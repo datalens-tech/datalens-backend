@@ -10,6 +10,7 @@ export DEV_MACHINE_UPLOAD_DEBUG
 export DEV_MACHINE_PKG_ROOT
 export TOOLS_VENV
 export DIR_GH_CHECKOUT_SYNC
+export DIR_GH_CHECKOUT_PROD
 
 .PHONY: docker-remote
 docker-remote: secrets-update
@@ -88,3 +89,6 @@ download-ea-docs:
 push_gh_sync:
 	bash push_gh_sync.bash
 
+.PHONY: push_gh_prod
+push_gh_prod:
+	bash push_to_prod_repo.bash

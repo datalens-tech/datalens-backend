@@ -17,7 +17,7 @@ from typing import Optional
 
 import attr
 
-from dl_repmanager.env import RepoEnvironmentLoader
+from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
 from dl_repmanager.package_index import PackageIndexBuilder
 from dl_repmanager.package_navigator import PackageNavigator
 from dl_repmanager.package_reference import PackageReference
@@ -26,6 +26,7 @@ from dl_repmanager.package_manager import PackageManager, PackageGenerator
 
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog='DL Repository Management CLI')
+    parser.add_argument('--config', help='Specify configuration file', default=DEFAULT_CONFIG_FILE_NAME)
 
     # mix-in parsers
     package_name_parser = argparse.ArgumentParser(add_help=False)
@@ -152,7 +153,9 @@ class DlRepManagerTool:
 
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
-        repo_env = RepoEnvironmentLoader().load_env(base_path=_BASE_DIR)
+        config_file_name = args.config
+
+        repo_env = RepoEnvironmentLoader(config_file_name=config_file_name).load_env(base_path=_BASE_DIR)
         index_builder = PackageIndexBuilder(repo_env=repo_env)
         package_index = index_builder.build_index()
         package_navigator = PackageNavigator(repo_env=repo_env, package_index=package_index)
@@ -163,7 +166,7 @@ class DlRepManagerTool:
                 package_index=package_index,
                 package_navigator=package_navigator,
                 package_generator=PackageGenerator(package_index=package_index, repo_env=repo_env),
-                package_reference=PackageReference(package_index=package_index),
+                package_reference=PackageReference(package_index=package_index, repo_env=repo_env),
             )
         )
 

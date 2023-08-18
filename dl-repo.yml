@@ -1,6 +1,6 @@
 # This file is used by dl-repmanager as the main configuration file
 
-env:
+dl_repo:
   fs_editor: arc  # Replace with `default` to stop using arc
   package_types:
     - type: terrarium  # Repository tools (including dl-repmanager)
@@ -39,3 +39,17 @@ env:
     - type: bi_meta_yc
       root_path: lib/bi_meta_yc
       boilerplate_path: lib/bi_package_boilerplate
+
+  custom_package_map:
+    flask_marshmallow: flask-marshmallow
+    flask_restx: flask-restx
+    jaeger_client: jaeger-client
+    jwt: pyjwt
+    typing_extensions: typing-extensions
+    marshmallow_enum: marshmallow-enum
+    marshmallow_oneofschema: marshmallow-oneofschema
+    more_itertools: more-itertools
+    psycopg2: psycopg2-binary
+    pytest_lazyfixture: pytest-lazyfixture
+    pyuwsgi: uwsgi
+    sentry_sdk: sentry-sdk

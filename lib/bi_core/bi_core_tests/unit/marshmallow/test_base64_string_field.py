@@ -21,6 +21,9 @@ def test_load():
     data = schema.load(data={"field": value.decode(encoding="utf-8")})
     assert data["field"] == "test"
 
+    data = schema.load(data={"field": ""})
+    assert data["field"] is None
+
     with pytest.raises(marshmallow.exceptions.ValidationError):
         schema.load(data=base64.b64encode(b"test"))
 

@@ -4,13 +4,23 @@ set -euxo pipefail
 
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 PROJECT_ROOT=$(realpath "${HERE}/../..")
-DST=$(realpath $DIR_GH_CHECKOUT_SYNC)
+DST=$(realpath $DIR_GH_CHECKOUT_PROD)
 
 ARC_COMMIT=$(arc rev-parse HEAD)
 ARC_BRANCH_REF=$(arc status -b | head -n 1)
 ARC_STATUS_TEXT=$(arc status)
 
 # Initial checks
+if [[ "${ARC_BRANCH_REF}" != "On branch trunk" ]]; then
+    echo "Not on trunk!"
+    exit 255
+fi
+
+if [[ $(arc diff --stat HEAD) != '' ]]; then
+    echo "Arc repo is dirty!"
+    exit 255
+fi
+
 if [[ ! -d "${DST}" ]]; then
     echo "${DST} is not exists!"
     exit 255
@@ -24,18 +34,9 @@ fi
 # Preparing target repo
 cd "${DST}"
 
-NEW_BRANCH_NAME="${USER}/$(date +"%Y-%m-%dT%H-%M-%S")"
+git checkout trunk
 git fetch
-git checkout -b "${NEW_BRANCH_NAME}"
 git reset --hard origin/trunk
-
-#BRANCH=$(git branch --show-current)
-#if [[ "${BRANCH}" != "dev-sync-${USER}" ]]; then
-#  echo "Unexpected branch set in mirror: ${BRANCH}"
-#  exit 255
-#fi
-#git fetch
-#git reset --hard origin/trunk
 
 # Remove all content from repo
 find "${DST}" -not -path "${DST}/.git/*" -not -path "${DST}/.git" -delete
@@ -54,8 +55,11 @@ find "${DST}" -name ".release.hjson" -exec bash -c "cat {} | grep -v './ya.make'
 
 # Commit
 git add .
-git commit -m "${USER} sync branch ${ARC_BRANCH_REF} ${ARC_COMMIT}, update $(date)"
-git push --set-upstream origin "${NEW_BRANCH_NAME}"
+COMM_MSG="SYNC ${ARC_BRANCH_REF} ${ARC_COMMIT}"
 
-PR_URL=$(gh pr create -B trunk --fill --body "${ARC_STATUS_TEXT}")
-gh pr merge -s --admin "${PR_URL}"
+if [[ $(git diff --stat HEAD) != '' ]]; then
+  git commit -m "${COMM_MSG}"
+  git push
+else
+  echo 'No changes detected!'
+fi

@@ -13,12 +13,13 @@ from dl_repmanager.package_meta_reader import PackageMetaReader
 
 @attr.s
 class PackageIndex:
+    _built: bool = attr.ib(kw_only=True, default=False)
     _package_infos_by_module_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_test_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_path: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
 
     def _is_built(self) -> bool:
-        return bool(self._package_infos_by_path)
+        return self._built
 
     def get_package_info_from_path(self, rel_package_dir_name: str) -> PackageInfo:
         assert self._is_built()
@@ -113,6 +114,7 @@ class PackageIndexBuilder:
                     package_infos_by_test_name[test_dir] = package_info
 
         package_index = PackageIndex(
+            built=True,
             package_infos_by_path=package_infos_by_path,
             package_infos_by_module_name=package_infos_by_module_name,
             package_infos_by_test_name=package_infos_by_test_name,

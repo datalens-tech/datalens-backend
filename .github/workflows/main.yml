@@ -1,12 +1,12 @@
 name: main
 
 on:
-  push:
-    paths:
-      - lib/**
-      - utils/**
-      - ops/ci/**
-      - '.github/workflows/main.yml'
+#  push:
+#    paths:
+#      - lib/**
+#      - utils/**
+#      - ops/ci/**
+#      - '.github/workflows/main.yml'
   workflow_dispatch:
     inputs:
       test_targets:

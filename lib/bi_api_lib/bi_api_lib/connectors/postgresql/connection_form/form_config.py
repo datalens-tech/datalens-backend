@@ -187,6 +187,8 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
                     FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
                     FormFieldApiSchema(name=CommonFieldName.username, required=True),
                     FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+                    FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                    FormFieldApiSchema(name=CommonFieldName.ssl_ca),
                     *self._get_top_level_check_api_schema_items(),
                 ]),
             )

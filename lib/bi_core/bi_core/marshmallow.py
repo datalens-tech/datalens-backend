@@ -69,6 +69,9 @@ class Base64StringField(fields.Field):
         if not isinstance(value, str):
             raise self.make_error("invalid")
 
+        if value == "":
+            return None
+
         # stripping metadata
         try:
             value = value.split(";base64,", 1)[1]
