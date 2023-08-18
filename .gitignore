@@ -10,3 +10,4 @@ build
 local_dev_2/requirements.txt
 .ruff_cache
 .idea
+__pycache__
