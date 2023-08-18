@@ -22,7 +22,7 @@ class DirectoryMarkingManager:
 
     @classmethod
     def get_iml_path(cls) -> str:
-        return path.join(IDEA_DIR, "backend.iml")
+        return path.join(IDEA_DIR, "datalens-backend-private.iml")
 
     @classmethod
     def get_instance(cls):
