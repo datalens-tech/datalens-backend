@@ -9,8 +9,6 @@ export DEV_MACHINE
 export DEV_MACHINE_UPLOAD_DEBUG
 export DEV_MACHINE_PKG_ROOT
 export TOOLS_VENV
-export DIR_GH_CHECKOUT_SYNC
-export DIR_GH_CHECKOUT_PROD
 
 .PHONY: docker-remote
 docker-remote: secrets-update
@@ -84,11 +82,3 @@ upload-dm: pycharm-prereq
 
 download-ea-docs:
 	scp -r ${DEV_MACHINE}:mirror/docs/external_api_md/* ../../../docs/external_api/
-
-.PHONY: push_gh_sync
-push_gh_sync:
-	bash push_gh_sync.bash
-
-.PHONY: push_gh_prod
-push_gh_prod:
-	bash push_to_prod_repo.bash
