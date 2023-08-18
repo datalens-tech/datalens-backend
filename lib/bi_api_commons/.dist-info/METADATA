@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: yandex-bi-api-commons
+Version: 0.0.0
+Author: Aleksandr Ushakov
+Author-email: alex-ushakov@yandex-team.ru
+Requires-Dist: attrs
+Requires-Dist: aiohttp
+Requires-Dist: marshmallow
+Requires-Dist: opentracing
+Requires-Dist: pyjwt
+Requires-Dist: raven
+Requires-Dist: sentry-sdk
+Provides-Extra: all
+

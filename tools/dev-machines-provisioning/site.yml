@@ -1,0 +1,8 @@
+- hosts: all
+  roles:
+    - role: docker_host
+      vars:
+        ovpn_tunnel_server_ip: "{{ dm_ovpn_tun_dev_machine_ip }}"
+        ovpn_tunnel_client_ip: "{{ dm_ovpn_tun_laptop_ip }}"
+        ovpn_required: "{{ dm_setup_ovpn }}"
+        expose_docker_socket: "{{ dm_docker_expose_socket | default('no') }}"

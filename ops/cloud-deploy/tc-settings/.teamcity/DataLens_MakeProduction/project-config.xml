@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="DataLens" uuid="36924b93-28db-4ee0-90e0-2b6cf1b8294b" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>MakeProduction</name>
+  <parameters>
+    <param name="env.DOCKER_TOKEN" value="credentialsJSON:78f5ed4a-b51f-412a-91e6-6616040c651e" spec="password display='normal'" />
+    <param name="env.DOCKER_USERNAME" value="robot-datalens" />
+    <param name="env.PACKER_LOG" value="1" />
+    <param name="env.SSH_PRIVATE_KEY_FILE" value="credentialsJSON:eebb50c5-a760-4e6f-af89-25a529047c80" spec="password display='normal'" />
+    <param name="env.UPGRADE_DEB_PACKAGES" value="true" />
+    <param name="env.YAV_TOKEN" value="credentialsJSON:32d93393-813a-4cd8-ac6c-ec02f88cc851" spec="password display='normal'" />
+    <param name="env.YC_SERVICE_ACCOUNT_KEY_FILE"><![CDATA[{
+   "id": "ajesn9i5qqte1ko29k2v",
+   "service_account_id": "aje2uruba661cok977h5",
+   "created_at": "2020-02-20T15:38:46Z",
+   "key_algorithm": "RSA_2048",
+   "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1bqnN+glcgNGqlDFTFht\nWEoT4HJwI2lmS8y0X8UWituPavLA0PcaoJ1T62uolxv+1K7VJ/ZoUQ/cBxxVjjwh\nHMsi3fbofPVa8QlaB+xk4DMZPLV1U/+75ObT/HFSyM15GZD8LitKEKJeWmcv8DfS\nged1pISES8neeT0fRQOJ6E7LBYhmSb12Wfwr4n7GOvL60VlOX4gnPU6604GBwQYV\nU9YDTrwIl6rK3rtcOHtbnGsfmGuKxSmYLpmWqWSngOHUJ4i7x+aC+hk13W8umPVq\naH+LUzsdClxf/nA2U1umDYIUCW/65Ck2jIk02gecH+0oSLTM0W890c+mOJhjzk2t\n3QIDAQAB\n-----END PUBLIC KEY-----\n"
+}]]></param>
+    <param name="env.YC_SERVICE_ACCOUNT_PRIVATE_KEY" value="credentialsJSON:f18bce70-4603-486f-b113-8f9451f6fdae" spec="password display='normal'" />
+  </parameters>
+  <cleanup />
+</project>
+

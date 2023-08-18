@@ -1,0 +1,20 @@
+# Yandex stable Repos
+deb http://dist.yandex.ru/common stable/all/
+deb http://dist.yandex.ru/common stable/amd64/
+
+deb http://dist.yandex.ru/yandex-xenial/ stable/all/
+deb http://dist.yandex.ru/yandex-xenial/ stable/amd64/
+
+# Yandex testing Repos
+deb http://dist.yandex.ru/common testing/all/
+deb http://dist.yandex.ru/common testing/amd64/
+
+deb http://dist.yandex.ru/yandex-xenial/ testing/all/
+deb http://dist.yandex.ru/yandex-xenial/ testing/amd64/
+
+# Yandex unstable Repos
+deb http://dist.yandex.ru/common unstable/all/
+deb http://dist.yandex.ru/common unstable/amd64/
+
+deb http://dist.yandex.ru/yandex-xenial/ unstable/all/
+deb http://dist.yandex.ru/yandex-xenial/ unstable/amd64/

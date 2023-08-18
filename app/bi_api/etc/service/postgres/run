@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+LAUNCH_TARGET="${LAUNCH_TARGET:-sync_api}"
+START_COMPENG="${START_COMPENG:-1}"
+if [ x"${LAUNCH_TARGET}" != x"async_api" ] || [ x"${START_COMPENG}" != x"1" ]; then
+    sleep 9000  # could also 'sv stop postgres'.
+    exit 0
+fi
+
+
+DATADIR="/tmp/pgdata"
+if [ -d "/tmpfs" ]; then
+    DATADIR="/tmpfs/pgdata"
+fi
+
+DATADIR_MARKER="$DATADIR/.setup_done"
+if [ ! -f "$DATADIR_MARKER" ]; then
+    mkdir -p "$DATADIR"
+    chown -R postgres:postgres "$DATADIR"
+    chmod 750 "$DATADIR"
+    sed -i "s|^data_directory =.*|data_directory = '${DATADIR}'|" /etc/postgresql/12/main/postgresql.conf
+    cp -a /var/lib/postgresql/12/main/* "$DATADIR/"
+    touch "$DATADIR_MARKER"
+fi
+
+
+exec \
+    chpst -u postgres:postgres \
+    /usr/lib/postgresql/12/bin/postgres \
+    --config-file=/etc/postgresql/12/main/postgresql.conf

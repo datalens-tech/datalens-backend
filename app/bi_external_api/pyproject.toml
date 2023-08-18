@@ -1,0 +1,89 @@
+
+[tool.poetry]
+name = "bi-external-api"
+version = "0.80.0"
+description = ""
+authors = ["Konstantin Chupin <kchupin@yandex-team.ru>"]
+packages = [
+    {include = "bi_external_api"},
+]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+docker = ">=6.0.1"
+dynamic-enum = {path = "../../lib/dynamic_enum"}
+grpcio-health-checking = ">=1.44.0"
+grpcio-reflection = ">=1.44.0"
+python = ">=3.10, <3.12"
+pyyaml = ">=5.3.1"
+sentry-sdk = ">=1.15.0"
+yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
+yandex-bi-us-client = {path = "../../lib/bi_us_client"}
+yandex-dc-public-api-proto-stubs = {path = "../../lib/dc_public_api_proto_stubs"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+uwsgi = ">=2.0.21"
+yandex-bi-api = {path = "../../app/bi_api"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_external_api_tests", "bi_external_api_tests/db", "bi_external_api_tests/local", "bi_external_api_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[tool.poetry.scripts]
+bi-ext-api-grpc-proxy = "bi_external_api.grpc_proxy.server:main"
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[datalens.pytest.unit]
+root_dir = "bi_external_api_tests/unit"
+target_path = "."
+labels = ["fat"]
+
+[datalens.pytest.local]
+root_dir = "bi_external_api_tests/db"
+target_path = "."
+labels = ["fat"]
+
+
+[datalens.pytest.ext]
+root_dir = "bi_core_tests/"
+target_path = "dc dc_preprod int_preprod local local_int_prod"
+

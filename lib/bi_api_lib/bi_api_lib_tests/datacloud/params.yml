@@ -1,0 +1,16 @@
+getters:
+  - name: yav_dc
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01f9pkp704tp2xw7cjs5g8qjgr}
+
+  - name: yav_int_tests
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01d5pcrfv9xceanxj2jwaed4bm}
+
+params:
+  ACCESS_KEY_ID: {getter: yav_dc, key: ACCESS_KEY_ID}
+  SECRET_ACCESS_KEY: {getter: yav_dc, key: SECRET_ACCESS_KEY}
+  INTEGRATION_TESTS_DC_PROD_DATA: {getter: yav_int_tests, key: INTEGRATION_TESTS_DC_PROD_DATA}
+  INTEGRATION_TESTS_DC_TESTING_DATA: {getter: yav_int_tests, key: INTEGRATION_TESTS_DC_TESTING_DATA}

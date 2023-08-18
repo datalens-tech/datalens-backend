@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-11 16:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bi_core/connectors/ydb/us_connection.py:75
+#: bi_core/connectors/chydb/us_connection.py:75
+#: bi_core/connectors/chyt/us_connection.py:138
+#: bi_core/connectors/chyt_internal/us_connection.py:48
+msgid "source_templates-tab_title-table"
+msgstr "Table"
+
+#: bi_core/connectors/ydb/us_connection.py:82
+#: bi_core/connectors/chydb/us_connection.py:85
+msgid "source_templates-label-ydb_table"
+msgstr "YDB table path"
+
+#: bi_core/connectors/chydb/us_connection.py:91
+msgid "source_templates-label-ydb_database"
+msgstr "YDB database path"
+
+#: bi_core/connectors/chydb/us_connection.py:98
+msgid "source_templates-label-ydb_cluster"
+msgstr "YDB cluster name"
+
+#: bi_core/connectors/chyt/us_connection.py:144
+msgid "source_templates-label-ytsaurus_table"
+msgstr "Path to a YTsaurus table"
+
+#: bi_core/connectors/chyt/us_connection.py:152
+#: bi_core/connectors/chyt_internal/us_connection.py:62
+msgid "source_templates-tab_title-concat"
+msgstr "Concat"
+
+#: bi_core/connectors/chyt/us_connection.py:158
+msgid "source_templates-label-ytasurus_table_list"
+msgstr "Path to YTsaurus tables, one per line"
+
+#: bi_core/connectors/chyt/us_connection.py:166
+#: bi_core/connectors/chyt_internal/us_connection.py:76
+msgid "source_templates-tab_title-range"
+msgstr "Range"
+
+#: bi_core/connectors/chyt/us_connection.py:172
+msgid "source_templates-label-ytsaurus_dir"
+msgstr "Path to a YTsaurus directory"
+
+#: bi_core/connectors/chyt/us_connection.py:178
+#: bi_core/connectors/chyt_internal/us_connection.py:88
+msgid "source_templates-label-range_from"
+msgstr "Start from"
+
+#: bi_core/connectors/chyt/us_connection.py:183
+#: bi_core/connectors/chyt_internal/us_connection.py:93
+msgid "source_templates-label-range_to"
+msgstr "End at"
+
+#: bi_core/connectors/chyt_internal/us_connection.py:54
+msgid "source_templates-label-yt_table"
+msgstr "Path to a YT table"
+
+#: bi_core/connectors/chyt_internal/us_connection.py:68
+msgid "source_templates-label-yt_table_list"
+msgstr "Path to YT tables, one per line"
+
+#: bi_core/connectors/chyt_internal/us_connection.py:82
+msgid "source_templates-label-yt_dir"
+msgstr "Path to a YT directory"
+
+#: bi_core/us_connection_base.py:509
+msgid "source_templates-tab_title-sql"
+msgstr "SQL"
+
+#: bi_core/us_connection_base.py:517
+msgid "source_templates-label-subquery"
+msgstr "Subquery"

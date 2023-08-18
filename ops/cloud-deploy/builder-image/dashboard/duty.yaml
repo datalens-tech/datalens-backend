@@ -1,0 +1,75 @@
+uid: cloudConsole 
+title: Duty dashboard (cloud console team)
+refresh: 3m
+
+tags: [ 'cloud-console' ]
+
+variables:
+  ui:
+    cluster: { values: [prod, preprod] }
+  uiQuery:
+    host:
+      labels: 'service=node-exporter_ma, host=*'
+      label: host
+      multi: true
+      regex: '[a-z-]+-[a-z-]+-\d+'
+  repeat:
+    host:
+      values:
+        - amcr0hgae43h2fnllo39-ijym
+        - amcr0hgae43h2fnllo39-adol
+
+graphDefaults:
+  width: 8
+  height: 6
+  datasource: Solomon Cloud
+
+queryDefaults:
+  labels: 'project=cloud-console, cluster=${cluster}' 
+
+rows:
+  - title: VM CPU
+    panels:
+      - type: graph
+        title: '$host'
+        uiRepeat: host
+        queries:
+          - params: { labels: 'name=node_cpu_seconds_total, host=$host, cpu=*, mode!=idle, service=node-exporter_ma' }
+            groupByTime: { max: '1m' }
+            select: { non_negative_derivative: [], group_by_labels: [sum, cpu], group_lines: avg, alias: 'cpu average' }
+  - title: VM Memory
+    panels:
+      - type: graph
+        title: '$host'
+        uiRepeat: host  
+        queries:
+          - params: { labels: 'name=node_memory_MemFree_bytes, host=$host, service=node-exporter_ma' }
+            groupByTime: { max: '1m' }
+            select: { alias: 'memory usage' }
+  - title: Nodejs heap size used
+    panels:
+      - type: graph
+        title: '$host'
+        uiRepeat: host  
+        queries:
+          - params: { labels: 'name=nodejs_heap_size_used_bytes, host=$host, service=application' }
+            groupByTime: { max: '1m' }
+            select: { alias: 'nodejs usage' }
+  - title: Application memory
+    panels:
+      - type: graph
+        title: '$host'
+        uiRepeat: host  
+        queries:
+          - params: { labels: 'name=process_resident_memory_bytes, host=$host, service=application' }
+            groupByTime: { max: '1m' }
+            select: { alias: 'rss memory' }
+  - title: GC reclaimed bytes total
+    panels:
+      - type: graph
+        title: '$host'
+        uiRepeat: host  
+        queries:
+          - params: { labels: 'name=nodejs_gc_reclaimed_bytes_total, gctype=*, host=$host, service=application' }
+            groupByTime: { max: '1m' }
+            select: { non_negative_derivative: [], alias: 'gc bytes {{gctype}}' }

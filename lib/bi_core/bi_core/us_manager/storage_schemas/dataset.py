@@ -1,0 +1,440 @@
+from __future__ import annotations
+
+from copy import deepcopy
+from typing import Any, Dict
+
+from marshmallow import fields as ma_fields, post_dump, post_load, pre_load
+from marshmallow_oneofschema import OneOfSchema
+from marshmallow_enum import EnumField
+
+from bi_constants.enums import (
+    BIType, ManagedBy, JoinType, BinaryJoinOperator,
+    JoinConditionType, ConditionPartCalcMode, CalcMode, AggregationFunction, FieldType,
+    RLSSubjectType, RLSPatternType,
+    WhereClauseOperation, ParameterValueConstraintType,
+)
+from bi_core.us_dataset import Dataset
+from bi_core.us_manager.storage_schemas.base import DefaultStorageSchema
+from bi_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema
+from bi_core.us_manager.storage_schemas.data_source_collection import GenericDataSourceCollectionStorageSchema
+from bi_core import (
+    multisource,
+    rls as rls_module
+)
+from bi_core.fields import (
+    ResultSchema, BIField, ParameterValueConstraint, RangeParameterValueConstraint, SetParameterValueConstraint,
+    CalculationSpec, DirectCalculationSpec, FormulaCalculationSpec, ParameterCalculationSpec,
+    del_calc_spec_kwargs_from, filter_calc_spec_kwargs,
+)
+from bi_core.base_models import ObligatoryFilter, DefaultWhereClause
+from bi_core.components.dependencies.primitives import FieldInterDependencyItem, FieldInterDependencyInfo
+from bi_core.values import (
+    BIValue, StringValue, IntegerValue, FloatValue, DateValue, DateTimeValue, DateTimeTZValue, GenericDateTimeValue,
+    BooleanValue, GeoPointValue, GeoPolygonValue, UuidValue, MarkupValue, ArrayStrValue, ArrayIntValue, ArrayFloatValue,
+    TreeStrValue,
+)
+
+
+class SourceAvatarSchema(DefaultStorageSchema):
+    TARGET_CLS = multisource.SourceAvatar
+
+    id = ma_fields.String()
+    title = ma_fields.String()
+    source_id = ma_fields.String()
+    is_root = ma_fields.Boolean()
+    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    valid = ma_fields.Boolean(allow_none=True)
+
+
+class ConditionPartBaseSchema(DefaultStorageSchema):
+    calc_mode = EnumField(ConditionPartCalcMode)
+
+
+class ConditionPartDirectSchema(ConditionPartBaseSchema):
+    TARGET_CLS = multisource.ConditionPartDirect
+    source = ma_fields.String()
+
+
+class ConditionPartResultFieldSchema(ConditionPartBaseSchema):
+    TARGET_CLS = multisource.ConditionPartResultField
+    field_id = ma_fields.String()
+
+
+class ConditionPartFormulaSchema(ConditionPartBaseSchema):
+    TARGET_CLS = multisource.ConditionPartFormula
+    formula = ma_fields.String()
+
+
+class ConditionPartSchema(OneOfSchema):
+    type_field = 'calc_mode'
+    type_field_remove = False
+    type_schemas = {
+        k.name: v for k, v in {
+            ConditionPartCalcMode.direct: ConditionPartDirectSchema,
+            ConditionPartCalcMode.result_field: ConditionPartResultFieldSchema,
+            ConditionPartCalcMode.formula: ConditionPartFormulaSchema,
+        }.items()
+    }
+
+    def get_obj_type(self, obj):  # type: ignore  # TODO: fix
+        return getattr(obj, self.type_field).name
+
+
+class AvatarRelationSchema(DefaultStorageSchema):
+    TARGET_CLS = multisource.AvatarRelation
+
+    class JoinConditionSchema(DefaultStorageSchema):
+        TARGET_CLS = multisource.BinaryCondition
+
+        operator = EnumField(BinaryJoinOperator)
+        left_part = ma_fields.Nested(ConditionPartSchema)
+        right_part = ma_fields.Nested(ConditionPartSchema)
+        condition_type = EnumField(JoinConditionType)
+
+    id = ma_fields.String()
+    left_avatar_id = ma_fields.String()
+    right_avatar_id = ma_fields.String()
+    conditions = ma_fields.List(ma_fields.Nested(JoinConditionSchema))
+    join_type = EnumField(JoinType)
+    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    valid = ma_fields.Boolean(allow_none=True)
+
+
+class RLSSchema(DefaultStorageSchema):
+    TARGET_CLS = rls_module.RLS
+
+    class RLSEntrySchema(DefaultStorageSchema):
+        TARGET_CLS = rls_module.RLSEntry
+
+        class RLSSubjectSchema(DefaultStorageSchema):
+            TARGET_CLS = rls_module.RLSSubject
+
+            subject_type = EnumField(RLSSubjectType)
+            subject_id = ma_fields.String()
+            subject_name = ma_fields.String()  # login, group name, etc
+
+        field_guid = ma_fields.String()
+        # TODO: validate that either of these is correct for each instance:
+        #   * pattern_type=RLSPatternType.value and allowed_value is not None
+        #   * pattern_type=RLSPatternType.all and allowed_value is None
+        allowed_value = ma_fields.String(allow_none=True)
+        pattern_type = EnumField(RLSPatternType, dump_default=RLSPatternType.value)
+        subject = ma_fields.Nested(RLSSubjectSchema)
+
+    items = ma_fields.List(ma_fields.Nested(RLSEntrySchema))
+
+    def pre_process_input_data(self, data):  # type: ignore  # TODO: fix
+        return {'items': data}
+
+    @post_dump
+    def flatten_items(self, data, **_):  # type: ignore  # TODO: fix
+        return data.get('items')
+
+
+class BaseValueSchema(DefaultStorageSchema):
+    type = EnumField(BIType)
+    value = ma_fields.Field()
+
+
+class StringValueSchema(BaseValueSchema):
+    TARGET_CLS = StringValue
+    value = ma_fields.String()
+
+
+class IntegerValueSchema(BaseValueSchema):
+    TARGET_CLS = IntegerValue
+    value = ma_fields.Integer()
+
+
+class FloatValueSchema(BaseValueSchema):
+    TARGET_CLS = FloatValue
+    value = ma_fields.Float()
+
+
+class DateValueSchema(BaseValueSchema):
+    TARGET_CLS = DateValue
+    value = ma_fields.Date()
+
+
+class DateTimeValueSchema(BaseValueSchema):
+    TARGET_CLS = DateTimeValue
+    value = ma_fields.DateTime()
+
+
+class DateTimeTZValueSchema(BaseValueSchema):
+    TARGET_CLS = DateTimeTZValue
+    value = ma_fields.DateTime()
+
+
+class GenericDateTimeValueSchema(BaseValueSchema):
+    TARGET_CLS = GenericDateTimeValue
+    value = ma_fields.DateTime()
+
+
+class BooleanValueSchema(BaseValueSchema):
+    TARGET_CLS = BooleanValue
+    value = ma_fields.Boolean()
+
+
+class GeoPointValueSchema(BaseValueSchema):
+    TARGET_CLS = GeoPointValue
+    value = ma_fields.List(ma_fields.Float())
+
+
+class GeoPolygonValueSchema(BaseValueSchema):
+    TARGET_CLS = GeoPolygonValue
+    value = ma_fields.List(ma_fields.List(ma_fields.List(ma_fields.Float())))
+
+
+class UuidValueSchema(BaseValueSchema):
+    TARGET_CLS = UuidValue
+    value = ma_fields.String()
+
+
+class MarkupValueSchema(BaseValueSchema):
+    TARGET_CLS = MarkupValue
+    value = ma_fields.String()
+
+
+class ArrayStrValueSchema(BaseValueSchema):
+    TARGET_CLS = ArrayStrValue
+    value = ma_fields.List(ma_fields.String())
+
+
+class ArrayIntValueSchema(BaseValueSchema):
+    TARGET_CLS = ArrayIntValue
+    value = ma_fields.List(ma_fields.Integer())
+
+
+class ArrayFloatValueSchema(BaseValueSchema):
+    TARGET_CLS = ArrayFloatValue
+    value = ma_fields.List(ma_fields.Float())
+
+
+class TreeStrValueSchema(BaseValueSchema):
+    TARGET_CLS = TreeStrValue
+    value = ma_fields.List(ma_fields.String())
+
+
+class ValueSchema(OneOfSchema):
+    type_field = 'type'
+    type_schemas = {
+        BIType.string.name: StringValueSchema,
+        BIType.integer.name: IntegerValueSchema,
+        BIType.float.name: FloatValueSchema,
+        BIType.date.name: DateValueSchema,
+        BIType.datetime.name: DateTimeValueSchema,
+        BIType.datetimetz.name: DateTimeTZValueSchema,
+        BIType.genericdatetime.name: GenericDateTimeValueSchema,
+        BIType.boolean.name: BooleanValueSchema,
+        BIType.geopoint.name: GeoPointValueSchema,
+        BIType.geopolygon.name: GeoPolygonValueSchema,
+        BIType.uuid.name: UuidValueSchema,
+        BIType.markup.name: MarkupValueSchema,
+        BIType.array_str.name: ArrayStrValueSchema,
+        BIType.array_int.name: ArrayIntValueSchema,
+        BIType.array_float.name: ArrayFloatValueSchema,
+        BIType.tree_str.name: TreeStrValueSchema,
+    }
+
+    def get_obj_type(self, obj: BIValue) -> str:
+        assert isinstance(obj, BIValue)
+        return obj.type.name
+
+
+class BaseParameterValueConstraintSchema(DefaultStorageSchema):
+    type = EnumField(ParameterValueConstraintType)
+
+
+class AllParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = ParameterValueConstraint
+
+
+class RangeParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = RangeParameterValueConstraint
+
+    min = ma_fields.Nested(ValueSchema, allow_none=True)
+    max = ma_fields.Nested(ValueSchema, allow_none=True)
+
+
+class SetParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = SetParameterValueConstraint
+
+    values = ma_fields.List(ma_fields.Nested(ValueSchema))
+
+
+class ParameterValueConstraintSchema(OneOfSchema):
+    type_field = 'type'
+    type_schemas = {
+        ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
+        ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
+        ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
+    }
+
+    def get_obj_type(self, obj: ParameterValueConstraint) -> str:
+        return getattr(obj, self.type_field).name
+
+
+class DirectCalculationSpecSchema(DefaultStorageSchema):
+    TARGET_CLS = DirectCalculationSpec
+    avatar_id = ma_fields.String(allow_none=True)
+    source = ma_fields.String()
+
+
+class FormulaCalculationSpecSchema(DefaultStorageSchema):
+    TARGET_CLS = FormulaCalculationSpec
+    formula = ma_fields.String()
+    guid_formula = ma_fields.String()
+
+
+class ParameterCalculationSpecSchema(DefaultStorageSchema):
+    TARGET_CLS = ParameterCalculationSpec
+    default_value = ma_fields.Nested(ValueSchema, allow_none=True)
+    value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
+
+
+class ResultSchemaStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = ResultSchema
+
+    class BIFieldSchema(DefaultStorageSchema):
+        TARGET_CLS = BIField
+
+        class CalculationSpecSchema(OneOfSchema):
+            type_field = 'mode'
+            type_field_remove = False
+            type_schemas = {
+                CalcMode.direct.name: DirectCalculationSpecSchema,
+                CalcMode.formula.name: FormulaCalculationSpecSchema,
+                CalcMode.parameter.name: ParameterCalculationSpecSchema,
+            }
+
+            def get_obj_type(self, obj: CalculationSpec) -> str:
+                return obj.mode.name
+
+        title = ma_fields.String()
+        guid = ma_fields.String()
+        aggregation = EnumField(AggregationFunction)
+        type = EnumField(FieldType)
+        hidden = ma_fields.Boolean()
+        description = ma_fields.String()
+        cast = EnumField(BIType, allow_none=True)
+        initial_data_type = EnumField(BIType, allow_none=True)
+        data_type = EnumField(BIType, allow_none=True)
+        valid = ma_fields.Boolean(allow_none=True)
+        has_auto_aggregation = ma_fields.Boolean(allow_none=True)
+        lock_aggregation = ma_fields.Boolean(allow_none=True)
+        managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+
+        # this will be flattened on dump and un-flattened before load
+        # TODO: dump/load as is and migrate data in storage respectively
+        calc_spec = ma_fields.Nested(CalculationSpecSchema)
+
+        @post_dump(pass_many=False)
+        def add_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+            data = deepcopy(data)
+            calc_spec_data = data.pop('calc_spec')
+            calc_spec_data['calc_mode'] = calc_spec_data.pop('mode')
+            data.update(calc_spec_data)
+            # For backward compatibility use '' for formula and source; avatar_id must be present even if None
+            for key in ('formula', 'guid_formula', 'source'):
+                data.setdefault(key, '')
+            for key in ('avatar_id', 'default_value', 'value_constraint'):
+                data.setdefault(key, None)
+            return data
+
+        @pre_load(pass_many=False)
+        def extract_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+            data = deepcopy(data)
+            mode = data['calc_mode']
+            data['calc_spec'] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
+            return del_calc_spec_kwargs_from(data)
+
+        def to_object(self, data: dict) -> BIField:
+            return BIField.make(**data)
+
+    fields = ma_fields.List(ma_fields.Nested(BIFieldSchema))  # type: ignore  # TODO: fix
+
+    def pre_process_input_data(self, data):  # type: ignore  # TODO: fix
+        return {'fields': data}
+
+    @post_dump
+    def flatten_fields(self, data, **_):  # type: ignore  # TODO: fix
+        return data.get('fields')
+
+    @post_load
+    def make_missing_formulas(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+        field: BIField
+        titles_to_guids = {
+            field.title: field.guid
+            for field in data['fields']
+        }
+        guids_to_titles = {
+            field.guid: field.title
+            for field in data['fields']
+        }
+        new_fields = []
+        for field in data['fields']:
+            if field.calc_mode == CalcMode.formula:
+                new_field = field
+                if field.formula and not field.guid_formula:
+                    new_field = field.clone(
+                        guid_formula=BIField.rename_in_formula(formula=field.formula, key_map=titles_to_guids)
+                    )
+                elif field.guid_formula and not field.formula:
+                    new_field = field.clone(
+                        formula=BIField.rename_in_formula(formula=field.guid_formula, key_map=guids_to_titles)
+                    )
+                new_fields.append(new_field)
+            else:
+                new_fields.append(field)
+        data['fields'] = new_fields
+        return data
+
+
+class ResultSchemaAuxSchema(DefaultStorageSchema):
+    TARGET_CLS = Dataset.DataModel.ResultSchemaAux
+
+    class FieldInterDependencyInfoSchema(DefaultStorageSchema):
+        TARGET_CLS = FieldInterDependencyInfo
+
+        class FieldInterDependencyItemSchema(DefaultStorageSchema):
+            TARGET_CLS = FieldInterDependencyItem
+
+            dep_field_id = ma_fields.String(allow_none=False)
+            ref_field_ids = ma_fields.List(ma_fields.String(allow_none=False), allow_none=False)
+
+        deps = ma_fields.List(ma_fields.Nested(FieldInterDependencyItemSchema()), allow_none=False)
+
+    inter_dependencies = ma_fields.Nested(FieldInterDependencyInfoSchema(), allow_none=False)
+
+
+class DefaultWhereClauseSchema(DefaultStorageSchema):
+    TARGET_CLS = DefaultWhereClause
+
+    operation = EnumField(WhereClauseOperation)
+    values = ma_fields.List(ma_fields.String())
+
+
+class ObligatoryFilterSchema(DefaultStorageSchema):
+    TARGET_CLS = ObligatoryFilter
+
+    id = ma_fields.String()
+    field_guid = ma_fields.String()
+    default_filters = ma_fields.List(ma_fields.Nested(DefaultWhereClauseSchema))
+    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    valid = ma_fields.Boolean(allow_none=True)
+
+
+class DatasetStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = Dataset.DataModel
+
+    name = ma_fields.String(allow_none=True, load_default=None)
+    revision_id = ma_fields.String(allow_none=True, dump_default=None, load_default=None)
+    result_schema = ma_fields.Nested(ResultSchemaStorageSchema, allow_none=False)
+    result_schema_aux = ma_fields.Nested(ResultSchemaAuxSchema, allow_none=False)
+    source_collections = ma_fields.List(ma_fields.Nested(GenericDataSourceCollectionStorageSchema, allow_none=False))
+    source_avatars = ma_fields.List(ma_fields.Nested(SourceAvatarSchema, allow_none=False))
+    avatar_relations = ma_fields.List(ma_fields.Nested(AvatarRelationSchema, allow_none=False))
+    rls = ma_fields.Nested(RLSSchema, allow_none=False)
+    component_errors = ma_fields.Nested(ComponentErrorListSchema)
+    obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))

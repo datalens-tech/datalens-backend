@@ -1,0 +1,46 @@
+digraph user_data_flow {
+    USConnection
+    ConnAdapter
+    SAAdapter [color = green]
+    SAAdapter [style = filled]
+
+    subgraph remote_adapter {
+        style = filled;
+        color = lightgrey;
+        node [style = filled];
+        RemoteAdapter
+        QE [label = "QE HTTP server"]
+        SAAdapter1 [label = SAAdapter,color = green]
+    }
+
+    DB [shape = folder]
+
+    // Ranking
+    rankdir = LR
+    {
+        rank = same
+        SAAdapter
+        RemoteAdapter
+    }
+
+
+    // Main flow
+    USConnection -> ConnAdapter [label = "query, user_types"]
+    ConnAdapter -> SAAdapter [label = "query, user_types"]
+
+    SAAdapter -> ConnAdapter [label = "raw_data"]
+    ConnAdapter -> USConnection [label = "bi_typed_data"]
+
+    SAAdapter -> DB [dir = both]
+
+    // Remote QE flow
+    ConnAdapter -> RemoteAdapter [label = "query, user_types"]
+    RemoteAdapter -> QE [label = "HTTP request"]
+    QE -> SAAdapter1
+
+    SAAdapter1 -> QE
+    QE -> RemoteAdapter [label = "HTTP response"]
+    RemoteAdapter -> ConnAdapter [label = "raw_data"]
+
+    SAAdapter1 -> DB [dir = both]
+}

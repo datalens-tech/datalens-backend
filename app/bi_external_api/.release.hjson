@@ -1,0 +1,10 @@
+dockerfile: Dockerfile
+image: registry.yandex.net/statinfra/bi-external-api
+experiments: version
+version_files: {
+  "./bi_external_api/__init__.py": '__version__ = "([^"]+)"',
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}
+deploy: true
+stage: back-int-preprod
+deploy_units: external-api:external-api

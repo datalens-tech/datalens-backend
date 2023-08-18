@@ -1,0 +1,268 @@
+# See also:
+# https://a.yandex-team.ru/arc/trunk/arcadia/sandbox/projects/datalens/duty_juggler_setter/__init__.py
+# https://sandbox.yandex-team.ru/scheduler/19193/tasks
+rules:
+    - rule_id: 5f95c1e866a346007a583974
+      namespace: datalens
+      selector: >-
+          host=datalens_ext_production &
+          (service=back_cpu_usage | service=back_mem_free)
+      template_name: on_status_change
+      template_kwargs:
+        status:
+            - CRIT
+            - from: CRIT
+              to: OK
+            - from: CRIT
+              to: WARN
+        login:
+            - DataLensDuty
+            - asnytin
+        method:
+            - sms
+            - telegram
+
+    - rule_id: 5f95c21d66a346007b2f9dc3
+      namespace: datalens
+      selector: >-
+          host=datalens_ext_production &
+          service=back_l7_5xx
+      template_name: on_status_change
+      template_kwargs:
+        status:
+            - CRIT
+            - from: CRIT
+              to: OK
+            - from: CRIT
+              to: WARN
+        login:
+            - DataLensDuty
+            - asnytin
+        method:
+            - sms
+            - telegram
+
+    - rule_id: 5d10eae4dcc66c00691ee821
+      namespace: datalens
+      selector: |-
+        namespace=datalens
+            & service=dl-regular-materialization
+            & (host=int-production | host=production)
+      template_name: on_status_change
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - asnytin
+          - DataLensDuty
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5d381ffbdcc66c006cd67df9
+      namespace: datalens
+      selector: |-
+        namespace=datalens
+            & service=dl-regular-materialization
+            & (host=int-testing | host=testing)
+      template_name: on_status_change
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - datalens_preprod_alerts
+        method:
+          - telegram
+
+    - rule_id: 5e176762dcc66c0072c098d4
+      namespace: datalens
+      selector: host=datalens_mat_ch_disk_space
+      template_name: on_status_change
+      match_raw_events: false
+      template_kwargs:
+        status:
+          - CRIT
+          - from: CRIT
+            to: OK
+          - from: CRIT
+            to: WARN
+        login:
+          - asnytin
+          - DataLensDuty
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5eaae24cdcc66c0076ad5543
+      namespace: datalens
+      selector: host=datalens_mdb
+      template_name: on_status_change
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - asnytin
+          - DataLensDuty
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5dfcd33edcc66c007534a423
+      namespace: datalens
+      selector: service=dl-dls-iam-import & host=ext_production
+      template_name: on_status_change
+      match_raw_events: false
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - DataLensDuty
+          - asnytin
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5fbbb12d41cd62006d31eb54
+      namespace: datalens
+      selector: service=dl-dls-staff-import & host=int_prod
+      template_name: on_status_change
+      match_raw_events: false
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - DataLensDuty
+          - asnytin
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5fbce98366a346006fc6649f
+      namespace: datalens
+      selector: host=datalens_ext_production & service=mat_ch_is_alive
+      template_name: on_status_change
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - asnytin
+          - DataLensDuty
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5fcf6f6ddcc66c006c9df97c
+      namespace: datalens
+      selector: host=int_prod & service=dl-dls-backend-selfcheck
+      template_name: on_status_change
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - DataLensDuty
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5fcf731aef1625007229babe
+      namespace: datalens
+      selector: host=ext_production & service=dl-dls-backend-selfcheck
+      template_name: on_status_change
+      template_kwargs:
+        status:
+          - from: OK
+            to: CRIT
+          - from: CRIT
+            to: OK
+        login:
+          - DataLensDuty
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 5fe0f5c3dcc66c0078cae08e
+      namespace: datalens
+      selector: >-
+        host=datalens_ext_production & ( service=back_mdb_cpu_usage |
+        service=back_mdb_mem_usage | service=back_mdb_disk_usage )
+      template_name: on_status_change
+      template_kwargs:
+        status:
+        - OK
+        - WARN
+        - CRIT
+        login:
+          - DataLensDuty
+          - asnytin
+        method:
+          - sms
+          - telegram
+
+    - rule_id: 60059c4f29c2ec08582b4385
+      namespace: datalens
+      selector: host=quota_usage & service=datalens_yt
+      template_name: on_status_change
+      template_kwargs:
+        status:
+        - OK
+        - WARN
+        - CRIT
+        login:
+          - DataLensDuty
+          - asnytin
+        method:
+          - sms
+          - telegram
+    - rule_id: 602bf46f4abb7a018aab25c0
+      namespace: datalens
+      selector: >-
+        service=mat_cluster_create_table_time &
+        (host=datalens_ext_production | host=datalens_int_production)
+      template_name: on_status_change
+      template_kwargs:
+        status:
+        - OK
+        - WARN
+        - CRIT
+        login:
+          - DataLensDuty
+          - asnytin
+        method:
+          - sms
+          - telegram
+    - rule_id: 602bf4d62f63ad8bc3445914
+      namespace: datalens
+      selector: service=mat_db_pool & host=datalens_ext_production
+      template_name: on_status_change
+      template_kwargs:
+        status:
+        - OK
+        - CRIT
+        login:
+          - DataLensDuty
+          - asnytin
+        method:
+          - sms
+          - telegram
+

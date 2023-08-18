@@ -1,0 +1,401 @@
+[tool.poetry]
+name = "datalens-ci-migration"
+version = "0.1.0"
+description = ""
+authors = ["Valentin Gologuzov <vgol@double.cloud>"]
+license = "MIT"
+packages = [{include = "bi_ci_dummy"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+antlr4-python3-runtime = "==4.11.1"
+yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
+yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
+sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
+statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
+statcommons = {path = "../../lib/statcommons"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+bi-file-secure-reader-lib = {path = "../../lib/bi_file_secure_reader_lib"}
+bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
+bi-task-processor = {path = "../../lib/bi_task_processor"}
+yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
+yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
+yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
+yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
+yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
+yandex-bi-sqlalchemy-chyt = {path = "../../lib/bi_sqlalchemy_chyt"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
+yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
+yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+yandex-bi-sqlalchemy-promql = {path = "../../lib/bi_sqlalchemy_promql"}
+yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
+yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
+yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
+yandex-bi-api-client = {path = "../../lib/bi_api_client"}
+# yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
+yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
+yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
+yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
+yandex-bi-query-processing = {path = "../../lib/bi_query_processing"}
+yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
+yandex-bi-us-client = {path = "../../lib/bi_us_client"}
+bi-test-project-task-interface = {path = "../../lib/bi_test_project_task_interface"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
+dynamic-enum = {path = "../../lib/dynamic_enum"}
+yandex-bi-file-uploader-lib = {path = "../../lib/bi_file_uploader_lib"}
+yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+yandex-bi-service-registry-ya-team = {path = "../../lib/bi_service_registry_ya_team"}
+redis_cache_lock = {path = "../../lib/redis-cache-lock"}
+yandex-bi-file-uploader-worker-lib = {path = "../../lib/bi_file_uploader_worker_lib"}
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+yandex-bi-file-uploader-api-lib = {path = "../../lib/bi_file_uploader_api_lib"}
+yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+yandex-bi-package-boilerplate = {path = "../../lib/bi_package_boilerplate"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
+yandex-bi-integration-tests = {path = "../../ops/bi_integration_tests"}
+yandex-bi-compeng-pg = {path = "../../lib/bi_compeng_pg"}
+yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
+yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
+anyascii = {path = "../../lib/anyascii"}
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
+yandex-bi-meta-os-control-api = {path = "../../lib/bi_meta_os/bi_meta_os_control_api"}
+yandex-bi-meta-os-data-api = {path = "../../lib/bi_meta_os/bi_meta_os_data_api"}
+yandex-bi-meta-yc-control-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_control_api"}
+yandex-bi-meta-yc-data-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_data_api"}
+yandex-bi-meta-yc-data-api-sec-embeds = {path = "../../lib/bi_meta_yc/bi_meta_yc_data_api_sec_embeds"}
+yandex-bi-meta-yc-public-dataset-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_public_dataset_api"}
+yandex-bi-meta-yc-file-uploader-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_api"}
+yandex-bi-meta-yc-file-uploader-worker = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_worker"}
+aiohttp = "==3.8.5"
+aiopg = "==1.4.0"
+docker = "==6.0.1"
+attrs = "==22.2.0"
+arq = "==0.25.0"
+certifi = "==2022.12.7"
+openpyxl = "==3.0.10"
+aiobotocore = "==2.4.2"
+aiogoogle = "==5.2.0"
+marshmallow = "==3.19.0"
+marshmallow-enum = "==1.5.1"
+sentry-sdk = "==1.15.0"
+grpcio-health-checking = "==1.44.0"
+grpcio-reflection = "==1.44.0"
+pyyaml = "==5.3.1"
+SQLAlchemy = "==1.4.46, <2.0"
+alembic = "==1.6.5"
+granular-settings = "==1.4"
+gunicorn = "==20.1.0"
+shortuuid = "==1.0.11"
+sqlalchemy = "==1.4.46, <2.0"
+Flask = "==2.0.3"
+Flask-SQLAlchemy = "==2.5.1"
+Werkzeug = "==2.0.3"
+blinker = "==1.5"
+certifi-yandex = "==2021.10.08"
+flask-marshmallow = "==0.14.0"
+flask-restx = "==1.1.0"
+graphviz = "==0.17"
+ipdb = "==0.13.13"
+ipython = "==8.10.0"
+marshmallow-oneofschema = "==3.0.1"
+pandas = "==1.5.3"
+pyopenssl = "==21.0.0"
+python-dateutil = "==2.8.2"
+raven = "==6.10.0"
+requests = "==2.28.2"
+tabulate = "==0.9.0"
+async-timeout = "==4.0.2"
+django = "==2.2.14"
+hypercorn = "==0.14.3"
+openapi-core = "==0.13.7"
+psycopg2-binary = "==2.9.6"
+pyjwt = "==2.3.0"
+pytz = "==2022.7.1"
+quart = "==0.17.0"
+service-identity = "==21.1.0"
+ujson = "==1.35"
+uvloop = "==0.17.0"
+werkzeug = "==2.0.3"
+xxhash = "==3.2.0"
+asyncpg = "==0.27.0"
+flask = "==2.0.3"
+snowflake-connector-python = "==2.9.0"
+snowflake-sqlalchemy = "==1.4.6"
+clickhouse-driver = "==0.2.5"
+dill = "==0.3.6"
+google-api-core = "==2.11.1"
+google-auth = "==2.21.0"
+oracledb = "==1.3.1"
+aiohttp_cors = "==0.7.0"
+yarl = "==1.8.2"
+googleapis-common-protos = "==1.59.1"
+grpcio = "==1.45.0rc1"
+mysqlclient = "==1.4.6"
+pyodbc = "==4.0.35"
+ciso8601 = "==2.2.0"
+aiomysql = "==0.2.0"
+redis = "==4.5.1"
+ydb = "==3.3.6"
+Babel = "==2.12.1"
+jinja2 = "==3.1.2"
+opentracing = "==2.4.0"
+frozendict = "==2.3.8"
+typing-extensions = "==4.5.0"
+aiodns = "==3.0.0"
+jaeger-client = "==4.8.0"
+pytest = "==7.2.2"
+tornado = "==6.2"
+yandex-passport-vault-client = "==1.5.2"
+cryptography = "==3.3.2"
+typeguard = "==2.13.3"
+flask-sqlalchemy = "==2.5.1"
+marshmallow-sqlalchemy = "==0.25.0"
+more-itertools = "==9.1.0"
+simplejson = "==3.18.4"
+aiochclient = "==2.2.0"
+apispec = "==3.3.2"
+cchardet = "==2.1.7"
+celery = "==5.2.7"
+dnspython = "==2.2.1"
+lz4 = "==4.3.2"
+tvmauth = "==3.4.9"
+blackbox = "==0.72"
+tvm2 = "==5.0"
+
+
+[tool.poetry.group.ci.dependencies]
+boto3 = ">=1.24.59"  # TODO FIX: This is used in tests in some packages. Try to fix with dependency in relevant packages
+#
+# All apps should be listed here. This group is installed for CI & local development
+#
+yandex-bi-api = {path = "../../app/bi_api"}
+bi-external-api = {path = "../../app/bi_external_api"}
+bi-file-secure-reader = {path = "../../app/bi_file_secure_reader"}
+bi-file-uploader-worker = {path = "../../app/bi_file_uploader_worker"}
+bi-file-uploader = {path = "../../app/bi_file_uploader"}
+bi-testing-db-provision = {path = "../../app/bi_testing_db_provision"}
+bi-test-project-worker = {path = "../../app/bi_test_project_worker"}
+bi-alerts = {path = "../../app/bi_alerts"}
+yadls = {path = "../../app/dls"}
+yandex-bi-testing-dc = {path = "../../lib/bi_testing_dc"}
+yandex-bi-rqe-ext-async = {path = "../../app/bi_rqe_ext_async"}
+yandex-bi-connector-chyt = {path = "../../lib/bi_connector_chyt"}
+yandex-bi-legacy-test-bundle = {path = "../../lib/bi_legacy_test_bundle"}
+yandex-dc-public-api-proto-stubs = {path = "../../lib/dc_public_api_proto_stubs"}
+yandex-yc-apis-proto-stubs = {path = "../../lib/yc_apis_proto_stubs"}
+yandex-bi-testing-nebius = {path = "../../lib/bi_testing_nebius"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
+bi-formula-ref-ya = {path = "../../lib/bi_formula_ref_ya"}
+bi-formula-ref-dc = {path = "../../lib/bi_formula_ref_dc"}
+bi-formula-ref-nebius = {path = "../../lib/bi_formula_ref_nebius"}
+
+[tool.poetry.group.contour-ya-ci.dependencies]
+# Ya-Team requirements
+# This group is not processed in any way, only so that we have a list of env-dependent requirements
+yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
+
+[tool.poetry.group.contour-nebius-ci.dependencies]
+# Nebius requirements
+
+[tool.poetry.group.contour-dc-ci.dependencies]
+# DC requirements
+
+[tool.poetry.group.app_bi_api.dependencies]
+#
+# This section defines dependencies groups per app.
+# To export/install specific app without other dependencies - use `--only` flag
+# Group naming convention: `app_${APP_FOLDER_NAME}`
+#
+yandex-bi-api = {path = "../../app/bi_api"}
+# TODO FIX: Remove after resolving issue with conflicts with BigQuery
+#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
+google-auth = "*"
+
+[tool.poetry.group.app_bi_external_api.dependencies]
+bi-external-api = {path = "../../app/bi_external_api"}
+
+[tool.poetry.group.app_bi_file_secure_reader.dependencies]
+bi-file-secure-reader = {path = "../../app/bi_file_secure_reader"}
+
+[tool.poetry.group.app_bi_file_uploader_worker.dependencies]
+bi-file-uploader-worker = {path = "../../app/bi_file_uploader_worker"}
+
+[tool.poetry.group.app_bi_file_uploader.dependencies]
+bi-file-uploader = {path = "../../app/bi_file_uploader"}
+
+[tool.poetry.group.app_bi_testing_db_provision.dependencies]
+bi-testing-db-provision = {path = "../../app/bi_testing_db_provision"}
+
+[tool.poetry.group.app_bi_test_project_worker.dependencies]
+bi-test-project-worker = {path = "../../app/bi_test_project_worker"}
+
+[tool.poetry.group.app_bi_alerts.dependencies]
+bi-alerts = {path = "../../app/bi_alerts"}
+
+[tool.poetry.group.app_dls.dependencies]
+yadls = {path = "../../app/dls"}
+
+[tool.poetry.group.app_bi_rqe_ext_async.dependencies]
+yandex-bi-rqe-ext-async = {path = "../../app/bi_rqe_ext_async"}
+
+[tool.poetry.group.app_bi_rqe_ext_sync.dependencies]
+yandex-bi-rqe-ext-sync = {path = "../../app/bi_rqe_ext_sync"}
+# TODO FIX: Remove after resolving issue with conflicts with BigQuery
+#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
+google-auth = "*"
+
+[tool.poetry.group.app_bi_rqe_int_sync.dependencies]
+yandex-bi-rqe-int-sync = {path = "../../app/bi_rqe_int_sync"}
+
+[tool.poetry.group.app_bi_os_control_api.dependencies]
+yandex-bi-control-api-os = {path = "../../app_os/app_os_control_api"}
+# TODO FIX: Remove after resolving issue with conflicts with BigQuery
+#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
+google-auth = "*"
+
+[tool.poetry.group.app_bi_os_data_api.dependencies]
+yandex-bi-data-api-os = {path = "../../app_os/app_os_data_api"}
+# TODO FIX: Remove after resolving issue with conflicts with BigQuery
+#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
+google-auth = "*"
+
+[tool.poetry.group.app_bi_yc_control_api.dependencies]
+yandex-bi-control-api-yc = {path = "../../app_yc/app_yc_control_api"}
+# TODO FIX: Remove after resolving issue with conflicts with BigQuery
+#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
+google-auth = "*"
+
+[tool.poetry.group.app_bi_yc_data_api.dependencies]
+yandex-bi-data-api-yc = {path = "../../app_yc/app_yc_data_api"}
+
+[tool.poetry.group.app_bi_yc_data_api_sec_embeds.dependencies]
+yandex-bi-data-api-sec-embeds-yc = {path = "../../app_yc/app_yc_data_api_sec_embeds"}
+
+[tool.poetry.group.app_bi_yc_public_dataset_api.dependencies]
+yandex-bi-public-dataset-api-yc = {path = "../../app_yc/app_yc_public_dataset_api"}
+
+[tool.poetry.group.app_bi_yc_file_uploader_api.dependencies]
+yandex-bi-file-uploader-api-yc = {path = "../../app_yc/app_yc_file_uploader_api"}
+
+[tool.poetry.group.app_bi_yc_file_uploader_worker.dependencies]
+yandex-bi-file-uploader-worker-yc = {path = "../../app_yc/app_yc_file_uploader_worker"}
+
+
+[tool.poetry.group.dev.dependencies]
+black = "23.3.0"
+ruff = "0.0.267"
+ipdb = "0.13.13"
+mysqlclient = "==1.4.6"
+psycopg2 = "==2.8.6"
+pyodbc = "==4.0.35"
+pytest = "==7.2.2"
+python-dateutil = "==2.8.2"
+sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
+sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
+statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
+yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
+pytest-asyncio = "==0.21.0"
+uwsgi = "==2.0.21"
+yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+shortuuid = "==1.0.11"
+sentry-sdk = "==1.15.0"
+yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
+yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+babel = "==2.12.1"
+yandex-bi-sqlalchemy-chyt = {path = "../../lib/bi_sqlalchemy_chyt"}
+yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
+yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
+yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
+yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+statcommons = {path = "../../lib/statcommons"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+mock = "==4.0.3"
+responses = "==0.23.1"
+pytest-lazy-fixture = "==0.6.3"
+yandex-bi-api-client = {path = "../../lib/bi_api_client"}
+pytz = "==2022.7.1"
+oracledb = "==1.3.1"
+psycopg2-binary = "==2.9.6"
+yandex-bi-file-uploader-worker-lib = {path = "../../lib/bi_file_uploader_worker_lib"}
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+tomlkit = "==0.11.8"
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+pandas = "==1.5.3"
+yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
+platformdirs = "==3.8.0"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+yandex-bi-compeng-pg = {path = "../../lib/bi_compeng_pg"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
+clize = "==5.0.0"
+poetry = "==1.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+
+]
+
+[tool.ruff.isort]
+split-on-trailing-comma = true
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []

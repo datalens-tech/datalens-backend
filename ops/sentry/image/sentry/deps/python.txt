@@ -1,0 +1,12 @@
+sentry==$SENTRY_VERSION
+sentry-plugins==$SENTRY_VERSION
+sentry-telegram==0.4.0
+git+https://github.yandex-team.ru/sentry/sentry-ldap-auth.git#egg=sentry-ldap-auth
+granular-settings
+librabbitmq
+pymongo
+gevent
+django-yauth
+zk-flock
+django_pgaas
+more-itertools==5.0.0

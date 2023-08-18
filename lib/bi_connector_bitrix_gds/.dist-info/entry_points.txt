@@ -1,0 +1,2 @@
+[bi_core.connectors]
+bitrix_gds = bi_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector

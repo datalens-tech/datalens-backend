@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: yandex-bi-sqlalchemy-oracle
+Version: 0.3
+Summary: BI Oracle SQLAlchemy Dialect
+Requires-Dist: sqlalchemy (>=1.4)
+Requires-Dist: oracledb
+Provides-Extra: all
+
+...

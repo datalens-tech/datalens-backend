@@ -1,0 +1,51 @@
+
+[tool.poetry]
+name = "yandex-bi-sqlalchemy-yq"
+version = "0.3"
+description = "BI YQ SQLAlchemy Dialect"
+authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+packages = [{include = "bi_sqlalchemy_yq"}]
+license = "MIT"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-ydb-core-protos = ">=0.2.11028435"
+ydb = ">=2.10.1"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_yq = "bi_sqlalchemy_yq.base:BIYQDialect"
+
+[tool.poetry.group.tests.dependencies]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_sqlalchemy_yq_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+[datalens_ci]
+# currently we have only one test which is skipped unconditionnaly, but import fails due to missing pb2 stubs in py pkg
+skip_test = true

@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+set -x  # debug.
+set -eu
+
+LAUNCH_TARGET="${LAUNCH_TARGET:-sync_api}"
+
+HTTP_BIND_PORT="80"
+if [ "${BISYS_USE_IPV6:-1}" = "1" ]; then HTTP_BIND_ADDR="[::]"; else HTTP_BIND_ADDR="0.0.0.0"; fi
+
+export LAUNCH_TARGET
+
+if [ x"${LAUNCH_TARGET}" = x"async_api" ]; then
+
+    GUNICORN_LISTEN_PORT="${BI_API_GUNICORN_LISTEN_PORT:-${GUNICORN_LISTEN_PORT:-${HTTP_BIND_PORT}}}"
+
+    exec gunicorn bi.app_async:create_gunicorn_app \
+        --config "${BI_API_GUNICORN_CONFIG:-${GUNICORN_CONFIG}}" \
+        --log-config "${BI_API_GUNICORN_LOG_CONFIG:-${GUNICORN_LOG_CONFIG}}" \
+        --bind "${HTTP_BIND_ADDR}:${GUNICORN_LISTEN_PORT}" \
+        --max-requests "${BI_API_GUNICORN_MAX_RQ:-${GUNICORN_MAX_RQ:-5000}}" \
+        --max-requests-jitter "${BI_API_GUNICORN_MAX_RQ_JITTER:-${GUNICORN_MAX_RQ_JITTER:-500}}" \
+        --workers "${BI_API_GUNICORN_WORKERS_COUNT:-${GUNICORN_WORKERS_COUNT:-1}}" \
+        --worker-class aiohttp.GunicornWebWorker
+else
+
+    BI_API_UWSGI_WORKERS_COUNT="${BI_API_UWSGI_WORKERS_COUNT:-}"
+    if [ -z "$BI_API_UWSGI_WORKERS_COUNT" ]; then
+        if [ x"$YENV_TYPE" = x"testing" ] || [ x"$YENV_TYPE" = x"int-testing" ]; then
+            # Do not use too much memory in testing.
+            BI_API_UWSGI_WORKERS_COUNT=4
+        else
+            BI_API_UWSGI_WORKERS_COUNT=40
+        fi
+    fi
+
+    # It is also set in the ini file, but that might not work in some cases.
+    UWSGI_STATS=/tmp/uwsgi_stats.sock
+    HTTP_BIND="${HTTP_BIND_ADDR}:${HTTP_BIND_PORT}"
+
+    export BI_API_UWSGI_WORKERS_COUNT UWSGI_STATS HTTP_BIND
+    exec uwsgi --ini=/code/app/uwsgi/uwsgi-bi-api.ini
+fi

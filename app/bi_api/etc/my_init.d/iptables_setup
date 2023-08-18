@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -x  # debug.
+set -Eeu
+
+if [ x"${RUN_IPTABLES_SETUP:-0}" != x"1" ]; then
+    exit 0
+fi
+
+echo 'Executing "setup-iptables"...' >&2
+
+setup-iptables ext_query_user || {
+    echo "IP setup-iptables failed" 1>&2
+    exit 255
+}
+touch /tmp/.iptables_setup_marker
+
+echo '"setup-iptables" done.' >&2

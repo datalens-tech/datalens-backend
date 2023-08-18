@@ -1,0 +1,11 @@
+*.egg-info
+.venv
+build
+.tox
+.env
+.coverage
+.python-version
+*/docker-compose/common/secrets/private/
+*.ipynb
+local_dev_2/requirements.txt
+.ruff_cache

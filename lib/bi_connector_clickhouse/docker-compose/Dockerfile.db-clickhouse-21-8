@@ -1,0 +1,11 @@
+# FROM yandex/clickhouse-server:21.8
+# https://github.com/ClickHouse/ClickHouse/blob/master/utils/list-versions/version_date.tsv
+# v21.8.7.22-lts @ 2021-09-22
+# FROM yandex/clickhouse-server:21.8.7.22
+FROM registry.yandex.net/statinfra/clickhouse-server@sha256:22603e0c2121142197610c387e472e22cdb0209e66abe5ad57776e686a9f5659
+
+COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
+
+COPY db-clickhouse/data /common-data
+
+COPY db-clickhouse/docker-entrypoint-initdb.d/ /docker-entrypoint-initdb.d/

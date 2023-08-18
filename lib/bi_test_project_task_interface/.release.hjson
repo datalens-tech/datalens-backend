@@ -1,0 +1,5 @@
+experiments: version
+version_files: {
+  "./bi_test_project_task_interface/__init__.py": '__version__ = "([^"]+)"',
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# abc 1561 is https://abc.yandex-team.ru/services/infrastatistics/
+
+ya tool yd-migrate \
+   dump_qloud \
+   "$(cat ~/.oauth_all)" \
+   qloud statbox sentry production \
+   1561 \
+   --awacs-namespace-id sentry.stat.yandex-team.ru \
+   --awacs-category statinfra \
+   --yav-secret-alias statinfra-sentry \
+   --stage-id statinfra-sentry

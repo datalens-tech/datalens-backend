@@ -1,0 +1,7 @@
+deploy: true
+stage: back-int-preprod
+deploy_units: dls-api:dls-api,dls-tasks:dls-tasks
+image: registry.yandex.net/statinfra/dls
+_x_bi_cloud_preprod_build_conf_ids: [
+  "DataLens_BuildVmImages_BuildDLS",
+]

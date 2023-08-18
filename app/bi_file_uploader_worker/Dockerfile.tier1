@@ -1,0 +1,27 @@
+#syntax=docker/dockerfile:1.4
+FROM bake_ctx_base_img
+
+ENV APP_DIR="app/bi_file_uploader_worker"
+
+RUN mkdir -p /code
+COPY /etc /etc
+COPY /app/gunicorn_logging.ini /code/gunicorn_logging.ini
+
+RUN mkdir -p /src/$APP_DIR
+RUN mkdir -p /src/ops
+
+# Libs & metapkg
+COPY --from=bake_ctx_libs / /src/lib
+COPY --from=bake_ctx_metapkg / /src/ops/ci
+
+# Sources copy
+COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
+COPY /bi_file_uploader_worker /src/$APP_DIR/bi_file_uploader_worker
+COPY /README.md /src/$APP_DIR/README.md
+
+# Installation
+WORKDIR /src/ops/ci
+RUN poetry export --only app_bi_file_uploader_worker --without-hashes --format=requirements.txt > requirements.txt
+RUN pip install -r requirements.txt
+# RUN pip install --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
+RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat requirements.txt | grep certifi-yandex)"

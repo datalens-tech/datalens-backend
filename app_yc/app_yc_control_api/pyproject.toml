@@ -1,0 +1,50 @@
+
+[tool.poetry]
+name = "yandex-bi-control-api-yc"
+version = "0.1969.0"
+description = ""
+authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
+packages = [{include = "app_yc_control_api"}]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+Flask = ">=2.0.3"
+yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-meta-yc-control-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_control_api"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens_ci]
+skip_test = true
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"

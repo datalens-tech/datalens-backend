@@ -1,0 +1,5 @@
+# the earliest version supported by BI
+# FROM mysql:8.0.12
+FROM registry.yandex.net/statinfra/mysql@sha256:574bf8a61e3276788bcaa9a9e226977ea3037f439295e2a07b624b8aaebd66d4
+
+COPY db-mysql/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d

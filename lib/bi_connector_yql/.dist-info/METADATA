@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: yandex-bi-connector-yql
+Version: 0.0.0
+Author: Nikolai Proskurin
+Author-email: mcpn@yandex-team.ru
+Requires-Dist: sqlalchemy (>=1.4)
+Requires-Dist: ydb (>=2.10.0)
+Requires-Dist: grpcio
+Requires-Dist: marshmallow
+Provides-Extra: all
+Requires-Dist: mypy ; extra == 'all'
+Requires-Dist: sqlalchemy-stubs ; extra == 'all'
+Provides-Extra: develop
+Provides-Extra: mypy
+Requires-Dist: mypy ; extra == 'mypy'
+Requires-Dist: sqlalchemy-stubs ; extra == 'mypy'
+

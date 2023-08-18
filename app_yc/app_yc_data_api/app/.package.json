@@ -1,0 +1,55 @@
+{
+    "meta": {
+        "name": "bi-data-api-yc",
+        "maintainer": "DataLens <robot-datalens@yandex-team.ru>",
+        "version": "{revision}"
+    },
+    "build": {
+        "targets": [
+            "datalens/backend/app_yc/app_yc_data_api/app"
+        ],
+        "build_type": "release"
+    },
+    "data": [
+        {
+            "source": {
+                "type": "BUILD_OUTPUT",
+                "path": "datalens/backend/app_yc/app_yc_data_api/app/biapi_app"
+            },
+            "destination": {
+                "path": "/"
+            }
+        },
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/app_yc/app_yc_data_api/docker"
+            },
+            "destination": {
+                "path": "/docker"
+            }
+
+        },
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/app_yc/app_yc_data_api/etc"
+            },
+            "destination": {
+                "path": "/etc"
+            }
+        },
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/app_yc/app_yc_data_api/app",
+                "files": [
+                    "Dockerfile"
+                ]
+            },
+            "destination": {
+                "path": "/"
+            }
+        }
+    ]
+}

@@ -1,0 +1,2 @@
+[sqlalchemy.dialects]
+bi_bitrix = bi_sqlalchemy_bitrix.base:BitrixDialect

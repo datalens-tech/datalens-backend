@@ -1,0 +1,120 @@
+{{- define "depl-bi_api_sec_embeds" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: dataset-data-api-sec-embeds
+  labels:
+    app: dataset-data-api-sec-embeds
+
+spec:
+  replicas: {{ .Values.scaling.dataset_data_api_sec_embeds.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.dataset_data_api_sec_embeds.max_surge }}
+      maxUnavailable: {{ .Values.scaling.dataset_data_api_sec_embeds.max_unavailable }}
+  selector:
+    matchLabels:
+      app: dataset-data-api-sec-embeds
+  template:
+    metadata:
+      labels:
+        app: dataset-data-api-sec-embeds
+      annotations:
+        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+    spec:
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.bi_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          env:
+            {{- include "secrets-common" . | indent 12}}
+            {{- include "secrets-bi_api" . | indent 12}}
+            {{ if .Values.enabled_features.service_connectors }}
+              {{- include "secrets-service_connectors" . | indent 12}}
+            {{ end }}
+            {{ if .Values.enabled_features.frozen_connectors }}
+              {{- include "env-vars_frozen-connectors" . | indent 12}}
+            {{ end }}
+            {{ if .Values.apps_to_run.file_uploader }}
+              {{- include "secrets-file_uploader" . | indent 12}}
+              {{- include "env_vars-file_uploader_data_access" . | indent 12 }}
+              {{- include "env_vars-file_uploader_client" . | indent 12 }}
+            {{ end }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-data-apps" . | indent 12 }}
+            {{- include "env_vars-nginx" . | indent 12 }}
+            {{- include "env_vars-bi_api" . | indent 12}}
+            {{- include "env_vars-mdb_domains" . | indent 12 }}
+            - name: LAUNCH_TARGET
+              value: "async_api"
+            - name: NGINX_SERVER_NAME
+              value: "dataset-data-api-sec-embeds"
+            - name: YENV_TYPE
+              value: "{{ .Values.yenv_type }}-sec-embeds"
+            - name: YENV_NAME
+              value: "cloud"
+            {{ if .Values.enabled_features.caches }}
+              {{- $redis_caches_targs := dict "Values" .Values "env_prefix" "CACHES_REDIS" "redis_settings" .Values.redis_caches }}
+              {{- include "env_vars-redis" $redis_caches_targs | indent 12 }}
+            {{ end }}
+            - name: START_COMPENG # disable internal COMPENG TODO: remove
+              value: "0"
+            - name: BI_COMPENG_PG_URL
+              value: "postgresql://postgres@localhost:5432/postgres"
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.dataset_data_api_sec_embeds.cpu }}
+              memory: {{ .Values.app_resources.dataset_data_api_sec_embeds.ram }}
+          readinessProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/ping"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/ping_ready"
+            failureThreshold: 30
+            periodSeconds: 10
+          securityContext:
+            capabilities:
+              add: [ "NET_ADMIN" ]
+        - name: postgres
+          image: "{{ .Values.docker_images_info.docker_repo }}/postgres:12"
+          imagePullPolicy: "IfNotPresent"
+          command: [ "/etc/compeng_init.sh" ]
+          ports:
+            - containerPort: 5432
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+          volumeMounts:
+            - mountPath: /etc/postgresql/12/main
+              name: compeng-config
+            - mountPath: /etc/compeng_init.sh
+              subPath: compeng_init.sh
+              name: compeng-init
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: "{{ .Release.Name }}-init-scripts"
+        - name: app-secrets
+          emptyDir: {}
+        - name: compeng-config
+          configMap:
+            name: compeng-config
+        - name: compeng-init
+          configMap:
+            name: compeng-init
+            defaultMode: 0777
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.dataset_data_api_sec_embeds.taint_toleration }}"
+          effect: "NoSchedule"
+{{ end }}

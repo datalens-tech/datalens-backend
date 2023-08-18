@@ -1,0 +1,30 @@
+# default: on
+# description: unistat
+service unistat
+{
+        disable         = no
+        passenv         += SENTRY_DB_PASSWORD
+        passenv         += SENTRY_SERVER_EMAIL
+        passenv         += SENTRY_MODE
+        passenv         += SENTRY_POSTGRES_PORT
+        passenv         += SENTRY_CONF
+        passenv         += SENTRY_VERSION
+        passenv         += SENTRY_FILESTORE_DIR
+        passenv         += SENTRY_POSTGRES_HOST
+        passenv         += SENTRY_SECRET_KEY
+        passenv         += SENTRY_DB_USER
+        passenv         += SENTRY_SINGLE_ORGANIZATION
+        passenv         += SENTRY_REDIS_HOST
+        passenv         += SENTRY_USE_SSL
+        passenv         += SENTRY_DB_NAME
+        passenv         += SENTRY_EMAIL_HOST
+        flags           = REUSE IPV6
+        socket_type     = stream
+        type            = UNLISTED
+        port            = 9200
+        wait            = no
+        user            = root
+        server          = /usr/local/bin/sentry_unistat
+        log_on_failure  += USERID
+        per_source      = UNLIMITED
+}

@@ -1,0 +1,34 @@
+[
+    {
+        "allowed_value": "Москва",
+        "subject": {"subject_type": "all", "subject_id": "*", "subject_name": "*"}
+    },
+    {
+        "allowed_value": "Санкт-Петербург",
+        "subject": {"subject_type": "all", "subject_id": "*", "subject_name": "*"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "volozh"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "user", "subject_id": "1120000000001062", "subject_name": "bunina"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "user", "subject_id": "1120000000000251", "subject_name": "tigran"}
+    },
+    {
+        "allowed_value": "Омск",
+        "subject": {"subject_type": "user", "subject_id": "1120000000000251", "subject_name": "tigran"}
+    },
+    {
+        "pattern_type": "userid", "allowed_value": null,
+        "subject": {"subject_type": "userid", "subject_id": "", "subject_name": "userid"}
+    },
+    {
+        "allowed_value": "Владивосток",
+        "subject": {"subject_type": "user", "subject_id": "1120000000013893", "subject_name": "abovsky"}
+    }
+]

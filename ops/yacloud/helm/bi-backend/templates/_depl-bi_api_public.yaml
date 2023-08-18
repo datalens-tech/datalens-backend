@@ -1,0 +1,187 @@
+{{- define "depl-bi_api_public" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: public-dataset-api
+  labels:
+    app: public-dataset-api
+
+spec:
+  replicas: {{ .Values.scaling.public_dataset_api.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.public_dataset_api.max_surge }}
+      maxUnavailable: {{ .Values.scaling.public_dataset_api.max_unavailable }}
+  selector:
+    matchLabels:
+      app: public-dataset-api
+  template:
+    metadata:
+      labels:
+        app: public-dataset-api
+      annotations:
+        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+    spec:
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.bi_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          env:
+            {{- include "secrets-common" . | indent 12}}
+            {{- include "secrets-bi_api" . | indent 12}}
+            {{- include "secrets_us_master_token" . | indent 12}}
+            {{ if .Values.enabled_features.service_connectors }}
+              {{- include "secrets-service_connectors" . | indent 12}}
+            {{ end }}
+            {{ if .Values.enabled_features.frozen_connectors }}
+              {{- include "env-vars_frozen-connectors" . | indent 12}}
+            {{ end }}
+            {{ if .Values.apps_to_run.file_uploader }}
+              {{- include "secrets-file_uploader" . | indent 12}}
+              {{- include "env_vars-file_uploader_data_access" . | indent 12 }}
+              {{- include "env_vars-file_uploader_client" . | indent 12 }}
+            {{ end }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-data-apps" . | indent 12 }}
+            {{- include "env_vars-nginx" . | indent 12 }}
+            {{- include "env_vars-bi_api" . | indent 12}}
+            {{- include "env_vars-mdb_domains" . | indent 12 }}
+            - name: LAUNCH_TARGET
+              value: "async_api"
+            - name: NGINX_SERVER_NAME
+              value: "public-dataset-api"
+            - name: YENV_TYPE
+              value: "{{ .Values.yenv_type }}-public"
+            - name: YENV_NAME
+              value: "cloud"
+            - name: USE_RQE_PUBLIC
+              value: "1"
+            - name: US_PUBLIC_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: bi-api-secrets
+                  key: US_PUBLIC_API_TOKEN
+            - name: PUBLIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bi-api-secrets
+                  key: PUBLIC_API_KEY
+            {{ if .Values.enabled_features.caches }}
+              {{- $redis_caches_targs := dict "Values" .Values "env_prefix" "CACHES_REDIS" "redis_settings" .Values.redis_caches }}
+              {{- include "env_vars-redis" $redis_caches_targs | indent 12 }}
+            {{ end }}
+            - name: START_COMPENG # disable internal COMPENG TODO: remove
+              value: "0"
+            - name: BI_COMPENG_PG_URL
+              value: "postgresql://postgres@localhost:5432/postgres"
+            {{ if .Values.enabled_features.network_policy}}
+            - name: RQE_EXT_ASYNC_HOST
+              value: "rqe-dataset-api.bi-backend.svc.cluster.local"
+            - name: RQE_EXT_ASYNC_PORT
+              value: "9877"
+            - name: LOCAL_RQE_EXT_ASYNC
+              value: "0"
+            - name: RQE_EXT_SYNC_HOST
+              value: "rqe-dataset-api.bi-backend.svc.cluster.local"
+            - name: RQE_EXT_SYNC_PORT
+              value: "9876"
+            - name: LOCAL_RQE_EXT_SYNC
+              value: "0"
+            - name: RQE_INT_SYNC_HOST
+              value: "127.0.0.1"
+            - name: RQE_INT_SYNC_PORT
+              value: "9874"
+            - name: LOCAL_RQE_INT_SYNC
+              value: "0"
+            {{ end }}
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.public_dataset_api.cpu }}
+              memory: {{.Values.app_resources.public_dataset_api.ram}}
+          readinessProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/ping"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/ping_ready"
+            failureThreshold: 30
+            periodSeconds: 10
+          securityContext:
+            capabilities:
+              add: [ "NET_ADMIN" ]
+        - name: postgres
+          image: "{{ .Values.docker_images_info.docker_repo }}/postgres:12"
+          imagePullPolicy: "IfNotPresent"
+          command: [ "/etc/compeng_init.sh" ]
+          ports:
+            - containerPort: 5432
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+          volumeMounts:
+            - mountPath: /etc/postgresql/12/main
+              name: compeng-config
+            - mountPath: /etc/compeng_init.sh
+              subPath: compeng_init.sh
+              name: compeng-init
+        {{ if .Values.enabled_features.network_policy}}
+        - name: rqe-int-sync
+          image: "{{ .Values.docker_images_info.rqe_int_sync.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          env:
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-rqe" . | indent 12 }}
+            {{- include "secrets-rqe" . | indent 12}}
+            - name: RQE_INT_SYNC_PORT
+              value: "9874"
+            - name: BISYS_USE_IPV6
+              value: "0"
+            - name: RQE_INT_SYNC_WORKERS_COUNT
+              value: "4"
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - http://127.0.0.1:9874/ping
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          startupProbe:
+            exec:
+              command:
+              - curl
+              - http://127.0.0.1:9874/ping
+            failureThreshold: 30
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+        {{ end }}
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: "{{ .Release.Name }}-init-scripts"
+        - name: app-secrets
+          emptyDir: {}
+        - name: compeng-config
+          configMap:
+            name: compeng-config
+        - name: compeng-init
+          configMap:
+            name: compeng-init
+            defaultMode: 0777
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.public_dataset_api.taint_toleration }}"
+          effect: "NoSchedule"
+{{ end }}

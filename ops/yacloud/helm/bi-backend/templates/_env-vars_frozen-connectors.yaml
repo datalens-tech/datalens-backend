@@ -1,0 +1,27 @@
+{{- define "env-vars_frozen-connectors" }}
+{{- range $cd := .Values.frozen_connectors_data }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_HOST
+  value: "{{- join "," $cd.hosts }}"
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_PORT
+  value: "{{ $cd.port }}"
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_DB_NAME
+  value: {{ $cd.db_name }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_USERNAME
+  value: {{ $cd.username }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_USE_MANAGED_NETWORK
+  value: {{ $cd.use_managed_network | ternary "1" "0" | quote }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_RAW_SQL_LEVEL
+  value: {{ $cd.raw_sql_level | quote }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_PASS_DB_QUERY_TO_USER
+  value: {{ $cd.pass_db_query_to_user | ternary "1" "0" | quote }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_ALLOWED_TABLES
+  value: {{ $cd.allowed_tables | toJson | quote }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_SUBSELECT_TEMPLATES
+  value: {{ $cd.subselect_templates | toJson | quote }}
+- name: CONNECTORS_{{ $cd.connector_settings_key }}_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: frozen-connectors-secrets
+      key: {{ $cd.connector_settings_key }}_PASSWORD
+{{- end }}
+{{ end }}

@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: yandex-bi-service-registry-ya-cloud
+Version: 0.0.0
+Author: Nikolai Proskurin
+Author-email: mcpn@yandex-team.ru
+Provides-Extra: all
+Requires-Dist: mypy ; extra == 'all'
+Provides-Extra: develop
+Provides-Extra: mypy
+Requires-Dist: mypy ; extra == 'mypy'
+

@@ -1,0 +1,111 @@
+awacs_backends:
+  statinfra-sentry.frontend.myt:
+    type: YP_ENDPOINT_SETS_SD
+    ypEndpointSets:
+    - cluster: myt
+      endpointSetId: statinfra-sentry.frontend
+  statinfra-sentry.frontend.sas:
+    type: YP_ENDPOINT_SETS_SD
+    ypEndpointSets:
+    - cluster: sas
+      endpointSetId: statinfra-sentry.frontend
+awacs_domains:
+- certOrder:
+    content:
+      abcServiceId: 1561
+      caName: InternalCA
+      commonName: sentry.stat.yandex-team.ru
+  fqdns:
+  - sentry.stat.yandex-team.ru
+  includeUpstreams:
+    ids:
+    - root
+    type: BY_ID
+  protocol: HTTP_AND_HTTPS
+awacs_endpoint_sets: {}
+awacs_l7_macro:
+  announceCheckReply:
+    urlRe: /ping
+  headers:
+  - create:
+      func: reqid
+      target: X-Request-Id
+  - create:
+      func: realip
+      target: X-Forwarded-For
+  - create:
+      func: reqid
+      target: X-Req-Id
+  - create:
+      func: scheme
+      target: X-Forwarded-Proto
+  - create:
+      func: realip
+      target: X-Real-IP
+  - create:
+      func: host
+      target: X-Forwared-Host
+  healthCheckReply: {}
+  http: {}
+  https: {}
+  includeDomains: {}
+  version: 0.1.0
+awacs_upstreams:
+- byDcScheme:
+    balancer:
+      attempts: 3
+      backendReadTimeout: 15s
+      backendTimeout: 10s
+      backendWriteTimeout: 15s
+      connectTimeout: 60ms
+      doNotLimitReattempts: true
+      doNotRetryHttpResponses: true
+      maxPessimizedEndpointsShare: 0.20000000298023224
+    dcBalancer:
+      attemptAllDcs: true
+      method: BY_DC_WEIGHT
+      weightsSectionId: by_geo
+    dcs:
+    - backendIds:
+      - statinfra-sentry.frontend.myt
+      name: myt
+    - backendIds:
+      - statinfra-sentry.frontend.sas
+      name: sas
+    onError:
+      static:
+        status: 504
+  id: root
+  matcher:
+    pathRe: (/.*)?
+  version: 0.0.1
+create_namespace_request:
+  meta:
+    abcServiceId: 1561
+    auth:
+      type: STAFF
+    category: statinfra
+    id: sentry.stat.yandex-team.ru
+  order:
+    backends:
+      statinfra-sentry.frontend.myt:
+        type: YP_ENDPOINT_SETS_SD
+        ypEndpointSets:
+        - cluster: myt
+          endpointSetId: statinfra-sentry.frontend
+      statinfra-sentry.frontend.sas:
+        type: YP_ENDPOINT_SETS_SD
+        ypEndpointSets:
+        - cluster: sas
+          endpointSetId: statinfra-sentry.frontend
+    flowType: YP_LITE
+    ypLiteAllocationRequest:
+      locations:
+      - SAS
+      - MYT
+      nannyServiceIdSlug: required-not-used
+      networkMacro: _SEARCHSAND_
+      preset:
+        instancesCount: 1
+        type: MICRO
+

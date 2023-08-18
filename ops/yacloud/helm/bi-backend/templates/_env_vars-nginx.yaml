@@ -1,0 +1,4 @@
+{{- define "env_vars-nginx" }}
+- name: RUN_NGINX
+  value: "0"
+{{ end }}

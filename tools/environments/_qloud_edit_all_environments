@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+# pylint: disable=invalid-name
+"""
+...
+"""
+
+import os
+import sys
+import copy
+import hjson
+import requests
+token = hjson.load(open(os.path.expanduser('~/.release.hjson')))['oauth_token']
+
+auth_headers = {"Authorization": "OAuth {}".format(token)}
+qloud_url = 'https://qloud-ext.yandex-team.ru'
+envs = (  # qloud_environment_address, shortened_explicit_environment_name, full_explicit_environment_name
+    ('datalens.bi.int-testing', 'int-testing', 'int-testing'),
+    ('datalens.bi.testing', 'ext-testing', 'ext-testing'),
+    ('datalens.bi.int-production', 'int-prod', 'int-production'),
+    ('datalens.bi.production', 'ext-prod', 'ext-production'),
+)
+
+for qloud_env, envname, envname2 in envs:
+    resp = requests.get(qloud_url + '/api/v1/environment/dump/' + qloud_env, headers=auth_headers)
+    resp.raise_for_status()
+    envdump = resp.json()
+    envdump_orig = copy.deepcopy(envdump)
+    for cfg in envdump['components']:
+
+        # # Example: ensure a secret.
+        # secrets = cfg['secrets']
+        # secrets = [item for item in secrets if item.get('target') != 'TVM_INFO']
+        # secrets.append({'objectId': 'secret.dl-back-tvm-info-{}'.format(envname2), 'target': 'TVM_INFO', 'used': True})
+        # cfg['secrets'] = secrets
+        # cfg['tvmConfig'] = {
+        #     'blackBoxType': 'PROD',
+        #     'clients': [
+        #         {'secretName': 'dl-back-tvm-app-{}'.format(envname),
+        #          'name': 'datalens_backend',
+        #          'destinations': [
+        #              {'name': 'logbroker', 'tvmId': 2001059},
+        #              {'name': 'blackbox', 'tvmId': 223}]}]}
+
+        # # Example: enable the embedded juggler client.
+        # cfg["jugglerBundleResources"] = [
+        #     # Dummy-check bundle because it requires at least one.
+        #     {"id": 746395381, "localName": "juggler-bundle-746395381",
+        #      "symlink": "/juggler/build-746395381", "dynamic": False, "extract": True}]
+        # cfg["embedJugglerClient"] = True
+
+        # # ...
+        raise Exception("Your Code Here")
+
+    if envdump_orig == envdump:
+        print(f"No difference in {qloud_env!r}")
+        continue
+    print(f"Environment {qloud_env!r}, config diff:")
+
+    try:
+        from pyaux.madness import p_datadiff
+        p_datadiff(envdump_orig, envdump, n=200)
+    except Exception as exc:
+        print(exc)
+
+    print("... <enter> to confirm and continue.")
+    sys.stdin.readline()
+
+    resp = requests.post(
+        qloud_url + '/api/v1/environment/upload',
+        params=dict(),
+        headers=auth_headers,
+        json=envdump)
+    resp.raise_for_status()

@@ -1,0 +1,25 @@
+{{- $conf_dataset_api := dict "Values" .Values "conf" .Values.alb_configs.dataset_api }}
+{{- include "alb_ingress" $conf_dataset_api }}
+
+{{- $conf_dataset_data_api := dict "Values" .Values "conf" .Values.alb_configs.dataset_data_api }}
+{{- include "alb_ingress" $conf_dataset_data_api }}
+
+{{ if .Values.apps_to_run.bi_api_public }}
+{{- $conf_public_dataset_api := dict "Values" .Values "conf" .Values.alb_configs.public_dataset_api }}
+{{- include "alb_ingress" $conf_public_dataset_api }}
+{{ end }}
+
+{{ if .Values.apps_to_run.sec_embeds }}
+{{- $conf_dataset_data_api_sec_embeds := dict "Values" .Values "conf" .Values.alb_configs.dataset_data_api_sec_embeds }}
+{{- include "alb_ingress" $conf_dataset_data_api_sec_embeds }}
+{{ end }}
+
+{{ if .Values.apps_to_run.dls }}
+{{- $conf_dls_api := dict "Values" .Values "conf" .Values.alb_configs.dls_api }}
+{{- include "alb_ingress" $conf_dls_api }}
+{{ end }}
+
+{{ if .Values.apps_to_run.file_uploader }}
+{{- $conf_file_uploader_api := dict "Values" .Values "conf" .Values.alb_configs.file_uploader_api }}
+{{- include "alb_ingress" $conf_file_uploader_api }}
+{{ end }}

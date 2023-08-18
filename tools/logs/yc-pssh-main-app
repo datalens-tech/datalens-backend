@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""
+Example usage:
+
+    yc-pssh-main-app prod_public-dataset-api \
+        'grep -hF 705c186b099b4e2c99386c6edabb53d5 /var/log/app/debug.log*' \
+        | tee tmp.log
+"""
+
+import os
+import re
+import subprocess
+import sys
+
+import click
+
+
+_sh_find_unsafe = re.compile(r"[^\w@%+=:,./-]").search
+
+
+def sh_quote(string, quote_method=2, **kwargs):
+    r"""
+    Quote a value for copypasteability in a posix commandline.
+
+    Py3.3's shlex.quote piece backport, extended.
+
+    >>> sh_quote("'one's one'", quote_method=2)
+    "\\''one'\\''s one'\\'"
+    """
+    quote_method = kwargs.get('v') or quote_method  # compat
+    if not string:
+        return "''"
+    if _sh_find_unsafe(string) is None:
+        return string
+
+    # Substring that is entirely useless at either end.
+    extraneous_at_sides = "''"
+
+    if quote_method == 1:
+        # use single quotes, and put single quotes into double quotes
+        # the string `'$'b'` is then quoted as `"'"'$'"'"'b'"'"`
+        quoted_quote = "'\"'\"'"
+    elif quote_method == 2:
+        # the string `'$'b'` is quoted as `\''$'\''b'\'`
+        quoted_quote = r"'\''"
+    else:
+        raise ValueError("No such method")
+    result = "'{}'".format(string.replace("'", quoted_quote))
+
+    # Remove the possible quoted empty strings at the ends.
+    if result.startswith(extraneous_at_sides):
+        result = result[len(extraneous_at_sides):]
+    if result.endswith(extraneous_at_sides):
+        result = result[:-len(extraneous_at_sides)]
+    return result
+
+
+
+def sh_join(args, sep=' '):
+    return sep.join(sh_quote(arg) for arg in args)
+
+
+@click.command()
+@click.option('-p', '--parallel', default=10)
+@click.option('-n', '--dry-run', default=False)
+@click.argument('host_group')
+@click.argument('cmd')
+def main(parallel, host_group, cmd, dry_run):
+    """
+    Run a command on inside main-app docker container on all instances.
+
+    Example:
+
+        yc-pssh-main-app prod_public-dataset-api 'grep -hF dl.f1c80_ck.woaxqkhg2l /var/log/app/debug.log*'
+
+    """
+    if '@' not in host_group and (host_group.startswith('prod_') or host_group.startswith('preprod_')):
+        env_name, component_name = host_group.split('_', 1)
+        host_group = f'C@cloud_{env_name}_datalens-back-{host_group}'
+
+    try:
+        subprocess.check_output(['which', 'yc-pssh'])
+        pssh_binary = 'yc-pssh'
+    except Exception:
+        subprocess.check_output(['which', 'pssh'])
+        pssh_binary = 'pssh'
+
+    incontainer_cmd = cmd
+    # For multi-arg, should do `incontainer_cmd = ' '.join(cmd)`
+    onhost_cmd = ' '.join((
+        sh_join(('sudo', 'docker', 'exec')),
+        '"$(sudo docker ps --format {{.Names}} | grep main-app | sed 1q)"',
+        sh_join(('bash', '-c', incontainer_cmd)),
+    ))
+    cmd_pieces = (
+        (pssh_binary, 'run-e') +
+        (
+            ('--parallel', str(parallel))
+            if parallel
+            else ()
+        ) +
+        (
+            '-H', host_group,
+            '--',
+            onhost_cmd,
+        )
+    )
+    cmd = sh_join(cmd_pieces)
+    print('+', cmd, file=sys.stderr)
+    if not dry_run:
+        os.execvp('bash', ('bash', '-c', cmd))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  pi2:
+    build:
+      context: ${IMG_CTX}
+      network: host
+    env_file:
+      - .env
+      - ./secrets/private/base_secrets.env
+    network_mode: host
+    environment:
+      CLEAR_US_DATABASE: 1
+      RUN_DEVHOST_TESTS: 1
+      TESTS_CACHES_DIR: /tests_caches
+      PIP_CACHE_DIR: /pip_cache
+      YAV_USER: ${LOGNAME}
+      POETRY_CACHE_DIR: /pypoetry
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    volumes:
+      # project code itself, which will be updated during lifetime
+      - ${DEV_MACHINE_PKG_ROOT}:/data
+      # pkg caches to avoid repeated fetch from pypi
+      - /home/${LOGNAME}/.cache/pypoetry:/pypoetry
+      # pytest caches
+      - pi2-tests-caches-dir:/tests_caches
+      - pi2-venv:/venv
+      - pi2-pip-cache:/pip_cache
+      # Docker socket to run/control side containers from pytest, not sure if this is really great idea ...
+      - /var/run/docker.sock:/var/run/docker.sock
+      # ssh auth sock
+      - /tmp:/tmp
+      # convenience for keeping bash history
+      - /home/${LOGNAME}/.bash_history:/root/.bash_history
+
+      # todo: on first run also pip install ci requirements including local deps
+
+volumes:
+  pi2-venv: {}
+  pi2-tests-caches-dir: {}
+  pi2-pip-cache: {}

@@ -1,0 +1,3 @@
+[sqlalchemy.dialects]
+appmetrica_api = sqlalchemy_metrika_api.base:AppMetricaApiDialect
+metrika_api = sqlalchemy_metrika_api.base:MetrikaApiDialect

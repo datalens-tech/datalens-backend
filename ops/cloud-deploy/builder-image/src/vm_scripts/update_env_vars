@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import yaml
+import requests
+
+
+APP_KUBELET_CONFIG_PATH = '/etc/kubelet.d/app.yaml'
+
+
+def main():
+    print('Going to update env vars in app config')
+    with open(APP_KUBELET_CONFIG_PATH) as f:
+        app_config = yaml.safe_load(f)
+
+    resp = requests.get(
+        'http://169.254.169.254/computeMetadata/v1/instance/attributes/user-data',
+        headers={'Metadata-Flavor': 'Google'}
+    )
+    try:
+        resp.raise_for_status()
+    except Exception:
+        print('metadata getting failed:', resp.text)
+        raise
+
+    user_data = yaml.load(resp.content)
+    env_vars = user_data.get('env_vars', {})
+
+    exisiting_env_vars = {
+        item['name']: item['value']
+        for item in app_config['spec']['containers'][0]['env']
+    }
+
+    print('Got env vars from metadata config:', env_vars)  # in /var/log/cloud-init-output.log
+    print('Existing env vars:', exisiting_env_vars.keys())
+
+    exisiting_env_vars.update(env_vars)
+    app_config['spec']['containers'][0]['env'] = [
+        {'name': key, 'value': str(value)}
+        for key, value in exisiting_env_vars.items()
+    ]
+
+    with open(APP_KUBELET_CONFIG_PATH, 'w') as f:
+        yaml.dump(app_config, f)
+
+    print('Env vars have been successfully updated')
+
+
+if __name__ == '__main__':
+    main()

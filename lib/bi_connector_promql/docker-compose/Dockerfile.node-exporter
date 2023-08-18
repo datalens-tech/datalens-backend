@@ -1,0 +1,4 @@
+# FROM prom/node-exporter:v1.2.2
+FROM registry.yandex.net/statinfra/node-exporter@sha256:4f30c76de420097cdc9915c439f5c5f725ccb834a98d0631b3fac1ccb39f96f6
+
+COPY node-exporter/data /data

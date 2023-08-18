@@ -1,0 +1,2 @@
+[env_param_getters]
+yav = bi_testing_ya.env_params.yav:YavEnvParamGetter

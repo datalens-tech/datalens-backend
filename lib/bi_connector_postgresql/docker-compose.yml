@@ -1,0 +1,74 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+
+services:
+  db-postgres-9-3:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-postgres-9.3
+    environment:
+      POSTGRES_DB: "test_data"
+      POSTGRES_USER: "datalens"
+      POSTGRES_PASSWORD: "qwerty"
+      PGCTLTIMEOUT: "300"  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+    ports:
+     - "52300:5432"
+
+  db-postgres-13:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-postgres-13
+    environment:
+      POSTGRES_DB: "test_data"
+      POSTGRES_USER: "datalens"
+      POSTGRES_PASSWORD: "qwerty"
+      PGCTLTIMEOUT: "300"  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+    ports:
+     - "52302:5432"
+
+# TODO: enable in https://st.yandex-team.ru/BI-4701
+#  db-postgres-9-4-ssl:
+#    build:
+#      context: docker-compose
+#      dockerfile: Dockerfile.db-postgres-9.4-ssl
+#    environment:
+#      POSTGRES_DB: "test_data"
+#      POSTGRES_USER: "datalens"
+#      POSTGRES_PASSWORD: "qwerty"
+#      PGCTLTIMEOUT: "300"  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+#    ports:
+#      - "52303:5432"
+#    command: [
+#      "postgres",
+#      "-c",
+#      "config_file=/etc/postgresql/postgresql.conf"
+#    ]
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+     - "52310:5432"
+
+  us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.us-single-tenant
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      DLS_ENABLED: "false"
+      DISABLE_DLS: "true"
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+     - "52311:80"

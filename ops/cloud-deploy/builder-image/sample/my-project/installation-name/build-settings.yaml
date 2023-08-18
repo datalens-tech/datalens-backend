@@ -1,0 +1,6 @@
+# Здесь описывается конфигурация СБОРКИ приложения
+CLOUD_ID: # string
+FOLDER_ID: # string
+SUBNET_ID: # string
+ZONE: # ru-central1-a | ru-central1-b | ru-central1-c
+BUILD_ENVIRONMENT: # prod | preprod

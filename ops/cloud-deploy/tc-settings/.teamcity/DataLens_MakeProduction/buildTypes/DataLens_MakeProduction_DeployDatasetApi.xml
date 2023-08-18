@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="660a2b91-2578-4f36-ad91-0dbbe1a36329" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>BIApi_DeployDatasetApi</name>
+  <description />
+  <settings ref="DataLens_MakeProduction_DeployCloudTemplate">
+    <options>
+      <option name="buildNumberPattern" value="%dep.DataLens_BuildVmImages_BuildBIApi.BUILD_IMAGE_TAG%" />
+    </options>
+    <disabled-settings>
+      <setting-ref ref="vcsTrigger" />
+    </disabled-settings>
+    <parameters>
+      <param name="dep.DataUI_Cloud_Ui_BuildCloud.build.number" value="" />
+      <param name="env.CONFIG_DIR" value="bi-api/instance-groups/dataset-api" />
+    </parameters>
+    <build-runners order="RUNNER_14237, RUNNER_10435">
+      <runner id="RUNNER_14237" name="Get image id" type="simpleRunner">
+        <parameters>
+          <param name="plugin.docker.imageId" value="%CLOUD_BUILDER_IMAGE%" />
+          <param name="script.content"><![CDATA[#!/bin/sh
+CLOUD_IMAGE_ID='%CLOUD_IMAGE_ID%'
+echo 'CLOUD_IMAGE_ID from parameters: '${CLOUD_IMAGE_ID}
+if ! test "$CLOUD_IMAGE_ID"; then
+  DEPLOY_SETTINGS="$CONFIG_DIR/deploy-settings.yaml"
+  FOLDER_ID="$(cat $DEPLOY_SETTINGS | yq -r .FOLDER_ID)"
+  CLOUD_ID="$(cat $DEPLOY_SETTINGS | yq -r .CLOUD_ID)"
+  source "/etc/cloud-builder/common.sh"
+  create_yc_profile
+
+  IMAGE_URL=`/usr/local/bin/aws s3 \
+  --region ru-central1 \
+  --endpoint-url=https://storage.yandexcloud.net \
+  presign %dep.DataLens_BuildVmImages_BuildBIApi.env.S3_PATH% \
+  --expires-in 10800`
+
+  IMAGE_NAME=`echo $IMAGE_URL | tr "/" "\n" | tail -n 1 | tr "?" "\n" | tail -n 2 | head -n 1`-`date +%s`
+
+  echo "IMAGE_NAME: $IMAGE_NAME"
+  echo "IMAGE_URL: $IMAGE_URL"
+
+  IMAGE_INFO=`yc compute image create \
+    --folder-id=b1gmdgpr40q4nokkqo8s \
+    --family=g4-images \
+    --name="$IMAGE_NAME" \
+    --description="imported from s3" \
+    --source-uri="$IMAGE_URL" \
+    --format json`
+
+  CLOUD_IMAGE_ID=`echo $IMAGE_INFO | jq -r .id`
+  echo "CLOUD_IMAGE_ID: $CLOUD_IMAGE_ID"
+
+fi
+
+echo "##teamcity[setParameter name='CLOUD_IMAGE_ID' value='${CLOUD_IMAGE_ID}']"]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="DataLens_MakeProduction_CloudDeployProduction" />
+    </vcs-settings>
+    <requirements />
+    <build-triggers>
+      <build-trigger id="vcsTrigger" type="vcsTrigger">
+        <parameters>
+          <param name="enableQueueOptimization" value="true" />
+          <param name="quietPeriodMode" value="USE_DEFAULT" />
+          <param name="triggerRules"><![CDATA[-:user=teamcity:**
+-:user=robot-dataui-vcs:**]]></param>
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <artifact-dependencies>
+      <dependency id="ARTIFACT_DEPENDENCY_1732" sourceBuildTypeId="DataLens_BuildVmImages_BuildBIApi" cleanDestination="false">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="*" />
+      </dependency>
+    </artifact-dependencies>
+    <dependencies>
+      <depend-on sourceBuildTypeId="DataLens_BuildVmImages_BuildBIApi">
+        <options>
+          <option name="run-build-if-dependency-failed" value="RUN_ADD_PROBLEM" />
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

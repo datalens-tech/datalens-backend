@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+script="$(realpath "$0")"
+script_dir="$(dirname "${script}")"
+project_dir="$(dirname "${script_dir}")"
+shims_dir="$project_dir/.shims"
+sources_dir="$project_dir"
+
+main() {
+  if ! [ -d "$sources_dir" ]; then
+    echo "ERROR: Found no sources on path($sources_dir)..."
+    exit 1
+  fi
+
+  leftover_arguments=()
+  environment="*"
+  layer="*"
+
+  while [ -n "$1" ]
+  do
+    case "$1" in
+      -env) environment="$2"
+        shift ;;
+      -layer) layer="$2"
+        shift ;;
+      -chdir*)
+        echo "ERROR: Found -chdir option, use terraform command instead, exiting..."
+        exit 1 ;;
+      *)
+        leftover_arguments+=("$1") ;;
+    esac
+    shift
+  done
+
+  if [ "$environment" == "*" ] && [ "$layer" != "*" ]
+  then
+    echo "ERROR: Found layer option, but no env option, exiting..."
+    exit 1
+  fi
+
+  for environment_folder in $sources_dir/$environment/
+  do
+    for layer_folder in $environment_folder$layer/
+    do
+      if ! [ -d "$layer_folder" ]; then
+        exit 1
+      fi
+      echo "Running for layer: $layer_folder"
+      terraform -chdir="$layer_folder" "${leftover_arguments[@]}"
+    done
+  done
+}
+
+terraform() {
+  "${shims_dir}/terraform" "${@:1}"
+}
+
+
+main "$@"

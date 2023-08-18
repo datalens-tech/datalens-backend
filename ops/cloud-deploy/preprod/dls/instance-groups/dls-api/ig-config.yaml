@@ -1,0 +1,306 @@
+name: dls-api
+service_account_id: bfbdtpfu9qlotm99j4h6
+scale_policy:
+  fixed_scale:
+    size: 2
+deploy_policy:
+  max_unavailable: 1
+  # здесь лучше 0, для того чтобы виртуалки не пересоздавались каждый раз
+  max_expansion: 0
+health_checks_spec:
+  health_check_specs:
+  - http_options:
+      port: 80
+        # для проектов на common, проверка живости приложения
+      path: /_dls/debug/
+    interval: 6s
+    timeout: 5s
+    unhealthy_threshold: 2
+    healthy_threshold: 3
+allocation_policy:
+  zones:
+  - zone_id: ru-central1-a
+  - zone_id: ru-central1-b
+  - zone_id: ru-central1-c
+platform_l7_load_balancer_spec:
+  preferred_ip_version: IPV6
+  target_group_spec:
+    # название вашей таргет-группы, это специальная тг для L7, из интерфейса ее создать невозможно
+    name: datalens-preprod-dls-api
+instance_template:
+  # шаблон для имени вм, мы используем такой app_name-{instance.internal_dc}-{instance.index}
+  name: dls-api-{instance.internal_dc}-{instance.index}
+  fqdn: dls-api-{instance.internal_dc}-{instance.index}.{instance.internal_dc}.datalens.cloud-preprod.yandex.net
+  service_account_id: bfbu9gprqdutnf1g7t1h
+  labels:
+    yandex-dns: ig
+    conductor-group: datalens-back-preprod
+    conductor-role: dls-api
+  platform_id: standard-v2
+  resources_spec:
+    memory: 2G
+    cores: 2
+    core_fraction: 20
+  boot_disk_spec:
+    mode: READ_WRITE
+    disk_spec:
+      # айдишник образа, созданного packer-ом, подставляется тимсити, здесь не менять
+      image_id: __IMAGE_ID__
+      type_id: network-ssd
+      size: 10g
+  # логи пишутся на secondary-disk, чтобы избежать потери при деплое
+  secondary_disk_specs:
+  - mode: READ_WRITE
+    device_name: data
+    disk_spec:
+      type_id: network-ssd
+      size: 11g
+  network_interface_specs:
+  - network_id: c64m78s133l6m4emf6t0
+    primary_v6_address_spec: {}
+    primary_v4_address_spec: {}
+    security_group_ids:
+    - c64rh4ff79f3f12097ft
+  metadata:
+    k8s-runtime-bootstrap-yaml: ' '
+    # настройка записи логов на secondary-disk
+    user-data: |
+      #cloud-config
+      fs_setup:
+      - device: /dev/disk/by-id/virtio-data
+        filesystem: ext4
+        partition: auto
+        overwrite: false
+      mounts:
+      - [/dev/disk/by-id/virtio-data, /data, ext4, 'defaults,errors=remount-ro', '0', '2']
+      - [/data/log/fluent, /var/log/fluent, none, 'defaults,bind', '0', '0']
+      runcmd:
+      - mkdir -p /data/log/fluent
+      - chmod 0777 /data
+      - chown td-agent:td-agent /data/log/fluent
+      - chmod 0755 /data/log/fluent
+      - mount --make-rprivate /data
+      - mount -o bind /data/log/fluent /var/log/fluent
+      - /usr/local/bin/update_env_vars
+      - /usr/bin/skm decrypt
+      - /usr/local/bin/update_secrets
+      env_vars:
+        DLS_DAEMON_NAME: http
+        DLS_ENV: ext_testing
+        NGINX_CERT_LOCATION: /etc/secrets/component_cert.pem
+        NGINX_CERT_PRIVATE_KEY_LOCATION: /etc/secrets/component_cert.key
+        NGINX_SERVER_NAME: dls-api
+        RUN_NGINX: 1
+        YENV_TYPE: testing
+    osquery_tag: ycloud-svc-datalens-bi
+    shortname: dls-api-{instance.internal_dc}-{instance.index}.{instance.internal_dc}
+    nsdomain: datalens.cloud-preprod.yandex.net
+    skm: |
+      api_endpoint: api.cloud-preprod.yandex.net:443
+      skip_tls_verify: false
+      kms_private_endpoint: ""
+      iam_private_endpoint: ""
+      kms_private_skip_tls_verify: false
+      kms_key_uri: yc-kms://e10mng38moenmrvomcdo
+      encrypted_dek: AAAAAQAAABRlMTA5bGE2aGswNXI5NnNhOWhmZAAAABCCEo3uAE+RBoM2WeUY4THEAAAADA+/wyQ580i18idfWdfBR9KsELW+FBg3p3VMMzzeOs5PiNB6tr66QXZ0ty8A+P9u59V/T5rqYW8mGeh6coUPwhLPzHDPmNJgnd2IpPRBWc8KnIrAD3Yr/Br2Rfl8
+      secrets:
+        - path: /etc/secrets/TVM_SECRET
+          ciphertext: !!binary RySrkUHluaXKm1OMxzhkXVeAaPL8s07yoqmE/Vh8x8naz+h8SGs=
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/TVM_INFO
+          ciphertext: !!binary |
+              SVdUj15ds2Kq5rdynR+8qdr4Z5Z58Xs7aJztMuHTk/NFXezjUl64Fa0MjqJCDg1sBe/hj8
+              6xK9VtDg==
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/DLS_API_KEY
+          ciphertext: !!binary |
+              WILskl87d3MQ15buI4xTWF+gAgQgeD5Ac7lxihvugO9JdrYUaik7Sr53yJBg0nKaoNhMIM
+              c5Rk62Vel6Ed+un3tI4fMfDQwCBzWPDOdsDw==
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/DLS_DB_PASSWORD
+          ciphertext: !!binary oPu11pLj3qKYxvv6qFRJ72PbmtmzbRMIqGWRik033LTKV3vM/KecKA==
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/DLS_SENTRY_DSN
+          ciphertext: !!binary |
+              natQOr22Ew/Eu1vm1sGbgiwu9pDTXu7YnDm1BSTsu0q3QWSfIffHX1LZd5vew5IZrPIQL7
+              DHdNwLYCqEtbiguisPqqgtixk+2t6IXCECNynzCbjwdn/Ybt2wltrfkvROpCrUE0zExgoZ
+              JX454/86ouobXZn/3T3t
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/LOGCH_PASSWORD
+          ciphertext: !!binary 62GE+HmwwbtpDS26lAyGOm+LiRdRhDZgU/TqOODmSZ8NDQdwiGLLNgix
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/component_cert.pem
+          ciphertext: !!binary |
+              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
+              NH
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/component_cert.key
+          ciphertext: !!binary |
+              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
+              +pdyltKjeGsdqV288Ipx
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/metricsagent/SOLOMON_AUTH
+          ciphertext: !!binary |
+              kt71soA46t/xil1c5OYns68cpf6MduuP02b30zqOfKTZPv7pIClmBfBlB3Bw0PPkyPkuPc
+              hJGg==
+          mode: 0
+          uid: 0
+          gid: 0
+        - path: /etc/secrets/DLS_SOLOMON_OAUTH
+          ciphertext: !!binary |
+              kt71soA46t/xil1c5OYns68cpf6MduuP02b30zqOfKTZPv7pIClmBfBlB3Bw0PPkyPkuPc
+              hJGg==
+          mode: 0
+          uid: 0
+          gid: 0
+      enc_mode: DETERMINISTIC
+      force: false

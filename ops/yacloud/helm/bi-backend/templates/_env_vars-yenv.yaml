@@ -1,0 +1,6 @@
+{{- define "env_vars-yenv" }}
+- name: YENV_TYPE
+  value: "{{ .Values.yenv_type }}"
+- name: YENV_NAME
+  value: "cloud"
+{{ end }}

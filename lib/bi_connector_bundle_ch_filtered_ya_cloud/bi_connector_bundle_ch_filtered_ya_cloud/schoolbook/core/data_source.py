@@ -1,0 +1,30 @@
+from __future__ import annotations
+
+import logging
+from typing import ClassVar
+
+from bi_constants.enums import CreateDSFrom
+
+from bi_core.connectors.clickhouse_base.data_source import ClickHouseTemplatedSubselectDataSource
+
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.constants import (
+    CONNECTION_TYPE_SCHOOLBOOK_JOURNAL, SOURCE_TYPE_CH_SCHOOLBOOK_TABLE,
+)
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+class ClickHouseSchoolbookDataSource(ClickHouseTemplatedSubselectDataSource):
+    """
+    Clickhouse datasource with data filtration by Yandex Passport userId of the connection creator.
+    """
+    preview_enabled: ClassVar[bool] = False
+
+    conn_type = CONNECTION_TYPE_SCHOOLBOOK_JOURNAL
+
+    @classmethod
+    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+        return source_type in {
+            SOURCE_TYPE_CH_SCHOOLBOOK_TABLE,
+        }

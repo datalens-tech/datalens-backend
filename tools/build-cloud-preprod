@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import logging
+import time
+
+import requests
+import hjson
+import gitchronicler
+
+
+CONFIG_FILENAME = '.release.hjson'
+CONFIG_KEY = '_x_bi_cloud_preprod_build_conf_ids'
+TEAMCITY_URL = 'https://teamcity.yandex-team.ru/app/rest/buildQueue'
+
+LOGGER = logging.getLogger('build-cloud-preprod')
+
+
+def main():
+    logging.basicConfig(level=logging.INFO)
+    with open(CONFIG_FILENAME) as fobj:
+        config = hjson.load(fobj)
+    cloud_confs = config.get(CONFIG_KEY)
+    if not cloud_confs:
+        LOGGER.info('No cloud config ids, doing nothing.')
+        return
+
+    token = os.environ.get('RELEASER_OAUTH_TOKEN')
+    if not token:
+        with open(os.path.expanduser('~/.release.hjson')) as fobj:
+            token = hjson.load(fobj)['oauth_token']
+    assert token
+
+    chronicler = gitchronicler.Chronicler()
+    if len(sys.argv) >= 2:
+        version = sys.argv[1]
+    else:
+        version = chronicler.get_current_version()
+    LOGGER.info('Building version=%r', version)
+
+    for build_conf_id in cloud_confs:
+        LOGGER.info('Going to trigger %s...', build_conf_id)
+        resp = requests.post(
+            TEAMCITY_URL,
+            json={
+                'buildType': {'id': build_conf_id},
+                'comment': {'text': 'triggered by STATBOX_RELOOSER'},
+                'properties': {
+                    'property': [
+                        {
+                            'name': 'BUILD_IMAGE_TAG',
+                            'value': version,
+                        }
+                    ]
+                }
+            },
+            headers={
+                'Authorization': 'OAuth {}'.format(token),
+            }
+        )
+        if not resp.ok:
+            LOGGER.error('Teamcity error: %s', resp.text)
+        resp.raise_for_status()
+
+        # https://github.yandex-team.ru/data-ui/cloud-deploy/blob/172f8727e85fcf7dd2b5430a6af00739477fa552/src/build.sh#L23
+        # image name doesn't contain component name, so it is the same for different components of one app (e.g., mat-api and mat-worker)
+        # so we have to wait a second for different timestamps in image names
+        # TODO FIXME
+        time.sleep(1.1)
+
+    LOGGER.info('done.')
+
+
+if __name__ == '__main__':
+    main()

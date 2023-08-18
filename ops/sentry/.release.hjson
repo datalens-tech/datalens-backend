@@ -1,0 +1,7 @@
+deploy: true
+project: __not_applicable_for_ydeploy__
+application: statinfra
+applications: statinfra
+stage: statinfra-sentry
+deploy_units: frontend
+# box: ...

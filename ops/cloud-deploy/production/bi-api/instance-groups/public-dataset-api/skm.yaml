@@ -1,0 +1,208 @@
+yav_token:
+  env_var: YAV_TOKEN
+
+yc_kms:
+  api_endpoint: api.cloud.yandex.net:443
+
+kek:
+  kms:
+    key_uri: yc-kms://abjbvt8c9bmbiat3lfha   # skm-key
+
+encrypted_dek: AAAAAQAAABRhYmplYWRjNHVyNXBqczg4YW9hZgAAABCG3ZLPsN+eGX+oXXZn+xOzAAAADBiyv1+yZW/xBksGUQbLYjBBbEeF6kpHQoStYh84DntMrHe5P/7LgRvrY3GIZiyW95h1pS+A1OleMIJVtxXxjZRPXbAkR4ewV786xdrZOybVFZuk3jWUL55bn4F2
+
+secrets:
+- path: /etc/secrets/TVM_SECRET
+  source:
+    yav:
+      secret_id: sec-01dv8x5xs7jv49pq7fam9d4zx7
+      key: client_secret
+- path: /etc/secrets/TVM_INFO
+  source:
+    yav:
+      secret_id: sec-01dv8x5xs7jv49pq7fam9d4zx7
+      key: TVM_INFO
+- path: /etc/secrets/CACHES_REDIS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: REDIS_CACHES_PASSWORD
+- path: /etc/secrets/EXT_QUERY_EXECUTER_SECRET_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: EXT_QUERY_EXECUTER_SECRET_KEY
+- path: /etc/secrets/PUBLIC_API_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: PUBLIC_MASTER_TOKEN
+- path: /etc/secrets/US_PUBLIC_API_TOKEN
+  source:
+    yav:
+      secret_id: sec-01e7ns911m3gez46t6zqb0z5hb
+      key: ext-prod
+- path: /etc/secrets/US_MASTER_TOKEN
+  source:
+    yav:
+      secret_id: sec-01csc2x33km5dc7x8p51hfh0nj
+      key: ext-production
+- path: /etc/secrets/component_cert.pem
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: COMPONENTS_CERT_CHAIN
+- path: /etc/secrets/component_cert.key
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: COMPONENTS_CERT_KEY
+- path: /etc/secrets/LOGCH_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: LOGS_CH_PASSWORD
+- path: /etc/metricsagent/SOLOMON_AUTH_SA_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: solomon_pusher_sa_key
+- path: /etc/secrets/DL_CRY_KEY_VAL_ID_cloud_prod_3
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CRYPTO_KEY_3
+- path: /etc/secrets/CONNECTORS_CH_YA_MUSIC_PODCAST_STATS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01epbz6r8azqrkb15qg2w6vscq
+      key: password
+- path: /etc/secrets/CONNECTORS_MOYSKLAD_PARTNER_KEYS
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: MOYSKLAD_PARTNER_KEYS
+- path: /etc/secrets/CONNECTORS_MOYSKLAD_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: MOYSKLAD_DB_USER_PASSWORD
+- path: /etc/secrets/CONNECTORS_EQUEO_PARTNER_KEYS
+  source:
+    yav:
+      secret_id: sec-01gr616qr799xq3ftc925a8wkm
+      key: PARTNER_KEYS
+- path: /etc/secrets/CONNECTORS_EQUEO_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01gr616qr799xq3ftc925a8wkm
+      key: pw
+- path: /etc/secrets/CONNECTORS_BITRIX_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: BITRIX_DB_USER_PASSWORD
+- path: /etc/secrets/CONNECTORS_BITRIX_PARTNER_KEYS
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: BITRIX_PARTNER_KEYS
+- path: /etc/secrets/CONNECTORS_SCHOOLBOOK_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CH_SCHOOLBOOK_PASSWORD
+- path: /etc/secrets/MUTATIONS_REDIS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: REDIS_CACHES_PASSWORD
+- path: /etc/secrets/CONNECTORS_MARKET_COURIERS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01g79fq9e0fycdqwsmpeka7hwn
+      key: datalens
+- path: /etc/secrets/FILE_UPLOADER_MASTER_TOKEN
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: FILE_UPLOADER_MASTER_TOKEN
+- path: /etc/secrets/CONNECTORS_FILE_ACCESS_KEY_ID
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CLOUD_S3_ACCESS_KEY_ID
+- path: /etc/secrets/CONNECTORS_FILE_SECRET_ACCESS_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CLOUD_S3_SECRET_ACCESS_KEY
+- path: /etc/secrets/CONNECTORS_FILE_PASSWORD
+  source:
+    yav:
+      key: CONN_FILE_CH_PASSWORD
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+- path: /etc/secrets/RQE_CACHES_REDIS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: REDIS_RQE_CACHES_PASSWORD
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_BUMPY_ROADS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01f2482eyh1xqwfpg65452rzz8
+      key: bumpy_roads_user_ro
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_COVID_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dpjw0f855743k8we1bw849gb
+      key: covid_public
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_DEMO_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dpjw0f855743k8we1bw849gb
+      key: samples_user-password
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_DTP_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01f8qnpcw9kwxyabyfad9kb2wp
+      key: dtp_mos_user_ro
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_GKH_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01f01hcbagr13zwvmhgvxgvh5d
+      key: gkh_user
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_SAMPLES_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dpjw0f855743k8we1bw849gb
+      key: samples_user-password
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_TRANSPARENCY_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01exscqjzy4764m3nwhrw1e8hr
+      key: transparency_report_user_ro
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_WEATHER_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dnvz294hkp2g4s4jycpzad5m
+      key: dl_user_password
+- path: /etc/secrets/CONNECTORS_CH_FROZEN_HORECA_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01f01hcbagr13zwvmhgvxgvh5d
+      key: horeca_user
+- path: /etc/secrets/CONNECTORS_SMB_HEATMAPS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01g18jp2yaq1xj1sfkjsh9h9fd
+      key: password
+- path: /etc/secrets/CONNECTORS_KONTUR_MARKET_PARTNER_KEYS
+  source:
+    yav:
+      secret_id: sec-01gwpgpc4sep4fe5etwy3tw0ek
+      key: PARTNER_KEYS
+- path: /etc/secrets/CONNECTORS_KONTUR_MARKET_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01gwpgpc4sep4fe5etwy3tw0ek
+      key: ch-password

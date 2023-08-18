@@ -1,0 +1,8 @@
+apiVersion: v2
+appVersion: 2.0.3
+description: Fluent-bit Cloud Logging Plugin
+name: fluent-bit-cloud-logging
+type: application
+version: 1.0-9
+maintainers:
+  - name: kirshe@

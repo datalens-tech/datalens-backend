@@ -1,0 +1,2757 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    policies.kyverno.io/category: Multi-Tenancy
+    policies.kyverno.io/description: By default, Kubernetes allows communications
+      across all Pods within a cluster. The NetworkPolicy resource and a CNI plug-in
+      that supports NetworkPolicy must be used to restrict communications. A default
+      NetworkPolicy should be configured for each Namespace to default deny all
+      ingress and egress traffic to the Pods in the Namespace. Application teams
+      can then configure additional NetworkPolicy resources to allow desired traffic
+      to application Pods from select sources. This policy will create a new NetworkPolicy
+      resource named `default-deny` which will deny all traffic anytime a new Namespace
+      is created.
+    policies.kyverno.io/subject: NetworkPolicy
+    policies.kyverno.io/title: Add Network Policy
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: add-networkpolicy
+  # resourceVersion: "45916726"
+  # uid: 7730a8be-afbe-4abd-a6dc-93ada1d6036d
+spec:
+  background: true
+  rules:
+    - generate:
+        apiVersion: networking.k8s.io/v1
+        data:
+          spec:
+            podSelector: { }
+            policyTypes:
+              - Ingress
+              - Egress
+        kind: NetworkPolicy
+        name: default-deny
+        namespace: '{{request.object.metadata.name}}'
+        synchronize: true
+      match:
+        resources:
+          kinds:
+            - Namespace
+      name: default-deny
+  validationFailureAction: audit
+status:
+  autogen: { }
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:47:58Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: "1.23"
+    kyverno.io/kyverno-version: 1.6.2
+    policies.kyverno.io/category: Multi-Tenancy
+    policies.kyverno.io/description: By default, Kubernetes allows communications
+      across all Pods within a cluster. The NetworkPolicy resource and a CNI plug-in
+      that supports NetworkPolicy must be used to restrict communications. A default
+      NetworkPolicy should be configured for each Namespace to default deny all
+      ingress and egress traffic to the Pods in the Namespace. Application teams
+      can then configure additional NetworkPolicy resources to allow desired traffic
+      to application Pods from select sources. This policy will create a new NetworkPolicy
+      resource named `default-deny` which will deny all traffic anytime a new Namespace
+      is created.
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/subject: NetworkPolicy
+    policies.kyverno.io/title: Add Network Policy for DNS
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: add-networkpolicy-dns
+  # resourceVersion: "45916763"
+  # uid: fe3af193-21f1-48ef-8e5d-5470d447b626
+spec:
+  background: true
+  rules:
+    - generate:
+        apiVersion: networking.k8s.io/v1
+        data:
+          spec:
+            egress:
+              - ports:
+                  - port: 53
+                    protocol: UDP
+                to:
+                  - namespaceSelector:
+                      matchLabels:
+                        name: kube-system
+            podSelector:
+              matchLabels: { }
+            policyTypes:
+              - Egress
+        kind: NetworkPolicy
+        name: allow-dns
+        namespace: '{{request.object.metadata.name}}'
+        synchronize: false
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      name: add-netpol-dns
+  validationFailureAction: audit
+status:
+  autogen: { }
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:05Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: "1.23"
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/description: 'Ephemeral containers, enabled by default in
+      Kubernetes 1.23, allow users to use the `kubectl debug` functionality and
+      attach a temporary container to an existing Pod. This may potentially be used
+      to gain access to unauthorized information executing inside one or more containers
+      in that Pod. This policy blocks the use of ephemeral containers.      '
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Block Ephemeral Containers
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: block-ephemeral-containers
+  # resourceVersion: "45916744"
+  # uid: 7e17fa42-171f-431f-980e-7753cc73dd15
+spec:
+  background: false
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: block-ephemeral-containers
+      validate:
+        message: Ephemeral (debug) containers are not permitted.
+        pattern:
+          spec:
+            X(ephemeralContainers): "null"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-block-ephemeral-containers
+        validate:
+          message: Ephemeral (debug) containers are not permitted.
+          pattern:
+            spec:
+              template:
+                spec:
+                  X(ephemeralContainers): "null"
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-block-ephemeral-containers
+        validate:
+          message: Ephemeral (debug) containers are not permitted.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      X(ephemeralContainers): "null"
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:47:59Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    policies.kyverno.io/category: Sample
+    policies.kyverno.io/description: 'The `exec` command may be used to gain shell
+      access, or run other commands, in a Pod''s container. While this can be useful
+      for troubleshooting purposes, it could represent an attack vector and is discouraged.
+      This policy blocks Pod exec commands to containers named `nginx` in Pods starting
+      with name `myapp-maintenance`.      '
+    policies.kyverno.io/minversion: 1.4.2
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Block Pod Exec by Pod and Container
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: deny-attach-by-pod-and-container
+  # resourceVersion: "45916831"
+  # uid: 40a40897-9ff7-40d6-8a8c-630eb13fbaa9
+spec:
+  background: false
+  rules:
+    - match:
+        resources:
+          kinds:
+            - PodAttachOptions
+      name: deny-exec
+      preconditions:
+        all:
+          - key: '{{ request.operation || ''BACKGROUND'' }}'
+            operator: Equals
+            value: CONNECT
+      validate:
+        deny:
+          conditions:
+            all:
+              - key: '{{ request.object.container }}'
+                operator: Equals
+                value: ?*
+        message: deny-attach-by-pod-and-container
+  validationFailureAction: audit
+status:
+  autogen: { }
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:14Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    policies.kyverno.io/category: Sample
+    policies.kyverno.io/description: 'The `exec` command may be used to gain shell
+      access, or run other commands, in a Pod''s container. While this can be useful
+      for troubleshooting purposes, it could represent an attack vector and is discouraged.
+      This policy blocks Pod exec commands to containers named `nginx` in Pods starting
+      with name `myapp-maintenance`.      '
+    policies.kyverno.io/minversion: 1.4.2
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Block Pod Exec by Pod and Container
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: deny-exec-by-pod-and-container
+  # resourceVersion: "45916769"
+  # uid: 89a25e4b-2d70-401a-9b6f-067a31ecf8ad
+spec:
+  background: false
+  rules:
+    - match:
+        resources:
+          kinds:
+            - PodExecOptions
+      name: deny-exec
+      preconditions:
+        all:
+          - key: '{{ request.operation || ''BACKGROUND'' }}'
+            operator: Equals
+            value: CONNECT
+      validate:
+        deny:
+          conditions:
+            all:
+              - key: '{{ request.object.container }}'
+                operator: Equals
+                value: ?*
+        message: deny-exec-by-pod-and-container
+  validationFailureAction: audit
+status:
+  autogen: { }
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:07Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: Adding capabilities beyond those listed in
+      the policy must be disallowed.
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow Capabilities
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-capabilities
+  # resourceVersion: "45916805"
+  # uid: 365fd89d-8db6-428b-bc15-73d9afa998b1
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: adding-capabilities
+      validate:
+        deny:
+          conditions:
+            all:
+              - key: '{{ request.object.spec.[ephemeralContainers, initContainers, containers][].securityContext.capabilities.add[]
+              }}'
+                operator: AnyNotIn
+                value:
+                  - AUDIT_WRITE
+                  - CHOWN
+                  - DAC_OVERRIDE
+                  - FOWNER
+                  - FSETID
+                  - KILL
+                  - MKNOD
+                  - NET_BIND_SERVICE
+                  - SETFCAP
+                  - SETGID
+                  - SETPCAP
+                  - SETUID
+                  - SYS_CHROOT
+        message: Any capabilities added beyond the allowed list (AUDIT_WRITE, CHOWN,
+          DAC_OVERRIDE, FOWNER, FSETID, KILL, MKNOD, NET_BIND_SERVICE, SETFCAP, SETGID,
+          SETPCAP, SETUID, SYS_CHROOT) are disallowed.
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-adding-capabilities
+        validate:
+          deny:
+            conditions:
+              all:
+                - key: '{{ request.object.spec.template.spec.[ephemeralContainers, initContainers,
+                containers][].securityContext.capabilities.add[] }}'
+                  operator: AnyNotIn
+                  value:
+                    - AUDIT_WRITE
+                    - CHOWN
+                    - DAC_OVERRIDE
+                    - FOWNER
+                    - FSETID
+                    - KILL
+                    - MKNOD
+                    - NET_BIND_SERVICE
+                    - SETFCAP
+                    - SETGID
+                    - SETPCAP
+                    - SETUID
+                    - SYS_CHROOT
+          message: Any capabilities added beyond the allowed list (AUDIT_WRITE, CHOWN,
+            DAC_OVERRIDE, FOWNER, FSETID, KILL, MKNOD, NET_BIND_SERVICE, SETFCAP,
+            SETGID, SETPCAP, SETUID, SYS_CHROOT) are disallowed.
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-adding-capabilities
+        validate:
+          deny:
+            conditions:
+              all:
+                - key: '{{ request.object.spec.jobTemplate.spec.template.spec.[ephemeralContainers,
+                initContainers, containers][].securityContext.capabilities.add[]
+                }}'
+                  operator: AnyNotIn
+                  value:
+                    - AUDIT_WRITE
+                    - CHOWN
+                    - DAC_OVERRIDE
+                    - FOWNER
+                    - FSETID
+                    - KILL
+                    - MKNOD
+                    - NET_BIND_SERVICE
+                    - SETFCAP
+                    - SETGID
+                    - SETPCAP
+                    - SETUID
+                    - SYS_CHROOT
+          message: Any capabilities added beyond the allowed list (AUDIT_WRITE, CHOWN,
+            DAC_OVERRIDE, FOWNER, FSETID, KILL, MKNOD, NET_BIND_SERVICE, SETFCAP,
+            SETGID, SETPCAP, SETUID, SYS_CHROOT) are disallowed.
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:11Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: Host namespaces (Process ID namespace, Inter-Process
+      Communication namespace, and network namespace) allow access to shared information
+      and can be used to elevate privileges. Pods should not be allowed access to
+      host namespaces. This policy ensures fields which make use of these host namespaces
+      are unset or set to `false`.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow Host Namespaces
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-host-namespaces
+  # resourceVersion: "45916826"
+  # uid: 58edca58-95d5-4f77-b37b-c40b6b5c5bbf
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: host-namespaces
+      validate:
+        message: Sharing the host namespaces is disallowed. The fields spec.hostNetwork,
+          spec.hostIPC, and spec.hostPID must be unset or set to `false`.
+        pattern:
+          spec:
+            =(hostIPC): "false"
+            =(hostNetwork): "false"
+            =(hostPID): "false"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-host-namespaces
+        validate:
+          message: Sharing the host namespaces is disallowed. The fields spec.hostNetwork,
+            spec.hostIPC, and spec.hostPID must be unset or set to `false`.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(hostIPC): "false"
+                  =(hostNetwork): "false"
+                  =(hostPID): "false"
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-host-namespaces
+        validate:
+          message: Sharing the host namespaces is disallowed. The fields spec.hostNetwork,
+            spec.hostIPC, and spec.hostPID must be unset or set to `false`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(hostIPC): "false"
+                      =(hostNetwork): "false"
+                      =(hostPID): "false"
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:12Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: HostPath volumes let Pods use host directories
+      and volumes in containers. Using host resources can be used to access shared
+      data or escalate privileges and should not be allowed. This policy ensures
+      no hostPath volumes are in use.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod,Volume
+    policies.kyverno.io/title: Disallow hostPath
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-host-path
+  # resourceVersion: "45916834"
+  # uid: afd96115-a4ab-4583-bac8-21985cb11828
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: host-path
+      validate:
+        message: HostPath volumes are forbidden. The field spec.volumes[*].hostPath
+          must be unset.
+        pattern:
+          spec:
+            =(volumes):
+              - X(hostPath): "null"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-host-path
+        validate:
+          message: HostPath volumes are forbidden. The field spec.volumes[*].hostPath
+            must be unset.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(volumes):
+                    - X(hostPath): "null"
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-host-path
+        validate:
+          message: HostPath volumes are forbidden. The field spec.volumes[*].hostPath
+            must be unset.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(volumes):
+                        - X(hostPath): "null"
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:15Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: Access to host ports allows potential snooping
+      of network traffic and should not be allowed, or at minimum restricted to
+      a known list. This policy ensures the `hostPort` field is unset or set to
+      `0`.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow hostPorts
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-host-ports
+  # resourceVersion: "45916702"
+  # uid: 6a913ac6-6567-4136-9240-5ad5cfa7a0ef
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: host-ports-none
+      validate:
+        message: Use of host ports is disallowed. The fields spec.containers[*].ports[*].hostPort
+          , spec.initContainers[*].ports[*].hostPort, and spec.ephemeralContainers[*].ports[*].hostPort
+          must either be unset or set to `0`.
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(ports):
+                  - =(hostPort): 0
+            =(initContainers):
+              - =(ports):
+                  - =(hostPort): 0
+            containers:
+              - =(ports):
+                  - =(hostPort): 0
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-host-ports-none
+        validate:
+          message: Use of host ports is disallowed. The fields spec.containers[*].ports[*].hostPort
+            , spec.initContainers[*].ports[*].hostPort, and spec.ephemeralContainers[*].ports[*].hostPort
+            must either be unset or set to `0`.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(ports):
+                        - =(hostPort): 0
+                  =(initContainers):
+                    - =(ports):
+                        - =(hostPort): 0
+                  containers:
+                    - =(ports):
+                        - =(hostPort): 0
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-host-ports-none
+        validate:
+          message: Use of host ports is disallowed. The fields spec.containers[*].ports[*].hostPort
+            , spec.initContainers[*].ports[*].hostPort, and spec.ephemeralContainers[*].ports[*].hostPort
+            must either be unset or set to `0`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(ports):
+                            - =(hostPort): 0
+                      =(initContainers):
+                        - =(ports):
+                            - =(hostPort): 0
+                      containers:
+                        - =(ports):
+                            - =(hostPort): 0
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:47:56Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: Windows pods offer the ability to run HostProcess
+      containers which enables privileged access to the Windows node. Privileged
+      access to the host is disallowed in the baseline policy. HostProcess pods
+      are an alpha feature as of Kubernetes v1.22. This policy ensures the `hostProcess`
+      field, if present, is set to `false`.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow hostProcess
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-host-process
+  # resourceVersion: "45916828"
+  # uid: 78ad6107-b4af-4f45-bcb2-19eccc4c1cb5
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: host-process-containers
+      validate:
+        message: HostProcess containers are disallowed. The fields spec.securityContext.windowsOptions.hostProcess,
+          spec.containers[*].securityContext.windowsOptions.hostProcess, spec.initContainers[*].securityContext.windowsOptions.hostProcess,
+          and spec.ephemeralContainers[*].securityContext.windowsOptions.hostProcess
+          must either be undefined or set to `false`.
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(windowsOptions):
+                    =(hostProcess): "false"
+            =(initContainers):
+              - =(securityContext):
+                  =(windowsOptions):
+                    =(hostProcess): "false"
+            containers:
+              - =(securityContext):
+                  =(windowsOptions):
+                    =(hostProcess): "false"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-host-process-containers
+        validate:
+          message: HostProcess containers are disallowed. The fields spec.securityContext.windowsOptions.hostProcess,
+            spec.containers[*].securityContext.windowsOptions.hostProcess, spec.initContainers[*].securityContext.windowsOptions.hostProcess,
+            and spec.ephemeralContainers[*].securityContext.windowsOptions.hostProcess
+            must either be undefined or set to `false`.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(securityContext):
+                        =(windowsOptions):
+                          =(hostProcess): "false"
+                  =(initContainers):
+                    - =(securityContext):
+                        =(windowsOptions):
+                          =(hostProcess): "false"
+                  containers:
+                    - =(securityContext):
+                        =(windowsOptions):
+                          =(hostProcess): "false"
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-host-process-containers
+        validate:
+          message: HostProcess containers are disallowed. The fields spec.securityContext.windowsOptions.hostProcess,
+            spec.containers[*].securityContext.windowsOptions.hostProcess, spec.initContainers[*].securityContext.windowsOptions.hostProcess,
+            and spec.ephemeralContainers[*].securityContext.windowsOptions.hostProcess
+            must either be undefined or set to `false`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(securityContext):
+                            =(windowsOptions):
+                              =(hostProcess): "false"
+                      =(initContainers):
+                        - =(securityContext):
+                            =(windowsOptions):
+                              =(hostProcess): "false"
+                      containers:
+                        - =(securityContext):
+                            =(windowsOptions):
+                              =(hostProcess): "false"
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:12Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: Privileged mode disables most security mechanisms
+      and must not be allowed. This policy ensures Pods do not call for privileged
+      mode.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow Privileged Containers
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-privileged-containers
+  # resourceVersion: "45916832"
+  # uid: 84898f63-e232-4b4c-ba49-0a84b8182c88
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: privileged-containers
+      validate:
+        message: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged
+          and spec.initContainers[*].securityContext.privileged must be unset or set
+          to `false`.
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(privileged): "false"
+            =(initContainers):
+              - =(securityContext):
+                  =(privileged): "false"
+            containers:
+              - =(securityContext):
+                  =(privileged): "false"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-privileged-containers
+        validate:
+          message: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged
+            and spec.initContainers[*].securityContext.privileged must be unset or
+            set to `false`.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(securityContext):
+                        =(privileged): "false"
+                  =(initContainers):
+                    - =(securityContext):
+                        =(privileged): "false"
+                  containers:
+                    - =(securityContext):
+                        =(privileged): "false"
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-privileged-containers
+        validate:
+          message: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged
+            and spec.initContainers[*].securityContext.privileged must be unset or
+            set to `false`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(securityContext):
+                            =(privileged): "false"
+                      =(initContainers):
+                        - =(securityContext):
+                            =(privileged): "false"
+                      containers:
+                        - =(securityContext):
+                            =(privileged): "false"
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:14Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: The default /proc masks are set up to reduce
+      attack surface and should be required. This policy ensures nothing but the
+      default procMount can be specified. Note that in order for users to deviate
+      from the `Default` procMount requires setting a feature gate at the API server.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow procMount
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-proc-mount
+  # resourceVersion: "45916777"
+  # uid: eb4455c4-5e21-492f-a1ea-b33226ec7bb9
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: check-proc-mount
+      validate:
+        message: Changing the proc mount from the default is not allowed. The fields
+          spec.containers[*].securityContext.procMount, spec.initContainers[*].securityContext.procMount,
+          and spec.ephemeralContainers[*].securityContext.procMount must be unset
+          or set to `Default`.
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(procMount): Default
+            =(initContainers):
+              - =(securityContext):
+                  =(procMount): Default
+            containers:
+              - =(securityContext):
+                  =(procMount): Default
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-check-proc-mount
+        validate:
+          message: Changing the proc mount from the default is not allowed. The fields
+            spec.containers[*].securityContext.procMount, spec.initContainers[*].securityContext.procMount,
+            and spec.ephemeralContainers[*].securityContext.procMount must be unset
+            or set to `Default`.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(securityContext):
+                        =(procMount): Default
+                  =(initContainers):
+                    - =(securityContext):
+                        =(procMount): Default
+                  containers:
+                    - =(securityContext):
+                        =(procMount): Default
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-check-proc-mount
+        validate:
+          message: Changing the proc mount from the default is not allowed. The fields
+            spec.containers[*].securityContext.procMount, spec.initContainers[*].securityContext.procMount,
+            and spec.ephemeralContainers[*].securityContext.procMount must be unset
+            or set to `Default`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(securityContext):
+                            =(procMount): Default
+                      =(initContainers):
+                        - =(securityContext):
+                            =(procMount): Default
+                      containers:
+                        - =(securityContext):
+                            =(procMount): Default
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:08Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: SELinux options can be used to escalate privileges
+      and should not be allowed. This policy ensures that the `seLinuxOptions` field
+      is undefined.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow SELinux
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: disallow-selinux
+  # resourceVersion: "45916847"
+  # uid: 6b5dca9f-4b91-4be0-958d-2aeb874e9328
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: selinux-type
+      validate:
+        message: Setting the SELinux type is restricted. The fields spec.securityContext.seLinuxOptions.type,
+          spec.containers[*].securityContext.seLinuxOptions.type, , spec.initContainers[*].securityContext.seLinuxOptions,
+          and spec.ephemeralContainers[*].securityContext.seLinuxOptions.type must
+          either be unset or set to one of the allowed values (container_t, container_init_t,
+          or container_kvm_t).
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(seLinuxOptions):
+                    =(type): container_t | container_init_t | container_kvm_t
+            =(initContainers):
+              - =(securityContext):
+                  =(seLinuxOptions):
+                    =(type): container_t | container_init_t | container_kvm_t
+            =(securityContext):
+              =(seLinuxOptions):
+                =(type): container_t | container_init_t | container_kvm_t
+            containers:
+              - =(securityContext):
+                  =(seLinuxOptions):
+                    =(type): container_t | container_init_t | container_kvm_t
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: selinux-user-role
+      validate:
+        message: Setting the SELinux user or role is forbidden. The fields spec.securityContext.seLinuxOptions.user,
+          spec.securityContext.seLinuxOptions.role, spec.containers[*].securityContext.seLinuxOptions.user,
+          spec.containers[*].securityContext.seLinuxOptions.role, spec.initContainers[*].securityContext.seLinuxOptions.user,
+          spec.initContainers[*].securityContext.seLinuxOptions.role, spec.ephemeralContainers[*].securityContext.seLinuxOptions.user,
+          and spec.ephemeralContainers[*].securityContext.seLinuxOptions.role must
+          be unset.
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(seLinuxOptions):
+                    X(role): "null"
+                    X(user): "null"
+            =(initContainers):
+              - =(securityContext):
+                  =(seLinuxOptions):
+                    X(role): "null"
+                    X(user): "null"
+            =(securityContext):
+              =(seLinuxOptions):
+                X(role): "null"
+                X(user): "null"
+            containers:
+              - =(securityContext):
+                  =(seLinuxOptions):
+                    X(role): "null"
+                    X(user): "null"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-selinux-type
+        validate:
+          message: Setting the SELinux type is restricted. The fields spec.securityContext.seLinuxOptions.type,
+            spec.containers[*].securityContext.seLinuxOptions.type, , spec.initContainers[*].securityContext.seLinuxOptions,
+            and spec.ephemeralContainers[*].securityContext.seLinuxOptions.type must
+            either be unset or set to one of the allowed values (container_t, container_init_t,
+            or container_kvm_t).
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(securityContext):
+                        =(seLinuxOptions):
+                          =(type): container_t | container_init_t | container_kvm_t
+                  =(initContainers):
+                    - =(securityContext):
+                        =(seLinuxOptions):
+                          =(type): container_t | container_init_t | container_kvm_t
+                  =(securityContext):
+                    =(seLinuxOptions):
+                      =(type): container_t | container_init_t | container_kvm_t
+                  containers:
+                    - =(securityContext):
+                        =(seLinuxOptions):
+                          =(type): container_t | container_init_t | container_kvm_t
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-selinux-type
+        validate:
+          message: Setting the SELinux type is restricted. The fields spec.securityContext.seLinuxOptions.type,
+            spec.containers[*].securityContext.seLinuxOptions.type, , spec.initContainers[*].securityContext.seLinuxOptions,
+            and spec.ephemeralContainers[*].securityContext.seLinuxOptions.type must
+            either be unset or set to one of the allowed values (container_t, container_init_t,
+            or container_kvm_t).
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(securityContext):
+                            =(seLinuxOptions):
+                              =(type): container_t | container_init_t | container_kvm_t
+                      =(initContainers):
+                        - =(securityContext):
+                            =(seLinuxOptions):
+                              =(type): container_t | container_init_t | container_kvm_t
+                      =(securityContext):
+                        =(seLinuxOptions):
+                          =(type): container_t | container_init_t | container_kvm_t
+                      containers:
+                        - =(securityContext):
+                            =(seLinuxOptions):
+                              =(type): container_t | container_init_t | container_kvm_t
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-selinux-user-role
+        validate:
+          message: Setting the SELinux user or role is forbidden. The fields spec.securityContext.seLinuxOptions.user,
+            spec.securityContext.seLinuxOptions.role, spec.containers[*].securityContext.seLinuxOptions.user,
+            spec.containers[*].securityContext.seLinuxOptions.role, spec.initContainers[*].securityContext.seLinuxOptions.user,
+            spec.initContainers[*].securityContext.seLinuxOptions.role, spec.ephemeralContainers[*].securityContext.seLinuxOptions.user,
+            and spec.ephemeralContainers[*].securityContext.seLinuxOptions.role must
+            be unset.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(securityContext):
+                        =(seLinuxOptions):
+                          X(role): "null"
+                          X(user): "null"
+                  =(initContainers):
+                    - =(securityContext):
+                        =(seLinuxOptions):
+                          X(role): "null"
+                          X(user): "null"
+                  =(securityContext):
+                    =(seLinuxOptions):
+                      X(role): "null"
+                      X(user): "null"
+                  containers:
+                    - =(securityContext):
+                        =(seLinuxOptions):
+                          X(role): "null"
+                          X(user): "null"
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-selinux-user-role
+        validate:
+          message: Setting the SELinux user or role is forbidden. The fields spec.securityContext.seLinuxOptions.user,
+            spec.securityContext.seLinuxOptions.role, spec.containers[*].securityContext.seLinuxOptions.user,
+            spec.containers[*].securityContext.seLinuxOptions.role, spec.initContainers[*].securityContext.seLinuxOptions.user,
+            spec.initContainers[*].securityContext.seLinuxOptions.role, spec.ephemeralContainers[*].securityContext.seLinuxOptions.user,
+            and spec.ephemeralContainers[*].securityContext.seLinuxOptions.role must
+            be unset.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(securityContext):
+                            =(seLinuxOptions):
+                              X(role): "null"
+                              X(user): "null"
+                      =(initContainers):
+                        - =(securityContext):
+                            =(seLinuxOptions):
+                              X(role): "null"
+                              X(user): "null"
+                      =(securityContext):
+                        =(seLinuxOptions):
+                          X(role): "null"
+                          X(user): "null"
+                      containers:
+                        - =(securityContext):
+                            =(seLinuxOptions):
+                              X(role): "null"
+                              X(user): "null"
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:19Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    policies.kyverno.io/category: Sample
+    policies.kyverno.io/description: 'A Pod securityContext entry defines fields
+      such as the user and group which should be used to run the Pod. Sometimes
+      choosing default values for users rather than blocking is a better alternative
+      to not impede such Pod definitions. This policy will mutate a Pod to set `runAsNonRoot`,
+      runAsUser`, `runAsGroup`, and `fsGroup` fields within the Pod securityContext
+      if they are not already set.      '
+    policies.kyverno.io/subject: Deployment
+    policies.kyverno.io/title: Add Default securityContext
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: mutate-securitycontext-seccomp-deployment
+  # resourceVersion: "45916849"
+  # uid: 976a9399-1a32-4fde-b646-505cbeaa5753
+spec:
+  background: true
+  rules:
+    - match:
+        resources:
+          kinds:
+            - Deployment
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                securityContext:
+                  +(seccompProfile):
+                    type: RuntimeDefault
+      name: add-default-securitycontext
+  validationFailureAction: audit
+# status:
+#   autogen: {}
+#   conditions:
+#   - lastTransitionTime: "2023-03-14T10:48:36Z"
+#     message: ""
+#     reason: Succeeded
+#     status: "True"
+#     type: Ready
+# ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    policies.kyverno.io/category: Sample
+    policies.kyverno.io/description: 'A Pod securityContext entry defines fields
+      such as the user and group which should be used to run the Pod. Sometimes
+      choosing default values for users rather than blocking is a better alternative
+      to not impede such Pod definitions. This policy will mutate a Pod to set `runAsNonRoot`,
+      runAsUser`, `runAsGroup`, and `fsGroup` fields within the Pod securityContext
+      if they are not already set.      '
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Add Default securityContext
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: mutate-securitycontext-seccomp-pod
+  # resourceVersion: "45916788"
+  # uid: 89e8ef63-9090-4370-b582-6af9ea843cb1
+spec:
+  background: true
+  rules:
+    - match:
+        resources:
+          kinds:
+            - Pod
+      mutate:
+        patchStrategicMerge:
+          spec:
+            securityContext:
+              +(seccompProfile):
+                type: RuntimeDefault
+      name: add-default-securitycontext
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          resources:
+            kinds:
+              - DaemonSet
+              - Deployment
+              - Job
+              - StatefulSet
+        mutate:
+          patchStrategicMerge:
+            spec:
+              template:
+                spec:
+                  securityContext:
+                    +(seccompProfile):
+                      type: RuntimeDefault
+        name: autogen-add-default-securitycontext
+        validate: { }
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          resources:
+            kinds:
+              - CronJob
+        mutate:
+          patchStrategicMerge:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      securityContext:
+                        +(seccompProfile):
+                          type: RuntimeDefault
+        name: autogen-cronjob-add-default-securitycontext
+        validate: { }
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:09Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/description: Containers must be required to run as non-root
+      users. This policy ensures `runAsNonRoot` is set to `true`. A known issue
+      prevents a policy such as this using `anyPattern` from being persisted properly
+      in Kubernetes 1.23.0-1.23.2.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Require runAsNonRoot
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: require-run-as-nonroot
+  # resourceVersion: "45916793"
+  # uid: 525bf2f1-9ddd-48ef-8aa6-8cc9fdfec176
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: run-as-non-root
+      validate:
+        anyPattern:
+          - spec:
+              =(ephemeralContainers):
+                - =(securityContext):
+                    =(runAsNonRoot): true
+              =(initContainers):
+                - =(securityContext):
+                    =(runAsNonRoot): true
+              containers:
+                - =(securityContext):
+                    =(runAsNonRoot): true
+              securityContext:
+                runAsNonRoot: true
+          - spec:
+              =(ephemeralContainers):
+                - securityContext:
+                    runAsNonRoot: true
+              =(initContainers):
+                - securityContext:
+                    runAsNonRoot: true
+              containers:
+                - securityContext:
+                    runAsNonRoot: true
+        message: Running as root is not allowed. Either the field spec.securityContext.runAsNonRoot
+          must be set to `true`, or the fields spec.containers[*].securityContext.runAsNonRoot,
+          spec.initContainers[*].securityContext.runAsNonRoot, and spec.ephemeralContainers[*].securityContext.runAsNonRoot
+          must be set to `true`.
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-run-as-non-root
+        validate:
+          anyPattern:
+            - spec:
+                template:
+                  spec:
+                    =(ephemeralContainers):
+                      - =(securityContext):
+                          =(runAsNonRoot): true
+                    =(initContainers):
+                      - =(securityContext):
+                          =(runAsNonRoot): true
+                    containers:
+                      - =(securityContext):
+                          =(runAsNonRoot): true
+                    securityContext:
+                      runAsNonRoot: true
+            - spec:
+                template:
+                  spec:
+                    =(ephemeralContainers):
+                      - securityContext:
+                          runAsNonRoot: true
+                    =(initContainers):
+                      - securityContext:
+                          runAsNonRoot: true
+                    containers:
+                      - securityContext:
+                          runAsNonRoot: true
+          message: Running as root is not allowed. Either the field spec.securityContext.runAsNonRoot
+            must be set to `true`, or the fields spec.containers[*].securityContext.runAsNonRoot,
+            spec.initContainers[*].securityContext.runAsNonRoot, and spec.ephemeralContainers[*].securityContext.runAsNonRoot
+            must be set to `true`.
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-run-as-non-root
+        validate:
+          anyPattern:
+            - spec:
+                jobTemplate:
+                  spec:
+                    template:
+                      spec:
+                        =(ephemeralContainers):
+                          - =(securityContext):
+                              =(runAsNonRoot): true
+                        =(initContainers):
+                          - =(securityContext):
+                              =(runAsNonRoot): true
+                        containers:
+                          - =(securityContext):
+                              =(runAsNonRoot): true
+                        securityContext:
+                          runAsNonRoot: true
+            - spec:
+                jobTemplate:
+                  spec:
+                    template:
+                      spec:
+                        =(ephemeralContainers):
+                          - securityContext:
+                              runAsNonRoot: true
+                        =(initContainers):
+                          - securityContext:
+                              runAsNonRoot: true
+                        containers:
+                          - securityContext:
+                              runAsNonRoot: true
+          message: Running as root is not allowed. Either the field spec.securityContext.runAsNonRoot
+            must be set to `true`, or the fields spec.containers[*].securityContext.runAsNonRoot,
+            spec.initContainers[*].securityContext.runAsNonRoot, and spec.ephemeralContainers[*].securityContext.runAsNonRoot
+            must be set to `true`.
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:09Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: On supported hosts, the 'runtime/default' AppArmor
+      profile is applied by default. The default policy should prevent overriding
+      or disabling the policy, or restrict overrides to an allowed set of profiles.
+      This policy ensures Pods do not specify any other AppArmor profiles than `runtime/default`
+      or `localhost/*`.
+    policies.kyverno.io/minversion: 1.3.0
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod, Annotation
+    policies.kyverno.io/title: Restrict AppArmor
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: restrict-apparmor-profiles
+  # resourceVersion: "45916810"
+  # uid: 945729b0-3739-4e43-97ba-52b55a39c648
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: app-armor
+      validate:
+        message: Specifying other AppArmor profiles is disallowed. The annotation
+          `container.apparmor.security.beta.kubernetes.io` if defined must not be
+          set to anything other than `runtime/default` or `localhost/*`.
+        pattern:
+          =(metadata):
+            =(annotations):
+              =(container.apparmor.security.beta.kubernetes.io/*): runtime/default
+                | localhost/*
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-app-armor
+        validate:
+          message: Specifying other AppArmor profiles is disallowed. The annotation
+            `container.apparmor.security.beta.kubernetes.io` if defined must not be
+            set to anything other than `runtime/default` or `localhost/*`.
+          pattern:
+            spec:
+              template:
+                =(metadata):
+                  =(annotations):
+                    =(container.apparmor.security.beta.kubernetes.io/*): runtime/default
+                      | localhost/*
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-app-armor
+        validate:
+          message: Specifying other AppArmor profiles is disallowed. The annotation
+            `container.apparmor.security.beta.kubernetes.io` if defined must not be
+            set to anything other than `runtime/default` or `localhost/*`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    =(metadata):
+                      =(annotations):
+                        =(container.apparmor.security.beta.kubernetes.io/*): runtime/default
+                          | localhost/*
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:11Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/description: 'Images from unknown, public registries can
+      be of dubious quality and may not be scanned and secured, representing a high
+      degree of risk. Requiring use of known, approved registries helps reduce threat
+      exposure by ensuring image pulls only come from them. This sample validates
+      that container images only originate from the registry `eu.foo.io` or `bar.io`.      '
+    policies.kyverno.io/minversion: 1.3.0
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Restrict Image Registries
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 3
+  name: restrict-image-registries
+  # resourceVersion: "46185677"
+  # uid: 42932f7e-0713-44d9-9bd0-b44ce8d019c4
+spec:
+  background: false
+  rules:
+    - match:
+        resources:
+          kinds:
+            - Pod
+      name: validate-registries
+      validate:
+        message: Unknown image registry.
+        pattern:
+          spec:
+            containers:
+              - image: cr.cloud-preprod.yandex.net/*
+              - image: docker.io/*
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          resources:
+            kinds:
+              - DaemonSet
+              - Deployment
+              - Job
+              - StatefulSet
+        mutate: { }
+        name: autogen-validate-registries
+        validate:
+          message: Unknown image registry.
+          pattern:
+            spec:
+              template:
+                spec:
+                  containers:
+                    - image: cr.cloud-preprod.yandex.net/*
+                    - image: docker.io/*
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          resources:
+            kinds:
+              - CronJob
+        mutate: { }
+        name: autogen-cronjob-validate-registries
+        validate:
+          message: Unknown image registry.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      containers:
+                        - image: cr.cloud-preprod.yandex.net/*
+                        - image: docker.io/*
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:11Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: The seccomp profile must not be explicitly
+      set to Unconfined. This policy, requiring Kubernetes v1.19 or later, ensures
+      that seccomp is unset or set to `RuntimeDefault` or `Localhost`.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Restrict Seccomp
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: restrict-seccomp
+  # resourceVersion: "45916827"
+  # uid: 3cf14066-e3f4-4861-a6ee-c38ba29d9b47
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: check-seccomp
+      validate:
+        message: Use of custom Seccomp profiles is disallowed. The fields spec.securityContext.seccompProfile.type,
+          spec.containers[*].securityContext.seccompProfile.type, spec.initContainers[*].securityContext.seccompProfile.type,
+          and spec.ephemeralContainers[*].securityContext.seccompProfile.type must
+          be unset or set to `RuntimeDefault` or `Localhost`.
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - =(securityContext):
+                  =(seccompProfile):
+                    =(type): RuntimeDefault | Localhost
+            =(initContainers):
+              - =(securityContext):
+                  =(seccompProfile):
+                    =(type): RuntimeDefault | Localhost
+            =(securityContext):
+              =(seccompProfile):
+                =(type): RuntimeDefault | Localhost
+            containers:
+              - =(securityContext):
+                  =(seccompProfile):
+                    =(type): RuntimeDefault | Localhost
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-check-seccomp
+        validate:
+          message: Use of custom Seccomp profiles is disallowed. The fields spec.securityContext.seccompProfile.type,
+            spec.containers[*].securityContext.seccompProfile.type, spec.initContainers[*].securityContext.seccompProfile.type,
+            and spec.ephemeralContainers[*].securityContext.seccompProfile.type must
+            be unset or set to `RuntimeDefault` or `Localhost`.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(ephemeralContainers):
+                    - =(securityContext):
+                        =(seccompProfile):
+                          =(type): RuntimeDefault | Localhost
+                  =(initContainers):
+                    - =(securityContext):
+                        =(seccompProfile):
+                          =(type): RuntimeDefault | Localhost
+                  =(securityContext):
+                    =(seccompProfile):
+                      =(type): RuntimeDefault | Localhost
+                  containers:
+                    - =(securityContext):
+                        =(seccompProfile):
+                          =(type): RuntimeDefault | Localhost
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-check-seccomp
+        validate:
+          message: Use of custom Seccomp profiles is disallowed. The fields spec.securityContext.seccompProfile.type,
+            spec.containers[*].securityContext.seccompProfile.type, spec.initContainers[*].securityContext.seccompProfile.type,
+            and spec.ephemeralContainers[*].securityContext.seccompProfile.type must
+            be unset or set to `RuntimeDefault` or `Localhost`.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(ephemeralContainers):
+                        - =(securityContext):
+                            =(seccompProfile):
+                              =(type): RuntimeDefault | Localhost
+                      =(initContainers):
+                        - =(securityContext):
+                            =(seccompProfile):
+                              =(type): RuntimeDefault | Localhost
+                      =(securityContext):
+                        =(seccompProfile):
+                          =(type): RuntimeDefault | Localhost
+                      containers:
+                        - =(securityContext):
+                            =(seccompProfile):
+                              =(type): RuntimeDefault | Localhost
+  # conditions:
+  # - lastTransitionTime: "2023-03-14T10:48:12Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/description: Sysctls can disable security mechanisms or
+      affect all containers on a host, and should be disallowed except for an allowed
+      "safe" subset. A sysctl is considered safe if it is namespaced in the container
+      or the Pod, and it is isolated from other Pods or processes on the same Node.
+      This policy ensures that only those "safe" subsets can be specified in a Pod.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Restrict sysctls
+  # creationTimestamp: "2023-03-13T16:24:09Z"
+  generation: 1
+  name: restrict-sysctls
+  # resourceVersion: "45916695"
+  # uid: 39ca435d-308c-4550-a0da-f4a5645d57e3
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+    - match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      name: check-sysctls
+      validate:
+        message: Setting additional sysctls above the allowed type is disallowed.
+          The field spec.securityContext.sysctls must be unset or not use any other
+          names than kernel.shm_rmid_forced, net.ipv4.ip_local_port_range, net.ipv4.ip_unprivileged_port_start,
+          net.ipv4.tcp_syncookies and net.ipv4.ping_group_range.
+        pattern:
+          spec:
+            =(securityContext):
+              =(sysctls):
+                - =(name): kernel.shm_rmid_forced | net.ipv4.ip_local_port_range | net.ipv4.ip_unprivileged_port_start
+                    | net.ipv4.tcp_syncookies | net.ipv4.ping_group_range
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - DaemonSet
+                  - Deployment
+                  - Job
+                  - StatefulSet
+          resources: { }
+        mutate: { }
+        name: autogen-check-sysctls
+        validate:
+          message: Setting additional sysctls above the allowed type is disallowed.
+            The field spec.securityContext.sysctls must be unset or not use any other
+            names than kernel.shm_rmid_forced, net.ipv4.ip_local_port_range, net.ipv4.ip_unprivileged_port_start,
+            net.ipv4.tcp_syncookies and net.ipv4.ping_group_range.
+          pattern:
+            spec:
+              template:
+                spec:
+                  =(securityContext):
+                    =(sysctls):
+                      - =(name): kernel.shm_rmid_forced | net.ipv4.ip_local_port_range
+                          | net.ipv4.ip_unprivileged_port_start | net.ipv4.tcp_syncookies
+                          | net.ipv4.ping_group_range
+      - exclude:
+          resources: { }
+        generate:
+          clone: { }
+          cloneList: { }
+        match:
+          any:
+            - resources:
+                kinds:
+                  - CronJob
+          resources: { }
+        mutate: { }
+        name: autogen-cronjob-check-sysctls
+        validate:
+          message: Setting additional sysctls above the allowed type is disallowed.
+            The field spec.securityContext.sysctls must be unset or not use any other
+            names than kernel.shm_rmid_forced, net.ipv4.ip_local_port_range, net.ipv4.ip_unprivileged_port_start,
+            net.ipv4.tcp_syncookies and net.ipv4.ping_group_range.
+          pattern:
+            spec:
+              jobTemplate:
+                spec:
+                  template:
+                    spec:
+                      =(securityContext):
+                        =(sysctls):
+                          - =(name): kernel.shm_rmid_forced | net.ipv4.ip_local_port_range
+                              | net.ipv4.ip_unprivileged_port_start | net.ipv4.tcp_syncookies
+                              | net.ipv4.ping_group_range
+#     conditions:
+#     - lastTransitionTime: "2023-03-14T10:47:55Z"
+#       message: ""
+#       reason: Succeeded
+#       status: "True"
+#       type: Ready
+  ready: true
+# kind: List
+# metadata:
+#   resourceVersion: ""
+#   selfLink: ""
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/description: Adding capabilities other than `NET_BIND_SERVICE`
+      is disallowed. In addition, all containers must explicitly drop `ALL` capabilities.
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow Capabilities (Strict)
+  # creationTimestamp: "2023-05-12T08:28:43Z"
+  generation: 1
+  name: disallow-capabilities-strict
+  # resourceVersion: "36096113"
+  # uid: 4e747d1d-9a58-45c9-bb96-a149c20a0811
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    name: require-drop-all
+    preconditions:
+      all:
+      - key: '{{ request.operation || ''BACKGROUND'' }}'
+        operator: NotEquals
+        value: DELETE
+    validate:
+      foreach:
+      - deny:
+          conditions:
+            all:
+            - key: ALL
+              operator: AnyNotIn
+              value: '{{ element.securityContext.capabilities.drop[].to_upper(@) ||
+                `[]` }}'
+        list: request.object.spec.[ephemeralContainers, initContainers, containers][]
+      message: Containers must drop `ALL` capabilities.
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    name: adding-capabilities-strict
+    preconditions:
+      all:
+      - key: '{{ request.operation || ''BACKGROUND'' }}'
+        operator: NotEquals
+        value: DELETE
+    validate:
+      foreach:
+      - deny:
+          conditions:
+            all:
+            - key: '{{ element.securityContext.capabilities.add[].to_upper(@) || `[]`
+                }}'
+              operator: AnyNotIn
+              value:
+              - NET_BIND_SERVICE
+              - ""
+        list: request.object.spec.[ephemeralContainers, initContainers, containers][]
+      message: Any capabilities added other than NET_BIND_SERVICE are disallowed.
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - DaemonSet
+            - Deployment
+            - Job
+            - StatefulSet
+        resources: {}
+      mutate: {}
+      name: autogen-require-drop-all
+      preconditions:
+        all:
+        - key: '{{ request.operation || ''BACKGROUND'' }}'
+          operator: NotEquals
+          value: DELETE
+      validate:
+        foreach:
+        - deny:
+            conditions:
+              all:
+              - key: ALL
+                operator: AnyNotIn
+                value: '{{ element.securityContext.capabilities.drop[].to_upper(@)
+                  || `[]` }}'
+          list: request.object.spec.template.spec.[ephemeralContainers, initContainers,
+            containers][]
+        message: Containers must drop `ALL` capabilities.
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+        resources: {}
+      mutate: {}
+      name: autogen-cronjob-require-drop-all
+      preconditions:
+        all:
+        - key: '{{ request.operation || ''BACKGROUND'' }}'
+          operator: NotEquals
+          value: DELETE
+      validate:
+        foreach:
+        - deny:
+            conditions:
+              all:
+              - key: ALL
+                operator: AnyNotIn
+                value: '{{ element.securityContext.capabilities.drop[].to_upper(@)
+                  || `[]` }}'
+          list: request.object.spec.jobTemplate.spec.template.spec.[ephemeralContainers,
+            initContainers, containers][]
+        message: Containers must drop `ALL` capabilities.
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - DaemonSet
+            - Deployment
+            - Job
+            - StatefulSet
+        resources: {}
+      mutate: {}
+      name: autogen-adding-capabilities-strict
+      preconditions:
+        all:
+        - key: '{{ request.operation || ''BACKGROUND'' }}'
+          operator: NotEquals
+          value: DELETE
+      validate:
+        foreach:
+        - deny:
+            conditions:
+              all:
+              - key: '{{ element.securityContext.capabilities.add[].to_upper(@) ||
+                  `[]` }}'
+                operator: AnyNotIn
+                value:
+                - NET_BIND_SERVICE
+                - ""
+          list: request.object.spec.template.spec.[ephemeralContainers, initContainers,
+            containers][]
+        message: Any capabilities added other than NET_BIND_SERVICE are disallowed.
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+        resources: {}
+      mutate: {}
+      name: autogen-cronjob-adding-capabilities-strict
+      preconditions:
+        all:
+        - key: '{{ request.operation || ''BACKGROUND'' }}'
+          operator: NotEquals
+          value: DELETE
+      validate:
+        foreach:
+        - deny:
+            conditions:
+              all:
+              - key: '{{ element.securityContext.capabilities.add[].to_upper(@) ||
+                  `[]` }}'
+                operator: AnyNotIn
+                value:
+                - NET_BIND_SERVICE
+                - ""
+          list: request.object.spec.jobTemplate.spec.template.spec.[ephemeralContainers,
+            initContainers, containers][]
+        message: Any capabilities added other than NET_BIND_SERVICE are disallowed.
+  # conditions:
+  # - lastTransitionTime: "2023-05-12T08:28:48Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/description: Privilege escalation, such as via set-user-ID
+      or set-group-ID file mode, should not be allowed. This policy ensures the `allowPrivilegeEscalation`
+      field is set to `false`.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disallow Privilege Escalation
+  # creationTimestamp: "2023-05-12T08:28:43Z"
+  generation: 1
+  name: disallow-privilege-escalation
+  # resourceVersion: "36096095"
+  # uid: 683b24de-ec18-42a1-9d4c-aa6d0391a869
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    name: privilege-escalation
+    validate:
+      message: Privilege escalation is disallowed. The fields spec.containers[*].securityContext.allowPrivilegeEscalation,
+        spec.initContainers[*].securityContext.allowPrivilegeEscalation, and spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation
+        must be set to `false`.
+      pattern:
+        spec:
+          =(ephemeralContainers):
+          - securityContext:
+              allowPrivilegeEscalation: "false"
+          =(initContainers):
+          - securityContext:
+              allowPrivilegeEscalation: "false"
+          containers:
+          - securityContext:
+              allowPrivilegeEscalation: "false"
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - DaemonSet
+            - Deployment
+            - Job
+            - StatefulSet
+        resources: {}
+      mutate: {}
+      name: autogen-privilege-escalation
+      validate:
+        message: Privilege escalation is disallowed. The fields spec.containers[*].securityContext.allowPrivilegeEscalation,
+          spec.initContainers[*].securityContext.allowPrivilegeEscalation, and spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation
+          must be set to `false`.
+        pattern:
+          spec:
+            template:
+              spec:
+                =(ephemeralContainers):
+                - securityContext:
+                    allowPrivilegeEscalation: "false"
+                =(initContainers):
+                - securityContext:
+                    allowPrivilegeEscalation: "false"
+                containers:
+                - securityContext:
+                    allowPrivilegeEscalation: "false"
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+        resources: {}
+      mutate: {}
+      name: autogen-cronjob-privilege-escalation
+      validate:
+        message: Privilege escalation is disallowed. The fields spec.containers[*].securityContext.allowPrivilegeEscalation,
+          spec.initContainers[*].securityContext.allowPrivilegeEscalation, and spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation
+          must be set to `false`.
+        pattern:
+          spec:
+            jobTemplate:
+              spec:
+                template:
+                  spec:
+                    =(ephemeralContainers):
+                    - securityContext:
+                        allowPrivilegeEscalation: "false"
+                    =(initContainers):
+                    - securityContext:
+                        allowPrivilegeEscalation: "false"
+                    containers:
+                    - securityContext:
+                        allowPrivilegeEscalation: "false"
+  # conditions:
+  # - lastTransitionTime: "2023-05-12T08:28:46Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/description: Containers must be required to run as non-root
+      users. This policy ensures `runAsUser` is either unset or set to a number greater
+      than zero.
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Require Run As Non-Root User
+  # creationTimestamp: "2023-05-12T08:28:42Z"
+  generation: 1
+  name: require-run-as-non-root-user
+  # resourceVersion: "36096103"
+  # uid: 39d45cbc-bc11-45a6-ac2c-3882ad515282
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    name: run-as-non-root-user
+    validate:
+      message: Running as root is not allowed. The fields spec.securityContext.runAsUser,
+        spec.containers[*].securityContext.runAsUser, spec.initContainers[*].securityContext.runAsUser,
+        and spec.ephemeralContainers[*].securityContext.runAsUser must be unset or
+        set to a number greater than zero.
+      pattern:
+        spec:
+          =(ephemeralContainers):
+          - =(securityContext):
+              =(runAsUser): '>0'
+          =(initContainers):
+          - =(securityContext):
+              =(runAsUser): '>0'
+          =(securityContext):
+            =(runAsUser): '>0'
+          containers:
+          - =(securityContext):
+              =(runAsUser): '>0'
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - DaemonSet
+            - Deployment
+            - Job
+            - StatefulSet
+        resources: {}
+      mutate: {}
+      name: autogen-run-as-non-root-user
+      validate:
+        message: Running as root is not allowed. The fields spec.securityContext.runAsUser,
+          spec.containers[*].securityContext.runAsUser, spec.initContainers[*].securityContext.runAsUser,
+          and spec.ephemeralContainers[*].securityContext.runAsUser must be unset
+          or set to a number greater than zero.
+        pattern:
+          spec:
+            template:
+              spec:
+                =(ephemeralContainers):
+                - =(securityContext):
+                    =(runAsUser): '>0'
+                =(initContainers):
+                - =(securityContext):
+                    =(runAsUser): '>0'
+                =(securityContext):
+                  =(runAsUser): '>0'
+                containers:
+                - =(securityContext):
+                    =(runAsUser): '>0'
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+        resources: {}
+      mutate: {}
+      name: autogen-cronjob-run-as-non-root-user
+      validate:
+        message: Running as root is not allowed. The fields spec.securityContext.runAsUser,
+          spec.containers[*].securityContext.runAsUser, spec.initContainers[*].securityContext.runAsUser,
+          and spec.ephemeralContainers[*].securityContext.runAsUser must be unset
+          or set to a number greater than zero.
+        pattern:
+          spec:
+            jobTemplate:
+              spec:
+                template:
+                  spec:
+                    =(ephemeralContainers):
+                    - =(securityContext):
+                        =(runAsUser): '>0'
+                    =(initContainers):
+                    - =(securityContext):
+                        =(runAsUser): '>0'
+                    =(securityContext):
+                      =(runAsUser): '>0'
+                    containers:
+                    - =(securityContext):
+                        =(runAsUser): '>0'
+  # conditions:
+  # - lastTransitionTime: "2023-05-12T08:28:47Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kyverno.io/kubernetes-version: 1.22-1.23
+    kyverno.io/kyverno-version: 1.6.0
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/description: In addition to restricting HostPath volumes,
+      the restricted pod security profile limits usage of non-core volume types to
+      those defined through PersistentVolumes. This policy blocks any other type of
+      volume other than those in the allow list.
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod,Volume
+    policies.kyverno.io/title: Restrict Volume Types
+  # creationTimestamp: "2023-05-12T08:28:44Z"
+  generation: 1
+  name: restrict-volume-types
+  # resourceVersion: "36096114"
+  # uid: 0bc2b81b-f876-467c-bf73-1e42eb5ebede
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    name: restricted-volumes
+    validate:
+      deny:
+        conditions:
+          all:
+          - key: '{{ request.object.spec.volumes[].keys(@)[] || '''' }}'
+            operator: AnyNotIn
+            value:
+            - name
+            - configMap
+            - csi
+            - downwardAPI
+            - emptyDir
+            - ephemeral
+            - persistentVolumeClaim
+            - projected
+            - secret
+            - ""
+      message: 'Only the following types of volumes may be used: configMap, csi, downwardAPI,
+        emptyDir, ephemeral, persistentVolumeClaim, projected, and secret.'
+  validationFailureAction: audit
+status:
+  autogen:
+    rules:
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - DaemonSet
+            - Deployment
+            - Job
+            - StatefulSet
+        resources: {}
+      mutate: {}
+      name: autogen-restricted-volumes
+      validate:
+        deny:
+          conditions:
+            all:
+            - key: '{{ request.object.spec.template.spec.volumes[].keys(@)[] || ''''
+                }}'
+              operator: AnyNotIn
+              value:
+              - name
+              - configMap
+              - csi
+              - downwardAPI
+              - emptyDir
+              - ephemeral
+              - persistentVolumeClaim
+              - projected
+              - secret
+              - ""
+        message: 'Only the following types of volumes may be used: configMap, csi,
+          downwardAPI, emptyDir, ephemeral, persistentVolumeClaim, projected, and
+          secret.'
+    - exclude:
+        resources: {}
+      generate:
+        clone: {}
+        cloneList: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+        resources: {}
+      mutate: {}
+      name: autogen-cronjob-restricted-volumes
+      validate:
+        deny:
+          conditions:
+            all:
+            - key: '{{ request.object.spec.jobTemplate.spec.template.spec.volumes[].keys(@)[]
+                || '''' }}'
+              operator: AnyNotIn
+              value:
+              - name
+              - configMap
+              - csi
+              - downwardAPI
+              - emptyDir
+              - ephemeral
+              - persistentVolumeClaim
+              - projected
+              - secret
+              - ""
+        message: 'Only the following types of volumes may be used: configMap, csi,
+          downwardAPI, emptyDir, ephemeral, persistentVolumeClaim, projected, and
+          secret.'
+  # conditions:
+  # - lastTransitionTime: "2023-05-12T08:28:48Z"
+  #   message: ""
+  #   reason: Succeeded
+  #   status: "True"
+  #   type: Ready
+  ready: true

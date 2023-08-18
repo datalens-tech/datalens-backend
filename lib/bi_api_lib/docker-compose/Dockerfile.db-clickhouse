@@ -1,0 +1,6 @@
+# FROM yandex/clickhouse-server:22.3
+FROM registry.yandex.net/statinfra/clickhouse-server:22.11
+COPY db-common/data /common-data
+COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
+COPY db-clickhouse/cluster.xml /etc/clickhouse-server/config.d/cluster.xml
+COPY db-clickhouse/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d

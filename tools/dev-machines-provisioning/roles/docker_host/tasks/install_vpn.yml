@@ -1,0 +1,5 @@
+- name: ensure openvpn is installed
+  apt:
+    name:
+      - openvpn
+    state: present

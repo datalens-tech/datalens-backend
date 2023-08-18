@@ -1,0 +1,9 @@
+getters:
+  - name: yav_dc
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01f9pkp704tp2xw7cjs5g8qjgr}
+
+params:
+  ACCESS_KEY_ID: {getter: yav_dc, key: ACCESS_KEY_ID}
+  SECRET_ACCESS_KEY: {getter: yav_dc, key: SECRET_ACCESS_KEY}

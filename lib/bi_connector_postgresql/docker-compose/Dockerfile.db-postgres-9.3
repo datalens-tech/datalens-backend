@@ -1,0 +1,7 @@
+# 9.3 is the earliest version supported by BI
+# FROM postgres:9.3-alpine
+FROM registry.yandex.net/statinfra/postgres@sha256:094358a1a64da927d5c26dcac9dad022cf0db840b6b627b143e5e4fd9adf982b
+
+COPY db-postgres/data /common-data
+
+COPY db-postgres/initdb.d/* /docker-entrypoint-initdb.d/

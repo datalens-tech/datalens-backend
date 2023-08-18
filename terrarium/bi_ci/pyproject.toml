@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "bi-ci"
+version = "0.1.0"
+description = ""
+authors = ["Valentin Gologuzov <vgol@double.cloud>"]
+license = "MIT"
+packages = [{include = "bi_ci"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+tomlkit = ">=0.11.8"
+clize = ">=5.0.0"
+poetry = ">=1.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.ruff.isort]
+split-on-trailing-comma = true
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[tool.poetry.scripts]
+detect_affected_packages = "bi_ci.detect_affected_packages:main"
+run_tests = "bi_ci.run_tests:runner_cli"
+fix_ports_in_compose = "bi_ci.fix_ports_in_compose:cmd"
+do_we_need_compose = "bi_ci.do_we_need_compose:cmd"
+get_compose_path = "bi_ci.get_compose_path:cmd"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_ci_tests"]

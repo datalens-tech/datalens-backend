@@ -1,0 +1,16 @@
+---
+docker_apt_release_channel: stable
+docker_apt_arch: amd64
+docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+
+docker_doker0_addr: "fd00::faac:0:0:0:1/80"
+dns_server: "2a02:6b8:0:3400::5005"
+
+perform_docker_login: no
+docker_ya_team_creds_username: "robot-datalens-back"
+docker_ya_team_creds_token_yav_sec_version_id: "ver-01h66qg6tf0d5xtq31mv01byst"
+docker_ya_team_creds_token_yav_sec_key: "docker_ya_team_token"
+
+docker_yc_prod_creds_username: "json_key"
+docker_yc_prod_creds_json_yav_sec_version_id: "ver-01h6bmeq4y3eg43qg06a4fvk7e"
+docker_yc_prod_creds_json_yav_sec_key: "prod"

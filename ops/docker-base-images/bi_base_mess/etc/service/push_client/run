@@ -1,0 +1,75 @@
+#!/bin/bash
+
+set -Eeu
+
+read -r ENV_NAME PUSH_CLIENT_TVM_CLIENT_ID PUSH_CLIENT_TVM_SECRET <<< "${TVM_INFO:-}"
+
+if [ -z "$PUSH_CLIENT_TVM_CLIENT_ID" ] || [ -z "$PUSH_CLIENT_TVM_SECRET" ]; then
+    echo "/etc/service/push_client/run: Missing/incomplete TVM_INFO: $PUSH_CLIENT_TVM_CLIENT_ID" >&2
+    sleep 86600
+    exit 1
+fi
+export PUSH_CLIENT_TVM_CLIENT_ID PUSH_CLIENT_TVM_SECRET
+
+printf "/etc/service/push_client/run: ENV_NAME='%s'; PUSH_CLIENT_TVM_CLIENT_ID='%s'\n" "$ENV_NAME" "$PUSH_CLIENT_TVM_CLIENT_ID" >&2
+
+CONFIG_FILE=/etc/push-client.yaml
+
+LB_IAM=
+LB_IAM_ENDPOINT=
+LB_IAM_KEYFILE=/etc/push_client_iam_keyfile.json
+LB_MASTER_ADDR=logbroker.yandex.net
+LB_MASTER_PORT=
+LB_TOPIC_PREFIX="datalens/back-${ENV_NAME}/"
+LB_YC_DATABASE=
+
+case "${YENV_TYPE:-}" in
+    int-production)
+        ;;
+    int-testing)
+        ;;
+    production|production-public)
+        if [ -z "${BI_DISABLE_CLOUD_LOGBROKER:-}" ]; then
+            LB_IAM=1
+            # https://wiki.yandex-team.ru/logbroker/docs/push-client/config/#prod
+            LB_MASTER_ADDR=lb.etn03iai600jur7pipla.ydb.mdb.yandexcloud.net
+            LB_MASTER_PORT=2135
+            LB_IAM_ENDPOINT=iam.api.cloud.yandex.net
+            LB_YC_DATABASE=/global/b1gvcqr959dbmi1jltep/etn03iai600jur7pipla
+            LB_TOPIC_PREFIX=b1g08s4su5tgce7cpeo5/
+            unset PUSH_CLIENT_TVM_CLIENT_ID PUSH_CLIENT_TVM_SECRET
+        fi
+        ;;
+    testing|testing-public)
+        if [ -z "${BI_DISABLE_CLOUD_LOGBROKER:-}" ]; then
+            LB_IAM=1
+            # https://wiki.yandex-team.ru/logbroker/docs/push-client/config/#pre-prod
+            LB_MASTER_ADDR=lb.cc8035oc71oh9um52mv3.ydb.mdb.cloud-preprod.yandex.net
+            LB_MASTER_PORT=2135
+            LB_IAM_ENDPOINT=iam.api.cloud-preprod.yandex.net
+            LB_YC_DATABASE=/pre-prod_global/aoeb66ftj1tbt1b2eimn/cc8035oc71oh9um52mv3
+            LB_TOPIC_PREFIX=aoee4gvsepbo0ah4i2j6/
+            unset PUSH_CLIENT_TVM_CLIENT_ID PUSH_CLIENT_TVM_SECRET
+        fi
+        ;;
+esac
+
+
+if [ "$LB_IAM" ]; then
+    if [ -n "${LB_IAM_KEYDATA:-}" ]; then
+        printf "%s" "$LB_IAM_KEYDATA" > "$LB_IAM_KEYFILE"
+        chmod 600 "$LB_IAM_KEYFILE"
+    else
+        LB_IAM_KEYFILE=''
+        # IAM_ENDPOINT is only used for key -> iam_token,
+        # which is not needed for iam_token-from-local-metadata,
+        # and is validated in the config.
+        LB_IAM_ENDPOINT=''
+    fi
+fi
+(
+    export ENV_NAME LB_IAM LB_IAM_ENDPOINT LB_IAM_KEYFILE LB_MASTER_ADDR LB_MASTER_PORT LB_TOPIC_PREFIX LB_YC_DATABASE
+    j2 "${CONFIG_FILE}.j2" > "$CONFIG_FILE"
+)
+
+exec /usr/bin/push-client -f -w -c "$CONFIG_FILE"

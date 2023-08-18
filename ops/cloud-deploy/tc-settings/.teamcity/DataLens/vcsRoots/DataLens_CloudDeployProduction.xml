@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vcs-root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="5dd63dad-227e-4928-9703-430527682056" type="svn" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>cloud-deploy-production</name>
+  <param name="externals-mode" value="externals-none" />
+  <param name="labelingMessage" value="Labeled automatically by TeamCity" />
+  <param name="labelingPatterns" value="trunk=&gt;tags" />
+  <param name="svn-config-directory" value="/home/teamcity/.subversion" />
+  <param name="svn-use-default-config-directory" value="true" />
+  <param name="teamcitySshKey" value="robot-statinfra" />
+  <param name="url" value="svn+ssh://arcadia.yandex.ru/arc/trunk/arcadia/datalens/backend/ops/cloud-deploy/production" />
+  <param name="user" value="robot-statinfra" />
+  <param name="working-copy-format" value="1.8" />
+</vcs-root>
+

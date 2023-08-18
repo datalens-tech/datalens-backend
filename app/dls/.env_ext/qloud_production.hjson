@@ -1,0 +1,357 @@
+{
+  objectId: datalens.dls.production
+  userEnvironment:
+    '''
+    DLS_ENV=ext_production
+    POKE=2019-01-26T13:59:24,557114740+03:00
+
+    '''
+  userEnvironmentMap:
+  {
+    DLS_ENV: ext_production
+    POKE: 2019-01-26T13:59:24,557114740+03:00
+  }
+  components:
+  [
+    {
+      componentName: backend
+      componentType: standard
+      properties:
+      {
+        allocationFailThreshold: "0"
+        allocationStrategy: dynamic
+        allowedCpuNames: ""
+        componentEnvironment:
+          '''
+          DLS_DAEMON_NAME=http
+
+          '''
+        deployPolicy: InPlace
+        diskSerial: "0"
+        diskSize: "5"
+        dnsCache: "true"
+        dnsNat64: "false"
+        ediskSerial: "0"
+        ediskSize: "0"
+        failTimeout: "60"
+        fastboneRequired: "false"
+        hardwareSegment: personal
+        hash: sha256:833164cbe5f3da7d7f0b1f00f8a6a69d531a5ad542b2cb7f5a23bfdd42ecc036
+        healthCheckFall: "5"
+        healthCheckHttpExpectedCode: http_2xx
+        healthCheckHttpUrl: /_dls/debug/
+        healthCheckInterval: "5000"
+        healthCheckRise: "2"
+        healthCheckTimeout: "2000"
+        healthCheckType: http
+        httpCheckOn: "true"
+        ioLimit: "0"
+        isolationGroup: root
+        isolationUser: root
+        java: "false"
+        listenBacklogSize: "511"
+        maxFails: "0"
+        maxInstancesPerHost: "999"
+        maxWorkerConnections: "16384"
+        minPrepared: "50"
+        multiAccept: "false"
+        network: DL_EXT_DLS_PROD_NETS
+        preAuthenticate: "false"
+        profiles: production
+        qloudCoreDumpDirectory: /coredumps_qloud
+        qloudCoreDumpFileSizeGb: "0"
+        qloudInitPolicy: stable
+        qloudInitVersion: "599"
+        qloudMaxCoreDumpedStopsRespawnDelay: 0s
+        qloudMaxCoreDumpsOnDisk: "0"
+        repository: registry.yandex.net/datalens/hhell/dls_p2:1.87
+        size: 2;4.0;16;1
+        sslStapling: "false"
+        statusChecksCorrected: "true"
+        stderr: line
+        stdout: json
+        storage: ""
+        tmpfsDiskSerial: "0"
+        tmpfsDiskSize: "0"
+        unistat: "false"
+        unistatPath: /unistat
+        unistatPort: "80"
+        units: "0"
+        upstreamPort: "80"
+        useDockerUserGroup: "true"
+        useHealthCheck: "true"
+        useHttps: "false"
+        useTorrents: "false"
+        usedVolumes: ""
+      }
+      secrets:
+      [
+        {
+          objectId: secret.dl-ext-dls-production-api-key
+          target: DLS_API_KEY
+          used: true
+        }
+        {
+          objectId: secret.dl-ext-dls-production-db-password
+          target: DLS_DB_PASSWORD
+          used: true
+        }
+        {
+          objectId: secret.dl-ext-dls-production-sentry-dsn
+          target: DLS_SENTRY_DSN
+          used: true
+        }
+        {
+          objectId: secret.dl-ext-dls-production-yc-key-data
+          target: DLS_YC_KEY_DATA
+          used: true
+        }
+      ]
+      instanceGroups:
+      [
+        {
+          location: MYT
+          units: 1
+          backup: false
+          weight: 1
+        }
+        {
+          location: SASOVO
+          units: 1
+          backup: false
+          weight: 1
+        }
+        {
+          location: VLADIMIR
+          units: 1
+          backup: false
+          weight: 1
+        }
+      ]
+      overlays: []
+      sandboxResources: []
+      jugglerBundleResources: []
+      environmentVariables:
+      {
+        DLS_DAEMON_NAME: http
+      }
+      prepareRecipe:
+      {
+        recipe: INTERNAL
+        updateWindow: 100%
+        doneThreshold: 90%
+        updateLimit: 100%
+        updatePeriod: 20s
+      }
+      activateRecipe:
+      {
+        recipe: INTERNAL
+        updateWindow: 100%
+        doneThreshold: 90%
+        updateLimit: 20%
+        updatePeriod: 20s
+      }
+      statusHookChecks:
+      [
+        {
+          type: http
+          port: 80
+          path: /_dls/debug/
+          timeout: 1000
+        }
+      ]
+      embedJugglerClient: false
+      componentFeatures: []
+      l3Config:
+      {
+        vss: []
+      }
+      upstreamComponents: []
+    }
+    {
+      componentName: tasks
+      componentType: standard
+      properties:
+      {
+        allocationFailThreshold: "0"
+        allocationStrategy: dynamic
+        allowedCpuNames: ""
+        componentEnvironment:
+          '''
+          DLS_DAEMON_NAME=tasks
+
+          '''
+        deployPolicy: InPlace
+        diskSerial: "0"
+        diskSize: "5"
+        dnsCache: "true"
+        dnsNat64: "false"
+        ediskSerial: "0"
+        ediskSize: "0"
+        failTimeout: "60"
+        fastboneRequired: "false"
+        hardwareSegment: personal
+        hash: sha256:833164cbe5f3da7d7f0b1f00f8a6a69d531a5ad542b2cb7f5a23bfdd42ecc036
+        healthCheckFall: "5"
+        healthCheckHttpExpectedCode: http_2xx
+        healthCheckHttpUrl: /
+        healthCheckInterval: "5000"
+        healthCheckRise: "2"
+        healthCheckTimeout: "2000"
+        healthCheckType: http
+        httpCheckOn: "true"
+        ioLimit: "0"
+        isolationGroup: root
+        isolationUser: root
+        java: "false"
+        listenBacklogSize: "511"
+        maxFails: "3"
+        maxInstancesPerHost: "999"
+        maxWorkerConnections: "16384"
+        minPrepared: "50"
+        multiAccept: "false"
+        network: DL_EXT_DLS_PROD_NETS
+        preAuthenticate: "false"
+        profiles: production
+        qloudCoreDumpDirectory: /coredumps_qloud
+        qloudCoreDumpFileSizeGb: "0"
+        qloudInitPolicy: stable
+        qloudInitVersion: "599"
+        qloudMaxCoreDumpedStopsRespawnDelay: 0s
+        qloudMaxCoreDumpsOnDisk: "0"
+        repository: registry.yandex.net/datalens/hhell/dls_p2:1.87
+        size: 2;2.0;64;1
+        sslStapling: "false"
+        statusChecksCorrected: "true"
+        stderr: line
+        stdout: json
+        storage: ""
+        tmpfsDiskSerial: "0"
+        tmpfsDiskSize: "0"
+        unistat: "false"
+        unistatPath: /unistat
+        unistatPort: "80"
+        units: "0"
+        upstreamPort: "80"
+        useDockerUserGroup: "true"
+        useHealthCheck: "false"
+        useHttps: "false"
+        useTorrents: "false"
+        usedVolumes: ""
+      }
+      secrets:
+      [
+        {
+          objectId: secret.dl-ext-dls-production-api-key
+          target: DLS_API_KEY
+          used: true
+        }
+        {
+          objectId: secret.dl-ext-dls-production-db-password
+          target: DLS_DB_PASSWORD
+          used: true
+        }
+        {
+          objectId: secret.dl-ext-dls-production-sentry-dsn
+          target: DLS_SENTRY_DSN
+          used: true
+        }
+        {
+          objectId: secret.dl-ext-dls-production-yc-key-data
+          target: DLS_YC_KEY_DATA
+          used: true
+        }
+      ]
+      instanceGroups:
+      [
+        {
+          location: MYT
+          units: 1
+          backup: false
+          weight: 1
+        }
+        {
+          location: SASOVO
+          units: 1
+          backup: false
+          weight: 1
+        }
+      ]
+      overlays: []
+      sandboxResources: []
+      jugglerBundleResources: []
+      environmentVariables:
+      {
+        DLS_DAEMON_NAME: tasks
+      }
+      prepareRecipe:
+      {
+        recipe: INTERNAL
+        updateWindow: 100%
+        doneThreshold: 90%
+        updateLimit: 100%
+        updatePeriod: 20s
+      }
+      activateRecipe:
+      {
+        recipe: INTERNAL
+        updateWindow: 100%
+        doneThreshold: 90%
+        updateLimit: 20%
+        updatePeriod: 20s
+      }
+      statusHookChecks: []
+      embedJugglerClient: false
+      componentFeatures: []
+      upstreamComponents: []
+    }
+  ]
+  routeSettings:
+  [
+    {
+      location: /
+      componentName: backend
+      upstreamPath: /
+      proxyConnectTimeout: 60ms
+      proxyReadTimeout: "5"
+      proxyWriteTimeout: "5"
+      proxyPolicy: round_robin
+      proxyNextUpstream: error timeout
+      proxyNextUpstreamTimeout: 10
+      proxyNextUpstreamTries: 3
+      preAuthenticate: false
+      geo: false
+      errorPage: INHERITED
+      errorPageUrl: http://any.yandex.ru
+      wallarm: false
+      proxyBuffering: false
+      proxyRequestBuffering: false
+      proxyBufferSize: "-1"
+      proxyBuffers: "-1"
+      webAuthMode: OFF
+      webAuthToken: DISABLED
+      webAuthCookies: DISABLED
+      webAuthCert: DISABLED
+      webAuthCheckIdm: false
+      noUriPart: false
+      molly: false
+      defaultErrorPageUrl: http://any.yandex.ru
+      defaultProxyBufferSize: "-1"
+      defaultWebAuthIdmRole: false
+      defaultNoUriPart: false
+      defaultProxyNextUpstreamTimeout: 10
+      defaultProxyConnectTimeout: 60ms
+      defaultProxyReadTimeout: "5"
+      defaultProxyNextUpstream: error timeout
+      defaultWebAuthToken: NO_CHECK
+      defaultProxyBuffers: "-1"
+      defaultProxyNextUpstreamTries: 3
+      defaultWebAuthCookie: NO_CHECK
+      defaultWebAuthCert: NO_CHECK
+      defaultProxyWriteTimeout: "5"
+      defaultProxyPolicy: round_robin
+    }
+  ]
+  comment: ""
+  engine: platform
+}

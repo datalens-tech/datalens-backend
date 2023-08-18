@@ -1,0 +1,28 @@
+---
+name: "jaeger-agent"
+
+containers:
+  - name: jaeger-agent
+    image: ${docker_registry}/jaeger-agent:1.45
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 6831
+        name: jg-compact-trft
+        protocol: UDP
+    args:
+      - --log-level=info
+      - --reporter.type=grpc
+      - --reporter.grpc.host-port=${jaeger_collector_netloc}
+      - --reporter.grpc.tls.enabled=true
+      - --reporter.grpc.tls.ca=${jaeger_map_path}/YandexInternalRootCA.crt
+    securityContext:
+      runAsNonRoot: true
+
+volumeMounts:
+  - name: jaeger-data
+    mountPath: ${jaeger_map_path}
+
+volumes:
+  - name: jaeger-data
+    configMap:
+      name: ${jaeger_map_name}

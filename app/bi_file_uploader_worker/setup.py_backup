@@ -1,0 +1,44 @@
+import os
+
+from setuptools import setup, find_packages
+
+__version__ = "0.127.0"
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+setup(
+    name="bi-file-uploader-worker",
+    version=__version__,
+    author="Andrey Snytin",
+    author_email="asnytin@yandex-team.ru",
+    packages=find_packages(".", exclude=["tests*"]),
+    zip_safe=False,
+    include_package_data=True,
+    entry_points={},
+    install_requires=[
+        "aiohttp",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            ("yandex-bi-file-uploader-worker-lib", "bi_file_uploader_worker_lib"),
+            ("bi-task-processor", "bi_task_processor"),
+            ("bi-file-uploader-task-interface", "bi_file_uploader_task_interface"),
+            ("yandex-bi-core", "bi_core"),
+        )
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/app/{pydir}"
+        for name, pydir in (
+            ("bi-file-secure-reader", "bi_file_secure_reader"),
+        )
+    ],
+    extras_require={
+        "develop": [  # for testing and development
+            "pytest",
+            "ipython", "ipdb", "pyaux", "pyauxm",  # tier1 debug-conveniences
+        ],
+        "mypy": [  # for mypy checks
+            "mypy",
+        ],
+    },
+)

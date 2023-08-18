@@ -1,0 +1,49 @@
+
+[tool.poetry]
+name = "yandex-bi-meta-yc-file-uploader-api"
+version = "0.112.0"
+description = ""
+authors = ["Aleksei Konstantinov <konstasa@yandex-team.ru>"]
+packages = [{include = "bi_meta_yc_file_uploader_api"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+yandex-bi-configs = {path = "../../bi_configs"}
+yandex-bi-core = {path = "../../bi_core"}
+yandex-bi-api-commons-ya-cloud = {path = "../../bi_api_commons_ya_cloud"}
+yandex-bi-file-uploader-api-lib = {path = "../../bi_file_uploader_api_lib"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

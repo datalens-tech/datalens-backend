@@ -1,0 +1,24 @@
+from __future__ import annotations
+
+from typing import Optional
+
+import flask
+
+from bi_api_lib.app_settings import (
+    ControlPlaneAppSettings,
+    ControlPlaneAppTestingsSettings,
+)
+from bi_api_lib_testing.app import TestingControlApiAppFactory
+
+
+def create_app(
+        app_settings: ControlPlaneAppSettings,
+        testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+        close_loop_after_request: bool = True,
+) -> flask.Flask:
+    mng_app_factory = TestingControlApiAppFactory()
+    return mng_app_factory.create_app(
+        app_settings=app_settings,
+        testing_app_settings=testing_app_settings,
+        close_loop_after_request=close_loop_after_request,
+    )

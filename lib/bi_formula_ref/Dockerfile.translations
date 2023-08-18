@@ -1,0 +1,4 @@
+FROM registry.yandex.net/statinfra/base/bi_mess:latest
+# ^ https://bb.yandex-team.ru/projects/STATBOX/repos/docker/browse/bi_base_mess/Dockerfile
+
+ENTRYPOINT ["bash", "/entrypoint.sh"]

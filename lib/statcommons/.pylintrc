@@ -1,0 +1,26 @@
+[MASTER]
+
+ignore=.git,.tox,__pycache
+persistent=no
+unsafe-load-any-extension=no
+
+
+[MESSAGES CONTROL]
+
+disable=
+  missing-docstring,
+  fixme,
+  useless-object-inheritance,
+
+
+[REPORTS]
+
+# output-format=text
+output-format=colorized
+reports=no
+
+
+[FORMAT]
+
+max-line-length=100
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$

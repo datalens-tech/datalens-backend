@@ -1,0 +1,32 @@
+- name: ensure openvpn static key
+  stat:
+    path: "{{ ovpn_static_key_location }}"
+  register: ovpn_static_key_stat
+
+- name: generate openvpn static key
+  shell: "openvpn --genkey --secret {{ ovpn_static_key_location }}"
+  when: not ovpn_static_key_stat.stat.exists
+
+- name: ensure openvpn server config
+  template:
+    src: openvpn/server.conf
+    dest: /etc/openvpn/server.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart openvpn server
+
+- name: fetch static key to local machine
+  fetch:
+    src: "{{ ovpn_static_key_location }}"
+    dest: "{{ playbook_dir }}/dev-machines/{{ ansible_host }}/ovpn/static.key"
+    flat: yes
+
+- name: ensure openvpn client config
+  template:
+    src: openvpn/client.ovpn
+    dest: "{{ playbook_dir }}/dev-machines/{{ ansible_host }}/ovpn/{{ ansible_host }}.ovpn"
+  vars:
+    ovpn_static_key_path: "static.key"
+  delegate_to: localhost
+  become: no

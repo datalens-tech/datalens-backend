@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -x  # debug.
+set -Eeu
+
+RUN_NGINX=${RUN_NGINX:-0}
+
+NGINX_LISTEN_PORT=${NGINX_LISTEN_PORT:-443}
+export NGINX_LISTEN_PORT
+
+NGINX_SERVER_NAME=${NGINX_SERVER_NAME:-localhost}
+export NGINX_SERVER_NAME
+
+NGINX_KEEPALIVE_TIMEOUT=${NGINX_KEEPALIVE_TIMEOUT:-100}
+export NGINX_KEEPALIVE_TIMEOUT
+
+NGINX_BACKEND_PORT=${NGINX_BACKEND_PORT:-80}
+export NGINX_BACKEND_PORT
+
+NGINX_CERT_PRIVATE_KEY_LOCATION="${NGINX_CERT_PRIVATE_KEY_LOCATION:-}"
+export NGINX_CERT_PRIVATE_KEY_LOCATION
+
+NGINX_CERT_LOCATION="${NGINX_CERT_LOCATION:-}"
+export NGINX_CERT_LOCATION
+
+if [ "${RUN_NGINX}" -lt 1 ]; then
+    sleep 9000  # could also 'sv stop nginx'.
+    exit 0
+fi
+
+# If certificate path was not provided via environment vars
+# issue self-signed certificate
+if [ -z "${NGINX_CERT_LOCATION}" ]; then
+    NGINX_CERT_LOCATION="/etc/nginx/locally_generated_cert.pem"
+    NGINX_CERT_PRIVATE_KEY_LOCATION="/etc/nginx/locally_generated_cert.pem"
+
+    if [ ! -f ${NGINX_CERT_LOCATION} ]; then
+        >&2 echo "No certificate path was provided via NGINX_CERT_LOCATION and there is no certificate in default location. Generating self-signed one..."
+        openssl req -x509 -newkey rsa:4096 -nodes -days 365 \
+            -subj "/CN=${NGINX_SERVER_NAME}" \
+            -keyout ${NGINX_CERT_PRIVATE_KEY_LOCATION} \
+            -out ${NGINX_CERT_LOCATION}
+    fi
+fi
+
+j2 /etc/nginx/nginx.conf.j2 > /etc/nginx/nginx.conf
+
+exec /usr/sbin/nginx -c /etc/nginx/nginx.conf

@@ -1,0 +1,5 @@
+all:
+  hosts:
+    datalens_teamcity_g2:
+      ansible_host: datalens-teamcity-g2.sas.yp-c.yandex.net
+      ansible_python_interpreter: /usr/bin/python3

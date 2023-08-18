@@ -1,0 +1,48 @@
+{
+    "meta": {
+        "name": "bi-integration-tests",
+        "maintainer": "DataLens <robot-datalens@yandex-team.ru>",
+        "version": "{revision}"
+    },
+    "build": {
+        "targets": [
+            "datalens/backend/ops/bi_integration_tests"
+        ],
+        "build_type": "release",
+        "target-platforms": [
+            "default-linux-x86_64"
+        ]
+    },
+    "data": [
+        {
+            "source": {
+                "type": "BUILD_OUTPUT",
+                "path": "datalens/backend/ops/bi_integration_tests/bi_integration_tests_bin"
+            },
+            "destination": {
+                "path": "/app/"
+            }
+        },
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/ops/bi_integration_tests",
+                "files": [
+                    "Dockerfile"
+                ]
+            },
+            "destination": {
+                "path": "/"
+            }
+        },
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/ops/bi_integration_tests/bi_integration_tests_tests"
+            },
+            "destination": {
+                "path": "/app/"
+            }
+        }
+    ]
+}

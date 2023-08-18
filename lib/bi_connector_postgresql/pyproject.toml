@@ -1,0 +1,80 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-postgresql"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_postgresql"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+asyncpg = ">=0.27.0"
+attrs = ">=22.2.0"
+marshmallow-enum = ">=1.5.1"
+psycopg2-binary = ">=2.9.6"
+python = ">=3.10, <3.12"
+python-dateutil = ">=2.8.2"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
+yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_core.connectors"]
+greenplum = "bi_connector_postgresql.core.greenplum.connector:GreenplumCoreConnector"
+postgresql = "bi_connector_postgresql.core.postgresql.connector:PostgreSQLCoreConnector"
+
+[tool.poetry.plugins."bi_db_testing.connectors"]
+postgresql = "bi_connector_postgresql.db_testing.connector:PostgreSQLDbTestingConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+postgresql = "bi_connector_postgresql.formula.connector:PostgreSQLFormulaConnector"
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+
+[tool.poetry.group.tests_db.dependencies]
+psycopg2-binary = ">=2.9.6"
+python-dateutil = ">=2.8.2"
+pytz = ">=2022.7.1"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_connector_postgresql_tests/db", "bi_connector_postgresql_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens.pytest.local]
+root_dir = "bi_connector_postgresql_tests/"
+target_path = "db unit"
+labels = ["fat"]
+

@@ -1,0 +1,22 @@
+{
+    "build_number": 334891820,
+    "bundle_name": "juggler-check-bundle-logrotate-hourly",
+    "checks": [
+        {
+            "args": [],
+            "check_hash": "df46256aca25294375c0d14ff90ac138f126099ecd674e5436a43cafe690e3e0",
+            "check_name": "logrotate_hourly.sh",
+            "check_script": "logrotate_hourly.sh",
+            "format": "nagios",
+            "interval": 3600,
+            "run_always": true,
+            "services": [
+                "logrotate_hourly.service"
+            ],
+            "timeout": 1800
+        }
+    ],
+    "env": {},
+    "timestamp": 1542715215,
+    "version": 1
+}

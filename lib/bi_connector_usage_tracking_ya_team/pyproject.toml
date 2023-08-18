@@ -1,0 +1,57 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-usage-tracking-ya-team"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_usage_tracking_ya_team"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+
+[tool.poetry.plugins."bi_api_lib.connectors"]
+usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.bi.connector:UsageTrackingYaTeamBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.core.connector:UsageTrackingYaTeamCoreConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

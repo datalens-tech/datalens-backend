@@ -1,0 +1,14 @@
+{{ define "env_vars-sentry" -}}
+{{/* Add env vars if settings are defined only */}}
+
+{{ if .sentry_enabled -}}
+
+- name: "DL_SENTRY_ENABLED"
+  value: "{{ .sentry_enabled }}"
+
+- name: "DL_SENTRY_DNS_API"
+  value: "{{ .sentry_dsn }}"
+
+{{ end -}}
+
+{{ end -}}

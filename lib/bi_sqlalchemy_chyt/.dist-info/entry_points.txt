@@ -1,0 +1,2 @@
+[sqlalchemy.dialects]
+bi_chyt = bi_sqlalchemy_chyt.base:BICHYTDialect

@@ -1,0 +1,52 @@
+app:
+  prefix: bi-backend
+
+docker_images_info:
+  bi_api:
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api-tier-1
+    tag: "0.1969.0"
+  control_api:
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api-tier-1
+  data_api:
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api-tier-1
+  rqe_int_sync:
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-int-sync-tier-1
+  rqe_ext_async:
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-ext-async-tier-1
+  rqe_ext_sync:
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-ext-sync-tier-1
+#  file_uploader_api:
+#    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader
+#    tag: "0.102.0"
+#  file_uploader_worker:
+#    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-worker
+#    tag: "0.123.0"
+#  external_api:
+#    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-external-api
+#    tag: "0.65.0"
+  docker_repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93
+
+apps_to_run:
+  external_api: false
+
+yenv_type: nemax
+
+sa_creds_mode: "env_key_data"
+
+scaling:
+  dataset_api:
+    desired: 3
+  dataset_data_api:
+    desired: 3
+  public_dataset_api:
+    desired: 0
+#  file_uploader_api:
+#    desired: 2
+#  file_uploader_worker:
+#    desired: 2
+#  external_api:
+#    desired: 2
+
+connector_forms_env:
+  - name: ENABLED_BACKEND_DRIVEN_FORMS
+    value: "ch_frozen_demo"

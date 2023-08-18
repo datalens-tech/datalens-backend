@@ -1,0 +1,48 @@
+#!/bin/sh
+# #######
+# ...
+#
+# Usages:
+#
+#     . ./_envit .env_dev
+#
+#     ./_envit .env_dev python -m ...
+#
+# #######
+
+# set -Eeu  # TODO: only when not being sourced.
+
+SELF="${BASH_SOURCE:-$0}"
+BASEDIR="$(realpath "$(dirname "$SELF")")"
+
+env_script="$1"
+shift 1
+
+unset YENV_TYPE
+unset DLS_ENV
+unset DLS_API_KEY
+unset DLS_DB_HOST
+unset DLS_DB_NAME
+unset DLS_DB_PASSWORD
+unset DLS_DB_PORT
+unset DLS_DB_USER
+unset DLS_JSON_LOG
+unset DLS_SENTRY_DSN
+unset DLS_STAFF_TOKEN
+unset DLS_HOST
+unset QLOUD_DRIVER
+unset QLOUD_LOGGER_STDERR
+unset QLOUD_LOGGER_STDERR_PARSER
+unset QLOUD_LOGGER_STDOUT
+unset QLOUD_LOGGER_STDOUT_PARSER
+unset DLS_YC_IAM_HOST
+
+# Disable by default:
+export DLS_ERRFILE_LOG=
+. "$env_script"
+
+export YENV_TYPE  DLS_ENV DLS_API_KEY DLS_DB_HOST DLS_DB_NAME DLS_DB_PASSWORD DLS_DB_PORT DLS_DB_USER DLS_JSON_LOG DLS_SENTRY_DSN DLS_STAFF_TOKEN DLS_HOST  QLOUD_DRIVER QLOUD_LOGGER_STDERR QLOUD_LOGGER_STDERR_PARSER QLOUD_LOGGER_STDOUT QLOUD_LOGGER_STDOUT_PARSER DLS_YC_IAM_HOST
+
+if [ ! -z "${1:-}" ]; then
+    "$@"
+fi

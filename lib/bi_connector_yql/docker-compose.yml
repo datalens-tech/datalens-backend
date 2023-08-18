@@ -1,0 +1,43 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+
+services:
+  db-ydb:
+    # image: "registry.yandex.net/yandex-docker-local-ydb:latest"
+    image: "registry.yandex.net/yandex-docker-local-ydb@sha256:882755b316b72490702e372e82c84df770b046fd3ecdd77163fc088a82c043a1"
+    environment:
+      YDB_LOCAL_SURVIVE_RESTART: "true"
+      GRPC_PORT: "51900"
+      YDB_USE_IN_MEMORY_PDISKS: "true"
+    hostname: "${GITHUB_CI_DB_YDB_HOSTNAME:-localhost}"
+    ports:
+      - "51900:51900"
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+      - "51910:5432"
+
+  us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.us-single-tenant
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      DLS_ENABLED: "false"
+      DISABLE_DLS: "true"
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+      - "51911:80"

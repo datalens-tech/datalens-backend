@@ -1,0 +1,24 @@
+getters:
+  - name: yav_main
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01eb6ngzk58g1hw91t2aggr3kv}
+      yav_token: {type: param, key: YAV_TOKEN}
+  - name: yav_tvm
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01ec8d1x4ckxq3h1byrh7wk5ax}
+      yav_token: {type: param, key: YAV_TOKEN}
+
+params:
+  # For yav access
+  YAV_TOKEN: {getter: $osenv, key: YAV_TOKEN}
+  # yav_main
+  BITRIX_TOKEN: {getter: yav_main, key: BITRIX_TOKEN}
+  BITRIX_SERBUL_TOKEN: { getter: yav_main, key: BITRIX_SERBUL_TOKEN }
+  ROBOT_STATBOX_KAPPA_PASSWORD: {getter: yav_main, key: ROBOT_STATBOX_KAPPA_PASSWORD}
+  YQ_CLOUD_PREPROD_SVCACC_KEY_DATA: {getter: yav_main, key: YQ_CLOUD_PREPROD_SVCACC_KEY_DATA}
+  METRIKA_OAUTH: {getter: yav_main, key: METRIKA_OAUTH}
+  YT_OAUTH: {getter: yav_main, key: YT_OAUTH}
+  # yav_tvm
+  TVM_CLIENT_SECRET: {getter: yav_tvm, key: client_secret}

@@ -1,0 +1,2 @@
+[bi_core.connectors]
+chyt_internal = bi_connector_chyt_internal.core.connector:CHYTInternalCoreConnector

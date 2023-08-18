@@ -1,0 +1,13 @@
+from bi_formula.connectors.base.testing.dialect import DefaultDialectFormulaConnectorTestSuite
+from bi_formula.core.dialect import DialectName
+
+from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
+
+
+class DialectPostgreSQLTestSuite(DefaultDialectFormulaConnectorTestSuite):
+    dialect_name = DialectName.POSTGRESQL
+    default_dialect = D.POSTGRESQL_9_4
+    dialect_matches = (
+        ('9.3.4', D.POSTGRESQL_9_3),
+        ('9.6.1', D.POSTGRESQL_9_4),
+    )

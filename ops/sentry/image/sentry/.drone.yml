@@ -1,0 +1,10 @@
+pipeline:
+  build:
+    image: registry.yandex.net/iddqd/ci:1.9.0
+    when:
+      event: pull_request
+    environment:
+      - REVIEWERS=@nodge,@gogoleff,@maxie
+    commands:
+      - ci-link-startrek
+      - ci-add-reviewers

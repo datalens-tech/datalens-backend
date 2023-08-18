@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="9fe6c389-f31b-4aba-bb43-0248e7e4dfb7" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>OSDataAPI</name>
+  <description />
+  <settings ref="DataLens_BuildTier1_BuildWithBuildXBake">
+    <parameters>
+      <param name="dl.app_build.bake_target" value="app_os_data_api" />
+      <param name="dl.app_build.dir_path" value="app_os/app_os_data_api" />
+      <param name="dl.app_build.docker_repo_suffix" value="os-data-api-tier-1" />
+      <param name="dl.app_build.trigger_ya_team_deploy" value="false" spec="checkbox uncheckedValue='false' display='normal' checkedValue='true'" />
+    </parameters>
+    <build-runners />
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+

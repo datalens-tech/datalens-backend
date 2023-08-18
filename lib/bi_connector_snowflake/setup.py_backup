@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-connector-snowflake",
+    author="Valentin Gologuzov",
+    author_email="vgol@yandex-team.ru",
+    packages=find_packages(exclude=["tests*"]),
+    zip_safe=False,
+    include_package_data=True,
+    package_data={
+        "bi_connector_snowflake": [
+            "locales/*/LC_MESSAGES/messages.po",
+        ],
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={
+        "bi_core.connectors": [
+            "snowflake=bi_connector_snowflake.core.connector:SnowFlakeCoreConnector",
+        ],
+        "bi_api_lib.connectors": [
+            "snowflake=bi_connector_snowflake.bi.connector:SnowFlakeBiApiConnector",
+        ],
+        "bi_db_testing.connectors": [
+            "snowflake=bi_connector_snowflake.db_testing.connector:SnowFlakeDbTestingConnector",
+        ],
+        "bi_formula.connectors": [
+            "snowflake=bi_connector_snowflake.formula.connector:SnowFlakeFormulaConnector",
+        ],
+    },
+    install_requires=[
+        # External packages
+        "attrs",
+        "sqlalchemy>=1.4",
+        "snowflake-connector-python",
+        "snowflake-sqlalchemy",
+    ]
+    + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-api-commons", "bi_api_commons"),
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-db-testing", "bi_db_testing"),
+            ("yandex-bi-formula", "bi_formula"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-constants", "bi_constants"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "develop": []  # for testing and development
+        + [
+            f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+            for name, pydir in (
+                ("yandex-bi-configs", "bi_configs"),
+                ("yandex-bi-core-testing", "bi_core_testing"),
+                ("yandex-bi-testing", "bi_testing"),
+                ("statcommons", "statcommons"),
+            )
+            if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+        ],
+    },
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

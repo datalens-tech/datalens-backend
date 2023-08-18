@@ -1,0 +1,46 @@
+app:
+  prefix: bi-backend
+
+docker_images_info:
+  bi_api:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api-tier-1  # CLOUD-122905
+    tag: "0.1964.0"
+  file_uploader_api:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-tier-1
+    tag: "0.112.0"
+  file_uploader_worker:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-worker-tier-1
+    tag: "0.135.0"
+  external_api:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-external-api-tier-1
+    tag: "0.78.0"
+  docker_repo: cr.cloudil.com/crlfgqo1pse5j9udsk53
+
+apps_to_run:
+  external_api: true
+
+yenv_type: israel
+
+sa_creds_mode: "env_key_data"
+
+endpoints:
+  charts_api: "https://datalens.il.nebius.com/"
+  dash_api: "https://datalens.il.nebius.com/"
+
+scaling:
+  dataset_api:
+    desired: 3
+  dataset_data_api:
+    desired: 3
+  file_uploader_api:
+    desired: 2
+  file_uploader_worker:
+    desired: 2
+  external_api:
+    desired: 1
+    max_surge: 1
+    max_unavailable: 100
+
+connector_forms_env:
+  - name: ENABLED_BACKEND_DRIVEN_FORMS
+    value: "ch_frozen_demo"

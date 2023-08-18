@@ -1,0 +1,18 @@
+{
+    "version": 1,
+    "checks": [
+        {
+            "args": [],
+            "check_name": "push_client.sh",
+            "check_script": "push_client.sh",
+            "format": "json",
+            "interval": 180,
+            "run_always": true,
+            "services": [
+                "push_client.service"
+            ],
+            "timeout": 120
+        }
+    ],
+    "env": {}
+}

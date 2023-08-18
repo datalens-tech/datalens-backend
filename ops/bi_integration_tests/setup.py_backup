@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip('/')
+if BACKEND_ROOT_DIR.startswith('tmp'):
+    BACKEND_ROOT_DIR = None
+
+
+SETUP_KWARGS = dict(
+    name='yandex-bi-integration-tests',
+    author='Konstantin Chupin',
+    author_email='kchupin@yandex-team.ru',
+    packages=find_packages(exclude=['bi_integration_tests_tests*']),
+    zip_safe=False,
+
+    include_package_data=True,
+    entry_points={},
+    install_requires=[
+    ] + ([] if not BACKEND_ROOT_DIR else [
+        f'yandex-bi-cloud-integration @ file://localhost/{BACKEND_ROOT_DIR}/lib/bi_cloud_integration',
+        f'yandex-bi-testing @ file://localhost/{BACKEND_ROOT_DIR}/lib/bi_testing',
+    ]),
+    extras_require={},
+)
+SETUP_KWARGS['extras_require']['all'] = sorted(set(
+    pkg for lst in SETUP_KWARGS['extras_require'].values() for pkg in lst
+))
+
+
+if __name__ == '__main__':
+    setup(**SETUP_KWARGS)

@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: yandex-bi-dls-client
+Version: 0.0.0
+Author: Aleksandr Ushakov
+Author-email: alex-ushakov@yandex-team.ru
+Requires-Dist: attrs
+Requires-Dist: requests
+Provides-Extra: all
+

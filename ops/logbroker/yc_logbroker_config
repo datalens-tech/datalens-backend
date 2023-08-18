@@ -1,0 +1,161 @@
+#!/bin/bash -x
+# #######
+# hacky configurator
+# for external installation's logs
+#
+# until logbroker supports anything better:
+# https://st.yandex-team.ru/LOGBROKER-6421
+# #######
+
+set -Eeuo pipefail
+
+
+COMMENT="https://st.yandex-team.ru/BI-2104"
+LOGNAMES="debug fast"
+
+
+LOGBROKER="logbroker"
+if ! which logbroker &>/dev/null; then
+    LOGBROKER="./logbroker"
+    if [ ! -f "./logbroker" ]; then
+        status="$(
+        curl \
+            -s \
+            -w '%{http_code}' \
+            -o ./logbroker \
+            'https://lb.yandex-team.ru/download/cli/linux/logbroker'
+        )"
+        if [ x"$status" != x"200" ]; then
+            printf "Non-ok download-logbroker-binary response: %s\n" "$status" >&2
+            exit 1
+        fi
+        chmod +x ./logbroker
+    fi
+fi
+
+LOGBROKER_BASE="$LOGBROKER"
+
+upsert_topic() {
+    topic="$1"
+    for cmd in create update; do  # poorman upsert
+        $LOGBROKER \
+            schema "$cmd" topic "$topic" \
+            --partitions-count 1 \
+            --retention-period 129600 \
+            --allow-unauthenticated-write=false \
+            --allow-unauthenticated-read=false \
+            -m "$COMMENT" \
+            -y || ( if [ x"$cmd" = x"update" ]; then exit $?; else true; fi; )
+    done
+}
+
+
+set_up() {
+    $LOGBROKER clusters list  # test
+
+    for logname in $LOGNAMES; do
+        topic="/$ACC/$logname"
+        upsert_topic "$topic"
+
+        for producer in $PRODUCERS; do
+            $LOGBROKER \
+                permissions grant \
+                --path "$topic" \
+                --subject "${producer}@as" \
+                --permissions WriteTopic \
+                -y
+        done
+
+        # https://wiki.yandex-team.ru/logbroker/dev/yc-lb/how-to-use-lb-in-yc/#ytdelivery
+
+        for consumer in $CONSUMERS; do
+            $LOGBROKER \
+                permissions grant \
+                --path "$topic" \
+                --subject "${consumer}@as" \
+                --permissions ReadTopic \
+                -y
+        done
+
+        # # For cleanup / transition:
+        # $LOGBROKER \
+        #     permissions revoke \
+        #     --path "$topic" \
+        #     --subject "bfbpad3se360c5d6csh9@as" \
+        #     --permissions ReadTopic \
+        #     -y || true
+
+        $LOGBROKER \
+            schema create read-rule \
+            --topic "$topic" \
+            --consumer shared/remote-mirror \
+            --all-original \
+            -y || true
+
+        if [ -f "$READER_SA_KEY_FILE" ]; then
+            logbroker \
+                -s logbroker \
+                schema create remote-mirror-rule \
+                --topic "datalens/back-ext-${ENV_NAME}/${logname}-yc-mirror" \
+                --cluster sas \
+                --src-cluster "$LB_INSTANCE" \
+                --src-topic "$topic" \
+                --src-consumer shared/remote-mirror \
+                --iam-key-file "$READER_SA_KEY_FILE" \
+                -y
+        fi
+    done
+}
+
+
+# ####### preprod #######
+# yc iam key create --service-account-name logbroker-sa-manage --profile=dlb-preprod --output ~/.logbroker/_preprod_sa_key.json
+(
+
+    # svcacc auth
+    SA_KEY_FILE="$HOME/.logbroker/_preprod_sa_key.json"
+    if [ ! -f "$SA_KEY_FILE" ]; then
+        ya vault get version sec-01evxzdmm97phqmcpn83y14m6m -o yc-logbroker-preprod > "$SA_KEY_FILE"
+    fi
+    export SA_KEY_FILE
+    # another option is iam user auth:
+    # IAM_TOKEN="$(yc iam create-token --profile=dlb-preprod)"
+    # export IAM_TOKEN
+
+    LB_INSTANCE="yc-logbroker-preprod"
+    LOGBROKER="$LOGBROKER_BASE -s $LB_INSTANCE"
+    ACC=aoee4gvsepbo0ah4i2j6
+    PRODUCERS="bfb6r4uuqhoegh7qetuo bfbk1j9tmltib6dttc71 bfbgeplq9m3t5qqvpcgh bfb262anc8g1o3hl75kt bfbvknmvg068lfbccnc1 bfbu9gprqdutnf1g7t1h"
+    # TODO: delete producer bfbmjlvaa3978bmr6hv0
+    CONSUMERS="bfb9vsa2o0ob3kant37d"
+    ENV_NAME="testing"
+    READER_SA_KEY_FILE="logbroker-mirrorer-key-preprod.json"
+
+    set_up
+)
+
+
+# ####### prod #######
+# yc iam key create --service-account-name logbroker-sa-manage --profile=dlb-prod --output ~/.logbroker/_prod_sa_key.json
+(
+    # svcacc auth
+    SA_KEY_FILE="$HOME/.logbroker/_prod_sa_key.json"
+    if [ ! -f "$SA_KEY_FILE" ]; then
+        ya vault get version sec-01evxzdmm97phqmcpn83y14m6m -o yc-logbroker > "$SA_KEY_FILE"
+    fi
+    export SA_KEY_FILE
+    # another option is iam user auth:
+    # IAM_TOKEN="$(yc iam create-token --profile=dlb-prod)"
+    # export IAM_TOKEN
+
+    LB_INSTANCE="yc-logbroker"
+    LOGBROKER="$LOGBROKER_BASE -s $LB_INSTANCE"
+    ACC=b1g08s4su5tgce7cpeo5
+    PRODUCERS="ajeh7le4hpde0t78vgm5 ajeubsdc219e8s8v8n3r aje1ao4nukdkgvecf7r4 aje737auk2fbjp31egh2 ajea06tr0uksu4heh3rf ajef7uvq8g2d85q099s4"
+    # TODO: delete producer ajehdjd2gfarobogoctc
+    CONSUMERS="ajers9930c7mc5cdp0km"
+    ENV_NAME="production"
+    READER_SA_KEY_FILE="logbroker-mirrorer-key-prod.json"
+
+    set_up
+)

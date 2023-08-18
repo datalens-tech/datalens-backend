@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+# pylint: disable=missing-docstring
+
+from statcommons.tools import qloud_juggler
+
+_IGNORED_NOTIFICATIONS = set((
+))
+
+
+class QloudJugglerBIAPI(qloud_juggler.QloudJugglerConfigurer):
+
+    @staticmethod
+    def get_extra_checks():
+        return qloud_juggler.COMMON_EXTRA_CHECKS
+
+    def read_manifest(self):  # No checks manifest, currently.
+        return {'checks': []}
+
+    def get_notifications_config(self, service_name, environment=None, **info):
+        if service_name in _IGNORED_NOTIFICATIONS:
+            return []
+
+        environment = environment or self.qloud_environment
+
+        notifies = [
+            dict(method=['email'], login=['datalens-mon']),
+        ]
+        if 'prod' in environment:  # 'production', 'int-production'
+            notifies += [
+                dict(method=['telegram'], login=['DataLensDuty']),
+            ]
+
+        result = [
+            dict(
+                template_name='on_status_change',
+                template_kwargs=dict(
+                    **notify_cfg,
+                    day_start=1,
+                    day_end=7,
+                    time_start='00:00',
+                    time_end='23:59',
+                    status=[
+                        "CRIT",
+                        # {"from": "OK", "to": "CRIT"},
+                        # {"from": "WARN", "to": "CRIT"},
+                        # {"from": "CRIT", "to": "OK"},
+                        # {"from": "CRIT", "to": "WARN"},
+                    ],
+                    golem_responsible=False,
+                ),
+            )
+            for notify_cfg in notifies
+        ]
+        calls_for = []
+        if service_name in calls_for and environment == 'prod':
+            result += [
+                dict(
+                    template_name='on_status_change',
+                    template_kwargs=dict(
+                        day_start=1,
+                        day_end=7,
+                        time_start='00:00',
+                        time_end='23:59',
+                        method=['phone'],
+                        status=['CRIT'],
+                        login=['dmifedorov'],
+                        golem_responsible=False,
+                    ),
+                ),
+            ]
+        return result
+
+    component_checks = {
+        'dataset-api': (
+            'logrotate_hourly.service',
+            'push_client.service',
+        ),
+    }
+
+
+
+if __name__ == '__main__':
+    QloudJugglerBIAPI.run_cli()

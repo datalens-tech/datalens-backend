@@ -1,0 +1,16 @@
+PRAGMA DqEngine = "disable";
+PRAGMA yt.UseNativeYtTypes;
+
+INSERT INTO {{input1}}
+SELECT
+    awg.entry_id AS entry_id,
+    IF(awg.scope = 'widget', 'chart', awg.scope) AS entity_type,
+    awg.access_type AS access_type,
+    awg.title AS access_source_title,
+    awg.access_source_slug AS access_source_slug,
+    CAST(access_datetime_utc AS Datetime) AS access_datetime_utc,
+    gm.login AS access_login
+FROM {{input2}} AS awg
+JOIN {{input3}} AS gm
+ON (awg.subject_id = gm.group_id)
+WHERE awg.puid IS NULL;

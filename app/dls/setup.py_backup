@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yadls",
+    author="Anton Vasilyev",
+    author_email="hhell@yandex-team.ru",
+    version="0.2",
+    description="Yandex DataLens Security core; https://st.yandex-team.ru/BI-46",
+    packages=find_packages(),
+    install_requires=[
+      ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            ("yandex-bi-app-tools", "bi_app_tools"),
+            ("yandex-bi-cloud-integration", "bi_cloud_integration"),
+            ("yandex-bi-configs", "bi_configs"),
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-utils", "bi_utils"),
+
+            ("statcommons", "statcommons"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "srv": [
+            "pytz",  # common
+            "simplejson",  # Fast-ish, most of the explicit json uses.
+
+            # ### database ###
+            "sqlalchemy",
+            # "sqlalchemy_utils",
+
+            "psycopg2-binary",  # main module for both sync and async.
+
+            "alembic",  # migrations (use-case is more like `dev` than `srv`.
+
+            "raven",  # common "logging"
+
+            # ### y ###
+            "statcommons",
+        ],
+        "web": [
+            "ujson",  # high-performance case for the HTTP+JSON.
+            "pyyaml>=5.0",  # basically just `schemas.yaml`.
+
+            # ### the http serving ###
+            "quart>=0.6.1",
+            "hypercorn>=0.2.0",
+            "gunicorn",
+            "uvloop",
+
+            "aiopg>=0.15.0",
+            # "asyncpg", "asyncpgsa",  # performance, maybe. Requires prepared statements.
+            # "peewee-async", "peewee_migrate", "flask-pw",  # ORM with more django-like models
+            # "gino",  # ORM-ish with less overhead.
+
+            # TODO?: update the https://github.com/altaurog/cpgcopy
+
+            # # Schema validation:
+            "openapi-core>=0.6.0",
+            "werkzeug",
+            # "flex", "jsonschema",  # other schema validation tools
+
+            "async_timeout",
+
+            "service_identity",  # uncertain
+            # "aiohttp-requests",  # "aiohttp", "aiodns",  # not currently used.
+        ],
+        "tasks": [
+            # # fast data insertion. Not currently used. Somehow, both were involved.
+            # "pgcopy", "sqlalchemy-postgres-copy",
+            "pyjwt",
+
+            "requests[security]",  # polling the staff/iam/...
+            "certifi-yandex",  # order matters: should be last.
+        ],
+        "dev": [
+            "msgpack", "atomicwrites",  # staff-import file-cache only.
+
+            "django",
+
+            # Extensive list of all known debug-useful things.
+            "django-extensions", "django-pdb",
+            "pylint", "flake8", "pylama",
+            "mypy", "sqlalchemy-stubs",
+            "pytest", "pytest-html", "pytest-cov", "pytest-profiling",
+            "pip-tools>=4.5",
+            "wheel",
+            "pyaux", "pyauxm",
+            "ipython", "ipdb",
+            "uwsgitop",
+
+            # ya
+            # WARNING: fresh releaser is available at `ya tool releaser ...`
+            "releaser-cli[all]",
+        ],
+    },
+    entry_points={
+        "console_scripts": [
+            "bidls_httpjrpc_hc = yadls.httpjrpc.main_hc:main",
+            "bidls_httpjrpc = yadls.httpjrpc.main:main",
+            "bidls_devhttp = yadls.httpjrpc.main:main",
+            "bidls_tasks = yadls.tasks:main",
+        ],
+    },
+    package_data={
+        "yadls": ["schemas.yaml"],
+        "yadls.httpjrpc": ["sample_ssl/*", "docs/*"],
+    },
+)
+SETUP_KWARGS["extras_require"]["all"] = list(item for lst in SETUP_KWARGS["extras_require"].values() for item in lst)
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

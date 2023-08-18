@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-04-20 18:32+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:120
+msgid "label_snowflake-doc-help"
+msgstr "Подробнее в [документации]({LINK})"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:133
+msgid "label_account-name"
+msgstr "ACCOUNT_NAME"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:139
+msgid "label_client-id"
+msgstr "CLIENT_ID"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:145
+msgid "label_client-secret"
+msgstr "CLIENT_SECRET"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:153
+msgid "button_get-new-token"
+msgstr "Получить новый токен"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:164
+msgid "label_user-name"
+msgstr "User name"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:170
+msgid "label_database"
+msgstr "Database name"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:176
+msgid "label_database-schema"
+msgstr "Database schema"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:182
+msgid "label_warehouse"
+msgstr "Warehouse"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:188
+msgid "label_user-role"
+msgstr "User role"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:200
+msgid "label_showflake-auth-section-title"
+msgstr "Аутентификация"
+
+#: bi_connector_snowflake/bi/connection_form/form_config.py:207
+msgid "label_showflake-db-details-section-title"
+msgstr "Сведения о базе данных"
+
+#: bi_connector_snowflake/bi/connection_info.py:7
+msgid "label_connector-snowflake"
+msgstr "Snowflake"

@@ -1,0 +1,28 @@
+import enum
+
+
+class ComparisonOperation(enum.Enum):
+    IN = 'IN'
+    NIN = 'NIN'
+    EQ = 'EQ'
+    NE = 'NE'
+    GT = 'GT'
+    LT = 'LT'
+    GTE = 'GTE'
+    LTE = 'LTE'
+    ISNULL = 'ISNULL'
+    ISNOTNULL = 'ISNOTNULL'
+    ISTARTSWITH = 'ISTARTSWITH'
+    STARTSWITH = 'STARTSWITH'
+    IENDSWITH = 'IENDSWITH'
+    ENDSWITH = 'ENDSWITH'
+    ICONTAINS = 'ICONTAINS'
+    CONTAINS = 'CONTAINS'
+    NOTICONTAINS = 'NOTICONTAINS'
+    NOTCONTAINS = 'NOTCONTAINS'
+    BETWEEN = 'BETWEEN'
+    LENEQ = 'LENEQ'
+    LENGT = 'LENGT'
+    LENGTE = 'LENGTE'
+    LENLT = 'LENLT'
+    LENLTE = 'LENLTE'

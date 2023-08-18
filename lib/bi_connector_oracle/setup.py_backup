@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-connector-oracle",
+    author="Grigory Statsenko",
+    author_email="gstatsenko@yandex-team.ru",  # FIXME
+    packages=find_packages(exclude=["bi_connector_oracle_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "bi_connector_oracle": [
+            "locales/*/LC_MESSAGES/messages.po",
+        ],
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={
+        "bi_core.connectors": [
+            "oracle=bi_connector_oracle.core.connector:OracleCoreConnector",
+        ],
+        "bi_db_testing.connectors": [
+            "oracle=bi_connector_oracle.db_testing.connector:OracleDbTestingConnector",
+        ],
+        "bi_formula.connectors": [
+            "oracle=bi_connector_oracle.formula.connector:OracleFormulaConnector",
+        ],
+    },
+    install_requires=[
+        # External packages
+        "sqlalchemy>=1.4",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-api-commons", "bi_api_commons"),
+            ("yandex-bi-api-connector", "bi_api_connector"),
+            ("yandex-bi-configs", "bi_configs"),
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-db-testing", "bi_db_testing"),
+            ("yandex-bi-formula", "bi_formula"),
+            ("yandex-bi-sqlalchemy-oracle", "bi_sqlalchemy_oracle"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "develop": [  # for testing and development
+            "oracledb",
+        ] + [
+            f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+            for name, pydir in (
+                ("yandex-bi-configs", "bi_configs"),
+                ("yandex-bi-core", "bi_core"),
+                ("yandex-bi-api-connector", "bi_api_connector"),
+                ("yandex-bi-testing", "bi_testing"),
+            )
+            if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+        ],
+        "mypy": [  # for testing and development
+            "mypy",
+            "sqlalchemy-stubs",
+        ],
+    },
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

@@ -1,0 +1,8 @@
+{{- define "env_vars-conn_chyt" }}
+- name: CONNECTORS_CHYT_PUBLIC_CLIQUES
+  value: '[]'
+- name: CONNECTORS_CHYT_FORBIDDEN_CLIQUES
+  value: '[]'
+- name: CONNECTORS_CHYT_DEFAULT_CLIQUE
+  value: '*ch_public'
+{{ end }}

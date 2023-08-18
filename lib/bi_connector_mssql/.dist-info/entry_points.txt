@@ -1,0 +1,11 @@
+[bi_api_lib.connectors]
+mssql = bi_connector_mssql.bi.connector:MSSQLBiApiConnector
+
+[bi_core.connectors]
+mssql = bi_connector_mssql.core.connector:MSSQLCoreConnector
+
+[bi_db_testing.connectors]
+mssql = bi_connector_mssql.db_testing.connector:MSSQLDbTestingConnector
+
+[bi_formula.connectors]
+mssql = bi_connector_mssql.formula.connector:MSSQLFormulaConnector

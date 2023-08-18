@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-compeng-pg",
+    author="Grigorii Statsenko",
+    author_email="gstatsenko@yandex-team.ru",
+    packages=find_packages(exclude=["bi_compeng_pg_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={
+        "bi_core.data_processor_plugins": [
+            "compeng_aiopg=bi_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin",
+            "compeng_asyncpg=bi_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin",
+        ],
+    },
+    install_requires=[
+        # External packages
+        "aiopg",
+        "asyncpg",
+        'attrs',
+        "shortuuid",
+        "sqlalchemy>=1.2",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-connector-postgresql", "bi_connector_postgresql"),
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-sqlalchemy-postgres", "bi_sqlalchemy_postgres"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={},
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

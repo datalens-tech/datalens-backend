@@ -1,0 +1,17 @@
+FROM registry.yandex.net/data-ui/united-storage:latest
+
+# ???
+ENV DEV_MODE="true"
+ENV SQL_DEBUG="true"
+ENV MULTITENANT="false"
+ENV DEBUG="knex:*"
+ENV APP_INSTALLATION="doublecloud"
+ENV APP_ENV="preprod"
+
+
+RUN mkdir -p /etc/dc/
+COPY us/dc_certs/ca-cert.pem /etc/dc
+
+ENV NODE_EXTRA_CA_CERTS=/etc/dc/ca-cert.pem
+
+

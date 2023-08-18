@@ -1,0 +1,3 @@
+[sqlalchemy.dialects]
+bi_oracle = bi_sqlalchemy_oracle.base:BIOracleDialect
+bi_oracle_basic = bi_sqlalchemy_oracle.base:BIOracleDialectBasic

@@ -1,0 +1,39 @@
+Metadata-Version: 2.1
+Name: yandex-bi-formula
+Version: 7.47.0
+Author: Grigory Statsenko
+Author-email: gstatsenko@yandex-team.ru
+Requires-Dist: antlr4-python3-runtime (==4.11)
+Requires-Dist: attrs
+Requires-Dist: graphviz
+Requires-Dist: jinja2
+Requires-Dist: sqlalchemy (>=1.2)
+Requires-Dist: ciso8601
+Provides-Extra: all
+Requires-Dist: ipdb ; extra == 'all'
+Requires-Dist: ipython ; extra == 'all'
+Requires-Dist: mypy ; extra == 'all'
+Requires-Dist: pyaux ; extra == 'all'
+Requires-Dist: pyauxm ; extra == 'all'
+Requires-Dist: pylama (<7.8) ; extra == 'all'
+Requires-Dist: pytest-cov (<2.11) ; extra == 'all'
+Requires-Dist: pytest-html (<2) ; extra == 'all'
+Requires-Dist: pytest (<6) ; extra == 'all'
+Requires-Dist: python-dateutil (<2.9) ; extra == 'all'
+Requires-Dist: sqlalchemy-stubs ; extra == 'all'
+Requires-Dist: wheel ; extra == 'all'
+Provides-Extra: develop
+Requires-Dist: pylama (<7.8) ; extra == 'develop'
+Requires-Dist: pytest (<6) ; extra == 'develop'
+Requires-Dist: pytest-cov (<2.11) ; extra == 'develop'
+Requires-Dist: pytest-html (<2) ; extra == 'develop'
+Requires-Dist: python-dateutil (<2.9) ; extra == 'develop'
+Requires-Dist: wheel ; extra == 'develop'
+Requires-Dist: ipython ; extra == 'develop'
+Requires-Dist: ipdb ; extra == 'develop'
+Requires-Dist: pyaux ; extra == 'develop'
+Requires-Dist: pyauxm ; extra == 'develop'
+Provides-Extra: mypy
+Requires-Dist: mypy ; extra == 'mypy'
+Requires-Dist: sqlalchemy-stubs ; extra == 'mypy'
+

@@ -1,0 +1,154 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataset-api-app
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: dataset-api
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
+      port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataset-data-api-app
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: dataset-data-api
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
+      port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: public-dataset-api-app
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: public-dataset-api
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
+      port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      protocol: TCP
+
+{{ if .Values.apps_to_run.sec_embeds }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataset-data-api-sec-embeds-app
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: dataset-data-api-sec-embeds
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
+      port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      protocol: TCP
+{{ end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dls-api-app
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: dls-api
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
+      port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: file-uploader-api
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: file-uploader-api
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
+      port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      protocol: TCP
+
+{{ if .Values.enabled_features.network_policy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqe-dataset-api
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: rqe-dataset-api
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: http-sync-rqe
+      port: 9876
+      targetPort: 9876
+      protocol: TCP
+    - name: http-async-rqe
+      port: 9877
+      targetPort: 9877
+      protocol: TCP
+  internalTrafficPolicy: Local
+{{ end }}

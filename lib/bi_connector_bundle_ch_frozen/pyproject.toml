@@ -1,0 +1,77 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-bundle-ch-frozen"
+version = "0.0.1"
+description = ""
+authors = ["Grigorii Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "bi_connector_bundle_ch_frozen"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+marshmallow-enum = ">=1.5.1"
+yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+
+[tool.poetry.plugins."bi_api_lib.connectors"]
+ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connector:CHFrozenBumpyRoadsBiApiConnector"
+ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.bi.connector:CHFrozenCovidBiApiConnector"
+ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connector:CHFrozenDemoBiApiConnector"
+ch_frozen_dtp = "bi_connector_bundle_ch_frozen.ch_frozen_dtp.bi.connector:CHFrozenDTPBiApiConnector"
+ch_frozen_gkh = "bi_connector_bundle_ch_frozen.ch_frozen_gkh.bi.connector:CHFrozenGKHBiApiConnector"
+ch_frozen_horeca = "bi_connector_bundle_ch_frozen.ch_frozen_horeca.bi.connector:CHFrozenHorecaBiApiConnector"
+ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connector:CHFrozenSamplesBiApiConnector"
+ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.bi.connector:CHFrozenTransparencyBiApiConnector"
+ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connector:CHFrozenWeatherBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.connector:CHFrozenBumpyRoadsCoreConnector"
+ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.core.connector:CHFrozenCovidCoreConnector"
+ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.core.connector:CHFrozenDemoCoreConnector"
+ch_frozen_dtp = "bi_connector_bundle_ch_frozen.ch_frozen_dtp.core.connector:CHFrozenDTPCoreConnector"
+ch_frozen_gkh = "bi_connector_bundle_ch_frozen.ch_frozen_gkh.core.connector:CHFrozenGKHCoreConnector"
+ch_frozen_horeca = "bi_connector_bundle_ch_frozen.ch_frozen_horeca.core.connector:CHFrozenHorecaCoreConnector"
+ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.core.connector:CHFrozenSamplesCoreConnector"
+ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.connector:CHFrozenTransparencyCoreConnector"
+ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.core.connector:CHFrozenWeatherCoreConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

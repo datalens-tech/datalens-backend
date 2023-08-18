@@ -1,0 +1,12 @@
+import os
+
+from bi_testing.containers import get_test_container_hostport
+
+PG_HOSTS = [get_test_container_hostport('db-postgres', fallback_port=50813).host]
+PG_PORT = get_test_container_hostport('db-postgres', fallback_port=50813).port
+PG_DATABASE = 'common_test'
+PG_USER = 'datalens'
+PG_PASSWORD = 'qwerty'
+PG_CONN_TIMEOUT = 2
+PG_SSL_MODE = 'disable'
+PG_SSL_ROOT_CERT_PATH = None

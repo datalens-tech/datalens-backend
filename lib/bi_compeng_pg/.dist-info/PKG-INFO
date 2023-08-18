@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: yandex-bi-compeng-pg
+Version: 0.0.0
+Author: Grigorii Statsenko
+Author-email: gstatsenko@yandex-team.ru
+Requires-Dist: aiopg
+Requires-Dist: asyncpg
+Requires-Dist: attrs
+Requires-Dist: shortuuid
+Requires-Dist: sqlalchemy (>=1.2)
+Provides-Extra: all
+

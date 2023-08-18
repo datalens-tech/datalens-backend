@@ -1,0 +1,7 @@
+requests
+lxml
+attrs
+startrek_client
+click
+tomlkit
+poetry==1.5.0

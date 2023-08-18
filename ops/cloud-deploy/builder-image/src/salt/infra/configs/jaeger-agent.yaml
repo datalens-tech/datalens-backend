@@ -1,0 +1,10 @@
+reporter:
+  grpc:
+    host-port: {{ pillar['JAEGER_ENDPOINT'] }}
+    tls:
+      enabled: true
+processor:
+  jaeger-compact:
+    server-host-port: 127.0.0.1:6831
+  jaeger-binary:
+    server-host-port: 127.0.0.1:6832

@@ -1,0 +1,32 @@
+{{- define "env_vars-integration-tests" }}
+- name: INTEGRATION_TESTS_TAGS
+  value: {{ .Values.integration_tests_tags }}
+- name: DLS_ENABLED
+  value: {{ .Values.dls_enabled | ternary "True" "" | quote }}
+- name: DATALENS_API_LB_MAIN_BASE_URL
+  value: {{ .Values.backendBalancer.host }}
+- name: DATALENS_DLS_LB_MAIN_BASE_URL
+  value: {{ .Values.dlsBalancer.host }}
+- name: DATALENS_API_LB_UPLOADS_BASE_URL
+  value: {{ .Values.uploadBalancer.uploadHost }}
+- name: DATALENS_API_LB_UPLOADS_STATUS_URL
+  value: {{ .Values.uploadBalancer.statusHost }}
+- name: YC_API_ENDPOINT_IAM
+  value: {{ .Values.endpoints.iam_api_host }}
+- name: YC_API_ENDPOINT_RM
+  value: {{ .Values.endpoints.rm_host }}
+- name: YC_AS_ENDPOINT
+  value: {{ .Values.endpoints.iam_as }}
+- name: YC_TS_ENDPOINT
+  value: {{ .Values.endpoints.iam_ts }}
+- name: WORKBOOK_MGMT_STRATEGY
+  value: {{ .Values.workbook_mgmt_strategy }}
+- name: TENANT_TYPE
+  value: {{ .Values.tenant_type }}
+{{ if .Values.tenant_type }}
+- name: TENANT_ID
+  value: {{ .Values.tenant_id }}
+{{ end }}
+- name: US_LB_MAIN_BASE_URL
+  value: {{ .Values.usBalancer.host }}
+{{ end }}

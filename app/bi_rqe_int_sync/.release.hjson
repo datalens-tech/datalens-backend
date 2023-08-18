@@ -1,0 +1,4 @@
+experiments: version
+version_files: {
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}

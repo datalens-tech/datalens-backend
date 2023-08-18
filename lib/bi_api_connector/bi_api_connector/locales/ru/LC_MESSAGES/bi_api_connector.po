@@ -1,0 +1,120 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-11 12:10+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:31
+msgid "field_host"
+msgstr "Имя хоста"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:39
+msgid "field_port"
+msgstr "Порт"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:50
+msgid "field_username"
+msgstr "Имя пользователя"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:60
+msgid "field_password"
+msgstr "Пароль"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:73
+msgid "field_db-name"
+msgstr "Путь к базе данных"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:90
+msgid "value_raw-sql-level-off"
+msgstr "Запретить"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:96
+msgid "value_raw-sql-level-subselect"
+msgstr "Разрешить подзапросы в датасетах"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:97
+msgid "value_raw-sql-level-subselect-note"
+msgstr ""
+"Изменить SQL-подзапрос может только пользователь с правами на "
+"администрирование или редактирование датасета"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:103
+msgid "value_raw-sql-level-dashsql"
+msgstr "Разрешить подзапросы в датасетах и запросы из чартов"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:104
+msgid "value_raw-sql-level-dashsql-note"
+msgstr "Пользователь c доступом к подключению может выполнить любой SQL-запрос"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:121
+msgid "label_allow-subselect-hint-2"
+msgstr ""
+"Не рекомендуем совмещать подзапросы в датасетах с RLS или каким-либо "
+"ограничением на просмотр таблиц."
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:122
+msgid "label_allow-subselect-hint-3"
+msgstr ""
+"SQL-запросы из чартов попадают напрямую в подключение и не учитывают "
+"настроенные RLS в датасетах."
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:126
+msgid "field_raw-sql-level"
+msgstr "Уровень доступа SQL запросов"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:144
+msgid "field_access-token"
+msgstr "Токен доступа"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:159
+msgid "field_auto-create-dashboard"
+msgstr "Автоматически создать дашборд, чарты и датасет над подключением"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:170
+msgid "label_advanced-settings"
+msgstr "Продвинутые настройки подключения"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:182
+msgid "label_ssl-enabled"
+msgstr "TLS"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:190
+msgid "value_ssl-enabled-off"
+msgstr "Выкл"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:194
+msgid "value_ssl-enabled-on"
+msgstr "Вкл"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:204
+msgid "label_ssl-ca"
+msgstr "CA Certificate"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:217
+msgid "label_data-export-forbidden"
+msgstr "Запрет на экспорт данных"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:219
+msgid "help_text_data-export-forbidden"
+msgstr "При включении опции в чартах будет скрыта кнопка экспорта данных. При этом останется возможность извлекать данные из чартов, а также снимать скриншоты."
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:225
+msgid "value_data-export-forbidden-off"
+msgstr "Выкл"
+
+#: bi_api_connector/form_config/models/shortcuts/rows.py:229
+msgid "value_data-export-forbidden-on"
+msgstr "Вкл"

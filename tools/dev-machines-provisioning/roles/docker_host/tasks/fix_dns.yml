@@ -1,0 +1,17 @@
+- name: ensure resolved.conf
+  template:
+    src: resolved.conf
+    dest: /etc/systemd/resolved.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart resolved
+
+# TODO Replace with symlink
+- name: ensure resolv.conf
+  template:
+    src: resolv.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644

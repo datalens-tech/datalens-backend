@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: yandex-bi-sqlalchemy-promql
+Version: 0.1
+Summary: BI PromQL SQLAlchemy Dialect
+Requires-Dist: sqlalchemy (>=1.4)
+Requires-Dist: requests
+Provides-Extra: all
+
+...

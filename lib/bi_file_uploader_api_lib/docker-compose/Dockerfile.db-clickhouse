@@ -1,0 +1,3 @@
+FROM registry.yandex.net/statinfra/clickhouse-server:22.11
+
+COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml

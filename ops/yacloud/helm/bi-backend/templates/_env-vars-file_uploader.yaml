@@ -1,0 +1,80 @@
+{{- define "env_vars-file_uploader_common" }}
+- name: REDIS_APP_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: redis-passwords
+      key: REDIS_MISC_PASSWORD
+- name: REDIS_ARQ_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: redis-passwords
+      key: REDIS_MISC_PASSWORD
+- name: S3_ACCESS_KEY_ID
+  valueFrom:
+    secretKeyRef:
+      name: file-uploader-secrets
+      key: CLOUD_S3_ACCESS_KEY_ID
+- name: S3_SECRET_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: file-uploader-secrets
+      key: CLOUD_S3_SECRET_ACCESS_KEY
+- name: S3_PERSISTENT_BUCKET_NAME
+  value: {{ .Values.file_connector_config.persistent_bucket_name }}
+- name: S3_TMP_BUCKET_NAME
+  value: {{ .Values.file_connector_config.tmp_bucket_name }}
+- name: S3_ENDPOINT_URL
+  value: {{ .Values.file_connector_config.s3_endpoint }}
+{{ end }}
+
+{{- define "env_vars-file_uploader_api" }}
+- name: CORS_ALLOWED_ORIGINS
+  value: {{ join "," .Values.file_connector_config.cors_allowed_origins | quote }}
+- name: CORS_ALLOWED_HEADERS
+  value: "Content-Type,X-Request-ID,X-DL-TenantId,X-CSRF-Token"
+- name: CORS_EXPOSE_HEADERS
+  value: "X-Request-ID"
+- name: CSRF_TIME_LIMIT
+  value: "43200"  # 12 hours
+- name: CSRF_HEADER_NAME
+  value: "X-CSRF-Token"
+- name: CSRF_METHODS
+  value: "POST,PUT,DELETE"
+{{ if .Values.apps_to_run.secure_reader }}
+- name: ALLOW_XLSX
+  value: "true"
+{{ end }}
+{{ end }}
+
+{{- define "env_vars-file_uploader_client" }}
+- name: FILE_UPLOADER_BASE_URL
+  value: "https://{{ index .Values.alb_configs.file_uploader_api.hosts 0 }}/file-uploader"  # TODO: k8s service discovery
+- name: FILE_UPLOADER_MASTER_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: file-uploader-secrets
+      key: FILE_UPLOADER_MASTER_TOKEN
+{{ end }}
+
+{{- define "env_vars-file_uploader_data_access" }}
+- name: CONNECTORS_FILE_S3_ENDPOINT
+  value: {{ .Values.file_connector_config.s3_endpoint }}
+- name: CONNECTORS_FILE_HOST
+  value: {{ join "," .Values.file_connector_config.ch_hosts }}
+- name: CONNECTORS_FILE_BUCKET
+  value: {{ .Values.file_connector_config.persistent_bucket_name }}
+- name: CONNECTORS_FILE_USERNAME
+  value: {{ .Values.file_connector_config.ch_username }}
+{{ end }}
+
+{{- define "env_vars-file_uploader_secure_reader" }}
+{{ if .Values.apps_to_run.secure_reader }}
+- name: SECURE_READER_SOCKET
+  value: {{ .Values.secure_reader_socket_path }}
+{{ end }}
+{{ end }}
+
+{{- define "env_vars-file_secure_reader" }}
+- name: GUNICORN_SOCKET_PATH
+  value: {{ .Values.secure_reader_socket_path }}
+{{ end }}

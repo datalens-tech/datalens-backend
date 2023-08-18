@@ -1,0 +1,12 @@
+getters:
+  - name: yav_main
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01eb6ngzk58g1hw91t2aggr3kv}
+      yav_token: {type: param, key: YAV_TOKEN}
+
+params:
+  # For yav access
+  YAV_TOKEN: {getter: $osenv, key: YAV_TOKEN}
+  # yav_main
+  METRIKA_OAUTH: {getter: yav_main, key: METRIKA_OAUTH}

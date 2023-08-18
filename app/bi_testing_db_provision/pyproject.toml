@@ -1,0 +1,61 @@
+
+[tool.poetry]
+name = "bi-testing-db-provision"
+version = "0.3.0"
+description = ""
+authors = ["Konstantin Chupin <kchupin@yandex-team.ru>"]
+packages = [{include = "bi_testing_db_provision"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+aiopg = ">=1.4.0"
+docker = ">=6.0.1"
+python = ">=3.10, <3.12"
+yandex-bi-core = {path = "../../lib/bi_core"}
+
+[tool.poetry.group.tests.dependencies]
+pytest-asyncio = ">=0.20.3"
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_testing_db_provision_tests/db", "bi_testing_db_provision_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[datalens_ci]
+skip_test = true
+
+[datalens.pytest.local]
+root_dir = "bi_alerts_tests/"
+target_path = "unit db"

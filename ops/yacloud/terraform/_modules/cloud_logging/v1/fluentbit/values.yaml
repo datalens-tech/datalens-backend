@@ -1,0 +1,12 @@
+image: "cr.yandex/crp90nath8cmuh8ivnac/yandex-cloud/fluent-bit/fluent-bit-plugin-yandex:v2.0.3-fluent-bit-1.9.3"
+loggingGroupId: ""
+auth:
+    json: |
+      {}
+objectStorageExport: false
+objectStorageBucket: ""
+serviceaccountawskeyvalue: string
+serviceaccountawskeyvalue_generated:
+  accessKeyID: string
+  secretAccessKey: string
+cloudApiEndpoint: "api.cloud.yandex.net:443"

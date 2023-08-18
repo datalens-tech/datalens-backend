@@ -1,0 +1,44 @@
+
+[tool.poetry]
+name = "redis_cache_lock"
+version = "0.0.1"
+description = ""
+authors = ["HoverHell <hoverhell@gmail.com>"]
+packages = [{include = "redis_cache_lock"}]
+license = "MIT"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+redis = ">=4.5.1"
+
+[tool.poetry.group.tests.dependencies]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens.pytest.unit]
+root_dir = "tests/"

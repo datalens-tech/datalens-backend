@@ -1,0 +1,21 @@
+{
+    "name": "",
+    "type": "yandex",
+    "endpoint": "",
+    "folder_id": "",
+    "image_name": "",
+    "platform_id": "standard-v2",
+    "source_image_id": "",
+    "use_ipv4_nat": false,
+    "use_ipv6": true,
+    "subnet_id": "",
+    "zone": "",
+    "disk_type": "network-ssd",
+    "ssh_username": "ubuntu",
+    "ssh_private_key_file": "",
+    "service_account_key_file": "",
+    "service_account_id": "",
+    "metadata": {
+        "osquery_tag": "ycloud-svc-datalens-bi"
+    }
+}

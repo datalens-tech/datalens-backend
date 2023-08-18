@@ -1,0 +1,16 @@
+# id: ds7t63l73g95m10s0s7h
+name: file-uploader-api
+description: DataLens file uploader API
+folder_id: b1g77mbejmj4m6flq848
+http:
+  backends:
+  - name: http-backend
+    weight: "100"
+    port: "443"
+    target_group:
+      target_group_id: ds7ujebu2316aumml2n9
+    tls:
+      tls_options:
+        tls_min_version: TLS_V1_2
+        tls_max_version: TLS_V1_2
+  connection: {}

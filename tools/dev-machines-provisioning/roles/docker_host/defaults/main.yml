@@ -1,0 +1,16 @@
+---
+ovpn_required: yes
+ovpn_tunnel_server_ip: 10.230.0.1
+ovpn_tunnel_client_ip: 10.230.0.2
+ovpn_server_bind_port: 1194
+ovpn_static_key_location: /etc/openvpn/static.key
+
+docker_apt_release_channel: stable
+docker_apt_arch: amd64
+docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+
+docker_bind_url_ovpn: "tcp://{{ ovpn_tunnel_server_ip }}:2375"
+docker_bind_url_external: "tcp://[::]:2375"
+
+docker_doker0_addr: "fd00::faac:0:0:0:1/80"
+dns_server: "2a02:6b8:0:3400::5005"

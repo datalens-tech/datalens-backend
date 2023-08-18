@@ -1,0 +1,73 @@
+---
+editable: false
+---
+
+{% for audience, func in multi_func.items() %}{% if audience.default != True %}{{ '{% if audience == \"'+ audience.name + '\" %}' }}{% endif -%}
+# {{ func.title }}
+
+{% if func.crosslink_note %}_{{ func.crosslink_note.text  }}_{% endif %}
+
+#### {{ _('Syntax') }} {{ '{#syntax}' }}
+{% if not func.multi_signature %}
+
+```
+{{ func.signature_coll.signatures[0].body }}
+```{% elif func.signature_coll.placement_mode.name == 'tabbed' %}
+{{ '{% list tabs %}' }}
+{% for signature in func.signature_coll.signatures %}
+- {{ _(signature.title) }}
+
+  ```
+{{ signature.body|indent(2, first=True) }}
+  ```{% if signature.description %}
+{% for description_part in signature.description %}
+{{ description_part|indent(2, first=True) }}{% endfor %}{% endif %}
+{% endfor %}
+{{ '{% endlist %}' }}{% else %}{% for signature in func.signature_coll.signatures %}
+{{ _(signature.title) }}
+```
+{{ signature.body }}
+```
+{%- endfor %}{% endif %}
+
+#### {{ _('Description') }} {{ '{#description}' }}
+{%- if func.top_notes %}
+{% for note in func.top_notes  %}
+{% if note.formatting %}{{ '{% note ' }}{{ note.level.value }}{{ ' %}' }}
+
+{% endif %}{{ _(note.text) }}
+{% if note.formatting %}
+{{ '{% endnote %}' }}{% endif %}
+{% endfor %}{% endif -%}
+{%- if func.description %}
+{{ func.description }}{% endif %}
+
+{%- if func.args %}
+
+**{{ _('Argument types') }}:**
+{% for arg in func.args -%}
+- `{{ arg.name }}` — {{ arg.human_type }}
+{% endfor %}{% endif %}
+
+**{{ _('Return type') }}**: {{ func.return_type }}
+
+{%- if func.bottom_notes %}
+{% for note in func.bottom_notes %}
+{% if note.formatting %}{{ '{% note ' }}{{ note.level.value }}{{ ' %}' }}
+
+{% endif %}{{ _(note.text) }}
+{% if note.formatting %}
+{{ '{% endnote %}' }}{% endif %}
+{% endfor %}{% endif -%}
+{%- if func.examples %}
+
+#### {% if func.examples|length == 1 %}{{ _('Example') }}{% else %}{{ _('Examples') }}{% endif %} {{ '{#examples}' }}
+{% for example in func.examples %}
+{{ example }}
+{% endfor %}{% endif %}
+
+#### {{ _('Data source support') }} {{ '{#data-source-support}' }}
+
+{{ ', '.join(func.human_dialects) }}.
+{%- if audience.default != True %}{{ '{% endif %}' }}{% endif %}{% endfor %}
+

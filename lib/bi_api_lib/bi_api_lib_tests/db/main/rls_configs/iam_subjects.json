@@ -1,0 +1,38 @@
+[
+    {
+        "id": "1120000000000529",
+        "email": "volozh@yandex.ru",
+        "title": "volozh",
+        "subject_type": "USER_ACCOUNT"
+    },
+    {
+        "id": "1120000000001062",
+        "email": "bunina@yandex.ru",
+        "title": "bunina",
+        "subject_type": "USER_ACCOUNT"
+    },
+    {
+        "id": "1120000000000251",
+        "email": "tigran@yandex.ru",
+        "title": "tigran",
+        "subject_type": "USER_ACCOUNT"
+    },
+    {
+        "id": "1120000000013893",
+        "email": "abovsky@yandex.ru",
+        "title": "abovsky",
+        "subject_type": "USER_ACCOUNT"
+    },
+    {
+        "id": "1120000000019416",
+        "email": "imperator@yandex.ru",
+        "title": "imperator",
+        "subject_type": "USER_ACCOUNT"
+    },
+    {
+        "id": "1120000000001001",
+        "email": "abash@yandex.ru",
+        "title": "abash",
+        "subject_type": "USER_ACCOUNT"
+    }
+]

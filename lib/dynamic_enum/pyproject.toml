@@ -1,0 +1,43 @@
+
+[tool.poetry]
+name = "dynamic-enum"
+version = "0.0.1"
+description = ""
+authors = ["Grigorii Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dynamic_enum"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dynamic_enum_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+

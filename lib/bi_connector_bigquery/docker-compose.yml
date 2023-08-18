@@ -1,0 +1,34 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+
+services:
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+     - "51609:5432"
+
+  # TODO: Mulitinancy & DLS integration
+  us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.us-single-tenant
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      DLS_ENABLED: "false"
+      DISABLE_DLS: "true"
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+     - "51600:80"

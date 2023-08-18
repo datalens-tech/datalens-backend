@@ -1,0 +1,76 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-bundle-ch-filtered-ya-cloud"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_bundle_ch_filtered_ya_cloud"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
+yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connector:ClickhouseGeoFilteredBiApiConnector"
+ch_ya_music_podcast_stats = "bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.bi.connector:CHYaMusicPodcastStatsBiApiConnector"
+market_couriers = "bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.bi.connector:CHMarketCouriersBiApiConnector"
+schoolbook = "bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connector:CHSchoolbookBiApiConnector"
+smb_heatmaps = "bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connector:CHSMBHeatmapsBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector:ClickhouseGeoFilteredCoreConnector"
+ch_ya_music_podcast_stats = "bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.connector:CHYaMusicPodcastStatsCoreConnector"
+market_couriers = "bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.connector:CHMarketCouriersCoreConnector"
+schoolbook = "bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.connector:CHSchoolbookCoreConnector"
+smb_heatmaps = "bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.connector:CHSMBHeatmapsCoreConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_connector_bundle_ch_filtered_ya_cloud_tests/db", "bi_connector_bundle_ch_filtered_ya_cloud_tests/ext"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+[datalens.pytest.db]
+root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
+target_path = "db"
+
+
+[datalens.pytest.ext]
+root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
+target_path = "ext"

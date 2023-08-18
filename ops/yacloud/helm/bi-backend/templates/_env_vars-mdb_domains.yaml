@@ -1,0 +1,10 @@
+{{- define "env_vars-mdb_domains" }}
+- name: MDB_MANAGED_NETWORK_ENABLED
+  value: {{ .Values.mdb.managed_network_enabled | ternary "1" "0" | quote }}
+- name: MDB_DOMAINS
+  value: {{ .Values.mdb.domains }}
+- name: MDB_CNAME_DOMAINS
+  value: {{ .Values.mdb.cname_domains }}
+- name: MDB_MANAGED_NETWORK_REMAP
+  value: {{ .Values.mdb.remap | toJson | quote }}
+{{ end }}

@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-testing-ya",
+    author="Grigorii Statsenko",
+    author_email="gstatsenko@yandex-team.ru",
+    packages=find_packages(exclude=["bi_testing_ya_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={
+        'env_param_getters': [
+            'yav=bi_testing_ya.env_params.yav:YavEnvParamGetter',
+        ],
+    },
+    install_requires=[
+        # External packages
+        'attrs',
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-testing", "bi_testing"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={},
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="f7e4f6b2-c2f6-4789-8cf2-9e08c2d56a79" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>BuildBIFileUploaderAPI</name>
+  <description />
+  <settings ref="DataLens_BuildVMImages_BuildCloudTemplate">
+    <options>
+      <option name="buildNumberPattern" value="%BUILD_IMAGE_TAG%" />
+    </options>
+    <disabled-settings>
+      <setting-ref ref="RUNNER_15574" />
+      <setting-ref ref="RUNNER_9508" />
+    </disabled-settings>
+    <parameters>
+      <param name="BUILD_IMAGE_REPOSITORY" value="registry.yandex.net/statinfra/bi-file-uploader" spec="text display='normal'" />
+      <param name="bi_application" value="bi-file-uploader-api" spec="select data_6='bi-uploads' data_5='bi-converter-api' data_7='bi-file-uploader-api' display='normal' data_2='bi-materializer' data_1='bi-api' data_4='bi-billing' data_3='dls'" />
+      <param name="branch_spec" value="trunk" />
+      <param name="dep.DataUI_Cloud_Ui_Build.env.BUILD_NUMBER" value="" />
+      <param name="env.CONFIG_DIR" value="%bi_application%/" />
+      <param name="yndx.license_server" value="1" />
+    </parameters>
+    <build-runners order="RUNNER_15575, RUNNER_9520, RUNNER_9508">
+      <runner id="RUNNER_15575" name="Run packer" type="simpleRunner">
+        <parameters>
+          <param name="command.executable" value="/etc/cloud-builder/tc-build.sh" />
+          <param name="command.parameters" value="%BUILD_IMAGE_URL%" />
+          <param name="log.stderr.as.errors" value="true" />
+          <param name="plugin.docker.imageId" value="%CLOUD_BUILDER_IMAGE%" />
+          <param name="plugin.docker.run.parameters" value="-v &quot;$(pwd)&quot;/artifacts:/tmp/manifest" />
+          <param name="script.content"><![CDATA[#!/bin/sh
+set -eo pipefail
+
+echo "Build image url is '%BUILD_IMAGE_URL%'"
+export BUILD_IMAGE_URL='%BUILD_IMAGE_URL%'
+
+TMP=${pwd}/tmps
+mkdir "$TMP"
+
+NEW_KEY_FILE="$TMP/prod-key.json"
+echo "$PROD_YC_SERVICE_ACCOUNT_KEY_FILE" > $NEW_KEY_FILE
+export PROD_YC_SERVICE_ACCOUNT_KEY_FILE=$NEW_KEY_FILE
+
+NEW_KEY_FILE="$TMP/preprod-key.json"
+echo "$PREPROD_YC_SERVICE_ACCOUNT_KEY_FILE" > $NEW_KEY_FILE
+export PREPROD_YC_SERVICE_ACCOUNT_KEY_FILE=$NEW_KEY_FILE
+
+NEW_KEY_FILE="$TMP/id_rsa"
+echo "$SSH_PRIVATE_KEY_FILE" > $NEW_KEY_FILE
+export SSH_PRIVATE_KEY_FILE=$NEW_KEY_FILE
+
+/bin/bash src/build-all.sh '%CONFIG_DIR%' /tmp/manifest/
+
+rm -rf "$TMP"]]></param>
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="DataLens_CloudDeployProduction" />
+    </vcs-settings>
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="1eae87b9-9efe-467b-ad8e-05eb38ebd6a0" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>Build Cloud Template</name>
+  <settings>
+    <options>
+      <option name="artifactRules" value="artifacts/*" />
+      <option name="publishArtifactCondition" value="SUCCESSFUL" />
+    </options>
+    <parameters>
+      <param name="BUILD_IMAGE_REPOSITORY" value="" />
+      <param name="BUILD_IMAGE_TAG" value="" />
+      <param name="BUILD_IMAGE_URL" value="%BUILD_IMAGE_REPOSITORY%:%BUILD_IMAGE_TAG%" />
+      <param name="CLOUD_BUILDER_IMAGE" value="registry.yandex.net/statinfra/cloud-image-builder:0.14" />
+      <param name="CONFIG_DIR" value="" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9508" name="Run packer" type="simpleRunner">
+        <parameters>
+          <param name="command.executable" value="/etc/cloud-builder/tc-build.sh" />
+          <param name="command.parameters" value="%BUILD_IMAGE_URL%" />
+          <param name="plugin.docker.imageId" value="%CLOUD_BUILDER_IMAGE%" />
+          <param name="plugin.docker.run.parameters" value="-v &quot;$(pwd)&quot;/artifacts:/tmp/manifest" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_9520" name="Create artifacts" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[ls -la ./artifacts/
+cp ./deps/* artifacts/
+echo "deps copied"]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers>
+      <build-trigger id="retryBuildTrigger" type="retryBuildTrigger">
+        <parameters>
+          <param name="branchFilter" value="+:*" />
+          <param name="enqueueTimeout" value="0" />
+          <param name="moveToTheQueueTop" value="true" />
+          <param name="reRunBuildWithTheSameRevisions" value="true" />
+          <param name="retryAttempts" value="3" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <build-extensions>
+      <extension id="BUILD_EXT_2654" type="JetBrains.SharedResources">
+        <parameters>
+          <param name="locks-param" value="simultaneous_builds readLock" />
+        </parameters>
+      </extension>
+    </build-extensions>
+    <cleanup />
+  </settings>
+</template>
+

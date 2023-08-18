@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: yandex-bi-api-client
+Version: 0.0.0
+Author: Grigory Statsenko
+Author-email: gstatsenko@yandex-team.ru
+Requires-Dist: aiohttp
+Requires-Dist: attrs
+Requires-Dist: marshmallow
+Requires-Dist: marshmallow-enum
+Requires-Dist: marshmallow-oneofschema
+Requires-Dist: requests
+Provides-Extra: all
+

@@ -1,0 +1,46 @@
+- name: ensure docker unit-file override directory
+  file:
+    path: /etc/systemd/system/docker.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: ensure docker unit-file override
+  template:
+    src: docker.unit.override
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload units
+
+- name: ensure systemd reloads units
+  meta: flush_handlers
+
+- name: ensure docker daemon config
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart dockerd
+
+- name: ensure systemd reloads units
+  meta: flush_handlers
+
+- name: get user information
+  getent:
+    database: passwd
+    key: "{{ ansible_user_id }}"
+
+- name: extract default user gid
+  set_fact:
+    current_user_gid: "{{ getent_passwd[ansible_user_id][2] }}"
+
+- name: ensure docker users are added to the docker group
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true

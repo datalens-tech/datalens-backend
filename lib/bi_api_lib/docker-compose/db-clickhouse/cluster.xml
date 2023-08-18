@@ -1,0 +1,22 @@
+<yandex>
+    <zookeeper>
+        <node index="1">
+            <host>zookeeper-1</host>
+            <port>2181</port>
+        </node>
+    </zookeeper>
+    <remote_servers>
+        <main>
+            <shard>
+                <replica>
+                    <host>127.0.0.1</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </main>
+    </remote_servers>
+    <macros>
+        <replica>127.0.0.1</replica>
+        <cluster>main</cluster>
+    </macros>
+</yandex>

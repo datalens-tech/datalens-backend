@@ -1,0 +1,2 @@
+[sqlalchemy.dialects]
+bi_promql = bi_sqlalchemy_promql.base:PromQLDialect

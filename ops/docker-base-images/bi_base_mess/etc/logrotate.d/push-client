@@ -1,0 +1,10 @@
+/var/log/push-client.log {
+  rotate 1
+  size 500M
+  compress
+  missingok
+  sharedscripts
+  postrotate
+    pkill -HUP push-client
+  endscript
+}

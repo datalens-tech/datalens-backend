@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -x  # debug.
+set -Eeu
+
+RUN_JAEGER_AGENT=${RUN_JAEGER_AGENT:-0}
+
+JAEGER_AGENT_CONFIG_PATH="/etc/jaeger-agent/agent.yaml"
+JAEGER_AGENT_CONFIG_TEMPLATE_PATH="${JAEGER_AGENT_CONFIG_PATH}.j2"
+
+JAEGER_COLLECTOR_NETLOC="${JAEGER_COLLECTOR_NETLOC:-}"
+export JAEGER_TLS_ENABLED=false
+export JAEGER_AGENT_PORT="${JAEGER_AGENT_PORT:-6831}"
+
+if [ "${RUN_JAEGER_AGENT}" -lt 1 ] || [ -z "${JAEGER_COLLECTOR_NETLOC}" ]; then
+    if [ -z "${JAEGER_COLLECTOR_NETLOC}" ]; then
+        >&2 echo "JAEGER_COLLECTOR_NETLOC var not set. Jaeger agent will not be launched"
+    fi
+    sleep 9000  # could also 'sv stop jaeger-agent'.
+    exit 0
+fi
+
+case "$YENV_NAME" in
+    cloud) JAEGER_TLS_ENABLED=true
+esac
+
+j2 "${JAEGER_AGENT_CONFIG_TEMPLATE_PATH}" > "${JAEGER_AGENT_CONFIG_PATH}"
+
+exec /usr/local/bin/jaeger-agent --config-file "${JAEGER_AGENT_CONFIG_PATH}"

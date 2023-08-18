@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: yandex-dc-public-api-proto-stubs
+Version: 0.0.0
+Author: Package Author
+Author-email: bipackageauthor@yandex-team.ru
+Requires-Dist: protobuf
+Provides-Extra: all
+

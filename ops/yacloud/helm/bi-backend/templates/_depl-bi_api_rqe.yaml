@@ -1,0 +1,119 @@
+{{- define "depl-bi_api_rqe" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: rqe-dataset-api
+  labels:
+    app: rqe-dataset-api
+spec:
+  replicas: {{ add .Values.scaling.dataset_data_api.desired .Values.scaling.public_dataset_api.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.dataset_data_api.max_surge }}
+      maxUnavailable: {{ .Values.scaling.dataset_data_api.max_unavailable }}
+  selector:
+    matchLabels:
+      app: rqe-dataset-api
+  template:
+    metadata:
+      labels:
+        app: rqe-dataset-api
+      annotations:
+        injector.tumblr.com/request: jaeger-agent
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - dataset-data-api
+                      - public-dataset-api
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: rqe-ext-async
+          image: "{{ .Values.docker_images_info.rqe_ext_async.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          env:
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-rqe" . | indent 12 }}
+            {{- include "secrets-rqe" . | indent 12}}
+            - name: RQE_EXT_ASYNC_PORT
+              value: "9877"
+            - name: BISYS_USE_IPV6
+              value: "0"
+            {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.dataset_data_api }}
+            {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.rqe_dataset_api.cpu }}
+              memory: {{.Values.app_resources.rqe_dataset_api.ram}}
+          readinessProbe:
+            httpGet:
+              port: 9877
+              scheme: "HTTP"
+              path: "/ping"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: 9877
+              scheme: "HTTP"
+              path: "/ping"
+            failureThreshold: 30
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+        - name: rqe-ext-sync
+          image: "{{ .Values.docker_images_info.rqe_ext_sync.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          env:
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-rqe" . | indent 12 }}
+            {{- include "secrets-rqe" . | indent 12}}
+            - name: SNOWFLAKE_CABUNDLE_PATH
+              value: "/etc/ssl/certs/ca-certificates.crt"
+            - name: RQE_EXT_SYNC_PORT
+              value: "9876"
+            - name: BISYS_USE_IPV6
+              value: "0"
+            {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.rqe_dataset_api.cpu }}
+              memory: {{.Values.app_resources.rqe_dataset_api.ram}}
+          readinessProbe:
+            httpGet:
+              port: 9876
+              scheme: "HTTP"
+              path: "/ping"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: 9876
+              scheme: "HTTP"
+              path: "/ping"
+            failureThreshold: 30
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.rqe_dataset_api.taint_toleration }}"
+          effect: "NoSchedule"
+{{ end }}

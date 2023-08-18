@@ -1,0 +1,19 @@
+- name: install docker
+  tags: [install]
+  become: yes
+  import_tasks: install_docker.yml
+
+- name: install other
+  tags: [install]
+  become: yes
+  import_tasks: install_other.yml
+
+- name: configure docker
+  tags: [configure, configure_docker]
+  become: yes
+  import_tasks: configure_docker.yml
+
+- name: docker login
+  tags: [docker_loging]
+  when: perform_docker_login
+  import_tasks: docker_login.yml

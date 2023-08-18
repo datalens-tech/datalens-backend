@@ -1,0 +1,180 @@
+version: 10
+
+# Документация: https://a.yandex-team.ru/arc/trunk/arcadia/frontend/packages/monitorado
+
+juggler_checks_defaults:
+  namespace: datalens
+
+notifications:
+  notif_preprod:
+    telegram: [datalens_preprod_alerts]
+  notif_minor:
+    telegram: [DataLensDuty]
+  notif_major:
+    telegram: [DataLensDuty]
+    sms: [ asnytin, abc:dlback:dutywork ]
+  notif_crit:
+    telegram: [ DataLensDuty ]
+    sms: [ asnytin, abc:dlback:dutywork ]
+    phone: [asnytin]  # abc:dlback:dutywork is coming
+
+settings_defaults:
+  abc: datalens  # Имя ABC-сервиса, к которому будут привязаны алерты
+
+deploy:
+  objects:
+    deploy_unit:back-int-preprod.dataset-api: default_preprod_alertset
+    deploy_unit:back-int-preprod.dataset-data-api: default_preprod_alertset
+    deploy_unit:back-int-preprod.dls-api: default_preprod_alertset
+    deploy_unit:back-int-preprod.dls-tasks: default_preprod_alertset
+    deploy_unit:back-int-preprod.alerts-api: default_preprod_alertset
+    deploy_unit:back-int-preprod.external-api: new_preprod_alertset
+    deploy_unit:back-int-preprod.file-uploader-api: default_preprod_alertset
+    deploy_unit:back-int-preprod.file-uploader-worker: default_preprod_alertset
+
+    deploy_unit:datalens-back-int-prod.dataset-api: default_prod_alertset
+    deploy_unit:datalens-back-int-prod.dataset-data-api: default_prod_alertset
+    deploy_unit:datalens-back-int-prod.dls-api: default_prod_alertset
+    deploy_unit:datalens-back-int-prod.dls-tasks: default_prod_alertset
+    deploy_unit:datalens-back-int-prod.alerts-api: default_prod_alertset
+    deploy_unit:datalens-back-int-prod.external-api: new_prod_alertset
+    deploy_unit:datalens-back-int-prod.file-uploader-api: new_prod_alertset
+    deploy_unit:datalens-back-int-prod.file-uploader-worker: new_prod_alertset
+
+  alertsets:
+    default_preprod_alertset:
+      settings:
+        notifications: [notif_preprod]
+      alerts:
+        cpu_usage:
+          signal: '%cpu_perc(99)'  # 99-ый перцентиль процента потребления CPU (рекомендуется)
+          warn: 80
+          crit: 90
+        cpu_wait:
+          signal: '%cpu_wait(99)'  # 99-ый перцентиль времени ожидания процессов в очереди за CPU (рекомендуется)
+          warn: 80
+          crit: 90
+        mem_usage:
+          signal: '%anon_mem_perc(99)'  # 99-ый перцентиль процента потребления памяти процессами (рекомендуется)
+          warn: 70
+          crit: 80
+        disk_usage:
+          signal: 'quant(portoinst-capacity-perc_usage_/virtual_disks/disk-0_hgram, 99)'  # 99-ый перцентиль процента потребления диска
+          warn: 70
+          crit: 80
+    new_preprod_alertset:
+      extends: default_preprod_alertset
+      alerts:
+        disk_usage:
+          signal: 'quant(portoinst-capacity-perc_usage_/virtual_disks/main-disk_hgram, 99)'  # у новых юнитов почему-то сигнал другой
+          warn: 70
+          crit: 80
+    default_prod_alertset:
+      settings:
+        notifications: [notif_minor]
+      alerts:
+        cpu_usage:
+          signal: '%cpu_perc(99)'  # 99-ый перцентиль процента потребления CPU (рекомендуется)
+          warn: 90
+          crit: 95
+        cpu_wait:
+          signal: '%cpu_wait(99)'  # 99-ый перцентиль времени ожидания процессов в очереди за CPU (рекомендуется)
+          warn: 80
+          crit: 90
+        mem_usage:
+          signal: '%anon_mem_perc(99)'  # 99-ый перцентиль процента потребления памяти процессами (рекомендуется)
+          warn: 70
+          crit: 80
+        disk_usage:
+          signal: 'quant(portoinst-capacity-perc_usage_/virtual_disks/disk-0_hgram, 99)'  # 99-ый перцентиль процента потребления диска
+          warn: 70
+          crit: 80
+    new_prod_alertset:
+      extends: default_prod_alertset
+      alerts:
+        disk_usage:
+          signal: 'quant(portoinst-capacity-perc_usage_/virtual_disks/main-disk_hgram, 99)'  # у новых юнитов почему-то сигнал другой
+          warn: 70
+          crit: 80
+
+awacs:
+  sections:
+    back-deploy.datalens-beta.yandex-team.ru.back-deploy_datalens-beta_yandex-team_ru: default_preprod_alertset
+    back-deploy.datalens-beta.yandex-team.ru.data-api: default_preprod_alertset
+    back-deploy.datalens-beta.yandex-team.ru.alerts-api: default_preprod_alertset
+    dls-int-test.yandex.net.dls-int-test_yandex_net: default_preprod_alertset
+
+    back.datalens.yandex-team.ru.dataset-api: default_prod_alertset
+    back.datalens.yandex-team.ru.dataset-data-api: dataset_data_api_prod_alertset
+    back.datalens.yandex-team.ru.alerts-api: default_prod_alertset
+    dls-int-prod.datalens.yandex.net.dls-int-prod_datalens_yandex_net: default_prod_alertset
+    # TODO: alertsets for file-uploader and external-api
+
+  alertsets:
+    default_preprod_alertset:
+      settings:
+        notifications: [notif_preprod]
+      alerts:
+        http_5xx:
+          signal: '%5xx_perc'  # Процент ответов с кодами вида 5xx (рекомендуется)
+          warn: 0.5
+          crit: 2
+        http_fail:
+          signal: '%backend_fail_perc'  # Процент безуспешных ответов из-за ошибок бэкенда (рекомендуется)
+          warn: 0.5
+          crit: 2
+
+    default_prod_alertset:
+      settings:
+        notifications: [notif_crit]
+      alerts:
+        http_5xx:
+          signal: '%5xx_perc'  # Процент ответов с кодами вида 5xx (рекомендуется)
+          warn: 0.5
+          crit: 2
+        http_fail:
+          signal: '%backend_fail_perc'  # Процент безуспешных ответов из-за ошибок бэкенда (рекомендуется)
+          warn: 0.5
+          crit: 2
+
+    dataset_data_api_prod_alertset:
+      settings:
+        notifications: [notif_crit]
+      alerts:
+        http_5xx:
+          signal: '%5xx_perc'  # Процент ответов с кодами вида 5xx
+          warn: 2
+          crit: 5
+        http_fail:
+          signal: '%backend_fail_perc'  # Процент безуспешных ответов из-за ошибок бэкенда
+          warn: 2
+          crit: 5
+
+mdb:
+  databases:
+    postgresql:yandexbi.yandexbi.dls_int_prod_db: default_alertset
+    postgresql:yandexbi.yandexbi.bi_pg_cluster: default_alertset
+    redis:yandexbi.yandexbi.int-prod: default_alertset
+    clickhouse:yandexbi.yandexbi.ya_bi_analytics: default_alertset
+
+  alertsets:
+    default_alertset:
+      settings:
+        notifications: [ notif_major ]  # Кому отправлять уведомления
+      alerts:
+        cpu_load:
+          signal: '%cpu_perc'  # Процент потребления CPU
+          warn: 50
+          crit: 85
+          tier: master  # Только на мастере
+        mem_usage:
+          signal: '%mem_anon_perc'  # Процент потребления памяти (anon) относительно гарантированного лимита
+          warn: 75
+          crit: 85
+          tier: master  # Только на мастере
+        disk_usage:
+          signal: '%used_space_perc'
+          warn: 80
+          crit: 90
+          tier: master  # Только на мастере
+

@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: yandex-bi-core-testing
+Version: 0.0.0
+Author: Bi Package Author
+Author-email: bipackageauthor@yandex-team.ru
+Requires-Dist: aiohttp (>=3.5)
+Requires-Dist: attrs
+Requires-Dist: docker
+Requires-Dist: Flask
+Requires-Dist: marshmallow
+Requires-Dist: psycopg2-binary
+Requires-Dist: pytest
+Requires-Dist: uwsgi
+Requires-Dist: requests
+Requires-Dist: shortuuid
+Requires-Dist: sqlalchemy (>=1.2)
+Requires-Dist: Werkzeug
+Provides-Extra: all
+

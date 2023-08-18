@@ -1,0 +1,100 @@
+
+[tool.poetry]
+name = "yandex-bi-legacy-test-bundle"
+version = "0.0.1"
+description = ""
+authors = ["Package Author <bipackageauthor@yandex-team.ru>"]
+packages = [{include = "bi_legacy_test_bundle"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+sentry-sdk = ">=1.15.0"
+sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+yandex-bi-compeng-pg = {path = "../../lib/bi_compeng_pg"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
+yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = [
+    "bi_legacy_test_bundle_tests/core/db",
+    "bi_legacy_test_bundle_tests/core/ext",
+    "bi_legacy_test_bundle_tests/core/unit"
+]
+timeout = 600
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true
+
+[datalens.pytest.unit]
+root_dir = "bi_legacy_test_bundle_tests/core/"
+target_path = "unit"
+skip_compose = "true"
+
+[datalens.pytest.db_part_1]
+root_dir = "bi_legacy_test_bundle_tests/core/db/"
+target_path = "aio caches capabilities common compeng"
+compose_file_base = "docker-compose.core"
+labels = ["fat"]
+# todo: add "required_services" and run only them before starting tests with docker compose
+
+[datalens.pytest.db_part_2]
+root_dir = "bi_legacy_test_bundle_tests/core/db/"
+target_path = "connectors data_processing maintenance services_registry us_manager"
+compose_file_base = "docker-compose.core"
+labels = ["fat"]
+
+[datalens.pytest.db_conn_executors]
+root_dir = "bi_legacy_test_bundle_tests/core/db/"
+target_path = "conn_executors"
+compose_file_base = "docker-compose.core"
+labels = ["fat"]
+
+[datalens.pytest.ext]
+root_dir = "bi_legacy_test_bundle_tests/core/"
+target_path = "ext"
+compose_file_base = "docker-compose.core"
+labels = ["fat"]

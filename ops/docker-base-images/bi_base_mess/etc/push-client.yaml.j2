@@ -1,0 +1,35 @@
+---
+# https://wiki.yandex-team.ru/logbroker/docs/push-client/config/
+
+logger:
+  # timeformat: "%b %d %H:%M:%S.\\S \\H [\\P]"
+  file: /var/log/push-client.log
+  level: 6
+  # Telemetry doesn't (currently) work over pq:
+  telemetry_interval: -1
+  remote: 0
+
+network:
+  proto: pq
+  master-addr: {{LB_MASTER_ADDR}}
+  {% if LB_MASTER_PORT %}master-port: {{LB_MASTER_PORT}}{% endif %}
+  {% if LB_IAM %}
+  iam: 1
+  {% if LB_IAM_KEYFILE %}iam-key-file: {{LB_IAM_KEYFILE}}{% endif %}
+  {% if LB_IAM_ENDPOINT %}iam-endpoint: {{LB_IAM_ENDPOINT}}{% endif %}
+  database: {{LB_YC_DATABASE}}
+  ssl:
+    enabled: 1
+  {% else %}
+  tvm-server-id: 2001059
+  {% endif %}
+
+files:
+
+  # https://bb.yandex-team.ru/projects/STATBOX/repos/bi-api/browse/_aux/logbroker_config
+  - name: /var/log/app/debug.log
+    topic: {{LB_TOPIC_PREFIX}}debug
+  - name: /var/log/app/fast.log
+    topic: {{LB_TOPIC_PREFIX}}fast
+  - name: /var/log/app/events.log
+    topic: {{LB_TOPIC_PREFIX}}events

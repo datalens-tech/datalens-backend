@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: bi-formula-ref-nebius
+Version: 0.0.0
+Author: Package Author
+Author-email: bipackageauthor@yandex-team.ru
+Requires-Dist: attrs
+Provides-Extra: all
+

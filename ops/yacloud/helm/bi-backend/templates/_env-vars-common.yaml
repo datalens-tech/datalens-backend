@@ -1,0 +1,28 @@
+{{- define "env_vars-common" }}
+- name: DL_CRY_ACTUAL_KEY_ID
+  value: {{ .Values.crypto_key_name }}_{{ .Values.crypto_key_version }}
+- name: US_HOST
+  value: {{ .Values.endpoints.us_host }}
+- name: YC_AUTH_SETTINGS_ENDPOINT_IAM
+  value: {{ .Values.endpoints.iam_api }}
+- name: YC_AUTH_SETTINGS_AS_ENDPOINT
+  value: {{ .Values.endpoints.iam_as }}
+- name: YC_AUTH_SETTINGS_SS_ENDPOINT
+  value: {{ .Values.endpoints.iam_ss }}
+- name: YC_AUTH_SETTINGS_TS_ENDPOINT
+  value: {{ .Values.endpoints.iam_ts }}
+- name: YC_ENDPOINT_IAM_TS
+  value: {{ .Values.endpoints.iam_ts }}
+- name: YC_ENDPOINT_RM_CP
+  value: {{ .Values.endpoints.rm_host }}
+- name: YC_AUTH_SETTINGS_AUTHORIZE_PERMISSION
+  value: {{ .Values.iam_basic_permission }}
+- name: JAEGER_AGENT_PORT
+  value: "6831"
+- name: RUN_JAEGER_AGENT
+  value: "0"
+- name: DL_USE_JAEGER_TRACER
+  value: "1"
+- name: YC_SA_CREDS_MODE
+  value: {{ .Values.sa_creds_mode | default "local_metadata" }}
+{{ end }}

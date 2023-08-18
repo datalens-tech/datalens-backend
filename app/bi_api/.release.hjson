@@ -1,0 +1,13 @@
+dockerfile: Dockerfile
+image: registry.yandex.net/statinfra/bi-api-tier-1
+deploy: true
+stage: back-int-preprod
+deploy_units: dataset-api:dataset-api,dataset-data-api:dataset-data-api
+experiments: version
+version_files: {
+  "./bi/__init__.py": '__version__ = "([^"]+)"',
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}
+_x_bi_cloud_preprod_build_conf_ids: [
+  "DataLens_BuildVmImages_BuildBIApi",
+]

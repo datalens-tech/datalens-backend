@@ -1,0 +1,71 @@
+#!/bin/sh
+# #######
+# Configure ClickHouse logs sending for syslog-ng,
+# if it can be done in the current environment.
+# #######
+
+set -eu
+
+
+# https://console.cloud.yandex.ru/folders/b1g77mbejmj4m6flq848/managed-clickhouse/cluster/c9qbc2g1d6pr7vhr34sg
+# tricky
+LOGCH_HOSTNAME=c-c9qbc2g1d6pr7vhr34sg.rw.mdb.yandexcloud.net
+# # only accessible from ext-prod
+# LOGCH_HOSTNAME=rc1c-au3skg5skktrlske.db.yandex.net
+# # does not match the TLS
+# LOGCH_HOSTNAME=logch.datalens.cloud.yandex.net
+
+
+LOGCH_TIMEOUT=10
+
+
+case "${YENV_TYPE:-}" in
+    production|production-public)
+        LOGCH_TABLE=ext_prod.bi_logs
+        LOGCH_USER=ext_prod_user
+        # password: yav sec-01dc4kwx555c9cby0rkmv50eym->LOGS_CH_PASSWORD
+        ;;
+    int-production)
+        LOGCH_TABLE=int_prod.bi_logs
+        LOGCH_USER=int_prod_user
+        # password: yav sec-01dc4kgz3ehzxkxdw1z48rp0b2->LOGS_CH_PASSWORD
+        ;;
+    testing|testing-public)
+        LOGCH_TABLE=ext_testing.bi_logs
+        LOGCH_USER=ext_testing_user
+        # password: yav sec-01dc24ppx88wd8wjawzp3zwxcg->LOGS_CH_PASSWORD
+        ;;
+    int-testing)
+        LOGCH_TABLE=int_testing.bi_logs
+        LOGCH_USER=int_testing_user
+        # password: yav sec-01dc245cgq8jprkct8ybrp9ffx->LOGS_CH_PASSWORD
+        # # Experimental setup, on the materialization CH
+        # LOGCH_HOSTNAME=c-mdb4qt5dhnvo81c4em4k.rw.db.yandex.net
+        # LOGCH_TABLE=test.bi_logs
+        # LOGCH_USER=test_user
+        # LOGCH_PASSWORD=qwerty123456
+        # # Debug setup
+        # LOGCH_HOSTNAME=hhell.stat.yandex-team.ru
+        ;;
+    israel)
+        LOGCH_HOSTNAME=il1a-h6dj1m0tebtttdk7.mdb.cloudil.com
+        LOGCH_TABLE=logs.bi_logs
+        LOGCH_USER=log_writer
+        # password: yav sec-01g7f9bepxj47d3n90s9qysvv3->LOGS_CH_PASSWORD
+        ;;
+    nemax)
+        LOGCH_HOSTNAME=eu-north1-a-tkec9jq4agm0m0op.mdb.nemax.nebius.cloud
+        LOGCH_TABLE=logs.bi_logs
+        LOGCH_USER=log_writer
+        # password: lockbox -> devops keys -> hhell_logs_log_writer
+        ;;
+esac
+
+
+if [ -n "${LOGCH_TABLE:-}" ] && [ -n "${LOGCH_PASSWORD:-}" ]; then
+    (
+        echo "Setting up syslog-ng -> ClickHouse logs to ${LOGCH_HOSTNAME} ${LOGCH_TABLE}"
+        export LOGCH_HOSTNAME LOGCH_TABLE LOGCH_USER LOGCH_PASSWORD LOGCH_TIMEOUT
+        j2 /etc/syslog-ng/conf.d/31-ch-logs.conf.j2 > /etc/syslog-ng/conf.d/31-ch-logs.conf
+    )
+fi

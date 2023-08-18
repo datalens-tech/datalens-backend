@@ -1,0 +1,5 @@
+[bi_db_testing.connectors]
+clickhouse = bi_connector_clickhouse.db_testing.connector:ClickHouseDbTestingConnector
+
+[bi_formula.connectors]
+clickhouse = bi_connector_clickhouse.formula.connector:ClickHouseFormulaConnector

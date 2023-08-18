@@ -1,0 +1,45 @@
+
+[tool.poetry]
+name = "sqlalchemy-gsheets"
+version = "0.2"
+description = ""
+authors = ["Anton Vasilev <hhell@yandex-team.ru>"]
+packages = [{include = "bi_sqlalchemy_gsheets"}]
+license = "MIT"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+gsheets = "bi_sqlalchemy_gsheets.base:GSheetsDialect"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

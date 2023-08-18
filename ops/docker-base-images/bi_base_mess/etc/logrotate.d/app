@@ -1,0 +1,12 @@
+/var/log/app/*.log {
+  rotate 3
+  nocreate
+  hourly
+  missingok
+  sharedscripts
+  # For whatever weird reason, juggler-client-executed script cannot chown a file to root:adm.
+  # But probably can skip file creation completely.
+  postrotate
+    syslog-ng-ctl reload
+  endscript
+}

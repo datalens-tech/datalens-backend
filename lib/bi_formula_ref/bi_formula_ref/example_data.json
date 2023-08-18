@@ -1,0 +1,5554 @@
+[
+    [
+        "ABS.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    0.1,
+                    0.1
+                ],
+                [
+                    -2.0,
+                    2.0
+                ],
+                [
+                    50.5,
+                    50.5
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    -3.5,
+                    3.5
+                ]
+            ]
+        }
+    ],
+    [
+        "ACOS.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    3.141592653589793
+                ],
+                [
+                    -0.8660254,
+                    2.6179938469042465
+                ],
+                [
+                    -0.70710677,
+                    2.356194473078074
+                ],
+                [
+                    -0.5,
+                    2.0943951023931957
+                ],
+                [
+                    0.0,
+                    1.5707963267948966
+                ],
+                [
+                    0.5,
+                    1.0471975511965979
+                ],
+                [
+                    0.70710677,
+                    0.7853981805117192
+                ],
+                [
+                    0.8660254,
+                    0.5235988066855469
+                ],
+                [
+                    1.0,
+                    0.0
+                ]
+            ]
+        }
+    ],
+    [
+        "ARR_AVG.Example",
+        {
+            "columns": [
+                {
+                    "name": "[int_array]",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "[float_array]",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "ARR_AVG([int_array])",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "ARR_AVG([float_array])",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "[21,12,0]",
+                    "[14.3,0.42,15]",
+                    11.0,
+                    9.906666666666666
+                ],
+                [
+                    "[-4,12,0]",
+                    "[0,-3,12]",
+                    2.6666666666666665,
+                    3.0
+                ],
+                [
+                    "[5,7,9]",
+                    "[3.2,2.3,3.2]",
+                    7.0,
+                    2.9
+                ]
+            ]
+        }
+    ],
+    [
+        "ARR_MAX.Example",
+        {
+            "columns": [
+                {
+                    "name": "[int_array]",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "[float_array]",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "ARR_MAX([int_array])",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "ARR_MAX([float_array])",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "[21,12,0]",
+                    "[14.3,0.42,15]",
+                    21,
+                    15.0
+                ],
+                [
+                    "[-4,12,0]",
+                    "[0,-3,12]",
+                    12,
+                    12.0
+                ],
+                [
+                    "[5,7,9]",
+                    "[3.2,2.3,3.2]",
+                    9,
+                    3.2
+                ]
+            ]
+        }
+    ],
+    [
+        "ARR_MIN.Example",
+        {
+            "columns": [
+                {
+                    "name": "[int_array]",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "[float_array]",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "ARR_MIN([int_array])",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "ARR_MIN([float_array])",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "[21,12,0]",
+                    "[14.3,0.42,15]",
+                    0,
+                    0.42
+                ],
+                [
+                    "[-4,12,0]",
+                    "[0,-3,12]",
+                    -4,
+                    -3.0
+                ],
+                [
+                    "[5,7,9]",
+                    "[3.2,2.3,3.2]",
+                    5,
+                    2.3
+                ]
+            ]
+        }
+    ],
+    [
+        "ARR_PRODUCT.Example",
+        {
+            "columns": [
+                {
+                    "name": "[int_array]",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "[float_array]",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "ARR_PRODUCT([int_array])",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "ARR_PRODUCT([float_array])",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "[21,12,0]",
+                    "[14.3,0.42,15]",
+                    0.0,
+                    90.09
+                ],
+                [
+                    "[-4,12,0]",
+                    "[0,-3,12]",
+                    0.0,
+                    -0.0
+                ],
+                [
+                    "[5,7,9]",
+                    "[3.2,2.3,3.2]",
+                    315.0,
+                    23.552
+                ]
+            ]
+        }
+    ],
+    [
+        "ARR_REMOVE.Example",
+        {
+            "columns": [
+                {
+                    "name": "array",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "No NULLs",
+                    "type": "ARRAY_INT"
+                }
+            ],
+            "rows": [
+                [
+                    "[100,300,200,100,300]",
+                    "[100,300,200,100,300]"
+                ],
+                [
+                    "[100,300,NULL,NULL]",
+                    "[100,300]"
+                ],
+                [
+                    "[150,NULL,130,192]",
+                    "[150,130,192]"
+                ]
+            ]
+        }
+    ],
+    [
+        "ARR_SUM.Example",
+        {
+            "columns": [
+                {
+                    "name": "[int_array]",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "[float_array]",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "ARR_SUM([int_array])",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "ARR_SUM([float_array])",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "[21,12,0]",
+                    "[14.3,0.42,15]",
+                    33,
+                    29.72
+                ],
+                [
+                    "[-4,12,0]",
+                    "[0,-3,12]",
+                    8,
+                    9.0
+                ],
+                [
+                    "[5,7,9]",
+                    "[3.2,2.3,3.2]",
+                    21,
+                    8.7
+                ]
+            ]
+        }
+    ],
+    [
+        "ASIN.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -1.5707963267948966
+                ],
+                [
+                    -0.8660254,
+                    -1.0471975201093497
+                ],
+                [
+                    -0.70710677,
+                    -0.7853981462831774
+                ],
+                [
+                    -0.5,
+                    -0.5235987755982989
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.5,
+                    0.5235987755982989
+                ],
+                [
+                    0.70710677,
+                    0.7853981462831774
+                ],
+                [
+                    0.8660254,
+                    1.0471975201093497
+                ],
+                [
+                    1.0,
+                    1.5707963267948966
+                ]
+            ]
+        }
+    ],
+    [
+        "ATAN.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -0.7853981633974483
+                ],
+                [
+                    -0.8660254,
+                    -0.7137243700626944
+                ],
+                [
+                    -0.70710677,
+                    -0.6154797006026426
+                ],
+                [
+                    -0.5,
+                    -0.4636476090008061
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.5,
+                    0.4636476090008061
+                ],
+                [
+                    0.70710677,
+                    0.6154797006026426
+                ],
+                [
+                    0.8660254,
+                    0.7137243700626944
+                ],
+                [
+                    1.0,
+                    0.7853981633974483
+                ]
+            ]
+        }
+    ],
+    [
+        "AVG_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "AVG 1",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "AVG 2",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "AVG 3",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    9.625,
+                    16.0,
+                    3.75
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    9.625,
+                    16.0,
+                    15.5
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    9.625,
+                    5.5,
+                    3.75
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    9.625,
+                    5.5,
+                    15.5
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    9.625,
+                    3.0,
+                    3.75
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    9.625,
+                    3.0,
+                    15.5
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    9.625,
+                    14.0,
+                    3.75
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    9.625,
+                    14.0,
+                    15.5
+                ]
+            ]
+        }
+    ],
+    [
+        "CASE.Example with data table",
+        {
+            "columns": [
+                {
+                    "name": "unit",
+                    "type": "STRING"
+                },
+                {
+                    "name": "case_function",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "case_statement",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "s",
+                    1,
+                    1
+                ],
+                [
+                    "m",
+                    60,
+                    60
+                ],
+                [
+                    "h",
+                    3600,
+                    3600
+                ]
+            ]
+        }
+    ],
+    [
+        "CAST_ARR_FLOAT.Example",
+        {
+            "columns": [
+                {
+                    "name": "string_array",
+                    "type": "ARRAY_STR"
+                },
+                {
+                    "name": "int_array",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "Array of float from string",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "Array of floats from integer",
+                    "type": "ARRAY_FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "['100','300','200']",
+                    "[12,0,42]",
+                    "[100,300,200]",
+                    "[12,0,42]"
+                ],
+                [
+                    "['100','300',NULL,NULL]",
+                    "[-3,NULL,0]",
+                    "[100,300,NULL,NULL]",
+                    "[-3,NULL,0]"
+                ],
+                [
+                    "['150',NULL,'192']",
+                    "[132,637,NULL]",
+                    "[150,NULL,192]",
+                    "[132,637,NULL]"
+                ]
+            ]
+        }
+    ],
+    [
+        "CAST_ARR_INT.Example",
+        {
+            "columns": [
+                {
+                    "name": "string_array",
+                    "type": "ARRAY_STR"
+                },
+                {
+                    "name": "float_array",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "Array of integers from string",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "Array of integers from float",
+                    "type": "ARRAY_INT"
+                }
+            ],
+            "rows": [
+                [
+                    "['100','300','200']",
+                    "[12.3,0.43,42]",
+                    "[100,300,200]",
+                    "[12,0,42]"
+                ],
+                [
+                    "['100','300',NULL,NULL]",
+                    "[0,NULL,12]",
+                    "[100,300,NULL,NULL]",
+                    "[0,NULL,12]"
+                ],
+                [
+                    "['150',NULL,'192']",
+                    "[3.2,2.3,3.5]",
+                    "[150,NULL,192]",
+                    "[3,2,3]"
+                ]
+            ]
+        }
+    ],
+    [
+        "CAST_ARR_STR.Example",
+        {
+            "columns": [
+                {
+                    "name": "int_array",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "float_array",
+                    "type": "ARRAY_FLOAT"
+                },
+                {
+                    "name": "Array of string from integer",
+                    "type": "ARRAY_STR"
+                },
+                {
+                    "name": "Array of integers from float",
+                    "type": "ARRAY_STR"
+                }
+            ],
+            "rows": [
+                [
+                    "[12,0,42]",
+                    "[12.3,0.43,42]",
+                    "['12','0','42']",
+                    "['12.3','0.43','42']"
+                ],
+                [
+                    "[-3,NULL,0]",
+                    "[0,NULL,12]",
+                    "['-3',NULL,'0']",
+                    "['0',NULL,'12']"
+                ],
+                [
+                    "[132,637,NULL]",
+                    "[3.2,2.3,3.5]",
+                    "['132','637',NULL]",
+                    "['3.2','2.3','3.5']"
+                ]
+            ]
+        }
+    ],
+    [
+        "CEILING.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    0.1,
+                    1.0
+                ],
+                [
+                    -2.0,
+                    -2.0
+                ],
+                [
+                    50.5,
+                    51.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    -3.5,
+                    -3.0
+                ]
+            ]
+        }
+    ],
+    [
+        "CONTAINS_ALL.Example",
+        {
+            "columns": [
+                {
+                    "name": "array1",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "array2",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "contains_all",
+                    "type": "BOOLEAN"
+                }
+            ],
+            "rows": [
+                [
+                    "[1,2,3]",
+                    "[1,2]",
+                    true
+                ],
+                [
+                    "[1,2,3]",
+                    "[1,4]",
+                    false
+                ]
+            ]
+        }
+    ],
+    [
+        "CONTAINS_ANY.Example",
+        {
+            "columns": [
+                {
+                    "name": "array1",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "array2",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "contains_any",
+                    "type": "BOOLEAN"
+                }
+            ],
+            "rows": [
+                [
+                    "[1,2,3]",
+                    "[1,5]",
+                    true
+                ],
+                [
+                    "[1,2,3]",
+                    "[4,5]",
+                    false
+                ]
+            ]
+        }
+    ],
+    [
+        "CONTAINS_ARRAY.Example",
+        {
+            "columns": [
+                {
+                    "name": "array",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "value",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "contains",
+                    "type": "BOOLEAN"
+                }
+            ],
+            "rows": [
+                [
+                    "[1,2,3]",
+                    2,
+                    true
+                ],
+                [
+                    "[1,2,3]",
+                    4,
+                    false
+                ]
+            ]
+        }
+    ],
+    [
+        "CONTAINS_SUBSEQUENCE.Example",
+        {
+            "columns": [
+                {
+                    "name": "array1",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "array2",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "contains_subsequence",
+                    "type": "BOOLEAN"
+                }
+            ],
+            "rows": [
+                [
+                    "[1,2,3]",
+                    "[1,2]",
+                    true
+                ],
+                [
+                    "[1,2,3]",
+                    "[2,1]",
+                    false
+                ],
+                [
+                    "[1,2,3]",
+                    "[1,3]",
+                    false
+                ]
+            ]
+        }
+    ],
+    [
+        "COS.Example",
+        {
+            "columns": [
+                {
+                    "name": "n",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "angle",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -3.141592653589793,
+                    -1.0
+                ],
+                [
+                    -0.5,
+                    -1.5707963267948966,
+                    6.123233995736766e-17
+                ],
+                [
+                    -0.25,
+                    -0.7853981633974483,
+                    0.7071067811865476
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.25,
+                    0.7853981633974483,
+                    0.7071067811865476
+                ],
+                [
+                    0.5,
+                    1.5707963267948966,
+                    6.123233995736766e-17
+                ],
+                [
+                    1.0,
+                    3.141592653589793,
+                    -1.0
+                ]
+            ]
+        }
+    ],
+    [
+        "COT.Example",
+        {
+            "columns": [
+                {
+                    "name": "n",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "angle",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -3.141592653589793,
+                    8165619676597685.0
+                ],
+                [
+                    -0.5,
+                    -1.5707963267948966,
+                    -6.123233995736766e-17
+                ],
+                [
+                    -0.25,
+                    -0.7853981633974483,
+                    -1.0000000000000002
+                ],
+                [
+                    0.0,
+                    0.0,
+                    Infinity
+                ],
+                [
+                    0.25,
+                    0.7853981633974483,
+                    1.0000000000000002
+                ],
+                [
+                    0.5,
+                    1.5707963267948966,
+                    6.123233995736766e-17
+                ],
+                [
+                    1.0,
+                    3.141592653589793,
+                    -8165619676597685.0
+                ]
+            ]
+        }
+    ],
+    [
+        "COUNT_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "COUNT 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "COUNT 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "COUNT 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    8,
+                    2,
+                    4
+                ]
+            ]
+        }
+    ],
+    [
+        "DATEPART.Example with custom first day of the week",
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "DATE"
+                },
+                {
+                    "name": "DOW",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "DOW sun",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "DOW Monday",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "DOW wed",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2014-10-06"
+                    },
+                    1,
+                    2,
+                    1,
+                    6
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2014-10-07"
+                    },
+                    2,
+                    3,
+                    2,
+                    7
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2017-03-08"
+                    },
+                    3,
+                    4,
+                    3,
+                    1
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2024-02-12"
+                    },
+                    1,
+                    2,
+                    1,
+                    6
+                ]
+            ]
+        }
+    ],
+    [
+        "DATEPART.Example with date",
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "DATE"
+                },
+                {
+                    "name": "Year",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Month",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Day",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "DayOfWeek",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "DOW",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2014-10-06"
+                    },
+                    2014,
+                    10,
+                    6,
+                    1,
+                    1
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2014-10-07"
+                    },
+                    2014,
+                    10,
+                    7,
+                    2,
+                    2
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2017-03-08"
+                    },
+                    2017,
+                    3,
+                    8,
+                    3,
+                    3
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2024-02-12"
+                    },
+                    2024,
+                    2,
+                    12,
+                    1,
+                    1
+                ]
+            ]
+        }
+    ],
+    [
+        "DATEPART.Example with date and time",
+        {
+            "columns": [
+                {
+                    "name": "DateTime",
+                    "type": "GENERICDATETIME"
+                },
+                {
+                    "name": "Year",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Month",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Day",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Hour",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Minute",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Second",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    {
+                        "__type__": "datetime",
+                        "__value__": "2014-10-06T07:45:12"
+                    },
+                    2014,
+                    10,
+                    6,
+                    7,
+                    45,
+                    12
+                ],
+                [
+                    {
+                        "__type__": "datetime",
+                        "__value__": "2014-10-07T11:10:15"
+                    },
+                    2014,
+                    10,
+                    7,
+                    11,
+                    10,
+                    15
+                ],
+                [
+                    {
+                        "__type__": "datetime",
+                        "__value__": "2017-03-08T23:59:59"
+                    },
+                    2017,
+                    3,
+                    8,
+                    23,
+                    59,
+                    59
+                ],
+                [
+                    {
+                        "__type__": "datetime",
+                        "__value__": "2024-02-12T07:40:33"
+                    },
+                    2024,
+                    2,
+                    12,
+                    7,
+                    40,
+                    33
+                ]
+            ]
+        }
+    ],
+    [
+        "DEGREES.Example",
+        {
+            "columns": [
+                {
+                    "name": "n",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "angle",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -3.141592653589793,
+                    -180.0
+                ],
+                [
+                    -0.5,
+                    -1.5707963267948966,
+                    -90.0
+                ],
+                [
+                    -0.25,
+                    -0.7853981633974483,
+                    -45.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.25,
+                    0.7853981633974483,
+                    45.0
+                ],
+                [
+                    0.5,
+                    1.5707963267948966,
+                    90.0
+                ],
+                [
+                    1.0,
+                    3.141592653589793,
+                    180.0
+                ]
+            ]
+        }
+    ],
+    [
+        "DIV.Example",
+        {
+            "columns": [
+                {
+                    "name": "numerator",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "denominator",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    4.0,
+                    2.0,
+                    2
+                ],
+                [
+                    5.0,
+                    3.0,
+                    1
+                ],
+                [
+                    5.0,
+                    2.0,
+                    2
+                ],
+                [
+                    2.5,
+                    1.2,
+                    2
+                ]
+            ]
+        }
+    ],
+    [
+        "DIV_SAFE.Example",
+        {
+            "columns": [
+                {
+                    "name": "numerator",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "denominator",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "result3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    5.0,
+                    2.0,
+                    2,
+                    2
+                ],
+                [
+                    5.0,
+                    0.0,
+                    null,
+                    42
+                ]
+            ]
+        }
+    ],
+    [
+        "FDIV_SAFE.Example",
+        {
+            "columns": [
+                {
+                    "name": "numerator",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "denominator",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result2",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result3",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    5.0,
+                    2.0,
+                    2.5,
+                    2.5
+                ],
+                [
+                    5.0,
+                    0.0,
+                    null,
+                    42.0
+                ]
+            ]
+        }
+    ],
+    [
+        "FIRST.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "FIRST 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "FIRST 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    28,
+                    6
+                ],
+                [
+                    "London",
+                    11,
+                    28,
+                    6
+                ],
+                [
+                    "Moscow",
+                    6,
+                    28,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    6
+                ]
+            ]
+        }
+    ],
+    [
+        "FIRST.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "FIRST 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "FIRST 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "FIRST 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    7,
+                    7,
+                    23
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    7,
+                    1,
+                    7
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    7,
+                    1,
+                    23
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    7,
+                    2,
+                    7
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    7,
+                    2,
+                    23
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    7,
+                    5,
+                    7
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    7,
+                    5,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "FLOOR.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    0.1,
+                    0.0
+                ],
+                [
+                    -2.0,
+                    -2.0
+                ],
+                [
+                    50.5,
+                    50.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    -3.5,
+                    -4.0
+                ]
+            ]
+        }
+    ],
+    [
+        "IF.Example with data table",
+        {
+            "columns": [
+                {
+                    "name": "sales",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "if_function",
+                    "type": "STRING"
+                },
+                {
+                    "name": "if_statement",
+                    "type": "STRING"
+                }
+            ],
+            "rows": [
+                [
+                    432.4,
+                    "100 - 1000",
+                    "100 - 1000"
+                ],
+                [
+                    77.0,
+                    "Less than 100",
+                    "Less than 100"
+                ],
+                [
+                    12000.0,
+                    "1000 and greater",
+                    "1000 and greater"
+                ],
+                [
+                    null,
+                    "Less than 100",
+                    "Less than 100"
+                ],
+                [
+                    34.25,
+                    "Less than 100",
+                    "Less than 100"
+                ],
+                [
+                    128.0,
+                    "100 - 1000",
+                    "100 - 1000"
+                ],
+                [
+                    0.0,
+                    "Less than 100",
+                    "Less than 100"
+                ],
+                [
+                    null,
+                    "Less than 100",
+                    "Less than 100"
+                ]
+            ]
+        }
+    ],
+    [
+        "IFNULL.Example",
+        {
+            "columns": [
+                {
+                    "name": "sales",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    432.4,
+                    432.3999938964844
+                ],
+                [
+                    77.0,
+                    77.0
+                ],
+                [
+                    12000.0,
+                    12000.0
+                ],
+                [
+                    null,
+                    -100.0
+                ],
+                [
+                    34.25,
+                    34.25
+                ],
+                [
+                    128.0,
+                    128.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    -100.0
+                ]
+            ]
+        }
+    ],
+    [
+        "ISNULL.Example",
+        {
+            "columns": [
+                {
+                    "name": "sales",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result_1",
+                    "type": "BOOLEAN"
+                },
+                {
+                    "name": "result_2",
+                    "type": "BOOLEAN"
+                },
+                {
+                    "name": "result_3",
+                    "type": "BOOLEAN"
+                }
+            ],
+            "rows": [
+                [
+                    432.4,
+                    false,
+                    false,
+                    true
+                ],
+                [
+                    77.0,
+                    false,
+                    false,
+                    true
+                ],
+                [
+                    12000.0,
+                    false,
+                    false,
+                    true
+                ],
+                [
+                    null,
+                    true,
+                    true,
+                    false
+                ],
+                [
+                    34.25,
+                    false,
+                    false,
+                    true
+                ],
+                [
+                    128.0,
+                    false,
+                    false,
+                    true
+                ],
+                [
+                    0.0,
+                    false,
+                    false,
+                    true
+                ],
+                [
+                    null,
+                    true,
+                    true,
+                    false
+                ]
+            ]
+        }
+    ],
+    [
+        "LAG.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    11,
+                    28
+                ],
+                [
+                    "London",
+                    11,
+                    6,
+                    6
+                ],
+                [
+                    "Moscow",
+                    6,
+                    28,
+                    null
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    null,
+                    11
+                ]
+            ]
+        }
+    ],
+    [
+        "LAG.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    7,
+                    7,
+                    23
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    25,
+                    null,
+                    7
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    1,
+                    1,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    10,
+                    null,
+                    1
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    2,
+                    2,
+                    25
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    4,
+                    null,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    5,
+                    5,
+                    null
+                ]
+            ]
+        }
+    ],
+    [
+        "LAG.Example with the optional argument",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAG 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    null,
+                    6
+                ],
+                [
+                    "London",
+                    11,
+                    32,
+                    28
+                ],
+                [
+                    "Moscow",
+                    6,
+                    11,
+                    null
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    6,
+                    null
+                ]
+            ]
+        }
+    ],
+    [
+        "LAST.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAST 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAST 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    32,
+                    32
+                ],
+                [
+                    "London",
+                    11,
+                    32,
+                    32
+                ],
+                [
+                    "Moscow",
+                    6,
+                    32,
+                    32
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    32,
+                    32
+                ]
+            ]
+        }
+    ],
+    [
+        "LAST.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAST 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAST 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "LAST 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    23,
+                    25,
+                    5
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    23,
+                    25,
+                    10
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    23,
+                    10,
+                    5
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    23,
+                    10,
+                    10
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    23,
+                    4,
+                    5
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    23,
+                    4,
+                    10
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    23,
+                    23,
+                    5
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    23,
+                    23,
+                    10
+                ]
+            ]
+        }
+    ],
+    [
+        "MAVG.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "21.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "30.0000000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    11,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "8.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "8.5000000000000000"
+                    }
+                ],
+                [
+                    "Moscow",
+                    6,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "6.0000000000000000"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "28.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "19.5000000000000000"
+                    }
+                ]
+            ]
+        }
+    ],
+    [
+        "MAVG.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    }
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "16.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "16.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "24.0000000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "13.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "1.00000000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "4.0000000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "5.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "5.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    }
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "6.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "2.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "1.5000000000000000"
+                    }
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "3.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "3.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "14.5000000000000000"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "4.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "5.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "3.5000000000000000"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "14.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "14.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "23.0000000000000000"
+                    }
+                ]
+            ]
+        }
+    ],
+    [
+        "MAVG.Example with two and three arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAVG 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "32.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "16.3333333333333333"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "21.5000000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    11,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "21.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "15.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "16.3333333333333333"
+                    }
+                ],
+                [
+                    "Moscow",
+                    6,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "8.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "15.0000000000000000"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "28.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.0000000000000000"
+                    }
+                ]
+            ]
+        }
+    ],
+    [
+        "MAX_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAX 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAX 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MAX 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    25,
+                    25,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    25,
+                    25,
+                    25
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    25,
+                    10,
+                    7
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    25,
+                    10,
+                    25
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    25,
+                    4,
+                    7
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    25,
+                    4,
+                    25
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    25,
+                    23,
+                    7
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    25,
+                    23,
+                    25
+                ]
+            ]
+        }
+    ],
+    [
+        "MCOUNT.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    2,
+                    2
+                ],
+                [
+                    "London",
+                    11,
+                    2,
+                    2
+                ],
+                [
+                    "Moscow",
+                    6,
+                    2,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    [
+        "MCOUNT.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    2,
+                    2,
+                    2
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    2,
+                    2,
+                    2
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    2,
+                    2,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    2,
+                    2,
+                    1
+                ]
+            ]
+        }
+    ],
+    [
+        "MCOUNT.Example with two and three arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MCOUNT 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    1,
+                    3,
+                    2
+                ],
+                [
+                    "London",
+                    11,
+                    2,
+                    3,
+                    3
+                ],
+                [
+                    "Moscow",
+                    6,
+                    2,
+                    2,
+                    3
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    2,
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    [
+        "MIN_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MIN 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MIN 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MIN 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    1,
+                    7,
+                    1
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    1,
+                    7,
+                    4
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    1,
+                    1,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    1,
+                    2,
+                    1
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    1,
+                    2,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    1,
+                    5,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    1,
+                    5,
+                    4
+                ]
+            ]
+        }
+    ],
+    [
+        "MMAX.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    32,
+                    32
+                ],
+                [
+                    "London",
+                    11,
+                    11,
+                    11
+                ],
+                [
+                    "Moscow",
+                    6,
+                    28,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    28
+                ]
+            ]
+        }
+    ],
+    [
+        "MMAX.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    25,
+                    25,
+                    25
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    25,
+                    1,
+                    7
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    10,
+                    10,
+                    10
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    10,
+                    2,
+                    2
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    4,
+                    4,
+                    25
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    5,
+                    5,
+                    5
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    23,
+                    23,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "MMAX.Example with two and three arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMAX 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    32,
+                    32,
+                    32
+                ],
+                [
+                    "London",
+                    11,
+                    32,
+                    28,
+                    32
+                ],
+                [
+                    "Moscow",
+                    6,
+                    11,
+                    28,
+                    28
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    28,
+                    28
+                ]
+            ]
+        }
+    ],
+    [
+        "MMIN.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    11,
+                    28
+                ],
+                [
+                    "London",
+                    11,
+                    6,
+                    6
+                ],
+                [
+                    "Moscow",
+                    6,
+                    6,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    11
+                ]
+            ]
+        }
+    ],
+    [
+        "MMIN.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    7,
+                    7,
+                    23
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    1,
+                    1,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    2,
+                    2,
+                    1
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    2,
+                    2,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    4,
+                    5,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    5,
+                    5,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "MMIN.Example with two and three arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MMIN 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    32,
+                    6,
+                    11
+                ],
+                [
+                    "London",
+                    11,
+                    11,
+                    6,
+                    6
+                ],
+                [
+                    "Moscow",
+                    6,
+                    6,
+                    6,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    6,
+                    28,
+                    6
+                ]
+            ]
+        }
+    ],
+    [
+        "MSUM.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    43,
+                    60
+                ],
+                [
+                    "London",
+                    11,
+                    17,
+                    17
+                ],
+                [
+                    "Moscow",
+                    6,
+                    34,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    39
+                ]
+            ]
+        }
+    ],
+    [
+        "MSUM.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    32,
+                    32,
+                    48
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    26,
+                    1,
+                    8
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    11,
+                    11,
+                    14
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    12,
+                    2,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    6,
+                    6,
+                    29
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    9,
+                    5,
+                    7
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    28,
+                    28,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "MSUM.Example with two and three arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "MSUM 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    32,
+                    49,
+                    43
+                ],
+                [
+                    "London",
+                    11,
+                    43,
+                    45,
+                    49
+                ],
+                [
+                    "Moscow",
+                    6,
+                    17,
+                    34,
+                    45
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    34,
+                    28,
+                    34
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    4,
+                    2,
+                    1
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    3,
+                    1,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    7,
+                    2,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    6,
+                    1,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    5,
+                    2,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    2,
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK.Example with two arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    1,
+                    4
+                ],
+                [
+                    "London",
+                    11,
+                    3,
+                    2
+                ],
+                [
+                    "Moscow",
+                    6,
+                    4,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    2,
+                    3
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK_DENSE.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_DENSE 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_DENSE 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_DENSE 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    4,
+                    2,
+                    1
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    3,
+                    1,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    7,
+                    2,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    6,
+                    1,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    5,
+                    2,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    2,
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK_DENSE.Example with two arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_DENSE 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_DENSE 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    1,
+                    4
+                ],
+                [
+                    "London",
+                    11,
+                    3,
+                    2
+                ],
+                [
+                    "Moscow",
+                    6,
+                    4,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    2,
+                    3
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK_PERCENTILE.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_PERCENTILE 1",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "RANK_PERCENTILE 2",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "RANK_PERCENTILE 3",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    0.428571428571429,
+                    1.0,
+                    0.0
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    0.285714285714286,
+                    0.0,
+                    0.666666666666667
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    0.857142857142857,
+                    1.0,
+                    0.666666666666667
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    0.714285714285714,
+                    0.0,
+                    1.0
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    0.571428571428571,
+                    1.0,
+                    0.333333333333333
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    0.142857142857143,
+                    0.0,
+                    0.333333333333333
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK_PERCENTILE.Example with two arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_PERCENTILE 1",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "RANK_PERCENTILE 2",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    0.0,
+                    1.0
+                ],
+                [
+                    "London",
+                    11,
+                    0.666666666666667,
+                    0.333333333333333
+                ],
+                [
+                    "Moscow",
+                    6,
+                    1.0,
+                    0.0
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    0.333333333333333,
+                    0.666666666666667
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK_UNIQUE.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_UNIQUE 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_UNIQUE 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_UNIQUE 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    4,
+                    2,
+                    1
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    8,
+                    2,
+                    4
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    3,
+                    1,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    7,
+                    2,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    6,
+                    1,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    5,
+                    2,
+                    2
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    2,
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    [
+        "RANK_UNIQUE.Example with two arguments",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_UNIQUE 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RANK_UNIQUE 2",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    1,
+                    4
+                ],
+                [
+                    "London",
+                    11,
+                    3,
+                    2
+                ],
+                [
+                    "Moscow",
+                    6,
+                    4,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    2,
+                    3
+                ]
+            ]
+        }
+    ],
+    [
+        "RAVG.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RAVG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RAVG 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RAVG 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "19.2500000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "19.2500000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "19.2500000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    11,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "15.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "15.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "8.5000000000000000"
+                    }
+                ],
+                [
+                    "Moscow",
+                    6,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "6.0000000000000000"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "28.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "28.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "15.0000000000000000"
+                    }
+                ]
+            ]
+        }
+    ],
+    [
+        "RAVG.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RAVG 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RAVG 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RAVG 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.0000000000000000"
+                    }
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "16.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "16.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "24.0000000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "11.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "1.00000000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "4.0000000000000000"
+                    }
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "10.7500000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "5.5000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "15.5000000000000000"
+                    }
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "9.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "2.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "3.3333333333333333"
+                    }
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "8.1666666666666667"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "3.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "17.3333333333333333"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "7.7142857142857143"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "5.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "3.7500000000000000"
+                    }
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    {
+                        "__type__": "decimal",
+                        "__value__": "9.6250000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "14.0000000000000000"
+                    },
+                    {
+                        "__type__": "decimal",
+                        "__value__": "23.0000000000000000"
+                    }
+                ]
+            ]
+        }
+    ],
+    [
+        "RCOUNT.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RCOUNT 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RCOUNT 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RCOUNT 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    4,
+                    4,
+                    4
+                ],
+                [
+                    "London",
+                    11,
+                    3,
+                    3,
+                    2
+                ],
+                [
+                    "Moscow",
+                    6,
+                    2,
+                    2,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    1,
+                    1,
+                    3
+                ]
+            ]
+        }
+    ],
+    [
+        "RCOUNT.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RCOUNT 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RCOUNT 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RCOUNT 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    2,
+                    2,
+                    2
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    3,
+                    1,
+                    2
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    4,
+                    2,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    5,
+                    1,
+                    3
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    6,
+                    2,
+                    3
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    7,
+                    1,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    8,
+                    2,
+                    1
+                ]
+            ]
+        }
+    ],
+    [
+        "REPLACE_ARRAY.Example",
+        {
+            "columns": [
+                {
+                    "name": "array",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "replace",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "No NULLs",
+                    "type": "ARRAY_INT"
+                }
+            ],
+            "rows": [
+                [
+                    "[100,300,200,100,300]",
+                    "[100,-1,200,100,-1]",
+                    "[100,300,200,100,300]"
+                ],
+                [
+                    "[100,300,NULL,NULL]",
+                    "[100,-1,NULL,NULL]",
+                    "[100,300,0,0]"
+                ],
+                [
+                    "[150,NULL,130,192]",
+                    "[150,NULL,130,192]",
+                    "[150,0,130,192]"
+                ]
+            ]
+        }
+    ],
+    [
+        "RMAX.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMAX 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMAX 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMAX 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    32,
+                    32,
+                    32
+                ],
+                [
+                    "London",
+                    11,
+                    28,
+                    28,
+                    11
+                ],
+                [
+                    "Moscow",
+                    6,
+                    28,
+                    28,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    28,
+                    28
+                ]
+            ]
+        }
+    ],
+    [
+        "RMAX.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMAX 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMAX 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMAX 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    25,
+                    25,
+                    25
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    25,
+                    1,
+                    7
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    25,
+                    10,
+                    25
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    25,
+                    2,
+                    7
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    25,
+                    4,
+                    25
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    25,
+                    5,
+                    7
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    25,
+                    23,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "RMIN.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMIN 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMIN 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMIN 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    6,
+                    6,
+                    6
+                ],
+                [
+                    "London",
+                    11,
+                    6,
+                    6,
+                    6
+                ],
+                [
+                    "Moscow",
+                    6,
+                    6,
+                    6,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    28,
+                    6
+                ]
+            ]
+        }
+    ],
+    [
+        "RMIN.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMIN 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMIN 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RMIN 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    7,
+                    7,
+                    23
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    1,
+                    1,
+                    4
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    1,
+                    2,
+                    1
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    1,
+                    2,
+                    4
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    1,
+                    5,
+                    1
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    1,
+                    5,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "RSUM.Example with ORDER BY",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RSUM 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RSUM 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RSUM 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    32,
+                    77,
+                    77,
+                    77
+                ],
+                [
+                    "London",
+                    11,
+                    45,
+                    45,
+                    17
+                ],
+                [
+                    "Moscow",
+                    6,
+                    34,
+                    34,
+                    6
+                ],
+                [
+                    "San Francisco",
+                    28,
+                    28,
+                    28,
+                    45
+                ]
+            ]
+        }
+    ],
+    [
+        "RSUM.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RSUM 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RSUM 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "RSUM 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    7,
+                    7,
+                    7
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    32,
+                    32,
+                    48
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    33,
+                    1,
+                    8
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    43,
+                    11,
+                    62
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    45,
+                    2,
+                    10
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    49,
+                    6,
+                    52
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    54,
+                    5,
+                    15
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    77,
+                    28,
+                    23
+                ]
+            ]
+        }
+    ],
+    [
+        "SIGN.Example",
+        {
+            "columns": [
+                {
+                    "name": "value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    1.0,
+                    1
+                ],
+                [
+                    0.1,
+                    1
+                ],
+                [
+                    -2.0,
+                    -1
+                ],
+                [
+                    50.5,
+                    1
+                ],
+                [
+                    0.0,
+                    0
+                ],
+                [
+                    -3.5,
+                    -1
+                ]
+            ]
+        }
+    ],
+    [
+        "SIN.Example",
+        {
+            "columns": [
+                {
+                    "name": "n",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "angle",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -3.141592653589793,
+                    -1.2246467991473532e-16
+                ],
+                [
+                    -0.5,
+                    -1.5707963267948966,
+                    -1.0
+                ],
+                [
+                    -0.25,
+                    -0.7853981633974483,
+                    -0.7071067811865475
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.25,
+                    0.7853981633974483,
+                    0.7071067811865475
+                ],
+                [
+                    0.5,
+                    1.5707963267948966,
+                    1.0
+                ],
+                [
+                    1.0,
+                    3.141592653589793,
+                    1.2246467991473532e-16
+                ]
+            ]
+        }
+    ],
+    [
+        "SQRT.Example",
+        {
+            "columns": [
+                {
+                    "name": "int_value",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "float_value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "int_result",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "float_result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    1,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                [
+                    3,
+                    3.0,
+                    1.7320508075688772,
+                    1.7320508075688772
+                ],
+                [
+                    4,
+                    4.0,
+                    2.0,
+                    2.0
+                ],
+                [
+                    13,
+                    13.0,
+                    3.605551275463989,
+                    3.605551275463989
+                ],
+                [
+                    16,
+                    16.0,
+                    4.0,
+                    4.0
+                ],
+                [
+                    20,
+                    20.2,
+                    4.47213595499958,
+                    4.494441095724746
+                ],
+                [
+                    25,
+                    25.0,
+                    5.0,
+                    5.0
+                ]
+            ]
+        }
+    ],
+    [
+        "SQUARE.Example",
+        {
+            "columns": [
+                {
+                    "name": "int_value",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "float_value",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "int_result",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "float_result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    1,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                [
+                    3,
+                    3.0,
+                    9.0,
+                    9.0
+                ],
+                [
+                    4,
+                    4.0,
+                    16.0,
+                    16.0
+                ],
+                [
+                    13,
+                    13.0,
+                    169.0,
+                    169.0
+                ],
+                [
+                    16,
+                    16.0,
+                    256.0,
+                    256.0
+                ],
+                [
+                    20,
+                    20.2,
+                    400.0,
+                    408.0400308227545
+                ],
+                [
+                    25,
+                    25.0,
+                    625.0,
+                    625.0
+                ]
+            ]
+        }
+    ],
+    [
+        "SUM.Example",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Sum 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Sum 2",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    5,
+                    6205.8701171875
+                ],
+                [
+                    "London",
+                    9,
+                    870.0999984741211
+                ],
+                [
+                    "Moscow",
+                    6,
+                    1335.8399963378906
+                ],
+                [
+                    "San Francisco",
+                    23,
+                    723.0
+                ]
+            ]
+        }
+    ],
+    [
+        "SUM_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Order Sum",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "SUM 1",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "SUM 2",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "SUM 3",
+                    "type": "INTEGER"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    "Furniture",
+                    7,
+                    77,
+                    32,
+                    15
+                ],
+                [
+                    "Detroit",
+                    "Office Supplies",
+                    25,
+                    77,
+                    32,
+                    62
+                ],
+                [
+                    "London",
+                    "Furniture",
+                    1,
+                    77,
+                    11,
+                    15
+                ],
+                [
+                    "London",
+                    "Office Supplies",
+                    10,
+                    77,
+                    11,
+                    62
+                ],
+                [
+                    "Moscow",
+                    "Furniture",
+                    2,
+                    77,
+                    6,
+                    15
+                ],
+                [
+                    "Moscow",
+                    "Office Supplies",
+                    4,
+                    77,
+                    6,
+                    62
+                ],
+                [
+                    "San Francisco",
+                    "Furniture",
+                    5,
+                    77,
+                    28,
+                    15
+                ],
+                [
+                    "San Francisco",
+                    "Office Supplies",
+                    23,
+                    77,
+                    28,
+                    62
+                ]
+            ]
+        }
+    ],
+    [
+        "TAN.Example",
+        {
+            "columns": [
+                {
+                    "name": "n",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "angle",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    -3.141592653589793,
+                    1.2246467991473532e-16
+                ],
+                [
+                    -0.5,
+                    -1.5707963267948966,
+                    -1.633123935319537e+16
+                ],
+                [
+                    -0.25,
+                    -0.7853981633974483,
+                    -0.9999999999999999
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.25,
+                    0.7853981633974483,
+                    0.9999999999999999
+                ],
+                [
+                    0.5,
+                    1.5707963267948966,
+                    1.633123935319537e+16
+                ],
+                [
+                    1.0,
+                    3.141592653589793,
+                    -1.2246467991473532e-16
+                ]
+            ]
+        }
+    ],
+    [
+        "UNNEST.Example",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "unnest_category",
+                    "type": "STRING"
+                }
+            ],
+            "rows": [
+                [
+                    "Moscow",
+                    "Office Supplies"
+                ],
+                [
+                    "Moscow",
+                    "Furniture"
+                ],
+                [
+                    "London",
+                    "Office Supplies"
+                ]
+            ]
+        }
+    ],
+    [
+        "ZN.Example",
+        {
+            "columns": [
+                {
+                    "name": "sales",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "result",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    432.4,
+                    432.4
+                ],
+                [
+                    77.0,
+                    77.0
+                ],
+                [
+                    12000.0,
+                    12000.0
+                ],
+                [
+                    null,
+                    0.0
+                ],
+                [
+                    34.25,
+                    34.25
+                ],
+                [
+                    128.0,
+                    128.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0
+                ]
+            ]
+        }
+    ]
+]

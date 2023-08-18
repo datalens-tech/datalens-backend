@@ -1,0 +1,200 @@
+from __future__ import annotations
+
+import aiomysql.sa
+import asyncio
+import attr
+import contextlib
+import logging
+import sqlalchemy as sa
+import ssl
+from functools import partial
+from pymysql.err import OperationalError, ProgrammingError
+from typing import Any, AsyncIterator, List, Optional, Tuple, Type, TypeVar
+
+from bi_connector_mysql.core.adapters_base_mysql import BaseMySQLAdapter
+from bi_core.connection_executors.adapters.async_adapters_base import (
+    AsyncCache, AsyncDirectDBAdapter, AsyncRawExecutionResult,
+)
+from bi_core.connection_executors.adapters.mixins import (
+    WithAsyncGetDBVersion, WithMinimalCursorInfo, WithDatabaseNameOverride, WithNoneRowConverters,
+)
+from bi_core.connection_executors.adapters.sa_utils import compile_query_for_debug
+from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
+from bi_connector_mysql.core.error_transformer import async_mysql_db_error_transformer
+from bi_connector_mysql.core.utils import compile_mysql_query
+from bi_connector_mysql.core.target_dto import MySQLConnTargetDTO
+from bi_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery, ExecutionStep, ExecutionStepCursorInfo, ExecutionStepDataChunk, RawSchemaInfo
+)
+from bi_core.connection_models import DBIdent, SchemaIdent, TableDefinition, TableIdent
+from bi_app_tools.profiling_base import generic_profiler_async
+from bi_constants.types import TBIChunksGen
+from bi_configs.utils import get_root_certificates_path
+
+from bi_sqlalchemy_mysql.base import BIMySQLDialect
+from bi_utils.utils import method_not_implemented
+
+
+LOGGER = logging.getLogger(__name__)
+
+_DBA_ASYNC_MYSQL_TV = TypeVar("_DBA_ASYNC_MYSQL_TV", bound='AsyncMySQLAdapter')
+
+
+@attr.s(cmp=False, kw_only=True)
+class AsyncMySQLAdapter(
+        WithAsyncGetDBVersion, WithDatabaseNameOverride, WithNoneRowConverters,
+        ETBasedExceptionMaker,
+        BaseMySQLAdapter, AsyncDirectDBAdapter, WithMinimalCursorInfo,
+):
+    _target_dto: MySQLConnTargetDTO = attr.ib()
+    _req_ctx_info: DBAdapterScopedRCI = attr.ib()
+    _default_chunk_size: int = attr.ib()
+
+    _engines: AsyncCache[aiomysql.sa.Engine] = attr.ib(default=attr.Factory(AsyncCache))
+    _error_transformer = async_mysql_db_error_transformer
+
+    EXTRA_EXC_CLS = (
+        OperationalError,
+        ProgrammingError,
+    )
+
+    @property
+    def _dialect(self) -> sa.engine.default.DefaultDialect:
+        dialect = BIMySQLDialect(paramstyle='pyformat')
+        return dialect
+
+    def _cursor_column_to_nullable(self, cursor_col: Tuple[Any, ...]) -> Optional[bool]:
+        # See https://aiomysql.readthedocs.io/en/latest/cursors.html#Cursor.description
+        # Although there are no known `nullable=False` cases for subselects in MySQL,
+        # let's use here `null_ok` field from cursor rather than hardcoded value
+        return cursor_col[6]
+
+    @classmethod
+    def create(
+        cls: Type[_DBA_ASYNC_MYSQL_TV],
+        target_dto: MySQLConnTargetDTO,
+        req_ctx_info: DBAdapterScopedRCI,
+        default_chunk_size: int
+    ) -> _DBA_ASYNC_MYSQL_TV:
+        return cls(target_dto=target_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size)
+
+    def get_default_db_name(self) -> Optional[str]:
+        return self._target_dto.db_name
+
+    async def _create_engine(self, db_name: str, use_ssl: bool = False) -> aiomysql.sa.Engine:
+        ssl_ctx = ssl.create_default_context(cafile=get_root_certificates_path()) if use_ssl else None
+        return await aiomysql.sa.create_engine(
+            host=self._target_dto.host,
+            port=self._target_dto.port,
+            user=self._target_dto.username,
+            password=self._target_dto.password,
+            db=db_name,
+            dialect=self._dialect,
+            ssl=ssl_ctx,
+        )
+
+    async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
+        try:
+            return await self._engines.get(db_name, generator=self._create_engine)
+        except OperationalError as err:
+            # 3159 = Connections using insecure transport are prohibited while --require_secure_transport=ON.
+            # This means we have to use SSL
+            if err.args[0] == 3159:
+                LOGGER.info('Using SSL for async MySQL connection')
+                create_engine_using_ssl = partial(self._create_engine, use_ssl=True)
+                return await self._engines.get(db_name, generator=create_engine_using_ssl)
+            else:
+                raise
+
+    @contextlib.asynccontextmanager
+    async def _get_connection(self, db_name_from_query: str) -> AsyncIterator[aiomysql.sa.SAConnection]:
+        db_name = self.get_db_name_for_query(db_name_from_query)
+        engine = await self._get_engine(db_name)
+        async with engine.acquire() as connection:
+            yield connection
+
+    async def _execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> AsyncIterator[ExecutionStep]:
+        """Generator that yielding messages with data chunks and execution meta-info"""
+
+        chunk_size = db_adapter_query.get_effective_chunk_size(self._default_chunk_size)
+        query = db_adapter_query.query
+        escape_percent = not db_adapter_query.is_dashsql_query  # DON'T escape only for dashsql
+        compiled_query, compiled_query_parameters = compile_mysql_query(query, dialect=self._dialect,
+                                                                        escape_percent=escape_percent)
+        debug_query = query if isinstance(query, str) else compile_query_for_debug(query, self._dialect)
+
+        with self.handle_execution_error(debug_query):
+            async with self._get_connection(db_adapter_query.db_name) as conn:
+                result = await conn.execute(compiled_query, compiled_query_parameters)
+                cursor_info = ExecutionStepCursorInfo(
+                    cursor_info=self._make_cursor_info(result.cursor),
+                    raw_cursor_description=list(result.cursor.description),
+                )
+                yield cursor_info
+
+                row_converters = self._get_row_converters(cursor_info=cursor_info)
+                while True:
+                    LOGGER.info('Fetching %s rows (conn %s)', chunk_size, conn)
+                    rows = await result.fetchmany(chunk_size)
+                    if not rows:
+                        LOGGER.info('No rows remaining')
+                        break
+
+                    LOGGER.info('Rows fetched, yielding')
+                    yield ExecutionStepDataChunk(tuple(
+                        tuple(
+                            (
+                                col_converter(val)
+                                if col_converter is not None and val is not None
+                                else val
+                            )
+                            for val, col_converter in zip([row[col_name] for col_name in cursor_info.cursor_info['names']], row_converters)
+                        )
+                        for row in rows
+                    ))
+
+    @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
+    async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
+        steps = self._execute_by_steps(query)
+        cursor_info_step = await steps.__anext__()
+
+        if not isinstance(cursor_info_step, ExecutionStepCursorInfo):
+            raise RuntimeError(f"Unexpected type of first step from database: {cursor_info_step}")
+
+        async def _process_chunk(steps: AsyncIterator[ExecutionStep]) -> TBIChunksGen:
+            async for step in steps:
+                if not isinstance(step, ExecutionStepDataChunk):
+                    raise RuntimeError(f"Unexpected type of non-first step from database: {step}")
+                yield step.chunk
+
+        return AsyncRawExecutionResult(
+            raw_cursor_info=cursor_info_step.cursor_info,
+            raw_chunk_generator=_process_chunk(steps),
+        )
+
+    async def close(self) -> None:
+        async def _finalizer(engine: aiomysql.sa.Engine) -> None:
+            engine.close()
+            await asyncio.wait_for(engine.wait_closed(), timeout=2.5)
+
+        await self._engines.clear(finalizer=_finalizer)
+
+    async def test(self) -> None:
+        await self.execute(DBAdapterQuery('SELECT 1'))
+
+    @method_not_implemented
+    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+        pass
+
+    @method_not_implemented
+    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+        pass
+
+    @method_not_implemented
+    async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
+        pass
+
+    @method_not_implemented
+    async def is_table_exists(self, table_ident: TableIdent) -> bool:
+        pass

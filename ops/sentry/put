@@ -1,0 +1,9 @@
+#!/bin/sh -x
+
+set -e
+
+./_render
+
+ya tool dctl put stage deploy.yaml
+
+rm deploy.yaml

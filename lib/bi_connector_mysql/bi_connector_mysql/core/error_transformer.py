@@ -1,0 +1,76 @@
+from typing import Optional
+
+import sqlalchemy
+import pymysql
+
+import bi_core.connectors.base.error_transformer as error_transformer
+from bi_core.connectors.base.error_transformer import ExcMatchCondition
+import bi_core.exc as exc
+from bi_core.connectors.base.error_transformer import wrapper_exc_is_and_matches_re, DbErrorTransformer, ErrorTransformerRule as Rule
+from bi_connector_mysql.core.exc import MysqlSourceDoesNotExistError
+
+
+def is_table_does_not_exist_async_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        if isinstance(exc, pymysql.ProgrammingError):
+            if len(exc.args) >= 2 and exc.args[0] == 1146:
+                return True
+        return False
+
+    return _
+
+
+def is_table_does_not_exist_sync_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        if isinstance(exc, sqlalchemy.exc.ProgrammingError):
+            orig = getattr(exc, "orig", None)
+            if orig and len(orig.args) >= 2 and orig.args[0] == 1146:
+                return True
+        return False
+
+    return _
+
+
+class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransformer):
+    # workaround until BI-4175 and further err transformation changes
+
+    @staticmethod
+    def _get_error_kw(
+        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
+    ) -> error_transformer.DBExcKWArgs:
+        if isinstance(wrapper_exc, pymysql.ProgrammingError):
+            return dict(
+                db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
+                query=debug_compiled_query,
+                orig=wrapper_exc,  # keep orig exception for .args
+                details={},
+            )
+        return error_transformer.ChainedDbErrorTransformer._get_error_kw(
+            debug_compiled_query, orig_exc, wrapper_exc
+        )
+
+
+async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorTransformer(
+    (
+        Rule(
+            when=is_table_does_not_exist_async_error(),
+            then_raise=MysqlSourceDoesNotExistError,
+        ),
+        Rule(
+            when=wrapper_exc_is_and_matches_re(
+                wrapper_exc_cls=pymysql.ProgrammingError,
+                err_regex_str="You have an error in your SQL syntax",
+            ),
+            then_raise=exc.InvalidQuery,
+        ),
+    )
+    + error_transformer.default_error_transformer_rules
+)
+
+
+sync_mysql_db_error_transformer: DbErrorTransformer = error_transformer.make_default_transformer_with_custom_rules(
+    Rule(
+        when=is_table_does_not_exist_sync_error(),
+        then_raise=MysqlSourceDoesNotExistError,
+    ),
+)

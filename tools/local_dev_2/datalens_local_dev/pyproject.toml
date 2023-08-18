@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "datalens-local-dev-2"
+version = "0.1.0"
+description = ""
+authors = ["Valentin Gologuzov <vgol@double.cloud>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "datalens_local_dev"}]
+
+[tool.poetry.dependencies]
+attrs = "22.2.0"
+python = "^3.10"
+frozendict = "*"
+toml = "*"
+packaging = ">=23.1"
+clize = "^5.0.0"
+pdm = "2.7.0"
+tomlkit = "*"
+urllib3 = "<=2.0"
+lxml = ">=4.9.2"
+jinja2 = "^3.1.2"
+
+[tool.poetry.group.dev.dependencies]
+# jupyter = "^1.0.0"
+mypy = "1.4.0"
+black = "23.3.0"
+ruff = "0.0.267"
+ipdb = "0.13.13"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+
+[tool.ruff.isort]
+split-on-trailing-comma = true
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[tool.poetry.scripts]
+print-deps = "datalens_local_dev.get_submodules:print_project_dependencies"
+print-sync-targets = "datalens_local_dev.get_submodules:rel_path_list_for_pycham_upload"
+idea-dir = "datalens_local_dev.idea:main"
+upload-to-dev-vm = "datalens_local_dev.upload_to_dev_machine:main"
+pycharm-ensure-upload-config = "datalens_local_dev.pycharm.ensure_uploads_config:main"
+pycharm-ensure-project-structure = "datalens_local_dev.pycharm.ensure_project_structure:main"

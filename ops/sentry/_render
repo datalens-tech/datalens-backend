@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -Eeuo pipefail
+
+
+DELEGATION_TOKEN="$(yav get version sec-01ejre46ykgb69dy7ec43xrsky -o _delegation_token)"
+export DELEGATION_TOKEN
+
+j2 deploy.yaml.j2 -o deploy.yaml

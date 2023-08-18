@@ -1,0 +1,10 @@
+dockerfile: Dockerfile
+image: registry.yandex.net/statinfra/sklad-fixtur
+deploy: true
+stage: sklad-fixtur-beta
+deploy_units: sklad-fixtur-api:sklad-fixtur-api
+experiments: version
+version_files: {
+  "./bi_testing_db_provision/__init__.py": '__version__ = "([^"]+)"',
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}

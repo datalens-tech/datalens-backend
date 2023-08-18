@@ -1,0 +1,93 @@
+yav_token:
+  env_var: YAV_TOKEN
+
+yc_kms:
+  api_endpoint: api.cloud-preprod.yandex.net:443
+
+kek:
+  kms:
+    key_uri: yc-kms://e10mng38moenmrvomcdo   # skm-key
+
+encrypted_dek: AAAAAQAAABRlMTA5bGE2aGswNXI5NnNhOWhmZAAAABAx3zpV4TflGK+liRAO/0ZjAAAADDPGK7Y50gU4zTmW57Etx/ks4x94zArfioEkoC/36ZtHfYYJ7MTjc7eJMktWi4c+wV0pXPb6RESyZiOzUR7TPBgiPwwusDQbfq2NDmN4zt21oeW2Xv1jXbevKXId
+
+secrets:
+- path: /etc/secrets/TVM_SECRET
+  source:
+    yav:
+      secret_id: sec-01dv8x3s847wpz1mjtcgmfzgv7
+      key: client_secret
+- path: /etc/secrets/TVM_INFO
+  source:
+    yav:
+      secret_id: sec-01dv8x3s847wpz1mjtcgmfzgv7
+      key: TVM_INFO
+- path: /etc/secrets/CACHES_REDIS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: REDIS_CACHES_PASSWORD
+- path: /etc/secrets/REDIS_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: REDIS_MISC_PASSWORD
+- path: /etc/secrets/PG_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: MAT_PG_PASSWORD
+- path: /etc/secrets/BILLING_MASTER_TOKEN
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: BILLING_MASTER_TOKEN
+- path: /etc/secrets/EXT_QUERY_EXECUTER_SECRET_KEY
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: EXT_QUERY_EXECUTER_SECRET_KEY
+- path: /etc/secrets/BACK_SUPERUSER_IAM_KEY_DATA
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: IAM_SERVICE_ACCOUNT_KEY_DATA
+- path: /etc/secrets/DL_CRY_KEY_VAL_ID_cloud_preprod_2
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: CRYPTO_KEY_2
+- path: /etc/secrets/US_MASTER_TOKEN
+  source:
+    yav:
+      secret_id: sec-01csc2x33km5dc7x8p51hfh0nj
+      key: ext-testing
+- path: /etc/secrets/YANDEX_MAPS_API_KEY
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: YANDEX_MAPS_API_KEY
+- path: /etc/secrets/GEO_DICT_DST_CLUSTERS_INFO
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: GEO_DICT_DST_CLUSTERS_INFO
+- path: /etc/secrets/UI_CONTROL_MASTER_TOKEN
+  source:
+    yav:
+      secret_id: sec-01e6c0wzqh4pv3m5eq0mf48bqq
+      key: testing
+- path: /etc/secrets/MAT_CH_SERVICE_USER_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: mat_ch_service_user_password
+- path: /etc/secrets/LOGCH_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc24ppx88wd8wjawzp3zwxcg
+      key: LOGS_CH_PASSWORD
+- path: /etc/metricsagent/SOLOMON_AUTH
+  source:
+    yav:
+      secret_id: sec-01ekmt2r5p50hp5qw875dewfgw
+      key: solomon_token

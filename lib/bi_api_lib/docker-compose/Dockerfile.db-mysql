@@ -1,0 +1,6 @@
+# the earliest version supported by BI
+# FROM mysql:5.6
+FROM registry.yandex.net/statinfra/mysql@sha256:d8e4032005f53a774f2361281ebf61fa3d7635d5dacf9c58bc54e823ddcf9f1d
+
+COPY db-common/data /common-data
+COPY db-mysql/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d

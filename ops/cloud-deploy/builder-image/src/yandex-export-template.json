@@ -1,0 +1,9 @@
+{
+  "type": "yandex-export",
+  "folder_id": "",
+  "subnet_id": "",
+  "service_account_id": "",
+  "service_account_key_file": "",
+  "paths": [],
+  "keep_input_artifact": false
+}

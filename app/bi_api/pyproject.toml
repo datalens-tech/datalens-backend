@@ -1,0 +1,111 @@
+
+[tool.poetry]
+name = "yandex-bi-api"
+version = "0.1969.0"
+description = ""
+authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>"]
+packages = [{include = "bi"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+Flask = ">=2.0.3"
+Flask-SQLAlchemy = ">=2.5.1"
+SQLAlchemy = ">=1.4.46, <2.0"
+Werkzeug = ">=2.0.3"
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
+bi-task-processor = {path = "../../lib/bi_task_processor"}
+blinker = ">=1.5"
+certifi = ">=2022.12.7"
+certifi-yandex = ">=2021.10.08"
+flask-marshmallow = ">=0.14.0"
+flask-restx = ">=1.1.0"
+graphviz = ">=0.17"
+ipdb = ">=0.13.13"
+ipython = ">=8.10.0"
+marshmallow = ">=3.19.0"
+marshmallow-enum = ">=1.5.1"
+marshmallow-oneofschema = ">=3.0.1"
+pandas = ">=1.5.3"
+pyopenssl = ">=21.0.0"
+pytest-asyncio = ">=0.20.3"
+python = ">=3.10, <3.12"
+python-dateutil = ">=2.8.2"
+raven = ">=6.10.0"
+requests = ">=2.28.2"
+sentry-sdk = ">=1.15.0"
+sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
+sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
+statcommons = {path = "../../lib/statcommons"}
+statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
+tabulate = ">=0.9.0"
+yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
+yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
+yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
+yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
+yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
+yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
+yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
+yandex-bi-sqlalchemy-chyt = {path = "../../lib/bi_sqlalchemy_chyt"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
+yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
+yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
+yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+yandex-bi-sqlalchemy-promql = {path = "../../lib/bi_sqlalchemy_promql"}
+yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
+yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true
+
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"

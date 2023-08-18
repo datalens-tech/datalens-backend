@@ -1,0 +1,62 @@
+
+[tool.poetry]
+name = "yandex-bi-cloud-integration"
+version = "0.0.1"
+description = ""
+authors = ["Konstantin Chupin <kchupin@yandex-team.ru>"]
+packages = [{include = "bi_cloud_integration"}]
+license = "MIT"
+
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+certifi-yandex = ">=2021.10.08"
+googleapis-common-protos = ">=1.59.1"
+grpcio = ">=1.45.0rc1"
+pyjwt = ">=2.3.0"
+python = ">=3.10, <3.12"
+shortuuid = ">=1.0.11"
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+yandex-yc-apis-proto-stubs = {path = "../../lib/yc_apis_proto_stubs"}
+
+[tool.poetry.group.tests.dependencies]
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_cloud_integration_tests", "bi_cloud_integration_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+[datalens.pytest.ext]
+root_dir = "bi_cloud_integration_tests/"
+target_path = "ext"
+
+
+[datalens.pytest.unit]
+root_dir = "bi_cloud_integration_tests/"
+target_path = "unit"

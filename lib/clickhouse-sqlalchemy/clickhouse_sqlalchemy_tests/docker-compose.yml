@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  db-clickhouse:
+  # chsq-tests-db-clickhouse-1592508713:
+    # image: "clickhouse/clickhouse-server:22.3"
+    image: "clickhouse/clickhouse-server@sha256:a46ea460c42cfe31c0c8f63415980de7fa5c0296035490311a3c8d325f49a687"
+    # environment:
+    #   TZ: "Europe/Moscow"
+    #   TZ: "Pacific/Chatham"
+    ports:
+     - "8123:8123"
+     - "9000:9000"
+  # test:
+  #   build:
+  #     context: .
+
+
+# networks:
+#   default:
+#     name: chsq-tests-network-default-1592508713

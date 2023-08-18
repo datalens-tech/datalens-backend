@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+for dc in man vla iva myt sas; do
+    printf "\n ======= %s =======\n" "$dc"
+    ya tool yp-util \
+      account explain \
+      abc:service:1561 \
+      --query "segment == 'default'" \
+      --cluster "$dc" \
+    | sed -r '/^[├╞╒╘]/ d; s/│/ /g; s/^([A-Z].*)/\n === \1 ===/' \
+    | sed -r 's/ +abc:service:1561 +/  /g; s/ +account_id +/  /g; s/total                       /total /g'
+    # ^ need it more compact after all.
+done

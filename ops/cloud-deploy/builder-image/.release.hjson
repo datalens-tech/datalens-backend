@@ -1,0 +1,7 @@
+dockerfile: docker/Dockerfile
+image: registry.yandex.net/statinfra/cloud-image-builder
+experiments: version
+version_files: {
+    "./.version": "(.+)"
+}
+

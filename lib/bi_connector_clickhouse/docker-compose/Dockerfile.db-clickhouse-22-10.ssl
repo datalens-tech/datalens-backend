@@ -1,0 +1,16 @@
+FROM registry.yandex.net/statinfra/clickhouse-server:22.11
+
+COPY db-clickhouse/data /common-data
+COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
+COPY db-clickhouse/config.xml /etc/clickhouse-server/config.xml
+
+RUN mkdir /etc/clickhouse-server/certs
+COPY db-clickhouse/ssl/chnode.crt /etc/clickhouse-server/certs
+COPY db-clickhouse/ssl/chnode.key /etc/clickhouse-server/certs
+COPY db-clickhouse/ssl/marsnet_ca.crt /etc/clickhouse-server/certs
+
+RUN chown clickhouse:clickhouse -R /etc/clickhouse-server/certs
+RUN chmod 600 /etc/clickhouse-server/certs/*
+RUN chmod 755 /etc/clickhouse-server/certs
+
+COPY db-clickhouse/docker-entrypoint-initdb.d/ /docker-entrypoint-initdb.d/

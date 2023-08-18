@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: integration-tests-run-{{ .Release.Revision }}
+  labels:
+    app: integration-tests
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: main
+      image: "{{ .Values.docker_images_info.integration_tests.repo }}:{{ .Values.docker_images_info.integration_tests.tag }}"
+      env:
+        {{- include "env_vars-integration-tests" . | indent 8 }}
+      resources:
+        requests:
+          memory: "1Gi"
+      volumeMounts:
+        - name: integration-test-secrets
+          mountPath: app/secrets
+          readOnly: true
+  volumes:
+    - name: integration-test-secrets
+      secret:
+        secretName: integration-tests
+        optional: false
+  restartPolicy: Never

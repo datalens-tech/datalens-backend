@@ -1,0 +1,9 @@
+[bi_core.connectors]
+ydb = bi_connector_yql.core.ydb.connector:YDBCoreConnector
+yq = bi_connector_yql.core.yq.connector:YQCoreConnector
+
+[bi_db_testing.connectors]
+yql = bi_connector_yql.db_testing.connector:YQLDbTestingConnector
+
+[bi_formula.connectors]
+yql = bi_connector_yql.formula.connector:YQLFormulaConnector

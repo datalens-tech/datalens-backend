@@ -1,0 +1,13 @@
+{
+    "download_link": "https://proxy.sandbox.yandex-team.ru/1539658731", 
+    "file_name": "mssql_deb.tgz", 
+    "md5": "76a4af101e00b27552e1b6f27711ecd5", 
+    "resource_id": 1539658731, 
+    "resource_link": "https://sandbox.yandex-team.ru/resource/1539658731/view", 
+    "skynet_id": "rbtorrent:7eda0ab5113f020187fddc8112cf8af354fbb86e", 
+    "storage": "SANDBOX", 
+    "task": {
+        "id": 691212270, 
+        "url": "https://sandbox.yandex-team.ru/api/v1.0/task/691212270"
+    }
+}

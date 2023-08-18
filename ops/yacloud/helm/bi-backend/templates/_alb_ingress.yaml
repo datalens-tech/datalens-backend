@@ -1,0 +1,60 @@
+{{ define "alb_ingress" -}}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.app.prefix }}-{{ .conf.name }}-ingress
+  annotations:
+    helm.sh/hook-weight: "-3"
+    ingress.alb.yc.io/group-name: {{ .Values.app.prefix }}-{{ .conf.ingress_group }}-ingress-group
+    ingress.alb.yc.io/subnets: {{ join "," .conf.subnets }}
+
+    {{ if .conf.prefix_rewrite }}
+    ingress.alb.yc.io/prefix-rewrite: {{ .conf.prefix_rewrite | quote}}
+    {{ end }}
+
+
+    {{ if .conf.security_groups }}
+    ingress.alb.yc.io/security-groups: {{ join "," .conf.security_groups }}
+    {{ end }}
+
+    ingress.alb.yc.io/idle-timeout: {{ .conf.idle_timeout | quote }}
+    ingress.alb.yc.io/request-timeout: {{ .conf.request_timeout | quote }}
+
+    {{ if .Values.tls_to_backends }}
+    ingress.alb.yc.io/transport-security: tls
+    {{ end }}
+
+    {{ if .conf.ipv4_address }}
+    ingress.alb.yc.io/external-ipv4-address: {{ .conf.ipv4_address }}
+    {{ else }}
+    ingress.alb.yc.io/external-ipv6-address: {{ .conf.ipv6_address }}
+    {{ end }}
+spec:
+  {{ if .conf.certificate_id }}
+  tls:
+    - hosts:
+      {{- range $host := .conf.hosts }}
+      - {{ $host }}
+      {{- end }}
+
+      secretName: yc-certmgr-cert-id-{{ .conf.certificate_id }}
+  {{ end }}
+  rules:
+    {{- range $host := .conf.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          {{- range $path_config := $.conf.paths }}
+          - path: {{ $path_config.path }}
+            pathType: {{ $path_config.path_type }}
+            backend:
+              service:
+                name: {{ $path_config.service_name }}
+                port:
+                  number: {{ $path_config.port }}
+            {{- end }}
+    {{- end }}
+
+{{ end -}}

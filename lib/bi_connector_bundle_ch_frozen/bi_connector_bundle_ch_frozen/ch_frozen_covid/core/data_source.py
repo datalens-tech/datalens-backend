@@ -1,0 +1,9 @@
+from __future__ import annotations
+
+from bi_connector_bundle_ch_frozen.ch_frozen_base.core.data_source import ClickHouseFrozenDataSourceBase
+
+from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.constants import CONNECTION_TYPE_CH_FROZEN_COVID
+
+
+class ClickHouseFrozenCovidDataSource(ClickHouseFrozenDataSourceBase):
+    conn_type = CONNECTION_TYPE_CH_FROZEN_COVID

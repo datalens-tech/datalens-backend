@@ -1,0 +1,44 @@
+import os
+import logging
+
+from aiohttp import web
+from concurrent.futures import ThreadPoolExecutor
+
+from bi_file_secure_reader_lib.resources import ping, reader
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+def create_app() -> web.Application:
+    app = web.Application()
+
+    app.router.add_route('*', '/reader/ping', ping.PingView)
+    app.router.add_route('*', '/reader/excel', reader.ReaderView)
+
+    app['tpe'] = ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 1) * 3 + 4))
+
+    return app
+
+
+async def create_gunicorn_app() -> web.Application:
+    try:
+        LOGGER.info("Creating application instance")
+        app = create_app()
+        LOGGER.info("Application instance was created")
+        return app
+    except Exception:
+        LOGGER.exception("Exception during app creation")
+        raise
+
+
+def main() -> None:
+    current_app = create_gunicorn_app()
+    web.run_app(
+        current_app,
+        path=os.environ["APP_SOCKET"],
+    )
+
+
+if __name__ == '__main__':
+    main()

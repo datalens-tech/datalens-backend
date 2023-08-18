@@ -1,0 +1,9 @@
+# FROM postgres:13-alpine
+FROM registry.yandex.net/statinfra/postgres@sha256:3335d0494b62ae52f0c18a1e4176a83991c9d3727fe67d8b1907b569de2f6175
+
+# https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+ENV PGCTLTIMEOUT=300
+
+COPY pg-us/docker-entrypoint-initdb.d/extensions.sql /docker-entrypoint-initdb.d/extensions.sql
+
+CMD ["postgres"]

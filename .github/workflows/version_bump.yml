@@ -1,0 +1,73 @@
+name: versioner
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_path:
+        type: choice
+        required: true
+        description:
+        options:
+          - lib/bi_api_lib;app/bi_api;app/bi_rqe_ext_async;app/bi_rqe_ext_sync;app/bi_rqe_int_sync;lib/bi_meta_yc/bi_meta_yc_control_api;app_yc/app_yc_control_api;lib/bi_meta_yc/bi_meta_yc_data_api;app_yc/app_yc_data_api;lib/bi_meta_yc/bi_meta_yc_data_api_sec_embeds;app_yc/app_yc_data_api_sec_embeds;lib/bi_meta_yc/bi_meta_yc_public_dataset_api;app_yc/app_yc_public_dataset_api;lib/bi_meta_os/bi_meta_os_control_api;app_os/app_os_control_api;lib/bi_meta_os/bi_meta_os_data_api;app_os/app_os_data_api
+          - app/bi_external_api
+          - app/bi_file_secure_reader
+          - lib/bi_file_uploader_api_lib;app/bi_file_uploader;lib/bi_meta_yc/bi_meta_yc_file_uploader_api;app_yc/app_yc_file_uploader_api
+          - lib/bi_file_uploader_worker_lib;app/bi_file_uploader_worker;lib/bi_meta_yc/bi_meta_yc_file_uploader_worker;app_yc/app_yc_file_uploader_worker
+          - app/bi_alerts
+
+jobs:
+  branch_push:
+    runs-on: [ self-hosted, linux ]
+    container:
+      image: "${{ vars.DL_CI_CR_URI }}/gh-action-image-default:7"
+      credentials:
+        username: "${{ secrets.DL_CI_CR_USER }}"
+        password: "${{ secrets.DL_CI_CR_TOKEN }}"
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+      - run: git config --global --add safe.directory .
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: git config --global --add safe.directory .
+      - run: git config --global --add safe.directory /__w/datalens-backend-mirror/datalens-backend-mirror
+      - name: set commiter info
+        env:
+          CI_COMMIT_AUTHOR: Continuous Integration
+        run: |
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "username@users.noreply.github.com"
+      - name: run releaser
+        run: |
+          export PROJ_ROOT=$(realpath .)
+          export ROOT_PKG_PATH=$(echo "${{ github.event.inputs.app_path }}" | cut -d ';' -f1)
+          export SUB_PKG_PATHS_LIST_STR=$(echo "${{ github.event.inputs.app_path }}" | cut -d ';' -f2-)
+          #
+          NEW_BRANCH_NAME="release/$(date +"%Y-%m-%dT%H-%M-%S")"
+          git checkout -b "${NEW_BRANCH_NAME}"
+          #
+          # Bump
+          #
+          bash ${PROJ_ROOT}/.github/bump_version.bash
+          #
+          # Debug
+          #
+          git diff HEAD~1
+          git push --set-upstream origin "${NEW_BRANCH_NAME}"
+          #
+          # PR
+          #
+          PR_URL=$(gh pr create -B trunk --fill --body "Releasing version for ${{ github.event.inputs.app_path }}")
+          # TODO FIX: Uncomment
+          # gh pr merge -s --admin "${PR_URL}"

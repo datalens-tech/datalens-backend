@@ -1,0 +1,78 @@
+#!/bin/sh
+# #######
+# Get logs by request id,
+# from current logfiles on the servers.
+#
+# Requires releaser-cli, parallel-ssh, yandex-python-sbdutils
+# should be run from the project directory (with `.release.hjson` in it).
+#
+# For cloud pssh, see 'yc-pssh-main-app'
+#
+# The raw log data is saved to `./tmp.log`
+# #######
+
+set -eu
+
+if which releaser_py >/dev/null; then
+    RELEASER="releaser_py"
+else
+    RELEASER="releaser"
+fi
+
+envname="int-production"
+components="dataset-api"
+reqid=""
+
+while [ -n "${1:-}" ]; do
+    case "$1" in
+        -e | --environment)
+            envname="$2"
+            shift 2
+            ;;
+        -c | --components)
+            components="$2"
+            shift 2
+            ;;
+        -*)
+            printf "ERROR: unknown parameter: %s\n" "$1" >&2
+            exit 1
+            ;;
+        *)
+            reqid="$1"
+            shift 1
+            ;;
+    esac
+done
+
+if [ -z "$envname" ]; then
+    printf "ERROR: no envname\n" >&2
+    exit 1
+fi
+
+if [ -z "$components" ]; then
+    components_args=""
+else
+    components_args="-c $components"
+fi
+
+if [ -z "$reqid" ]; then
+    printf "ERROR: no reqid\n" >&2
+    exit 1
+fi
+
+time \
+"$RELEASER" \
+    pssh \
+    -e "$envname" \
+    ${RELEASER_ARGS:-} \
+    $components_args \
+    -- \
+    -v -P --no-annotate-each-line \
+    -- \
+    grep -hF "$reqid" '/var/log/app/debug.log*' \
+| tee tmp.log \
+| grep -F 'Body for ' | jq -r .request_body | tee tmp_body.log
+
+cat tmp.log \
+| sort_by_regex 'isotimestamp.{30}' \
+| tskview_sbd

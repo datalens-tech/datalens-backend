@@ -1,0 +1,2 @@
+[bi_core.connectors]
+testing = bi_core_testing.connector:TestingCoreConnector

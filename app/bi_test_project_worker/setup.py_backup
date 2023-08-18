@@ -1,0 +1,39 @@
+import os
+from setuptools import setup, find_packages
+
+
+__version__ = "0.14.0"
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+setup(
+    name="bi-test-project-worker",
+    version=__version__,
+    author="Max Zuev",
+    author_email="thenno@yandex-team.ru",
+    packages=find_packages(".", exclude=["tests*"]),
+    zip_safe=False,
+    include_package_data=True,
+    entry_points={},
+    install_requires=[
+        # global packages
+        "attrs>=19.2.0",
+        "arq>=0.25.0",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            ("bi-task-processor", "bi_task_processor"),
+            ("bi-test-project-task-interface", "bi_test_project_task_interface"),
+        )
+    ],
+    extras_require={
+        "develop": [  # for testing and development
+            "pytest",
+            "ipython", "ipdb", "pyaux", "pyauxm",  # tier1 debug-conveniences
+        ],
+        "mypy": [  # for mypy checks
+            "mypy",
+        ],
+    },
+)

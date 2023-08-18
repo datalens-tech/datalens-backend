@@ -1,0 +1,89 @@
+name: {IG_NAME}
+service_account_id: {SA_ID}
+scale_policy:
+  fixed_scale:
+    size: 3
+deploy_policy:
+  max_unavailable: 2
+  # здесь лучше 0, для того чтобы виртуалки не пересоздавались каждый раз
+  max_expansion: 0 
+health_checks_spec:
+  health_check_specs:
+    - http_options:
+        port: 80
+        # для проектов на common, проверка живости приложения
+        path: /ping 
+      interval: 5s
+      timeout: 3s
+      unhealthy_threshold: 2
+      healthy_threshold: 3
+allocation_policy:
+  zones:
+    - zone_id: ru-central1-a
+    - zone_id: ru-central1-b
+    - zone_id: ru-central1-c
+platform_l7_load_balancer_spec:
+  preferred_ip_version: IPV6
+  target_group_spec:
+    # название вашей таргет-группы, это специальная тг для L7, из интерфейса ее создать невозможно
+    name: {TG_NAME_}
+instance_template:
+  # шаблон для имени вм, мы используем такой app_name-{instance.internal_dc}-{instance.index}
+  name: {INSTANCE_NAME_TEMPLATE}
+  labels: 
+    yandex-dns: ig
+    # имя кондукторной группы, подставляется тимсити, здесь не менять
+    # при создании можно не указывать
+    conductor-group: __CONDUCTOR_GROUP__
+  platform_id: standard-v1
+  resources_spec:
+    memory: 4G
+    cores: 2
+  boot_disk_spec:
+    mode: READ_WRITE
+    disk_spec:
+      # айдишник образа, созданного packer-ом, подставляется тимсити, здесь не менять
+      image_id: __IMAGE_ID__
+      type_id: network-ssd
+      size: 20g
+  # логи пишутся на secondary-disk, чтобы избежать потери при деплое
+  secondary_disk_specs:
+    - mode: READ_WRITE
+      device_name: data
+      disk_spec:
+        type_id: network-ssd
+        size: 50g
+  network_interface_specs:
+    - network_id: {NETWORK_ID}
+      primary_v6_address_spec: {}
+      primary_v4_address_spec: {}
+  metadata:
+    # настройка записи логов на secondary-disk
+    user-data: |
+      #cloud-config
+      disk_setup:
+        /dev/disk/by-id/virtio-data:
+          table_type: mbr
+          layout: [80, 20]
+          overwrite: false
+      fs_setup:
+        - filesystem: ext4
+          device: /dev/disk/by-id/virtio-data
+          partition: 1
+          overwrite: false
+        - filesystem: ext4
+          device: /dev/disk/by-id/virtio-data
+          partition: 2
+          overwrite: false
+      mounts:
+        - ["/dev/disk/by-id/virtio-data-part1", "/var/log", "auto", "defaults", "0", "0"]
+        - ["/dev/disk/by-id/virtio-data-part2", "/data", "auto", "defaults", "0", "0"]
+    # список ssh-ключей тех, кому нужен доступ на тачку, всей группы
+    # может быть получен через ssh-keys-generator
+    ssh-keys: |
+      {robot-1:ssh-rsa key1
+      vasya-1:ssh-rsa key2}
+    # подставляется тимсити, здесь не менять
+    dek: __DEK__
+    # тэг для osquery, для безопасников. Попросит создать shashial@ тэг и подставить его сюда
+    osquery_tag: {OSQUERY_TAG}

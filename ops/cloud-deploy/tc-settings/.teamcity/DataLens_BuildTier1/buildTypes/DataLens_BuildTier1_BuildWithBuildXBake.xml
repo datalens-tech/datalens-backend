@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="5ebac2c8-4342-4434-adf9-a0a1ff8fb7b8" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>BuildWithBuildXBake</name>
+  <settings>
+    <options>
+      <option name="checkoutMode" value="MANUAL" />
+      <option name="cleanBuild" value="true" />
+      <option name="publishArtifactCondition" value="SUCCESSFUL" />
+    </options>
+    <parameters>
+      <param name="arc.exported.path" value="datalens/backend" />
+      <param name="branch_spec" value="+:arcadia/(trunk)" />
+      <param name="dl.app_build.aw_deploy_build_id" value="Datalens_Yt_Preprod_DeployGeneric" />
+      <param name="dl.app_build.aw_docker_push.dc.build_id" value="Datalens_Dc_PushGeneric" spec="text display='normal' readOnly='true' validationMode='any'" />
+      <param name="dl.app_build.aw_docker_push.dc.enabled" value="false" spec="checkbox uncheckedValue='false' display='normal' checkedValue='true'" />
+      <param name="dl.app_build.aw_docker_push.il.build_id" value="Datalens_Il_PushGeneric" spec="text display='normal' readOnly='true' validationMode='any'" />
+      <param name="dl.app_build.aw_docker_push.il.enabled" value="false" spec="checkbox uncheckedValue='false' display='normal' checkedValue='true'" />
+      <param name="dl.app_build.aw_docker_push.yc_preprod.build_id" value="Datalens_Yc_Preprod_PushGeneric" spec="text display='normal' readOnly='true' validationMode='any'" />
+      <param name="dl.app_build.aw_docker_push.yc_preprod.enabled" value="false" spec="checkbox uncheckedValue='false' display='normal' checkedValue='true'" />
+      <param name="dl.app_build.bake_target" value="" />
+      <param name="dl.app_build.dir_path" value="" />
+      <param name="dl.app_build.docker_repo_prefix_array" value="registry.yandex.net/statinfra;cr.yandex/crpvqg9oj0ude1mj1mj2" />
+      <param name="dl.app_build.docker_repo_suffix" value="" />
+      <param name="dl.app_build.trigger_ya_team_deploy" value="true" spec="checkbox uncheckedValue='false' display='normal' checkedValue='true'" />
+      <param name="env.ARC_TOKEN" value="credentialsJSON:4316c0ca-ba32-4a0d-889f-670aacf53b65" spec="password display='hidden'" />
+      <param name="env.AW_TOKEN" value="credentialsJSON:5dd46041-a3d0-4f0b-9822-86b787871002" spec="password display='hidden'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_10413" name="arc checkout" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[#!/usr/bin/env bash
+
+set -ex
+
+BUILD_ROOT="${PWD}"
+ARC_ROOT="${BUILD_ROOT}/arc"
+SRC_ROOT="${BUILD_ROOT}/src"
+
+mkdir -p "${ARC_ROOT}"
+cd "${ARC_ROOT}"
+arc init --bare
+
+A_REVISION="%build.vcs.number.Root_Arcadia%"
+A_MAIN_PATH="%arc.exported.path%"
+
+COMMIT_MESSAGE=$(arc show "${A_REVISION}" --json | jq '.[0].commits[0].message' -r)
+APP_VERSION_FROM_COMMIT_MSG=$(printf "%s" "${COMMIT_MESSAGE}" | python3 -c 'import re; print(re.search(r"^releasing version (\S+)", input()).group(1))')
+echo "##teamcity[buildStatus text='version: ${APP_VERSION_FROM_COMMIT_MSG}']"
+echo "##teamcity[setParameter name='env.DL_APP_VERSION' value='${APP_VERSION_FROM_COMMIT_MSG}']"
+
+arc export "${A_REVISION}" "${A_MAIN_PATH}" --to "${SRC_ROOT}"
+
+cd "${BUILD_ROOT}"
+
+rm -rf "${ARC_ROOT}"
+mv ${SRC_ROOT}/* "${BUILD_ROOT}"
+rm -rf "${SRC_ROOT}"]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_10415" name="docker buildx bake" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[#!/usr/bin/env bash
+
+set -ex
+
+cd datalens/backend/docker_build
+
+BAKE_TARGET="%dl.app_build.bake_target%"
+REPO_SUFFIX="%dl.app_build.docker_repo_suffix%"
+VERSION="${DL_APP_VERSION}"
+TAG_ARGS=()
+PUSH_ARGS=()
+
+IFS=';' read -ra REPO_PREFIX_ARRAY <<< "%dl.app_build.docker_repo_prefix_array%"
+for REPO_PREFIX in "${REPO_PREFIX_ARRAY[@]}"
+do
+    TAG_ARGS+=(
+    	--set
+        "${BAKE_TARGET}.tags=${REPO_PREFIX}/${REPO_SUFFIX}:${VERSION}"
+    )
+done
+
+if (( ${#TAG_ARGS[@]} )); then
+	PUSH_ARGS+=(--push)
+fi
+
+./run-project-bake --progress=plain "${TAG_ARGS[@]}" "${PUSH_ARGS[@]}" "${BAKE_TARGET}"]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_10419" name="trigger YaTeam deploy in AW" type="simpleRunner">
+        <conditions>
+          <equals name="dl.app_build.trigger_ya_team_deploy" value="true" />
+        </conditions>
+        <parameters>
+          <param name="script.content"><![CDATA[#!/usr/bin/env bash
+set -e
+
+AW_TOKEN=${AW_TOKEN}
+APP_PATH=${APP_PATH:-"%dl.app_build.dir_path%"}
+AW_BUILD_ID=${AW_BUILD_ID:-"%dl.app_build.aw_deploy_build_id%"}
+
+PAYLOAD=$(jq --null-input --arg BUILD_ID "${AW_BUILD_ID}" --arg COMMENT "Deploy from YaTeam TC: ${APP_PATH}:${DL_APP_VERSION}" --arg APP_PATH "$APP_PATH" --arg APP_VERSION "$DL_APP_VERSION" '
+{
+  "buildType": {
+    "id": $BUILD_ID
+  },
+  "comment": {
+    "text": $COMMENT
+  },
+  "properties": {
+    "property": [
+      {
+        "name": "dl.generic_ya_deploy.app_path",
+        "value": $APP_PATH
+      },
+      {
+        "name": "dl.generic_ya_deploy.version",
+        "value": $APP_VERSION
+      }
+    ]
+  }
+}
+')
+
+echo "Payload for AW deploy build request:"
+jq --null-input "${PAYLOAD}"
+
+curl --fail-with-body --location 'https://teamcity.aw.cloud.yandex.net/app/rest/buildQueue' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header "Authorization: Bearer ${AW_TOKEN}" \
+--data "${PAYLOAD}" || printf "\n\n##teamcity[addBuildTag 'AW deploy trigger fail']\n"
+
+printf "\n"]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_11164" name="trigger AW Docker push tasks" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[#!/usr/bin/env bash
+set -e
+
+AW_TOKEN=${AW_TOKEN}
+
+REPO_SUFFIX=${REPO_SUFFIX:-"%dl.app_build.docker_repo_suffix%"}
+DL_APP_VERSION="${DL_APP_VERSION}"
+
+AW_BUILD_ID_PUSH_YC_PREPROD=${AW_BUILD_ID_PUSH_YC_PREPROD:-"%dl.app_build.aw_docker_push.yc_preprod.build_id%"}
+AW_BUILD_ID_PUSH_IL=${AW_BUILD_ID_PUSH_IL:-"%dl.app_build.aw_docker_push.il.build_id%"}
+AW_BUILD_ID_PUSH_DC=${AW_BUILD_ID_PUSH_DC:-"%dl.app_build.aw_docker_push.dc.build_id%"}
+
+DO_PUSH_YC_PREPROD=${DO_PUSH_YC_PREPROD:-"%dl.app_build.aw_docker_push.yc_preprod.enabled%"}
+DO_PUSH_IL=${DO_PUSH_IL:-"%dl.app_build.aw_docker_push.il.enabled%"}
+DO_PUSH_DC=${DO_PUSH_DC:-"%dl.app_build.aw_docker_push.dc.enabled%"}
+
+DOCKER_PUSH_AW_BUILD_IDS=()
+
+if [[ "${DO_PUSH_YC_PREPROD}" == "true" ]]; then DOCKER_PUSH_AW_BUILD_IDS+=("${AW_BUILD_ID_PUSH_YC_PREPROD}"); fi
+if [[ "${DO_PUSH_IL}" == "true" ]]; then DOCKER_PUSH_AW_BUILD_IDS+=("${AW_BUILD_ID_PUSH_IL}"); fi
+if [[ "${DO_PUSH_DC}" == "true" ]]; then DOCKER_PUSH_AW_BUILD_IDS+=("${AW_BUILD_ID_PUSH_DC}"); fi
+
+for AW_BUILD_ID in "${DOCKER_PUSH_AW_BUILD_IDS[@]}"; do
+    echo "##teamcity[addBuildTag 'AW Docker push ${AW_BUILD_ID}']"
+    PAYLOAD=$(jq --null-input --arg BUILD_ID "${AW_BUILD_ID}" --arg COMMENT "From YaTeam TC: ${REPO_SUFFIX}:${DL_APP_VERSION}" --arg REPO_SUFFIX "${REPO_SUFFIX}" --arg APP_VERSION "${DL_APP_VERSION}" '
+    {
+      "buildType": {
+        "id": $BUILD_ID
+      },
+      "comment": {
+        "text": $COMMENT
+      },
+      "properties": {
+        "property": [
+          {
+            "name": "dl.generic_docker_upl.repo_suffix",
+            "value": $REPO_SUFFIX
+          },
+          {
+            "name": "dl.generic_docker_upl.img_version",
+            "value": $APP_VERSION
+          }
+        ]
+      }
+    }
+    ')
+
+    echo "Payload for AW Docker push build ${AW_BUILD_ID} request:"
+    jq --null-input "${PAYLOAD}"
+
+    curl --fail-with-body --location 'https://teamcity.aw.cloud.yandex.net/app/rest/buildQueue' \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    --header "Authorization: Bearer ${AW_TOKEN}" \
+    --data "${PAYLOAD}" || printf "\n\n##teamcity[addBuildTag 'AW Docker push trigger fail ${AW_BUILD_ID}']\n"
+
+    printf "\n"
+done]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="Root_Arcadia">
+        <checkout-rule rule="-:." />
+        <checkout-rule rule="+:datalens/backend/%dl.app_build.dir_path%" />
+      </vcs-entry-ref>
+    </vcs-settings>
+    <requirements />
+    <build-triggers>
+      <build-trigger id="TRIGGER_2088" type="vcsTrigger">
+        <parameters>
+          <param name="branchFilter" value="+:*" />
+          <param name="perCheckinTriggering" value="true" />
+          <param name="quietPeriodMode" value="DO_NOT_USE" />
+          <param name="triggerRules" value="+:root=Root_Arcadia;comment=^releasing version .+:datalens/backend/%dl.app_build.dir_path%/**" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <cleanup />
+  </settings>
+</template>
+

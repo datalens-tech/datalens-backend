@@ -1,0 +1,62 @@
+- name: extract ya-team token
+  delegate_to: localhost
+  shell: "ya vault get version {{ docker_ya_team_creds_token_yav_sec_version_id }} --json | jq .value | jq -r .{{ docker_ya_team_creds_token_yav_sec_key }}"
+  register: docker_token_ya_team
+  
+- name: extract yc-prod token
+  delegate_to: localhost
+  shell: "ya vault get version {{ docker_yc_prod_creds_json_yav_sec_version_id }} --json | jq .value | jq -r .{{ docker_yc_prod_creds_json_yav_sec_key }}"
+  register: docker_token_yc_prod
+
+- name: creds ya-team token tempfile path
+  become: yes
+  ansible.builtin.tempfile:
+    state: file
+    suffix: temp
+  register: creds_tempfile_ya_team
+
+- name: creds yc-prod token tempfile path
+  become: yes
+  ansible.builtin.tempfile:
+    state: file
+    suffix: temp
+  register: creds_tempfile_yc_prod
+
+- name: login block
+  block:
+    # Fill creds
+    - name: creds tempfile content ya-team
+      become: yes
+      copy:
+        content: "{{ docker_token_ya_team.stdout }}"
+        dest: "{{ creds_tempfile_ya_team.path }}"
+    - name: creds tempfile content yc-prod
+      become: yes
+      copy:
+        content: "{{ docker_token_yc_prod.stdout }}"
+        dest: "{{ creds_tempfile_yc_prod.path }}"
+    # Login
+    - name: docker login ya-team
+      become: yes
+      shell: "sudo -i -u teamcity docker login --username {{ docker_ya_team_creds_username }} --password-stdin registry.yandex.net < {{ creds_tempfile_ya_team.path }}"
+      register: debug_shell_ya_team
+    - name: docker login yc-prod
+      become: yes
+      shell: "sudo -i -u teamcity docker login --username {{ docker_yc_prod_creds_username }} --password-stdin cr.yandex < {{ creds_tempfile_yc_prod.path }}"
+      register: debug_shell_yc_prod
+  always:
+    - name: cleanup creds file ya-team
+      become: yes
+      file:
+        path: "{{ creds_tempfile_ya_team.path }}"
+        state: absent
+    - name: cleanup creds file yc-prod
+      become: yes
+      file:
+        path: "{{ creds_tempfile_yc_prod.path }}"
+        state: absent
+
+- debug:
+    var: debug_shell_ya_team
+- debug:
+    var: debug_shell_yc_prod

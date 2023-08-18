@@ -1,0 +1,30 @@
+daemon on;
+worker_processes $QLOUD_CPU_CORES;
+pid /run/nginx.pid;
+
+events {
+    worker_connections 768;
+}
+
+http {
+    include /etc/nginx/mime.types;
+
+    client_max_body_size 40m;
+    default_type application/octet-stream;
+
+    error_log /proc/self/fd/1;
+
+    server {
+        listen      $QLOUD_HTTP_PORT;
+        listen [::]:$QLOUD_HTTP_PORT;
+
+        location / {
+            proxy_pass http://127.0.0.1:9000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+            add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: blob: https://center.yandex-team.ru; style-src 'self' 'unsafe-inline'";
+        }
+    }
+}

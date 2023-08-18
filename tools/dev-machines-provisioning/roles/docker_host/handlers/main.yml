@@ -1,0 +1,28 @@
+- name: restart dockerd
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+  become: yes
+  become_user: root
+
+- name: reload units
+  systemd:
+    daemon_reload: yes
+  become: yes
+  become_user: root
+
+- name: restart resolved
+  service:
+    name: systemd-resolved
+    state: restarted
+  become: yes
+  become_user: root
+
+- name: restart openvpn server
+  service:
+    name: openvpn@server
+    state: restarted
+    enabled: yes
+  become: yes
+  become_user: root

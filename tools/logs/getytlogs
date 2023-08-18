@@ -1,0 +1,113 @@
+#!/bin/bash
+# #######
+# Get logs by request id,
+# from log tables on Yt
+#
+# Requires yandex-python-sbdutils:
+# https://a.yandex-team.ru/arc/trunk/arcadia/datalens/backend/tools/logs/getytlogs?rev=7222730#L6
+#
+#     pip install -i https://pypi.yandex-team.ru/simple yandex-python-sbdutils
+#
+# The raw log is saved to `./tmp.log`
+# #######
+
+set -eu
+
+envname="int-production"
+date=""
+pattern=""
+field="request_id"
+
+cluster="${DLL_CLUSTER:-hahn}"
+clique="${DLL_CLIQUE:-chyt_datalens_back}"
+
+while [ -n "${1:-}" ]; do
+    case "$1" in
+        -e | --environment)
+            envname="$2"
+            shift 2
+            ;;
+        -d | --date)
+            date="$2"
+            shift 2
+            ;;
+        -m | --message)
+            # Search by message rather than by request_id.
+            field="message"
+            shift 1
+            ;;
+        -*)
+            printf "ERROR: unknown parameter: %s\n" "$1" >&2
+            exit 1
+            ;;
+        *)
+            if [ ! -z "$pattern" ]; then
+                printf "ERROR: extra positional argument: %s\n" "$1" >&2
+                exit 1
+            fi
+            pattern="$1"
+            shift 1
+            ;;
+    esac
+done
+
+YT_TOKEN="$(cat ~/.yt/token)"
+host="$(
+    curl -s "https://${cluster}.yt.yandex.net/hosts" \
+    | jq -r '.[]' \
+    | shuf -n1
+)"
+if [ -z "$date" ]; then
+    dir_path="//logs/datalens-back-${envname}-debug/30min"
+    range_start="$(date "+%Y-%m-%dT%H:%M:%S" -d '00:00')"
+    range_end="$(date "+%Y-%m-%dT%H:%M:%S" -d '1 hour')"
+    query_from="concatYtTablesRange(\"${dir_path}\", '${range_start}', '${range_end}')"
+else
+    query_from="\"//logs/datalens-back-${envname}-debug/1d/${date}\""
+fi
+
+# NOTE: `COLUMNS('^[^_]')` is to imitate `* except "_rest"`
+query="
+    select
+        COLUMNS('^[^_]')
+        , ConvertYson(_rest, 'text') as _rest_text
+    from ${query_from}
+    where ${field} like '${pattern}%'
+    order by timestampns
+    limit 1000000
+    format JSONEachRow
+"
+
+url="http://${host}:80/query?database=%2A${clique}&chyt.composite.default_yson_format=pretty&chyt.composite.enable_conversion=1"
+
+# Simple: just the query: printf "%s\n\n" "$query"
+# Complex: reproducible command without the visible secrets
+# TODO: after fresh `yandex-yt` is packaged, do: yt --proxy hahn clickhouse execute --setting chyt.composite.default_yson_format=pretty --operation-alias '*chyt_datalens_back' --format JSONEachRow "$query"
+printf "
+time curl \\
+     -s -H 'Expect:' -H \"Authorization: Basic \$(printf \"x:%%s\" \"\$(cat ~/.yt/token)\" | base64)\" \\
+     %q \\
+     --data-binary \"%s\" \
+     -o tmp.log && bi-log-format tmp.log
+" "$url" "$(printf "%s" "$query" | sed -r 's|\\|\\\\|g; s|"|\\"|g')" >&2
+
+time curl \
+    -s -H 'Expect:' -H "Authorization: Basic $(printf "x:%s" "$YT_TOKEN" | base64)" \
+    "$url" \
+    --data-binary "$query" \
+    -o tmp.log
+grep -F 'Body for ' tmp.log \
+    | jq -r .request_body \
+    | tee tmp_body.log
+
+_logformat() {
+    HERE="$(dirname "$0")"
+    LOG_FORMAT_PATH="$HERE/bi-log-format"
+    if [ -e "$LOG_FORMAT_PATH" ]; then
+        "$LOG_FORMAT_PATH" tmp.log
+    else
+        bi-log-format tmp.log
+    fi
+}
+
+_logformat tmp.log

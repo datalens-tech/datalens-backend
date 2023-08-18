@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: yandex-bi-api-lib
+Version: 0.1900.0
+Author: Datalens Backendovich
+Author-email: robot-datalens-back@yandex-team.ru
+Requires-Dist: attrs
+Provides-Extra: all
+Provides-Extra: develop
+

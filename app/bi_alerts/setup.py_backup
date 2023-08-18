@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import os
+
+from setuptools import setup, find_packages
+
+__version__ = "0.117.0"
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="bi-alerts",
+    version=__version__,
+    author="Sergey Borodin",
+    author_email="seray@yandex-team.ru",
+    packages=find_packages(exclude=["bi_alerts_tests"]),
+    zip_safe=False,
+    include_package_data=True,
+    package_data={
+        "bi_alerts": [
+            "settings/*.conf*",
+        ],
+    },
+    python_requires=">3.7.0",
+    install_requires=[
+        "aiohttp>=3.5",
+        "aiopg",
+        "granular-settings",
+        "gunicorn",
+        "marshmallow",
+        "marshmallow-enum>=1.5.1",
+        "sentry-sdk",
+        "shortuuid",
+        "SQLAlchemy",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            ("yandex-bi-api-commons", "bi_api_commons"),
+            ("yandex-bi-blackbox-client", "bi_blackbox_client"),
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-utils", "bi_utils"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "bi_alerts_tests": [
+            "pip-tools>=4.5.0",
+            "pytest>=5.4.3",
+        ],
+    }
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

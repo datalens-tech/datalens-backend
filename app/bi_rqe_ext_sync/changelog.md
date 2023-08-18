@@ -1,0 +1,283 @@
+0.1969.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-18 07:00:51+00:00
+
+0.1968.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 16:10:42+00:00
+
+0.1967.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 15:43:56+00:00
+
+0.1966.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 14:38:05+00:00
+
+0.1965.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 13:30:40+00:00
+
+0.1964.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 11:49:39+00:00
+
+0.1963.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 11:40:45+00:00
+
+0.1962.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-17 00:14:45+00:00
+
+0.1961.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-16 23:22:16+00:00
+
+0.1960.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-16 14:28:43+00:00
+
+0.1959.0
+--------
+
+* [seray](http://staff/seray)
+
+ * BI-4808 new dependencies for rqe-ext-async  [ https://a.yandex-team.ru/arc/commit/12178725 ]
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-15 16:47:55+00:00
+
+0.1958.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-15 15:33:40+00:00
+
+0.1957.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-14 15:51:18+00:00
+
+0.1956.0
+--------
+
+* [seray](http://staff/seray)
+
+ * BI-4807 rqe-ext-sync bigquery fix  [ https://a.yandex-team.ru/arc/commit/12167091 ]
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-14 14:38:38+00:00
+
+0.1955.0
+--------
+
+* [seray](http://staff/seray)
+
+ * BI-4807 rqe-ext-sync tier1  [ https://a.yandex-team.ru/arc/commit/12164454 ]
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-14 11:43:52+00:00
+
+0.1954.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-11 14:13:30+00:00
+
+0.1953.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-11 10:35:24+00:00
+
+0.1952.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-10 15:18:52+00:00
+
+0.1951.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-09 10:52:46+00:00
+
+0.1950.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-08 16:50:43+00:00
+
+0.1949.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-04 08:42:50+00:00
+
+0.1948.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-03 20:18:15+00:00
+
+0.1947.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-03 18:57:21+00:00
+
+0.1946.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-03 18:31:44+00:00
+
+0.1945.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-03 15:32:27+00:00
+
+0.1944.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-03 12:43:15+00:00
+
+0.1943.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-03 10:13:20+00:00
+
+0.1942.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-02 19:40:34+00:00
+
+0.1941.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-02 18:30:35+00:00
+
+0.1940.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-02 15:25:50+00:00
+
+0.1939.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-02 14:29:25+00:00
+
+0.1938.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-02 09:26:56+00:00
+
+0.1937.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-02 08:51:33+00:00
+
+0.1936.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-01 11:05:06+00:00
+
+0.1935.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-08-01 09:00:43+00:00
+
+0.1934.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-31 14:34:53+00:00
+
+0.1933.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-29 16:36:07+00:00
+
+0.1932.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-28 21:57:11+00:00
+
+0.1931.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-28 18:31:54+00:00
+
+0.1930.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-28 16:39:03+00:00
+
+0.1929.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-28 13:31:39+00:00
+
+0.1928.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-28 08:34:25+00:00
+
+0.1927.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 18:16:54+00:00
+
+0.1926.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 16:59:45+00:00
+
+0.1925.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 16:46:38+00:00
+
+0.1924.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 14:57:07+00:00
+
+0.1923.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 14:33:28+00:00
+
+0.1922.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 13:33:40+00:00
+
+0.1921.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-27 09:41:10+00:00
+
+0.1920.0
+--------
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-26 16:50:42+00:00
+
+0.1919.0
+--------
+
+* [seray](http://staff/seray)
+
+ * BI-4478 fix service path  [ https://a.yandex-team.ru/arc/commit/12016035 ]
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-25 19:09:19+00:00
+
+0.1918.0
+--------
+
+* [seray](http://staff/seray)
+
+ * BI-4478 rqe_ext_sync as a separate app  [ https://a.yandex-team.ru/arc/commit/12010421 ]
+
+[robot-yc-arcadia](http://staff/robot-yc-arcadia) 2023-07-25 12:29:40+00:00
+
+0.1916.0
+--------
+Sync version with bi-api

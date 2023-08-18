@@ -1,0 +1,4 @@
+[*.py]
+ij_python_use_continuation_indent_for_parameters = true
+ij_python_use_continuation_indent_for_collection_and_comprehensions = false
+ij_python_use_continuation_indent_for_arguments = false

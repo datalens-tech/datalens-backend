@@ -1,0 +1,13 @@
+{
+    "download_link": "https://proxy.sandbox.yandex-team.ru/1539663420", 
+    "file_name": "oracle_cli.tgz", 
+    "md5": "e095e11d138d6597af9a19b39f682798", 
+    "resource_id": 1539663420, 
+    "resource_link": "https://sandbox.yandex-team.ru/resource/1539663420/view", 
+    "skynet_id": "rbtorrent:dfbeafa67aa5187f774881229d8d7ff206cd8a51", 
+    "storage": "SANDBOX", 
+    "task": {
+        "id": 691214406, 
+        "url": "https://sandbox.yandex-team.ru/api/v1.0/task/691214406"
+    }
+}

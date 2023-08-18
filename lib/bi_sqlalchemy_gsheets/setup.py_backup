@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from setuptools import setup, find_packages
+
+
+__version__ = "0.2"
+
+
+SETUP_KWARGS = dict(
+    name="sqlalchemy-gsheets",
+    version=__version__,
+    author="Anton Vasilev",
+    author_email="hhell@yandex-team.ru",
+    packages=find_packages(exclude=["tests"]),
+    include_package_data=True,
+    install_requires=["sqlalchemy>=1.4"],
+    extras_require={"all": []},
+    entry_points={
+        "sqlalchemy.dialects": [
+            "gsheets = bi_sqlalchemy_gsheets.base:GSheetsDialect",
+        ],
+    },
+)
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

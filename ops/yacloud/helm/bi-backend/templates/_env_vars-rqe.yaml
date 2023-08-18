@@ -1,0 +1,4 @@
+{{- define "env_vars-rqe" }}
+- name: RQE_CACHES_ON
+  value: {{ .Values.enabled_features.rqe_caches | ternary "1" "0" | quote }}
+{{ end }}

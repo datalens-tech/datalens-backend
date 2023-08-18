@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: yandex-bi-connector-bigquery
+Version: 0.0.0
+Author: Grigory Statsenko
+Author-email: gstatsenko@yandex-team.ru
+Requires-Dist: attrs
+Requires-Dist: marshmallow
+Requires-Dist: google-api-core
+Requires-Dist: google-auth
+Requires-Dist: google-cloud-bigquery
+Requires-Dist: sqlalchemy (>=1.2)
+Requires-Dist: sqlalchemy-bigquery
+Provides-Extra: all
+Provides-Extra: develop
+

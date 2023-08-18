@@ -1,0 +1,16 @@
+# id: a5dr1rv607iro878i023
+name: billing-api
+description: DataLens Billing API (PREPROD)
+folder_id: aoevv1b69su5144mlro3
+http:
+  backends:
+  - name: http-backend
+    weight: '100'
+    port: '443'
+    target_group:
+      target_group_id: a5dj7jrn2tv805kss22t
+    tls:
+      tls_options:
+        tls_min_version: TLS_V1_2
+        tls_max_version: TLS_V1_2
+  connection: {}

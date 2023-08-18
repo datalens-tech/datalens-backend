@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+TOKEN="$(cat ~/.auth/awacs)"
+
+ya tool yd-migrate push_awacs "$TOKEN"

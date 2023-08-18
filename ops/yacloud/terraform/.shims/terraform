@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script="$(realpath "$0")"
+script_dir="$(dirname "${script}")"
+project_dir="$(dirname "${script_dir}")"
+
+main() {
+  if [[ ! -d "${script_dir}/bin" ]]; then
+    mkdir "${script_dir}/bin"
+  fi
+
+  if [[ ! -f "${script_dir}/bin/terraform" ]]; then
+    download_terraform
+  fi
+
+  execute_terraform "${@:1}"
+}
+
+download_terraform() {
+  arch="$(uname -m)"
+  version="$(cat "${project_dir}/.terraform-version")"
+  platform="$(tr '[:upper:]' '[:lower:]' <<< "$(uname)")"
+
+  if [[ "${arch}" == "x86_64" ]]; then
+    arch="amd64"
+  fi
+
+  if [[ "${arch}" == "aarch64" ]]; then
+    arch="arm64"
+  fi
+
+  base_url='https://hashicorp-releases.yandexcloud.net/terraform'
+  archive_url="${base_url}/${version}/terraform_${version}_${platform}_${arch}.zip"
+
+  curl --location --output "${script_dir}/bin/terraform.zip" "${archive_url}"
+  unzip "${script_dir}/bin/terraform.zip" -d "${script_dir}/bin"
+  chmod +x "${script_dir}/bin/terraform"
+  rm "${script_dir}/bin/terraform.zip"
+}
+
+execute_terraform() {
+  export TF_CLI_CONFIG_FILE="${project_dir}/.terraformrc"
+  "${script_dir}/bin/terraform" "${@:1}"
+}
+
+main "$@"

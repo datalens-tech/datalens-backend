@@ -1,0 +1,52 @@
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+    ytr = {
+      source  = "terraform.storage.cloud-preprod.yandex.net/yandex-cloud/ytr"
+      version = "0.9.0"
+    }
+    ycp = {
+      source = "terraform.storage.cloud-preprod.yandex.net/yandex-cloud/ycp"
+    }
+  }
+  backend "s3" {
+    endpoint = "storage.cloud-preprod.yandex.net"
+    bucket   = "dl-tf-state"
+    region   = "us-east-1"
+    key      = "datalens-ops.tfstate"
+
+    skip_region_validation      = true
+    skip_credentials_validation = true
+  }
+  required_version = ">= 0.13"
+}
+
+provider "ycp" {
+  token       = var.iam_token
+  cloud_id    = module.constants.env_data.cloud_id
+  folder_id   = module.constants.env_data.folder_id
+  ycp_profile = module.constants.env_data.ycp_profile
+  environment = module.constants.env_data.ycp_environment
+}
+
+provider "ytr" {
+  solomon_token      = var.iam_token
+  solomon_endpoint   = "https://solomon.cloud-preprod.yandex-team.ru"
+  solomon_token_type = "Bearer"
+  juggler_endpoint   = "https://juggler.yandex-team.ru"
+  # temporary solution
+  # we don't have cloud juggler yet
+  # https://st.yandex-team.ru/MONSUPPORT-1791#6311f088c709c901cf23e9c2
+  juggler_token_type = "OAuth"
+  juggler_token      = var.juggler_token
+}
+
+provider "yandex" {
+  token            = var.iam_token
+  cloud_id         = module.constants.env_data.cloud_id
+  folder_id        = module.constants.env_data.folder_id
+  endpoint         = module.constants.env_data.cloud_api_endpoint
+  storage_endpoint = module.constants.env_data.s3_endpoint
+}

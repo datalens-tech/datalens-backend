@@ -1,0 +1,2 @@
+class SettingsLoadingException(Exception):
+    pass

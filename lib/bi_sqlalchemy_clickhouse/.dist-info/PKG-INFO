@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: yandex-bi-sqlalchemy-clickhouse
+Version: 0.3
+Summary: BI ClickHouse SQLAlchemy Dialect Customizations
+Author: Datalens Backendovich
+Author-email: robot-datalens-back@yandex-team.ru
+Requires-Dist: sqlalchemy (>=1.4)
+Provides-Extra: all
+
+...

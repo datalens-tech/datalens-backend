@@ -1,0 +1,8 @@
+**
+
+!yadls/**
+!etc/**
+!docker/**
+
+!setup.py
+!requirements.txt

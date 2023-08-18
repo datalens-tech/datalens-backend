@@ -1,0 +1,49 @@
+
+[tool.poetry]
+name = "yandex-bi-sqlalchemy-chyt"
+version = "0.7"
+description = "BI CHYT SQLAlchemy Dialect"
+authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+packages = [{include = "bi_sqlalchemy_chyt"}]
+license = "MIT"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_chyt = "bi_sqlalchemy_chyt.base:BICHYTDialect"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: yandex-bi-sqlalchemy-common
+Version: 0.2
+Summary: BI SQLAlchemy dialects common additions
+Requires-Dist: sqlalchemy (>=1.4)
+Provides-Extra: all
+
+...

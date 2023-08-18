@@ -1,0 +1,12 @@
+all:
+  hosts:
+    dev_machine:
+      ansible_host: mydevmachine.example.com # dev-machine FQDN
+      ansible_python_interpreter: /usr/bin/python3 # This is path on remote machine. Ubuntu bionic assumed in this example
+      # OpenVPN settings
+      dm_setup_ovpn: yes
+      dm_ovpn_laptop_port: 11194 # Port on local laptop to be forwarded to OpenVPN server on dev machine
+      dm_ovpn_tun_laptop_ip: 10.142.0.2 # OpenVPN Tunnel IP address of laptop
+      dm_ovpn_tun_dev_machine_ip: 10.142.0.1 # OpenVPN Tunnel IP address of dev machine
+      dm_docker_expose_socket: no # If you did don't want to use VPN, you may want to bind INSECURE docker socket on dev machine interface/
+                                  #  This will bind INSECURE docker socket on [::]:2375.

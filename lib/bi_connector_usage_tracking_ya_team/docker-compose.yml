@@ -1,0 +1,41 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+
+services:
+  db-clickhouse-22-10:
+    ports:
+      - "52204:8123"
+      - "52205:9000"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-22-10
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+      - "51910:5432"
+
+  us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.us-single-tenant
+    container_name: bi_connector_usage_tracking_ya_team_us-unit-tests
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      DLS_ENABLED: "false"
+      DISABLE_DLS: "true"
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+      - "51911:80"

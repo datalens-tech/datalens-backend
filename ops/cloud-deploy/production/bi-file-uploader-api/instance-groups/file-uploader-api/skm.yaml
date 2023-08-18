@@ -1,0 +1,103 @@
+yav_token:
+  env_var: YAV_TOKEN
+
+yc_kms:
+  api_endpoint: api.cloud.yandex.net:443
+
+kek:
+  kms:
+    key_uri: yc-kms://abjbvt8c9bmbiat3lfha   # skm-key
+
+encrypted_dek: AAAAAQAAABRhYmplYWRjNHVyNXBqczg4YW9hZgAAABA5xEdk1lHbXxFuDwO4Jw1JAAAADH6EsXash9tjBt4jNNys/+FhjfH2tZb+evoE5WJBrfTNjN3pQW4EiNe1V7H5M/Z29ySjZbNdciztSNyA91lFbAER9yCJmWqmLuPCTR6BvucACvxr2YzknZMCAlMD
+
+secrets:
+- path: /etc/secrets/TVM_SECRET
+  source:
+    yav:
+      secret_id: sec-01dv8x5xs7jv49pq7fam9d4zx7
+      key: client_secret
+- path: /etc/secrets/TVM_INFO
+  source:
+    yav:
+      secret_id: sec-01dv8x5xs7jv49pq7fam9d4zx7
+      key: TVM_INFO
+- path: /etc/secrets/component_cert.pem
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: COMPONENTS_CERT_CHAIN
+- path: /etc/secrets/component_cert.key
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: COMPONENTS_CERT_KEY
+- path: /etc/secrets/LOGCH_PASSWORD
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: LOGS_CH_PASSWORD
+- path: /etc/metricsagent/SOLOMON_AUTH_SA_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: solomon_pusher_sa_key
+- path: /etc/secrets/DL_CRY_KEY_VAL_ID_cloud_prod_3
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CRYPTO_KEY_3
+- path: /etc/secrets/CSRF_SECRET
+  source:
+    yav:
+      secret_id: sec-01cramk07fz80xzkj80f4nkd82
+      key: production
+- path: /etc/secrets/REDIS_APP_PASSWORD
+  source:
+    yav:
+      key: REDIS_MISC_PASSWORD
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+- path: /etc/secrets/REDIS_ARQ_PASSWORD
+  source:
+    yav:
+      key: REDIS_MISC_PASSWORD
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+- path: /etc/secrets/S3_ACCESS_KEY_ID
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CLOUD_S3_ACCESS_KEY_ID
+- path: /etc/secrets/S3_SECRET_ACCESS_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CLOUD_S3_SECRET_ACCESS_KEY
+- path: /etc/secrets/FILE_S3_CH_PASSWORD
+  source:
+    yav:
+      key: mat_ch_service_user_password
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+- path: /etc/secrets/CONNECTORS_FILE_ACCESS_KEY_ID
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CLOUD_S3_ACCESS_KEY_ID
+- path: /etc/secrets/CONNECTORS_FILE_SECRET_ACCESS_KEY
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: CLOUD_S3_SECRET_ACCESS_KEY
+- path: /etc/secrets/CONNECTORS_FILE_PASSWORD
+  source:
+    yav:
+      key: CONN_FILE_CH_PASSWORD
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+- path: /etc/secrets/SA_KEY_DATA
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: IAM_INTERACTION_SERVICE_ACCOUNT_KEY_DATA
+- path: /etc/secrets/FILE_UPLOADER_MASTER_TOKEN
+  source:
+    yav:
+      secret_id: sec-01dc4kwx555c9cby0rkmv50eym
+      key: FILE_UPLOADER_MASTER_TOKEN

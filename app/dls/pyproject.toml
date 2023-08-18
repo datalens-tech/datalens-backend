@@ -1,0 +1,92 @@
+
+[tool.poetry]
+name = "yadls"
+version = "0.2"
+description = "Yandex DataLens Security core; https://st.yandex-team.ru/BI-46"
+authors = ["Anton Vasilyev <hhell@yandex-team.ru>"]
+packages = [{include = "yadls"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+aiopg = ">=1.4.0"
+alembic = ">=1.6.5"
+async-timeout = ">=4.0.2"
+django = ">=2.2.14"
+gunicorn = ">=20.1.0"
+hypercorn = ">=0.14.3"
+ipython = ">=8.10.0"
+openapi-core = ">=0.13.7"
+psycopg2-binary = ">=2.9.6"
+pyjwt = ">=2.3.0"
+python = ">=3.10, <3.12"
+pytz = ">=2022.7.1"
+pyyaml = ">=5.3.1"
+quart = ">=0.17.0"
+raven = ">=6.10.0"
+requests = ">=2.28.2"
+sentry-sdk = ">=1.15.0"
+service-identity = ">=21.1.0"
+sqlalchemy = ">=1.4.46, <2.0"
+statcommons = {path = "../../lib/statcommons"}
+ujson = ">=1.35"
+uvloop = ">=0.17.0"
+werkzeug = ">=2.0.3"
+yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["yadls_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[tool.poetry.scripts]
+bidls_httpjrpc_hc = "yadls.httpjrpc.main_hc:main"
+bidls_httpjrpc = "yadls.httpjrpc.main:main"
+bidls_devhttp = "yadls.httpjrpc.main:main"
+bidls_tasks = "yadls.tasks:main"
+
+[datalens.pytest.unit]
+root_dir = "yadls_tests/"
+target_path = "unit"
+
+
+[datalens_ci]
+# todo: make possible to explicitly mark test target which doesn't require docker-compose, to unblock unit tests
+# todo: prepare image in cr.yandex to use in docker-compose here
+skip_test = true
+

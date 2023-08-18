@@ -1,0 +1,7 @@
+from bi_api_lib_testing.connector.dataset_suite import DefaultConnectorDatasetTestSuite
+
+from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.ch_geo_filtered.api.base import CHGeoFilteredDatasetTestBase
+
+
+class TestCHGeoFilteredDataset(CHGeoFilteredDatasetTestBase, DefaultConnectorDatasetTestSuite):
+    pass

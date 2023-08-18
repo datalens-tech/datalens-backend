@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-api-lib-testing",
+    author="Grigorii Statsenko",
+    author_email="gstatsenko@yandex-team.ru",
+    packages=find_packages(exclude=["bi_api_lib_testing_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={},
+    install_requires=[
+        # External packages
+        'attrs',
+        'flask',
+        'pytest',
+        'werkzeug',
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-api-client", "bi_api_client"),
+            ("yandex-bi-api-commons", "bi_api_commons"),
+            ("yandex-bi-api-lib", "bi_api_lib"),
+            ("yandex-bi-configs", "bi_configs"),
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-core-testing", "bi_core_testing"),
+            ("yandex-bi-testing", "bi_testing"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={},
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

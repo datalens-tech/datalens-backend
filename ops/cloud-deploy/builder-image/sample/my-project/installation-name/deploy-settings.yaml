@@ -1,0 +1,5 @@
+# Здесь описываются настройки того куда будет осуществляться deploy приложения
+CLOUD_ID: # string
+FOLDER_ID: # string
+BUILD_ENVIRONMENT: # prod | preprod
+INSTANCE_GROUP_ID: # string

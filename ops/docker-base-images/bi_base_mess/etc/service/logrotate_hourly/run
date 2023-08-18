@@ -1,0 +1,23 @@
+#!/bin/bash
+# #######
+# This service is, sometimes, in addition to the juggler-initiated logrotate_hourly
+# (see /juggler/logrotate_hourly/logrotate_hourly.sh)
+# #######
+
+set -Eeu
+
+while true; do
+    start_ts="$(date -Ins)"
+    output="$(
+        /bin/sh /etc/cron.daily/logrotate 2>&1
+    )"
+    status="$?"
+    end_ts="$(date -Ins)"
+    if [ $status -ne 0 ]; then
+        output_flat="$(printf "%s\n" "$output" | sed -z 's/\n$//;       s/\n/   |   /g;       s/$/\n/')"
+        printf "%s\n" "LOGROTATE ERROR: ${start_ts} .. ${end_ts} ${status} ${output_flat}" >&2
+    fi
+    printf "%s\n%s\n%s\n" "$start_ts" "$output" "$end_ts" > /tmp/_logrotate_hourly_service_last.log
+
+    sleep 3600
+done

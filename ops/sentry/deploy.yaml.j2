@@ -1,0 +1,68 @@
+labels: {migration_from: statbox.sentry.production, migration_type: qloud}
+meta: {id: statinfra-sentry, project_id: statinfra}
+spec:
+  # account_id: abc:service:1561
+  deploy_units:
+    frontend:
+      box_juggler_configs:
+        frontend:
+          archived_checks: [{checksum: {type: md5, value: 9d2c7c818566f24a3d1007eb9032e431}, url: https://proxy.sandbox.yandex-team.ru/746400694}]
+      endpoint_sets: [port: 80]
+      images_for_boxes: {frontend: {name: statinfra/sentry, registry_host: registry.yandex.net, tag: 9.1.1-yandex.4x7}}
+      multi_cluster_replica_set:
+        replica_set:
+          clusters:
+          - {cluster: myt, spec: {constraints: {antiaffinity_constraints: [{key: rack, max_pods: 1}]}, replica_count: 1}}
+          - {cluster: sas, spec: {constraints: {antiaffinity_constraints: [{key: rack, max_pods: 1}]}, replica_count: 2}}
+          - {cluster: iva, spec: {constraints: {antiaffinity_constraints: [{key: rack, max_pods: 1}]}, replica_count: 2}}
+          deployment_strategy: {max_unavailable: 1}
+          pod_template_spec:
+            spec:
+              disk_volume_requests: [{id: infra, labels: {used_by_infra: true}, quota_policy: {bandwidth_guarantee: 1048576,
+                    bandwidth_limit: 1048576, capacity: 32212254720}, storage_class: hdd}]
+              resource_requests:
+                # memory_guarantee: 2147483648
+                # memory_limit: 2147483648
+                # vcpu_guarantee: 1000
+                # vcpu_limit: 1000
+                memory_guarantee: 8589934592
+                memory_limit: 8589934592
+                vcpu_guarantee: 9000
+                vcpu_limit: 9000
+              pod_agent_payload:
+                spec:
+                  boxes: [{id: frontend, compute_resources: {memory_guarantee: 8089934592, memory_limit: 8089934592, vcpu_guarantee: 8000, vcpu_limit: 8500}}]
+                  workloads:
+                  - box_ref: frontend
+                    env:
+                    - name: QLOUD_CPU_CORES
+                      value: {literal_env: {value: '12'}}  # = amount of sentry workers
+                    - {name: QLOUD_HTTP_PORT, value: {literal_env: {value: '80'}}}
+                    - {name: SENTRY_USE_SSL, value: {literal_env: {value: '1'}}}
+                    - {name: POKE, value: {literal_env: {value: '2019-09-06T11:59:16,738610621+03:00'}}}
+                    # - {name: AUTH_LDAP_REQUIRE_GROUP_CN, value: {literal_env: {value: dpt_yandex}}}
+                    - {name: SENTRY_YAUTH, value: {literal_env: {value: '1'}}}
+                    - {name: YENV_NAME, value: {literal_env: {value: intranet}}}
+                    - {name: YENV_TYPE, value: {literal_env: {value: production}}}
+                    - {name: SENTRY_SECRET_KEY, value: {secret_env: {alias: sec-01ejre46ykgb69dy7ec43xrsky:ver-01ejre46yy4qwwrb5a6sz9msgw,
+                          id: SENTRY_SECRET_KEY}}}
+                    - {name: SENTRY_POSTGRES_HOST, value: {literal_env: {value: 'statsentry01h.db.yandex.net,statsentry01i.db.yandex.net,statsentry01f.db.yandex.net'}}}
+                    - {name: SENTRY_POSTGRES_PORT, value: {literal_env: {value: '6432'}}}
+                    - {name: SENTRY_DB_NAME, value: {literal_env: {value: statsentry}}}
+                    - {name: SENTRY_DB_USER, value: {literal_env: {value: statsentry}}}
+                    - {name: SENTRY_DB_PASSWORD, value: {secret_env: {alias: sec-01ejre46ykgb69dy7ec43xrsky:ver-01ejre46yy4qwwrb5a6sz9msgw,
+                          id: SENTRY_DB_PASSWORD}}}
+                    - {name: SENTRY_REDIS_HOST, value: {literal_env: {value: 127.0.0.1}}}
+                    - {name: SENTRY_EMAIL_HOST, value: {literal_env: {value: outbound-relay.yandex.net}}}
+                    - {name: SENTRY_SERVER_EMAIL, value: {literal_env: {value: devnull@yandex-team.ru}}}
+                    - {name: SENTRY_FILESTORE_DIR, value: {literal_env: {value: /tmp}}}
+                    - {name: SENTRY_SINGLE_ORGANIZATION, value: {literal_env: {value: 'true'}}}
+                    - {name: SENTRY_SOURCE_FETCH_TIMEOUT, value: {literal_env: {value: '15'}}}
+                    id: frontend
+                    readiness_check:
+                      # TODO: {http_get: {any: true, path: /ping/, port: 80, time_limit: {max_execution_time_ms: 4999}}}
+                      tcp_check: {port: 80, time_limit: {max_execution_time_ms: 1000}}
+                    transmit_logs: true
+              secrets: {sec-01ejre46ykgb69dy7ec43xrsky:ver-01ejre46yy4qwwrb5a6sz9msgw: {delegation_token: '{{ DELEGATION_TOKEN }}',
+                secret_id: sec-01ejre46ykgb69dy7ec43xrsky, secret_version: ver-01ejre46yy4qwwrb5a6sz9msgw}}
+      network_defaults: {network_id: _STATBOX_QLOUD_EXT_NETS_}

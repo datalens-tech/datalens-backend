@@ -1,0 +1,193 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+  DB_ORACLE_CONTAINER_LABEL: &c-db-oracle-cont-label db-oracle
+  DB_MSSQL_CONTAINER_LABEL: &c-db-mssql-cont-label db-mssql
+
+# Short overview of ports across **all** datalens/backend projects:
+#   503XX: bi_core
+#   504XX: bi_formula
+#   505XX: bi_api
+#   508XX: bi_alerts
+#   509XX: bi_testing_db_provision
+#   510XX: bi_external_api
+#   511XX: bi_formula_ref
+#   512XX: bi_task_processor
+#   513XX: bi_test_project_worker
+#   514XX: bi_file_uploader
+#   515XX: bi_file_uploader_worker
+#   516XX: bi_connector_bigquery
+#   517XX: bi_connector_snowflake
+#   518XX: bi_connector_oracle
+#   519XX: bi_connector_yql
+#   520XX: bi_connector_mysql
+#   521XX: bi_connector_mssql
+#   522XX: bi_connector_clickhouse
+#   523XX: bi_connector_postgresql
+#   524XX: bi_file_uploader_lib
+# Service-side:
+#   XXX00:80    us
+#   XXX03:5432  bimat-pg-mat-status
+#   XXX04:6379  bimat-redis
+#   XXX05:6379  redis-caches
+#   XXX08:8000  init-db
+#   XXX09:5432  pg-us
+#   XXX10:8123  clickhouse (HTTP)
+#   XXX11:9000  clickhouse (native)
+#   XXX12:3306  mysql
+#   XXX13:5432  postgres
+#   XXX14:1433  mssql
+#   XXX15:1521  oracle
+#   XXX16:5500  oracle
+#   XXX18:5432  postgres-fresh
+#   XXX19:6379  redis-arq
+#   XXX20:8000  s3
+#   XXX21:6379  mutations-redis-cache (currently using XXX04 instead of XXX21)
+# Version-specific DBs:
+#   XXX58:8123  clickhouse-21-8 (HTTP)
+#   XXX59:9000  clickhouse-21-8 (native)
+#   XXX60:3306  mysql-5-6
+#   XXX61:3306  mysql-8-0
+#   XXX65:5432  postgres-9-3
+#   XXX66:5432  postgres-9-4
+#   XXX70:1433  mssql-14
+#   XXX75:1521  oracle-12
+#   XXX76:5500  oracle-12
+
+services:
+
+  zookeeper-1:
+    # image: "zookeeper:3.4"
+    image: "registry.yandex.net/statinfra/zookeeper@sha256:ad460bd234a3166cb37e14a1526d677052f7c42e1d1dccd040ca3e24ed1bec1f"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888
+
+  db-clickhouse:
+    depends_on:
+      - zookeeper-1
+    build:
+      context: docker-compose-core
+      dockerfile: Dockerfile.db-clickhouse
+    ports:
+     - "50310:8123"
+     - "50311:9000"
+
+  db-mysql:
+    # the earliest version supported by BI
+    # image: "mysql:5.6"
+    image: "registry.yandex.net/statinfra/mysql@sha256:d8e4032005f53a774f2361281ebf61fa3d7635d5dacf9c58bc54e823ddcf9f1d"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_DATABASE=common_test
+      - MYSQL_USER=datalens
+      - MYSQL_PASSWORD=qwerty
+    ports:
+     - "50312:3306"
+
+  db-postgres:
+    # the earliest version supported by BI
+    # image: "postgres:9.3-alpine"
+    image: "registry.yandex.net/statinfra/postgres@sha256:094358a1a64da927d5c26dcac9dad022cf0db840b6b627b143e5e4fd9adf982b"
+    environment:
+      - POSTGRES_DB=common_test
+      - POSTGRES_USER=datalens
+      - POSTGRES_PASSWORD=qwerty
+      - PGCTLTIMEOUT=300  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+    ports:
+     - "50313:5432"
+
+  db-postgres-fresh:
+    # image: "postgres:13-alpine"
+    image: "registry.yandex.net/statinfra/postgres@sha256:3335d0494b62ae52f0c18a1e4176a83991c9d3727fe67d8b1907b569de2f6175"
+    environment:
+      - POSTGRES_DB=common_test
+      - POSTGRES_USER=datalens
+      - POSTGRES_PASSWORD=qwerty
+      - PGCTLTIMEOUT=300  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+    ports:
+     - "50318:5432"
+
+  db-mssql:
+    # image: "microsoft/mssql-server-linux:2017-CU12"
+    labels:
+      datalens.ci.service: *c-db-mssql-cont-label
+    image: "registry.yandex.net/statinfra/mssql-server-linux@sha256:6522290393006d93b88f63a295c5137010e4e0fea548d3fce9892c07262f7a1a"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=qweRTY123
+    ports:
+     - "50314:1433"
+
+  db-oracle:
+    ports:
+     - "50315:1521"
+    # image: "ghcr.io/gvenzl/oracle-xe:21.3.0-slim-faststart"
+    image: "ghcr.io/gvenzl/oracle-xe:18-slim-faststart"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "yes"
+      APP_USER: "datalens"
+      APP_USER_PASSWORD: "qwerty"
+  init-db:
+    depends_on:
+      - db-clickhouse
+      - db-postgres
+      - db-mysql
+      - db-mssql
+      - db-oracle
+    build:
+      context: github/docker-compose-core
+      dockerfile: Dockerfile.init-db
+    ports:
+     - "50308:8000"
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+     - "50309:5432"
+
+  # TODO: Mulitinancy & DLS integration
+  us:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.us-single-tenant
+    depends_on:
+      - pg-us
+    #      - dls
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      DLS_ENABLED: "false"
+      DISABLE_DLS: "true"
+      #      DLS_ENDPOINT: "http://dls"
+      #      DLS_API_KEY: *c-dls-api-key
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+     - "50300:80"
+
+  redis-caches:
+    # image: "bitnami/redis:5.0.8"
+    image: "registry.yandex.net/statinfra/redis@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+     - "50305:6379"
+
+  s3-storage:
+    build:
+      context: ../../lib/testenv-common/images
+      dockerfile: Dockerfile.s3-storage
+    command: bash /data/entrypoint.sh
+    environment:
+      S3BACKEND: "mem"
+      REMOTE_MANAGEMENT_DISABLE: 1
+    ports:
+      - "51620:8000"

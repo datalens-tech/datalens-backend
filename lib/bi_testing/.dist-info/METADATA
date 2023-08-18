@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: yandex-bi-testing
+Version: 0.0.0
+Author: Konstantin Chupin
+Author-email: kchupin@yandex-team.ru
+Requires-Dist: aiobotocore
+Requires-Dist: aiodns
+Requires-Dist: aiohttp (>=3.5)
+Requires-Dist: attrs (>=19.2.0)
+Requires-Dist: ciso8601
+Requires-Dist: marshmallow
+Requires-Dist: marshmallow-enum
+Requires-Dist: marshmallow-oneofschema
+Requires-Dist: pyjwt
+Requires-Dist: certifi-yandex
+Requires-Dist: yandex-passport-vault-client
+Provides-Extra: all
+

@@ -1,0 +1,81 @@
+app:
+  prefix: bi-backend
+
+docker_images_info:
+  bi_api:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+    tag: "0.1962.0"
+  control_api:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+  data_api:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+  public_data_api:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+  embedded_data_api:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+  rqe_int_sync:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-int-sync-tier-1
+  rqe_ext_async:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-async-tier-1
+  rqe_ext_sync:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-sync-tier-1
+  dls:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/dls
+    tag: "1.285"
+  file_uploader_api:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-uploader-tier-1
+    tag: "0.112.0"
+  file_uploader_worker:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-uploader-worker-tier-1
+    tag: "0.135.0"
+  file_secure_reader:
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-secure-reader
+    tag: "0.12.0"
+  docker_repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu
+
+yenv_type: testing
+dls_env: ext_testing
+
+scaling:
+  dataset_api:
+    desired: 2
+  dataset_data_api:
+    desired: 2
+  public_dataset_api:
+    desired: 1
+  dataset_data_api_sec_embeds:
+    desired: 1
+  dls_api:
+    desired: 2
+  dls_tasks:
+    desired: 1
+  file_uploader_api:
+    desired: 1
+  file_uploader_worker:
+    desired: 1
+  file_secure_reader:
+    desired: 1
+
+connector_forms_env:
+  - name: CONNECTORS_METRICA_COUNTER_ALLOW_MANUAL_INPUT
+    value: "0"
+  - name: CONNECTORS_METRICA_ALLOW_AUTO_DASH_CREATION
+    value: "1"
+  - name: CONNECTORS_APPMETRICA_COUNTER_ALLOW_MANUAL_INPUT
+    value: "0"
+  - name: CONNECTORS_APPMETRICA_ALLOW_AUTO_DASH_CREATION
+    value: "1"
+  - name: CONNECTORS_YQ_USE_MDB_CLUSTER_PICKER
+    value: "1"
+  - name: CONNECTORS_YDB_USE_MDB_CLUSTER_PICKER
+    value: "1"
+  - name: CONNECTORS_YDB_DEFAULT_HOST_VALUE
+    value: "ydb-ru.yandex.net"
+  - name: CONNECTORS_CLICKHOUSE_USE_MDB_CLUSTER_PICKER
+    value: "1"
+  - name: CONNECTORS_GREENPLUM_USE_MDB_CLUSTER_PICKER
+    value: "1"
+  - name: CONNECTORS_MYSQL_USE_MDB_CLUSTER_PICKER
+    value: "1"
+  - name: CONNECTORS_POSTGRES_USE_MDB_CLUSTER_PICKER
+    value: "1"

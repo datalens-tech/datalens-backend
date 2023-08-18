@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: bi-task-processor
+Version: 0.0.0
+Author: Max Zuev
+Author-email: thenno@yandex-team.ru
+Requires-Dist: attrs (>=19.2.0)
+Requires-Dist: arq (>=0.25.0)
+Provides-Extra: develop
+Requires-Dist: pytest ; extra == 'develop'
+Requires-Dist: ipython ; extra == 'develop'
+Requires-Dist: ipdb ; extra == 'develop'
+Requires-Dist: pyaux ; extra == 'develop'
+Requires-Dist: pyauxm ; extra == 'develop'
+Provides-Extra: mypy
+Requires-Dist: mypy ; extra == 'mypy'
+

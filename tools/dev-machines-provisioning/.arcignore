@@ -1,0 +1,7 @@
+.venv
+.idea
+
+dev-machines
+
+inventories/*
+!inventories/sample.yml

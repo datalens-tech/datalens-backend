@@ -1,0 +1,27 @@
+{{ if .Values.apps_to_run.bi_api }}
+  {{- include "depl-bi_api" . | indent 0}}
+{{ end }}
+
+{{ if .Values.apps_to_run.bi_api_public }}
+    {{- include "depl-bi_api_public" . | indent 0}}
+{{ end }}
+
+{{ if .Values.apps_to_run.sec_embeds }}
+    {{- include "depl-bi_api_sec_embeds" . | indent 0}}
+{{ end }}
+
+{{ if .Values.apps_to_run.file_uploader }}
+    {{- include "depl-file_uploader" . | indent 0}}
+{{ end }}
+
+{{ if .Values.apps_to_run.dls }}
+  {{- include "depl-dls" . | indent 0}}
+{{ end }}
+
+{{ if .Values.apps_to_run.external_api }}
+  {{- include "depl-bi_external_api" . | indent 0}}
+{{ end }}
+
+{{ if .Values.enabled_features.network_policy }}
+  {{- include "depl-bi_api_rqe" . | indent 0}}
+{{ end }}

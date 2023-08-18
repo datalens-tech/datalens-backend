@@ -1,0 +1,6 @@
+**{{ _('Syntax') }}:**{% if func.multi_signature %}{{ '<br/>' }}{% endif %}
+{%- for signature in func.signature_coll.signatures -%}
+{% if loop.index != 1 %}{{ _('<br/>or<br/>') }}{% endif %}`{{ signature.body }}`
+{%- endfor %}
+
+{% if func.description %}{{ func.description }}{% endif %}

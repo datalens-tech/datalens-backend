@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-connector-usage-tracking-ya-team",
+    author="Nikolai Proskurin",
+    author_email="mcpn@yandex-team.ru",
+    packages=find_packages(exclude=["bi_connector_usage_tracking_ya_team_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={
+        "bi_core.connectors": [
+            (
+                "usage_tracking_ya_team="
+                "bi_connector_usage_tracking_ya_team.core.connector:UsageTrackingYaTeamCoreConnector"
+            ),
+        ]
+    },
+    install_requires=[
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-core-testing", "bi_core_testing"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "develop": [
+            f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+            for name, pydir in (
+                ("yandex-bi-connector-clickhouse", "bi_connector_clickhouse"),
+            )
+            if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+        ],
+        "mypy": [
+            "mypy",
+        ]
+    },
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

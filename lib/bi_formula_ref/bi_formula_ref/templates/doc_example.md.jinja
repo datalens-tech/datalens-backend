@@ -1,0 +1,26 @@
+{% if under_cut %}{{ '{% cut "' + _(example_result.name) + '" %}' }}{% endif %}
+
+{% if example_result.source %}
+{{ _('Source data') }}
+
+{{ example_result.source }}
+{% endif -%}
+{% if example_result.group_by %}
+{{ _('Grouped by') }} {% for expr in example_result.group_by %}`{{ expr }}`{% if loop.index != loop.length %}, {% else %}.{% endif %}{% endfor %}
+{% endif -%}
+{% if example_result.order_by %}
+{{ _('Sorted by') }} {% for expr in example_result.order_by %}`{{ expr }}`{% if loop.index != loop.length %}, {% else %}.{% endif %}{% endfor %}
+{% endif -%}
+{% if example_result.formula_fields %}
+{{ _('Formulas') }}:
+{% for name, formula in example_result.formula_fields %}
+- **{{ name }}**: `{{ formula }}` {% if loop.index != loop.length %};{% else %}.{% endif %}{% endfor %}
+
+{% endif -%}
+{% if example_result.source %}
+{{ _('Result') }}
+
+{% endif -%}
+{{ example_result.result }}
+
+{% if under_cut %}{{ '{% endcut %}' }}{% endif %}

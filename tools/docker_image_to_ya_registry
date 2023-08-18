@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+exec 2>/dev/null
+
+new_prefix="registry.yandex.net/statinfra/"
+new_tag="bitst"
+
+image="$(cat)"
+
+image_name="$(printf "%s" "$image" | sed -r 's/[:@].*//')"
+image_basename="$(printf "%s" "$image_name" | sed -r 's|.*/||')"
+pull_res="$(docker pull "$image")"
+# digest="$(printf "%s" "$pull_res" | grep "^Digest: " | awk '{print $2}')"
+new_name="${new_prefix}${image_basename}"
+docker tag "$image" "${new_name}:${new_tag}"
+push_res="$(docker push "${new_name}:${new_tag}")"
+digest="$(printf "%s" "$push_res" | grep ": digest: " | awk '{print $3}')"
+printf "%s@%s" "$new_name" "$digest"

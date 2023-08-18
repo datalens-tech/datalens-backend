@@ -1,0 +1,1 @@
+GRANT SELECT ON sys.V_$SESSION TO datalens;

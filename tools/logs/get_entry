@@ -1,0 +1,63 @@
+#!/bin/bash
+# #######
+# Get / browse US entry by id,
+#
+# For 'browsing', requires `jsonbrowse`: get it by `pip install 'pyauxm[jsonbrowse]'`
+#
+# The raw entry data is saved to `./entry.json`
+# #######
+
+set -Eeuo pipefail
+
+envname="ext-production"
+
+while [ -n "${1:-}" ]; do
+    case "$1" in
+        -e | --environment)
+            envname="$2"
+            shift 2
+            ;;
+        -*)
+            printf "ERROR: unknown parameter: %s\n" "$1" >&2
+            exit 1
+            ;;
+        *)
+            entry_id="$1"
+            shift 1
+            ;;
+    esac
+done
+
+case "$envname" in
+    ext-production|ext-prod)
+        US_HOST=https://us.datalens-front.cloud.yandex.net
+        US_MASTER_TOKEN="$(ya vault get version sec-01csc2x33km5dc7x8p51hfh0nj -o ext-production)"
+        ;;
+    int-production|int-prod)
+        US_HOST=https://united-storage.yandex-team.ru
+        US_MASTER_TOKEN="$(ya vault get version sec-01csc2x33km5dc7x8p51hfh0nj -o int-production)"
+        ;;
+    ext-testing)
+        US_HOST=https://us.datalens-front.cloud-preprod.yandex.net
+        US_MASTER_TOKEN="$(ya vault get version sec-01csc2x33km5dc7x8p51hfh0nj -o ext-testing)"
+        ;;
+    int-testing)
+        US_HOST=https://united-storage-beta.yandex-team.ru
+        US_MASTER_TOKEN="$(ya vault get version sec-01csc2x33km5dc7x8p51hfh0nj -o int-testing)"
+        ;;
+    *)
+        printf "ERROR: unsupported env: %s\n" "$envname" >&2
+        exit 1
+esac
+
+set -x
+curl \
+    -s \
+    -H "x-us-master-token: $US_MASTER_TOKEN" \
+    "$US_HOST/private/entries/${entry_id}" \
+    -o ./entry.json
+if which jsonbrowse; then
+    jsonbrowse entry.json
+else
+    cat entry.json
+fi

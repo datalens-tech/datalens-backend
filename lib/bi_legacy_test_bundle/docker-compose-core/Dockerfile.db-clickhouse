@@ -1,0 +1,7 @@
+# FROM yandex/clickhouse-server:22.3
+FROM registry.yandex.net/statinfra/clickhouse-server@sha256:74e094253baa15b18ec1ea3a79fb4015451de3bb23c40c99dcc37d1f85c1ac09
+
+COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
+COPY db-clickhouse/cluster.xml /etc/clickhouse-server/config.d/cluster.xml
+
+COPY db-clickhouse/docker-entrypoint-initdb.d/ /docker-entrypoint-initdb.d/

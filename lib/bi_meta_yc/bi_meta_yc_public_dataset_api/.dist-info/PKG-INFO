@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: yandex-bi-meta-yc-public-dataset-api
+Version: 0.1917.0
+Author: Aleksei Konstantinov
+Author-email: konstasa@yandex-team.ru
+Requires-Dist: attrs
+Provides-Extra: all
+

@@ -1,0 +1,26 @@
+- name: fix dns to make nat64 works
+  tags: [fix_dns]
+  become: yes
+  import_tasks: fix_dns.yml
+
+- name: install docker
+  tags: [install]
+  become: yes
+  import_tasks: install_docker.yml
+
+- name: install openvpn
+  tags: [install]
+  become: yes
+  when: ovpn_required | bool
+  import_tasks: install_vpn.yml
+
+- name: configure vpn
+  tags: [configure, configure_vpn]
+  become: yes
+  when: ovpn_required | bool
+  import_tasks: configure_vpn.yml
+
+- name: configure docker
+  tags: [configure, configure_docker]
+  become: yes
+  import_tasks: configure_docker.yml

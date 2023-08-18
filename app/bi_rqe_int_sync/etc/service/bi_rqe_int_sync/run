@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+set -x  # debug.
+set -eu
+
+HTTP_BIND_PORT="${RQE_INT_SYNC_PORT:-9874}"
+RQE_UWSGI_WORKERS_COUNT="${RQE_INT_SYNC_WORKERS_COUNT:-16}"
+RQE_UWSGI_THREADS_COUNT="${RQE_INT_SYNC_THREADS_COUNT:-10}"
+if [ "${BISYS_USE_IPV6:-1}" = "1" ]; then HTTP_BIND_ADDR="[::1]"; else HTTP_BIND_ADDR="127.0.0.1"; fi
+
+HTTP_BIND="${HTTP_BIND_ADDR}:${HTTP_BIND_PORT}"
+export HTTP_BIND RQE_UWSGI_WORKERS_COUNT RQE_UWSGI_THREADS_COUNT
+exec \
+    uwsgi \
+        --ini=/src/app/uwsgi/uwsgi-query-executer.ini

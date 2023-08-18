@@ -1,0 +1,10 @@
+from bi_formula.connectors.base.testing.conditional_blocks import (
+    DefaultConditionalBlockFormulaConnectorTestSuite,
+)
+from bi_connector_yql_tests.db.formula.base import (
+    YQLTestBase,
+)
+
+
+class TestConditionalBlockYQL(YQLTestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
+    pass

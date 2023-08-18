@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bi_api_lib/connectors/equeo/connection_info.py:8
+msgid "label_connector-equeo"
+msgstr "E-queo"
+
+#: bi_api_lib/connectors/kontur_market/connection_form/form_config.py:17
+msgid "label_kontur_market_description"
+msgstr ""
+"Коннектор выгружает данные из сервиса [Контур.Маркет](https://kontur.ru/"
+"market) для построения аналитических отчетов в Yandex DataLens. Отчеты "
+"подходят для розничных магазинов, кафе, ресторанов и предприятий из сферы "
+"услуг.\n"
+"\n"
+"Отчеты позволяют сравнивать различные показатели сразу нескольких торговых "
+"точек между собой за разные периоды времени. Можно изменять и создавать "
+"новые отчеты.\n"
+"\n"
+"После подключения в дашборде будут доступны отчеты для анализа:\n"
+"- выручки;\n"
+"- продаж товаров, услуг и блюд;\n"
+"- списаний товаров;\n"
+"- остатков товаров;\n"
+"- закупки товаров у поставщиков.\n"
+"\n"
+"Данные в отчетах обновляются автоматически по расписанию: остатки товаров "
+"каждый час, остальные данные 1 раз в сутки.\n"
+"\n"
+"Если у вас есть идеи по развитию коннектора, расскажите о них, [заполнив "
+"форму](https://forms.kontur.ru/form/datalens).\n"
+"\n"
+"При первом подключении необходимо подождать пока данные из Контур.Маркета "
+"загрузятся в дашборд. Обычно это занимает не более 1 часа."
+
+#: bi_api_lib/connectors/kontur_market/connection_info.py:8
+msgid "label_connector-kontur_market"
+msgstr "Kontur.Market"
+
+#: bi_api_lib/connectors/moysklad/connection_form/form_config.py:23
+msgid "label_moysklad-token-hint"
+msgstr "Check [developer's documentation]({DOC_LINK}) on how to get token."
+
+#: bi_api_lib/connectors/moysklad/connection_info.py:8
+msgid "label_connector-moysklad"
+msgstr "MoySklad"

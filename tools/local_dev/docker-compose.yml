@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  pi:
+    build:
+      context: .
+      network: host
+    network_mode: host
+    # TODO FIX:
+    #  Docker version 20.10.17, build 100c70180f
+    #  Docker Compose version 2.10.2
+    #  With this setup `docker run ${command}`/`docker-compose run ${command}`
+    #  ignores entrypoint from image & launch [${command}] instead of [${entry_point_from_image} ${command}]
+    #  next line may be removed when issue described above will be resolved
+    entrypoint: "/entrypoint.sh"
+    environment:
+      CLEAR_US_DATABASE: 1
+      RUN_DEVHOST_TESTS: 1
+      TESTS_CACHES_DIR: /tests_caches
+      VENV_LOCATION: /venvs/py310
+      YAV_USER: ${LOGNAME}
+    env_file:
+      - ./secrets/private/base_secrets.env
+    volumes:
+      - ${DEV_MACHINE_PKG_ROOT}:/data
+      - pi-venv:/venvs
+      - pi-tests-caches-dir:/tests_caches
+      # Docker socket
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+      - /home/${LOGNAME}/.bash_history:/root/.bash_history
+
+  jaeger:
+    image: "jaegertracing/all-in-one:1.21"
+    ports:
+      # Agent ports
+      - 6831:6831/udp
+      - 6832:6832/udp
+      # UI ports
+      - 16686:16686
+
+volumes:
+  pi-venv: {}
+  pi-tests-caches-dir: {}

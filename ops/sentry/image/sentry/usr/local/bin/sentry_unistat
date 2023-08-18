@@ -1,0 +1,24 @@
+#!/bin/bash
+export LANG=C
+content=$(cat /tmp/sentry_queues_list)
+if [ $? -eq 0 ]; then
+    content="["$(for m in $(echo -e "$content"|tr ' ' ',');do echo -n "[\"queues_${m%%,*}_ammm\",${m##*,}]";done | sed 's/\]\[/\],\[/g')"]"
+    echo -en "HTTP/1.1 200 OK\r\n"
+    echo -en "Content-Type: application/json\r\n"
+    echo -en "Connection: close\r\n"
+    echo -en "Content-Length: ${#content}\r\n"
+    echo -en "\r\n"
+    echo -en "$content"
+    sleep 0.1
+    exit 0
+else
+    content="sentry: $content $(env)"
+    echo -en "HTTP/1.1 503 Service Unavailable\r\n"
+    echo -en "Content-Type: text/plain\r\n"
+    echo -en "Connection: close\r\n"
+    echo -en "Content-Length: ${#content}\r\n"
+    echo -en "\r\n"
+    echo -en "$content"
+    sleep 0.1
+    exit 1
+fi

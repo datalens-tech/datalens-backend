@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: yandex-bi-connector-snowflake
+Version: 0.0.0
+Author: Valentin Gologuzov
+Author-email: vgol@yandex-team.ru
+Requires-Dist: attrs
+Requires-Dist: sqlalchemy (>=1.4)
+Requires-Dist: snowflake-connector-python
+Requires-Dist: snowflake-sqlalchemy
+Provides-Extra: all
+Provides-Extra: develop
+

@@ -1,0 +1,14 @@
+# List of requirements that has conflicts with core requirements
+# Will be installed --no-deps --ignore-installed after installation of packages managed by Poetry
+# Normally should be empty
+
+--index-url https://pypi.yandex-team.ru/simple
+
+# Due to old version of grpcio/protobuf in A/yc-generated stubs
+# Try to remove after https://st.yandex-team.ru/BI-4718
+sqlalchemy-bigquery==1.6.1
+google-cloud-bigquery==3.10.0
+google-cloud-bigquery-storage==2.19.0
+google-api-core[grpc]==2.11.1
+google-resumable-media==2.5.0
+google-cloud-core==2.3.2

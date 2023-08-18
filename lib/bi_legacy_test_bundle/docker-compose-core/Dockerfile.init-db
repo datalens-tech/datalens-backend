@@ -1,0 +1,9 @@
+FROM registry.yandex.net/statinfra/base/bi/initdb:latest
+# ^ https://bb.yandex-team.ru/projects/STATBOX/repos/docker/browse/bi_initdb/Dockerfile
+
+COPY init-db/entrypoint.sh /entrypoint.sh
+
+COPY init-db/mssql/ /mssql/
+COPY init-db/oracle/ /oracle/
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]

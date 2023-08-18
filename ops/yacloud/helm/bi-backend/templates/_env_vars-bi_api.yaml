@@ -1,0 +1,12 @@
+{{- define "env_vars-bi_api" }}
+- name: CACHES_ON
+  value: {{ .Values.enabled_features.caches | ternary "1" "0" | quote }}
+- name: RQE_CACHES_ON
+  value: {{ .Values.enabled_features.rqe_caches | ternary "1" "0" | quote }}
+- name: MUTATION_CACHES_ON
+  value: {{ .Values.enabled_features.mutation_caches | ternary "1" "0" | quote }}
+- name: NEW_SUBQUERY_MODE
+  value: "1"
+- name: CONNECTORS_FILE_USE_NON_REF_SOURCES
+  value: "1"
+{{ end }}

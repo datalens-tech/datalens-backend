@@ -1,0 +1,251 @@
+{{- define "depl-file_uploader" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: file-uploader-api
+  labels:
+    app: file-uploader-api
+
+spec:
+  replicas: {{ .Values.scaling.file_uploader_api.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.file_uploader_api.max_surge }}
+      maxUnavailable: {{ .Values.scaling.file_uploader_api.max_unavailable }}
+  selector:
+    matchLabels:
+      app: file-uploader-api
+  template:
+    metadata:
+      labels:
+        app: file-uploader-api
+      annotations:
+        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+    spec:
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.file_uploader_api.repo }}:{{ .Values.docker_images_info.file_uploader_api.tag }}"
+          env:
+            {{- include "secrets-common" . | indent 12}}
+            {{- include "secrets-file_uploader" . | indent 12}}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-nginx" . | indent 12 }}
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-file_uploader_common" . | indent 12}}
+            {{- include "env_vars-file_uploader_api" . | indent 12}}
+            - name: CSRF_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: file-uploader-secrets
+                  key: CSRF_SECRET
+            - name: FILE_UPLOADER_MASTER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: file-uploader-secrets
+                  key: FILE_UPLOADER_MASTER_TOKEN
+            - name: NGINX_SERVER_NAME
+              value: "file-uploader-api"
+            {{- $redis_arq_targs := dict "Values" .Values "env_prefix" "REDIS_ARQ" "redis_settings" .Values.redis_misc }}
+            {{- include "env_vars-redis" $redis_arq_targs | indent 12 }}
+            - name: REDIS_ARQ_DB
+              value: "7"
+            {{- $redis_app_targs := dict "Values" .Values "env_prefix" "REDIS_APP" "redis_settings" .Values.redis_misc }}
+            {{- include "env_vars-redis" $redis_app_targs | indent 12 }}
+            - name: REDIS_APP_DB
+              value: "8"
+            {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.file_uploader_api }}
+            {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+            - name: SA_KEY_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: common-secrets
+                  key: IAM_INTERACTION_SERVICE_ACCOUNT_KEY_DATA
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.file_uploader_api.cpu }}
+              memory: {{.Values.app_resources.file_uploader_api.ram}}
+          readinessProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/api/v2/ping"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: "{{ .Release.Name }}-init-scripts"
+        - name: app-secrets
+          emptyDir: {}
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.file_uploader_api.taint_toleration }}"
+          effect: "NoSchedule"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: file-uploader-worker
+  labels:
+    app: file-uploader-worker
+
+spec:
+  replicas: {{ .Values.scaling.file_uploader_worker.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.file_uploader_worker.max_surge }}
+      maxUnavailable: {{ .Values.scaling.file_uploader_worker.max_unavailable }}
+  selector:
+    matchLabels:
+      app: file-uploader-worker
+  template:
+    metadata:
+      labels:
+        app: file-uploader-worker
+      annotations:
+        injector.tumblr.com/request: jaeger-agent
+    spec:
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.file_uploader_worker.repo }}:{{ .Values.docker_images_info.file_uploader_worker.tag }}"
+          volumeMounts:
+            - name: socket-folder
+              mountPath: "/var/sockets"
+          env:
+            {{- include "secrets-common" . | indent 12}}
+            {{- include "secrets_us_master_token" . | indent 12}}
+            {{- include "secrets-file_uploader" . | indent 12}}
+            {{- include "secrets-file_uploader_gsheets" . | indent 12}}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-file_uploader_common" . | indent 12}}
+            {{- include "env_vars-file_uploader_data_access" . | indent 12}}
+            {{- include "env_vars-file_uploader_secure_reader" . | indent 12}}
+            {{- include "env_vars-yenv" . | indent 12 }}
+            - name: ENABLE_REGULAR_S3_LC_RULES_CLEANUP
+              value: "1"
+            {{- $redis_arq_targs := dict "Values" .Values "env_prefix" "REDIS_ARQ" "redis_settings" .Values.redis_misc }}
+            {{- include "env_vars-redis" $redis_arq_targs | indent 12 }}
+            - name: REDIS_ARQ_DB
+              value: "7"
+            {{- $redis_app_targs := dict "Values" .Values "env_prefix" "REDIS_APP" "redis_settings" .Values.redis_misc }}
+            {{- include "env_vars-redis" $redis_app_targs | indent 12 }}
+            - name: REDIS_APP_DB
+              value: "8"
+            {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.file_uploader_worker }}
+            {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.file_uploader_worker.cpu }}
+              memory: {{.Values.app_resources.file_uploader_worker.ram}}
+          startupProbe:
+            exec:
+              command:
+              - file-uploader-worker-health-check
+            initialDelaySeconds: 60
+            failureThreshold: 10
+            periodSeconds: 15
+            timeoutSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+              - file-uploader-worker-health-check
+            periodSeconds: 15
+            timeoutSeconds: 10
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: "{{ .Release.Name }}-init-scripts"
+        - name: app-secrets
+          emptyDir: {}
+        - name: socket-folder
+          hostPath:
+            path: "/var/sockets"
+
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.file_uploader_worker.taint_toleration }}"
+          effect: "NoSchedule"
+
+{{ if .Values.apps_to_run.secure_reader }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: file-secure-reader
+  labels:
+    app: file-secure-reader
+
+spec:
+  replicas: {{ .Values.scaling.file_secure_reader.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.file_secure_reader.max_surge }}
+      maxUnavailable: {{ .Values.scaling.file_secure_reader.max_unavailable }}
+  selector:
+    matchLabels:
+      app: file-secure-reader
+  template:
+    metadata:
+      labels:
+        app: file-secure-reader
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - file-uploader-worker
+            topologyKey: "kubernetes.io/hostname"
+      hostNetwork: false
+      initContainers:
+        - name: change-ownership-container
+          image: busybox
+          command: ["/bin/chown", "-R", "1000:1000", "/var/sockets"]
+          volumeMounts:
+            - name: socket-folder
+              mountPath: "/var/sockets"
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.file_secure_reader.repo }}:{{ .Values.docker_images_info.file_secure_reader.tag }}"
+          volumeMounts:
+            - name: socket-folder
+              mountPath: "/var/sockets"
+          env:
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-file_secure_reader" . | indent 12}}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.file_secure_reader.cpu }}
+              memory: {{.Values.app_resources.file_secure_reader.ram}}
+      volumes:
+        - name: socket-folder
+          hostPath:
+            path: "/var/sockets"
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.file_secure_reader.taint_toleration }}"
+          effect: "NoSchedule"
+{{ end }}
+{{ end }}

@@ -1,0 +1,2 @@
+[bi_core.connectors]
+monitoring = bi_connector_monitoring.core.connector:MonitoringCoreConnector

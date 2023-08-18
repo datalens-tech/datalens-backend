@@ -1,0 +1,92 @@
+{
+  "build_number": 370368689,
+  "bundle_name": "cloud-platform-juggler-client-bundle",
+  "checks": [
+    {
+      "args": [],
+      "check_name": "freespace.py",
+      "check_script": "freespace.py",
+      "format": "nagios",
+      "interval": 300,
+      "run_always": false,
+      "services": [
+        "freespace"
+      ],
+      "timeout": 30
+    },
+    {
+      "args": [],
+      "check_name": "coredumps.py",
+      "check_script": "coredumps.py",
+      "format": "nagios",
+      "interval": 300,
+      "run_always": false,
+      "services": [
+        "coredumps"
+      ],
+      "timeout": 30
+    },
+    {
+      "args": [],
+      "check_name": "oom-killer.sh",
+      "check_script": "oom-killer.sh",
+      "format": "nagios",
+      "interval": 300,
+      "run_always": false,
+      "services": [
+        "oom-killer"
+      ],
+      "timeout": 30
+    },
+    {
+      "args": [],
+      "check_name": "reboot-count.py",
+      "check_script": "reboot-count.py",
+      "format": "nagios",
+      "interval": 300,
+      "run_always": false,
+      "services": [
+        "reboot-count"
+      ],
+      "timeout": 30
+    },
+    {
+      "args": [],
+      "check_name": "solomon-agent.py",
+      "check_script": "solomon-agent.py",
+      "format": "nagios",
+      "interval": 300,
+      "run_always": false,
+      "services": [
+        "solomon-agent"
+      ],
+      "timeout": 30
+    },
+    {
+      "check_script": "push-client.sh",
+      "services": ["push-client"],
+      "timeout": 30
+    }
+  ,{
+      "args": [
+        "--service",
+        "envoy-ping"
+      ],
+      "check_name": "platform-http-check.py",
+      "check_script": "platform-http-check.py",
+      "format": "nagios",
+      "interval": 30,
+      "run_always": false,
+      "services": [
+        "envoy-ping"
+      ],
+      "timeout": 30
+    }
+
+  ],
+  "env": {
+    "USER": "root"
+  },
+  "timestamp": 1548873135,
+  "version": 1
+}

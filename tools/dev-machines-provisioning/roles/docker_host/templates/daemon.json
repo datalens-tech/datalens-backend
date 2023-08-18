@@ -1,0 +1,16 @@
+{
+  "hosts": [
+{% if ovpn_required | bool %}
+    "{{ docker_bind_url_ovpn }}",
+{% endif %}
+{% if expose_docker_socket | bool %}
+    "{{ docker_bind_url_external }}",
+{% endif %}
+    "unix:///var/run/docker.sock"
+  ],
+  "tls": false,
+  "ip": "0.0.0.0",
+  "ipv6": true,
+  "fixed-cidr-v6": "{{ docker_doker0_addr }}",
+  "dns": ["{{ dns_server }}"]
+}

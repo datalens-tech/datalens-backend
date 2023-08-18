@@ -1,0 +1,6 @@
+{{- define "env_vars-data-apps" }}
+- name: SAMPLES_CH_HOST
+  value: {{ join "," .Values.sample_hosts }}
+- name: RUN_IPTABLES_SETUP
+  value: "1"
+{{ end }}

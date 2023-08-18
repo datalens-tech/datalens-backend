@@ -1,0 +1,8 @@
+getters:
+  - name: yav_main
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01eb6ngzk58g1hw91t2aggr3kv}
+
+params:
+  YT_OAUTH: {getter: yav_main, key: YT_OAUTH}

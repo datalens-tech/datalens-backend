@@ -1,0 +1,3 @@
+[bi_core.connectors]
+file = bi_connector_bundle_chs3.file.core.connector:FileS3CoreConnector
+gsheets_v2 = bi_connector_bundle_chs3.chs3_gsheets.core.connector:GSheetsFileS3CoreConnector

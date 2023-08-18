@@ -1,0 +1,11 @@
+getters:
+  - name: yav_main
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01eb6ngzk58g1hw91t2aggr3kv}
+      yav_token: {type: param, key: YAV_TOKEN}
+
+params:
+  YAV_TOKEN: {getter: $osenv, key: YAV_TOKEN}
+  BIGQUERY_CONFIG: {getter: yav_main, key: BIGQUERY_CONFIG}
+  BIGQUERY_CREDS: {getter: yav_main, key: BIGQUERY_CREDS}

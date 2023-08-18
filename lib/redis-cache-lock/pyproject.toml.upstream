@@ -1,0 +1,272 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "redis_cache_lock"
+authors = [{name = "HoverHell", email = "hoverhell@gmail.com"}]
+readme = "README.rst"
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requres-python = ">=3.7"
+dynamic = ["version", "description"]
+dependencies = [
+    "attrs",
+]
+
+[project.optional-dependencies]
+tests = [
+    "docutils>=0.16",
+    "flake8>=3.9.0",
+    "flake8-future-import>=0.4.6",
+    "flake8-print>=4.0.0",
+    "pyproject-flake8",
+    "isort>=5.8.0",
+    "mypy>=0.812",
+    "pep8-naming>=0.11.1",
+    "Pygments>=2.8.1",
+    "pylint>=2.7.4",
+    "pytest>=6.2.2",
+    "pytest-asyncio>=0.14.0",
+    "pytest-cov>=2.11.1",
+    "pytest-html>=3.1.1",
+    "tox>=3.5.3",
+]
+tools = [
+    "black",
+    "isort",
+]
+# TODO: all = tests + tools
+
+[project.urls]
+Home = "https://gitlab.com/hoverhell/redis-cache-lock/"
+
+[tool.flit.sdist]
+include = [
+    "LICENSE",
+    "README.rst",
+]
+# Minimal set of files, just for the installation.
+exclude = [
+    ".gitignore",
+    "docker-compose.yml",
+    "_up",
+    "doc/*",
+    "tests/*",
+]
+
+[tool.flake8]
+ignore = [
+    "FI58",  # requiring `from __future__ import annotations` (FI18)
+    "W503",  # preferring line breaks *before* the operator (W504)
+    "E203",  # `E203 whitespace before ':'` currently conflicts with `black`
+    "N818",  # `N818 exception name ... should be named with an Error suffix`
+]
+max_line_length = 100
+min_version = "3.7"
+require_code = "true"
+
+
+[tool.isort]
+line_length = 80
+combine_as_imports = true
+use_parentheses = true
+balanced_wrapping = true
+include_trailing_comma = true
+# `WrapModes.VERTICAL_GRID_GROUPED`:
+multi_line_output = 5
+# known_first_party = "redis_cache_lock, tests"
+# known_third_party = "_pytest, pytest"
+# no_lines_before = "LOCALFOLDER"
+# order_by_type = false
+# reverse_relative = true
+
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "aioredis.*",
+    "pytest.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+
+[tool.pylint.MASTER]
+# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# number of processors available to use.
+jobs = 0
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "missing-module-docstring",  # overdocumentation is a sin too
+    "missing-class-docstring",
+    "missing-function-docstring",
+    # "line-too-long",
+    "invalid-name",  # TODO: make up the correct regexes instead
+    "no-self-use",  # defining overridable methods' fingerprint
+    "too-few-public-methods",
+]
+
+[tool.pylint.REPORTS]
+output-format = "colorized"
+reports = "no"
+score = "yes"
+
+[tool.pylint.BASIC]
+# Good variable names which should always be accepted, separated by a comma.
+good-names = ""
+
+[tool.pylint.MISCELLANEOUS]
+# List of note tags to take in consideration, separated by a comma.
+notes = ["FIXME", "XXX", "TODO"]
+
+[tool.pylint.SIMILARITIES]
+# Minimum lines number of a similarity.
+min-similarity-lines = 6
+
+[tool.pylint.STRING]
+# This flag controls whether inconsistent-quotes generates a warning when the
+# character used as a quote delimiter is used inconsistently within a module.
+check-quote-consistency = "yes"
+
+# This flag controls whether the implicit-str-concat should generate a warning
+# on implicit string concatenation in sequences defined over several lines.
+check-str-concat-over-line-jumps = "yes"
+
+[tool.pylint.DESIGN]
+# Maximum number of arguments for function / method.
+max-args = 8
+
+# Maximum number of attributes for a class (see R0902).
+max-attributes = 9
+
+# Maximum number of boolean expressions in an if statement (see R0916).
+max-bool-expr = 5
+
+# Maximum number of branch for function / method body.
+max-branches = 12
+
+# Maximum number of locals for function / method body.
+max-locals = 15
+
+# Maximum number of parents for a class (see R0901).
+max-parents = 7
+
+# Maximum number of public methods for a class (see R0904).
+max-public-methods = 20
+
+# Maximum number of return / yield for function / method body.
+max-returns = 6
+
+# Maximum number of statements in function / method body.
+max-statements = 50
+
+# Minimum number of public methods for a class (see R0903).
+min-public-methods = 2
+
+[tool.pylint.EXCEPTIONS]
+# Exceptions that will emit a warning when being caught. Defaults to
+# "BaseException, Exception".
+overgeneral-exceptions=["BaseException", "Exception"]
+
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+requires =
+    pip==21.3.1
+    wheel==0.37.0
+    tox==3.24.4
+    tox-pip-version==0.0.7
+envlist =
+    # isort  # TODO. Needs some config tuning.
+    flake8
+    pylint
+    mypy
+    py37
+    py38
+    py39aior1
+    py39
+
+
+[testenv:isort]
+basepython = python3.9
+deps = isort==5.9.3
+commands = isort --check --diff src/redis_cache_lock/ tests/ doc/
+
+[testenv:flake8]
+basepython = python3.9
+deps =
+    flake8==4.0.1
+    pep8-naming==0.12.1
+    flake8-future-import==0.4.6
+    flake8-print==4.0.0
+    pyproject-flake8==0.0.1a2
+commands = pflake8
+
+[testenv:pylint]
+basepython = python3.9
+deps =
+    pylint==2.11.1
+    # for linting the tests
+    pytest==6.2.5
+    typing-extensions==4.0.0
+commands =
+    # `fixme` are useful for the eyes, but not for autochecks.
+    pylint --rcfile=pyproject.toml --disable=fixme src/redis_cache_lock tests doc
+
+[testenv:mypy]
+deps = mypy==0.910
+commands = mypy --config-file=pyproject.toml --warn-unused-configs src/redis_cache_lock tests doc
+
+[testenv]
+pip_version = pip==21.3.1
+deps =
+    pytest==6.2.5
+    pytest-asyncio==0.16.0
+    pytest-cov==3.0.0
+    pytest-html==3.1.1
+commands =
+    py.test \
+        --cov=redis_cache_lock \
+        --cov-report term \
+        --cov-report html:_cov_html \
+        --html=_report.html \
+        tests
+
+[testenv:py39aior1]
+pip_version = pip==21.3.1
+deps =
+    pytest==6.2.5
+    pytest-asyncio==0.16.0
+    pytest-cov==3.0.0
+    pytest-html==3.1.1
+commands =
+    py.test \
+        --cov=redis_cache_lock \
+        --cov-report term \
+        --cov-report html:_cov_html \
+        --html=_report.html \
+        tests
+"""

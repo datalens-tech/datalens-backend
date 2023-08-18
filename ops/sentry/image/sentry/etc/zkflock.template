@@ -1,0 +1,9 @@
+{
+  "host": ["$servers"],
+  "timeout": 5,
+  "app_id": "$appid",
+  "logger": {
+    "path": "/dev/stdout",
+    "zklevel": "ERROR"
+  }
+}

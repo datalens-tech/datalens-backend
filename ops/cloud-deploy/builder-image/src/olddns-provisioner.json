@@ -1,0 +1,8 @@
+{
+  "type": "shell",
+  "inline": [
+    "sudo sed -i.orig '1i nameserver 2a02:6b8:0:3400::5005' /etc/resolv.conf",
+    "echo 'Content of /etc/resolv.conf.orig' ; cat /etc/resolv.conf.orig",
+    "echo 'Content of /etc/resolv.conf' ; cat /etc/resolv.conf"
+  ]
+}

@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+
+import json
+
+import sh
+import pandas as pd
+
+
+ACCOUNT = 'abc:service:1561'
+DCS = ['man', 'vla', 'iva', 'myt', 'sas']
+COL_ORDER = ['dc', 'slug', 'vcpu', 'memory', 'hdd', 'hdd_bw', 'ssd', 'ssd_bw']
+
+SIZES = {
+    'K': 1000,
+    'KiB': 2**10,
+    'MiB': 2**20,
+    'GiB': 2**30,
+}
+COL_SIZES = {
+    'vcpu': 'K', 'memory': 'GiB',
+    'hdd': 'GiB', 'hdd_bw': 'MiB',
+    'ssd': 'GiB', 'ssd_bw': 'MiB',
+}
+
+
+def subtract(val1, val2):
+    '''
+    Subtract values with matching suffixes (or numeric values).
+
+    >>> subtract('38.4 Gb', '12 Gb')
+    '26.4 Gb'
+    '''
+    if isinstance(val1, (int, float)) and isinstance(val2, (int, float)):
+        return val1 - val2
+    if not (isinstance(val1, str) and isinstance(val2, str)):
+        return None
+    val1_pieces = val1.split(' ', 1)
+    val2_pieces = val2.split(' ', 1)
+    if len(val1_pieces) == 2 and len(val2_pieces) == 2 and val1_pieces[-1] == val2_pieces[-1]:
+        val1_val = val1_pieces[0]
+        val2_val = val2_pieces[0]
+        suffix = ' ' + val1_pieces[-1]
+    else:
+        val1_val = val1
+        val2_val = val2
+        suffix = ''
+    try:
+        val1_val = float(val1_val)
+        val2_val = float(val2_val)
+    except Exception:
+        return None
+    return '{}{}'.format(val1_val - val2_val, suffix)
+
+
+def reorder_df(df, cols):
+    ''' Put `cols` to the front '''
+    return df[
+        [col for col in cols if col in df.columns] +
+        [col for col in df.columns if col not in cols]]
+
+
+def parse_output(output):
+    data = json.loads(output)
+    result = {}
+    keymap = {
+        'accounts_limits': 'limit',
+        'accounts_usages': 'usage',
+    }
+    for src_key, key in keymap.items():
+        value = data.get(src_key)
+        if value and isinstance(value, list) and len(value) == 1:
+            result[key] = value[0]
+
+    limit = result.get('limit')
+    usage = result.get('usage')
+    if limit and usage:
+        result['free'] = {
+            key: subtract(value, usage.get(key))
+            for key, value in limit.items()
+        }
+    return result
+
+
+def main():
+    data = {
+        dc: getattr(sh, 'ya')(
+            'tool', 'yp-util',
+            'account', 'explain',
+            ACCOUNT,
+            '--query', "segment == 'default'",
+            '--cluster', dc,
+            '--format', 'json',
+        )
+        for dc in DCS}
+
+    data_parsed = {
+        dc: parse_output(cmd_res.stdout)
+        for dc, cmd_res in data.items()}
+
+    free = pd.DataFrame(
+        [
+            dict(dc_data.get('free') or {}, dc=dc)
+            for dc, dc_data in data_parsed.items()])
+    free = reorder_df(free, COL_ORDER)
+    for col, col_size_name in COL_SIZES.items():
+        size = SIZES[col_size_name]
+        free[col] = free[col] / size
+        free = free.rename(columns={col: f'{col}_{col_size_name.lower()}'})
+    print(free)
+    # print(free.to_string(float_format='${:,.2f}'.format))
+
+
+if __name__ == '__main__':
+    main()

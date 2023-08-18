@@ -1,0 +1,7 @@
+project: datalens
+qloudinst: ext
+application: dls
+applications: dls
+image: hhell/dls_p2
+environment: testing
+components: backend,tasks

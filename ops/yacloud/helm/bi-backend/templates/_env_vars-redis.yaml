@@ -1,0 +1,21 @@
+{{ define "env_vars-redis" -}}
+{{/* Add env vars if settings are defined only */}}
+{{ if .redis_settings -}}
+
+- name: "{{ .env_prefix }}_MODE"
+  value: "{{ .redis_settings.mode }}"
+
+- name: "{{ .env_prefix }}_NAME"
+  value: "{{ .redis_settings.cluster_name | default "" }}"
+
+- name: "{{ .env_prefix }}_HOSTS"
+  value: "{{ range $index, $element := .redis_settings.hosts}}{{if $index}},{{else}}{{end}}{{$element}}{{end}}"
+
+- name: "{{ .env_prefix }}_PORT"
+  value: "{{ .redis_settings.port }}"
+
+- name: "{{ .env_prefix }}_SSL"
+  value: "{{ if .redis_settings.tls_enabled }}1{{ else }}0{{ end }}"
+
+{{ end -}}
+{{ end -}}

@@ -1,0 +1,346 @@
+#!/usr/bin/env python3
+import datetime
+import json
+import os
+import re
+import shlex
+import sys
+import urllib.parse
+from typing import Any, Iterable, Optional, Sequence, Union
+
+TD_THRESHOLD = float(os.environ.get("TVS_TD") or 0.04)
+ENABLE_COLORS = True
+TERM_COLORS = dict(
+    clear="\x1b[0m",
+    bright="\x1b[01m",
+    red="\x1b[31m",
+    yellow="\x1b[33m",
+    green="\x1b[32m",
+    cyan="\x1b[36m",
+    magenta="\x1b[35m",
+    grey="\x1b[01;30m",
+)
+LEVEL_COLORS = {
+    "CRIT": "red",
+    "ERROR": "red",
+    "WARNING": "yellow",
+    "INFO": "green",
+    "Level 11": "cyan",  # (useful for tmp-debug-messages)
+    "DEBUG": "magenta",
+    # 'Level 2': 'magenta',
+    "": "grey",  # default
+}
+DATETIME_INPUT_FORMATS = ("%Y-%m-%d %H:%M:%S.%f",)
+FORMATS = {
+    "base": ("[%(asctime)s]" " %(levelname)s: %(name)s: %(message)s"),
+    "full": (
+        "[%(asctime)s][%(process)s/%(threadName)s] %(request_id)s"
+        " %(levelname)s: %(name)s: %(message)s"
+    ),
+    "verbose_ex": (
+        "[%(asctime)s](+%(time_diff)s) %(request_id)s"
+        " %(levelname)s: %(name)s: %(message)s"
+    ),
+}
+CURL_CMD = (
+    "_curl_oauth", "-k", "-v", "-H", "x-dl-allow-superuser: true",
+)
+CURL_SKIP_HEADERS = frozenset(("cookie", "authorization", "x-yacloud-subjecttoken"))
+DEFAULT_ENCODING = "utf-8"
+
+
+class UnknownFormat(ValueError):
+    """..."""
+
+
+def to_text(value: Any, **kwargs: Any) -> str:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, bytes):
+        return value.decode(DEFAULT_ENCODING, **kwargs)
+    return repr(value)
+
+
+def sh_join(args: Sequence[str], sep: str = " ") -> str:
+    return sep.join(shlex.quote(val) for val in args)
+
+
+def loads(value, force=False, **kwargs):
+    if isinstance(value, str):
+        value = value.encode("utf-8")
+    elif isinstance(value, bytes):
+        pass
+    else:
+        return value
+    if not value:
+        return None
+
+    # Some special-cases support: remove the term-escapes such as coloring.
+    value = re.sub(br"\x1b\[([0-9]{1,2}m|[0-9]{2};[0-9]{2}m)", b"", value, flags=re.I)
+    value = value.rstrip(b"\n")
+
+    if value.startswith(b"{"):
+        try:
+            return json.loads(value, **kwargs)
+        except UnicodeDecodeError:
+            # CHYT+YSON problems
+            return json.loads(value.decode("utf-8", errors="replace"), **kwargs)
+
+    if not force:
+        raise UnknownFormat("Unexpected value format in `loads`", value)
+
+    # Support prefixed json lines (e.g. grep's filename or pssh's hostname prefix)
+    sep = b"{"
+    value_piece = value[value.index(sep):]
+    return json.loads(value_piece, **kwargs)
+
+
+def _parse_dt(value, fmts=DATETIME_INPUT_FORMATS):
+    for fmt in fmts:
+        try:
+            return datetime.datetime.strptime(value, fmt)
+        except Exception:
+            pass
+    return None
+
+
+def _make_url(
+    server_name: str,
+    path: str,
+    params: Union[str, dict[str, str], Sequence[tuple[str, str]]],
+    proto: str = "https",
+) -> str:
+    params_s = params if isinstance(params, str) else urllib.parse.urlencode(params)
+    path_rel = path.lstrip("/")
+    return f"{proto}://{server_name}/{path_rel}?{params_s}"
+
+
+def make_curl_command(
+    url: str,
+    headers: dict[str, str],
+    body: Optional[str] = None,
+    method: Optional[str] = None,
+    curl_cmd: Sequence[str] = CURL_CMD,
+    skip_headers: set[str] = CURL_SKIP_HEADERS,
+) -> str:
+
+    def _process_header(header_name: str, value: str) -> Sequence[str]:
+        name = header_name.lower()
+        if name in skip_headers:
+            return ()
+        return ("-H", f"{header_name}: {value}")
+
+    headers_cmd: list[str] = [
+        piece
+        for header_name, value in headers.items()
+        for piece in _process_header(header_name, value)
+    ]
+
+    cmd_rows: tuple[tuple[str, ...], ...] = (
+        tuple(curl_cmd),
+        (("-X", method) if method else ()),
+        (url,),
+        tuple(headers_cmd),
+        (("--data-binary", body) if body is not None else ()),
+    )
+    return " \\\n  ".join(sh_join(piece) for piece in cmd_rows if piece)
+
+
+def _color_wrap(text: str, *colors: str, add_nocolor: bool = True) -> str:
+    return "".join(
+        tuple(TERM_COLORS[name] for name in colors)
+        + (text,)
+        + (
+            (TERM_COLORS["clear"],) if add_nocolor else ()
+        )
+    )
+
+
+def colorize_time_diff(value, threshold=TD_THRESHOLD):
+    if not threshold:
+        return value
+    try:
+        td = float(value)
+    except Exception:
+        return value
+
+    td_s = "%.3f" % (td,)
+    if td > TD_THRESHOLD:
+        return _color_wrap(td_s, "bright", "red")
+    return td_s
+
+
+def colorize(data):
+    levelname = data.get("levelname")
+    levelcolor_name = LEVEL_COLORS.get(levelname) or LEVEL_COLORS[""]
+
+    message = data.get("message")
+    if message:
+        message = _color_wrap(message, levelcolor_name)
+        data["message"] = message
+
+    data["levelname"] = _color_wrap(levelname, levelcolor_name)
+    data["time_diff"] = colorize_time_diff(data.get("time_diff"))
+    return data
+
+
+def _loads_line(line):
+    try:
+        data = loads(line, force=True)
+    except ValueError:
+        return None
+
+    if not data:
+        return None
+
+    return data
+
+
+def _process_line_data(data, prev_data=None):
+
+    # qloud
+    if "@fields" in data:
+        data_actual = dict(data["@fields"])
+        data_actual.update(data)
+        data = data_actual
+
+    # logfeller
+    data = data.copy()
+    rest_text = data.pop("_rest_text", None)
+    rest_base = data.pop("_rest", None)
+    rest = rest_text or rest_base
+    if rest is not None:
+        if isinstance(rest, str):
+            rest = rest.encode("utf-8")
+        if isinstance(rest, bytes):
+            import yt.yson
+            rest = yt.yson.loads(rest)
+        data.update(rest)
+
+    data["asctime"] = (
+        data.get("full_timestamp")
+        or data.get("isotimestamp")
+        or data.get("iso_eventtime")
+    )
+    data["_ts_obj"] = _parse_dt(data["asctime"])
+    data["process"] = data.get("pid")
+    # Some extra compat stuff:
+    data["request_id"] = (
+        data.get("django_request_id") or data.get("reqid") or data.get("request_id")
+    )
+
+    data = colorize(data)
+
+    td = data.get("time_diff")
+    if not td and prev_data is not None:
+        _ts_obj = data.get("_ts_obj")
+        _ts_obj_prev = prev_data.get("_ts_obj")
+        if _ts_obj is not None and _ts_obj_prev is not None:
+            td = (_ts_obj - _ts_obj_prev).total_seconds()
+
+    if isinstance(td, float):
+        # td = '%.3f' % (td,)
+        td = colorize_time_diff(td)
+        data["time_diff"] = td
+
+    return data
+
+
+def _format_data(data, fmt):
+    try:
+        output = fmt % data
+    except Exception:  # supposedly not a good enough line
+        return None
+
+    # Strip the excess newlines (managing those here)
+    output = output.strip("\n")
+
+    if data.get("exc_info"):
+        output = "%s\n%s" % (output, data["exc_info"])
+
+    return output
+
+
+def process_one_line(
+    line: bytes, fmt: str, prev_data: Optional[dict] = None
+) -> tuple[Optional[dict], str]:
+    data = _loads_line(line)
+
+    if not data or not isinstance(data, dict):
+        return None, to_text(line, errors="replace")
+
+    data_processed = _process_line_data(data, prev_data=prev_data)
+    formatted = _format_data(data_processed, fmt)
+    if not formatted:
+        formatted = to_text(line, errors="replace")
+
+    if isinstance(data_processed, dict):
+        request_body = data_processed.get("request_body")
+        request_path = data_processed.get("request_path")
+        if request_body and request_path:
+            # To consider: check `prev_data` for 'Received request.' with headers/...
+            req_as_curl = make_curl_command(
+                url=request_path, headers={}, body=request_body,
+            )
+            formatted += "\n" + req_as_curl
+
+    return data_processed, formatted
+
+
+def process_lines(
+    lines: Iterable[bytes], fmt: str, suffix_line: Optional[str] = ""
+) -> Iterable[str]:
+    prev_data = None
+    for line in lines:
+        if not line:
+            continue
+
+        data, res = process_one_line(line, fmt=fmt, prev_data=prev_data)
+        yield res
+        if suffix_line is not None:
+            yield ""  # add an empty line for eyefriendliness
+
+        prev_data = data
+
+
+def stdin_bin_lines(strip_newlines: bool = True) -> Iterable[bytes]:
+    """Iterate over stdin lines in a 'line-buffered' way"""
+    source = sys.stdin.buffer
+    while True:
+        try:
+            line = source.readline()
+        except KeyboardInterrupt:
+            # Generally, there's no point in dropping a traceback in a
+            # script within an interrupted shell pipe.
+            return
+        if not line:
+            # No more data to read (otherwise it would at least have an "\n")
+            break
+        # This might not be the case if the stream terminates with a non-newline at the end.
+        if strip_newlines and line[-1] == b"\n":
+            line = line[:-1]
+        yield line
+
+
+def stdout_lines(gen: Iterable[str], flush: bool = True) -> None:
+    output = sys.stdout
+    for line in gen:
+        output.write(line)
+        output.write("\n")
+        if flush:
+            sys.stdout.flush()
+
+
+def main():
+    fmt = FORMATS[os.environ.get("FMT") or "verbose_ex"]
+    if len(sys.argv) >= 2:
+        infile = sys.argv[1]
+        inp = open(infile, "rb")
+    else:
+        inp = stdin_bin_lines()
+    outp = process_lines(inp, fmt=fmt)
+    stdout_lines(outp)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: yandex-bi-cloud-integration
+Version: 0.0.0
+Author: Konstantin Chupin
+Author-email: kchupin@yandex-team.ru
+Requires-Dist: attrs (>=19.2.0)
+Requires-Dist: pyjwt
+Requires-Dist: certifi-yandex
+Requires-Dist: grpcio
+Requires-Dist: googleapis-common-protos (==1.55.0)
+Provides-Extra: all
+

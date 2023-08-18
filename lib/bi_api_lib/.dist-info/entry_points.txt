@@ -1,0 +1,16 @@
+[bi_api_lib.connectors]
+appmetrica_api = bi_api_lib.connectors.metrica.connector:AppMetricaApiBiApiConnector
+bitrix_gds = bi_api_lib.connectors.bitrix_gds.connector:BitrixGDSBiApiConnector
+chs3_gsheets = bi_api_lib.connectors.chs3_gsheets.connector:GSheetsFileS3BiApiConnector
+chyt = bi_api_lib.connectors.chyt.connector:CHYTBiApiConnector
+chyt_internal = bi_api_lib.connectors.chyt_internal.connector:CHYTInternalBiApiConnector
+clickhouse = bi_api_lib.connectors.clickhouse.connector:ClickHouseBiApiConnector
+file = bi_api_lib.connectors.file.connector:FileS3BiApiConnector
+greenplum = bi_api_lib.connectors.greenplum.connector:GreenplumBiApiConnector
+gsheets = bi_api_lib.connectors.gsheets.connector:GSheetsBiApiConnector
+metrica_api = bi_api_lib.connectors.metrica.connector:MetricaApiBiApiConnector
+monitoring = bi_api_lib.connectors.monitoring.connector:MonitoringBiApiConnector
+postgresql = bi_api_lib.connectors.postgresql.connector:PostgreSQLBiApiConnector
+solomon = bi_api_lib.connectors.solomon.connector:SolomonBiApiConnector
+ydb = bi_api_lib.connectors.ydb.connector:YDBBiApiConnector
+yq = bi_api_lib.connectors.yq.connector:YQBiApiConnector

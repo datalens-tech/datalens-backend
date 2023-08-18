@@ -1,0 +1,68 @@
+Metadata-Version: 2.1
+Name: yandex-bi-core
+Version: 12.99.0
+Author: Dmitry Fedorov
+Author-email: dmifedorov@yandex-team.ru
+Requires-Dist: aiobotocore
+Requires-Dist: aiochclient
+Requires-Dist: aiodns
+Requires-Dist: aiohttp (>=3.5)
+Requires-Dist: apispec[yaml]
+Requires-Dist: attrs (>=19.2.0)
+Requires-Dist: cchardet
+Requires-Dist: ciso8601
+Requires-Dist: cryptography
+Requires-Dist: dnspython
+Requires-Dist: Flask
+Requires-Dist: jaeger-client
+Requires-Dist: lz4
+Requires-Dist: marshmallow
+Requires-Dist: marshmallow-enum
+Requires-Dist: marshmallow-oneofschema
+Requires-Dist: pyopenssl
+Requires-Dist: python-dateutil
+Requires-Dist: redis (>=3.2.0)
+Requires-Dist: requests[security]
+Requires-Dist: sentry-sdk
+Requires-Dist: shortuuid
+Requires-Dist: typeguard
+Requires-Dist: typing-extensions
+Requires-Dist: Werkzeug
+Requires-Dist: xxhash
+Requires-Dist: ydb (>=2.10.0)
+Requires-Dist: certifi-yandex
+Requires-Dist: tvmauth
+Requires-Dist: grpcio
+Requires-Dist: googleapis-common-protos
+Requires-Dist: sqlalchemy (>=1.2)
+Requires-Dist: pyjwt
+Provides-Extra: aio
+Provides-Extra: all
+Requires-Dist: Werkzeug ; extra == 'all'
+Requires-Dist: celery[redis] ; extra == 'all'
+Requires-Dist: mypy ; extra == 'all'
+Requires-Dist: pip-tools ; extra == 'all'
+Requires-Dist: pytest ; extra == 'all'
+Requires-Dist: pytest-asyncio ; extra == 'all'
+Requires-Dist: pytest-cov ; extra == 'all'
+Requires-Dist: pytest-html ; extra == 'all'
+Requires-Dist: requests ; extra == 'all'
+Requires-Dist: sqlalchemy-stubs ; extra == 'all'
+Requires-Dist: wheel ; extra == 'all'
+Requires-Dist: yandex-passport-vault-client ; extra == 'all'
+Provides-Extra: celery
+Requires-Dist: celery[redis] ; extra == 'celery'
+Provides-Extra: db
+Provides-Extra: develop
+Requires-Dist: pip-tools ; extra == 'develop'
+Requires-Dist: pytest ; extra == 'develop'
+Requires-Dist: pytest-cov ; extra == 'develop'
+Requires-Dist: pytest-html ; extra == 'develop'
+Requires-Dist: pytest-asyncio ; extra == 'develop'
+Requires-Dist: requests ; extra == 'develop'
+Requires-Dist: wheel ; extra == 'develop'
+Requires-Dist: Werkzeug ; extra == 'develop'
+Requires-Dist: mypy ; extra == 'develop'
+Requires-Dist: sqlalchemy-stubs ; extra == 'develop'
+Requires-Dist: yandex-passport-vault-client ; extra == 'develop'
+

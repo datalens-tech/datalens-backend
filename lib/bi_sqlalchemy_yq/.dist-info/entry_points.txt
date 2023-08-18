@@ -1,0 +1,2 @@
+[sqlalchemy.dialects]
+bi_yq = bi_sqlalchemy_yq.base:BIYQDialect

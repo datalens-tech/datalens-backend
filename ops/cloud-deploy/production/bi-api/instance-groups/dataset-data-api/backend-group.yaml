@@ -1,0 +1,16 @@
+# id: ds7ul1v9iqptqkn83975
+name: dataset-data-api
+description: DataLens Dataset Data API
+folder_id: b1g77mbejmj4m6flq848
+http:
+  backends:
+  - name: http-backend
+    weight: '100'
+    port: '443'
+    target_group:
+      target_group_id: ds7hp3efnnrin5u7nfui
+    tls:
+      tls_options:
+        tls_min_version: TLS_V1_2
+        tls_max_version: TLS_V1_2
+  connection: {}

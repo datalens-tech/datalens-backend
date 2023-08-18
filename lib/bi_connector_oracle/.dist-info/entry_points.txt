@@ -1,0 +1,11 @@
+[bi_api_lib.connectors]
+oracle = bi_connector_oracle.bi.connector:OracleBiApiConnector
+
+[bi_core.connectors]
+oracle = bi_connector_oracle.core.connector:OracleCoreConnector
+
+[bi_db_testing.connectors]
+oracle = bi_connector_oracle.db_testing.connector:OracleDbTestingConnector
+
+[bi_formula.connectors]
+oracle = bi_connector_oracle.formula.connector:OracleFormulaConnector

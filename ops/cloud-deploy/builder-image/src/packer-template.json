@@ -1,0 +1,80 @@
+{
+    "variables": {
+        "docker_token": "{{env `DOCKER_TOKEN`}}",
+        "yav_token": "{{env `YAV_TOKEN`}}",
+        "docker_username": "{{env `DOCKER_USERNAME`}}",
+        "manifest_path": "{{ pwd }}",
+        "user": "{{env `USER`}}",
+        "upgrade_deb_packages": "{{env `UPGRADE_DEB_PACKAGES`}}"
+    },
+    "sensitive-variables": ["docker_token", "yav_token"],
+    "builders": [],
+    "provisioners": [
+        {
+            "type": "salt-masterless",
+            "skip_bootstrap": "true",
+            "local_state_tree": "{{user `salt_local_root`}}",
+            "local_pillar_roots": "{{user `settings_dir`}}/{{build_name}}/pillar"
+        },
+        {
+            "type": "shell",
+            "environment_vars": [
+                "DOCKER_TOKEN={{user `docker_token`}}",
+                "DOCKER_USERNAME={{user `docker_username`}}"
+            ],
+            "inline": [
+                "set -x",
+                "for i in /etc/kubelet.d/* ; do fgrep 'image: registry.yandex.net' $i | awk '{print $NF}'; done | sort | uniq > /tmp/images_for_download",
+                "echo \"${DOCKER_TOKEN}\" | sudo docker login --username \"${DOCKER_USERNAME}\" --password-stdin registry.yandex.net",
+                "for i in $(cat /tmp/images_for_download); do sudo docker pull $i; done",
+                "sudo docker logout registry.yandex.net"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo docker-credential-ycr configure-docker --hostname cr.yandex",
+                "set -x",
+                "fgrep 'image: cr.yandex' /etc/kubelet.d/app.yaml  | awk '{print $NF}' | sort | uniq > /tmp/images_for_download",
+                "for i in $(cat /tmp/images_for_download); do sudo docker pull $i; done",
+                "sudo docker logout cr.yandex"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "{{user `settings_dir`}}/",
+            "destination": "/tmp/"
+        },
+        {
+            "type": "shell",
+            "inline": [
+              "ls -la /tmp"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo mkdir -p /etc/secrets",
+                "sudo mv /tmp/vm_scripts/* /usr/local/bin/"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+              "echo 'Purge Salt packages'",
+              "sudo apt-get -y purge salt-common salt-minion",
+              "sudo rm -rf /srv/salt",
+              "sudo rm -rf /var/cache/salt"
+            ]
+        }
+    ],
+    "post-processors": [{
+        "type": "manifest",
+        "output": "{{user `manifest_path`}}/{{build_name}}-manifest.json",
+        "strip_path": true,
+        "custom_data": {
+            "created": "{{user `created_time`}}",
+            "s3_path": "{{user `s3_path`}}"
+        }
+    }]
+}

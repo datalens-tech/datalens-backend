@@ -1,0 +1,27 @@
+#syntax=docker/dockerfile:1.4
+FROM bake_ctx_base_img
+
+ENV APP_DIR="app/bi_rqe_int_sync"
+
+RUN mkdir -p /code
+COPY /etc /etc
+
+RUN mkdir -p /src/$APP_DIR
+RUN mkdir -p /src/ops
+
+# Libs & metapkg
+COPY --from=bake_ctx_libs / /src/lib
+COPY --from=bake_ctx_metapkg / /src/ops/ci
+
+# Sources copy
+COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
+COPY /bi_rqe_int_sync /src/$APP_DIR/bi_rqe_int_sync
+COPY /uwsgi /src/app/uwsgi
+COPY /README.md /src/$APP_DIR/README.md
+
+# Installation
+WORKDIR /src/ops/ci
+RUN poetry export --only app_bi_rqe_int_sync --without-hashes --format=requirements.txt > requirements.txt
+RUN pip install -r requirements.txt
+
+ENTRYPOINT ["/etc/service/bi_rqe_int_sync/run"]

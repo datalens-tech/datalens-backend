@@ -1,0 +1,70 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-yql"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_yql"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+grpcio = ">=1.45.0rc1"
+marshmallow = ">=3.19.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
+yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
+ydb = ">=2.10.1"
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_core.connectors"]
+ydb = "bi_connector_yql.core.ydb.connector:YDBCoreConnector"
+yq = "bi_connector_yql.core.yq.connector:YQCoreConnector"
+
+[tool.poetry.plugins."bi_db_testing.connectors"]
+yql = "bi_connector_yql.db_testing.connector:YQLDbTestingConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+yql = "bi_connector_yql.formula.connector:YQLFormulaConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_connector_yql_tests/db"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens.pytest.db]
+root_dir = "bi_connector_yql_tests/"
+target_path = "db"
+compose_file_base = "docker-compose"

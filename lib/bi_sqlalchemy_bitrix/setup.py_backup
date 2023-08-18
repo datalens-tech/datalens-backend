@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from setuptools import setup, find_packages
+
+
+__version__ = "0.1"
+
+
+SETUP_KWARGS = dict(
+    name="yandex-bi-sqlalchemy-bitrix",
+    version=__version__,
+
+    description="BI Bitrix SQLAlchemy Dialect",
+    long_description="""...""",
+    packages=find_packages(".", exclude=["bi_sqlalchemy_bitrix_tests*"]),
+    install_requires=[
+        "sqlalchemy>=1.4",
+    ],
+    extras_require={"all": []},
+    entry_points={
+        "sqlalchemy.dialects": [
+            "bi_bitrix = bi_sqlalchemy_bitrix.base:BitrixDialect",
+        ],
+    },
+)
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

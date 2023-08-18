@@ -1,0 +1,55 @@
+{
+    "meta": {
+        "name": "bi-alerts",
+        "maintainer": "DataLens <robot-datalens@yandex-team.ru>",
+        "version": "{revision}"
+    },
+
+    "build": {
+        "targets": ["datalens/backend/app/bi_alerts/app"],
+        "build_type": "release"
+    },
+
+    "data": [
+        {
+            "source": {
+                "type": "BUILD_OUTPUT",
+                "path": "datalens/backend/app/bi_alerts/app/bi_alerts_app"
+            },
+            "destination": {
+                "path": "/"
+            }
+        },
+
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/app/bi_alerts/docker-compose"
+            },
+            "destination": {
+                "path": "/docker-compose"
+            }
+        },
+
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/app/bi_alerts/etc"
+            },
+            "destination": {
+                "path": "/etc"
+            }
+        },
+
+        {
+            "source": {
+                "type": "ARCADIA",
+                "path": "datalens/backend/app/bi_alerts/app",
+                "files": ["Dockerfile"]
+            },
+            "destination": {
+                "path": "/"
+            }
+        }
+    ]
+}

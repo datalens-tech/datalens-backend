@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+__version__ = "0.0.0"
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-formula-ref",
+    version=__version__,
+    author="Grigory Statsenko",
+    author_email="gstatsenko@yandex-team.ru",
+    packages=find_packages(exclude=["bi_formula_ref_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "bi_formula_ref": [
+            "locales/*/LC_MESSAGES/bi_formula_ref.po",
+            "example_data.json",
+            "templates/*",
+        ],
+        "*": [
+            "py.typed",
+        ],
+    },
+
+    entry_points={
+        "console_scripts": [
+            "bi-formula-ref-doc = bi_formula_ref.scripts.formula_doc:main",
+            "bi-formula-ref-exdata = bi_formula_ref.scripts.example_data:main",
+        ],
+    },
+    install_requires=[
+        # (M1 platform note) you should reinstall grpcio
+        # pip install --no-binary :all: grpcio --ignore-installed
+        "attrs",
+        "Babel<2.9",
+        "jinja2",
+        "tabulate",
+        "sqlalchemy<2",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            ("yandex-bi-formula", "bi_formula"),
+            ("yandex-bi-connector-clickhouse", "bi_connector_clickhouse"),
+            ("yandex-bi-connector-metrica", "bi_connector_metrica"),
+            ("yandex-bi-connector-mssql", "bi_connector_mssql"),
+            ("yandex-bi-connector-mysql", "bi_connector_mysql"),
+            ("yandex-bi-connector-oracle", "bi_connector_oracle"),
+            ("yandex-bi-connector-postgresql", "bi_connector_postgresql"),
+            ("yandex-bi-connector-yql", "bi_connector_yql"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "develop": [  # for testing and development
+            "pytest",
+            "ipython", "ipdb", "pyaux", "pyauxm",  # tier1 debug-conveniences
+        ],
+        "mypy": [  # for mypy checks
+            "mypy",
+        ],
+    },
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

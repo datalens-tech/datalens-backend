@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: yandex-bi-file-uploader-api-lib
+Version: 0.0.0
+Author: Aleksei Konstantinov
+Author-email: konstasa@yandex-team.ru
+Requires-Dist: attrs
+Requires-Dist: aiogoogle
+Requires-Dist: aiohttp
+Requires-Dist: arq
+Requires-Dist: marshmallow
+Requires-Dist: marshmallow-enum
+Requires-Dist: marshmallow-oneofschema
+Provides-Extra: all
+Provides-Extra: develop
+

@@ -1,0 +1,148 @@
+#!/bin/bash
+# #######
+# Get logs by request id,
+# from log tables on logs CH
+#
+# Requires yandex-python-sbdutils:
+# https://a.yandex-team.ru/arc/trunk/arcadia/datalens/backend/tools/logs/getytlogs?rev=7222730#L6
+#
+#     pip install -i https://pypi.yandex-team.ru/simple yandex-python-sbdutils
+#
+# The raw log is saved to `./tmp.log`
+# #######
+
+set -Eeuo pipefail
+
+die() {
+    printf "%s\n" "$1" >&2
+    exit 1
+}
+
+envname=""
+date=""
+today=""
+pattern=""
+pattern_contains=""
+field="request_id"
+
+while [ -n "${1:-}" ]; do
+    case "$1" in
+        -e | --environment)
+            envname="$2"
+            shift 2
+            ;;
+        -d | --date)
+            date="$2"
+            shift 2
+            ;;
+        -m | --message)
+            # Search by full message JSON rather than by request_id.
+            field="MESSAGE"
+            pattern_contains=1
+            shift 1
+            ;;
+        --today)
+            today=1
+            shift 1
+            ;;
+        -*)
+            die "ERROR: unknown parameter: $1"
+            ;;
+        *)
+            if [ -n "$pattern" ]; then
+                die "ERROR: extra positional argument: $1"
+            fi
+            pattern="$1"
+            shift 1
+            ;;
+    esac
+done
+
+USERNAME="reader"
+# TODO?: cache in a file?
+PASSWORD="$(ya vault get version sec-01em6fhx7861e3pnahgpw0s9pg -o password)"
+# https://console.cloud.yandex.ru/folders/b1g77mbejmj4m6flq848/managed-clickhouse/cluster/c9qbc2g1d6pr7vhr34sg
+HOSTNAME="c-c9qbc2g1d6pr7vhr34sg.rw.mdb.yandexcloud.net"
+
+query_from=""
+case "$envname" in
+    int-prod | int_prod | int-production)
+        query_from='int_prod.bi_logs'
+        ;;
+    ext-prod | ext_prod | production)
+        query_from='ext_prod.bi_logs'
+        ;;
+    ext-testing | ext_testing | testing)
+        query_from='ext_testing.bi_logs'
+        ;;
+    int-testing | int_testing | int-beta)
+        query_from='int_testing.bi_logs'
+        ;;
+    '')
+        # 'union all' view
+        query_from='ext_prod.all_bi_logs'
+        ;;
+    *)
+        die "Unknown environment name '$envname'"
+        ;;
+esac
+
+if [ "$today" ]; then
+    if [ -n "$date" ]; then
+        die "--date and --today should not be combined"
+    fi
+    date="$(date -I)"
+fi
+
+extra_where=""
+if [ -n "$date" ]; then
+    extra_where="$extra_where and toDate(ts) = '$date'"
+fi
+
+if [ "$pattern_contains" ]; then
+    pattern="%${pattern}"
+fi
+
+query="
+    select
+        MESSAGE
+    from ${query_from}
+    where ${field} like '${pattern}%' ${extra_where}
+    order by timestampns
+    limit 1000000
+    format TabSeparatedRaw
+"
+
+url="https://${HOSTNAME}:8443/"
+
+# Simple: just the query: printf "%s\n\n" "$query"
+# Complex: reproducible command without the visible secrets
+printf "
+time curl \\
+     -s -H 'Expect:' -H \"Authorization: Basic \$(printf \"%%s:%%s\" \"$USERNAME\" \"\$(ya vault get version sec-01em6fhx7861e3pnahgpw0s9pg -o password)\" | base64)\" \\
+     %q \\
+     --data-binary \"%s\" \
+     -o tmp.log && bi-log-format tmp.log
+" "$url" "$(printf "%s" "$query" | sed -r 's|\\|\\\\|g; s|"|\\"|g')" >&2
+
+time curl \
+    -s -H 'Expect:' -H "Authorization: Basic $(printf "%s:%s" "$USERNAME" "$PASSWORD" | base64)" \
+    "$url" \
+    --data-binary "$query" \
+    -o tmp.log
+grep -F 'Body for ' tmp.log \
+    | jq -r .request_body \
+    | tee tmp_body.log \
+    || true
+
+_logformat() {
+    HERE="$(dirname "$0")"
+    LOG_FORMAT_PATH="$HERE/bi-log-format"
+    if [ -e "$LOG_FORMAT_PATH" ]; then
+        "$LOG_FORMAT_PATH" tmp.log
+    else
+        bi-log-format tmp.log
+    fi
+}
+
+_logformat tmp.log

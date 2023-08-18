@@ -1,0 +1,1077 @@
+openapi: 3.0.0
+servers:
+  - url: "/_dls"
+  - url: "https://dls-beta.common-int.yandex-team.ru/_dls"
+  - url: "http://dls/_dls"
+  - url: "https://dls/_dls"
+info:
+  description: >-
+    See
+    [documentation](https://wiki.yandex-team.ru/datalens/datalenssecurity/),
+    [beta instance configuration](https://qloud.yandex-team.ru/projects/statbox/dls/testing),
+    [ST ticket](https://st.yandex-team.ru/BI-45).
+  version: 0.1.0
+  title: DLS API
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: Internal API
+    description: "Inter-system communication API"
+  - name: Public API
+    description: "APIs to be requested from users' browsers."
+  - name: Unused
+    description: "APIs that are not to be used (future / unnecessary / unimplemented / obsolete)"
+paths:
+  /configurations/scopes:
+    put:
+      tags: ["Unused"]
+      summary: "Set system-specific configuration."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              # patternProperties:
+              #   "^[a-z]+$":
+              additionalProperties:
+                type: object
+                required: ["actions", "grantTypes"]
+                properties:
+                  grantTypes:
+                    $ref: "#/components/schemas/GrantTypes"
+                  actions:
+                    type: object
+                    example: {
+                      "read": ["acl_view", "acl_edit", "acl_adm"],
+                      "write": ["acl_edit", "acl_adm"],
+                      "set_permissions": ["acl_adm"]
+                    }
+                    additionalProperties:
+                      $ref: "#/components/schemas/GrantTypes"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/all/{node_identifier}:
+    get:
+      tags: ["Internal API"]
+      summary: "Get node metadata."
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/cloud_folder_id"
+      responses:
+        "200":
+          description: Result obtained successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "The specified node was not found"}
+        "500": {$ref: '#/components/responses/500'}
+  /nodes/all/{node_identifier}/access/{action}:
+    get:
+      tags: ["Internal API"]
+      # operationId: list-data-sets
+      summary: "Check for access."
+      description: "Check whether the `user` has access to do `action` upon `node`."
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/cloud_folder_id"
+        - $ref: "#/components/parameters/chk_allow_superuser"
+        - $ref: "#/components/parameters/chk_sudo"
+        - $ref: "#/components/parameters/chk_extra_action"
+        - name: action
+          in: path
+          required: true
+          schema: {$ref: "#/components/schemas/ActionRef"}
+        - name: user
+          in: query
+          required: true
+          schema: {$ref: "#/components/schemas/UserRef"}
+        - $ref: "#/components/parameters/verbose"
+      responses:
+        "200":
+          description: Result obtained successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                    nullable: true
+                    description: "Specifies whether the requested action should be allowed"
+                example: {result: true}
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "One of the specified entities (node/user/action) were not found"}
+        "500": {$ref: '#/components/responses/500'}
+  /rpc/{name}:
+    post:
+      tags: ["Unused"]
+      summary: "RPC call"
+      parameters:
+      - in: path
+        name: name
+        required: true
+        schema:
+          type: string
+          enum: [
+            'getGrant', 'createGrant', 'modifyGrant',
+            'approveGrant', 'rejectGrant', 'revokeGrant',
+          ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: "Result obtained successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: '#/components/responses/500'}
+  /batch/render_subjects/:
+    post:
+      tags: ["Internal API"]
+      summary: "Convert subject identifiers to subjects' display data"
+      parameters:
+        - $ref: "#/components/parameters/cloud_folder_id"
+        - name: require
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: "Whether the request should fail if some of the subjects don't exist."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["subjects"]
+              properties:
+                subjects:
+                  type: array
+                  example: ["user:1120000000016555", "group:962"]
+                  items: {$ref: "#/components/schemas/UserRef"}
+      responses:
+        "200":
+          description: "Result obtained successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: object
+                    description: "`{subject_identifier: result_data}` mapping"
+                    additionalProperties: {$ref: "#/components/schemas/SubjectInfo"}
+                    example:
+                      {"user:1120000000016555": {"__source":"staff","icon":"https://center.yandex-team.ru/api/v1/user/hhell/photo/64/square.jpg","link":"https://staff.yandex-team.ru/hhell","name":"user:1120000000016555","title":"Антон Васильев","type":"user-staff"},
+                       "group:962": {"__source":"staff","link":"https://staff.yandex-team.ru/departments/yandex/","name":"group:962","title":"Яндекс","type":"group-staff-department"}}
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "Some of the specified subjects were not found"}
+        "500": {$ref: '#/components/responses/500'}
+  /batch/render_subjects_by_login/:
+    post:
+      tags: ["Internal API"]
+      summary: "Convert subject logins/rlsids to subjects' display data"
+      parameters:
+        - $ref: "#/components/parameters/cloud_folder_id"
+        - name: require
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: "Whether the request should fail if some of the subjects don't exist."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["subjects"]
+              properties:
+                subjects:
+                  type: array
+                  example: ["hhell", "group:yandex"]
+                  items: {type: string}
+      responses:
+        "200":
+          description: "Result obtained successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: object
+                    description: "`{subject_identifier: result_data}` mapping"
+                    additionalProperties: {$ref: "#/components/schemas/SubjectInfo"}
+                    example:
+                      {"hhell": {"__source":"staff","icon":"https://center.yandex-team.ru/api/v1/user/hhell/photo/64/square.jpg","link":"https://staff.yandex-team.ru/hhell","name":"user:1120000000016555","title":"Антон Васильев","type":"user-staff"},
+                       "group:yandex": {"__source":"staff","link":"https://staff.yandex-team.ru/departments/yandex/","name":"group:962","title":"Яндекс","type":"group-staff-department"}}
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "Some of the specified subjects were not found"}
+        "500": {$ref: '#/components/responses/500'}
+  /batch/accesses/:
+    post:
+      tags: ["Internal API"]
+      # operationId: list-data-sets
+      summary: "Check for accesses (optimized batch)."
+      description: "Check whether the `user` has access to do `action` upon each of the `nodes`. Performance-optimized "
+      parameters:
+        - $ref: "#/components/parameters/chk_allow_superuser"
+        - $ref: "#/components/parameters/chk_sudo"
+        - $ref: "#/components/parameters/chk_extra_action"
+        - $ref: "#/components/parameters/cloud_folder_id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["user", "action", "nodes"]
+              properties:
+                user: {$ref: "#/components/schemas/UserRef"}
+                nodes:
+                  type: array
+                  example: [
+                    "562efb9a-4a15-11e8-895d-0bb8b07c4c9a",
+                    "f6d428dd-ac82-463c-a4f0-eddb0648efb4",
+                    "95be8320-d832-4183-8e22-3b0376262522"]
+                  items: {$ref: "#/components/schemas/NodeRef"}
+                action: {$ref: "#/components/schemas/ActionRef"}
+                verbose:
+                  type: boolean
+                  default: false
+                  description: "Whether additional information about each result should be returned"
+      responses:
+        "200":
+          description: "Result obtained successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: object
+                    description: "`{node_identifier: result_data}` mapping"
+                    additionalProperties:
+                      type: object
+                      properties:
+                        result:
+                          type: boolean
+                          nullable: true
+                          description: "Specifies whether the requested action should be allowed"
+                        status:
+                          type: string
+                          nullable: true
+                          description: >-
+                            Additional information about the result status.
+                            If the result is null, shows the reason.
+                    example:
+                      {"562efb9a-4a15-11e8-895d-0bb8b07c4c9a": {result: true, status: null},
+                       "f6d428dd-ac82-463c-a4f0-eddb0648efb4": {result: false, status: null},
+                       "95be8320-d832-4183-8e22-3b0376262522": {result: null, status: "not found"},
+                      }
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "One of the specified entities (user/action) were not found"}
+        "500": {$ref: '#/components/responses/500'}
+  /batch_accesses:
+    post:
+      tags: ["Internal API"]
+      # operationId: list-data-sets
+      summary: "(deprecating) Check for accesses (optimized batch)."
+      description: "(WARNING: deprecating; use `/batch/accesses/`) Check whether the `user` has access to do `action` upon each of the `nodes`. Performance-optimized "
+      parameters:
+        - $ref: "#/components/parameters/chk_allow_superuser"
+        - $ref: "#/components/parameters/chk_sudo"
+        - $ref: "#/components/parameters/chk_extra_action"
+        - $ref: "#/components/parameters/cloud_folder_id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["user", "action", "nodes"]
+              properties:
+                user: {$ref: "#/components/schemas/UserRef"}
+                nodes:
+                  type: array
+                  example: [
+                    "562efb9a-4a15-11e8-895d-0bb8b07c4c9a",
+                    "f6d428dd-ac82-463c-a4f0-eddb0648efb4",
+                    "95be8320-d832-4183-8e22-3b0376262522"]
+                  items: {$ref: "#/components/schemas/NodeRef"}
+                action: {$ref: "#/components/schemas/ActionRef"}
+                verbose:
+                  type: boolean
+                  default: false
+                  description: "Whether additional information about each result should be returned"
+      responses:
+        "200":
+          description: "Result obtained successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "`{node_identifier: result_data}` mapping"
+                additionalProperties:
+                  type: object
+                  properties:
+                    result:
+                      type: boolean
+                      nullable: true
+                      description: "Specifies whether the requested action should be allowed"
+                    status:
+                      type: string
+                      nullable: true
+                      description: >-
+                        Additional information about the result status.
+                        If the result is null, shows the reason.
+                example:
+                  {"562efb9a-4a15-11e8-895d-0bb8b07c4c9a": {result: true, status: null},
+                   "f6d428dd-ac82-463c-a4f0-eddb0648efb4": {result: false, status: null},
+                   "95be8320-d832-4183-8e22-3b0376262522": {result: null, status: "not found"},
+                  }
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "One of the specified entities (user/action) were not found"}
+        "500": {$ref: '#/components/responses/500'}
+  /cloud/:
+    get:
+      tags: ["Internal API"]
+      summary: "Get the current clouds config"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+  /cloud/{cloud_id}:
+    put:
+      tags: ["Internal API"]
+      summary: "Register & enable the cloud with DLS."
+      parameters:
+        - $ref: "#/components/parameters/cloud_id__path"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+    delete:
+      tags: ["Internal API"]
+      summary: "Unregister the cloud with DLS."
+      parameters:
+        - $ref: "#/components/parameters/cloud_id__path"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/entries/{node_identifier}:
+    put:
+      tags: ["Internal API"]
+      summary: "Add an Entry node."
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/cloud_folder_id"
+      requestBody:
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/EntryInfo"}
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/all/{node_identifier}/permissions:
+    get:
+      summary: "Get node permissions."
+      tags: ["Public API"]
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/requester"
+      responses:
+        "200":
+          description: >-
+            Information about the permissions of the specified node and related context.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permissions:
+                    $ref: "#/components/schemas/PermissionsDetailed"
+                  pendingPermissions:
+                    $ref: "#/components/schemas/PermissionsDetailed"
+                  editable:
+                    type: boolean
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+        "404": {description: "The specified node was not found."}
+    patch:
+      summary: "Modify or request node permissions."
+      description: >-
+        If the requester has access to modify permissions, the modifications are applied.
+        Otherwise, only adding is allowed, and added grants will be marked as inactive ('requested').
+      tags: ["Public API"]
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/requester"
+        - $ref: "#/components/parameters/chk_allow_superuser"
+        - $ref: "#/components/parameters/chk_sudo"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["diff"]
+              properties:
+                diff: {$ref: "#/components/schemas/PermissionsDiff"}
+                default_comment: {type: string}
+              example: {"diff": {
+                "added": {
+                  "acl_adm": [{"subject": "user:user_01", "comment": "More owners."}],
+                  "acl_view": [{"subject": "sysgroup:all_valid_users", "comment": "Open it!"}]
+                },
+                "removed": {
+                  "acl_adm": [{"subject": "user:user_00", "comment": "Not responsible enough."}]
+                },
+                "modified": {
+                  "acl_view": [
+                    {
+                      "subject": "user:user_02",
+                      "comment": "Giving wider access to a wider group",
+                      "new": {"subject": "group:group_02", "grantType": "acl_edit"}
+                    }
+                  ]
+                }
+              }}
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403": {$ref: "#/components/responses/403"}
+        "404": {description: "A specified node or subject was not found."}
+        "500": {$ref: "#/components/responses/500"}
+    put:
+      summary: "Replace node permission grants."
+      tags: ["Public API"]
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/requester"
+        - $ref: "#/components/parameters/chk_allow_superuser"
+        - $ref: "#/components/parameters/chk_sudo"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["permissions", "default_comment"]
+              properties:
+                permissions: {$ref: "#/components/schemas/PermissionsChangeSubjects"}
+                default_comment: {type: string}
+              example: {"default_comment": "Clean refill", "permissions": {
+                "acl_adm": [{"subject": "user:user_01", "comment": "That owner."}],
+                "acl_view": [{"subject": "sysgroup:all_valid_users", "comment": "Open it!"}]
+              }}
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403": {$ref: "#/components/responses/403"}
+        "404": {description: "A specified node or subject was not found."}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/all/{node_identifier}/permissions/subjects/{subject_identifier}:
+    get:
+      summary: "Get grant details."
+      tags: ["Public API"]
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/subject_identifier"
+        - $ref: "#/components/parameters/requester"
+        - $ref: "#/components/parameters/verbose"
+      responses:
+        "200":
+          description: >-
+            Information about the grant.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        timestamp: {$ref: "#/components/schemas/Timestamp"}
+                        action: {type: string, example: "edit_permissions"}
+                        situation: {type: string, example: "grant_new_add"}
+                        author: {$ref: "#/components/schemas/SubjectInfo"}
+                        comment: {type: string}
+                        modified:
+                          type: object
+                          description: >-
+                            Grant properties modifications.
+                            "{property: [old, new], ...}"
+                          example: {"grantType": ["acl_view", "acl_edit"]}
+                        grant:
+                          type: object
+                          description: "Resulting grant properties"
+                          # allOf:
+                          #   - {$ref: "#/components/schemas/PermissionDetailed"}
+                          example: {
+                            "active": true, "description": "Initial permissions",
+                            "grantType": "acl_view", "state": "active",
+                            "subject": {
+                              "type": "user-staff", "name": "user:robot-statbox-theta",
+                              "title": "robot-statbox-theta robot-statbox-theta"
+                            }}
+        "400": {$ref: "#/components/responses/400"}
+        "404": {description: "The specified node or grant was not found."}
+        "500": {$ref: "#/components/responses/500"}
+  /batch_permissions:
+    post:
+      summary: "Modify permissions of multiple nodes"
+      tags: ["Unused"]
+      parameters:
+        - $ref: "#/components/parameters/requester"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ['nodes', 'diff']
+              properties:
+                nodes:
+                  type: array
+                  example: [
+                    "562efb9a-4a15-11e8-895d-0bb8b07c4c9a",
+                    "f6d428dd-ac82-463c-a4f0-eddb0648efb4",
+                    "95be8320-d832-4183-8e22-3b0376262522"]
+                  items: {$ref: "#/components/schemas/NodeRef"}
+                diff: {$ref: "#/components/schemas/PermissionsDiff"}
+                clearAllExistingPermissions:
+                  description: >-
+                    Whether all permissions on the specified nodes should be removed.
+                    In that case, `.diff.removed` must be empty.
+                  type: boolean
+                  default: false
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403":
+          description: "Insufficient permissions to complete the action"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  failedNodes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        node: {$ref: "#/components/schemas/NodeRef"}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/all/{node_identifier}/permissions/request:
+    post:
+      tags: ["Unused"]
+      summary: Request an access grant.
+      description: >-
+        Not necessary, as "Modify node permissions" handle is used for requesting as well.
+      parameters:
+        - $ref: "#/components/parameters/node_identifier"
+        - $ref: "#/components/parameters/requester"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["node", "subject", "grantType", "comment"]
+              properties:
+                node: {$ref: "#/components/schemas/NodeRef"}
+                subject: {$ref: "#/components/schemas/SubjectRef"}
+                grantType: {$ref: "#/components/schemas/GrantType"}
+                comment: {type: string}
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        # "403": {$ref: "#/components/responses/403"}
+        "404": {description: "A specified node or subject was not found."}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/groups/{group_identifier}:
+    get:
+      tags: ["Unused"]
+      summary: "Get group details."
+      parameters:
+        - $ref: "#/components/parameters/requester"
+        - $ref: "#/components/parameters/group_identifier"
+      responses:
+        "200":
+          description: "Group details."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title: {$ref: "#/components/schemas/Title"}
+                  subjects:
+                    type: array
+                    items: {$ref: "#/components/schemas/SubjectInfo"}
+                  editable:
+                    type: boolean
+                  # permissions?
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+        "404": {description: "The specified group was not found."}
+    put:
+      tags: ["Unused"]
+      summary: "Ensure a group exists."
+      parameters:
+        - $ref: "#/components/parameters/group_identifier"
+        - $ref: "#/components/parameters/requester"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["title"]
+              properties:
+                title: {$ref: "#/components/schemas/Title"}
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403": {$ref: "#/components/responses/403"}
+        "500": {$ref: "#/components/responses/500"}
+    delete:
+      tags: ["Unused"]
+      summary: "Delete a group."
+      parameters:
+        - $ref: "#/components/parameters/group_identifier"
+        - $ref: "#/components/parameters/requester"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403": {$ref: "#/components/responses/403"}
+        "404": {$ref: "#/components/responses/404"}
+        "500": {$ref: "#/components/responses/500"}
+  /nodes/groups/{group_identifier}/{subject_identifier}:
+    put:
+      tags: ["Unused"]
+      summary: "Add a subject to the group members."
+      parameters:
+        - $ref: "#/components/parameters/group_identifier"
+        - $ref: "#/components/parameters/subject_identifier"
+        - $ref: "#/components/parameters/requester"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403": {$ref: "#/components/responses/403"}
+        "404": {$ref: "#/components/responses/404"}
+        "500": {$ref: "#/components/responses/500"}
+    delete:
+      tags: ["Unused"]
+      summary: "Remove a subject from the group members."
+      parameters:
+        - $ref: "#/components/parameters/group_identifier"
+        - $ref: "#/components/parameters/subject_identifier"
+        - $ref: "#/components/parameters/requester"
+      responses:
+        "200": {$ref: "#/components/responses/200"}
+        "400": {$ref: "#/components/responses/400"}
+        "403": {$ref: "#/components/responses/403"}
+        "404": {$ref: "#/components/responses/404"}
+        "500": {$ref: "#/components/responses/500"}
+  /suggest/subjects/:
+    get:
+      tags: ["Public API"]
+      summary: "Search for subjects."
+      parameters:
+        - $ref: "#/components/parameters/requester"
+        - $ref: "#/components/parameters/requester_language"
+        - name: search_text
+          in: query
+          required: true
+          schema: {type: string}
+          example: "robot stat"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+      responses:
+        "200":
+          description: >-
+            List of subjects found by the query.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items: {$ref: "#/components/schemas/SubjectInfo"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+        "404": {description: "The specified node was not found."}
+  /nodes/subjects/{subject_identifier}/groups/:
+    get:
+      tags: ["Internal API"]
+      summary: "Get subject's groups list (default: effective system groups)"
+      parameters:
+        - $ref: "#/components/parameters/subject_identifier"
+      responses:
+        "200":
+          description: >-
+            List of groups for the query.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items: {$ref: "#/components/schemas/SubjectInfo"}
+        "400": {$ref: "#/components/responses/400"}
+        "500": {$ref: "#/components/responses/500"}
+        "404": {description: "The specified subject was not found."}
+components:
+  responses:
+    "200": {description: "Action completed successfully."}
+    "400": {description: "Usage error. See response body for details."}
+    "404": {description: "The object at the request path (URI) does not exist or is deleted."}
+    "403": {description: "Permission error. See response body for details."}
+    "500": {description: "An usage or system error, see response body for details"}
+  parameters:
+    requester:
+      name: "X-User-Id"
+      in: header
+      required: true
+      description: "Current authenticated user."
+      example: "user:robot-dls"
+      schema: {$ref: "#/components/schemas/UserRef"}
+    requester_language:
+      name: "X-User-Language"
+      in: header
+      required: false
+      description: "Current authenticated user's language setting."
+      example: "en"
+      schema:
+        type: string
+        enum: ["ru", "en"]
+        default: "ru"
+    cloud_folder_id:
+      name: "X-YaCloud-FolderId"
+      in: header
+      required: false
+      schema: {type: string}
+    chk_allow_superuser:
+      name: "X-DL-Allow-Superuser"
+      in: header
+      required: false
+      schema: {type: boolean}
+    chk_sudo:
+      name: "X-DL-Sudo"
+      in: header
+      required: false
+      schema: {type: boolean}
+    chk_extra_action:
+      name: extra_action
+      in: query
+      required: false
+      # schema: {type: string}
+      schema:
+        type: array
+        items: {$ref: "#/components/schemas/ActionRef"}
+      description: "Additional actions to check and give out in additional keys"
+    cloud_id__path:
+      name: cloud_id
+      required: true
+      in: path
+      schema: {type: string}
+    node_identifier:
+      name: node_identifier
+      required: true
+      in: path
+      description: "Node identifier"
+      schema: {$ref: "#/components/schemas/NodeRef"}
+    group_identifier:
+      name: group_identifier
+      required: true
+      in: path
+      example: "group:my_custom_group"
+      description: "Namespaced group name"
+      schema: {type: string}
+    subject_identifier:
+      name: subject_identifier
+      required: true
+      in: path
+      example: "user:that_user"
+      description: "Subject identifier string"
+      schema: {$ref: "#/components/schemas/SubjectRef"}
+    verbose:
+      name: verbose
+      in: query
+      description: "Whether additional (debug) information should be returned."
+      schema:
+        type: boolean
+        default: false
+  schemas:
+    Timestamp:
+      type: string
+      format: "date-time"
+    Title:
+      type: string
+    GrantType:
+      type: string
+      example: "acl_deny"
+    GrantTypes:
+      type: array
+      example: ["acl_deny", "acl_adm", "acl_edit", "acl_view"]
+      items: {$ref: "#/components/schemas/GrantType"}
+    PermissionChangeSubject:
+      type: object
+      required: ['subject']
+      properties:
+        subject: {$ref: "#/components/schemas/SubjectRef"}
+        comment:
+          type: string
+          description: >-
+            User-specified reason for the action.
+            For new/returned grants, the comment will also
+            become the grant description.
+    PermissionMetadata:
+      type: object
+      properties:
+        requester:
+          description: "User that requested the grant."
+          allOf:
+            - $ref: "#/components/schemas/SubjectInfo"
+        approver:
+          description: "User that approved the grant."
+          allOf:
+            - $ref: "#/components/schemas/SubjectInfo"
+    PermissionDetailed:
+      allOf:
+        # # XXXXXXXX: should probably have "subject details" here
+        # - $ref: "#/components/schemas/PermissionChangeSubject"
+        - $ref: "#/components/schemas/PermissionMetadata"
+        - properties:
+            subject: {$ref: "#/components/schemas/SubjectInfo"}
+            description:
+              type: string
+              description: >-
+                User-specified reason for the permission grant.
+                By default it is equal to the permission request comment.
+    PermissionsDetailed:
+      description: "{grantType: [PermissionDetailed, ...], ...}"
+      type: object
+      additionalProperties:
+        type: array
+        items: {$ref: "#/components/schemas/PermissionDetailed"}
+    # PermissionSimple:
+    # PermissionsSimple:
+    #   description: "{grantType: [Subject, ...], ...}"
+    #   type: object
+    #   additionalProperties:
+    #     type: array
+    #     items:
+    #       $ref: "#/components/schemas/PermissionDetailed"
+    PermissionsChangeSubjects:
+      description: "{grantType: [PermissionChangeSubject, ...], ...}"
+      type: object
+      additionalProperties:
+        type: array
+        items: {$ref: "#/components/schemas/PermissionChangeSubject"}
+    PermissionsDiff:
+      description: "{\"added\": permissions, \"removed\": permissions, \"modified\": ...}"
+      type: object
+      required: ['added', 'removed']
+      properties:
+        added: {$ref: "#/components/schemas/PermissionsChangeSubjects"}
+        removed: {$ref: "#/components/schemas/PermissionsChangeSubjects"}
+        modified:
+          description: "{grantType: [PermissionChange, ...], ...}"
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              required: ["subject", "new"]
+              properties:
+                subject: {$ref: "#/components/schemas/SubjectRef"}
+                comment:
+                  type: string
+                  description: "User-specified reason for the action."
+                new:
+                  type: object
+                  description: "Properties to set on the resulting grant."
+                  properties:
+                    subject: {$ref: "#/components/schemas/SubjectRef"}
+                    grantType: {$ref: "#/components/schemas/GrantType"}
+                    description:
+                      type: string
+                      description: "Grant description."
+    NodeId:
+      type: string
+      example: "abdcef_some_nodeid"
+    # NodePath:
+    #   type: array
+    #   # example: ["root", "home", "user1", "sample_script"]
+    #   items: {type: string}
+    #   description: "Materialized-path tree address of the node"
+    NodeRefBase:
+      # description: "Reference to a node, by either its `id` or its `path`"
+      description: "Reference to a node, by its identifier"
+      oneOf:
+        - $ref: "#/components/schemas/NodeId"
+        # # Not currently expected.
+        # - $ref: "#/components/schemas/NodePath"
+    NodeRef:
+      description: "Reference to a node"
+      example: "ghijk_some_nodeid"
+      type: string
+      allOf:
+        - $ref: "#/components/schemas/NodeRefBase"
+      # oneOf:
+      #   - $ref: "#/components/schemas/NodeRefBase"
+      #   - $ref: "#/components/schemas/UserRef"
+      #   - $ref: "#/components/schemas/GroupRef"
+    NodeWithId:
+      type: object
+      required: ["id"]
+      properties:
+        id: {$ref: "#/components/schemas/NodeId"}
+    NodeInfo:
+      type: object
+      required: ['initialOwner', 'initialPermissionsMode']
+      properties:
+        # path: {$ref: "#/components/schemas/NodePath"}
+        # name:
+        #   type: string
+        #   example: "<User-provided node title>"
+        #   description: "Optional debug-convenient 'name' of the node"
+        initialOwner: {$ref: "#/components/schemas/UserRef"}
+        initialParent: {$ref: "#/components/schemas/NodeRef"}
+        initialPermissions: {$ref: "#/components/schemas/PermissionsChangeSubjects"}
+        initialPermissionsMode:
+          type: string
+          example: "parent_and_owner"
+          description: >-
+            Currently supported values:
+              * "parent_and_owner": copy parent's permissions, add the owner.
+              * "owner_only": only give full access to the owner.
+              * "explicit": specify full initial permissions; in that case, `initialPermissions` is required.
+    Node:
+      allOf:
+        - {$ref: "#/components/schemas/NodeWithId"}
+        - {$ref: "#/components/schemas/NodeInfo"}
+    ScopeRef:
+      type: object
+      required: ["scope"]
+      properties:
+        scope:
+          type: string
+          example: "script"
+          description: >-
+            System-specific "scope" of the entry.
+            Must match one of the scopes in the "Scopes Configuration"
+    EntryInfo:
+      allOf:
+        - $ref: "#/components/schemas/NodeInfo"
+        - $ref: "#/components/schemas/ScopeRef"
+    Entry:
+      allOf:
+        - $ref: "#/components/schemas/Node"
+        - $ref: "#/components/schemas/ScopeRef"
+    SubjectInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [
+            "user",
+            "group", "group-system",
+            "user-staff",
+            "group-staff-department", "group-staff-wiki",
+            "group-staff-service", "group-staff-servicerole"]
+          example: "user-staff"
+        name:
+          type: string
+          description: "API-level identifier of the subject"
+          example: "user:robot-statbox-theta"
+        title:
+          type: string
+          description: "Display text."
+          example: "robot-statbox-theta robot-statbox-theta"
+        parent:
+          type: object
+          properties:
+            title: {type: string}
+            link: {type: string}
+          description: "Parent group (for `group-staff-department`)"
+        link:
+          type: string
+          description: "An URI of the page with source-specific details about the subject."
+          example: "https://staff.yandex-team.ru/robot-statbox-theta"
+        icon:
+          type: string
+          description: "An URI of the source-specific icon file for the subject."
+          example: "https://center.yandex-team.ru/api/v1/user/robot-statbox-theta/photo/64/square.jpg"
+    # Subject:
+    #   allOf:
+    #     - $ref: "#/components/schemas/Node"
+    # Group:
+    #   allOf:
+    #     - $ref: "#/components/schemas/Subject"
+    GroupRef:
+      # allOf:
+      #   - $ref: "#/components/schemas/NodeRefBase"
+      # example: {"kind": "group", "name": "sysgroup:all_valid_users"}
+      # type: object
+      # properties:
+      #   kind: {type: string}
+      #   subkind: {type: string}
+      #   name: {type: string}
+      type: string
+      example: "sysgroup:all_valid_users"
+    SubjectRef:
+      description: "User or group identifier"
+      # example: {"kind": "group", "name": "sysgroup:all_valid_users"}
+      # allOf:
+      #   - $ref: "#/components/schemas/NodeRefBase"
+      example: "sysgroup:all_valid_users"
+      # oneOf:
+      #   - $ref: "#/components/schemas/UserRef"
+      #   - $ref: "#/components/schemas/GroupRef"
+      type: string
+    # UserInfo:
+    #   description: "User entity information"
+    #   type: object
+    #   properties:
+    #     kind:
+    #       type: string
+    #     source:
+    #       type: string
+    #     id:
+    #       type: string
+    UserRef:
+      description: "User identifier"
+      # example: [".users", ".blackbox", "123456"]
+      # example: {"kind": "user", "source": "blackbox", "id": "123456"}
+      # oneOf:
+      #   - $ref: "#/components/schemas/SubjectRef"
+      #   - $ref: "#/components/schemas/UserInfo"
+      example: "user:robot-dls"
+      type: string
+    ActionRef:
+      type: string
+      description: >-
+        System-specific and node-specific "action" to be checked.
+        Must match one of the actions in the "Scopes Configuration" part
+        specific to the node's scope.
+      example: "read"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key

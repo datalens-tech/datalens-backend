@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  bi-integration-tests:
+    build:
+      context: .
+      network: host
+    network_mode: host
+    environment:
+      RUN_DEVHOST_TESTS: 1
+      YAV_USER: ${LOGNAME}
+      SSH_AUTH_SOCK: $SSH_AUTH_SOCK
+    volumes:
+      # Docker socket
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $SSH_AUTH_SOCK:${SSH_AUTH_SOCK}

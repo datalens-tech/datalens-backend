@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: yandex-bi-us-client
+Version: 0.0.0
+Author: Aleksandr Ushakov
+Author-email: alex-ushakov@yandex-team.ru
+Provides-Extra: all
+

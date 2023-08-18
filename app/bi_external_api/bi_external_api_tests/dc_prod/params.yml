@@ -1,0 +1,8 @@
+getters:
+  - name: yav_int_tests
+    type: yav
+    settings:
+      secret_id: {type: value, value: sec-01d5pcrfv9xceanxj2jwaed4bm}
+
+params:
+  INTEGRATION_TESTS_DC_PROD_DATA: {getter: yav_int_tests, key: INTEGRATION_TESTS_DC_PROD_DATA}

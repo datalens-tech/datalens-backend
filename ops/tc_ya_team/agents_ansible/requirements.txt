@@ -1,0 +1,2 @@
+cryptography<36
+ansible>=2.8.1

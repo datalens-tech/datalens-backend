@@ -1,0 +1,57 @@
+
+[tool.poetry]
+name = "yandex-bi-rqe-ext-sync"
+version = "0.1969.0"
+description = ""
+authors = ["Sergei Borodin <seray@yandex-team.ru>"]
+packages = [{include = "bi_rqe_ext_sync"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+uwsgi = ">=2.0.21"
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
+yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens_ci]
+skip_test = true
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"

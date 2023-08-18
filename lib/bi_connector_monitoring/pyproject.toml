@@ -1,0 +1,56 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-monitoring"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_monitoring"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+
+[tool.poetry.plugins."bi_core.connectors"]
+monitoring = "bi_connector_monitoring.core.connector:MonitoringCoreConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

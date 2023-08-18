@@ -1,0 +1,5 @@
+qloudinst: ext
+project: stat
+application: dls
+environment: b-dls-int-prod
+components: balancer-l7

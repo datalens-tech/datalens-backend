@@ -1,0 +1,135 @@
+{{- define "depl-dls" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: dls-api
+  labels:
+    app: dls-api
+
+spec:
+  replicas: {{ .Values.scaling.dls_api.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.dls_api.max_surge }}
+      maxUnavailable: {{ .Values.scaling.dls_api.max_unavailable }}
+  selector:
+    matchLabels:
+      app: dls-api
+  template:
+    metadata:
+      labels:
+        app: dls-api
+      annotations:
+        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.node_selection_options.node_selector_key }}
+                operator: In
+                values:
+                - {{ .Values.node_selection_options.dls_tasks.taint_toleration }}
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.dls.repo }}:{{ .Values.docker_images_info.dls.tag }}"
+          env:
+            {{- include "secrets-common" . | indent 12}}
+            {{- include "secrets-dls" . | indent 12}}
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-nginx" . | indent 12 }}
+            - name: DLS_DAEMON_NAME
+              value: http
+            - name: DLS_ENV
+              value: {{ .Values.dls_env }}
+            - name: NGINX_SERVER_NAME
+              value: "dls-api"
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.dls_api.cpu }}
+              memory: {{.Values.app_resources.dls_api.ram}}
+          readinessProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/_dls/debug/"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: "{{ .Release.Name }}-init-scripts"
+        - name: app-secrets
+          emptyDir: {}
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.dls_api.taint_toleration }}"
+          effect: "NoSchedule"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: dls-tasks
+  labels:
+    app: dls-tasks
+
+spec:
+  replicas: {{ .Values.scaling.dls_tasks.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.dls_tasks.max_surge }}
+      maxUnavailable: {{ .Values.scaling.dls_tasks.max_unavailable }}
+  selector:
+    matchLabels:
+      app: dls-tasks
+  template:
+    metadata:
+      labels:
+        app: dls-tasks
+      annotations:
+        injector.tumblr.com/request: jaeger-agent
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.node_selection_options.node_selector_key }}
+                operator: In
+                values:
+                - {{ .Values.node_selection_options.dls_tasks.taint_toleration }}
+      containers:
+        - name: main
+          image: "{{ .Values.docker_images_info.dls.repo }}:{{ .Values.docker_images_info.dls.tag }}"
+          env:
+            {{- include "secrets-common" . | indent 12}}
+            {{- include "secrets-dls" . | indent 12}}
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            - name: DLS_DAEMON_NAME
+              value: tasks
+            - name: DLS_ENV
+              value: {{ .Values.dls_env }}
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.dls_tasks.cpu }}
+              memory: {{.Values.app_resources.dls_tasks.ram}}
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: "{{ .Release.Name }}-init-scripts"
+        - name: app-secrets
+          emptyDir: {}
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.dls_tasks.taint_toleration }}"
+          effect: "NoSchedule"
+{{ end }}

@@ -1,0 +1,2 @@
+[console_scripts]
+bi-formula-cli = bi_formula.scripts.formula_cli:main

@@ -1,0 +1,655 @@
+{
+  "annotations" : {
+    "list" : [ {
+      "builtIn" : 1,
+      "datasource" : "-- Grafana --",
+      "enable" : true,
+      "hide" : true,
+      "iconColor" : "rgba(0, 211, 255, 1)",
+      "name" : "Annotations & Alerts",
+      "type" : "dashboard"
+    } ]
+  },
+  "editable" : true,
+  "gnetId" : null,
+  "graphTooltip" : 1,
+  "links" : [ ],
+  "panels" : [ {
+    "id" : 1,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 0,
+      "w" : 24,
+      "h" : 1
+    },
+    "title" : "VM CPU",
+    "type" : "row",
+    "collapsed" : false,
+    "panels" : [ ]
+  }, {
+    "id" : 2,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 1,
+      "w" : 8,
+      "h" : 6
+    },
+    "title" : "$host",
+    "type" : "graph",
+    "aliasColors" : { },
+    "bars" : false,
+    "dashLength" : 10,
+    "dashes" : false,
+    "datasource" : "Solomon Cloud",
+    "fill" : 1,
+    "legend" : {
+      "avg" : false,
+      "current" : false,
+      "max" : false,
+      "min" : false,
+      "show" : true,
+      "total" : false,
+      "values" : false
+    },
+    "lines" : true,
+    "linewidth" : 1,
+    "nullPointMode" : "null",
+    "percentage" : false,
+    "pointradius" : 5,
+    "points" : false,
+    "renderer" : "flot",
+    "repeat" : "host",
+    "repeatDirection" : "h",
+    "seriesOverrides" : [ ],
+    "spaceLength" : 10,
+    "stack" : false,
+    "steppedLine" : false,
+    "targets" : [ {
+      "groupBy" : [ {
+        "type" : "time",
+        "params" : [ "1m" ]
+      } ],
+      "refId" : "Q1",
+      "select" : [ [ {
+        "type" : "field",
+        "params" : [ "value" ]
+      }, {
+        "type" : "max",
+        "params" : [ ]
+      }, {
+        "type" : "non_negative_derivative",
+        "params" : [ ]
+      }, {
+        "type" : "group_by_labels",
+        "params" : [ "sum", "cpu" ]
+      }, {
+        "type" : "group_lines",
+        "params" : [ "avg" ]
+      }, {
+        "type" : "alias",
+        "params" : [ "cpu average" ]
+      } ] ],
+      "tags" : {
+        "mode" : "!idle",
+        "cluster" : "${cluster}",
+        "service" : "node-exporter_ma",
+        "host" : "$host",
+        "name" : "node_cpu_seconds_total",
+        "cpu" : "*",
+        "project" : "cloud-console"
+      },
+      "target" : "alias(group_lines('avg', sum(non_negative_derivative(group_by_time(1m, 'max', {'cluster'='${cluster}', 'cpu'='*', 'host'='$host', 'mode'!='idle', 'name'='node_cpu_seconds_total', 'project'='cloud-console', 'service'='node-exporter_ma'}))) by (cpu)), 'cpu average')",
+      "type" : "timeserie"
+    } ],
+    "thresholds" : [ ],
+    "timeFrom" : null,
+    "timeRegions" : [ ],
+    "timeShift" : null,
+    "tooltip" : {
+      "shared" : true,
+      "sort" : 0,
+      "value_type" : "individual"
+    },
+    "xaxis" : {
+      "buckets" : null,
+      "mode" : "time",
+      "name" : null,
+      "show" : true,
+      "values" : [ ]
+    },
+    "yaxes" : [ {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    }, {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    } ],
+    "yaxis" : {
+      "align" : false,
+      "alignLevel" : null
+    }
+  }, {
+    "id" : 3,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 7,
+      "w" : 24,
+      "h" : 1
+    },
+    "title" : "VM Memory",
+    "type" : "row",
+    "collapsed" : false,
+    "panels" : [ ]
+  }, {
+    "id" : 4,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 8,
+      "w" : 8,
+      "h" : 6
+    },
+    "title" : "$host",
+    "type" : "graph",
+    "aliasColors" : { },
+    "bars" : false,
+    "dashLength" : 10,
+    "dashes" : false,
+    "datasource" : "Solomon Cloud",
+    "fill" : 1,
+    "legend" : {
+      "avg" : false,
+      "current" : false,
+      "max" : false,
+      "min" : false,
+      "show" : true,
+      "total" : false,
+      "values" : false
+    },
+    "lines" : true,
+    "linewidth" : 1,
+    "nullPointMode" : "null",
+    "percentage" : false,
+    "pointradius" : 5,
+    "points" : false,
+    "renderer" : "flot",
+    "repeat" : "host",
+    "repeatDirection" : "h",
+    "seriesOverrides" : [ ],
+    "spaceLength" : 10,
+    "stack" : false,
+    "steppedLine" : false,
+    "targets" : [ {
+      "groupBy" : [ {
+        "type" : "time",
+        "params" : [ "1m" ]
+      } ],
+      "refId" : "Q1",
+      "select" : [ [ {
+        "type" : "field",
+        "params" : [ "value" ]
+      }, {
+        "type" : "max",
+        "params" : [ ]
+      }, {
+        "type" : "alias",
+        "params" : [ "memory usage" ]
+      } ] ],
+      "tags" : {
+        "cluster" : "${cluster}",
+        "service" : "node-exporter_ma",
+        "host" : "$host",
+        "name" : "node_memory_MemFree_bytes",
+        "project" : "cloud-console"
+      },
+      "target" : "alias(group_by_time(1m, 'max', {'cluster'='${cluster}', 'host'='$host', 'name'='node_memory_MemFree_bytes', 'project'='cloud-console', 'service'='node-exporter_ma'}), 'memory usage')",
+      "type" : "timeserie"
+    } ],
+    "thresholds" : [ ],
+    "timeFrom" : null,
+    "timeRegions" : [ ],
+    "timeShift" : null,
+    "tooltip" : {
+      "shared" : true,
+      "sort" : 0,
+      "value_type" : "individual"
+    },
+    "xaxis" : {
+      "buckets" : null,
+      "mode" : "time",
+      "name" : null,
+      "show" : true,
+      "values" : [ ]
+    },
+    "yaxes" : [ {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    }, {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    } ],
+    "yaxis" : {
+      "align" : false,
+      "alignLevel" : null
+    }
+  }, {
+    "id" : 5,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 14,
+      "w" : 24,
+      "h" : 1
+    },
+    "title" : "Nodejs heap size used",
+    "type" : "row",
+    "collapsed" : false,
+    "panels" : [ ]
+  }, {
+    "id" : 6,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 15,
+      "w" : 8,
+      "h" : 6
+    },
+    "title" : "$host",
+    "type" : "graph",
+    "aliasColors" : { },
+    "bars" : false,
+    "dashLength" : 10,
+    "dashes" : false,
+    "datasource" : "Solomon Cloud",
+    "fill" : 1,
+    "legend" : {
+      "avg" : false,
+      "current" : false,
+      "max" : false,
+      "min" : false,
+      "show" : true,
+      "total" : false,
+      "values" : false
+    },
+    "lines" : true,
+    "linewidth" : 1,
+    "nullPointMode" : "null",
+    "percentage" : false,
+    "pointradius" : 5,
+    "points" : false,
+    "renderer" : "flot",
+    "repeat" : "host",
+    "repeatDirection" : "h",
+    "seriesOverrides" : [ ],
+    "spaceLength" : 10,
+    "stack" : false,
+    "steppedLine" : false,
+    "targets" : [ {
+      "groupBy" : [ {
+        "type" : "time",
+        "params" : [ "1m" ]
+      } ],
+      "refId" : "Q1",
+      "select" : [ [ {
+        "type" : "field",
+        "params" : [ "value" ]
+      }, {
+        "type" : "max",
+        "params" : [ ]
+      }, {
+        "type" : "alias",
+        "params" : [ "nodejs usage" ]
+      } ] ],
+      "tags" : {
+        "cluster" : "${cluster}",
+        "service" : "application",
+        "host" : "$host",
+        "name" : "nodejs_heap_size_used_bytes",
+        "project" : "cloud-console"
+      },
+      "target" : "alias(group_by_time(1m, 'max', {'cluster'='${cluster}', 'host'='$host', 'name'='nodejs_heap_size_used_bytes', 'project'='cloud-console', 'service'='application'}), 'nodejs usage')",
+      "type" : "timeserie"
+    } ],
+    "thresholds" : [ ],
+    "timeFrom" : null,
+    "timeRegions" : [ ],
+    "timeShift" : null,
+    "tooltip" : {
+      "shared" : true,
+      "sort" : 0,
+      "value_type" : "individual"
+    },
+    "xaxis" : {
+      "buckets" : null,
+      "mode" : "time",
+      "name" : null,
+      "show" : true,
+      "values" : [ ]
+    },
+    "yaxes" : [ {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    }, {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    } ],
+    "yaxis" : {
+      "align" : false,
+      "alignLevel" : null
+    }
+  }, {
+    "id" : 7,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 21,
+      "w" : 24,
+      "h" : 1
+    },
+    "title" : "Application memory",
+    "type" : "row",
+    "collapsed" : false,
+    "panels" : [ ]
+  }, {
+    "id" : 8,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 22,
+      "w" : 8,
+      "h" : 6
+    },
+    "title" : "$host",
+    "type" : "graph",
+    "aliasColors" : { },
+    "bars" : false,
+    "dashLength" : 10,
+    "dashes" : false,
+    "datasource" : "Solomon Cloud",
+    "fill" : 1,
+    "legend" : {
+      "avg" : false,
+      "current" : false,
+      "max" : false,
+      "min" : false,
+      "show" : true,
+      "total" : false,
+      "values" : false
+    },
+    "lines" : true,
+    "linewidth" : 1,
+    "nullPointMode" : "null",
+    "percentage" : false,
+    "pointradius" : 5,
+    "points" : false,
+    "renderer" : "flot",
+    "repeat" : "host",
+    "repeatDirection" : "h",
+    "seriesOverrides" : [ ],
+    "spaceLength" : 10,
+    "stack" : false,
+    "steppedLine" : false,
+    "targets" : [ {
+      "groupBy" : [ {
+        "type" : "time",
+        "params" : [ "1m" ]
+      } ],
+      "refId" : "Q1",
+      "select" : [ [ {
+        "type" : "field",
+        "params" : [ "value" ]
+      }, {
+        "type" : "max",
+        "params" : [ ]
+      }, {
+        "type" : "alias",
+        "params" : [ "rss memory" ]
+      } ] ],
+      "tags" : {
+        "cluster" : "${cluster}",
+        "service" : "application",
+        "host" : "$host",
+        "name" : "process_resident_memory_bytes",
+        "project" : "cloud-console"
+      },
+      "target" : "alias(group_by_time(1m, 'max', {'cluster'='${cluster}', 'host'='$host', 'name'='process_resident_memory_bytes', 'project'='cloud-console', 'service'='application'}), 'rss memory')",
+      "type" : "timeserie"
+    } ],
+    "thresholds" : [ ],
+    "timeFrom" : null,
+    "timeRegions" : [ ],
+    "timeShift" : null,
+    "tooltip" : {
+      "shared" : true,
+      "sort" : 0,
+      "value_type" : "individual"
+    },
+    "xaxis" : {
+      "buckets" : null,
+      "mode" : "time",
+      "name" : null,
+      "show" : true,
+      "values" : [ ]
+    },
+    "yaxes" : [ {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    }, {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    } ],
+    "yaxis" : {
+      "align" : false,
+      "alignLevel" : null
+    }
+  }, {
+    "id" : 9,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 28,
+      "w" : 24,
+      "h" : 1
+    },
+    "title" : "GC reclaimed bytes total",
+    "type" : "row",
+    "collapsed" : false,
+    "panels" : [ ]
+  }, {
+    "id" : 10,
+    "gridPos" : {
+      "x" : 0,
+      "y" : 29,
+      "w" : 8,
+      "h" : 6
+    },
+    "title" : "$host",
+    "type" : "graph",
+    "aliasColors" : { },
+    "bars" : false,
+    "dashLength" : 10,
+    "dashes" : false,
+    "datasource" : "Solomon Cloud",
+    "fill" : 1,
+    "legend" : {
+      "avg" : false,
+      "current" : false,
+      "max" : false,
+      "min" : false,
+      "show" : true,
+      "total" : false,
+      "values" : false
+    },
+    "lines" : true,
+    "linewidth" : 1,
+    "nullPointMode" : "null",
+    "percentage" : false,
+    "pointradius" : 5,
+    "points" : false,
+    "renderer" : "flot",
+    "repeat" : "host",
+    "repeatDirection" : "h",
+    "seriesOverrides" : [ ],
+    "spaceLength" : 10,
+    "stack" : false,
+    "steppedLine" : false,
+    "targets" : [ {
+      "groupBy" : [ {
+        "type" : "time",
+        "params" : [ "1m" ]
+      } ],
+      "refId" : "Q1",
+      "select" : [ [ {
+        "type" : "field",
+        "params" : [ "value" ]
+      }, {
+        "type" : "max",
+        "params" : [ ]
+      }, {
+        "type" : "non_negative_derivative",
+        "params" : [ ]
+      }, {
+        "type" : "alias",
+        "params" : [ "gc bytes {{gctype}}" ]
+      } ] ],
+      "tags" : {
+        "cluster" : "${cluster}",
+        "service" : "application",
+        "host" : "$host",
+        "name" : "nodejs_gc_reclaimed_bytes_total",
+        "project" : "cloud-console",
+        "gctype" : "*"
+      },
+      "target" : "alias(non_negative_derivative(group_by_time(1m, 'max', {'cluster'='${cluster}', 'gctype'='*', 'host'='$host', 'name'='nodejs_gc_reclaimed_bytes_total', 'project'='cloud-console', 'service'='application'})), 'gc bytes {{gctype}}')",
+      "type" : "timeserie"
+    } ],
+    "thresholds" : [ ],
+    "timeFrom" : null,
+    "timeRegions" : [ ],
+    "timeShift" : null,
+    "tooltip" : {
+      "shared" : true,
+      "sort" : 0,
+      "value_type" : "individual"
+    },
+    "xaxis" : {
+      "buckets" : null,
+      "mode" : "time",
+      "name" : null,
+      "show" : true,
+      "values" : [ ]
+    },
+    "yaxes" : [ {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    }, {
+      "format" : "short",
+      "label" : null,
+      "logBase" : 1,
+      "max" : null,
+      "min" : null,
+      "show" : true
+    } ],
+    "yaxis" : {
+      "align" : false,
+      "alignLevel" : null
+    }
+  } ],
+  "refresh" : "3m",
+  "schemaVersion" : 16,
+  "style" : "dark",
+  "tags" : [ "cloud-console" ],
+  "templating" : {
+    "list" : [ {
+      "allValue" : null,
+      "current" : {
+        "selected" : true,
+        "text" : "prod",
+        "value" : "prod"
+      },
+      "hide" : 0,
+      "includeAll" : false,
+      "label" : null,
+      "multi" : false,
+      "name" : "cluster",
+      "options" : [ {
+        "selected" : true,
+        "text" : "prod",
+        "value" : "prod"
+      }, {
+        "selected" : false,
+        "text" : "preprod",
+        "value" : "preprod"
+      } ],
+      "query" : "prod,preprod",
+      "skipUrlSync" : false,
+      "type" : "custom"
+    }, {
+      "allValue" : null,
+      "current" : {
+        "selected" : false,
+        "text" : "All",
+        "value" : "$__all"
+      },
+      "hide" : 0,
+      "includeAll" : true,
+      "label" : null,
+      "multi" : true,
+      "name" : "host",
+      "options" : [ {
+        "selected" : false,
+        "text" : "All",
+        "value" : "$__all"
+      } ],
+      "query" : "{'cluster'='${cluster}', 'host'='*', 'project'='cloud-console', 'service'='node-exporter_ma'} #host",
+      "skipUrlSync" : false,
+      "type" : "query",
+      "datasource" : "Solomon Cloud",
+      "refresh" : 2,
+      "regex" : "/[a-z-]+-[a-z-]+-\\d+/",
+      "sort" : 1
+    } ]
+  },
+  "time" : {
+    "from" : "now-3h",
+    "to" : "now"
+  },
+  "timepicker" : {
+    "refresh_intervals" : [ "5s", "10s", "15s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d" ],
+    "time_options" : [ "5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d" ]
+  },
+  "timezone" : "",
+  "title" : "Duty dashboard (cloud console team)",
+  "uid" : "cloudConsole",
+  "version" : -1
+}

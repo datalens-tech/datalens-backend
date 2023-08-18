@@ -1,0 +1,47 @@
+
+[tool.poetry]
+name = "yandex-bi-sqlalchemy-promql"
+version = "0.1"
+description = "BI PromQL SQLAlchemy Dialect"
+authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+packages = [{include = "bi_sqlalchemy_promql"}]
+license = "MIT"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+requests = ">=2.28.2"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_promql = "bi_sqlalchemy_promql.base:PromQLDialect"
+
+[tool.poetry.group.tests.dependencies]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_sqlalchemy_promql_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+

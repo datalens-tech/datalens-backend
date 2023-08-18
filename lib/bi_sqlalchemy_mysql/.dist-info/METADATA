@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: yandex-bi-sqlalchemy-mysql
+Version: 0.3
+Summary: BI MySQL SQLAlchemy Dialect
+Requires-Dist: sqlalchemy (>=1.4)
+Requires-Dist: mysqlclient
+Provides-Extra: all
+
+...

@@ -1,0 +1,9 @@
+getters:
+  - name: yav_ext_api_dev_data
+    type: yav
+    settings:
+      yav_token: {type: param, key: BI_EXT_API_DEV_DATA_SECRET_ID}
+
+params:
+  BI_EXT_API_DEV_DATA_SECRET_ID: {getter: $osenv, key: BI_EXT_API_DEV_DATA_SECRET_ID}
+  OAUTH_YT_STAT: {getter: yav_ext_api_dev_data, key: 6a8508f4746e43c284e1cca9ea1dc67b}

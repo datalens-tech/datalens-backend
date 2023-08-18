@@ -1,0 +1,13 @@
+PRAGMA yt.UseNativeYtTypes;
+
+INSERT INTO {{output1}} WITH TRUNCATE
+SELECT
+    entry_id AS entry_id,
+    IF(scope = 'widget', 'chart', scope) AS entity_type,
+    access_type AS access_type,
+    CAST('Прямой доступ' AS UTF8) AS access_source_title,
+    access_source_slug AS access_source_slug,
+    CAST(access_datetime_utc AS Datetime) AS access_datetime_utc,
+    title AS access_login
+FROM {{input1}}
+WHERE puid IS NOT NULL;

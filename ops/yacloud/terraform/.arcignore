@@ -1,0 +1,5 @@
+# Local terraform directories
+**/.terraform/*
+
+# Binaries cache
+.shims/bin/

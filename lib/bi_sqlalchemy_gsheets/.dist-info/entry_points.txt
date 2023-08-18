@@ -1,0 +1,2 @@
+[sqlalchemy.dialects]
+gsheets = bi_sqlalchemy_gsheets.base:GSheetsDialect

@@ -1,0 +1,2 @@
+[sqlalchemy.dialects]
+bi_mssql = bi_sqlalchemy_mssql.base:BIMSSQLDialect

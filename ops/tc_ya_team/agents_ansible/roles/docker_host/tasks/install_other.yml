@@ -1,0 +1,6 @@
+- name: ensure arc setup
+  package:
+    name:
+     - yandex-arc-launcher
+     - jq
+    state: present

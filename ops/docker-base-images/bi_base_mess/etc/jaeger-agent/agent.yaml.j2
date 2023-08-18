@@ -1,0 +1,12 @@
+reporter:
+    type: grpc
+    grpc:
+        host-port: "{{ JAEGER_COLLECTOR_NETLOC }}"
+        tls:
+            enabled: {{ JAEGER_TLS_ENABLED }}
+
+log-level: info
+
+processor:
+    jaeger-compact:
+        server-host-port: ":{{ JAEGER_AGENT_PORT }}"

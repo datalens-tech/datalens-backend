@@ -1,0 +1,6 @@
+CLOUD_ID: b1g08s4su5tgce7cpeo5
+FOLDER_ID: b1gmdgpr40q4nokkqo8s
+SUBNET_ID: e2ljif5uneddv3l6bcvf
+ZONE: ru-central1-b
+BUILD_ENVIRONMENT: prod
+DISABLE_USING_OLD_DNS: true

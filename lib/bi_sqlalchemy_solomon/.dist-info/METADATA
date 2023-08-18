@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: yandex-bi-sqlalchemy-solomon
+Version: 0.1
+Summary: BI Solomon SQLAlchemy Dialect
+Requires-Dist: sqlalchemy (>=1.4)
+Provides-Extra: all
+
+...

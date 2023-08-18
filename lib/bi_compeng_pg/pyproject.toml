@@ -1,0 +1,58 @@
+
+[tool.poetry]
+name = "yandex-bi-compeng-pg"
+version = "0.0.1"
+description = ""
+authors = ["Grigorii Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "bi_compeng_pg"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiopg = ">=1.4.0"
+asyncpg = ">=0.27.0"
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+
+[tool.poetry.plugins."bi_core.data_processor_plugins"]
+compeng_aiopg = "bi_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
+compeng_asyncpg = "bi_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

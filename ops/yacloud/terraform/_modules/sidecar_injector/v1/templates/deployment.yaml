@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "sidecar-injector-prod"
+  namespace: ${namespace}
+  labels:
+    k8s-app: "sidecar-injector"
+    track: "prod"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        k8s-app: "sidecar-injector"
+        track: "prod"
+    spec:
+      serviceAccountName: ${sa_name}
+      volumes:
+      - name: secrets
+        secret:
+          secretName: sidecar-injector-cert
+          items:
+            - key: tls.crt
+              path: "sidecar-injector.crt"
+            - key: tls.key
+              path: "sidecar-injector.key"
+      containers:
+      - name: "sidecar-injector"
+        imagePullPolicy: IfNotPresent
+        image: ${docker_registry}/k8s-sidecar-injector:0.5
+        command: ["entrypoint.sh"]
+        args: []
+        ports:
+        - name: https
+          containerPort: 9443
+        volumeMounts:
+        - name: secrets
+          mountPath: /etc/secrets
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /health
+            port: https
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: 1Gi
+          limits:
+            cpu: "0.5"
+            memory: 2Gi
+        env:
+        - name: TLS_CERT_FILE
+          value: "/etc/secrets/sidecar-injector.crt"
+        - name: TLS_KEY_FILE
+          value: "/etc/secrets/sidecar-injector.key"
+        - name: LOG_LEVEL
+          value: "2"
+        - name: CONFIGMAP_LABELS
+          value: "k8s-app=sidecar-injector,track=prod"
+  selector:
+    matchLabels:
+      k8s-app: "sidecar-injector"
+      track: "prod"

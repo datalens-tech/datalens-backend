@@ -1,0 +1,4 @@
+{{ if .Values.apps_to_run.file_uploader }}
+{{- $conf := dict "Values" .Values "conf" .Values.alb_configs.upload }}
+{{- include "alb_ingress" $conf }}
+{{ end }}

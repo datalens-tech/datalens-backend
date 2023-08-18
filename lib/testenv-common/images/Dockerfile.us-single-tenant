@@ -1,0 +1,9 @@
+FROM registry.yandex.net/data-ui/united-storage:latest
+
+# ???
+ENV DEV_MODE="true"
+ENV SQL_DEBUG="true"
+ENV MULTITENANT="false"
+ENV DEBUG="knex:*"
+ENV APP_INSTALLATION="yandex-team"
+ENV APP_ENV="preprod"

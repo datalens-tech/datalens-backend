@@ -1,0 +1,66 @@
+user:
+  create: true
+  email: ${sentry_email}
+  password: ${sentry_password}
+
+rabbitmq:
+  enabled: false
+
+clickhouse:
+  enabled: true
+
+zookeeper:
+  enabled: true
+
+redis:
+  enabled: true
+
+kafka:
+  enabled: true
+
+postgresql:
+  enabled: false
+
+externalPostgresql:
+  host: ${postgres_db_host}
+  port: 6432
+  database: ${postgres_db_name}
+  username: ${postgres_username}
+  password: ${postgres_password}
+
+#externalClickhouse:
+#  enabled: true
+#  host: nope
+#  tcpPort: 9000
+#  httpPort: 8123
+#  username: nope
+#  password: nope
+#  database: nope
+#  singleNode: true
+
+#externalKafka:
+#  ## Hostname or ip address of external kafka
+#  ##
+#  host: "rc1a-quampaqtemiuv0ej.mdb.cloud-preprod.yandex.net"
+#  port: 9091
+
+hooks:
+  activeDeadlineSeconds: 600
+
+service:
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  selector:
+    app: sentry
+    role: web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9000
+      protocol: TCP
+
+nginx:
+  enabled: false

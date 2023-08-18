@@ -1,0 +1,109 @@
+#!/bin/bash -x
+# #######
+# hacky configurator
+# for internal installation's logs
+#
+# until logbroker supports anything better:
+# https://st.yandex-team.ru/LOGBROKER-6421
+# #######
+
+set -Eeuo pipefail
+
+
+LOGBROKER="logbroker"
+if ! which logbroker &>/dev/null; then
+    LOGBROKER="./logbroker"
+    if [ ! -f "./logbroker" ]; then
+        status="$(
+        curl \
+            -s \
+            -w '%{http_code}' \
+            -o ./logbroker \
+            'https://lb.yandex-team.ru/download/cli/linux/logbroker'
+        )"
+        if [ x"$status" != x"200" ]; then
+            printf "Non-ok download-logbroker-binary response: %s\n" "$status" >&2
+            exit 1
+        fi
+        chmod +x ./logbroker
+    fi
+fi
+
+LOGBROKER="$LOGBROKER -s logbroker"
+
+
+COMMENT="BI-1049 BI-2104: datalens logs over push-client"
+LOGNAMES="debug fast"
+# # Maybe later:
+# LOGNAMES="debug fast events"
+YT_CLUSTERS="hahn arnold"
+ENVS='
+ext-production 2017229
+int-production 2017227
+ext-testing 2017225
+int-testing 2017223
+'
+
+# # Reference:
+# logbroker -s logbroker schema create account datalens --abc-service yandexbi --responsible "hhell@, dmifedorov@"
+
+printf "%s\n" "$ENVS" | while read -r item; do
+    read -r env_name tvm_client_id <<< "$item"
+    if [ -z "$tvm_client_id" ]; then continue; fi
+    printf " ======= env_name='%s'; tvm_client_id='%s';\n" "$env_name" "$tvm_client_id"
+    $LOGBROKER schema create directory /datalens/back-"$env_name" -m "$COMMENT" -y  || true
+    for logname in $LOGNAMES; do
+        topic_base=/datalens/back-"$env_name"/"$logname"
+        topic_main="$topic_base"
+        topic_mirror=
+
+        if printf "%s\n" "$env_name" | grep -q "^ext-"; then
+            topic_mirror="${topic_base}-yc-mirror"
+        fi
+
+        for topic in "$topic_main" "$topic_mirror"; do
+            if [ -z "$topic" ]; then continue; fi
+
+            for cmd in create update; do  # poorman upsert
+                $LOGBROKER \
+                    schema "$cmd" topic "$topic" \
+                    --partitions-count 1 \
+                    --retention-period 129600 \
+                    --allow-unauthenticated-write=false \
+                    --allow-unauthenticated-read=false \
+                    --abc-service yandexbi \
+                    --responsible "hhell@, dmifedorov@" \
+                    -m "$COMMENT" \
+                    -y || ( if [ x"$cmd" = x"update" ]; then exit $?; else true; fi; )
+            done
+
+            for yt_cluster in $YT_CLUSTERS; do
+                $LOGBROKER \
+                    yt-delivery add \
+                    --topic "$topic" \
+                    --yt "$yt_cluster" \
+                    -m "$COMMENT" \
+                    -y || true
+            done
+        done
+
+        $LOGBROKER \
+            permissions grant \
+            --path "$topic_base" \
+            --subject "$tvm_client_id"@tvm \
+            --permissions WriteTopic \
+            -y
+
+        # $LOGBROKER \
+        #     permissions grant \
+        #     --path /datalens \
+        #     --subject "$tvm_client_id"@tvm \
+        #     --permissions WriteTopic \
+        #     -y
+
+        if [ -n "$topic_mirror" ]; then
+            true  # TODO
+        fi
+
+    done
+done

@@ -1,0 +1,63 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-metrica"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_metrica"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_core.connectors"]
+appmetrica_api = "bi_connector_metrica.core.connector:AppMetricaApiCoreConnector"
+metrica_api = "bi_connector_metrica.core.connector:MetricaApiCoreConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+metrica = "bi_connector_metrica.formula.connector:MetricaFormulaConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

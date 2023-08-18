@@ -1,0 +1,7 @@
+{
+  "envoy-healthcheck": {
+    "port": 80,
+    "scheme": "http",
+    "path": "/ping"
+  }
+}

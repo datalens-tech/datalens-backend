@@ -1,0 +1,16 @@
+# id: a5d6h0cr8r2mfokuknp3
+name: materializer-api
+description: DataLens Materializer API (PREPROD)
+folder_id: aoevv1b69su5144mlro3
+http:
+  backends:
+  - name: http-backend
+    weight: '100'
+    port: '443'
+    target_group:
+      target_group_id: a5d96nvi8q71cmd1f3pf
+    tls:
+      tls_options:
+        tls_min_version: TLS_V1_2
+        tls_max_version: TLS_V1_2
+  connection: {}

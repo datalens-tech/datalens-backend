@@ -1,0 +1,73 @@
+{{- define "depl-bi_external_api" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: bi-external-api
+  labels:
+    app: bi-external-api
+
+spec:
+  replicas: {{ .Values.scaling.external_api.desired | default 1 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.external_api.max_surge }}
+      maxUnavailable: {{ .Values.scaling.external_api.max_unavailable }}
+  selector:
+    matchLabels:
+      app: bi-external-api
+  template:
+    metadata:
+      labels:
+        app: bi-external-api
+      annotations:
+        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+    spec:
+      containers:
+        - name: main
+          image: "{{ required "Valid ext API Docker repo required" .Values.docker_images_info.external_api.repo }}:{{ required "Valid ext API Docker tag required" .Values.docker_images_info.external_api.tag }}"
+          env:
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-nginx" . | indent 12 }}
+            {{- include "secrets_us_master_token" . | indent 12}}
+            - name: "EXT_API_TYPE"
+              value: "unified_il"
+            - name: "EXT_API_LAUNCH_TARGET"
+              value: "http_api"
+            - name: DO_ADD_EXC_MESSAGE
+              value: "0"
+            - name: NGINX_SERVER_NAME
+              value: "bi-external-api"
+            - name: US_BASE_URL
+              value: "{{ .Values.endpoints.us_host }}"
+            - name: DATASET_CONTROL_PLANE_API_BASE_URL
+              value: "http://dataset-api-app:80"
+            - name: CHARTS_API_BASE_URL
+              value: "{{ required "endpoints.charts_api is required to run ext API" .Values.endpoints.charts_api}}"
+            - name: DASH_API_BASE_URL
+              value: "{{ required "endpoints.dash_api is required to run ext API" .Values.endpoints.dash_api }}"
+            - name: INT_API_CLI_FORCE_CLOSE_HTTP_CONN
+              value: "true"
+            {{ if .Values.sentry_dsns.external_api }}
+            {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.external_api }}
+            {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+            {{ end }}
+          resources:
+            requests:
+              cpu: {{ .Values.app_resources.external_api.cpu }}
+              memory: {{.Values.app_resources.external_api.ram}}
+          readinessProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/ping"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ required "External API taint toleration is required" .Values.node_selection_options.external_api.taint_toleration }}"
+          effect: "NoSchedule"
+{{ end }}

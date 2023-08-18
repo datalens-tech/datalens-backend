@@ -1,0 +1,10 @@
+dockerfile: Dockerfile
+image: registry.yandex.net/statinfra/bi-file-uploader-worker
+deploy: true
+stage: back-int-preprod
+deploy_units: file-uploader-worker:file-uploader-worker
+experiments: version
+version_files: {
+  "./bi_file_uploader_worker/__init__.py": '__version__ = "([^"]+)"',
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}

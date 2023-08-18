@@ -1,0 +1,11 @@
+[bi_api_lib.connectors]
+snowflake = bi_connector_snowflake.bi.connector:SnowFlakeBiApiConnector
+
+[bi_core.connectors]
+snowflake = bi_connector_snowflake.core.connector:SnowFlakeCoreConnector
+
+[bi_db_testing.connectors]
+snowflake = bi_connector_snowflake.db_testing.connector:SnowFlakeDbTestingConnector
+
+[bi_formula.connectors]
+snowflake = bi_connector_snowflake.formula.connector:SnowFlakeFormulaConnector

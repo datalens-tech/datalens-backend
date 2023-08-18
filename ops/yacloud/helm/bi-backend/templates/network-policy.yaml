@@ -1,0 +1,41 @@
+{{ if .Values.enabled_features.network_policy }}
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "deny-egress-to-internal"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: rqe-dataset-api
+  egress:
+    {{ if .Values.host_allow }}
+    {{- range splitList "," .Values.host_allow }}
+    - toFQDNs:
+      - matchName: {{ (split ":" .)._0 }}
+      toPorts:
+        - ports:
+            - port: {{ (split ":" .)._1 | quote }}
+    {{- end }}
+    {{ end }}
+    - toCIDRSet:
+      - cidr: 0.0.0.0/0
+        except: {{ splitList "," .Values.ipv4_deny | toYaml | nindent 8}}
+      - cidr: ::/0
+        except: {{ splitList "," .Values.ipv6_deny | toYaml | nindent 8}}
+    - toEndpoints:
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": kube-system
+          "k8s-app": kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEndpoints:
+      - {}
+    - toEntities:
+      - cluster
+{{ end }}

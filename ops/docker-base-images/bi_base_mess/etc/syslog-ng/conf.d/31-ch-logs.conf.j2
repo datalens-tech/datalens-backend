@@ -1,0 +1,29 @@
+destination d_ch {
+    http(
+        url("https://{{LOGCH_HOSTNAME}}:8443/?query=insert%20into%20{{LOGCH_TABLE}}%20format%20JSONEachRow")
+
+        tls(
+            ca-file("/etc/YandexCLCA.pem")
+            peer-verify(yes)
+            # peer-verify(no)
+            cipher-suite("ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384")
+            ssl-version(tlsv1_2)
+            # cipher-suite(ECDHE-RSA-AES256-GCM-SHA384)
+            # ssl-version(tlsv1_3)
+        )
+
+        method("POST")
+        user("{{LOGCH_USER}}")
+        password("{{LOGCH_PASSWORD}}")
+        headers("Content-Type: application/x-ndjson")
+
+        timeout({{LOGCH_TIMEOUT}})
+
+        flush-lines(50000)
+        flush-timeout(3000)
+        workers(1)
+
+        body-suffix("\n")
+        body('$(format-json --scope rfc5424 --exclude DATE --key ISODATE)')
+    );
+};

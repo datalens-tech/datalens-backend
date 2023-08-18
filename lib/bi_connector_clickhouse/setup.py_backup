@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import os
+from setuptools import setup, find_packages
+
+
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_ROOT_DIR = os.path.dirname(os.path.dirname(PKG_DIR)).strip("/")
+SETUP_KWARGS = dict(
+    name="yandex-bi-connector-clickhouse",
+    author="Nikolai Proskurin",
+    author_email="mcpn@yandex-team.ru",
+    packages=find_packages(exclude=["bi_connector_clickhouse_tests*"]),
+    zip_safe=False,
+
+    include_package_data=True,
+    package_data={
+        "*": [
+            "py.typed",
+        ],
+    },
+    entry_points={
+        "bi_db_testing.connectors": [
+            "clickhouse=bi_connector_clickhouse.db_testing.connector:ClickHouseDbTestingConnector",
+        ],
+        "bi_formula.connectors": [
+            "clickhouse=bi_connector_clickhouse.formula.connector:ClickHouseFormulaConnector",
+        ],
+    },
+    install_requires=[
+        # External packages
+        "attrs",
+        "shortuuid",
+        "sqlalchemy>=1.4",
+    ] + [
+        f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+        for name, pydir in (
+            # bi packages go here
+            ("yandex-bi-constants", "bi_constants"),
+            ("yandex-bi-core", "bi_core"),
+            ("yandex-bi-core-testing", "bi_core_testing"),
+            ("statinfra-clickhouse-sqlalchemy", "clickhouse-sqlalchemy"),
+            ("yandex-bi-db-testing", "bi_db_testing"),
+            ("yandex-bi-formula", "bi_formula"),
+        )
+        if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+    ],
+    extras_require={
+        "develop": [  # for testing and development
+            "pytz",
+            "python-dateutil"
+       ] + [
+           f"{name} @ file://localhost/{BACKEND_ROOT_DIR}/lib/{pydir}"
+           for name, pydir in (
+                # bi packages go here
+                ("yandex-bi-testing", "bi_testing"),
+            )
+            if os.path.exists(f"/{BACKEND_ROOT_DIR}/lib/{pydir}")
+        ],
+        "mypy": [  # for testing and development
+            "mypy",
+            "sqlalchemy-stubs",
+        ],
+    },
+)
+SETUP_KWARGS["extras_require"]["all"] = sorted(set(
+    pkg for lst in SETUP_KWARGS["extras_require"].values() for pkg in lst
+))
+
+
+if __name__ == "__main__":
+    setup(**SETUP_KWARGS)

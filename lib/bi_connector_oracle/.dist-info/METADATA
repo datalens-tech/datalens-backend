@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: yandex-bi-connector-oracle
+Version: 0.0.0
+Author: Grigory Statsenko
+Author-email: gstatsenko@yandex-team.ru
+Requires-Dist: sqlalchemy (>=1.4)
+Provides-Extra: all
+Requires-Dist: mypy ; extra == 'all'
+Requires-Dist: oracledb ; extra == 'all'
+Requires-Dist: sqlalchemy-stubs ; extra == 'all'
+Provides-Extra: develop
+Requires-Dist: oracledb ; extra == 'develop'
+Provides-Extra: mypy
+Requires-Dist: mypy ; extra == 'mypy'
+Requires-Dist: sqlalchemy-stubs ; extra == 'mypy'
+

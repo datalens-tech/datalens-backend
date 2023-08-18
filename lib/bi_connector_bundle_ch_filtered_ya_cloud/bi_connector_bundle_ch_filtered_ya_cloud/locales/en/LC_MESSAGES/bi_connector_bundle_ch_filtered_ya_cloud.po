@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi/connection_form/form_config.py:30
+msgid "label_ch-geo-filtered-description"
+msgstr ""
+"This is a service connection for interactions datasets with geolayers. You "
+"can set up a connection in [Marketplace](/marketplace)"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi/connection_info.py:7
+msgid "label_connector-ch_geo_filtered"
+msgstr "Geolayer"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_form/form_config.py:20
+#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_form/form_config.py:20
+#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_form/form_config.py:18
+msgid "cloud-datalens-docs-url"
+msgstr "https://cloud.yandex.com/docs/datalens"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_form/form_config.py:25
+msgid "label_ya-podcasts-conn-description"
+msgstr ""
+"This connection lets you check your podcasts' detailed statistics.\n"
+"\n"
+"By clicking the button below you will be given the key (OAuth-token) — the "
+"tool which lets DataLens show information about your podcast.\n"
+"\n"
+"You can give access to statistics to other people yourself, just like it "
+"described in [documentation]({SEC_LINK}). You can make the access to stats "
+"private any time you'd like. All you need to do is to revoke the issued "
+"token in [Yandex ID]({PASSPORT_LINK})."
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_info.py:8
+msgid "label_connector-ch_ya_music_podcast_stats"
+msgstr "Podcasts Analytics"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_form/form_config.py:25
+msgid "label_market-couriers-description"
+msgstr ""
+"This connection lets you check statistics about couriers and their completed "
+"tasks. The information is available only to partners who have accepted the "
+"offer.\n"
+"\n"
+"By clicking the button below, you will receive a key (OAuth token) - a tool "
+"that lets DataLens to show information about your tasks and performers.\n"
+"\n"
+"You can give access to statistics to other people yourself, just like it "
+"described in [documentation]({SEC_LINK}). All you need to do is to revoke "
+"the issued token in [Yandex ID]({PASSPORT_LINK})."
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_info.py:8
+msgid "label_connector-market_couriers"
+msgstr "Market Couriers"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_form/form_config.py:23
+msgid "label_schoolbook-journal-description"
+msgstr ""
+"This connection lets you check your detailed statistics about your students' "
+"work in the Computer Science course from Yandex.Schoolbook. You can give "
+"access to statistics to other people yourself. See more in the DataLens "
+"[documentation]({SEC_LINK}).\n"
+"\n"
+"You can make the access to stats private any time you'd like. All you need "
+"to do is to revoke the issued token in [Yandex ID]({PASSPORT_LINK})."
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_info.py:8
+msgid "label_connector-schoolbook_journal"
+msgstr "Yandex.Schoolbook"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_form/form_config.py:13
+#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_info.py:8
+msgid "label_connector-smb_heatmaps"
+msgstr "Heatmaps Yandex Direct"
+
+#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_form/form_config.py:17
+msgid "label_smb-heatmaps-description"
+msgstr ""
+"As a source, the data of the Heat Maps tool will be used, which, according "
+"to the specified conditions, visualize supply and demand polygons on the map "
+"in the context of Yandex Direct headings.\n"
+"\n"
+"This connection will allow you to access Heatmaps from the Yandex Direct "
+"team. You will be able to study, in the context of polygons and headings, "
+"metrics relating to supply and demand in the city. Detailed work with the "
+"tool is described in the DataLens documentation.\n"
+"\n"
+"Access can be closed at any time. To do this, it will be enough to contact "
+"your manager."

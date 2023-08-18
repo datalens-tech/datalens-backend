@@ -1,0 +1,65 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-promql"
+version = "0.0.1"
+description = ""
+authors = ["Alexander Ushakov <alex-ushakov@yandex-team.ru>"]
+packages = [{include = "bi_connector_promql"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-sqlalchemy-promql = {path = "../../lib/bi_sqlalchemy_promql"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+promql = "bi_connector_promql.bi.connector:PromQLBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+promql = "bi_connector_promql.core.connector:PromQLCoreConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_connector_promql_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+[datalens.pytest.db]
+root_dir = "bi_connector_promql_tests/db"
+target_path = "."
+
+[datalens.pytest.unit]
+root_dir = "bi_connector_promql_tests/unit"
+target_path = "."
+
