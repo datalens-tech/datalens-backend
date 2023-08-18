@@ -15,14 +15,13 @@ from bi_core.multisource import AvatarRelation, SourceAvatar, BinaryCondition
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.base_models import ObligatoryFilter, DefaultWhereClause, DefaultConnectionRef, connection_ref_from_id
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionSpecBase, DataSourceCollectionSpec, DataSourceCollectionProxySpec,
+    DataSourceCollectionSpecBase, DataSourceCollectionSpec,
 )
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.data_source_merge_tools import update_spec_from_dict
 from bi_core.db.elements import IndexInfo, SchemaColumn
 from bi_core.data_source.type_mapping import get_data_source_class
 from bi_core.data_source_merge_tools import make_spec_from_dict
-from bi_core.us_connection_dsrc import make_data_source_id_for_connection
 from bi_core.fields import ResultSchema, BIField
 from bi_core.connectors.base.data_source_migration import get_data_source_migrator
 
@@ -57,26 +56,6 @@ class DatasetComponentEditor:
 
         dsrc_coll_spec = DataSourceCollectionSpec(
             id=source_id, title=title, managed_by=managed_by, valid=valid,
-        )
-        self._dataset.data.source_collections.append(dsrc_coll_spec)
-        return dsrc_coll_spec
-
-    def add_data_source_collection_reference(
-            self, *,
-            source_id: str,
-            connection_id: str,
-            ref_source_id: str,
-            title: Optional[str],
-            managed_by: ManagedBy = ManagedBy.user,
-            valid: bool = True,
-    ) -> DataSourceCollectionSpecBase:
-        """Add a new data source collection external reference configuration entry"""
-
-        ref_source_id = ref_source_id or make_data_source_id_for_connection(connection_id)
-        connection_ref = connection_ref_from_id(connection_id=connection_id)
-        dsrc_coll_spec = DataSourceCollectionProxySpec(
-            id=source_id, connection_ref=connection_ref, source_id=ref_source_id, title=title,
-            managed_by=managed_by, valid=valid,
         )
         self._dataset.data.source_collections.append(dsrc_coll_spec)
         return dsrc_coll_spec

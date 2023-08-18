@@ -51,7 +51,6 @@ class SnowFlakeDatasetTestBase(SnowFlakeConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope='class')
     def dataset_params(self, sf_secrets) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_SNOWFLAKE_TABLE.name,
             parameters=dict(
                 table_name=sf_secrets.get_table_name(),

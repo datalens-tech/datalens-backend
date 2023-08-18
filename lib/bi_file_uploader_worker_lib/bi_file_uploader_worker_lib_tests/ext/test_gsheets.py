@@ -8,7 +8,6 @@ from bi_constants.enums import BIType, FileProcessingStatus, ConnectionType
 
 from bi_core_testing.connection import make_conn_key
 
-from bi_core.converter_parsing_utils import idx_to_alphabet_notation
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from bi_task_processor.state import wait_task
@@ -28,6 +27,7 @@ from bi_file_uploader_lib.redis_model.models import (
 )
 
 from bi_file_uploader_worker_lib.utils import parsing_utils
+from bi_file_uploader_worker_lib.utils.converter_parsing_utils import idx_to_alphabet_notation
 
 
 LOGGER = logging.getLogger(__name__)

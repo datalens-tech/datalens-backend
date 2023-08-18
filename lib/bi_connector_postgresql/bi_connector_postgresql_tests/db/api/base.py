@@ -44,7 +44,6 @@ class PostgreSQLDatasetTestBase(PostgreSQLConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope='class')
     def dataset_params(self, sample_table) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_PG_TABLE.name,
             parameters=dict(
                 schema_name=sample_table.schema,

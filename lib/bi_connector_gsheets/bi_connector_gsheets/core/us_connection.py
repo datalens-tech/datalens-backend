@@ -61,10 +61,6 @@ class GSheetsConnection(ExecutorBasedMixin, ConnectionBase):  # type: ignore  # 
                 group=[],
                 source_type=SOURCE_TYPE_GSHEETS,
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
-                # Like CSV, the dataset is (currently) in the connection;
-                # unlike CSV, it is potentially dynamic, so 'update fields' is still needed.
-                is_ref=False,
-                ref_source_id=None,
                 parameters={},
             ),
         ]

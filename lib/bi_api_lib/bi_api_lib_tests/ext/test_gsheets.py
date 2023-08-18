@@ -132,7 +132,7 @@ def gsheets_dataset(client, api_v1, request, gsheets_conn_id):
     resp = client.get(f'/api/v1/connections/{conn_id}/info/sources')
     assert resp.status_code == 200, resp.json
     source_cfg = resp.json['sources'][0]
-    source_cfg_keys = {'is_ref', 'source_type', 'ref_source_id', 'title', 'connection_id', 'parameters'}
+    source_cfg_keys = {'source_type', 'title', 'connection_id', 'parameters'}
     source_cfg_clean = {key: val for key, val in source_cfg.items() if key in source_cfg_keys}
 
     ds = Dataset()

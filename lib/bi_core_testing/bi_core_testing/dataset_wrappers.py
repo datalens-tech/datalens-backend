@@ -197,16 +197,6 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def _make_ds_editor(self) -> DatasetComponentEditor:
         return DatasetComponentEditor(dataset=self._dataset)
 
-    def add_data_source_collection_reference(
-            self, *,
-            source_id: str, connection_id: str, ref_source_id: str, title: str,
-            managed_by: ManagedBy = ManagedBy.user, valid: bool = True,
-    ) -> DataSourceCollectionSpecBase:
-        return self._ds_editor.add_data_source_collection_reference(
-            source_id=source_id, connection_id=connection_id, ref_source_id=ref_source_id, title=title,
-            managed_by=managed_by, valid=valid,
-        )
-
     def update_data_source_collection(
             self, source_id: str, title: Optional[str] = None, valid: Optional[bool] = None,
     ) -> None:

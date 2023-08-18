@@ -334,7 +334,6 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
             SECRET_ACCESS_KEY='verySecretKey1',
             BUCKET='bi-file-uploader',
             S3_ENDPOINT='http://s3-storage:8000',
-            USE_NON_REF_SOURCES=True,
             **base_settings_params,
         ),
         BITRIX=BitrixConnectorSettings(**partner_settings_params),
@@ -497,7 +496,6 @@ def _make_dataset(client, connection_id, request, source_type=None, created_via=
                     'title': 'test_data',
                     'source_type': source_type,
                     'connection_id': connection_id,
-                    'is_ref': False,
                     'parameters': {
                         'db_name': db,
                         'table_name': table,

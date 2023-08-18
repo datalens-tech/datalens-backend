@@ -26,8 +26,6 @@ class DataSource(Generic[_PARAMS_T], DatasetAPIBaseModel):
     id: str = attr.ib()
     title: str = attr.ib()
     connection_id: str = attr.ib(metadata=AttribDescriptor(tags=frozenset({IntModelTags.connection_id})).to_meta())
-    is_ref: Optional[bool] = attr.ib(default=False)
-    # ref_source_id = ma_fields.String(allow_none=True)
     # raw_schema
     # index_info_set
     parameters: _PARAMS_T = attr.ib()  # redefined in subclasses

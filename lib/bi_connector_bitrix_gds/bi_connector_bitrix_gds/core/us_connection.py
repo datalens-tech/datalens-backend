@@ -72,8 +72,6 @@ class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):  # type: ignore  
                 group=[],
                 source_type=SOURCE_TYPE_BITRIX_GDS,
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
-                is_ref=False,
-                ref_source_id=None,
                 parameters=parameters,
             ) for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)
         ]

@@ -250,9 +250,7 @@ class DataSourceSchema(DefaultSchema[DataSource]):
 
     id = ma_fields.String()
     title = ma_fields.String()
-    is_ref = ma_fields.Boolean()
     connection_id = ma_fields.String(allow_none=True)
-    ref_source_id = ma_fields.String(allow_none=True, required=False)
     source_type = DynamicEnumField(CreateDSFrom)
     raw_schema = ma_fields.Nested(ColumnSchema, allow_none=True, required=False, many=True)
     index_info_set = ma_fields.List(ma_fields.Dict, allow_none=True)

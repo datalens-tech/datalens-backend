@@ -28,10 +28,7 @@ if TYPE_CHECKING:
 def require_file_configured(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(self: BaseFileS3DataSource, *args: Any, **kwargs: Any) -> Any:
-        if self.is_ref:
-            if self.saved_raw_schema is None or self.table_name is None:
-                raise exc.TableNameNotConfiguredError
-        elif self._get_origin_src().status != FileProcessingStatus.ready:
+        if self._get_origin_src().status != FileProcessingStatus.ready:
             raise exc.TableNameNotConfiguredError
 
         return func(self, *args, **kwargs)
@@ -49,11 +46,6 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
         raise NotImplementedError
 
     @property
-    def is_ref(self) -> bool:
-        # TODO?: make up a better ref indicator?
-        return self.bucket is not None
-
-    @property
     def origin_source_id(self) -> Optional[str]:
         return self.spec.origin_source_id
 
@@ -68,13 +60,9 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
 
     @require_file_configured
     def get_schema_info(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> SchemaInfo:
-        if self.is_ref:
-            assert self.saved_raw_schema is not None
-            source_schema = self.saved_raw_schema
-        else:
-            origin_src = self._get_origin_src()
-            assert origin_src.raw_schema is not None
-            source_schema = origin_src.raw_schema
+        origin_src = self._get_origin_src()
+        assert origin_src.raw_schema is not None
+        source_schema = origin_src.raw_schema
         return SchemaInfo.from_schema(source_schema)
 
     @require_file_configured
@@ -82,9 +70,6 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
             self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
             force_refresh: bool = False,
     ) -> bool:
-        if self.is_ref:
-            return True
-
         try:
             self.connection.get_file_source_by_id(self.origin_source_id)
         except exc.SourceDoesNotExist:
@@ -120,17 +105,11 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
         return self._quoter.quote_str(value)
 
     def get_sql_source(self, alias: str = None) -> Any:
-        if self.is_ref:
-            conn_src_id = self.id
-            status = self.spec.status
-            raw_schema = self.saved_raw_schema
-            s3_filename = self.table_name
-        else:
-            conn_src_id = self.origin_source_id
-            origin_src = self._get_origin_src()
-            status = origin_src.status
-            raw_schema = self.spec.raw_schema
-            s3_filename = origin_src.s3_filename
+        conn_src_id = self.origin_source_id
+        origin_src = self._get_origin_src()
+        status = origin_src.status
+        raw_schema = self.spec.raw_schema
+        s3_filename = origin_src.s3_filename
 
         if conn_src_id is not None and (error_pack := self.connection.data.component_errors.get_pack(conn_src_id)):
             single_error = error_pack.errors[0]

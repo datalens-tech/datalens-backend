@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import json
 from http import HTTPStatus
 
@@ -14,13 +13,9 @@ from bi_constants.enums import (
     WhereClauseOperation,
     DataSourceRole,
     FileProcessingStatus,
-    DataSourceCollectionType,
 )
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_core.db import SchemaColumn
-from bi_core.maintenance.crawlers.file_connection_dataset_ref_sources_crawler import (
-    RefToNonRefDatasetSourceMigrationCrawler
-)
 
 
 @pytest.fixture(
@@ -100,7 +95,6 @@ def test_add_dataset_source(client, default_sync_usm, api_v1, clickhouse_table, 
 
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=False,
         connection_id=conn_id,
         parameters=dict(
             origin_source_id='source_1_id',
@@ -134,9 +128,8 @@ def test_result(client, api_v1, data_api_v2, test_chs3_connections, s3_native_fr
 
     source_for_ds = {
         k: v for k, v in sources_resp.json['sources'][2].items()
-        if k in ('source_type', 'is_ref', 'connection_id', 'parameters')
+        if k in ('source_type', 'connection_id', 'parameters')
     }
-    assert source_for_ds['is_ref'] is False
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(**source_for_ds)
@@ -182,10 +175,8 @@ def test_date32(client, api_v1, data_api_v2, test_chs3_connections, s3_native_fr
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=True,
         connection_id=conn_id,
-        ref_source_id='source_4_id',
-        parameters={},
+        parameters=dict(origin_source_id='source_4_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 
@@ -260,7 +251,6 @@ def test_table_name_spoofing(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=False,
         connection_id=conn_id,
         parameters=fake_parameters,
     )
@@ -274,7 +264,6 @@ def test_table_name_spoofing(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=False,
         connection_id=conn_id,
         parameters=dict(
             origin_source_id=conn.data.sources[2].id,
@@ -325,10 +314,8 @@ def test_distinct(client, api_v1, data_api_v2, test_chs3_connections, s3_native_
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=True,
         connection_id=conn_id,
-        ref_source_id='source_3_id',
-        parameters={},
+        parameters=dict(origin_source_id='source_3_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 
@@ -353,10 +340,8 @@ def test_file_not_configured_add_source(client, api_v1, test_chs3_connections, s
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=True,
         connection_id=conn_id,
-        ref_source_id='source_2_id',
-        parameters={},
+        parameters=dict(origin_source_id='source_2_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 
@@ -379,7 +364,6 @@ def test_file_not_ready_fetch_data(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=False,
         connection_id=conn_id,
         parameters={
             'origin_source_id': 'source_3_id',
@@ -434,7 +418,6 @@ def test_file_not_ready_fetch_data(
     client.delete('/api/v1/datasets/{}'.format(dataset_id))
 
 
-@pytest.mark.parametrize('is_ref', (True, False))
 def test_get_data_from_removed_file(
         client,
         api_v1,
@@ -442,7 +425,6 @@ def test_get_data_from_removed_file(
         test_chs3_connections,
         s3_native_from_ch_table,
         default_sync_usm_per_test,
-        is_ref,
 ):
     data_api = data_api_v2
     usm = default_sync_usm_per_test
@@ -450,10 +432,8 @@ def test_get_data_from_removed_file(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=source_type,
-        is_ref=is_ref,
         connection_id=conn_id,
-        ref_source_id='source_3_id' if is_ref else None,
-        parameters={} if is_ref else {'origin_source_id': 'source_3_id'},
+        parameters=dict(origin_source_id='source_3_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 
@@ -488,12 +468,11 @@ def test_get_data_from_removed_file(
     assert update_resp.status_code == 200, update_resp.json
 
     get_ds_resp = client.get(f'/api/v1/datasets/{ds.id}/versions/draft')
-    assert get_ds_resp.status_code == 400 if is_ref else 200, get_ds_resp.json
-    # ^ 400 is not okay, and it comes from BI-4154, it works as expected with a non-ref source
+    assert get_ds_resp.status_code == 200, get_ds_resp.json
 
     refresh_resp = api_v1.refresh_dataset_sources(ds, [ds.sources[0].id], fail_ok=True)
     assert refresh_resp.status_code == 400
-    assert refresh_resp.json['code'] == 'ERR.DS_API.VALIDATION.ERROR' if not is_ref else 'ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST'
+    assert refresh_resp.json['code'] == 'ERR.DS_API.VALIDATION.ERROR'
 
     preview_resp = data_api.get_preview(dataset=ds, fail_ok=True)
     assert preview_resp.status_code == 400, preview_resp.json
@@ -512,9 +491,8 @@ def test_update_dataset_source(client, default_sync_usm, api_v1, clickhouse_tabl
     sources_resp = client.get(f'/api/v1/connections/{conn_id}/info/sources')
     source_for_ds = {
         k: v for k, v in sources_resp.json['sources'][0].items()
-        if k in ('source_type', 'is_ref', 'connection_id', 'parameters')
+        if k in ('source_type', 'connection_id', 'parameters')
     }
-    assert source_for_ds['is_ref'] is False
 
     ds = Dataset()
 
@@ -553,69 +531,3 @@ def test_update_dataset_source(client, default_sync_usm, api_v1, clickhouse_tabl
 
     dataset_id = ds.id
     client.delete('/api/v1/datasets/{}'.format(dataset_id))
-
-
-def test_ref_to_non_ref_crawler(
-        client,
-        data_api_v2,
-        default_sync_usm_per_test,
-        default_async_usm_per_test,
-        file_connection_with_raw_schema_id,
-        api_v1,
-        s3_native_from_ch_table,
-):
-    data_api = data_api_v2
-    usm = default_sync_usm_per_test
-    conn_id = file_connection_with_raw_schema_id
-
-    # --- prepare dataset ---
-    ds = Dataset()
-    ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.FILE_S3_TABLE,
-        is_ref=True,
-        connection_id=conn_id,
-        ref_source_id='source_3_id',
-        parameters={},
-    )
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
-    ds.result_schema['sum'] = ds.field(formula='SUM([int_value])')
-    ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
-    assert ds_resp.status_code == HTTPStatus.OK, ds_resp.response_errors
-    ds = ds_resp.dataset
-    ds = api_v1.save_dataset(ds).dataset
-
-    ds = api_v1.load_dataset(dataset=ds).dataset
-    assert ds.sources[0].is_ref is True
-    result_resp = data_api.get_result(
-        dataset=ds,
-        fields=[
-            ds.find_field(title='string_value'),
-            ds.find_field(title='sum'),
-        ],
-    )
-    assert result_resp.status_code == HTTPStatus.OK, result_resp.json
-
-    # --- run crawler ---
-    crawler = RefToNonRefDatasetSourceMigrationCrawler(dry_run=False, usm=usm)
-    from bi_core.us_dataset import Dataset as USDataset
-    entry: USDataset = usm.get_by_id(ds.id, expected_type=USDataset)
-    need_save, message = asyncio.get_event_loop().run_until_complete(
-        crawler.process_entry_get_save_flag(entry=entry, logging_extra={}, usm=default_async_usm_per_test),
-    )
-    assert need_save
-    usm.save(entry)
-
-    # --- reload dataset and check ---
-    ds_entry: USDataset = usm.get_by_id(ds.id)
-    assert ds_entry.data.source_collections[0].dsrc_coll_type == DataSourceCollectionType.collection
-
-    ds = api_v1.load_dataset(dataset=ds).dataset
-    assert ds.sources[0].is_ref is False
-    result_resp = data_api.get_result(
-        dataset=ds,
-        fields=[
-            ds.find_field(title='string_value'),
-            ds.find_field(title='sum'),
-        ],
-    )
-    assert result_resp.status_code == HTTPStatus.OK, result_resp.json

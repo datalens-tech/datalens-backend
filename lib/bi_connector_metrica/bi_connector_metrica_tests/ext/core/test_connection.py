@@ -49,8 +49,6 @@ class TestMetricaConnection(BaseMetricaTestClass, DefaultConnectionTestClass[Met
                 group=[],
                 connection_id=conn.uuid,
                 source_type=SOURCE_TYPE_METRICA_API,
-                is_ref=False,
-                ref_source_id=None,
                 parameters={'db_name': ns.name},
             ) for ns in MetrikaApiCounterSource
         ], key=lambda el: el.title)

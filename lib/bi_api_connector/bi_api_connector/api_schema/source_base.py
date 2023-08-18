@@ -85,9 +85,7 @@ class SubselectParametersSchema(SimpleParametersSchema):
 
 class DataSourceCommonSchema(BaseSchema):
     title = ma_fields.String(required=True)
-    is_ref = ma_fields.Boolean()
     connection_id = ma_fields.String(allow_none=True)
-    ref_source_id = ma_fields.String(allow_none=True)
     source_type = DynamicEnumField(CreateDSFrom)
     raw_schema = ma_fields.Nested(RawSchemaColumnSchema, many=True, allow_none=True)
     index_info_set = FrozenSetField(
@@ -104,7 +102,7 @@ class DataSourceTemplateResponseField(ma_fields.Field):
     Optimized version of the `DataSourceTemplateResponseSchema` that does a bare minimum.
     """
     _allowed_keys = frozenset((
-        'title', 'tab_title', 'is_ref', 'connection_id', 'ref_source_id',
+        'title', 'tab_title', 'connection_id',
         'source_type',
         # In `DataSourceCommonSchema` but not intended for dsrc templates: 'raw_schema'
         'index_info_set',

@@ -314,7 +314,6 @@ class DataSourceRole(Enum):
 
 class DataSourceCollectionType(Enum):
     collection = 'collection'
-    connection_ref = 'connection_ref'
 
 
 class DataSourceCreatedVia(Enum):

@@ -89,7 +89,7 @@ async def test_file_api(
 
     # check file source
     response = await file_status_executor.get_file_sources(file_id)
-    ref_source_id = response.json["sources"][0]["source_id"]
+    conn_source_id = response.json["sources"][0]["source_id"]
 
     # create connection
     connection_name = str(uuid.uuid4())
@@ -100,7 +100,7 @@ async def test_file_api(
             dir_path=base_dir,
             sources=[
                 bi_integration_tests.request_executors.base.FileConnectionSourceData(
-                    id=ref_source_id,
+                    id=conn_source_id,
                     file_id=file_id,
                     title="test_title")
             ]
@@ -113,7 +113,7 @@ async def test_file_api(
 
     # create dataset
     response = await dataset_executor.setup_dataset(
-        dataset_json=common.get_csv_dataset_json(connection_id=connection_id, ref_source_id=ref_source_id),
+        dataset_json=common.get_csv_dataset_json(connection_id=connection_id, conn_source_id=conn_source_id),
         base_dir=base_dir,
         connection_name=connection_name,
     )

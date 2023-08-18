@@ -123,7 +123,6 @@ class CHFrozenDatasetTestBase(CHFrozenConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope='class')
     def dataset_params(self, sample_table: DbTable) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_CH_FROZEN_SOURCE.name,
             parameters=dict(
                 db_name=sample_table.db.name,

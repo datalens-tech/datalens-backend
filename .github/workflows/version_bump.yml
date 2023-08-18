@@ -16,7 +16,7 @@ on:
           - app/bi_alerts
 
 jobs:
-  branch_push:
+  release_version:
     runs-on: [ self-hosted, linux ]
     container:
       image: "${{ vars.DL_CI_CR_URI }}/gh-action-image-default:7"
@@ -41,7 +41,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: git config --global --add safe.directory .
-      - run: git config --global --add safe.directory /__w/datalens-backend-mirror/datalens-backend-mirror
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: set commiter info
         env:
           CI_COMMIT_AUTHOR: Continuous Integration
@@ -68,6 +68,6 @@ jobs:
           #
           # PR
           #
-          PR_URL=$(gh pr create -B trunk --fill --body "Releasing version for ${{ github.event.inputs.app_path }}")
+          PR_URL=$(gh pr create -B trunk --fill --base "${GITHUB_REF_NAME}" --body "Releasing version for ${{ github.event.inputs.app_path }}")
           # TODO FIX: Uncomment
           # gh pr merge -s --admin "${PR_URL}"

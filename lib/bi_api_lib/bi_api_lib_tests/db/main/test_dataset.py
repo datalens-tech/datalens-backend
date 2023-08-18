@@ -932,7 +932,7 @@ def test_replace_connection_clickhouse_to_frozen_preconfigured_subselect_source(
         {
             'action': DatasetAction.add_source.name,
             'source': {
-                'connection_id': new_connection_id, 'id': new_source_id, 'is_ref': False,
+                'connection_id': new_connection_id, 'id': new_source_id,
                 'source_type': SOURCE_TYPE_CH_FROZEN_SOURCE.name,
                 'parameters': {'db_name': db_name, 'table_name': table_name}, 'title': f'{db_name}.{table_name}',
             },
@@ -1005,7 +1005,7 @@ def test_replace_connection_clickhouse_to_frozen_subselect_source(
         {
             'action': DatasetAction.add_source.name,
             'source': {
-                'connection_id': new_connection_id, 'id': new_source_id, 'is_ref': False,
+                'connection_id': new_connection_id, 'id': new_source_id,
                 'source_type': SOURCE_TYPE_CH_FROZEN_SUBSELECT.name,
                 'parameters': {'subsql': 'select * from samples.SampleLite'},
                 'title': 'My SQL Source',

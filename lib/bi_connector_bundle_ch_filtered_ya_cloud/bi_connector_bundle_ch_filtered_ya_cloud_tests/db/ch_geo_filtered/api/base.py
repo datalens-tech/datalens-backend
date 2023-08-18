@@ -73,7 +73,6 @@ class CHGeoFilteredDatasetTestBase(CHGeoFilteredConnectionTestBase, DatasetTestB
     @pytest.fixture(scope='class')
     def dataset_params(self, sample_table: DbTable) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_CH_GEO_FILTERED_TABLE.name,
             parameters=dict(
                 db_name=sample_table.db.name,
@@ -86,7 +85,6 @@ class CHGeoFilteredDownloadableDatasetTestBase(CHGeoFilteredDownloadableConnecti
     @pytest.fixture(scope='class')
     def dataset_params(self, sample_table: DbTable) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_CH_GEO_FILTERED_TABLE.name,
             parameters=dict(
                 db_name=sample_table.db.name,

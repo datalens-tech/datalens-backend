@@ -119,7 +119,6 @@ def connection_id(app, client, request):  # TODO: Rename to ch_connection_id
 def ch_data_source_settings(static_connection_id):
     return {
         'connection_id': static_connection_id,
-        'is_ref': False,
         'source_type': 'CH_TABLE',
         'parameters': {
             'db_name': 'test_data',
@@ -132,7 +131,6 @@ def ch_data_source_settings(static_connection_id):
 def ch_data_source_settings_for_other_db(static_connection_id):
     return {
         'connection_id': static_connection_id,
-        'is_ref': False,
         'source_type': 'CH_TABLE',
         'parameters': {
             'db_name': 'other_test_data',

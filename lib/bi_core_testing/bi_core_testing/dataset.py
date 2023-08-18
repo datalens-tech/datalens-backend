@@ -75,39 +75,21 @@ def make_dataset(  # type: ignore  # TODO: fix
             assert isinstance(connection, ExecutorBasedMixin)
             return service_registry.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
 
-        if connection.has_data_sources():
-            conn_id = connection.uuid
-            assert conn_id
-            try:
-                ds_wrapper.add_data_source_collection_reference(
-                    source_id=source_id,
-                    connection_id=conn_id,
-                    ref_source_id=connection.get_single_data_source_id(),
-                    title='my_source',
-                )
-            except NotImplementedError:
-                ds_wrapper.add_data_source_collection_reference(
-                    source_id=source_id,
-                    connection_id=conn_id,
-                    ref_source_id=connection.data.sources[0].id,
-                    title='my_source',
-                )
-        else:
-            assert created_from is not None
-            ds_wrapper.add_data_source(
-                source_id=source_id,
-                role=DataSourceRole.origin,
-                connection_id=connection.uuid,
-                created_from=created_from,
-                parameters=dsrc_params,
-            )
-            sync_usm.load_dependencies(dataset)
-            dsrc = ds_wrapper.get_data_source_strict(source_id=source_id, role=DataSourceRole.origin)
-            ds_wrapper.update_data_source(
-                source_id=source_id,
-                role=DataSourceRole.origin,
-                raw_schema=dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema,
-            )
+        assert created_from is not None
+        ds_wrapper.add_data_source(
+            source_id=source_id,
+            role=DataSourceRole.origin,
+            connection_id=connection.uuid,
+            created_from=created_from,
+            parameters=dsrc_params,
+        )
+        sync_usm.load_dependencies(dataset)
+        dsrc = ds_wrapper.get_data_source_strict(source_id=source_id, role=DataSourceRole.origin)
+        ds_wrapper.update_data_source(
+            source_id=source_id,
+            role=DataSourceRole.origin,
+            raw_schema=dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema,
+        )
 
         ds_wrapper.add_avatar(avatar_id=str(uuid.uuid4()), source_id=source_id, title='Main Avatar')
 
@@ -124,7 +106,6 @@ def get_created_from(db: Db) -> CreateDSFrom:
 def data_source_settings_from_table(table: DbTable) -> dict:
     source_type = get_created_from(db=table.db)
     data: dict[str, Any] = {  # this still requires connection_id to be defined
-        'is_ref': False,
         'source_type': source_type,
         'parameters': {
             'table_name': table.name,

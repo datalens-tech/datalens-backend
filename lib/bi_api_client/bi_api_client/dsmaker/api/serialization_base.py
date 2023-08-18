@@ -55,9 +55,7 @@ class BaseApiV1SerializationAdapter:
         else:
             return dict(
                 id=item.id,
-                is_ref=item.is_ref,
                 connection_id=item.connection_id,
-                ref_source_id=item.ref_source_id,
                 source_type=item.source_type.name,
                 title=item.title,
                 raw_schema=[

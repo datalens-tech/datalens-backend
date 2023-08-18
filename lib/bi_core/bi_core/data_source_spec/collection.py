@@ -7,7 +7,7 @@ import attr
 
 from bi_constants.enums import DataSourceCollectionType, ManagedBy, DataSourceRole
 
-from bi_core.base_models import ConnectionRef, DefaultConnectionRef
+from bi_core.base_models import DefaultConnectionRef
 from bi_core.data_source_spec.base import DataSourceSpec
 
 
@@ -49,21 +49,6 @@ class DataSourceCollectionSpec(DataSourceCollectionSpecBase):  # noqa
         assert self.origin is not None
         result: dict[str, str] = {}
         connection_ref = self.origin.connection_ref
-        if isinstance(connection_ref, DefaultConnectionRef):
-            result[self.id] = connection_ref.conn_id
-        return result
-
-
-@attr.s
-class DataSourceCollectionProxySpec(DataSourceCollectionSpecBase):  # noqa
-    dsrc_coll_type = DataSourceCollectionType.connection_ref
-
-    connection_ref: ConnectionRef = attr.ib(kw_only=True, default=None)
-    source_id: str = attr.ib(kw_only=True, default=None)
-
-    def collect_links(self) -> dict[str, str]:
-        result: dict[str, str] = {}
-        connection_ref = self.connection_ref
         if isinstance(connection_ref, DefaultConnectionRef):
             result[self.id] = connection_ref.conn_id
         return result

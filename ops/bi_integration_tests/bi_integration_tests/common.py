@@ -181,7 +181,6 @@ def get_sample_db_dataset_json(conn_id: str, test_dataset: IntegrationTestDatase
                     "title": test_dataset.table_name,
                     "source_type": test_dataset.source_type,
                     "connection_id": conn_id,
-                    "is_ref": False,
                     "parameters": {
                         "schema_name": test_dataset.db_name,
                         "table_name": test_dataset.table_name
@@ -216,7 +215,7 @@ def prepare_csv_for_uploading(base_dir: str, csv_binary_content: bytes):
     )
 
 
-def get_csv_dataset_json(connection_id: str, ref_source_id: str):
+def get_csv_dataset_json(connection_id: str, conn_source_id: str):
     """Returns sample DataLens CSV dataset configuration in json format."""
     source_id = str(uuid.uuid4())
     source_avatar_id = str(uuid.uuid4())
@@ -227,8 +226,9 @@ def get_csv_dataset_json(connection_id: str, ref_source_id: str):
                 'source': {
                     'connection_id': connection_id,
                     'id': source_id,
-                    'is_ref': True,
-                    'ref_source_id': ref_source_id,
+                    'parameters': {
+                        'origin_source_id': conn_source_id,
+                    },
                     'source_type': SOURCE_TYPE_FILE_S3_TABLE_STR,
                     'title': 'source_1'
                 }

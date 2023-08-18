@@ -12,7 +12,13 @@ COMMIT_MSG_PREFIX="releasing version ${ROOT_PKG_PATH}"
 
 cd "${PROJ_ROOT}/${ROOT_PKG_PATH}"
 PREV_VERSION=$(head -n1 changelog.md)
-PREV_VER_COMMIT_INFO_ARR=($(git log --pretty=reference . | grep -i "^[a-z0-9]\{8\} (${COMMIT_MSG_PREFIX} ${PREV_VERSION} (" | cut -d ' ' -f1))
+PREV_VER_COMMIT_INFO_ARR=($(git log --pretty=reference . | grep -i "^[a-z0-9]\{6,\} (${COMMIT_MSG_PREFIX} ${PREV_VERSION} (" | cut -d ' ' -f1))
+
+echo "PREV VER COMMIT CANDIDATES"
+for PREV_VER_CANDIDATES in "${PREV_VER_COMMIT_INFO_ARR[@]}"; do
+	echo "${PREV_VER_CANDIDATES}"
+done
+echo ""
 
 if [[ "${#PREV_VER_COMMIT_INFO_ARR[@]}" == 1 ]]; then
   PREV_VER_COMMIT="${PREV_VER_COMMIT_INFO_ARR[0]}"

@@ -32,7 +32,6 @@ class BigQueryDatasetTestBase(BigQueryConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope='class')
     def dataset_params(self, sample_table) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_BIGQUERY_TABLE.name,
             parameters=dict(
                 dataset_name=sample_table.schema,

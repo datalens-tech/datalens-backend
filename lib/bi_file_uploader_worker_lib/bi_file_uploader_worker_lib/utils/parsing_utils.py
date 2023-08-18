@@ -10,13 +10,6 @@ import attr
 import cchardet as chardet
 
 from bi_constants.enums import BIType, ConnectionType
-from bi_core.converter_parsing_utils import (
-    raw_schema_to_column_types,
-    make_result_types,
-    merge_column_types,
-    idx_to_alphabet_notation,
-)
-from bi_core import converter_parsing_utils
 from bi_core.aio.web_app_services.gsheets import Sheet
 from bi_core.db import get_type_transformer
 from bi_core.db.elements import SchemaColumn
@@ -25,6 +18,14 @@ from bi_app_tools.profiling_base import generic_profiler
 
 from bi_file_uploader_lib.enums import FileType, CSVEncoding, CSVDelimiter
 from bi_file_uploader_lib import exc
+
+from bi_file_uploader_worker_lib.utils import converter_parsing_utils
+from bi_file_uploader_worker_lib.utils.converter_parsing_utils import (
+    raw_schema_to_column_types,
+    make_result_types,
+    merge_column_types,
+    idx_to_alphabet_notation,
+)
 
 
 LOGGER = logging.getLogger(__name__)

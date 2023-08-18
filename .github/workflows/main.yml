@@ -1,6 +1,8 @@
 name: main
 
 on:
+  pull_request:
+    types: [ opened, reopened ]
 #  push:
 #    paths:
 #      - lib/**
@@ -46,6 +48,7 @@ jobs:
           ls -la ./
       - name: Checkout code
         uses: actions/checkout@v3
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - run: /bin/bash ops/ci/gha_build.sh
         env:
           CR_URI: "${{ vars.DL_CI_CR_URI }}"
@@ -75,6 +78,7 @@ jobs:
         fetch-depth: 2
     # https://github.com/actions/runner-images/issues/6775
     - run: git config --global --add safe.directory .
+    - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
     - name: Get packages affected by changes in the current commit
       # todo: ensure that `git diff  ...` works correctly both for commits and pr requests
       id: get_affected
@@ -114,6 +118,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Run python script to split job for general and fat runners
         id: get_split
         run: |

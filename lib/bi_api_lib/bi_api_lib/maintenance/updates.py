@@ -111,7 +111,6 @@ class SimpleDatasetUpdateGen:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=id)
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self._us_manager.get_entry_buffer())
         dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
-        assert not dsrc_coll.is_ref, 'Referenced sources are not supported'
 
         dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
         assert dsrc is not None
@@ -122,7 +121,6 @@ class SimpleDatasetUpdateGen:
             'id': id,
             'source_type': source_type,
             'connection_id': conn_ref.conn_id,
-            'is_ref': False,
             'parameters': {
                 'subsql': subsql,
             },

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from marshmallow import fields
 from marshmallow_oneofschema import OneOfSchema
@@ -10,12 +10,10 @@ from marshmallow_enum import EnumField
 from bi_constants.enums import ManagedBy, DataSourceCollectionType
 
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionSpec, DataSourceCollectionProxySpec, DataSourceCollectionSpecBase
+    DataSourceCollectionSpec, DataSourceCollectionSpecBase
 )
 from bi_core.us_manager.storage_schemas.base import BaseStorageSchema, CtxKey
 from bi_core.us_manager.storage_schemas.data_source_spec import GenericDataSourceSpecStorageSchema
-from bi_core.us_manager.storage_schemas.connection_ref_field import ConnectionRefField
-from bi_core.base_models import InternalMaterializationConnectionRef
 
 
 LOGGER = logging.getLogger(__name__)
@@ -52,42 +50,12 @@ class DataSourceCollectionSpecStorageSchema(BaseStorageSchema[DataSourceCollecti
         )
 
 
-class DataSourceCollectionProxySpecStorageSchema(BaseStorageSchema[DataSourceCollectionProxySpec]):
-    TARGET_CLS = DataSourceCollectionProxySpec
-
-    id = fields.String(required=False, allow_none=True)
-    title = fields.String(required=False, allow_none=True, load_default=None)
-    managed_by = EnumField(ManagedBy)
-    valid = fields.Boolean()
-
-    connection_id = ConnectionRefField(allow_none=True, load_default=None, attribute='connection_ref')
-    source_id = fields.String()
-
-    def constructor_kwargs(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        data['connection_ref'] = data.pop('connection_ref', None)
-        if data['connection_ref'] is None:
-            data['connection_ref'] = InternalMaterializationConnectionRef()
-        return data
-
-    def to_object(self, data: Dict[str, Any]):  # type: ignore  # TODO: fix
-        data = self.constructor_kwargs(data)
-        return self.get_target_cls()(
-            id=data['id'],
-            title=data['title'],
-            managed_by=data['managed_by'],
-            connection_ref=data['connection_ref'],
-            source_id=data['source_id'],
-            valid=data['valid'],
-        )
-
-
 class GenericDataSourceCollectionStorageSchema(OneOfSchema):
     type_field = 'type'
     type_field_remove = True
     type_schemas = {
         k.name: v for k, v in {
             DataSourceCollectionType.collection: DataSourceCollectionSpecStorageSchema,
-            DataSourceCollectionType.connection_ref: DataSourceCollectionProxySpecStorageSchema,
         }.items()
     }
 

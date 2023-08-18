@@ -7,7 +7,6 @@ from typing import Any, List, Optional, Set, Tuple
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
 from bi_constants.enums import AggregationFunction, BIType, BinaryJoinOperator, ConnectionType, ManagedBy
 
-from bi_core.data_source.collection import DataSourceCollectionProxy
 from bi_core.data_source.base import DbInfo
 from bi_core.dataset_capabilities import DatasetCapabilities
 from bi_core.exc import ReferencedUSEntryNotFound
@@ -81,7 +80,6 @@ class DatasetResource(BIResource):
             dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
 
             origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
-            is_ref = isinstance(dsrc_coll, DataSourceCollectionProxy)
             connection_id = dsrc_coll.get_connection_id(DataSourceRole.origin)
             sources.append({
                 'id': source_id,
@@ -89,11 +87,6 @@ class DatasetResource(BIResource):
                 'connection_id': connection_id,
                 'managed_by': dsrc_coll.managed_by,
                 'valid': dsrc_coll.valid,
-                'is_ref': is_ref,
-                'ref_source_id': dsrc_coll.ref_source_id if is_ref else None,  # type: ignore
-                # The following are needed for both collection types
-                # even though they will not be saved if `is_ref`.
-                # They will be used for field generation and updating
                 'source_type': origin_dsrc.spec.source_type,
                 'raw_schema': origin_dsrc.saved_raw_schema,
                 'index_info_set': origin_dsrc.saved_index_info_set,

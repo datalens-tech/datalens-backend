@@ -87,8 +87,6 @@ class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):
                 ],
                 group=[],
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
-                is_ref=False,
-                ref_source_id=None,
             ),
         ] + self._make_subselect_templates(
             title='Subselect over YDB',

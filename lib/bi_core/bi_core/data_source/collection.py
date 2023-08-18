@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import wraps
 from typing import Callable, ClassVar, Dict, List, Optional, TYPE_CHECKING, Union
 
 import attr
@@ -16,7 +15,7 @@ from bi_core.db import SchemaColumn
 from bi_core.base_models import DefaultConnectionRef, InternalMaterializationConnectionRef, ConnectionRef
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionSpecBase, DataSourceCollectionSpec, DataSourceCollectionProxySpec,
+    DataSourceCollectionSpecBase, DataSourceCollectionSpec,
 )
 
 from bi_core.data_source import base, type_mapping
@@ -41,7 +40,6 @@ LazyDataSourceType = Union[base.DataSource, dict]  # data source instance or par
 
 @attr.s
 class DataSourceCollectionBase:
-    is_ref: ClassVar[bool] = False  # is a reference to an external data source
     dsrc_coll_type: ClassVar[DataSourceCollectionType]
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
 
@@ -319,86 +317,6 @@ class DataSourceCollection(DataSourceCollectionBase):
         )
 
 
-def require_loaded_ref(meth):  # type: ignore  # TODO: fix
-
-    @wraps(meth)
-    def wrapper(self, *args, **kwargs):  # type: ignore  # TODO: fix
-        if self._conn_collection is None:
-            self._fetch_ref()
-        return meth(self, *args, **kwargs)
-
-    return wrapper
-
-
-@attr.s
-class DataSourceCollectionProxy(DataSourceCollectionBase):
-    is_ref = True
-    dsrc_coll_type = DataSourceCollectionType.connection_ref
-
-    _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(kw_only=True)
-    # Link to real connection
-    _conn_collection: Optional[DataSourceCollectionBase] = attr.ib(init=False, default=None)
-
-    @property
-    def spec(self) -> DataSourceCollectionProxySpec:
-        assert isinstance(self._spec, DataSourceCollectionProxySpec)
-        return self._spec
-
-    @property
-    def connection_ref(self) -> ConnectionRef:
-        return self.spec.connection_ref
-
-    @property
-    def ref_source_id(self) -> str:
-        return self.spec.source_id
-
-    @property
-    def conn_collection(self) -> DataSourceCollectionBase:
-        assert self._conn_collection is not None
-        return self._conn_collection
-
-    def _fetch_ref(self) -> None:
-        """Load referenced data source collection from connection object"""
-        connection = self._get_connection_by_ref(self.connection_ref)
-        dsrc_coll_spec = connection.get_data_source_coll_spec(source_id=self.ref_source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
-        self._conn_collection = dsrc_coll
-
-    @require_loaded_ref
-    def get_opt(self, role: DataSourceRole = None, for_preview: bool = False) -> Optional[base.DataSource]:
-        return self.conn_collection.get_opt(role=role, for_preview=for_preview)
-
-    @require_loaded_ref
-    def get_strict(self, role: DataSourceRole = None, for_preview: bool = False) -> base.DataSource:
-        return self.conn_collection.get_strict(role=role, for_preview=for_preview)
-
-    @require_loaded_ref
-    def _get_spec_for_role(self, role: DataSourceRole) -> Optional[DataSourceSpec]:
-        return self.conn_collection._get_spec_for_role(role=role)
-
-    @require_loaded_ref
-    def __contains__(self, role: DataSourceRole) -> bool:
-        return role in self.conn_collection
-
-    @require_loaded_ref
-    def exists(self, role: DataSourceRole) -> bool:
-        return self.conn_collection.exists(role)
-
-    @require_loaded_ref
-    def invalidate(self, role: DataSourceRole) -> None:
-        self.conn_collection.invalidate(role)
-
-    def get_param_hash(self) -> str:
-        role = DataSourceRole.origin
-        dsrc = self.get_strict(role=role)
-
-        return get_parameters_hash(
-            source_type=dsrc.spec.source_type,
-            connection_id=self.get_connection_id(role=role),
-            ref_source_id=self.ref_source_id,
-        )
-
-
 @attr.s
 class DataSourceCollectionFactory:  # TODO: Move to service_registry
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None)
@@ -406,9 +324,4 @@ class DataSourceCollectionFactory:  # TODO: Move to service_registry
     def get_data_source_collection(self, spec: DataSourceCollectionSpecBase) -> DataSourceCollectionBase:
         if isinstance(spec, DataSourceCollectionSpec):
             return DataSourceCollection(us_entry_buffer=self._us_entry_buffer, spec=spec)
-        if isinstance(spec, DataSourceCollectionProxySpec):
-            return DataSourceCollectionProxy(
-                dsrc_coll_factory=self,
-                us_entry_buffer=self._us_entry_buffer, spec=spec,
-            )
         raise TypeError(f'Invalid spec type: {spec})')

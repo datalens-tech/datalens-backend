@@ -38,8 +38,6 @@ class BaseConnectionCHYTInternal(BaseConnectionCHYT):
         common: dict[str, Any] = dict(
             group=[],
             connection_id=self.uuid,
-            is_ref=False,
-            ref_source_id=None,
             parameters={},
         )
         return [

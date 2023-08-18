@@ -201,7 +201,7 @@ def bitrix_dataset(client, api_v1, request, bitrix_conn_id):
         if source['title'] == 'crm_deal':
             source_cfg = source
             break
-    source_cfg_keys = {'is_ref', 'source_type', 'ref_source_id', 'title', 'connection_id', 'parameters'}
+    source_cfg_keys = {'source_type', 'title', 'connection_id', 'parameters'}
     source_cfg_clean = {key: val for key, val in source_cfg.items() if key in source_cfg_keys}
 
     ds = Dataset()
@@ -368,7 +368,7 @@ def test_bitrix_sources(client, api_v1, data_api_v1, bitrix_conn_id):
     resp = client.get(f'/api/v1/connections/{conn_id}/info/sources')
     assert resp.status_code == 200, resp.json
 
-    source_cfg_keys = {'is_ref', 'source_type', 'ref_source_id', 'title', 'connection_id', 'parameters'}
+    source_cfg_keys = {'source_type', 'title', 'connection_id', 'parameters'}
     for source_cfg in resp.json['sources']:
         source_cfg_clean = {key: val for key, val in source_cfg.items() if key in source_cfg_keys}
         if source_cfg_clean['title'] in ['telephony_call', 'crm_lead_uf', 'crm_deal_uf',
@@ -398,7 +398,7 @@ def test_uf_sources(client, api_v1, data_api_v1, bitrix_uf_conn_id):
     resp = client.get(f'/api/v1/connections/{conn_id}/info/sources')
     assert resp.status_code == 200, resp.json
 
-    source_cfg_keys = {'is_ref', 'source_type', 'ref_source_id', 'title', 'connection_id', 'parameters'}
+    source_cfg_keys = {'source_type', 'title', 'connection_id', 'parameters'}
     for source_cfg in resp.json['sources']:
         source_cfg_clean = {key: val for key, val in source_cfg.items() if key in source_cfg_keys}
         if source_cfg_clean['title'] not in ['crm_lead_uf', 'crm_deal_uf', 'crm_company_uf', 'crm_contact_uf']:
@@ -431,7 +431,7 @@ def test_smart_tables_sources(client, api_v1, data_api_v1, bitrix_smart_tables_c
     assert resp.status_code == 200, resp.json
 
     smart_tables_cnt = 0
-    source_cfg_keys = {'is_ref', 'source_type', 'ref_source_id', 'title', 'connection_id', 'parameters'}
+    source_cfg_keys = {'source_type', 'title', 'connection_id', 'parameters'}
     for source_cfg in resp.json['sources']:
         source_cfg_clean = {key: val for key, val in source_cfg.items() if key in source_cfg_keys}
         if not source_cfg_clean['title'].startswith("crm_dynamic_items_"):

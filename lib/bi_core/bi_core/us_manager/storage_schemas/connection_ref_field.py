@@ -13,8 +13,6 @@ class ConnectionRefField(Field):
             raise ValueError("Can not serialize data source without connection reference")
         if isinstance(value, DefaultConnectionRef):
             return value.conn_id
-        # if isinstance(value, InternalMaterializationConnectionRef):
-        #     return None
         return None
 
     def _deserialize(

@@ -1054,14 +1054,12 @@ class DatasetValidator(DatasetBaseWrapper):
 
         LOGGER.info(f'Got raw_schema with {len(new_raw_schema)} columns for data source {source_id}')
 
-        if not dsrc_coll.is_ref:
-            # is dataset's own source, so it can be patched with fresh info from the DB
-            db_version = get_db_version(exists=exists)
-            self._ds_editor.update_data_source(
-                source_id=source_id, role=DataSourceRole.origin,
-                raw_schema=new_raw_schema, db_version=db_version,
-                index_info_set=new_idx_info_set,
-            )
+        db_version = get_db_version(exists=exists)
+        self._ds_editor.update_data_source(
+            source_id=source_id, role=DataSourceRole.origin,
+            raw_schema=new_raw_schema, db_version=db_version,
+            index_info_set=new_idx_info_set,
+        )
 
         self._reload_sources()
 
@@ -1086,7 +1084,6 @@ class DatasetValidator(DatasetBaseWrapper):
 
         existing_id = self._ds.find_data_source_configuration(
             connection_id=source_data.get('connection_id'),
-            ref_source_id=source_data.get('ref_source_id'),
             created_from=source_data['source_type'],
             parameters=source_data.get('parameters'),
             # Currently ignoring: `title`
@@ -1129,22 +1126,14 @@ class DatasetValidator(DatasetBaseWrapper):
 
             connection_ref = DefaultConnectionRef(conn_id=connection_id)
             self._sync_us_manager.ensure_entry_preloaded(connection_ref)
-            if source_data['is_ref']:
-                self._ds_editor.add_data_source_collection_reference(
-                    source_id=source_id,
-                    connection_id=connection_id,
-                    ref_source_id=source_data['ref_source_id'],
-                    title=title,
-                )
-            else:
-                self._ds_editor.add_data_source(
-                    source_id=source_id,
-                    role=DataSourceRole.origin,
-                    connection_id=connection_id,
-                    created_from=source_data['source_type'],
-                    title=title,
-                    parameters=source_data['parameters'],
-                )
+            self._ds_editor.add_data_source(
+                source_id=source_id,
+                role=DataSourceRole.origin,
+                connection_id=connection_id,
+                created_from=source_data['source_type'],
+                title=title,
+                parameters=source_data['parameters'],
+            )
 
             check_permissions_for_origin_sources(
                 dataset=self._ds, source_ids=[source_id],
@@ -1180,33 +1169,24 @@ class DatasetValidator(DatasetBaseWrapper):
         elif action == DatasetAction.update_source:
             self.add_affected_component(component_ref)
             parameters = source_data.get('parameters') or {}
-            if source_data['is_ref']:
-                parameters = {}
 
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
             origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             old_raw_schema = origin_dsrc.saved_raw_schema
             new_title = source_data.get('title') or dsrc_coll.title
-            if dsrc_coll.is_ref or source_data['is_ref']:
-                # data source collection type changed
-                self._ds_editor.remove_data_source_collection(source_id=source_id, ignore_avatars=True)
-                add_source(title=new_title)  # type: ignore  # TODO: fix
+            self._ds_editor.update_data_source(
+                source_id=source_id,
+                created_from=source_data.get('source_type'),
+                role=DataSourceRole.origin,
+                connection_id=source_data.get('connection_id'),
+                **parameters
+            )
+            if new_title != old_title:
+                self._ds_editor.update_data_source_collection(source_id=source_id, title=new_title)
+
+            if (set(source_data) - {'title', 'id', 'source_type', 'parameters'}) or parameters:
+                # something besides the title was updated
                 self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)  # type: ignore  # TODO: fix
-
-            else:
-                self._ds_editor.update_data_source(
-                    source_id=source_id,
-                    created_from=source_data.get('source_type'),
-                    role=DataSourceRole.origin,
-                    connection_id=source_data.get('connection_id'),
-                    **parameters
-                )
-                if new_title != old_title:
-                    self._ds_editor.update_data_source_collection(source_id=source_id, title=new_title)
-
-                if (set(source_data) - {'title', 'id', 'source_type', 'parameters'}) or parameters:
-                    # something besides the title was updated
-                    self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)  # type: ignore  # TODO: fix
 
         elif action == DatasetAction.delete_source:
             self._ds_editor.remove_data_source_collection(source_id=source_id)
@@ -1498,17 +1478,6 @@ class DatasetValidator(DatasetBaseWrapper):
 
         return parameters, new_source_type
 
-    def _choose_ref_source_id(self, new_connection: ConnectionBase, dsrc_coll: 'DataSourceCollectionBase') -> str:
-        # try to match to connection source by title
-        old_default_title = dsrc_coll.title
-        conn_executor_factory = self._service_registry.get_conn_executor_factory().get_sync_conn_executor
-        dsrc_templates = new_connection.get_data_source_templates(conn_executor_factory=conn_executor_factory)
-        for dsrc_tmpl in dsrc_templates:
-            if dsrc_tmpl.title == old_default_title:
-                return dsrc_tmpl.ref_source_id  # type: ignore  # TODO: fix
-
-        return dsrc_templates[0].ref_source_id  # type: ignore  # TODO: fix
-
     @generic_profiler("validator-apply-connection-action")
     def apply_connection_action(
             self, action: DatasetAction, connection_data: ReplaceConnection, by: Optional[ManagedBy] = ManagedBy.user
@@ -1536,33 +1505,18 @@ class DatasetValidator(DatasetBaseWrapper):
             if not isinstance(connection_ref, DefaultConnectionRef):
                 raise TypeError(f'Unexpected connection_ref type: {type(connection_ref)}')
             if connection_ref.conn_id == connection_data.id:
-                if new_connection.has_data_sources():
-                    # new data source is provided by connection
-                    ref_source_id = self._choose_ref_source_id(
-                        new_connection=new_connection,
-                        dsrc_coll=dsrc_coll,
-                    )
-                    parameters = {}  # type: ignore  # TODO: fix
-                    new_source_type = new_connection.source_type    # essentially 'default_source_type'
-                    is_ref = True
-                else:
-                    # new data source is owned by the dataset
-                    ref_source_id = None  # type: ignore  # TODO: fix
-                    parameters, new_source_type = self._migrate_source_parameters(
-                        old_connection=old_connection,
-                        new_connection=new_connection,
-                        old_source_type=dsrc.spec.source_type,  # type: ignore  # TODO: fix
-                        dsrc=dsrc,  # type: ignore  # TODO: fix
-                    )
-                    is_ref = False
+                parameters, new_source_type = self._migrate_source_parameters(
+                    old_connection=old_connection,
+                    new_connection=new_connection,
+                    old_source_type=dsrc.spec.source_type,  # type: ignore  # TODO: fix
+                    dsrc=dsrc,  # type: ignore  # TODO: fix
+                )
 
                 # migrate parameters for new source type
                 updates.append(dict(
                     id=dsrc_coll.id,
                     connection_id=connection_data.new_id,
                     source_type=new_source_type,
-                    is_ref=is_ref,
-                    ref_source_id=ref_source_id,
                     parameters=parameters,
                 ))
                 ignore_source_ids.append(dsrc_coll.id)

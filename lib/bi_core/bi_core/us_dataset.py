@@ -21,7 +21,7 @@ from bi_core.components.ids import (
 from bi_core.components.dependencies.primitives import FieldInterDependencyInfo
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionProxySpec, DataSourceCollectionSpec, DataSourceCollectionSpecBase,
+    DataSourceCollectionSpec, DataSourceCollectionSpecBase,
 )
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.db import SchemaColumn
@@ -97,7 +97,6 @@ class Dataset(USEntry):
     def find_data_source_configuration(  # type: ignore  # TODO: fix
             self,
             connection_id: Optional[str],
-            ref_source_id: Optional[str] = None,
             created_from: Optional[CreateDSFrom] = None,
             title: Optional[str] = None,
             parameters: Optional[dict] = None,
@@ -124,14 +123,6 @@ class Dataset(USEntry):
         connection_ref = connection_ref_from_id(connection_id=connection_id)
 
         for dsrc_coll_spec in self.data.source_collections:
-            if (
-                    isinstance(dsrc_coll_spec, DataSourceCollectionProxySpec)
-                    and dsrc_coll_spec.connection_ref == connection_ref
-                    and dsrc_coll_spec.source_id == ref_source_id
-            ):
-                # reference matches params
-                return dsrc_coll_spec.id
-
             if (
                     isinstance(dsrc_coll_spec, DataSourceCollectionSpec)
                     and dsrc_coll_spec.origin is not None

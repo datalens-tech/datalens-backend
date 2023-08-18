@@ -124,7 +124,6 @@ class DatasetApiLoader:
                 new_hash = get_parameters_hash(
                     connection_id=connection_id,
                     source_type=source_type,
-                    ref_source_id=source_data['ref_source_id'],
                     **source_data['parameters'],
                 )  # not that this does not include title and raw_schema updates
                 old_raw_schema = old_src_coll.get_cached_raw_schema(role=DataSourceRole.origin)
@@ -142,26 +141,18 @@ class DatasetApiLoader:
 
                 if should_update:
                     # source really was updated
-                    if source_data['is_ref'] or old_src_coll.is_ref:
-                        # in this case just delete and recreate it
-                        LOGGER.info('Source %s is a connection reference. '
-                                    'It will be deleted and recreated.', source_id)
-                        ds_editor.remove_data_source_collection(source_id=source_id, ignore_avatars=True)
-                        old_src_coll = None
-                        old_dsrc_coll_spec = None
-                    else:
-                        LOGGER.info('Source %s is an in-dataset source. It will be updated.', source_id)
-                        ds_editor.update_data_source(
-                            source_id=source_id,
-                            role=DataSourceRole.origin,
-                            created_from=source_type,
-                            connection_id=connection_id,
-                            raw_schema=source_data['raw_schema'],
-                            index_info_set=new_index_info_set,
-                            **source_data['parameters'],
-                        )
-                        if should_update_and_notify:
-                            updated_own_source_ids.append(source_id)
+                    LOGGER.info('Source %s is an in-dataset source. It will be updated.', source_id)
+                    ds_editor.update_data_source(
+                        source_id=source_id,
+                        role=DataSourceRole.origin,
+                        created_from=source_type,
+                        connection_id=connection_id,
+                        raw_schema=source_data['raw_schema'],
+                        index_info_set=new_index_info_set,
+                        **source_data['parameters'],
+                    )
+                    if should_update_and_notify:
+                        updated_own_source_ids.append(source_id)
 
                 if old_src_coll is not None and (
                         title != old_src_coll.title
@@ -172,34 +163,23 @@ class DatasetApiLoader:
 
             if old_dsrc_coll_spec is None:
                 # data source doesn't exist - it has to be (re)created
-                if source_data['is_ref']:
-                    LOGGER.info('Creating new source %s as reference to connection %s.', source_id, connection_id)
-                    ds_editor.add_data_source_collection_reference(
-                        source_id=source_id,
-                        title=title,
-                        connection_id=connection_id,
-                        ref_source_id=source_data['ref_source_id'],
-                        managed_by=source_data['managed_by'],
-                        valid=valid,
-                    )
-                else:
-                    LOGGER.info('Creating new plain source %s for connection %s.', source_id, connection_id)
-                    ds_editor.add_data_source_collection(
-                        source_id=source_id,
-                        title=title,
-                        managed_by=source_data['managed_by'],
-                        valid=valid,
-                    )
-                    ds_editor.add_data_source(
-                        source_id=source_id,
-                        role=DataSourceRole.origin,
-                        created_from=source_data['source_type'],
-                        connection_id=connection_id,
-                        raw_schema=source_data['raw_schema'],
-                        index_info_set=source_data['index_info_set'],
-                        parameters=source_data['parameters'],
-                    )
-                    added_own_source_ids.append(source_id)
+                LOGGER.info('Creating new plain source %s for connection %s.', source_id, connection_id)
+                ds_editor.add_data_source_collection(
+                    source_id=source_id,
+                    title=title,
+                    managed_by=source_data['managed_by'],
+                    valid=valid,
+                )
+                ds_editor.add_data_source(
+                    source_id=source_id,
+                    role=DataSourceRole.origin,
+                    created_from=source_data['source_type'],
+                    connection_id=connection_id,
+                    raw_schema=source_data['raw_schema'],
+                    index_info_set=source_data['index_info_set'],
+                    parameters=source_data['parameters'],
+                )
+                added_own_source_ids.append(source_id)
 
         return updated_own_source_ids, added_own_source_ids, handled_source_ids
 

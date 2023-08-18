@@ -1033,7 +1033,6 @@ class ConnectorsDataFileBase(ConnectorsDataBase):
     CONN_FILE_CH_HOST: ClassVar[Optional[str]] = None
     CONN_FILE_CH_PORT: ClassVar[int] = 8443
     CONN_FILE_CH_USERNAME: ClassVar[Optional[str]] = None
-    USE_NON_REF_SOURCES: ClassVar[bool] = False
 
     @classmethod
     def connector_name(cls) -> str:

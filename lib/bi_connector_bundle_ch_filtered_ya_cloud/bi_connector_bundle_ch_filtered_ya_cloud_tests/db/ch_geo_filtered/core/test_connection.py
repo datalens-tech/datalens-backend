@@ -32,8 +32,6 @@ class TestCHGeoFilteredConnection(
             group=[DB_NAME],
             connection_id=conn.uuid,
             source_type=SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
-            is_ref=False,
-            ref_source_id=None,
             parameters=dict(db_name=DB_NAME, table_name=TABLE_NAME),
         )
         assert [expected_template] == dsrc_templates

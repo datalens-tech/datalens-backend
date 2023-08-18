@@ -36,7 +36,6 @@ class DefaultBiApiTestBase(DataApiTestBase):
     @pytest.fixture(scope='session')
     def dataset_params(self) -> dict:
         return dict(
-            is_ref=False,
             source_type=CreateDSFrom.CH_TABLE.name,
             parameters=dict(
                 db_name='test_data',

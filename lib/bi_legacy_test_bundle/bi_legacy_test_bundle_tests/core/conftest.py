@@ -345,7 +345,6 @@ def connectors_settings(clickhouse_db):
             SECRET_ACCESS_KEY='verySecretKey1',
             BUCKET='bi-file-uploader',
             S3_ENDPOINT='http://s3-storage:8000',
-            USE_NON_REF_SOURCES=True,
             **base_settings_params,
         ),
         BITRIX=BitrixConnectorSettings(**partner_settings_params),

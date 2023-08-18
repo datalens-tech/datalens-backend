@@ -44,7 +44,6 @@ class MySQLDatasetTestBase(MySQLConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope='class')
     def dataset_params(self, sample_table) -> dict:
         return dict(
-            is_ref=False,
             source_type=SOURCE_TYPE_MYSQL_TABLE.name,
             parameters=dict(
                 db_name=sample_table.db.name,

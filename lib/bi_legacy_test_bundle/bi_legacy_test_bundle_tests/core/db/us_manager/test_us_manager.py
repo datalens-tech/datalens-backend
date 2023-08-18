@@ -9,7 +9,7 @@ from bi_constants.enums import DataSourceRole, ConnectionType
 
 from bi_core import exc
 from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
-from bi_core.data_source import DataSourceCollectionProxy, DataSource
+from bi_core.data_source import DataSource
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
 from bi_core.us_manager.us_manager_async import AsyncUSManager
@@ -127,11 +127,6 @@ async def test_us_manager_links_load(saved_dataset, local_private_usm: AsyncUSMa
         add_connection_from_data_source(dsrc_coll.get_strict(DataSourceRole.origin))
         add_connection_from_data_source(dsrc_coll.get_opt(DataSourceRole.materialization))
         add_connection_from_data_source(dsrc_coll.get_opt(DataSourceRole.sample))
-
-        if isinstance(dsrc_coll, DataSourceCollectionProxy):
-            add_connection_from_data_source(dsrc_coll._conn_collection.get_strict(DataSourceRole.origin))
-            add_connection_from_data_source(dsrc_coll._conn_collection.get_opt(DataSourceRole.materialization))
-            add_connection_from_data_source(dsrc_coll._conn_collection.get_opt(DataSourceRole.sample))
 
     assert (
         len(manually_collected_related_conn_set) > 0

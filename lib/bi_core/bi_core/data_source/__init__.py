@@ -8,7 +8,6 @@ from .collection import (
     DataSourceCollectionBase,
     DataSourceCollection,
     DataSourceCollectionFactory,
-    DataSourceCollectionProxy,
 )
 from .sql import (
     SQLDataSource,
@@ -32,7 +31,6 @@ __all__ = (
     'DataSourceCollectionBase',
     'DataSourceCollection',
     'DataSourceCollectionFactory',
-    'DataSourceCollectionProxy',
 
     'DataStreamBase',
 

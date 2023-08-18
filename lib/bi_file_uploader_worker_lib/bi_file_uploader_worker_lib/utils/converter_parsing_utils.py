@@ -357,8 +357,7 @@ def guess_cell_type(value, start_order: int = 0) -> ParsingDataType:  # type: ig
         return _NONE_PARSING_DATA_TYPE
 
     result = None
-    if start_order < 0:
-        start_order = 0
+    start_order = max(start_order, 0)
     for cell_type in islice(ALLOWED_DATA_TYPES, start_order, ALLOWED_DATA_TYPES_LEN):
         if cell_type.check_func is not None:
             format_desc = cell_type.check_func(value)

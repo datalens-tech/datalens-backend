@@ -287,10 +287,8 @@ def test_update_data(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=CreateDSFrom.GSHEETS_V2,
-        is_ref=True,
         connection_id=conn_id,
-        ref_source_id='source_3_id',
-        parameters={},
+        parameters=dict(origin_source_id='source_3_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 
@@ -411,10 +409,8 @@ def test_component_errors(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=CreateDSFrom.GSHEETS_V2,
-        is_ref=True,
         connection_id=conn_id,
-        ref_source_id='source_3_id',
-        parameters={},
+        parameters=dict(origin_source_id='source_3_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 
@@ -492,10 +488,8 @@ def test_component_error_warning(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         source_type=CreateDSFrom.GSHEETS_V2,
-        is_ref=True,
         connection_id=conn_id,
-        ref_source_id='source_3_id',
-        parameters={},
+        parameters=dict(origin_source_id='source_3_id'),
     )
     ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
 

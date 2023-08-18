@@ -21,7 +21,7 @@ def saved_file_connection(default_sync_usm: SyncUSManager):
             title='Source 1',
             s3_filename=str(uuid.uuid4()),
             raw_schema=[],
-            status=FileProcessingStatus.in_progress,
+            status=FileProcessingStatus.ready,
         )
         for _ in range(2)
     ])

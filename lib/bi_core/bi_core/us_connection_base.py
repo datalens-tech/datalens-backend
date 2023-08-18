@@ -42,7 +42,6 @@ if TYPE_CHECKING:
     from bi_core.connection_models.common_models import TableIdent
     from bi_core.us_manager.us_manager import USManagerBase
     from bi_core.us_manager.us_manager_sync import SyncUSManager
-    from bi_core.data_source_spec.collection import DataSourceCollectionSpecBase
 
 
 LOGGER = logging.getLogger(__name__)
@@ -55,8 +54,6 @@ class DataSourceTemplate(NamedTuple):
     # main properties
     source_type: CreateDSFrom
     connection_id: str
-    is_ref: bool  # indicates that the data source is a reference to specific source belonging to connection
-    ref_source_id: Optional[str]  # id of referenced data source (only if `is_ref`)
     # type-specific
     parameters: dict
     tab_title: Optional[str] = None
@@ -68,7 +65,6 @@ class DataSourceTemplate(NamedTuple):
         return data_source.get_parameters_hash(
             source_type=self.source_type,
             connection_id=self.connection_id,
-            ref_source_id=self.ref_source_id,
             **self.parameters,
         )
 
@@ -249,10 +245,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def sample_table_name(self):  # type: ignore  # TODO: fix
         return self.data.sample_table_name
 
-    _dsrc_error = 'Only materializable connections can have a data source'
-
-    def get_data_source_coll_spec(self, source_id: str) -> DataSourceCollectionSpecBase:
-        raise NotImplementedError(self._dsrc_error)
+    _dsrc_error = 'Only materializable connections can have a data source'  # TODO remove?
 
     def update_data_source(  # type: ignore  # TODO: fix
             self,
@@ -266,9 +259,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     def get_single_data_source_id(self) -> str:
         raise NotImplementedError(self._dsrc_error)
-
-    def has_data_sources(self) -> bool:
-        return False
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         """
@@ -405,8 +395,6 @@ class SubselectMixin:
                 disabled=not allowed,
                 group=[],
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
-                is_ref=False,
-                ref_source_id=None,
                 parameters={},
             ),
         ]
@@ -476,8 +464,6 @@ class ConnectionSQL(SubselectMixin, ExecutorBasedMixin, ConnectionBase):  # type
                 group=self.get_data_source_template_group(parameters),
                 source_type=self.source_type,  # type: ignore  # TODO: fix
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
-                is_ref=False,
-                ref_source_id=None,
                 parameters=parameters,
             )
             for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)

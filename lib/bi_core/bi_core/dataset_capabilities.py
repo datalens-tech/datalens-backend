@@ -255,12 +255,10 @@ class DatasetCapabilities:
     def supports_preview(self) -> bool:
         """
         Check whether dataset supports preview.
-        This means preview in  general, not necessarily via a materialized sample table.
         Used in options to tell the UI (or some other client) whether preview should/could be shown.
         """
         for source_id, dsrc_coll in self._get_data_source_collections().items():
-            if not dsrc_coll.is_ref:
-                if not dsrc_coll.get_strict().preview_enabled:
-                    return False
+            if not dsrc_coll.get_strict().preview_enabled:
+                return False
 
         return True

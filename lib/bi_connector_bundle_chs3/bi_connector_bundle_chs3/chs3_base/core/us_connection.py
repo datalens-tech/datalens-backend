@@ -14,13 +14,10 @@ from bi_configs.connectors_settings import FileS3ConnectorSettings
 
 from bi_core import exc
 from bi_core import connection_models
-from bi_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec
 from bi_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.us_connection_base import DataSourceTemplate, ConnectionHardcodedDataMixin, ConnectionBase
-from bi_core.base_models import DefaultConnectionRef, ConnectionDataModelBase
-from bi_core.data_source_spec.collection import DataSourceCollectionSpec, DataSourceCollectionSpecBase
-from bi_core.data_source_spec.type_mapping import get_data_source_spec_class
+from bi_core.base_models import ConnectionDataModelBase
 from bi_core.db.elements import SchemaColumn
 from bi_core.utils import parse_comma_separated_hosts
 from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
@@ -131,34 +128,17 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         assert self.source_type is not None
-        if self._connector_settings.USE_NON_REF_SOURCES:
-            return [
-                DataSourceTemplate(
-                    title=source.title,
-                    group=[],
-                    source_type=self.source_type,
-                    connection_id=self.uuid,  # type: ignore
-                    is_ref=False,
-                    ref_source_id=None,
-                    parameters={
-                        'origin_source_id': source.id,
-                    },
-                ) for source in self.data.sources
-            ]
         return [
             DataSourceTemplate(
                 title=source.title,
                 group=[],
                 source_type=self.source_type,
                 connection_id=self.uuid,  # type: ignore
-                is_ref=True,
-                ref_source_id=source.id,
-                parameters={},
+                parameters={
+                    'origin_source_id': source.id,
+                },
             ) for source in self.data.sources
         ]
-
-    def has_data_sources(self) -> bool:
-        return True
 
     def get_file_source_by_id(self, id: Optional[str]) -> FileDataSource:
         file_source = next(iter(src for src in self.data.sources if src.id == id), None)
@@ -186,33 +166,6 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         if file_source is None:
             raise exc.SourceDoesNotExist(f'DataSource id={id} not found in saved sources of connection id={self.uuid}')
         return file_source
-
-    def get_data_source_coll_spec(self, source_id: str) -> DataSourceCollectionSpecBase:
-        file_source = self.get_file_source_by_id(source_id)
-
-        cs = self._connector_settings
-        assert self.source_type is not None
-        dsrc_spec_cls = get_data_source_spec_class(ds_type=self.source_type)
-        assert issubclass(dsrc_spec_cls, BaseFileS3DataSourceSpec)
-        dsrc_spec = dsrc_spec_cls(
-            source_type=self.source_type,
-            connection_ref=DefaultConnectionRef(conn_id=self.uuid),  # type: ignore
-            raw_schema=file_source.raw_schema,
-            table_name=file_source.s3_filename,
-            s3_endpoint=cs.S3_ENDPOINT,
-            bucket=cs.BUCKET,
-            status=file_source.status,
-            origin_source_id=source_id if cs.USE_NON_REF_SOURCES else None,
-        )
-
-        dsrc_coll_spec = DataSourceCollectionSpec(
-            id=file_source.id,
-            title=file_source.title,
-            origin=dsrc_spec,
-            materialization=None,
-            sample=dsrc_spec,
-        )
-        return dsrc_coll_spec
 
     def update_data_source(
             self,

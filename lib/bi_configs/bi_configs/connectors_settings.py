@@ -280,8 +280,6 @@ class FileS3ConnectorSettings(ConnectorSettingsBase):
     # ^ Note that this is used in a query, which, in turn, is used in a cache key at the moment
     #   This means that the value must be set explicitly to preserve caches between restarts and instances
 
-    USE_NON_REF_SOURCES: bool = s_attrib("USE_NON_REF_SOURCES", missing=False)  # type ignore
-
 
 @attr.s(frozen=True)
 class UsageTrackingConnectionSettings(ServiceConnectorSettingsBase):
@@ -469,7 +467,6 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             SECRET_ACCESS_KEY=required(str),
             S3_ENDPOINT=full_cfg.S3_ENDPOINT_URL,
             BUCKET=full_cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,
-            USE_NON_REF_SOURCES=cfg.FILE.USE_NON_REF_SOURCES,
         ) if hasattr(cfg, 'FILE') else None,
         CH_BILLING_ANALYTICS=BillingConnectorSettings(  # type: ignore
             HOST=cfg.CH_BILLING_ANALYTICS.CONN_BILLING_HOST,
@@ -701,7 +698,6 @@ def connectors_settings_fallback_factory_defaults(cfg: CommonInstallation) -> Op
             SECRET_ACCESS_KEY=required(str),
             S3_ENDPOINT=cfg.S3_ENDPOINT_URL,
             BUCKET=cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,
-            USE_NON_REF_SOURCES=cfg.USE_NON_REF_SOURCES,
         ) if isinstance(cfg, cd.ConnectorsDataFileBase) and isinstance(cfg, CommonInstallation) else None,
         CH_BILLING_ANALYTICS=BillingConnectorSettings(  # type: ignore
             HOST=cfg.CONN_BILLING_HOST,
@@ -819,6 +815,5 @@ def connectors_settings_file_only_fallback_factory(cfg: CommonInstallation) -> O
             SECRET_ACCESS_KEY=required(str),
             S3_ENDPOINT=cfg.S3_ENDPOINT_URL,
             BUCKET=cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,
-            USE_NON_REF_SOURCES=cfg.USE_NON_REF_SOURCES,
         ) if isinstance(cfg, cd.ConnectorsDataFileBase) and isinstance(cfg, CommonInstallation) else None,
     )

@@ -187,9 +187,7 @@ class Container(Generic[_ITEM_TV]):
 
 @attr.s
 class DataSource(ApiProxyObject):
-    is_ref: bool = attr.ib(default=False)
     connection_id: str = attr.ib(default=None)
-    ref_source_id: str = attr.ib(default=None)
     source_type: Optional[CreateDSFrom] = attr.ib(default=None, converter=CreateDSFrom.normalize)
     parameters: dict = attr.ib(default=None)
     raw_schema: list = attr.ib(factory=list)
