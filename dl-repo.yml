@@ -1,7 +1,7 @@
 # This file is used by dl-repmanager as the main configuration file
 
 dl_repo:
-  fs_editor: arc  # Replace with `default` to stop using arc
+  fs_editor: default
   package_types:
     - type: terrarium  # Repository tools (including dl-repmanager)
       root_path: terrarium

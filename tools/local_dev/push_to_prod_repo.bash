@@ -51,6 +51,7 @@ find "${DST}" -path "*tests/mypy/*" -delete
 find "${DST}" -name "ya.make" -delete
 find "${DST}" -name "a.yaml" -delete
 find "${DST}" -name ".release.hjson" -exec bash -c "cat {} | grep -v './ya.make' > {}.tmp; rm {}; mv {}.tmp {};" \;
+find "${DST}" -name ".arcignore" -exec bash -c 'mv {} $(dirname {})/.gitignore' \;
 # arcadia entry-points (app/*/app dir)
 
 # Commit

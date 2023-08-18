@@ -9,3 +9,4 @@ build
 *.ipynb
 local_dev_2/requirements.txt
 .ruff_cache
+.idea
