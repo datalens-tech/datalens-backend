@@ -1,5 +1,4 @@
 # Translations
-*.mo
 *.pot
 # Example data
 db_config.json
