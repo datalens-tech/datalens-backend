@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import logging
 from typing import (
-    TYPE_CHECKING, Any, Callable, ClassVar, Final,
+    TYPE_CHECKING, Any, Callable, ClassVar,
     NamedTuple, Optional, Type, TypeVar, Union, Generic,
 )
 
@@ -75,7 +75,6 @@ _CB_TV = TypeVar('_CB_TV', bound='ConnectionBase')
 class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     dir_name: ClassVar[str] = ''  # type: ignore  # TODO: fix
     scope: ClassVar[str] = 'connection'  # type: ignore  # TODO: fix
-    class_version: Final[tuple[int, int]] = (11, 0)  # type: ignore  # TODO: fix
     source_type: ClassVar[Optional[CreateDSFrom]] = None
     allowed_source_types: ClassVar[Optional[frozenset[CreateDSFrom]]] = None
     allow_dashsql: ClassVar[bool] = False

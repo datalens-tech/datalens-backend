@@ -115,7 +115,6 @@ class SyncUSManager(USManagerBase):
 
         # noinspection PyProtectedMember
         if not entry._stored_in_db:
-            entry.version = entry.class_version
             resp = self._us_client.create_entry(
                 key=entry_loc,
                 scope=us_scope,

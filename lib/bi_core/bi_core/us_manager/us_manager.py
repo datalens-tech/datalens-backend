@@ -410,7 +410,6 @@ class USManagerBase:
         save_params: dict[str, Any] = {}
 
         if not entry._stored_in_db:
-            entry.version = entry.class_version
             if entry.permissions_mode is not None:
                 save_params.update(permissionsMode=entry.permissions_mode)
             if entry.initial_permissions is not None:

@@ -40,10 +40,6 @@ class Dataset(USEntry):
     dir_name = ''  # type: ignore  # TODO: fix
     scope = 'dataset'  # type: ignore  # TODO: fix
 
-    # Current version - 11:
-    # has_auto_aggregation attribute is now saved as True for fields containing aggregations in formulas
-    class_version = (11, 0)
-
     @attr.s
     class DataModel(BaseAttrsDataModel):
         name: str = attr.ib()

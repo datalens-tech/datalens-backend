@@ -123,7 +123,6 @@ class AsyncUSManager(USManagerBase):
 
         # noinspection PyProtectedMember
         if not entry._stored_in_db:
-            entry.version = entry.class_version
             entry_loc = entry.entry_key
             assert entry_loc is not None, "Entry location must be set before saving US entry"
 

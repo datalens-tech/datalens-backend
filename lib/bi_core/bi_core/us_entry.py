@@ -25,7 +25,6 @@ _USENTRY_TV = TypeVar('_USENTRY_TV', bound='USEntry')
 class USEntry:
     DataModel: ClassVar[Union[Type[BaseAttrsDataModel], None]] = None
     dir_name = None
-    class_version = (0, 0)
 
     uuid: Optional[str] = None
     _data = None
@@ -48,29 +47,6 @@ class USEntry:
     @classmethod
     def _class_generator(cls, us_resp):  # type: ignore  # TODO: fix
         return cls
-
-    # TODO FIX: Remove after removing 0007__metrika_counter_creation_date.py
-    @classmethod
-    def _init_from_us_resp(cls, us_resp, us_manager=None):  # type: ignore  # TODO: fix
-        init_params = dict(
-            uuid=us_resp['entryId'],
-            data=us_resp.get('data'),
-            entry_key=us_resp['key'],
-            type_=us_resp['type'],
-            meta=us_resp['meta'],
-            is_locked=us_resp.get('isLocked'),
-            is_favorite=us_resp.get('isFavorite'),
-            permissions=us_resp.get('permissions') or {},
-            links=us_resp.get('links') or {},
-            hidden=us_resp['hidden'],
-            us_manager=us_manager,
-            data_strict=False,
-        )
-        real_cls = cls._class_generator(us_resp)  # XXX: also done in `from_db`.
-        obj = real_cls(**init_params)
-        obj._stored_in_db = True
-        obj._us_resp = us_resp
-        return obj
 
     @classmethod
     def create_from_dict(
@@ -254,18 +230,6 @@ class USEntry:
     @property
     def folder_id(self):  # type: ignore  # TODO: fix
         return self._us_resp.get('tenantId') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
-
-    @property
-    def version(self):  # type: ignore  # TODO: fix
-        if self._stored_in_db:
-            return (self.meta.get('version', 0), self.meta.get('version_minor', 0))
-        else:
-            return self.class_version
-
-    @version.setter
-    def version(self, version: tuple[int, int]):  # type: ignore  # TODO: fix
-        self.meta['version'] = version[0]
-        self.meta['version_minor'] = version[1]
 
     def validate(self) -> None:
         """
