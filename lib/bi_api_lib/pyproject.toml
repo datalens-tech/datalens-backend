@@ -136,7 +136,7 @@ bi-core-rqe-async = "bi_core.connection_executors.remote_query_executor.app_asyn
 [datalens.pytest.ext]
 root_dir = "bi_api_lib_tests/"
 target_path = "ext"
-skip_compose = "true"
+labels = ["fat"]
 
 [datalens.pytest.db]
 root_dir = "bi_api_lib_tests/"

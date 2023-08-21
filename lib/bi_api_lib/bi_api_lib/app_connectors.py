@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Collection, Optional, Type
 
 import attr
 
@@ -23,9 +23,11 @@ class BiApiConnectorEntrypointManager(EntrypointClassManager[BiApiConnector]):
     entrypoint_group_name = attr.ib(init=False, default=_CONNECTOR_EP_GROUP)
 
 
-def register_all_connectors() -> None:
+def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
     connectors = BiApiConnectorEntrypointManager().get_all_ep_classes()
-    for _, connector_cls in sorted(connectors.items()):
+    for ep_name, connector_cls in sorted(connectors.items()):
+        if connector_ep_names is not None and ep_name not in connector_ep_names:
+            continue
         CONN_REG_BI_API.register_connector(connector_cls)
 
     register_non_connectorized_source_schemas()  # FIXME: Remove

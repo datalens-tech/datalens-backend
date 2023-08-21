@@ -6,6 +6,7 @@ import logging
 import attr
 
 from bi_configs.crypto_keys import CryptoKeysConfig, get_single_key_crypto_keys_config
+from bi_core.loader import CoreLibraryConfig
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +29,10 @@ class CoreTestEnvironmentConfigurationBase(abc.ABC):
     def get_crypto_keys_config(self) -> CryptoKeysConfig:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_core_library_config(self) -> CoreLibraryConfig:
+        raise NotImplementedError
+
 
 # These are used only for creation of local environments in tests, not actual external ones
 DEFAULT_FERNET_KEY = 'h1ZpilcYLYRdWp7Nk8X1M1kBPiUi8rdjz9oBfHyUKIk='
@@ -41,6 +46,7 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
     port_us_pg_5432: int = attr.ib(kw_only=True)
     us_master_token: str = attr.ib(kw_only=True)
     fernet_key: str = attr.ib(kw_only=True, default=DEFAULT_FERNET_KEY)
+    core_library_config: CoreLibraryConfig = attr.ib(kw_only=True, default=CoreLibraryConfig())
 
     def get_us_config(self) -> UnitedStorageConfiguration:
         return UnitedStorageConfiguration(
@@ -51,3 +57,6 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
 
     def get_crypto_keys_config(self) -> CryptoKeysConfig:
         return get_single_key_crypto_keys_config(key_id="0", key_value=self.fernet_key)
+
+    def get_core_library_config(self) -> CoreLibraryConfig:
+        return self.core_library_config

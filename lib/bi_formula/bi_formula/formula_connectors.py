@@ -1,5 +1,5 @@
 from importlib import metadata
-from typing import Type
+from typing import Collection, Optional, Type
 
 from bi_sqlalchemy_gsheets.base import GSheetsDialect
 from bi_sqlalchemy_bitrix.base import BitrixDialect
@@ -10,7 +10,7 @@ from bi_formula.translation.sa_dialects import register_sa_dialect
 from bi_formula.translation.columns import register_column_renderer_cls
 from bi_formula.connectors.base.connector import FormulaConnector
 from bi_formula.connectors.base.column import DefaultColumnRenderer, UnprefixedColumnRenderer
-from bi_formula.connector_registration import CONN_REG_FORMULA
+from bi_formula.connectors.registration import CONN_REG_FORMULA
 
 
 _CONNECTOR_EP_GROUP = f'{package.__name__}.connectors'
@@ -23,9 +23,11 @@ def _get_all_ep_connectors() -> dict[str, Type[FormulaConnector]]:
     return {ep.name: ep.load() for ep in entrypoints}
 
 
-def register_all_connectors() -> None:
+def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
     connectors = _get_all_ep_connectors()
-    for _, connector_cls in sorted(connectors.items()):
+    for ep_name, connector_cls in sorted(connectors.items()):
+        if connector_ep_names is not None and ep_name not in connector_ep_names:
+            continue
         CONN_REG_FORMULA.register_connector(connector_cls)
 
     # FIXME: Remove all this manual registration of dialects
