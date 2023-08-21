@@ -32,31 +32,6 @@ class RepositoryManagementPlugin(abc.ABC):
 
 
 @attr.s
-class YaMakeRepositoryManagementPlugin(RepositoryManagementPlugin):
-    def register_package(self, package_info: PackageInfo) -> None:
-        package_own_dir_name = os.path.basename(package_info.abs_path)
-        package_parent_path = os.path.dirname(package_info.abs_path)
-        pkg_list_path = os.path.join(package_parent_path, 'ya.make')
-
-        def transform_yamake_package_list(old_text: str) -> str:
-            deps_re = r'RECURSE\(\s+#[^\n]+\n(?P<list_text>[^)]+)\)'
-            list_match = re.search(deps_re, old_text)
-            assert list_match is not None
-            pkg_list = list_match.group('list_text').strip().split()
-            pkg_list.append(package_own_dir_name)
-            pkg_list.sort()
-            pkg_list = [f'    {item}' for item in pkg_list]
-            return ''.join([
-                old_text[:list_match.start('list_text')],
-                '\n'.join(pkg_list),
-                '\n',
-                old_text[list_match.end('list_text'):],
-            ])
-
-        self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_yamake_package_list)
-
-
-@attr.s
 class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
     _PACKAGE_LIST_REL_PATH = 'tools/local_dev/requirements/all_local_packages.lst'
 

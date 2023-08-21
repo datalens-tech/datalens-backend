@@ -70,17 +70,17 @@ class DefaultFilesystemEditor(FilesystemEditor):
             shutil.move(old_path, new_path)
 
 
-class ArcFilesystemEditor(FilesystemEditor):
-    """An FS editor that buses arc to move files and directories"""
+class GitFilesystemEditor(FilesystemEditor):
+    """An FS editor that buses git to move files and directories"""
 
     def copy_dir(self, src_dir: str, dst_dir: str) -> None:
         cwd = os.getcwd()
         rel_old_path = os.path.relpath(src_dir, cwd)
         rel_new_path = os.path.relpath(dst_dir, cwd)
-        subprocess.run(f'arc cp -r "{rel_old_path}" "{rel_new_path}"', shell=True)
+        subprocess.run(f'git cp -r "{rel_old_path}" "{rel_new_path}"', shell=True)
 
     def move_path(self, old_path: str, new_path: str) -> None:
         cwd = os.getcwd()
         rel_old_path = os.path.relpath(old_path, cwd)
         rel_new_path = os.path.relpath(new_path, cwd)
-        subprocess.run(f'arc mv "{rel_old_path}" "{rel_new_path}"', shell=True)
+        subprocess.run(f'git mv "{rel_old_path}" "{rel_new_path}"', shell=True)

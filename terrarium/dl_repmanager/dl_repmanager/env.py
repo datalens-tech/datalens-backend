@@ -3,7 +3,7 @@ Load environment from config file (dl-repo.yml).
 The file should have a structure similar to this:
 
     dl_repo:
-      fs_editor: arc
+      fs_editor: git
 
       include:
         - core_repo/dl-repo.yml
@@ -43,11 +43,10 @@ from typing import ClassVar, Iterable, Optional, Type
 import attr
 import yaml
 
-from dl_repmanager.fs_editor import FilesystemEditor, DefaultFilesystemEditor, ArcFilesystemEditor
+from dl_repmanager.fs_editor import FilesystemEditor, DefaultFilesystemEditor, GitFilesystemEditor
 from dl_repmanager.management_plugins import (
     RepositoryManagementPlugin,
     MainTomlRepositoryManagementPlugin,
-    YaMakeRepositoryManagementPlugin,
     CommonToolingRepositoryManagementPlugin,
 )
 
@@ -74,7 +73,6 @@ class RepoEnvironment:
     fs_editor: FilesystemEditor = attr.ib(kw_only=True)
 
     plugin_classes: ClassVar[tuple[Type[RepositoryManagementPlugin], ...]] = (
-        YaMakeRepositoryManagementPlugin,
         CommonToolingRepositoryManagementPlugin,
         MainTomlRepositoryManagementPlugin,
     )
@@ -125,7 +123,7 @@ class RepoEnvironmentLoader:
 
     fs_editor_classes: ClassVar[dict[str, Type[FilesystemEditor]]] = {
         'default': DefaultFilesystemEditor,
-        'arc': ArcFilesystemEditor,
+        'git': GitFilesystemEditor,
     }
 
     def _load_params_from_yaml_file(self, config_path: str) -> ConfigContents:
