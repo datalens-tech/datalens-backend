@@ -5,7 +5,7 @@ import pytest
 import shortuuid
 
 from bi_constants.enums import CreateDSFrom
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.dlenv import DLEnv
 from bi_api_client.dsmaker.primitives import Dataset
 
 

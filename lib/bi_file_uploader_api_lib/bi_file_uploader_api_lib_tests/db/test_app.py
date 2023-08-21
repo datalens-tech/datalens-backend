@@ -1,6 +1,6 @@
 import pytest
 
-from bi_testing.api_wrappers import Req
+from bi_testing_ya.api_wrappers import Req
 
 from bi_file_uploader_api_lib_tests.req_builder import ReqBuilder
 

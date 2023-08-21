@@ -4,7 +4,7 @@ import time
 import aiohttp
 
 import bi_integration_tests.request_executors.base as request_executors_base
-from bi_testing import api_wrappers
+from bi_testing_ya import api_wrappers
 
 
 class WaitTimeoutError(Exception):

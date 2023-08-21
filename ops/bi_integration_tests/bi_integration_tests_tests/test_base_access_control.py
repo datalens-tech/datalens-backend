@@ -9,7 +9,7 @@ from bi_integration_tests import datasets
 from bi_integration_tests.common import get_dataset_json_from_validation, get_sample_db_dataset_json
 from bi_integration_tests.request_executors.bi_api_client import get_connection_json
 from bi_integration_tests.steps import ScenarioStep, StepExecutor
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.dlenv import DLEnv
 from bi_testing.utils import skip_outside_devhost
 
 tag_init = "tag_init"

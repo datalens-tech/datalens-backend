@@ -25,7 +25,7 @@ from bi_core.loader import load_bi_core
 from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_api_commons.base_models import RequestContextInfo, TenantCommon
-from bi_testing.api_wrappers import APIClient
+from bi_testing_ya.api_wrappers import APIClient
 from bi_testing.s3_utils import create_s3_bucket, create_s3_client
 from bi_testing.utils import wait_for_initdb
 from bi_file_uploader_task_interface.context import FileUploaderTaskContext

@@ -23,6 +23,7 @@ yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

@@ -7,7 +7,7 @@ from bi_constants.enums import ManagedBy, CalcMode, AggregationFunction, BIType
 from bi_external_api.domain.internal import datasets
 from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
 from bi_external_api.internal_api_clients import exc_api
-from bi_testing.api_wrappers import Req
+from bi_testing_ya.api_wrappers import Req
 
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 

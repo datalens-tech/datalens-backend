@@ -7,7 +7,7 @@ from bi_external_api.converter.main import DatasetConverter
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.external import get_external_model_mapper
 from bi_external_api.enums import ExtAPIType
-from bi_testing.api_wrappers import Req
+from bi_testing_ya.api_wrappers import Req
 
 from bi_external_api_tests.test_acceptance import (
     _test_dc_workbook_create_modify_delete,

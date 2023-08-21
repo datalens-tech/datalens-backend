@@ -13,7 +13,7 @@ from bi_configs.rqe import RQEConfig
 from bi_configs.connectors_settings import ConnectorsSettingsByType
 from bi_configs.settings_submodels import YCAuthSettings
 
-from bi_testing.iam_mock import apply_iam_services_mock
+from bi_testing_ya.iam_mock import apply_iam_services_mock
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
 from bi_api_commons.base_models import TenantYCFolder

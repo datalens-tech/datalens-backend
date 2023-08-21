@@ -5,7 +5,7 @@ import attr
 from bi_api_commons.base_models import TenantDef
 
 from bi_integration_tests import report_formatting
-from bi_testing import api_wrappers, cloud_tokens
+from bi_testing_ya import api_wrappers, cloud_tokens
 
 
 @attr.s(auto_attribs=True, frozen=True)

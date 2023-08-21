@@ -8,7 +8,7 @@ from typing import Optional, Dict, Any, Union, AsyncIterable, Mapping
 
 import aiohttp.test_utils
 import attr
-from aiohttp import MultipartWriter
+from aiohttp import MultipartWriter, ClientResponse
 
 from bi_api_commons.base_models import TenantDef
 from bi_api_commons.tracing import get_current_tracing_headers
@@ -16,7 +16,7 @@ from bi_constants.api_constants import DLHeadersCommon
 from bi_utils.aio import await_sync
 from bi_configs.utils import get_root_certificates_path
 
-from .cloud_tokens import AccountCredentials
+from bi_testing_ya.cloud_tokens import AccountCredentials
 
 
 @attr.s(frozen=True)
@@ -47,7 +47,7 @@ class HTTPClientWrapper:
     session: aiohttp.ClientSession
     base_url: str
 
-    def _make_url(self, url: str):
+    def _make_url(self, url: str) -> str:
         return f"{self.base_url.rstrip('/')}/{url.lstrip('/')}"
 
     async def request(
@@ -56,8 +56,8 @@ class HTTPClientWrapper:
         data: Any = None,
         json: Any = None,
         headers: Optional[Mapping[str, str]] = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> ClientResponse:
         return await self.session.request(
             method, self._make_url(url),
             data=data,
@@ -93,7 +93,7 @@ class APIClient:
     @staticmethod
     def common_headers(*, folder_id: str, req_id: Optional[str] = None, token: Optional[str] = None,
                        public_api_key: Optional[str] = None, is_intranet_user: bool = False,
-                       tenant: Optional[TenantDef] = None):
+                       tenant: Optional[TenantDef] = None) -> dict:
         if public_api_key is not None and token is not None:
             raise ValueError("Public API key and access token (IAM or OAuth) can not be provided simultaneously.")
 
@@ -122,7 +122,7 @@ class APIClient:
 
         return {**headers, **tracing_headers}
 
-    def get_local_common_headers(self, req_id):
+    def get_local_common_headers(self, req_id: str) -> dict:
         if self.account_credentials:
             token = self.account_credentials.token
             is_intranet_user = self.account_credentials.is_intranet_user
@@ -145,7 +145,7 @@ class APIClient:
                 **(self.get_local_common_headers(req_id=req_id) if rq.add_common_headers else {}),
                 **(rq.extra_headers if rq.extra_headers else {}),
             },
-            params=rq.params,
+            params=rq.params,  # type: ignore  # TODO: fix
             data=rq.data,
             json=rq.data_json,
             ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())
@@ -182,7 +182,12 @@ class TestClientConverterAiohttpToFlask:
     class Resp:
         status_code: int
         data: bytes
-        json: dict
+        _json: Optional[dict]
+
+        @property
+        def json(self) -> dict:
+            assert self._json is not None
+            return self._json
 
     def set_cookie(self, server_name: str, key: str, value: str = "", **kwargs: Any) -> None:
         if self._cookies is None:
@@ -193,10 +198,10 @@ class TestClientConverterAiohttpToFlask:
         if self._cookies is not None:
             self._cookies.pop(key, None)
 
-    def post(self, url: str, **kwargs):
+    def post(self, url: str, **kwargs: Any) -> Resp:
         return self.open(url, method='post', **kwargs)
 
-    def get(self, url: str, **kwargs):
+    def get(self, url: str, **kwargs: Any) -> Resp:
         return self.open(url, method='get', **kwargs)
 
     def open(
@@ -205,7 +210,7 @@ class TestClientConverterAiohttpToFlask:
             method: str,
             data: Optional[str] = None,
             content_type: Optional[str] = None,
-            headers: dict = None,
+            headers: Optional[dict] = None,
     ) -> Resp:
         headers = dict(headers) if headers else {}
         if self._extra_headers:
@@ -216,9 +221,13 @@ class TestClientConverterAiohttpToFlask:
         resp = await_sync(self._aio_client.request(
             method, url, data=data, headers=headers, cookies=self._cookies,
         ), loop=self._loop)
-        data = await_sync(resp.read())
-        try:
-            js = json.loads(data)
-        except json.JSONDecodeError:
-            js = None
-        return self.Resp(status_code=resp.status, data=data, json=js)
+        resp_data = await_sync(resp.read())
+
+        js: Optional[dict] = None
+        if resp_data is not None:
+            try:
+                js = json.loads(resp_data)
+            except json.JSONDecodeError:
+                pass
+
+        return self.Resp(status_code=resp.status, data=resp_data, json=js)

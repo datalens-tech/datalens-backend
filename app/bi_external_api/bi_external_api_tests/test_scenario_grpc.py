@@ -11,7 +11,7 @@ from bi_external_api.testing_dicts_builders.chart import ChartJSONBuilderSingleD
 from bi_external_api.testing_dicts_builders.dataset import SampleSuperStoreLightJSONBuilder, BaseDatasetJSONBuilder
 from bi_external_api.testing_dicts_builders.reference_wb import build_reference_workbook
 from bi_external_api.testing_no_deps import DomainScene
-from bi_testing.factories import AbstractAsyncTestResourceFactory
+from bi_testing_ya.factories import AbstractAsyncTestResourceFactory
 
 
 def assert_operation_status(

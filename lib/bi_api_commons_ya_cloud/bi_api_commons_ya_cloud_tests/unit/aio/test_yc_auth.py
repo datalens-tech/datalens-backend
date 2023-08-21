@@ -20,7 +20,7 @@ from bi_api_commons.yc_access_control_model import (
 )
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 
-from bi_testing.api_wrappers import TestClientConverterAiohttpToFlask
+from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
 from ..test_yc_auth_scenarios import (
     Scenario_YCAuth_ModeYC_DenyCookieAuth,
     Scenario_YCAuth_ModeDataCloud_DenyCookieAuth,

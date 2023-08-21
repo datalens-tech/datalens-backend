@@ -26,14 +26,14 @@ class AccountCredentials:
     user_name: Optional[str] = attr.ib(default=None)
     is_sa: bool = attr.ib(default=False)
 
-    def get_rls_user_name(self):
+    def get_rls_user_name(self) -> Optional[str]:
         if self.is_sa:
             return f'@sa:{self.user_id}'
         return self.user_name
 
 
 def get_user_account_credentials(
-        user_oauth_token: str, yc_ts_endpoint: str, as_grpc_channel,
+        user_oauth_token: str, yc_ts_endpoint: str, as_grpc_channel: grpc.Channel,
         caches_dir: Optional[str] = None, cache_key: Optional[str] = None,
 ) -> AccountCredentials:
     cache_file_path = None
@@ -143,7 +143,7 @@ class CloudCredentialsConverter:
             key_id: str,
             private_key: str,
             cache_key: Optional[str] = None,
-    ):
+    ) -> str:
         return get_service_account_iam_token(
             service_account_id=service_account_id,
             key_id=key_id,

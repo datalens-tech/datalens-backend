@@ -1,6 +1,6 @@
 import attr
 
-from bi_testing.cloud_tokens import AccountCredentials, CloudCredentialsConverter
+from bi_testing_ya.cloud_tokens import AccountCredentials, CloudCredentialsConverter
 
 
 @attr.s(auto_attribs=True, frozen=True)

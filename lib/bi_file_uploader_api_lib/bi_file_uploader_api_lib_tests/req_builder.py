@@ -2,7 +2,7 @@ from typing import ClassVar, Optional, Any
 
 import aiohttp
 
-from bi_testing.api_wrappers import Req
+from bi_testing_ya.api_wrappers import Req
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 

@@ -18,6 +18,7 @@ shortuuid = ">=1.0.11"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 yandex-bi-us-client = {path = "../../lib/bi_us_client"}
 
 [tool.poetry.group.tests.dependencies]

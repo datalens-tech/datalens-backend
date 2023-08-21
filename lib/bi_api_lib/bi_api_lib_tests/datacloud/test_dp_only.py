@@ -3,7 +3,7 @@ import pytest
 from bi_constants.enums import CreateDSFrom
 
 from bi_api_client.dsmaker.primitives import Dataset
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.dlenv import DLEnv
 
 
 @pytest.mark.asyncio

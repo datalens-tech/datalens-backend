@@ -7,9 +7,9 @@ import bi_integration_tests.request_executors.base as request_executors_base
 from bi_api_commons.base_models import TenantDef
 from bi_integration_tests.request_executors.base import ConnectionData
 from bi_integration_tests.report_formatting import ReportFormatter
-from bi_testing import api_wrappers
-from bi_testing.api_wrappers import Req, Resp
-from bi_testing.cloud_tokens import AccountCredentials
+
+from bi_testing_ya.api_wrappers import Req, Resp
+from bi_testing_ya.cloud_tokens import AccountCredentials
 
 
 @attr.s(auto_attribs=True, frozen=True)
@@ -92,23 +92,23 @@ class BIAPIClient(request_executors_base.BaseRequestExecutor):
         conn_id = connection_response.json["id"]
         return conn_id
 
-    async def create_connection(self, data: ConnectionData) -> api_wrappers.Resp:
-        request = api_wrappers.Req(
+    async def create_connection(self, data: ConnectionData) -> Resp:
+        request = Req(
             method="post",
             url="/api/v1/connections/",
             data_json=attr.asdict(data),
         )
         return await self._request(request)
 
-    async def get_connection(self, connection_id: str) -> api_wrappers.Resp:
-        request = api_wrappers.Req(
+    async def get_connection(self, connection_id: str) -> Resp:
+        request = Req(
             method="get",
             url=f"/api/v1/connections/{connection_id}",
         )
         return await self._request(request)
 
-    async def get_dataset_data(self, dataset_id: str) -> api_wrappers.Resp:
-        request = api_wrappers.Req(
+    async def get_dataset_data(self, dataset_id: str) -> Resp:
+        request = Req(
             method="post",
             url=f"/api/data/v1/datasets/{dataset_id}/versions/draft/result",
             data_json={"columns": ["int_value"]}

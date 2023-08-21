@@ -6,7 +6,7 @@ import attr
 from werkzeug.test import Client as WClient
 
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase, ClientResponse
-from bi_testing.api_wrappers import TestClientConverterAiohttpToFlask
+from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
 
 
 @attr.s

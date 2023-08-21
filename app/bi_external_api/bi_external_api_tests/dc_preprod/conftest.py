@@ -25,8 +25,8 @@ from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.settings import ExternalAPISettings
 from bi_external_api.testings import WorkbookOpsClient
-from bi_testing.cloud_tokens import AccountCredentials
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.cloud_tokens import AccountCredentials
+from bi_testing_ya.dlenv import DLEnv
 from bi_testing.env_params.generic import GenericEnvParamGetter
 from bi_testing.files import get_file_loader
 from ..test_acceptance import ConnectionTestingData

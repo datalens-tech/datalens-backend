@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from bi_testing.cloud_tokens import AccountCredentials
+from bi_testing_ya.cloud_tokens import AccountCredentials
 
 # ##### #
 # Creds #
 # ##### #
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.dlenv import DLEnv
 
 
 @pytest.fixture()

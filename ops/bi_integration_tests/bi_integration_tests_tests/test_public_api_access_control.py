@@ -5,8 +5,8 @@ import pytest
 from bi_integration_tests import datasets
 from bi_integration_tests.common import RequestExecutor, setup_db_conn_and_dataset
 from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
-from bi_testing.api_wrappers import Req
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.api_wrappers import Req
+from bi_testing_ya.dlenv import DLEnv
 from bi_testing.utils import skip_outside_devhost, requires_materialization
 
 

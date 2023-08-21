@@ -17,7 +17,7 @@ from aiohttp import web, ClientSession, ClientConnectorError
 from bi_constants.api_constants import DLHeadersCommon
 from bi_api_commons.logging_sentry import cleanup_common_secret_data
 from bi_core.flask_utils.sentry import configure_raven_for_flask
-from bi_testing.api_wrappers import HTTPClientWrapper
+from bi_testing_ya.api_wrappers import HTTPClientWrapper
 
 
 @attr.s

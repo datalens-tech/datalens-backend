@@ -7,7 +7,7 @@ import shortuuid
 
 from bi_constants.api_constants import DLHeadersCommon, YcTokenHeaderMode, DLHeaders
 
-from bi_testing.iam_mock import apply_iam_services_mock
+from bi_testing_ya.iam_mock import apply_iam_services_mock
 
 from bi_api_commons.error_messages import UserErrorMessages
 

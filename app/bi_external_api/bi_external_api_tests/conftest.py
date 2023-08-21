@@ -29,7 +29,7 @@ from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.settings import ExternalAPISettings
 from bi_external_api.testings import WorkbookOpsClient
-from bi_testing.api_wrappers import APIClient
+from bi_testing_ya.api_wrappers import APIClient
 from .config import DockerComposeEnvBiExtApi, TestingUSConfig
 from .config import (
     DockerComposeEnvBiExtApiDC,

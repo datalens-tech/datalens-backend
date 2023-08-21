@@ -3,7 +3,7 @@ import pytest
 from bi_external_api.domain import external as ext
 from bi_external_api.testings import WorkbookOpsClient
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
-from bi_testing.api_wrappers import Req
+from bi_testing_ya.api_wrappers import Req
 
 
 @pytest.mark.asyncio

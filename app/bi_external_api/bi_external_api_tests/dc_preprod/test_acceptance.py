@@ -13,7 +13,7 @@ from bi_external_api.grpc_proxy.common import GHeaders
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.testing_no_deps import DomainScene
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
-from bi_testing.sa_factories import DisposableYCServiceAccountFactory
+from bi_testing_ya.sa_factories import DisposableYCServiceAccountFactory
 from ..test_acceptance_dc import AcceptanceScenarioDC
 from ..test_scenario_grpc import GrpcAcceptanceScenarioDC
 

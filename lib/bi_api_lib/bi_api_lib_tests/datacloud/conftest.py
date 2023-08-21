@@ -16,9 +16,9 @@ from bi_constants.api_constants import DLHeadersCommon
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.enums import AppType, EnvType
 
-from bi_testing.api_wrappers import TestClientConverterAiohttpToFlask
-from bi_testing.cloud_tokens import AccountCredentials
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
+from bi_testing_ya.cloud_tokens import AccountCredentials
+from bi_testing_ya.dlenv import DLEnv
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
 from bi_testing.env_params.generic import GenericEnvParamGetter

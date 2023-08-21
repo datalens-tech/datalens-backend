@@ -6,8 +6,8 @@ from bi_integration_tests import datasets
 from bi_integration_tests.common import setup_db_conn_and_dataset, create_executor
 from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
 from bi_integration_tests.sales_table import upload_data_from_df
-from bi_testing.api_wrappers import Req
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.api_wrappers import Req
+from bi_testing_ya.dlenv import DLEnv
 from bi_testing.utils import skip_outside_devhost
 from test_data.sales_dataset import read_superstore_csv_as_pandas_df
 

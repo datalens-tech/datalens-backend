@@ -19,8 +19,8 @@ from bi_dls_client.dls_client import DLSClient
 from bi_integration_tests.account_credentials import TestCredentialsConverter
 from bi_integration_tests.report_formatting import ReportFormatter
 from bi_integration_tests.request_executors.workbook_mgmt import workbook_mgmt_hooks, NOT_REQUIRED
-from bi_testing.cloud_tokens import AccountCredentials
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.cloud_tokens import AccountCredentials
+from bi_testing_ya.dlenv import DLEnv
 
 pytest_plugins = (
     'aiohttp.pytest_plugin',

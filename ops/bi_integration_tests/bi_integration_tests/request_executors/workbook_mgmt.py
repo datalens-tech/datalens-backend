@@ -7,7 +7,7 @@ import aiohttp
 
 from bi_api_commons.base_models import IAMAuthData, TenantDef
 from bi_api_commons.client.base import get_default_aiohttp_session
-from bi_testing.cloud_tokens import AccountCredentials
+from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_us_client.us_workbook_cmd_client import USWorkbookCommandClient
 
 NOT_REQUIRED = 'NOT_REQUIRED'

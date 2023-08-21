@@ -7,7 +7,7 @@ import aiohttp.web
 import pytest
 
 from bi_constants.enums import FileProcessingStatus
-from bi_testing.api_wrappers import APIClient
+from bi_testing_ya.api_wrappers import APIClient
 from bi_task_processor.state import wait_task
 from bi_file_uploader_task_interface.tasks import ParseFileTask, SaveSourceTask
 

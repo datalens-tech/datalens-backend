@@ -6,7 +6,7 @@ import bi_integration_tests.request_executors.base
 from bi_integration_tests import common, request_executors
 from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
 from bi_testing import utils
-from bi_testing.dlenv import DLEnv
+from bi_testing_ya.dlenv import DLEnv
 from test_data.sales_dataset import get_test_csv_file_contents
 
 STATUS_TIMEOUT_SECONDS = 10

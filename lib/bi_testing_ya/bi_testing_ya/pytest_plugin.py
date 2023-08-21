@@ -13,9 +13,9 @@ import yaml
 from bi_configs import environments
 from bi_configs.environments import IntegrationTestConfig, CommonInstallation, DataCloudExposedInstallationTesting
 from bi_testing import shared_testing_constants
-from bi_testing.cloud_tokens import AccountCredentials, ServiceAccountAndKeyData
-from bi_testing.dlenv import DLEnv
-from bi_testing.external_systems_helpers.top import (
+from bi_testing_ya.cloud_tokens import AccountCredentials, ServiceAccountAndKeyData
+from bi_testing_ya.dlenv import DLEnv
+from bi_testing_ya.external_systems_helpers.top import (
     ExternalSystemsHelperBase, ExternalSystemsHelperCloud, ExternalSystemsHelperInternalInstallation,
 )
 from bi_testing.utils import skip_outside_devhost

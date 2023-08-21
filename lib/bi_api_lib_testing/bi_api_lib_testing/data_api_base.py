@@ -12,7 +12,7 @@ from bi_configs.enums import AppType
 from bi_configs.rqe import RQEConfig
 from bi_configs.connectors_settings import ConnectorsSettingsByType
 
-from bi_testing.api_wrappers import TestClientConverterAiohttpToFlask
+from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 

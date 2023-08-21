@@ -14,9 +14,9 @@ from bi_integration_tests.report_formatting import ReportFormatter
 from bi_integration_tests.request_executors.base import WaitTimeoutError
 from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
 from bi_integration_tests.steps import file_form
-from bi_testing import api_wrappers
-from bi_testing.api_wrappers import Req, Resp
-from bi_testing.cloud_tokens import AccountCredentials
+
+from bi_testing_ya.api_wrappers import Req, Resp
+from bi_testing_ya.cloud_tokens import AccountCredentials
 
 
 class TestSetupExecutor(metaclass=abc.ABCMeta):
@@ -123,7 +123,7 @@ class RequestExecutor(TestSetupExecutor):
         connection_id: str,
         timeout_seconds: float = 10,
         retry_delay_seconds: float = 1
-    ) -> api_wrappers.Resp:
+    ) -> Resp:
         deadline = time.time() + timeout_seconds
 
         while True:

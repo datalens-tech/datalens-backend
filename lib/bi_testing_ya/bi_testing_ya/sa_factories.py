@@ -8,20 +8,21 @@ import attr
 
 from bi_cloud_integration.iam_rm_client import IAMRMClient
 from bi_cloud_integration.model import AccessBindingAction
-from bi_testing.external_systems_helpers.top import ExternalSystemsHelperCloud
-from bi_testing.cloud_tokens import AccountCredentials
+from bi_testing_ya.external_systems_helpers.top import ExternalSystemsHelperCloud
+from bi_testing_ya.cloud_tokens import AccountCredentials
 
 
 @attr.s(kw_only=True)
 class DisposableYCServiceAccountFactory:
     iam_client: Optional[IAMRMClient] = attr.ib()
-    folder_id = attr.ib()
+    folder_id: str = attr.ib()
     ext_sys_helpers: ExternalSystemsHelperCloud = attr.ib()
     _dls_creation_hook: Optional[Callable] = attr.ib(default=None)  # avoiding circular dependency
 
     _created_sa_cred_list: List[AccountCredentials] = attr.ib(factory=list)
 
     def create(self, role_ids: Sequence[str]) -> AccountCredentials:
+        assert self.iam_client is not None
         sa_name = f'integration-test-sa-{uuid.uuid4()}'
         logging.info(f'Creating sa {sa_name}')
         sa = self.iam_client.create_svc_acct_sync(self.folder_id, sa_name, "")
@@ -61,14 +62,15 @@ class DisposableYCServiceAccountFactory:
 
         return credentials
 
-    def dispose(self):
+    def dispose(self) -> None:
         logging.info('SA teardown:')
         while len(self._created_sa_cred_list) > 0:
             creds = self._created_sa_cred_list.pop()
             sa_id = creds.user_id
+            assert self.iam_client is not None
             self.iam_client.delete_svc_acct_sync(sa_id)
             logging.info(f'Deleted sa with id={sa_id}')
 
-    def __del__(self):
+    def __del__(self) -> None:
         # better to call explicitly asap
         self.dispose()

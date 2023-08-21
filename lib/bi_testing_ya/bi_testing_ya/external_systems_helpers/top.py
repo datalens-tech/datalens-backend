@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import Optional, TypeVar, TYPE_CHECKING, Union
+from typing import Any, Optional, TypeVar, TYPE_CHECKING, Union
 
 import attr
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
@@ -11,8 +11,8 @@ import grpc
 from bi_cloud_integration.yc_as_client import DLASClient
 
 from bi_cloud_integration.iam_rm_client import IAMRMClient
-from bi_testing.cloud_tokens import CloudCredentialsConverter
-from bi_testing.factories import FolderServiceFactory
+from bi_testing_ya.cloud_tokens import CloudCredentialsConverter
+from bi_testing_ya.factories import FolderServiceFactory
 
 if TYPE_CHECKING:
     from bi_configs.environments import CommonExternalInstallation, DataCloudExposedInstallation, \
@@ -30,7 +30,7 @@ class ExternalSystemsHelperBase:
     def __enter__(self: _EXT_SYS_HELPER_TV) -> _EXT_SYS_HELPER_TV:
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         pass
 
 
@@ -52,7 +52,7 @@ class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
     yc_credentials_converter: CloudCredentialsConverter = attr.ib(init=False, default=None)
     _yc_folder_service_factory: FolderServiceFactory = attr.ib(init=False, default=None)
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         self.yc_credentials_converter = CloudCredentialsConverter(
             as_grpc_channel=self.yc_access_service_channel,
             yc_ts_endpoint=self._ext_sys_requisites.YC_TS_ENDPOINT,
@@ -63,7 +63,7 @@ class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
         )
 
     @property
-    def ext_sys_requisites(self) -> Union[CommonExternalInstallation, DataCloudExposedInstallation]:
+    def ext_sys_requisites(self) -> CommonExternalInstallation | DataCloudExposedInstallation | IntegrationTestConfig:
         return self._ext_sys_requisites
 
     @property
@@ -90,7 +90,7 @@ class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
             )
         )
 
-    def get_iam_rm_client(self, iam_token: str, req_id: Optional[str] = None):
+    def get_iam_rm_client(self, iam_token: str, req_id: Optional[str] = None) -> IAMRMClient:
         return IAMRMClient(
             iam_endpoint=self._ext_sys_requisites.YC_API_ENDPOINT_IAM,
             rm_endpoint=self._ext_sys_requisites.YC_API_ENDPOINT_RM,
@@ -101,5 +101,5 @@ class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
     def __enter__(self) -> ExternalSystemsHelperCloud:
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         self._yc_folder_service_factory.close_all()

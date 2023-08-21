@@ -13,7 +13,7 @@ from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ts_client import get_yc_service_token_sync
 from bi_testing import shared_testing_constants
-from bi_testing.external_systems_helpers.top import ExternalSystemsHelperCloud
+from bi_testing_ya.external_systems_helpers.top import ExternalSystemsHelperCloud
 from bi_testing.utils import skip_outside_devhost
 
 DEFAULT_TEST_ROBOT_DESCRIPTION = 'DataLensRobot created during auto-tests. Can be removed without any consequences.'

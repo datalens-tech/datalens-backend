@@ -4,9 +4,9 @@ from typing import Any
 
 import pytest
 
-from bi_testing.cloud_tokens import AccountCredentials
-from bi_testing.dlenv import DLEnv
-from bi_testing.iam_mock import apply_iam_services_mock
+from bi_testing_ya.cloud_tokens import AccountCredentials
+from bi_testing_ya.dlenv import DLEnv
+from bi_testing_ya.iam_mock import apply_iam_services_mock
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
 pytest_plugins = (

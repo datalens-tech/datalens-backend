@@ -5,7 +5,7 @@ from typing import Iterable, Sequence
 import sys
 
 import attr
-from bi_testing.api_wrappers import Resp, Req
+from bi_testing_ya.api_wrappers import Resp, Req
 
 from bi_integration_tests.steps import StepExecutionException, StepExecutionReport, ScenarioStep
 
