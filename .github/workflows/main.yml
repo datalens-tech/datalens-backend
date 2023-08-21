@@ -80,15 +80,10 @@ jobs:
     - run: git config --global --add safe.directory .
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
     - name: Get packages affected by changes in the current commit
-      # todo: ensure that `git diff  ...` works correctly both for commits and pr requests
       id: get_affected
-      # todo: replace diff with: git diff  --name-only  origin/trunk..
-      #   after final move to gh repo
-      # TARGET=$(git diff --name-only ${{ github.event.after }} ${{ github.event.before }} || echo '')
-      #   is not very reliable
       run: |
         . /venv/bin/activate
-        TARGET=$(git diff-tree --no-commit-id --name-only --diff-filter=ACMRT -r ${{ github.sha }} || echo '')
+        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} || echo '')
         echo "Changed files from git diff: $TARGET"
         detect_affected_packages --repo=$(realpath .) $TARGET
         detect_affected_packages --repo=/data $TARGET >> "$GITHUB_OUTPUT"
