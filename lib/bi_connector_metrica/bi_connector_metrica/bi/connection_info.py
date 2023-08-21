@@ -1,6 +1,6 @@
 from bi_api_connector.connection_info import ConnectionInfoProvider
 
-from bi_api_lib.i18n.localizer import Translatable
+from bi_connector_metrica.bi.i18n.localizer import Translatable
 
 
 class MetricaConnectionInfoProvider(ConnectionInfoProvider):

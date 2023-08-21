@@ -1,3 +1,7 @@
+[bi_api_lib.connectors]
+appmetrica_api = bi_connector_metrica.bi.connector:AppMetricaApiBiApiConnector
+metrica_api = bi_connector_metrica.bi.connector:MetricaApiBiApiConnector
+
 [bi_core.connectors]
 appmetrica_api = bi_connector_metrica.core.connector:AppMetricaApiCoreConnector
 metrica_api = bi_connector_metrica.core.connector:MetricaApiCoreConnector

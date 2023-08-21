@@ -15,10 +15,8 @@ from bi_api_connector.form_config.models.base import ConnectionFormFactory, Conn
 from bi_api_connector.form_config.models.common import CommonFieldName, FormFieldName, OAuthApplication
 from bi_api_connector.form_config.models.rows.base import FormRow
 
-from bi_api_lib.connectors.metrica.connection_info import (
-    MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider,
-)
-from bi_api_lib.i18n.localizer import Translatable
+from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
+from bi_connector_metrica.bi.i18n.localizer import Translatable
 
 
 class MetricaOAuthApplication(OAuthApplication):

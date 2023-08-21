@@ -17,14 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_api_lib/connection_forms/metrica_like.py:66
-msgid "field_oauth-token"
-msgstr "OAuth token"
-
-#: bi_api_lib/connection_forms/metrica_like.py:67
-msgid "button_get-token"
-msgstr "Get token"
-
 #: bi_api_lib/connectors/bitrix_gds/connection_form/form_config.py:35
 msgid "label_token"
 msgstr "Token"
@@ -155,14 +147,6 @@ msgstr "YTsaurus token"
 #: bi_api_lib/connectors/chyt/connection_info.py:8
 msgid "label_connector-chyt"
 msgstr "YTsaurus CHYT"
-
-#: bi_api_lib/connection_info.py:47
-msgid "label_connector-metrica"
-msgstr "Metrica"
-
-#: bi_api_lib/connection_info.py:52
-msgid "label_connector-appmetrica"
-msgstr "AppMetrica"
 
 #: bi_api_lib/connection_info.py:57
 #: bi_api_lib/connector_availability/configs/development.py:41

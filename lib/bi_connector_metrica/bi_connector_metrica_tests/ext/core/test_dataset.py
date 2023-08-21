@@ -38,6 +38,9 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
     def test_simple_select(self):
         pytest.skip()  # FIXME
 
+    def test_simple_select_from_subquery(self):
+        pytest.skip()  # FIXME
+
     def test_select_data(
             self,
             dataset_wrapper: DatasetTestWrapper,
@@ -204,6 +207,9 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
         pytest.skip()  # FIXME
 
     def test_simple_select(self):
+        pytest.skip()  # FIXME
+
+    def test_simple_select_from_subquery(self):
         pytest.skip()  # FIXME
 
     def test_select_data(

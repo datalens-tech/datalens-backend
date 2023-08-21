@@ -12,16 +12,13 @@ from bi_api_connector.connector import (
 )
 
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
-from bi_api_lib.connectors.metrica.api_schema.connection import (
-    ConnectionMetrikaAPISchema, ConnectionAppMetricaAPISchema,
-)
-from bi_api_lib.connectors.metrica.connection_form.form_config import (
+from bi_connector_metrica.bi.api_schema.connection import ConnectionMetrikaAPISchema, ConnectionAppMetricaAPISchema
+from bi_connector_metrica.bi.connection_form.form_config import (
     MetricaAPIConnectionFormFactory, AppMetricaAPIConnectionFormFactory,
 )
-from bi_api_lib.connectors.metrica.connection_info import (
-    MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider,
-)
-from bi_api_lib.connectors.metrica.filter_compiler import MetricaApiFilterFormulaCompiler
+from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
+from bi_connector_metrica.bi.filter_compiler import MetricaApiFilterFormulaCompiler
+from bi_connector_metrica.bi.i18n.localizer import CONFIGS
 
 
 class MetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
@@ -43,7 +40,7 @@ class MetricaApiBiApiConnector(BiApiConnector):
     source_definitions = (MetricaApiFilteredBiApiTableSourceDefinition,)
     filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
     formula_dialect_name = DialectName.METRIKAAPI
-    # translation_configs = frozenset(CONFIGS)  TODO: add after a connectorization
+    translation_configs = frozenset(CONFIGS)
 
 
 class AppMetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
@@ -65,4 +62,4 @@ class AppMetricaApiBiApiConnector(BiApiConnector):
     source_definitions = (AppMetricaApiFilteredBiApiTableSourceDefinition,)
     filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
     formula_dialect_name = DialectName.METRIKAAPI
-    # translation_configs = frozenset(CONFIGS)  TODO: add after a connectorization
+    translation_configs = frozenset(CONFIGS)
