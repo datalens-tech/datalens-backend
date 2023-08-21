@@ -42,7 +42,9 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+nebius_env = "bi_formula_ref_nebius.plugins.nebius_env:NebiusFormulaRefPlugin"
 
 [datalens_ci]
 skip_test = true

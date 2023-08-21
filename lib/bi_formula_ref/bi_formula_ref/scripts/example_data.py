@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 
 from bi_db_testing.loader import load_bi_db_testing
-from bi_formula.loader import load_bi_formula
 
+from bi_formula_ref.loader import load_formula_ref
 from bi_formula_ref.generator import ReferenceDocGenerator, ConfigVersion
 
 
@@ -42,7 +42,7 @@ class ExampleDataTool:
 
 
 def main():
-    load_bi_formula()
+    load_formula_ref()
     load_bi_db_testing()
     ExampleDataTool.run(parser.parse_args())
 

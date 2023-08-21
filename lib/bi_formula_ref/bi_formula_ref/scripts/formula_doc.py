@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import argparse
 
-from bi_formula.loader import load_bi_formula
-
+from bi_formula_ref.loader import load_formula_ref
 from bi_formula_ref.generator import ReferenceDocGenerator, ConfigVersion
 from bi_formula_ref.localization import DEFAULT_LOCALE, get_locales
 
@@ -55,7 +54,7 @@ class FormulaDocTool:
 
 
 def main():
-    load_bi_formula()
+    load_formula_ref()
     FormulaDocTool.run(parser.parse_args())
 
 

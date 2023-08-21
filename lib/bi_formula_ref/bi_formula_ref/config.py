@@ -28,6 +28,7 @@ class FuncDocConfigVersion(Enum):
 class ConfigVersion(DynamicEnum):
     default = AutoEnumValue()
     yacloud = AutoEnumValue()
+    nebius = AutoEnumValue()
     doublecloud = AutoEnumValue()
 
 
