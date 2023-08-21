@@ -108,7 +108,7 @@ class AsyncMySQLAdapter(
                 raise
 
     @contextlib.asynccontextmanager
-    async def _get_connection(self, db_name_from_query: str) -> AsyncIterator[aiomysql.sa.SAConnection]:
+    async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
         db_name = self.get_db_name_for_query(db_name_from_query)
         engine = await self._get_engine(db_name)
         async with engine.acquire() as connection:

@@ -39,6 +39,7 @@ class PartnersCHConnectionBase(
 
     def get_conn_dto(self) -> ClickHouseConnDTO:
         cs = self._connector_settings
+        assert self.db_name
         conn_dto = attr.evolve(
             super().get_conn_dto(),
 

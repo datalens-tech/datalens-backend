@@ -96,7 +96,7 @@ class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):
 
     def get_tables(
             self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-            db_name: str = None, schema_name: Optional[str] = None,
+            db_name: Optional[str] = None, schema_name: Optional[str] = None,
     ) -> list[TableIdent]:
         if db_name is None:
             # Only current-database listing is feasible here.

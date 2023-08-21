@@ -56,7 +56,7 @@ def _basic_input_row(
     label_text: str,
     field: FormFieldName,
     help_text: Optional[MarkdownStr],
-    display_conditions: TDisplayConditions = None,
+    display_conditions: Optional[TDisplayConditions] = None,
     password_input: bool = False,
     fake_value: Optional[str] = None,
 ) -> C.CustomizableRow:

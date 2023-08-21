@@ -41,7 +41,7 @@ class SFAuthProvider:
     _NOTIFICATION_DAYS_BEFORE_TOKEN_EXPIRE = 7
 
     @classmethod
-    def from_dto(cls, dto: SnowFlakeConnDTO, redis_conn_options: dict = None) -> SFAuthProvider:
+    def from_dto(cls, dto: SnowFlakeConnDTO) -> SFAuthProvider:
         return cls(
             account_name=dto.account_name,
             user_name=dto.user_name,

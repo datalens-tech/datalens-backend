@@ -124,7 +124,7 @@ class AsyncPostgresAdapter(
             self.__dialect = AsyncBIPGDialect()
         return self.__dialect
 
-    def get_conn_line(self, db_name: str = None, params: Dict[str, Any] = None) -> str:
+    def get_conn_line(self, db_name: Optional[str] = None, params: Dict[str, Any] = None) -> str:
         params = params or {}
         params['sslrootcert'] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
         return AsyncPGConnLineConstructor(
