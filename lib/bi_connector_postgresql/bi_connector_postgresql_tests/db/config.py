@@ -74,6 +74,33 @@ select
 from base
 limit 10
 """
+DASHSQL_QUERY = '''select
+    '1' as aa,
+    ARRAY[2, 3] as bb,
+    unnest(ARRAY[4, 5]) as cc,
+    '2020-01-01 01:02:03'::timestamp as dd,
+    '2020-01-01 02:03:0'::timestamptz as ee,
+    'zxc'::bytea as ff
+'''
+QUERY_WITH_PARAMS = r"""
+select
+  'normal '':string'''::text as v1_normal_string,
+  E'extended:string\nwith\nnewlines'::text as v2_ext_string,
+  {{some_string}}::text as v3_param_string,
+  {{some_integer}} as v4_param_integer,
+  {{some_float}} as v5_param_float,
+  {{some_boolean}} as v6_param_boolean,
+  {{some_other_boolean}} as v7_param_boolean,
+  {{some_date}} as v8_param_date,
+  {{some_datetime}} as v9_param_datetime,
+  {{3xtr4 ше1гd param}}::text as v10_weird_name,
+  {{3xtr4 же1гd param}}::text as v11_weird_name,
+  1 in {{intvalues}} as v12_int_in,
+  0 in {{intvalues}} as v13_int_in_2,
+  'a' in {{strvalues}} as v14_str_in,
+  'z' in {{strvalues}} as v14_str_in_2,
+  1 as stuff
+"""
 
 DB_URLS = {
     D.POSTGRESQL_9_3: (
@@ -93,12 +120,3 @@ BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key='_some_test_secret_key_',
 )
-
-DASHSQL_QUERY = '''select
-    '1' as aa,
-    ARRAY[2, 3] as bb,
-    unnest(ARRAY[4, 5]) as cc,
-    '2020-01-01 01:02:03'::timestamp as dd,
-    '2020-01-01 02:03:0'::timestamptz as ee,
-    'zxc'::bytea as ff
-'''

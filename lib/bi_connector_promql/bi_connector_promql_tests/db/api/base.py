@@ -1,6 +1,6 @@
 import pytest
 
-from bi_constants.enums import ConnectionType
+from bi_constants.enums import ConnectionType, RawSQLLevel
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.connection_base import ConnectionTestBase
@@ -30,3 +30,11 @@ class PromQLConnectionTestBase(ConnectionTestBase):
     @pytest.fixture(scope='class')
     def connection_params(self) -> dict:
         return API_CONNECTION_SETTINGS
+
+
+class PromQLDashSQLConnectionTest(PromQLConnectionTestBase):
+    @pytest.fixture(scope='class')
+    def connection_params(self) -> dict:
+        return API_CONNECTION_SETTINGS | dict(
+            raw_sql_level=RawSQLLevel.dashsql.value,
+        )

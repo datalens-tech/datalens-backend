@@ -31,7 +31,7 @@ from bi_core_testing.environment import common_pytest_configure, prepare_united_
 from bi_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_testing.s3_utils import create_s3_client, create_s3_bucket, s3_tbl_func_maker
-from bi_testing.test_data.sql_queries import CH_QUERY_FULL, PG_QUERY_FULL
+from bi_testing.test_data.sql_queries import CH_QUERY_FULL
 from clickhouse_sqlalchemy import types as ch_types
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
@@ -539,34 +539,6 @@ def saved_ch_subselect_dataset(default_sync_usm: SyncUSManager, saved_ch_subsele
         sync_usm=default_sync_usm,
         connection=conn,
         created_from=CreateDSFrom.CH_SUBSELECT,
-        dsrc_params=dict(
-            subsql=query,
-        ),
-    )
-    default_sync_usm.save(dataset)
-    yield dataset
-    default_sync_usm.delete(dataset)
-
-
-@pytest.fixture(scope='function')
-def saved_pg_subselectable_connection(default_sync_usm, postgres_db, app_context):
-    conn = make_saved_connection(
-        default_sync_usm, postgres_db,
-        data_dict=dict(raw_sql_level=RawSQLLevel.dashsql),
-    )
-    yield conn
-    default_sync_usm.delete(conn)
-
-
-@pytest.fixture(scope='function')
-def saved_pg_subselect_dataset(default_sync_usm: SyncUSManager, saved_pg_subselectable_connection, app_context):
-    conn = saved_pg_subselectable_connection
-    # results in 7 rows, which is checked in a further test
-    query = PG_QUERY_FULL
-    dataset = make_dataset(
-        sync_usm=default_sync_usm,
-        connection=conn,
-        created_from=SOURCE_TYPE_PG_SUBSELECT,
         dsrc_params=dict(
             subsql=query,
         ),

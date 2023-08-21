@@ -1,9 +1,10 @@
 import pytest
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from bi_constants.enums import RawSQLLevel
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE
 
+from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.connection_base import ConnectionTestBase
 from bi_api_lib_testing.dataset_base import DatasetTestBase
 from bi_api_lib_testing.data_api_base import StandardizedDataApiTestBase
@@ -30,7 +31,12 @@ class MSSQLConnectionTestBase(BaseMSSQLTestClass, ConnectionTestBase):
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
         )
+
+
+class MSSQLDashSQLConnectionTest(MSSQLConnectionTestBase):
+    raw_sql_level = RawSQLLevel.dashsql
 
 
 class MSSQLDatasetTestBase(MSSQLConnectionTestBase, DatasetTestBase):

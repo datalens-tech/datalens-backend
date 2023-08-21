@@ -79,71 +79,6 @@ limit 10
 """
 
 
-# Note: `TestGetSubselectSchemaMySQL` cut offs this query up to '\nfrom '
-# (to make a view for schema test)
-MYSQL_QUERY_FULL = r"""
-select
-    number as num,  -- `int(1)`
-    cast(number as unsigned) as num_unsigned,  -- `int(1) unsigned`
-    cast(number as signed) as num_signed,  -- `int(1)`
-    cast(number as decimal) as num_decimal,  -- `decimal(10,0)`
-    cast(number as decimal(12, 2)) as num_decimal_12_2,  -- `decimal(12,2)`
-    concat('test', number) as num_text, -- `varchar(5)`
-    BINARY number as num_binary,  -- `varbinary(1)`
-    cast(number as char) as num_char,  -- `varchar(1)``
-    cast(number as date) as num_date,  -- `date`
-    cast(number as datetime) as num_datetime,  -- `datetime`
-    cast(number as nchar) as num_nchar,  -- `varchar(1)`
-    cast(number as time) as num_time, -- `time`
-    1073741824 as int_30bit,  -- `bigint(10)`
-    pow(2, 15) as some_double  -- `double`
-from (
-    select 0 as number
-    union all
-    select 1 as number
-    union all
-    select 6 as number
-) as sq
-"""
-
-
-MSSQL_QUERY_FULL = r"""
-select
-    number,
-    cast(number as tinyint) as num_tinyint,
-    cast(number as smallint) as num_smallint,
-    cast(number as integer) as num_integer,
-    cast(number as bigint) as num_bigint,
-    cast(number as float) as num_float,
-    cast(number as real) as num_real,
-    cast(number as numeric) as num_numeric,
-    cast(number as decimal) as num_decimal,
-    cast(number as bit) as num_bit,
-    cast(number as char) as num_char,
-    cast(number as varchar) as num_varchar,
-    cast(cast(number as varchar) as text) as num_text,
-    cast(number as nchar) as num_nchar,
-    cast(number as nvarchar) as num_nvarchar,
-    cast(cast(number as nvarchar) as ntext) as num_ntext,
-    cast(concat('2020-01-0', number + 1) as date) as num_date,
-    cast(number as datetime) as num_datetime,
-    cast(concat('2020-01-01T00:00:0',
-    number) as datetime2) as num_datetime2,
-    cast(number as smalldatetime) as num_smalldatetime,
-    cast(concat('2020-01-01T00:00:00+00:0',
-    number) as datetimeoffset) as num_datetimeoffset,
-    NEWID() as uuid
-from
-    (
-        select 0 as number
-        union all
-        select 1 as number
-        union all
-        select 6 as number
-    ) as base
-"""
-
-
 ORACLE_QUERY_FULL = r"""
 select
     num,
@@ -370,3 +305,17 @@ group by id
 order by id
 limit 1000
 '''
+
+DASHSQL_EXAMPLE_PARAMS = {
+    "some_string": {"type_name": "string", "value": "some\\:string\nwith\\stuff"},
+    "some_integer": {"type_name": "integer", "value": "562949953421312"},
+    "some_float": {"type_name": "float", "value": "73786976294838206464.5"},
+    "some_boolean": {"type_name": "boolean", "value": "true"},
+    "some_other_boolean": {"type_name": "boolean", "value": "false"},
+    "some_date": {"type_name": "date", "value": "2021-07-19"},
+    "some_datetime": {"type_name": "datetime", "value": "2021-07-19T19:35:43"},
+    "3xtr4 ше1гd param": {"type_name": "string", "value": "11"},
+    "3xtr4 же1гd param": {"type_name": "string", "value": "22"},
+    "intvalues": {"type_name": "integer", "value": ["1", "2", "3"]},
+    "strvalues": {"type_name": "string", "value": ["a", "b", "c"]},
+}
