@@ -1,9 +1,12 @@
 # This file is used by dl-repmanager as the main configuration file
 
 dl_repo:
+  include:
+    - mainrepo/dl-repo.yml  # The "main" open-source repo
+
   fs_editor: default
   package_types:
-    - type: terrarium  # Repository tools (including dl-repmanager)
+    - type: terrarium  # Repository tools  # TODO: move to OS dir/repo
       root_path: terrarium
       boilerplate_path: lib/bi_package_boilerplate
 
@@ -39,17 +42,3 @@ dl_repo:
     - type: bi_meta_yc
       root_path: lib/bi_meta_yc
       boilerplate_path: lib/bi_package_boilerplate
-
-  custom_package_map:
-    flask_marshmallow: flask-marshmallow
-    flask_restx: flask-restx
-    jaeger_client: jaeger-client
-    jwt: pyjwt
-    typing_extensions: typing-extensions
-    marshmallow_enum: marshmallow-enum
-    marshmallow_oneofschema: marshmallow-oneofschema
-    more_itertools: more-itertools
-    psycopg2: psycopg2-binary
-    pytest_lazyfixture: pytest-lazyfixture
-    pyuwsgi: uwsgi
-    sentry_sdk: sentry-sdk

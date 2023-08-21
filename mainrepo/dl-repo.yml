@@ -1,0 +1,19 @@
+# This file is used by dl-repmanager as the main configuration file
+
+dl_repo:
+  fs_editor: default
+  # package_types:
+
+  custom_package_map:
+    flask_marshmallow: flask-marshmallow
+    flask_restx: flask-restx
+    jaeger_client: jaeger-client
+    jwt: pyjwt
+    typing_extensions: typing-extensions
+    marshmallow_enum: marshmallow-enum
+    marshmallow_oneofschema: marshmallow-oneofschema
+    more_itertools: more-itertools
+    psycopg2: psycopg2-binary
+    pytest_lazyfixture: pytest-lazyfixture
+    pyuwsgi: uwsgi
+    sentry_sdk: sentry-sdk
