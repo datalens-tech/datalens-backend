@@ -79,7 +79,7 @@ class CHYDBTableDataSource(CHYDBDataSourceMixin, StandardSQLDataSource):
         return value
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         table_name = self.table_name
         assert table_name
         ydb_cluster = self.ydb_cluster

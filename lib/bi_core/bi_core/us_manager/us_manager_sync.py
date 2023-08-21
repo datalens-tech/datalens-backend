@@ -159,7 +159,7 @@ class SyncUSManager(USManagerBase):
         pass
 
     @generic_profiler("us-fetch-entity")
-    def get_by_id(self, entry_id: str, expected_type: Type[USEntry] = None) -> USEntry:
+    def get_by_id(self, entry_id: str, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
         with self._enrich_us_exception(
                 entry_id=entry_id,
                 entry_scope=expected_type.scope if expected_type is not None else None,

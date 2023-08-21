@@ -25,7 +25,7 @@ class GSheetsDataSource(BaseSQLDataSource):
     def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
         return source_type == SOURCE_TYPE_GSHEETS
 
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         return sa.text('()')  # placeholder, should be cut in the dialect.
 
     def get_table_definition(self) -> TableDefinition:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from bi_constants.enums import CreateDSFrom
 
@@ -25,7 +25,7 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
     """ YDB table """
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         # cross-db joins are not supported
         assert not self.db_name or self.db_name == self.connection.db_name
 

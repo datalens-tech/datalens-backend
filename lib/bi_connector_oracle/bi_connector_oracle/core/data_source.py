@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from bi_constants.enums import CreateDSFrom
 
@@ -32,7 +32,7 @@ class OracleDataSourceMixin(BaseSQLDataSource):
 class OracleDataSource(OracleDataSourceMixin, StandardSchemaSQLDataSource):
     """ Oracle table """
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         q = self.quote
         alias_str = '' if alias is None else f' {q(alias)}'
         schema_str = '' if self.schema_name is None else f'{q(self.schema_name)}.'

@@ -65,7 +65,7 @@ class BaseCHYTTableDataSource(CHYTDataSourceBaseMixin, TableSQLDataSourceMixin, 
         return self.spec.table_name.split('/')[-1]  # type: ignore  # TODO: fix
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         if alias:
             return sa.alias(self.get_sql_source(), name=alias)
         path = self.spec.table_name
@@ -86,7 +86,7 @@ class BaseCHYTSpecialDataSource(CHYTDataSourceBaseMixin, BaseSQLDataSource, abc.
     def default_title(self) -> str:
         raise NotImplementedError
 
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         raise NotImplementedError
 
     def get_table_definition(self) -> TableDefinition:

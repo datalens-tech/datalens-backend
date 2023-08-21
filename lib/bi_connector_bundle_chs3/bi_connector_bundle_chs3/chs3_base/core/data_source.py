@@ -104,7 +104,7 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
             self._quoter = Quoter()
         return self._quoter.quote_str(value)
 
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         conn_src_id = self.origin_source_id
         origin_src = self._get_origin_src()
         status = origin_src.status

@@ -110,7 +110,7 @@ class BaseSQLDataSource(DataSource):
     def quote(self, value) -> sa.sql.quoted_name:  # type: ignore  # TODO: fix  # subclass of str
         return self.connection.quote(value)
 
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         raise NotImplementedError()
 
     def get_table_definition(self) -> TableDefinition:
@@ -249,7 +249,7 @@ class SQLDataSource(abc.ABC, BaseSQLDataSource):
         return super().source_exists(conn_executor_factory=conn_executor_factory, force_refresh=force_refresh)
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         q = self.quote
         alias_str = '' if alias is None else f' AS {q(alias)}'
         return sa_plain_text(f'{q(self.db_name)}.{q(self.table_name)}{alias_str}')
@@ -334,7 +334,7 @@ class PseudoSQLDataSource(StandardSQLDataSource, IncompatibleDataSourceMixin):
     supports_schema_update: ClassVar[bool] = False
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         # ignore alias
         return sa.table(self.table_name)
 
@@ -364,7 +364,7 @@ class StandardSchemaSQLDataSource(StandardSQLDataSource, SchemaSQLDataSourceMixi
         )
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         if not self.schema_name:
             return super().get_sql_source(alias=alias)
         q = self.quote

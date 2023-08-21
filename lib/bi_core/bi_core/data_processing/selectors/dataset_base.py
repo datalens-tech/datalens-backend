@@ -181,7 +181,7 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
 
     def build_query_execution_ctx(
             self, *,
-            query_id: str = None,
+            query_id: str,
             query_res_info: QueryAndResultInfo,
             role: DataSourceRole,
             joint_dsrc_info: PreparedMultiFromInfo,
@@ -195,7 +195,7 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
         assert isinstance(target_connection, ExecutorBasedMixin)
 
         return BIQueryExecutionContext(
-            query_id=query_id,  # type: ignore  # TODO: fix
+            query_id=query_id,
             query=query_res_info.query,
             compiled_query=compiled_query,
             target_connection=target_connection,

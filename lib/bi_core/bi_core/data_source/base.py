@@ -168,7 +168,7 @@ class DataSource(metaclass=abc.ABCMeta):
     def saved_index_info_set(self) -> Optional[frozenset[IndexInfo]]:
         return None
 
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         """
         Return something that can be used in a ``select_from`` ``SQLAlchemy`` clause for fetching data.
         Optionally assign the source an alias that can be used in the query to refer to it.

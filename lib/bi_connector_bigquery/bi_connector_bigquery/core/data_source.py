@@ -67,7 +67,7 @@ class BigQueryTableDataSource(BigQueryDataSourceMixin, TableSQLDataSourceMixin, 
         )
 
     @require_table_name
-    def get_sql_source(self, alias: str = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> Any:
         q = self.quote
         alias_str = '' if alias is None else f' AS {q(alias)}'
         return sa_plain_text(

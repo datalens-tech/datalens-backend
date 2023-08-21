@@ -66,7 +66,7 @@ class DataSourceCollectionBase:
     def managed_by(self) -> ManagedBy:
         return self.spec.managed_by
 
-    def get_connection_id(self, role: DataSourceRole = None) -> Optional[str]:
+    def get_connection_id(self, role: Optional[DataSourceRole] = None) -> Optional[str]:
         conn_ref = self.get_strict(role=role).connection_ref
         if isinstance(conn_ref, DefaultConnectionRef):
             return conn_ref.conn_id
@@ -83,7 +83,9 @@ class DataSourceCollectionBase:
     def source_type(self) -> CreateDSFrom:
         return self.get_strict().spec.source_type
 
-    def supports_join_type(self, join_type: JoinType, role: DataSourceRole = None, for_preview: bool = False) -> bool:
+    def supports_join_type(
+            self, join_type: JoinType, role: Optional[DataSourceRole] = None, for_preview: bool = False,
+    ) -> bool:
         if role is None:
             role = self.resolve_role(for_preview=for_preview)
         dsrc = self.get_strict(role=role)
@@ -186,10 +188,10 @@ class DataSourceCollectionBase:
             raise exc.NoCommonRoleError()
         return role_priorities[0]
 
-    def get_opt(self, role: DataSourceRole = None, for_preview: bool = False) -> Optional['base.DataSource']:
+    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional['base.DataSource']:
         raise NotImplementedError
 
-    def get_strict(self, role: DataSourceRole = None, for_preview: bool = False) -> base.DataSource:
+    def get_strict(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> base.DataSource:
         dsrc = self.get_opt(role=role, for_preview=for_preview)
         assert dsrc is not None
         return dsrc
@@ -284,10 +286,11 @@ class DataSourceCollection(DataSourceCollectionBase):
     def __contains__(self, role: DataSourceRole) -> bool:
         return self._get_spec_for_role(role) is not None
 
-    def get_opt(self, role: DataSourceRole = None, for_preview: bool = False) -> Optional['base.DataSource']:
+    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional['base.DataSource']:
         """Return data source for role. Initialize it if it isn't initialized yet"""
         if role is None:
             role = self.resolve_role(for_preview=for_preview)
+        assert role is not None
         if role not in self:
             return None
         if role not in self._loaded_sources:
