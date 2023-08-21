@@ -21,7 +21,7 @@ cleanup: docker-cleanup tests-cleanup
 
 # Create a development environment (start all the services required for bi-api)
 .PHONY: devenv
-devenv: gen-parser
+devenv:
 	docker-compose up --build
 
 

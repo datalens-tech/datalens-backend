@@ -5,5 +5,5 @@
 include ../../tools/common_makefile.mk
 
 
-devenv-d: gen-parser
+devenv-d:
 	docker-compose up --build -d
