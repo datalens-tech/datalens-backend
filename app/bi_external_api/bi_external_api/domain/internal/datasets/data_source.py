@@ -4,6 +4,8 @@ import attr
 
 from bi_constants.enums import ManagedBy, CreateDSFrom
 from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
+
 from .data_source_parameters import (
     DataSourceParams,
     DataSourceParamsSQL,
@@ -142,13 +144,13 @@ class DataSourceCHYTUserAuthTableRange(DataSourceAnyCHYTTableRange):
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourcePGTable(DataSourceSchematizedSQL):
-    source_type = CreateDSFrom.PG_TABLE
+    source_type = SOURCE_TYPE_PG_TABLE
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourcePGSubSQL(DataSourceSubSQL):
-    source_type = CreateDSFrom.PG_SUBSELECT
+    source_type = SOURCE_TYPE_PG_SUBSELECT
 
 
 @ModelDescriptor()

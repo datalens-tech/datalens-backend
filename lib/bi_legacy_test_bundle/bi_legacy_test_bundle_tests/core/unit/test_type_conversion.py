@@ -6,6 +6,8 @@ from bi_constants.enums import BIType, ConnectionType
 from bi_core.db import get_type_transformer
 from bi_core.db.native_type import CommonNativeType
 
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+
 
 @pytest.mark.parametrize('connection_type', (
     ConnectionType.clickhouse,
@@ -36,5 +38,5 @@ def test_foreign_conversion(connection_type):
 
 @pytest.mark.parametrize('array_type', (BIType.array_int, BIType.array_float, BIType.array_str))
 def test_null_array_conversion(array_type):
-    tt = get_type_transformer(ConnectionType.postgres)
+    tt = get_type_transformer(CONNECTION_TYPE_POSTGRES)
     assert tt.cast_for_output(None, user_t=array_type) is None

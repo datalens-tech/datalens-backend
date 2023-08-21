@@ -6,9 +6,10 @@ from typing import Optional, ClassVar
 
 import attr
 
-from bi_constants.enums import CreateDSFrom, FileProcessingStatus, DataSourceRole
+from bi_constants.enums import FileProcessingStatus, DataSourceRole
 from bi_utils.utils import DataKey
 
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_core.services_registry.file_uploader_client_factory import GSheetsFileSourceDesc
 
@@ -16,8 +17,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class GSheetsFileS3Connection(BaseFileS3Connection):
-    source_type = CreateDSFrom.GSHEETS_V2
-    allowed_source_types = frozenset((CreateDSFrom.GSHEETS_V2,))
+    source_type = SOURCE_TYPE_GSHEETS_V2
+    allowed_source_types = frozenset((SOURCE_TYPE_GSHEETS_V2,))
 
     editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
         BaseFileS3Connection.editable_data_source_parameters +

@@ -4,8 +4,9 @@ import logging
 
 import attr
 
-from bi_constants.enums import CreateDSFrom, DataSourceRole
+from bi_constants.enums import DataSourceRole
 
+from bi_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_core.services_registry.file_uploader_client_factory import FileSourceDesc
 
@@ -13,8 +14,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FileS3Connection(BaseFileS3Connection):
-    source_type = CreateDSFrom.FILE_S3_TABLE
-    allowed_source_types = frozenset((CreateDSFrom.FILE_S3_TABLE,))
+    source_type = SOURCE_TYPE_FILE_S3_TABLE
+    allowed_source_types = frozenset((SOURCE_TYPE_FILE_S3_TABLE,))
 
     @attr.s(eq=False, kw_only=True)
     class FileDataSource(BaseFileS3Connection.FileDataSource):

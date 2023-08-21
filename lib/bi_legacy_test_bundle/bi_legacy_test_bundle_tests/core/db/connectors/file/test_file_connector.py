@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import logging
 
-from bi_constants.enums import CreateDSFrom, ConnectionType, BIType, FileProcessingStatus
+from bi_constants.enums import BIType, FileProcessingStatus
 
 from bi_core.base_models import DefaultConnectionRef
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
 from bi_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
 from bi_connector_bundle_chs3.file.core.data_source import FileS3DataSource
 from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
@@ -43,15 +44,15 @@ def test_build_from_clause(default_sync_usm, saved_file_connection):
     sources = conn.data.sources
     conn_dto = conn.get_conn_dto()
     raw_schema = [
-        SchemaColumn(name='c1', native_type=ClickHouseNativeType(conn_type=ConnectionType.file, name='Int64'), user_type=BIType.integer),
-        SchemaColumn(name='c2', native_type=ClickHouseNativeType(conn_type=ConnectionType.file, name='String'), user_type=BIType.string),
-        SchemaColumn(name='c3', native_type=ClickHouseNativeType(conn_type=ConnectionType.file, name='Int64'), user_type=BIType.integer),
+        SchemaColumn(name='c1', native_type=ClickHouseNativeType(conn_type=CONNECTION_TYPE_FILE, name='Int64'), user_type=BIType.integer),
+        SchemaColumn(name='c2', native_type=ClickHouseNativeType(conn_type=CONNECTION_TYPE_FILE, name='String'), user_type=BIType.string),
+        SchemaColumn(name='c3', native_type=ClickHouseNativeType(conn_type=CONNECTION_TYPE_FILE, name='Int64'), user_type=BIType.integer),
     ]
     default_sync_usm.ensure_entry_preloaded(DefaultConnectionRef(conn_id=saved_file_connection.uuid))
     dsrc = FileS3DataSource(
         us_entry_buffer=default_sync_usm.get_entry_buffer(),
         spec=FileS3DataSourceSpec(
-            source_type=CreateDSFrom.FILE_S3_TABLE,
+            source_type=SOURCE_TYPE_FILE_S3_TABLE,
             connection_ref=DefaultConnectionRef(conn_id=conn.uuid),
             db_version='1.1.2',
             db_name='some_db',

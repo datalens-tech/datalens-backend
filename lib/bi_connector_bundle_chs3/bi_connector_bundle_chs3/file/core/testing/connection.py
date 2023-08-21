@@ -3,12 +3,14 @@ from __future__ import annotations
 import asyncio
 import uuid
 
-from bi_constants.enums import ConnectionType, FileProcessingStatus
+from bi_constants.enums import FileProcessingStatus
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.database import DbTable
 from bi_core.mdb_utils import MDBDomainManagerFactory
+
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 def make_saved_file_connection(  # type: ignore  # TODO: fix
@@ -71,7 +73,7 @@ def make_saved_file_connection(  # type: ignore  # TODO: fix
     conn = FileS3Connection.create_from_dict(
         data_dict,
         ds_key=conn_name,
-        type_=ConnectionType.file.name,
+        type_=CONNECTION_TYPE_FILE.name,
         us_manager=sync_usm,
         **kwargs)
     sync_usm.save(conn)

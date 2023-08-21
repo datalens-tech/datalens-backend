@@ -68,7 +68,6 @@ class ConnectionType(DynamicEnum):
     clickhouse = AutoEnumValue()
     file = AutoEnumValue()
     gsheets_v2 = AutoEnumValue()
-    postgres = AutoEnumValue()
     chyt = AutoEnumValue()
     ch_over_yt = AutoEnumValue()  # CHYT internal
     ch_over_yt_user_auth = AutoEnumValue()  # CHYT internal

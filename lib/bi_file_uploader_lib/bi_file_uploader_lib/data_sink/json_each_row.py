@@ -12,6 +12,8 @@ from bi_core.data_sink import DataSink, DataSinkAsync
 from bi_core.db import SchemaColumn, get_type_transformer
 from bi_core.raw_data_streaming.stream import DataStreamBase, SimpleUntypedDataStream, SimpleUntypedAsyncDataStream
 
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+
 from bi_file_uploader_lib import exc
 
 
@@ -19,7 +21,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class S3JsonEachRowFileDataSink(DataSink):
-    conn_type: ConnectionType = ConnectionType.file
+    conn_type: ConnectionType = CONNECTION_TYPE_FILE
     batch_size_in_bytes: int = 30 * 1024 ** 2
     max_batch_size: Optional[int] = None
 
@@ -164,7 +166,7 @@ class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
 
 
 class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncDataStream]):
-    conn_type: ConnectionType = ConnectionType.file
+    conn_type: ConnectionType = CONNECTION_TYPE_FILE
     batch_size_in_bytes: int = 30 * 1024 ** 2
     max_batch_size: Optional[int] = None
     max_file_size_bytes: ClassVar[int] = 200 * 1024 ** 2

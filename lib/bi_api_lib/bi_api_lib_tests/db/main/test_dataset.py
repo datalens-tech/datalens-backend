@@ -27,11 +27,14 @@ from bi_testing.utils import get_log_record, guids_from_titles
 
 from bi_core.exc import USObjectNotFoundException
 
-from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT
+from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
+    SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT,
+)
 
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_SUBSELECT
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
 from bi_connector_postgresql.core.greenplum.constants import SOURCE_TYPE_GP_TABLE
+from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
 
 from bi_api_lib_tests.utils import get_result_schema, replace_dataset_connection as replace_connection
 
@@ -97,7 +100,7 @@ def test_create_pg_dataset_in_custom_us_dir(client, api_v1, pg_connection_id, de
 
     ds = Dataset(name='my_dataset')
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.PG_TABLE,
+        source_type=SOURCE_TYPE_PG_TABLE,
         connection_id=pg_connection_id,
         parameters=dict(
             table_name='supersample',
@@ -595,7 +598,7 @@ def test_pg_subselect(request, client, api_v1, data_api_v1, pg_subselectable_con
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         connection_id=conn_id,
-        source_type=CreateDSFrom.PG_SUBSELECT,
+        source_type=SOURCE_TYPE_PG_SUBSELECT,
         parameters=dict(
             subsql=r"""
                 select
@@ -663,7 +666,7 @@ def test_pg_invalid_subselect(request, client, api_v1, data_api_v1, pg_subselect
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         connection_id=conn_id,
-        source_type=CreateDSFrom.PG_SUBSELECT,
+        source_type=SOURCE_TYPE_PG_SUBSELECT,
         parameters=dict(
             subsql=r"select 1 as a;",
         ))
@@ -683,7 +686,7 @@ def test_pg_unsupported_type(request, client, api_v1, data_api_v1, pg_subselecta
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         connection_id=conn_id,
-        source_type=CreateDSFrom.PG_SUBSELECT,
+        source_type=SOURCE_TYPE_PG_SUBSELECT,
         parameters=dict(
             subsql=r"""
                 select
@@ -810,7 +813,7 @@ def test_index_fetching_pg(api_v1, pg_connection_id, postgres_db):
 
     ds = Dataset()
     ds.sources[source_alias] = ds.source(
-        source_type=CreateDSFrom.PG_TABLE,
+        source_type=SOURCE_TYPE_PG_TABLE,
         connection_id=pg_connection_id,
         parameters=dict(
             table_name=table_name,

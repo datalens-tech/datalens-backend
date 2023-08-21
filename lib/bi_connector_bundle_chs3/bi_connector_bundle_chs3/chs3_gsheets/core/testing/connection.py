@@ -3,9 +3,10 @@ from __future__ import annotations
 import asyncio
 import uuid
 
-from bi_constants.enums import ConnectionType, FileProcessingStatus
+from bi_constants.enums import FileProcessingStatus
 
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.database import DbTable
@@ -75,7 +76,7 @@ def make_saved_gsheets_v2_connection(  # type: ignore  # TODO: fix
     conn = GSheetsFileS3Connection.create_from_dict(
         data_dict,
         ds_key=conn_name,
-        type_=ConnectionType.gsheets_v2.name,
+        type_=CONNECTION_TYPE_GSHEETS_V2.name,
         us_manager=sync_usm,
         **kwargs)
     sync_usm.save(conn)

@@ -1,6 +1,6 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom
-
 from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter
+
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2, SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3TableCoreSourceDefinition,
@@ -19,7 +19,7 @@ from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFile
 
 
 class GSheetsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
-    conn_type = ConnectionType.gsheets_v2
+    conn_type = CONNECTION_TYPE_GSHEETS_V2
     connection_cls = GSheetsFileS3Connection
     us_storage_schema_cls = GSheetsFileConnectionDataStorageSchema
     sync_conn_executor_cls = GSheetsFileS3AsyncAdapterConnExecutor
@@ -29,7 +29,7 @@ class GSheetsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
 
 
 class GSheetsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):
-    source_type = CreateDSFrom.GSHEETS_V2
+    source_type = SOURCE_TYPE_GSHEETS_V2
     source_cls = GSheetsFileS3DataSource
     source_spec_cls = GSheetsFileS3DataSourceSpec
     us_storage_schema_cls = GSheetsFileS3DataSourceSpecStorageSchema

@@ -8,7 +8,7 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from bi_constants.enums import BIType, CreateDSFrom, DataSourceRole, ManagedBy
+from bi_constants.enums import BIType, DataSourceRole, ManagedBy
 
 from bi_api_commons.reporting.profiler import DefaultReportingProfiler
 
@@ -27,6 +27,8 @@ from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_core.utils import attrs_evolve_to_subclass
 from bi_core.components.editor import DatasetComponentEditor
+
+from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
 
 from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records, assert_no_warnings
 
@@ -103,7 +105,7 @@ async def test_dataset_async_select_data(
 
     ds_editor.add_data_source(
         source_id=dsrc_id,
-        created_from=CreateDSFrom.PG_TABLE,
+        created_from=SOURCE_TYPE_PG_TABLE,
         connection_id=saved_pg_connection.uuid,
         managed_by=ManagedBy.user,
         raw_schema=raw_schema,

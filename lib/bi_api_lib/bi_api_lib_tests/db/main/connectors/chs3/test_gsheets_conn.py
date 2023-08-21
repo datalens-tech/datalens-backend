@@ -6,7 +6,6 @@ import json
 from http import HTTPStatus
 
 from bi_constants.enums import (
-    CreateDSFrom,
     WhereClauseOperation,
     ComponentType,
     DataSourceRole,
@@ -15,6 +14,7 @@ from bi_constants.enums import (
 )
 
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from bi_core.reporting.notifications import NotificationType
 from bi_core import exc
@@ -286,7 +286,7 @@ def test_update_data(
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.GSHEETS_V2,
+        source_type=SOURCE_TYPE_GSHEETS_V2,
         connection_id=conn_id,
         parameters=dict(origin_source_id='source_3_id'),
     )
@@ -408,7 +408,7 @@ def test_component_errors(
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.GSHEETS_V2,
+        source_type=SOURCE_TYPE_GSHEETS_V2,
         connection_id=conn_id,
         parameters=dict(origin_source_id='source_3_id'),
     )
@@ -487,7 +487,7 @@ def test_component_error_warning(
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.GSHEETS_V2,
+        source_type=SOURCE_TYPE_GSHEETS_V2,
         connection_id=conn_id,
         parameters=dict(origin_source_id='source_3_id'),
     )

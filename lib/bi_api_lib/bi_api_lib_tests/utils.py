@@ -19,6 +19,7 @@ from bi_api_lib.enums import DatasetAction
 
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
+from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
 
 
 METRIKA_SAMPLE_COUNTER_ID = '44147844'
@@ -150,7 +151,7 @@ def data_source_settings_from_table(table: DbTable):
         },
     }
 
-    if source_type in (CreateDSFrom.PG_TABLE, SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_ORACLE_TABLE):
+    if source_type in (SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_ORACLE_TABLE):
         data['parameters']['schema_name'] = table.schema
 
     return data

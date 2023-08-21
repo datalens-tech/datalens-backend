@@ -16,6 +16,9 @@ from bi_core.db.elements import SchemaColumn
 from bi_core.components.ids import make_readable_field_id, ID_VALID_SYMBOLS, ID_LENGTH
 from bi_app_tools.profiling_base import generic_profiler
 
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+
 from bi_file_uploader_lib.enums import FileType, CSVEncoding, CSVDelimiter
 from bi_file_uploader_lib import exc
 
@@ -144,8 +147,8 @@ class GSheetsFieldIdGenerator(FileUploaderFieldIdGenerator):
 
 def get_field_id_generator(conn_type: ConnectionType) -> FileUploaderFieldIdGenerator:
     field_id_gen_cls_map: dict[ConnectionType, Type[FileUploaderFieldIdGenerator]] = {
-        ConnectionType.file: FileFieldIdGenerator,
-        ConnectionType.gsheets_v2: GSheetsFieldIdGenerator,
+        CONNECTION_TYPE_FILE: FileFieldIdGenerator,
+        CONNECTION_TYPE_GSHEETS_V2: GSheetsFieldIdGenerator,
     }
 
     if conn_type not in field_id_gen_cls_map:
@@ -190,7 +193,7 @@ def guess_header_and_schema(
     csv_reader = csv.reader(text_io_wrapper, dialect)
     new_has_header, legacy_column_types = converter_parsing_utils.guess_types_and_header(csv_reader, has_header=has_header)
 
-    raw_schema = result_column_types_to_raw_schema(legacy_column_types, ConnectionType.file)
+    raw_schema = result_column_types_to_raw_schema(legacy_column_types, CONNECTION_TYPE_FILE)
 
     if len(raw_schema) > MAX_COLUMNS_COUNT:
         raise exc.TooManyColumnsError()
@@ -205,13 +208,13 @@ def guess_header_and_schema_gsheet(sheet: Sheet) -> tuple[bool, list[SchemaColum
         sample_lines_count=None,
     )
 
-    raw_schema = result_column_types_to_raw_schema(legacy_column_types, ConnectionType.gsheets_v2)
+    raw_schema = result_column_types_to_raw_schema(legacy_column_types, CONNECTION_TYPE_GSHEETS_V2)
 
     if len(raw_schema) > MAX_COLUMNS_COUNT:
         raise exc.TooManyColumnsError()
 
-    raw_schema_header = result_column_types_to_raw_schema(col_types_header, ConnectionType.gsheets_v2)
-    raw_schema_body = result_column_types_to_raw_schema(col_types_body, ConnectionType.gsheets_v2)
+    raw_schema_header = result_column_types_to_raw_schema(col_types_header, CONNECTION_TYPE_GSHEETS_V2)
+    raw_schema_body = result_column_types_to_raw_schema(col_types_body, CONNECTION_TYPE_GSHEETS_V2)
 
     return has_header, raw_schema, raw_schema_header, raw_schema_body
 
@@ -223,7 +226,7 @@ def guess_schema_gsheet(sheet: Sheet) -> list[SchemaColumn]:
         sample_lines_count=None,
     )
 
-    raw_schema = result_column_types_to_raw_schema(col_types, ConnectionType.gsheets_v2)
+    raw_schema = result_column_types_to_raw_schema(col_types, CONNECTION_TYPE_GSHEETS_V2)
 
     if len(raw_schema) > MAX_COLUMNS_COUNT:
         raise exc.TooManyColumnsError()
@@ -238,8 +241,8 @@ def merge_raw_schemas_spreadsheet(
         file_type: FileType,
 ) -> list[SchemaColumn]:
     conn_type_map: dict[FileType, ConnectionType] = {
-        FileType.xlsx: ConnectionType.file,
-        FileType.gsheets: ConnectionType.gsheets_v2,
+        FileType.xlsx: CONNECTION_TYPE_FILE,
+        FileType.gsheets: CONNECTION_TYPE_GSHEETS_V2,
     }
     col_types_header = raw_schema_to_column_types(header_rs)
     col_types_body = raw_schema_to_column_types(body_rs)
@@ -371,12 +374,12 @@ def guess_header_and_schema_excel(data: list) -> tuple[bool, list[SchemaColumn],
         sample_lines_count=None,
     )
 
-    raw_schema = result_column_types_to_raw_schema(legacy_column_types, ConnectionType.file)
+    raw_schema = result_column_types_to_raw_schema(legacy_column_types, CONNECTION_TYPE_FILE)
 
     if len(raw_schema) > MAX_COLUMNS_COUNT:
         raise ValueError('Too many columns')  # TODO: proper exc type
 
-    raw_schema_header = result_column_types_to_raw_schema(col_types_header, ConnectionType.file)
-    raw_schema_body = result_column_types_to_raw_schema(col_types_body, ConnectionType.file)
+    raw_schema_header = result_column_types_to_raw_schema(col_types_header, CONNECTION_TYPE_FILE)
+    raw_schema_body = result_column_types_to_raw_schema(col_types_body, CONNECTION_TYPE_FILE)
 
     return has_header, raw_schema, raw_schema_header, raw_schema_body

@@ -1,6 +1,6 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom
-
 from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter
+
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
 from bi_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3TableCoreSourceDefinition,
@@ -17,7 +17,7 @@ from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 
 
 class FileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
-    conn_type = ConnectionType.file
+    conn_type = CONNECTION_TYPE_FILE
     connection_cls = FileS3Connection
     us_storage_schema_cls = FileConnectionDataStorageSchema
     sync_conn_executor_cls = FileS3AsyncAdapterConnExecutor
@@ -27,7 +27,7 @@ class FileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
 
 
 class FileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):
-    source_type = CreateDSFrom.FILE_S3_TABLE
+    source_type = SOURCE_TYPE_FILE_S3_TABLE
     source_cls = FileS3DataSource
     source_spec_cls = FileS3DataSourceSpec
     us_storage_schema_cls = FileS3DataSourceSpecStorageSchema

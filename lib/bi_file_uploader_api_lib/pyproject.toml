@@ -25,6 +25,7 @@ yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-bi-file-uploader-lib = {path = "../../lib/bi_file_uploader_lib"}
+yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
 
 [tool.poetry.group.tests.dependencies]
 bi-file-secure-reader = {path = "../../app/bi_file_secure_reader"}

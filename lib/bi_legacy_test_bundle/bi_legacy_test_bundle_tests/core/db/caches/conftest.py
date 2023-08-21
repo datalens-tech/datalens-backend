@@ -3,11 +3,13 @@ from __future__ import annotations
 import pytest
 from sqlalchemy.engine.url import make_url
 
-from bi_constants.enums import BIType, ConnectionType, RawSQLLevel
+from bi_constants.enums import BIType, RawSQLLevel
 
 from bi_core_testing.connection import make_saved_connection
 from bi_core_testing.database import make_db, make_table, C
 from bi_core_testing.dataset import make_dataset
+
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 @pytest.fixture(scope='session')
@@ -23,7 +25,7 @@ def db_def_cache_tests_pg(postgres_db):
     new_url = make_url(str(postgres_db.url))
     new_url = new_url.set(database=db_name)
 
-    db = make_db(url=new_url, conn_type=ConnectionType.postgres, )
+    db = make_db(url=new_url, conn_type=CONNECTION_TYPE_POSTGRES, )
     yield db
 
 

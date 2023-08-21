@@ -7,6 +7,7 @@ from bi_core_testing.connector import SOURCE_TYPE_TESTING
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
 
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 def test_source_can_be_added_to_clickhouse(
@@ -71,5 +72,5 @@ def test_replace_connection_types_single_clickhouse_conn(
     assert {
         CONNECTION_TYPE_METRICA_API,
         ConnectionType.clickhouse,
-        ConnectionType.postgres,
+        CONNECTION_TYPE_POSTGRES,
     }.issubset(replacement_types)

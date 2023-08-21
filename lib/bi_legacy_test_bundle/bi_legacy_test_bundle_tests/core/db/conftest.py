@@ -37,6 +37,9 @@ from clickhouse_sqlalchemy import types as ch_types
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_SUBSELECT
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2, SOURCE_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
 
 from bi_legacy_test_bundle_tests.core.conftest import clear_logging_context, loaded_libraries  # noqa: F401
 
@@ -58,12 +61,12 @@ _SORTED_CONFIGS = sorted(DB_CONFIGURATIONS.items(), key=lambda item: item[0].val
 
 
 DEFAULT_SCHEMAS = {
-    ConnectionType.postgres: 'public',
+    CONNECTION_TYPE_POSTGRES: 'public',
     CONNECTION_TYPE_MSSQL: 'dbo',
     CONNECTION_TYPE_ORACLE: 'DATALENS',
 }
 SCHEMATIZED_DB = {
-    ConnectionType.postgres,
+    CONNECTION_TYPE_POSTGRES,
     CONNECTION_TYPE_MSSQL,
     CONNECTION_TYPE_ORACLE,
 }
@@ -170,12 +173,12 @@ def clickhouse_db(request, bi_config, db_dispenser) -> Db:
 
 @pytest.fixture(scope='session')
 def postgres_db(request, bi_config, db_dispenser) -> Db:
-    return _db_for(ConnectionType.postgres, bi_config=bi_config, db_dispenser=db_dispenser)
+    return _db_for(CONNECTION_TYPE_POSTGRES, bi_config=bi_config, db_dispenser=db_dispenser)
 
 
 @pytest.fixture(scope='session')
 def postgres_db_fresh(request, bi_config, db_dispenser) -> Db:
-    conn_type = ConnectionType.postgres
+    conn_type = CONNECTION_TYPE_POSTGRES
     url, cluster = bi_config.DB_CONFIGURATIONS['postgres_fresh']
     return db_dispenser.get_database(
         db_config=make_db_config(url=url, conn_type=conn_type, cluster=cluster),
@@ -248,7 +251,7 @@ def db_table(db):
 @pytest.fixture(scope='session')
 def db_table_another_schema(db):
     """Basic table with another schema for all db types"""
-    if db.conn_type not in [CONNECTION_TYPE_MSSQL, ConnectionType.postgres, CONNECTION_TYPE_ORACLE]:
+    if db.conn_type not in [CONNECTION_TYPE_MSSQL, CONNECTION_TYPE_POSTGRES, CONNECTION_TYPE_ORACLE]:
         return None
     return make_table(db, schema=make_schema(db))
 
@@ -563,7 +566,7 @@ def saved_pg_subselect_dataset(default_sync_usm: SyncUSManager, saved_pg_subsele
     dataset = make_dataset(
         sync_usm=default_sync_usm,
         connection=conn,
-        created_from=CreateDSFrom.PG_SUBSELECT,
+        created_from=SOURCE_TYPE_PG_SUBSELECT,
         dsrc_params=dict(
             subsql=query,
         ),
@@ -600,8 +603,8 @@ def saved_ch_dataset_per_func(default_sync_usm, clickhouse_table, saved_ch_conne
 @pytest.fixture(scope='function')
 def saved_chs3_dataset(default_sync_usm, clickhouse_table, saved_chs3_connection: BaseFileS3Connection, app_context):
     conn_type_to_source_type_map = {
-        ConnectionType.file: CreateDSFrom.FILE_S3_TABLE,
-        ConnectionType.gsheets_v2: CreateDSFrom.GSHEETS_V2,
+        CONNECTION_TYPE_FILE: SOURCE_TYPE_FILE_S3_TABLE,
+        CONNECTION_TYPE_GSHEETS_V2: SOURCE_TYPE_GSHEETS_V2,
     }
     dataset = make_dataset(
         default_sync_usm,

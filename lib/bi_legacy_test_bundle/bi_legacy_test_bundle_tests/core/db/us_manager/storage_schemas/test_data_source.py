@@ -16,7 +16,7 @@ from bi_core import data_source
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, StandardSchemaSQLDataSourceSpec
 from bi_core.connectors.clickhouse.data_source import ClickHouseDataSource
 
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 from bi_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource
 
 
@@ -67,7 +67,7 @@ _DS_FACTORY = {
     'ch_postgres': lambda usm: PostgreSQLDataSource(
         us_entry_buffer=usm.get_entry_buffer(),
         spec=StandardSchemaSQLDataSourceSpec(
-            source_type=CreateDSFrom.PG_TABLE,
+            source_type=SOURCE_TYPE_PG_TABLE,
             connection_ref=DefaultConnectionRef(conn_id="12xl1k123"),
             db_version='1.1.2',
             schema_name='some_schema',
@@ -76,7 +76,7 @@ _DS_FACTORY = {
             data_dump_id=None,
             raw_schema=rs_for(
                 CONNECTION_TYPE_POSTGRES,
-                common_col('pk', BIType.integer, 'bigint', conn_type=CT.postgres)
+                common_col('pk', BIType.integer, 'bigint', conn_type=CONNECTION_TYPE_POSTGRES)
             ),
         ),
     ),

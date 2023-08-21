@@ -26,6 +26,7 @@ from bi_core.services_registry.top_level import ServicesRegistry
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL, SOURCE_TYPE_MYSQL_TABLE
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE, SOURCE_TYPE_ORACLE_TABLE
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 
 from bi_legacy_test_bundle_tests.core import config
 
@@ -35,7 +36,7 @@ if TYPE_CHECKING:
 
 SOURCE_TYPE_BY_CONN_TYPE = {
     ConnectionType.clickhouse: CreateDSFrom.CH_TABLE,
-    ConnectionType.postgres: CreateDSFrom.PG_TABLE,
+    CONNECTION_TYPE_POSTGRES: SOURCE_TYPE_PG_TABLE,
     CONNECTION_TYPE_MYSQL: SOURCE_TYPE_MYSQL_TABLE,
     CONNECTION_TYPE_MSSQL: SOURCE_TYPE_MSSQL_TABLE,
     CONNECTION_TYPE_ORACLE: SOURCE_TYPE_ORACLE_TABLE,

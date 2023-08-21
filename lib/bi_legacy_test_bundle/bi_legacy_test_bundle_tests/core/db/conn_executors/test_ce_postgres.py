@@ -9,14 +9,18 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as pg_types
 
-from bi_constants.enums import BIType, ConnectionType
+from bi_constants.enums import BIType
 
-from bi_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor
-from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 from bi_core.connection_models import ConnDTO, TableIdent, SATextTableDefinition
 from bi_core.db import IndexInfo, SchemaInfo
 
-from .test_base import BaseConnExecutorSet, BaseSchemaSupportedExecutorSet
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from bi_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor
+from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+
+from .test_base import (
+    BaseConnExecutorSet, BaseSchemaSupportedExecutorSet,
+)
 
 
 # noinspection PyMethodMayBeStatic
@@ -71,7 +75,7 @@ class TestPostgresExecutor(BaseSchemaSupportedExecutorSet):
                 schema_name=table.schema,
                 table_name=table.name,
             ),
-            expected_schema_info=self.column_data_to_schema_info(columns_data, ConnectionType.postgres),
+            expected_schema_info=self.column_data_to_schema_info(columns_data, CONNECTION_TYPE_POSTGRES),
         )
 
         db.drop_table(table)

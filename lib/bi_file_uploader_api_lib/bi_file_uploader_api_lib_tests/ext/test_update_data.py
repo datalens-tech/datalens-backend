@@ -6,7 +6,8 @@ import uuid
 
 import pytest
 
-from bi_constants.enums import FileProcessingStatus, ConnectionType, BIType
+from bi_constants.enums import FileProcessingStatus, BIType
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from bi_core.db import SchemaColumn
 from bi_core_testing.connection import make_conn_key
@@ -105,7 +106,7 @@ async def saved_gsheets_v2_connection(loop, bi_context, default_async_usm_per_te
     conn = GSheetsFileS3Connection.create_from_dict(
         data,
         ds_key=make_conn_key('connections', conn_name),
-        type_=ConnectionType.gsheets_v2.name,
+        type_=CONNECTION_TYPE_GSHEETS_V2.name,
         meta={'title': conn_name, 'state': 'saved'},
         us_manager=us_manager,
     )

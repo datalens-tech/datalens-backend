@@ -41,6 +41,7 @@ from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDataset
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 
 from bi_legacy_test_bundle_tests.core.utils import (
     add_source, get_other_db, col, patch_dataset_with_two_sources, simple_groupby,
@@ -1353,7 +1354,7 @@ def test_find_data_source_configuration(
         parameters=dict(table_name='fake_table'),
     ) is None
     assert dataset.find_data_source_configuration(
-        connection_id=connection.uuid, created_from=CreateDSFrom.PG_TABLE,
+        connection_id=connection.uuid, created_from=SOURCE_TYPE_PG_TABLE,
         parameters=dict(table_name='second_table'),
     ) is None
 
@@ -1607,7 +1608,7 @@ def test_join_type(
         # dialect-dependent formula for sorting values
         ifnull = {
             CONNECTION_TYPE_MYSQL: sa.func.IFNULL,
-            ConnectionType.postgres: sa.func.COALESCE,
+            CONNECTION_TYPE_POSTGRES: sa.func.COALESCE,
             CONNECTION_TYPE_MSSQL: sa.func.ISNULL,
             ConnectionType.clickhouse: sa.func.ifNull,
             CONNECTION_TYPE_ORACLE: sa.func.NVL,
@@ -1665,7 +1666,7 @@ def test_join_type(
     assert i_1_values == table_1_col0
     assert i_2_values == [not_found] * 5 + expected_intersection
 
-    if db.conn_type in (ConnectionType.clickhouse, ConnectionType.postgres, CONNECTION_TYPE_MYSQL):
+    if db.conn_type in (ConnectionType.clickhouse, CONNECTION_TYPE_POSTGRES, CONNECTION_TYPE_MYSQL):
         i_1_values, i_2_values = select_for_join_type(join_type=JoinType.right)
         assert i_1_values == expected_intersection + [not_found] * 5
         assert i_2_values == table_2_col0
@@ -1673,7 +1674,7 @@ def test_join_type(
         with pytest.raises(exc.DatasetConfigurationError):
             select_for_join_type(join_type=JoinType.right)
 
-    if db.conn_type in (ConnectionType.clickhouse, ConnectionType.postgres):
+    if db.conn_type in (ConnectionType.clickhouse, CONNECTION_TYPE_POSTGRES):
         i_1_values, i_2_values = select_for_join_type(join_type=JoinType.full)
         assert i_1_values == table_1_col0 + [not_found] * 5
         assert i_2_values == [not_found] * 5 + table_2_col0

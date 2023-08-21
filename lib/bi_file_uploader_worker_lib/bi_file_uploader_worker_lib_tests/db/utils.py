@@ -1,6 +1,7 @@
 import uuid
 
-from bi_constants.enums import FileProcessingStatus, ConnectionType, DataSourceRole
+from bi_constants.enums import FileProcessingStatus, DataSourceRole
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 from bi_core_testing.connection import make_conn_key
 from bi_core.us_manager.us_manager_async import AsyncUSManager
@@ -19,7 +20,7 @@ async def create_file_connection(us_manager: AsyncUSManager, file_id, source_id,
     conn = FileS3Connection.create_from_dict(
         data,
         ds_key=make_conn_key('connections', conn_name),
-        type_=ConnectionType.file.name,
+        type_=CONNECTION_TYPE_FILE.name,
         meta={'title': conn_name, 'state': 'saved'},
         us_manager=us_manager,
     )

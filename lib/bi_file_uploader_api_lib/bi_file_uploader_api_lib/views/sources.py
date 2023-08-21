@@ -5,11 +5,13 @@ from typing import Any, Optional, ClassVar
 
 from aiohttp import web
 
-from bi_constants.enums import BIType, ConnectionType, FileProcessingStatus
+from bi_constants.enums import BIType, FileProcessingStatus
 from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResource, RequiredResourceCommon
 from bi_core.db import get_type_transformer
 from bi_core.db.elements import SchemaColumn
 from bi_file_uploader_task_interface.tasks import ParseFileTask
+
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 from bi_file_uploader_lib import exc
 from bi_file_uploader_lib.enums import FileType, CSVEncoding, CSVDelimiter
@@ -74,7 +76,7 @@ def cast_preview_data(
         preview_data: list[list[Optional[str]]],
         raw_schema: RawSchemaType,
 ) -> list[list[Optional[str]]]:
-    tt = get_type_transformer(ConnectionType.file)
+    tt = get_type_transformer(CONNECTION_TYPE_FILE)  # FIXME
     for row in preview_data:
         for i, cell in enumerate(row):
             cast_value = tt.cast_for_input(cell, raw_schema[i].user_type)

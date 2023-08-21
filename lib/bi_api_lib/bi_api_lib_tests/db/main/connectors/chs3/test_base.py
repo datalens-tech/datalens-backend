@@ -15,6 +15,8 @@ from bi_constants.enums import (
     FileProcessingStatus,
 )
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
 from bi_core.db import SchemaColumn
 
 
@@ -30,8 +32,8 @@ def test_chs3_connection_params(request):
 @pytest.fixture(
     scope="function",
     params=[
-        ('file_connection_with_raw_schema_id', CreateDSFrom.FILE_S3_TABLE),
-        ('gsheets_v2_connection_with_raw_schema_id', CreateDSFrom.GSHEETS_V2),
+        ('file_connection_with_raw_schema_id', SOURCE_TYPE_FILE_S3_TABLE),
+        ('gsheets_v2_connection_with_raw_schema_id', SOURCE_TYPE_GSHEETS_V2),
     ],
     ids=['file', 'gsheets'],
 )

@@ -6,8 +6,10 @@ import attr
 from redis.asyncio.lock import Lock as RedisLock
 from botocore.exceptions import ClientError
 
-from bi_constants.enums import ConnectionType, DataSourceRole
+from bi_constants.enums import DataSourceRole
 from bi_core.us_entry import USMigrationEntry
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_task_processor.task import BaseExecutorTask, TaskResult, Success, Retry
 import bi_file_uploader_task_interface.tasks as task_interface
@@ -207,8 +209,8 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
             s3_client = s3_service.get_client()
 
             s3_file_based_conn_types = (
-                ConnectionType.file,
-                ConnectionType.gsheets_v2,
+                CONNECTION_TYPE_FILE,
+                CONNECTION_TYPE_GSHEETS_V2,
             )
 
             redis = self._ctx.redis_service.get_redis()

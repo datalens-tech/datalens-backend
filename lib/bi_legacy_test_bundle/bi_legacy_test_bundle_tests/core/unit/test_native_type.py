@@ -13,6 +13,7 @@ from bi_core.db.native_type_schema import OneOfNativeTypeSchema
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 SAMPLE_NATIVE_TYPES = (
@@ -20,7 +21,7 @@ SAMPLE_NATIVE_TYPES = (
         conn_type=CONNECTION_TYPE_MYSQL,
         name='tinyblob'),
     CommonNativeType(
-        conn_type=ConnectionType.postgres,
+        conn_type=CONNECTION_TYPE_POSTGRES,
         name='double_precision',
         nullable=True),
     LengthedNativeType(

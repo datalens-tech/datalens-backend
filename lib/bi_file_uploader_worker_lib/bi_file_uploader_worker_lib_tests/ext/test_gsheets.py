@@ -4,11 +4,12 @@ import uuid
 
 import pytest
 
-from bi_constants.enums import BIType, FileProcessingStatus, ConnectionType
+from bi_constants.enums import BIType, FileProcessingStatus
 
 from bi_core_testing.connection import make_conn_key
 
 from bi_core.us_manager.us_manager_async import AsyncUSManager
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from bi_task_processor.state import wait_task
 from bi_file_uploader_task_interface.tasks import DownloadGSheetTask, ParseFileTask, SaveSourceTask
@@ -431,7 +432,7 @@ async def create_gsheets_v2_connection(us_manager: AsyncUSManager, dfile: DataFi
     conn = GSheetsFileS3Connection.create_from_dict(
         data,
         ds_key=make_conn_key('connections', conn_name),
-        type_=ConnectionType.gsheets_v2.name,
+        type_=CONNECTION_TYPE_GSHEETS_V2.name,
         meta={'title': conn_name, 'state': 'saved'},
         us_manager=us_manager,
     )

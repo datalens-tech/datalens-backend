@@ -59,6 +59,8 @@ from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.constants import (
 )
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 CONFIG = ConnectorAvailabilityConfig(
@@ -102,8 +104,8 @@ CONFIG = ConnectorAvailabilityConfig(
         Section(
             title_translatable=Translatable('section_title-files_and_services'),
             connectors=[
-                Connector(conn_type=CT.file, hidden=False),
-                Connector(conn_type=CT.gsheets_v2, hidden=False),
+                Connector(conn_type=CONNECTION_TYPE_FILE, hidden=False),
+                Connector(conn_type=CONNECTION_TYPE_GSHEETS_V2, hidden=False),
                 Connector(conn_type=CONNECTION_TYPE_YQ, hidden=False),
                 Connector(conn_type=CONNECTION_TYPE_METRICA_API, hidden=False),
                 Connector(conn_type=CONNECTION_TYPE_APPMETRICA_API, hidden=False),
