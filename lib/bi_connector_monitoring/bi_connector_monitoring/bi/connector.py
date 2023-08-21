@@ -14,9 +14,10 @@ from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
 
-from bi_api_lib.connectors.monitoring.connection_form.form_config import MonitoringConnectionFormFactory
-from bi_api_lib.connectors.monitoring.connection_info import MonitoringConnectionInfoProvider
-from bi_api_lib.connectors.monitoring.schemas import MonitoringConnectionSchema
+from bi_connector_monitoring.bi.api_schema.connection import MonitoringConnectionSchema
+from bi_connector_monitoring.bi.connection_form.form_config import MonitoringConnectionFormFactory
+from bi_connector_monitoring.bi.connection_info import MonitoringConnectionInfoProvider
+from bi_connector_monitoring.bi.i18n.localizer import CONFIGS
 
 
 class MonitoringBiApiConnectionDefinition(BiApiConnectionDefinition):
@@ -40,3 +41,4 @@ class MonitoringBiApiConnector(BiApiConnector):
     source_definitions = (
         MonitoringBiApiSourceDefinition,
     )
+    translation_configs = frozenset(CONFIGS)

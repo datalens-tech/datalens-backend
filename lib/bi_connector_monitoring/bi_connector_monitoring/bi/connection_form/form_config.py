@@ -16,7 +16,7 @@ from bi_api_connector.form_config.models.base import (
 )
 from bi_api_connector.form_config.models.common import CommonFieldName
 
-from bi_api_lib.connectors.monitoring.connection_info import MonitoringConnectionInfoProvider
+from bi_connector_monitoring.bi.connection_info import MonitoringConnectionInfoProvider
 
 
 class MonitoringConnectionFormFactory(ConnectionFormFactory):

@@ -63,10 +63,6 @@ msgstr ""
 msgid "label_connector-gsheets"
 msgstr "Google Sheets"
 
-#: bi_api_lib/connectors/monitoring/connection_info.py:8
-msgid "label_connector-monitoring"
-msgstr "Monitoring"
-
 #: bi_api_lib/connectors/solomon/connection_form/form_config.py:22
 msgid "label_solomon-conn-description"
 msgstr ""
