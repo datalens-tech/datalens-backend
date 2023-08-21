@@ -9,7 +9,7 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from bi_api_lib.service_registry.formula_parser_factory import FormulaParserFactory
 from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
-from bi_core.i18n.localizer_base import LocalizerFactory, Localizer
+from bi_i18n.localizer_base import LocalizerFactory, Localizer
 from bi_api_lib.utils.rls import BaseSubjectResolver
 from bi_core.services_registry.top_level import DefaultServicesRegistry, ServicesRegistry
 from bi_dls_client.dls_client import DLSClient

@@ -19,6 +19,7 @@ anyascii = {path = "../../lib/anyascii"}
 apispec = ">=3.3.2"
 attrs = ">=22.2.0"
 bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
+bi-i18n = {path = "../../lib/bi_i18n"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 cchardet = ">=2.1.7"
 celery = ">=5.2.7"

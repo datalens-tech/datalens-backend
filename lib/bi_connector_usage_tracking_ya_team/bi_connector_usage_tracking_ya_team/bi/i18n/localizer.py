@@ -2,7 +2,7 @@ import os
 
 import attr
 
-from bi_core.i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
+from bi_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
 
 
 DOMAIN = 'bi_connector_usage_tracking_ya_team'

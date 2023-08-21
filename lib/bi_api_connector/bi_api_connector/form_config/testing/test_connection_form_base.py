@@ -7,7 +7,7 @@ from bi_configs.connectors_settings import ConnectorsSettingsByType
 
 from bi_api_commons.base_models import TenantDef, TenantYCFolder
 
-from bi_core.i18n.localizer_base import LocalizerLoader, TranslationConfig
+from bi_i18n.localizer_base import LocalizerLoader, TranslationConfig
 
 from bi_api_connector.form_config.models.base import ConnectionFormMode, ConnectionFormFactory, ConnectionForm
 

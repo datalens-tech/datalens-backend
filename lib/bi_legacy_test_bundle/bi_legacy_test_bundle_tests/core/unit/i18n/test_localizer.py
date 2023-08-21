@@ -1,14 +1,16 @@
+# TODO: Move to bi_i18n
+
 import os
 from typing import Dict
 
 import attr
 import pytest
 
-from bi_core.exc import (
+from bi_i18n.exc import (
     UnknownDomain,
     UnknownLocale,
 )
-from bi_core.i18n.localizer_base import (
+from bi_i18n.localizer_base import (
     Translatable as BaseTranslatable,
     TranslationConfig,
     LocalizerLoader,

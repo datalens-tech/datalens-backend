@@ -920,6 +920,22 @@ type = "directory"
 url = "../../lib/bi_formula_ref_ya"
 
 [[package]]
+name = "bi-i18n"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_i18n"
+
+[[package]]
 name = "bi-task-processor"
 version = "0.0.0"
 description = ""
@@ -7100,7 +7116,7 @@ url = "../../app/dls"
 
 [[package]]
 name = "yandex-bi-api"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7282,6 +7298,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 dynamic-enum = {path = "../../lib/dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-enum = ">=1.5.1"
@@ -7300,7 +7317,7 @@ url = "../../lib/bi_api_connector"
 
 [[package]]
 name = "yandex-bi-api-lib"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7310,6 +7327,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 blinker = ">=1.5"
 ciso8601 = ">=2.2.0"
 flask = ">=2.0.3"
@@ -7518,6 +7536,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 google-api-core = ">=2.11.1"
 google-auth = ">=2.21.0"
 marshmallow = ">=3.19.0"
@@ -7567,6 +7586,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-i18n = {path = "../../lib/bi_i18n"}
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
@@ -7592,6 +7612,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-i18n = {path = "../../lib/bi_i18n"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
@@ -7615,6 +7636,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow-enum = ">=1.5.1"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
@@ -7639,6 +7661,7 @@ develop = false
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
+bi-i18n = {path = "../../lib/bi_i18n"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 marshmallow = ">=3.19.0"
 marshmallow-enum = ">=1.5.1"
@@ -7667,6 +7690,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
@@ -7690,6 +7714,7 @@ develop = false
 [package.dependencies]
 aiochclient = ">=2.2.0"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
@@ -7713,6 +7738,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-connector-chyt = {path = "../../lib/bi_connector_chyt"}
@@ -7736,6 +7762,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
@@ -7783,6 +7810,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
@@ -7807,6 +7835,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
@@ -7827,6 +7856,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 pyodbc = ">=4.0.35"
 sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
@@ -7854,6 +7884,7 @@ develop = false
 [package.dependencies]
 aiomysql = ">=0.1.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 mysqlclient = ">=1.4.6"
 sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
@@ -7882,6 +7913,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow-enum = ">=1.5.1"
 oracledb = ">=1.3.1"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -7910,6 +7942,7 @@ develop = false
 [package.dependencies]
 asyncpg = ">=0.27.0"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow-enum = ">=1.5.1"
 psycopg2-binary = ">=2.9.6"
 python-dateutil = ">=2.8.2"
@@ -7939,6 +7972,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
@@ -7960,6 +7994,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 snowflake-connector-python = ">=2.9.0"
 snowflake-sqlalchemy = ">=1.4.6"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -7984,6 +8019,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-i18n = {path = "../../lib/bi_i18n"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
@@ -8006,6 +8042,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 grpcio = ">=1.45.0rc1"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -8043,7 +8080,7 @@ url = "../../lib/bi_constants"
 
 [[package]]
 name = "yandex-bi-control-api-os"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8063,7 +8100,7 @@ url = "../../app_os/app_os_control_api"
 
 [[package]]
 name = "yandex-bi-control-api-yc"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8098,6 +8135,7 @@ anyascii = {path = "../../lib/anyascii"}
 apispec = ">=3.3.2"
 attrs = ">=22.2.0"
 bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
+bi-i18n = {path = "../../lib/bi_i18n"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 cchardet = ">=2.1.7"
 celery = ">=5.2.7"
@@ -8193,7 +8231,7 @@ url = "../../lib/bi_core_testing"
 
 [[package]]
 name = "yandex-bi-data-api-os"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8214,7 +8252,7 @@ url = "../../app_os/app_os_data_api"
 
 [[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8235,7 +8273,7 @@ url = "../../app_yc/app_yc_data_api_sec_embeds"
 
 [[package]]
 name = "yandex-bi-data-api-yc"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8527,7 +8565,7 @@ url = "../../lib/bi_legacy_test_bundle"
 
 [[package]]
 name = "yandex-bi-meta-os-control-api"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8587,7 +8625,7 @@ url = "../../lib/bi_meta_os/bi_meta_os_control_api"
 
 [[package]]
 name = "yandex-bi-meta-os-data-api"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8648,7 +8686,7 @@ url = "../../lib/bi_meta_os/bi_meta_os_data_api"
 
 [[package]]
 name = "yandex-bi-meta-yc-control-api"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8730,7 +8768,7 @@ url = "../../lib/bi_meta_yc/bi_meta_yc_control_api"
 
 [[package]]
 name = "yandex-bi-meta-yc-data-api"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8813,7 +8851,7 @@ url = "../../lib/bi_meta_yc/bi_meta_yc_data_api"
 
 [[package]]
 name = "yandex-bi-meta-yc-data-api-sec-embeds"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8931,7 +8969,7 @@ url = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_worker"
 
 [[package]]
 name = "yandex-bi-meta-yc-public-dataset-api"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9050,7 +9088,7 @@ url = "../../lib/bi_package_boilerplate"
 
 [[package]]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9094,7 +9132,7 @@ url = "../../lib/bi_query_processing"
 
 [[package]]
 name = "yandex-bi-rqe-ext-async"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9116,7 +9154,7 @@ url = "../../app/bi_rqe_ext_async"
 
 [[package]]
 name = "yandex-bi-rqe-ext-sync"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9142,7 +9180,7 @@ url = "../../app/bi_rqe_ext_sync"
 
 [[package]]
 name = "yandex-bi-rqe-int-sync"
-version = "0.1963.0"
+version = "0.1969.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9780,4 +9818,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "1f258acae9f3463a11f62569f9dd67a601b993b1f60c1239bf909294afdc0fb8"
+content-hash = "2188ec89c68dd34b318bf71fb1917b945bdf38e5519f81f274ab6191dbec96d3"

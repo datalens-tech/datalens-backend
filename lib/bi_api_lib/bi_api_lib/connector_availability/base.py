@@ -10,7 +10,7 @@ import attr
 
 from bi_constants.enums import ConnectionType
 
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from bi_api_lib.connection_info import get_connector_info_provider_cls
 from bi_api_lib.i18n.localizer import Translatable

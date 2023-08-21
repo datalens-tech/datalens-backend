@@ -212,6 +212,7 @@ yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 bi-formula-ref-ya = {path = "../../lib/bi_formula_ref_ya"}
 bi-formula-ref-dc = {path = "../../lib/bi_formula_ref_dc"}
 bi-formula-ref-nebius = {path = "../../lib/bi_formula_ref_nebius"}
+bi-i18n = {path = "../../lib/bi_i18n"}
 
 [tool.poetry.group.contour-ya-ci.dependencies]
 # Ya-Team requirements

@@ -840,22 +840,6 @@ class USPermissionRequired(USReqException):
         return f'No permission {self.permission} for entry {self.entry_id}'
 
 
-class I18nException(Exception):
-    pass
-
-
-class UnknownLocale(I18nException):
-    pass
-
-
-class UnknownDomain(I18nException):
-    pass
-
-
-class InvalidLocaleConfig(I18nException):
-    pass
-
-
 class LargeCHYTRowError(SourceProtocolError):
     err_code = SourceProtocolError.err_code + ['TOO_LARGE_ROW']
     default_message = 'Data source failed to respond correctly (too large row).'

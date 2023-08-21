@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional, final
 from bi_task_processor.arq_wrapper import create_arq_redis_settings
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_core.i18n.localizer_base import LocalizerLoader
+from bi_i18n.localizer_base import LocalizerLoader
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory import (
     CloudEnvManagerFactory, IntranetEnvManagerFactory, DataCloudEnvManagerFactory,

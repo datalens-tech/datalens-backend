@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import DataSourceTemplate
 
 from bi_configs.connectors_settings import CHFrozenConnectorSettings

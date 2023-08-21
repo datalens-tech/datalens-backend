@@ -30,7 +30,7 @@ from bi_core.base_models import (
 )
 from bi_core.connection_models import DBIdent, SchemaIdent
 from bi_core.db import get_type_transformer, TypeTransformer
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.i18n.localizer import Translatable
 from bi_core.us_entry import BaseAttrsDataModel, USEntry
 from bi_core.utils import parse_comma_separated_hosts, secrepr

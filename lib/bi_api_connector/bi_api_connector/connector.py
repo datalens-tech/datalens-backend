@@ -5,7 +5,7 @@ import abc
 from bi_core.connectors.base.connector import (
     CoreConnector, CoreSourceDefinition, CoreConnectionDefinition
 )
-from bi_core.i18n.localizer_base import TranslationConfig
+from bi_i18n.localizer_base import TranslationConfig
 
 from bi_formula.core.dialect import DialectName
 

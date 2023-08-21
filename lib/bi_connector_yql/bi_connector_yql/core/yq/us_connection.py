@@ -9,7 +9,7 @@ from bi_utils.utils import DataKey
 
 from bi_core.base_models import ConnCacheableMixin, ConnSubselectMixin
 from bi_core.connection_models.conn_options import ConnectOptions
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import (
     ConnectionBase, DataSourceTemplate, ExecutorBasedMixin, SubselectMixin, ConnectionHardcodedDataMixin,

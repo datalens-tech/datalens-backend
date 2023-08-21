@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from bi_core.us_connection_base import DataSourceTemplate
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 
 from bi_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT,

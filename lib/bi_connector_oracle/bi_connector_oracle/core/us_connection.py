@@ -4,7 +4,7 @@ from typing import Callable, ClassVar
 
 import attr
 
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate, ConnectionBase
 

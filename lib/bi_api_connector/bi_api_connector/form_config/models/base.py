@@ -20,7 +20,7 @@ from bi_api_connector.form_config.models.common import (
     remap_skip_if_null,
 )
 from bi_api_connector.form_config.models.rows.base import FormRow, FormFieldMixin, DisplayConditionsMixin
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 
 
 @attr.s(kw_only=True, frozen=True)

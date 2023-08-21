@@ -11,6 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 python = ">=3.10, <3.12"
 snowflake-connector-python = ">=2.9.0"
 snowflake-sqlalchemy = ">=1.4.6"

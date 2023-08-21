@@ -11,7 +11,7 @@ from bi_connector_chyt.core.us_connection import BaseConnectionCHYT
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
 from bi_connector_chyt_internal.core.dto import CHYTInternalDTO, CHYTUserAuthDTO
 from bi_core.i18n.localizer import Translatable
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import DataSourceTemplate
 from bi_core.utils import secrepr
 

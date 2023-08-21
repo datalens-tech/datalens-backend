@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 blinker = ">=1.5"
 ciso8601 = ">=2.2.0"
 flask = ">=2.0.3"

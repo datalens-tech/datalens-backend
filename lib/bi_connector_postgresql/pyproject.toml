@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 asyncpg = ">=0.27.0"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow-enum = ">=1.5.1"
 psycopg2-binary = ">=2.9.6"
 python = ">=3.10, <3.12"

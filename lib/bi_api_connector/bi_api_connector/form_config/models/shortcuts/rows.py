@@ -5,7 +5,7 @@ from typing import Optional, List
 
 from bi_constants.enums import RawSQLLevel
 
-from bi_core.i18n.localizer_base import (
+from bi_i18n.localizer_base import (
     Localizer,
     Translatable as BaseTranslatable,
 )

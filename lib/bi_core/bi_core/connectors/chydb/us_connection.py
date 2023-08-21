@@ -10,7 +10,7 @@ from bi_utils.utils import DataKey
 from bi_core.connectors.chydb.dto import CHOverYDBDTO
 from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
 from bi_core.i18n.localizer import Translatable
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import DataSourceTemplate, ConnectionBase
 from bi_core.utils import secrepr

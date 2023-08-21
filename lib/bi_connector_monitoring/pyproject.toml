@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 python = ">=3.10, <3.12"
 yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}

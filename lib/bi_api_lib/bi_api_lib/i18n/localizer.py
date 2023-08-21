@@ -3,7 +3,7 @@ import os
 import attr
 
 
-from bi_core.i18n.localizer_base import (
+from bi_i18n.localizer_base import (
     Translatable as BaseTranslatable,
     TranslationConfig,
 )

@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiomysql = ">=0.1.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 mysqlclient = ">=1.4.6"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"

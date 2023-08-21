@@ -11,6 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 google-api-core = ">=2.11.1"
 google-auth = ">=2.21.0"
 marshmallow = ">=3.19.0"

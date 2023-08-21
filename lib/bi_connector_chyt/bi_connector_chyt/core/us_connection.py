@@ -15,7 +15,7 @@ from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhous
 from bi_connector_chyt.core.conn_options import CHYTConnectOptions
 from bi_connector_chyt.core.dto import CHYTDTO
 from bi_core.i18n.localizer import Translatable
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import (
     ConnectionBase, DataSourceTemplate, ExecutorBasedMixin, SubselectMixin,
 )

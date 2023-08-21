@@ -5,7 +5,7 @@ from typing import ClassVar
 from bi_constants.enums import CreateDSFrom
 
 from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import DataSourceTemplate
 
 

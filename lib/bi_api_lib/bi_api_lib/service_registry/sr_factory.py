@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import attr
 
-from bi_core.i18n.localizer_base import LocalizerFactory, Localizer
+from bi_i18n.localizer_base import LocalizerFactory, Localizer
 from bi_core.services_registry.sr_factories import DefaultSRFactory
 from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core.components.ids import FieldIdGeneratorType

@@ -11,7 +11,7 @@ from bi_core.connection_models.conn_options import ConnectOptions
 from bi_connector_yql.core.ydb.dto import YDBConnDTO
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin
 from bi_core.i18n.localizer import Translatable
-from bi_core.i18n.localizer_base import Localizer
+from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate, ConnectionBase
 from bi_core.utils import secrepr
