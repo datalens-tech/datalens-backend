@@ -1,0 +1,2 @@
+[bi_formula_ref.plugins]
+ya_env = bi_formula_ref_ya.plugins.ya_env:YaFormulaRefPlugin

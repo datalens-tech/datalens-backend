@@ -14,7 +14,7 @@ from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo, StandardDialect as D
 
 from bi_formula_ref.audience import Audience
-from bi_formula_ref.localization import gettext_for_locale
+from bi_formula_ref.i18n.registry import get_localizer
 from bi_formula_ref.texts import (
     HUMAN_DIALECTS, HUMAN_CATEGORIES,
     DialectStyle, ALSO_IN_OTHER_CATEGORIES, HIDDEN_DIALECTS, ANY_DIALECTS,
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
 
 
 def translate(text: str, locale: str) -> str:
-    gtext = gettext_for_locale(locale).gettext
+    gtext = get_localizer(locale).translate
     return gtext(text) if text else ''
 
 
@@ -112,7 +112,7 @@ class FuncRenderer:
                 text=translate(text.text, locale=self._locale),
                 params=text.params,
             ).format()
-        translation_callable = gettext_for_locale(self._locale).gettext
+        translation_callable = get_localizer(self._locale).translate
         relative_path_renderer = self._path_renderer.child(context_path)
         expander = MacroExpander(
             resources=raw_func.resources,
@@ -165,7 +165,7 @@ class FuncRenderer:
         )
 
     def render_func(self, func_key: RefFunctionKey, raw_func: RawFunc) -> RenderedFunc:
-        gtext = gettext_for_locale(self._locale).gettext
+        gtext = get_localizer(self._locale).translate
         func_file_path = self._path_renderer.get_func_path(func_key=func_key)
         context_path = os.path.dirname(func_file_path)
 

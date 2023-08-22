@@ -5,7 +5,7 @@ from typing import Optional, TYPE_CHECKING
 
 import attr
 
-from bi_formula_ref.localization import gettext_for_locale
+from bi_formula_ref.i18n.registry import get_localizer
 from bi_formula_ref.texts import FUNCTION_CATEGORY_TAG
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 def translate(text: Optional[str], locale: str) -> str:
     # Note: for `text=None` returns an empty string `''`
-    gtext = gettext_for_locale(locale).gettext
+    gtext = get_localizer(locale).translate
     return gtext(text) if text else ''
 
 

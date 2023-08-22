@@ -33,7 +33,7 @@ from bi_formula_ref.rendering import human_category, human_dialect, FuncRenderer
 from bi_formula_ref.registry.registry import RefFunctionKey
 from bi_formula_ref.registry.example_base import DataExampleRendererConfig
 from bi_formula_ref.registry.example import DataExample, ExampleBase
-from bi_formula_ref.localization import gettext_for_locale
+from bi_formula_ref.i18n.registry import get_localizer
 from bi_formula_ref.config import (
     RefDocGeneratorConfig, get_generator_config, ConfigVersion,
     FuncDocConfigVersion, FuncDocTemplateConfig,
@@ -116,7 +116,7 @@ class ReferenceDocGenerator:
             template = self._jinja_env.get_template(doc_config.template_file)
             rend_funcs = self._render_funcs(raw_funcs=raw_funcs, doc_config=doc_config)
             for multi_func in rend_funcs:
-                text = template.render(multi_func=multi_func, _=gettext_for_locale(self._locale).gettext)
+                text = template.render(multi_func=multi_func, _=get_localizer(self._locale).translate)
                 full_path = os.path.join(outdir, multi_func.file_path)
                 dirname = os.path.dirname(full_path)
                 if not os.path.exists(dirname):
@@ -135,7 +135,7 @@ class ReferenceDocGenerator:
         return funcs_by_category
 
     def generate_doc_toc(self, list_funcs: bool = False) -> None:
-        trans = gettext_for_locale(self._locale).gettext
+        trans = get_localizer(self._locale).translate
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
         raw_funcs = self._func_ref.as_list()
         renderer = self._get_renderer(doc_config=doc_config)
@@ -197,7 +197,7 @@ class ReferenceDocGenerator:
             meta_description: str = '',
             meta_keywords: Sequence[str] = (),
     ) -> None:
-        trans = gettext_for_locale(self._locale).gettext
+        trans = get_localizer(self._locale).translate
         template = self._jinja_env.get_template(self._gen_config.doc_list_template)
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
         renderer = self._get_renderer(doc_config=doc_config)
@@ -324,7 +324,7 @@ class ReferenceDocGenerator:
         template = self._jinja_env.get_template(self._gen_config.doc_avail_template)
         text = template.render(
             table_by_audience=table_by_audience,
-            _=gettext_for_locale(self._locale).gettext,
+            _=get_localizer(self._locale).translate,
         )
         print(text)
 

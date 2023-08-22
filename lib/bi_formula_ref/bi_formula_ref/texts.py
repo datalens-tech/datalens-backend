@@ -233,3 +233,11 @@ HUMAN_DIALECTS = {
 SIGNATURE_TITLE_STANDARD = _('Standard')
 SIGNATURE_TITLE_EXTENDED = _('Extended')
 SIGNATURE_DESC_EXTENDED_HEADER = _('More info:')
+
+
+def register_any_dialects(any_dialects: frozenset[DialectCombo]) -> None:
+    ANY_DIALECTS.update(any_dialects)
+
+
+def register_human_dialects(human_dialects: dict[DialectCombo, StyledDialect]) -> None:
+    HUMAN_DIALECTS.update(human_dialects)

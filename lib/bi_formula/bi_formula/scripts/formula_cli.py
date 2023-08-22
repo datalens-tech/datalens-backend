@@ -116,7 +116,7 @@ class FormulaCliTool:
             yield line
 
     @classmethod
-    def parse(cls, text: str, pretty: bool, suppress_errors: bool, pos: int = None, with_meta: bool = False):
+    def parse(cls, text: str, pretty: bool, suppress_errors: bool, pos: Optional[int] = None, with_meta: bool = False):
         if not text:
             # bulk mode, read from STDIN
             for line in cls._stdin_lines():

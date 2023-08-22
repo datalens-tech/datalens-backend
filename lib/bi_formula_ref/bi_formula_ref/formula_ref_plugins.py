@@ -4,11 +4,12 @@ import attr
 
 from bi_utils.entrypoints import EntrypointClassManager
 
+import bi_formula_ref as package
 from bi_formula_ref.plugins.base.plugin import FormulaRefPlugin
 from bi_formula_ref.plugins.registration import FORMULA_REF_PLUGIN_REG
 
 
-_PLUGIN_EP_GROUP = 'dl_formula_ref.plugins'
+_PLUGIN_EP_GROUP = f'{package.__name__}.plugins'
 
 
 @attr.s

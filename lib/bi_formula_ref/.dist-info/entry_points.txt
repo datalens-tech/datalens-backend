@@ -1,3 +1,6 @@
+[bi_formula_ref.plugins]
+default = bi_formula_ref.plugins.default.plugin:DefaultFormulaRefPlugin
+
 [console_scripts]
 bi-formula-ref-doc = bi_formula_ref.scripts.formula_doc:main
 bi-formula-ref-exdata = bi_formula_ref.scripts.example_data:main

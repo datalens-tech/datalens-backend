@@ -11,7 +11,8 @@ import tabulate
 from bi_formula_ref.examples.data_table import rename_columns
 from bi_formula_ref.examples.utils import make_data_table_from_example, make_key_for_example
 from bi_formula_ref.examples.result_storage import ReadableDataStorage
-from bi_formula_ref.localization import gettext_for_locale
+from bi_formula_ref.i18n.registry import get_localizer
+
 
 if TYPE_CHECKING:
     from bi_formula_ref.examples.data_table import DataTable
@@ -40,7 +41,7 @@ class ExampleRenderer:
     def __attrs_post_init__(self) -> None:
         self._storage = ReadableDataStorage(filename=self._storage_filename)
         self._storage.load()
-        self._trans = gettext_for_locale(self._locale).gettext
+        self._trans = get_localizer(self._locale).translate
 
     def _format_value(self, value: Any, example: ExampleConfig) -> str:
         if value is None:
