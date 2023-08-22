@@ -28,6 +28,13 @@ docker-reinstall: secrets-update update-requirements
 	docker-compose run --rm pi
 
 
+# Run bash in the remote python container. Can be used to run tests/checks manually
+.PHONY: remote-shell
+remote-shell:
+	docker-compose stop pi
+	docker-compose run --rm -it --env SKIP_DEPS_INSTALL=1 pi bash
+
+
 # Request secrets from vault and store it to env file
 secrets/private/base_secrets.env: secrets/conf/defaults.conf secrets/conf/templates/base_secrets.env.j2
 	yav-deploy --force --deploy-root ./secrets/private --configs-path ./secrets/conf
