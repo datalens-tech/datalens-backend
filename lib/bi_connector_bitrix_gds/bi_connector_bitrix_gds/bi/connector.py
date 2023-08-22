@@ -13,12 +13,13 @@ from bi_api_connector.api_schema.source_base import (
     SQLDataSourceSchema, SQLDataSourceTemplateSchema,
 )
 
-from bi_api_lib.connectors.bitrix_gds.connection_form.form_config import BitrixGDSConnectionFormFactory
-from bi_api_lib.connectors.bitrix_gds.connection_info import BitrixGDSConnectionInfoProvider
-from bi_api_lib.connectors.bitrix_gds.schemas import BitrixGDSConnectionSchema
-from bi_api_lib.connectors.bitrix_gds.filter_compiler import BitrixGDSFilterFormulaCompiler
-from bi_api_lib.connectors.bitrix_gds.planner import BitrixGDSCompengExecutionPlanner
-from bi_api_lib.connectors.bitrix_gds.multi_query import BitrixGDSMultiQueryMutatorFactory
+from bi_connector_bitrix_gds.bi.api_schema.connection import BitrixGDSConnectionSchema
+from bi_connector_bitrix_gds.bi.connection_form.form_config import BitrixGDSConnectionFormFactory
+from bi_connector_bitrix_gds.bi.connection_info import BitrixGDSConnectionInfoProvider
+from bi_connector_bitrix_gds.bi.filter_compiler import BitrixGDSFilterFormulaCompiler
+from bi_connector_bitrix_gds.bi.i18n.localizer import CONFIGS
+from bi_connector_bitrix_gds.bi.multi_query import BitrixGDSMultiQueryMutatorFactory
+from bi_connector_bitrix_gds.bi.planner import BitrixGDSCompengExecutionPlanner
 
 
 class BitrixGDSBiApiSourceDefinition(BiApiSourceDefinition):
@@ -47,3 +48,4 @@ class BitrixGDSBiApiConnector(BiApiConnector):
     legacy_initial_planner_cls = BitrixGDSCompengExecutionPlanner
     is_forkable = False
     filter_formula_compiler_cls = BitrixGDSFilterFormulaCompiler
+    translation_configs = frozenset(CONFIGS)

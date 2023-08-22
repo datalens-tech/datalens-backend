@@ -11,15 +11,24 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 redis = ">=4.5.1"
 redis_cache_lock = {path = "../../lib/redis-cache-lock"}
 sqlalchemy = ">=1.4.46, <2.0"
 python = ">=3.10, <3.12"
+yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../bi_api_connector"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-query-processing = {path = "../../lib/bi_query_processing"}
 yandex-bi-utils = {path = "../../lib/bi_utils"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+bitrix_gds = "bi_connector_bitrix_gds.bi.connector:BitrixGDSBiApiConnector"
 
 [tool.poetry.plugins."bi_core.connectors"]
 bitrix_gds = "bi_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"
@@ -51,7 +60,7 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+root_dir = "bi_connector_bitrix_gds_tests/"
+target_path = "unit"
+skip_compose = "true"

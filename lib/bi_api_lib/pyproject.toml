@@ -70,7 +70,6 @@ yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_
 yandex-bi-service-registry-ya-team = {path = "../../lib/bi_service_registry_ya_team"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
-bitrix_gds = "bi_api_lib.connectors.bitrix_gds.connector:BitrixGDSBiApiConnector"
 chs3_gsheets = "bi_api_lib.connectors.chs3_gsheets.connector:GSheetsFileS3BiApiConnector"
 chyt = "bi_api_lib.connectors.chyt.connector:CHYTBiApiConnector"
 chyt_internal = "bi_api_lib.connectors.chyt_internal.connector:CHYTInternalBiApiConnector"

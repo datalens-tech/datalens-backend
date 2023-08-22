@@ -17,18 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_api_lib/connectors/bitrix_gds/connection_form/form_config.py:35
-msgid "label_token"
-msgstr "Token"
-
-#: bi_api_lib/connectors/bitrix_gds/connection_form/form_config.py:46
-msgid "label_portal"
-msgstr "Portal"
-
-#: bi_api_lib/connectors/bitrix_gds/connection_info.py:8
-msgid "label_connector-bitrix"
-msgstr "Bitrix24"
-
 #: bi_api_lib/connectors/chs3_gsheets/connection_info.py:8
 msgid "label_connector-gsheets_v2"
 msgstr "Google Sheets"
