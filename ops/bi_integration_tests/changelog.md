@@ -1,3 +1,75 @@
+0.12.0
+------
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4830] Version bump for integration tests fix (#57)            [ https://github.com/datalens-tech/datalens-backend-private/commit/c4188ee ]
+ * [BI-4830] Version bump for integration tests (#56)                [ https://github.com/datalens-tech/datalens-backend-private/commit/56fcece ]
+ * [BI-4830] Fix release PR branch name (#52)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/24eeb5d ]
+ * [BI-4830] Add dedicated dir for CI artifacts to .gitignore (#43)  [ https://github.com/datalens-tech/datalens-backend-private/commit/a787a30 ]
+ * [BI-4830] Fix make pycharm (#11)                                  [ https://github.com/datalens-tech/datalens-backend-private/commit/bc7a3ab ]
+ * [BI-4830] Remove GH sync tools (#9)                               [ https://github.com/datalens-tech/datalens-backend-private/commit/88c518a ]
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * integration-tests with bake (#54)     [ https://github.com/datalens-tech/datalens-backend-private/commit/fb99f60 ]
+ * BI-4809 control-api yc-preprod (#45)  [ https://github.com/datalens-tech/datalens-backend-private/commit/ccc6044 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Added make remote-shell command (#49)                                                    [ https://github.com/datalens-tech/datalens-backend-private/commit/321c8af ]
+ * Added registrations to formula_ref plugins and switched to new localization logic (#34)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4cfe507 ]
+ * Removed empty bi_core/i18n/localizer_base.py (#35)                                       [ https://github.com/datalens-tech/datalens-backend-private/commit/6b38614 ]
+ * Added the mainrepo dir (#32)                                                             [ https://github.com/datalens-tech/datalens-backend-private/commit/08cc8da ]
+ * Some mypy fixes for bi_i18n,  bi_core and connectors (#28)                               [ https://github.com/datalens-tech/datalens-backend-private/commit/7927363 ]
+ * git-related fixes for repmanager (#30)                                                   [ https://github.com/datalens-tech/datalens-backend-private/commit/7898fcf ]
+ * Fixed i18n import in monitoring connector (#29)                                          [ https://github.com/datalens-tech/datalens-backend-private/commit/6804cdc ]
+ * Removed some unused attributes and methods from USEntry (#14)                            [ https://github.com/datalens-tech/datalens-backend-private/commit/82ca37e ]
+ * Added the option of using whitelists in connector registration (#18)                     [ https://github.com/datalens-tech/datalens-backend-private/commit/cbbcf25 ]
+ * Removed __init__ from the root dir (#26)                                                 [ https://github.com/datalens-tech/datalens-backend-private/commit/ad1f2f7 ]
+ * Added formula_ref plugins (#20)                                                          [ https://github.com/datalens-tech/datalens-backend-private/commit/c1fa53d ]
+ * Moved some modules from bi_testing to bi_testing_ya (#22)                                [ https://github.com/datalens-tech/datalens-backend-private/commit/808304f ]
+ * Implemented regulated test mechanism (#21)                                               [ https://github.com/datalens-tech/datalens-backend-private/commit/a3e1816 ]
+ * Partially moved some more constants to connectors (#12)                                  [ https://github.com/datalens-tech/datalens-backend-private/commit/8457968 ]
+ * Added bi_i18n package (#10)                                                              [ https://github.com/datalens-tech/datalens-backend-private/commit/21fcbf8 ]
+ * Added .mo files to bi_formula_ref package (#15)                                          [ https://github.com/datalens-tech/datalens-backend-private/commit/af79cd6 ]
+ * Added __pycache__ to .gitignore (#13)                                                    [ https://github.com/datalens-tech/datalens-backend-private/commit/864e9cb ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Update Kontur.Market texts; fix translations generation (#47)  [ https://github.com/datalens-tech/datalens-backend-private/commit/338074a ]
+ * Remove the remaining gen-parser prerequisites from Makefiles   [ https://github.com/datalens-tech/datalens-backend-private/commit/380fbd8 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * remove unused file (#51)                                                   [ https://github.com/datalens-tech/datalens-backend-private/commit/9592af6 ]
+ * remove method_not_implemented (#48)                                        [ https://github.com/datalens-tech/datalens-backend-private/commit/312cd5c ]
+ * BI-4834: move the bitrix bi api connector to a separate package (#46)      [ https://github.com/datalens-tech/datalens-backend-private/commit/088d08a ]
+ * enable more tests in ci (#41)                                              [ https://github.com/datalens-tech/datalens-backend-private/commit/2598b2b ]
+ * remove remaining setup pys (#42)                                           [ https://github.com/datalens-tech/datalens-backend-private/commit/8b23500 ]
+ * small fixes for mypy (#37)                                                 [ https://github.com/datalens-tech/datalens-backend-private/commit/9981e20 ]
+ * BI-4834: move metrica bi api connectors to a separate package (#27)        [ https://github.com/datalens-tech/datalens-backend-private/commit/ba21b47 ]
+ * BI-4817: move some dashsql tests from bi api to connectors packages (#31)  [ https://github.com/datalens-tech/datalens-backend-private/commit/8b2af58 ]
+ * BI-4834: move the monitoring bi api connector to a separate package (#23)  [ https://github.com/datalens-tech/datalens-backend-private/commit/a20b872 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * GH CI fixes: Skip publish if not executed pytests (#33)                                                [ https://github.com/datalens-tech/datalens-backend-private/commit/94232ef ]
+ * Detect which files was changed between pr branch and base (#25)                                        [ https://github.com/datalens-tech/datalens-backend-private/commit/412a2e0 ]
+ * placeholder workflow for simpler creation of new flow and avoid confusion in running flows list (#17)  [ https://github.com/datalens-tech/datalens-backend-private/commit/90d8b6a ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version lib/bi_api_lib 0.1970.0 (#40)  [ https://github.com/datalens-tech/datalens-backend-private/commit/3c2ed13 ]
+
+* [Konstantin Chupin](http://staff/kchupin@yandex-team.ru)
+
+ * SYNC On branch trunk aabaf57ac056cd9d5ab8541280330f76bedb90d6  [ https://github.com/datalens-tech/datalens-backend-private/commit/f47b646 ]
+ * SYNC On branch trunk f9b55cf0bbe5880d1f49b17ad9615c7e010f2b55  [ https://github.com/datalens-tech/datalens-backend-private/commit/6e5572b ]
+ * SYNC On branch trunk b62b8da33d58eb7fb22395578156db63e1549606  [ https://github.com/datalens-tech/datalens-backend-private/commit/5274b30 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-22 14:09:23+00:00
+
 0.11.0
 -----
 
