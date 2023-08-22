@@ -76,5 +76,3 @@ target-version = ['py310']
 [datalens.pytest.local]
 root_dir = "bi_connector_postgresql_tests/"
 target_path = "db unit"
-labels = ["fat"]
-

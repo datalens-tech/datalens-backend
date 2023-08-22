@@ -75,13 +75,10 @@ priority = "default"
 [datalens.pytest.unit]
 root_dir = "bi_external_api_tests/unit"
 target_path = "."
-labels = ["fat"]
 
 [datalens.pytest.local]
 root_dir = "bi_external_api_tests/db"
 target_path = "."
-labels = ["fat"]
-
 
 [datalens.pytest.ext]
 root_dir = "bi_core_tests/"

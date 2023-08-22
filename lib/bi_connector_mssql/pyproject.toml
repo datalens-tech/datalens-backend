@@ -76,7 +76,6 @@ target-version = ['py310']
 [datalens.pytest.db]
 root_dir = "bi_connector_mssql_tests/"
 target_path = "db unit"
-labels = ["fat"]
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_mssql_tests/"

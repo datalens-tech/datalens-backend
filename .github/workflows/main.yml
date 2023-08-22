@@ -16,7 +16,11 @@ on:
       run_mypy:
         type: boolean
         default: false
-        description: "Check to run mypy"
+        description: "Check to run mypy (in addition to other tests)"
+      run_mypy_only:
+        type: boolean
+        default: false
+        description: "Check to only run mypy"
       pytest_timeout_minutes:
         type: number
         default: 5
@@ -92,6 +96,7 @@ jobs:
   pytest_split:
     runs-on: [ self-hosted, linux ]
     needs: router
+    if: ${{ github.event.inputs.run_mypy_only != 'true' }}
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
       image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_with_code:${{ github.sha }}"
@@ -233,7 +238,7 @@ jobs:
   publish-result:
     runs-on: [self-hosted, linux]
     needs: [ "pytest", "pytest_fat"]
-    if: "!cancelled()"
+    if: "!cancelled() && ${{ github.event.inputs.run_mypy_only != 'true' }}"
     permissions:
       contents: read
       issues: read
@@ -255,7 +260,7 @@ jobs:
 
   mypy:
     runs-on: [ self-hosted, linux ]
-    if: ${{ github.event.inputs.run_mypy == 'true' }}
+    if: ${{ github.event.inputs.run_mypy == 'true' }} ||  ${{ github.event.inputs.run_mypy_only == 'true' }}
     needs: router
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
