@@ -9,12 +9,12 @@ on:
         description:
         options:
           - lib/bi_api_lib;app/bi_api;app/bi_rqe_ext_async;app/bi_rqe_ext_sync;app/bi_rqe_int_sync;lib/bi_meta_yc/bi_meta_yc_control_api;app_yc/app_yc_control_api;lib/bi_meta_yc/bi_meta_yc_data_api;app_yc/app_yc_data_api;lib/bi_meta_yc/bi_meta_yc_data_api_sec_embeds;app_yc/app_yc_data_api_sec_embeds;lib/bi_meta_yc/bi_meta_yc_public_dataset_api;app_yc/app_yc_public_dataset_api;lib/bi_meta_os/bi_meta_os_control_api;app_os/app_os_control_api;lib/bi_meta_os/bi_meta_os_data_api;app_os/app_os_data_api
-          - app/bi_external_api
-          - app/bi_file_secure_reader
+          - app/bi_external_api;
+          - app/bi_file_secure_reader;
           - lib/bi_file_uploader_api_lib;app/bi_file_uploader;lib/bi_meta_yc/bi_meta_yc_file_uploader_api;app_yc/app_yc_file_uploader_api
           - lib/bi_file_uploader_worker_lib;app/bi_file_uploader_worker;lib/bi_meta_yc/bi_meta_yc_file_uploader_worker;app_yc/app_yc_file_uploader_worker
-          - app/bi_alerts
-          - ops/bi_integration_tests
+          - app/bi_alerts;
+          - ops/bi_integration_tests;
 
 jobs:
   release_version:
