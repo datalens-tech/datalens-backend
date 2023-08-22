@@ -1,5 +1,7 @@
 # Makefile pieces that can be conveniently shared between datalens/backend projects.
 
+include ../../tools/common_makefile_i18n.mk
+
 
 # Stop all related containers
 .PHONY: docker-cleanup
@@ -80,18 +82,6 @@ build-cloud-preprod:
 SHELL = /bin/bash
 gen-parser:
 	cd ../../docker_build && docker buildx bake -f bake.hcl gen_antlr
-
-# Merge updated messages.pot template file into .po files
-.PHONY: update-po
-update-po:
-	cd ../../docker_build && \
-	./run-project-bake update-po --set update-po.args.PACKAGE_NAME=$(PACKAGE_NAME) --set update-po.contexts.src=$(PWD) --set update-po.output="type=local,dest=$(PWD)/$(PACKAGE_NAME)"
-
-
-.PHONY: msgfmt
-msgfmt:
-	cd ../../docker_build && \
-	./run-project-bake msgfmt --set msgfmt.args.PACKAGE_NAME=$(PACKAGE_NAME) --set msgfmt.contexts.src=$(PWD) --set msgfmt.output="type=local,dest=$(PWD)/$(PACKAGE_NAME)"
 
 
 .PHONY: build-like-gh

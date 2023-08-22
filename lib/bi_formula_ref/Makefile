@@ -109,3 +109,6 @@ generate-docs-source:
 
 	@echo "Generating ru_RU docs..."
 	@$(VENV)/bin/bi-formula-ref-doc generate --locale ru_RU $(DOCS_SOURCE_PATH)/ru/_api-ref/datalens
+
+
+PACKAGE_NAME = bi_formula_ref
