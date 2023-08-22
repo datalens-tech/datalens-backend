@@ -257,7 +257,7 @@ target "app_os_data_api" {
 target "integration_tests" {
   pull     = false
   contexts = {
-    bake_ctx_base_img = "target:base_focal_tier_1"
+    bake_ctx_base_img = "target:base_tier_1"
     bake_ctx_libs     = "${PROJECT_ROOT}/lib"
     bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
   }
