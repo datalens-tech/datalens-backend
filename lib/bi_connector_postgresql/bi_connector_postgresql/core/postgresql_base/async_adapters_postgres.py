@@ -4,10 +4,7 @@ import asyncio
 import logging
 import typing
 import contextlib
-from typing import (
-    TYPE_CHECKING, Any, List, Optional, Tuple, Type, Dict, ClassVar, TypeVar,
-    Iterable, Callable, AsyncIterator
-)
+from typing import Any, AsyncIterator, Callable, ClassVar, Iterable, Optional, Type, TypeVar, TYPE_CHECKING
 
 import attr
 import asyncpg
@@ -28,8 +25,6 @@ from bi_app_tools.profiling_base import generic_profiler_async
 from bi_constants.types import TBIChunksGen, TBIDataRow
 from bi_core import exc
 from bi_sqlalchemy_postgres.asyncpg import DBAPIMock
-
-from bi_utils.utils import method_not_implemented
 
 from contextlib import asynccontextmanager
 from urllib.parse import quote_plus
@@ -101,7 +96,7 @@ class AsyncPostgresAdapter(
     _error_transformer = make_async_pg_error_transformer()
     __dialect: Optional[AsyncBIPGDialect] = None
 
-    EXTRA_EXC_CLS: ClassVar[Tuple[Type[Exception], ...]] = (
+    EXTRA_EXC_CLS: ClassVar[tuple[Type[Exception], ...]] = (
         exc.DataStreamValidationError,
         # I don't have any idea why asyncpg doesn't provide common exception in public interface
         # but there are about 40 different types of exceptions for every case of error
@@ -124,7 +119,7 @@ class AsyncPostgresAdapter(
             self.__dialect = AsyncBIPGDialect()
         return self.__dialect
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: Dict[str, Any] = None) -> str:
+    def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] = None) -> str:
         params = params or {}
         params['sslrootcert'] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
         return AsyncPGConnLineConstructor(
@@ -235,7 +230,9 @@ class AsyncPostgresAdapter(
             ],
         )
 
-    def _get_row_converters(self, query_attrs: Iterable[asyncpg.Attribute]) -> Tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(
+            self, query_attrs: Iterable[asyncpg.Attribute]
+    ) -> tuple[Optional[Callable[[Any], Any]], ...]:
         return tuple(
             self._convert_bytea if a.type.oid == 17  # `bytea`
             else None
@@ -313,7 +310,7 @@ class AsyncPostgresAdapter(
             raw_chunk_generator=_process_chunk(steps),
         )
 
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         result = await self.execute(DBAdapterQuery(PG_LIST_SCHEMA_NAMES))
         schema_names = []
         async for row in result.get_all_rows():
@@ -321,7 +318,7 @@ class AsyncPostgresAdapter(
                 schema_names.append(str(value))
         return schema_names
 
-    async def _get_view_names(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def _get_view_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         query = sa.text(PG_LIST_VIEW_NAMES).bindparams(
             sa.bindparam(
                 "schema",
@@ -342,7 +339,7 @@ class AsyncPostgresAdapter(
             for view in views
         ]
 
-    async def _get_table_names(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def _get_table_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         query = sa.text(PG_LIST_TABLE_NAMES).bindparams(
             sa.bindparam(
                 "schema",
@@ -363,12 +360,12 @@ class AsyncPostgresAdapter(
             for table in tables
         ]
 
-    async def _get_tables_single_schema(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def _get_tables_single_schema(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         table_list = await self._get_table_names(schema_ident)
         view_list = await self._get_view_names(schema_ident)
         return table_list + view_list
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         if schema_ident.schema_name is not None:
             # For a single schema, plug into the common SA code.
             # (might not be ever used)
@@ -386,9 +383,8 @@ class AsyncPostgresAdapter(
             async for schema_name, name in result.get_all_rows()
         ]
 
-    @method_not_implemented
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        raise NotImplementedError()
 
     # magic copypaste from
     # https://a.yandex-team.ru/arc/trunk/arcadia/contrib/python/sqlalchemy/sqlalchemy-1.4/sqlalchemy/dialects/postgresql/base.py?rev=r8825837#L3372
@@ -449,14 +445,14 @@ class AsyncPostgresAdapter(
 
 
 class AsyncPGConnLineConstructor(ClassicSQLConnLineConstructor[PostgresConnTargetDTO]):
-    def _get_dsn_query_params(self) -> Dict:
+    def _get_dsn_query_params(self) -> dict:
         return {
             'sslmode': 'require' if self._target_dto.ssl_enable else 'prefer',
         }
 
     def _get_dsn_params(
         self,
-        safe_db_symbols: Tuple[str, ...] = (),
+        safe_db_symbols: tuple[str, ...] = (),
         db_name: Optional[str] = None,
         standard_auth: Optional[bool] = True,
     ) -> dict:

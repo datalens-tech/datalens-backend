@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Any, Dict
+from typing import Any, Optional, TYPE_CHECKING
 
 import logging
 
 import attr
 from aiohttp.client import ClientResponse
-
-from bi_utils.utils import method_not_implemented
 
 from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
@@ -34,7 +32,7 @@ class AsyncBaseSolomonAdapter(AiohttpDBAdapter):
         )
         return resp
 
-    def parse_response_body(self, response: Dict[str, Any], dba_query: DBAdapterQuery) -> dict:
+    def parse_response_body(self, response: dict[str, Any], dba_query: DBAdapterQuery) -> dict:
         return dict(rows=[], schema=[])
 
     @staticmethod
@@ -96,26 +94,20 @@ class AsyncBaseSolomonAdapter(AiohttpDBAdapter):
             name=type_name,
         )
 
-    @method_not_implemented
     async def test(self) -> None:
         pass
 
-    @method_not_implemented
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         pass
 
-    @method_not_implemented
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         pass
 
-    @method_not_implemented
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         pass
 
-    @method_not_implemented
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         pass
 
-    @method_not_implemented
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
         pass

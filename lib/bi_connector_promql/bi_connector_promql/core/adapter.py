@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar, Optional, List, Tuple, Type
+from typing import ClassVar, Optional, Type, TYPE_CHECKING
 
 import logging
 
@@ -13,8 +13,6 @@ from datetime import datetime
 from urllib.parse import urljoin, quote_plus
 
 from bi_constants.enums import ConnectionType
-
-from bi_utils.utils import method_not_implemented
 
 from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
@@ -132,7 +130,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
     @staticmethod
     def _parse_response_body_data(data: dict) -> dict:
         rows = []
-        schema: List[Tuple[str, str]] = []
+        schema: list[tuple[str, str]] = []
         for chunk in data['result']:
             chunk_schema = [
                 ('timestamp', 'unix_timestamp'), ('value', 'float64')
@@ -227,22 +225,17 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             url=urljoin(self._url, '-/ready'),
         )
 
-    @method_not_implemented
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        pass
+        raise NotImplementedError()
 
-    @method_not_implemented
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        pass
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
+        raise NotImplementedError()
 
-    @method_not_implemented
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        pass
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        raise NotImplementedError()

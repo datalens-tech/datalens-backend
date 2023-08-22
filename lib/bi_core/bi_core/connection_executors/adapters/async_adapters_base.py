@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import asyncio
 import logging
-from typing import TYPE_CHECKING, AsyncIterable, Awaitable, Callable, Dict, Generic, List, Optional, TypeVar
+from typing import TYPE_CHECKING, AsyncIterable, Awaitable, Callable, Generic, Optional, TypeVar
 
 import attr
 
@@ -38,7 +38,7 @@ _CACHE_TV = TypeVar('_CACHE_TV')
 
 @attr.s
 class AsyncCache(Generic[_CACHE_TV]):
-    _cache: Dict[str, _CACHE_TV] = attr.ib(init=False, default=attr.Factory(dict))
+    _cache: dict[str, _CACHE_TV] = attr.ib(init=False, default=attr.Factory(dict))
     _lock: asyncio.Lock = attr.ib(init=False, default=attr.Factory(asyncio.Lock))
 
     async def get(self, key: str, generator: Callable[[str], Awaitable[_CACHE_TV]]) -> _CACHE_TV:
@@ -92,11 +92,11 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         pass
 
     @abc.abstractmethod
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         pass
 
     @abc.abstractmethod

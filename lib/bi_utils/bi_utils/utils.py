@@ -110,20 +110,6 @@ def split_list(
     return matching, non_matching
 
 
-# Typing note: technically, it is a callable of one positional argument of a
-# type `object` and any other arguments, and the arguments signature is
-# unchanged. Practically, not sure if that's even expressible.
-def method_not_implemented(func: Callable[..., Any]) -> Callable[..., NoReturn]:
-    """ Convenience wrapper for marking 'intentionally not implemented' method """
-
-    @functools.wraps(func)
-    def wrapper(self: Any, *_: Any, **__: Any) -> NoReturn:
-        raise NotImplementedError(
-            f"Method {func.__name__!r} is not implemented for {self.__class__.__qualname__}")
-
-    return wrapper
-
-
 class DotDict(dict):
     """ A simple dict subclass with items also available over attributes """
 

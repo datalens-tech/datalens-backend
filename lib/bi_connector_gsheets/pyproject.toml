@@ -18,7 +18,6 @@ python = ">=3.10, <3.12"
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
 
 [tool.poetry.plugins."bi_core.connectors"]
 gsheets = "bi_connector_gsheets.core.connector:GSheetsCoreConnector"

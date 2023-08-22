@@ -26,7 +26,6 @@ yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_core.connectors"]

@@ -4,11 +4,8 @@ from __future__ import annotations
 import logging
 import contextlib
 import json
-import typing
 from typing import (
-    TYPE_CHECKING, Any, AsyncGenerator,
-    List, Sequence, TypeVar,
-    Tuple, Optional, Type, ClassVar, Dict, Callable
+    Any, AsyncGenerator, Callable, ClassVar, ContextManager, Generator, Optional, Sequence, Type, TYPE_CHECKING, TypeVar
 )
 import ssl
 
@@ -26,8 +23,6 @@ from clickhouse_sqlalchemy.drivers.http.transport import _get_type  # noqa
 from clickhouse_sqlalchemy.parsers.jsoncompact import JSONCompactChunksParser
 
 from bi_constants.enums import ConnectionType, IndexKind
-
-from bi_utils.utils import method_not_implemented
 
 from bi_core import exc
 from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, ClassicSQLConnLineConstructor
@@ -72,7 +67,7 @@ _TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound='BaseClickHouseConnTargetDTO')
 
 @attr.s()
 class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DTO_TV]):
-    _converted_headers: Dict[str, str] = attr.ib()
+    _converted_headers: dict[str, str] = attr.ib()
 
     def _get_dsn_query_params(self) -> dict:
         # TODO FIX: Move to utils
@@ -100,12 +95,12 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
 
     _dt_with_system_tz = True
 
-    def _get_dsn_params_from_headers(self) -> Dict[str, str]:
+    def _get_dsn_params_from_headers(self) -> dict[str, str]:
         return self._convert_headers_to_dsn_params(
             self.ch_utils.get_context_headers(self._req_ctx_info)
         )
 
-    def get_conn_line(self, db_name: str = None, params: Dict[str, Any] = None) -> str:
+    def get_conn_line(self, db_name: str = None, params: dict[str, Any] = None) -> str:
         return self.conn_line_constructor_type(
             dsn_template=self.dsn_template,
             dialect_name=get_dialect_string(self.conn_type),
@@ -140,8 +135,8 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
         return args
 
     @contextlib.contextmanager
-    def execution_context(self) -> typing.Generator[None, None, None]:
-        contexts: list[typing.ContextManager[None]] = [super().execution_context()]
+    def execution_context(self) -> Generator[None, None, None]:
+        contexts: list[ContextManager[None]] = [super().execution_context()]
 
         if self._target_dto.ssl_ca:
             contexts.append(self.ssl_cert_context(self._target_dto.ssl_ca))
@@ -155,7 +150,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
                 stack.close()
 
     @staticmethod
-    def _convert_headers_to_dsn_params(headers: Dict[str, str]) -> Dict[str, str]:
+    def _convert_headers_to_dsn_params(headers: dict[str, str]) -> dict[str, str]:
         return {
             f"header__{h_name}": h_val
             for h_name, h_val in headers.items()
@@ -169,7 +164,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
             wrapper_exc: Exception,
             orig_exc: Optional[Exception],
             debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
         ch_exc_cls: Optional[Type[exc.DatabaseQueryError]] = None
@@ -217,7 +212,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
             columns=self._get_raw_columns_info(subquery)
         )
 
-    def _get_raw_columns_info(self, table_def: TableDefinition) -> Tuple[RawColumnInfo, ...]:
+    def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
         table_columns = self._get_sa_table_columns(table_def)
         db_name = table_def.db_name if isinstance(table_def, TableIdent) else None
         db_engine = self.get_db_engine(db_name)
@@ -305,7 +300,7 @@ class ClickHouseAdapter(BaseClickHouseAdapter):
     def get_default_db_name(self) -> Optional[str]:
         return self._target_dto.db_name or "system"
 
-    def _get_table_indexes(self, table_ident: TableIdent) -> Tuple[RawIndexInfo, ...]:
+    def _get_table_indexes(self, table_ident: TableIdent) -> tuple[RawIndexInfo, ...]:
         common_indexes = super()._get_table_indexes(table_ident)
         result = self.execute(DBAdapterQuery(
             query=sa.select(
@@ -369,13 +364,13 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             encoding='utf-8',
         )
 
-    def get_session_headers(self) -> Dict[str, str]:
+    def get_session_headers(self) -> dict[str, str]:
         return {
             **super().get_session_headers(),
             **self.ch_utils.get_context_headers(self._req_ctx_info),
         }
 
-    def get_request_params(self, dba_q: DBAdapterQuery) -> Dict[str, str]:
+    def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
         read_only_level = None if dba_q.trusted_query else 2
         return dict(
             # TODO FIX: Move to utils
@@ -390,10 +385,10 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             ),
         )
 
-    def _get_current_tracing_headers(self) -> Dict[str, str]:
+    def _get_current_tracing_headers(self) -> dict[str, str]:
         return {}
 
-    def _get_ssl_context(self) -> typing.Optional[ssl.SSLContext]:
+    def _get_ssl_context(self) -> Optional[ssl.SSLContext]:
         return None
 
     # TODO FIX: Add logging from bi_core.connection_executors.adapters.sa_utils.CursorLogger
@@ -448,7 +443,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
         return resp
 
-    async def _parse_response_body(self, resp: ClientResponse) -> AsyncGenerator[Tuple[str, Any], None]:
+    async def _parse_response_body(self, resp: ClientResponse) -> AsyncGenerator[tuple[str, Any], None]:
         parser = JSONCompactChunksParser()
 
         event = None
@@ -654,25 +649,20 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     async def test(self) -> None:
         await self.execute(DBAdapterQuery('select 1'))
 
-    @method_not_implemented
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        pass
+        raise NotImplementedError()
 
-    @method_not_implemented
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        pass
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
+        raise NotImplementedError()
 
-    @method_not_implemented
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        pass
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        raise NotImplementedError()
 
     @classmethod
     def create(  # type: ignore  # TODO: fix
@@ -723,7 +713,7 @@ class AsyncClickHouseAdapter(BaseAsyncClickHouseAdapter):
     conn_type = ConnectionType.clickhouse
     ch_utils = ClickHouseUtils
 
-    def _get_ssl_context(self) -> typing.Optional[ssl.SSLContext]:
+    def _get_ssl_context(self) -> Optional[ssl.SSLContext]:
         if not self._target_dto.secure or self._target_dto.ssl_ca is None:
             return None
 

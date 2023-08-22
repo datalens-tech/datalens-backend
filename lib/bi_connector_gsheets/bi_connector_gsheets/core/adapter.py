@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, ClassVar, FrozenSet, List, Optional, Tuple
+from typing import ClassVar, Optional, TYPE_CHECKING
 import ssl
 
 import aiohttp
@@ -11,8 +11,6 @@ import logging
 import urllib.parse
 
 from bi_constants.enums import ConnectionType
-
-from bi_utils.utils import method_not_implemented
 
 from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
@@ -56,8 +54,8 @@ class GSheetsDefaultAdapter(AiohttpDBAdapter):
 
     conn_type: ClassVar[ConnectionType] = ConnectionType.gsheets
     _default_host: ClassVar[str] = 'docs.google.com'
-    _allowed_hosts: ClassVar[FrozenSet[str]] = frozenset({_default_host})
-    _allowed_params: ClassVar[Tuple[str, ...]] = ('gid', 'sheet', 'range')
+    _allowed_hosts: ClassVar[frozenset[str]] = frozenset({_default_host})
+    _allowed_params: ClassVar[tuple[str, ...]] = ('gid', 'sheet', 'range')
     _example_url: ClassVar[str] = 'https://docs.google.com/spreadsheets/d/1zRPTxxLOQ08n0_MReIBbouAbPFw6pJ4ibNSVdFkZ3gs/edit#gid=1140182768'
     _example_url_message: ClassVar[str] = f'example: {_example_url!r}'
 
@@ -266,17 +264,14 @@ class GSheetsDefaultAdapter(AiohttpDBAdapter):
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         return None  # Not Applicable
 
-    @method_not_implemented
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        pass
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
+        raise NotImplementedError()
 
-    @method_not_implemented
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[str]:
-        pass
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[str]:
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        raise NotImplementedError()
 
     @staticmethod
     def _normalize_col_title(title: str) -> str:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar, Optional, Any, Union
+from typing import Any, ClassVar, Optional, TYPE_CHECKING, Union
 
 import attr
 import datetime
@@ -16,8 +16,6 @@ from bi_constants.enums import ConnectionType
 from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
 from bi_connector_bitrix_gds.core.error_transformer import bitrix_error_transformer
 from bi_core.db.native_type import CommonNativeType
-
-from bi_utils.utils import method_not_implemented
 
 from bi_core.aio.web_app_services.redis import RedisConnParams
 from bi_connector_bitrix_gds.core.tables import BITRIX_TABLES_MAP, CRM_DYNAMIC_ITEMS_TABLE, SMART_PROCESS_TABLE_PREFIX
@@ -244,9 +242,8 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         return None  # Not Applicable
 
-    @method_not_implemented
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        pass
+        raise NotImplementedError()
 
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         smart_process_tables = await self._get_smart_process_tables(schema_ident)

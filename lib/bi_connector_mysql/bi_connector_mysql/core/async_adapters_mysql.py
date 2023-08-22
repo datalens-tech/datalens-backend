@@ -9,7 +9,7 @@ import sqlalchemy as sa
 import ssl
 from functools import partial
 from pymysql.err import OperationalError, ProgrammingError
-from typing import Any, AsyncIterator, List, Optional, Tuple, Type, TypeVar
+from typing import Any, AsyncIterator, Optional, Type, TypeVar
 
 from bi_connector_mysql.core.adapters_base_mysql import BaseMySQLAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import (
@@ -33,7 +33,6 @@ from bi_constants.types import TBIChunksGen
 from bi_configs.utils import get_root_certificates_path
 
 from bi_sqlalchemy_mysql.base import BIMySQLDialect
-from bi_utils.utils import method_not_implemented
 
 
 LOGGER = logging.getLogger(__name__)
@@ -64,7 +63,7 @@ class AsyncMySQLAdapter(
         dialect = BIMySQLDialect(paramstyle='pyformat')
         return dialect
 
-    def _cursor_column_to_nullable(self, cursor_col: Tuple[Any, ...]) -> Optional[bool]:
+    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> Optional[bool]:
         # See https://aiomysql.readthedocs.io/en/latest/cursors.html#Cursor.description
         # Although there are no known `nullable=False` cases for subselects in MySQL,
         # let's use here `null_ok` field from cursor rather than hardcoded value
@@ -183,18 +182,14 @@ class AsyncMySQLAdapter(
     async def test(self) -> None:
         await self.execute(DBAdapterQuery('SELECT 1'))
 
-    @method_not_implemented
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        pass
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
+        raise NotImplementedError()
 
-    @method_not_implemented
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        pass
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        raise NotImplementedError()
 
-    @method_not_implemented
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        raise NotImplementedError()
