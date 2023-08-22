@@ -8,6 +8,7 @@ import bi_configs.utils as bi_configs_utils
 from bi_core.us_connection_base import DataSourceTemplate, ConnectionSQL
 from bi_core.services_registry.top_level import ServicesRegistry
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
@@ -19,8 +20,8 @@ _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionSQL)
 
 
 class TestPostgreSQLConnection(
-    BasePostgreSQLTestClass,
-    DefaultConnectionTestClass[ConnectionPostgreSQL],
+        BasePostgreSQLTestClass,
+        DefaultConnectionTestClass[ConnectionPostgreSQL],
 ):
     do_check_data_export_flag = True
 
@@ -60,8 +61,8 @@ class TestPostgreSQLConnection(
 # TODO: turn on in https://st.yandex-team.ru/BI-4701
 @pytest.mark.skip
 class TestSslPostgreSQLConnection(
-    BaseSslPostgreSQLTestClass,
-    DefaultConnectionTestClass[ConnectionPostgreSQL],
+        BaseSslPostgreSQLTestClass,
+        DefaultConnectionTestClass[ConnectionPostgreSQL],
 ):
     def check_ssl_directory_is_empty(self) -> None:
         assert not os.listdir(bi_configs_utils.get_temp_root_certificates_folder_path())
@@ -96,7 +97,11 @@ class TestSslPostgreSQLConnection(
 # TODO: turn on in https://st.yandex-team.ru/BI-4701
 @pytest.mark.skip
 class TestSslAsyncPostgreSQLConnection(TestSslPostgreSQLConnection):
-    do_check_templates = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectionTestClass.test_connection_get_data_source_templates: '',  # TODO: FIXME
+        },
+    )
 
     @pytest.fixture(scope='session')
     def conn_exec_factory_async_env(self) -> bool:

@@ -15,12 +15,12 @@ from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core.query.expression import ExpressionCtx
 
+from bi_testing.regulated_test import RegulatedTestCase
 from bi_core_testing.database import DbTable
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
 from bi_core_testing.data import DataFetcher
 from bi_core_testing.dataset import make_dataset
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
-
 
 _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionBase)
 
@@ -92,10 +92,7 @@ class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV])
         )
 
 
-class DefaultDatasetTestSuite(BaseDatasetTestClass[_CONN_TV], Generic[_CONN_TV]):
-    do_check_simple_select: ClassVar[bool] = True
-    do_check_param_hash: ClassVar[bool] = True
-
+class DefaultDatasetTestSuite(RegulatedTestCase, BaseDatasetTestClass[_CONN_TV], Generic[_CONN_TV]):
     def _check_simple_select(
             self,
             dataset_wrapper: DatasetTestWrapper,
@@ -138,9 +135,6 @@ class DefaultDatasetTestSuite(BaseDatasetTestClass[_CONN_TV], Generic[_CONN_TV])
             conn_async_service_registry: ServicesRegistry,
             sync_us_manager: SyncUSManager,
     ) -> None:
-        if not self.do_check_simple_select:
-            pytest.skip()
-
         self._check_simple_select(
             dataset_wrapper=dataset_wrapper, saved_dataset=saved_dataset,
             async_service_registry=conn_async_service_registry, sync_us_manager=sync_us_manager,
@@ -154,9 +148,6 @@ class DefaultDatasetTestSuite(BaseDatasetTestClass[_CONN_TV], Generic[_CONN_TV])
             conn_async_service_registry: ServicesRegistry,
             sync_us_manager: SyncUSManager,
     ) -> None:
-        if not self.do_check_simple_select:
-            pytest.skip()
-
         self._check_simple_select(
             dataset_wrapper=dataset_wrapper, saved_dataset=saved_dataset,
             async_service_registry=conn_async_service_registry, sync_us_manager=sync_us_manager,
@@ -167,9 +158,6 @@ class DefaultDatasetTestSuite(BaseDatasetTestClass[_CONN_TV], Generic[_CONN_TV])
             self, sample_table: DbTable, saved_connection: ConnectionBase, saved_dataset: Dataset,
             conn_default_service_registry: ServicesRegistry, dataset_wrapper: DatasetTestWrapper,
     ) -> None:
-        if not self.do_check_param_hash:
-            pytest.skip()
-
         dataset = saved_dataset
         service_registry = conn_default_service_registry
         source_id = dataset.get_single_data_source_id()

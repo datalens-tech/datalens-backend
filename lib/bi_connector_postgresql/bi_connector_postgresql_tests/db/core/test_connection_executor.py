@@ -1,13 +1,17 @@
 from typing import Optional, Sequence
 
 import pytest
+import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
 from bi_constants.enums import BIType
 
+from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.connection_models.common_models import DBIdent, TableIdent
 
+from bi_testing.regulated_test import RegulatedTestParams
+from bi_core_testing.database import Db
 from bi_core_testing.testcases.connection_executor import (
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
@@ -19,16 +23,16 @@ from bi_connector_postgresql_tests.db.config import CoreConnectionSettings
 from bi_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 from bi_sqlalchemy_postgres.base import CITEXT
 
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-import shortuuid
-from bi_core_testing.database import Db
-
 
 class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
         BasePostgreSQLTestClass,
         DefaultSyncAsyncConnectionExecutorCheckBase[ConnectionPostgreSQL],
 ):
-    do_check_closing_sql_sessions = False
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: '',  # TODO: FIXME
+        },
+    )
 
     @pytest.fixture(scope='function')
     def db_ident(self) -> DBIdent:
@@ -77,12 +81,20 @@ class TestPostgreSQLSyncConnectionExecutor(
         PostgreSQLSyncAsyncConnectionExecutorCheckBase,
         DefaultSyncConnectionExecutorTestSuite[ConnectionPostgreSQL],
 ):
-    do_check_table_exists = False  # FIXME
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_table_exists: '',  # TODO: FIXME
+        },
+    )
 
 
 class TestPostgreSQLAsyncConnectionExecutor(
         PostgreSQLSyncAsyncConnectionExecutorCheckBase,
         DefaultAsyncConnectionExecutorTestSuite[ConnectionPostgreSQL],
 ):
-    do_check_table_exists = False
-    do_check_table_not_exists = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_table_exists: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_not_exists: 'Not implemented',
+        },
+    )

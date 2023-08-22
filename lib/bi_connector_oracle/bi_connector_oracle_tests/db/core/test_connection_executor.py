@@ -8,6 +8,7 @@ from bi_constants.enums import BIType
 
 from bi_core.connection_models.common_models import DBIdent
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.testcases.connection_executor import (
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
@@ -23,8 +24,12 @@ class OracleSyncAsyncConnectionExecutorCheckBase(
         BaseOracleTestClass,
         DefaultSyncAsyncConnectionExecutorCheckBase[ConnectionSQLOracle],
 ):
-    do_check_select_nonexistent_source = False  # FIXME
-    do_check_closing_sql_sessions = False  # FIXME: They really are not being closed
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultAsyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: '',  # TODO: FIXME
+            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: '',  # TODO: FIXME
+        },
+    )
 
     @pytest.fixture(scope='function')
     def db_ident(self) -> DBIdent:

@@ -2,6 +2,7 @@ from typing import TypeVar
 
 from bi_core.us_connection_base import ConnectionBase
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
 )
@@ -28,9 +29,13 @@ class TestCHYTInternalTokenAsyncConnectionExecutor(
         BaseCHYTTestClass,
         DefaultAsyncConnectionExecutorTestSuite[ConnectionCHYTInternalToken],
 ):
-    do_check_db_version = False
-    do_check_table_exists = False
-    do_check_table_not_exists = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_get_db_version: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_exists: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_not_exists: 'Not implemented',
+        },
+    )
 
 
 class TestCHYTUserAuthSyncConnectionExecutor(
@@ -46,6 +51,10 @@ class TestCHYTUserAuthAsyncConnectionExecutor(
         BaseCHYTUserAuthTestClass,
         DefaultAsyncConnectionExecutorTestSuite[ConnectionCHYTUserAuth],
 ):
-    do_check_db_version = False
-    do_check_table_exists = False
-    do_check_table_not_exists = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_get_db_version: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_exists: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_not_exists: 'Not implemented',
+        },
+    )

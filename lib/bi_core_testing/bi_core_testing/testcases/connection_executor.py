@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Callable, ClassVar, Generator, Generic, Optional, TypeVar, TYPE_CHECKING, Sequence
+from typing import Callable, Generator, Generic, Optional, TypeVar, TYPE_CHECKING, Sequence
 
 import pytest
 import shortuuid
@@ -15,6 +15,7 @@ from bi_core.us_connection_base import ConnectionBase
 from bi_core.connection_models.common_models import DBIdent, TableIdent
 from bi_core.connection_executors.common_base import ConnExecutorQuery
 
+from bi_testing.regulated_test import RegulatedTestCase
 from bi_core_testing.database import C, Db, DbTable, make_table
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
 
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
 _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionBase)
 
 
-class BaseConnectionExecutorTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
+class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
     @pytest.fixture(scope='function')
     def sync_connection_executor(
             self, sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
@@ -42,14 +43,6 @@ class BaseConnectionExecutorTestClass(BaseConnectionTestClass[_CONN_TV], Generic
 
 
 class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
-    do_check_db_version: ClassVar[bool] = True
-    do_check_test: ClassVar[bool] = True
-    do_check_table_exists: ClassVar[bool] = True
-    do_check_table_not_exists: ClassVar[bool] = True
-    do_check_simple_select: ClassVar[bool] = True
-    do_check_select_nonexistent_source: ClassVar[bool] = True
-    do_check_closing_sql_sessions: ClassVar[bool] = True
-
     @pytest.fixture(scope='function')
     def db_ident(self) -> DBIdent:
         raise NotImplementedError
@@ -96,32 +89,20 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         return False
 
     def test_get_db_version(self, sync_connection_executor: SyncConnExecutorBase, db_ident: DBIdent) -> None:
-        if not self.do_check_db_version:
-            pytest.skip()
-
         db_version = sync_connection_executor.get_db_version(db_ident)
         self.check_db_version(db_version)
 
     def test_test(self, sync_connection_executor: SyncConnExecutorBase) -> None:
-        if not self.do_check_test:
-            pytest.skip()
-
         sync_connection_executor.test()
 
     def test_table_exists(
             self, sync_connection_executor: SyncConnExecutorBase, existing_table_ident: TableIdent, db_table: DbTable,
     ) -> None:
-        if not self.do_check_table_exists:
-            pytest.skip()
-
         assert sync_connection_executor.is_table_exists(existing_table_ident)
 
     def test_table_not_exists(
             self, sync_connection_executor: SyncConnExecutorBase, nonexistent_table_ident: TableIdent,
     ) -> None:
-        if not self.do_check_table_not_exists:
-            pytest.skip()
-
         assert not sync_connection_executor.is_table_exists(nonexistent_table_ident)
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, BIType]]]:
@@ -154,9 +135,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
                 )
 
     def test_simple_select(self, sync_connection_executor: SyncConnExecutorBase) -> None:
-        if not self.do_check_simple_select:
-            pytest.skip()
-
         query = ConnExecutorQuery(query=sa.select([sa.literal(1)]))
         result = next(iter(sync_connection_executor.execute(query).result))
         assert len(result) == 1
@@ -165,9 +143,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
     def test_error_on_select_from_nonexistent_source(
             self, db: Db, sync_connection_executor: SyncConnExecutorBase, nonexistent_table_ident: TableIdent,
     ) -> None:
-        if not self.do_check_select_nonexistent_source:
-            pytest.skip()
-
         query = ConnExecutorQuery(query=f'SELECT * from {db.quote(nonexistent_table_ident.table_name)}')
         with pytest.raises(core_exc.SourceDoesNotExist):
             sync_connection_executor.execute(query)
@@ -176,9 +151,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
             self, db: Db, sync_connection_executor: SyncConnExecutorBase,
             query_for_session_check: str
     ) -> None:
-        if not self.do_check_closing_sql_sessions:
-            pytest.skip()
-
         with self.check_closing_sql_sessions(db=db):
             for i in range(5):
                 sync_connection_executor.execute(ConnExecutorQuery(query=query_for_session_check))
@@ -190,37 +162,23 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         return True
 
     async def test_get_db_version(self, async_connection_executor: AsyncConnExecutorBase, db_ident: DBIdent) -> None:
-        if not self.do_check_db_version:
-            pytest.skip()
-
         db_version = await async_connection_executor.get_db_version(db_ident)
         self.check_db_version(db_version)
 
     async def test_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
-        if not self.do_check_test:
-            pytest.skip()
-
         await async_connection_executor.test()
 
     async def test_table_exists(
             self, async_connection_executor: AsyncConnExecutorBase, existing_table_ident: TableIdent,
     ) -> None:
-        if not self.do_check_table_exists:
-            pytest.skip()
-
         assert await async_connection_executor.is_table_exists(existing_table_ident)
 
     async def test_table_not_exists(
             self, async_connection_executor: AsyncConnExecutorBase, nonexistent_table_ident: TableIdent,
     ) -> None:
-        if not self.do_check_table_not_exists:
-            pytest.skip()
-
         assert not await async_connection_executor.is_table_exists(nonexistent_table_ident)
 
     async def test_simple_select(self, async_connection_executor: AsyncConnExecutorBase) -> None:
-        if not self.do_check_simple_select:
-            pytest.skip()
         query = ConnExecutorQuery(query=sa.select([sa.literal(1)]))
         result = await anext(aiter((await async_connection_executor.execute(query)).result))  # type: ignore  # FIXME: old arcadian mypy
         assert len(result) == 1
@@ -229,9 +187,6 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
     async def test_error_on_select_from_nonexistent_source(
             self, db: Db, async_connection_executor: AsyncConnExecutorBase, nonexistent_table_ident: TableIdent,
     ) -> None:
-        if not self.do_check_select_nonexistent_source:
-            pytest.skip()
-
         query = ConnExecutorQuery(query=f'SELECT * from {db.quote(nonexistent_table_ident.table_name)}')
         with pytest.raises(core_exc.SourceDoesNotExist):
             await async_connection_executor.execute(query)
@@ -240,9 +195,6 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
             self, db: Db, async_connection_executor: AsyncConnExecutorBase,
             query_for_session_check: str
     ) -> None:
-        if not self.do_check_closing_sql_sessions:
-            pytest.skip()
-
         with self.check_closing_sql_sessions(db=db):
             for i in range(5):
                 await async_connection_executor.execute(ConnExecutorQuery(query=query_for_session_check))

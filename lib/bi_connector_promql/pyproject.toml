@@ -64,4 +64,3 @@ target_path = "."
 root_dir = "bi_connector_promql_tests/unit"
 target_path = "."
 skip_compose = "true"
-

@@ -4,6 +4,7 @@ import pytest
 
 from bi_constants.enums import CreateDSFrom
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.testcases.dataset import DefaultDatasetTestSuite
 from bi_core_testing.database import DbTable
 
@@ -18,7 +19,11 @@ _CONN_TV = TypeVar('_CONN_TV', ConnectionCHYTInternalToken, ConnectionCHYTUserAu
 
 
 class CHYTDatasetSelectTestClass(DefaultDatasetTestSuite[_CONN_TV], Generic[_CONN_TV]):
-    do_check_param_hash = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultDatasetTestSuite.test_get_param_hash: 'No data source templates',
+        },
+    )
 
     @pytest.fixture(scope='function')
     def dsrc_params(self, dataset_table: DbTable) -> dict:

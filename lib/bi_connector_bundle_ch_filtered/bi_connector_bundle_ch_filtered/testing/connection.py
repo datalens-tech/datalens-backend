@@ -5,8 +5,9 @@ from typing import ClassVar, Generic, TypeVar
 from bi_configs.connectors_settings import ServiceConnectorSettingsBase
 
 from bi_core.us_connection_base import ConnectionSQL
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
 
+from bi_testing.regulated_test import RegulatedTestParams
+from bi_core_testing.testcases.connection import DefaultConnectionTestClass
 
 _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionSQL)
 
@@ -14,7 +15,11 @@ _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionSQL)
 class CHFilteredConnectionTestClass(DefaultConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
     sr_connection_settings: ClassVar[ServiceConnectorSettingsBase]
 
-    do_check_templates = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectionTestClass.test_connection_get_data_source_templates: '',  # TODO: FIXME
+        },
+    )
 
     def check_saved_connection(self, conn: _CONN_TV, params: dict) -> None:
         assert conn.uuid is not None

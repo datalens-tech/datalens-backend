@@ -10,6 +10,7 @@ from bi_constants.enums import RawSQLLevel
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core.us_connection_base import ConnectionBase, DataSourceTemplate
 
+from bi_testing.regulated_test import RegulatedTestCase
 from bi_core_testing.database import Db, DbTable
 from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from bi_core_testing.testcases.service_base import ServiceFixtureTextClass, DbServiceFixtureTextClass
@@ -72,8 +73,7 @@ class BaseConnectionTestClass(
         return self.db_table_dispenser.get_csv_table(db=db, spec=TABLE_SPEC_SAMPLE_SUPERSTORE)
 
 
-class DefaultConnectionTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
-    do_check_templates: ClassVar[bool] = True
+class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
     do_check_data_export_flag: ClassVar[bool] = False
 
     @abc.abstractmethod
@@ -105,9 +105,6 @@ class DefaultConnectionTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CON
             self, saved_connection: _CONN_TV,
             sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> None:
-        if not self.do_check_templates:
-            pytest.skip()
-
         def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
             return sync_conn_executor_factory()
 

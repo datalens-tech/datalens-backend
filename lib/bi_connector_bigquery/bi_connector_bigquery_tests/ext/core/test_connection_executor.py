@@ -4,6 +4,7 @@ from bi_constants.enums import BIType
 
 from bi_core.connection_models.common_models import DBIdent
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.database import C, Db
 from bi_core_testing.testcases.connection_executor import (
     DefaultSyncAsyncConnectionExecutorCheckBase,
@@ -18,8 +19,12 @@ class BigQuerySyncAsyncConnectionExecutorCheckBase(
         BaseBigQueryTestClass,
         DefaultSyncAsyncConnectionExecutorCheckBase[ConnectionSQLBigQuery],
 ):
-    do_check_select_nonexistent_source = False  # FIXME: Learn to detect this error
-    do_check_closing_sql_sessions = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: 'Need to earn to detect this error',  # TODO: FIXME
+            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: 'Not implemented',
+        },
+    )
 
     @pytest.fixture(scope='class')
     def db_table_columns(self, db: Db) -> list[C]:

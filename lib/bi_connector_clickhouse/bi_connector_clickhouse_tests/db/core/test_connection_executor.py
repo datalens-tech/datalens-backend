@@ -4,6 +4,7 @@ import pytest
 
 from bi_core.connection_models.common_models import DBIdent
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.testcases.connection_executor import (
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
@@ -19,7 +20,11 @@ class ClickHouseSyncAsyncConnectionExecutorCheckBase(
         BaseClickHouseTestClass,
         DefaultSyncAsyncConnectionExecutorCheckBase[ConnectionClickhouse],
 ):
-    do_check_closing_sql_sessions = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: 'Not implemented',
+        },
+    )
 
     @pytest.fixture(scope='function')
     def db_ident(self) -> DBIdent:
@@ -41,7 +46,11 @@ class TestClickHouseAsyncConnectionExecutor(
         ClickHouseSyncAsyncConnectionExecutorCheckBase,
         DefaultAsyncConnectionExecutorTestSuite[ConnectionClickhouse],
 ):
-    do_check_db_version = False
-    do_check_test = False
-    do_check_table_exists = False
-    do_check_table_not_exists = False
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultAsyncConnectionExecutorTestSuite.test_get_db_version: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_test: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_exists: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_table_not_exists: 'Not implemented',
+        },
+    )

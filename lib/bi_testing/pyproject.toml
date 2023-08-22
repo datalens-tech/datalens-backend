@@ -47,7 +47,7 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+root_dir = "bi_testing_tests/unit"
+target_path = "."
+skip_compose = "true"

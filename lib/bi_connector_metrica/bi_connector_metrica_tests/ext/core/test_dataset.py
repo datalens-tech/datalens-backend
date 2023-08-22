@@ -12,6 +12,7 @@ from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
+from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.connection import make_saved_connection
 from bi_core_testing.connector import CONNECTION_TYPE_TESTING, SOURCE_TYPE_TESTING
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
@@ -24,7 +25,12 @@ from bi_connector_metrica_tests.ext.core.base import BaseMetricaTestClass, BaseA
 
 class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaApiConnection]):
     source_type = SOURCE_TYPE_METRICA_API
-    do_check_param_hash = False
+
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultDatasetTestSuite.test_get_param_hash: '',  # TODO: FIXME
+        },
+    )
 
     @pytest.fixture(scope='function')
     def dsrc_params(self) -> dict:
@@ -195,7 +201,12 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
 
 class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[AppMetricaApiConnection]):
     source_type = SOURCE_TYPE_APPMETRICA_API
-    do_check_param_hash = False
+
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultDatasetTestSuite.test_get_param_hash: '',  # TODO: FIXME
+        },
+    )
 
     @pytest.fixture(scope='function')
     def dsrc_params(self) -> dict:
