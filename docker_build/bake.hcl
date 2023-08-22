@@ -254,6 +254,17 @@ target "app_os_data_api" {
   dockerfile = "Dockerfile.tier1"
 }
 
+target "integration_tests" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img = "target:base_focal_tier_1"
+    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
+    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+  }
+  context    = "${PROJECT_ROOT}/ops/bi_integration_tests"
+  dockerfile = "Dockerfile.tier1"
+}
+
 target "update-po" {
   pull = false
   args = {

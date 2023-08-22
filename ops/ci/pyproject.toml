@@ -305,6 +305,9 @@ yandex-bi-file-uploader-api-yc = {path = "../../app_yc/app_yc_file_uploader_api"
 [tool.poetry.group.app_bi_yc_file_uploader_worker.dependencies]
 yandex-bi-file-uploader-worker-yc = {path = "../../app_yc/app_yc_file_uploader_worker"}
 
+[tool.poetry.group.bi_integration_tests.dependencies]
+yandex-bi-integration-tests = {path = "../../ops/bi_integration_tests"}
+
 
 [tool.poetry.group.dev.dependencies]
 black = "23.3.0"
