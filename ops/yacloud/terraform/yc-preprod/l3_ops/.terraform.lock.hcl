@@ -20,11 +20,9 @@ provider "registry.terraform.io/hashicorp/helm" {
 }
 
 provider "registry.terraform.io/hashicorp/kubernetes" {
-  version = "2.21.1"
+  version = "2.23.0"
   hashes = [
-    "h1:2spGoBcGDQ/Csc23bddCfM21zyKx3PONoiqRgmuChnM=",
-    "h1:I1qWLUFmB0Z8+3CX+XzJtkgiAOYQ1nHlLN9lFcPf+zc=",
-    "h1:gP8IU3gFfXYRfGZr5Qws9JryZsOGsluAVpiAoZW7eo0=",
+    "h1:arTzD0XG/DswGCAx9JEttkSKe9RyyFW9W7UWcXF13dU=",
   ]
 }
 
@@ -65,25 +63,22 @@ provider "registry.terraform.io/hashicorp/tls" {
 }
 
 provider "registry.terraform.io/yandex-cloud/yandex" {
-  version = "0.92.0"
+  version = "0.97.0"
   hashes = [
-    "h1:2H7x2Pp3Mgis1vjO0ySm826E2SBySlgghexW/GQic+w=",
-    "h1:ClWpfavaywoJaAtBSysjfXHPyJ+ynRwMbLWc5L/nhrQ=",
-    "h1:ZTZtAROLdKlPlczZq+Xs9FySWHMCW58a5YnWgN454Vw=",
+    "h1:+ZfGaQXDIhfZ6/1ltrFpAEWFHmN0Vz9LwAE69my/KKc=",
   ]
 }
 
 provider "terraform.storage.cloud-preprod.yandex.net/yandex-cloud/ycp" {
-  version = "0.109.0"
+  version = "0.114.0"
   hashes = [
-    "h1:n0/SkHEK0mOF3u7Qrik8JMWQ2UiGhLwezvskpc4CAqs=",
-    "h1:qsd9Wxb2QENKgcobVUwGD+UWb79iV7HiKAyfH1LfVLg=",
-    "zh:377d4daae4aa2df476af7897eb061be1969353a35a5807348759093f2b29ede7",
-    "zh:63df7a42ed8e4dc4abed83bb6faa6b49b8b0bd79202d5a9506300d8bfc1da8a7",
-    "zh:6d314ddbaa9e61db1654b8dd4b44a4b9578a4022c9704ad529ec0c1a0e28de2c",
-    "zh:9ad68df04ea50ef6bafb49e4b331a25d755b5081578119113775df634e7d1d74",
-    "zh:ac29bab0693bf564802dd3b29413d71b130d5934506b85feb4b945164d37f179",
-    "zh:ae73142cb2f492d2dd1d61fc545bbc12784ea103927c41b39e5e341959481c83",
+    "h1:dik6uI8ZSkwcYVFIUdpfMgztysxLaPqlUAWIEM9FeiU=",
+    "zh:19688f72d5b5b53bbae95361c1c0e5eab3eda20d6c9ba36500901f93885061ab",
+    "zh:63d42680ce31fe64402f516b02cce89fef598c211e37104a212a7132b609dbc2",
+    "zh:abb21d2060eceddd7aead7d550b18666e95cda9e98d196aa7d7267677b456f6d",
+    "zh:c33000fda089947c3280ffad2cdbe73f69cd3752f36856b56aee7e1528cec285",
+    "zh:e4cd0ad2dccb706afce3ace8fca937ebd631dad7af5f0db876aa2fae44b00e3b",
+    "zh:fc1990c7116ad19b8ab0689a5708fb950c4659584e0b212a57331e3bcd72cdae",
   ]
 }
 

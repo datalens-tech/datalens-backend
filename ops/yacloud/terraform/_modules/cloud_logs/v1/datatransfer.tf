@@ -1,19 +1,22 @@
 
-#resource "ycp_datatransfer_endpoint" "logs-source" {
-#  folder_id = var.folder_id
-#  name      = "logs-source"
-#
-#  settings {
-#    yds_source {
-#      database           = yandex_ydb_database_serverless.logs-stream-db.database_path
-#      service_account_id = yandex_iam_service_account.logs-sa.id
-#      stream             = "logs-stream"
-#      #      parser {
-#      #        cloud_logging_parser {}
-#      #      }
-#    }
-#  }
-#}
+resource "ycp_datatransfer_endpoint" "logs-source" {
+  folder_id = var.folder_id
+  name      = "logs-source"
+
+  settings {
+    yds_source {
+      backup_mode = "NO_BACKUP"
+      database = yandex_ydb_database_serverless.logs-stream-db.database_path
+      service_account_id = yandex_iam_service_account.logs-sa.id
+      stream = "logs-stream"
+      endpoint = "yds.serverless.cloud-preprod.yandex.net"
+      line_splitter = "LINE_SPLITTER_UNSPECIFIED"
+      parser {
+        cloud_logging_parser {}
+      }
+    }
+  }
+}
 
 resource "ycp_datatransfer_endpoint" "logs-receiver" {
   name = "logs-receiver"
@@ -31,19 +34,27 @@ resource "ycp_datatransfer_endpoint" "logs-receiver" {
       bucket             = yandex_storage_bucket.logs-bucket.bucket
       service_account_id = yandex_iam_service_account.logs-sa.id
       output_format      = "OBJECT_STORAGE_SERIALIZATION_FORMAT_JSON"
+      serializer_config {
+        any_as_string = false
+      }
     }
   }
 }
 
-#resource "ycp_datatransfer_transfer" "logs-transfer" {
-#  folder_id = var.folder_id
-#  name       = "logs-transfer"
-#  source_id  = ycp_datatransfer_endpoint.logs-source.id
-#  target_id  = ycp_datatransfer_endpoint.logs-receiver.id
-#  type       = "INCREMENT_ONLY"
-#
-#}
-
-
-
-
+resource "ycp_datatransfer_transfer" "logs-transfer" {
+  folder_id = var.folder_id
+  name       = "logs-transfer"
+  source_id  = ycp_datatransfer_endpoint.logs-source.id
+  target_id  = ycp_datatransfer_endpoint.logs-receiver.id
+  type       = "INCREMENT_ONLY"
+  runtime {
+    yc_runtime {
+      flavor            = "SMALL"
+      job_count         = 1
+      minimum_log_level = "INFO"
+    }
+  }
+  regular_snapshot {
+    disabled {}
+  }
+}

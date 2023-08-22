@@ -12,3 +12,4 @@ local_dev_2/requirements.txt
 .idea
 __pycache__
 ci_artifacts
+.DS_Store
