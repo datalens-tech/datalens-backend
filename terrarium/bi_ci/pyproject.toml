@@ -46,3 +46,14 @@ get_compose_path = "bi_ci.get_compose_path:cmd"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_ci_tests"]
+
+[datalens.pytest.fat]
+# just a placeholder to run at least one pytest
+root_dir = "bi_ci_tests/"
+target_path = "dummy_fat"
+labels = ["fat"]
+
+[datalens.pytest.unit]
+# just a placeholder to run at least one pytest
+root_dir = "bi_ci_tests/"
+target_path = "unit"

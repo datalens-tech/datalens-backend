@@ -2,7 +2,6 @@ name: main
 
 on:
   pull_request:
-    types: [ opened, reopened ]
 #  push:
 #    paths:
 #      - lib/**
@@ -83,10 +82,10 @@ jobs:
       id: get_affected
       run: |
         . /venv/bin/activate
-        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} || echo '')
+        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
         echo "Changed files from git diff: $TARGET"
-        detect_affected_packages --repo=$(realpath .) $TARGET
-        detect_affected_packages --repo=/data $TARGET >> "$GITHUB_OUTPUT"
+        detect_affected_packages --repo=/data --changes="$TARGET"
+        detect_affected_packages --repo=/data --changes="$TARGET" >> "$GITHUB_OUTPUT"
       env:
         TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
 
@@ -136,7 +135,7 @@ jobs:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     name: "🐍[pytest]${{ matrix.value }}"
-    timeout-minutes: 20
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:

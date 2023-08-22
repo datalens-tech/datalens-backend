@@ -9,24 +9,26 @@ from pathlib import Path
 from typing import Iterator, Iterable
 
 from .pkg_ref import PkgRef
-from .pkg_ref import SECTIONS, PREFIX
-
-SECTIONS_WO_CI = set([x for x in SECTIONS if x != "ci"])
 
 
-def collect_affected_packages(repo_root: Path, paths: Iterable[Path]) -> list[PkgRef]:
+def collect_affected_packages(repo_root: Path, refs: list[PkgRef], paths: list[str]) -> list[PkgRef]:
     # path relative to project root
     seen = set()
-    for path in paths:
-        parts = path.parts
-        if len(parts) >= 2 and parts[0] in SECTIONS_WO_CI and (key := (parts[0:2])) not in seen:
-            seen.add(key)
-    refs = [PkgRef(path=repo_root / Path("/".join(key))) for key in seen]
-    return [ref for ref in refs if ref.self_pkg_name is not None]
+    # pkg_by_path = {str(p.pkg.path.relative_to(repo_root)): p for p in refs}
+    pkg_by_path = {str(p.partial_parent_path): p for p in refs}
+
+    # slow, but should work ...
+    for p in paths:
+        for pkg_path in pkg_by_path:
+            if pkg_path in p:
+                seen.add(pkg_path)
+                continue
+
+    return [pkg_by_path[k] for k in seen]
 
 
 def gen_pkg_dirs(repo_path: Path) -> Iterator[Path]:
-    roots = ("lib", "app")
+    roots = ("lib", "app", "mainrepo/lib", "mainrepo/app")
     for root in roots:
         root_path = (Path(repo_path) / root).resolve()
         if not root_path.exists():
@@ -49,7 +51,9 @@ def get_leafs(dependencies):
     for deps in dependencies.values():
         all_values.extend(deps)
     all_values = set(all_values)
-    leafs = set(all_values) - set([k for k in dependencies.keys() if len(dependencies[k]) > 0])
+    leafs = set(all_values) - set(
+        [k for k in dependencies.keys() if len(dependencies[k]) > 0]
+    )
     return leafs
 
 
@@ -57,7 +61,6 @@ def get_deep_deps(dependencies: dict[str, list[str]]) -> dict[str, set[str]]:
     """
     @param dependencies: dict with pkg names direct dependencies
     """
-
     aff_dict = get_reverse_dependencies(dependencies)
     leafs = get_leafs(dependencies)
 
@@ -88,7 +91,7 @@ def get_deep_affection_map(dependencies: dict[str, list[str]]) -> dict[str, set[
     return affected
 
 
-def process(repo_root: Path, affected: Iterable[Path]) -> list[PkgRef]:
+def process(repo_root: Path, affected: Iterable[str]) -> list[PkgRef]:
     affected = list(affected)
 
     depends_on = defaultdict(list)
@@ -96,21 +99,22 @@ def process(repo_root: Path, affected: Iterable[Path]) -> list[PkgRef]:
 
     all_refs = []
     for item in gen_pkg_dirs(repo_root):
-        ref = PkgRef(item)
+        # print(f"==> {item}")
+        ref = PkgRef(root=repo_root, full_path=item)
+        # ref = PkgRef(item)
         all_refs.append(ref)
         if ref.self_pkg_name is None:
             continue
         pkg_by_ref[ref.self_pkg_name] = ref
-        for req in ref.extract_requirements():
-            if req.name.startswith(PREFIX):
-                depends_on[ref.self_pkg_name].append(req.name)
+        for req in ref.extract_local_requirements():  # include_groups=["test", "tests"]):
+            depends_on[ref.self_pkg_name].append(req)
 
     affection_map = get_deep_affection_map(depends_on)
 
     if len(affected) == 0:
         return all_refs
 
-    direct_affected = collect_affected_packages(repo_root, affected)
+    direct_affected = collect_affected_packages(repo_root, all_refs, affected)
     to_test = set()
 
     for pkg in direct_affected:
@@ -128,24 +132,24 @@ def main() -> None:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo")
-    parser.add_argument("paths", nargs="*")
-    # list on affected files in commit, starting from the repo root
+    parser.add_argument("--changes")
 
     args = parser.parse_args()
     repo_root = args.repo
+    paths = args.changes
 
-    to_check = process(Path(repo_root), [Path(p) for p in args.paths if not (p.startswith("ops/") or "ya.make" in p)])
-    to_check.append(PkgRef(Path(repo_root) / "terrarium" / "bi_ci"))
+    paths = paths.strip().split(" ")
+    to_check = process(
+        Path(repo_root), [p for p in paths if not (p.startswith("ops/") or p.startswith("terrarium/"))]
+    )
+    to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "terrarium" / "bi_ci"))
     result = []
+
     for sub in to_check:
         if sub.skip_test:
             continue
-        if (sub.path / "tests").exists():
-            # skip generic named tests dir, use prefixed ones
-            continue
 
-        result.append(sub.rel_path)
-    # result = [x.rel_path for x in to_check if not x.skip_test]
+        result.append(str(sub.partial_parent_path))
     print(f"affected={json.dumps(result)}")
 
 
