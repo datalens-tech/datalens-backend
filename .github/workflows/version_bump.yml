@@ -54,7 +54,7 @@ jobs:
           export ROOT_PKG_PATH=$(echo "${{ github.event.inputs.app_path }}" | cut -d ';' -f1)
           export SUB_PKG_PATHS_LIST_STR=$(echo "${{ github.event.inputs.app_path }}" | cut -d ';' -f2-)
           #
-          NEW_BRANCH_NAME="release/$(date +"%Y-%m-%dT%H-%M-%S")"
+          NEW_BRANCH_NAME="release-pr/$(date +"%Y-%m-%dT%H-%M-%S")"
           git checkout -b "${NEW_BRANCH_NAME}"
           #
           # Bump
