@@ -1,3 +1,16 @@
+0.13.0
+------
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * phusion base image for integration-tests (#62)  [ https://github.com/datalens-tech/datalens-backend-private/commit/5a458a6 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * gh ci option to run only mypy tests (#55)  [ https://github.com/datalens-tech/datalens-backend-private/commit/b0d84f3 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-22 15:59:08+00:00
+
 0.12.0
 ------
 
