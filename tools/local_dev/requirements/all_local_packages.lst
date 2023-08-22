@@ -71,12 +71,8 @@ lib/bi_i18n
 lib/bi_legacy_test_bundle
 lib/bi_meta_os/bi_meta_os_control_api
 lib/bi_meta_os/bi_meta_os_data_api
-lib/bi_meta_yc/bi_meta_yc_control_api
-lib/bi_meta_yc/bi_meta_yc_data_api
-lib/bi_meta_yc/bi_meta_yc_data_api_sec_embeds
 lib/bi_meta_yc/bi_meta_yc_file_uploader_api
 lib/bi_meta_yc/bi_meta_yc_file_uploader_worker
-lib/bi_meta_yc/bi_meta_yc_public_dataset_api
 lib/bi_model_tools
 lib/bi_package_boilerplate
 lib/bi_query_processing

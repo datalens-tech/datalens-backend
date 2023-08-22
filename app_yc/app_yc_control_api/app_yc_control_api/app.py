@@ -12,12 +12,8 @@ from bi_core.logging_config import hook_configure_logging
 
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
 
-from bi_meta_yc_control_api.app import ControlApiAppFactoryYC
+from app_yc_control_api.app_factory import ControlApiAppFactoryYC
 from app_yc_control_api import app_version
-
-
-class DefaultControlApiAppFactoryYC(ControlApiAppFactoryYC):
-    pass
 
 
 def create_app(
@@ -25,7 +21,7 @@ def create_app(
         testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
-    mng_app_factory = DefaultControlApiAppFactoryYC()
+    mng_app_factory = ControlApiAppFactoryYC()
     return mng_app_factory.create_app(
         app_settings=app_settings,
         testing_app_settings=testing_app_settings,

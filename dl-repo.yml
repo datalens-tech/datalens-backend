@@ -38,7 +38,3 @@ dl_repo:
     - type: bi_meta_os
       root_path: lib/bi_meta_os
       boilerplate_path: lib/bi_package_boilerplate
-
-    - type: bi_meta_yc
-      root_path: lib/bi_meta_yc
-      boilerplate_path: lib/bi_package_boilerplate

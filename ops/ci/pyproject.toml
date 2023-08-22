@@ -84,10 +84,6 @@ yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 yandex-bi-meta-os-control-api = {path = "../../lib/bi_meta_os/bi_meta_os_control_api"}
 yandex-bi-meta-os-data-api = {path = "../../lib/bi_meta_os/bi_meta_os_data_api"}
-yandex-bi-meta-yc-control-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_control_api"}
-yandex-bi-meta-yc-data-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_data_api"}
-yandex-bi-meta-yc-data-api-sec-embeds = {path = "../../lib/bi_meta_yc/bi_meta_yc_data_api_sec_embeds"}
-yandex-bi-meta-yc-public-dataset-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_public_dataset_api"}
 yandex-bi-meta-yc-file-uploader-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_api"}
 yandex-bi-meta-yc-file-uploader-worker = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_worker"}
 aiohttp = "==3.8.5"

@@ -15,21 +15,15 @@ from bi_core.logging_config import configure_logging
 
 from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
 
-from bi_meta_yc_data_api.app import DataApiAppFactoryYC
-from app_yc_data_api import app_version
+from app_yc_data_api.app_factory import DataApiAppFactoryYC
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DefaultDataApiAppFactoryYC(DataApiAppFactoryYC):
-    def get_app_version(self) -> str:
-        return app_version
-
-
 # TODO CONSIDER: Pass all testing workarounds in constructor args
 def create_app(setting: AsyncAppSettings, test_setting: Optional[TestAppSettings] = None) -> web.Application:
-    data_api_app_factory = DefaultDataApiAppFactoryYC()
+    data_api_app_factory = DataApiAppFactoryYC()
     return data_api_app_factory.create_app(
         setting=setting,
         test_setting=test_setting,

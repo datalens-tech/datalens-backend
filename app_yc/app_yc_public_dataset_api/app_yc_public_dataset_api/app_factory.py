@@ -5,31 +5,30 @@ from typing import Optional
 from bi_configs.enums import RequiredService, RQE_SERVICES
 
 from bi_core.aio.middlewares.services_registry import services_registry_middleware
-from bi_core.aio.middlewares.us_manager import (
-    public_usm_workaround_middleware,
-    public_us_manager_middleware,
-)
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
-from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
+from bi_core.aio.middlewares.us_manager import public_usm_workaround_middleware, public_us_manager_middleware
 from bi_core.connection_models import ConnectOptions
+from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.services_registry.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_core.us_connection_base import ExecutorBasedMixin
 
+from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
+from bi_api_lib.app_common import SRFactoryBuilder
+from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
+from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
+
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import BaseAppSettings, TestAppSettings, AsyncAppSettings
-from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
+from app_yc_public_dataset_api import app_version
 
 
 class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder):
@@ -89,6 +88,9 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder):
 
 
 class PublicDatasetApiAppFactoryYC(DataApiAppFactory, PublicDatasetApiSRFactoryBuilderYC):
+    def get_app_version(self) -> str:
+        return app_version
+
     def set_up_environment(
             self,
             setting: AsyncAppSettings,
