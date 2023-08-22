@@ -1,19 +1,2 @@
-getters:
-  - name: yav_main
-    type: yav
-    settings:
-      secret_id: {type: value, value: sec-01eb6ngzk58g1hw91t2aggr3kv}
-      yav_token: {type: param, key: YAV_TOKEN}
-  - name: yav_tvm
-    type: yav
-    settings:
-      secret_id: {type: value, value: sec-01ec8d1x4ckxq3h1byrh7wk5ax}
-      yav_token: {type: param, key: YAV_TOKEN}
-
 params:
-  # For yav access
-  YAV_TOKEN: {getter: $osenv, key: YAV_TOKEN}
-  # yav_main
-  GOOGLE_API_KEY: {getter: yav_main, key: GOOGLE_API_KEY}
-  # yav_tvm
-  TVM_CLIENT_SECRET: {getter: yav_tvm, key: client_secret}
+  GOOGLE_API_KEY: {getter: $osenv, key: GOOGLE_API_KEY}

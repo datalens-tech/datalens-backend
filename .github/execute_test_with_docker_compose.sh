@@ -60,4 +60,5 @@ fi
 #    sleep 5
 # done
 
-TEST_CONTAINER_HOST=from_compose PYTHONUNBUFFERED=1 run_tests "$TARGET_PATH"
+set +x
+TEST_CONTAINER_HOST=from_compose PYTHONUNBUFFERED=1 env "${@:4}" run_tests "$TARGET_PATH"

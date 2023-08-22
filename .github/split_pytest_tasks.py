@@ -18,7 +18,14 @@ target_path = "aio caches capabilities common compeng"
 labels = ["fat"]
 """
 
-SECTIONS_TO_SKIP = ["ext"]
+SECTIONS_TO_SKIP = []
+
+EXT_TESTS_TO_RUN = [  # temporary: until all ext tests are configured
+    "terrarium/bi_ci",
+    "lib/bi_file_uploader_api_lib",
+    "lib/bi_file_uploader_lib",
+    "lib/bi_file_uploader_worker_lib",
+]
 
 
 def format_output(name: str, sections: list[tuple[str, str]]) -> str:
@@ -31,16 +38,22 @@ def format_output(name: str, sections: list[tuple[str, str]]) -> str:
 
 def split_tests(mode: str) -> None:
     """
-    :param mode: Either "base" for test targets without specific labels, or "fat" for test target to be put into
-     the "fat" runners
+    :param mode: One of: "base" for test targets without specific labels, "fat" for test target to be put into
+     the "fat" runners, "ext" to pass secrets into env
     :side-effect: prints to stdout variable assignment for github output
     """
     targets_file = os.environ.get("TEST_TARGETS")
     raw = open(targets_file).read().strip().replace("'", '"')
     paths = json.loads(raw)
 
-    base = []
-    fat = []
+    split_result: dict[str, list[tuple]] = dict(
+        fat=[],
+        ext=[],
+    )
+    split_base = []
+
+    if mode not in (modes := list(split_result.keys()) + ["base"]):
+        raise RuntimeError(f'Unknown mode "{mode}", expected one of: {modes}')
 
     for short_path in paths:
         path = Path(__file__).resolve().parent.parent / short_path.strip() / "pyproject.toml"
@@ -55,22 +68,22 @@ def split_tests(mode: str) -> None:
         if pytest_targets:
             for section in pytest_targets.keys():
                 spec = toml_data["datalens"]["pytest"][section]
-                if "fat" in spec.get("labels", []):
-                    fat.append((short_path, section))
+                section_labels = spec.get("labels", [])
+                if section == "ext" and short_path not in EXT_TESTS_TO_RUN:
+                    continue
+                for category in split_result.keys():  # find a proper category based on given labels or fallback to base
+                    if category in section_labels:
+                        split_result[category].append((short_path, section))
+                        break
                 else:
-                    base.append((short_path, section))
+                    split_base.append((short_path, section))
         else:
-            base.append((short_path, "__default__"))
-
-    out_split = format_output("split", base)
-    out_split_fat = format_output("split_fat", fat)
+            split_base.append((short_path, "__default__"))
 
     if mode == "base":
-        print(out_split)
-    elif mode == "fat":
-        print(out_split_fat)
+        print(format_output("split", split_base))
     else:
-        raise RuntimeError("provide either base or fat mode for the script")
+        print(format_output(f"split_{mode}", split_result[mode]))
 
 
 if __name__ == "__main__":

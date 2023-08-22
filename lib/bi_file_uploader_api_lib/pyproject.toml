@@ -68,3 +68,4 @@ labels = ["fat"]
 [datalens.pytest.ext]
 root_dir = "bi_file_uploader_api_lib_tests/"
 target_path = "ext"
+labels = ["ext"]

@@ -1,4 +1,8 @@
 import os
+from pathlib import Path
+
+import attr
+from dotenv import dotenv_values
 
 from bi_testing.env_params.getter import EnvParamGetter
 
@@ -10,8 +14,20 @@ class DirectEnvParamGetter(EnvParamGetter):
         return str(key)
 
 
+@attr.s
 class OsEnvParamGetter(EnvParamGetter):
-    """Gets params from os environment"""
+    """Gets params from os environment, with an env-file fallback"""
+
+    _env_from_file: dict = attr.ib(init=False, factory=dict)
+
+    def initialize(self, config: dict) -> None:
+        env_file = Path(__file__).resolve().parent.parent.parent.parent.parent / ".env"
+        self._env_from_file = dotenv_values(env_file)
 
     def get_str_value(self, key: str) -> str:
-        return os.environ.get(key)
+        env_value = os.environ.get(key)
+
+        if env_value is None:
+            return self._env_from_file.get(key)
+
+        return env_value

@@ -30,9 +30,6 @@ def pkg_to_targets_ref(pkg_dir: Path, doc: TOMLDocument, sections: list[str] | N
             if k not in sections:
                 continue
 
-        if k == "ext":
-            continue
-
         target_path = v.get("target_path", None)
         if target_path:
             for tp in target_path.split(" "):
@@ -105,20 +102,12 @@ def runner(test_target: str):
         target = Target("__main__", pkg_root, ".")
         sys.exit(run_pytest_one(target))
 
-    # excluding "ext" since we did not provide secrets for it yet
-    # todo: allow arbitrary rules and check ENV vars
-    targets = [t for t in targets if t.name != "ext"]
-
     # Later we would probably filter this list depending on additional marks for
     #   for test targets and ENV vars defining which kind of tests should be executed
     # E.g. short vs long-running, unit vs external
 
     exit_code = 0
     for t in targets:
-        if t.name == "ext":
-            print(f"Skipped ext test in {pkg_root}")
-            continue
-
         run_exit_code = run_pytest_one(t)
         if run_exit_code not in [0, 5]:
             exit_code = 1

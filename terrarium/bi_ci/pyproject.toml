@@ -47,6 +47,12 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_ci_tests"]
 
+[datalens.pytest.ext]
+# just a placeholder to run at least one pytest
+root_dir = "bi_ci_tests/"
+target_path = "dummy_ext"
+labels = ["ext"]
+
 [datalens.pytest.fat]
 # just a placeholder to run at least one pytest
 root_dir = "bi_ci_tests/"
