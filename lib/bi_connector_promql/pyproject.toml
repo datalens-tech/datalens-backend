@@ -63,4 +63,5 @@ target_path = "."
 [datalens.pytest.unit]
 root_dir = "bi_connector_promql_tests/unit"
 target_path = "."
+skip_compose = "true"
 

@@ -68,3 +68,8 @@ target-version = ['py310']
 [datalens.pytest.db]
 root_dir = "bi_connector_bundle_ch_filtered_tests/"
 target_path = "db"
+
+[datalens.pytest.unit]
+root_dir = "bi_connector_bundle_ch_filtered_tests/"
+target_path = "unit"
+skip_compose = "true"
