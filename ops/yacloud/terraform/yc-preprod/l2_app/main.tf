@@ -115,6 +115,7 @@ module "main" {
     rqe_caches         = true
     mutation_caches    = true
     network_policy     = module.constants.env_data.k8s_use_cilium
+    rootless_mode      = true
   }
 
   app_resources = {

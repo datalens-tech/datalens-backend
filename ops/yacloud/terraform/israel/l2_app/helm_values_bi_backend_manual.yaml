@@ -5,6 +5,8 @@ docker_images_info:
   bi_api:
     repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api-tier-1  # CLOUD-122905
     tag: "0.1964.0"
+  control_api:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api-tier-1
   file_uploader_api:
     repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-tier-1
     tag: "0.112.0"

@@ -21,13 +21,26 @@ resource "kubernetes_config_map" "sidecars" {
       jaeger_map_path         = local.jaeger_map_path
       nginx_map_name          = kubernetes_config_map.nginx_data.metadata[0].name
       nginx_map_path          = local.nginx_map_path
+      nginx_port              = var.app_tls_port
       docker_registry         = var.docker_registry_repo
+      version                 = ""
+    })
+    "jaeger_nginx_v2" = templatefile("${path.module}/sidecars/jaeger_nginx.yaml", {
+      jaeger_collector_netloc = var.jaeger_collector_netloc
+      jaeger_map_name         = kubernetes_config_map.jaeger_data.metadata[0].name
+      jaeger_map_path         = local.jaeger_map_path
+      nginx_map_name          = kubernetes_config_map.nginx_data_v2.metadata[0].name
+      nginx_map_path          = local.nginx_map_path
+      nginx_port              = var.app_tls_port
+      docker_registry         = var.docker_registry_repo
+      version                 = "_v2"
     })
   }
 
   depends_on = [
     kubernetes_namespace.sidecar_ns,
     kubernetes_config_map.jaeger_data,
-    kubernetes_config_map.nginx_data
+    kubernetes_config_map.nginx_data,
+    kubernetes_config_map.nginx_data_v2
   ]
 }

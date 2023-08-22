@@ -1,5 +1,5 @@
 ---
-name: "jaeger,nginx"
+name: "jaeger,nginx${version}"
 
 containers:
   - name: jaeger-agent
@@ -21,7 +21,7 @@ containers:
     image: ${docker_registry}/nginx-unprivileged:1.18-alpine
     imagePullPolicy: IfNotPresent
     ports:
-      - containerPort: 8443
+      - containerPort: ${nginx_port}
     securityContext:
       runAsNonRoot: true
 

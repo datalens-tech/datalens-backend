@@ -28,6 +28,7 @@ variable "enabled_features" {
     rqe_caches         = bool
     mutation_caches    = bool
     network_policy     = bool
+    rootless_mode      = bool
   })
 }
 

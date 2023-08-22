@@ -37,3 +37,21 @@ resource "kubernetes_config_map" "nginx_data" {
     "cert.key" = "${tls_private_key.nginx_private_key.private_key_pem}"
   }
 }
+
+resource "kubernetes_config_map" "nginx_data_v2" {
+  metadata {
+    name      = "nginx-data-v2"
+    namespace = var.apps_namespace
+  }
+  data = {
+    "nginx.conf" = templatefile("${path.module}/sidecars/nginx.conf", {
+      nginx_keepalive_timeout         = 100
+      nginx_listen_port               = var.app_tls_port
+      nginx_cert_location             = "${local.nginx_map_path}/cert.pem"
+      nginx_cert_private_key_location = "${local.nginx_map_path}/cert.key"
+      nginx_backend_port              = 8080
+    })
+    "cert.pem" = "${tls_self_signed_cert.nginx_cert.cert_pem}"
+    "cert.key" = "${tls_private_key.nginx_private_key.private_key_pem}"
+  }
+}

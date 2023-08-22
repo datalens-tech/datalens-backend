@@ -22,11 +22,11 @@ spec:
       labels:
         app: dataset-api
       annotations:
-        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+        injector.tumblr.com/request: {{ ternary (ternary "jaeger,nginx_v2" "jaeger,nginx" (eq .Values.enabled_features.rootless_mode true)) "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
       containers:
         - name: main
-          image: "{{ .Values.docker_images_info.bi_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          image: "{{ .Values.docker_images_info.control_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
           env:
             {{- include "secrets-common" . | indent 12}}
             {{- include "secrets-bi_api" . | indent 12}}
@@ -89,20 +89,82 @@ spec:
               value: "0"
             - name: SNOWFLAKE_CABUNDLE_PATH
               value: "/usr/lib/python3/dist-packages/certifi/cacert.pem"
+            {{ if .Values.enabled_features.network_policy}}
+            - name: RQE_EXT_ASYNC_HOST
+              value: "rqe-dataset-api.bi-backend.svc.cluster.local"
+            - name: RQE_EXT_ASYNC_PORT
+              value: "9877"
+            - name: LOCAL_RQE_EXT_ASYNC
+              value: "0"
+            - name: RQE_EXT_SYNC_HOST
+              value: "rqe-dataset-api.bi-backend.svc.cluster.local"
+            - name: RQE_EXT_SYNC_PORT
+              value: "9876"
+            - name: LOCAL_RQE_EXT_SYNC
+              value: "0"
+            - name: RQE_INT_SYNC_HOST
+              value: "127.0.0.1"
+            - name: RQE_INT_SYNC_PORT
+              value: "9874"
+            - name: LOCAL_RQE_INT_SYNC
+              value: "0"
+            {{ end }}
           resources:
             requests:
               cpu: {{ .Values.app_resources.dataset_api.cpu }}
               memory: {{.Values.app_resources.dataset_api.ram}}
           readinessProbe:
             httpGet:
-              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              port: {{ ternary .Values.app_tls_port (ternary 8080 80 (eq .Values.rootless_mode true)) (eq .Values.tls_to_backends true) }}
               scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
               path: "/ping"
             initialDelaySeconds: 60
             periodSeconds: 10
           securityContext:
+            {{ if .Values.enabled_features.rootless_mode }}
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            {{ else }}
             capabilities:
-              add: [ "NET_ADMIN"]
+              add: [ "NET_ADMIN" ]
+            {{ end }}
+        {{ if .Values.enabled_features.network_policy}}
+        - name: rqe-int-sync
+          image: "{{ .Values.docker_images_info.rqe_int_sync.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          env:
+            {{- include "env_vars-yenv" . | indent 12 }}
+            {{- include "env_vars-common" . | indent 12 }}
+            {{- include "env_vars-rqe" . | indent 12 }}
+            {{- include "secrets-rqe" . | indent 12}}
+            - name: RQE_INT_SYNC_PORT
+              value: "9874"
+            - name: BISYS_USE_IPV6
+              value: "0"
+            - name: RQE_INT_SYNC_WORKERS_COUNT
+              value: "4"
+            {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - http://127.0.0.1:9874/ping
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          startupProbe:
+            exec:
+              command:
+              - curl
+              - http://127.0.0.1:9874/ping
+            failureThreshold: 30
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+        {{ end }}
       volumes:
         - name: init-scripts
           configMap:
