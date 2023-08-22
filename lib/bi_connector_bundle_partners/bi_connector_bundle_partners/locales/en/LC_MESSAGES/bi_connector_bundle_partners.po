@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"POT-Creation-Date: 2023-08-22 10:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_api_lib/connectors/equeo/connection_info.py:8
-msgid "label_connector-equeo"
-msgstr "E-queo"
+#: bi_connector_bundle_partners/kontur_market/bi/connection_info.py:8
+msgid "label_connector-kontur_market"
+msgstr "Kontur.Market"
 
-#: bi_api_lib/connectors/kontur_market/connection_form/form_config.py:17
+#: bi_connector_bundle_partners/kontur_market/bi/connection_form/form_config.py:18
 msgid "label_kontur_market_description"
 msgstr ""
 "Коннектор выгружает данные из сервиса [Контур.Маркет](https://kontur.ru/"
 "market) для построения аналитических отчетов в Yandex DataLens. Отчеты "
-"подходят для розничных магазинов, кафе, ресторанов и предприятий из сферы "
-"услуг.\n"
+"подходят для розничных магазинов, кафе и ресторанов.\n"
 "\n"
 "Отчеты позволяют сравнивать различные показатели сразу нескольких торговых "
 "точек между собой за разные периоды времени. Можно изменять и создавать "
@@ -35,7 +34,7 @@ msgstr ""
 "\n"
 "После подключения в дашборде будут доступны отчеты для анализа:\n"
 "- выручки;\n"
-"- продаж товаров, услуг и блюд;\n"
+"- продаж товаров и блюд;\n"
 "- списаний товаров;\n"
 "- остатков товаров;\n"
 "- закупки товаров у поставщиков.\n"
@@ -47,16 +46,16 @@ msgstr ""
 "форму](https://forms.kontur.ru/form/datalens).\n"
 "\n"
 "При первом подключении необходимо подождать пока данные из Контур.Маркета "
-"загрузятся в дашборд. Обычно это занимает не более 1 часа."
+"загрузятся в дашборд. Обычно это занимает от 2 до 5 минут."
 
-#: bi_api_lib/connectors/kontur_market/connection_info.py:8
-msgid "label_connector-kontur_market"
-msgstr "Kontur.Market"
+#: bi_connector_bundle_partners/equeo/bi/connection_info.py:8
+msgid "label_connector-equeo"
+msgstr "E-queo"
 
-#: bi_api_lib/connectors/moysklad/connection_form/form_config.py:23
-msgid "label_moysklad-token-hint"
-msgstr "Check [developer's documentation]({DOC_LINK}) on how to get token."
-
-#: bi_api_lib/connectors/moysklad/connection_info.py:8
+#: bi_connector_bundle_partners/moysklad/bi/connection_info.py:8
 msgid "label_connector-moysklad"
 msgstr "MoySklad"
+
+#: bi_connector_bundle_partners/moysklad/bi/connection_form/form_config.py:24
+msgid "label_moysklad-token-hint"
+msgstr "Check [developer's documentation]({DOC_LINK}) on how to get token."

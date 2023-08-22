@@ -4,6 +4,7 @@
 
 include ../../tools/common_makefile.mk
 
+PACKAGE_NAME = bi_connector_bundle_partners
 
 devenv-d:
 	docker-compose up --build -d
