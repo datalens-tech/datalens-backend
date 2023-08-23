@@ -34,7 +34,3 @@ dl_repo:
       boilerplate_path: lib/bi_package_boilerplate
       tags:
         - own_dependency_group
-
-    - type: bi_meta_os
-      root_path: lib/bi_meta_os
-      boilerplate_path: lib/bi_package_boilerplate

@@ -82,8 +82,6 @@ yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usa
 anyascii = {path = "../../lib/anyascii"}
 yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-meta-os-control-api = {path = "../../lib/bi_meta_os/bi_meta_os_control_api"}
-yandex-bi-meta-os-data-api = {path = "../../lib/bi_meta_os/bi_meta_os_data_api"}
 yandex-bi-meta-yc-file-uploader-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_api"}
 yandex-bi-meta-yc-file-uploader-worker = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_worker"}
 aiohttp = "==3.8.5"

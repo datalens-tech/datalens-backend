@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from typing import Optional
 
 import flask
@@ -13,12 +12,8 @@ from bi_core.logging_config import hook_configure_logging
 
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
 
-from bi_meta_os_control_api.app import ControlApiAppFactoryOS
+from app_os_control_api.app_factory import ControlApiAppFactoryOS
 from app_os_control_api import app_version
-
-
-class DefaultControlApiAppFactoryOS(ControlApiAppFactoryOS):
-    pass
 
 
 def create_app(
@@ -26,7 +21,7 @@ def create_app(
         testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
-    mng_app_factory = DefaultControlApiAppFactoryOS()
+    mng_app_factory = ControlApiAppFactoryOS()
     return mng_app_factory.create_app(
         app_settings=app_settings,
         testing_app_settings=testing_app_settings,

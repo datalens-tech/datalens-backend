@@ -4,23 +4,22 @@ from typing import Optional
 
 import flask
 
-from bi_constants.enums import USAuthMode
 from bi_configs.enums import RequiredService
+from bi_constants.enums import USAuthMode
+
+from bi_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
+from bi_api_lib.app_common import SRFactoryBuilder
+from bi_api_lib.app_settings import BaseAppSettings, ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from bi_api_lib.connector_availability.configs.open_source import CONFIG as OPEN_SOURCE_CONNECTORS
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
-from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings, BaseAppSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.connector_availability.configs.open_source import CONFIG as OPEN_SOURCE_CONNECTORS
-
-from bi_meta_os_control_api.service_registry import StandaloneServiceRegistryFactory
+from app_os_control_api.service_registry import StandaloneServiceRegistryFactory
 
 
 class ControlApiSRFactoryBuilderOS(SRFactoryBuilder):

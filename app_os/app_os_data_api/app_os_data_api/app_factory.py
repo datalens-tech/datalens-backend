@@ -3,26 +3,28 @@ from __future__ import annotations
 from typing import Optional
 
 from bi_configs.enums import RequiredService
-from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 
+from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.aio.middlewares.services_registry import services_registry_middleware
 from bi_core.aio.middlewares.us_manager import service_us_manager_middleware
-from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.connection_models import ConnectOptions
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.us_connection_base import ExecutorBasedMixin
 
-from bi_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
-
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import BaseAppSettings, TestAppSettings, AsyncAppSettings
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
+from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
+from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+
+from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
+from bi_api_commons.aio.typing import AIOHTTPMiddleware
+
+from app_os_data_api import app_version
 
 
 class DataApiSRFactoryBuilderOS(SRFactoryBuilder):
@@ -55,6 +57,9 @@ class DataApiSRFactoryBuilderOS(SRFactoryBuilder):
 
 
 class DataApiAppFactoryOS(DataApiAppFactory, DataApiSRFactoryBuilderOS):
+    def get_app_version(self) -> str:
+        return app_version
+
     def set_up_environment(
             self,
             setting: AsyncAppSettings,
