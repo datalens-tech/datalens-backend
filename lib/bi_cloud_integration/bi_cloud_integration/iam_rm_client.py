@@ -23,6 +23,8 @@ from yandex.cloud.priv.iam.v1.service_account_service_pb2 import (
 from yandex.cloud.priv.iam.v1.service_account_service_pb2_grpc import ServiceAccountServiceStub
 from yandex.cloud.priv.resourcemanager.v1.folder_service_pb2 import ResolveFoldersRequest
 from yandex.cloud.priv.resourcemanager.v1.folder_service_pb2_grpc import FolderServiceStub
+from yandex.cloud.priv.resourcemanager.v1.cloud_service_pb2 import ResolveCloudsRequest
+from yandex.cloud.priv.resourcemanager.v1.cloud_service_pb2_grpc import CloudServiceStub
 from yandex.cloud.priv.resourcemanager.v1.operation_service_pb2 import GetOperationRequest
 from yandex.cloud.priv.resourcemanager.v1.operation_service_pb2_grpc import OperationServiceStub
 
@@ -237,6 +239,25 @@ class DLFolderServiceClient(DLYCSingleServiceClient):
         rs = self.service.UpdateAccessBindings(rq)
         op_converter = NoResponseOpConverter()
         return op_converter.convert_operation(rs)
+
+
+@attr.s
+class DLCloudServiceClient(DLYCSingleServiceClient):
+    """
+    RM (Resource Management)
+    Folder service client.
+    Endpoint example: 'api-adapter.private-api.ycp.cloud-preprod.yandex.net:443'
+    """
+
+    service_cls = CloudServiceStub
+
+    async def resolve_cloud_id_to_org_id(self, cloud_id: str) -> str:
+        req = ResolveCloudsRequest(cloud_ids=[cloud_id])
+        resp = await self.service.Resolve.aio(req)
+        resolved = resp.resolved_clouds
+        if len(resolved) != 1:
+            raise Exception(f"Expected one resolved cloud, got {resp!r}")
+        return resolved[0].organization_id
 
 
 class DLRMOperationService(DLGenericOperationService[Operation]):

@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n+yandex/cloud/priv/iam/v1/oauth_client.proto\x12\x18yandex.cloud.priv.iam.v1\"\x88\x02\n\x0bOAuthClient\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x16\n\x0epermission_ids\x18\x03 \x03(\t\x12\x1c\n\x14\x63lient_secret_sha256\x18\x04 \x01(\t\x12\x15\n\rredirect_uris\x18\x05 \x03(\t\x12\x0e\n\x06scopes\x18\x06 \x03(\t\x12\x1b\n\x13\x61uto_approve_scopes\x18\x07 \x03(\t\x12\x1e\n\x16\x61uthorized_grant_types\x18\x08 \x03(\t\x12\x15\n\rfederation_id\x18\t \x01(\t\x12\x11\n\tfolder_id\x18\n \x01(\t\x12\x1b\n\x13\x64\x65\x62ug_redirect_uris\x18\x0b \x03(\tBQB\x04POACZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iamb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n+yandex/cloud/priv/iam/v1/oauth_client.proto\x12\x18yandex.cloud.priv.iam.v1\"\xa8\x02\n\x0bOAuthClient\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x16\n\x0epermission_ids\x18\x03 \x03(\t\x12\x1c\n\x14\x63lient_secret_sha256\x18\x04 \x01(\t\x12\x15\n\rredirect_uris\x18\x05 \x03(\t\x12\x0e\n\x06scopes\x18\x06 \x03(\t\x12\x1b\n\x13\x61uto_approve_scopes\x18\x07 \x03(\t\x12\x1e\n\x16\x61uthorized_grant_types\x18\x08 \x03(\t\x12\x15\n\rfederation_id\x18\t \x01(\t\x12\x11\n\tfolder_id\x18\n \x01(\t\x12\x1b\n\x13\x64\x65\x62ug_redirect_uris\x18\x0b \x03(\t\x12\x1e\n\x16\x61uthentication_methods\x18\x0c \x03(\tBQB\x04POACZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iamb\x06proto3')
 
 
 
@@ -31,5 +31,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'B\004POACZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iam'
   _OAUTHCLIENT._serialized_start=74
-  _OAUTHCLIENT._serialized_end=338
+  _OAUTHCLIENT._serialized_end=370
 # @@protoc_insertion_point(module_scope)

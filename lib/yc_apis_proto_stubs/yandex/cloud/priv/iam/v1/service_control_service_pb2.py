@@ -18,7 +18,7 @@ from yandex.cloud.priv.operation import operation_pb2 as yandex_dot_cloud_dot_pr
 from yandex.cloud.priv import validation_pb2 as yandex_dot_cloud_dot_priv_dot_validation__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n6yandex/cloud/priv/iam/v1/service_control_service.proto\x12\x18yandex.cloud.priv.iam.v1\x1a yandex/cloud/api/operation.proto\x1a.yandex/cloud/priv/iam/v1/service_control.proto\x1a+yandex/cloud/priv/operation/operation.proto\x1a\"yandex/cloud/priv/validation.proto\"q\n\x11GetServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"t\n\x14\x45nableServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"a\n\x15\x45nableServiceMetadata\x12\x12\n\nservice_id\x18\x01 \x01(\t\x12\x34\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.Resource\"u\n\x15\x44isableServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"b\n\x16\x44isableServiceMetadata\x12\x12\n\nservice_id\x18\x01 \x01(\t\x12\x34\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.Resource\"\xac\x01\n\x13ListServicesRequest\x12:\n\x08resource\x18\x01 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\x12\x1d\n\tpage_size\x18\x02 \x01(\x03\x42\n\xba\x89\x31\x06\x30-1000\x12\x1e\n\npage_token\x18\x03 \x01(\tB\n\xca\x89\x31\x06<=2000\x12\x1a\n\x06\x66ilter\x18\x04 \x01(\tB\n\xca\x89\x31\x06<=1000\"d\n\x14ListServicesResponse\x12\x33\n\x08services\x18\x01 \x03(\x0b\x32!.yandex.cloud.priv.iam.v1.Service\x12\x17\n\x0fnext_page_token\x18\x02 \x01(\t2\xea\x03\n\x15ServiceControlService\x12U\n\x03Get\x12+.yandex.cloud.priv.iam.v1.GetServiceRequest\x1a!.yandex.cloud.priv.iam.v1.Service\x12\x65\n\x04List\x12-.yandex.cloud.priv.iam.v1.ListServicesRequest\x1a..yandex.cloud.priv.iam.v1.ListServicesResponse\x12\x86\x01\n\x06\x45nable\x12..yandex.cloud.priv.iam.v1.EnableServiceRequest\x1a&.yandex.cloud.priv.operation.Operation\"$\xb2\xd2* \n\x15\x45nableServiceMetadata\x12\x07Service\x12\x89\x01\n\x07\x44isable\x12/.yandex.cloud.priv.iam.v1.DisableServiceRequest\x1a&.yandex.cloud.priv.operation.Operation\"%\xb2\xd2*!\n\x16\x44isableServiceMetadata\x12\x07ServiceBQB\x04PSCSZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iamb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n6yandex/cloud/priv/iam/v1/service_control_service.proto\x12\x18yandex.cloud.priv.iam.v1\x1a yandex/cloud/api/operation.proto\x1a.yandex/cloud/priv/iam/v1/service_control.proto\x1a+yandex/cloud/priv/operation/operation.proto\x1a\"yandex/cloud/priv/validation.proto\"q\n\x11GetServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"t\n\x14\x45nableServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"a\n\x15\x45nableServiceMetadata\x12\x12\n\nservice_id\x18\x01 \x01(\t\x12\x34\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.Resource\"u\n\x15\x44isableServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"b\n\x16\x44isableServiceMetadata\x12\x12\n\nservice_id\x18\x01 \x01(\t\x12\x34\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.Resource\"t\n\x14\x44\x65leteServiceRequest\x12 \n\nservice_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12:\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\"a\n\x15\x44\x65leteServiceMetadata\x12\x12\n\nservice_id\x18\x01 \x01(\t\x12\x34\n\x08resource\x18\x02 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.Resource\"\xac\x01\n\x13ListServicesRequest\x12:\n\x08resource\x18\x01 \x01(\x0b\x32\".yandex.cloud.priv.iam.v1.ResourceB\x04\xa8\x89\x31\x01\x12\x1d\n\tpage_size\x18\x02 \x01(\x03\x42\n\xba\x89\x31\x06\x30-1000\x12\x1e\n\npage_token\x18\x03 \x01(\tB\n\xca\x89\x31\x06<=2000\x12\x1a\n\x06\x66ilter\x18\x04 \x01(\tB\n\xca\x89\x31\x06<=1000\"d\n\x14ListServicesResponse\x12\x33\n\x08services\x18\x01 \x03(\x0b\x32!.yandex.cloud.priv.iam.v1.Service\x12\x17\n\x0fnext_page_token\x18\x02 \x01(\t\"y\n\x18ListSystemFoldersRequest\x12\x1e\n\x08\x63loud_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12\x1d\n\tpage_size\x18\x02 \x01(\x03\x42\n\xba\x89\x31\x06\x30-1000\x12\x1e\n\npage_token\x18\x03 \x01(\tB\n\xca\x89\x31\x06<=2000\"t\n\x19ListSystemFoldersResponse\x12>\n\x0esystem_folders\x18\x01 \x03(\x0b\x32&.yandex.cloud.priv.iam.v1.SystemFolder\x12\x17\n\x0fnext_page_token\x18\x02 \x01(\t\"C\n\x19\x44\x65leteSystemFolderRequest\x12&\n\x10system_folder_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\"6\n\x1a\x44\x65leteSystemFolderMetadata\x12\x18\n\x10system_folder_id\x18\x01 \x01(\t2\x95\x07\n\x15ServiceControlService\x12U\n\x03Get\x12+.yandex.cloud.priv.iam.v1.GetServiceRequest\x1a!.yandex.cloud.priv.iam.v1.Service\x12\x65\n\x04List\x12-.yandex.cloud.priv.iam.v1.ListServicesRequest\x1a..yandex.cloud.priv.iam.v1.ListServicesResponse\x12\x86\x01\n\x06\x45nable\x12..yandex.cloud.priv.iam.v1.EnableServiceRequest\x1a&.yandex.cloud.priv.operation.Operation\"$\xb2\xd2* \n\x15\x45nableServiceMetadata\x12\x07Service\x12\x89\x01\n\x07\x44isable\x12/.yandex.cloud.priv.iam.v1.DisableServiceRequest\x1a&.yandex.cloud.priv.operation.Operation\"%\xb2\xd2*!\n\x16\x44isableServiceMetadata\x12\x07Service\x12\x86\x01\n\x06\x44\x65lete\x12..yandex.cloud.priv.iam.v1.DeleteServiceRequest\x1a&.yandex.cloud.priv.operation.Operation\"$\xb2\xd2* \n\x15\x44\x65leteServiceMetadata\x12\x07Service\x12|\n\x11ListSystemFolders\x12\x32.yandex.cloud.priv.iam.v1.ListSystemFoldersRequest\x1a\x33.yandex.cloud.priv.iam.v1.ListSystemFoldersResponse\x12\xa1\x01\n\x12\x44\x65leteSystemFolder\x12\x33.yandex.cloud.priv.iam.v1.DeleteSystemFolderRequest\x1a&.yandex.cloud.priv.operation.Operation\".\xb2\xd2**\n\x1a\x44\x65leteSystemFolderMetadata\x12\x0cSystemFolderBQB\x04PSCSZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iamb\x06proto3')
 
 
 
@@ -27,8 +27,14 @@ _ENABLESERVICEREQUEST = DESCRIPTOR.message_types_by_name['EnableServiceRequest']
 _ENABLESERVICEMETADATA = DESCRIPTOR.message_types_by_name['EnableServiceMetadata']
 _DISABLESERVICEREQUEST = DESCRIPTOR.message_types_by_name['DisableServiceRequest']
 _DISABLESERVICEMETADATA = DESCRIPTOR.message_types_by_name['DisableServiceMetadata']
+_DELETESERVICEREQUEST = DESCRIPTOR.message_types_by_name['DeleteServiceRequest']
+_DELETESERVICEMETADATA = DESCRIPTOR.message_types_by_name['DeleteServiceMetadata']
 _LISTSERVICESREQUEST = DESCRIPTOR.message_types_by_name['ListServicesRequest']
 _LISTSERVICESRESPONSE = DESCRIPTOR.message_types_by_name['ListServicesResponse']
+_LISTSYSTEMFOLDERSREQUEST = DESCRIPTOR.message_types_by_name['ListSystemFoldersRequest']
+_LISTSYSTEMFOLDERSRESPONSE = DESCRIPTOR.message_types_by_name['ListSystemFoldersResponse']
+_DELETESYSTEMFOLDERREQUEST = DESCRIPTOR.message_types_by_name['DeleteSystemFolderRequest']
+_DELETESYSTEMFOLDERMETADATA = DESCRIPTOR.message_types_by_name['DeleteSystemFolderMetadata']
 GetServiceRequest = _reflection.GeneratedProtocolMessageType('GetServiceRequest', (_message.Message,), {
   'DESCRIPTOR' : _GETSERVICEREQUEST,
   '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
@@ -64,6 +70,20 @@ DisableServiceMetadata = _reflection.GeneratedProtocolMessageType('DisableServic
   })
 _sym_db.RegisterMessage(DisableServiceMetadata)
 
+DeleteServiceRequest = _reflection.GeneratedProtocolMessageType('DeleteServiceRequest', (_message.Message,), {
+  'DESCRIPTOR' : _DELETESERVICEREQUEST,
+  '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.DeleteServiceRequest)
+  })
+_sym_db.RegisterMessage(DeleteServiceRequest)
+
+DeleteServiceMetadata = _reflection.GeneratedProtocolMessageType('DeleteServiceMetadata', (_message.Message,), {
+  'DESCRIPTOR' : _DELETESERVICEMETADATA,
+  '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.DeleteServiceMetadata)
+  })
+_sym_db.RegisterMessage(DeleteServiceMetadata)
+
 ListServicesRequest = _reflection.GeneratedProtocolMessageType('ListServicesRequest', (_message.Message,), {
   'DESCRIPTOR' : _LISTSERVICESREQUEST,
   '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
@@ -77,6 +97,34 @@ ListServicesResponse = _reflection.GeneratedProtocolMessageType('ListServicesRes
   # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.ListServicesResponse)
   })
 _sym_db.RegisterMessage(ListServicesResponse)
+
+ListSystemFoldersRequest = _reflection.GeneratedProtocolMessageType('ListSystemFoldersRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LISTSYSTEMFOLDERSREQUEST,
+  '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.ListSystemFoldersRequest)
+  })
+_sym_db.RegisterMessage(ListSystemFoldersRequest)
+
+ListSystemFoldersResponse = _reflection.GeneratedProtocolMessageType('ListSystemFoldersResponse', (_message.Message,), {
+  'DESCRIPTOR' : _LISTSYSTEMFOLDERSRESPONSE,
+  '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.ListSystemFoldersResponse)
+  })
+_sym_db.RegisterMessage(ListSystemFoldersResponse)
+
+DeleteSystemFolderRequest = _reflection.GeneratedProtocolMessageType('DeleteSystemFolderRequest', (_message.Message,), {
+  'DESCRIPTOR' : _DELETESYSTEMFOLDERREQUEST,
+  '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.DeleteSystemFolderRequest)
+  })
+_sym_db.RegisterMessage(DeleteSystemFolderRequest)
+
+DeleteSystemFolderMetadata = _reflection.GeneratedProtocolMessageType('DeleteSystemFolderMetadata', (_message.Message,), {
+  'DESCRIPTOR' : _DELETESYSTEMFOLDERMETADATA,
+  '__module__' : 'yandex.cloud.priv.iam.v1.service_control_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.DeleteSystemFolderMetadata)
+  })
+_sym_db.RegisterMessage(DeleteSystemFolderMetadata)
 
 _SERVICECONTROLSERVICE = DESCRIPTOR.services_by_name['ServiceControlService']
 if _descriptor._USE_C_DESCRIPTORS == False:
@@ -95,6 +143,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _DISABLESERVICEREQUEST.fields_by_name['service_id']._serialized_options = b'\250\2111\001\312\2111\004<=50'
   _DISABLESERVICEREQUEST.fields_by_name['resource']._options = None
   _DISABLESERVICEREQUEST.fields_by_name['resource']._serialized_options = b'\250\2111\001'
+  _DELETESERVICEREQUEST.fields_by_name['service_id']._options = None
+  _DELETESERVICEREQUEST.fields_by_name['service_id']._serialized_options = b'\250\2111\001\312\2111\004<=50'
+  _DELETESERVICEREQUEST.fields_by_name['resource']._options = None
+  _DELETESERVICEREQUEST.fields_by_name['resource']._serialized_options = b'\250\2111\001'
   _LISTSERVICESREQUEST.fields_by_name['resource']._options = None
   _LISTSERVICESREQUEST.fields_by_name['resource']._serialized_options = b'\250\2111\001'
   _LISTSERVICESREQUEST.fields_by_name['page_size']._options = None
@@ -103,10 +155,22 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _LISTSERVICESREQUEST.fields_by_name['page_token']._serialized_options = b'\312\2111\006<=2000'
   _LISTSERVICESREQUEST.fields_by_name['filter']._options = None
   _LISTSERVICESREQUEST.fields_by_name['filter']._serialized_options = b'\312\2111\006<=1000'
+  _LISTSYSTEMFOLDERSREQUEST.fields_by_name['cloud_id']._options = None
+  _LISTSYSTEMFOLDERSREQUEST.fields_by_name['cloud_id']._serialized_options = b'\250\2111\001\312\2111\004<=50'
+  _LISTSYSTEMFOLDERSREQUEST.fields_by_name['page_size']._options = None
+  _LISTSYSTEMFOLDERSREQUEST.fields_by_name['page_size']._serialized_options = b'\272\2111\0060-1000'
+  _LISTSYSTEMFOLDERSREQUEST.fields_by_name['page_token']._options = None
+  _LISTSYSTEMFOLDERSREQUEST.fields_by_name['page_token']._serialized_options = b'\312\2111\006<=2000'
+  _DELETESYSTEMFOLDERREQUEST.fields_by_name['system_folder_id']._options = None
+  _DELETESYSTEMFOLDERREQUEST.fields_by_name['system_folder_id']._serialized_options = b'\250\2111\001\312\2111\004<=50'
   _SERVICECONTROLSERVICE.methods_by_name['Enable']._options = None
   _SERVICECONTROLSERVICE.methods_by_name['Enable']._serialized_options = b'\262\322* \n\025EnableServiceMetadata\022\007Service'
   _SERVICECONTROLSERVICE.methods_by_name['Disable']._options = None
   _SERVICECONTROLSERVICE.methods_by_name['Disable']._serialized_options = b'\262\322*!\n\026DisableServiceMetadata\022\007Service'
+  _SERVICECONTROLSERVICE.methods_by_name['Delete']._options = None
+  _SERVICECONTROLSERVICE.methods_by_name['Delete']._serialized_options = b'\262\322* \n\025DeleteServiceMetadata\022\007Service'
+  _SERVICECONTROLSERVICE.methods_by_name['DeleteSystemFolder']._options = None
+  _SERVICECONTROLSERVICE.methods_by_name['DeleteSystemFolder']._serialized_options = b'\262\322**\n\032DeleteSystemFolderMetadata\022\014SystemFolder'
   _GETSERVICEREQUEST._serialized_start=247
   _GETSERVICEREQUEST._serialized_end=360
   _ENABLESERVICEREQUEST._serialized_start=362
@@ -117,10 +181,22 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _DISABLESERVICEREQUEST._serialized_end=696
   _DISABLESERVICEMETADATA._serialized_start=698
   _DISABLESERVICEMETADATA._serialized_end=796
-  _LISTSERVICESREQUEST._serialized_start=799
-  _LISTSERVICESREQUEST._serialized_end=971
-  _LISTSERVICESRESPONSE._serialized_start=973
-  _LISTSERVICESRESPONSE._serialized_end=1073
-  _SERVICECONTROLSERVICE._serialized_start=1076
-  _SERVICECONTROLSERVICE._serialized_end=1566
+  _DELETESERVICEREQUEST._serialized_start=798
+  _DELETESERVICEREQUEST._serialized_end=914
+  _DELETESERVICEMETADATA._serialized_start=916
+  _DELETESERVICEMETADATA._serialized_end=1013
+  _LISTSERVICESREQUEST._serialized_start=1016
+  _LISTSERVICESREQUEST._serialized_end=1188
+  _LISTSERVICESRESPONSE._serialized_start=1190
+  _LISTSERVICESRESPONSE._serialized_end=1290
+  _LISTSYSTEMFOLDERSREQUEST._serialized_start=1292
+  _LISTSYSTEMFOLDERSREQUEST._serialized_end=1413
+  _LISTSYSTEMFOLDERSRESPONSE._serialized_start=1415
+  _LISTSYSTEMFOLDERSRESPONSE._serialized_end=1531
+  _DELETESYSTEMFOLDERREQUEST._serialized_start=1533
+  _DELETESYSTEMFOLDERREQUEST._serialized_end=1600
+  _DELETESYSTEMFOLDERMETADATA._serialized_start=1602
+  _DELETESYSTEMFOLDERMETADATA._serialized_end=1656
+  _SERVICECONTROLSERVICE._serialized_start=1659
+  _SERVICECONTROLSERVICE._serialized_end=2576
 # @@protoc_insertion_point(module_scope)

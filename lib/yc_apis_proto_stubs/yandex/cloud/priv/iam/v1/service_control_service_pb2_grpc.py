@@ -36,6 +36,21 @@ class ServiceControlServiceStub(object):
                 request_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DisableServiceRequest.SerializeToString,
                 response_deserializer=yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.FromString,
                 )
+        self.Delete = channel.unary_unary(
+                '/yandex.cloud.priv.iam.v1.ServiceControlService/Delete',
+                request_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DeleteServiceRequest.SerializeToString,
+                response_deserializer=yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.FromString,
+                )
+        self.ListSystemFolders = channel.unary_unary(
+                '/yandex.cloud.priv.iam.v1.ServiceControlService/ListSystemFolders',
+                request_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.ListSystemFoldersRequest.SerializeToString,
+                response_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.ListSystemFoldersResponse.FromString,
+                )
+        self.DeleteSystemFolder = channel.unary_unary(
+                '/yandex.cloud.priv.iam.v1.ServiceControlService/DeleteSystemFolder',
+                request_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DeleteSystemFolderRequest.SerializeToString,
+                response_deserializer=yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.FromString,
+                )
 
 
 class ServiceControlServiceServicer(object):
@@ -65,6 +80,24 @@ class ServiceControlServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Delete(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListSystemFolders(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteSystemFolder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ServiceControlServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -86,6 +119,21 @@ def add_ServiceControlServiceServicer_to_server(servicer, server):
             'Disable': grpc.unary_unary_rpc_method_handler(
                     servicer.Disable,
                     request_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DisableServiceRequest.FromString,
+                    response_serializer=yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.SerializeToString,
+            ),
+            'Delete': grpc.unary_unary_rpc_method_handler(
+                    servicer.Delete,
+                    request_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DeleteServiceRequest.FromString,
+                    response_serializer=yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.SerializeToString,
+            ),
+            'ListSystemFolders': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListSystemFolders,
+                    request_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.ListSystemFoldersRequest.FromString,
+                    response_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.ListSystemFoldersResponse.SerializeToString,
+            ),
+            'DeleteSystemFolder': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteSystemFolder,
+                    request_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DeleteSystemFolderRequest.FromString,
                     response_serializer=yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.SerializeToString,
             ),
     }
@@ -162,6 +210,57 @@ class ServiceControlService(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/yandex.cloud.priv.iam.v1.ServiceControlService/Disable',
             yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DisableServiceRequest.SerializeToString,
+            yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Delete(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/yandex.cloud.priv.iam.v1.ServiceControlService/Delete',
+            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DeleteServiceRequest.SerializeToString,
+            yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListSystemFolders(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/yandex.cloud.priv.iam.v1.ServiceControlService/ListSystemFolders',
+            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.ListSystemFoldersRequest.SerializeToString,
+            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.ListSystemFoldersResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteSystemFolder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/yandex.cloud.priv.iam.v1.ServiceControlService/DeleteSystemFolder',
+            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_service__control__service__pb2.DeleteSystemFolderRequest.SerializeToString,
             yandex_dot_cloud_dot_priv_dot_operation_dot_operation__pb2.Operation.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

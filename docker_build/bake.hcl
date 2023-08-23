@@ -1,7 +1,7 @@
 target "proto_collect_dc_public_api" {
   contexts = {
     proto_google = "https://github.com/googleapis/googleapis.git"
-    proto_dc     = "${PROJECT_ROOT}/../../cloud/doublecloud/public-api"
+    proto_dc     = "${ARC_ROOT}/cloud/doublecloud/public-api"
   }
   dockerfile-inline = <<EOT
 FROM debian:bullseye AS build
@@ -17,11 +17,11 @@ EOT
 target "proto_collect_yc_apis" {
   contexts = {
     proto_google                 = "https://github.com/googleapis/googleapis.git"
-    proto_yc_common              = "${PROJECT_ROOT}/../../cloud/bitbucket/common-api"
-    proto_yc_pub_main            = "${PROJECT_ROOT}/../../cloud/bitbucket/public-api"
-    proto_yc_priv_main           = "${PROJECT_ROOT}/../../cloud/bitbucket/private-api"
-    proto_yc_priv_iam_as_main    = "${PROJECT_ROOT}/../../cloud/iam/accessservice/client/iam-access-service-api-proto/v1/private-api"
-    proto_yc_priv_iam_proto_exts = "${PROJECT_ROOT}/../../cloud/iam/accessservice/client/cloud-proto-extensions/v1"
+    proto_yc_common              = "${ARC_ROOT}/cloud/bitbucket/common-api"
+    proto_yc_pub_main            = "${ARC_ROOT}/cloud/bitbucket/public-api"
+    proto_yc_priv_main           = "${ARC_ROOT}/cloud/bitbucket/private-api"
+    proto_yc_priv_iam_as_main    = "${ARC_ROOT}/cloud/iam/accessservice/client/iam-access-service-api-proto/v1/private-api"
+    proto_yc_priv_iam_proto_exts = "${ARC_ROOT}/cloud/iam/accessservice/client/cloud-proto-extensions/v1"
   }
   dockerfile-inline = <<EOT
 FROM debian:bullseye AS build
@@ -80,6 +80,11 @@ target "proto_stubs_yc_apis" {
       "yandex/cloud/priv/servicecontrol/v1/*.proto",
 
       "yandex/cloud/protoextensions/*.proto",
+
+      "yandex/cloud/priv/mdb/clickhouse/v1/**/*.proto",
+      "yandex/cloud/priv/mdb/postgresql/v1/**/*.proto",
+      "yandex/cloud/priv/mdb/mysql/v1/**/*.proto",
+      "yandex/cloud/priv/mdb/greenplum/v1/**/*.proto",
     ])
   }
 }

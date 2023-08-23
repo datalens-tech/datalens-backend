@@ -23,7 +23,9 @@ done
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 PROJECT_ROOT=$(realpath "${HERE}/..")
 
+ARC_ROOT=$(realpath "${PROJECT_ROOT}/../arc/arcadia")
+
 cd "${HERE}"
 
-PROJECT_ROOT="${PROJECT_ROOT}" \
+PROJECT_ROOT="${PROJECT_ROOT}" ARC_ROOT="${ARC_ROOT}" \
     exec docker buildx bake "${FILE_AGS[@]}" "$@"

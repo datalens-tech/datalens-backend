@@ -14,17 +14,17 @@ class RefreshTokenServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CreateForSubject = channel.unary_unary(
-                '/yandex.cloud.priv.iam.v1.RefreshTokenService/CreateForSubject',
-                request_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.CreateRefreshTokenForSubjectRequest.SerializeToString,
-                response_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.CreateRefreshTokenResponse.FromString,
+        self.List = channel.unary_unary(
+                '/yandex.cloud.priv.iam.v1.RefreshTokenService/List',
+                request_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.ListRefreshTokensForSubjectRequest.SerializeToString,
+                response_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.ListRefreshTokensResponse.FromString,
                 )
 
 
 class RefreshTokenServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CreateForSubject(self, request, context):
+    def List(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,10 +33,10 @@ class RefreshTokenServiceServicer(object):
 
 def add_RefreshTokenServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CreateForSubject': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateForSubject,
-                    request_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.CreateRefreshTokenForSubjectRequest.FromString,
-                    response_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.CreateRefreshTokenResponse.SerializeToString,
+            'List': grpc.unary_unary_rpc_method_handler(
+                    servicer.List,
+                    request_deserializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.ListRefreshTokensForSubjectRequest.FromString,
+                    response_serializer=yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.ListRefreshTokensResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -49,7 +49,7 @@ class RefreshTokenService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CreateForSubject(request,
+    def List(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +59,8 @@ class RefreshTokenService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/yandex.cloud.priv.iam.v1.RefreshTokenService/CreateForSubject',
-            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.CreateRefreshTokenForSubjectRequest.SerializeToString,
-            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.CreateRefreshTokenResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/yandex.cloud.priv.iam.v1.RefreshTokenService/List',
+            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.ListRefreshTokensForSubjectRequest.SerializeToString,
+            yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_refresh__token__service__pb2.ListRefreshTokensResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

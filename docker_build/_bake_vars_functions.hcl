@@ -2,6 +2,10 @@ variable PROJECT_ROOT {
   default = ".."
 }
 
+variable ARC_ROOT {
+  default = ".."
+}
+
 variable BASE_IMG_PHUSION {
   default = "registry.yandex.net/statinfra/base/phusion:focal-1.1.0"
 }

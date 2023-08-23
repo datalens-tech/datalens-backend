@@ -14,48 +14,57 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 from yandex.cloud.priv import validation_pb2 as yandex_dot_cloud_dot_priv_dot_validation__pb2
-from yandex.cloud.priv import sensitive_pb2 as yandex_dot_cloud_dot_priv_dot_sensitive__pb2
-from yandex.cloud.priv.iam.v1.ts import iam_token_service_subject_pb2 as yandex_dot_cloud_dot_priv_dot_iam_dot_v1_dot_ts_dot_iam__token__service__subject__pb2
-from yandex.cloud.priv.oauth.v1 import oauth_request_pb2 as yandex_dot_cloud_dot_priv_dot_oauth_dot_v1_dot_oauth__request__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n4yandex/cloud/priv/iam/v1/refresh_token_service.proto\x12\x18yandex.cloud.priv.iam.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\"yandex/cloud/priv/validation.proto\x1a!yandex/cloud/priv/sensitive.proto\x1a;yandex/cloud/priv/iam/v1/ts/iam_token_service_subject.proto\x1a.yandex/cloud/priv/oauth/v1/oauth_request.proto\"\xb6\x01\n#CreateRefreshTokenForSubjectRequest\x12 \n\nsubject_id\x18\x01 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\x12\x45\n\roauth_request\x18\x02 \x01(\x0b\x32(.yandex.cloud.priv.oauth.v1.OAuthRequestB\x04\xa8\x89\x31\x01\x12&\n\x10refresh_token_id\x18\x03 \x01(\tB\x0c\xa8\x89\x31\x01\xca\x89\x31\x04<=50\"\xd3\x01\n\x1a\x43reateRefreshTokenResponse\x12\x1f\n\rrefresh_token\x18\x01 \x01(\tB\x08\xc8\x8f\x31\x01\xd0\x8f\x31\x06\x12-\n\tissued_at\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nexpires_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x07subject\x18\x03 \x01(\x0b\x32$.yandex.cloud.priv.iam.v1.ts.Subject2\x9f\x01\n\x13RefreshTokenService\x12\x87\x01\n\x10\x43reateForSubject\x12=.yandex.cloud.priv.iam.v1.CreateRefreshTokenForSubjectRequest\x1a\x34.yandex.cloud.priv.iam.v1.CreateRefreshTokenResponseBRB\x05PIRTSZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iamb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n4yandex/cloud/priv/iam/v1/refresh_token_service.proto\x12\x18yandex.cloud.priv.iam.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\"yandex/cloud/priv/validation.proto\"\xc6\x01\n\"ListRefreshTokensForSubjectRequest\x12\x1c\n\nsubject_id\x18\x01 \x01(\tB\x08\xca\x89\x31\x04<=50\x12&\n\x12\x63lient_instance_id\x18\x02 \x01(\tB\n\xca\x89\x31\x06<=1000\x12\x1b\n\tclient_id\x18\x03 \x01(\tB\x08\xca\x89\x31\x04<=50\x12\x1d\n\tpage_size\x18\x04 \x01(\x03\x42\n\xba\x89\x31\x06\x30-1000\x12\x1e\n\npage_token\x18\x05 \x01(\tB\n\xca\x89\x31\x06<=2000\"\xed\x01\n\x0cRefreshToken\x12\n\n\x02id\x18\x01 \x01(\t\x12\x1a\n\x12\x63lient_instance_id\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x12\n\nsubject_id\x18\x04 \x01(\t\x12.\n\ncreated_at\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\texpire_at\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0blast_use_at\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"t\n\x19ListRefreshTokensResponse\x12>\n\x0erefresh_tokens\x18\x01 \x03(\x0b\x32&.yandex.cloud.priv.iam.v1.RefreshToken\x12\x17\n\x0fnext_page_token\x18\x02 \x01(\t2\x90\x01\n\x13RefreshTokenService\x12y\n\x04List\x12<.yandex.cloud.priv.iam.v1.ListRefreshTokensForSubjectRequest\x1a\x33.yandex.cloud.priv.iam.v1.ListRefreshTokensResponseBRB\x05PIRTSZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iamb\x06proto3')
 
 
 
-_CREATEREFRESHTOKENFORSUBJECTREQUEST = DESCRIPTOR.message_types_by_name['CreateRefreshTokenForSubjectRequest']
-_CREATEREFRESHTOKENRESPONSE = DESCRIPTOR.message_types_by_name['CreateRefreshTokenResponse']
-CreateRefreshTokenForSubjectRequest = _reflection.GeneratedProtocolMessageType('CreateRefreshTokenForSubjectRequest', (_message.Message,), {
-  'DESCRIPTOR' : _CREATEREFRESHTOKENFORSUBJECTREQUEST,
+_LISTREFRESHTOKENSFORSUBJECTREQUEST = DESCRIPTOR.message_types_by_name['ListRefreshTokensForSubjectRequest']
+_REFRESHTOKEN = DESCRIPTOR.message_types_by_name['RefreshToken']
+_LISTREFRESHTOKENSRESPONSE = DESCRIPTOR.message_types_by_name['ListRefreshTokensResponse']
+ListRefreshTokensForSubjectRequest = _reflection.GeneratedProtocolMessageType('ListRefreshTokensForSubjectRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LISTREFRESHTOKENSFORSUBJECTREQUEST,
   '__module__' : 'yandex.cloud.priv.iam.v1.refresh_token_service_pb2'
-  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.CreateRefreshTokenForSubjectRequest)
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.ListRefreshTokensForSubjectRequest)
   })
-_sym_db.RegisterMessage(CreateRefreshTokenForSubjectRequest)
+_sym_db.RegisterMessage(ListRefreshTokensForSubjectRequest)
 
-CreateRefreshTokenResponse = _reflection.GeneratedProtocolMessageType('CreateRefreshTokenResponse', (_message.Message,), {
-  'DESCRIPTOR' : _CREATEREFRESHTOKENRESPONSE,
+RefreshToken = _reflection.GeneratedProtocolMessageType('RefreshToken', (_message.Message,), {
+  'DESCRIPTOR' : _REFRESHTOKEN,
   '__module__' : 'yandex.cloud.priv.iam.v1.refresh_token_service_pb2'
-  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.CreateRefreshTokenResponse)
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.RefreshToken)
   })
-_sym_db.RegisterMessage(CreateRefreshTokenResponse)
+_sym_db.RegisterMessage(RefreshToken)
+
+ListRefreshTokensResponse = _reflection.GeneratedProtocolMessageType('ListRefreshTokensResponse', (_message.Message,), {
+  'DESCRIPTOR' : _LISTREFRESHTOKENSRESPONSE,
+  '__module__' : 'yandex.cloud.priv.iam.v1.refresh_token_service_pb2'
+  # @@protoc_insertion_point(class_scope:yandex.cloud.priv.iam.v1.ListRefreshTokensResponse)
+  })
+_sym_db.RegisterMessage(ListRefreshTokensResponse)
 
 _REFRESHTOKENSERVICE = DESCRIPTOR.services_by_name['RefreshTokenService']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'B\005PIRTSZIa.yandex-team.ru/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1;iam'
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST.fields_by_name['subject_id']._options = None
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST.fields_by_name['subject_id']._serialized_options = b'\250\2111\001\312\2111\004<=50'
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST.fields_by_name['oauth_request']._options = None
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST.fields_by_name['oauth_request']._serialized_options = b'\250\2111\001'
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST.fields_by_name['refresh_token_id']._options = None
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST.fields_by_name['refresh_token_id']._serialized_options = b'\250\2111\001\312\2111\004<=50'
-  _CREATEREFRESHTOKENRESPONSE.fields_by_name['refresh_token']._options = None
-  _CREATEREFRESHTOKENRESPONSE.fields_by_name['refresh_token']._serialized_options = b'\310\2171\001\320\2171\006'
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST._serialized_start=296
-  _CREATEREFRESHTOKENFORSUBJECTREQUEST._serialized_end=478
-  _CREATEREFRESHTOKENRESPONSE._serialized_start=481
-  _CREATEREFRESHTOKENRESPONSE._serialized_end=692
-  _REFRESHTOKENSERVICE._serialized_start=695
-  _REFRESHTOKENSERVICE._serialized_end=854
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['subject_id']._options = None
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['subject_id']._serialized_options = b'\312\2111\004<=50'
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['client_instance_id']._options = None
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['client_instance_id']._serialized_options = b'\312\2111\006<=1000'
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['client_id']._options = None
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['client_id']._serialized_options = b'\312\2111\004<=50'
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['page_size']._options = None
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['page_size']._serialized_options = b'\272\2111\0060-1000'
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['page_token']._options = None
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST.fields_by_name['page_token']._serialized_options = b'\312\2111\006<=2000'
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST._serialized_start=152
+  _LISTREFRESHTOKENSFORSUBJECTREQUEST._serialized_end=350
+  _REFRESHTOKEN._serialized_start=353
+  _REFRESHTOKEN._serialized_end=590
+  _LISTREFRESHTOKENSRESPONSE._serialized_start=592
+  _LISTREFRESHTOKENSRESPONSE._serialized_end=708
+  _REFRESHTOKENSERVICE._serialized_start=711
+  _REFRESHTOKENSERVICE._serialized_end=855
 # @@protoc_insertion_point(module_scope)
