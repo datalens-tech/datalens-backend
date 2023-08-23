@@ -128,7 +128,7 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
         from bi_api_commons.logging_sentry import cleanup_common_secret_data
 
         sentry_sdk.init(
-            dsn=setting.SENTRY_DSN_API,
+            dsn=setting.SENTRY_DSN,
             default_integrations=False,
             before_send=cleanup_common_secret_data,
             integrations=[

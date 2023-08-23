@@ -13,7 +13,7 @@ from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 @attr.s(frozen=True)
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore
-        "SENTRY_DSN", fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER", missing=None,
+        "DL_SENTRY_DSN", fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER", missing=None,
     )
 
     US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore

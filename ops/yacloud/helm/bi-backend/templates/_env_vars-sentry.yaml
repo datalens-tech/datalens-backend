@@ -6,7 +6,7 @@
 - name: "DL_SENTRY_ENABLED"
   value: "{{ .sentry_enabled }}"
 
-- name: "DL_SENTRY_DNS_API"
+- name: "DL_SENTRY_DSN"
   value: "{{ .sentry_dsn }}"
 
 {{ end -}}

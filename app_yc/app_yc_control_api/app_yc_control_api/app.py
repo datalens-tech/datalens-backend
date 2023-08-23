@@ -33,7 +33,7 @@ def create_uwsgi_app() -> flask.Flask:
     settings = load_settings_from_env_with_fallback(ControlPlaneAppSettings)
     uwsgi_app = create_app(settings)
 
-    actual_sentry_dsn: Optional[str] = settings.SENTRY_DSN_API if settings.SENTRY_ENABLED else None
+    actual_sentry_dsn: Optional[str] = settings.SENTRY_DSN if settings.SENTRY_ENABLED else None
 
     hook_configure_logging(
         uwsgi_app,

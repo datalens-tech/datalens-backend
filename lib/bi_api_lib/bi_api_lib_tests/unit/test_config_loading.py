@@ -35,7 +35,7 @@ SEC_REDIS_PASSWORD = "someRedisPassword"
 SEC_DLS_API_KEY = "someDLSAPIkey"
 SEC_EXT_QUERY_EXECUTER_SECRET_KEY = "_some_rqe_test_secret_key_"
 SEC_US_MASTER_TOKEN = "99_us_mas_tok"
-SEC_SENTRY_DSN_API = "asdsdf@asdf.12341"
+SEC_SENTRY_DSN = "asdsdf@asdf.12341"
 
 SEC_CRY_KEY_0 = "2Lrbo3-cmefoRMylo1ARngCBhfTCdKz2Jv6gjDBGmmw="
 SEC_CRY_KEY_cloud_preprod_1 = "zphPI9wTF9raXd0YzLAmY4N1ez3FtXmxhixguRVSiFY="
@@ -202,7 +202,7 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
         EXPLAIN_SELECT_FRAC=0.0,
         EXPLAIN_SELECT_TIMEOUT=5.0,
         SENTRY_ENABLED=True,
-        SENTRY_DSN_API=ExternalTestingInstallation.SENTRY_DSN_DATASET_API,
+        SENTRY_DSN=ExternalTestingInstallation.SENTRY_DSN_DATASET_API,
         CRYPTO_KEYS_CONFIG=CryptoKeysConfig(
             actual_key_id="cloud_preprod_1",
             map_id_key={

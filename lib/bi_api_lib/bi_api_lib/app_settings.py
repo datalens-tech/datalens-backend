@@ -100,7 +100,7 @@ class BaseAppSettings:
         return NOT_SET
 
     @staticmethod
-    def default_sentry_dsn_api(fallback_cfg: CommonInstallation, app_type: AppType):  # type: ignore  # TODO: fix
+    def default_sentry_dsn(fallback_cfg: CommonInstallation, app_type: AppType):  # type: ignore  # TODO: fix
         if not isinstance(fallback_cfg, (ObjectLikeConfig, CommonInstallation)):
             return NOT_SET
 
@@ -114,7 +114,7 @@ class BaseAppSettings:
             return fallback_cfg.SENTRY_DSN_DATASET_API
 
     SENTRY_ENABLED: bool = s_attrib("DL_SENTRY_ENABLED", fallback_factory=default_sentry_enabled, missing=False)  # type: ignore  # TODO: fix
-    SENTRY_DSN_API: Optional[str] = s_attrib("DL_SENTRY_DNS_API", fallback_factory=default_sentry_dsn_api, missing=None)  # type: ignore  # TODO: fix
+    SENTRY_DSN: Optional[str] = s_attrib("DL_SENTRY_DSN", fallback_factory=default_sentry_dsn, missing=None)  # type: ignore  # TODO: fix
 
     # US section
     CRYPTO_KEYS_CONFIG: CryptoKeysConfig = s_attrib("DL_CRY", json_converter=CryptoKeysConfig.from_json, sensitive=True)  # type: ignore  # TODO: fix
