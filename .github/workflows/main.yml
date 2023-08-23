@@ -237,7 +237,7 @@ jobs:
 
   pytest_ext:
     # copy-paste, but simpliest solution for now given options provided by github ci
-    runs-on: [ self-hosted, linux, fat ]
+    runs-on: [ self-hosted, linux, ext ]
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_ext != '[]' }}
     container:
@@ -330,7 +330,7 @@ jobs:
     name: "🐲[mypy]${{ matrix.value }}"
     # set more when tuning
     # from json attempt to workaround
-    timeout-minutes: ${{ fromJSON(inputs.pytest_timeout_minutes) }}
+    timeout-minutes: ${{ inputs.pytest_timeout_minutes && fromJSON(inputs.pytest_timeout_minutes ) || 5 }}
     strategy:
       fail-fast: false
       matrix:
