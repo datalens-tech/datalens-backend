@@ -1,3 +1,12 @@
+0.1973.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * fix typing (#91)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0d95eb3 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 16:16:44+00:00
+
 0.1972.0
 --------
 
