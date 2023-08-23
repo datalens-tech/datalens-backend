@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, TYPE_CHECKING
+from typing import ClassVar
 
-from bi_constants.enums import CreateDSFrom, ConnectionType
+from bi_constants.enums import ConnectionType
 from bi_core.data_source.sql import DataSource
-from bi_core.db import SchemaInfo
-
-if TYPE_CHECKING:
-    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
 class MonitoringDataSource(DataSource):
@@ -15,13 +11,6 @@ class MonitoringDataSource(DataSource):
     supports_offset: ClassVar[bool] = False
 
     conn_type = ConnectionType.monitoring
-
-    @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
-        pass
-
-    def get_schema_info(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> SchemaInfo:
-        pass
 
     @property
     def default_title(self) -> str:
