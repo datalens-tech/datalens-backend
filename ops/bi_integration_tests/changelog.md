@@ -1,3 +1,36 @@
+0.16.0
+------
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4830] Version bump PR auto-merge (#84)  [ https://github.com/datalens-tech/datalens-backend-private/commit/363f45f ]
+
+* [Dmitry Nadein](http://staff/pr45dima@mail.ru)
+
+ * BI-4749: Update sentry dsn env vars (#38)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f55e014 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version lib/bi_api_lib 0.1971.0 (#81)  [ https://github.com/datalens-tech/datalens-backend-private/commit/23f04eb ]
+
+* [dmi-feo](http://staff/fdi1992@gmail.com)
+
+ * BI-4750: monitoring connection for istrael and nemax (#65)  [ https://github.com/datalens-tech/datalens-backend-private/commit/a1bf019 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * enable_ext_tag_in_workflow (#79)  [ https://github.com/datalens-tech/datalens-backend-private/commit/8b5e3b5 ]
+
+* [Andrey Snytin](http://staff/asnytin@yandex-team.ru)
+
+ * BI-4855: added MDB protos to yc_apis_proto_stubs (#72)  [ https://github.com/datalens-tech/datalens-backend-private/commit/ae18987 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * remove old bitrix conncetor settings (#76)  [ https://github.com/datalens-tech/datalens-backend-private/commit/197ff7d ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 14:07:42+00:00
+
 0.15.0
 ------
 
