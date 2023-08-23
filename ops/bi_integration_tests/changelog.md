@@ -1,3 +1,31 @@
+0.14.0
+------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4834: move the gsheets bi api connector to a separate package (#71)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7c8eb90 ]
+ * BI-4834: move chyt bi api connectors to separate packages (#50)         [ https://github.com/datalens-tech/datalens-backend-private/commit/da59831 ]
+ * fix mypy in the monitoring connector (#59)                              [ https://github.com/datalens-tech/datalens-backend-private/commit/d1270b4 ]
+ * replace most do_xxx classvars with regulated marks in core tests (#36)  [ https://github.com/datalens-tech/datalens-backend-private/commit/e9a0487 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Remove YC file-uploader[-worker] meta packages (#68)  [ https://github.com/datalens-tech/datalens-backend-private/commit/790186a ]
+ * Remove OS meta packages (#63)                         [ https://github.com/datalens-tech/datalens-backend-private/commit/7766dbd ]
+ * Remove YC bi-api meta packages (#60)                  [ https://github.com/datalens-tech/datalens-backend-private/commit/d59f021 ]
+ * BI-4692 GitHub Actions secrets for ext tests (#44)    [ https://github.com/datalens-tech/datalens-backend-private/commit/4271639 ]
+ * Fix bitrix_gds bi-api-connector dependency (#66)      [ https://github.com/datalens-tech/datalens-backend-private/commit/a1f35b9 ]
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * BI-4626: Add transfer, source and new log-group (#70)  [ https://github.com/datalens-tech/datalens-backend-private/commit/aac8c56 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Refactored update-po and msfmt common makefile targets (#67)  [ https://github.com/datalens-tech/datalens-backend-private/commit/45db6d0 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 09:16:44+00:00
+
 0.13.0
 ------
 
