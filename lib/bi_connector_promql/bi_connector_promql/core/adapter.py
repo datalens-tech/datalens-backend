@@ -35,7 +35,7 @@ LOGGER = logging.getLogger(__name__)
 class PromQLConnLineConstructor(ClassicSQLConnLineConstructor['PromQLConnTargetDTO']):
     def _get_dsn_params(
         self,
-        safe_db_symbols: Tuple[str, ...] = (),
+        safe_db_symbols: tuple[str, ...] = (),
         db_name: Optional[str] = None,
         standard_auth: Optional[bool] = True,
     ) -> dict:
