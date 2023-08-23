@@ -1,3 +1,26 @@
+0.1972.0
+--------
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * BI-4863: Added clickhouse formula_ref plugin (#74)  [ https://github.com/datalens-tech/datalens-backend-private/commit/2ade140 ]
+ * Fixed bake targets for i18n (#75)                   [ https://github.com/datalens-tech/datalens-backend-private/commit/d15fa6f ]
+ * Added --no-location option to .po generator (#83)   [ https://github.com/datalens-tech/datalens-backend-private/commit/54020f4 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version ops/bi_integration_tests 0.16.0 (#85)  [ https://github.com/datalens-tech/datalens-backend-private/commit/038232f ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4830] Version bump PR auto-merge (#84)  [ https://github.com/datalens-tech/datalens-backend-private/commit/363f45f ]
+
+* [Dmitry Nadein](http://staff/pr45dima@mail.ru)
+
+ * BI-4749: Update sentry dsn env vars (#38)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f55e014 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 15:21:56+00:00
+
 0.1971.0
 --------
 
