@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 class RepositoryManagementPlugin(abc.ABC):
     repo_env: RepoEnvironment = attr.ib(kw_only=True)
     base_path: str = attr.ib(kw_only=True)
+    pkg_type_base_path: str = attr.ib(kw_only=True)
     fs_editor: FilesystemEditor = attr.ib(init=False)
 
     @fs_editor.default

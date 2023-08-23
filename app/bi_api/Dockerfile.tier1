@@ -36,6 +36,7 @@ RUN mkdir -p /src/ops
 
 COPY $APP_DIR /src/$APP_DIR
 COPY lib /src/lib
+COPY mainrepo/lib /src/mainrepo/lib
 COPY ops/ci /src/ops/ci
 
 # RUN find /src/lib/bi_formula/bi_formula/parser/antlr/gen -exec cat {} \; | grep import

@@ -68,6 +68,7 @@ class RepoEnvironment:
     Provides information about repository folders and boilerplates
     """
 
+    base_path: str = attr.ib(kw_only=True)
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor: FilesystemEditor = attr.ib(kw_only=True)
@@ -99,7 +100,7 @@ class RepoEnvironment:
         # TODO: parameterize and load plugins from config
         home_repo_path = self.package_types[package_type].home_repo_path
         return [
-            plugin_cls(repo_env=self, base_path=home_repo_path)
+            plugin_cls(repo_env=self, pkg_type_base_path=home_repo_path, base_path=self.base_path)
             for plugin_cls in self.plugin_classes
         ]
 
@@ -112,6 +113,7 @@ _DEFAULT_FS_EDITOR_TYPE = 'default'
 
 @attr.s(frozen=True)
 class ConfigContents:
+    base_path: str = attr.ib(kw_only=True)
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True, factory=dict)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor_type: str = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
@@ -155,6 +157,7 @@ class RepoEnvironmentLoader:
 
         # FS editor is loaded only from the main config
         return ConfigContents(
+            base_path=base_path,
             package_types=package_types,
             custom_package_map=custom_package_map,
             fs_editor_type=fs_editor_type,
@@ -166,6 +169,7 @@ class RepoEnvironmentLoader:
         assert fs_editor_type is not None
         fs_editor = self.fs_editor_classes[fs_editor_type]()
         return RepoEnvironment(
+            base_path=config_contents.base_path,
             package_types=config_contents.package_types,
             custom_package_map=config_contents.custom_package_map,
             fs_editor=fs_editor,

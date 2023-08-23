@@ -73,7 +73,7 @@ yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-bi-file-uploader-api-lib = {path = "../../lib/bi_file_uploader_api_lib"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-package-boilerplate = {path = "../../lib/bi_package_boilerplate"}
+yandex-bi-package-boilerplate = {path = "../../mainrepo/lib/bi_package_boilerplate"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-integration-tests = {path = "../../ops/bi_integration_tests"}
 yandex-bi-compeng-pg = {path = "../../lib/bi_compeng_pg"}

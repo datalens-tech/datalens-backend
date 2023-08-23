@@ -9,6 +9,7 @@ FROM debian:bullseye AS build
 RUN mkdir -p /src/ops
 COPY --from=app / /src/app
 COPY --from=lib / /src/lib
+COPY --from=mainrepo/lib / /src/mainrepo/lib
 COPY --from=metapkg / /src/ops/ci
 FROM scratch
 COPY --from=build /src /

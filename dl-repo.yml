@@ -6,27 +6,27 @@ dl_repo:
 
   fs_editor: default
   package_types:
-    - type: lib  # Main libraries (internal repo)
+    - type: lib_ya  # Main libraries (internal repo)
       root_path: lib
-      boilerplate_path: lib/bi_package_boilerplate
+      boilerplate_path: mainrepo/lib/bi_package_boilerplate
       tags:
         - main_dependency_group
 
     - type: app
       root_path: app
-      boilerplate_path: lib/bi_package_boilerplate
+      boilerplate_path: mainrepo/lib/bi_package_boilerplate
       tags:
         - main_dependency_group
         - own_dependency_group
 
     - type: app_os
       root_path: app_os
-      boilerplate_path: lib/bi_package_boilerplate
+      boilerplate_path: mainrepo/lib/bi_package_boilerplate
       tags:
         - own_dependency_group
 
     - type: app_yc
       root_path: app_yc
-      boilerplate_path: lib/bi_package_boilerplate
+      boilerplate_path: mainrepo/lib/bi_package_boilerplate
       tags:
         - own_dependency_group

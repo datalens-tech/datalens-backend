@@ -7,6 +7,7 @@ RUN mkdir -p /data
 COPY lib /data/lib
 COPY app /data/app
 COPY mainrepo/terrarium /data/mainrepo/terrarium
+COPY mainrepo/lib /data/mainrepo/lib
 COPY app_yc /data/app_yc
 RUN mkdir -p /data/ops
 
