@@ -70,5 +70,11 @@ jobs:
           # PR
           #
           PR_URL=$(gh pr create -B trunk --fill --base "${GITHUB_REF_NAME}" --body "Releasing version for ${{ github.event.inputs.app_path }}")
-          # TODO FIX: Uncomment
-          # gh pr merge -s --admin "${PR_URL}"
+          echo "${PR_URL}"
+          echo "${PR_URL}" > pr_url.txt
+      - name: approve
+        env:
+          GH_TOKEN: "${{ secrets.APPROVE_PR_TOKEN }}"
+        run: gh pr review -a "$(cat pr_url.txt)"
+      - name: merge
+        run: gh pr merge -s "$(cat pr_url.txt)"
