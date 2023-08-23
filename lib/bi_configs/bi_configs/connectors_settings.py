@@ -257,11 +257,6 @@ class KonturMarketConnectorSettings(PartnerConnectorSettingsBase):
 
 
 @attr.s(frozen=True)
-class BitrixConnectorSettings(PartnerConnectorSettingsBase):
-    """"""
-
-
-@attr.s(frozen=True)
 class FileS3ConnectorSettings(ConnectorSettingsBase):
     SECURE: bool = s_attrib("SECURE", missing=True)  # type: ignore
     HOST: str = s_attrib("HOST")  # type: ignore
@@ -317,7 +312,6 @@ class ConnectorsSettingsByType(SettingsBase):
     MOYSKLAD: Optional[MoySkladConnectorSettings] = s_attrib("MOYSKLAD", missing=None)  # type: ignore
     EQUEO: Optional[EqueoConnectorSettings] = s_attrib("EQUEO", missing=None)  # type: ignore
     KONTUR_MARKET: Optional[KonturMarketConnectorSettings] = s_attrib("KONTUR_MARKET", missing=None)  # type: ignore
-    BITRIX: Optional[BitrixConnectorSettings] = s_attrib("BITRIX", missing=None)  # type: ignore
     USAGE_TRACKING: Optional[UsageTrackingConnectionSettings] = s_attrib("USAGE_TRACKING", missing=None)  # type: ignore
     USAGE_TRACKING_YA_TEAM: Optional[UsageTrackingYaTeamConnectionSettings] = s_attrib(
         "USAGE_TRACKING_YA_TEAM",
@@ -532,14 +526,6 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             PASSWORD=required(str),
             PARTNER_KEYS=required(PartnerKeys),
         ) if hasattr(cfg, 'KONTUR_MARKET') else None,
-        BITRIX=BitrixConnectorSettings(  # type: ignore
-            HOST=cfg.BITRIX.CONN_BITRIX_HOST,
-            PORT=cfg.BITRIX.CONN_BITRIX_PORT,
-            USERNAME=cfg.BITRIX.CONN_BITRIX_USERNAME,
-            USE_MANAGED_NETWORK=cfg.BITRIX.CONN_BITRIX_USE_MANAGED_NETWORK,
-            PASSWORD=required(str),
-            PARTNER_KEYS=required(PartnerKeys),
-        ) if hasattr(cfg, 'BITRIX') else None,
         USAGE_TRACKING=UsageTrackingConnectionSettings(  # type: ignore
             HOST=cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_HOST,
             PORT=cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_PORT,
@@ -763,14 +749,6 @@ def connectors_settings_fallback_factory_defaults(cfg: CommonInstallation) -> Op
             PASSWORD=required(str),
             PARTNER_KEYS=required(PartnerKeys),
         ) if isinstance(cfg, cd.ConnectorsDataKonturMarketBase) else None,
-        BITRIX=BitrixConnectorSettings(  # type: ignore
-            HOST=cfg.CONN_BITRIX_HOST,
-            PORT=cfg.CONN_BITRIX_PORT,
-            USERNAME=cfg.CONN_BITRIX_USERNAME,
-            USE_MANAGED_NETWORK=cfg.CONN_BITRIX_USE_MANAGED_NETWORK,
-            PASSWORD=required(str),
-            PARTNER_KEYS=required(PartnerKeys),
-        ) if isinstance(cfg, cd.ConnectorsDataBitrixBase) else None,
         USAGE_TRACKING=UsageTrackingConnectionSettings(  # type: ignore
             HOST=cfg.CONN_USAGE_TRACKING_HOST,
             PORT=cfg.CONN_USAGE_TRACKING_PORT,

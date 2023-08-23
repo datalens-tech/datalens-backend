@@ -20,8 +20,6 @@ from bi_configs import env_var_definitions
 from bi_configs.connectors_settings import (
     ConnectorsSettingsByType,
     FileS3ConnectorSettings,
-    BitrixConnectorSettings,
-    PartnerKeys,
 )
 from bi_configs.rqe import RQEBaseURL, RQEConfig
 
@@ -325,18 +323,12 @@ def clickhouse_db(db_dispenser) -> Db:
 @pytest.fixture(scope='session')
 def connectors_settings(clickhouse_db):
     ch_creds = clickhouse_db.get_conn_credentials(full=True)
-
     base_settings_params = dict(
         SECURE=False,
         HOST=ch_creds['host'],
         PORT=ch_creds['port'],
         USERNAME=ch_creds['username'],
         PASSWORD=ch_creds['password'],
-    )
-    partner_settings_params = dict(
-        USE_MANAGED_NETWORK=True,
-        PARTNER_KEYS=PartnerKeys(dl_private={}, partner_public={}),
-        **base_settings_params,
     )
 
     return ConnectorsSettingsByType(
@@ -347,7 +339,6 @@ def connectors_settings(clickhouse_db):
             S3_ENDPOINT='http://s3-storage:8000',
             **base_settings_params,
         ),
-        BITRIX=BitrixConnectorSettings(**partner_settings_params),
     )
 
 

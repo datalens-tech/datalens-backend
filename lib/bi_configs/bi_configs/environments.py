@@ -348,7 +348,6 @@ class CommonExternalInstallation(
 
 class ExternalTestingInstallation(
         cd.ConnectorsDataBillingExtTesting,
-        cd.ConnectorsDataBitrixExtTesting,
         cd.ConnectorsDataFileExtTesting,
         cd.ConnectorsDataMonitoringExtTesting,
         cd.ConnectorsDataMoyskladExtTesting,
@@ -424,7 +423,6 @@ class ExternalTestingInstallation(
 
 class ExternalProductionInstallation(
         cd.ConnectorsDataBillingExtProduction,
-        cd.ConnectorsDataBitrixExtProduction,
         cd.ConnectorsDataMonitoringExtProduction,
         cd.ConnectorsDataMoyskladExtProduction,
         cd.ConnectorsDataSchoolbookExtProduction,

@@ -1114,17 +1114,6 @@ class ConnectorsDataKonturMarketBase(ConnectorsDataBase):
         return 'KONTUR_MARKET'
 
 
-class ConnectorsDataBitrixBase(ConnectorsDataBase):
-    CONN_BITRIX_HOST: ClassVar[Optional[str]] = None
-    CONN_BITRIX_PORT: ClassVar[Optional[int]] = None
-    CONN_BITRIX_USERNAME: ClassVar[Optional[str]] = None
-    CONN_BITRIX_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'BITRIX'
-
-
 class ConnectorsDataMonitoringBase(ConnectorsDataBase):
     CONN_MONITORING_HOST: ClassVar[Optional[str]] = None
 
@@ -1359,12 +1348,6 @@ class ConnectorsDataKonturMarketExternalInstallation(ConnectorsDataKonturMarketB
     CONN_KONTUR_MARKET_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = True
 
 
-class ConnectorsDataBitrixExternalInstallation(ConnectorsDataBitrixBase):
-    CONN_BITRIX_HOST: ClassVar[Optional[str]] = 'rc1a-fwit5p613vrgracz.mdb.yandexcloud.net'
-    CONN_BITRIX_USERNAME: ClassVar[Optional[str]] = 'datalens'
-    CONN_BITRIX_PORT: ClassVar[Optional[int]] = 8443
-
-
 class ConnectorsDataYQExtTesting(ConnectorsDataYQExternalInstallation):
     CONN_YQ_HOST: ClassVar[str] = 'grpcs://grpc.yandex-query.cloud-preprod.yandex.net'
 
@@ -1422,10 +1405,6 @@ class ConnectorsDataMoyskladExtTesting(ConnectorsDataMoyskladExternalInstallatio
     CONN_MOYSKLAD_USERNAME: ClassVar[Optional[str]] = 'moysklad_test_db_user'
 
 
-class ConnectorsDataBitrixExtTesting(ConnectorsDataBitrixExternalInstallation):
-    CONN_BITRIX_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
-
-
 class ConnectorsDataMonitoringExtTesting(ConnectorsDataMonitoringBase):
     CONN_MONITORING_HOST: ClassVar[Optional[str]] = 'monitoring.api.cloud-preprod.yandex.net'
 
@@ -1477,10 +1456,6 @@ class ConnectorsDataSchoolbookExtProduction(ConnectorsDataSchoolbookBase):
 class ConnectorsDataMoyskladExtProduction(ConnectorsDataMoyskladExternalInstallation):
     CONN_MOYSKLAD_HOST: ClassVar[Optional[str]] = 'rc1a-ttnir71yo4sxu88h.mdb.yandexcloud.net'
     CONN_MOYSKLAD_USERNAME: ClassVar[Optional[str]] = 'moysklad_readonly'
-
-
-class ConnectorsDataBitrixExtProduction(ConnectorsDataBitrixExternalInstallation):
-    CONN_BITRIX_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = True
 
 
 class ConnectorsDataMonitoringExtProduction(ConnectorsDataMonitoringBase):
