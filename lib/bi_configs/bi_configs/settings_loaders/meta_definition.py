@@ -37,6 +37,7 @@ class SMeta:
 
 def s_attrib(
         key_name: Optional[str],
+        type_class: object = None,
         fallback_cfg_key: Optional[str] = None,
         fallback_factory: Optional[FallbackFactory] = None,
         env_var_converter: Optional[Callable[[str], Any]] = None,
@@ -64,6 +65,7 @@ def s_attrib(
     )
 
     return attr.ib(
+        type=type_class,
         default=missing,
         factory=missing_factory,
         repr=not sensitive,
