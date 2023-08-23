@@ -10,6 +10,10 @@ variable BASE_IMG_PHUSION {
   default = "registry.yandex.net/statinfra/base/phusion:focal-1.1.0"
 }
 
+variable BASE_IMG_UBUNTU_FOCAL {
+  default = "registry.yandex.net/statinfra/base/ubuntu:focal-20230605"
+}
+
 variable CACHE_REGISTRY_PREFIX {
   default = null
 }

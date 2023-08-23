@@ -141,6 +141,9 @@ target "base_tier_1" {
 
 target "base_focal_tier_1" {
   context = "target_base_focal_tier_1"
+  args = {
+    BASE_IMG = BASE_IMG_UBUNTU_FOCAL
+  }
 }
 
 target "base_focal_db_tier_1" {
@@ -262,7 +265,7 @@ target "app_os_data_api" {
 target "integration_tests" {
   pull     = false
   contexts = {
-    bake_ctx_base_img = "target:base_tier_1"
+    bake_ctx_base_img = "target:base_focal_tier_1"
     bake_ctx_libs     = "${PROJECT_ROOT}/lib"
     bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
   }

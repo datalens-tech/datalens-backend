@@ -1,5 +1,7 @@
 #syntax=docker/dockerfile:1.4
-FROM registry.yandex.net/statinfra/base/ubuntu:focal-20230605
+ARG BASE_IMG
+# ^ ubuntu focal expected
+FROM $BASE_IMG
 
 # Installing deb tools
 ENV DEBIAN_FRONTEND noninteractive
