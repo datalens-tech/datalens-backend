@@ -20,7 +20,7 @@ set -x
 # only third party deps here
 cat "$reqsdir/requirements_a.txt"
 pip install -r "$reqsdir/requirements_a.txt"
-pip install -e /data/terrarium/bi_ci
+pip install -e /data/mainrepo/terrarium/bi_ci
 
 # workaround
 pip install --no-deps --ignore-installed -r "$reqsdir/requirements_conflicting.txt"

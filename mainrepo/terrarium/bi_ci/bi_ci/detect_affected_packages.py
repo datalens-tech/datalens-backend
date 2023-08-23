@@ -140,9 +140,9 @@ def main() -> None:
 
     paths = paths.strip().split(" ")
     to_check = process(
-        Path(repo_root), [p for p in paths if not (p.startswith("ops/") or p.startswith("terrarium/"))]
+        Path(repo_root), [p for p in paths if not (p.startswith("ops/") or p.startswith("terrarium/") or p.startswith("mainrepo/terrarium/"))]
     )
-    to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "terrarium" / "bi_ci"))
+    to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci"))
     result = []
 
     for sub in to_check:

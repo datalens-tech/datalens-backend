@@ -16,7 +16,8 @@ def main():
 
     submodule_list = get_submodules() + [
         "ops/ci",
-        "terrarium"
+        "terrarium",
+        "mainrepo/terrarium",
     ]
 
     print(f"\n\n--- Uploading project to {dev_machine=} ---\n")

@@ -7,6 +7,7 @@ RUN mkdir -p /data
 COPY lib /data/lib
 COPY app /data/app
 COPY terrarium /data/terrarium
+COPY mainrepo/terrarium /data/mainrepo/terrarium
 COPY app_yc /data/app_yc
 RUN mkdir -p /data/ops
 
@@ -26,7 +27,7 @@ RUN . /venv/bin/activate \
     && pip install -r requirements_types.txt
 
 RUN . /venv/bin/activate \
-    && pip install -e /data/terrarium/bi_ci
+    && pip install -e /data/mainrepo/terrarium/bi_ci
 
 COPY ops/ci/docker_image_ci_with_src/local_deps_install.sh /local_deps_install.sh
 RUN bash /local_deps_install.sh
