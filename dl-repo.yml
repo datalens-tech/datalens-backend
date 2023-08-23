@@ -6,11 +6,7 @@ dl_repo:
 
   fs_editor: default
   package_types:
-    - type: terrarium  # Repository tools  # TODO: move to OS dir/repo
-      root_path: terrarium
-      boilerplate_path: lib/bi_package_boilerplate
-
-    - type: lib  # Main libraries
+    - type: lib  # Main libraries (internal repo)
       root_path: lib
       boilerplate_path: lib/bi_package_boilerplate
       tags:

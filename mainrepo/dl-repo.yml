@@ -2,7 +2,11 @@
 
 dl_repo:
   fs_editor: default
-  # package_types:
+
+  package_types:
+    - type: terrarium  # Repository tools
+      root_path: terrarium
+      boilerplate_path: ../lib/bi_package_boilerplate  # FIXME: move the boilerplate inside mainrepo
 
   custom_package_map:
     flask_marshmallow: flask-marshmallow
