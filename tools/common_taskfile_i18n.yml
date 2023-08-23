@@ -1,0 +1,37 @@
+version: '3'
+
+vars:
+  PACKAGE_NAME:
+    sh: basename {{.USER_WORKING_DIR}}
+
+tasks:
+  _update-po-domain:
+    dir: ../docker_build
+    cmds:
+      - ./run-project-bake update-po
+        --set update-po.args.PACKAGE_NAME={{.PACKAGE_NAME}}
+        --set update-po.args.DOMAIN_NAME={{.DOMAIN_NAME}}
+        --set update-po.args.PATH_MASK={{.PATH_MASK}}
+        --set update-po.contexts.src={{.USER_WORKING_DIR}}
+        --set update-po.output="type=local,dest={{.USER_WORKING_DIR}}/{{.PACKAGE_NAME}}"
+
+  update-po:
+    deps:
+      - {task: "_update-po-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}", PATH_MASK: "/bi/"}}
+      - {task: "_update-po-domain", vars: {DOMAIN_NAME: "bi_formula_ref", PATH_MASK: ".*formula_ref/"}}
+    ignore_error: true
+
+  _msgfmt-domain:
+    dir: ../docker_build
+    cmds:
+      - ./run-project-bake msgfmt
+        --set msgfmt.args.PACKAGE_NAME={{.PACKAGE_NAME}}
+        --set msgfmt.args.DOMAIN_NAME={{.DOMAIN_NAME}}
+        --set msgfmt.contexts.src={{.USER_WORKING_DIR}}
+        --set msgfmt.output="type=local,dest={{.USER_WORKING_DIR}}/{{.PACKAGE_NAME}}"
+
+  msgfmt:
+    deps:
+      - {task: "_msgfmt-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}", PATH_MASK: "/bi/"}}
+      - {task: "_msgfmt-domain", vars: {DOMAIN_NAME: "bi_formula_ref", PATH_MASK: ".*formula_ref/"}}
+    ignore_error: true

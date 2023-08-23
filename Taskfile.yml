@@ -1,0 +1,9 @@
+version: '3'
+
+includes:
+  env:
+    taskfile: tools/common_taskfile_env.yml
+    dir: tools
+  i18n:
+    taskfile: tools/common_taskfile_i18n.yml
+    dir: tools
