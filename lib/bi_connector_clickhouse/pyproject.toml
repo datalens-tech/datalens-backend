@@ -73,8 +73,9 @@ skip_compose = "true"
 [datalens.pytest.db]
 root_dir = "bi_connector_clickhouse_tests/db"
 
-[datalens.pytest.ext]
-root_dir = "bi_connector_clickhouse_tests/ext"
+#[datalens.pytest.ext]
+#root_dir = "bi_connector_clickhouse_tests/ext"
+#labels = ["ext"]
 
 
 

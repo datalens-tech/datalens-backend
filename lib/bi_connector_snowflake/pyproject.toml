@@ -69,8 +69,9 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-[datalens.pytest.ext]
-root_dir = "bi_connector_snowflake_tests/ext"
+#[datalens.pytest.ext]
+#root_dir = "bi_connector_snowflake_tests/ext"
+#labels = ["ext"]
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_snowflake_tests/unit"

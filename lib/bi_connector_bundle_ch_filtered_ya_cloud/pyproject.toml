@@ -71,9 +71,10 @@ target-version = ['py310']
 root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
 target_path = "db"
 
-[datalens.pytest.ext]
-root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
-target_path = "ext"
+#[datalens.pytest.ext]
+#root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
+#target_path = "ext"
+#labels = ["ext"]
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"

@@ -75,7 +75,8 @@ target-version = ['py310']
 root_dir = "bi_connector_bigquery_tests/unit"
 skip_compose = "true"
 
-[datalens.pytest.ext]
-root_dir = "bi_connector_bigquery_tests/ext"
-skip_compose = "true"
+#[datalens.pytest.ext]
+#root_dir = "bi_connector_bigquery_tests/ext"
+#skip_compose = "true"
+#labels = ["ext"]
 

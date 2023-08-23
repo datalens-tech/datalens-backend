@@ -20,13 +20,6 @@ labels = ["fat"]
 
 SECTIONS_TO_SKIP = []
 
-EXT_TESTS_TO_RUN = [  # temporary: until all ext tests are configured
-    "terrarium/bi_ci",
-    "lib/bi_file_uploader_api_lib",
-    "lib/bi_file_uploader_lib",
-    "lib/bi_file_uploader_worker_lib",
-]
-
 
 def format_output(name: str, sections: list[tuple[str, str]]) -> str:
     data = [
@@ -69,8 +62,6 @@ def split_tests(mode: str) -> None:
             for section in pytest_targets.keys():
                 spec = toml_data["datalens"]["pytest"][section]
                 section_labels = spec.get("labels", [])
-                if section == "ext" and short_path not in EXT_TESTS_TO_RUN:
-                    continue
                 for category in split_result.keys():  # find a proper category based on given labels or fallback to base
                     if category in section_labels:
                         split_result[category].append((short_path, section))

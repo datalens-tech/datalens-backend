@@ -80,7 +80,8 @@ target_path = "."
 root_dir = "bi_external_api_tests/db"
 target_path = "."
 
-[datalens.pytest.ext]
-root_dir = "bi_core_tests/"
-target_path = "dc dc_preprod int_preprod local local_int_prod"
+#[datalens.pytest.ext]
+#root_dir = "bi_core_tests/"
+#target_path = "dc dc_preprod int_preprod local local_int_prod"
+#labels = ["ext"]
 

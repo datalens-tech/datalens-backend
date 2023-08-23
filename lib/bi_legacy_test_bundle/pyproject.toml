@@ -93,8 +93,8 @@ target_path = "conn_executors"
 compose_file_base = "docker-compose.core"
 labels = ["fat"]
 
-[datalens.pytest.ext]
-root_dir = "bi_legacy_test_bundle_tests/core/"
-target_path = "ext"
-compose_file_base = "docker-compose.core"
-labels = ["fat"]
+#[datalens.pytest.ext]
+#root_dir = "bi_legacy_test_bundle_tests/core/"
+#target_path = "ext"
+#compose_file_base = "docker-compose.core"
+#labels = ["ext"]

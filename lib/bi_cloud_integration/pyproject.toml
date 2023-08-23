@@ -52,9 +52,10 @@ line-length = 140
 target-version = ['py310']
 
 
-[datalens.pytest.ext]
-root_dir = "bi_cloud_integration_tests/"
-target_path = "ext"
+#[datalens.pytest.ext]
+#root_dir = "bi_cloud_integration_tests/"
+#target_path = "ext"
+#labels = ["ext"]
 
 
 [datalens.pytest.unit]
