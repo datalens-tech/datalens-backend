@@ -20,9 +20,11 @@ marshmallow = ">=3.19.0"
 marshmallow-enum = ">=1.5.1"
 python = ">=3.10, <3.12"
 sentry-sdk = ">=1.15.0"
+yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-file-uploader-api-lib = {path = "../../lib/bi_file_uploader_api_lib"}
-yandex-bi-meta-yc-file-uploader-api = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_api"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

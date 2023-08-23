@@ -15,7 +15,7 @@ from bi_task_processor.worker import HealthChecker
 from bi_file_uploader_worker_lib.tasks import REGISTRY
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 
-from bi_meta_yc_file_uploader_worker.app import FileUploaderWorkerFactory
+from app_yc_file_uploader_worker.app_factory import FileUploaderWorkerFactoryYC
 
 
 LOGGER = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 def run_standalone_worker() -> None:
     loop = asyncio.get_event_loop()
     settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
-    worker = FileUploaderWorkerFactory(settings=settings).create_worker()
+    worker = FileUploaderWorkerFactoryYC(settings=settings).create_worker()
     configure_logging(app_name='bi_file_uploader_worker', sentry_dsn=settings.SENTRY_DSN)
     worker_task = loop.create_task(worker.start())
     try:

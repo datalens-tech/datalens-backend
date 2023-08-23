@@ -69,8 +69,6 @@ lib/bi_formula_ref_nebius
 lib/bi_formula_ref_ya
 lib/bi_i18n
 lib/bi_legacy_test_bundle
-lib/bi_meta_yc/bi_meta_yc_file_uploader_api
-lib/bi_meta_yc/bi_meta_yc_file_uploader_worker
 lib/bi_model_tools
 lib/bi_package_boilerplate
 lib/bi_query_processing

@@ -17,7 +17,7 @@ bi-file-secure-reader = {path = "../../app/bi_file_secure_reader"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-file-uploader-worker-lib = {path = "../../lib/bi_file_uploader_worker_lib"}
-yandex-bi-meta-yc-file-uploader-worker = {path = "../../lib/bi_meta_yc/bi_meta_yc_file_uploader_worker"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

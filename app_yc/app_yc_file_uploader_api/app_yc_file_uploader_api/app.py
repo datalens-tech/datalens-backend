@@ -8,15 +8,11 @@ from bi_core.logging_config import configure_logging
 
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
 
-from bi_meta_yc_file_uploader_api.app import FileUploaderApiAppFactoryYC
+from app_yc_file_uploader_api.app_factory import FileUploaderApiAppFactoryYC
 from app_yc_file_uploader_api import app_version
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-class DefaultFileUploaderApiAppFactoryYC(FileUploaderApiAppFactoryYC):
-    pass
 
 
 async def create_gunicorn_app() -> web.Application:
@@ -24,7 +20,7 @@ async def create_gunicorn_app() -> web.Application:
     configure_logging(app_name='bi_file_uploader_api')
     try:
         LOGGER.info("Creating application instance...")
-        app_factory = DefaultFileUploaderApiAppFactoryYC(settings=settings)
+        app_factory = FileUploaderApiAppFactoryYC(settings=settings)
         app = app_factory.create_app(app_version)
         LOGGER.info("Application instance was created")
         return app
