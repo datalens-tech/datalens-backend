@@ -29,20 +29,6 @@ msgstr "Файлы"
 msgid "label_connector-greenplum"
 msgstr "Greenplum"
 
-#: bi_api_lib/connectors/gsheets/connection_form/form_config.py:50
-msgid "field_google-sheets-link"
-msgstr "Ссылка"
-
-#: bi_api_lib/connectors/gsheets/connection_form/form_config.py:51
-msgid "label_gsheets-url-hint"
-msgstr ""
-"В Google Sheets  необходимо предоставить доступ \"Anyone with the link\", "
-"затем из адресной строки браузера скопировать ссылку на нужный лист."
-
-#: bi_api_lib/connectors/gsheets/connection_info.py:8
-msgid "label_connector-gsheets"
-msgstr "Google Sheets"
-
 #: bi_api_lib/connectors/solomon/connection_form/form_config.py:22
 msgid "label_solomon-conn-description"
 msgstr ""

@@ -12,8 +12,8 @@ from bi_api_connector.form_config.models.api_schema import FormActionApiSchema, 
 from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
 from bi_api_connector.form_config.models.common import CommonFieldName, FormFieldName
 
-from bi_api_lib.connectors.gsheets.connection_info import GSheetsConnectionInfoProvider
-from bi_api_lib.i18n.localizer import Translatable
+from bi_connector_gsheets.bi.connection_info import GSheetsConnectionInfoProvider
+from bi_connector_gsheets.bi.i18n.localizer import Translatable
 
 
 @unique

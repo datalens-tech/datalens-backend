@@ -15,11 +15,12 @@ from bi_api_connector.api_schema.source_base import (
 
 from bi_query_processing.multi_query.factory import SimpleFieldSplitterMultiQueryMutatorFactory
 
-from bi_api_lib.connectors.gsheets.connection_form.form_config import GSheetsConnectionFormFactory
-from bi_api_lib.connectors.gsheets.connection_info import GSheetsConnectionInfoProvider
-from bi_api_lib.connectors.gsheets.schemas import GSheetsConnectionSchema
-from bi_api_lib.connectors.gsheets.filter_compiler import GSheetsFilterFormulaCompiler
-from bi_api_lib.connectors.gsheets.planner import GSheetsCompengExecutionPlanner
+from bi_connector_gsheets.bi.api_schema.connection import GSheetsConnectionSchema
+from bi_connector_gsheets.bi.connection_form.form_config import GSheetsConnectionFormFactory
+from bi_connector_gsheets.bi.connection_info import GSheetsConnectionInfoProvider
+from bi_connector_gsheets.bi.filter_compiler import GSheetsFilterFormulaCompiler
+from bi_connector_gsheets.bi.planner import GSheetsCompengExecutionPlanner
+from bi_connector_gsheets.bi.i18n.localizer import CONFIGS
 
 
 class GSheetsBiApiSourceDefinition(BiApiSourceDefinition):
@@ -48,3 +49,4 @@ class GSheetsBiApiConnector(BiApiConnector):
     legacy_initial_planner_cls = GSheetsCompengExecutionPlanner
     is_forkable = False
     filter_formula_compiler_cls = GSheetsFilterFormulaCompiler
+    translation_configs = frozenset(CONFIGS)
