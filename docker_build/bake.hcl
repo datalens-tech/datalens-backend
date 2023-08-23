@@ -274,6 +274,8 @@ target "update-po" {
   pull = false
   args = {
     PACKAGE_NAME = ".." # need to pass via --set flag
+    DOMAIN_NAME = ".." # need to pass via --set flag
+    PATH_MASK = ".." # need to pass via --set flag
   }
   contexts = {
     bake_ctx_base_img = "target:base_tier_1"
@@ -288,6 +290,7 @@ target "msgfmt" {
   pull = false
   args = {
     PACKAGE_NAME = ".." # need to pass via --set flag
+    DOMAIN_NAME = ".." # need to pass via --set flag
   }
   contexts = {
     bake_ctx_base_img = "target:base_tier_1"
