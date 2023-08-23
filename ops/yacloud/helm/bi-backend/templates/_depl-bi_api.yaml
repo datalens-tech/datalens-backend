@@ -263,6 +263,9 @@ spec:
             {{ end }}
             {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.dataset_data_api }}
             {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+            {{ if .Values.connector_settings.monitoring }}
+            {{- include "env_vars-conn_monitoring" . | indent 12 }}
+            {{ end }}
             {{ if .Values.enabled_features.network_policy}}
             - name: RQE_EXT_ASYNC_HOST
               value: "rqe-dataset-api.bi-backend.svc.cluster.local"

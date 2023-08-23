@@ -1,0 +1,4 @@
+{{- define "env_vars-conn_monitoring" }}
+- name: CONNECTORS_MONITORING_HOST
+  value: {{ .Values.connector_settings.monitoring.endpoint }}
+{{ end }}

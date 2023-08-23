@@ -19,3 +19,5 @@ apps_to_run:
   external_api: false
 
 sentry_dsns: {}
+
+connector_settings: {}

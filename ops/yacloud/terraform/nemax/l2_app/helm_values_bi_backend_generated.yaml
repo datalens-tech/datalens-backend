@@ -69,6 +69,7 @@
   "frozen_connectors": true
   "mutation_caches": true
   "network_policy": true
+  "rootless_mode": false
   "rqe_caches": false
   "service_connectors": false
 "endpoints":

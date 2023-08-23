@@ -46,3 +46,7 @@ scaling:
 connector_forms_env:
   - name: ENABLED_BACKEND_DRIVEN_FORMS
     value: "ch_frozen_demo"
+
+connector_settings:  # thenno, fixme!
+  monitoring:
+    endpoint: "monitoring.private-api.yandexcloud.co.il"
