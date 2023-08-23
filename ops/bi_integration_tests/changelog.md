@@ -1,3 +1,12 @@
+0.15.0
+------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * BI-4692 Comment out unconfigured ext tests instead of a whitelist in test splitter (#69)  [ https://github.com/datalens-tech/datalens-backend-private/commit/00af47f ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 11:10:16+00:00
+
 0.14.0
 ------
 
