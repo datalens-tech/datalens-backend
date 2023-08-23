@@ -3,3 +3,6 @@ clickhouse = bi_connector_clickhouse.db_testing.connector:ClickHouseDbTestingCon
 
 [bi_formula.connectors]
 clickhouse = bi_connector_clickhouse.formula.connector:ClickHouseFormulaConnector
+
+[bi_formula_ref.plugins]
+clickhouse = bi_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlugin

@@ -31,3 +31,7 @@ def register_all_plugins(plugin_ep_names: Optional[Collection[str]] = None) -> N
         if plugin_ep_names is not None and ep_name not in plugin_ep_names:
             continue
         _register_plugin(plugin_cls)
+
+    # FIXME: Remove
+    from bi_connector_clickhouse.formula_ref.plugin import ClickHouseFormulaRefPlugin
+    _register_plugin(ClickHouseFormulaRefPlugin)

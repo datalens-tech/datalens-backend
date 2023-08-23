@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.18\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-08-03 10:51+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-23 08:39+0000\n"
 "PO-Revision-Date: 2019-03-18 16:15+MSK\n"
 "Last-Translator: Grigory Statsenko <gstatsenko@yandex-team.ru>\n"
 "Language-Team: en_US <LL@li.org>\n"
@@ -16,193 +16,1420 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-msgid "Example"
+msgid "Stylizes the passed text in bold font."
 msgstr ""
 
-msgid "Function Reference"
+msgid "Stylizes the passed text in cursive font."
 msgstr ""
 
-msgid "All Functions"
+#, python-brace-format
+msgid "Wraps {arg:1} into a hyperlink to URL {arg:0}."
 msgstr ""
 
-msgid "Overview"
+msgid ""
+"Merges marked up text pieces. Can also be used for converting strings to "
+"marked up text."
 msgstr ""
 
-msgid "Function Availability"
+#, python-brace-format
+msgid ""
+"Returns `TRUE` if {arg:0} is `NULL`, otherwise returns `FALSE`.\n"
+"\n"
+"`{argn:0} IS NOT NULL` returns the opposite result."
 msgstr ""
 
-msgid "Arguments ({args}) must be of the same type."
+msgid "As a function"
 msgstr ""
 
-msgid "Only constant values are accepted for the arguments ({args})."
+msgid "As an operator"
 msgstr ""
 
-msgid "Function `{func_name}` is also found in the following categories: "
+#, python-brace-format
+msgid "Returns {arg:0} if it's not `NULL`. Otherwise returns {arg:1}."
 msgstr ""
 
-msgid "Depends on argument types"
+#, python-brace-format
+msgid "Returns `TRUE` if {arg:0} is `NaN`, otherwise returns `FALSE`.\n"
 msgstr ""
 
-msgid "Same type as ({args})"
+#, python-brace-format
+msgid "Returns {arg:0} if it's not `NaN`. Otherwise returns {arg:1}."
 msgstr ""
 
-msgid "Any"
+#, python-brace-format
+msgid "Returns {arg:0} if it's not `NULL`. Otherwise returns 0."
 msgstr ""
 
-msgid "Aggregate functions"
+#, python-brace-format
+msgid ""
+"Compares {arg:0} to {arg:1}, {arg:3}, ... consecutively and returns the "
+"corresponding result for the first match. If no match is found, it returns "
+"{arg:5}."
 msgstr ""
 
-msgid "String functions"
+msgid "As a block"
 msgstr ""
 
-msgid "Mathematical functions"
+msgid "Example with data table"
 msgstr ""
 
-msgid "Logical functions"
+#, python-brace-format
+msgid ""
+"Checks conditional expressions {arg:0}, {arg:1}, ... and returns the "
+"matching result for the first condition found to be `TRUE`. IF all "
+"conditional expressions are `FALSE`, it returns {arg:4}."
 msgstr ""
 
-msgid "Date/Time functions"
+msgid ""
+"Returns the sum of all expression values. Applicable to numeric data types "
+"only."
 msgstr ""
 
-msgid "Type conversion functions"
+#, python-brace-format
+msgid ""
+"Returns the sum of all the expression values that meet the {arg:1} "
+"condition. Applicable to numeric data types only."
 msgstr ""
 
-msgid "Operators"
+msgid ""
+"Returns the average of all values. Applicable to numeric data types as well "
+"as {type:DATE|DATETIME}."
 msgstr ""
 
-msgid "Geographical functions"
+#, python-brace-format
+msgid ""
+"Returns the average of all values that meet the {arg:1} condition. If the "
+"values don't exist, it returns `NULL`. Applicable to numeric data types only."
 msgstr ""
 
-msgid "Text markup functions"
+#, python-brace-format
+msgid ""
+"Returns the maximum value.\n"
+"\n"
+"If {arg:0}:\n"
+"- number — Returns the largest number.\n"
+"- date — Returns the latest date.\n"
+"- string — Returns the last value in the alphabetic order.\n"
 msgstr ""
 
-msgid "Window functions"
+#, python-brace-format
+msgid ""
+"Returns the minimum value.\n"
+"\n"
+"If {arg:0}:\n"
+"- number — Returns the smallest number.\n"
+"- date — Returns the earliest date.\n"
+"- string — Returns the first value in the alphabetic order.\n"
 msgstr ""
 
-msgid "Time series functions"
+msgid "Returns the number of items in the group."
 msgstr ""
 
-msgid "Array functions"
+#, python-brace-format
+msgid "Returns the number of items in the group meeting the {arg:0} condition."
 msgstr ""
 
-msgid "aggregation"
+msgid ""
+"Returns the number of unique values in the group.\n"
+"\n"
+"See also {ref:COUNTD_APPROX}."
 msgstr ""
 
-msgid "string"
+msgid ""
+"Returns the number of unique values in the group that meet the {arg:1} "
+"condition.\n"
+"\n"
+"See also {ref:COUNTD_APPROX}."
 msgstr ""
 
-msgid "mathematical"
+msgid ""
+"Returns the approximate number of unique values in the group. Faster than "
+"{ref:COUNTD}, but doesn't guarantee accuracy."
 msgstr ""
 
-msgid "logical"
+msgid ""
+"Returns the statistical standard deviation of all values in the expression "
+"based on a selection from the population."
 msgstr ""
 
-msgid "date/time"
+msgid ""
+"Returns the statistical standard deviation of all values in the expression "
+"based on the biased population."
 msgstr ""
 
-msgid "type conversion"
+msgid ""
+"Returns the statistical variance of all values in an expression based on a "
+"selection from the population."
 msgstr ""
 
-msgid "operator"
+msgid ""
+"Returns the statistical variance of all values in an expression across the "
+"entire population."
 msgstr ""
 
-msgid "geographical"
+#, python-brace-format
+msgid ""
+"Returns the precise {arg:1}-level quantile ({arg:1} should be in range from "
+"0 to 1)."
 msgstr ""
 
-msgid "text markup"
+#, python-brace-format
+msgid ""
+"Returns the approximate {arg:1}-level quantile ({arg:1} should be in range "
+"from 0 to 1)."
 msgstr ""
 
-msgid "window"
+msgid "Returns the median value."
 msgstr ""
 
-msgid "time series"
+#, python-brace-format
+msgid ""
+"Returns one of the values of {arg:0} from the group. This is a "
+"nondeterministic aggregation — the result may vary for the same data over "
+"multiple queries."
 msgstr ""
 
-msgid "array"
+#, python-brace-format
+msgid ""
+"Returns {arg:0} for the minimum value of {arg:1} in the group. If multiple "
+"values of {arg:0} match the minimum value of {arg:1}, then the first one "
+"encountered is returned. This makes the function non-deterministic."
 msgstr ""
 
-msgid "Integer"
+#, python-brace-format
+msgid ""
+"Returns {arg:0} for the maximum value of {arg:1} in the group. If multiple "
+"values of {arg:0} match the maximum value of {arg:1}, then the first one "
+"encountered is returned. This makes the function non-deterministic."
 msgstr ""
 
-msgid "Fractional number"
+#, python-brace-format
+msgid ""
+"Returns a string that contains all unique values of {arg:0} delimited by "
+"{arg:1} (if {arg:1} is not specified, a comma is used)."
 msgstr ""
 
-msgid "Boolean"
+#, python-brace-format
+msgid ""
+"Returns a string that contains top {arg:1} unique values of {arg:0} "
+"delimited by {arg:2} (if {arg:2} is not specified, a comma is used)."
 msgstr ""
 
-msgid "String"
+msgid "Example with grouping"
 msgstr ""
 
-msgid "Date"
+msgid "Example with two arguments"
 msgstr ""
 
-msgid "Datetime (deprecated)"
+#, python-brace-format
+msgid ""
+"If {arg:1} is `\"desc\"` or omitted, then ranking is done from greatest to "
+"least, if `\"asc\"`, then from least to greatest."
 msgstr ""
 
-msgid "Datetime with timezone"
+msgid ""
+"Returns the rank of the current row if ordered by the given argument. Rows "
+"corresponding to the same value used for sorting have the same rank. If the "
+"first two rows both have rank of `1`, then the next row (if it features a "
+"different value) will have rank `3`, so, in effect, it is rank with gaps.\n"
+"\n"
+"{text:rank_direction_description}\n"
+"\n"
+"See also {ref: RANK_DENSE}, {ref: RANK_UNIQUE}, {ref:RANK_PERCENTILE}."
 msgstr ""
 
-msgid "Datetime"
+msgid ""
+"Returns the rank of the current row if ordered by the given argument. Rows "
+"corresponding to the same value used for sorting have the same rank. If the "
+"first two rows both have rank of `1`, then the next row (if it features a "
+"different value) will have rank `2`, (rank without gaps).\n"
+"\n"
+"{text:rank_direction_description}\n"
+"\n"
+"See also {ref: RANK}, {ref: RANK_UNIQUE}, {ref:RANK_PERCENTILE}."
 msgstr ""
 
-msgid "Geopoint"
+msgid ""
+"Returns the rank of the current row if ordered by the given argument. Rows "
+"corresponding to the same value have different rank values. This means that "
+"rank values are sequential and different for all rows, always increasing by "
+"`1` for the next row.\n"
+"\n"
+"{text:rank_direction_description}\n"
+"\n"
+"See also {ref: RANK}, {ref: RANK_DENSE}, {ref:RANK_PERCENTILE}."
 msgstr ""
 
-msgid "Geopolygon"
+msgid ""
+"Returns the relative rank (from `0` to `1`) of the current row if ordered by "
+"the given argument. Calculated as `(RANK(...) - 1) / (row count) `.\n"
+"\n"
+"{text:rank_direction_description}\n"
+"\n"
+"See also {ref: RANK}, {ref: RANK_DENSE}, {ref: RANK_UNIQUE}."
 msgstr ""
 
-msgid "Markup"
+msgid "Returns the number of items in the specified window."
 msgstr ""
 
-msgid "UUID"
+msgid "Returns the average of all values. Applicable to numeric data types."
 msgstr ""
 
-msgid "Array of fractional numbers"
+#, python-brace-format
+msgid ""
+"Returns the number of items in the specified window meeting the {arg:0} "
+"condition."
 msgstr ""
 
-msgid "Array of integers"
+msgid "Example with ORDER BY"
 msgstr ""
 
-msgid "Array of strings"
+msgid ""
+"The sorting order is based on the fields listed in the sorting section of "
+"the chart and in the `ORDER BY` clause. First, `ORDER BY` fields are used, "
+"and then they are complemented by the fields from the chart."
 msgstr ""
 
-msgid "Tree"
+msgid "Window"
 msgstr ""
 
-msgid "`ClickHouse` version `21.8`"
+msgid "Starts from the first row and ends at the current row."
 msgstr ""
 
-msgid "`ClickHouse` version `22.10`"
+msgid "Starts from the current row and ends at the last row."
 msgstr ""
 
-msgid "`PostgreSQL` version `9.3`"
+msgid ""
+"\n"
+"{table:rwindow_description_table}\n"
+"\n"
+"By default `\"asc\"` is used.\n"
 msgstr ""
 
-msgid "`PostgreSQL` version `9.4`"
+msgid ""
+"Returns the sum of all values in a growing (or shrinking) window defined by "
+"the sort order and the value of {arg:1}:\n"
+"{text:rwindow_description}\n"
+"\n"
+"Window functions with a similar behavior: {ref:RCOUNT}, {ref:RMIN}, {ref:"
+"RMAX}, {ref:RAVG}.\n"
+"\n"
+"See also {ref:aggregation/SUM}, {ref:MSUM}."
 msgstr ""
 
-msgid "`MySQL` version `5.6`"
+msgid ""
+"Returns the count of all values in a growing (or shrinking) window defined "
+"by the sort order and the value of {arg:1}:\n"
+"{text:rwindow_description}\n"
+"\n"
+"Window functions with a similar behavior: {ref:RSUM}, {ref:RMIN}, {ref:"
+"RMAX}, {ref:RAVG}.\n"
+"\n"
+"See also {ref:aggregation/COUNT}, {ref:MCOUNT}."
 msgstr ""
 
-msgid "`MySQL` version `5.7`"
+msgid ""
+"Returns the minimum of all values in a growing (or shrinking) window defined "
+"by the sort order and the value of {arg:1}:\n"
+"{text:rwindow_description}\n"
+"\n"
+"Window functions with a similar behavior: {ref:RSUM}, {ref:RCOUNT}, {ref:"
+"RMAX}, {ref:RAVG}.\n"
+"\n"
+"See also {ref:aggregation/MIN}, {ref:MMIN}."
 msgstr ""
 
-msgid "`MySQL` version `8.0.12`"
+msgid ""
+"Returns the maximum of all values in a growing (or shrinking) window defined "
+"by the sort order and the value of {arg:1}:\n"
+"{text:rwindow_description}\n"
+"\n"
+"Window functions with a similar behavior: {ref:RSUM}, {ref:RCOUNT}, {ref:"
+"RMIN}, {ref:RAVG}.\n"
+"\n"
+"See also {ref:aggregation/MAX}, {ref:MMAX}."
 msgstr ""
 
-msgid "`Microsoft SQL Server` version `2017 (14.0)`"
+msgid ""
+"Returns the average of all values in a growing (or shrinking) window defined "
+"by the sort order and the value of {arg:1}:\n"
+"{text:rwindow_description}\n"
+"\n"
+"Window functions with a similar behavior: {ref:RSUM}, {ref:RCOUNT}, {ref:"
+"RMIN}, {ref:RMAX}.\n"
+"\n"
+"See also {ref:aggregation/AVG}, {ref:MAVG}."
 msgstr ""
 
-msgid "`Oracle Database` version `12c (12.1)`"
+msgid "Example with two and three arguments"
 msgstr ""
 
-msgid "Standard"
+msgid "positive"
 msgstr ""
 
-msgid "Extended"
+#, python-brace-format
+msgid "The current row and {arg:1} preceding rows."
 msgstr ""
 
-msgid "More info:"
+msgid "negative"
+msgstr ""
+
+#, python-brace-format
+msgid "The current row and -{arg:1} following rows."
+msgstr ""
+
+msgid "any sign"
+msgstr ""
+
+#, python-brace-format
+msgid "{arg:1} preceding rows, the current row and {arg:2} following rows."
+msgstr ""
+
+msgid ""
+"Returns the moving sum of values in a fixed-size window defined by the sort "
+"order and arguments:\n"
+"{text:mwindow_description}\n"
+"Window functions with a similar behavior: {ref:MCOUNT}, {ref:MMIN}, {ref:"
+"MMAX}, {ref:MAVG}.\n"
+"\n"
+"See also {ref:aggregation/SUM}, {ref:RSUM}."
+msgstr ""
+
+msgid ""
+"Returns the moving count of (non-`NULL`) values in a fixed-size window "
+"defined by the sort order and arguments:\n"
+"{text:mwindow_description}\n"
+"Window functions with a similar behavior: {ref:MSUM}, {ref:MMIN}, {ref:"
+"MMAX}, {ref:MAVG}.\n"
+"\n"
+"See also {ref:aggregation/COUNT}, {ref:RCOUNT}."
+msgstr ""
+
+msgid ""
+"Returns the moving minimum of values in a fixed-size window defined by the "
+"sort order and arguments:\n"
+"{text:mwindow_description}\n"
+"Window functions with a similar behavior: {ref:MSUM}, {ref:MCOUNT}, {ref:"
+"MMAX}, {ref:MAVG}.\n"
+"\n"
+"See also {ref:aggregation/MIN}, {ref:RMIN}."
+msgstr ""
+
+msgid ""
+"Returns the moving maximum of values in a fixed-size window defined by the "
+"sort order and arguments:\n"
+"{text:mwindow_description}\n"
+"Window functions with a similar behavior: {ref:MSUM}, {ref:MCOUNT}, {ref:"
+"MMIN}, {ref:MAVG}.\n"
+"\n"
+"See also {ref:aggregation/MAX}, {ref:RMAX}."
+msgstr ""
+
+msgid ""
+"Returns the moving average of values in a fixed-size window defined by the "
+"sort order and arguments:\n"
+"{text:mwindow_description}\n"
+"Window functions with a similar behavior: {ref:MSUM}, {ref:MCOUNT}, {ref:"
+"MMIN}, {ref:MMAX}.\n"
+"\n"
+"See also {ref:aggregation/AVG}, {ref:RAVG}."
+msgstr ""
+
+msgid "Example with the optional argument"
+msgstr ""
+
+msgid ""
+"Returns {arg:0} re-evaluated against the row that is offset from the current "
+"row by {arg:1} within the specified window:\n"
+"- Positive {arg:1} seeks among preceding rows.\n"
+"- Negative {arg:1} seeks among following rows.\n"
+"\n"
+"By default {arg:1} is `1`.\n"
+"\n"
+"If there is no available value ({arg:1} reaches before the first row or "
+"after the last one), then {arg:2} is returned. If {arg:2} is not specified, "
+"then `NULL` is used.\n"
+"\n"
+"See also {ref:AGO} for a non-window function alternative."
+msgstr ""
+
+msgid ""
+"Returns the value of {arg:0} from the first row in the window. See also {ref:"
+"LAST}."
+msgstr ""
+
+msgid ""
+"Returns the value of {arg:0} from the last row in the window. See also {ref:"
+"FIRST}."
+msgstr ""
+
+msgid ""
+"Returns the numeric representation of the first character of the string."
+msgstr ""
+
+msgid "Converts the numeric representation of an ASCII character to a value."
+msgstr ""
+
+msgid ""
+"Merges any number of strings. When non-string types are used, they're "
+"converted to strings and then merged."
+msgstr ""
+
+msgid ""
+"Returns `TRUE` if {arg:0} contains {arg:1}. For case-insensitive searches, "
+"see {ref:ICONTAINS}."
+msgstr ""
+
+msgid ""
+"Case-insensitive version of {ref:string/CONTAINS}. Returns `TRUE` if {arg:0} "
+"contains {arg:1}."
+msgstr ""
+
+msgid ""
+"Returns `TRUE` if {arg:0} ends in {arg:1}. For case-insensitive searches, "
+"see {ref:IENDSWITH}."
+msgstr ""
+
+msgid ""
+"Case-insensitive version of {ref:ENDSWITH}. Returns `TRUE` if {arg:0} ends "
+"in {arg:1}."
+msgstr ""
+
+msgid ""
+"Returns `TRUE` if {arg:0} starts with {arg:1}. For case-insensitive "
+"searches, see {ref:ISTARTSWITH}."
+msgstr ""
+
+msgid ""
+"Case-insensitive version of {ref:string/STARTSWITH}. Returns `TRUE`  if "
+"{arg:0} starts with {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the index of the position of the first character of the substring "
+"{arg:1} in the string {arg:0}.\n"
+"\n"
+"If the `start_index` option is specified, the search starts from the "
+"specified position."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns a string that contains the number of characters specified in {arg:1} "
+"from the beginning of the string {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns a string that contains the number of characters specified in {arg:1} "
+"from the end of the string {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of characters in the string or items in array {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the string {arg:0} in lowercase."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the string {arg:0} in uppercase."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the string {arg:0} without spaces at the beginning of the string."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the string {arg:0} without spaces at the end of the string."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the string {arg:0} without spaces at the beginning or end of the "
+"string."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the substring {arg:0} starting from the index {arg:1}.\n"
+"\n"
+"If an additional argument `{argn:2}` is specified, a substring of the "
+"specified length is returned."
+msgstr ""
+
+msgid ""
+"See the documentation of the data source to clarify the regular expression "
+"syntax."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the substring {arg:0} that matches the regular expression pattern "
+"{arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns a substring {arg:0} that matches the regular expression pattern "
+"{arg:1} starting from the specified index."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns 'TRUE' if the string {arg:0} has a substring that matches the "
+"regular expression pattern {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Searches for a substring in the string {arg:0} using the regular expression "
+"pattern {arg:1} and replaces it with the string {arg:2}.\n"
+"\n"
+"If the substring is not found, the string is not changed."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Searches for the substring {arg:1} in the string {arg:0} and replaces it "
+"with the string {arg:2}.\n"
+"\n"
+"If the substring is not found, the string is not changed."
+msgstr ""
+
+msgid "Returns a string with the specified number of spaces."
+msgstr ""
+
+msgid ""
+"Returns a substring from {arg:0} using the {arg:1} delimiter character to "
+"divide the string into a sequence of {arg:2} parts. Delimiter is a comma by "
+"default. If {arg:2} is not passed, an array is returned (only for {dialects:"
+"CLICKHOUSE|POSTGRESQL} sources)"
+msgstr ""
+
+#, python-brace-format
+msgid "Converts the {arg:0} string encoding to `UTF8`."
+msgstr ""
+
+msgid "Returns an array containing the passed values."
+msgstr ""
+
+msgid ""
+"All passed values must be of the same type or `NULL`. At least one value "
+"must be non-`NULL`."
+msgstr ""
+
+#, python-brace-format
+msgid "Expands the {arg:0} array expression to a set of rows."
+msgstr ""
+
+msgid ""
+"{dialects: POSTGRESQL} doesn't allow filtering fields containing the UNNEST "
+"function. If the data source is {dialects: POSTGRESQL}, do not use such "
+"fields in selectors."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the element with the index {arg:1} from the array {arg:0}. Index "
+"must be any integer. Indexes in an array begin with one."
+msgstr ""
+
+msgid ""
+"Concatenates elements of the array {arg:0} using {arg:1} as a delimiter "
+"(comma by default) and {arg:2} as a `NULL` string (`NULL` items are skipped "
+"by default).\n"
+"\n"
+"See also {ref:STR}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of elements in the array {arg:0} equal to {arg:1}. The "
+"type of {arg:1} must match the type of the {arg:0} elements."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns `TRUE` if {arg:0} contains {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns `TRUE` if {arg:0} contains all elements of {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns `TRUE` if {arg:0} contains any elements of {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns `TRUE` if {arg:1} is a continuous subsequence of {arg:0}. In other "
+"words, returns `TRUE` if and only if `array1 = prefix + array2 + suffix`."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns `TRUE` if {arg:0} starts with {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the part of array {arg:0} of length {arg:2} starting from index "
+"{arg:1}. Indexes in an array begin with one."
+msgstr ""
+
+msgid ""
+"Converts {arg:0} to an array of integers. The conversion rules are the same "
+"as for {ref:INT}."
+msgstr ""
+
+msgid ""
+"Converts {arg:0} to an array of strings. The conversion rules are the same "
+"as for {ref:STR}."
+msgstr ""
+
+msgid ""
+"Converts {arg:0} to an array of fractional numbers. The conversion rules are "
+"the same as for {ref:FLOAT}."
+msgstr ""
+
+#, python-brace-format
+msgid "Replaces each {arg:0} element equal to {arg:1} with {arg:2}."
+msgstr ""
+
+msgid ""
+"This function cannot work with arrays with `Nullable` items. To remove "
+"`NULL` items from the array, use {ref:ARR_REMOVE} or {ref:array/REPLACE}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the least of elements in the {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the greatest of elements in the {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the sum of elements in the {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the average of elements in the {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the product of elements in the {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Removes all {arg:0} elements equal to {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Converts the {arg:0} expression to date format.\n"
+"\n"
+"The date must be in the format `YYYY-MM-DD`.\n"
+"\n"
+"If {arg:0} is a number, then the {arg:1} option can be used to convert the "
+"date to the specified time zone."
+msgstr ""
+
+msgid "Argument {arg:1} is available only for {dialects:CLICKHOUSE} sources."
+msgstr ""
+
+msgid ""
+"For {dialects:CLICKHOUSE} data sources, numeric {arg:0} values less than or "
+"equal to `65535` are interpreted as the number of days (not seconds, like in "
+"all other cases) since January 1st 1970. This is the result of the behavior "
+"of available {dialects:CLICKHOUSE} functions.\n"
+"\n"
+"One way to surpass this is to use the following formula: "
+"`DATE(DATETIME([value]))`. The result is more consistent, but is likely to "
+"be much slower."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Converts the {arg:0} expression to date and time format. When converting "
+"`Date` to `DateTime`, the time is set to '00:00:00'.\n"
+"The date must be in the format `YYYY-MM-DDThh:mm:ss` or `YYYY-MM-DD hh:mm:"
+"ss`.\n"
+"\n"
+"The date and time can be converted to the specified time zone when the "
+"{arg:1} option is available."
+msgstr ""
+
+msgid ""
+"Converts the {arg:0} expression to fractional number format according to the "
+"following rules:\n"
+"\n"
+"{table: conversion}"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Original value."
+msgstr ""
+
+msgid ""
+"{link: unix_ts: Unix time} corresponding to the date and time. If the value "
+"contains time zone data, it's used in the calculation. If the time zone is "
+"unknown, the time is set in UTC."
+msgstr ""
+
+msgid "A number from a decimal string."
+msgstr ""
+
+msgid "`TRUE` — `1.0`, `FALSE` — `0.0`."
+msgstr ""
+
+msgid ""
+"Converts the {arg:0} expression to integer format according to the following "
+"rules:\n"
+"\n"
+"{table: conversion}"
+msgstr ""
+
+msgid "Integer part of the number (rounded down)."
+msgstr ""
+
+msgid "`TRUE` — `1`, `FALSE` — `0`."
+msgstr ""
+
+msgid ""
+"Converts the {arg:0} expression to Boolean type according to the following "
+"rules:\n"
+"\n"
+"{table:conversion}"
+msgstr ""
+
+msgid "All others"
+msgstr ""
+
+msgid "Empty string (`\"\"`)"
+msgstr ""
+
+#, python-brace-format
+msgid "Converts the {arg:0} expression to string type."
+msgstr ""
+
+msgid ""
+"If an array is passed (only for {dialects:CLICKHOUSE|POSTGRESQL} sources), "
+"the conversion is performed by a function in the source database and results "
+"may vary for different data sources. For consistent results use {ref:"
+"ARR_STR}."
+msgstr ""
+
+msgid ""
+"Converts the {arg:0} expression to date and time format. Unlike {ref: "
+"DATETIME}, it supports multiple formats."
+msgstr ""
+
+msgid ""
+"Converts the {arg:0} expression to date format. Unlike {ref: DATE}, it "
+"supports multiple formats."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Generates a Geopoint type value. For the input, it accepts a string, a "
+"\"geopoint\" type value, or coordinates — latitude {arg:0} and longitude "
+"{arg:1}. If a single string is input, it must contain a list of two numbers "
+"(latitude and longitude) in JSON syntax."
+msgstr ""
+
+#, python-brace-format
+msgid "Converts the {arg:0} expression to geopolygon format."
+msgstr ""
+
+msgid "Alias: `char`"
+msgstr ""
+
+msgid "Alias: `varchar`"
+msgstr ""
+
+msgid "Alias for `character`"
+msgstr ""
+
+msgid "Alias for `character varying`"
+msgstr ""
+
+msgid ""
+"Converts the {arg:0} expression to database's native type {arg:1}.\n"
+"\n"
+"The following type casts are supported:\n"
+"\n"
+"{table:supported_native_types}\n"
+msgstr ""
+
+msgid "Data source"
+msgstr ""
+
+msgid "Data type"
+msgstr ""
+
+msgid "Native data type"
+msgstr ""
+
+msgid "Parameters for native type"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Inverts a Boolean value."
+msgstr ""
+
+msgid "Negation (-)"
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the number {arg:0} with the opposite sign."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Checks whether the value of {arg:0} is true (`TRUE`).\n"
+"\n"
+"The `{argn:0} IS NOT TRUE` option returns the opposite value."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Checks whether the {arg:0} value is false (`FALSE`).\n"
+"\n"
+"The `{argn:0} IS NOT FALSE` option returns the opposite value."
+msgstr ""
+
+msgid "Power (^)"
+msgstr ""
+
+#, python-brace-format
+msgid "Raises {arg:0} to the power of {arg:1}."
+msgstr ""
+
+msgid "Multiplication (*)"
+msgstr ""
+
+msgid ""
+"If both arguments are numbers, it returns the result by multiplying {arg:0} "
+"by {arg:1}.\n"
+"\n"
+"If one of the arguments is {type:STRING} and the other is {type:INTEGER}, it "
+"returns the string repeated the specified number of times."
+msgstr ""
+
+msgid "Division (/)"
+msgstr ""
+
+#, python-brace-format
+msgid "Divides the number {arg:0} by the number {arg:1}."
+msgstr ""
+
+msgid "Modulo (%)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the remainder from dividing the first number {arg:0} by the second "
+"number {arg:1}."
+msgstr ""
+
+msgid "Addition and concatenation (+)"
+msgstr ""
+
+msgid ""
+"Behaves differently depending on the argument types. Possible options are "
+"listed in the table:\n"
+"\n"
+"{table: desc_by_type}\n"
+"\n"
+"Changing the order of arguments does not affect the result."
+msgstr ""
+
+#, python-brace-format
+msgid "Type of {arg:0}"
+msgstr ""
+
+#, python-brace-format
+msgid "Type of {arg:1}"
+msgstr ""
+
+msgid "Return value"
+msgstr ""
+
+#, python-brace-format
+msgid "The sum of the numbers {arg:0} and {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The date that is {arg:1} days greater than {arg:0} (rounded down to an "
+"integer number of days)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The date with time, {arg:1} days greater than {arg:0}. If {arg:1} contains a "
+"fractional part, it is converted hours (`1/24`), minutes (`1/1440`), and "
+"seconds (`1/86400`)."
+msgstr ""
+
+#, python-brace-format
+msgid "The merging (concatenation) of strings {arg:0} and {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid "The merging (concatenation) of arrays {arg:0} and {arg:1}."
+msgstr ""
+
+msgid "{dialects: METRIKAAPI} does not support string concatenation."
+msgstr ""
+
+msgid "Subtraction (-)"
+msgstr ""
+
+msgid ""
+"Behaves differently depending on the argument types. Possible options are "
+"listed in the table:\n"
+"\n"
+"{table: desc_by_type}"
+msgstr ""
+
+#, python-brace-format
+msgid "The difference between the numbers {arg:0} and {arg:1}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The date that is {arg:1} days smaller than {arg:0} (rounded down to an "
+"integer number of days)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The date with time, {arg:1} days smaller than {arg:0}. If {arg:1} contains a "
+"fractional part, it is converted to hours (`1/24`), minutes (`1/1440`), and "
+"seconds (`1/86400`)."
+msgstr ""
+
+msgid "The difference between two dates in days."
+msgstr ""
+
+msgid ""
+"The difference between two dates in days: the integer part — the number of "
+"whole days, the fractional part — the number of hours, minutes and seconds "
+"expressed as a fraction of the whole day (1 hour is '1/24')."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Matches the string {arg:0} to the template {arg: 1} and returns `TRUE` on "
+"match.\n"
+"You can specify the value in {arg:1} or use the `%` character to match a "
+"string of any length.\n"
+"\n"
+"The `{argn:0} NOT LIKE` option returns the opposite value."
+msgstr ""
+
+msgid "Comparison"
+msgstr ""
+
+#, python-brace-format
+msgid "Compares the value {arg:0} with the value {arg:1}."
+msgstr ""
+
+msgid ""
+"Due to implementation details of the {type:FLOAT} type in {dialects:"
+"CLICKHOUSE} sources it is recommended to use the {ref:COMPARE} function "
+"instead of comparison operators for this type."
+msgstr ""
+
+msgid "Equality"
+msgstr ""
+
+msgid "Inequality"
+msgstr ""
+
+msgid "Less than"
+msgstr ""
+
+msgid "Less than or equal"
+msgstr ""
+
+msgid "Greater than"
+msgstr ""
+
+msgid "Greater than or equal"
+msgstr ""
+
+msgid "Performs a Boolean join of two expressions with the `AND` condition."
+msgstr ""
+
+msgid "Performs a Boolean join of two expressions with the `OR` condition."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Checks whether the value matches at least one of the values listed in "
+"`IN(...)`.\n"
+"\n"
+"The option `{argn:0} NOT IN (<{arg:1}>)` returns the opposite value."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns `TRUE` if {arg:0} is in the range from {arg:1} to {arg:2}.\n"
+"\n"
+"The option `{argn:0} NOT BETWEEN {argn:1} AND {argn:2}` returns the opposite "
+"value."
+msgstr ""
+
+msgid ""
+"The first argument must be a measure (aggregated expression), otherwise an "
+"error will be raised."
+msgstr ""
+
+msgid ""
+"Re-evaluate {arg:0} for a date/time with a given offset.\n"
+"The {arg:1} argument is the dimension along which the offset is made.\n"
+"The {arg:3} argument is an integer. It can be negative.\n"
+"The {arg:2} argument takes the following values:\n"
+"- `\"year\"`;\n"
+"- `\"month\"`;\n"
+"- `\"day\"`;\n"
+"- `\"hour\"`;\n"
+"- `\"minute\"`;\n"
+"- `\"second\"`.\n"
+"\n"
+"Can also be used as `AGO( measure, date_dimension, number )`. In this case, "
+"the third argument is interpreted as the number of days.\n"
+"\n"
+"See also {ref:AT_DATE}, {ref:LAG}."
+msgstr ""
+
+msgid ""
+"Re-evaluate {arg:0} for a date/time specified by {arg:2}.\n"
+"The {arg:1} argument is the dimension along which the offset is made.\n"
+"\n"
+"See also {ref:AGO}, {ref:LAG}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the absolute value of {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the arccosine of {arg:0} in radians."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the arcsine of {arg:0} in radians."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the arctangent of {arg:0} in radians."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the arctangent in radians for the specified coordinates {arg:0} and "
+"{arg:1}."
+msgstr ""
+
+msgid "Rounds the value up to the nearest integer."
+msgstr ""
+
+msgid "Rounds the value down to the nearest integer."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the cosine of {arg:0} in radians."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the cotangent of {arg:0} in radians."
+msgstr ""
+
+msgid "Converts radians to degrees."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Divides {arg:0} by {arg:1}. The result is rounded down to the nearest "
+"integer."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Divides {arg:0} by {arg:1}. Returns {arg:2} if division by zero occurs. If "
+"the number {arg:2} is omitted, it is assumed to be `NULL`.\n"
+"The result is rounded down to the nearest integer."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Divides {arg:0} by {arg:1}. Returns {arg:2} if division by zero occurs. If "
+"the number {arg:2} is omitted, it is assumed to be `NULL`."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the result of raising the number 'e' to the power of {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the natural logarithm of the number {arg:0}. Returns `NULL` if the "
+"number is less than or equal to 0."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the logarithm of the number {arg:0} to base 10. Returns `NULL` if "
+"the number is less than or equal to 0."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the logarithm of {arg:0} to base {arg:1}. Returns `NULL` if the "
+"number {arg:0} is less than or equal to 0."
+msgstr ""
+
+msgid ""
+"Returns the greatest value.\n"
+"\n"
+"See also {ref:LEAST}.\n"
+"\n"
+"Depending on the specified data type, it returns:\n"
+"- The greatest number.\n"
+"- The last string in alphabetical order.\n"
+"- The latest date.\n"
+"- `TRUE` when selecting between `TRUE` and `FALSE` for Boolean type."
+msgstr ""
+
+msgid ""
+"Returns the smallest value.\n"
+"\n"
+"See also {ref:GREATEST}.\n"
+"\n"
+"Depending on the specified data type, it returns:\n"
+"- The smallest number.\n"
+"- The first string in alphabetical order.\n"
+"- The earliest date.\n"
+"- `FALSE` when selecting between `TRUE` and `FALSE` for Boolean type."
+msgstr ""
+
+msgid "Returns PI. The accuracy depends on the data source."
+msgstr ""
+
+#, python-brace-format
+msgid "Converts {arg:0} degrees to radians."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Rounds the number {arg:0} to the number of decimal digits specified in "
+"{arg:1}.\n"
+"If the number {arg:1} is omitted, {arg:0} is rounded to the nearest integer."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the sign of the number {arg:0}:\n"
+"- `-1` if the number is negative.\n"
+"`0` if the number is zero.\n"
+"- `1` if the number is positive."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the sine of {arg:0} in radians."
+msgstr ""
+
+msgid "Returns the square root of the specified number."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the number {arg:0} raised to the power of 2."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the tangent of {arg:0} in radians."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns:\n"
+"* 0 if {arg:0} and {arg:1} differs by not more than {arg:2}.\n"
+"* -1 if {arg:0} is less than {arg:1} by more than {arg:2}.\n"
+"* 1 if {arg:0} is greater than {arg:1} by more than {arg:2}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the date obtained by adding {arg:1} in the amount of {arg:2} to the "
+"specified date {arg:0}.\n"
+"\n"
+"The {arg:2} argument is an integer. It can be negative.\n"
+"The {arg:1} argument takes the following values:\n"
+"- `\"year\"`;\n"
+"- `\"month\"`;\n"
+"- `\"day\"`;\n"
+"- `\"hour\"`;\n"
+"- `\"minute\"`;\n"
+"- `\"second\"`."
+msgstr ""
+
+msgid ""
+"For all sources except {dialects:CLICKHOUSE}, {arg:2} takes only constant "
+"values."
+msgstr ""
+
+msgid ""
+"Returns a part of the date as an integer.\n"
+"\n"
+"Depending on the argument, {arg:1} returns the following values:\n"
+"- `\"year\"` — the year number (see {ref:YEAR});\n"
+"- `\"quarter\"` — the number of the quarter (from `1` to `4`) of the year "
+"(see {ref:QUARTER});\n"
+"- `\"month\"` — the number of the month in the year (see {ref:MONTH});\n"
+"- `\"week\"` — the number of the week in the year according to {link: "
+"iso_8601: ISO 8601} (see {ref:WEEK});\n"
+"- `\"dayofweek\"`, `\"dow\"` — the number of the day of the week (see {ref:"
+"DAYOFWEEK});\n"
+"- `\"day\"` — the number of the day in the month (see {ref:DAY});\n"
+"- `\"hour\"` — the number of the hour in the day (see {ref:HOUR});\n"
+"- `\"minute\"` — the number of the minute in the hour (see {ref:MINUTE});\n"
+"- `\"second\"` — the number of the second in the minute (see {ref:SECOND}).\n"
+"\n"
+"If you select `\"dayofweek\"`, you can use the additional parameter {arg:2} "
+"to specify the first day of the week (Monday by default). Learn more about "
+"this parameter in the {ref:DAYOFWEEK} function description.\n"
+msgstr ""
+
+msgid "Example with date"
+msgstr ""
+
+msgid "Example with custom first day of the week"
+msgstr ""
+
+msgid "Example with date and time"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Rounds {arg:0} down to the given {arg:1}. If optional {arg:2} is given, then "
+"the value is rounded down to a {arg:2} multiple of {arg:1} (omitting {arg:2} "
+"is the same as `{argn:2} = 1`).\n"
+"\n"
+"Supported units:\n"
+"- `\"second\"`;\n"
+"- `\"minute\"`;\n"
+"- `\"hour\"`;\n"
+"- `\"day\"` (acts as the day of the year if {arg:2} is specified);\n"
+"- `\"week\"`;\n"
+"- `\"month\"`;\n"
+"- `\"quarter\"`;\n"
+"- `\"year\"`."
+msgstr ""
+
+msgid ""
+"The function with three arguments is only available for the sources "
+"{dialects:CLICKHOUSE_21_8} or higher."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of the second in the minute of the specified date "
+"{arg:0}. When the date is specified without time, it returns `0`."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of the minute in the hour of the specified date {arg:0}. "
+"When the date is specified without time, it returns `0`."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of the hour in the day of the specified date and time "
+"{arg:0}. When the date is specified without time, it returns `0`."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of the day in the month of the specified date {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of the month in the year of the specified date {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Returns the number of the quarter (from `1` to `4`) of the year of the "
+"specified date {arg:0}."
+msgstr ""
+
+#, python-brace-format
+msgid "Returns the year number in the specified date {arg:0}."
+msgstr ""
+
+msgid ""
+"Returns the day of the week according to {link: iso_8601: ISO 8601}.\n"
+"- Monday — 1.\n"
+"- Sunday — 7.\n"
+"\n"
+"If the additional parameter {arg:1} is specified, this day is considered the "
+"first day of the week. Valid values:\n"
+"- `\"Monday\"`, `\"Mon\"` — Monday;\n"
+"- `\"Tuesday\"`. `\"Tue\"` — Tuesday;\n"
+"- `\"Wednesday\"`, `\"Wed\"` — Wednesday;\n"
+"- `\"Thursday\"`, `\"Thu\"` — Thursday;\n"
+"- `\"Friday\"`, `\"Fri\"` — Friday;\n"
+"- `\"Saturday\"`, ` \"Sat\"` — Saturday;\n"
+"- `\"Sunday\"`, `\"Sun\"` — Sunday.\n"
+msgstr ""
+
+msgid ""
+"The number of the week according to {link: iso_8601: ISO 8601}. The first "
+"week is the week that contains the first Thursday of the year or January 4th."
+msgstr ""
+
+msgid ""
+"Returns the current date and time, depending on the data source and "
+"connection type."
+msgstr ""
+
+msgid "On {dialects:YQL}, the function always returns the UTC date and time."
+msgstr ""
+
+msgid ""
+"Returns the current date, depending on the data source and connection type."
+msgstr ""
+
+msgid ""
+"Markup functions are used for creating marked up text (hypertext) from "
+"string values and/or other marked up text.\n"
+"\n"
+"## Usage notes {#usage-notes}\n"
+"\n"
+"There are the following features of using markup:\n"
+"1. These functions return `NULL` when any argument is `NULL`. To get a non-"
+"NULL value, wrap argumens in `IFNULL()`. Example: `bold(ifnull([value], "
+"'NULL'))`.\n"
+"1. Converting markup to a normal string is not currently possible.\n"
+"1. Markup functions can be used within logic functions. Example: "
+"`IF(STARTSWITH([value], 'n'), BOLD([value]), MARKUP([value]))`.\n"
 msgstr ""
 
 msgid ""
@@ -369,114 +1596,6 @@ msgstr ""
 
 msgid "aggregate functions,aggregations,aggregate data,level of detail,lod"
 msgstr ""
-
-msgid "https://en.wikipedia.org/wiki/ISO_8601"
-msgstr ""
-
-msgid ""
-"Markup functions are used for creating marked up text (hypertext) from "
-"string values and/or other marked up text.\n"
-"\n"
-"## Usage notes {#usage-notes}\n"
-"\n"
-"There are the following features of using markup:\n"
-"1. These functions return `NULL` when any argument is `NULL`. To get a non-"
-"NULL value, wrap argumens in `IFNULL()`. Example: `bold(ifnull([value], "
-"'NULL'))`.\n"
-"1. Converting markup to a normal string is not currently possible.\n"
-"1. Markup functions can be used within logic functions. Example: "
-"`IF(STARTSWITH([value], 'n'), BOLD([value]), MARKUP([value]))`.\n"
-msgstr ""
-
-msgid "https://github.com/google/re2/wiki/Syntax"
-msgstr "https://github.com/google/re2/wiki/Syntax"
-
-msgid ""
-"Time series functions provide various ways to look up values corresponding "
-"to a specific time or offset along a given time axis.\n"
-"\n"
-"In a certain way this functionality is similar to the window function {ref:"
-"LAG}.\n"
-"The main difference is that `LAG` is indifferent to the actual values of the "
-"dimensions being used, and operates over positional offsets specified in "
-"_rows_, while time series functions use specific values and value offsets in "
-"date/time units like days, hours or seconds. This makes them sensitive to "
-"missing values in data. As a result of this `AGO(SUM([Sales]), [Date], "
-"\"year\")` will return `NULL` if the same-date row for the previous year is "
-"missing.\n"
-"{text:time_series_syntax}\n"
-msgstr ""
-
-msgid ""
-"## Syntax {#syntax}\n"
-"\n"
-"Time series functions support extended syntax:\n"
-"{text:time_series_signature}\n"
-"### BEFORE FILTER BY {#syntax-before-filter-by}\n"
-"\n"
-"If any fields are listed in `BEFORE FILTER BY`, then the function is "
-"calculated before data is filtered using these fields.\n"
-"Let's say you are trying to calculate the value of `[Sales]` a year ago from "
-"today's date:\n"
-"```\n"
-"AGO([Sales], [Date], \"year\", 1)\n"
-"```\n"
-"and also have a filter in the chart limiting the dates to a specific year "
-"(`2018 < [Year] <= 2019`, where `Year` is calculated as `YEAR([Date])`). All "
-"data pertaining to the year 2018 will be omitted from the result. Because of "
-"this the function will return `NULL`.\n"
-"\n"
-"If `BEFORE FILTER BY` is added to the function:\n"
-"```\n"
-"AGO([Sales], [Date], \"year\", 1 BEFORE FILTER BY [Year])\n"
-"```\n"
-"it will return the value of `[Sales]`.\n"
-"\n"
-"The date/time dimension specified as the second argument of time series "
-"functions is implicitly added to the `BEFORE FILTER BY` clause. For example, "
-"the following to formulas are equivalent:\n"
-"```\n"
-"AGO([Sales], [Date], \"week\")\n"
-"```\n"
-"```\n"
-"AGO([Sales], [Date], \"week\" BEFORE FILTER BY [Date])\n"
-"```\n"
-"\n"
-"### IGNORE DIMENSIONS {#syntax-ignore-dimensions}\n"
-"\n"
-"The `IGNORE DIMENSIONS` clause allows the exclusion of dimensions from the "
-"search criteria. When looking up a value for a certain date, the search is "
-"done by matching dimension values in each row against the values of the same "
-"dimensions in the original row. If any of the other dimensions correlate "
-"with the date dimension, then the data query may return an empty result "
-"(`NULL`).\n"
-"\n"
-"For example, if the data request contains `[Date]`, `[Month]` and "
-"`AGO([Sales], [Date], \"month\")`, then it will be impossible to find a row "
-"with `[Date]` being a month earlier, but the value of `[Month]` being the "
-"same as in the current row. This will result in `AGO` always returning "
-"`NULL`.\n"
-"\n"
-"To get the correct value of `[Sales]` exclude `[Month]` using the `IGNORE "
-"DIMENSIONS` clause:\n"
-"```\n"
-"AGO([Sales], [Date], \"month\" IGNORE DIMENSIONS [Month])\n"
-"```"
-msgstr ""
-
-msgid ""
-"```\n"
-"<FUNCTION_NAME>(\n"
-"    arg1, arg2, ...\n"
-"\n"
-"    [ BEFORE FILTER BY filtered_field_1, ... ]\n"
-"    [ IGNORE DIMENSIONS dimension_1, ... ]\n"
-")\n"
-"```\n"
-msgstr ""
-
-msgid "https://en.wikipedia.org/wiki/Unix_time"
-msgstr "https://en.wikipedia.org/wiki/Unix_time"
 
 msgid ""
 "Window functions are calculated in the same way as aggregations, but they do "
@@ -679,1330 +1798,282 @@ msgstr ""
 msgid "Conditional Aggregations"
 msgstr ""
 
-msgid ""
-"Returns the sum of all expression values. Applicable to numeric data types "
-"only."
-msgstr ""
-
-msgid ""
-"Returns the sum of all the expression values that meet the {arg:1} "
-"condition. Applicable to numeric data types only."
-msgstr ""
-
-msgid ""
-"Returns the average of all values. Applicable to numeric data types as well "
-"as {type:DATE|DATETIME}."
-msgstr ""
-
-msgid ""
-"Returns the average of all values that meet the {arg:1} condition. If the "
-"values don't exist, it returns `NULL`. Applicable to numeric data types only."
-msgstr ""
-
-msgid ""
-"Returns the maximum value.\n"
-"\n"
-"If {arg:0}:\n"
-"- number — Returns the largest number.\n"
-"- date — Returns the latest date.\n"
-"- string — Returns the last value in the alphabetic order.\n"
-msgstr ""
-
-msgid ""
-"Returns the minimum value.\n"
-"\n"
-"If {arg:0}:\n"
-"- number — Returns the smallest number.\n"
-"- date — Returns the earliest date.\n"
-"- string — Returns the first value in the alphabetic order.\n"
-msgstr ""
-
-msgid "Returns the number of items in the group."
-msgstr ""
-
-msgid "Returns the number of items in the group meeting the {arg:0} condition."
-msgstr ""
-
-msgid ""
-"Returns the number of unique values in the group.\n"
-"\n"
-"See also {ref:COUNTD_APPROX}."
-msgstr ""
-
-msgid ""
-"Returns the number of unique values in the group that meet the {arg:1} "
-"condition.\n"
-"\n"
-"See also {ref:COUNTD_APPROX}."
-msgstr ""
-
-msgid ""
-"Returns the approximate number of unique values in the group. Faster than "
-"{ref:COUNTD}, but doesn't guarantee accuracy."
-msgstr ""
-
-msgid ""
-"Returns the statistical standard deviation of all values in the expression "
-"based on a selection from the population."
-msgstr ""
-
-msgid ""
-"Returns the statistical standard deviation of all values in the expression "
-"based on the biased population."
-msgstr ""
-
-msgid ""
-"Returns the statistical variance of all values in an expression based on a "
-"selection from the population."
-msgstr ""
-
-msgid ""
-"Returns the statistical variance of all values in an expression across the "
-"entire population."
-msgstr ""
-
-msgid ""
-"Returns the precise {arg:1}-level quantile ({arg:1} should be in range from "
-"0 to 1)."
-msgstr ""
-
-msgid ""
-"Returns the approximate {arg:1}-level quantile ({arg:1} should be in range "
-"from 0 to 1)."
-msgstr ""
-
-msgid "Returns the median value."
-msgstr ""
-
-msgid ""
-"Returns one of the values of {arg:0} from the group. This is a "
-"nondeterministic aggregation — the result may vary for the same data over "
-"multiple queries."
-msgstr ""
-
-msgid ""
-"Returns {arg:0} for the minimum value of {arg:1} in the group. If multiple "
-"values of {arg:0} match the minimum value of {arg:1}, then the first one "
-"encountered is returned. This makes the function non-deterministic."
-msgstr ""
-
-msgid ""
-"Returns {arg:0} for the maximum value of {arg:1} in the group. If multiple "
-"values of {arg:0} match the maximum value of {arg:1}, then the first one "
-"encountered is returned. This makes the function non-deterministic."
-msgstr ""
-
-msgid ""
-"Returns a string that contains all unique values of {arg:0} delimited by "
-"{arg:1} (if {arg:1} is not specified, a comma is used)."
-msgstr ""
-
-msgid ""
-"Returns a string that contains top {arg:1} unique values of {arg:0} "
-"delimited by {arg:2} (if {arg:2} is not specified, a comma is used)."
-msgstr ""
-
-msgid "Returns an array containing the passed values."
-msgstr ""
-
-msgid ""
-"All passed values must be of the same type or `NULL`. At least one value "
-"must be non-`NULL`."
-msgstr ""
-
-msgid "Expands the {arg:0} array expression to a set of rows."
-msgstr ""
-
-msgid ""
-"{dialects: POSTGRESQL} doesn't allow filtering fields containing the UNNEST "
-"function. If the data source is {dialects: POSTGRESQL}, do not use such "
-"fields in selectors."
-msgstr ""
-
-msgid ""
-"Returns the element with the index {arg:1} from the array {arg:0}. Index "
-"must be any integer. Indexes in an array begin with one."
-msgstr ""
-
-msgid ""
-"Concatenates elements of the array {arg:0} using {arg:1} as a delimiter "
-"(comma by default) and {arg:2} as a `NULL` string (`NULL` items are skipped "
-"by default).\n"
-"\n"
-"See also {ref:STR}"
-msgstr ""
-
-msgid ""
-"Returns the number of elements in the array {arg:0} equal to {arg:1}. The "
-"type of {arg:1} must match the type of the {arg:0} elements."
-msgstr ""
-
-msgid "Returns `TRUE` if {arg:0} contains {arg:1}."
-msgstr ""
-
-msgid "Returns `TRUE` if {arg:0} contains all elements of {arg:1}."
-msgstr ""
-
-msgid "Returns `TRUE` if {arg:0} contains any elements of {arg:1}."
-msgstr ""
-
-msgid ""
-"Returns `TRUE` if {arg:1} is a continuous subsequence of {arg:0}. In other "
-"words, returns `TRUE` if and only if `array1 = prefix + array2 + suffix`."
-msgstr ""
-
-msgid "Returns `TRUE` if {arg:0} starts with {arg:1}."
-msgstr ""
-
-msgid ""
-"Returns the part of array {arg:0} of length {arg:2} starting from index "
-"{arg:1}. Indexes in an array begin with one."
-msgstr ""
-
-msgid ""
-"Converts {arg:0} to an array of integers. The conversion rules are the same "
-"as for {ref:INT}."
-msgstr ""
-
-msgid ""
-"Converts {arg:0} to an array of strings. The conversion rules are the same "
-"as for {ref:STR}."
-msgstr ""
-
-msgid ""
-"Converts {arg:0} to an array of fractional numbers. The conversion rules are "
-"the same as for {ref:FLOAT}."
-msgstr ""
-
-msgid "Replaces each {arg:0} element equal to {arg:1} with {arg:2}."
-msgstr ""
-
-msgid ""
-"This function cannot work with arrays with `Nullable` items. To remove "
-"`NULL` items from the array, use {ref:ARR_REMOVE} or {ref:array/REPLACE}."
-msgstr ""
-
-msgid "Returns the least of elements in the {arg:0}."
-msgstr ""
-
-msgid "Returns the greatest of elements in the {arg:0}."
-msgstr ""
-
-msgid "Returns the sum of elements in the {arg:0}."
-msgstr ""
-
-msgid "Returns the average of elements in the {arg:0}."
-msgstr ""
-
-msgid "Returns the product of elements in the {arg:0}."
-msgstr ""
-
-msgid "Removes all {arg:0} elements equal to {arg:1}."
-msgstr ""
-
-msgid ""
-"Returns the date obtained by adding {arg:1} in the amount of {arg:2} to the "
-"specified date {arg:0}.\n"
-"\n"
-"The {arg:2} argument is an integer. It can be negative.\n"
-"The {arg:1} argument takes the following values:\n"
-"- `\"year\"`;\n"
-"- `\"month\"`;\n"
-"- `\"day\"`;\n"
-"- `\"hour\"`;\n"
-"- `\"minute\"`;\n"
-"- `\"second\"`."
-msgstr ""
-
-msgid ""
-"For all sources except {dialects:CLICKHOUSE}, {arg:2} takes only constant "
-"values."
-msgstr ""
-
-msgid ""
-"Returns a part of the date as an integer.\n"
-"\n"
-"Depending on the argument, {arg:1} returns the following values:\n"
-"- `\"year\"` — the year number (see {ref:YEAR});\n"
-"- `\"quarter\"` — the number of the quarter (from `1` to `4`) of the year "
-"(see {ref:QUARTER});\n"
-"- `\"month\"` — the number of the month in the year (see {ref:MONTH});\n"
-"- `\"week\"` — the number of the week in the year according to {link: "
-"iso_8601: ISO 8601} (see {ref:WEEK});\n"
-"- `\"dayofweek\"`, `\"dow\"` — the number of the day of the week (see {ref:"
-"DAYOFWEEK});\n"
-"- `\"day\"` — the number of the day in the month (see {ref:DAY});\n"
-"- `\"hour\"` — the number of the hour in the day (see {ref:HOUR});\n"
-"- `\"minute\"` — the number of the minute in the hour (see {ref:MINUTE});\n"
-"- `\"second\"` — the number of the second in the minute (see {ref:SECOND}).\n"
-"\n"
-"If you select `\"dayofweek\"`, you can use the additional parameter {arg:2} "
-"to specify the first day of the week (Monday by default). Learn more about "
-"this parameter in the {ref:DAYOFWEEK} function description.\n"
-msgstr ""
-
-msgid "Example with date"
-msgstr ""
-
-msgid "Example with custom first day of the week"
-msgstr ""
-
-msgid "Example with date and time"
-msgstr ""
-
-msgid ""
-"Rounds {arg:0} down to the given {arg:1}. If optional {arg:2} is given, then "
-"the value is rounded down to a {arg:2} multiple of {arg:1} (omitting {arg:2} "
-"is the same as `{argn:2} = 1`).\n"
-"\n"
-"Supported units:\n"
-"- `\"second\"`;\n"
-"- `\"minute\"`;\n"
-"- `\"hour\"`;\n"
-"- `\"day\"` (acts as the day of the year if {arg:2} is specified);\n"
-"- `\"week\"`;\n"
-"- `\"month\"`;\n"
-"- `\"quarter\"`;\n"
-"- `\"year\"`."
-msgstr ""
-
-msgid ""
-"The function with three arguments is only available for the sources "
-"{dialects:CLICKHOUSE_21_8} or higher."
-msgstr ""
-
-msgid ""
-"Returns the number of the second in the minute of the specified date "
-"{arg:0}. When the date is specified without time, it returns `0`."
-msgstr ""
-
-msgid ""
-"Returns the number of the minute in the hour of the specified date {arg:0}. "
-"When the date is specified without time, it returns `0`."
-msgstr ""
-
-msgid ""
-"Returns the number of the hour in the day of the specified date and time "
-"{arg:0}. When the date is specified without time, it returns `0`."
-msgstr ""
-
-msgid ""
-"Returns the number of the day in the month of the specified date {arg:0}."
-msgstr ""
-
-msgid ""
-"Returns the number of the month in the year of the specified date {arg:0}."
-msgstr ""
-
-msgid ""
-"Returns the number of the quarter (from `1` to `4`) of the year of the "
-"specified date {arg:0}."
-msgstr ""
-
-msgid "Returns the year number in the specified date {arg:0}."
-msgstr ""
-
-msgid ""
-"Returns the day of the week according to {link: iso_8601: ISO 8601}.\n"
-"- Monday — 1.\n"
-"- Sunday — 7.\n"
-"\n"
-"If the additional parameter {arg:1} is specified, this day is considered the "
-"first day of the week. Valid values:\n"
-"- `\"Monday\"`, `\"Mon\"` — Monday;\n"
-"- `\"Tuesday\"`. `\"Tue\"` — Tuesday;\n"
-"- `\"Wednesday\"`, `\"Wed\"` — Wednesday;\n"
-"- `\"Thursday\"`, `\"Thu\"` — Thursday;\n"
-"- `\"Friday\"`, `\"Fri\"` — Friday;\n"
-"- `\"Saturday\"`, ` \"Sat\"` — Saturday;\n"
-"- `\"Sunday\"`, `\"Sun\"` — Sunday.\n"
-msgstr ""
-
-msgid ""
-"The number of the week according to {link: iso_8601: ISO 8601}. The first "
-"week is the week that contains the first Thursday of the year or January 4th."
-msgstr ""
-
-msgid ""
-"Returns the current date and time, depending on the data source and "
-"connection type."
-msgstr ""
-
-msgid "On {dialects:YQL}, the function always returns the UTC date and time."
-msgstr ""
-
-msgid ""
-"Returns the current date, depending on the data source and connection type."
-msgstr ""
-
-msgid ""
-"Returns `TRUE` if {arg:0} is `NULL`, otherwise returns `FALSE`.\n"
-"\n"
-"`{argn:0} IS NOT NULL` returns the opposite result."
-msgstr ""
-
-msgid "As a function"
-msgstr ""
-
-msgid "As an operator"
-msgstr ""
-
-msgid "Returns {arg:0} if it's not `NULL`. Otherwise returns {arg:1}."
-msgstr ""
-
-msgid "Returns `TRUE` if {arg:0} is `NaN`, otherwise returns `FALSE`.\n"
-msgstr ""
-
-msgid "Returns {arg:0} if it's not `NaN`. Otherwise returns {arg:1}."
-msgstr ""
-
-msgid "Returns {arg:0} if it's not `NULL`. Otherwise returns 0."
-msgstr ""
-
-msgid ""
-"Compares {arg:0} to {arg:1}, {arg:3}, ... consecutively and returns the "
-"corresponding result for the first match. If no match is found, it returns "
-"{arg:5}."
-msgstr ""
-
-msgid "As a block"
-msgstr ""
-
-msgid "Example with data table"
-msgstr ""
-
-msgid ""
-"Checks conditional expressions {arg:0}, {arg:1}, ... and returns the "
-"matching result for the first condition found to be `TRUE`. IF all "
-"conditional expressions are `FALSE`, it returns {arg:4}."
-msgstr ""
-
-msgid "Stylizes the passed text in bold font."
-msgstr ""
-
-msgid "Stylizes the passed text in cursive font."
-msgstr ""
-
-msgid "Wraps {arg:1} into a hyperlink to URL {arg:0}."
-msgstr ""
-
-msgid ""
-"Merges marked up text pieces. Can also be used for converting strings to "
-"marked up text."
-msgstr ""
-
-msgid "Returns the absolute value of {arg:0}."
-msgstr ""
-
-msgid "Returns the arccosine of {arg:0} in radians."
-msgstr ""
-
-msgid "Returns the arcsine of {arg:0} in radians."
-msgstr ""
-
-msgid "Returns the arctangent of {arg:0} in radians."
-msgstr ""
-
-msgid ""
-"Returns the arctangent in radians for the specified coordinates {arg:0} and "
-"{arg:1}."
-msgstr ""
-
-msgid "Rounds the value up to the nearest integer."
-msgstr ""
-
-msgid "Rounds the value down to the nearest integer."
-msgstr ""
-
-msgid "Returns the cosine of {arg:0} in radians."
-msgstr ""
-
-msgid "Returns the cotangent of {arg:0} in radians."
-msgstr ""
-
-msgid "Converts radians to degrees."
-msgstr ""
-
-msgid ""
-"Divides {arg:0} by {arg:1}. The result is rounded down to the nearest "
-"integer."
-msgstr ""
-
-msgid ""
-"Divides {arg:0} by {arg:1}. Returns {arg:2} if division by zero occurs. If "
-"the number {arg:2} is omitted, it is assumed to be `NULL`.\n"
-"The result is rounded down to the nearest integer."
-msgstr ""
-
-msgid ""
-"Divides {arg:0} by {arg:1}. Returns {arg:2} if division by zero occurs. If "
-"the number {arg:2} is omitted, it is assumed to be `NULL`."
-msgstr ""
-
-msgid "Returns the result of raising the number 'e' to the power of {arg:0}."
-msgstr ""
-
-msgid ""
-"Returns the natural logarithm of the number {arg:0}. Returns `NULL` if the "
-"number is less than or equal to 0."
-msgstr ""
-
-msgid ""
-"Returns the logarithm of the number {arg:0} to base 10. Returns `NULL` if "
-"the number is less than or equal to 0."
-msgstr ""
-
-msgid ""
-"Returns the logarithm of {arg:0} to base {arg:1}. Returns `NULL` if the "
-"number {arg:0} is less than or equal to 0."
-msgstr ""
-
-msgid ""
-"Returns the greatest value.\n"
-"\n"
-"See also {ref:LEAST}.\n"
-"\n"
-"Depending on the specified data type, it returns:\n"
-"- The greatest number.\n"
-"- The last string in alphabetical order.\n"
-"- The latest date.\n"
-"- `TRUE` when selecting between `TRUE` and `FALSE` for Boolean type."
-msgstr ""
-
-msgid ""
-"Returns the smallest value.\n"
-"\n"
-"See also {ref:GREATEST}.\n"
-"\n"
-"Depending on the specified data type, it returns:\n"
-"- The smallest number.\n"
-"- The first string in alphabetical order.\n"
-"- The earliest date.\n"
-"- `FALSE` when selecting between `TRUE` and `FALSE` for Boolean type."
-msgstr ""
-
-msgid "Returns PI. The accuracy depends on the data source."
-msgstr ""
-
-msgid "Raises {arg:0} to the power of {arg:1}."
-msgstr ""
-
-msgid "Converts {arg:0} degrees to radians."
-msgstr ""
-
-msgid ""
-"Rounds the number {arg:0} to the number of decimal digits specified in "
-"{arg:1}.\n"
-"If the number {arg:1} is omitted, {arg:0} is rounded to the nearest integer."
-msgstr ""
-
-msgid ""
-"Returns the sign of the number {arg:0}:\n"
-"- `-1` if the number is negative.\n"
-"`0` if the number is zero.\n"
-"- `1` if the number is positive."
-msgstr ""
-
-msgid "Returns the sine of {arg:0} in radians."
-msgstr ""
-
-msgid "Returns the square root of the specified number."
-msgstr ""
-
-msgid "Returns the number {arg:0} raised to the power of 2."
-msgstr ""
-
-msgid "Returns the tangent of {arg:0} in radians."
-msgstr ""
-
-msgid ""
-"Returns:\n"
-"* 0 if {arg:0} and {arg:1} differs by not more than {arg:2}.\n"
-"* -1 if {arg:0} is less than {arg:1} by more than {arg:2}.\n"
-"* 1 if {arg:0} is greater than {arg:1} by more than {arg:2}."
-msgstr ""
-
-msgid "Inverts a Boolean value."
-msgstr ""
-
-msgid "Negation (-)"
-msgstr ""
-
-msgid "Returns the number {arg:0} with the opposite sign."
-msgstr ""
-
-msgid ""
-"Checks whether the value of {arg:0} is true (`TRUE`).\n"
-"\n"
-"The `{argn:0} IS NOT TRUE` option returns the opposite value."
-msgstr ""
-
-msgid ""
-"Checks whether the {arg:0} value is false (`FALSE`).\n"
-"\n"
-"The `{argn:0} IS NOT FALSE` option returns the opposite value."
-msgstr ""
-
-msgid "Power (^)"
-msgstr ""
-
-msgid "Multiplication (*)"
-msgstr ""
-
-msgid ""
-"If both arguments are numbers, it returns the result by multiplying {arg:0} "
-"by {arg:1}.\n"
-"\n"
-"If one of the arguments is {type:STRING} and the other is {type:INTEGER}, it "
-"returns the string repeated the specified number of times."
-msgstr ""
-
-msgid "Division (/)"
-msgstr ""
-
-msgid "Divides the number {arg:0} by the number {arg:1}."
-msgstr ""
-
-msgid "Modulo (%)"
-msgstr ""
-
-msgid ""
-"Returns the remainder from dividing the first number {arg:0} by the second "
-"number {arg:1}."
-msgstr ""
-
-msgid "Addition and concatenation (+)"
-msgstr ""
-
-msgid ""
-"Behaves differently depending on the argument types. Possible options are "
-"listed in the table:\n"
-"\n"
-"{table: desc_by_type}\n"
-"\n"
-"Changing the order of arguments does not affect the result."
-msgstr ""
-
-msgid "Type of {arg:0}"
-msgstr ""
-
-msgid "Type of {arg:1}"
-msgstr ""
-
-msgid "Return value"
-msgstr ""
-
-msgid "The sum of the numbers {arg:0} and {arg:1}."
-msgstr ""
-
-msgid ""
-"The date that is {arg:1} days greater than {arg:0} (rounded down to an "
-"integer number of days)."
-msgstr ""
-
-msgid ""
-"The date with time, {arg:1} days greater than {arg:0}. If {arg:1} contains a "
-"fractional part, it is converted hours (`1/24`), minutes (`1/1440`), and "
-"seconds (`1/86400`)."
-msgstr ""
-
-msgid "The merging (concatenation) of strings {arg:0} and {arg:1}."
-msgstr ""
-
-msgid "The merging (concatenation) of arrays {arg:0} and {arg:1}."
-msgstr ""
-
-msgid "{dialects: METRIKAAPI} does not support string concatenation."
-msgstr ""
-
-msgid "Subtraction (-)"
-msgstr ""
-
-msgid ""
-"Behaves differently depending on the argument types. Possible options are "
-"listed in the table:\n"
-"\n"
-"{table: desc_by_type}"
-msgstr ""
-
-msgid "The difference between the numbers {arg:0} and {arg:1}."
-msgstr ""
-
-msgid ""
-"The date that is {arg:1} days smaller than {arg:0} (rounded down to an "
-"integer number of days)."
-msgstr ""
-
-msgid ""
-"The date with time, {arg:1} days smaller than {arg:0}. If {arg:1} contains a "
-"fractional part, it is converted to hours (`1/24`), minutes (`1/1440`), and "
-"seconds (`1/86400`)."
-msgstr ""
-
-msgid "The difference between two dates in days."
-msgstr ""
-
-msgid ""
-"The difference between two dates in days: the integer part — the number of "
-"whole days, the fractional part — the number of hours, minutes and seconds "
-"expressed as a fraction of the whole day (1 hour is '1/24')."
-msgstr ""
-
-msgid ""
-"Matches the string {arg:0} to the template {arg: 1} and returns `TRUE` on "
-"match.\n"
-"You can specify the value in {arg:1} or use the `%` character to match a "
-"string of any length.\n"
-"\n"
-"The `{argn:0} NOT LIKE` option returns the opposite value."
-msgstr ""
-
-msgid "Comparison"
-msgstr ""
-
-msgid "Compares the value {arg:0} with the value {arg:1}."
-msgstr ""
-
-msgid ""
-"Due to implementation details of the {type:FLOAT} type in {dialects:"
-"CLICKHOUSE} sources it is recommended to use the {ref:COMPARE} function "
-"instead of comparison operators for this type."
-msgstr ""
-
-msgid "Equality"
-msgstr ""
-
-msgid "Inequality"
-msgstr ""
-
-msgid "Less than"
-msgstr ""
-
-msgid "Less than or equal"
-msgstr ""
-
-msgid "Greater than"
-msgstr ""
-
-msgid "Greater than or equal"
-msgstr ""
-
-msgid "Performs a Boolean join of two expressions with the `AND` condition."
-msgstr ""
-
-msgid "Performs a Boolean join of two expressions with the `OR` condition."
-msgstr ""
-
-msgid ""
-"Checks whether the value matches at least one of the values listed in "
-"`IN(...)`.\n"
-"\n"
-"The option `{argn:0} NOT IN (<{arg:1}>)` returns the opposite value."
-msgstr ""
-
-msgid ""
-"Returns `TRUE` if {arg:0} is in the range from {arg:1} to {arg:2}.\n"
-"\n"
-"The option `{argn:0} NOT BETWEEN {argn:1} AND {argn:2}` returns the opposite "
-"value."
-msgstr ""
-
-msgid ""
-"Returns the numeric representation of the first character of the string."
-msgstr ""
-
-msgid "Converts the numeric representation of an ASCII character to a value."
-msgstr ""
-
-msgid ""
-"Merges any number of strings. When non-string types are used, they're "
-"converted to strings and then merged."
-msgstr ""
-
-msgid ""
-"Returns `TRUE` if {arg:0} contains {arg:1}. For case-insensitive searches, "
-"see {ref:ICONTAINS}."
-msgstr ""
-
-msgid ""
-"Case-insensitive version of {ref:string/CONTAINS}. Returns `TRUE` if {arg:0} "
-"contains {arg:1}."
-msgstr ""
-
-msgid ""
-"Returns `TRUE` if {arg:0} ends in {arg:1}. For case-insensitive searches, "
-"see {ref:IENDSWITH}."
-msgstr ""
-
-msgid ""
-"Case-insensitive version of {ref:ENDSWITH}. Returns `TRUE` if {arg:0} ends "
-"in {arg:1}."
-msgstr ""
-
-msgid ""
-"Returns `TRUE` if {arg:0} starts with {arg:1}. For case-insensitive "
-"searches, see {ref:ISTARTSWITH}."
-msgstr ""
-
-msgid ""
-"Case-insensitive version of {ref:string/STARTSWITH}. Returns `TRUE`  if "
-"{arg:0} starts with {arg:1}."
-msgstr ""
-
-msgid ""
-"Returns the index of the position of the first character of the substring "
-"{arg:1} in the string {arg:0}.\n"
-"\n"
-"If the `start_index` option is specified, the search starts from the "
-"specified position."
-msgstr ""
-
-msgid ""
-"Returns a string that contains the number of characters specified in {arg:1} "
-"from the beginning of the string {arg:0}."
-msgstr ""
-
-msgid ""
-"Returns a string that contains the number of characters specified in {arg:1} "
-"from the end of the string {arg:0}."
-msgstr ""
-
-msgid ""
-"Returns the number of characters in the string or items in array {arg:0}."
-msgstr ""
-
-msgid "Returns the string {arg:0} in lowercase."
-msgstr ""
-
-msgid "Returns the string {arg:0} in uppercase."
-msgstr ""
-
-msgid ""
-"Returns the string {arg:0} without spaces at the beginning of the string."
-msgstr ""
-
-msgid "Returns the string {arg:0} without spaces at the end of the string."
-msgstr ""
-
-msgid ""
-"Returns the string {arg:0} without spaces at the beginning or end of the "
-"string."
-msgstr ""
-
-msgid ""
-"Returns the substring {arg:0} starting from the index {arg:1}.\n"
-"\n"
-"If an additional argument `{argn:2}` is specified, a substring of the "
-"specified length is returned."
-msgstr ""
-
-msgid ""
-"See the documentation of the data source to clarify the regular expression "
-"syntax."
-msgstr ""
-
-msgid ""
-"Returns the substring {arg:0} that matches the regular expression pattern "
-"{arg:1}."
-msgstr ""
-
-msgid ""
-"Returns a substring {arg:0} that matches the regular expression pattern "
-"{arg:1} starting from the specified index."
-msgstr ""
-
-msgid ""
-"Returns 'TRUE' if the string {arg:0} has a substring that matches the "
-"regular expression pattern {arg:1}."
-msgstr ""
+msgid "https://github.com/google/re2/wiki/Syntax"
+msgstr "https://github.com/google/re2/wiki/Syntax"
 
-msgid ""
-"Searches for a substring in the string {arg:0} using the regular expression "
-"pattern {arg:1} and replaces it with the string {arg:2}.\n"
-"\n"
-"If the substring is not found, the string is not changed."
-msgstr ""
+msgid "https://en.wikipedia.org/wiki/Unix_time"
+msgstr "https://en.wikipedia.org/wiki/Unix_time"
 
 msgid ""
-"Searches for the substring {arg:1} in the string {arg:0} and replaces it "
-"with the string {arg:2}.\n"
+"Time series functions provide various ways to look up values corresponding "
+"to a specific time or offset along a given time axis.\n"
 "\n"
-"If the substring is not found, the string is not changed."
-msgstr ""
-
-msgid "Returns a string with the specified number of spaces."
-msgstr ""
-
-msgid ""
-"Returns a substring from {arg:0} using the {arg:1} delimiter character to "
-"divide the string into a sequence of {arg:2} parts. Delimiter is a comma by "
-"default. If {arg:2} is not passed, an array is returned (only for {dialects:"
-"CLICKHOUSE|POSTGRESQL} sources)"
-msgstr ""
-
-msgid "Converts the {arg:0} string encoding to `UTF8`."
+"In a certain way this functionality is similar to the window function {ref:"
+"LAG}.\n"
+"The main difference is that `LAG` is indifferent to the actual values of the "
+"dimensions being used, and operates over positional offsets specified in "
+"_rows_, while time series functions use specific values and value offsets in "
+"date/time units like days, hours or seconds. This makes them sensitive to "
+"missing values in data. As a result of this `AGO(SUM([Sales]), [Date], \"year"
+"\")` will return `NULL` if the same-date row for the previous year is "
+"missing.\n"
+"{text:time_series_syntax}\n"
 msgstr ""
 
 msgid ""
-"The first argument must be a measure (aggregated expression), otherwise an "
-"error will be raised."
-msgstr ""
-
-msgid ""
-"Re-evaluate {arg:0} for a date/time with a given offset.\n"
-"The {arg:1} argument is the dimension along which the offset is made.\n"
-"The {arg:3} argument is an integer. It can be negative.\n"
-"The {arg:2} argument takes the following values:\n"
-"- `\"year\"`;\n"
-"- `\"month\"`;\n"
-"- `\"day\"`;\n"
-"- `\"hour\"`;\n"
-"- `\"minute\"`;\n"
-"- `\"second\"`.\n"
-"\n"
-"Can also be used as `AGO( measure, date_dimension, number )`. In this case, "
-"the third argument is interpreted as the number of days.\n"
+"## Syntax {#syntax}\n"
 "\n"
-"See also {ref:AT_DATE}, {ref:LAG}."
-msgstr ""
-
-msgid ""
-"Re-evaluate {arg:0} for a date/time specified by {arg:2}.\n"
-"The {arg:1} argument is the dimension along which the offset is made.\n"
+"Time series functions support extended syntax:\n"
+"{text:time_series_signature}\n"
+"### BEFORE FILTER BY {#syntax-before-filter-by}\n"
 "\n"
-"See also {ref:AGO}, {ref:LAG}."
-msgstr ""
-
-msgid ""
-"Converts the {arg:0} expression to date format.\n"
+"If any fields are listed in `BEFORE FILTER BY`, then the function is "
+"calculated before data is filtered using these fields.\n"
+"Let's say you are trying to calculate the value of `[Sales]` a year ago from "
+"today's date:\n"
+"```\n"
+"AGO([Sales], [Date], \"year\", 1)\n"
+"```\n"
+"and also have a filter in the chart limiting the dates to a specific year "
+"(`2018 < [Year] <= 2019`, where `Year` is calculated as `YEAR([Date])`). All "
+"data pertaining to the year 2018 will be omitted from the result. Because of "
+"this the function will return `NULL`.\n"
 "\n"
-"The date must be in the format `YYYY-MM-DD`.\n"
+"If `BEFORE FILTER BY` is added to the function:\n"
+"```\n"
+"AGO([Sales], [Date], \"year\", 1 BEFORE FILTER BY [Year])\n"
+"```\n"
+"it will return the value of `[Sales]`.\n"
 "\n"
-"If {arg:0} is a number, then the {arg:1} option can be used to convert the "
-"date to the specified time zone."
-msgstr ""
-
-msgid "Argument {arg:1} is available only for {dialects:CLICKHOUSE} sources."
-msgstr ""
-
-msgid ""
-"For {dialects:CLICKHOUSE} data sources, numeric {arg:0} values less than or "
-"equal to `65535` are interpreted as the number of days (not seconds, like in "
-"all other cases) since January 1st 1970. This is the result of the behavior "
-"of available {dialects:CLICKHOUSE} functions.\n"
+"The date/time dimension specified as the second argument of time series "
+"functions is implicitly added to the `BEFORE FILTER BY` clause. For example, "
+"the following to formulas are equivalent:\n"
+"```\n"
+"AGO([Sales], [Date], \"week\")\n"
+"```\n"
+"```\n"
+"AGO([Sales], [Date], \"week\" BEFORE FILTER BY [Date])\n"
+"```\n"
 "\n"
-"One way to surpass this is to use the following formula: "
-"`DATE(DATETIME([value]))`. The result is more consistent, but is likely to "
-"be much slower."
-msgstr ""
-
-msgid ""
-"Converts the {arg:0} expression to date and time format. When converting "
-"`Date` to `DateTime`, the time is set to '00:00:00'.\n"
-"The date must be in the format `YYYY-MM-DDThh:mm:ss` or `YYYY-MM-DD hh:mm:"
-"ss`.\n"
+"### IGNORE DIMENSIONS {#syntax-ignore-dimensions}\n"
 "\n"
-"The date and time can be converted to the specified time zone when the "
-"{arg:1} option is available."
-msgstr ""
-
-msgid ""
-"Converts the {arg:0} expression to fractional number format according to the "
-"following rules:\n"
+"The `IGNORE DIMENSIONS` clause allows the exclusion of dimensions from the "
+"search criteria. When looking up a value for a certain date, the search is "
+"done by matching dimension values in each row against the values of the same "
+"dimensions in the original row. If any of the other dimensions correlate "
+"with the date dimension, then the data query may return an empty result "
+"(`NULL`).\n"
 "\n"
-"{table: conversion}"
-msgstr ""
-
-msgid "Type"
-msgstr ""
-
-msgid "Value"
-msgstr ""
-
-msgid "Original value."
-msgstr ""
-
-msgid ""
-"{link: unix_ts: Unix time} corresponding to the date and time. If the value "
-"contains time zone data, it's used in the calculation. If the time zone is "
-"unknown, the time is set in UTC."
-msgstr ""
-
-msgid "A number from a decimal string."
-msgstr ""
-
-msgid "`TRUE` — `1.0`, `FALSE` — `0.0`."
-msgstr ""
-
-msgid ""
-"Converts the {arg:0} expression to integer format according to the following "
-"rules:\n"
+"For example, if the data request contains `[Date]`, `[Month]` and "
+"`AGO([Sales], [Date], \"month\")`, then it will be impossible to find a row "
+"with `[Date]` being a month earlier, but the value of `[Month]` being the "
+"same as in the current row. This will result in `AGO` always returning "
+"`NULL`.\n"
 "\n"
-"{table: conversion}"
-msgstr ""
-
-msgid "Integer part of the number (rounded down)."
-msgstr ""
-
-msgid "`TRUE` — `1`, `FALSE` — `0`."
+"To get the correct value of `[Sales]` exclude `[Month]` using the `IGNORE "
+"DIMENSIONS` clause:\n"
+"```\n"
+"AGO([Sales], [Date], \"month\" IGNORE DIMENSIONS [Month])\n"
+"```"
 msgstr ""
 
 msgid ""
-"Converts the {arg:0} expression to Boolean type according to the following "
-"rules:\n"
+"```\n"
+"<FUNCTION_NAME>(\n"
+"    arg1, arg2, ...\n"
 "\n"
-"{table:conversion}"
-msgstr ""
-
-msgid "All others"
-msgstr ""
-
-msgid "Empty string (`\"\"`)"
-msgstr ""
-
-msgid "Converts the {arg:0} expression to string type."
-msgstr ""
-
-msgid ""
-"If an array is passed (only for {dialects:CLICKHOUSE|POSTGRESQL} sources), "
-"the conversion is performed by a function in the source database and results "
-"may vary for different data sources. For consistent results use {ref:"
-"ARR_STR}."
-msgstr ""
-
-msgid ""
-"Converts the {arg:0} expression to date and time format. Unlike {ref: "
-"DATETIME}, it supports multiple formats."
-msgstr ""
-
-msgid ""
-"Converts the {arg:0} expression to date format. Unlike {ref: DATE}, it "
-"supports multiple formats."
+"    [ BEFORE FILTER BY filtered_field_1, ... ]\n"
+"    [ IGNORE DIMENSIONS dimension_1, ... ]\n"
+")\n"
+"```\n"
 msgstr ""
 
-msgid ""
-"Generates a Geopoint type value. For the input, it accepts a string, a "
-"\"geopoint\" type value, or coordinates — latitude {arg:0} and longitude "
-"{arg:1}. If a single string is input, it must contain a list of two numbers "
-"(latitude and longitude) in JSON syntax."
+msgid "https://en.wikipedia.org/wiki/ISO_8601"
 msgstr ""
 
-msgid "Converts the {arg:0} expression to geopolygon format."
+msgid "Example"
 msgstr ""
 
-msgid "Alias: `char`"
+msgid "Function Reference"
 msgstr ""
 
-msgid "Alias: `varchar`"
+msgid "All Functions"
 msgstr ""
 
-msgid "Alias for `character`"
+msgid "Overview"
 msgstr ""
 
-msgid "Alias for `character varying`"
+msgid "Function Availability"
 msgstr ""
 
-msgid ""
-"Converts the {arg:0} expression to database's native type {arg:1}.\n"
-"\n"
-"The following type casts are supported:\n"
-"\n"
-"{table:supported_native_types}\n"
+#, python-brace-format
+msgid "Arguments ({args}) must be of the same type."
 msgstr ""
 
-msgid "Data source"
+#, python-brace-format
+msgid "Only constant values are accepted for the arguments ({args})."
 msgstr ""
 
-msgid "Data type"
+#, python-brace-format
+msgid "Function `{func_name}` is also found in the following categories: "
 msgstr ""
 
-msgid "Native data type"
+msgid "Depends on argument types"
 msgstr ""
 
-msgid "Parameters for native type"
+#, python-brace-format
+msgid "Same type as ({args})"
 msgstr ""
 
-msgid "Comment"
+msgid "Any"
 msgstr ""
 
-msgid "Example with grouping"
+msgid "Aggregate functions"
 msgstr ""
 
-msgid "Example with two arguments"
+msgid "String functions"
 msgstr ""
 
-msgid ""
-"If {arg:1} is `\"desc\"` or omitted, then ranking is done from greatest to "
-"least, if `\"asc\"`, then from least to greatest."
+msgid "Mathematical functions"
 msgstr ""
 
-msgid ""
-"Returns the rank of the current row if ordered by the given argument. Rows "
-"corresponding to the same value used for sorting have the same rank. If the "
-"first two rows both have rank of `1`, then the next row (if it features a "
-"different value) will have rank `3`, so, in effect, it is rank with gaps.\n"
-"\n"
-"{text:rank_direction_description}\n"
-"\n"
-"See also {ref: RANK_DENSE}, {ref: RANK_UNIQUE}, {ref:RANK_PERCENTILE}."
+msgid "Logical functions"
 msgstr ""
 
-msgid ""
-"Returns the rank of the current row if ordered by the given argument. Rows "
-"corresponding to the same value used for sorting have the same rank. If the "
-"first two rows both have rank of `1`, then the next row (if it features a "
-"different value) will have rank `2`, (rank without gaps).\n"
-"\n"
-"{text:rank_direction_description}\n"
-"\n"
-"See also {ref: RANK}, {ref: RANK_UNIQUE}, {ref:RANK_PERCENTILE}."
+msgid "Date/Time functions"
 msgstr ""
 
-msgid ""
-"Returns the rank of the current row if ordered by the given argument. Rows "
-"corresponding to the same value have different rank values. This means that "
-"rank values are sequential and different for all rows, always increasing by "
-"`1` for the next row.\n"
-"\n"
-"{text:rank_direction_description}\n"
-"\n"
-"See also {ref: RANK}, {ref: RANK_DENSE}, {ref:RANK_PERCENTILE}."
+msgid "Type conversion functions"
 msgstr ""
 
-msgid ""
-"Returns the relative rank (from `0` to `1`) of the current row if ordered by "
-"the given argument. Calculated as `(RANK(...) - 1) / (row count) `.\n"
-"\n"
-"{text:rank_direction_description}\n"
-"\n"
-"See also {ref: RANK}, {ref: RANK_DENSE}, {ref: RANK_UNIQUE}."
+msgid "Operators"
 msgstr ""
 
-msgid "Returns the number of items in the specified window."
+msgid "Geographical functions"
 msgstr ""
 
-msgid "Returns the average of all values. Applicable to numeric data types."
+msgid "Text markup functions"
 msgstr ""
 
-msgid ""
-"Returns the number of items in the specified window meeting the {arg:0} "
-"condition."
+msgid "Window functions"
 msgstr ""
 
-msgid "Example with ORDER BY"
+msgid "Time series functions"
 msgstr ""
 
-msgid ""
-"The sorting order is based on the fields listed in the sorting section of "
-"the chart and in the `ORDER BY` clause. First, `ORDER BY` fields are used, "
-"and then they are complemented by the fields from the chart."
+msgid "Array functions"
 msgstr ""
 
-msgid "Window"
+msgid "aggregation"
 msgstr ""
 
-msgid "Starts from the first row and ends at the current row."
+msgid "string"
 msgstr ""
 
-msgid "Starts from the current row and ends at the last row."
+msgid "mathematical"
 msgstr ""
 
-msgid ""
-"\n"
-"{table:rwindow_description_table}\n"
-"\n"
-"By default `\"asc\"` is used.\n"
+msgid "logical"
 msgstr ""
 
-msgid ""
-"Returns the sum of all values in a growing (or shrinking) window defined by "
-"the sort order and the value of {arg:1}:\n"
-"{text:rwindow_description}\n"
-"\n"
-"Window functions with a similar behavior: {ref:RCOUNT}, {ref:RMIN}, {ref:"
-"RMAX}, {ref:RAVG}.\n"
-"\n"
-"See also {ref:aggregation/SUM}, {ref:MSUM}."
+msgid "date/time"
 msgstr ""
 
-msgid ""
-"Returns the count of all values in a growing (or shrinking) window defined "
-"by the sort order and the value of {arg:1}:\n"
-"{text:rwindow_description}\n"
-"\n"
-"Window functions with a similar behavior: {ref:RSUM}, {ref:RMIN}, {ref:"
-"RMAX}, {ref:RAVG}.\n"
-"\n"
-"See also {ref:aggregation/COUNT}, {ref:MCOUNT}."
+msgid "type conversion"
 msgstr ""
 
-msgid ""
-"Returns the minimum of all values in a growing (or shrinking) window defined "
-"by the sort order and the value of {arg:1}:\n"
-"{text:rwindow_description}\n"
-"\n"
-"Window functions with a similar behavior: {ref:RSUM}, {ref:RCOUNT}, {ref:"
-"RMAX}, {ref:RAVG}.\n"
-"\n"
-"See also {ref:aggregation/MIN}, {ref:MMIN}."
+msgid "operator"
 msgstr ""
 
-msgid ""
-"Returns the maximum of all values in a growing (or shrinking) window defined "
-"by the sort order and the value of {arg:1}:\n"
-"{text:rwindow_description}\n"
-"\n"
-"Window functions with a similar behavior: {ref:RSUM}, {ref:RCOUNT}, {ref:"
-"RMIN}, {ref:RAVG}.\n"
-"\n"
-"See also {ref:aggregation/MAX}, {ref:MMAX}."
+msgid "geographical"
 msgstr ""
 
-msgid ""
-"Returns the average of all values in a growing (or shrinking) window defined "
-"by the sort order and the value of {arg:1}:\n"
-"{text:rwindow_description}\n"
-"\n"
-"Window functions with a similar behavior: {ref:RSUM}, {ref:RCOUNT}, {ref:"
-"RMIN}, {ref:RMAX}.\n"
-"\n"
-"See also {ref:aggregation/AVG}, {ref:MAVG}."
+msgid "text markup"
 msgstr ""
 
-msgid "Example with two and three arguments"
+msgid "window"
 msgstr ""
 
-msgid "positive"
+msgid "time series"
 msgstr ""
 
-msgid "The current row and {arg:1} preceding rows."
+msgid "array"
 msgstr ""
 
-msgid "negative"
+msgid "Integer"
 msgstr ""
 
-msgid "The current row and -{arg:1} following rows."
+msgid "Fractional number"
 msgstr ""
 
-msgid "any sign"
+msgid "Boolean"
 msgstr ""
 
-msgid "{arg:1} preceding rows, the current row and {arg:2} following rows."
+msgid "String"
 msgstr ""
 
-msgid ""
-"Returns the moving sum of values in a fixed-size window defined by the sort "
-"order and arguments:\n"
-"{text:mwindow_description}\n"
-"Window functions with a similar behavior: {ref:MCOUNT}, {ref:MMIN}, {ref:"
-"MMAX}, {ref:MAVG}.\n"
-"\n"
-"See also {ref:aggregation/SUM}, {ref:RSUM}."
+msgid "Date"
 msgstr ""
 
-msgid ""
-"Returns the moving count of (non-`NULL`) values in a fixed-size window "
-"defined by the sort order and arguments:\n"
-"{text:mwindow_description}\n"
-"Window functions with a similar behavior: {ref:MSUM}, {ref:MMIN}, {ref:"
-"MMAX}, {ref:MAVG}.\n"
-"\n"
-"See also {ref:aggregation/COUNT}, {ref:RCOUNT}."
+msgid "Datetime (deprecated)"
 msgstr ""
 
-msgid ""
-"Returns the moving minimum of values in a fixed-size window defined by the "
-"sort order and arguments:\n"
-"{text:mwindow_description}\n"
-"Window functions with a similar behavior: {ref:MSUM}, {ref:MCOUNT}, {ref:"
-"MMAX}, {ref:MAVG}.\n"
-"\n"
-"See also {ref:aggregation/MIN}, {ref:RMIN}."
+msgid "Datetime with timezone"
 msgstr ""
 
-msgid ""
-"Returns the moving maximum of values in a fixed-size window defined by the "
-"sort order and arguments:\n"
-"{text:mwindow_description}\n"
-"Window functions with a similar behavior: {ref:MSUM}, {ref:MCOUNT}, {ref:"
-"MMIN}, {ref:MAVG}.\n"
-"\n"
-"See also {ref:aggregation/MAX}, {ref:RMAX}."
+msgid "Datetime"
 msgstr ""
 
-msgid ""
-"Returns the moving average of values in a fixed-size window defined by the "
-"sort order and arguments:\n"
-"{text:mwindow_description}\n"
-"Window functions with a similar behavior: {ref:MSUM}, {ref:MCOUNT}, {ref:"
-"MMIN}, {ref:MMAX}.\n"
-"\n"
-"See also {ref:aggregation/AVG}, {ref:RAVG}."
+msgid "Geopoint"
 msgstr ""
 
-msgid "Example with the optional argument"
+msgid "Geopolygon"
 msgstr ""
 
-msgid ""
-"Returns {arg:0} re-evaluated against the row that is offset from the current "
-"row by {arg:1} within the specified window:\n"
-"- Positive {arg:1} seeks among preceding rows.\n"
-"- Negative {arg:1} seeks among following rows.\n"
-"\n"
-"By default {arg:1} is `1`.\n"
-"\n"
-"If there is no available value ({arg:1} reaches before the first row or "
-"after the last one), then {arg:2} is returned. If {arg:2} is not specified, "
-"then `NULL` is used.\n"
-"\n"
-"See also {ref:AGO} for a non-window function alternative."
+msgid "Markup"
 msgstr ""
 
-msgid ""
-"Returns the value of {arg:0} from the first row in the window. See also {ref:"
-"LAST}."
+msgid "UUID"
 msgstr ""
 
-msgid ""
-"Returns the value of {arg:0} from the last row in the window. See also {ref:"
-"FIRST}."
+msgid "Array of fractional numbers"
 msgstr ""
 
-msgid "Function availability for various data source types."
+msgid "Array of integers"
 msgstr ""
 
-msgid "Source data"
+msgid "Array of strings"
 msgstr ""
 
-msgid "Grouped by"
+msgid "Tree"
 msgstr ""
 
-msgid "Sorted by"
+msgid "`PostgreSQL` version `9.3`"
 msgstr ""
 
-msgid "Formulas"
+msgid "`PostgreSQL` version `9.4`"
 msgstr ""
 
-msgid "Result"
+msgid "`MySQL` version `5.6`"
 msgstr ""
 
-msgid "Syntax"
+msgid "`MySQL` version `5.7`"
 msgstr ""
 
-msgid "Description"
+msgid "`MySQL` version `8.0.12`"
 msgstr ""
 
-msgid "Argument types"
+msgid "`Microsoft SQL Server` version `2017 (14.0)`"
 msgstr ""
 
-msgid "Return type"
+msgid "`Oracle Database` version `12c (12.1)`"
 msgstr ""
 
-msgid "Examples"
+msgid "Standard"
 msgstr ""
 
-msgid "Data source support"
+msgid "Extended"
 msgstr ""
 
-msgid "<br/>or<br/>"
+msgid "More info:"
 msgstr ""

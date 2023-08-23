@@ -29,6 +29,9 @@ clickhouse = "bi_connector_clickhouse.db_testing.connector:ClickHouseDbTestingCo
 [tool.poetry.plugins."bi_formula.connectors"]
 clickhouse = "bi_connector_clickhouse.formula.connector:ClickHouseFormulaConnector"
 
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+clickhouse = "bi_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlugin"
+
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

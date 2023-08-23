@@ -4,7 +4,6 @@ from typing import NamedTuple
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import StandardDialect as D, DialectCombo
 
-from bi_connector_clickhouse.formula.constants import ClickHouseDialect
 from bi_connector_mysql.formula.constants import MySQLDialect
 from bi_connector_yql.formula.constants import YqlDialect
 from bi_connector_metrica.formula.constants import MetricaDialect
@@ -132,7 +131,6 @@ class StyledDialect(NamedTuple):
 
 HIDDEN_DIALECTS: set[DialectCombo] = set()
 ANY_DIALECTS = {
-    *ClickHouseDialect.CLICKHOUSE.to_list(),
     *PostgreSQLDialect.NON_COMPENG_POSTGRESQL.to_list(),
     *MySQLDialect.MYSQL.to_list(),
     *MssqlDialect.MSSQLSRV.to_list(),
@@ -143,21 +141,6 @@ ANY_DIALECTS = {
 
 
 HUMAN_DIALECTS = {
-    ClickHouseDialect.CLICKHOUSE: StyledDialect(
-        '`ClickHouse`',
-        '`ClickHouse`',
-        '`ClickHouse`',
-    ),
-    ClickHouseDialect.CLICKHOUSE_21_8: StyledDialect(
-        '`ClickHouse 21.8`',
-        '`ClickHouse`<br/>`21.8`',
-        _('`ClickHouse` version `21.8`'),
-    ),
-    ClickHouseDialect.CLICKHOUSE_22_10: StyledDialect(
-        '`ClickHouse 22.10`',
-        '`ClickHouse`<br/>`22.10`',
-        _('`ClickHouse` version `22.10`'),
-    ),
     PostgreSQLDialect.POSTGRESQL: StyledDialect(
         '`PostgreSQL`',
         '`PostgreSQL`',

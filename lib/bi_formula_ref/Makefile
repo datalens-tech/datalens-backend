@@ -18,12 +18,15 @@ l10n-template:
 	pybabel extract --no-location -F babel.ini -o ${PROJECT_DIR}/locales/bi_formula_ref.pot ${PROJECT_DIR}/
 
 
-# Merge updated bi_formula_ref.pot template file into .po files
-# TODO?: non-phony sub-commands?
+.PHONY: update-po-domain-formula-ref
+update-po-domain-formula-ref:
+	DOMAIN_NAME=bi_formula_ref PATH_MASK="formula_ref/" make update-po-domain
+
+
 .PHONY: update-po
-update-po: l10n-template
-	bi-formula-ref-doc locales \
-	    | awk '{system("msgmerge ${PROJECT_DIR}/locales/"$$1"/LC_MESSAGES/bi_formula_ref.po ${PROJECT_DIR}/locales/bi_formula_ref.pot -o ${PROJECT_DIR}/locales/"$$1"/LC_MESSAGES/bi_formula_ref.po")}'
+update-po:
+	@echo "Running for 'formula_ref'"
+	@make update-po-domain-formula-ref 2> /dev/null || true
 
 
 .PHONY: translations-docker
