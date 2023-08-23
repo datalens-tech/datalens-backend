@@ -6,7 +6,6 @@ FROM $BASE_CI_IMAGE
 RUN mkdir -p /data
 COPY lib /data/lib
 COPY app /data/app
-COPY terrarium /data/terrarium
 COPY mainrepo/terrarium /data/mainrepo/terrarium
 COPY app_yc /data/app_yc
 RUN mkdir -p /data/ops
