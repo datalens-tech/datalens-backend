@@ -1,3 +1,12 @@
+0.18.0
+------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4860: generate ConnectorsSettingsByType by settings registry (#88)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c531841 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 22:36:37+00:00
+
 0.17.0
 ------
 
