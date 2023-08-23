@@ -4,15 +4,6 @@ from bi_api_connector.api_schema.source_base import SubselectDataSourceSchema, S
 
 from bi_formula.core.dialect import DialectName
 
-from bi_connector_chyt.core.connector import (
-    CHYTCoreConnectionDefinition,
-    CHYTTableCoreSourceDefinition,
-    CHYTTableListCoreSourceDefinition,
-    CHYTTableRangeCoreSourceDefinition,
-    CHYTTableSubselectCoreSourceDefinition,
-    CHYTCoreConnector,
-)
-
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
@@ -21,16 +12,25 @@ from bi_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 
-from bi_api_lib.connectors.chyt.api_schema.connection import CHYTConnectionSchema
-from bi_api_lib.connectors.chyt.api_schema.source import (
+from bi_connector_chyt.bi.api_schema.connection import CHYTConnectionSchema
+from bi_connector_chyt.bi.api_schema.source import (
     CHYTTableListDataSourceSchema,
     CHYTTableListDataSourceTemplateSchema,
     CHYTTableRangeDataSourceSchema,
     CHYTTableRangeDataSourceTemplateSchema,
 )
+from bi_connector_chyt.bi.connection_form.form_config import CHYTConnectionFormFactory
+from bi_connector_chyt.bi.connection_info import CHYTConnectionInfoProvider
+from bi_connector_chyt.bi.i18n.localizer import CONFIGS
 
-from bi_api_lib.connectors.chyt.connection_form.form_config import CHYTConnectionFormFactory
-from bi_api_lib.connectors.chyt.connection_info import CHYTConnectionInfoProvider
+from bi_connector_chyt.core.connector import (
+    CHYTCoreConnectionDefinition,
+    CHYTTableCoreSourceDefinition,
+    CHYTTableListCoreSourceDefinition,
+    CHYTTableRangeCoreSourceDefinition,
+    CHYTTableSubselectCoreSourceDefinition,
+    CHYTCoreConnector,
+)
 
 
 class CHYTBiApiConnectionDefinition(BiApiConnectionDefinition):
@@ -76,3 +76,4 @@ class CHYTBiApiConnector(BiApiConnector):
         CHYTTableRangeBiApiSourceDefinition,
         CHYTSubselectBiApiSourceDefinition,
     )
+    translation_configs = frozenset(CONFIGS)

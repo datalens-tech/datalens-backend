@@ -12,8 +12,8 @@ from bi_api_connector.form_config.models.base import ConnectionFormFactory, Conn
 from bi_api_connector.form_config.models.common import FormFieldName, CommonFieldName
 from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
 
-from bi_api_lib.connectors.chyt.connection_info import CHYTConnectionInfoProvider
-from bi_api_lib.i18n.localizer import Translatable
+from bi_connector_chyt.bi.connection_info import CHYTConnectionInfoProvider
+from bi_connector_chyt.bi.i18n.localizer import Translatable
 
 
 @unique

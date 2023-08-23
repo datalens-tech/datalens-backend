@@ -1,2 +1,5 @@
+[bi_api_lib.connectors]
+chyt_internal = bi_connector_chyt_internal.bi.connector:CHYTInternalBiApiConnector
+
 [bi_core.connectors]
 chyt_internal = bi_connector_chyt_internal.core.connector:CHYTInternalCoreConnector

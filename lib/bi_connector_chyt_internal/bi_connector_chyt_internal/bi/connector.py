@@ -12,16 +12,17 @@ from bi_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 
-from bi_api_lib.connectors.chyt.api_schema.source import (
+from bi_connector_chyt.bi.api_schema.source import (
     CHYTTableListDataSourceSchema,
     CHYTTableListDataSourceTemplateSchema,
     CHYTTableRangeDataSourceSchema,
     CHYTTableRangeDataSourceTemplateSchema,
 )
-from bi_api_lib.connectors.chyt_internal.api_schema.connection import CHYTConnectionSchema, CHYTUserAuthConnectionSchema
-from bi_api_lib.connectors.chyt_internal.connection_info import (
+from bi_connector_chyt_internal.bi.api_schema.connection import CHYTConnectionSchema, CHYTUserAuthConnectionSchema
+from bi_connector_chyt_internal.bi.connection_info import (
     CHYTInternalTokenConnectionInfoProvider, CHYTUserAuthConnectionInfoProvider,
 )
+from bi_connector_chyt_internal.bi.i18n.localizer import CONFIGS
 
 from bi_connector_chyt_internal.core.connector import (
     CHYTInternalCoreConnectionDefinition,
@@ -115,3 +116,4 @@ class CHYTInternalBiApiConnector(BiApiConnector):
         CHYTUserAuthTableRangeBiApiSourceDefinition,
         CHYTUserAuthSubselectBiApiSourceDefinition,
     )
+    translation_configs = frozenset(CONFIGS)

@@ -124,27 +124,10 @@ msgstr "Default database name"
 msgid "label_connector-chydb"
 msgstr "CH over YDB"
 
-#: bi_api_lib/connectors/chyt/connection_form/form_config.py:35
-msgid "field_clique-alias"
-msgstr "Clique alias"
-
-#: bi_api_lib/connectors/chyt/connection_form/form_config.py:40
-msgid "field_chyt-token"
-msgstr "YTsaurus token"
-
-#: bi_api_lib/connectors/chyt/connection_info.py:8
-msgid "label_connector-chyt"
-msgstr "YTsaurus CHYT"
-
-#: bi_api_lib/connection_info.py:57
 #: bi_api_lib/connector_availability/configs/development.py:41
 #: bi_api_lib/connector_availability/configs/int_production.py:26
 #: bi_api_lib/connector_availability/configs/int_testing.py:29
 msgid "label_connector-ch_over_yt"
-msgstr "CHYT"
-
-#: bi_api_lib/connection_info.py:61
-msgid "label_connector-ch_over_yt_user_auth"
 msgstr "CHYT"
 
 #: bi_api_lib/connector_availability/configs/development.py:35
