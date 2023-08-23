@@ -1,3 +1,29 @@
+0.17.0
+------
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Introduced taskfiles (#86)                          [ https://github.com/datalens-tech/datalens-backend-private/commit/d04e821 ]
+ * Moved dl_repmanager to mainrepo (#92)               [ https://github.com/datalens-tech/datalens-backend-private/commit/687c59f ]
+ * BI-4863: Added clickhouse formula_ref plugin (#74)  [ https://github.com/datalens-tech/datalens-backend-private/commit/2ade140 ]
+ * Fixed bake targets for i18n (#75)                   [ https://github.com/datalens-tech/datalens-backend-private/commit/d15fa6f ]
+ * Added --no-location option to .po generator (#83)   [ https://github.com/datalens-tech/datalens-backend-private/commit/54020f4 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * moved terrarium/bi_ci into mainrepo/ (#82)  [ https://github.com/datalens-tech/datalens-backend-private/commit/1dc7e25 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version lib/bi_api_lib 0.1973.0 (#94)  [ https://github.com/datalens-tech/datalens-backend-private/commit/bb14b67 ]
+ * releasing version lib/bi_api_lib 0.1972.0 (#89)  [ https://github.com/datalens-tech/datalens-backend-private/commit/643bfaf ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * fix typing (#91)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0d95eb3 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-23 17:21:45+00:00
+
 0.16.0
 ------
 
