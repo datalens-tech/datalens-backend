@@ -1,3 +1,44 @@
+0.19.0
+------
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * integration-tests tier1 only (#108)  [ https://github.com/datalens-tech/datalens-backend-private/commit/6a42522 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * move metrica connector aliases to the connector package (#111)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d7bf72e ]
+ * BI-4860: connector settings registry (#80)                      [ https://github.com/datalens-tech/datalens-backend-private/commit/ae48ac5 ]
+ * some more mypy fixes (#93)                                      [ https://github.com/datalens-tech/datalens-backend-private/commit/96fa442 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Enable bitrix ext tests in CI (#77)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d7b7cf1 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version lib/bi_api_lib 0.1975.0 (#109)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0e10952 ]
+ * releasing version lib/bi_api_lib 0.1974.0 (#107)  [ https://github.com/datalens-tech/datalens-backend-private/commit/180b8a8 ]
+
+* [Andrey Snytin](http://staff/asnytin@yandex-team.ru)
+
+ * BI-3546: rewrite mdb domains in YaTeam (#104)  [ https://github.com/datalens-tech/datalens-backend-private/commit/9f3ee91 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4830] Adopt mainrepo/libs to all Docker builds (#105)      [ https://github.com/datalens-tech/datalens-backend-private/commit/44459ff ]
+ * [BI-4830] Parametrize base rootless image at bake level (#98)  [ https://github.com/datalens-tech/datalens-backend-private/commit/6dfdb3c ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Moved the boilerplate package to mainrepo (#102)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4051eba ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * Try to fix ci tests (delete terrarium from root level)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7053fc5 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-24 12:33:30+00:00
+
 0.18.0
 ------
 
