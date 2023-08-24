@@ -88,7 +88,7 @@ class AiohttpGSheetsSession(AiohttpSession):
             self,
             *args: Any,
             proxy: Optional[StrOrURL] = None,
-            proxy_headers: dict[str, str] = None,
+            proxy_headers: Optional[dict[str, str]] = None,
             ssl: Optional[Union[SSLContext, bool, Fingerprint]] = True,
             **kwargs: Any
     ) -> None:
@@ -309,7 +309,7 @@ class GSheetsClient:
             number_format_type=number_format,
         )
 
-    def _get_sheet_data(self, sheet: dict[str, Any], num_rows: int = None) -> list[list[Cell]]:
+    def _get_sheet_data(self, sheet: dict[str, Any], num_rows: Optional[int] = None) -> list[list[Cell]]:
         data: list[list[Cell]] = []
         rows_read = 0
         for rowdata in sheet['data'][0].get('rowData', []):
@@ -439,7 +439,7 @@ class GSheetsClient:
             self,
             spreadsheet_id: str,
             include_data: bool = True,
-            num_rows: int = None,
+            num_rows: Optional[int] = None,
     ) -> Spreadsheet:
         """
         :param spreadsheet_id: ID of the spreadsheet to get, e.g. 1rnUFa7AiSKD5O80IKCvMy2cSZvLU1kRw9dxbtZbDMWc

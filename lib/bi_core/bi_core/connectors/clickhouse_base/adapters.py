@@ -100,7 +100,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
             self.ch_utils.get_context_headers(self._req_ctx_info)
         )
 
-    def get_conn_line(self, db_name: str = None, params: dict[str, Any] = None) -> str:
+    def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
         return self.conn_line_constructor_type(
             dsn_template=self.dsn_template,
             dialect_name=get_dialect_string(self.conn_type),

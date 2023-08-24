@@ -35,7 +35,7 @@ class S3JsonEachRowFileDataSink(DataSink):
             bi_schema: list[SchemaColumn],
             s3: botocore.client.BaseClient,
             s3_key: str,
-            bucket_name: str = None
+            bucket_name: str,
     ):
         super().__init__(bi_schema=bi_schema)
 
@@ -148,7 +148,7 @@ class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
         self,
         s3: botocore.client.BaseClient,
         s3_key: str,
-        bucket_name: str = None
+        bucket_name: str,
     ):
         super().__init__(
             bi_schema=[],  # ignore bi_schema
@@ -176,7 +176,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(self, s3: AioBaseClient, s3_key: str, bucket_name: str = None):
+    def __init__(self, s3: AioBaseClient, s3_key: str, bucket_name: str):
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name

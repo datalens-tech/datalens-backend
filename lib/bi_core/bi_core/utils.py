@@ -345,7 +345,7 @@ def make_id() -> str:
     return shortuuid.uuid()
 
 
-_MODEL_TYPE_TV = TypeVar('_MODEL_TYPE_TV')
+_MODEL_TYPE_TV = TypeVar('_MODEL_TYPE_TV', bound=attr.AttrsInstance)
 
 
 def attrs_evolve_to_subclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix

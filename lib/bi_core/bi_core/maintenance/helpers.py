@@ -14,11 +14,8 @@ from bi_core.us_manager.us_manager_sync import SyncUSManager
 try:
     from bi_api_lib.maintenance.common import MaintenanceEnvironmentManager  # type: ignore  # TODO: fix
 except ImportError:
-    try:
-        from bi_materializer.maintenance.common import MaintenanceEnvironmentManager  # type: ignore  # TODO: fix
-    except ImportError:
-        # Most likely will lead to errors
-        from bi_core.maintenance.common import MaintenanceEnvironmentManagerBase as MaintenanceEnvironmentManager
+    # Most likely will lead to errors
+    from bi_core.maintenance.common import MaintenanceEnvironmentManagerBase as MaintenanceEnvironmentManager
 
 from bi_core.us_dataset import Dataset
 

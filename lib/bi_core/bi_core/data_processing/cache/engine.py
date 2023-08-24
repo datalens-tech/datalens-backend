@@ -582,7 +582,7 @@ class EntityCacheEngineBase:
             result: TJSONExt,
             compress: bool = False,
             compress_alg: Optional[CompressAlg] = None,
-            ttl_sec: float = None,
+            ttl_sec: Optional[float] = None,
             metadata: Optional[Dict[str, Any]] = None,
     ) -> _CacheUpdateRequest:
         if ttl_sec is None:

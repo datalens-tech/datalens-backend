@@ -19,7 +19,7 @@ class FrozenSetField(fields.List):
 
 
 class ErrorCodeField(fields.Field):
-    def __init__(self, *args: Any, prefix: Iterable[str] = None, **kwargs: Any):
+    def __init__(self, *args: Any, prefix: Optional[Iterable[str]] = None, **kwargs: Any):
         self._prefix = list(prefix or [])
         super().__init__(*args, **kwargs)
 

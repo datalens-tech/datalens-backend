@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, Optional, Tuple, TypeVar, Generic, Type
+from typing import TYPE_CHECKING, Any, ClassVar, Optional, TypeVar, Generic, Type
 from urllib.parse import quote_plus, urlencode
 
 import attr
@@ -38,7 +38,7 @@ class BaseConnLineConstructor(abc.ABC, Generic[_CONN_DTO_TV]):
     @abc.abstractmethod
     def _get_dsn_params(
         self,
-        safe_db_symbols: Tuple[str, ...] = (),
+        safe_db_symbols: tuple[str, ...] = (),
         db_name: Optional[str] = None,
         standard_auth: Optional[bool] = True,
     ) -> dict:
@@ -47,7 +47,7 @@ class BaseConnLineConstructor(abc.ABC, Generic[_CONN_DTO_TV]):
     def _get_dsn_query_params(self) -> dict:
         return {}
 
-    def make_conn_line(self, db_name: str = None, params: Dict[str, Any] = None) -> str:
+    def make_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
         # TODO?: replace with `get_conn_line`, delete `dsn_template`.
         conn_line = self._dsn_template.format(**self._get_dsn_params(db_name=db_name))
 
@@ -72,7 +72,7 @@ class ClassicSQLConnLineConstructor(
 
     def _get_dsn_params(
         self,
-        safe_db_symbols: Tuple[str, ...] = (),
+        safe_db_symbols: tuple[str, ...] = (),
         db_name: Optional[str] = None,
         standard_auth: Optional[bool] = True,
     ) -> dict:
@@ -89,7 +89,7 @@ class ClassicSQLConnLineConstructor(
 @attr.s(cmp=False)
 class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     dsn_template: ClassVar[str] = '{dialect}://{user}:{passwd}@{host}:{port}/{db_name}'
-    execution_options: ClassVar[Dict[str, Any]] = {}
+    execution_options: ClassVar[dict[str, Any]] = {}
     conn_line_constructor_type: ClassVar[Type[BaseConnLineConstructor]] = ClassicSQLConnLineConstructor
 
     # Instance attributes
@@ -109,7 +109,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     def _get_dsn_query_params(self) -> dict:
         return {}
 
-    def get_conn_line(self, db_name: str = None, params: Dict[str, Any] = None) -> str:
+    def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
         return self.conn_line_constructor_type(
             dsn_template=self.dsn_template,
             dialect_name=get_dialect_string(self.conn_type),

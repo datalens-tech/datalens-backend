@@ -98,16 +98,16 @@ class AsyncBaseSolomonAdapter(AiohttpDBAdapter):
         pass
 
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        pass
+        raise NotImplementedError()
 
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        pass
+        raise NotImplementedError()
 
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        pass
+        raise NotImplementedError()
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        raise NotImplementedError()
 
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        raise NotImplementedError()

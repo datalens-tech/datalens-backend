@@ -50,7 +50,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     _chunks_saved: int = 0
     _bytes_saved: int = 0
 
-    def __init__(self, s3: AioBaseClient, s3_key: str, bucket_name: str = None):
+    def __init__(self, s3: AioBaseClient, s3_key: str, bucket_name: str):
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name

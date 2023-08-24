@@ -26,7 +26,7 @@ class DLTSClient(DLYCSingleServiceClient):
     def jwt_encode_token(
             service_account_id: str, key_id: str, private_key: str,
             expiration: int = 360, timestamp: Optional[float] = None,
-    ) -> bytes:
+    ) -> str:
         if timestamp is None:
             timestamp = time.time()
         timestamp = int(timestamp)

@@ -94,7 +94,7 @@ class ComponentErrorRegistry:
             message: str,
             code: Sequence[str],
             level: ComponentErrorLevel = ComponentErrorLevel.error,
-            details: dict = None,
+            details: Optional[dict] = None,
     ):
         details = details or {}
         error_cls = ERROR_CLS_BY_COMP_TYPE.get(type)

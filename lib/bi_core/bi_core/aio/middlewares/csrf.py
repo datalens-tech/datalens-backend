@@ -1,3 +1,5 @@
+from typing import Optional
+
 import hmac
 import logging
 import time
@@ -25,7 +27,7 @@ def csrf_middleware(
     csrf_secret: str,
     csrf_methods: tuple[str, ...] = ('POST', 'PUT', 'DELETE'),
 ) -> AIOHTTPMiddleware:
-    def validate_csrf_token(token_header_value: str, user_token: str) -> bool:
+    def validate_csrf_token(token_header_value: Optional[str], user_token: str) -> bool:
         if not token_header_value:
             return False
 
