@@ -17,7 +17,7 @@ spec:
           memory: "1Gi"
       volumeMounts:
         - name: integration-test-secrets
-          mountPath: app/secrets
+          mountPath: /src/ops/bi_integration_tests/bi_integration_tests_tests/secrets
           readOnly: true
   volumes:
     - name: integration-test-secrets

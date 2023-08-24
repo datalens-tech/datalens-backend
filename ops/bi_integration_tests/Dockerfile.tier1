@@ -6,6 +6,7 @@ ENV RUN_DEVHOST_TESTS=1
 
 # Libs & metapkg
 COPY --from=bake_ctx_src_lib / /src
+COPY /etc /etc
 
 # Sources copy
 COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
@@ -20,4 +21,5 @@ WORKDIR /src/ops/ci
 RUN poetry export --only bi_integration_tests --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["sh", "-c", "pytest -ra /src/$APP_DIR/bi_integration_tests_tests"]
+WORKDIR /src/$APP_DIR/bi_integration_tests_tests
+ENTRYPOINT ["/etc/service/integration_tests/run"]

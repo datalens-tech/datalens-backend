@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -x  # debug.
+set -eu
+
+INTEGRATION_TESTS_TAGS="${INTEGRATION_TESTS_TAGS:-}"
+
+if [ -z "$INTEGRATION_TESTS_TAGS" ]; then
+    exec pytest -ra .
+else
+    exec pytest -ra -m "${INTEGRATION_TESTS_TAGS}" .
+fi

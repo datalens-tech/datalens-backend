@@ -1,10 +1,9 @@
 docker_images_info:
   integration_tests:
-    repo: "cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-integration-tests"
-    tag: "0.1.78"
+    repo: "cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-integration-tests-tier-1"
+    tag: "0.14.0"
 
 integration_tests_tags: not requires_materialization
 workbook_mgmt_strategy: NOT_REQUIRED
 tenant_type: organization
 tenant_id: yc.organization-manager.sandbox
-
