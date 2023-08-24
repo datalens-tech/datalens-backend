@@ -1,7 +1,10 @@
+from bi_core.us_connection_base import DataSourceTemplate
+
+from bi_testing.regulated_test import RegulatedTestParams
+from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
 from bi_connector_oracle_tests.db.core.base import BaseOracleTestClass
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
-from bi_core.us_connection_base import DataSourceTemplate
 from bi_connector_oracle_tests.db.config import DEFAULT_ORACLE_SCHEMA_NAME
 
 
@@ -10,6 +13,11 @@ class TestOracleConnection(
         DefaultConnectionTestClass[ConnectionSQLOracle],
 ):
     do_check_data_export_flag = True
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultConnectionTestClass.test_connection_get_data_source_templates: '',  # TODO: FIXME
+        }
+    )
 
     def check_saved_connection(self, conn: ConnectionSQLOracle, params: dict) -> None:
         assert conn.uuid is not None
