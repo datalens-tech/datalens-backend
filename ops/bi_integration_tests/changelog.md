@@ -1,3 +1,21 @@
+0.20.0
+------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * mark failing oracle test (#110)  [ https://github.com/datalens-tech/datalens-backend-private/commit/cc953d2 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version lib/bi_api_lib 0.1977.0 (#116)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4a28df1 ]
+ * releasing version lib/bi_api_lib 0.1976.0 (#115)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7dd0c10 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * fix_main_flow_git_fetch_trunk (#112)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0c4a370 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-24 15:26:35+00:00
+
 0.19.0
 ------
 
