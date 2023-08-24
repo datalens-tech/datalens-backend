@@ -30,6 +30,7 @@ class MetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
 class MetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
     core_conn_def_cls = MetricaApiCoreConnectionDefinition
     api_generic_schema_cls = ConnectionMetrikaAPISchema
+    alias = 'metrica'
     info_provider_cls = MetricaConnectionInfoProvider
     form_factory_cls = MetricaAPIConnectionFormFactory
 
@@ -52,6 +53,7 @@ class AppMetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
 class AppMetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
     core_conn_def_cls = AppMetricaApiCoreConnectionDefinition
     api_generic_schema_cls = ConnectionAppMetricaAPISchema
+    alias = 'appmetrica'
     info_provider_cls = AppMetricaConnectionInfoProvider
     form_factory_cls = AppMetricaAPIConnectionFormFactory
 
