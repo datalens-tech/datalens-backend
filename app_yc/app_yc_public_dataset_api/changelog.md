@@ -1,3 +1,40 @@
+0.1974.0
+--------
+
+* [Andrey Snytin](http://staff/asnytin@yandex-team.ru)
+
+ * BI-3546: rewrite mdb domains in YaTeam (#104)  [ https://github.com/datalens-tech/datalens-backend-private/commit/9f3ee91 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4830] Adopt mainrepo/libs to all Docker builds (#105)      [ https://github.com/datalens-tech/datalens-backend-private/commit/44459ff ]
+ * [BI-4830] Parametrize base rootless image at bake level (#98)  [ https://github.com/datalens-tech/datalens-backend-private/commit/6dfdb3c ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Moved the boilerplate package to mainrepo (#102)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4051eba ]
+ * Introduced taskfiles (#86)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/d04e821 ]
+ * Moved dl_repmanager to mainrepo (#92)             [ https://github.com/datalens-tech/datalens-backend-private/commit/687c59f ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * Try to fix ci tests (delete terrarium from root level)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7053fc5 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version ops/bi_integration_tests 0.18.0 (#101)  [ https://github.com/datalens-tech/datalens-backend-private/commit/9d66cbd ]
+ * releasing version ops/bi_integration_tests 0.17.0 (#97)   [ https://github.com/datalens-tech/datalens-backend-private/commit/55a217b ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4860: generate ConnectorsSettingsByType by settings registry (#88)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c531841 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * moved terrarium/bi_ci into mainrepo/ (#82)  [ https://github.com/datalens-tech/datalens-backend-private/commit/1dc7e25 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-24 07:59:49+00:00
+
 0.1973.0
 --------
 
