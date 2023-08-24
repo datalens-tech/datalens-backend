@@ -1,3 +1,12 @@
+0.1975.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * some more mypy fixes (#93)  [ https://github.com/datalens-tech/datalens-backend-private/commit/96fa442 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-24 10:16:21+00:00
+
 0.1974.0
 --------
 
