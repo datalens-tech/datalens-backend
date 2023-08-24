@@ -38,7 +38,11 @@ class MDBDomainManager:
             }[yenv_name]
 
             mdb_cname_domains = tuple([f".rw.{dmn}" for dmn in mdb_domains])
-            renaming_map = {dmn: '.db.yandex.net' for dmn in mdb_domains}
+            mdb_replacement = {
+                'cloud': '.db.yandex.net',
+                'intranet': '.mdb.yandex.net',
+            }[yenv_name]
+            renaming_map = {dmn: mdb_replacement for dmn in mdb_domains}
         else:
             mdb_domains = split_by_comma(os.environ.get('MDB_DOMAINS', ''))
             mdb_cname_domains = split_by_comma(os.environ.get('MDB_CNAME_DOMAINS', ''))
