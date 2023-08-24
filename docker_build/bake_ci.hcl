@@ -1,16 +1,29 @@
-target "all_sources" {
+target "src_lib" {
   contexts = {
-    app     = "${PROJECT_ROOT}/app"
     lib     = "${PROJECT_ROOT}/lib"
+    mr-lib  = "${PROJECT_ROOT}/mainrepo/lib"
     metapkg = "${PROJECT_ROOT}/ops/ci"
   }
   dockerfile-inline = <<EOT
 FROM debian:bullseye AS build
 RUN mkdir -p /src/ops
-COPY --from=app / /src/app
 COPY --from=lib / /src/lib
-COPY --from=mainrepo/lib / /src/mainrepo/lib
+COPY --from=mr-lib / /src/mainrepo/lib
 COPY --from=metapkg / /src/ops/ci
+FROM scratch
+COPY --from=build /src /
+EOT
+}
+
+target "src_all" {
+  contexts = {
+    src_lib = "target:src_lib"
+    app     = "${PROJECT_ROOT}/app"
+  }
+  dockerfile-inline = <<EOT
+FROM debian:bullseye AS build
+COPY --from=src_lib / /src
+COPY --from=app / /src/app
 FROM scratch
 COPY --from=build /src /
 EOT
@@ -18,7 +31,7 @@ EOT
 
 target "app_pkg_info" {
   contexts = {
-    all_src = "target:all_sources"
+    all_src = "target:src_all"
   }
 
   dockerfile-inline = <<EOT

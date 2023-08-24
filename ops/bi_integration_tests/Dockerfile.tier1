@@ -4,7 +4,8 @@ FROM bake_ctx_base_img
 ENV APP_DIR="ops/bi_integration_tests"
 ENV RUN_DEVHOST_TESTS=1
 
-RUN mkdir -p /src/ops
+# Libs & metapkg
+COPY --from=bake_ctx_src_lib / /src
 
 # Sources copy
 COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
@@ -14,10 +15,6 @@ COPY /bi_integration_tests_tests /src/$APP_DIR/bi_integration_tests_tests
 # We run integration tests inside doker with single dl_env=DLEnv.dynamic
 # So we replace pytest dl_env parameter values list with [DLEnv.dynamic]
 RUN perl -0777pi -e "s/(@pytest\.mark\.parametrize\s*\(\s*['\"]dl_env['\"].*?\[).*?]/\$1DLEnv.dynamic\]/sg" /src/$APP_DIR/bi_integration_tests_tests/test_*.py
-
-# Libs & metapkg
-COPY --from=bake_ctx_libs / /src/lib
-COPY --from=bake_ctx_metapkg / /src/ops/ci
 
 WORKDIR /src/ops/ci
 RUN poetry export --only bi_integration_tests --without-hashes --format=requirements.txt > requirements.txt

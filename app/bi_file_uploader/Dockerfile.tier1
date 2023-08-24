@@ -7,14 +7,11 @@ RUN mkdir -p /code
 COPY /etc /etc
 COPY /app/gunicorn_logging.ini /code/gunicorn_logging.ini
 
-RUN mkdir -p /src/$APP_DIR
-RUN mkdir -p /src/ops
-
 # Libs & metapkg
-COPY --from=bake_ctx_libs / /src/lib
-COPY --from=bake_ctx_metapkg / /src/ops/ci
+COPY --from=bake_ctx_src_lib / /src
 
 # Sources copy
+RUN mkdir -p /src/$APP_DIR
 COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
 COPY /bi_file_uploader /src/$APP_DIR/bi_file_uploader
 COPY /README.md /src/$APP_DIR/README.md

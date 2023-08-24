@@ -167,8 +167,7 @@ target "app_yc_control_api" {
   pull     = false
   contexts = {
     bake_ctx_base_img   = "target:base_focal_db_tier_1"
-    bake_ctx_libs       = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg    = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app_yc/app_yc_control_api"
   dockerfile = "Dockerfile.tier1"
@@ -178,8 +177,7 @@ target "app_bi_external_api" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app/bi_external_api"
   dockerfile = "Dockerfile.tier1"
@@ -189,8 +187,7 @@ target "app_bi_rqe_ext_async" {
   pull     = false
   contexts = {
     bake_ctx_base_img   = "target:base_focal_db_tier_1"
-    bake_ctx_libs       = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg    = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app/bi_rqe_ext_async"
   dockerfile = "Dockerfile.tier1"
@@ -200,8 +197,7 @@ target "app_bi_rqe_ext_sync" {
   pull     = false
   contexts = {
     bake_ctx_base_img   = "target:base_focal_db_tier_1"
-    bake_ctx_libs       = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg    = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app/bi_rqe_ext_sync"
   dockerfile = "Dockerfile.tier1"
@@ -211,8 +207,7 @@ target "app_bi_rqe_int_sync" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_focal_db_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app/bi_rqe_int_sync"
   dockerfile = "Dockerfile.tier1"
@@ -222,8 +217,7 @@ target "app_bi_file_uploader" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app/bi_file_uploader"
   dockerfile = "Dockerfile.tier1"
@@ -233,8 +227,7 @@ target "app_bi_file_uploader_worker" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app/bi_file_uploader_worker"
   dockerfile = "Dockerfile.tier1"
@@ -244,8 +237,7 @@ target "app_os_control_api" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_focal_db_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app_os/app_os_control_api"
   dockerfile = "Dockerfile.tier1"
@@ -255,8 +247,7 @@ target "app_os_data_api" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_focal_db_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/app_os/app_os_data_api"
   dockerfile = "Dockerfile.tier1"
@@ -266,8 +257,7 @@ target "integration_tests" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_focal_tier_1"
-    bake_ctx_libs     = "${PROJECT_ROOT}/lib"
-    bake_ctx_metapkg  = "${PROJECT_ROOT}/ops/ci"
+    bake_ctx_src_lib  = "target:src_lib"
   }
   context    = "${PROJECT_ROOT}/ops/bi_integration_tests"
   dockerfile = "Dockerfile.tier1"
