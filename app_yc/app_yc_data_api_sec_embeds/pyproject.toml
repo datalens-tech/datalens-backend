@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-data-api-sec-embeds-yc"
-version = "0.1975.0"
+version = "0.1976.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "app_yc_data_api_sec_embeds"}]

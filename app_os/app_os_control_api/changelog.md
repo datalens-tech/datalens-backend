@@ -1,3 +1,29 @@
+0.1976.0
+--------
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * fix_main_flow_git_fetch_trunk (#112)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0c4a370 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version ops/bi_integration_tests 0.19.0 (#113)  [ https://github.com/datalens-tech/datalens-backend-private/commit/e6f21fe ]
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * integration-tests tier1 only (#108)  [ https://github.com/datalens-tech/datalens-backend-private/commit/6a42522 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * move metrica connector aliases to the connector package (#111)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d7bf72e ]
+ * BI-4860: connector settings registry (#80)                      [ https://github.com/datalens-tech/datalens-backend-private/commit/ae48ac5 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Enable bitrix ext tests in CI (#77)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d7b7cf1 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-24 13:53:14+00:00
+
 0.1975.0
 --------
 
