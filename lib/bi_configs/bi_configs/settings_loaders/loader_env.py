@@ -620,13 +620,25 @@ class EnvSettingsLoader:
 
 
 def get_default_resolver(env: SDict):
-    fallback_cfg_resolver = YEnvFallbackConfigResolver(
+    if YamlFileConfigResolver.is_config_enabled(s_dict=env):
+        return YamlFileConfigResolver()
+    return YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
         env_map=EnvAliasesMap,
     )
-    if YamlFileConfigResolver.is_config_enabled(s_dict=env):
-        fallback_cfg_resolver = YamlFileConfigResolver()
-    return fallback_cfg_resolver
+
+
+def load_settings_from_env_with_fallback_legacy(
+        settings_type: Type[_SETTINGS_TV],
+        fallback_cfg_resolver: Optional[FallbackConfigResolver],
+        env: Optional[SDict] = None,
+) -> _SETTINGS_TV:
+    effective_env = os.environ if env is None else env
+
+    return EnvSettingsLoader(effective_env).load_settings(
+        settings_type,
+        fallback_cfg_resolver=fallback_cfg_resolver,
+    )
 
 
 def load_settings_from_env_with_fallback(

@@ -3,8 +3,10 @@ import os
 
 from aiohttp import web
 
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from bi_core.logging_config import configure_logging
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
@@ -20,7 +22,14 @@ class DefaultFileUploaderApiAppFactory(FileUploaderApiAppFactory):
 
 
 async def create_gunicorn_app() -> web.Application:
-    settings = load_settings_from_env_with_fallback(FileUploaderAPISettings)
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback_legacy(
+        FileUploaderAPISettings,
+        fallback_cfg_resolver=fallback_resolver,
+    )
     configure_logging(app_name='bi_file_uploader_api')
     try:
         LOGGER.info("Creating application instance...")

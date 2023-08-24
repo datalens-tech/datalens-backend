@@ -4,8 +4,10 @@ import logging
 import asyncio
 from aiohttp import web
 
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_core.logging_config import configure_logging
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 from bi_file_uploader_worker_lib.app import FileUploaderWorkerFactory
 from bi_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings
 from bi_task_processor.controller import Cli
@@ -20,9 +22,21 @@ from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 LOGGER = logging.getLogger(__name__)
 
 
+def load_settings() -> FileUploaderWorkerSettings:
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback_legacy(
+        FileUploaderWorkerSettings,
+        fallback_cfg_resolver=fallback_resolver,
+    )
+    return settings
+
+
 def run_standalone_worker() -> None:
     loop = asyncio.get_event_loop()
-    settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
+    settings = load_settings()
     worker = FileUploaderWorkerFactory(settings=settings).create_worker()
     configure_logging(app_name='bi_file_uploader_worker', sentry_dsn=settings.SENTRY_DSN)
     worker_task = loop.create_task(worker.start())
@@ -39,7 +53,7 @@ def run_standalone_worker() -> None:
 
 def run_health_check() -> None:
     loop = asyncio.get_event_loop()
-    settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
+    settings = load_settings()
     configure_logging(app_name='bi_file_uploader_worker_health_check', sentry_dsn=settings.SENTRY_DSN)
     worker = FileUploaderWorkerFactory(settings=settings).create_worker()
     health_checker = HealthChecker(worker)
@@ -49,7 +63,7 @@ def run_health_check() -> None:
 def run_cli(args: List) -> None:
     parsed_args = Cli.parse_params(args)
     loop = asyncio.get_event_loop()
-    settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
+    settings = load_settings()
     configure_logging(app_name='bi_file_uploader_cli')
     redis_pool = loop.run_until_complete(
         create_redis_pool(

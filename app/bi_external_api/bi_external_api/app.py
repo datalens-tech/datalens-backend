@@ -14,13 +14,15 @@ from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
 from bi_configs.enums import AppType
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from bi_constants.api_constants import YcTokenHeaderMode
 
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.aio.middlewares.tracing import TracingService
 from bi_core.aio.ping_view import PingView
 from bi_core.logging_config import configure_logging
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 from bi_external_api.aiohttp_services.base import ExtAPIRequest, AppConfig
 from bi_external_api.aiohttp_services.error_handler import ExternalAPIErrorHandler
@@ -138,13 +140,25 @@ def create_app(settings: ExternalAPISettings) -> web.Application:
     return app
 
 
+def load_settings() -> ExternalAPISettings:
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback_legacy(
+        ExternalAPISettings,
+        fallback_cfg_resolver=fallback_resolver,
+    )
+    return settings
+
+
 async def create_gunicorn_app() -> web.Application:
-    settings = load_settings_from_env_with_fallback(ExternalAPISettings)
     configure_logging(
         app_name='bi_external_api',
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware('bi-external-api'),
     )
+    settings = load_settings()
     try:
         LOGGER.info("Creating application instance...")
         app = create_app(settings=settings)
@@ -158,7 +172,7 @@ async def create_gunicorn_app() -> web.Application:
 def main() -> None:
     host = os.environ["APP_HOST"]
     port = int(os.environ["APP_PORT"])
-    settings = load_settings_from_env_with_fallback(ExternalAPISettings)
+    settings = load_settings()
     app = create_app(settings)
     web.run_app(app, host=host, port=port)
 

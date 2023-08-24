@@ -3,8 +3,10 @@ import os
 
 from aiohttp import web
 
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_core.logging_config import configure_logging
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 from bi_file_uploader_worker_lib.app_health_check import FileUploaderWorkerHealthCheckAppFactory
 
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
@@ -14,7 +16,14 @@ LOGGER = logging.getLogger(__name__)
 
 
 async def create_gunicorn_app() -> web.Application:
-    settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback_legacy(
+        FileUploaderWorkerSettings,
+        fallback_cfg_resolver=fallback_resolver,
+    )
     configure_logging(app_name='bi_file_uploader_worker_health_check', sentry_dsn=settings.SENTRY_DSN)
     try:
         LOGGER.info("Creating application instance...")

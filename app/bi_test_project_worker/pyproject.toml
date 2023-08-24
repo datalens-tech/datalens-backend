@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
+bi-defaults = {path = "../../lib/bi_defaults"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 bi-test-project-task-interface = {path = "../../lib/bi_test_project_task_interface"}
 python = ">=3.10, <3.12"

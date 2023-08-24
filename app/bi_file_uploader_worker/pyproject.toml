@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-defaults = {path = "../../lib/bi_defaults"}
 bi-file-secure-reader-lib = {path = "../../lib/bi_file_secure_reader_lib"}
 bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}

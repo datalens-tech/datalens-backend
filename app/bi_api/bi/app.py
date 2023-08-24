@@ -6,7 +6,8 @@ from typing import Optional
 import flask
 
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 
 from bi import app_version
 from bi_api_lib.app_settings import (
@@ -18,6 +19,7 @@ from bi_core.flask_utils.sentry import configure_raven_for_flask
 from bi_core.logging_config import hook_configure_logging
 from bi_api_lib.app_common import LegacySRFactoryBuilder
 from bi_api_lib.app.control_api.app import ControlApiAppFactory
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 
 class DefaultControlApiAppFactory(ControlApiAppFactory, LegacySRFactoryBuilder):
@@ -38,7 +40,14 @@ def create_app(
 
 
 def create_uwsgi_app():  # type: ignore  # TODO: fix
-    settings = load_settings_from_env_with_fallback(ControlPlaneAppSettings)
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback_legacy(
+        ControlPlaneAppSettings,
+        fallback_cfg_resolver=fallback_resolver,
+    )
     uwsgi_app = create_app(settings)
 
     actual_sentry_dsn: Optional[str] = settings.SENTRY_DSN if settings.SENTRY_ENABLED else None
