@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.1976.0"
+version = "0.1977.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "app_yc_public_dataset_api"}]
