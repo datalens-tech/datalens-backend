@@ -41,21 +41,6 @@ def yt_token(env_param_getter):
 
 
 @pytest.fixture(scope='session')
-def bitrix_token(env_param_getter):
-    return env_param_getter.get_str_value('BITRIX_TOKEN')
-
-
-@pytest.fixture(scope='session')
-def bitrix_uf_token(env_param_getter):
-    return env_param_getter.get_str_value('BITRIX_SERBUL_TOKEN')
-
-
-@pytest.fixture(scope='session')
-def bitrix_smart_tables_token(env_param_getter):
-    return env_param_getter.get_str_value('BITRIX_SERBUL_TOKEN')
-
-
-@pytest.fixture(scope='session')
 def int_cookie(env_param_getter):
     import requests
 

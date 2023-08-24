@@ -36,7 +36,7 @@ def main():
 def fix_in_root(root: Path):
     for (path, dirs, items) in os.walk(root):
         for name in items:
-            if name == "docker-compose.yml" or name == "docker-compose.local.yml" or name.startswith("Dockerfile"):
+            if name.startswith(("Dockerfile", "docker-compose.")):
                 fn = Path(path) / name
                 changed = False
                 content = open(fn).read()

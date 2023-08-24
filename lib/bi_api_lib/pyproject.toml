@@ -141,3 +141,9 @@ labels = ["fat"]
 root_dir = "bi_api_lib_tests/"
 target_path = "unit"
 skip_compose = "true"
+
+[datalens.pytest.bitrix]
+root_dir = "bi_api_lib_tests/"
+target_path = "ext/bitrix"
+compose_file_base = "docker-compose.bitrix"
+labels = ["ext"]

@@ -4,42 +4,13 @@ import json
 
 import pytest
 
-from bi_api_lib.connectors.bitrix_gds.schemas import BitrixPortalValidator
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from bi_testing.utils import guids_from_titles
 
+from bi_connector_bitrix_gds.bi.api_schema.connection import BitrixPortalValidator
+
 from bi_api_lib_tests.utils import get_random_str, get_result_schema
-
-
-@pytest.fixture
-def bitrix_conn_params(bitrix_token):
-    return dict(
-        type='bitrix24',
-        name='bitrix_test_{}'.format(get_random_str()),
-        portal='gds.office.bitrix.ru',
-        token=bitrix_token,
-    )
-
-
-@pytest.fixture
-def bitrix_uf_conn_params(bitrix_uf_token):
-    return dict(
-        type='bitrix24',
-        name='bitrix_test_{}'.format(get_random_str()),
-        portal='serbul.bitrix24.ru',
-        token=bitrix_uf_token,
-    )
-
-
-@pytest.fixture
-def bitrix_smart_tables_conn_params(bitrix_smart_tables_token):
-    return dict(
-        type='bitrix24',
-        name='bitrix_test_{}'.format(get_random_str()),
-        portal='serbul.bitrix24.ru',
-        token=bitrix_smart_tables_token,
-    )
 
 
 @pytest.mark.parametrize(
@@ -66,63 +37,6 @@ def test_portal_validation(client, portal):
     resp_data = resp.json
     assert resp.status_code == 400, resp_data
     assert resp_data['portal'][0] == BitrixPortalValidator.error
-
-
-@pytest.fixture
-def bitrix_conn_id(app, client, request, bitrix_conn_params):
-    conn_params = bitrix_conn_params
-    resp = client.post(
-        '/api/v1/connections',
-        data=json.dumps(conn_params),
-        content_type='application/json',
-    )
-    assert resp.status_code == 200, resp.json
-    conn_id = resp.json['id']
-
-    def teardown():
-        client.delete('/api/v1/connections/{}'.format(conn_id))
-
-    request.addfinalizer(teardown)
-
-    return conn_id
-
-
-@pytest.fixture
-def bitrix_uf_conn_id(app, client, request, bitrix_uf_conn_params):
-    conn_params = bitrix_uf_conn_params
-    resp = client.post(
-        '/api/v1/connections',
-        data=json.dumps(conn_params),
-        content_type='application/json',
-    )
-    assert resp.status_code == 200, resp.json
-    conn_id = resp.json['id']
-
-    def teardown():
-        client.delete('/api/v1/connections/{}'.format(conn_id))
-
-    request.addfinalizer(teardown)
-
-    return conn_id
-
-
-@pytest.fixture
-def bitrix_smart_tables_conn_id(app, client, request, bitrix_smart_tables_conn_params):
-    conn_params = bitrix_smart_tables_conn_params
-    resp = client.post(
-        '/api/v1/connections',
-        data=json.dumps(conn_params),
-        content_type='application/json',
-    )
-    assert resp.status_code == 200, resp.json
-    conn_id = resp.json['id']
-
-    def teardown():
-        client.delete('/api/v1/connections/{}'.format(conn_id))
-
-    request.addfinalizer(teardown)
-
-    return conn_id
 
 
 def test_bitrix_cache_ttl_sec_override(client, api_v1, default_sync_usm, bitrix_conn_id):
@@ -188,35 +102,6 @@ def test_bitrix_conn_test_error(client, bitrix_conn_params):
         content_type='application/json',
     )
     assert resp.status_code == 400, resp.json
-
-
-@pytest.fixture
-def bitrix_dataset(client, api_v1, request, bitrix_conn_id):
-    conn_id = bitrix_conn_id
-
-    resp = client.get(f'/api/v1/connections/{conn_id}/info/sources')
-    assert resp.status_code == 200, resp.json
-    source_cfg = dict()
-    for source in resp.json['sources']:
-        if source['title'] == 'crm_deal':
-            source_cfg = source
-            break
-    source_cfg_keys = {'source_type', 'title', 'connection_id', 'parameters'}
-    source_cfg_clean = {key: val for key, val in source_cfg.items() if key in source_cfg_keys}
-
-    ds = Dataset()
-    ds.sources['source_1'] = ds.source(**source_cfg_clean)
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
-
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds = api_v1.save_dataset(dataset=ds, preview=False).dataset
-
-    def teardown(ds_id=ds.id):
-        client.delete('/api/v1/datasets/{}'.format(ds_id))
-
-    request.addfinalizer(teardown)
-
-    return ds
 
 
 def test_bitrix_add_formula(client, data_api_v1, api_v1, bitrix_dataset):
@@ -335,7 +220,7 @@ def test_bitrix_result_date_filtration(client, data_api_v1, api_v1, bitrix_datas
     assert response.status_code == 200
 
 
-def test_bitrix_result_whith_caches(client, data_api_v1_with_caches, bitrix_dataset):
+def test_bitrix_result_with_caches(client, data_api_v1_with_caches, bitrix_dataset):
     data_api = data_api_v1_with_caches
     ds_id = bitrix_dataset.id
     result_schema = get_result_schema(client, ds_id)
