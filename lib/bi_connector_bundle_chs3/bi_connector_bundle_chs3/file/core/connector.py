@@ -1,3 +1,5 @@
+from bi_configs.connectors_settings import FileS3ConnectorSettings
+
 from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter
 
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
@@ -24,6 +26,7 @@ class FileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     async_conn_executor_cls = FileS3AsyncAdapterConnExecutor
     lifecycle_manager_cls = FileS3ConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
+    settings_class = FileS3ConnectorSettings
 
 
 class FileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):

@@ -1,3 +1,4 @@
+from bi_configs.connectors_settings import KonturMarketConnectorSettings
 from bi_constants.enums import ConnectionType
 
 from bi_core.connectors.base.connector import (
@@ -22,9 +23,10 @@ class KonturMarketCoreConnectionDefinition(CoreConnectionDefinition):
     connection_cls = KonturMarketCHConnection
     us_storage_schema_cls = PartnersCHConnectionDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
-    sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor  # type: ignore  # TODO: fix
+    sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     dialect_string = 'bi_clickhouse'
+    settings_class = KonturMarketConnectorSettings
 
 
 class KonturMarketTableCoreSourceDefinition(CoreSourceDefinition):

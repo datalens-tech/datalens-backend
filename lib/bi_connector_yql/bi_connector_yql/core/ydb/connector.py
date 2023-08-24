@@ -1,5 +1,7 @@
 from ydb.sqlalchemy import register_dialect as yql_register_dialect
 
+from bi_configs.connectors_settings import YDBConnectorSettings
+
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import (
     SubselectDataSourceSpecStorageSchema, SQLDataSourceSpecStorageSchema,
@@ -28,6 +30,7 @@ class YDBCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = YDBAsyncAdapterConnExecutor
     async_conn_executor_cls = YDBAsyncAdapterConnExecutor
     dialect_string = 'yql'
+    settings_class = YDBConnectorSettings
 
 
 class YDBCoreSourceDefinition(CoreSourceDefinition):

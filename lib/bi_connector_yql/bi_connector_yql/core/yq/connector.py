@@ -1,3 +1,5 @@
+from bi_configs.connectors_settings import YQConnectorSettings
+
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
 )
@@ -25,6 +27,7 @@ class YQCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = YQAsyncAdapterConnExecutor
     async_conn_executor_cls = YQAsyncAdapterConnExecutor
     dialect_string = 'bi_yq'
+    settings_class = YQConnectorSettings
 
 
 class YQTableCoreSourceDefinition(CoreSourceDefinition):

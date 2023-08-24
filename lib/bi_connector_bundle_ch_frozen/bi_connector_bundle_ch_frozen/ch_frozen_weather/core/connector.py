@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_configs.connectors_settings import CHFrozenWeatherConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenBaseCoreConnectionDefinition,
     CHFrozenBaseCoreSourceDefinition,
@@ -11,6 +12,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.data_source import Cli
 
 class CHFrozenWeatherCoreConnectionDefinition(CHFrozenBaseCoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_CH_FROZEN_WEATHER
+    settings_class = CHFrozenWeatherConnectorSettings
 
 
 class CHFrozenWeatherCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):

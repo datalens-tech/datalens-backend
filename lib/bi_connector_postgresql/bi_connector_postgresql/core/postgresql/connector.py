@@ -1,3 +1,5 @@
+from bi_configs.connectors_settings import PostgresConnectorSettings
+
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
 from bi_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
@@ -29,6 +31,7 @@ class PostgreSQLCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = PostgresConnExecutor
     async_conn_executor_cls = AsyncPostgresConnExecutor
     dialect_string = 'bi_postgresql'
+    settings_class = PostgresConnectorSettings
 
 
 class PostgreSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

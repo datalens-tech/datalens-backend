@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_configs.connectors_settings import MarketCouriersConnectorSettings
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -35,6 +36,7 @@ class CHMarketCouriersCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = CHFilteredSubselectByPuidBaseConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
+    settings_class = MarketCouriersConnectorSettings
 
 
 class CHMarketCouriersCoreSourceDefinition(CoreSourceDefinition):

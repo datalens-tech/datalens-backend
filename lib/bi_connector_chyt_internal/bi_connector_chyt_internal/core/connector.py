@@ -1,3 +1,4 @@
+from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_constants.enums import SourceBackendType, ConnectionType, CreateDSFrom
 
 from bi_core.connectors.base.connector import (
@@ -50,6 +51,7 @@ class CHYTInternalCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = CHYTInternalSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTInternalAsyncAdapterConnExecutor
     dialect_string = 'bi_chyt'
+    settings_class = CHYTConnectorSettings
 
 
 class CHYTTableCoreSourceDefinition(CoreSourceDefinition):
@@ -88,6 +90,7 @@ class CHYTUserAuthCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = CHYTUserAuthSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTUserAuthAsyncAdapterConnExecutor
     dialect_string = 'bi_chyt'
+    settings_class = CHYTConnectorSettings
 
 
 class CHYTUserAuthTableCoreSourceDefinition(CoreSourceDefinition):

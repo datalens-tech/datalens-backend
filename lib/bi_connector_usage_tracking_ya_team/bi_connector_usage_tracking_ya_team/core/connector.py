@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_configs.connectors_settings import UsageTrackingYaTeamConnectionSettings
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
 from bi_core.connectors.base.connector import (
@@ -28,6 +29,7 @@ class UsageTrackingYaTeamCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     dialect_string = 'bi_clickhouse'
+    settings_class = UsageTrackingYaTeamConnectionSettings
 
 
 class UsageTrackingYaTeamCoreSourceDefinition(CoreSourceDefinition):

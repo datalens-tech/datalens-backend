@@ -21,6 +21,7 @@ from bi_core.connection_executors.remote_query_executor.commons import register_
 from bi_core.db_session_utils import register_sa_query_cls, register_query_fail_exceptions
 from bi_core.reporting.notifications import register_notification
 from bi_core.backend_types import register_connection_backend_type
+from bi_core.connectors.settings.registry import register_connector_settings_class
 
 
 class CoreConnectorRegistrator:
@@ -59,6 +60,8 @@ class CoreConnectorRegistrator:
             register_async_conn_executor_class(
                 conn_cls=conn_def.connection_cls, async_ce_cls=conn_def.async_conn_executor_cls)
         register_dialect_string(conn_type=conn_def.conn_type, dialect_str=conn_def.dialect_string)
+        if conn_def.settings_class is not None:
+            register_connector_settings_class(conn_type=conn_def.conn_type, settings_class=conn_def.settings_class)
 
     @classmethod
     def register_connector(cls, connector: Type[CoreConnector]) -> None:

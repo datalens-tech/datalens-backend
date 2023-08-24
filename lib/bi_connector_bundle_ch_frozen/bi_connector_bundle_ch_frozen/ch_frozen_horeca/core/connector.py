@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_configs.connectors_settings import CHFrozenHorecaConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenBaseCoreConnectionDefinition,
     CHFrozenBaseCoreSourceDefinition,
@@ -11,6 +12,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_horeca.core.data_source import Clic
 
 class CHFrozenHorecaCoreConnectionDefinition(CHFrozenBaseCoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_CH_FROZEN_HORECA
+    settings_class = CHFrozenHorecaConnectorSettings
 
 
 class CHFrozenHorecaCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):

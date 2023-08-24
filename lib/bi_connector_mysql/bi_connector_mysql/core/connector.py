@@ -1,3 +1,5 @@
+from bi_configs.connectors_settings import MysqlConnectorSettings
+
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
 from bi_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
@@ -27,6 +29,7 @@ class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = MySQLConnExecutor
     async_conn_executor_cls = AsyncMySQLConnExecutor
     dialect_string = 'bi_mysql'
+    settings_class = MysqlConnectorSettings
 
 
 class MySQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

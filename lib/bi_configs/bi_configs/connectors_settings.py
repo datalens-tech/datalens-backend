@@ -175,6 +175,11 @@ class CHFrozenGKHConnectorSettings(CHFrozenConnectorSettings):
 
 
 @attr.s(frozen=True)
+class CHFrozenHorecaConnectorSettings(CHFrozenConnectorSettings):
+    """"""
+
+
+@attr.s(frozen=True)
 class CHFrozenSamplesConnectorSettings(CHFrozenConnectorSettings):
     """"""
 
@@ -186,11 +191,6 @@ class CHFrozenTransparencyConnectorSettings(CHFrozenConnectorSettings):
 
 @attr.s(frozen=True)
 class CHFrozenWeatherConnectorSettings(CHFrozenConnectorSettings):
-    """"""
-
-
-@attr.s(frozen=True)
-class CHFrozenHorecaConnectorSettings(CHFrozenConnectorSettings):
     """"""
 
 
@@ -242,17 +242,17 @@ class PartnerConnectorSettingsBase(ConnectorSettingsBase):
 
 
 @attr.s(frozen=True)
-class MoySkladConnectorSettings(PartnerConnectorSettingsBase):
-    """"""
-
-
-@attr.s(frozen=True)
 class EqueoConnectorSettings(PartnerConnectorSettingsBase):
     """"""
 
 
 @attr.s(frozen=True)
 class KonturMarketConnectorSettings(PartnerConnectorSettingsBase):
+    """"""
+
+
+@attr.s(frozen=True)
+class MoySkladConnectorSettings(PartnerConnectorSettingsBase):
     """"""
 
 

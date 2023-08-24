@@ -26,7 +26,7 @@ class CHFrozenBaseCoreConnectionDefinition(CoreConnectionDefinition):
     connection_cls = ConnectionClickhouseFrozenBase
     us_storage_schema_cls = ConnectionCHFilteredHardcodedDataBaseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
-    sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor  # type: ignore  # TODO: fix
+    sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     dialect_string = 'bi_clickhouse'
 

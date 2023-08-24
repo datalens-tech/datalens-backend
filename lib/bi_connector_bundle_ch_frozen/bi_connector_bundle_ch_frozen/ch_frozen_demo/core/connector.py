@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_configs.connectors_settings import CHFrozenDemoConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenBaseCoreConnectionDefinition,
     CHFrozenBaseCoreSourceDefinition,
@@ -15,6 +16,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.data_source import (
 
 class CHFrozenDemoCoreConnectionDefinition(CHFrozenBaseCoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_CH_FROZEN_DEMO
+    settings_class = CHFrozenDemoConnectorSettings
 
 
 class CHFrozenDemoCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
