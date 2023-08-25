@@ -1,0 +1,35 @@
+#syntax=docker/dockerfile:1.4
+FROM bake_ctx_base_img
+
+ENV APP_DIR="app_yc/app_yc_data_api_sec_embeds"
+
+COPY /etc /etc
+
+# Libs & metapkg
+COPY --from=bake_ctx_src_lib / /src
+
+# Gunicorn config
+ENV GUNICORN_LISTEN_PORT 8080
+ENV GUNICORN_LOG_CONFIG /src/$APP_DIR/gunicorn_logging.ini
+ENV GUNICORN_CONFIG /src/$APP_DIR/gunicorn_config.py
+
+# Sources copy
+RUN mkdir -p /src/$APP_DIR
+COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
+COPY /app_yc_data_api_sec_embeds /src/$APP_DIR/app_yc_data_api_sec_embeds
+COPY /README.md /src/$APP_DIR/README.md
+COPY /docker/gunicorn_logging.ini ${GUNICORN_LOG_CONFIG}
+COPY /docker/gunicorn_config.py ${GUNICORN_CONFIG}
+
+# Installation
+WORKDIR /src/ops/ci
+RUN poetry export --only app_bi_yc_data_api_sec_embeds --without-hashes --format=requirements.txt > requirements.txt
+RUN pip install -r requirements.txt
+RUN pip install --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
+RUN pip install --no-deps /src/lib/bi_connector_bigquery
+RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat requirements.txt | grep certifi-yandex)"
+
+EXPOSE 8080
+WORKDIR /src/$APP_DIR
+
+ENTRYPOINT ["/etc/service/bi_api/run"]
