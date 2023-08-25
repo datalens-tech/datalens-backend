@@ -5,9 +5,9 @@ from typing import AbstractSet, Callable, ClassVar, Optional, Type, TYPE_CHECKIN
 
 from sqlalchemy.orm import Query
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.enums import SourceBackendType
 from bi_core.connectors.base.query_compiler import QueryCompiler
+from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from bi_core.data_source.base import DataSource
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
@@ -45,7 +45,7 @@ class CoreConnectionDefinition(abc.ABC):
     lifecycle_manager_cls: ClassVar[Type[ConnectionLifecycleManager]] = DefaultConnectionLifecycleManager
     dialect_string: ClassVar[str]
     data_source_migrator_cls: ClassVar[Type[DataSourceMigrator]] = DefaultDataSourceMigrator
-    settings_class: ClassVar[Optional[Type[ConnectorSettingsBase]]] = None
+    settings_definition: ClassVar[Optional[Type[ConnectorSettingsDefinition]]] = None
 
 
 class CoreConnector(abc.ABC):

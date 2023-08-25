@@ -60,8 +60,12 @@ class CoreConnectorRegistrator:
             register_async_conn_executor_class(
                 conn_cls=conn_def.connection_cls, async_ce_cls=conn_def.async_conn_executor_cls)
         register_dialect_string(conn_type=conn_def.conn_type, dialect_str=conn_def.dialect_string)
-        if conn_def.settings_class is not None:
-            register_connector_settings_class(conn_type=conn_def.conn_type, settings_class=conn_def.settings_class)
+        if conn_def.settings_definition is not None:
+            register_connector_settings_class(
+                conn_type=conn_def.conn_type,
+                settings_class=conn_def.settings_definition.settings_class,
+                fallback=conn_def.settings_definition.fallback,
+            )
 
     @classmethod
     def register_connector(cls, connector: Type[CoreConnector]) -> None:

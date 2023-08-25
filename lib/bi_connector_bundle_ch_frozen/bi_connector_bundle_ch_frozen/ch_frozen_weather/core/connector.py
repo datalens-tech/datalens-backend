@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import CHFrozenWeatherConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenBaseCoreConnectionDefinition,
     CHFrozenBaseCoreSourceDefinition,
@@ -8,11 +7,12 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.constants import CONNECTION_TYPE_CH_FROZEN_WEATHER
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.data_source import ClickHouseFrozenWeatherDataSource
+from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.settings import CHFrozenWeatherSettingDefinition
 
 
 class CHFrozenWeatherCoreConnectionDefinition(CHFrozenBaseCoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_CH_FROZEN_WEATHER
-    settings_class = CHFrozenWeatherConnectorSettings
+    settings_definition = CHFrozenWeatherSettingDefinition
 
 
 class CHFrozenWeatherCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import CHFrozenCovidConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenBaseCoreConnectionDefinition,
     CHFrozenBaseCoreSourceDefinition,
@@ -8,11 +7,12 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.constants import CONNECTION_TYPE_CH_FROZEN_COVID
 from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.data_source import ClickHouseFrozenCovidDataSource
+from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.settings import CHFrozenCovidSettingDefinition
 
 
 class CHFrozenCovidCoreConnectionDefinition(CHFrozenBaseCoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_CH_FROZEN_COVID
-    settings_class = CHFrozenCovidConnectorSettings
+    settings_definition = CHFrozenCovidSettingDefinition
 
 
 class CHFrozenCovidCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):

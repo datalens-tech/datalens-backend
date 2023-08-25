@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import MarketCouriersConnectorSettings
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -22,6 +21,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.base.core.storage_schemas.connecti
     ConnectionCHFilteredSubselectByPuidDataStorageSchema,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.data_source import ClickHouseMarketCouriersDataSource
+from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.settings import CHMarketCouriersSettingDefinition
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.us_connection import (
     ConnectionClickhouseMarketCouriers,
 )
@@ -36,7 +36,7 @@ class CHMarketCouriersCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = CHFilteredSubselectByPuidBaseConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
-    settings_class = MarketCouriersConnectorSettings
+    settings_definition = CHMarketCouriersSettingDefinition
 
 
 class CHMarketCouriersCoreSourceDefinition(CoreSourceDefinition):

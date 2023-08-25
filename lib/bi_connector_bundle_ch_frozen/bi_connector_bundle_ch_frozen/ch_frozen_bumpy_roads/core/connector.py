@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import CHFrozenBumpyRoadsConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenBaseCoreConnectionDefinition,
     CHFrozenBaseCoreSourceDefinition,
@@ -8,11 +7,12 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.constants import CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS
 from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.data_source import ClickHouseFrozenBumpyRoadsDataSource
+from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.settings import CHFrozenBumpyRoadsSettingDefinition
 
 
 class CHFrozenBumpyRoadsCoreConnectionDefinition(CHFrozenBaseCoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS
-    settings_class = CHFrozenBumpyRoadsConnectorSettings
+    settings_definition = CHFrozenBumpyRoadsSettingDefinition
 
 
 class CHFrozenBumpyRoadsCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):

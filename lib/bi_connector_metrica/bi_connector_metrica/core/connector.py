@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import MetricaConnectorSettings, AppmetricaConnectorSettings
-
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.connectors.base.connector import (
@@ -29,6 +27,7 @@ from bi_connector_metrica.core.storage_schemas.connection import (
 from bi_connector_metrica.core.type_transformer import MetrikaApiTypeTransformer
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection
 from bi_connector_metrica.core.dto import MetricaAPIConnDTO, AppMetricaAPIConnDTO
+from bi_connector_metrica.core.settings import MetricaSettingDefinition, AppMetricaSettingDefinition
 
 
 class MetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
@@ -40,7 +39,7 @@ class MetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = MetricaAPIConnExecutor
     lifecycle_manager_cls = MetricaConnectionLifecycleManager
     dialect_string = 'metrika_api'
-    settings_class = MetricaConnectorSettings
+    settings_definition = MetricaSettingDefinition
 
 
 class MetricaApiCoreSourceDefinition(CoreSourceDefinition):
@@ -71,7 +70,7 @@ class AppMetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AppMetricaAPIConnExecutor
     lifecycle_manager_cls = MetricaConnectionLifecycleManager
     dialect_string = 'appmetrica_api'
-    settings_class = AppmetricaConnectorSettings
+    settings_definition = AppMetricaSettingDefinition
 
 
 class AppMetricaApiCoreSourceDefinition(CoreSourceDefinition):

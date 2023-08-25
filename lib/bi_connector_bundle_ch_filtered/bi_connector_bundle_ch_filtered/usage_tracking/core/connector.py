@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import UsageTrackingConnectionSettings
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
 from bi_core.connectors.base.connector import (
@@ -16,6 +15,7 @@ from bi_core.connectors.clickhouse_base.storage_schemas.connection import (
 from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 from bi_connector_bundle_ch_filtered.usage_tracking.core.data_source import UsageTrackingDataSource
 from bi_connector_bundle_ch_filtered.usage_tracking.core.lifecycle import UsageTrackingConnectionLifecycleManager
+from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import UsageTrackingSettingDefinition
 from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
@@ -30,7 +30,7 @@ class UsageTrackingCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = UsageTrackingConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
-    settings_class = UsageTrackingConnectionSettings
+    settings_definition = UsageTrackingSettingDefinition
 
 
 class UsageTrackingCoreSourceDefinition(CoreSourceDefinition):

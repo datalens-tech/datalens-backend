@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import SMBHeatmapsConnectorSettings
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -22,6 +21,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.base.core.storage_schemas.connecti
     ConnectionCHFilteredSubselectByPuidDataStorageSchema,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.data_source import ClickHouseSMBHeatmapsDataSource
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.settings import CHSMBHeatmapsSettingDefinition
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.us_connection import ConnectionClickhouseSMBHeatmaps
 
 
@@ -34,7 +34,7 @@ class CHSMBHeatmapsCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = CHFilteredSubselectByPuidBaseConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
-    settings_class = SMBHeatmapsConnectorSettings
+    settings_definition = CHSMBHeatmapsSettingDefinition
 
 
 class CHSMBHeatmapsCoreSourceDefinition(CoreSourceDefinition):

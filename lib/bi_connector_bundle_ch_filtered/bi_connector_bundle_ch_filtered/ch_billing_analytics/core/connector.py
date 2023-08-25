@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import BillingConnectorSettings
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
 from bi_core.connectors.base.connector import (
@@ -10,6 +9,7 @@ from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.data_source impor
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.lifecycle import (
     BillingAnalyticsCHConnectionLifecycleManager,
 )
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import BillingAnalyticsSettingDefinition
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.us_connection import BillingAnalyticsCHConnection
 from bi_core.connectors.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
@@ -28,11 +28,11 @@ class CHBillingAnalyticsCoreConnectionDefinition(CoreConnectionDefinition):
     connection_cls = BillingAnalyticsCHConnection
     us_storage_schema_cls = ConnectionCHFilteredHardcodedDataBaseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
-    sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor  # type: ignore
+    sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = BillingAnalyticsCHConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
-    settings_class = BillingConnectorSettings
+    settings_definition = BillingAnalyticsSettingDefinition
 
 
 class CHBillingAnalyticsTableCoreSourceDefinition(CoreSourceDefinition):

@@ -1,5 +1,3 @@
-from bi_configs.connectors_settings import MysqlConnectorSettings
-
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
 from bi_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
@@ -19,6 +17,7 @@ from bi_connector_mysql.core.data_source import MySQLDataSource, MySQLSubselectD
 from bi_connector_mysql.core.connection_executors import MySQLConnExecutor, AsyncMySQLConnExecutor
 from bi_connector_mysql.core.dto import MySQLConnDTO
 from bi_connector_mysql.core.sa_types import SQLALCHEMY_MYSQL_TYPES
+from bi_connector_mysql.core.settings import MySQLSettingDefinition
 
 
 class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
@@ -29,7 +28,7 @@ class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = MySQLConnExecutor
     async_conn_executor_cls = AsyncMySQLConnExecutor
     dialect_string = 'bi_mysql'
-    settings_class = MysqlConnectorSettings
+    settings_definition = MySQLSettingDefinition
 
 
 class MySQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

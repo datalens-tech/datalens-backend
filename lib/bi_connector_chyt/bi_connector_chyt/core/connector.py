@@ -1,4 +1,3 @@
-from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_constants.enums import SourceBackendType, ConnectionType, CreateDSFrom
 
 from bi_core.connectors.base.connector import (
@@ -27,6 +26,7 @@ from bi_connector_chyt.core.data_source_spec import (
     CHYTTableRangeDataSourceSpec,
     CHYTSubselectDataSourceSpec,
 )
+from bi_connector_chyt.core.settings import CHYTSettingDefinition
 from bi_connector_chyt.core.storage_schemas.data_source_spec import (
     CHYTTableDataSourceSpecStorageSchema,
     CHYTTableListDataSourceSpecStorageSchema,
@@ -43,7 +43,7 @@ class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = CHYTSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTAsyncAdapterConnExecutor
     dialect_string = 'bi_chyt'
-    settings_class = CHYTConnectorSettings
+    settings_definition = CHYTSettingDefinition
 
 
 class CHYTTableCoreSourceDefinition(CoreSourceDefinition):

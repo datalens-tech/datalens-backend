@@ -1,4 +1,3 @@
-from bi_configs.connectors_settings import ClickHouseConnectorSettings
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
@@ -14,6 +13,7 @@ from bi_core.connectors.clickhouse_base.connection_executors import (
 )
 from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
 from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from bi_core.connectors.clickhouse.settings import ClickHouseSettingDefinition
 
 
 class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
@@ -24,7 +24,7 @@ class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     dialect_string = 'bi_clickhouse'
-    settings_class = ClickHouseConnectorSettings
+    settings_definition = ClickHouseSettingDefinition
 
 
 class ClickHouseTableCoreSourceDefinition(CoreSourceDefinition):

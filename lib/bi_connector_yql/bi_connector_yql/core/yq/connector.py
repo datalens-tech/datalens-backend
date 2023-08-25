@@ -1,5 +1,3 @@
-from bi_configs.connectors_settings import YQConnectorSettings
-
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
 )
@@ -17,6 +15,7 @@ from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDat
 from bi_core.us_manager.storage_schemas.data_source_spec_base import (
     SQLDataSourceSpecStorageSchema, SubselectDataSourceSpecStorageSchema,
 )
+from bi_connector_yql.core.yq.settings import YQSettingDefinition
 
 
 class YQCoreConnectionDefinition(CoreConnectionDefinition):
@@ -27,7 +26,7 @@ class YQCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = YQAsyncAdapterConnExecutor
     async_conn_executor_cls = YQAsyncAdapterConnExecutor
     dialect_string = 'bi_yq'
-    settings_class = YQConnectorSettings
+    settings_definition = YQSettingDefinition
 
 
 class YQTableCoreSourceDefinition(CoreSourceDefinition):

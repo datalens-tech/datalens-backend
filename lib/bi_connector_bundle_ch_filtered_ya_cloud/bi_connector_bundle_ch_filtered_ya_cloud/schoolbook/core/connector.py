@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import SchoolbookConnectorSettings
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -22,6 +21,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.base.core.storage_schemas.connecti
     ConnectionCHFilteredSubselectByPuidDataStorageSchema,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.data_source import ClickHouseSchoolbookDataSource
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.settings import CHSchoolbookSettingDefinition
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.us_connection import ConnectionClickhouseSchoolbook
 
 
@@ -34,7 +34,7 @@ class CHSchoolbookCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = CHFilteredSubselectByPuidBaseConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
-    settings_class = SchoolbookConnectorSettings
+    settings_definition = CHSchoolbookSettingDefinition
 
 
 class CHSchoolbookCoreSourceDefinition(CoreSourceDefinition):

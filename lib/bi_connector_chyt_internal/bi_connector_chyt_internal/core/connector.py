@@ -1,4 +1,3 @@
-from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_constants.enums import SourceBackendType, ConnectionType, CreateDSFrom
 
 from bi_core.connectors.base.connector import (
@@ -41,6 +40,7 @@ from bi_connector_chyt_internal.core.connection_executors import (
 )
 from bi_connector_chyt_internal.core.adapters import CHYTInternalAdapter, CHYTUserAuthAdapter
 from bi_connector_chyt_internal.core.sa_types import SQLALCHEMY_CHYT_INTERNAL_TYPES
+from bi_connector_chyt_internal.core.settings import CHYTInternalSettingDefinition, CHYTUserAuthSettingDefinition
 
 
 class CHYTInternalCoreConnectionDefinition(CoreConnectionDefinition):
@@ -51,7 +51,7 @@ class CHYTInternalCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = CHYTInternalSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTInternalAsyncAdapterConnExecutor
     dialect_string = 'bi_chyt'
-    settings_class = CHYTConnectorSettings
+    settings_definition = CHYTInternalSettingDefinition
 
 
 class CHYTTableCoreSourceDefinition(CoreSourceDefinition):
@@ -90,7 +90,7 @@ class CHYTUserAuthCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = CHYTUserAuthSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTUserAuthAsyncAdapterConnExecutor
     dialect_string = 'bi_chyt'
-    settings_class = CHYTConnectorSettings
+    settings_definition = CHYTUserAuthSettingDefinition
 
 
 class CHYTUserAuthTableCoreSourceDefinition(CoreSourceDefinition):

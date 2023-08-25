@@ -1,4 +1,3 @@
-from bi_configs.connectors_settings import MonitoringConnectorSettings
 from bi_constants.enums import ConnectionType
 
 from bi_core.connectors.base.connector import (
@@ -15,6 +14,7 @@ from bi_connector_monitoring.core.us_connection import MonitoringConnection
 from bi_connector_monitoring.core.dto import MonitoringConnDTO
 from bi_connector_monitoring.core.connection_executors import MonitoringAsyncAdapterConnExecutor
 from bi_connector_monitoring.core.data_source import MonitoringDataSource
+from bi_connector_monitoring.core.settings import MonitoringSettingDefinition
 
 
 class MonitoringCoreConnectionDefinition(CoreConnectionDefinition):
@@ -25,7 +25,7 @@ class MonitoringCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = MonitoringAsyncAdapterConnExecutor
     async_conn_executor_cls = MonitoringAsyncAdapterConnExecutor
     dialect_string = 'bi_solomon'
-    settings_class = MonitoringConnectorSettings
+    settings_definition = MonitoringSettingDefinition
 
 
 class MonitoringCoreSourceDefinition(CoreSourceDefinition):

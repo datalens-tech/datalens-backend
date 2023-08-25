@@ -1,4 +1,3 @@
-from bi_configs.connectors_settings import EqueoConnectorSettings
 from bi_constants.enums import ConnectionType
 
 from bi_core.connectors.base.connector import (
@@ -15,6 +14,7 @@ from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 from bi_connector_bundle_partners.equeo.core.constants import SOURCE_TYPE_EQUEO_CH_TABLE
 from bi_connector_bundle_partners.equeo.core.data_source import EqueoCHDataSource
+from bi_connector_bundle_partners.equeo.core.settings import EqueoSettingDefinition
 from bi_connector_bundle_partners.equeo.core.us_connection import EqueoCHConnection
 
 
@@ -26,7 +26,7 @@ class EqueoCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     dialect_string = 'bi_clickhouse'
-    settings_class = EqueoConnectorSettings
+    settings_definition = EqueoSettingDefinition
 
 
 class EqueoTableCoreSourceDefinition(CoreSourceDefinition):
