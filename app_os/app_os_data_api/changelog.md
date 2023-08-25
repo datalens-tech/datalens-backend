@@ -1,3 +1,28 @@
+0.1979.0
+--------
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * BI-4873 BI-4874 yc-public-data-api yc-embedded-data-api docker tier1 (#131)  [ https://github.com/datalens-tech/datalens-backend-private/commit/71caa7d ]
+ * BI-4872 yc-data-api docker tier1 (#126)                                      [ https://github.com/datalens-tech/datalens-backend-private/commit/adb226e ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Switched to short locales in formula_ref and fixed locales in clickhouse connector (#90)     [ https://github.com/datalens-tech/datalens-backend-private/commit/f71f6b7 ]
+ * Added ConvertBlocksToFunctionsMutation for converting IF and CASE blocks to functions (#24)  [ https://github.com/datalens-tech/datalens-backend-private/commit/66adc9d ]
+ * Added mypy task (#125)                                                                       [ https://github.com/datalens-tech/datalens-backend-private/commit/9f56a55 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * remove explain query (#128)                           [ https://github.com/datalens-tech/datalens-backend-private/commit/d2c373d ]
+ * BI-4860: connector settings fallback registry (#119)  [ https://github.com/datalens-tech/datalens-backend-private/commit/48f0f80 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Add dev-machine secrets sync to the taskfile (#127)  [ https://github.com/datalens-tech/datalens-backend-private/commit/ece8e9e ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-25 13:42:00+00:00
+
 0.1978.0
 --------
 
