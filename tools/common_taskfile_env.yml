@@ -10,3 +10,33 @@ tasks:
     dir: '/{{.USER_WORKING_DIR}}'
     cmds:
       - docker-compose up --build -d
+
+  secrets-update:
+    dir: local_dev
+    sources: ["secrets/conf/defaults.conf", "secrets/conf/templates/base_secrets.env.j2"]
+    generates: ["secrets/private/base_secrets.env"]
+    method: timestamp
+    cmds:
+      - yav-deploy --force --deploy-root ./secrets/private --configs-path ./secrets/conf
+
+  docker-remote:
+    dir: local_dev
+    deps: ["secrets-update"]
+    cmds:
+      - docker-compose run -e SKIP_DEPS_INSTALL=1 --rm pi bash
+
+  update-requirements:
+    dir: local_dev/requirements
+    cmds:
+      - bash update_requirements.sh
+
+  docker-reinstall:
+    dir: local_dev
+    deps: ["secrets-update", "update-requirements"]
+    cmds:
+      - docker-compose stop pi
+      - docker-compose rm -f pi
+      - docker rm $(docker stop $(docker ps -a -q --filter volume=local_dev_pi-venv --format='{{printf "{{.ID}}"}}')) || echo "nothing to stop"
+      - docker volume rm -f local_dev_pi-venv
+      - docker-compose build --pull pi
+      - docker-compose run --rm pi

@@ -1,6 +1,7 @@
 *.egg-info
 .venv
 build
+.task
 .tox
 .env
 .coverage
