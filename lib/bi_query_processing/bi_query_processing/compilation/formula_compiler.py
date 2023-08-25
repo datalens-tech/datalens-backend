@@ -51,7 +51,7 @@ from bi_formula.validation.aggregation import AggregationChecker
 from bi_formula.validation.window import WindowFunctionChecker
 from bi_formula.validation.validator import validate
 from bi_formula.mutation.mutation import FormulaMutation, apply_mutations
-from bi_formula.mutation.general import IgnoreParenthesisWrapperMutation
+from bi_formula.mutation.general import IgnoreParenthesisWrapperMutation, ConvertBlocksToFunctionsMutation
 from bi_formula.mutation.window import (
     DefaultWindowOrderingMutation, AmongToWithinGroupingMutation, IgnoreExtraWithinGroupingMutation,
 )
@@ -682,6 +682,7 @@ class FormulaCompiler:
         title_id_map = {f.title: f.guid for f in self._fields}
         mutations.extend([
             IgnoreParenthesisWrapperMutation(),
+            ConvertBlocksToFunctionsMutation(),
             DefaultWindowOrderingMutation(default_order_by=default_order_by),
             LookupDefaultBfbMutation(),
             RemapBfbMutation(name_mapping=title_id_map),

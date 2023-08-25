@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from bi_formula.mutation.general import (
     IgnoreParenthesisWrapperMutation,
+    ConvertBlocksToFunctionsMutation,
     OptimizeConstComparisonMutation,
     OptimizeConstAndOrMutation,
 )
@@ -18,6 +19,18 @@ def test_ignore_parenthesis_wrapper_mutation():
     ])
     assert formula_obj == n.formula(
         n.func.my_func(args=[n.func.FUNC(args=[])])
+    )
+
+
+def test_convert_blocks_to_functions_mutation():
+    formula_obj = n.formula(
+        n.if_(n.field('this')).then(n.field('that')).else_(n.field('smth_else'))
+    )
+    formula_obj = apply_mutations(formula_obj, mutations=[
+        ConvertBlocksToFunctionsMutation(),
+    ])
+    assert formula_obj == n.formula(
+        n.func.IF(args=[n.field('this'), n.field('that'), n.field('smth_else')])
     )
 
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import cached_property
+from itertools import chain
 from typing import Any, Callable, Optional, Tuple
 
 import bi_formula.core.nodes as nodes
@@ -30,6 +31,43 @@ class IgnoreParenthesisWrapperMutation(FormulaMutation):
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.ParenthesizedExpr)
         return old.expr
+
+
+class ConvertBlocksToFunctionsMutation(FormulaMutation):
+    """
+    A mutation that converts IF- and CASE-blocks to corresponding functions.
+    """
+
+    def match_node(
+            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+    ) -> bool:
+        return isinstance(node, nodes.IfBlock) or isinstance(node, nodes.IfBlock)
+
+    def _make_replacement_for_if_block(self, node: nodes.IfBlock) -> nodes.FuncCall:
+        args: list[nodes.FormulaItem] = [
+            *chain.from_iterable(if_part.children for if_part in node.if_list),  # type: ignore
+            node.else_expr
+        ]
+        return nodes.FuncCall.make('if', args=args, meta=node.meta)
+
+    def _make_replacement_for_case_block(self, node: nodes.CaseBlock) -> nodes.FuncCall:
+        args: list[nodes.FormulaItem] = [
+            node.case_expr,
+            *chain.from_iterable(when_part.children for when_part in node.when_list)  # type: ignore
+        ]
+        if node.else_expr is not None:
+            args.append(node.else_expr)
+        return nodes.FuncCall.make('case', args=args, meta=node.meta)
+
+    def make_replacement(
+            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+    ) -> nodes.FormulaItem:
+        if isinstance(old, nodes.IfBlock):
+            return self._make_replacement_for_if_block(old)
+        elif isinstance(old, nodes.CaseBlock):
+            return self._make_replacement_for_case_block(old)
+
+        raise TypeError(type(old))
 
 
 class OptimizeConstComparisonMutation(FormulaMutation):

@@ -54,7 +54,7 @@ def test_translate(tool):
     stdout, stderr = tool.run([
         'translate', '--table', 'my_table',
         '--dialect', 'clickhouse', '--unknown-funcs',
-        'SUM(IF ISNULL([field]) THEN 0 ELSE [field] END)'
+        'SUM(IF(ISNULL([field]), 0, [field]))'
     ])
     assert stdout == (
         "sum(if(isNull(my_table.field), 0, my_table.field))\n")
