@@ -23,4 +23,4 @@ HTTP_BIND="${HTTP_BIND_ADDR}:${HTTP_BIND_PORT}"
 export BI_API_UWSGI_WORKERS_COUNT UWSGI_STATS HTTP_BIND
 exec \
     uwsgi \
-        --ini=/src/app/uwsgi/uwsgi-bi-api.ini
+        --ini=/src/app_yc/app_yc_control_api/uwsgi/uwsgi-bi-api.ini

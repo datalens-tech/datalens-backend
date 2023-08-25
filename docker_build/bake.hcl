@@ -173,6 +173,16 @@ target "app_yc_control_api" {
   dockerfile = "Dockerfile.tier1"
 }
 
+target "app_yc_data_api" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img   = "target:base_focal_db_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_yc/app_yc_data_api"
+  dockerfile = "Dockerfile.tier1"
+}
+
 target "app_bi_external_api" {
   pull     = false
   contexts = {
