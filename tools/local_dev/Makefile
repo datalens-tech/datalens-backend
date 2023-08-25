@@ -6,6 +6,9 @@ TOOLS_VENV = .tools_venv
 TOOLS_PY = $(TOOLS_VENV)/bin/python
 
 export DEV_MACHINE
+ifeq ("$(DEV_MACHINE)", "")
+	DEV_MACHINE=$(DEV_MACHINE_IPV4)
+endif
 export DEV_MACHINE_UPLOAD_DEBUG
 export DEV_MACHINE_PKG_ROOT
 export TOOLS_VENV
@@ -42,6 +45,11 @@ secrets/private/base_secrets.env: secrets/conf/defaults.conf secrets/conf/templa
 
 .PHONY: secrets-update
 secrets-update: secrets/private/base_secrets.env
+	yav get version -j sec-01eb6ngzk58g1hw91t2aggr3kv -o > .tmp.env-main
+	yav get version -j sec-01ec8d1x4ckxq3h1byrh7wk5ax -o > .tmp.env-tvm
+	python3 json_to_env_file.py .tmp.env-main,.tmp.env-tvm .tmp.env-result '{"client_secret": "TVM_CLIENT_SECRET"}'
+	scp .tmp.env-result ${DEV_MACHINE_IPV4}:${DEV_MACHINE_PKG_ROOT}/.env
+	rm .tmp.env-main .tmp.env-tvm .tmp.env-result
 
 
 .PHONY: secrets-cleanup

@@ -36,7 +36,11 @@ https://a.yandex-team.ru/arc_vcs/datalens/backend/tools/dev-machines-provisionin
  и в стуркутре проекта папки раскрасились
  * На dev-машинке создайте папку `mirror`: `mkdir ~/mirror`
  * Тыкните `Tools -> Deployment -> Automatic upload`. В скобках у этого пункта меню должно появиться слово `always`
- * Из папки `tools/local_dev` вызвать `DEV_MACHINE=%DEV_MACHINE_IPV4% DEV_MACHINE_PKG_ROOT=/home/%USER%/mirror make upload-dm`
+ * В `tools/local_dev`:
+   * создать .env файл следующего содержания:
+     * DEV_MACHINE_PKG_ROOT=/home/%USER%/mirror
+     * DEV_MACHINE_IPV4=%DEV_MACHINE_IPV4%
+   * вызвать `make upload-dm`
  * Установите консольный клиент для работы с секретницей. https://docs.yandex-team.ru/yav-api/cli/install
  * Получите доступ к секретам https://yav.yandex-team.ru/secret/sec-01d5pcrfv9xceanxj2jwaed4bm
  * Устоановите docker-compose с помощью pip в отдельный venv и добавте в $PATH или сделайте симлинк в /usr/local/bin
@@ -45,7 +49,6 @@ https://a.yandex-team.ru/arc_vcs/datalens/backend/tools/dev-machines-provisionin
  * Авторизоваться в Докере: https://wiki.yandex-team.ru/docker-registry/#authorization
  * В терминале перейдите в `tools/local_dev`
     * Сделайте `make secrets-update`
-    * Создать .env файл в директории local_dev (где запускаем команды) со строчкой вида `DEV_MACHINE_PKG_ROOT=/home/%%YOUR_USERNAME%%/mirror` (mirror - пока прибито гвоздями :( )
     * Сделайте `DOCKER_HOST="tcp://%DEV_MACHINE_IPV4%:2375" make docker-reinstall`
  * В настройках PyCharm (`CMD + ,`) войдите в `Project -> Python Interpreter`
     * Тыкните `Шестеренка в правом верхнем углу -> Add...`

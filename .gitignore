@@ -4,6 +4,7 @@ build
 .task
 .tox
 .env
+.tmp.env*
 .coverage
 .python-version
 */docker-compose/common/secrets/private/
