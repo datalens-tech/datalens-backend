@@ -11,13 +11,25 @@ tasks:
     cmds:
       - docker-compose up --build -d
 
-  secrets-update:
+  base-secrets-update:
     dir: local_dev
     sources: ["secrets/conf/defaults.conf", "secrets/conf/templates/base_secrets.env.j2"]
     generates: ["secrets/private/base_secrets.env"]
     method: timestamp
     cmds:
       - yav-deploy --force --deploy-root ./secrets/private --configs-path ./secrets/conf
+
+  secrets-update:
+    dir: local_dev
+    deps: ["base-secrets-update"]
+    dotenv: [".env"]
+    cmds:
+      - yav get version -j sec-01eb6ngzk58g1hw91t2aggr3kv -o > .tmp.env-main
+      - yav get version -j sec-01ec8d1x4ckxq3h1byrh7wk5ax -o > .tmp.env-tvm
+      - python3 json_to_env_file.py .tmp.env-main,.tmp.env-tvm .tmp.env-result '{"client_secret":"TVM_CLIENT_SECRET"}'
+      - scp -q .tmp.env-result ${DEV_MACHINE_IPV4}:${DEV_MACHINE_PKG_ROOT}/.env
+      - echo "Successfully created ${DEV_MACHINE_IPV4}:${DEV_MACHINE_PKG_ROOT}/.env"
+      - rm .tmp.env-main .tmp.env-tvm .tmp.env-result
 
   docker-remote:
     dir: local_dev
