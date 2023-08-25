@@ -57,12 +57,6 @@ class DBAdapterQuery:
         return attr.evolve(self, **kwargs)
 
 
-@attr.s(frozen=True, auto_attribs=True)
-class ExplainResult:
-    explain_query_text: Optional[str]
-    explain_response: Any  # `List[str]` is recommended in most cases; or at least jsonable; or `repr`able.
-
-
 @attr.s(frozen=True, slots=True, auto_attribs=True)
 class RawColumnInfo:
     name: str

@@ -327,10 +327,6 @@ class TestCHYTSyncAdapterConnExecutor(CHYTTokenAuthMixin, BaseCHYTSyncTestSet):
 
     executor_cls = CHYTInternalSyncAdapterConnExecutor
 
-    @pytest.mark.skip()
-    async def test_explain(self, executor_builder, default_conn_options, caplog, exec_mode):
-        pass
-
 
 @pytest.mark.yt
 class TestCHYTAsyncAdapterConnExecutor(CHYTTokenAuthMixin, BaseTestCHYTAsyncAdapterConnExecutor):
@@ -344,10 +340,6 @@ class TestCHYTUserAuthSyncAdapterConnExecutor(CHYTUserAuthAuthMixin, BaseCHYTSyn
     connection_type = ConnectionType.ch_over_yt_user_auth
 
     executor_cls = CHYTUserAuthSyncAdapterConnExecutor
-
-    @pytest.mark.skip()
-    async def test_explain(self, executor_builder, default_conn_options, caplog, exec_mode):
-        pass
 
 
 @pytest.mark.yt

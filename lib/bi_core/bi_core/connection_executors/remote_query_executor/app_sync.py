@@ -74,9 +74,6 @@ class ActionHandlingView(flask.views.View):
         if isinstance(action, act.ActionTest):
             return dba.test()
 
-        elif isinstance(action, act.ActionExecuteExplain):
-            return dba.execute_explain(query=action.db_adapter_query, require=action.require)  # type: ignore
-
         elif isinstance(action, act.ActionGetDBVersion):
             return dba.get_db_version(db_ident=action.db_ident)
 

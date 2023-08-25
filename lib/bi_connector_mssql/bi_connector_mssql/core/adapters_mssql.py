@@ -237,5 +237,3 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         exc_cls = specific_exc_cls if specific_exc_cls is not None else exc_cls
 
         return exc_cls, kw
-
-    # _explain_query_prefix = 'SET SHOWPLAN_ALL ON;\nGO\n'  # TODO; might not work nicely.

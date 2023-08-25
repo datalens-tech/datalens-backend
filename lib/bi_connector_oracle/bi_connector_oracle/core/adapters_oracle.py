@@ -159,10 +159,6 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     def _cursor_column_to_nullable(self, cursor_col) -> Optional[bool]:  # type: ignore  # TODO: fix
         return bool(cursor_col[6])
 
-    # # For reference, this is not going to just work:
-    # _explain_query_prefix = 'EXPLAIN PLAN FOR '
-    # _explain_query_suffix = '; SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());'
-
     def _make_cursor_info(self, cursor, db_session=None) -> dict:  # type: ignore  # TODO: fix
         return dict(
             super()._make_cursor_info(cursor, db_session=db_session),

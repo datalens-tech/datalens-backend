@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from marshmallow import fields, pre_dump
 from marshmallow_enum import EnumField
 
 from bi_constants.enums import IndexKind
 
-from bi_core.connection_executors.models.db_adapter_data import (
-    ExplainResult, RawColumnInfo, RawSchemaInfo, RawIndexInfo
-)
+from bi_core.connection_executors.models.db_adapter_data import RawColumnInfo, RawSchemaInfo, RawIndexInfo
 from bi_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
 from bi_core.db.native_type_schema import OneOfNativeTypeSchemaBase
 
@@ -41,16 +39,6 @@ class RawSchemaInfoSchema(BaseQEAPISchema):
 
     def to_object(self, data: Dict[str, Any]) -> RawSchemaInfo:
         return RawSchemaInfo(**data)
-
-
-class ExplainResultResponseSchema(BaseQEAPISchema):
-    explain_query_text = fields.String()
-    explain_response = fields.Raw()
-
-    def to_object(self, data: Dict[str, Any]) -> Optional[ExplainResult]:
-        if not data:
-            return None
-        return ExplainResult(**data)
 
 
 class PrimitivesResponseSchema(BaseQEAPISchema):

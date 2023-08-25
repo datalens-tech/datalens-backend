@@ -80,18 +80,6 @@ class DataApiAppFactoryOS(DataApiAppFactory, DataApiSRFactoryBuilderOS):
             )
         ]
 
-        def explain_select_conn_opts_mutator(
-            conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            if setting.EXPLAIN_SELECT_FRAC:
-                return conn_opts.clone(
-                    explain_select_frac=setting.EXPLAIN_SELECT_FRAC,
-                    explain_select_timeout=setting.EXPLAIN_SELECT_TIMEOUT,
-                )
-            return None
-
-        conn_opts_factory.add_mutator(explain_select_conn_opts_mutator)
-
         # SR middlewares
         sr_middleware_list = [
             services_registry_middleware(

@@ -87,11 +87,6 @@ class BaseAppSettings:
 
     CHYT_MIRRORING: Optional[CHYTMirroringConfig] = s_attrib("DL_CHYT_MIRRORING", enabled_key_name="ON", missing=None)  # type: ignore  # TODO: fix
 
-    # Fraction of requests to `EXPLAIN` into log.
-    # WORK IN PROGRESS
-    EXPLAIN_SELECT_FRAC: float = s_attrib("DL_EXPLAIN_SELECT_FRAC", missing=0)  # type: ignore  # TODO: fix
-    EXPLAIN_SELECT_TIMEOUT: float = s_attrib("DL_EXPLAIN_SELECT_TIMEOUT", missing=5)  # type: ignore  # TODO: fix
-
     # Sentry
     @staticmethod
     def default_sentry_enabled(fallback_cfg: CommonInstallation):  # type: ignore  # TODO: fix

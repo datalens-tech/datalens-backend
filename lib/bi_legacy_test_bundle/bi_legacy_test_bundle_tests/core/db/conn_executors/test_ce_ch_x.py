@@ -12,10 +12,6 @@ from bi_legacy_test_bundle_tests.core.common_ce_ch import BaseClickHouseTestSet
 class TestClickHouseSyncAdapterConnExecutor(BaseClickHouseTestSet):
     executor_cls = ClickHouseSyncAdapterConnExecutor
 
-    @pytest.mark.skip()
-    async def test_explain(self, executor_builder, default_conn_options, caplog, exec_mode):
-        pass
-
 
 class TestClickHouseAsyncAdapterExecutor(BaseClickHouseTestSet):
     executor_cls = ClickHouseAsyncAdapterConnExecutor

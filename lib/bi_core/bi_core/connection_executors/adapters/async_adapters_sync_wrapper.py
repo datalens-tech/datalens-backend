@@ -19,7 +19,6 @@ from bi_core.connection_executors.models.db_adapter_data import (
 )
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.models.db_adapter_data import ExplainResult
     from bi_core.connection_models.common_models import (
         DBIdent, SchemaIdent, TableDefinition, TableIdent,
     )
@@ -82,9 +81,6 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
             raw_cursor_info=first_msg.cursor_info,
             raw_chunk_generator=data_generator(),
         )
-
-    async def execute_explain(self, query: DBAdapterQuery, require: bool = True) -> Optional['ExplainResult']:
-        return await self._loop.run_in_executor(self._tpe, self._sync_adapter.execute_explain, query, require)
 
     async def test(self) -> None:
         await self._loop.run_in_executor(self._tpe, self._sync_adapter.test)

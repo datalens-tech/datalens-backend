@@ -255,19 +255,6 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
             result_footer=result_footer,
         )
 
-    async def _maybe_log_explain(self, query: ConnExecutorQuery) -> None:
-        # TODO: self._conn_options.explain_select_timeout
-        dba = self._target_dba
-        try:
-            dba_query = self.executor_query_to_db_adapter_query(query)
-            explain_res = await dba.execute_explain(dba_query, require=False)
-            if explain_res is None:
-                return
-            self._handle_explain_select_data(explain_res)
-        except Exception as exc:
-            maybe_postmortem()  # debug-catch
-            LOGGER.exception("Failed to log execute-explain: %r", exc)
-
     @_common_exec_wrapper
     async def _test(self) -> None:
         await self._target_dba.test()

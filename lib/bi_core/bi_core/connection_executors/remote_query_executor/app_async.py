@@ -140,9 +140,6 @@ class ActionHandlingView(BaseView):
         if isinstance(action, act.ActionTest):
             return await dba.test()
 
-        elif isinstance(action, act.ActionExecuteExplain):
-            return await dba.execute_explain(query=action.db_adapter_query, require=action.require)  # type: ignore
-
         elif isinstance(action, act.ActionGetDBVersion):
             return await dba.get_db_version(db_ident=action.db_ident)
 

@@ -8,9 +8,7 @@ from typing import TYPE_CHECKING, AsyncIterable, Awaitable, Callable, Generic, O
 import attr
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery, ExplainResult, RawSchemaInfo,
-)
+from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
 
 if TYPE_CHECKING:
     from bi_core.connection_models.common_models import (
@@ -66,26 +64,6 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
         pass
-
-    async def execute_explain(self, query: DBAdapterQuery, require: bool = True) -> Optional[ExplainResult]:
-        explain_query = self._make_explain_query(query=query, require=require)  # type: ignore  # TODO: fix
-        if not explain_query:
-            assert not require
-            return None
-
-        explain_query_text = explain_query.query
-        if not isinstance(explain_query_text, str):
-            LOGGER.warning("_make_explain_query on %r returned a non-str explain query %r", self, type(explain_query_text))
-            explain_query_text = None
-        assert isinstance(explain_query_text, str) or explain_query_text is None
-
-        # Reminder: CE execute -> CE maybe_log_explain -> DBA execute_explain -> DBA execute
-        explain_query_result = await self.execute(explain_query)
-        explain_response = []  # type: ignore  # TODO: fix
-        async for chunk in explain_query_result.raw_chunk_generator:
-            explain_response.extend(chunk)
-
-        return ExplainResult(explain_query_text=explain_query_text, explain_response=explain_response)
 
     @abc.abstractmethod
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:

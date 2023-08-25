@@ -84,10 +84,6 @@ class TestOracleExecutor(BaseConnExecutorSet):
 
         db.drop_table(table)
 
-    @pytest.mark.skip()
-    async def test_explain(self, *args, **kwargs):
-        pass  # TODO
-
     @pytest.fixture()
     def error_test_set(self, request) -> ErrorTestSet:
         return ErrorTestSet(

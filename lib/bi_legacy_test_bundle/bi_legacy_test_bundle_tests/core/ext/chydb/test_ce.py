@@ -91,10 +91,6 @@ class BaseCHYDBCETestSet(CHLikeBaseTestSet):
 class TestCHYDBCESyncAdapterConnExecutor(BaseCHYDBCETestSet):
     executor_cls = CHYDBSyncAdapterConnExecutor
 
-    @pytest.mark.skip()
-    async def test_explain(self, executor_builder, default_conn_options, caplog, exec_mode):
-        pass
-
 
 @pytest.mark.yt
 class TestCHYDBCEAsyncAdapterConnExecutor(BaseCHYDBCETestSet):
@@ -130,8 +126,4 @@ class TestCHYDBCEAsyncAdapterConnExecutor(BaseCHYDBCETestSet):
 
     @pytest.mark.skip()
     def test_table_exists_sync(self, sync_exec_wrapper, is_table_exists_test_case):
-        pass
-
-    @pytest.mark.skip('CHYDB CH is too old')
-    async def test_explain(self, executor_builder, default_conn_options, caplog, exec_mode):
         pass

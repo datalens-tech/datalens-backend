@@ -90,31 +90,3 @@ class CommonBaseDirectAdapter(Generic[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
         query_text = str(compiled_query)
 
         return query_text
-
-    @staticmethod
-    def compile_query_for_explain(query: sa.sql.Select, dialect: sa.engine.Dialect) -> tuple[str, tuple[Any, ...]]:
-        compiled_query = query.compile(
-            dialect=dialect,
-            compile_kwargs={"literal_binds": True},
-        )
-        params = ()
-        return str(compiled_query), params
-
-    _explain_query_prefix: Optional[str] = None
-
-    def _make_explain_query(self, query: DBAdapterQuery, require: bool = True) -> Optional[DBAdapterQuery]:
-        if self._explain_query_prefix is None:
-            if require:
-                raise Exception(f"`_explain_query_prefix` is not set on {self.__class__!r}")
-            return None
-
-        query_obj = query.query
-        if isinstance(query_obj, str):
-            query_text = query_obj
-        else:
-            # engine = self.get_db_engine(self.get_db_name_for_query(query.db_name))
-            dialect = self.get_dialect()
-            query_text, query_params = self.compile_query_for_explain(query_obj, dialect=dialect)
-            query_text = query_text % query_params
-        explain_query_text = self._explain_query_prefix + query_text
-        return query.clone(query=explain_query_text)

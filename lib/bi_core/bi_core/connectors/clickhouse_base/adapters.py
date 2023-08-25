@@ -52,7 +52,6 @@ if TYPE_CHECKING:
     from bi_core.connectors.clickhouse_base.target_dto import (  # noqa: F401
         BaseClickHouseConnTargetDTO, ClickHouseConnTargetDTO,
     )
-    from bi_core.connection_executors.models.db_adapter_data import ExplainResult
     from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
     from bi_core.connection_models.common_models import (
         DBIdent, SchemaIdent,
@@ -676,37 +675,6 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             req_ctx_info=req_ctx_info,
             default_chunk_size=default_chunk_size,
         )
-
-    # There's also `explain pipeline', which seems to be more detailed but not
-    # in any useful way.
-    _explain_query_prefix = 'explain plan '
-
-    def _should_explain_for_ch_version(self, version_response) -> Tuple[bool, str]:  # type: ignore  # TODO: fix
-        try:
-            version_row, = version_response
-            version, = version_row
-            version_pieces = version.split('.')
-            version_pieces = version_pieces[:2]  # the interesting part
-            version_values = [int(piece) for piece in version_pieces]
-        except Exception as exc:
-            return False, repr(exc)
-        return version_values >= [20, 7], f'version = {version_values} < 20.7'  # also works in *some* 20.6 versions
-
-    async def execute_explain(self, query: DBAdapterQuery, require: bool = True) -> Optional[ExplainResult]:
-        version_query_text = 'select version()'
-        version_query = DBAdapterQuery(query=version_query_text, debug_compiled_query=version_query_text)
-        version_result = await self.execute(version_query)
-        version_response = []  # type: ignore  # TODO: fix
-        async for chunk in version_result.raw_chunk_generator:
-            version_response.extend(chunk)
-        should_explain, details = self._should_explain_for_ch_version(version_response)
-        if not should_explain:
-            if require:
-                raise Exception(f"Unable to EXPLAIN on CH version {version_response!r}: {details}")
-            LOGGER.debug("Not doing CH explain for version %r: %s", version_response, details)
-            return None
-
-        return await super().execute_explain(query, require=require)
 
 
 class AsyncClickHouseAdapter(BaseAsyncClickHouseAdapter):

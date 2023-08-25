@@ -13,7 +13,6 @@ from bi_core.connection_executors.models.db_adapter_data import (
     ExecutionStep,
     ExecutionStepCursorInfo,
     ExecutionStepDataChunk,
-    ExplainResult,
     RawSchemaInfo,
 )
 from bi_core.connection_models import TableIdent, SchemaIdent, DBIdent, TableDefinition
@@ -75,26 +74,6 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
             data_chunks=real_generator(),
             raw_cursor_info=cursor_info_step,
         )
-
-    def execute_explain(self, query: DBAdapterQuery, require: bool = True) -> Optional[ExplainResult]:
-        explain_query = self._make_explain_query(query=query, require=require)
-        if not explain_query:
-            assert not require
-            return None
-
-        explain_query_text = explain_query.query
-        if not isinstance(explain_query_text, str):
-            LOGGER.warning("_make_explain_query on %r returned a non-str explain query %r", self, type(explain_query_text))
-            explain_query_text = None  # type: ignore  # TODO: fix
-        assert isinstance(explain_query_text, str) or explain_query_text is None
-
-        explain_query_response = self.execute(explain_query)
-        explain_response = [
-            row
-            for chunk in explain_query_response.data_chunks
-            for row in chunk]
-
-        return ExplainResult(explain_query_text=explain_query_text, explain_response=explain_response)
 
     @abc.abstractmethod
     def get_db_version(self, db_ident: DBIdent) -> Optional[str]:

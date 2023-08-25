@@ -99,7 +99,3 @@ class TestMySQLSyncAdapterExecutor(BaseConnExecutorSet):
             pytest.skip("Hangs forever in RQE on fetch_many()")
 
         super().test_get_db_version_sync(sync_exec_wrapper)
-
-    @pytest.mark.skip()
-    async def test_explain(self, *args, **kwargs):
-        pass  # TODO

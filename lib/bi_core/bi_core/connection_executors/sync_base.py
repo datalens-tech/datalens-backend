@@ -49,8 +49,6 @@ class SyncConnExecutorBase(metaclass=abc.ABCMeta):
     def execute(self, query: ConnExecutorQuery) -> SyncExecutionResult:
         pass
 
-    # Not expected to be implemented on a sync CE: `maybe_log_explain`.
-
     @abc.abstractmethod
     def test(self) -> None:
         pass

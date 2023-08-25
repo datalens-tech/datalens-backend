@@ -31,7 +31,6 @@ from bi_constants.types import TBIDataValue
 
 if TYPE_CHECKING:
     from bi_core.services_registry.top_level import ServicesRegistry
-    from bi_core.connection_executors.models.db_adapter_data import ExplainResult
     from bi_core.connections_security.base import ConnectionSecurityManager  # noqa
     from bi_core.mdb_utils import MDBDomainManager
     from bi_constants.types import TJSONExt
@@ -161,26 +160,6 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
             )
 
         return SchemaInfo(schema=schema, indexes=index_info_set,)
-
-    def _should_explain_select(self) -> bool:
-        explain_frac = self._conn_options.explain_select_frac
-        if not explain_frac:
-            LOGGER.debug('EXPLAIN SELECT enabled=False by explain_frac=%r', explain_frac)
-            return False
-        if explain_frac >= 1.0:
-            LOGGER.debug('EXPLAIN SELECT enabled=True by explain_frac=%r', explain_frac)
-            return True
-        result = random.random() < explain_frac
-        LOGGER.debug('EXPLAIN SELECT enabled=%r by random over explain_frac=%r', result, explain_frac)
-        return result
-
-    def _handle_explain_select_data(self, explain_result: ExplainResult):  # type: ignore  # TODO: fix
-        LOGGER.debug(
-            "Explain data. (see `explain_data`)",
-            extra=dict(explain_data=dict(
-                query_text=explain_result.explain_query_text,
-                response=make_jsonable(explain_result.explain_response),
-            )))
 
     @contextlib.contextmanager
     def _postprocess_db_excs(self) -> Generator[None, None, None]:

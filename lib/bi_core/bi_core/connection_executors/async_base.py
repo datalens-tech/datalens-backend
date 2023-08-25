@@ -84,18 +84,7 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
         :param query:
         :return: Chunks of result
         """
-        if self._should_explain_select():  # skip aio task if it's disabled
-            asyncio.ensure_future(self.maybe_log_explain(query))
         return await self._execute(query)
-
-    @final
-    @init_required
-    async def maybe_log_explain(self, query: ConnExecutorQuery) -> None:
-        """
-        Executes an `explain select ...` query, if possible and enabled,
-        and *logs* the result for further analysis.
-        """
-        await self._maybe_log_explain(query)
 
     @final
     @init_required
@@ -136,9 +125,6 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     async def _execute(self, query: ConnExecutorQuery) -> AsyncExecutionResult:
         pass
-
-    async def _maybe_log_explain(self, query: ConnExecutorQuery) -> None:
-        """ Does nothing unless overridden """
 
     @abc.abstractmethod
     async def _test(self) -> None:

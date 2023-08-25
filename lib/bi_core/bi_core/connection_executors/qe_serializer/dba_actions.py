@@ -7,15 +7,11 @@ import attr
 from marshmallow import fields
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery, ExplainResult, RawSchemaInfo,
-)
+from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
 from bi_core.connection_executors.qe_serializer.schemas_common import TableIdentSchema
-from bi_core.connection_executors.qe_serializer.schemas_responses import (
-    ExplainResultResponseSchema, PrimitivesResponseSchema, RawSchemaInfoSchema,
-)
+from bi_core.connection_executors.qe_serializer.schemas_responses import PrimitivesResponseSchema, RawSchemaInfoSchema
 from bi_core.connection_models import DBIdent, SchemaIdent, TableDefinition, TableIdent
 
 if TYPE_CHECKING:
@@ -52,14 +48,6 @@ class ActionTest(NonStreamAction[None]):
     class ResultSchema(BaseQEAPISchema):
         def to_object(self, data: Dict[str, Any]) -> Any:
             return None
-
-
-@attr.s(frozen=True)
-class ActionExecuteExplain(NonStreamAction[ExplainResult]):
-    db_adapter_query: DBAdapterQuery = attr.ib()
-    require: bool = attr.ib()
-
-    ResultSchema = ExplainResultResponseSchema
 
 
 @attr.s(frozen=True)

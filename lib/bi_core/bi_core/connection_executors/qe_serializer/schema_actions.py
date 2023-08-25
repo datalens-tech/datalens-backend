@@ -57,14 +57,6 @@ class ActionExecuteQuerySchema(DBAdapterActionBaseSchema):
         return dba_actions.ActionExecuteQuery(**data)
 
 
-class ActionExecuteExplainSchema(DBAdapterActionBaseSchema):
-    db_adapter_query = fields.Nested(GenericDBAQuerySchema)
-    require = fields.Boolean()
-
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteExplain:
-        return dba_actions.ActionExecuteExplain(**data)
-
-
 class ActionGetDBVersionSchema(DBAdapterActionBaseSchema):
     db_ident = fields.Nested(DBIdentSchema)
 

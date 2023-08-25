@@ -13,8 +13,6 @@ class ConnectOptions:
     rqe_total_timeout: Optional[int] = attr.ib(default=None)
     rqe_sock_read_timeout: Optional[int] = attr.ib(default=None)
     use_managed_network: bool = attr.ib(default=True)
-    explain_select_frac: float = attr.ib(default=0.0)
-    explain_select_timeout: float = attr.ib(default=5.0)
     fetch_table_indexes: bool = attr.ib(default=False)
     pass_db_messages_to_user: bool = attr.ib(default=False)
     pass_db_query_to_user: bool = attr.ib(default=False)

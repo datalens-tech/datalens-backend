@@ -76,5 +76,3 @@ class BaseMySQLAdapter:
         # Another important note: these types don't designate *arrays* by
         # themselves. Might have to look into the data for that.
     }
-
-    _explain_query_prefix: Optional[str] = 'explain format = JSON '

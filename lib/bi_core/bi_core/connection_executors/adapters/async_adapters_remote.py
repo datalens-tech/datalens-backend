@@ -45,7 +45,6 @@ from bi_core import exc as common_exc
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
-    from bi_core.connection_executors.models.db_adapter_data import ExplainResult
     from bi_core.connection_models.common_models import (
         DBIdent, SchemaIdent, TableDefinition, TableIdent,
     )
@@ -293,18 +292,6 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         return AsyncRawExecutionResult(
             raw_cursor_info=raw_cursor_info,
             raw_chunk_generator=data_generator(),
-        )
-
-    @generic_profiler_async("qe_explain")  # type: ignore  # TODO: fix
-    async def execute_explain(self, query: DBAdapterQuery, require: bool = True) -> Optional[ExplainResult]:
-        return await self._make_request_parse_response(  # type: ignore  # TODO: fix
-            dba_actions.ActionExecuteExplain(
-                db_adapter_query=query,
-                require=require,
-                target_conn_dto=self._target_dto,
-                dba_cls=self._dba_cls,
-                req_ctx_info=self._req_ctx_info,
-            ),
         )
 
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:

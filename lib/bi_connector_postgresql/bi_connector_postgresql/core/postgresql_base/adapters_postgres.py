@@ -101,10 +101,3 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             else None
             for col in cursor_info.raw_cursor_description
         )
-
-    _explain_query_prefix = 'explain (verbose true, format yaml) '
-
-    def _make_explain_query(self, query: DBAdapterQuery, require: bool = True) -> DBAdapterQuery:
-        explain_query = super()._make_explain_query(query, require=require)
-        assert explain_query is not None, 'should be implemented here'
-        return explain_query.clone(disable_streaming=True)

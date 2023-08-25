@@ -80,14 +80,6 @@ class BaseTestFileS3AsyncAdapterExecutor(BaseClickHouseTestSet):
 
         await s3_client.delete_object(Bucket=s3_bucket, Key=filename)
 
-    @pytest.fixture()
-    def query_for_explain(self, s3_tbl_func_local, s3_native_from_ch_table) -> tuple[str, sa.sql.Select]:
-        s3_tbl_func_for_dba = s3_tbl_func_local(for_='dba', filename=s3_native_from_ch_table)
-        return (
-            'SELECT 1 / 2 AS anon_1\nFROM\n' + s3_tbl_func_for_dba,
-            sa.select([sa.literal(1) / sa.literal(2)]).select_from(sa.text(s3_tbl_func_for_dba))
-        )
-
     async def test_date32(self, executor, s3_tbl_func_local, s3_native_from_ch_table):
         query = executor.execute(query=ConnExecutorQuery(
             query="SELECT toDate32('1931-01-01') "

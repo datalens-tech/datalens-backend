@@ -73,10 +73,6 @@ class TestMSSQLExecutor(BaseSchemaSupportedExecutorSet):
 
         db.drop_table(table)
 
-    @pytest.mark.skip()
-    async def test_explain(self, *args, **kwargs):
-        pass  # TODO
-
     @pytest.mark.asyncio
     async def test_execution_errors(self, executor):
         with pytest.raises(exc.DataParseError):

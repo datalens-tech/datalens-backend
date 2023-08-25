@@ -16,7 +16,6 @@ class ActionSerializer:
     MAP_ACT_TYPE_SCHEMA_CLS: ClassVar[Dict[Type[actions.RemoteDBAdapterAction], Type[Schema]]] = {
         actions.ActionExecuteQuery: act_schemas.ActionExecuteQuerySchema,
         actions.ActionTest: act_schemas.ActionTestSchema,
-        actions.ActionExecuteExplain: act_schemas.ActionExecuteExplainSchema,
         actions.ActionGetDBVersion: act_schemas.ActionGetDBVersionSchema,
         actions.ActionGetSchemaNames: act_schemas.ActionGetSchemaNamesSchema,
         actions.ActionGetTables: act_schemas.ActionGetTablesSchema,

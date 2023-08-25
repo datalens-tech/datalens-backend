@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import contextlib
-import logging
 from typing import Any, Callable, ClassVar, Generator, List, NamedTuple, Optional, Sequence, Type
 
 import attr
@@ -325,10 +324,6 @@ class BaseConnExecutorSupport:
         else:
             raise ValueError(f"Unknown fixture param {param}")
 
-    @pytest.fixture()
-    def query_for_explain(self) -> tuple[str, sa.sql.Select]:
-        return 'SELECT 1 / 2', sa.select([sa.literal(1) / sa.literal(2)])
-
 
 class BaseConnExecutorSet(BaseConnExecutorSupport):
     """ Base tests for all CE classes """
@@ -355,38 +350,6 @@ class BaseConnExecutorSet(BaseConnExecutorSupport):
         result = sync_exec_wrapper.execute(select_data_test_set.query)
         rows = result.get_all()
         assert rows == select_data_test_set.expected_data
-
-    async def test_explain(self, executor_builder, default_conn_options, caplog, exec_mode, query_for_explain):
-        req_timeout = 5.0
-        ce_bld = executor_builder.with_options(ExecutorOptions(
-            connect_options=attr.evolve(
-                default_conn_options,
-                explain_select_frac=1.0,
-                explain_select_timeout=req_timeout,
-            ),
-            exec_mode=exec_mode,
-        ))
-        ce = ce_bld.build()
-
-        caplog.clear()
-        caplog.set_level(logging.DEBUG)
-
-        query_text, query_obj = query_for_explain
-
-        ce_query = ConnExecutorQuery(query_obj, trusted_query=True)
-        await ce.execute(ce_query)
-
-        log_rec = await self.wait_for_log_record(
-            caplog=caplog, prefix='Explain data',
-            timeout=req_timeout * 1.5)
-
-        self._check_explain_data(log_rec.explain_data, query_obj=query_obj, query_text=query_text)
-
-        caplog.clear()
-
-    def _check_explain_data(self, explain_data: dict, query_obj: sa.sql.Select, query_text: str):
-        assert query_text in explain_data['query_text'], explain_data
-        assert '\n'.join(row for row, in explain_data['response']), explain_data
 
     # Schema discovery
     # ################
