@@ -1,5 +1,9 @@
 version: '3'
 
+vars:
+  USER_REL_PATH:
+    sh: python -c "import os,sys;print(os.path.relpath('{{.USER_WORKING_DIR}}'))"
+
 includes:
   env:
     taskfile: tools/common_taskfile_env.yml
