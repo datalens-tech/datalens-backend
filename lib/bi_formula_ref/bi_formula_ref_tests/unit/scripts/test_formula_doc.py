@@ -45,7 +45,7 @@ def test_locales(tool):
         'locales'
     ])
     assert stderr == ''
-    assert 'ru_RU' in stdout
+    assert 'ru' in stdout
 
 
 def test_doc_full_dir(tool, example_data_patch):

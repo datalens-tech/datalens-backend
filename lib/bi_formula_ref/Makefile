@@ -42,18 +42,18 @@ translations-local:
 	    | awk '{system("msgfmt ${PROJECT_DIR}/locales/"$$1"/LC_MESSAGES/bi_formula_ref.po -o ${PROJECT_DIR}/locales/"$$1"/LC_MESSAGES/bi_formula_ref.mo")}'
 
 
-bi_formula_ref/locales/ru_RU/LC_MESSAGES/bi_formula_ref.mo: bi_formula_ref/locales/ru_RU/LC_MESSAGES/bi_formula_ref.po
+bi_formula_ref/locales/ru/LC_MESSAGES/bi_formula_ref.mo: bi_formula_ref/locales/ru/LC_MESSAGES/bi_formula_ref.po
 	if which msgfmt >/dev/null; then make translations-local; else make translations-docker; fi
 
 
 # Generate translation binary .mo files
 .PHONY: translations
-translations: bi_formula_ref/locales/ru_RU/LC_MESSAGES/bi_formula_ref.mo
+translations: bi_formula_ref/locales/ru/LC_MESSAGES/bi_formula_ref.mo
 
 
 .PHONY: cloud-docs
 cloud-docs: translations
-	for locale in ru_RU en_US; do locale_short="$$(printf "%s\n" "$$locale" | sed -r 's/_.*//')"; bi-formula-ref-doc generate --locale "$$locale" $${CLOUD_DOCS_REPO:-~/src/cloud/docs}/"$${locale_short}"/_api-ref/datalens/; done
+	for locale in ru en; do locale_short="$$(printf "%s\n" "$$locale" | sed -r 's/_.*//')"; bi-formula-ref-doc generate --locale "$$locale" $${CLOUD_DOCS_REPO:-~/src/cloud/docs}/"$${locale_short}"/_api-ref/datalens/; done
 
 
 .PHONY: test
@@ -107,11 +107,11 @@ DOCS_SOURCE_PATH ?= docs-source
 
 .PHONY: generate-docs-source
 generate-docs-source:
-	@echo "Generating en_US docs..."
-	@$(VENV)/bin/bi-formula-ref-doc generate --locale en_US $(DOCS_SOURCE_PATH)/en/_api-ref/datalens
+	@echo "Generating en docs..."
+	@$(VENV)/bin/bi-formula-ref-doc generate --locale en $(DOCS_SOURCE_PATH)/en/_api-ref/datalens
 
-	@echo "Generating ru_RU docs..."
-	@$(VENV)/bin/bi-formula-ref-doc generate --locale ru_RU $(DOCS_SOURCE_PATH)/ru/_api-ref/datalens
+	@echo "Generating ru docs..."
+	@$(VENV)/bin/bi-formula-ref-doc generate --locale ru $(DOCS_SOURCE_PATH)/ru/_api-ref/datalens
 
 
 PACKAGE_NAME = bi_formula_ref

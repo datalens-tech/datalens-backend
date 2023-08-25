@@ -33,7 +33,7 @@ def example_data_file_patch(monkeypatch):
 
 
 def test_prepare_example_data(example_db_conf_patch, example_data_file_patch):
-    gen = ReferenceDocGenerator(config_version=ConfigVersion.default, locale='en_US')
+    gen = ReferenceDocGenerator(config_version=ConfigVersion.default, locale='en')
     gen.generate_example_data()
 
     with open(DOC_GEN_CONFIG_DEFAULT.example_data_file, 'rb') as ex_data_f:

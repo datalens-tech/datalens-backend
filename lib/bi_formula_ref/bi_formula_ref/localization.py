@@ -3,11 +3,11 @@
 import gettext
 
 
-DEFAULT_LOCALE = 'en_US'
+DEFAULT_LOCALE = 'en'
 
 
 def get_locales() -> list[str]:
-    return ['en_US', 'ru_RU']  # TODO: pluginize
+    return ['en', 'ru']  # TODO: pluginize
 
 
 def get_gettext():

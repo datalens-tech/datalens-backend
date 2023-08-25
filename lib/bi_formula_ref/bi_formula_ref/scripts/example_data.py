@@ -28,7 +28,7 @@ class ExampleDataTool:
         defining all the required database types:
         - CLICKHOUSE_21_8
         """
-        ref_doc_generator = ReferenceDocGenerator(locale='en_US', config_version=ConfigVersion.default)
+        ref_doc_generator = ReferenceDocGenerator(locale='en', config_version=ConfigVersion.default)
         ref_doc_generator.generate_example_data()
 
         print('Generated data successfully')

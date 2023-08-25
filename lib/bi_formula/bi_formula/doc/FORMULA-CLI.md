@@ -226,8 +226,8 @@ bi-formula-cli doc locales
 ```
 prints
 ```
-en_US
-ru_RU
+en
+ru
 ```
 
 ### doc todo
