@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-rqe-int-sync"
-version = "0.1977.0"
+version = "0.1978.0"
 description = ""
 authors = ["Sergei Borodin <seray@yandex-team.ru>"]
 packages = [{include = "bi_rqe_int_sync"}]

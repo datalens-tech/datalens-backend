@@ -1,3 +1,32 @@
+0.1978.0
+--------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Sync secrets from yav to dev machine on secrets-update for local ext tests runs (#123)  [ https://github.com/datalens-tech/datalens-backend-private/commit/5236bc0 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Added docker-remote and docker-reinstall commands to taskfile (#106)  [ https://github.com/datalens-tech/datalens-backend-private/commit/83bd071 ]
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * Up integration-tests version (#121)  [ https://github.com/datalens-tech/datalens-backend-private/commit/1cabd36 ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * BI-4359: move old defaults to new package (#99)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f0b1831 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version ops/bi_integration_tests 0.20.0 (#118)  [ https://github.com/datalens-tech/datalens-backend-private/commit/b896c79 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * mark failing oracle test (#110)  [ https://github.com/datalens-tech/datalens-backend-private/commit/cc953d2 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-25 10:14:28+00:00
+
 0.1977.0
 --------
 
