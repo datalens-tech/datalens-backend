@@ -189,7 +189,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     def _extract_table_name(self, query: Union[sa.sql.Select, str]) -> str:
         assert isinstance(query, sa.sql.Select)
         froms = query.froms[0]
-        if isinstance(froms, sa.sql.Subquery):
+        if isinstance(froms, sa.sql.Subquery) and hasattr(froms, "element"):
             froms = froms.element.froms[0]
         assert isinstance(froms, sa.sql.TableClause)
         return froms.name

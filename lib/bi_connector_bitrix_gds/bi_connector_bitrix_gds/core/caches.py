@@ -29,7 +29,7 @@ def build_local_key_rep(portal: str, table: str, body: dict) -> LocalKeyRepresen
 def make_simple_cli_acm(conn_params: RedisConnParams) -> TClientACM:
     @asynccontextmanager
     async def cli_acm(**_: Any) -> AsyncGenerator[redis.asyncio.Redis, None]:
-        rcli = redis.asyncio.Redis(**attr.asdict(conn_params))
+        rcli: redis.asyncio.Redis = redis.asyncio.Redis(**attr.asdict(conn_params))
         try:
             yield rcli
         finally:
