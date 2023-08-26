@@ -25,9 +25,13 @@ done
 docker inspect $REF
 
 CI_IMG="datalens_ci_with_code:$GIT_SHA"
+CI_MYPY_IMG="datalens_ci_mypy:$GIT_SHA"
 export CI_IMG_YC="$CR_URI/$CI_IMG"
+export CI_MYPY_IMG_YC="$CR_URI/$CI_MYPY_IMG"
 
 
 # Going to project root, to copy sources
 DOCKER_BUILDKIT=1  docker build -t $CI_IMG_YC --build-arg BASE_CI_IMAGE=$REF -f ops/ci/docker_image_ci_with_src/Dockerfile .
+DOCKER_BUILDKIT=1  docker build -t $CI_MYPY_IMG_YC --build-arg BASE_CI_IMAGE=$CI_IMG_YC -f ops/ci/docker_image_ci_mypy/Dockerfile .
 docker push "$CI_IMG_YC"
+docker push "$CI_MYPY_IMG_YC"

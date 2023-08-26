@@ -21,10 +21,10 @@ RUN mkdir -p /data/tools
 RUN echo 2 && ls -laht /data/tools
 COPY ops/ci/Makefile /data/ops/ci/
 
-# todo: merge with the main third party requiremets, add tooling to sync versions stubs with main pkg
-COPY ops/ci/docker_image_ci_with_src/requirements_types.txt /requirements_types.txt
-RUN . /venv/bin/activate \
-    && pip install -r requirements_types.txt
+## todo: merge with the main third party requiremets, add tooling to sync versions stubs with main pkg
+#COPY ops/ci/docker_image_ci_with_src/requirements_types.txt /requirements_types.txt
+#RUN . /venv/bin/activate \
+#    && pip install -r requirements_types.åtxt
 
 RUN . /venv/bin/activate \
     && pip install -e /data/mainrepo/terrarium/bi_ci
