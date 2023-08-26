@@ -29,7 +29,6 @@ def gozora_enabled(tvm_secret_reader) -> Generator[None, None, None]:
 
     def new_get_conn_options(self) -> GSheetsConnectOptions:
         conn_options = old_get_conn_options(self)
-        conn_options = attr.evolve(conn_options, is_intranet=True)
         return conn_options
 
     try:

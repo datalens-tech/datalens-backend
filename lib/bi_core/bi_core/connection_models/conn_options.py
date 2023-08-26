@@ -17,9 +17,8 @@ class ConnectOptions:
     pass_db_messages_to_user: bool = attr.ib(default=False)
     pass_db_query_to_user: bool = attr.ib(default=False)
 
-    # mutated in `CloudEnvManagerFactory`
+    # mutated in `CloudEnvManagerFactory` for YDB connector
     is_cloud: bool = attr.ib(default=False)
-    is_intranet: bool = attr.ib(default=False)
 
     def to_subclass(self, subcls: Type[_CONNECT_OPTIONS_TV], **kwargs: Any) -> _CONNECT_OPTIONS_TV:
         assert issubclass(subcls, type(self))

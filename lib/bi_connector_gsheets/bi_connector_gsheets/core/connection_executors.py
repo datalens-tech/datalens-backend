@@ -22,5 +22,6 @@ class GSheetsAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[GSheetsDefau
             total_timeout=self._conn_options.total_timeout,  # type: ignore  # TODO: fix
             connect_timeout=self._conn_options.connect_timeout,  # type: ignore  # TODO: fix
 
-            use_gozora=self._conn_options.is_intranet,  # type: ignore  # TODO: fix
+            # use_gozora=self._conn_options.is_intranet,
+            use_gozora=True,  # gsheets connector is left only in intranet
         )]
