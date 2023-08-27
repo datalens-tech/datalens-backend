@@ -2,8 +2,7 @@ from typing import Optional, Any
 
 from marshmallow import fields as ma_fields, validates_schema, ValidationError
 
-from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection
-from bi_core.utils import parse_metrica_ids
+from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection, parse_metrica_ids
 
 from bi_api_connector.api_schema.extras import FieldExtra
 from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin

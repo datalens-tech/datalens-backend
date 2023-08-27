@@ -2,11 +2,6 @@ from __future__ import annotations
 
 from bi_constants.enums import BIType
 
-from bi_constants.types import BIDataTypes
-
-
-DatalensDataTypes = BIDataTypes  # compatibility, to be deprecated  # FIXME
-
 
 _BI_TO_YQL = {
     BIType.string: 'String',
@@ -29,5 +24,6 @@ _BI_TO_YQL = {
 }
 
 
-def bi_to_yql(bi_type: BIType) -> str:  # TODO: move to bi-api
+# TODO: Legacy stuff. Should be removed with data-api-v1
+def bi_to_yql(bi_type: BIType) -> str:
     return _BI_TO_YQL[bi_type]

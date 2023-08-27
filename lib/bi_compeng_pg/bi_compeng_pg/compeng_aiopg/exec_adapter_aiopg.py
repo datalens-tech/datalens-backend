@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import AsyncGenerator, ClassVar, List, Optional, Sequence, Union
+from typing import AsyncGenerator, ClassVar, Optional, Sequence, Union, TYPE_CHECKING
 
 import attr
 from sqlalchemy.sql.base import Executable
@@ -11,11 +11,13 @@ import aiopg.sa
 
 from bi_constants.enums import BIType
 
-from bi_core.data_types import DatalensDataTypes
 from bi_core.data_processing.streaming import AsyncChunkedBase, AsyncChunked
 from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 
 from bi_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
+
+if TYPE_CHECKING:
+    from bi_constants.types import TBIDataValue
 
 
 DEFAULT_CHUNK_SIZE = 1000
@@ -42,9 +44,9 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
             query: Union[Select, str], user_types: Sequence[BIType],
             chunk_size: int, joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
             query_id: str,
-    ) -> AsyncChunkedBase[Sequence[DatalensDataTypes]]:
+    ) -> AsyncChunkedBase[Sequence[TBIDataValue]]:
 
-        async def chunked_data_gen() -> AsyncGenerator[List[List[DatalensDataTypes]], None]:
+        async def chunked_data_gen() -> AsyncGenerator[list[list[TBIDataValue]], None]:
             """Fetch data in chunks"""
 
             result = await self._conn.execute(query)

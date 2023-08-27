@@ -3,11 +3,10 @@ from __future__ import annotations
 import datetime
 import decimal
 import uuid
-from typing import AsyncGenerator, AsyncIterable, Dict, List, Sequence, Tuple, Union
+from typing import AsyncGenerator, AsyncIterable, Sequence, Union
 
 
 TJSONScalar = Union[str, float, int, bool, None]
-# Often used through `bi_core.data_types.DatalensDataTypes`
 TBIDataValue = Union[
     # All the python types that connection executors are known to spit out.
     # (does not include e.g. `memoryview` which should always be processed in the executor).
@@ -21,9 +20,9 @@ TBIDataValue = Union[
 # # Recursive (not supported by mypy):
 # TJSONLike = Union[
 #     TJSONScalar,
-#     Dict[str, 'TJSONLike'],
-#     List['TJSONLike'],
-#     Tuple['TJSONLike', ...],
+#     dict[str, 'TJSONLike'],
+#     list['TJSONLike'],
+#     tuple['TJSONLike', ...],
 # ]
 # # Limited recursion:
 TJSONLikeUnchecked = Union[
@@ -31,9 +30,9 @@ TJSONLikeUnchecked = Union[
     TJSONScalar,
 ]
 TJSONLike = Union[
-    Dict[str, TJSONLikeUnchecked],
-    List[TJSONLikeUnchecked],
-    Tuple[TJSONLikeUnchecked, ...],
+    dict[str, TJSONLikeUnchecked],
+    list[TJSONLikeUnchecked],
+    tuple[TJSONLikeUnchecked, ...],
     TJSONScalar,
 ]
 
@@ -41,9 +40,9 @@ TJSONLike = Union[
 # Types supported by the extended JSON serializer (`bi_core.serialization`)
 # # Recursive (not supported by mypy):
 # TJSONExt = Union[
-#     Dict[str, 'TJSONExt'],
-#     List['TJSONExt']
-#     Tuple['TJSONExt', ...],
+#     dict[str, 'TJSONExt'],
+#     list['TJSONExt']
+#     tuple['TJSONExt', ...],
 #     TBIDataValue,
 # ]
 # # Limited recursion:
@@ -52,9 +51,9 @@ TJSONExtUnchecked = Union[
     TBIDataValue,
 ]
 TJSONExt = Union[
-    Dict[str, TJSONExtUnchecked],
-    List[TJSONExtUnchecked],
-    Tuple[TJSONExtUnchecked, ...],
+    dict[str, TJSONExtUnchecked],
+    list[TJSONExtUnchecked],
+    tuple[TJSONExtUnchecked, ...],
     TBIDataValue,
 ]
 
@@ -66,10 +65,3 @@ TBIDataRow = Sequence[TBIDataValue]  # sequence of cells -> row
 TBIDataTable = Sequence[TBIDataRow]  # sequence of rows -> table
 TBIChunksGen = AsyncGenerator[TBIDataTable, None]  # sequence of tables -> chunks
 # NOTE: ^ often wrapped in an AsyncChunked
-
-
-# Compatibility aliases:
-# FIXME: mass-rename (and move usages to `TYPE_CHECKING` when possible).
-JSONScalarTypes = TJSONScalar
-BIDataTypes = TBIDataValue
-# DatalensDataTypes = BIDataTypes  # see `.data_types`

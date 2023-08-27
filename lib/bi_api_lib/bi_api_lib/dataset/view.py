@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import List, Tuple, TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Type
 
 from bi_constants.enums import DataSourceRole, ProcessorType, SelectorType, CalcMode
 
 from bi_api_commons.base_models import RequestContextInfo
 
-from bi_core.data_types import DatalensDataTypes
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
 from bi_core.fields import BIField
@@ -29,7 +28,7 @@ from bi_api_lib.query.formalization.query_formalizer import (
 )
 
 if TYPE_CHECKING:
-
+    from bi_constants.types import TBIDataValue
     from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
 
 
@@ -199,7 +198,7 @@ class DatasetView(DatasetBaseWrapper):
 
         role = self.resolve_role()
 
-        target_connections: List[ClassicConnectionSQL] = []
+        target_connections: list[ClassicConnectionSQL] = []
         for avatar_id in translated_multi_query.get_base_root_from_ids():
             avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
             dsrc = self._get_data_source_strict(source_id=avatar.source_id, role=role)
@@ -213,7 +212,7 @@ class DatasetView(DatasetBaseWrapper):
             target_connections=target_connections,
         )
 
-    def fast_get_expression_value_range(self) -> Tuple[BIField, DatalensDataTypes, DatalensDataTypes]:
+    def fast_get_expression_value_range(self) -> tuple[BIField, TBIDataValue, TBIDataValue]:
         """ Try to get fast (cached or pre-defined) range from data source"""
 
         assert len(self.query_spec.select_specs) == 2, (

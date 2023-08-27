@@ -13,11 +13,11 @@ from bi_constants.enums import (
     OrderDirection, RangeType,
 )
 
+from bi_api_commons.base_models import RequestContextInfo
+from bi_constants.enums import BIType
 from bi_core.constants import DataAPILimits
-from bi_core.data_types import BIType
 from bi_core.fields import BIField
 from bi_core.us_dataset import Dataset
-from bi_api_commons.base_models import RequestContextInfo
 from bi_core.components.ids import AvatarId, FieldId
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.components.dependencies.factory_base import ComponentDependencyManagerFactoryBase

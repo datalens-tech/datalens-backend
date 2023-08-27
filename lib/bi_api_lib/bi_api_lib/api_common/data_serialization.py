@@ -9,7 +9,6 @@ from bi_constants.enums import ManagedBy
 
 from bi_api_commons.reporting import ReportingRegistry
 from bi_api_commons.reporting.models import NotificationReportingRecord
-from bi_core.data_types import bi_to_yql
 from bi_core.us_dataset import Dataset
 
 from bi_query_processing.enums import QueryType
@@ -18,6 +17,7 @@ from bi_query_processing.merging.primitives import MergedQueryDataStream
 from bi_api_lib.schemas.data import DatasetFieldsResponseSchema, DataApiV2ResponseSchema, NotificationSchema
 from bi_api_lib.schemas.legend import LegendSchema
 from bi_api_lib.schemas.pivot import PivotItemSchema, PivotHeaderInfoSchema
+from bi_api_lib.api_common.data_types import bi_to_yql
 
 if TYPE_CHECKING:
     from bi_constants.types import TJSONLike

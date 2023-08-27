@@ -11,7 +11,6 @@ from bi_core.connection_executors import ConnExecutorQuery
 from bi_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
 from bi_core.data_processing.selectors.utils import select_data_context
 from bi_core.data_processing.streaming import AsyncChunked, AsyncChunkedBase
-from bi_core.data_types import DatalensDataTypes
 from bi_core.us_connection_base import ExecutorBasedMixin
 
 # TODO FIX: Find out why MyPy does not recognize attributes of DatasetDataSelectorAsyncBase without this import
@@ -20,6 +19,8 @@ if TYPE_CHECKING:
     from bi_core.data_processing.selectors.base import BIQueryExecutionContext
     # noinspection PyUnresolvedReferences
     from bi_core.services_registry.top_level import ServicesRegistry  # noqa
+    from bi_constants.types import TBIDataValue
+
 
 
 @attr.s
@@ -31,7 +32,7 @@ class DatasetDbDataSelectorAsync(DatasetDataSelectorAsyncBase):
             role: DataSourceRole,
             query_execution_ctx: BIQueryExecutionContext,
             row_count_hard_limit: Optional[int] = None,
-    ) -> Optional[AsyncChunkedBase[Sequence[DatalensDataTypes]]]:
+    ) -> Optional[AsyncChunkedBase[Sequence[TBIDataValue]]]:
         if not isinstance(query_execution_ctx.target_connection, ExecutorBasedMixin):
             raise exc.NotAvailableError(
                 f"Connection {type(query_execution_ctx.target_connection).__qualname__}"

@@ -19,7 +19,7 @@ from bi_core.db import get_type_transformer, SchemaColumn
 from bi_core.us_connection_base import (
     ConnectionBase, DataSourceTemplate, ExecutorBasedMixin,
 )
-from bi_core.utils import parse_metrica_ids, secrepr
+from bi_core.utils import secrepr
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.dto import MetricaAPIConnDTO, AppMetricaAPIConnDTO
@@ -29,6 +29,12 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def parse_metrica_ids(ids_str: str) -> Sequence[str]:
+    if not ids_str:
+        return []
+    return [id_.strip() for id_ in ids_str.split(',')]
 
 
 class MetrikaBaseMixin(ConnectionBase):

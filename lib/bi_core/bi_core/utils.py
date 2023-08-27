@@ -1,28 +1,16 @@
 from __future__ import annotations
 
-import asyncio
-import contextlib
-import csv
 import ipaddress
 import logging
 import os
 import re
-import sys
 import uuid
-import functools
-import time
 from typing import (
     Any,
-    Dict,
     Generic,
-    List,
     Optional,
-    Sequence,
-    TYPE_CHECKING,
     Type,
     TypeVar,
-    Tuple,
-    Union,
     Iterable,
 )
 from urllib.parse import urlparse
@@ -40,20 +28,12 @@ from multidict import CIMultiDict, CIMultiDictProxy
 from requests.packages.urllib3.util import Retry
 import sqlalchemy as sa
 
-# # Transition note, just in case:
-# from bi_app_tools.utils import register_sa_dialects
-# from statcommons.juggler import make_event_to_juggler_request, process_juggler_response, send_event_to_juggler
 from bi_configs.settings_loaders.env_remap import remap_env
 from bi_constants.api_constants import DLHeadersCommon
 from bi_api_commons import clean_secret_data_in_headers
 from bi_api_commons.utils import stringify_dl_headers, stringify_dl_cookies
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons.base_models import AuthData
-from .data_types import bi_to_yql
-
-if TYPE_CHECKING:
-    from bi_core.us_manager.us_manager_sync import SyncUSManager  # noqa
-    from .db import SchemaColumn  # noqa
 
 
 LOGGER = logging.getLogger(__name__)
@@ -112,7 +92,7 @@ def make_user_auth_headers(
         sudo_override: Optional[bool] = None,
         allow_superuser_override: Optional[bool] = None,
 ) -> dict[str, str]:
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
 
     effective_auth_data: Optional[AuthData] = rci.auth_data if auth_data_override is None else auth_data_override
     if effective_auth_data is not None:
@@ -159,49 +139,6 @@ def make_user_auth_cookies(
     return {}
 
 
-def get_requests_session_with_user_auth_base(
-        rci: RequestContextInfo,
-        auth_data_override: Optional[AuthData] = None,
-        retriable: bool = True,
-        sudo_override: Optional[bool] = None,
-        allow_superuser_override: Optional[bool] = None,
-) -> requests.Session:
-    session = get_retriable_requests_session() if retriable else get_requests_session()
-
-    headers = make_user_auth_headers(
-        rci=rci,
-        auth_data_override=auth_data_override,
-        sudo_override=sudo_override,
-        allow_superuser_override=allow_superuser_override,
-    )
-    session.headers.update(headers)
-    session.cookies.update(make_user_auth_cookies(rci, auth_data_override))
-
-    return session
-
-
-def generate_yql_schema(fields: List['SchemaColumn']):  # type: ignore  # TODO: fix
-    return [
-        'ListType',
-        [
-            'StructType',
-            [
-                [
-                    field.title,
-                    [
-                        'OptionalType',
-                        [
-                            'DataType',
-                            bi_to_yql(field.user_type)
-                        ]
-                    ]
-                ]
-                for field in fields
-            ]
-        ]
-    ]
-
-
 # TODO FIX: Remove after migration to Connection Executors
 def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
     """
@@ -219,60 +156,10 @@ def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
         return '-'
 
 
-@contextlib.contextmanager
-def max_csv_field_size_limit_cm():  # type: ignore  # TODO: fix
-    # FIXME. Thread unsafe. https://bugs.python.org/issue36121
-    initial_csv_limit = csv.field_size_limit()
-    csv.field_size_limit(sys.maxsize)
-    try:
-        yield
-    finally:
-        csv.field_size_limit(initial_csv_limit)
-
-
-def get_size_in_bytes(obj, seen=None):  # type: ignore  # TODO: fix
-    """
-    Recursively find size of objects.
-    Note that this might not work correctly for all kinds of objects.
-    Intended for calculating size of database entries in ``dict`` form
-    """
-    size = sys.getsizeof(obj)
-    if seen is None:
-        seen = set()
-    obj_id = id(obj)
-    if obj_id in seen:
-        return 0
-    # Important: mark as seen *before* entering recursion to gracefully handle
-    # self-referential objects
-    seen.add(obj_id)
-    if isinstance(obj, dict):
-        size += sum([get_size_in_bytes(v, seen) for v in obj.values()])
-        size += sum([get_size_in_bytes(k, seen) for k in obj.keys()])
-    elif hasattr(obj, '__dict__'):
-        size += get_size_in_bytes(obj.__dict__, seen)
-    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
-        size += sum([get_size_in_bytes(i, seen) for i in obj])
-    return size
-
-
-def is_env_async() -> bool:
-    try:
-        asyncio.get_running_loop()
-    except RuntimeError:
-        return False
-    return True
-
-
 def parse_comma_separated_hosts(host: Optional[str]) -> tuple[str, ...]:
     if not host:
         return tuple()
     return tuple(h.strip() for h in host.split(','))
-
-
-def parse_metrica_ids(ids_str: str) -> Sequence[str]:
-    if not ids_str:
-        return []
-    return [id_.strip() for id_ in ids_str.split(',')]
 
 
 def validate_hostname_or_ip_address(hostname: str):  # type: ignore  # TODO: fix
@@ -390,37 +277,13 @@ def attrs_evolve_to_superclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -
     return cls(**all_attrs)  # type: ignore  # TODO: fix
 
 
-def retry_errors_wrap(backoffs: List[Union[int, float]] = (0.1, 0.5, 1, 2), excs_to_retry: List[type] = (Exception,)):  # type: ignore  # TODO: fix
-    """ Wrap a function to be retried entirely on errors. """
-    assert isinstance(backoffs, tuple)
-    assert all(isinstance(backoff, (int, float)) for backoff in backoffs)
-
-    def retry_errors_wrapper(func):
-
-        @functools.wraps(func)
-        def retry_errors_wrapped(*args, **kwargs):
-            for backoff in tuple(backoffs) + (None,):
-                try:
-                    return func(*args, **kwargs)
-                except excs_to_retry as err:
-                    if backoff is None:
-                        raise
-                    LOGGER.exception("Retrying an error: %r, sleeping for %.3fs.", err, backoff)
-                    time.sleep(backoff)
-            raise Exception("Logic error, should have returned or raised")
-
-        return retry_errors_wrapped
-
-    return retry_errors_wrapper
-
-
 def get_current_w3c_tracing_headers(
     tracer: Optional[opentracing.Tracer] = None,
     req_id: Optional[str] = None,
     override_sampled: Optional[bool] = None,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     actual_tracer = opentracing.global_tracer() if tracer is None else tracer
-    tracing_headers: Dict[str, str] = {}
+    tracing_headers: dict[str, str] = {}
 
     active_span = actual_tracer.active_span
 
@@ -477,7 +340,7 @@ def secrepr(value: Optional[str]) -> str:
     return repr(f'{value[:side_size]}...{value[-side_size:]}')
 
 
-def _multidict_to_list(md: CIMultiDictProxy[str]) -> Iterable[Tuple[str, str]]:
+def _multidict_to_list(md: CIMultiDictProxy[str]) -> Iterable[tuple[str, str]]:
     return [(str(k), str(v)) for k, v in md.items()]
 
 

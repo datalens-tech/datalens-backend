@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import contextmanager
-from typing import AsyncGenerator, ClassVar, Generator, List, Optional, Sequence, Union
+from typing import AsyncGenerator, ClassVar, Generator, Optional, Sequence, Union, TYPE_CHECKING
 
 import asyncpg
 import attr
@@ -14,12 +14,14 @@ from bi_constants.enums import BIType
 from bi_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 from bi_core.data_processing.streaming import AsyncChunked, AsyncChunkedBase
-from bi_core.data_types import DatalensDataTypes
 from bi_sqlalchemy_postgres.asyncpg import DBAPIMock
 from bi_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
 from bi_core.connectors.base.error_transformer import DbErrorTransformer
 
 from bi_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
+
+if TYPE_CHECKING:
+    from bi_constants.types import TBIDataValue
 
 
 LOGGER = logging.getLogger(__name__)
@@ -78,10 +80,10 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
             query: Union[str, sa.sql.selectable.Select], user_types: Sequence[BIType],
             chunk_size: int, joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
             query_id: str,
-    ) -> AsyncChunked[List[DatalensDataTypes]]:
+    ) -> AsyncChunked[list[TBIDataValue]]:
         query_text, params = self._compile_query(query)
 
-        async def chunked_data_gen() -> AsyncGenerator[List[List[DatalensDataTypes]], None]:
+        async def chunked_data_gen() -> AsyncGenerator[list[list[TBIDataValue]], None]:
             """Fetch data in chunks"""
 
             with self.handle_db_errors(query_text=query_text):

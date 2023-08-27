@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import List, Optional, Sequence
+from typing import List, Optional, Sequence, TYPE_CHECKING
 
 import attr
 
@@ -10,7 +10,9 @@ from bi_constants.enums import DataSourceRole
 from bi_core.data_processing.selectors.base import BIQueryExecutionContext
 from bi_core.data_processing.selectors.dataset_cached import CachedDatasetDataSelectorAsync
 from bi_core.data_processing.streaming import AsyncChunkedBase, AsyncChunked, LazyAsyncChunked
-from bi_core.data_types import DatalensDataTypes
+
+if TYPE_CHECKING:
+    from bi_constants.types import TBIDataValue
 
 
 LOGGER = logging.getLogger(__name__)
@@ -44,7 +46,7 @@ class LazyCachedDatasetDataSelectorAsync(CachedDatasetDataSelectorAsync):
             role: DataSourceRole,
             query_execution_ctx: BIQueryExecutionContext,
             row_count_hard_limit: Optional[int] = None,
-    ) -> Optional[AsyncChunkedBase[Sequence[DatalensDataTypes]]]:
+    ) -> Optional[AsyncChunkedBase[Sequence[TBIDataValue]]]:
 
         result_iter_awaitable = super().execute_query_context(
             role=role,
@@ -52,7 +54,7 @@ class LazyCachedDatasetDataSelectorAsync(CachedDatasetDataSelectorAsync):
             row_count_hard_limit=row_count_hard_limit
         )
 
-        async def initialize_data_stream() -> AsyncChunkedBase[List[DatalensDataTypes]]:
+        async def initialize_data_stream() -> AsyncChunkedBase[List[TBIDataValue]]:
             wrapped_result_iter = await result_iter_awaitable
             if wrapped_result_iter is None:
                 wrapped_result_iter = AsyncChunked.from_chunked_iterable([[]])
