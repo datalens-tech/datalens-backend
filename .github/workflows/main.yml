@@ -28,10 +28,12 @@ on:
 
 jobs:
   gh_build_image:
-    runs-on: [ self-hosted, linux ]
+    runs-on: [ self-hosted, linux, ext_public ]
     container:
       # until I found some std image with docker and non-alpline linux for a proper bash/sort/...
-      image: "${{ vars.DL_CI_CR_URI }}/datalens_base_ci:latest"
+      #image: "${{ vars.DL_CI_CR_URI }}/datalens_base_ci:latest"
+      # todo: create GH action to build image with all required docker libs and build it periodically
+      image: "${{ vars.DL_CI_CR_URI }}/datalens_base_ci:e5eb5740c9b9fd4b632bd824e692a0b4b4d0017d"
       options: -v /var/run/docker.sock:/var/run/docker.sock
       credentials:
         username: "${{ secrets.DL_CI_CR_USER }}"
