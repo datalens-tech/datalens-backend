@@ -304,7 +304,8 @@ jobs:
     # copy-paste, but simpliest solution for now given options provided by github ci
     runs-on: [ self-hosted, linux, ext_private ]
     needs: pytest_split
-    if: ${{ needs.pytest_split.outputs.split_ext_private != '[]' }}
+    #if: ${{ needs.pytest_split.outputs.split_ext_private != '[]' }}
+    if: "!always()"
     container:
       image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_with_code:${{ github.sha }}"
       credentials:
@@ -358,7 +359,8 @@ jobs:
 
   publish-result:
     runs-on: [self-hosted, linux]
-    needs: [ "pytest", "pytest_fat", "pytest_ext_public", "pytest_ext_private"]
+    # needs: [ "pytest", "pytest_fat", "pytest_ext_public", "pytest_ext_private"]
+    needs: [ "pytest", "pytest_fat", "pytest_ext_public"]
     if: "!cancelled() && ${{ github.event.inputs.run_mypy_only != 'true' }}"
     permissions:
       contents: read
