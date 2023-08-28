@@ -13,7 +13,6 @@ from bi_formula.parser.factory import ParserType
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
-from bi_api_lib.service_registry.dls_client_factory import DLSClientFactory
 from bi_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from bi_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
 from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
@@ -29,8 +28,6 @@ class DefaultBiApiSRFactory(DefaultSRFactory[DefaultBiApiServiceRegistry]):
     _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
     _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
     _field_id_generator_type: FieldIdGeneratorType = attr.ib(kw_only=True, default=FieldIdGeneratorType.readable)
-    _dls_client_factory: Optional[DLSClientFactory] = attr.ib(kw_only=True, default=None)
-    _use_iam_subject_resolver: bool = attr.ib(default=False)
     _localizer_factory: Optional[LocalizerFactory] = attr.ib(default=None)
     _localizer_fallback: Optional[Localizer] = attr.ib(default=None)
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(default=None)
@@ -47,8 +44,6 @@ class DefaultBiApiSRFactory(DefaultSRFactory[DefaultBiApiServiceRegistry]):
                 field_id_generator_type=self._field_id_generator_type,
             ),
             supported_functions_manager=self._supported_functions_manager,
-            dls_client=self._dls_client_factory.get_client(request_context_info) if self._dls_client_factory is not None else None,
-            use_iam_subject_resolver=self._use_iam_subject_resolver,
             localizer_factory=self._localizer_factory,
             localizer_fallback=self._localizer_fallback,
             connector_availability=self._connector_availability,

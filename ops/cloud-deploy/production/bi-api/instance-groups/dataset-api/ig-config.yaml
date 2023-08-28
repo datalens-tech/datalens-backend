@@ -147,7 +147,6 @@ instance_template:
         CONNECTORS_MYSQL_USE_MDB_CLUSTER_PICKER: "1"
         CONNECTORS_POSTGRES_USE_MDB_CLUSTER_PICKER: "1"
         CONNECTORS_CH_FROZEN_SAMPLES_PASS_DB_QUERY_TO_USER: "1"
-        USE_IAM_SUBJECT_RESOLVER: "0"
         NEW_SUBQUERY_MODE: "1"
     osquery_tag: ycloud-svc-datalens-bi
     shortname: dataset-api-{instance.internal_dc}-{instance.index}.{instance.internal_dc}

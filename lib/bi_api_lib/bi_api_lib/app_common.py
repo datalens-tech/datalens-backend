@@ -29,7 +29,6 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.connector_availability.main import get_connector_availability_config_for_env
 from bi_api_lib.i18n.registry import LOCALIZATION_CONFIGS
 from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
-from bi_api_lib.service_registry.dls_client_factory import DLSClientFactory
 from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from bi_api_lib.service_registry.sr_factory import DefaultBiApiSRFactory
 
@@ -101,11 +100,6 @@ class SRFactoryBuilder(abc.ABC):
         if settings.BI_COMPENG_PG_ON:
             required_services.add(RequiredService.POSTGRES)
 
-        dls_client_factory = DLSClientFactory(
-            host=settings.DLS_HOST,
-            api_key=settings.DLS_API_KEY,
-        ) if settings.DLS_HOST and settings.DLS_API_KEY else None
-
         localization_loader = LocalizerLoader(configs=LOCALIZATION_CONFIGS)
         localization_factory = localization_loader.load()
         localizer_fallback = localization_factory.get_for_locale(
@@ -129,8 +123,6 @@ class SRFactoryBuilder(abc.ABC):
             rqe_caches_settings=self._get_rqe_caches_settings(settings),
             supported_functions_manager=supported_functions_manager,
             required_services=required_services,
-            dls_client_factory=dls_client_factory,
-            use_iam_subject_resolver=settings.USE_IAM_SUBJECT_RESOLVER,
             localizer_factory=localization_factory,
             localizer_fallback=localizer_fallback,
             connector_availability=self._get_connector_availability(settings),

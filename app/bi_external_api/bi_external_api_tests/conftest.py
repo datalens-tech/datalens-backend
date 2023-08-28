@@ -30,6 +30,7 @@ from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.settings import ExternalAPISettings
 from bi_external_api.testings import WorkbookOpsClient
 from bi_testing_ya.api_wrappers import APIClient
+from bi_testing_ya.iam_mock import apply_iam_services_mock
 from .config import DockerComposeEnvBiExtApi, TestingUSConfig
 from .config import (
     DockerComposeEnvBiExtApiDC,
@@ -137,7 +138,7 @@ def bi_ext_api_dc_test_env_us_config(bi_ext_api_dc_test_env) -> TestingUSConfig:
     return us_config
 
 
-def _make_control_plane_app(us_config, rqe_config_subprocess):
+def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock):
     settings = ControlPlaneAppSettings(
         APP_TYPE=AppType.TESTS,
         ENV_TYPE=EnvType.development,
@@ -154,7 +155,12 @@ def _make_control_plane_app(us_config, rqe_config_subprocess):
         DO_DSRC_IDX_FETCH=False,
 
         RQE_CONFIG=rqe_config_subprocess,
-        YC_AUTH_SETTINGS=None,
+        YC_AUTH_SETTINGS=YCAuthSettings(  # required for the RLS
+            YC_AS_ENDPOINT=iam_services_mock.service_config.endpoint,
+            YC_API_ENDPOINT_IAM=iam_services_mock.service_config.endpoint,
+            YC_AUTHORIZE_PERMISSION=None,
+        ),
+        YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         CONNECTORS=None,
     )
     app = bi.app.create_app(
@@ -167,9 +173,9 @@ def _make_control_plane_app(us_config, rqe_config_subprocess):
     return app
 
 
-def _make_cp_app_netloc(us_config, rqe_config_subprocess):
+def _make_cp_app_netloc(us_config, rqe_config_subprocess, iam_services_mock):
     bind_address = "localhost"
-    cp_app = _make_control_plane_app(us_config, rqe_config_subprocess)
+    cp_app = _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
     server = make_server(
         app=cp_app,
         host=bind_address,
@@ -182,22 +188,22 @@ def _make_cp_app_netloc(us_config, rqe_config_subprocess):
     thread.join()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def bi_ext_api_test_env_bi_api_control_plane_app_netloc(
-    bi_ext_api_test_env_us_config, rqe_config_subprocess,
+    bi_ext_api_test_env_us_config, rqe_config_subprocess, iam_services_mock
 ) -> Tuple[str, int]:
     us_config = bi_ext_api_test_env_us_config
 
-    yield from _make_cp_app_netloc(us_config, rqe_config_subprocess)
+    yield from _make_cp_app_netloc(us_config, rqe_config_subprocess, iam_services_mock)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def bi_ext_api_dc_test_env_bi_api_control_plane_app_netloc(
-    bi_ext_api_dc_test_env_us_config, rqe_config_subprocess,
+    bi_ext_api_dc_test_env_us_config, rqe_config_subprocess, iam_services_mock
 ) -> Tuple[str, int]:
     us_config = bi_ext_api_dc_test_env_us_config
 
-    yield from _make_cp_app_netloc(us_config, rqe_config_subprocess)
+    yield from _make_cp_app_netloc(us_config, rqe_config_subprocess, iam_services_mock)
 
 
 def _make_int_api_clients(loop, netloc, us_config):
@@ -380,3 +386,8 @@ async def bi_ext_api_dc_tmp_wb_id(
     await client.dc_delete_workbook(ext.DCOpWorkbookDeleteRequest(
         workbook_id=wb_id,
     ))
+
+
+@pytest.fixture()
+def iam_services_mock(monkeypatch):
+    yield from apply_iam_services_mock(monkeypatch)

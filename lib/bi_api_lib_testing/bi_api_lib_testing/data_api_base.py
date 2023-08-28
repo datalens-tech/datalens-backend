@@ -78,6 +78,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
 
             YC_AUTH_SETTINGS=YCAuthSettings(
                 YC_AS_ENDPOINT=iam_services_mock.service_config.endpoint,
+                YC_API_ENDPOINT_IAM=iam_services_mock.service_config.endpoint,
                 YC_AUTHORIZE_PERMISSION=None,
             ),  # type: ignore
             YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,

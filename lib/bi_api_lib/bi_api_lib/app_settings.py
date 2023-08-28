@@ -185,8 +185,6 @@ class BaseAppSettings:
 
     DEFAULT_LOCALE: Optional[str] = 'en'
 
-    USE_IAM_SUBJECT_RESOLVER: bool = s_attrib("USE_IAM_SUBJECT_RESOLVER", missing=False)  # type: ignore
-
 
 def _list_to_tuple(value: Any) -> Any:
     if isinstance(value, list):

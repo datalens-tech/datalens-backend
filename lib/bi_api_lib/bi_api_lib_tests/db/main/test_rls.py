@@ -25,6 +25,9 @@ from bi_api_lib.dataset.view import DatasetView
 from bi_api_lib.query.formalization.raw_specs import IdFieldRef, RawSelectFieldSpec, RawQuerySpecUnion
 from bi_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
 from bi_api_lib.query.formalization.block_formalizer import BlockFormalizer
+from bi_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
+
+from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistry
 
 PKG = __name__.rsplit('.', 1)[0]
 
@@ -130,7 +133,7 @@ def iam_subjects_data() -> Iterable[SubjectInfo]:
 
 
 @pytest.fixture(scope='function')
-def dls_subjects_mock(app, dls_subjects_data, us_host):
+def dls_subjects_mock(app, dls_subjects_data, us_host, monkeypatch, bi_test_config, default_service_registry):
     def subjects_callback(request):
         """
         Mockup:
@@ -154,6 +157,11 @@ def dls_subjects_mock(app, dls_subjects_data, us_host):
         }}
         headers = {}
         return 200, headers, json.dumps(response)
+
+    def get_subject_resolver(self):  # type: ignore
+        return default_service_registry.get_installation_specific_service_registry(YTServiceRegistry).get_subject_resolver()
+
+    monkeypatch.setattr(DefaultBiApiServiceRegistry, 'get_subject_resolver', get_subject_resolver)
 
     dls_subjects_url = f'{app.config["DLS_HOST"]}/_dls/batch/render_subjects_by_login/'
 

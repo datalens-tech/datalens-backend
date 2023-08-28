@@ -12,8 +12,6 @@ from bi_api_lib.service_registry.supported_functions_manager import SupportedFun
 from bi_i18n.localizer_base import LocalizerFactory, Localizer
 from bi_api_lib.utils.rls import BaseSubjectResolver
 from bi_core.services_registry.top_level import DefaultServicesRegistry, ServicesRegistry
-from bi_dls_client.dls_client import DLSClient
-from bi_dls_client.subject_resolver import DLSSubjectResolver
 from bi_formula.parser.factory import ParserType
 
 if TYPE_CHECKING:
@@ -39,10 +37,6 @@ class BiApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_dls_client(self) -> DLSClient:
-        raise NotImplementedError
-
-    @abc.abstractmethod
     async def get_subject_resolver(self) -> BaseSubjectResolver:
         raise NotImplementedError
 
@@ -62,8 +56,6 @@ class DefaultBiApiServiceRegistry(DefaultServicesRegistry, BiApiServiceRegistry)
     _dataset_validator_factory: Optional['DatasetValidatorFactory'] = attr.ib(kw_only=True)
     _field_id_generator_factory: Optional[FieldIdGeneratorFactory] = attr.ib(kw_only=True)
     _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
-    _dls_client: Optional[DLSClient] = attr.ib(kw_only=True, default=None)
-    _use_iam_subject_resolver: bool = attr.ib(kw_only=True, default=False)
     _localizer_factory: Optional[LocalizerFactory] = attr.ib(kw_only=True, default=None)
     _localizer_fallback: Optional[Localizer] = attr.ib(kw_only=True, default=None)
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(kw_only=True, default=None)
@@ -92,16 +84,9 @@ class DefaultBiApiServiceRegistry(DefaultServicesRegistry, BiApiServiceRegistry)
         assert self._supported_functions_manager is not None
         return self._supported_functions_manager
 
-    def get_dls_client(self) -> DLSClient:
-        assert self._dls_client is not None
-        return self._dls_client
-
     async def get_subject_resolver(self) -> BaseSubjectResolver:
-        if self._use_iam_subject_resolver:
-            assert self._inst_specific_sr is not None
-            return await self._inst_specific_sr.get_subject_resolver()
-        # TODO: remove after enabling IAM resolver on YC prod
-        return DLSSubjectResolver(dls_client=self.get_dls_client())
+        assert self._inst_specific_sr is not None
+        return await self._inst_specific_sr.get_subject_resolver()
 
     def get_localizer(self) -> Localizer:
         assert self._localizer_factory is not None

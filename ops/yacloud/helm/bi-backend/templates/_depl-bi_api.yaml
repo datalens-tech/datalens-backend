@@ -79,8 +79,6 @@ spec:
               value: "env_key_data"
             - name: USE_RQE_PUBLIC
               value: "1"
-            - name: USE_IAM_SUBJECT_RESOLVER
-              value: "1"
             {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.dataset_api }}
             {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
             - name: BI_API_UWSGI_WORKERS_COUNT

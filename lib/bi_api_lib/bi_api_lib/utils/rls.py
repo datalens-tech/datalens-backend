@@ -158,11 +158,11 @@ class FieldRLSSerializer:
     @classmethod
     def _resolve_subject_names(cls, subject_names: List[str], subject_resolver: BaseSubjectResolver) -> Dict[str, Any]:
         """
-        Obtain the subject infos from DLS.
+        Obtain the subject infos from a subject resolver.
         """
         name_to_subject = {}
         # The chunk size is up to tuning,
-        # the primary point is to avoid giving too large JSONs to DLS,
+        # the primary point is to avoid creating too large JSONs,
         # as it gets deserialized in one async iteration.
         # Note that it makes the 'Logins do not exist' error potentially incomplete.
         names_by_account_type = cls._group_names_by_account_type(subject_names)

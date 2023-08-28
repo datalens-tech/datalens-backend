@@ -63,7 +63,6 @@ yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usa
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
 yandex-bi-query-processing = {path = "../../lib/bi_query_processing"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}

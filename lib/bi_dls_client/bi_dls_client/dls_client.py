@@ -23,7 +23,6 @@ ST_DLS_TO_RLS = {
 }
 
 
-# TODO FIX: https://st.yandex-team.ru/BI-1680 Initiate DLS Client per request (possibly in services registry)
 class DLSClient:
     _session: Session
     _rci: RequestContextInfo
@@ -106,7 +105,7 @@ class DLSClient:
             }
         )
         if response.status_code == 404 and response.json()['error'] == 'missing_subjects':
-            missing_names = response.json()['missing']  # TODO: store in exception
+            missing_names = response.json()['missing']
             raise DLSSubjectNotFound('Logins do not exist: {}'.format(', '.join(missing_names)),
                                      details={'missing_names': missing_names})
 

@@ -12,7 +12,6 @@ import aiohttp.pytest_plugin
 import attr
 import pytest
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa
 from pytest_lazyfixture import lazy_fixture
@@ -45,7 +44,6 @@ from bi_configs.connectors_settings import (
 )
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
-from bi_configs.environments import InternalTestingInstallation
 from bi_configs.rqe import RQEConfig
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
 
@@ -77,7 +75,6 @@ from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from bi_core.utils import FutureRef
-from bi_dls_client.dls_client import DLSClient
 from bi_task_processor.processor import LocalTaskProcessorFactory, DummyTaskProcessorFactory
 from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
 from bi_testing.s3_utils import create_s3_client, create_s3_bucket
@@ -101,6 +98,8 @@ from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+
+from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistry
 
 from bi_api_lib_tests.app_async import create_app as create_app_async
 from bi_api_lib_tests.app_sync import create_app as create_app_sync
@@ -201,6 +200,7 @@ def app(
 
         YC_AUTH_SETTINGS=YCAuthSettings(
             YC_AS_ENDPOINT=iam_services_mock.service_config.endpoint,
+            YC_API_ENDPOINT_IAM=iam_services_mock.service_config.endpoint,
             YC_AUTHORIZE_PERMISSION=None,
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
@@ -277,20 +277,6 @@ def partners_conn_access_token(
 def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_private_partner):
     ch_creds = clickhouse_db.get_conn_credentials(full=True)
 
-    dl_priv_key_pem = partner_keys_private_dl.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption()
-    ).decode('utf-8')
-    partner_pub_key_pem = partner_keys_private_partner.public_key().public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo
-    ).decode('utf-8')
-    partner_keys_json = json.dumps({
-        'dl_private': {'1': dl_priv_key_pem},
-        'partner_public': {'1': partner_pub_key_pem},
-    })
-
     base_settings_params = dict(
         SECURE=False,
         HOST=ch_creds['host'],
@@ -344,6 +330,7 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
 
 
 def make_sync_services_registry(
+        bi_test_config: BiApiTestEnvironmentConfiguration,
         rci: RequestContextInfo,
         async_env: bool,
         rqe_config,
@@ -363,11 +350,6 @@ def make_sync_services_registry(
             mdb_mgr=MDBDomainManagerFactory().get_manager(),
             tpe=None,
         ),
-        dls_client=DLSClient(
-            rci=rci,
-            host=InternalTestingInstallation.DATALENS_API_LB_DLS_BASE_URL,
-            secret_api_key='_tests_dls_api_key_',
-        ),
         caches_redis_client_factory=None,  # TODO: should actually probably add one (but with a random key prefix)
         dataset_validator_factory=DefaultDatasetValidatorFactory(),
         mutations_cache_factory=DefaultUSEntryMutationCacheFactory(),
@@ -376,15 +358,22 @@ def make_sync_services_registry(
             context_fab=FileUploaderContextFab(file_uploader_worker_settings),
             registry=FILE_UPLOADER_WORKER_TASK_REGISTRY,
         ) if file_uploader_worker_settings is not None else DummyTaskProcessorFactory,
+        inst_specific_sr=YTServiceRegistry(
+            service_registry_ref=sr_future_ref,
+            dls_host=bi_test_config.dls_host,
+            dls_api_key=bi_test_config.dls_key,
+        )
     )
     sr_future_ref.fulfill(new_sr)
     return new_sr
 
 
 @pytest.fixture(scope='session')
-def default_service_registry(bi_context, rqe_config_subprocess, file_uploader_worker_settings) -> BiApiServiceRegistry:
+def default_service_registry(
+        bi_test_config, bi_context, rqe_config_subprocess, file_uploader_worker_settings
+) -> BiApiServiceRegistry:
     sr = make_sync_services_registry(
-        bi_context,
+        bi_test_config, bi_context,
         async_env=False,
         rqe_config=rqe_config_subprocess,
         file_uploader_worker_settings=file_uploader_worker_settings
@@ -406,9 +395,11 @@ def default_sync_usm(bi_context, default_service_registry, core_test_config):
 
 
 @pytest.fixture(scope='function')
-def default_service_registry_per_test(bi_context, rqe_config_subprocess, file_uploader_worker_settings) -> BiApiServiceRegistry:
+def default_service_registry_per_test(
+        bi_test_config, bi_context, rqe_config_subprocess, file_uploader_worker_settings
+) -> BiApiServiceRegistry:
     sr = make_sync_services_registry(
-        bi_context,
+        bi_test_config, bi_context,
         async_env=False,
         rqe_config=rqe_config_subprocess,
         file_uploader_worker_settings=file_uploader_worker_settings,
@@ -418,9 +409,11 @@ def default_service_registry_per_test(bi_context, rqe_config_subprocess, file_up
 
 
 @pytest.fixture(scope='function')
-def default_service_registry_async_env_per_test(bi_context, loop, rqe_config_subprocess, file_uploader_worker_settings) -> BiApiServiceRegistry:
+def default_service_registry_async_env_per_test(
+        bi_test_config, bi_context, loop, rqe_config_subprocess, file_uploader_worker_settings
+) -> BiApiServiceRegistry:
     sr = make_sync_services_registry(
-        bi_context,
+        bi_test_config, bi_context,
         async_env=True,
         rqe_config=rqe_config_subprocess,
         file_uploader_worker_settings=file_uploader_worker_settings,
