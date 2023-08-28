@@ -86,12 +86,15 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     _preview_conn = None
 
-    def __init__(self, uuid: str = None, data: dict = None, entry_key: Optional[EntryLocation] = None,
-                 type_: str = None,
-                 meta: dict = None, is_locked: bool = None, is_favorite: bool = None,
-                 permissions_mode: str = None, initial_permissions: str = None,
-                 permissions: dict = None, links: dict = None, hidden: bool = False, data_strict: bool = True,
-                 *, us_manager: USManagerBase):
+    def __init__(
+            self, uuid: Optional[str] = None, data: Optional[dict] = None, entry_key: Optional[EntryLocation] = None,
+            type_: Optional[str] = None,
+            meta: Optional[dict] = None, is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
+            permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
+            permissions: Optional[dict] = None, links: Optional[dict] = None, hidden: bool = False,
+            data_strict: bool = True,
+            *, us_manager: USManagerBase
+    ):
         super().__init__(
             uuid=uuid, data=data, entry_key=entry_key,
             type_=type_, meta=meta, is_locked=is_locked, is_favorite=is_favorite,
@@ -246,11 +249,11 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     _dsrc_error = 'Only materializable connections can have a data source'  # TODO remove?
 
-    def update_data_source(  # type: ignore  # TODO: fix
+    def update_data_source(
             self,
             id: str,
-            role: DataSourceRole = None,
-            raw_schema: list = None,
+            role: Optional[DataSourceRole] = None,
+            raw_schema: Optional[list] = None,
             remove_raw_schema: bool = False,
             **parameters
     ) -> None:
@@ -340,14 +343,14 @@ class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
 
     def get_schema_names(
             self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-            db_name: str = None,
+            db_name: Optional[str] = None,
     ) -> list[str]:
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_schema_names(DBIdent(db_name))
 
     def get_tables(
             self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-            db_name: str = None, schema_name: Optional[str] = None,
+            db_name: Optional[str] = None, schema_name: Optional[str] = None,
     ) -> list[TableIdent]:
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
@@ -476,9 +479,6 @@ class ClassicConnectionSQL(ConnectionSQL):
     @property
     def password(self):  # type: ignore  # TODO: fix
         return self.data.password
-
-    def get_conn_dto(self) -> connection_models.DefaultSQLDTO:
-        pass
 
     def parse_multihosts(self) -> tuple[str, ...]:
         return parse_comma_separated_hosts(self.data.host)

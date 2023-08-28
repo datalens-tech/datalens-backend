@@ -31,13 +31,13 @@ class USEntry:
     entry_key: Optional[EntryLocation] = None
     scope: Optional[str] = None
     type_: Optional[str] = None
-    is_locked = None
-    is_favorite = None
-    permissions_mode = None
-    initial_permissions = None
-    permissions = None
+    is_locked: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    permissions_mode: Optional[str] = None
+    initial_permissions: Optional[str] = None
+    permissions: Optional[str] = None
     hidden: bool
-    links = None
+    links: Optional[dict] = None
 
     _stored_in_db = False
     _us_resp: Optional[dict] = None
@@ -93,11 +93,12 @@ class USEntry:
         )
         return obj
 
-    def __init__(self, uuid: str = None, data: dict = None, entry_key: Optional[EntryLocation] = None,
-                 type_: str = None,
-                 meta: dict = None, is_locked: bool = None, is_favorite: bool = None,
-                 permissions_mode: str = None, initial_permissions: str = None,
-                 permissions: dict = None, links: dict = None, hidden: bool = False, data_strict: bool = True,
+    def __init__(self, uuid: Optional[str] = None, data: Optional[dict] = None, entry_key: Optional[EntryLocation] = None,
+                 type_: Optional[str] = None,
+                 meta: Optional[dict] = None, is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
+                 permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
+                 permissions: Optional[str] = None, links: Optional[dict] = None, hidden: bool = False,
+                 data_strict: bool = True,
                  *, us_manager: USManagerBase):
         if entry_key is not None:
             assert isinstance(entry_key, EntryLocation), f"Unexpected type of entry key: {type(entry_key)}"
@@ -245,11 +246,12 @@ class USEntry:
 
 class USMigrationEntry(USEntry):
     def __init__(
-            self, uuid: str = None, data: dict = None, entry_key: Optional[EntryLocation] = None,
-            type_: str = None, meta: dict = None,
-            is_locked: bool = None, is_favorite: bool = None, permissions_mode: str = None,
-            initial_permissions: str = None, permissions: dict = None,
-            links: dict = None, hidden: bool = False, data_strict: bool = True, *, us_manager: USManagerBase,
+            self, uuid: Optional[str] = None, data: Optional[dict] = None, entry_key: Optional[EntryLocation] = None,
+            type_: Optional[str] = None, meta: Optional[dict] = None,
+            is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
+            permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
+            permissions: Optional[dict] = None,
+            links: Optional[dict] = None, hidden: bool = False, data_strict: bool = True, *, us_manager: USManagerBase,
             unversioned_data: Optional[dict[str, Any]]
     ):
         super().__init__(

@@ -200,7 +200,7 @@ class DataSourceCollectionBase:
         raise NotImplementedError
 
     def get_cached_raw_schema(
-            self, role: DataSourceRole = None, for_preview: bool = False,
+            self, role: Optional[DataSourceRole] = None, for_preview: bool = False,
     ) -> Optional[list[SchemaColumn]]:
 
         dsrc = self.get_strict(role=role, for_preview=for_preview)
@@ -225,7 +225,7 @@ class DataSourceCollectionBase:
     def get_raw_schema(
             self,
             conn_executor_factory: Callable[[], SyncConnExecutorBase],
-            role: DataSourceRole = None, for_preview: bool = False,
+            role: Optional[DataSourceRole] = None, for_preview: bool = False,
     ) -> Optional[list[SchemaColumn]]:
         """
         Return raw schema of data source.

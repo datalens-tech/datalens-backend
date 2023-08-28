@@ -135,7 +135,7 @@ class Dataset(USEntry):
         column: SchemaColumn,
         field_id_generator: Optional[FieldIdGenerator] = None,
         autofix_title: bool = True,
-        avatar_id: str = None,
+        avatar_id: Optional[str] = None,
     ) -> dict:
         title = column.title
         if autofix_title:

@@ -267,7 +267,7 @@ class GSheetsDefaultAdapter(AiohttpDBAdapter):
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         raise NotImplementedError()
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[str]:
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         raise NotImplementedError()
 
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
