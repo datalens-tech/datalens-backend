@@ -3,7 +3,7 @@
 set -x  # debug.
 set -eu
 
-if [ x"${YENV_NAME}" != x"cloud" ]; then
+if [ x"${RUN_HEALTH_CHECK_API}" != x"1" ]; then
     sleep 9000
     exit 0
 fi

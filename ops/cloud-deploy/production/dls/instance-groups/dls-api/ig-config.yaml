@@ -93,6 +93,7 @@ instance_template:
         JAEGER_COLLECTOR_NETLOC: "jaeger-collector.private-api.ycp.cloud.yandex.net:443"
         JAEGER_AGENT_PORT: 16831
         RUN_JAEGER_AGENT: 1
+        JAEGER_TLS_ENABLED: true
     osquery_tag: ycloud-svc-datalens-bi
     shortname: dls-api-{instance.internal_dc}-{instance.index}.{instance.internal_dc}
     nsdomain: datalens.cloud.yandex.net

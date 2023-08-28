@@ -87,12 +87,14 @@ instance_template:
       env_vars:
         DL_CRY_ACTUAL_KEY_ID: cloud_prod_3
         ENABLE_REGULAR_S3_LC_RULES_CLEANUP: 1
+        RUN_HEALTH_CHECK_API: 1
         YENV_NAME: cloud
         YENV_TYPE: production
         EXT_QUERY_EXECUTER_SECRET_KEY: dummy
         JAEGER_COLLECTOR_NETLOC: "jaeger-collector.private-api.ycp.cloud.yandex.net:443"
         JAEGER_AGENT_PORT: 16831
         RUN_JAEGER_AGENT: 1
+        JAEGER_TLS_ENABLED: true
         CONNECTORS_FILE_HOST: "rc1a-4kva30nfjn716tn1.mdb.yandexcloud.net,rc1b-bbj8ne2tk7sq512l.mdb.yandexcloud.net"
     osquery_tag: ycloud-svc-datalens-bi
     shortname: file-uploader-worker-{instance.internal_dc}-{instance.index}.{instance.internal_dc}

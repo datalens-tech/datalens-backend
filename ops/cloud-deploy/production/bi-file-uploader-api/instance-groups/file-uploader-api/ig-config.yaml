@@ -95,6 +95,7 @@ instance_template:
         JAEGER_COLLECTOR_NETLOC: "jaeger-collector.private-api.ycp.cloud.yandex.net:443"
         JAEGER_AGENT_PORT: 16831
         RUN_JAEGER_AGENT: 1
+        JAEGER_TLS_ENABLED: true
         DL_CRY_ACTUAL_KEY_ID: cloud_prod_3
     osquery_tag: ycloud-svc-datalens-bi
     shortname: file-uploader-api-{instance.internal_dc}-{instance.index}.{instance.internal_dc}

@@ -14,11 +14,6 @@ RQE_UWSGI_THREADS_COUNT="${RQE_EXT_SYNC_THREADS_COUNT:-10}"
 RQE_RSS_LIMIT="${RQE_EXT_SYNC_RSS_LIMIT:-1073741824}"  # 1GB
 if [ "${BISYS_USE_IPV6:-1}" = "1" ]; then HTTP_BIND_ADDR="[::1]"; else HTTP_BIND_ADDR="127.0.0.1"; fi
 
-if [ x"${YENV_NAME}" != x"cloud" ] && [ x"${YENV_NAME}" != x"datacloud" ]; then
-    sleep 9000  # could also 'sv stop async_query_executer'.
-    exit 0
-fi
-
 if [ ! -f /tmp/.iptables_setup_marker ]; then
     echo 'The marker "/tmp/.iptables_setup_marker" does not exist. It should have been created by "/etc/my_init.d/iptables_setup" executed from "/sbin/my_init".' 1>&2
     sleep 15

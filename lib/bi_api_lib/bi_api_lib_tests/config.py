@@ -10,8 +10,6 @@ from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
 
 class DockerCompose:
-    YENV_NAME = "intranet"
-
     REDIS_PASSWORD = 'AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5'
 
     US_MASTER_TOKEN = "AC1ofiek8coB"
@@ -26,8 +24,6 @@ class DockerCompose:
 
 
 DOCKER_COMPOSE = DockerCompose()
-
-YENV_NAME = DOCKER_COMPOSE.YENV_NAME
 
 COMPOSE_PROJECT_NAME = DOCKER_COMPOSE.COMPOSE_PROJECT_NAME
 MSSQL_CONTAINER_LABEL = DOCKER_COMPOSE.MSSQL_CONTAINER_LABEL

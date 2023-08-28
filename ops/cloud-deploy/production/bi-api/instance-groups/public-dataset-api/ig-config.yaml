@@ -139,6 +139,7 @@ instance_template:
         JAEGER_COLLECTOR_NETLOC: "jaeger-collector.private-api.ycp.cloud.yandex.net:443"
         JAEGER_AGENT_PORT: 16831
         RUN_JAEGER_AGENT: 1
+        JAEGER_TLS_ENABLED: true
         MDB_MANAGED_NETWORK_ENABLED: '1'
         MDB_DOMAINS: '.mdb.cloud-preprod.yandex.net,.mdb.yandexcloud.net'
         MDB_CNAME_DOMAINS: '.rw.mdb.cloud-preprod.yandex.net, .rw.mdb.yandexcloud.net'

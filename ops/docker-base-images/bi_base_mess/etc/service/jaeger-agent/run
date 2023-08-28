@@ -9,7 +9,7 @@ JAEGER_AGENT_CONFIG_PATH="/etc/jaeger-agent/agent.yaml"
 JAEGER_AGENT_CONFIG_TEMPLATE_PATH="${JAEGER_AGENT_CONFIG_PATH}.j2"
 
 JAEGER_COLLECTOR_NETLOC="${JAEGER_COLLECTOR_NETLOC:-}"
-export JAEGER_TLS_ENABLED=false
+export JAEGER_TLS_ENABLED="${JAEGER_TLS_ENABLED:-false}"
 export JAEGER_AGENT_PORT="${JAEGER_AGENT_PORT:-6831}"
 
 if [ "${RUN_JAEGER_AGENT}" -lt 1 ] || [ -z "${JAEGER_COLLECTOR_NETLOC}" ]; then
@@ -19,10 +19,6 @@ if [ "${RUN_JAEGER_AGENT}" -lt 1 ] || [ -z "${JAEGER_COLLECTOR_NETLOC}" ]; then
     sleep 9000  # could also 'sv stop jaeger-agent'.
     exit 0
 fi
-
-case "$YENV_NAME" in
-    cloud) JAEGER_TLS_ENABLED=true
-esac
 
 j2 "${JAEGER_AGENT_CONFIG_TEMPLATE_PATH}" > "${JAEGER_AGENT_CONFIG_PATH}"
 

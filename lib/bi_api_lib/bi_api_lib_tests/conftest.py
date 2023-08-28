@@ -118,10 +118,6 @@ except AttributeError:
 
 
 def pytest_configure(config):  # noqa
-    # TODO: clean this up
-    os.environ['YENV_NAME'] = tests_config_mod.YENV_NAME
-    # TODO FIX: https://st.yandex-team.ru/BI-1528
-    os.environ['BI_ALLOW_CH_SUBQUERY'] = '1'
     os.environ['ALLOW_SUBQUERY_IN_PREVIEW'] = '1'
     os.environ['NATIVE_WF_POSTGRESQL'] = '1'
     os.environ['NATIVE_WF_MYSQL'] = '1'
