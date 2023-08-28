@@ -20,6 +20,7 @@ class MSSQLEngineWrapper(EngineWrapperBase):
             query = dict(urllib.parse.parse_qsl(urldata.query))
             odbc_dsn = query['odbc_connect']
 
+        assert isinstance(odbc_dsn, str)
         odbc_props = {pair.split('=')[0]: pair.split('=')[1] for pair in odbc_dsn.split(';')}
         return dict(
             host=odbc_props['Server'],

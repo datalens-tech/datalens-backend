@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import ChainMap
-from typing import Any, Iterable, List, Mapping, Tuple, TypeVar
+from typing import Any, Iterable, MutableMapping, TypeVar
 
 import attr
 
@@ -27,12 +27,12 @@ class AliasedLinkResource(AliasedResource):
 
 @attr.s(frozen=True)
 class AliasedTableResource(AliasedResource):
-    table_body: List[List[str]] = attr.ib(kw_only=True)
+    table_body: list[list[str]] = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
 class AliasedResourceRegistry:
-    _resources: Mapping[str, AliasedResource] = attr.ib(factory=dict)
+    _resources: MutableMapping[str, AliasedResource] = attr.ib(factory=dict)
 
     def __getitem__(self, item: str) -> AliasedResource:
         return self._resources[item]
@@ -40,7 +40,7 @@ class AliasedResourceRegistry:
     def __add__(self, other: AliasedResourceRegistry) -> AliasedResourceRegistry:
         return AliasedResourceRegistry(resources=ChainMap(self._resources, other._resources))
 
-    def items(self) -> Iterable[Tuple[str, AliasedResource]]:
+    def items(self) -> Iterable[tuple[str, AliasedResource]]:
         return self._resources.items()
 
     def keys(self) -> Iterable[str]:

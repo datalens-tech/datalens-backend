@@ -3,7 +3,7 @@ from bi_db_testing.database.engine_wrapper import EngineWrapperBase
 
 class MySQLEngineWrapperBase(EngineWrapperBase):
     def count_sql_sessions(self) -> int:
-        cur = self.execute('SHOW PROCESSLIST').fetchall()
+        cur = self.execute('SHOW PROCESSLIST')
         try:
             lines = cur.fetchall()
             return len(lines)

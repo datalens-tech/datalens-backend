@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Collection, Type
+from typing import Any, Collection, Optional, Type
 
 from bi_formula.core.dialect import get_all_basic_dialects
 from bi_formula.definitions.flags import ContextFlag
@@ -15,7 +15,7 @@ from bi_formula_ref.registry.tools import populate_registry_from_definitions
 
 
 class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
-    def __init__(self, funcs_by_key: Dict[RefFunctionKey, RawMultiAudienceFunc] = None):
+    def __init__(self, funcs_by_key: Optional[dict[RefFunctionKey, RawMultiAudienceFunc]] = None):
         self._funcs_by_key = funcs_by_key or {}
 
     def __contains__(self, key: RefFunctionKey) -> bool:
@@ -28,7 +28,7 @@ class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
     def get_func(self, func_key: RefFunctionKey) -> RawMultiAudienceFunc:
         return self._funcs_by_key[func_key]
 
-    def filter(self, category: str = None, name: str = None) -> List[RawMultiAudienceFunc]:
+    def filter(self, category: Optional[str] = None, name: Optional[str] = None) -> list[RawMultiAudienceFunc]:
         result = []
         for func in self._funcs_by_key.values():
             if category is not None and func.category.name != category or name is not None and func.name != name:
@@ -36,7 +36,7 @@ class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
             result.append(func)
         return result
 
-    def as_list(self) -> List[RawMultiAudienceFunc]:
+    def as_list(self) -> list[RawMultiAudienceFunc]:
         return self.filter()
 
 

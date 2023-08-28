@@ -45,6 +45,7 @@ class SourceStatusView(FileUploaderBaseView):
         assert isinstance(dfile, DataFile)
         source = dfile.get_source_by_id(req_data['source_id'])
 
+        status: FileProcessingStatus
         if dfile.status == FileProcessingStatus.failed:
             # TODO: temporary hack. Should be fixed with properly parsing errors saving.
             status = dfile.status
