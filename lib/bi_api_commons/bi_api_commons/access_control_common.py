@@ -61,11 +61,11 @@ def get_token_from_authorization_header(secret_header_value: None, token_type: A
     pass
 
 
-def get_token_from_authorization_header(secret_header_value, token_type):  # type: ignore  # TODO: fix
+def get_token_from_authorization_header(secret_header_value, token_type):
     if secret_header_value is None:
         return None
     assert isinstance(secret_header_value, str)
-    prefix: str = f"{token_type.value} "
+    prefix = f"{token_type.value} "
 
     if secret_header_value.startswith(prefix):
         return secret_header_value.removeprefix(prefix)

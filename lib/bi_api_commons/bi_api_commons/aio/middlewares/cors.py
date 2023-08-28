@@ -15,7 +15,7 @@ def cors_middleware(
     allow_headers: Optional[tuple[str, ...]] = None,
     allow_methods: tuple[str, ...] = ALL_METHODS,
     allow_credentials: bool = False,
-    max_age: int = None,
+    max_age: Optional[int] = None,
 ) -> AIOHTTPMiddleware:
     @web.middleware
     async def middleware(request: web.Request, handler: Handler) -> web.StreamResponse:

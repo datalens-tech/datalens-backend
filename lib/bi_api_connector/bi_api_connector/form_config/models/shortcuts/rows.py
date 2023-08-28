@@ -25,7 +25,7 @@ class RowConstructor:
     def host_row(
         self,
         default_value: Optional[str] = None,
-        display_conditions: TDisplayConditions = None,
+        display_conditions: Optional[TDisplayConditions] = None,
         label_help_text: Optional[str] = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(Translatable('field_host'))

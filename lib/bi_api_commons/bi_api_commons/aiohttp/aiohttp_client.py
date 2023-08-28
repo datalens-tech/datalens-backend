@@ -150,10 +150,10 @@ class BIAioHTTPClient:
         response.close()
 
     async def _request(
-        self, method: str, path: str = '', params: TParams = None,
+        self, method: str, path: str = '', params: Optional[TParams] = None,
         data: Optional[Any] = None, json_data: Optional[Any] = None,
-        headers: THeaders = None, cookies: TCookies = None,
-        conn_timeout_sec: float = None, read_timeout_sec: float = None
+        headers: Optional[THeaders] = None, cookies: Optional[TCookies] = None,
+        conn_timeout_sec: Optional[float] = None, read_timeout_sec: Optional[float] = None
     ) -> Optional[Any]:
 
         timeout = aiohttp.ClientTimeout(

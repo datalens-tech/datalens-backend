@@ -4,11 +4,7 @@ import copy
 import itertools
 import logging
 import os
-from typing import (
-    ClassVar, Generic, Type, TypeVar,
-    Any, Dict, Sequence, Union, Optional, Tuple, Iterable, Set,
-    final,
-)
+from typing import ClassVar, Generic, TypeVar, Any, Sequence, Union, Optional, Iterable, final
 
 import marshmallow
 from marshmallow import post_load, fields as ma_fields, Schema, missing, pre_load
@@ -31,7 +27,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
     CTX_KEY_EDITABLE_OBJECT: ClassVar[str] = 'editable_object'
     CTX_KEY_OPERATIONS_MODE: ClassVar[str] = 'operations_mode'
 
-    TARGET_CLS: ClassVar[Type[_TARGET_OBJECT_TV]]
+    TARGET_CLS: ClassVar[type]
 
     def __init__(
         self,
@@ -39,7 +35,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         only: Optional[Sequence[str]] = None,
         exclude: Sequence[str] = (),
         many: bool = False,
-        context: Optional[Dict] = None,
+        context: Optional[dict] = None,
         load_only: Sequence[str] = (),
         dump_only: Sequence[str] = (),
         partial: Union[Sequence[str], bool] = False,
@@ -68,11 +64,11 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         return self.context.get(self.CTX_KEY_OPERATIONS_MODE)
 
     @classmethod
-    def all_fields_dict(cls) -> Dict[str, ma_fields.Field]:
+    def all_fields_dict(cls) -> dict[str, ma_fields.Field]:
         return cls._declared_fields
 
     @classmethod
-    def all_fields_with_extra_info(cls) -> Iterable[Tuple[str, ma_fields.Field, FieldExtra]]:
+    def all_fields_with_extra_info(cls) -> Iterable[tuple[str, ma_fields.Field, FieldExtra]]:
         for field_name, field in cls.all_fields_dict().items():
             extra = cls.get_field_extra(field)
             if extra is not None:
@@ -120,14 +116,14 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
         return ret
 
-    def create_object(self, data: Dict[str, Any]) -> _TARGET_OBJECT_TV:
+    def create_object(self, data: dict[str, Any]) -> _TARGET_OBJECT_TV:
         raise NotImplementedError()
 
-    def update_object(self, obj: _TARGET_OBJECT_TV, data: Dict[str, Any]) -> _TARGET_OBJECT_TV:
+    def update_object(self, obj: _TARGET_OBJECT_TV, data: dict[str, Any]) -> _TARGET_OBJECT_TV:
         raise NotImplementedError()
 
     @post_load(pass_many=False)
-    def post_load(self, data: Dict[str, Any], **_: Any) -> Union[_TARGET_OBJECT_TV, dict]:
+    def post_load(self, data: dict[str, Any], **_: Any) -> Union[_TARGET_OBJECT_TV, dict]:
         if isinstance(self.operations_mode, EditMode):
             editable_object = self.context.get(self.CTX_KEY_EDITABLE_OBJECT)
             if editable_object is None:
@@ -138,7 +134,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
             return self.create_object(data)
         raise ValueError(f"Can not perform load. Unknown operations mode: {self.operations_mode!r}")
 
-    def get_allowed_unknown_fields(self) -> Set[str]:
+    def get_allowed_unknown_fields(self) -> set[str]:
         """
         Should return set of fields that does not exist at schema, but it is ok.
         This fields will be removed from data in pre_load hook.
@@ -147,7 +143,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         return set()
 
     @final
-    def handle_unknown_fields(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_unknown_fields(self, data: dict[str, Any]) -> dict[str, Any]:
         refined_data = {}
         allowed_unknown_data = {}
         disallowed_unknown_data = {}
@@ -190,7 +186,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         return refined_data
 
     @pre_load(pass_many=False)
-    def pre_load(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+    def pre_load(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         all_data_keys = list(sorted(data.keys()))
         LOGGER.debug(
             "Got fields for schema %s/%s: %s",
@@ -233,7 +229,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
     def us_manager(self) -> USManagerBase:
         return self.context[self.CTX_KEY_USM]
 
-    def default_create_from_dict_kwargs(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def default_create_from_dict_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
         entry_name = data["entry_key"]["entry_name"]
         entry_dir_path = data["entry_key"]["dir_path"]
         entry_wb_id = data["entry_key"]["workbook_id"]
@@ -254,7 +250,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
         )
 
     # TODO FIX: Find a way to specify return type
-    def create_data_model(self, data_attributes: Dict[str, Any]) -> Any:
+    def create_data_model(self, data_attributes: dict[str, Any]) -> Any:
         raise NotImplementedError()
 
     @final
@@ -277,10 +273,10 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
             raise marshmallow.ValidationError(err.message, field_name=cause_field_name) from err
 
     @final
-    def create_object(self, data: Dict[str, Any]) -> _US_ENTRY_TV:
+    def create_object(self, data: dict[str, Any]) -> _US_ENTRY_TV:
         data_attributes = data.get('data', {})
 
-        obj = self.TARGET_CLS.create_from_dict(
+        obj = self.TARGET_CLS.create_from_dict(  # type: ignore  # TODO: fix
             data_dict=self.create_data_model(data_attributes),
             **self.default_create_from_dict_kwargs(data),
         )
@@ -288,7 +284,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
         return obj
 
     @final
-    def update_object(self, obj: _US_ENTRY_TV, data: Dict[str, Any]) -> _US_ENTRY_TV:
+    def update_object(self, obj: _US_ENTRY_TV, data: dict[str, Any]) -> _US_ENTRY_TV:
         # Assumed that only data of USEntry can be modified with schema
         assert not (data.keys() - {'data'})
 

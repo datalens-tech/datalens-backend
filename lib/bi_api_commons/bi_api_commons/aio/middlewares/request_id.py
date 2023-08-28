@@ -86,8 +86,9 @@ class RequestId:
         ylog.context.put_to_context('endpoint_code', endpoint_code)
 
         if self.accept_logging_ctx and self.logging_ctx_header_name in request.headers:
+            assert self.logging_ctx_header_name is not None
             try:
-                logging_ctx_from_header = json.loads(request.headers.get(self.logging_ctx_header_name))
+                logging_ctx_from_header = json.loads(request.headers.get(self.logging_ctx_header_name) or '')
                 for ctx_key in NON_TRANSITIVE_LOGGING_CTX_KEYS:
                     logging_ctx_from_header.pop(ctx_key, None)
             except Exception:  # noqa

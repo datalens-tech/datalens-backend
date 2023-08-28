@@ -94,7 +94,7 @@ def cleanup_event_headers(original_headers: dict[str, str]) -> dict[str, str]:
     }
 
 
-def cleanup_event_request_section(req_section: dict[str, str]) -> dict[str, str]:
+def cleanup_event_request_section(req_section: dict[str, str | dict[str, str]]) -> dict[str, str | dict[str, str]]:
     clean_req_section = dict(req_section)
 
     secret_original_headers = req_section.get("headers")

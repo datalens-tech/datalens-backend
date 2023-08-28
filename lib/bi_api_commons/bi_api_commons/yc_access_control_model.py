@@ -10,7 +10,7 @@ _AUTH_OBJ_TV = TypeVar("_AUTH_OBJ_TV")
 
 
 class AuthorizationMode(Generic[_AUTH_OBJ_TV]):
-    supported_tenant_types: ClassVar[Type[_AUTH_OBJ_TV]]
+    supported_tenant_types: ClassVar[type]
 
     def ensure_tenant(self, obj: TenantDef) -> _AUTH_OBJ_TV:
         check_type("obj", obj, self.supported_tenant_types)
