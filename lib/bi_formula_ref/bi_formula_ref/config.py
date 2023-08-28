@@ -71,43 +71,6 @@ DOC_GEN_CONFIG_DEFAULT = RefDocGeneratorConfig(
     doc_avail_filename='function-ref/availability.md',
 )
 
-DOC_GEN_CONFIG_YC = RefDocGeneratorConfig(
-    func_doc_configs={
-        FuncDocConfigVersion.overview_shortcut: FuncDocTemplateConfig(
-            template_file='doc_func_long.md.jinja',
-            func_file_path=FuncPathTemplate('function-ref/{func_name}.md'),
-            cat_file_path=CatPathTemplate('function-ref/{category_name}-functions.md'),
-        ),
-    },
-    doc_toc_filename='toc.yaml',
-    doc_all_filename='function-ref/all.md',
-    doc_avail_filename='function-ref/availability.md',
-    function_scopes={
-        Audience(name='internal'): Scope.DOCUMENTED | Scope.INTERNAL,
-        Audience(name='external'): Scope.DOCUMENTED | Scope.YACLOUD,
-    },
-    block_conditions={'ycloud': True},
-)
-
-
-DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
-    func_doc_configs={
-        FuncDocConfigVersion.overview_shortcut: FuncDocTemplateConfig(
-            template_file='doc_func_long.md.jinja',
-            func_file_path=FuncPathTemplate('{func_name}.md'),
-            cat_file_path=CatPathTemplate('{category_name}-functions.md'),
-        ),
-    },
-    doc_toc_filename='toc.yaml',
-    doc_all_filename='all.md',
-    doc_avail_filename='availability.md',
-    gen_availability_table=False,
-    function_scopes={
-        DEFAULT_AUDIENCE: Scope.DOCUMENTED | Scope.DOUBLECLOUD,
-    },
-    block_conditions={'doublecloud': True},
-)
-
 
 _CONFIGS_BY_VERSION: dict[ConfigVersion, RefDocGeneratorConfig] = {}
 
@@ -124,5 +87,3 @@ def get_generator_config(version: ConfigVersion) -> RefDocGeneratorConfig:
 
 
 register_config_version(ConfigVersion.default, DOC_GEN_CONFIG_DEFAULT)
-register_config_version(ConfigVersion.yacloud, DOC_GEN_CONFIG_YC)
-register_config_version(ConfigVersion.doublecloud, DOC_GEN_CONFIG_DC)
