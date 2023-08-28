@@ -1,0 +1,21 @@
+{{- define "security-context-common" }}
+allowPrivilegeEscalation: false
+runAsNonRoot: true
+runAsUser: 1000
+runAsGroup: 1000
+{{ end }}
+
+{{- define "security-context-data-api" }}
+{{ if .Values.enabled_features.rootless_mode }}
+{{- include "security-context-common" . }}
+{{ else }}
+capabilities:
+  add: [ "NET_ADMIN" ]
+{{ end }}
+{{ end }}
+
+{{- define "security-context-postgres" }}
+runAsUser: 999
+runAsGroup: 999
+runAsNonRoot: true
+{{ end }}

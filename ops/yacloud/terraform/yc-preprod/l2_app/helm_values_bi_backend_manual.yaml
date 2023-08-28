@@ -4,21 +4,21 @@ app:
 docker_images_info:
   bi_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
-    tag: "0.1970.0"
+    tag: "0.1979.0"
   control_api:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-control-api-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-control-api
   data_api:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-data-api
   public_data_api:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-public-data-api
   embedded_data_api:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-embedded-data-api
   rqe_int_sync:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-int-sync-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-int-sync
   rqe_ext_async:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-async-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-async
   rqe_ext_sync:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-sync-tier-1
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-sync
   dls:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/dls
     tag: "1.285"

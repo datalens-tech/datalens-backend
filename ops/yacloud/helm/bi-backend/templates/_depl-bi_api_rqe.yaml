@@ -70,10 +70,7 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
+            {{- include "security-context-common" . | indent 12}}
         - name: rqe-ext-sync
           image: "{{ .Values.docker_images_info.rqe_ext_sync.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
           env:
@@ -107,10 +104,7 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
+            {{- include "security-context-common" . | indent 12}}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"

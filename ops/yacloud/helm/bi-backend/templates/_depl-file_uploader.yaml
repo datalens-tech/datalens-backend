@@ -227,10 +227,7 @@ spec:
             {{- include "env_vars-yenv" . | indent 12 }}
             {{- include "env_vars-file_secure_reader" . | indent 12}}
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
+            {{- include "security-context-common" . | indent 12}}
             capabilities:
               drop:
                 - all

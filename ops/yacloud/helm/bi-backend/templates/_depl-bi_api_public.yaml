@@ -22,11 +22,11 @@ spec:
       labels:
         app: public-dataset-api
       annotations:
-        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+        injector.tumblr.com/request: {{ ternary (ternary "jaeger,nginx_v2" "jaeger,nginx" (eq .Values.enabled_features.rootless_mode true)) "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
       containers:
         - name: main
-          image: "{{ .Values.docker_images_info.bi_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
+          image: "{{ .Values.docker_images_info.public_data_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
           env:
             {{- include "secrets-common" . | indent 12}}
             {{- include "secrets-bi_api" . | indent 12}}
@@ -114,8 +114,7 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           securityContext:
-            capabilities:
-              add: [ "NET_ADMIN" ]
+            {{- include "security-context-data-api" . | indent 12}}
         - name: postgres
           image: "{{ .Values.docker_images_info.docker_repo }}/postgres:12"
           imagePullPolicy: "IfNotPresent"
@@ -123,9 +122,7 @@ spec:
           ports:
             - containerPort: 5432
           securityContext:
-            runAsUser: 999
-            runAsGroup: 999
-            runAsNonRoot: true
+            {{- include "security-context-postgres" . | indent 12}}
           volumeMounts:
             - mountPath: /etc/postgresql/12/main
               name: compeng-config
@@ -161,10 +158,7 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
+            {{- include "security-context-common" . | indent 12}}
         {{ end }}
       volumes:
         - name: init-scripts
