@@ -132,7 +132,7 @@ jobs:
           python .github/split_pytest_tasks.py base | tee -a "$GITHUB_OUTPUT"
           python .github/split_pytest_tasks.py fat | tee -a "$GITHUB_OUTPUT"
           python .github/split_pytest_tasks.py ext_public | tee -a "$GITHUB_OUTPUT"
-          python .github/split_pytest_tasks.py ext_privete | tee -a "$GITHUB_OUTPUT"
+          python .github/split_pytest_tasks.py ext_private | tee -a "$GITHUB_OUTPUT"
 
   pytest:
     runs-on: [self-hosted, linux, light]

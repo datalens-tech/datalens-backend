@@ -64,6 +64,7 @@ def split_tests(mode: str) -> None:
                 spec = toml_data["datalens"]["pytest"][section]
                 section_labels = spec.get("labels", [])
                 if "ext" in section_labels:
+                    split_result["ext_public"].append((short_path, section))
                     continue
                 for category in split_result.keys():  # find a proper category based on given labels or fallback to base
                     if category in section_labels:
