@@ -57,14 +57,16 @@ def get_root_certs_file_content() -> bytes:
 
 # Secrets
 
+
+DATALENS_TEST_DATA_YAV_KEY = 'sec-01d5pcrfv9xceanxj2jwaed4bm'
+
 @pytest.fixture(scope='session')
 @skip_outside_devhost
 def secret_datalens_test_data(dl_env: DLEnv) -> dict[str, Any]:
     if dl_env == DLEnv.dynamic:
         with open('secrets/integration_tests.json') as secrets_file:
             return json.load(secrets_file)
-    sec_id = environments.YAVSecretsMap.datalens_test_data.value
-    return get_secret(sec_id, use_ssh_auth=True)
+    return get_secret(DATALENS_TEST_DATA_YAV_KEY, use_ssh_auth=True)
 
 
 # CI-safe secrets

@@ -9,7 +9,7 @@ import time
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import ClassVar, Dict, FrozenSet, Optional, Tuple
 
-from bi_configs.environments import YAVSecretsMap, TvmDestination
+from bi_configs.environments import TvmDestination
 
 import tvmauth
 
@@ -19,20 +19,6 @@ LOGGER = logging.getLogger(__name__)
 TVM_SERVICE_TICKET_HEADER = 'X-Ya-Service-Ticket'
 TVM_AUTO_CACHE_DIR_PREFIX = '/tmp/tvmauth/cache_'
 TVM_AUTO_CACHE_DIR_HASH_CHARS = 22
-
-
-def get_tvm_info_and_secret_from_yav(
-        sec: YAVSecretsMap = YAVSecretsMap.tvm_int_testing,
-) -> Tuple[str, str, str]:
-    """ Convenience function for obtaining tvm app info from YAV. Primarily intended for dev-usage """
-    try:
-        from library.python.vault_client.instances import Production as VaultClient  # noqa
-    except ImportError:
-        from vault_client.instances import Production as VaultClient  # type: ignore # noqa
-    vault_cli = VaultClient()
-    secret_data = vault_cli.get_version(sec.value)
-    tvm_name, tvm_id, tvm_secret = secret_data['value']['TVM_INFO'].split()
-    return tvm_name, tvm_id, tvm_secret
 
 
 def get_tvm_info_and_secret_from_env(key: str = 'TVM_INFO') -> Optional[Tuple[str, str, str]]:

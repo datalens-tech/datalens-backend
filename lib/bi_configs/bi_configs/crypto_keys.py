@@ -77,17 +77,3 @@ def get_crypto_keys_config_from_env(config_source: Optional[Mapping[str, str]] =
     return loader.load_settings(
         settings_type=_CryptoKeysConfigOnlySettings,
     ).cry
-
-
-def get_crypto_keys_from_vault_data(sec_value):
-    prefix = "CRYPTO_KEY_"
-    map_id_key = {}
-    for key, value in sec_value.items():
-        if not key.startswith(prefix):
-            continue
-        key_id = key[len(prefix):]
-        map_id_key[key_id] = value
-    if map_id_key.get("0") is None and sec_value.get("FERNET_KEY") is not None:
-        map_id_key["0"] = sec_value["FERNET_KEY"]
-
-    return map_id_key
