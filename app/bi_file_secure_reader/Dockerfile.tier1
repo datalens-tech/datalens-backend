@@ -1,0 +1,24 @@
+#syntax=docker/dockerfile:1.4
+FROM bake_ctx_base_img
+
+ENV APP_DIR="app/bi_file_secure_reader"
+
+COPY /etc /etc
+
+# Libs & metapkg
+COPY --from=bake_ctx_src_lib / /src
+
+# Sources copy
+RUN mkdir -p /src/$APP_DIR
+COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
+COPY /bi_file_secure_reader /src/$APP_DIR/bi_file_secure_reader
+COPY /README.md /src/$APP_DIR/README.md
+
+# Installation
+WORKDIR /src/ops/ci
+RUN poetry export --only app_bi_file_secure_reader --without-hashes --format=requirements.txt > requirements.txt
+RUN pip install -r requirements.txt
+
+WORKDIR /src/$APP_DIR
+
+ENTRYPOINT ["/etc/service/bi_file_secure_reader/run"]

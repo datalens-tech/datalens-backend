@@ -790,6 +790,7 @@ develop = false
 
 [package.dependencies]
 bi-file-secure-reader-lib = {path = "../../lib/bi_file_secure_reader_lib"}
+gunicorn = ">=20.1.0"
 
 [package.source]
 type = "directory"

@@ -1,10 +1,5 @@
-dockerfile: Dockerfile
-image: registry.yandex.net/statinfra/bi-file-secure-reader
 experiments: version
 version_files: {
   "./bi_file_secure_reader/__init__.py": '__version__ = "([^"]+)"',
   "./pyproject.toml": '\\nversion = "([^"]+)"',
 }
-deploy: true
-stage: back-int-preprod
-deploy_units: file-secure-reader:file-secure-reader

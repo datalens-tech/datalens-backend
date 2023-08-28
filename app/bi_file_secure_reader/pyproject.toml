@@ -1,4 +1,3 @@
-
 [tool.poetry]
 name = "bi-file-secure-reader"
 version = "0.1.0"
@@ -8,13 +7,14 @@ packages = [{include = "bi_file_secure_reader"}]
 license = "MIT"
 readme = "README.md"
 
-
 [tool.poetry.dependencies]
-bi-file-secure-reader-lib = {path = "../../lib/bi_file_secure_reader_lib"}
 python = ">=3.10, <3.12"
+gunicorn = ">=20.1.0"
+bi-file-secure-reader-lib = {path = "../../lib/bi_file_secure_reader_lib"}
 
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = ">=0.20.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -22,7 +22,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"
-testpaths = ["bi_file_secure_reader_tests/db"]
+testpaths = []
 
 [tool.ruff]
 line-length = 140

@@ -223,6 +223,16 @@ target "app_yc_public_dataset_api" {
   dockerfile = "Dockerfile.tier1"
 }
 
+target "app_bi_file_secure_reader" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img = "target:base_focal_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app/bi_file_secure_reader"
+  dockerfile = "Dockerfile.tier1"
+}
+
 target "app_bi_external_api" {
   pull     = false
   contexts = {
