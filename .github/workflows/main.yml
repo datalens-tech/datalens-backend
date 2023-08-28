@@ -110,7 +110,8 @@ jobs:
     outputs:
       split: ${{ steps.get_split.outputs.split }}
       split_fat: ${{ steps.get_split.outputs.split_fat }}
-      split_ext: ${{ steps.get_split.outputs.split_ext }}
+      split_ext_public: ${{ steps.get_split.outputs.split_ext_public }}
+      split_ext_private: ${{ steps.get_split.outputs.split_ext_private }}
     steps:
       - name: 'Cleanup build folder'
         run: |
@@ -130,7 +131,8 @@ jobs:
           export TEST_TARGETS="/tmp/dl_test_targets.json"
           python .github/split_pytest_tasks.py base | tee -a "$GITHUB_OUTPUT"
           python .github/split_pytest_tasks.py fat | tee -a "$GITHUB_OUTPUT"
-          python .github/split_pytest_tasks.py ext | tee -a "$GITHUB_OUTPUT"
+          python .github/split_pytest_tasks.py ext_public | tee -a "$GITHUB_OUTPUT"
+          python .github/split_pytest_tasks.py ext_privete | tee -a "$GITHUB_OUTPUT"
 
   pytest:
     runs-on: [self-hosted, linux, light]
@@ -239,11 +241,11 @@ jobs:
           path: /report/
           retention-days: 1
 
-  pytest_ext:
+  pytest_ext_public:
     # copy-paste, but simpliest solution for now given options provided by github ci
-    runs-on: [ self-hosted, linux, ext ]
+    runs-on: [ self-hosted, linux, ext_public ]
     needs: pytest_split
-    if: ${{ needs.pytest_split.outputs.split_ext != '[]' }}
+    if: ${{ needs.pytest_split.outputs.split_ext_public != '[]' }}
     container:
       image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_with_code:${{ github.sha }}"
       credentials:
@@ -256,11 +258,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        value: ${{fromJson(needs.pytest_split.outputs.split_ext)}}
+        value: ${{fromJson(needs.pytest_split.outputs.split_ext_public)}}
     steps:
       - run: mkdir /report
       - run: echo "Running py tests for ${{ matrix.value }}"
-      - run: echo "Split ext ${{ needs.pytest_split.outputs.split_ext }}"
+      - run: echo "Split ext ${{ needs.pytest_split.outputs.split_ext_public }}"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -298,9 +300,65 @@ jobs:
           path: /report/
           retention-days: 1
 
+  pytest_ext_private:
+    # copy-paste, but simpliest solution for now given options provided by github ci
+    runs-on: [ self-hosted, linux, ext_private ]
+    needs: pytest_split
+    if: ${{ needs.pytest_split.outputs.split_ext_private != '[]' }}
+    container:
+      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: "${{ secrets.DL_CI_CR_USER }}"
+        password: "${{ secrets.DL_CI_CR_TOKEN }}"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    name: "🐍[pytest][ext]${{ matrix.value }}"
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        value: ${{fromJson(needs.pytest_split.outputs.split_ext_private)}}
+    steps:
+      - run: mkdir /report
+      - run: echo "Running py tests for ${{ matrix.value }}"
+      - run: echo "Split ext ${{ needs.pytest_split.outputs.split_ext_private }}"
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.DL_CI_CR_URI }}
+          username: ${{ secrets.DL_CI_CR_USER }}
+          password: ${{ secrets.DL_CI_CR_TOKEN }}
+      - name: 'Cleanup build folder'
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+      - name: Checkout code, just to get access to .github/execute_tests...
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
+      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      # We need to set custom compose project name to ensure "unique" container names in the host docker env
+      - run: echo "TARGET_PATH=${{ matrix.value }}" "NET_NAME=${{ job.container.network }}" "COMPOSE_PROJECT_NAME=${{ env.compose_prj }}"
+      - name: run bash script with all logic for starting compose and running tests
+        run: |
+          bash .github/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+      - name: Stop compose if provided
+        # We could not put this into bash script, since job could be cancelled by user request
+        if: always()  # yes! always
+        run: bash .github/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
+      - uses: actions/upload-artifact@v3
+        if: "!cancelled()"
+        with:
+          name: "pytest_reports_${{ env.compose_prj }}"
+          path: /report/
+          retention-days: 1
+
   publish-result:
     runs-on: [self-hosted, linux]
-    needs: [ "pytest", "pytest_fat", "pytest_ext"]
+    needs: [ "pytest", "pytest_fat", "pytest_ext_public", "pytest_ext_private"]
     if: "!cancelled() && ${{ github.event.inputs.run_mypy_only != 'true' }}"
     permissions:
       contents: read

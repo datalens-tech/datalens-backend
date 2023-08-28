@@ -32,7 +32,7 @@ def format_output(name: str, sections: list[tuple[str, str]]) -> str:
 def split_tests(mode: str) -> None:
     """
     :param mode: One of: "base" for test targets without specific labels, "fat" for test target to be put into
-     the "fat" runners, "ext" to pass secrets into env
+     the "fat" runners, "ext_public" to pass secrets into env, "ext_private" for tests to run in the closed contour
     :side-effect: prints to stdout variable assignment for github output
     """
     targets_file = os.environ.get("TEST_TARGETS")
@@ -41,7 +41,8 @@ def split_tests(mode: str) -> None:
 
     split_result: dict[str, list[tuple]] = dict(
         fat=[],
-        ext=[],
+        ext_public=[],
+        ext_private=[],
     )
     split_base = []
 
@@ -62,6 +63,8 @@ def split_tests(mode: str) -> None:
             for section in pytest_targets.keys():
                 spec = toml_data["datalens"]["pytest"][section]
                 section_labels = spec.get("labels", [])
+                if "ext" in section_labels:
+                    continue
                 for category in split_result.keys():  # find a proper category based on given labels or fallback to base
                     if category in section_labels:
                         split_result[category].append((short_path, section))
