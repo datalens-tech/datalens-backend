@@ -244,8 +244,6 @@ class CreateDSFrom(DynamicEnum):
     CSV = AutoEnumValue()
     FILE_S3_TABLE = AutoEnumValue()
     GSHEETS_V2 = AutoEnumValue()
-    PG_TABLE = AutoEnumValue()
-    PG_SUBSELECT = AutoEnumValue()
     CHYT_YTSAURUS_TABLE = AutoEnumValue()
     CHYT_YTSAURUS_TABLE_LIST = AutoEnumValue()
     CHYT_YTSAURUS_TABLE_RANGE = AutoEnumValue()
