@@ -1,5 +1,0 @@
-qloudinst: ext
-project: qloud
-application: balancer
-environment: dl-ext-infra-test
-components: balancer-l7

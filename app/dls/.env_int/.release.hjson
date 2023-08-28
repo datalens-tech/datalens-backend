@@ -1,7 +1,0 @@
-project: stat
-qloudinst: ext
-application: dls
-applications: dls
-image: registry.yandex.net/datalens/hhell/dls_p2
-environment: beta
-components: backend,tasks

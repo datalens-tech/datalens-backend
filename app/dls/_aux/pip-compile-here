@@ -1,4 +1,0 @@
-#!/bin/sh -x
-
-set -Eeu
-../tools/local_dev/requirements/pip-compile-here "$@"
