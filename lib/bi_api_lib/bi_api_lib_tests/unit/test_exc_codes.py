@@ -50,7 +50,6 @@ STABILIZED_CODES = (
     (bi_core.exc.InvalidQuery, 'ERR.DS_API.DB.INVALID_QUERY'),
     (bi_core.exc.JoinColumnTypeMismatch, 'ERR.DS_API.DB.JOIN_COLUMN_TYPE_MISMATCH'),
     (bi_core.exc.MaterializationNotFinished, 'ERR.DS_API.DB.MATERIALIZATION_NOT_FINISHED'),
-    (bi_core.exc.MetricaAPIDatabaseQueryError, 'ERR.DS_API.DB.METRICA'),
     (bi_core.exc.ResultRowCountLimitExceeded, 'ERR.DS_API.ROW_COUNT_LIMIT'),
     (bi_core.exc.SourceDoesNotExist, 'ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST'),
     (bi_core.exc.UnexpectedInfOrNan, 'ERR.DS_API.DB.UNEXPECTED_INF_OR_NAN'),

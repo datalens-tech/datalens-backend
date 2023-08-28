@@ -67,10 +67,6 @@ class DatabaseUnavailable(DLBaseException):
     default_message = 'Data source is unavailable'
 
 
-class TableDefinitionNotFound(Exception):
-    pass
-
-
 class DataSourceConfigurationError(DLBaseException):
     err_code = DLBaseException.err_code + ['SOURCE_CONFIG']
 
@@ -91,10 +87,6 @@ class DatasetConfigurationError(DLBaseException):
 
 class NoCommonRoleError(DLBaseException):
     err_code = DatasetConfigurationError.err_code + ['NO_COMMON_ROLE']
-
-
-class NoDataSources(DatasetConfigurationError):
-    err_code = DatasetConfigurationError.err_code + ['NO_SOURCES']
 
 
 # Data sources
@@ -366,11 +358,6 @@ class DatabaseQueryError(DLBaseException):
 class CommitOrRollbackFailed(DatabaseQueryError):
     err_code = DatabaseQueryError.err_code + ['COMMIT_OR_ROLLBACK_FAILED']
     default_message = 'Failed to COMMIT or ROLLBACK'
-
-
-class MetricaAPIDatabaseQueryError(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['METRICA']
-    default_message = 'Metrica API error.'
 
 
 class ResultRowCountLimitExceeded(DLBaseException):
@@ -820,7 +807,7 @@ class YCPermissionRequired(DLBaseException):
 
 class EntityUsageNotAllowed(DLBaseException):
     err_code = DLBaseException.err_code + ['ENTITY_USAGE_NOT_ALLOWED']
-    default_message = 'Some of the entities cannot be used in thix context'
+    default_message = 'Some of the entities cannot be used in this context'
 
 
 class USPermissionRequired(USReqException):

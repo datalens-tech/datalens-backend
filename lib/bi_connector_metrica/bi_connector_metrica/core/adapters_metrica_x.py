@@ -12,6 +12,7 @@ from bi_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from bi_core.connectors.base.error_transformer import DBExcKWArgs
 from bi_core.connection_models import DBIdent
 
+from bi_connector_metrica.core.exc import MetricaAPIDatabaseQueryError
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.target_dto import MetricaAPIConnTargetDTO, AppMetricaAPIConnTargetDTO
 
@@ -55,7 +56,7 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
                 sqla_metrika_exc.ProgrammingError,
             )
         ):
-            exc_cls = exc.MetricaAPIDatabaseQueryError
+            exc_cls = MetricaAPIDatabaseQueryError
 
         return exc_cls, kw
 
