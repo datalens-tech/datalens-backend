@@ -1,4 +1,3 @@
-
 [tool.poetry]
 name = "yandex-bi-file-uploader-api-yc"
 version = "0.112.0"
@@ -7,7 +6,6 @@ authors = ["Andrey Snytin <asnytin@yandex-team.ru>", "Aleksei Konstantinov konst
 packages = [{include = "app_yc_file_uploader_api"}]
 license = "MIT"
 readme = "README.md"
-
 
 [tool.poetry.dependencies]
 aiobotocore = ">=2.4.2"
@@ -50,11 +48,8 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
 [datalens_ci]
 skip_test = true
-
 
 [[tool.poetry.source]]
 name = "ya"

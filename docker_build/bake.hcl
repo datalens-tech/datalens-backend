@@ -193,6 +193,26 @@ target "app_yc_data_api_sec_embeds" {
   dockerfile = "Dockerfile.tier1"
 }
 
+target "app_yc_file_uploader_api" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img   = "target:base_focal_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_yc/app_yc_file_uploader_api"
+  dockerfile = "Dockerfile.tier1"
+}
+
+target "app_yc_file_uploader_worker" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img   = "target:base_focal_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_yc/app_yc_file_uploader_worker"
+  dockerfile = "Dockerfile.tier1"
+}
+
 target "app_yc_public_dataset_api" {
   pull     = false
   contexts = {

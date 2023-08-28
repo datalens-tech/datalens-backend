@@ -10,7 +10,7 @@ max_rq_jitter="${GUNICORN_MAX_RQ_JITTER:-500}"
 exec \
     gunicorn \
     app_yc_file_uploader_api.app:create_gunicorn_app \
-    --log-config /code/gunicorn_logging.ini \
+    --log-config "${BI_API_GUNICORN_LOG_CONFIG:-${GUNICORN_LOG_CONFIG}}" \
     --bind "[::]:${port}" \
     --max-requests "$max_rq" \
     --max-requests-jitter "$max_rq_jitter" \

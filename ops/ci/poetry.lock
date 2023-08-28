@@ -7155,7 +7155,7 @@ url = "../../app/dls"
 
 [[package]]
 name = "yandex-bi-api"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7356,7 +7356,7 @@ url = "../../lib/bi_api_connector"
 
 [[package]]
 name = "yandex-bi-api-lib"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8137,7 +8137,7 @@ url = "../../lib/bi_constants"
 
 [[package]]
 name = "yandex-bi-control-api-os"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8164,7 +8164,7 @@ url = "../../app_os/app_os_control_api"
 
 [[package]]
 name = "yandex-bi-control-api-yc"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8320,7 +8320,7 @@ url = "../../lib/bi_core_testing"
 
 [[package]]
 name = "yandex-bi-data-api-os"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8346,7 +8346,7 @@ url = "../../app_os/app_os_data_api"
 
 [[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8391,7 +8391,7 @@ url = "../../app_yc/app_yc_data_api_sec_embeds"
 
 [[package]]
 name = "yandex-bi-data-api-yc"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8601,7 +8601,6 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-file-secure-reader = {path = "../../app/bi_file_secure_reader"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-file-uploader-worker-lib = {path = "../../lib/bi_file_uploader_worker_lib"}
@@ -8744,7 +8743,7 @@ url = "../../mainrepo/lib/bi_package_boilerplate"
 
 [[package]]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8812,7 +8811,7 @@ url = "../../lib/bi_query_processing"
 
 [[package]]
 name = "yandex-bi-rqe-ext-async"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8834,7 +8833,7 @@ url = "../../app/bi_rqe_ext_async"
 
 [[package]]
 name = "yandex-bi-rqe-ext-sync"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8860,7 +8859,7 @@ url = "../../app/bi_rqe_ext_sync"
 
 [[package]]
 name = "yandex-bi-rqe-int-sync"
-version = "0.1977.0"
+version = "0.1979.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
