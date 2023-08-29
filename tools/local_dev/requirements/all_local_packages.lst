@@ -83,7 +83,6 @@ lib/bi_sqlalchemy_promql
 lib/bi_sqlalchemy_solomon
 lib/bi_sqlalchemy_yq
 lib/bi_task_processor
-lib/bi_test_project_task_interface
 lib/bi_testing
 lib/bi_testing_dc
 lib/bi_testing_nebius

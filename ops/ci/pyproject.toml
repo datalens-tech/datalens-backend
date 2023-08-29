@@ -60,7 +60,6 @@ yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-query-processing = {path = "../../lib/bi_query_processing"}
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-us-client = {path = "../../lib/bi_us_client"}
-bi-test-project-task-interface = {path = "../../lib/bi_test_project_task_interface"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 dynamic-enum = {path = "../../lib/dynamic_enum"}
