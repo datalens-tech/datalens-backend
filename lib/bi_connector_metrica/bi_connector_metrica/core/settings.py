@@ -1,10 +1,11 @@
-from bi_configs.connectors_settings import ConnectorSettingsBase, MetricaConnectorSettings, AppmetricaConnectorSettings
-from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from bi_configs.connectors_settings import (
+    ConnectorsConfigType, ConnectorSettingsBase, MetricaConnectorSettings, AppmetricaConnectorSettings,
+)
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
 
-def metrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
+def metrica_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     return dict(METRIKA_API=MetricaConnectorSettings())
 
 
@@ -13,7 +14,7 @@ class MetricaSettingDefinition(ConnectorSettingsDefinition):
     fallback = metrica_settings_fallback
 
 
-def appmetrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
+def appmetrica_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     return dict(APPMETRICA_API=AppmetricaConnectorSettings())
 
 

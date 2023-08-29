@@ -1,5 +1,3 @@
-from bi_configs.connectors_settings import GreenplumConnectorSettings
-
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
 from bi_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
@@ -18,6 +16,7 @@ from bi_connector_postgresql.core.greenplum.data_source import GreenplumTableDat
 from bi_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor, AsyncPostgresConnExecutor
 from bi_connector_postgresql.core.greenplum.dto import GreenplumConnDTO
 from bi_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
+from bi_connector_postgresql.core.greenplum.settings import GreenplumSettingDefinition
 
 
 class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
@@ -28,7 +27,7 @@ class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = PostgresConnExecutor
     async_conn_executor_cls = AsyncPostgresConnExecutor
     dialect_string = 'bi_postgresql'
-    settings_class = GreenplumConnectorSettings
+    settings_definition = GreenplumSettingDefinition
 
 
 class GreenplumTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

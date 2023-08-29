@@ -1,16 +1,20 @@
-from bi_configs.connectors_settings import ConnectorSettingsBase, YQConnectorSettings
-from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, YQConnectorSettings
+from bi_defaults.connectors_data import ConnectorsDataYQBase
 
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
+from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 
 
-def yq_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
-    cfg = full_cfg.CONNECTORS_DATA
+def yq_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
+    cfg = get_connectors_settings_config(
+        full_cfg, object_like_config_key='YQ', connector_data_class=ConnectorsDataYQBase,
+    )
+    if cfg is None:
+        return {}
     return dict(
         YQ=YQConnectorSettings(  # type: ignore
-            HOST=cfg.YQ.CONN_YQ_HOST,
-            PORT=cfg.YQ.CONN_YQ_PORT,
-            DB_NAME=cfg.YQ.CONN_YQ_DB_NAME,
+            HOST=cfg.CONN_YQ_HOST,
+            PORT=cfg.CONN_YQ_PORT,
+            DB_NAME=cfg.CONN_YQ_DB_NAME,
         )
     )
 

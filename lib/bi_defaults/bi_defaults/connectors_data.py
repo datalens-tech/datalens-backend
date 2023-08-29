@@ -1006,9 +1006,9 @@ class ConnectorsDataMusicBase(ConnectorsDataBase):
     CONN_MUSIC_PORT: ClassVar[Optional[int]] = None
     CONN_MUSIC_DB_MAME: ClassVar[Optional[str]] = None
     CONN_MUSIC_USERNAME: ClassVar[Optional[str]] = None
-    conn_music_use_managed_network: ClassVar[Optional[bool]] = None
-    conn_music_allowed_tables: ClassVar[Optional[list[str]]] = None
-    conn_music_subselect_templates: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+    CONN_MUSIC_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_MUSIC_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_MUSIC_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
 
     @classmethod
     def connector_name(cls) -> str:

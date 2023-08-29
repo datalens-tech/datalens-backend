@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import Any, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import attr
 import json
@@ -54,6 +54,10 @@ class PartnerKeys:
 @attr.s(frozen=True)
 class ConnectorSettingsBase(SettingsBase):
     """"""
+
+
+ConnectorsConfigType = ObjectLikeConfig | CommonInstallation
+SettingsFallbackType = Callable[[ConnectorsConfigType], dict[str, ConnectorSettingsBase]]
 
 
 @attr.s(frozen=True)

@@ -14,8 +14,11 @@ from bi_configs.enums import AppType, RedisMode
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.rqe import RQEConfig, RQEBaseURL
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from bi_configs.settings_loaders.loader_env import EnvSettingsLoader
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.settings_loaders.loader_env import EnvSettingsLoader, load_connectors_settings_from_env_with_fallback
+from bi_configs.connectors_settings import ConnectorsSettingsByType, CHFrozenSamplesConnectorSettings
+
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.constants import CONNECTION_TYPE_CH_FROZEN_SAMPLES
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ch_frozen_samples_settings_fallback
 
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_formula.parser.factory import ParserType
@@ -288,3 +291,29 @@ def test_config_loading(case: ConfigLoadingCase):
     assert isinstance(actual_config.CONNECTORS, ConnectorsSettingsByType)
     actual_config = attr.evolve(actual_config, CONNECTORS=None)
     assert actual_config == expected_config
+
+
+@pytest.mark.parametrize("case", (
+    CLOUD_PRE_PROD_DATA_API_CASE,
+))
+def test_connectors_settings_loading(case: ConfigLoadingCase):
+    settings_registry = {CONNECTION_TYPE_CH_FROZEN_SAMPLES: CHFrozenSamplesConnectorSettings}
+    fallbacks = {CONNECTION_TYPE_CH_FROZEN_SAMPLES: ch_frozen_samples_settings_fallback}
+    connectors_settings = load_connectors_settings_from_env_with_fallback(
+        settings_registry=settings_registry,
+        fallbacks=fallbacks,
+        env=case.env,
+        fallback_cfg_resolver=YEnvFallbackConfigResolver(
+            env_map=EnvAliasesMap,
+            installation_map=InstallationsMap,
+        )
+    )
+
+    assert len(connectors_settings) == 1
+    samples_settings = connectors_settings[CONNECTION_TYPE_CH_FROZEN_SAMPLES]
+    assert isinstance(samples_settings, CHFrozenSamplesConnectorSettings)
+    assert samples_settings.PORT == 8443
+    assert samples_settings.USE_MANAGED_NETWORK is False
+    assert samples_settings.ALLOWED_TABLES == ['list', 'of', 'tables']
+    assert samples_settings.SUBSELECT_TEMPLATES == \
+           ({'title': 'SQL for cohorts', 'sql_query': '\nSELECT\n    *\nFROM\n    samples.orders t1\n'},)

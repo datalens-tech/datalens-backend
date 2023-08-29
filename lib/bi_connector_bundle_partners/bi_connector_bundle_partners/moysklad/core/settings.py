@@ -1,18 +1,24 @@
-from bi_configs.connectors_settings import ConnectorSettingsBase, MoySkladConnectorSettings, PartnerKeys
-from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from bi_configs.connectors_settings import (
+    ConnectorsConfigType, ConnectorSettingsBase, MoySkladConnectorSettings, PartnerKeys,
+)
 from bi_configs.settings_loaders.meta_definition import required
+from bi_defaults.connectors_data import ConnectorsDataMoyskladBase
 
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
+from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 
 
-def moysklad_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
-    cfg = full_cfg.CONNECTORS_DATA
+def moysklad_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
+    cfg = get_connectors_settings_config(
+        full_cfg, object_like_config_key='MOYSKLAD', connector_data_class=ConnectorsDataMoyskladBase,
+    )
+    if cfg is None:
+        return {}
     return dict(
         MOYSKLAD=MoySkladConnectorSettings(  # type: ignore
-            HOST=cfg.MOYSKLAD.CONN_MOYSKLAD_HOST,
-            PORT=cfg.MOYSKLAD.CONN_MOYSKLAD_PORT,
-            USERNAME=cfg.MOYSKLAD.CONN_MOYSKLAD_USERNAME,
-            USE_MANAGED_NETWORK=cfg.MOYSKLAD.CONN_MOYSKLAD_USE_MANAGED_NETWORK,
+            HOST=cfg.CONN_MOYSKLAD_HOST,
+            PORT=cfg.CONN_MOYSKLAD_PORT,
+            USERNAME=cfg.CONN_MOYSKLAD_USERNAME,
+            USE_MANAGED_NETWORK=cfg.CONN_MOYSKLAD_USE_MANAGED_NETWORK,
             PASSWORD=required(str),
             PARTNER_KEYS=required(PartnerKeys),
         )

@@ -1,10 +1,9 @@
-from bi_configs.connectors_settings import ConnectorSettingsBase, YDBConnectorSettings
-from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, YDBConnectorSettings
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
 
-def ydb_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
+def ydb_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     return dict(YDB=YDBConnectorSettings())
 
 
