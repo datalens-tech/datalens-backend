@@ -157,10 +157,10 @@ target "app_bi_api" {
   pull       = false
   contexts = {
     bake_ctx_base_img = "target:base_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
   }
-  # TODO FIX: BI-4740 use common build scheme & shrink context to app
-  context    = "${PROJECT_ROOT}"
-  dockerfile = "app/bi_api/Dockerfile.tier1"
+  context    = "${PROJECT_ROOT}/app/bi_api"
+  dockerfile = "Dockerfile.tier1"
 }
 
 target "app_yc_control_api" {
