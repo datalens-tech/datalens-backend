@@ -1,3 +1,16 @@
+0.139.0
+-------
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * BI-4876 fix factory (#189)  [ https://github.com/datalens-tech/datalens-backend-private/commit/745dbd2 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * Moving from shell hell to bake new world (#120)  [ https://github.com/datalens-tech/datalens-backend-private/commit/194c8cd ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-29 14:41:57+00:00
+
 0.138.0
 -------
 

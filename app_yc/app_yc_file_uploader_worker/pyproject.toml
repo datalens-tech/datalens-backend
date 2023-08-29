@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "yandex-bi-file-uploader-worker-yc"
-version = "0.138.0"
+version = "0.139.0"
 description = ""
 authors = ["Andrey Snytin <asnytin@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "app_yc_file_uploader_worker"}]
