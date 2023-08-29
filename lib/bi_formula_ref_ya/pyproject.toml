@@ -13,6 +13,13 @@ readme = "README.md"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

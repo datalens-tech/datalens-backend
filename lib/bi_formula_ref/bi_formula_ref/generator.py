@@ -22,9 +22,7 @@ from bi_formula_ref.texts import (
     ANY_DIALECTS, DOC_ALL_TITLE, DOC_OVERVIEW_TEXT, DOC_AVAIL_TITLE, DialectStyle,
 )
 from bi_formula_ref.primitives import RawFunc, RawMultiAudienceFunc
-from bi_formula_ref.registry.dialect_extractor import (
-    COMPENG_SUPPORT, should_include_dialect,
-)
+from bi_formula_ref.registry.dialect_extractor import COMPENG_SUPPORT
 from bi_formula_ref.rendered import RenderedFunc, RenderedMultiAudienceFunc
 from bi_formula_ref.reference import (
     FuncReference, load_func_reference_from_registry
@@ -68,7 +66,10 @@ class ReferenceDocGenerator:
 
     def __attrs_post_init__(self) -> None:
         self._gen_config = get_generator_config(self._config_version)
-        self._func_ref = load_func_reference_from_registry(scopes_by_audience=self._gen_config.function_scopes)
+        self._func_ref = load_func_reference_from_registry(
+            scopes_by_audience=self._gen_config.function_scopes,
+            supported_dialects=self._gen_config.supported_dialects
+        )
         self._jinja_env = get_jinja_env(self._gen_config)
 
     def _get_renderer(self, doc_config: FuncDocTemplateConfig) -> FuncRenderer:
@@ -275,7 +276,7 @@ class ReferenceDocGenerator:
         assert scopes is not None
         dialects = [
             d for d in get_all_basic_dialects()
-            if should_include_dialect(d, scopes=scopes)
+            if d in self._gen_config.supported_dialects
         ]
         table_data = []
         for multi_func in raw_funcs:

@@ -1,4 +1,5 @@
 from bi_formula.definitions.scope import Scope
+
 from bi_formula_ref.categories.aggregation import CATEGORY_AGGREGATION
 from bi_formula_ref.categories.logical import CATEGORY_LOGICAL
 from bi_formula_ref.categories.mathematical import CATEGORY_MATHEMATICAL
@@ -8,14 +9,17 @@ from bi_formula_ref.registry.env import GenerationEnvironment
 from bi_formula_ref.registry.registry import RefFunctionKey, FUNC_REFERENCE_REGISTRY
 from bi_formula_ref.registry.tools import populate_registry_from_definitions
 
+from bi_connector_clickhouse.formula.constants import ClickHouseDialect
+
 
 def check_function(func_name: str, exp_signature: list, category_name: str) -> None:
     func_key = RefFunctionKey.normalized(name=func_name, category_name=category_name)
     func = FUNC_REFERENCE_REGISTRY[func_key]
-    signatures = [
-        sig.body
-        for sig in func.get_signatures(env=GenerationEnvironment(scopes=Scope.DOCUMENTED)).signatures
-    ]
+    env = GenerationEnvironment(
+        scopes=Scope.DOCUMENTED,
+        supported_dialects=frozenset({ClickHouseDialect.CLICKHOUSE_22_10}),
+    )
+    signatures = [sig.body for sig in func.get_signatures(env=env).signatures]
     assert signatures == exp_signature
 
 

@@ -7,6 +7,7 @@ from typing import Any, Mapping, NamedTuple
 import attr
 from dynamic_enum import DynamicEnum, AutoEnumValue
 
+from bi_formula.core.dialect import DialectCombo, StandardDialect as D
 from bi_formula.definitions.scope import Scope
 
 from bi_formula_ref.audience import Audience, DEFAULT_AUDIENCE
@@ -53,6 +54,8 @@ class RefDocGeneratorConfig:
 
     function_scopes: dict[Audience, int] = attr.ib(kw_only=True, default={DEFAULT_AUDIENCE: Scope.DOCUMENTED})
     block_conditions: Mapping[str, bool] = attr.ib(kw_only=True, factory=dict)
+
+    supported_dialects: frozenset[DialectCombo] = attr.ib(kw_only=True, default=frozenset({D.DUMMY}))
 
     def clone(self, **kwargs: Any) -> RefDocGeneratorConfig:
         return attr.evolve(self, **kwargs)

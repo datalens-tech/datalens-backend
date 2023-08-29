@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Collection, Optional, Type
 
-from bi_formula.core.dialect import get_all_basic_dialects
+from bi_formula.core.dialect import get_all_basic_dialects, DialectCombo
 from bi_formula.definitions.flags import ContextFlag
 from bi_formula.definitions.base import MultiVariantTranslation
 
@@ -75,11 +75,17 @@ def _all_same(items: Collection[Any]) -> bool:
     return all(item == one for item in items)
 
 
-def load_func_reference_from_registry(scopes_by_audience: dict[Audience, int]) -> FuncReference:
+def load_func_reference_from_registry(
+        scopes_by_audience: dict[Audience, int],
+        supported_dialects: frozenset[DialectCombo],
+) -> FuncReference:
     populate_registry_from_definitions()
 
     env_by_audience: dict[Audience, GenerationEnvironment] = {
-        audience: GenerationEnvironment(scopes=aud_scopes)
+        audience: GenerationEnvironment(
+            scopes=aud_scopes,
+            supported_dialects=supported_dialects,
+        )
         for audience, aud_scopes in scopes_by_audience.items()
     }
 

@@ -1,3 +1,4 @@
+from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.definitions.scope import Scope
 
 from bi_formula_ref.paths import FuncPathTemplate, CatPathTemplate
@@ -5,6 +6,14 @@ from bi_formula_ref.audience import DEFAULT_AUDIENCE
 from bi_formula_ref.config import (
     RefDocGeneratorConfig, FuncDocConfigVersion, FuncDocTemplateConfig
 )
+
+from bi_connector_clickhouse.formula.constants import ClickHouseDialect
+from bi_connector_mysql.formula.constants import MySQLDialect
+from bi_connector_yql.formula.constants import YqlDialect
+from bi_connector_metrica.formula.constants import MetricaDialect
+from bi_connector_oracle.formula.constants import OracleDialect
+from bi_connector_mssql.formula.constants import MssqlDialect
+from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 
 DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
@@ -23,4 +32,11 @@ DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
         DEFAULT_AUDIENCE: Scope.DOCUMENTED | Scope.DOUBLECLOUD,
     },
     block_conditions={'doublecloud': True},
+    supported_dialects=frozenset({
+        D.ANY,
+        *ClickHouseDialect.and_above(ClickHouseDialect.CLICKHOUSE_21_8).to_list(),
+        *MssqlDialect.and_above(MssqlDialect.MSSQLSRV_14_0).to_list(),
+        *MySQLDialect.and_above(MySQLDialect.MYSQL_5_6).to_list(),
+        *PostgreSQLDialect.and_above(PostgreSQLDialect.POSTGRESQL_9_3).to_list(),
+    }),
 )
