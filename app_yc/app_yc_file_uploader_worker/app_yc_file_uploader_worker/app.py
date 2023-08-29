@@ -42,7 +42,7 @@ def run_health_check() -> None:
     loop = asyncio.get_event_loop()
     settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
     configure_logging(app_name='bi_file_uploader_worker_health_check', sentry_dsn=settings.SENTRY_DSN)
-    worker = FileUploaderWorkerFactory(settings=settings).create_worker()
+    worker = FileUploaderWorkerFactoryYC(settings=settings).create_worker()
     health_checker = HealthChecker(worker)
     loop.run_until_complete(health_checker.check())
 
