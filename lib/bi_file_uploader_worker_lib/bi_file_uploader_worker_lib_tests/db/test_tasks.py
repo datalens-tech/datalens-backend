@@ -590,7 +590,7 @@ async def test_rename_tenant_files(
     assert source.s3_filename
     s3_obj = await s3_client.get_object(Bucket=s3_persistent_bucket, Key=source.s3_filename)
     s3_data = await s3_obj['Body'].read()
-    preview_set = PreviewSet(redis=redis_model_manager._redis, id=conn.folder_id)
+    preview_set = PreviewSet(redis=redis_model_manager._redis, id=conn.raw_tenant_id)
     ps_vals = {_ async for _ in preview_set.sscan_iter()}
     assert len(ps_vals) >= 1
 

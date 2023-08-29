@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Optional
 from aiohttp import web
 import attr
 
+from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
 from bi_constants.api_constants import YcTokenHeaderMode
 from bi_constants.enums import ProcessorType, RedisInstanceKind
 
@@ -173,6 +174,7 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
                     conn_id_match_info_code='conn_id',
                     us_public_token=setting.US_PUBLIC_API_TOKEN,  # type: ignore  # TODO: fix
                     us_master_token=setting.US_MASTER_TOKEN,
+                    tenant_resolver=TenantResolverYC(),
                 ),
             ]
         elif setting.APP_TYPE == AppType.CLOUD:

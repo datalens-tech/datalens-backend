@@ -25,7 +25,6 @@ from bi_core.base_models import (
     WorkbookEntryLocation,
 )
 from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.base_models import TenantYCFolder
 from bi_api_commons.base_models import TenantDef
 from bi_core.united_storage_client import USAuthContextBase, UStorageClientBase
 from bi_core.us_connection import get_connection_class
@@ -148,19 +147,11 @@ class USManagerBase:
             service_registry=service_registry
         )
 
+    # TODO FIX: Prevent saving entries with folder ID that doesn't match current folder ID
     def set_tenant_override(self, tenant: TenantDef) -> None:
         if not self._us_auth_context.is_tenant_id_mutable():
             raise AssertionError("Folder ID might be set only for US manager with master US auth context")
         self._us_client.set_tenant_override(tenant)
-
-    # TODO FIX: Prevent saving entries with folder ID that doesn't match current folder ID
-    def set_folder_id(self, folder_id: str) -> None:
-        if not self._us_auth_context.is_tenant_id_mutable():
-            # TODO FIX: Custom exception
-            raise ValueError("Folder ID might be set only for US manager with master US auth context")
-        # TODO FIX: Think about do we really need to set it to context???
-        # self._bi_context.temp_request_logging_context.folder_id = folder_id
-        self.set_tenant_override(TenantYCFolder(folder_id=folder_id))
 
     @classmethod
     def get_load_storage_schema(cls, data_cls: Type[BaseAttrsDataModel]) -> marshmallow.Schema:

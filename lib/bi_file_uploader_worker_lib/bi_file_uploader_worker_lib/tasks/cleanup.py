@@ -203,8 +203,9 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
         await RenameTenantStatusModel(manager=rmm, id=tenant_id, status=RenameTenantStatus.started).save()
         try:
             usm = self._ctx.get_async_usm()
-            # TODO FIX: Replace with .set_tenant_override()
-            usm.set_folder_id(tenant_id)
+            usm.set_tenant_override(
+                self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id)
+            )
             s3_service = self._ctx.s3_service
             s3_client = s3_service.get_client()
 

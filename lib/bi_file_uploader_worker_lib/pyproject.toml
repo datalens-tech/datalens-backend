@@ -17,6 +17,7 @@ bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_inter
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 python = ">=3.10, <3.12"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}

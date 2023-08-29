@@ -229,8 +229,17 @@ class USEntry:
         return self._us_resp.get('revId') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
 
     @property
-    def folder_id(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get('tenantId') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+    def raw_tenant_id(self) -> Optional[str]:
+        if not isinstance(self._us_resp, dict):
+            raise ValueError("Can not get tenantId from US entry without ._us_resp.")
+
+        may_be_tenant_id = self._us_resp.get("tenantId")
+
+        if may_be_tenant_id is None or isinstance(may_be_tenant_id, str):
+            return may_be_tenant_id
+        raise ValueError(
+            f"Gon unexpected type of tenantId in US entry {self.scope}/{self.type_}/{self.uuid}: {may_be_tenant_id!r}"
+        )
 
     def validate(self) -> None:
         """

@@ -17,8 +17,8 @@ from bi_core.services_registry.top_level import DummyServiceRegistry
 from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from bi_api_commons.aiohttp import aiohttp_wrappers
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from bi_api_commons.tenant_resolver import TenantResolver
 from ... import exc
-from bi_api_commons.base_models import TenantYCFolder
 from ...us_manager.factory import USMFactory
 from ...us_manager.us_manager_async import AsyncUSManager
 
@@ -33,6 +33,7 @@ def public_usm_workaround_middleware(
         dataset_id_match_info_code: str,
         conn_id_match_info_code: str,
         us_master_token: Optional[str],
+        tenant_resolver: TenantResolver,
 ) -> AIOHTTPMiddleware:
     """
     This is workaround for the following public API issues:
@@ -50,6 +51,7 @@ def public_usm_workaround_middleware(
     :param crypto_keys_config:
     :param dataset_id_match_info_code: name of URL match param for dataset ID
     :param conn_id_match_info_code: name of URL match param for connection ID
+    :param tenant_resolver:
     :return: Actual middleware
     """
     usm_factory = USMFactory(
@@ -94,11 +96,11 @@ def public_usm_workaround_middleware(
             except exc.USObjectNotFoundException:
                 raise web.HTTPNotFound()
             else:
-                folder_id = entry.folder_id
+                tenant = tenant_resolver.resolve_tenant_def_by_tenant_id(entry.raw_tenant_id)
         finally:
             await public_usm.close()
 
-        rci = attr.evolve(rci, tenant=TenantYCFolder(folder_id=folder_id))
+        rci = attr.evolve(rci, tenant=tenant)
         dl_request.replace_temp_rci(rci)
 
         return await handler(dl_request.request)

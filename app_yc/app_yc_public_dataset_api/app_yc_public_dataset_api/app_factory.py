@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
 from bi_configs.enums import RequiredService, RQE_SERVICES
 
 from bi_core.aio.middlewares.services_registry import services_registry_middleware
@@ -115,6 +116,7 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory, PublicDatasetApiSRFactoryB
                 conn_id_match_info_code='conn_id',
                 us_public_token=setting.US_PUBLIC_API_TOKEN,
                 us_master_token=setting.US_MASTER_TOKEN,
+                tenant_resolver=TenantResolverYC(),
             ),
         ]
 

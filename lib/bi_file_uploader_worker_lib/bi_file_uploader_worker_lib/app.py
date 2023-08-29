@@ -2,6 +2,9 @@ import os
 
 import attr
 
+from bi_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
+from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC, TenantResolverDC
+from bi_configs.enums import AppType
 from bi_utils.aio import ContextVarExecutor
 from bi_core.aio.web_app_services.gsheets import GSheetsSettings
 from bi_core.aio.web_app_services.s3 import S3Service
@@ -51,7 +54,16 @@ class FileUploaderContextFab(BaseContextFabric):
             redis_pool=redis_pool,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             secure_reader_socket=self._settings.SECURE_READER_SOCKET,
+            tenant_resolver=self.get_tenant_resolver(),
         )
+
+    # TODO FIX: Inject appropriate resolver in app for particular contour
+    def get_tenant_resolver(self) -> TenantResolver:
+        return {
+            AppType.CLOUD: TenantResolverYC(),
+            AppType.DATA_CLOUD: TenantResolverDC(),
+            AppType.NEBIUS: TenantResolverYC(),
+        }.get(self._settings.APP_TYPE, CommonTenantResolver())
 
     async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore
         await inst.s3_service.tear_down()

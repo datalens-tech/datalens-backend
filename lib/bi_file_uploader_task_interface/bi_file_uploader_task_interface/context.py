@@ -6,6 +6,7 @@ import arq
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_utils.aio import ContextVarExecutor
 
+from bi_api_commons.tenant_resolver import TenantResolver
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.aio.web_app_services.gsheets import GSheetsSettings
 from bi_core.aio.web_app_services.s3 import S3Service
@@ -31,6 +32,7 @@ class FileUploaderTaskContext(BaseContext):
     redis_pool: arq.ArqRedis = attr.ib()
     crypto_keys_config: CryptoKeysConfig = attr.ib()
     secure_reader_socket: str = attr.ib()
+    tenant_resolver: TenantResolver = attr.ib()
 
     def get_rci(self) -> RequestContextInfo:
         return RequestContextInfo.create_empty()
