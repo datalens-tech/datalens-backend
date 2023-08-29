@@ -20,6 +20,7 @@ from bi_formula.mutation.lod import (
 from bi_formula.mutation.lookup import LookupFunctionToQueryForkMutation
 from bi_formula.mutation.general import (
     OptimizeConstComparisonMutation, OptimizeConstAndOrMutation, OptimizeUnaryBoolFunctions,
+    OptimizeConstFuncMutation,
 )
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.inspect.expression import (
@@ -245,6 +246,7 @@ class OptimizingQueryMutator(QueryMutator):
                 OptimizeConstComparisonMutation(),
                 OptimizeConstAndOrMutation(),
                 OptimizeUnaryBoolFunctions(self._dialect),
+                OptimizeConstFuncMutation(),
             ])
             compiled_query = mutator.mutate_query(compiled_query)
 

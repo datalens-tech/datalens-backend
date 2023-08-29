@@ -495,7 +495,7 @@ class TestAwareDatetimeMultipleTimezonesOverCompeng(BaseCHSelectTest):
         # Mimic the CH behavior (?),
         # so all result values still look exactly the same,
         # so reuse them.
-        ExpMod('dtc_str', formula="str([dt_str] + if(false, str([some_rank]), ''))"),
+        ExpMod('dtc_str', formula="str([dt_str] + 0 * str([some_rank]))"),
         ExpMod('dtc_msk', expected_data=['2010-10-30T20:00:00']),
         ExpMod('dtc_nyc_ts', expected_data=[dt_to_api_ts('2010-10-30 16:00:00')]),
         ExpMod('dtc_pch_ts', expected_data=[dt_to_api_ts('2010-10-31 09:45:00')]),
@@ -511,7 +511,7 @@ class TestAwareDatetimeMultipleTimezonesOverCompengMostlyAwareVersion(
     # Should match the CH behavior when going over compeng.
     exprs = massevolve(
         TestAwareDatetimeMultipleTimezonesMostlyAwareVersion.exprs,
-        ExpMod('dtc_str', formula="str([dt_str] + if(false, str([some_rank]), ''))")
+        ExpMod('dtc_str', formula="str([dt_str] + 0 * str([some_rank]))")
     ) + (
         # Required addition.
         Exp('some_rank', 'rank(min([dt_str]))', 'Int64', ['1']),
