@@ -1,3 +1,30 @@
+0.138.0
+-------
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version lib/bi_file_uploader_api_lib 0.115.0 (#184)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c5ee769 ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * BI-4359: don't use defaults from libs (#182)               [ https://github.com/datalens-tech/datalens-backend-private/commit/da152cc ]
+ * BI-4359: return back nebius defaults to bi-configs (#164)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4714d55 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * BI-4150: Implemented optimization of IF and CASE functions with constant conditions (#148)  [ https://github.com/datalens-tech/datalens-backend-private/commit/bb1bdbf ]
+ * BI-4703: Partial implementation of data source migration for connection replacement (#19)   [ https://github.com/datalens-tech/datalens-backend-private/commit/d14823c ]
+ * Moved dialect support settings to formula-ref configs (#143)                                [ https://github.com/datalens-tech/datalens-backend-private/commit/0fb32cc ]
+ * Removed and refactored some legacy core data source tests (#53)                             [ https://github.com/datalens-tech/datalens-backend-private/commit/7a7df16 ]
+ * Connectorized DialectName (#147)                                                            [ https://github.com/datalens-tech/datalens-backend-private/commit/3433273 ]
+ * Added recursive config discovery to dl-repomanager (#171)                                   [ https://github.com/datalens-tech/datalens-backend-private/commit/6ebc5ed ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Remove preprod ig configs (#170)  [ https://github.com/datalens-tech/datalens-backend-private/commit/534386e ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-29 13:50:58+00:00
+
 0.137.0
 -------
 
