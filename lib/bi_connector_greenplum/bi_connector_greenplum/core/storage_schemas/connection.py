@@ -1,5 +1,5 @@
 from bi_connector_postgresql.core.postgresql_base.storage_schemas.connection import ConnectionPostgreSQLBaseDataStorageSchema
-from bi_connector_postgresql.core.greenplum.us_connection import GreenplumConnection
+from bi_connector_greenplum.core.us_connection import GreenplumConnection
 
 
 class GreenplumConnectionDataStorageSchema(ConnectionPostgreSQLBaseDataStorageSchema):

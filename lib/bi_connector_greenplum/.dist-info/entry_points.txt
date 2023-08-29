@@ -1,0 +1,2 @@
+[bi_core.connectors]
+greenplum = bi_connector_greenplum.core.connector:GreenplumCoreConnector

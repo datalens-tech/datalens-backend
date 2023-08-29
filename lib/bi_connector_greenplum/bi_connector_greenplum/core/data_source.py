@@ -5,7 +5,7 @@ from bi_constants.enums import CreateDSFrom
 from bi_core.data_source.sql import BaseSQLDataSource, StandardSchemaSQLDataSource, SubselectDataSource
 
 from bi_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
-from bi_connector_postgresql.core.greenplum.constants import (
+from bi_connector_greenplum.core.constants import (
     CONNECTION_TYPE_GREENPLUM, SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT,
 )
 

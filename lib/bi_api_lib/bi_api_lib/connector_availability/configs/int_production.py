@@ -13,7 +13,7 @@ from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from bi_connector_postgresql.core.greenplum.constants import CONNECTION_TYPE_GREENPLUM
+from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 

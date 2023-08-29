@@ -41,6 +41,7 @@ lib/bi_connector_bundle_partners
 lib/bi_connector_chyt
 lib/bi_connector_chyt_internal
 lib/bi_connector_clickhouse
+lib/bi_connector_greenplum
 lib/bi_connector_gsheets
 lib/bi_connector_metrica
 lib/bi_connector_monitoring

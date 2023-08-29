@@ -4,8 +4,9 @@ from typing import ClassVar
 
 from bi_core.us_connection_base import DataSourceTemplate
 from bi_i18n.localizer_base import Localizer
-from bi_connector_postgresql.core.greenplum.dto import GreenplumConnDTO
-from bi_connector_postgresql.core.greenplum.constants import (
+
+from bi_connector_greenplum.core.dto import GreenplumConnDTO
+from bi_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT,
 )
 from bi_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase

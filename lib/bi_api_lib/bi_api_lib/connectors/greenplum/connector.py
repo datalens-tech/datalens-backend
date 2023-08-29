@@ -1,4 +1,4 @@
-from bi_connector_postgresql.core.greenplum.connector import (
+from bi_connector_greenplum.core.connector import (
     GreenplumCoreConnector,
     GreenplumCoreConnectionDefinition,
     GreenplumTableCoreSourceDefinition,

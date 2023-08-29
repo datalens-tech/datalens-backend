@@ -1,5 +1,4 @@
 [bi_core.connectors]
-greenplum = bi_connector_postgresql.core.greenplum.connector:GreenplumCoreConnector
 postgresql = bi_connector_postgresql.core.postgresql.connector:PostgreSQLCoreConnector
 
 [bi_db_testing.connectors]

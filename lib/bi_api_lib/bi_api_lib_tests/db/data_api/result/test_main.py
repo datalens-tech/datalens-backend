@@ -14,7 +14,7 @@ from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
 from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from bi_testing.utils import guids_from_titles
 
-from bi_connector_postgresql.core.greenplum.constants import SOURCE_TYPE_GP_TABLE
+from bi_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
 
 from bi_api_lib_tests.utils import (
     get_result_schema, get_field_by_title, data_source_settings_from_table,

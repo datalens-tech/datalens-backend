@@ -33,7 +33,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
 
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_SUBSELECT
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
-from bi_connector_postgresql.core.greenplum.constants import SOURCE_TYPE_GP_TABLE
+from bi_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
 from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
 
 from bi_api_lib_tests.utils import get_result_schema, replace_dataset_connection as replace_connection

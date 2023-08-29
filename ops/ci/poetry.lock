@@ -732,6 +732,27 @@ type = "directory"
 url = "../../app/bi_alerts"
 
 [[package]]
+name = "bi-connector-greenplum"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+bi-i18n = {path = "../../lib/bi_i18n"}
+yandex-bi-configs = {path = "../../lib/bi_configs"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-constants = {path = "../../lib/bi_constants"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_connector_greenplum"
+
+[[package]]
 name = "bi-defaults"
 version = "0.0.1"
 description = ""
@@ -816,7 +837,7 @@ url = "../../lib/bi_file_secure_reader_lib"
 
 [[package]]
 name = "bi-file-uploader"
-version = "0.112.0"
+version = "0.114.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -866,7 +887,7 @@ url = "../../lib/bi_file_uploader_task_interface"
 
 [[package]]
 name = "bi-file-uploader-worker"
-version = "0.135.0"
+version = "0.137.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -899,6 +920,11 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [package.source]
@@ -933,6 +959,13 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [package.source]
@@ -4213,8 +4246,8 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
     {version = ">=1.23.2", markers = "python_version >= \"3.11\""},
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
 ]
 python-dateutil = ">=2.8.1"
 pytz = ">=2020.1"
@@ -6089,7 +6122,7 @@ files = [
 ]
 
 [package.dependencies]
-greenlet = {version = "!=0.4.17", markers = "python_version >= \"3\" and (platform_machine == \"win32\" or platform_machine == \"WIN32\" or platform_machine == \"AMD64\" or platform_machine == \"amd64\" or platform_machine == \"x86_64\" or platform_machine == \"ppc64le\" or platform_machine == \"aarch64\")"}
+greenlet = {version = "!=0.4.17", markers = "python_version >= \"3\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")"}
 
 [package.extras]
 aiomysql = ["aiomysql", "greenlet (!=0.4.17)"]
@@ -7324,6 +7357,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-connector-greenplum = {path = "../../lib/bi_connector_greenplum"}
 bi-i18n = {path = "../../lib/bi_i18n"}
 blinker = ">=1.5"
 ciso8601 = ">=2.2.0"
@@ -7374,7 +7408,6 @@ yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usa
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
 yandex-bi-query-processing = {path = "../../lib/bi_query_processing"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
@@ -8433,7 +8466,7 @@ url = "../../lib/bi_dls_client"
 
 [[package]]
 name = "yandex-bi-file-uploader-api-lib"
-version = "0.112.0"
+version = "0.114.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8463,7 +8496,7 @@ url = "../../lib/bi_file_uploader_api_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-api-yc"
-version = "0.112.0"
+version = "0.114.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8522,7 +8555,7 @@ url = "../../lib/bi_file_uploader_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-lib"
-version = "0.135.0"
+version = "0.137.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8549,7 +8582,7 @@ url = "../../lib/bi_file_uploader_worker_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-yc"
-version = "0.135.0"
+version = "0.137.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9456,4 +9489,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "ae29c4ff1295b91136b74b0de9e6d50b41923a9a6aa726ad402baa2907f156a9"
+content-hash = "5ef0c75c4e78f599e76e3951e602e2a10d4b2571398ab7b2c7302f31ccba21b2"

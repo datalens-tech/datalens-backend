@@ -16,7 +16,7 @@ from bi_api_connector.form_config.models.common import CommonFieldName
 from bi_api_connector.form_config.models.rows.base import FormRow
 from bi_api_connector.form_config.models.shortcuts.mdb import get_db_host_section
 
-from bi_connector_postgresql.core.greenplum.constants import CONNECTION_TYPE_GREENPLUM
+from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from bi_api_lib.connectors.greenplum.connection_info import GreenplumConnectionInfoProvider
 
 
