@@ -96,7 +96,7 @@ class DatasetComponentEditor:
             connection_id: Optional[str] = None,
             title: Optional[str] = None,
             raw_schema: Optional[list[SchemaColumn]] = None,
-            index_info_set: FrozenSet[IndexInfo] = None,
+            index_info_set: Optional[FrozenSet[IndexInfo]] = None,
             managed_by: Optional[ManagedBy] = None,
             parameters: Optional[dict[str, Any]] = None,
     ) -> None:
@@ -136,7 +136,7 @@ class DatasetComponentEditor:
             connection_id: Optional[str] = None,
             created_from: Optional[CreateDSFrom] = None,
             raw_schema: Optional[list] = None,
-            index_info_set: FrozenSet[IndexInfo] = None,
+            index_info_set: Optional[FrozenSet[IndexInfo]] = None,
             **parameters: Any,
     ) -> None:
         """Update data source config data"""
@@ -280,8 +280,8 @@ class DatasetComponentEditor:
             left_avatar_id: str,
             right_avatar_id: str,
             conditions: list[BinaryCondition],
-            join_type: JoinType = None,
-            managed_by: ManagedBy = None,
+            join_type: Optional[JoinType] = None,
+            managed_by: Optional[ManagedBy] = None,
             valid: bool = True
     ) -> None:
         # validate

@@ -91,7 +91,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             type_: Optional[str] = None,
             meta: Optional[dict] = None, is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
             permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
-            permissions: Optional[dict] = None, links: Optional[dict] = None, hidden: bool = False,
+            permissions: Optional[dict[str, bool]] = None, links: Optional[dict] = None, hidden: bool = False,
             data_strict: bool = True,
             *, us_manager: USManagerBase
     ):
@@ -255,7 +255,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             role: Optional[DataSourceRole] = None,
             raw_schema: Optional[list] = None,
             remove_raw_schema: bool = False,
-            **parameters
+            **parameters: dict[str, Any],
     ) -> None:
         raise NotImplementedError(self._dsrc_error)
 

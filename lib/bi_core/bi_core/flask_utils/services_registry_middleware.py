@@ -29,7 +29,7 @@ class ServicesRegistryMiddleware:
         app.before_request(self.bind_services_registry_to_request)
         app.teardown_request(self.cleanup_request_services_registry)
 
-    def cleanup_request_services_registry(self, _: Optional[Exception] = None) -> None:
+    def cleanup_request_services_registry(self, _: Optional[BaseException] = None) -> None:
         try:
             services_registry = self.get_request_services_registry()
         except NoServiceRegistryForRequest:

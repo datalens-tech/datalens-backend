@@ -43,11 +43,11 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
     def post_process_output_data(self, data: Dict[str, Any]) -> Dict[str, Any]:  # noqa
         return data
 
-    def push_ctx(self, data: dict) -> dict:
+    def push_ctx(self, data: dict) -> None:
         """Used for pushing data upper-layer data to nested schemas. Note that data is raw dict after pre-processing"""
         pass
 
-    def pop_ctx(self, data: dict):  # type: ignore  # TODO: fix
+    def pop_ctx(self, data: dict) -> None:
         """Cleanup con"""
         pass
 

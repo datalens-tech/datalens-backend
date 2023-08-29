@@ -138,7 +138,8 @@ class ActionHandlingView(BaseView):
             action: act.NonStreamAction,
     ) -> ResponseTypes:
         if isinstance(action, act.ActionTest):
-            return await dba.test()
+            await dba.test()
+            return None
 
         elif isinstance(action, act.ActionGetDBVersion):
             return await dba.get_db_version(db_ident=action.db_ident)

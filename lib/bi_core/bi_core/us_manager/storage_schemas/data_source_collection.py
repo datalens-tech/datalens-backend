@@ -32,10 +32,10 @@ class DataSourceCollectionSpecStorageSchema(BaseStorageSchema[DataSourceCollecti
     materialization = fields.Nested(GenericDataSourceSpecStorageSchema, required=False, allow_none=True)
     sample = fields.Nested(GenericDataSourceSpecStorageSchema, required=False, allow_none=True)
 
-    def push_ctx(self, data):  # type: ignore  # TODO: fix
+    def push_ctx(self, data: dict) -> None:
         self.context[CtxKey.dsc_id] = data.get('id')
 
-    def pop_ctx(self, data):  # type: ignore  # TODO: fix
+    def pop_ctx(self, data: dict) -> None:
         self.context.pop(CtxKey.dsc_id, None)
 
     def to_object(self, data):  # type: ignore  # TODO: fix

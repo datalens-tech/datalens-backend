@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Type
 
 import attr
 
@@ -11,5 +11,5 @@ SettingsFallbackType = Callable[[ObjectLikeConfig], dict[str, ConnectorSettingsB
 
 @attr.s(frozen=True)
 class ConnectorSettingsDefinition:
-    settings_class: ConnectorSettingsBase = attr.ib()
+    settings_class: Type[ConnectorSettingsBase] = attr.ib()
     fallback: ConnectorSettingsBase = attr.ib()

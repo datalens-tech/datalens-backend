@@ -35,7 +35,7 @@ class USEntry:
     is_favorite: Optional[bool] = None
     permissions_mode: Optional[str] = None
     initial_permissions: Optional[str] = None
-    permissions: Optional[str] = None
+    permissions: Optional[dict[str, bool]] = None
     hidden: bool
     links: Optional[dict] = None
 
@@ -97,7 +97,7 @@ class USEntry:
                  type_: Optional[str] = None,
                  meta: Optional[dict] = None, is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
                  permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
-                 permissions: Optional[str] = None, links: Optional[dict] = None, hidden: bool = False,
+                 permissions: Optional[dict[str, bool]] = None, links: Optional[dict] = None, hidden: bool = False,
                  data_strict: bool = True,
                  *, us_manager: USManagerBase):
         if entry_key is not None:
