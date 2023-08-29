@@ -1,5 +1,5 @@
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, CHYTConnectorSettings
-from bi_defaults.connectors_data import ConnectorsDataCHYTBase
+from bi_configs.connectors_data import ConnectorsDataCHYTBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 

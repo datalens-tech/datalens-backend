@@ -4,7 +4,7 @@ import attr
 
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, SettingsFallbackType
 from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
-from bi_defaults.connectors_data import ConnectorsDataBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 
 _CONN_DATA_TV = TypeVar('_CONN_DATA_TV', bound=ConnectorsDataBase)

@@ -1,6 +1,6 @@
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, UsageTrackingConnectionSettings
 from bi_configs.settings_loaders.meta_definition import required
-from bi_defaults.connectors_data import ConnectorsDataUsageTrackingBase
+from bi_configs.connectors_data import ConnectorsDataUsageTrackingBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 

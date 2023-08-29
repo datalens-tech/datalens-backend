@@ -1,5 +1,5 @@
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, MonitoringConnectorSettings
-from bi_defaults.connectors_data import ConnectorsDataMonitoringBase
+from bi_configs.connectors_data import ConnectorsDataMonitoringBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 
