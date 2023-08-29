@@ -1,3 +1,17 @@
+0.114.0
+-------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4860: load connectors settings using a dynamically generated class (#150)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d0a942d ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version app/bi_file_secure_reader 0.13.0 (#167)         [ https://github.com/datalens-tech/datalens-backend-private/commit/a744607 ]
+ * releasing version lib/bi_file_uploader_worker_lib 0.136.0 (#166)  [ https://github.com/datalens-tech/datalens-backend-private/commit/6a012d7 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-29 09:48:19+00:00
+
 0.113.0
 -------
 
