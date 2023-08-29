@@ -175,7 +175,17 @@ class RepoEnvironmentLoader:
             fs_editor=fs_editor,
         )
 
+    def _discover_config(self, base_path: str) -> str:
+        base_path = os.path.abspath(base_path)
+        while base_path and os.path.exists(base_path):
+            config_path = os.path.join(base_path, self.config_file_name)
+            if os.path.exists(config_path):
+                return config_path
+            base_path = os.path.dirname(base_path)
+
+        raise RuntimeError('Failed to discover the repo config file. This does not seem to be a managed repository.')
+
     def load_env(self, base_path: str) -> RepoEnvironment:
         return self._load_from_yaml_file(
-            config_path=os.path.join(base_path, self.config_file_name)
+            config_path=self._discover_config(base_path)
         )
