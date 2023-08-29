@@ -14,7 +14,6 @@ app_yc/app_yc_data_api_sec_embeds
 app_yc/app_yc_file_uploader_api
 app_yc/app_yc_file_uploader_worker
 app_yc/app_yc_public_dataset_api
-lib/anyascii
 lib/bi_api_client
 lib/bi_api_commons
 lib/bi_api_commons_ya_cloud

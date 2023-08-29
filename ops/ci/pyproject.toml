@@ -79,11 +79,11 @@ yandex-bi-integration-tests = {path = "../../ops/bi_integration_tests"}
 yandex-bi-compeng-pg = {path = "../../lib/bi_compeng_pg"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
-anyascii = {path = "../../lib/anyascii"}
 yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 aiohttp = "==3.8.5"
 aiopg = "==1.4.0"
+anyascii = "==0.3.2"
 docker = "==6.0.1"
 attrs = "==22.2.0"
 arq = "==0.25.0"
