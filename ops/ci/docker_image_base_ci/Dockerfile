@@ -1,4 +1,5 @@
-FROM registry.yandex.net/statinfra/base/bi_mess:latest
+ARG BASE_IMG=registry.yandex.net/statinfra/base/bi_mess:latest
+FROM $BASE_IMG
 
 COPY install_py_310.sh /install_py_310.sh
 RUN bash /install_py_310.sh

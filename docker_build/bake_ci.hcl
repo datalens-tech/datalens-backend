@@ -1,3 +1,5 @@
+# let's rename this file, since it's related not only for CI
+
 target "src_lib" {
   contexts = {
     lib     = "${PROJECT_ROOT}/lib"
@@ -19,11 +21,29 @@ target "src_all" {
   contexts = {
     src_lib = "target:src_lib"
     app     = "${PROJECT_ROOT}/app"
+    app_yc  = "${PROJECT_ROOT}/app_yc"
+    app_os  = "${PROJECT_ROOT}/app_os"
+    bi_integration_tests = "${PROJECT_ROOT}/ops/bi_integration_tests"
   }
   dockerfile-inline = <<EOT
 FROM debian:bullseye AS build
 COPY --from=src_lib / /src
 COPY --from=app / /src/app
+COPY --from=app_yc / /src/app_yc
+COPY --from=app_os / /src/app_os
+COPY --from=bi_integration_tests / /src/ops/bi_integration_tests
+FROM scratch
+COPY --from=build /src /
+EOT
+}
+
+target "src_terrarium" {
+  contexts = {
+    terrarium     = "${PROJECT_ROOT}/mainrepo/terrarium"
+  }
+  dockerfile-inline = <<EOT
+FROM debian:bullseye AS build
+COPY --from=terrarium / /src/terrarium
 FROM scratch
 COPY --from=build /src /
 EOT
@@ -44,6 +64,43 @@ RUN find /src -type d -empty -delete
 RUN find /src
 FROM scratch
 COPY --from=build /src /
+EOT
+}
+
+target "base_ci" {
+  contexts = {
+    base_img = "target:legacy_base_bi_base_mess"
+  }
+  context = "${PROJECT_ROOT}/ops/ci/docker_image_base_ci"
+  args = {
+    BASE_IMG = "base_img"
+  }
+}
+
+target "ci_with_src" {
+  contexts = (BASE_CI_TAG_OVERRIDE == null) ? {
+    base_img = "target:base_ci"
+    src_all  = "target:src_all"
+    src_terrarium = "target:src_terrarium"
+  } : {
+    src_all  = "target:src_all"
+    src_terrarium = "target:src_terrarium"
+  }
+  context = "${PROJECT_ROOT}/ops/ci/docker_image_ci_with_src"
+  args = {
+    BASE_CI_IMAGE = (BASE_CI_TAG_OVERRIDE == null) ? "base_img" : BASE_CI_TAG_OVERRIDE
+  }
+  tags = ["${CI_IMG_WITH_SRC}"]
+}
+
+target "ci_mypy" {
+  contexts = {
+    base_img = "target:ci_with_src"
+  }
+  tags = ["${CI_IMG_MYPY}"]
+  dockerfile-inline = <<EOT
+FROM base_img
+RUN . /venv/bin/activate && pip install -r /data/ops/ci/docker_image_ci_mypy/requirements_types.txt
 EOT
 }
 

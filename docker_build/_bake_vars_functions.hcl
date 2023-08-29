@@ -18,6 +18,22 @@ variable CACHE_REGISTRY_PREFIX {
   default = null
 }
 
+variable BASE_CI_TAG_OVERRIDE {
+  default = null
+}
+
+variable BASE_CI_IMG {
+  default = ""
+}
+
+variable CI_IMG_WITH_SRC {
+  default = ""
+}
+
+variable CI_IMG_MYPY {
+  default = ""
+}
+
 function "interim_ext_cache_to" {
   params = []
   result = (CACHE_REGISTRY_PREFIX == null) ? [] : ["type=inline"]
