@@ -3,7 +3,7 @@ from __future__ import annotations
 from contextlib import contextmanager, redirect_stdout, redirect_stderr
 import io
 import sys
-from typing import Generator, TextIO, List, Optional, Type, TYPE_CHECKING
+from typing import Generator, TextIO, Optional, Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from argparse import ArgumentParser
@@ -28,7 +28,7 @@ class ToolRunner:
         self.parser = parser
         self.tool_cls = tool_cls
 
-    def run(self, args: List[str], stdin: str = None):
+    def run(self, args: list[str], stdin: Optional[str] = None):
         stdin_str = stdin
         stdout = io.StringIO()
         stderr = io.StringIO()

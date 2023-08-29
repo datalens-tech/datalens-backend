@@ -4,10 +4,11 @@ import copy
 import datetime
 import re
 import time
-from typing import Collection, List, Optional, Sequence, Type, Union
+from typing import Collection, Optional, Sequence, Type, Union
 
 import attr
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import ClauseElement
 
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo
@@ -61,13 +62,13 @@ class DbEvaluator:
 
     def translate_formula(
             self,
-            formula: Union[str, Formula],
-            context_flags: int = None,
-            other_fields: dict = None,
-            collect_errors: bool = None,
+            formula: str | Formula,
+            context_flags: Optional[int] = None,
+            other_fields: Optional[dict] = None,
+            collect_errors: Optional[bool] = None,
             field_types: Optional[Sequence[DataType]] = None,
-            group_by: Optional[List[Union[str, Formula]]] = None,
-            order_by: Optional[List[Union[str, Formula]]] = None,
+            group_by: Optional[list[str | Formula]] = None,
+            order_by: Optional[list[str | Formula]] = None,
             required_scopes: int = Scope.EXPLICIT_USAGE,
     ) -> TranslationCtx:
         other_fields = other_fields or {}
@@ -116,10 +117,14 @@ class DbEvaluator:
         print('{},'.format(repr('{} = {}'.format(formula, result_str))))
 
     def eval(
-            self, formula: Union[str, Formula], from_=None, where: Union[str, Formula] = None,
-            many: bool = False, other_fields: dict = None,
-            order_by: Optional[List[Union[str, Formula]]] = None,
-            group_by: Optional[List[Union[str, Formula]]] = None,
+            self,
+            formula: Union[str, Formula],
+            from_: Optional[ClauseElement] = None,
+            where: str | Formula | None = None,
+            many: bool = False,
+            other_fields: Optional[dict] = None,
+            order_by: Optional[list[str | Formula]] = None,
+            group_by: Optional[list[str | Formula]] = None,
             first: bool = False,
             required_scopes: int = Scope.EXPLICIT_USAGE,
     ):

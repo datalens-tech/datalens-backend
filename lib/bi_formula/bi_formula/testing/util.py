@@ -64,6 +64,7 @@ def to_datetime(date: datetime.date) -> datetime.datetime:
 def dt_strip(value: Union[datetime.datetime, str]) -> datetime.datetime:
     if isinstance(value, str):
         value = dateutil.parser.parse(value)
+    assert isinstance(value, datetime.datetime)
     return value.replace(microsecond=0, tzinfo=None)
 
 

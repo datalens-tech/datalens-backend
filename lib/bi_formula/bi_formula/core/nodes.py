@@ -199,7 +199,9 @@ class FormulaItem(abc.ABC):
         self.visit_node_type(node_type=node_type, visit_func=res.append)  # type: ignore
         return res
 
-    def get_by_pos(self, pos: int, node_types: tuple[Type[FormulaItem], ...] = None) -> Optional[FormulaItem]:
+    def get_by_pos(
+            self, pos: int, node_types: Optional[tuple[Type[FormulaItem], ...]] = None,
+    ) -> Optional[FormulaItem]:
         """
         Return the innermost node at position ``pos``.
         If ``node_types`` is given, then choose only among nodes of the listed types.
@@ -416,9 +418,10 @@ class FormulaItem(abc.ABC):
         Return a hashable immutable object that represents this node and its children.
         It should not contain any syntactic info so that can be used for optimization of data calculations.
         """
-        child_extracts = tuple(child.extract for child in self.children)
-        if None in child_extracts:
+        optional_child_extracts = tuple(child.extract for child in self.children)
+        if None in optional_child_extracts:
             return None
+        child_extracts = cast(tuple[NodeExtract, ...], optional_child_extracts)
         return NodeExtract(
             type_name=type(self).__name__,
             children=child_extracts,
@@ -1201,13 +1204,14 @@ class IfBlock(FormulaItem):
 
     @classmethod
     def make(
-        cls, if_list: list[IfPart], else_expr: FormulaItem = None, *,
+        cls, if_list: list[IfPart], else_expr: Optional[FormulaItem] = None, *,
         meta: Optional[NodeMeta] = None,
     ) -> IfBlock:
         for part in if_list:
             check_type(part, IfPart)
         if else_expr is None:
             else_expr = Null()
+        assert else_expr is not None
         children = [*if_list, else_expr]
         return cls(*children, internal_value=(), meta=meta)
 
@@ -1262,13 +1266,14 @@ class CaseBlock(FormulaItem):
 
     @classmethod
     def make(
-        cls, case_expr: FormulaItem, when_list: list[WhenPart], else_expr: FormulaItem = None, *,
+        cls, case_expr: FormulaItem, when_list: list[WhenPart], else_expr: Optional[FormulaItem] = None, *,
         meta: Optional[NodeMeta] = None,
     ) -> CaseBlock:
         for part in when_list:
             check_type(part, WhenPart)
         if else_expr is None:
             else_expr = Null()
+        assert else_expr is not None
         children = [case_expr, *when_list, else_expr]
         return cls(*children, meta=meta)
 

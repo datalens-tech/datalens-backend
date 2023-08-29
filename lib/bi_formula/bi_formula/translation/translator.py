@@ -35,8 +35,8 @@ class SqlAlchemyTranslator:
     def __init__(
             self,
             env: TranslationEnvironment,
-            restrict_funcs: bool = None,
-            restrict_fields: bool = None,
+            restrict_funcs: Optional[bool] = None,
+            restrict_fields: Optional[bool] = None,
             collect_stats: bool = False,
     ):
         self._env = env
@@ -150,7 +150,7 @@ class SqlAlchemyTranslator:
         ctx.set_expression(translated_func)
 
     def translate(
-            self, formula: nodes.Formula, collect_errors: bool = None, context_flags: int = None,
+            self, formula: nodes.Formula, collect_errors: Optional[bool] = None, context_flags: Optional[int] = None,
     ) -> TranslationCtx:
         """
         Translate ``Formula`` object into an SQLAlchemy selectable,
@@ -381,10 +381,10 @@ class SqlAlchemyTranslator:
 def translate(
         formula: nodes.Formula, dialect: Optional[DialectCombo] = None,
         required_scopes: int = Scope.EXPLICIT_USAGE,
-        restrict_funcs: bool = None, restrict_fields: bool = None,
-        collect_errors: bool = None, collect_stats: bool = False,
-        field_types: dict[str, DataType] = None,
-        context_flags: int = None, field_names: dict[str, tuple[str, ...]] = None,
+        restrict_funcs: Optional[bool] = None, restrict_fields: Optional[bool] = None,
+        collect_errors: Optional[bool] = None, collect_stats: bool = False,
+        field_types: Optional[dict[str, DataType]] = None,
+        context_flags: Optional[int] = None, field_names: Optional[dict[str, tuple[str, ...]]] = None,
         env: Optional[TranslationEnvironment] = None,
 ) -> TranslationCtx:
     """Translate ``Formula`` tree object into an SQLAlchemy representation that can be used for queries"""
@@ -414,10 +414,10 @@ def translate_and_compile(
         formula: nodes.Formula,
         dialect: Optional[DialectCombo] = None,
         required_scopes: int = Scope.EXPLICIT_USAGE,
-        restrict_funcs: bool = None, restrict_fields: bool = None,
-        collect_errors: bool = None, collect_stats: bool = False,
-        field_types: dict[str, DataType] = None,
-        context_flags: int = None, field_names: dict[str, tuple[str, ...]] = None,
+        restrict_funcs: Optional[bool] = None, restrict_fields: Optional[bool] = None,
+        collect_errors: Optional[bool] = None, collect_stats: bool = False,
+        field_types: Optional[dict[str, DataType]] = None,
+        context_flags: Optional[int] = None, field_names: Optional[dict[str, tuple[str, ...]]] = None,
         env: Optional[TranslationEnvironment] = None,
 ) -> str:
     """Translate ``Formula`` tree object into an SQLAlchemy representation and compile it into raw SQL"""

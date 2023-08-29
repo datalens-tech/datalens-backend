@@ -27,7 +27,7 @@ FORMULA_CACHE_SIZE = int(os.environ.get('FORMULA_CACHE_SIZE', 1000))
 class ParserStats(NamedTuple):
     global_cache_hits: Dict[str, int]
     global_cache_misses: Dict[str, int]
-    global_cache_maxsize: Dict[str, int]
+    global_cache_maxsize: Dict[str, Optional[int]]
     global_cache_currsize: Dict[str, int]
     call_count: int
     call_time: float
