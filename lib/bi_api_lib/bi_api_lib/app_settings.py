@@ -20,9 +20,10 @@ from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import RedisSettings, YCAuthSettings, default_yc_auth_settings
 from bi_configs.utils import split_by_comma, app_type_env_var_converter, env_type_env_var_converter
 from bi_constants.enums import USAuthMode
+
 from bi_api_commons.base_models import TenantDef
+from bi_cloud_integration.sa_creds import SACredsMode
 from bi_core.components.ids import FieldIdGeneratorType
-from bi_core.services_registry.sa_creds import SACredsMode
 from bi_formula.parser.factory import ParserType
 
 

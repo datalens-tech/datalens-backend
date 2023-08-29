@@ -4,6 +4,9 @@ import abc
 import logging.config
 from typing import TYPE_CHECKING, Optional, final
 
+from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
+from bi_configs.enums import AppType, RequiredService, RQE_SERVICES
+
 from bi_task_processor.arq_wrapper import create_arq_redis_settings
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
@@ -15,10 +18,8 @@ from bi_core.services_registry.env_manager_factory import (
 from bi_core.services_registry.file_uploader_client_factory import FileUploaderSettings
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.services_registry.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 from bi_core.mdb_utils import MDBDomainManagerSettings
-from bi_configs.enums import AppType, RequiredService, RQE_SERVICES
 
 from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFactory
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory

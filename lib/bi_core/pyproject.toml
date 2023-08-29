@@ -62,7 +62,6 @@ xxhash = ">=3.2.0"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}

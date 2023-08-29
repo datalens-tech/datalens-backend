@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_configs.enums import RequiredService, RQE_SERVICES
 from bi_constants.api_constants import YcTokenHeaderMode
 
@@ -14,7 +15,6 @@ from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.services_registry.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_core.us_connection_base import ExecutorBasedMixin
 
 from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult

@@ -4,6 +4,7 @@ from typing import Optional
 
 import flask
 
+from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_configs.enums import RequiredService, EnvType
 from bi_constants.enums import USAuthMode
 
@@ -12,7 +13,6 @@ from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.services_registry.sa_creds import SACredsSettings, SACredsRetrieverFactory
 
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
