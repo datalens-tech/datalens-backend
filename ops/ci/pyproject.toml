@@ -189,9 +189,6 @@ bi-external-api = {path = "../../app/bi_external_api"}
 bi-file-secure-reader = {path = "../../app/bi_file_secure_reader"}
 bi-file-uploader-worker = {path = "../../app/bi_file_uploader_worker"}
 bi-file-uploader = {path = "../../app/bi_file_uploader"}
-bi-testing-db-provision = {path = "../../app/bi_testing_db_provision"}
-bi-test-project-worker = {path = "../../app/bi_test_project_worker"}
-bi-alerts = {path = "../../app/bi_alerts"}
 yandex-bi-testing-dc = {path = "../../lib/bi_testing_dc"}
 yandex-bi-rqe-ext-async = {path = "../../app/bi_rqe_ext_async"}
 yandex-bi-connector-chyt = {path = "../../lib/bi_connector_chyt"}
@@ -240,15 +237,6 @@ bi-file-uploader-worker = {path = "../../app/bi_file_uploader_worker"}
 
 [tool.poetry.group.app_bi_file_uploader.dependencies]
 bi-file-uploader = {path = "../../app/bi_file_uploader"}
-
-[tool.poetry.group.app_bi_testing_db_provision.dependencies]
-bi-testing-db-provision = {path = "../../app/bi_testing_db_provision"}
-
-[tool.poetry.group.app_bi_test_project_worker.dependencies]
-bi-test-project-worker = {path = "../../app/bi_test_project_worker"}
-
-[tool.poetry.group.app_bi_alerts.dependencies]
-bi-alerts = {path = "../../app/bi_alerts"}
 
 [tool.poetry.group.app_bi_rqe_ext_async.dependencies]
 yandex-bi-rqe-ext-async = {path = "../../app/bi_rqe_ext_async"}

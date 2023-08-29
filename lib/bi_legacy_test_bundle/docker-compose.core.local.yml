@@ -9,12 +9,9 @@ x-constants:
 #   503XX: bi_core
 #   504XX: bi_formula
 #   505XX: bi_api
-#   508XX: bi_alerts
-#   509XX: bi_testing_db_provision
 #   510XX: bi_external_api
 #   511XX: bi_formula_ref
 #   512XX: bi_task_processor
-#   513XX: bi_test_project_worker
 #   514XX: bi_file_uploader
 #   515XX: bi_file_uploader_worker
 #   516XX: bi_connector_bigquery

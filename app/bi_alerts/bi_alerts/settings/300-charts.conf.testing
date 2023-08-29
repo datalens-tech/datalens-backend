@@ -1,5 +1,0 @@
-import os
-
-
-CHARTS_BASE_URL = 'https://charts-beta.yandex-team.ru/api/run'
-CHARTS_TOKEN = os.environ.get('CHARTS_TOKEN')

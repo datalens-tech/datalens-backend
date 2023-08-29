@@ -701,37 +701,6 @@ url = "https://pypi.yandex-team.ru/simple"
 reference = "ya"
 
 [[package]]
-name = "bi-alerts"
-version = "0.117.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-aiopg = ">=1.4.0"
-alembic = ">=1.6.5"
-certifi = ">=2022.12.7"
-granular-settings = ">=1.4"
-gunicorn = ">=20.1.0"
-marshmallow = ">=3.19.0"
-marshmallow-enum = ">=1.5.1"
-sentry-sdk = ">=1.15.0"
-shortuuid = ">=1.0.11"
-SQLAlchemy = ">=1.4.46,<2.0"
-yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
-yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../app/bi_alerts"
-
-[[package]]
 name = "bi-connector-greenplum"
 version = "0.0.1"
 description = ""
@@ -837,7 +806,7 @@ url = "../../lib/bi_file_secure_reader_lib"
 
 [[package]]
 name = "bi-file-uploader"
-version = "0.114.0"
+version = "0.115.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -887,7 +856,7 @@ url = "../../lib/bi_file_uploader_task_interface"
 
 [[package]]
 name = "bi-file-uploader-worker"
-version = "0.137.0"
+version = "0.139.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -1023,47 +992,6 @@ bi-task-processor = {path = "../../lib/bi_task_processor"}
 [package.source]
 type = "directory"
 url = "../../lib/bi_test_project_task_interface"
-
-[[package]]
-name = "bi-test-project-worker"
-version = "0.14.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-bi-defaults = {path = "../../lib/bi_defaults"}
-bi-task-processor = {path = "../../lib/bi_task_processor"}
-bi-test-project-task-interface = {path = "../../lib/bi_test_project_task_interface"}
-yandex-bi-configs = {path = "../../lib/bi_configs"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-
-[package.source]
-type = "directory"
-url = "../../app/bi_test_project_worker"
-
-[[package]]
-name = "bi-testing-db-provision"
-version = "0.3.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-aiopg = ">=1.4.0"
-docker = ">=6.0.1"
-yandex-bi-core = {path = "../../lib/bi_core"}
-
-[package.source]
-type = "directory"
-url = "../../app/bi_testing_db_provision"
 
 [[package]]
 name = "billiard"
@@ -4246,8 +4174,8 @@ files = [
 
 [package.dependencies]
 numpy = [
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
     {version = ">=1.23.2", markers = "python_version >= \"3.11\""},
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
 ]
 python-dateutil = ">=2.8.1"
 pytz = ">=2020.1"
@@ -6122,7 +6050,7 @@ files = [
 ]
 
 [package.dependencies]
-greenlet = {version = "!=0.4.17", markers = "python_version >= \"3\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")"}
+greenlet = {version = "!=0.4.17", markers = "python_version >= \"3\" and (platform_machine == \"win32\" or platform_machine == \"WIN32\" or platform_machine == \"AMD64\" or platform_machine == \"amd64\" or platform_machine == \"x86_64\" or platform_machine == \"ppc64le\" or platform_machine == \"aarch64\")"}
 
 [package.extras]
 aiomysql = ["aiomysql", "greenlet (!=0.4.17)"]
@@ -8257,7 +8185,6 @@ xxhash = ">=3.2.0"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
@@ -8466,7 +8393,7 @@ url = "../../lib/bi_dls_client"
 
 [[package]]
 name = "yandex-bi-file-uploader-api-lib"
-version = "0.114.0"
+version = "0.115.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8496,7 +8423,7 @@ url = "../../lib/bi_file_uploader_api_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-api-yc"
-version = "0.114.0"
+version = "0.115.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8555,7 +8482,7 @@ url = "../../lib/bi_file_uploader_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-lib"
-version = "0.137.0"
+version = "0.139.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8569,6 +8496,7 @@ attrs = ">=22.2.0"
 bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_interface"}
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
@@ -8582,7 +8510,7 @@ url = "../../lib/bi_file_uploader_worker_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-yc"
-version = "0.137.0"
+version = "0.139.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9489,4 +9417,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "5ef0c75c4e78f599e76e3951e602e2a10d4b2571398ab7b2c7302f31ccba21b2"
+content-hash = "2e13e7e216f412e923c27f3ecc87f2a386e608c8c68c3871917316e137cc7e8a"

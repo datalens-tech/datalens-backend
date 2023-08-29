@@ -1,1 +1,0 @@
-# bi-testing-db-provision

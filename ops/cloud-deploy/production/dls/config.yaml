@@ -1,7 +1,0 @@
-TVM_APP_ID: 2017229
-ENV: {}
-PUSH_CLIENT_NODEJS_TOPIC: TODO
-PUSH_CLIENT_ERROR_TOPIC: TODO
-SOLOMON_URL: https://solomon.cloud-prod.yandex-team.ru/api/v2/push
-SOLOMON_PROJECT: b1g08s4su5tgce7cpeo5
-JAEGER_ENDPOINT: jaeger-collector.private-api.ycp.cloud.yandex.net:443

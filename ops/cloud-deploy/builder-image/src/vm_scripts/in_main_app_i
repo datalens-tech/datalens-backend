@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ -z "${1:-}" ]; then
-    DOCKER_OPTS="${DOCKER_OPTS:-} -it" exec in_main_app bash
-fi
-
-DOCKER_OPTS="${DOCKER_OPTS:-} -it" exec in_main_app "$@"

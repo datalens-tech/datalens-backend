@@ -1,4 +1,3 @@
-app/bi_alerts
 app/bi_api
 app/bi_external_api
 app/bi_file_secure_reader
@@ -7,9 +6,6 @@ app/bi_file_uploader_worker
 app/bi_rqe_ext_async
 app/bi_rqe_ext_sync
 app/bi_rqe_int_sync
-app/bi_test_project_worker
-app/bi_testing_db_provision
-app/dls
 app_os/app_os_control_api
 app_os/app_os_data_api
 app_yc/app_yc_control_api
