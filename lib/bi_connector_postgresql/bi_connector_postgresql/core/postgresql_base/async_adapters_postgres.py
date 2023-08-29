@@ -150,14 +150,12 @@ class AsyncPostgresAdapter(
     async def _get_connection(self, db_name_from_query: str) -> AsyncIterator[asyncpg.Connection]:
         conn_pool = await self._conn_pools.get(db_name_from_query, generator=self.create_conn_pool)
         async with conn_pool.acquire() as connection:
-            # I hope it will skip error
-            # "asyncpg.exceptions.InvalidSQLStatementNameError: unnamed prepared statement does not exist"
-            # We have already disabled cache by statement_cache_size=0, but it still work.
-            # By default Postgresql in MDB contains PGBouncer in transaction mode
-            # So let's try to use cache inside transaction
+            # Fix for the "asyncpg.exceptions.InvalidSQLStatementNameError: unnamed prepared statement does not exist"
+            # We have already disabled cache by statement_cache_size=0, but it still works,
+            # so let's try to use cache inside a transaction.
             async with connection.transaction():
                 # There is some decimal-magic in asyncpg
-                # and this magic is not incompatible with magic in sqlalchemy-psycopg2
+                # and this magic is incompatible with magic in sqlalchemy-psycopg2
                 # so lets disable it
                 await connection.set_type_codec(
                     'numeric',
@@ -166,7 +164,6 @@ class AsyncPostgresAdapter(
                     schema='pg_catalog',
                     format='text',
                 )
-                # https://st.yandex-team.ru/BI-3169
                 # we set date-like values to params as strings
                 # but asyncpg expects python-objects
                 await connection.set_type_codec(
@@ -266,9 +263,8 @@ class AsyncPostgresAdapter(
 
         q = query.query
         # exclude ENUM because of
-        # https://a.yandex-team.ru/arc/trunk/arcadia/contrib/python/sqlalchemy/sqlalchemy-1.4/sqlalchemy/dialects/postgresql/asyncpg.py?rev=r8893939#L323
+        # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/asyncpg.py#L345
         # and exclude STRINGS because of our BI ENUMS (it's strings)
-        # https://st.yandex-team.ru/BI-3163
         # in asyncpg we can skip type annotations for strings, it should work like in psycopg
         compiled_query, params = compile_pg_query(q, self._dialect, exclude_types={DBAPIMock.ENUM, DBAPIMock.STRING})
         debug_query = make_debug_query(compiled_query, params)
@@ -387,7 +383,7 @@ class AsyncPostgresAdapter(
         raise NotImplementedError()
 
     # magic copypaste from
-    # https://a.yandex-team.ru/arc/trunk/arcadia/contrib/python/sqlalchemy/sqlalchemy-1.4/sqlalchemy/dialects/postgresql/base.py?rev=r8825837#L3372
+    # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/base.py#L3589
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
         if table_ident.schema_name is None:
             result = await self.execute(DBAdapterQuery(
