@@ -1348,67 +1348,6 @@ class ConnectorsDataKonturMarketExternalInstallation(ConnectorsDataKonturMarketB
     CONN_KONTUR_MARKET_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = True
 
 
-class ConnectorsDataYQExtTesting(ConnectorsDataYQExternalInstallation):
-    CONN_YQ_HOST: ClassVar[str] = 'grpcs://grpc.yandex-query.cloud-preprod.yandex.net'
-
-
-class ConnectorsDataMusicExtTesting(ConnectorsDataMusicExternalInstallation):
-    CONN_MUSIC_USE_MANAGED_NETWORK: ClassVar[bool] = False
-
-
-class ConnectorsDataFileExtTesting(ConnectorsDataFileBase):
-    # materialization ch cluster
-    # https://console-preprod.cloud.yandex.ru/folders/aoevv1b69su5144mlro3/managed-clickhouse/cluster/e4umim6f3jr14ois49i9
-    CONN_FILE_CH_HOST: ClassVar[str] = ','.join((
-        'rc1a-qr19go7vdcaukxsd.mdb.cloud-preprod.yandex.net',
-        'rc1c-8afsacczmoytzlo5.mdb.cloud-preprod.yandex.net',
-    ))
-    CONN_FILE_CH_USERNAME: ClassVar[str] = 'dl_file_conn'
-
-
-class ConnectorsDataBillingExtTesting(ConnectorsDataBillingExternalInstallation):
-    CONN_BILLING_HOST: ClassVar[Optional[str]] = ','.join((
-        'rc1a-rvwp0jt22z68ybre.mdb.cloud-preprod.yandex.net',
-        'rc1b-6kjlsmsl0l7u5308.mdb.cloud-preprod.yandex.net',
-        'rc1b-xtsv1236xrz6gd20.mdb.cloud-preprod.yandex.net',
-        'rc1c-ct03ung4rmxwqg7f.mdb.cloud-preprod.yandex.net',
-    ))
-
-
-class ConnectorsDataMarketCouriersExtTesting(ConnectorsDataMarketCouriersExternalInstallation):
-    CONN_MARKET_COURIERS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
-
-
-class ConnectorsDataSMBHeatmapsExtTesting(ConnectorsDataSMBHeatmapsExternalInstallation):
-    CONN_SMB_HEATMAPS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
-
-
-class ConnectorsDataSchoolbookExtTesting(ConnectorsDataSchoolbookBase):
-    CONN_SCHOOLBOOK_HOST: ClassVar[Optional[str]] = ','.join((
-        'vla-ws8isxcg383rpugb.db.yandex.net',
-        'sas-0vu6ols4s7prltlm.db.yandex.net',
-        'man-c4i8hlp8hp0qkmfo.db.yandex.net',
-    ))
-    CONN_SCHOOLBOOK_PORT: ClassVar[Optional[int]] = 8443
-    CONN_SCHOOLBOOK_DB_MAME: ClassVar[Optional[str]] = 'pelican_db_prod_db'
-    CONN_SCHOOLBOOK_USERNAME: ClassVar[Optional[str]] = 'datalens'
-    CONN_SCHOOLBOOK_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
-    CONN_SCHOOLBOOK_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = []
-    CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = (
-        dict(title='Stats', sql_query=SQL_SCHOOLBOOK_STATS_TESTING),
-    )
-
-
-class ConnectorsDataMoyskladExtTesting(ConnectorsDataMoyskladExternalInstallation):
-    # https://console-preprod.cloud.yandex.ru/folders/aoen5db923vq956hvb91/managed-clickhouse/cluster/e4usmt8rjpinn0ot4kac
-    CONN_MOYSKLAD_HOST: ClassVar[Optional[str]] = 'rc1a-247svhto6jy5iymw.mdb.cloud-preprod.yandex.net'
-    CONN_MOYSKLAD_USERNAME: ClassVar[Optional[str]] = 'moysklad_test_db_user'
-
-
-class ConnectorsDataMonitoringExtTesting(ConnectorsDataMonitoringBase):
-    CONN_MONITORING_HOST: ClassVar[Optional[str]] = 'monitoring.api.cloud-preprod.yandex.net'
-
-
 class ConnectorsDataFileExtProduction(ConnectorsDataFileBase):
     CONN_FILE_CH_HOST: ClassVar[str] = ','.join((
         # https://console.cloud.yandex.ru/folders/b1g77mbejmj4m6flq848/managed-clickhouse/cluster/c9q7c5ibbkf7vl65h94t/view
@@ -1493,13 +1432,6 @@ class ConnectorsDataUsageTrackingExtProduction(ConnectorsDataUsageTrackingExtern
     CONN_USAGE_TRACKING_HOST = ','.join((
         'rc1a-96iufcb8j58s5nrv.mdb.yandexcloud.net',
         'rc1c-5oxkvtparu51mfno.mdb.yandexcloud.net',
-    ))
-
-
-class ConnectorsDataUsageTrackingExtTesting(ConnectorsDataUsageTrackingExternalInstallation):
-    CONN_USAGE_TRACKING_HOST = ','.join((
-        'rc1a-sj4j1pnhotgffpn1.mdb.cloud-preprod.yandex.net',
-        'rc1c-2g6441917n15umos.mdb.cloud-preprod.yandex.net',
     ))
 
 

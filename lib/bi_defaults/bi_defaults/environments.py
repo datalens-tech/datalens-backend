@@ -6,47 +6,14 @@ All the classes (instead of dicts) for static checking.
 
 from __future__ import annotations
 
-from enum import Enum, IntEnum, unique
-from typing import ClassVar, Tuple, Dict, Optional, ItemsView, Set
+from enum import IntEnum, unique
+from typing import ClassVar, Tuple, Optional, ItemsView, Set, TypeAlias, Union
 
 import attr
 
 from bi_configs.enums import EnvType, RedisMode
 from bi_constants.api_constants import DLHeadersCommon
 from bi_defaults import connectors_data as cd
-
-
-@unique
-class YAVSecretsMap(Enum):
-    bi_analytics = "sec-01d8rb402ftm1ppxgafc1eea4b"
-    datalens_creds_int_testing = "sec-01dc245cgq8jprkct8ybrp9ffx"
-    datalens_creds_int_production = "sec-01dc4kgz3ehzxkxdw1z48rp0b2"
-    datalens_creds_ext_testing = "sec-01dc24ppx88wd8wjawzp3zwxcg"
-    datalens_creds_ext_production = "sec-01dc4kwx555c9cby0rkmv50eym"
-    datalens_creds_israel = "sec-01g7f9bepxj47d3n90s9qysvv3"
-    dl_billing_master_token = "sec-01dns6vh0wrmteebhk0er0q3x2"
-    dl_ext_csrf_key = "sec-01cramk07fz80xzkj80f4nkd82"
-    ext_prod_materializer_master_token = "sec-01e126dy1wp4zr0sw9n2t2xf2z"
-    ext_testing_materializer_master_token = "sec-01e0wqwn3yyem626wggb9dc0sk"
-    robot_datalens_back = "sec-01ekmt2r5p50hp5qw875dewfgw"
-    statinfra_sentry = "sec-01ejre46ykgb69dy7ec43xrsky"
-
-    #  2021163  Datalens Backend dev/tests  https://abc.yandex-team.ru/services/yandexbi/resources/?show-resource=20620547
-    tvm_dev = "sec-01ec8d1x4ckxq3h1byrh7wk5ax"
-    #  2017223  Datalens Backend Internal Testing  https://abc.yandex-team.ru/services/yandexbi/resources/?show-resource=8913719
-    tvm_int_testing = "sec-01dv8x203ws5kw7dhdxdynmqke"  # "tvm.secret.2017223"
-    #  2017227  Datalens Backend Internal Production  https://abc.yandex-team.ru/services/yandexbi/resources/?show-resource=8913746
-    tvm_int_production = "sec-01dv8x5eye1hw18x3akg4b2gb7"  # "tvm.secret.2017223"
-    #  2017225  Datalens Backend Testing  https://abc.yandex-team.ru/services/yandexbi/resources/?show-resource=8913721
-    tvm_ext_testing = "sec-01dv8x3s847wpz1mjtcgmfzgv7"  # "tvm.secret.2017225"
-    #  2017229  Datalens Backend Production  https://abc.yandex-team.ru/services/yandexbi/resources/?show-resource=8913747
-    tvm_ext_prod = "sec-01dv8x5xs7jv49pq7fam9d4zx7"  # "tvm.secret.2017229"
-
-    us_master_token = "sec-01csc2x33km5dc7x8p51hfh0nj"
-    us_public_token = "sec-01e7ns911m3gez46t6zqb0z5hb"
-
-    # tests:
-    datalens_test_data = "sec-01d5pcrfv9xceanxj2jwaed4bm"
 
 
 class InstallationBase:
@@ -121,10 +88,6 @@ class CommonInstallation(
     ENV_TYPE: ClassVar[EnvType]
 
     US_BASE_URL: ClassVar[str]
-
-    DL_CRY_ACTUAL_KEY_ID: ClassVar[str] = "0"
-    ENV_VAULT_ID: ClassVar[str]
-    DL_CRY_KEYMAP: ClassVar[Dict[str, str]] = {}
 
     DATALENS_API_LB_MAIN_BASE_URL: ClassVar[str]
     DATALENS_API_LB_UPLOADS_BASE_URL: ClassVar[str]
@@ -217,11 +180,6 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
 
     US_BASE_URL: ClassVar[str] = "https://united-storage-beta.yandex-team.ru"
 
-    DL_CRY_ACTUAL_KEY_ID = "int_preprod_1"
-    DL_CRY_KEYMAP: ClassVar[Dict[str, str]] = {"1": "int_preprod_1"}
-    US_MASTER_SECRET_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.us_master_token.value, "int-testing")
-    ENV_VAULT_ID: ClassVar[str] = YAVSecretsMap.datalens_creds_int_testing.value
-
     DATALENS_API_LB_MAIN_BASE_URL: ClassVar[str] = "https://back.datalens-beta.yandex-team.ru"
     DATALENS_API_LB_UPLOADS_BASE_URL: ClassVar[str] = "https://upload.datalens-beta.yandex-team.ru"
     DATALENS_API_LB_UPLOADS_STATUS_URL: ClassVar[str] = "https://upload.datalens-beta.yandex-team.ru"
@@ -237,7 +195,6 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
         'vla-w420dojupq0i9lmy.db.yandex.net',
         'man-zmxng5x68wurj7gv.db.yandex.net',
     )
-    REDIS_CACHES_PASSWORD_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.datalens_creds_int_testing.value, "REDIS_CACHES_PASSWORD")
 
     REDIS_PERSISTENT_CLUSTER_NAME: ClassVar[str] = 'int-testing'
     REDIS_PERSISTENT_HOSTS: ClassVar[Tuple[str, ...]] = (
@@ -265,11 +222,6 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
 
     US_BASE_URL: ClassVar[str] = "https://united-storage.yandex-team.ru"
 
-    DL_CRY_ACTUAL_KEY_ID = "int_prod_1"
-    DL_CRY_KEYMAP: ClassVar[Dict[str, str]] = {"1": "int_prod_1"}
-    US_MASTER_SECRET_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.us_master_token.value, "int-production")
-    ENV_VAULT_ID: ClassVar[str] = YAVSecretsMap.datalens_creds_int_production.value
-
     DATALENS_API_LB_MAIN_BASE_URL: ClassVar[str] = "https://back.datalens.yandex-team.ru"
     DATALENS_API_LB_UPLOADS_BASE_URL: ClassVar[str] = "https://upload.datalens.yandex-team.ru"
     DATALENS_API_LB_UPLOADS_STATUS_URL: ClassVar[str] = "https://upload.datalens.yandex-team.ru"
@@ -285,7 +237,6 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
         'myt-axexufcxe1j8j9as.db.yandex.net',
     )
     REDIS_CACHES_CLUSTER_NAME: ClassVar[str] = 'caches-int-production'
-    REDIS_CACHES_PASSWORD_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.datalens_creds_int_production.value, "REDIS_CACHES_PASSWORD")
 
     REDIS_PERSISTENT_CLUSTER_NAME: ClassVar[str] = 'int-prod'
     REDIS_PERSISTENT_HOSTS: ClassVar[tuple[str, ...]] = (
@@ -330,7 +281,6 @@ class CommonExternalInstallation(
     REDIS_RQE_CACHES_CLUSTER_NAME: ClassVar[str] = 'rqecaches'
     REDIS_RQE_CACHES_HOSTS: ClassVar[Tuple[str, ...]]
     REDIS_RQE_CACHES_PORT: ClassVar[int] = 6379
-    REDIS_RQE_CACHES_PASSWORD_YAV: ClassVar[Tuple[str, str]]
     REDIS_RQE_CACHES_SSL: ClassVar[Optional[bool]] = None
     REDIS_RQE_CACHES_DB: ClassVar[int] = 1
 
@@ -370,11 +320,6 @@ class ExternalProductionInstallation(
 
     US_BASE_URL: ClassVar[str] = "https://us.datalens-front.cloud.yandex.net"
 
-    DL_CRY_ACTUAL_KEY_ID: ClassVar[str] = "cloud_prod_3"
-    DL_CRY_KEYMAP: ClassVar[Dict[str, str]] = {"3": "cloud_prod_3"}
-    US_MASTER_SECRET_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.us_master_token.value, "ext-production")
-    ENV_VAULT_ID: ClassVar[str] = YAVSecretsMap.datalens_creds_ext_production.value
-
     DATALENS_API_LB_MAIN_BASE_URL: ClassVar[str] = "https://datalens-back.private-api.ycp.cloud.yandex.net"
     DATALENS_API_LB_UPLOADS_BASE_URL: ClassVar[str] = "https://upload.datalens.yandex.ru"
     DATALENS_API_LB_UPLOADS_STATUS_URL: ClassVar[str] = "https://datalens-back.private-api.ycp.cloud.yandex.net/file-uploader"
@@ -392,7 +337,6 @@ class ExternalProductionInstallation(
         'rc1c-1kyeib07e4kfvm0o.mdb.yandexcloud.net',
     )
     REDIS_CACHES_CLUSTER_NAME: ClassVar[str] = 'caches'
-    REDIS_CACHES_PASSWORD_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.datalens_creds_ext_production.value, "REDIS_CACHES_PASSWORD")
 
     REDIS_PERSISTENT_CLUSTER_NAME: ClassVar[str] = 'misc'
     REDIS_PERSISTENT_HOSTS: ClassVar[tuple[str, ...]] = (
@@ -430,7 +374,26 @@ class ExternalProductionInstallation(
     REDIS_RQE_CACHES_HOSTS: ClassVar[Tuple[str, ...]] = (
         'rc1a-h0c0k98f4p8imglf.mdb.yandexcloud.net',
     )
-    REDIS_RQE_CACHES_PASSWORD_YAV: ClassVar[Tuple[str, str]] = (YAVSecretsMap.datalens_creds_ext_production.value, "REDIS_RQE_CACHES_PASSWORD")
+
+
+class NebiusInstallation(InstallationBase):
+    """ Base class for all white-lable installations """
+
+
+class IsraelInstallation(NebiusInstallation):
+    ENV_TYPE: ClassVar[EnvType] = EnvType.israel
+
+    # IAMAwareInstallation:
+    YC_API_ENDPOINT_IAM: ClassVar[str] = "iam.private-api.yandexcloud.co.il:14283"
+    YC_API_ENDPOINT_RM: ClassVar[str] = "rm.private-api.yandexcloud.co.il:14284"
+    YC_AS_ENDPOINT: ClassVar[str] = "as.private-api.yandexcloud.co.il:14286"
+    YC_SS_ENDPOINT: ClassVar[str] = "ss.private-api.yandexcloud.co.il:18655"
+    YC_TS_ENDPOINT: ClassVar[str] = "ts.private-api.yandexcloud.co.il:14282"
+
+
+class NemaxInstallation(NebiusInstallation):
+    ENV_TYPE: ClassVar[EnvType] = EnvType.nemax
+
 
 class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
     ENV_TYPE: ClassVar[EnvType] = EnvType.int_testing
@@ -462,12 +425,17 @@ class BaseInstallationsMap:
     pass
 
 
+AllInstallations: TypeAlias = Union[CommonInstallation, NebiusInstallation, DataCloudInstallation]
+
+
 class InstallationsMap(BaseInstallationsMap):
     tests: ClassVar[CommonInstallation] = TestsInstallation()
     int_testing: ClassVar[CommonInstallation] = InternalTestingInstallation()
     int_prod: ClassVar[CommonInstallation] = InternalProductionInstallation()
     ext_prod: ClassVar[CommonInstallation] = ExternalProductionInstallation()
     datacloud: ClassVar[DataCloudInstallation] = DataCloudInstallation()
+    israel: ClassVar[IsraelInstallation] = IsraelInstallation()
+    nemax: ClassVar[IsraelInstallation] = NemaxInstallation()
 
 
 class EnvAliasesMap:
@@ -481,8 +449,6 @@ class EnvAliasesMap:
     int_production: ClassVar[str] = "int_prod"
     int_prod: ClassVar[str] = "int_prod"
 
-    testing: ClassVar[str] = "ext_testing"
-
     ext_production: ClassVar[str] = "ext_prod"
     production: ClassVar[str] = "ext_prod"
     ext_prod: ClassVar[str] = "ext_prod"
@@ -490,48 +456,8 @@ class EnvAliasesMap:
     datacloud: ClassVar[str] = "datacloud"
     datacloud_sec_embeds: ClassVar[str] = "datacloud"
 
-
-class CommonEnvironmentSettings:
-    YENV_TYPE: ClassVar[str]
-    YENV_NAME: ClassVar[str]
-
-
-class CommonInternalEnvironmentSettings(CommonEnvironmentSettings):
-    YENV_NAME: ClassVar[str] = "intranet"
-
-
-class InternalTestingSettings(InternalTestingInstallation, CommonInternalEnvironmentSettings):
-    YENV_TYPE: ClassVar[str] = "int-testing"
-
-
-class InternalProductionSettings(InternalProductionInstallation, CommonInternalEnvironmentSettings):
-    YENV_TYPE: ClassVar[str] = "int-production"
-
-
-class CommonExternalEnvironmentSettings(CommonEnvironmentSettings):
-    YENV_NAME: ClassVar[str] = "cloud"
-
-
-class ExternalProductionSettings(ExternalProductionInstallation, CommonExternalEnvironmentSettings):
-    YENV_TYPE: ClassVar[str] = "production"
-
-
-class ExternalPublicProductionSettings(ExternalProductionSettings):
-    YENV_TYPE: ClassVar[str] = "production-public"
-
-
-class TestsEnvironmentSettings(TestsInstallation, CommonEnvironmentSettings):
-    YENV_NAME: ClassVar[str] = "intranet"
-    YENV_TYPE: ClassVar[str] = "tests"
-
-
-class EnvironmentsSettingsMap:
-    # Effectively `settings_cls.YENV_TYPE.replace("-", "_"): settings_cls`
-    tests: ClassVar[CommonEnvironmentSettings] = TestsEnvironmentSettings
-    int_testing: ClassVar[CommonEnvironmentSettings] = InternalTestingSettings
-    int_production: ClassVar[CommonEnvironmentSettings] = InternalProductionSettings
-    production: ClassVar[CommonEnvironmentSettings] = ExternalProductionSettings
-    production_public: ClassVar[CommonEnvironmentSettings] = ExternalPublicProductionSettings
+    israel: ClassVar[str] = "israel"
+    nemax: ClassVar[str] = "nemax"
 
 
 @attr.s

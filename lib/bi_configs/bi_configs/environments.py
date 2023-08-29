@@ -558,7 +558,6 @@ class IntegrationTestConfig:
     def field_names() -> Set[str]:
         return {a.name for a in attr.fields(IntegrationTestConfig)}
 
-
 @unique
 class TvmDestination(IntEnum):
     BlackboxProdYateam = 223
