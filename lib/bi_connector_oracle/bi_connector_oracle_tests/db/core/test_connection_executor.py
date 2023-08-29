@@ -27,7 +27,9 @@ class OracleSyncAsyncConnectionExecutorCheckBase(
     test_params = RegulatedTestParams(
         mark_tests_failed={
             DefaultAsyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: '',  # TODO: FIXME
-            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: '',  # TODO: FIXME
+            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: 'Sessions not closed',  # TODO: FIXME
+            DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info_for_nonexistent_table: (
+                'Empty schema is returned instead of an error'),  # FIXME
         },
     )
 

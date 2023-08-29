@@ -2,6 +2,8 @@ from typing import Optional
 
 import pytest
 
+from bi_testing.regulated_test import RegulatedTestParams
+
 from bi_core.connection_models.common_models import DBIdent
 
 from bi_core_testing.testcases.connection_executor import (
@@ -19,6 +21,13 @@ class MSSQLSyncAsyncConnectionExecutorCheckBase(
         BaseMSSQLTestClass,
         DefaultSyncAsyncConnectionExecutorCheckBase[ConnectionMSSQL],
 ):
+
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info_for_nonexistent_table: (
+                'Empty schema is returned instead of an error'),  # FIXME
+        },
+    )
 
     @pytest.fixture(scope='function')
     def db_ident(self) -> DBIdent:

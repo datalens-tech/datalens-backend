@@ -96,5 +96,7 @@ class TestPostgreSQLAsyncConnectionExecutor(
         mark_tests_skipped={
             DefaultAsyncConnectionExecutorTestSuite.test_table_exists: 'Not implemented',
             DefaultAsyncConnectionExecutorTestSuite.test_table_not_exists: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info: 'Not implemented',
+            DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info_for_nonexistent_table: 'Not implemented',
         },
     )

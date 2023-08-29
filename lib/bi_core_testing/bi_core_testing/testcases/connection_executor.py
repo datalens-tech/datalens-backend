@@ -155,6 +155,20 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
             for i in range(5):
                 sync_connection_executor.execute(ConnExecutorQuery(query=query_for_session_check))
 
+    def test_get_table_schema_info(
+            self, sync_connection_executor: SyncConnExecutorBase, existing_table_ident: TableIdent, db_table: DbTable,
+    ) -> None:
+        # Just tests that the adapter can successfully retrieve the schema.
+        # Data source tests check this in more detail
+        detected_columns = sync_connection_executor.get_table_schema_info(table_def=existing_table_ident).schema
+        assert len(detected_columns) > 0
+
+    def test_get_table_schema_info_for_nonexistent_table(
+            self, sync_connection_executor: SyncConnExecutorBase, nonexistent_table_ident: TableIdent,
+    ) -> None:
+        with pytest.raises(core_exc.DLBaseException):
+            sync_connection_executor.get_table_schema_info(table_def=nonexistent_table_ident)
+
 
 class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
     @pytest.fixture(scope='session')
@@ -198,3 +212,19 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         with self.check_closing_sql_sessions(db=db):
             for i in range(5):
                 await async_connection_executor.execute(ConnExecutorQuery(query=query_for_session_check))
+
+    async def test_get_table_schema_info(
+            self, async_connection_executor: AsyncConnExecutorBase, existing_table_ident: TableIdent, db_table: DbTable,
+    ) -> None:
+        # Just tests that the adapter can successfully retrieve the schema.
+        # Data source tests check this in more detail
+        detected_columns = (
+            await async_connection_executor.get_table_schema_info(table_def=existing_table_ident)
+        ).schema
+        assert len(detected_columns) > 0
+
+    async def test_get_table_schema_info_for_nonexistent_table(
+            self, async_connection_executor: AsyncConnExecutorBase, nonexistent_table_ident: TableIdent,
+    ) -> None:
+        with pytest.raises(core_exc.DLBaseException):
+            await async_connection_executor.get_table_schema_info(table_def=nonexistent_table_ident)

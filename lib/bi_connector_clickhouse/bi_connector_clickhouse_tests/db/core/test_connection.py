@@ -33,6 +33,10 @@ class TestClickHouseConnection(
             assert conn.db_name in dsrc_tmpl.group
             assert dsrc_tmpl.title
 
+        # Make sure
+        tmpl_db_names = {dsrc_tmpl.group[0] for dsrc_tmpl in dsrc_templates}
+        assert 'system' not in tmpl_db_names
+
 
 # TODO: turn on in https://st.yandex-team.ru/BI-4738
 @pytest.mark.skip
