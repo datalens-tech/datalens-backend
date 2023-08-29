@@ -20,3 +20,11 @@ class DataSourceSpec:
     @property
     def is_configured(self) -> bool:
         return True
+
+    @classmethod
+    def get_public_fields(cls) -> list[str]:
+        return [
+            field.name
+            for field in cls.__attrs_attrs__  # type: ignore
+            if not field.name.startswith('_')
+        ]

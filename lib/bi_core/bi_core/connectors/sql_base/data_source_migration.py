@@ -1,18 +1,13 @@
-from typing import Any, ClassVar, Optional, Sequence
+from typing import ClassVar, Optional, Type
 
 import attr
 
 from bi_constants.enums import CreateDSFrom
 
-from bi_core.base_models import ConnectionRef
 from bi_core.data_source_spec.base import DataSourceSpec
-from bi_core.data_source_spec.sql import (
-    DbSQLDataSourceSpec, SchemaSQLDataSourceSpec, TableSQLDataSourceSpec,
-    SubselectDataSourceSpec,
-)
-from bi_core.data_source_spec.type_mapping import get_data_source_spec_class
+from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
 from bi_core.connectors.base.data_source_migration import (
-    DataSourceMigrationInterface, DataSourceMigrator,
+    DataSourceMigrationInterface, SpecBasedSourceMigrator, MigrationSpec, MigrationKeyMappingItem,
 )
 
 
@@ -25,82 +20,68 @@ class SQLTableDSMI(DataSourceMigrationInterface):
 
 @attr.s(frozen=True)
 class SQLSubselectDSMI(DataSourceMigrationInterface):
-    subselect: str = attr.ib(kw_only=True)
+    subsql: Optional[str] = attr.ib(kw_only=True)
 
 
-class DefaultSQLDataSourceMigrator(DataSourceMigrator):
+class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
     table_source_type: ClassVar[Optional[CreateDSFrom]] = None
+    table_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = StandardSQLDataSourceSpec
+
     subselect_source_type: ClassVar[Optional[CreateDSFrom]] = None
+    subselect_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = SubselectDataSourceSpec
+
     default_schema_name: ClassVar[Optional[str]] = None
 
-    def export_migration_dtos(
-            self, data_source_spec: DataSourceSpec,
-    ) -> Sequence[DataSourceMigrationInterface]:
-        params: dict[str, Any] = {}
-        if isinstance(data_source_spec, DbSQLDataSourceSpec):
-            params['db_name'] = data_source_spec.db_name
-        if isinstance(data_source_spec, SchemaSQLDataSourceSpec):
-            if data_source_spec.schema_name != self.default_schema_name:
-                params['schema_name'] = data_source_spec.schema_name
-        if isinstance(data_source_spec, TableSQLDataSourceSpec):
-            params['table_name'] = data_source_spec.table_name
+    def _resolve_schema_name_for_export(
+            self, source_spec: DataSourceSpec, attr_name: str,
+    ) -> Optional[str]:
+        assert attr_name == 'schema_name'
+        schema_name: Optional[str] = getattr(source_spec, attr_name, None)
+        if schema_name == self.default_schema_name:
+            schema_name = None
+        return schema_name
 
-        return [SQLTableDSMI(**params)]
+    def _resolve_schema_name_for_import(
+            self, migration_dto: DataSourceMigrationInterface, attr_name: str,
+    ) -> Optional[str]:
+        assert attr_name == 'schema_name'
+        schema_name: Optional[str] = getattr(migration_dto, attr_name, None)
+        if schema_name == self.default_schema_name:
+            schema_name = None
+        return schema_name
 
-    def _choose_migration_dto(
-            self, migration_dtos: Sequence[DataSourceMigrationInterface],
-    ) -> DataSourceMigrationInterface:
-        return next(
-            dto for dto in migration_dtos
-            if (
-                isinstance(dto, SQLTableDSMI) and self.table_source_type is not None
-                or isinstance(dto, SQLSubselectDSMI) and self.subselect_source_type is not None
-            )
-        )
-
-    def _load_migration_dto_table(
-            self, migration_dto: SQLTableDSMI, source_type: CreateDSFrom,
-            connection_ref: ConnectionRef,
-    ) -> DataSourceSpec:
-        params: dict[str, Any] = {'source_type': source_type, 'connection_ref': connection_ref}
-        table_dsrc_cls = get_data_source_spec_class(source_type)
-        if issubclass(table_dsrc_cls, DbSQLDataSourceSpec):
-            params['db_name'] = migration_dto.db_name
-        if issubclass(table_dsrc_cls, SchemaSQLDataSourceSpec):
-            params['schema_name'] = migration_dto.schema_name or self.default_schema_name
-        assert issubclass(table_dsrc_cls, TableSQLDataSourceSpec)
-        params['table_name'] = migration_dto.table_name
-        dsrc_spec = table_dsrc_cls(**params)
-        assert isinstance(dsrc_spec, TableSQLDataSourceSpec)
-        return dsrc_spec
-
-    def _load_migration_dto_subselect(
-            self, migration_dto: SQLSubselectDSMI, source_type: CreateDSFrom,
-            connection_ref: ConnectionRef,
-    ) -> DataSourceSpec:
-        params: dict[str, Any] = {'source_type': source_type, 'connection_ref': connection_ref}
-        table_dsrc_cls = get_data_source_spec_class(source_type)
-        assert issubclass(table_dsrc_cls, DbSQLDataSourceSpec)
-        params['subselect'] = migration_dto.subselect
-        dsrc_spec = table_dsrc_cls(**params)
-        assert isinstance(dsrc_spec, SubselectDataSourceSpec)
-        return dsrc_spec
-
-    def _load_migration_dto(
-            self, migration_dto: DataSourceMigrationInterface,
-            connection_ref: ConnectionRef,
-    ) -> DataSourceSpec:
-
-        if isinstance(migration_dto, SQLTableDSMI) and self.table_source_type is not None:
-            return self._load_migration_dto_table(
-                migration_dto, source_type=self.table_source_type,
-                connection_ref=connection_ref,
+    def get_migration_specs(self) -> list[MigrationSpec]:
+        result: list[MigrationSpec] = []
+        if self.table_source_type is not None:
+            assert self.table_dsrc_spec_cls is not None
+            result.append(
+                MigrationSpec(
+                    source_type=self.table_source_type,
+                    dto_cls=SQLTableDSMI,
+                    dsrc_spec_cls=self.table_dsrc_spec_cls,
+                    migration_mapping_items=(
+                        MigrationKeyMappingItem(migration_dto_key='db_name', source_spec_key='db_name'),
+                        MigrationKeyMappingItem(
+                            migration_dto_key='schema_name', source_spec_key='schema_name',
+                            custom_export_resolver=self._resolve_schema_name_for_export,
+                            custom_import_resolver=self._resolve_schema_name_for_import,
+                        ),
+                        MigrationKeyMappingItem(migration_dto_key='table_name', source_spec_key='table_name'),
+                    ),
+                )
             )
 
-        elif isinstance(migration_dto, SQLSubselectDSMI) and self.subselect_source_type is not None:
-            return self._load_migration_dto_subselect(
-                migration_dto, source_type=self.subselect_source_type,
-                connection_ref=connection_ref,
+        if self.subselect_source_type is not None:
+            assert self.subselect_dsrc_spec_cls is not None
+            result.append(
+                MigrationSpec(
+                    source_type=self.subselect_source_type,
+                    dto_cls=SQLSubselectDSMI,
+                    dsrc_spec_cls=self.subselect_dsrc_spec_cls,
+                    migration_mapping_items=(
+                        MigrationKeyMappingItem(migration_dto_key='subsql', source_spec_key='subsql'),
+                    ),
+                )
             )
 
-        raise RuntimeError(f'Invalid dto class: {type(migration_dto)}')
+        return result

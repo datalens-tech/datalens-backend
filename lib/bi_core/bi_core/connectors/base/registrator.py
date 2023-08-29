@@ -22,6 +22,7 @@ from bi_core.db_session_utils import register_sa_query_cls, register_query_fail_
 from bi_core.reporting.notifications import register_notification
 from bi_core.backend_types import register_connection_backend_type
 from bi_core.connectors.settings.registry import register_connector_settings_class
+from bi_core.connectors.base.data_source_migration import register_data_source_migrator
 
 
 class CoreConnectorRegistrator:
@@ -66,6 +67,7 @@ class CoreConnectorRegistrator:
                 settings_class=conn_def.settings_definition.settings_class,
                 fallback=conn_def.settings_definition.fallback,
             )
+        register_data_source_migrator(conn_type=conn_def.conn_type, migrator_cls=conn_def.data_source_migrator_cls)
 
     @classmethod
     def register_connector(cls, connector: Type[CoreConnector]) -> None:

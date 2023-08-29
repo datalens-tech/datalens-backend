@@ -18,6 +18,7 @@ from bi_connector_mssql.core.data_source import MSSQLDataSource, MSSQLSubselectD
 from bi_connector_mssql.core.connection_executors import MSSQLConnExecutor
 from bi_connector_mssql.core.dto import MSSQLConnDTO
 from bi_connector_mssql.core.sa_types import SQLALCHEMY_MSSQL_TYPES
+from bi_connector_mssql.core.data_source_migration import MSSQLDataSourceMigrator
 
 
 class MSSQLCoreConnectionDefinition(CoreConnectionDefinition):
@@ -28,6 +29,7 @@ class MSSQLCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = MSSQLConnExecutor
     async_conn_executor_cls = MSSQLConnExecutor
     dialect_string = 'bi_mssql'
+    data_source_migrator_cls = MSSQLDataSourceMigrator
 
 
 class MSSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

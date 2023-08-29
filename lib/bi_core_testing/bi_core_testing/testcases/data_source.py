@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import uuid
-from typing import Callable, ClassVar, Generic, Type, TypeVar, TYPE_CHECKING
+from typing import Callable, ClassVar, Generic, Sequence, Type, TypeVar, TYPE_CHECKING
 
 import pytest
 import shortuuid
@@ -13,10 +13,12 @@ from bi_core.connection_models import TableIdent
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.data_source_spec.sql import SubselectDataSourceSpec
 from bi_core.data_source.base import DataSource
-from bi_core.data_source.sql import SubselectDataSource
+from bi_core.data_source.sql import TableSQLDataSourceMixin, SubselectDataSource
 from bi_core.db import SchemaColumn
 from bi_core.us_connection_base import ConnectionBase
 from bi_core.us_manager.us_manager_sync import SyncUSManager
+from bi_core.connectors.base.data_source_migration import DataSourceMigrationInterface, get_data_source_migrator
+from bi_core.connectors.sql_base.data_source_migration import SQLTableDSMI, SQLSubselectDSMI
 
 from bi_core_testing.database import Db
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
@@ -89,6 +91,42 @@ class DefaultDataSourceTestClass(
         assert len(simplified_schema) == len(expected_schema)
         for actual, expected in zip(simplified_schema, expected_schema):
             assert actual == expected, f"{expected=} {actual=}"
+
+    def _check_migration_dtos(
+            self, data_source: _DSRC_TV,
+            migration_dtos: Sequence[DataSourceMigrationInterface],
+    ) -> None:
+        pass
+
+    def _check_migration_dtos_table(  # TODO: Plug it in
+            self, data_source: _DSRC_TV,
+            migration_dtos: Sequence[DataSourceMigrationInterface],
+    ) -> None:
+        assert isinstance(data_source, TableSQLDataSourceMixin)
+        assert migration_dtos[0] == SQLTableDSMI(
+            db_name=getattr(data_source, 'db_name', None),
+            schema_name=getattr(data_source, 'schema_name', None),
+            table_name=data_source.table_name,
+        )
+
+    def _check_migration_dtos_subselect(  # TODO: Plug it in
+            self, data_source: _DSRC_TV,
+            migration_dtos: Sequence[DataSourceMigrationInterface],
+    ) -> None:
+        assert isinstance(data_source, SubselectDataSource)
+        assert migration_dtos[0] == SQLSubselectDSMI(
+            subsql=data_source.subsql,
+        )
+
+    def test_export_dsrc_migration_dtos(
+            self,
+            data_source: _DSRC_TV,
+            sync_us_manager: SyncUSManager,
+    ) -> None:
+        migrator = get_data_source_migrator(self.conn_type)
+        source_spec = data_source.spec
+        migration_dtos = migrator.export_migration_dtos(data_source_spec=source_spec)
+        self._check_migration_dtos(data_source=data_source, migration_dtos=migration_dtos)
 
 
 _SUBSELECT_DSRC_SPEC_TV = TypeVar('_SUBSELECT_DSRC_SPEC_TV', bound=SubselectDataSourceSpec)

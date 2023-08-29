@@ -18,6 +18,7 @@ from bi_connector_mysql.core.connection_executors import MySQLConnExecutor, Asyn
 from bi_connector_mysql.core.dto import MySQLConnDTO
 from bi_connector_mysql.core.sa_types import SQLALCHEMY_MYSQL_TYPES
 from bi_connector_mysql.core.settings import MySQLSettingDefinition
+from bi_connector_mysql.core.data_source_migration import MySQLDataSourceMigrator
 
 
 class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
@@ -29,6 +30,7 @@ class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncMySQLConnExecutor
     dialect_string = 'bi_mysql'
     settings_definition = MySQLSettingDefinition
+    data_source_migrator_cls = MySQLDataSourceMigrator
 
 
 class MySQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

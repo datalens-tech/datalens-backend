@@ -20,6 +20,7 @@ from bi_connector_postgresql.core.postgresql_base.connection_executors import (
 from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 from bi_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
 from bi_connector_postgresql.core.postgresql.settings import PostgreSQLSettingDefinition
+from bi_connector_postgresql.core.postgresql.data_source_migration import PostgreSQLDataSourceMigrator
 
 
 class PostgreSQLCoreConnectionDefinition(CoreConnectionDefinition):
@@ -31,6 +32,7 @@ class PostgreSQLCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncPostgresConnExecutor
     dialect_string = 'bi_postgresql'
     settings_definition = PostgreSQLSettingDefinition
+    data_source_migrator_cls = PostgreSQLDataSourceMigrator
 
 
 class PostgreSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

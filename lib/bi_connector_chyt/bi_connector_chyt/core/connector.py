@@ -1,7 +1,11 @@
-from bi_constants.enums import SourceBackendType, ConnectionType, CreateDSFrom
-
 from bi_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
+)
+
+from bi_connector_chyt.core.constants import (
+    BACKEND_TYPE_CHYT, CONNECTION_TYPE_CHYT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE, SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST, SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
 )
 from bi_connector_chyt.core.us_connection import ConnectionCHYTToken
 from bi_connector_chyt.core.storage_schemas.connection import (
@@ -33,10 +37,11 @@ from bi_connector_chyt.core.storage_schemas.data_source_spec import (
     CHYTTableRangeDataSourceSpecStorageSchema,
     CHYTSubselectDataSourceSpecStorageSchema,
 )
+from bi_connector_chyt.core.data_source_migration import CHYTDataSourceMigrator
 
 
 class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.chyt
+    conn_type = CONNECTION_TYPE_CHYT
     connection_cls = ConnectionCHYTToken
     us_storage_schema_cls = ConnectionCHYTDataStorageSchema
     type_transformer_cls = CHYTTypeTransformer
@@ -44,38 +49,39 @@ class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = CHYTAsyncAdapterConnExecutor
     dialect_string = 'bi_chyt'
     settings_definition = CHYTSettingDefinition
+    data_source_migrator_cls = CHYTDataSourceMigrator
 
 
 class CHYTTableCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
     source_cls = CHYTTableDataSource
     source_spec_cls = CHYTTableDataSourceSpec
     us_storage_schema_cls = CHYTTableDataSourceSpecStorageSchema
 
 
 class CHYTTableListCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE_LIST
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST
     source_cls = CHYTTableListDataSource
     source_spec_cls = CHYTTableListDataSourceSpec
     us_storage_schema_cls = CHYTTableListDataSourceSpecStorageSchema
 
 
 class CHYTTableRangeCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE_RANGE
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE
     source_cls = CHYTTableRangeDataSource
     source_spec_cls = CHYTTableRangeDataSourceSpec
     us_storage_schema_cls = CHYTTableRangeDataSourceSpecStorageSchema
 
 
 class CHYTTableSubselectCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CHYT_YTSAURUS_SUBSELECT
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT
     source_cls = CHYTTableSubselectDataSource
     source_spec_cls = CHYTSubselectDataSourceSpec
     us_storage_schema_cls = CHYTSubselectDataSourceSpecStorageSchema
 
 
 class CHYTCoreConnector(CoreConnector):
-    backend_type = SourceBackendType.CHYT
+    backend_type = BACKEND_TYPE_CHYT
     connection_definitions = (
         CHYTCoreConnectionDefinition,
     )

@@ -16,6 +16,7 @@ from bi_connector_oracle.core.data_source import OracleDataSource, OracleSubsele
 from bi_connector_oracle.core.connection_executors import OracleDefaultConnExecutor
 from bi_connector_oracle.core.dto import OracleConnDTO
 from bi_connector_oracle.core.sa_types import SQLALCHEMY_ORACLE_TYPES
+from bi_connector_oracle.core.data_source_migration import OracleDataSourceMigrator
 
 
 class OracleCoreConnectionDefinition(CoreConnectionDefinition):
@@ -26,6 +27,7 @@ class OracleCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = OracleDefaultConnExecutor
     async_conn_executor_cls = OracleDefaultConnExecutor
     dialect_string = 'bi_oracle'
+    data_source_migrator_cls = OracleDataSourceMigrator
 
 
 class OracleTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):
