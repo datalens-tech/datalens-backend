@@ -4,7 +4,6 @@ from bi_core.connectors.clickhouse.connector import (
     ClickHouseTableCoreSourceDefinition,
     ClickHouseSubselectCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
@@ -15,6 +14,8 @@ from bi_api_connector.connector import (
 from bi_api_connector.api_schema.source_base import (
     SQLDataSourceSchema, SQLDataSourceTemplateSchema, SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 from bi_api_lib.connectors.clickhouse.api_schema.connection import ClickHouseConnectionSchema
 from bi_api_lib.connectors.clickhouse.connection_form.form_config import ClickHouseConnectionFormFactory
 from bi_api_lib.connectors.clickhouse.connection_info import ClickHouseConnectionInfoProvider
@@ -46,5 +47,5 @@ class ClickHouseBiApiConnector(BiApiConnector):
         ClickHouseBiApiTableSourceDefinition,
         ClickHouseBiApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     # translation_configs = frozenset(CONFIGS)  TODO: add after a connectorization

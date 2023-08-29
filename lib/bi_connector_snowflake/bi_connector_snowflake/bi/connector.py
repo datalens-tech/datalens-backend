@@ -3,7 +3,6 @@ from bi_connector_snowflake.core.connector import (
     SnowFlakeCoreConnectionDefinition,
     SnowFlakeCoreTableSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
@@ -11,6 +10,7 @@ from bi_api_connector.connector import (
     BiApiConnector,
 )
 
+from bi_connector_snowflake.formula.constants import DIALECT_NAME_SNOWFLAKE
 from bi_connector_snowflake.bi.api_schema.source import (  # type: ignore
     SnowFlakeTableDataSourceSchema,
     SnowFlakeTableDataSourceTemplateSchema,
@@ -38,5 +38,5 @@ class SnowFlakeBiApiConnector(BiApiConnector):
     core_connector_cls = SnowFlakeCoreConnector
     connection_definitions = (SnowFlakeBiApiConnectionDefinition,)
     source_definitions = (SnowFlakeBiApiTableSourceDefinition,)
-    formula_dialect_name = DialectName.SNOWFLAKE
+    formula_dialect_name = DIALECT_NAME_SNOWFLAKE
     translation_configs = frozenset(CONFIGS)

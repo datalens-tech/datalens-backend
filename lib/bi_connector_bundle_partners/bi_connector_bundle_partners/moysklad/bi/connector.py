@@ -6,12 +6,12 @@ from bi_connector_bundle_partners.moysklad.core.connector import (
     MoySkladCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_partners.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_partners.moysklad.bi.api_schema.connection import MoySkladConnectionSchema
@@ -34,7 +34,7 @@ class MoySkladBiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class MoySkladBiApiConnector(BiApiConnector):
     core_connector_cls = MoySkladCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         MoySkladBiApiConnectionDefinition,
     )

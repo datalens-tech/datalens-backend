@@ -6,12 +6,12 @@ from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.connector import (
     CHSchoolbookCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BASE_CONFIGS
 from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import CONFIGS
@@ -37,7 +37,7 @@ class CHSchoolbookBiApiSourceDefinition(BiApiSourceDefinition):
 
 class CHSchoolbookBiApiConnector(BiApiConnector):
     core_connector_cls = CHSchoolbookCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         CHSchoolbookBiApiConnectionDefinition,
     )

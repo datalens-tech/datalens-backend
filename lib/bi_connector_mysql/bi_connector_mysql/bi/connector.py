@@ -4,17 +4,17 @@ from bi_connector_mysql.core.connector import (
     MySQLTableCoreSourceDefinition,
     MySQLSubselectCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
 )
-
 from bi_api_connector.api_schema.source_base import (
     SQLDataSourceSchema, SQLDataSourceTemplateSchema, SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
+
+from bi_connector_mysql.formula.constants import DIALECT_NAME_MYSQL
 from bi_connector_mysql.bi.api_schema.connection import MySQLConnectionSchema
 from bi_connector_mysql.bi.connection_form.form_config import MySQLConnectionFormFactory
 from bi_connector_mysql.bi.connection_info import MySQLConnectionInfoProvider
@@ -47,5 +47,5 @@ class MySQLBiApiConnector(BiApiConnector):
         MySQLBiApiTableSourceDefinition,
         MySQLBiApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DialectName.MYSQL
+    formula_dialect_name = DIALECT_NAME_MYSQL
     translation_configs = frozenset(CONFIGS)

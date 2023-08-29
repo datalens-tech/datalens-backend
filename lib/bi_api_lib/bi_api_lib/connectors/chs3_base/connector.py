@@ -12,6 +12,7 @@ from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
 
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 from bi_api_lib.connectors.chs3_base.schemas import (
     BaseFileS3ConnectionSchema,
     BaseFileS3DataSourceSchema,
@@ -32,7 +33,7 @@ class BaseFileS3BiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class BaseFileS3BiApiConnector(BiApiConnector):
     core_connector_cls = BaseFileS3CoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         BaseFileS3BiApiConnectionDefinition,
     )

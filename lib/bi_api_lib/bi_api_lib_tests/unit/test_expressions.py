@@ -18,7 +18,7 @@ from bi_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDi
 from bi_core.query.expression import ExpressionCtx
 
 import bi_formula.core.exc as formula_exc
-from bi_formula.core.dialect import DialectName, from_name_and_version
+from bi_formula.core.dialect import from_name_and_version
 from bi_formula.core.message_ctx import FormulaErrorCtx
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.parser.factory import get_parser
@@ -41,6 +41,7 @@ from bi_query_processing.translation.multi_level_translator import MultiLevelQue
 
 from bi_api_lib.enums import WhereClauseOperation
 
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 
@@ -169,7 +170,7 @@ class CompilerTestBase:
             inspect_env=inspect_env,
         )
         dialect = from_name_and_version(
-            dialect_name=DialectName.CLICKHOUSE,
+            dialect_name=DIALECT_NAME_CLICKHOUSE,
             dialect_version=DB_VERSION,
         )
         self.multi_query_translator = MultiLevelQueryTranslator(

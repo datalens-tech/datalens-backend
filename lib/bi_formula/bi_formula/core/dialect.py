@@ -6,7 +6,7 @@ import inspect
 import logging
 import re
 from itertools import chain
-from typing import Any, Generator, NamedTuple, Optional, Tuple, Type
+from typing import Any, Generator, NamedTuple, Optional, Type
 
 from dynamic_enum import DynamicEnum, AutoEnumValue
 
@@ -14,29 +14,18 @@ from dynamic_enum import DynamicEnum, AutoEnumValue
 LOGGER = logging.getLogger(__name__)
 
 
-VersionType = Tuple[int, ...]
+VersionType = tuple[int, ...]
 
 _NO_VERSION: VersionType = ()
 
 
-class DialectName(DynamicEnum):  # TODO: Connectorize
+class DialectName(DynamicEnum):
     UNKNOWN = AutoEnumValue()
     DUMMY = AutoEnumValue()
     ANY = AutoEnumValue()
-    CLICKHOUSE = AutoEnumValue()
-    COMPENG = AutoEnumValue()  # computation engine (PostgreSQL-based)
-    POSTGRESQL = AutoEnumValue()
-    MYSQL = AutoEnumValue()
-    MSSQLSRV = AutoEnumValue()
-    ORACLE = AutoEnumValue()
-    METRIKAAPI = AutoEnumValue()
-    SQLITE = AutoEnumValue()     # TODO ???
-    GSHEETS = AutoEnumValue()
-    YDB = AutoEnumValue()  # YDB ScanQuery connection (YQL dialect)
-    YQ = AutoEnumValue()  # YQ (Yandex Query) (YQL dialect)
-    BITRIX = AutoEnumValue()
-    BIGQUERY = AutoEnumValue()
-    SNOWFLAKE = AutoEnumValue()
+    SQLITE = AutoEnumValue()  # TODO: Remove
+    GSHEETS = AutoEnumValue()  # FIXME
+    BITRIX = AutoEnumValue()  # FIXME
 
 
 class DialectBit(NamedTuple):
@@ -201,7 +190,6 @@ class StandardDialect(DialectNamespace):
     SQLITE = simple_combo(name=DialectName.SQLITE)
     GSHEETS = simple_combo(name=DialectName.GSHEETS)
     BITRIX = simple_combo(name=DialectName.BITRIX)
-    METRIKAAPI = simple_combo(name=DialectName.METRIKAAPI)
 
 
 dialect_defaults: dict[DialectName, DialectCombo] = {

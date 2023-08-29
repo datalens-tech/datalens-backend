@@ -6,12 +6,12 @@ from bi_connector_bundle_partners.kontur_market.core.connector import (
     KonturMarketCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_partners.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_partners.kontur_market.bi.api_schema.connection import KonturMarketConnectionSchema
@@ -34,7 +34,7 @@ class KonturMarketBiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class KonturMarketBiApiConnector(BiApiConnector):
     core_connector_cls = KonturMarketCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         KonturMarketBiApiConnectionDefinition,
     )

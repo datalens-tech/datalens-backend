@@ -6,12 +6,12 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.api_schema.connection import BaseClickHouseFrozenConnectionSchema
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.i18n.localizer import CONFIGS
@@ -30,7 +30,7 @@ class BaseCHFrozenBiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class BaseCHFrozenBiApiConnector(BiApiConnector):
     core_connector_cls = CHFrozenCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         BaseCHFrozenBiApiConnectionDefinition,
     )

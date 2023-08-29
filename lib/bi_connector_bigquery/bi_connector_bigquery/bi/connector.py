@@ -1,10 +1,10 @@
-from bi_formula.core.dialect import DialectName
 from bi_api_connector.api_schema.source_base import (
     SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
 from bi_api_connector.connector import (
     BiApiSourceDefinition, BiApiConnectionDefinition, BiApiConnector,
 )
+from bi_connector_bigquery.formula.constants import DIALECT_NAME_BIGQUERY
 from bi_connector_bigquery.core.connector import (
     BigQueryCoreConnector, BigQueryCoreConnectionDefinition,
     BigQueryCoreTableSourceDefinition, BigQueryCoreSubselectSourceDefinition
@@ -46,5 +46,5 @@ class BigQueryBiApiConnector(BiApiConnector):
     connection_definitions = (
         BigQueryBiApiConnectionDefinition,
     )
-    formula_dialect_name = DialectName.BIGQUERY
+    formula_dialect_name = DIALECT_NAME_BIGQUERY
     translation_configs = frozenset(CONFIGS)

@@ -3,7 +3,6 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector imp
     ClickhouseGeoFilteredCoreConnectionDefinition,
     ClickhouseGeoFilteredTableCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
@@ -12,6 +11,9 @@ from bi_api_connector.connector import (
 )
 
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.api_schema.connection import (
     CHGeoFilteredConnectionSchema,
 )
@@ -41,5 +43,5 @@ class ClickhouseGeoFilteredBiApiConnector(BiApiConnector):
     core_connector_cls = ClickhouseGeoFilteredCoreConnector
     connection_definitions = (ClickhouseGeoFilteredBiApiConnectionDefinition,)
     source_definitions = (ClickhouseGeoFilteredBiApiTableSourceDefinition,)
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     translation_configs = frozenset(CONFIGS)

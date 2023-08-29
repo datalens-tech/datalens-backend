@@ -3,15 +3,15 @@ from bi_connector_metrica.core.connector import (
     MetricaApiCoreConnectionDefinition, AppMetricaApiCoreConnectionDefinition,
     MetricaApiCoreSourceDefinition, AppMetricaApiCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
 )
-
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+
+from bi_connector_metrica.formula.constants import DIALECT_NAME_METRICAAPI
 from bi_connector_metrica.bi.api_schema.connection import ConnectionMetrikaAPISchema, ConnectionAppMetricaAPISchema
 from bi_connector_metrica.bi.connection_form.form_config import (
     MetricaAPIConnectionFormFactory, AppMetricaAPIConnectionFormFactory,
@@ -40,7 +40,7 @@ class MetricaApiBiApiConnector(BiApiConnector):
     connection_definitions = (MetricaApiBiApiConnectionDefinition,)
     source_definitions = (MetricaApiFilteredBiApiTableSourceDefinition,)
     filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
-    formula_dialect_name = DialectName.METRIKAAPI
+    formula_dialect_name = DIALECT_NAME_METRICAAPI
     translation_configs = frozenset(CONFIGS)
 
 
@@ -63,5 +63,5 @@ class AppMetricaApiBiApiConnector(BiApiConnector):
     connection_definitions = (AppMetricaApiBiApiConnectionDefinition,)
     source_definitions = (AppMetricaApiFilteredBiApiTableSourceDefinition,)
     filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
-    formula_dialect_name = DialectName.METRIKAAPI
+    formula_dialect_name = DIALECT_NAME_METRICAAPI
     translation_configs = frozenset(CONFIGS)

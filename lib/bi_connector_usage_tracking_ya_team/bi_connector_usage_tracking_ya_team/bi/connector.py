@@ -6,12 +6,12 @@ from bi_connector_usage_tracking_ya_team.core.connector import (
     UsageTrackingYaTeamCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_usage_tracking_ya_team.bi.i18n.localizer import CONFIGS
 from bi_connector_usage_tracking_ya_team.bi.api_schema.connection import UsageTrackingYaTeamConnectionSchema
@@ -34,7 +34,7 @@ class UsageTrackingYaTeamBiApiSourceDefinition(BiApiSourceDefinition):
 
 class UsageTrackingYaTeamBiApiConnector(BiApiConnector):
     core_connector_cls = UsageTrackingYaTeamCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         UsageTrackingYaTeamBiApiConnectionDefinition,
     )

@@ -4,18 +4,18 @@ from bi_connector_postgresql.core.postgresql.connector import (
     PostgreSQLTableCoreSourceDefinition,
     PostgreSQLSubselectCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
 )
-
 from bi_api_connector.api_schema.source_base import (
     SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
     SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
+
+from bi_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
 from bi_api_lib.connectors.postgresql.api_schema.connection import PostgreSQLConnectionSchema
 from bi_api_lib.connectors.postgresql.connection_form.form_config import PostgreSQLConnectionFormFactory
 from bi_api_lib.connectors.postgresql.connection_info import PostgreSQLConnectionInfoProvider
@@ -47,5 +47,5 @@ class PostgreSQLBiApiConnector(BiApiConnector):
         PostgreSQLBiApiTableSourceDefinition,
         PostgreSQLBiApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DialectName.POSTGRESQL
+    formula_dialect_name = DIALECT_NAME_POSTGRESQL
     # translation_configs = frozenset(CONFIGS)  TODO: add after a connectorization

@@ -4,7 +4,6 @@ from bi_connector_postgresql.core.greenplum.connector import (
     GreenplumTableCoreSourceDefinition,
     GreenplumSubselectCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
@@ -16,6 +15,8 @@ from bi_api_connector.api_schema.source_base import (
     SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
     SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
+
+from bi_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
 from bi_api_lib.connectors.greenplum.api_schema.connection import GreenplumConnectionSchema
 from bi_api_lib.connectors.greenplum.connection_form.form_config import GreenplumConnectionFormFactory
 from bi_api_lib.connectors.greenplum.connection_info import GreenplumConnectionInfoProvider
@@ -47,5 +48,5 @@ class GreenplumBiApiConnector(BiApiConnector):
         GreenplumBiApiTableSourceDefinition,
         GreenplumBiApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DialectName.POSTGRESQL
+    formula_dialect_name = DIALECT_NAME_POSTGRESQL
     # translation_configs = frozenset(CONFIGS)  TODO: add after a connectorization

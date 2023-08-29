@@ -6,8 +6,6 @@ from bi_connector_yql.core.yq.connector import (
     YQSubselectCoreSourceDefinition, YQTableCoreSourceDefinition,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
@@ -16,6 +14,7 @@ from bi_api_connector.api_schema.source_base import (
     SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
 
+from bi_connector_yql.formula.constants import DIALECT_NAME_YQ
 from bi_api_lib.connectors.yq.connection_form.form_config import YQConnectionFormFactory
 from bi_api_lib.connectors.yq.schemas import YQConnectionSchema
 
@@ -41,7 +40,7 @@ class YQBiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class YQBiApiConnector(BiApiConnector):
     core_connector_cls = YQCoreConnector
-    formula_dialect_name = DialectName.YQ
+    formula_dialect_name = DIALECT_NAME_YQ
     connection_definitions = (
         YQBiApiConnectionDefinition,
     )

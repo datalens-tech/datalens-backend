@@ -4,7 +4,6 @@ from bi_connector_mssql.core.connector import (
     MSSQLTableCoreSourceDefinition,
     MSSQLSubselectCoreSourceDefinition,
 )
-from bi_formula.core.dialect import DialectName
 
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
@@ -16,6 +15,8 @@ from bi_api_connector.api_schema.source_base import (
     SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
     SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
+
+from bi_connector_mssql.formula.constants import DIALECT_NAME_MSSQLSRV
 from bi_connector_mssql.bi.api_schema.connection import MSSQLConnectionSchema
 from bi_connector_mssql.bi.connection_form.form_config import MSSQLConnectionFormFactory
 from bi_connector_mssql.bi.connection_info import MSSQLConnectionInfoProvider
@@ -48,5 +49,5 @@ class MSSQLBiApiConnector(BiApiConnector):
         MSSQLBiApiTableSourceDefinition,
         MSSQLBiApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DialectName.MSSQLSRV
+    formula_dialect_name = DIALECT_NAME_MSSQLSRV
     translation_configs = frozenset(CONFIGS)

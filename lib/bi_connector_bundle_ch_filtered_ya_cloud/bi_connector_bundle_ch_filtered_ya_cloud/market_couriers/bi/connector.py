@@ -6,12 +6,12 @@ from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.connector imp
     CHMarketCouriersCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BASE_CONFIGS
 from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import CONFIGS
@@ -41,7 +41,7 @@ class CHMarketCouriersBiApiSourceDefinition(BiApiSourceDefinition):
 
 class CHMarketCouriersBiApiConnector(BiApiConnector):
     core_connector_cls = CHMarketCouriersCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         CHMarketCouriersBiApiConnectionDefinition,
     )

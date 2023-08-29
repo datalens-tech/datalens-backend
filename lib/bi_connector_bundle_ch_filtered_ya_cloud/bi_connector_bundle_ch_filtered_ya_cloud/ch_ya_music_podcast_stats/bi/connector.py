@@ -6,12 +6,12 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.con
     CHYaMusicPodcastStatsCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BASE_CONFIGS
 from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import CONFIGS
@@ -41,7 +41,7 @@ class CHYaMusicPodcastStatsBiApiSourceDefinition(BiApiSourceDefinition):
 
 class CHYaMusicPodcastStatsBiApiConnector(BiApiConnector):
     core_connector_cls = CHYaMusicPodcastStatsCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         CHYaMusicPodcastStatsBiApiConnectionDefinition,
     )

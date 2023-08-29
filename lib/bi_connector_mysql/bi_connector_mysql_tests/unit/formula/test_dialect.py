@@ -1,11 +1,11 @@
-from bi_formula.core.dialect import DialectName
 from bi_formula.connectors.base.testing.dialect import DefaultDialectFormulaConnectorTestSuite
 
+from bi_connector_mysql.formula.constants import DIALECT_NAME_MYSQL
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 
 
 class DialectMySQLTestSuite(DefaultDialectFormulaConnectorTestSuite):
-    dialect_name = DialectName.MYSQL
+    dialect_name = DIALECT_NAME_MYSQL
     default_dialect = D.MYSQL_8_0_12
     dialect_matches = (
         ('5.6', D.MYSQL_5_6),

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from bi_api_connector.api_schema.source_base import SubselectDataSourceSchema, SubselectDataSourceTemplateSchema
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
@@ -11,6 +9,8 @@ from bi_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
 )
+
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_chyt.bi.api_schema.connection import CHYTConnectionSchema
 from bi_connector_chyt.bi.api_schema.source import (
@@ -66,7 +66,7 @@ class CHYTSubselectBiApiSourceDefinition(BiApiSourceDefinition):
 
 class CHYTBiApiConnector(BiApiConnector):
     core_connector_cls = CHYTCoreConnector
-    formula_dialect_name = DialectName.CLICKHOUSE
+    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     connection_definitions = (
         CHYTBiApiConnectionDefinition,
     )
