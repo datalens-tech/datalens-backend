@@ -107,6 +107,8 @@ spec:
             - name: LOCAL_RQE_INT_SYNC
               value: "0"
             {{ end }}
+            - name: USE_IAM_SUBJECT_RESOLVER  # TODO: delete after control_api is updated
+              value: "1"
           resources:
             requests:
               cpu: {{ .Values.app_resources.dataset_api.cpu }}
