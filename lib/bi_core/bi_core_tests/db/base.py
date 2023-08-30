@@ -12,9 +12,9 @@ from bi_core_testing.testcases.dataset import BaseDatasetTestClass
 from bi_core_testing.dataset_builder import DatasetBuilderFactory, DefaultDbDatasetBuilderFactory
 
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
-from bi_core.connectors.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE, SOURCE_TYPE_CH_TABLE
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
-from bi_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE, SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.testing.connection import make_clickhouse_saved_connection
 
 import bi_core_tests.db.config as test_config
 

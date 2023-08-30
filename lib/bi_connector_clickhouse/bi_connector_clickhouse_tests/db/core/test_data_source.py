@@ -7,9 +7,9 @@ from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDat
 from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from bi_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
-from bi_core.connectors.clickhouse.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
-from bi_core.connectors.clickhouse.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
 
 from bi_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
 

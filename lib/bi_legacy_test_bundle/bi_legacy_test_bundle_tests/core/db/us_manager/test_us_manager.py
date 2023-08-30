@@ -8,7 +8,7 @@ from aiohttp import ClientResponseError
 from bi_constants.enums import DataSourceRole, ConnectionType
 
 from bi_core import exc
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 from bi_core.data_source import DataSource
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase

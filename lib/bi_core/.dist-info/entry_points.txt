@@ -1,6 +1,5 @@
 [bi_core.connectors]
 chydb = bi_core.connectors.chydb.connector:CHYDBCoreConnector
-clickhouse = bi_core.connectors.clickhouse.connector:ClickHouseCoreConnector
 solomon = bi_core.connectors.solomon.connector:SolomonCoreConnector
 
 [console_scripts]

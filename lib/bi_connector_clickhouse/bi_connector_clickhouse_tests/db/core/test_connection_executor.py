@@ -10,7 +10,7 @@ from bi_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
 )
 
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 
 from bi_connector_clickhouse_tests.db.config import CoreConnectionSettings
 from bi_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass

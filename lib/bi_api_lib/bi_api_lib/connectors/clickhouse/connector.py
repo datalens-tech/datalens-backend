@@ -1,4 +1,4 @@
-from bi_core.connectors.clickhouse.connector import (
+from bi_connector_clickhouse.core.connector import (
     ClickHouseCoreConnector,
     ClickHouseCoreConnectionDefinition,
     ClickHouseTableCoreSourceDefinition,

@@ -13,7 +13,7 @@ from bi_query_processing.exc import DatasetError
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1, HttpDatasetApiResponse
 from bi_api_client.dsmaker.primitives import Dataset, ObligatoryFilter, WhereClause
 from bi_constants.enums import AggregationFunction, BIType, JoinType, TopLevelComponentId, ComponentType
-from bi_core.connectors.clickhouse.data_source import ClickHouseDataSource
+from bi_connector_clickhouse.core.data_source import ClickHouseDataSource
 from bi_core_testing.database import make_table, C
 from bi_api_lib_tests.utils import (
     validate_schema, get_field_by_title, recycle_validation_response,

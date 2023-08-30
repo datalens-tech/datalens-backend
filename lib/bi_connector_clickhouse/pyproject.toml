@@ -24,6 +24,9 @@ yandex-bi-formula = {path = "../../lib/bi_formula"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [tool.poetry.plugins]
+[tool.poetry.plugins."bi_core.connectors"]
+clickhouse = "bi_connector_clickhouse.core.connector:ClickHouseCoreConnector"
+
 [tool.poetry.plugins."bi_db_testing.connectors"]
 clickhouse = "bi_connector_clickhouse.db_testing.connector:ClickHouseDbTestingConnector"
 

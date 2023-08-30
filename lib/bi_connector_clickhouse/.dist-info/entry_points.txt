@@ -1,3 +1,6 @@
+[bi_core.connectors]
+clickhouse = bi_connector_clickhouse.core.connector:ClickHouseCoreConnector
+
 [bi_db_testing.connectors]
 clickhouse = bi_connector_clickhouse.db_testing.connector:ClickHouseDbTestingConnector
 

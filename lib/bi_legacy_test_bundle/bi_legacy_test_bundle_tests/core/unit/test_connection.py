@@ -5,7 +5,7 @@ import pytest
 from bi_constants.enums import ConnectionType
 
 from bi_core.us_connection import get_connection_class
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
 from bi_connector_mssql.core.us_connection import ConnectionMSSQL
 from bi_connector_mysql.core.us_connection import ConnectionMySQL

@@ -14,8 +14,9 @@ from bi_constants.enums import ProcessorType, RedisInstanceKind
 
 from bi_configs.enums import AppType, RedisMode
 
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
-from bi_connector_chyt_internal.core.us_connection import BaseConnectionCHYTInternal
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse  # TODO: remove dependency on connector
+from bi_connector_chyt_internal.core.us_connection import BaseConnectionCHYTInternal  # TODO: remove dependency on connector
+
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.aio.middlewares.services_registry import services_registry_middleware
 from bi_core.aio.middlewares.tracing import TracingService

@@ -1,19 +1,21 @@
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreSourceDefinition
 from bi_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefinitionBase
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
-from bi_core.connectors.clickhouse.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
-from bi_core.connectors.clickhouse.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
+from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+
 from bi_core.connectors.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor
 )
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
 from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_core.connectors.clickhouse.settings import ClickHouseSettingDefinition
+from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
+from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+
+from bi_connector_clickhouse.core.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
+from bi_connector_clickhouse.core.settings import ClickHouseSettingDefinition
+from bi_connector_clickhouse.core.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 
 
 class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):

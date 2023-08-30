@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, FrozenSet, Optional, Sequence
 import attr
 import pytest
 
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouseBase
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouseBase
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory import IntranetEnvManagerFactory

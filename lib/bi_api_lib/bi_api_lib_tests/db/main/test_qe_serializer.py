@@ -15,7 +15,7 @@ from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core_testing.executors import ExecutorFactoryBase
 
-from bi_connector_clickhouse.core.clickhouse.testing.exec_factory import ClickHouseExecutorFactory
+from bi_connector_clickhouse.core.testing.exec_factory import ClickHouseExecutorFactory
 from bi_connector_postgresql.core.postgresql.testing.exec_factory import PostgresExecutorFactory
 
 from bi_formula.definitions.common import within_group

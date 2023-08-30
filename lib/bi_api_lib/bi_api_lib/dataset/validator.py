@@ -54,7 +54,7 @@ from bi_utils.utils import enum_not_none
 # TODO: Remove connector dependencies
 from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_SUBSELECT
 from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 from bi_connector_chyt.core.us_connection import ConnectionCHYTToken
 from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_SUBSELECT

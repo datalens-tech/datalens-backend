@@ -51,6 +51,7 @@ yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch
 yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}

@@ -77,7 +77,6 @@ ydb = ">=2.10.1"
 
 [tool.poetry.plugins."bi_core.connectors"]
 chydb = "bi_core.connectors.chydb.connector:CHYDBCoreConnector"
-clickhouse = "bi_core.connectors.clickhouse.connector:ClickHouseCoreConnector"
 solomon = "bi_core.connectors.solomon.connector:SolomonCoreConnector"
 
 [tool.poetry.group.tests.dependencies]

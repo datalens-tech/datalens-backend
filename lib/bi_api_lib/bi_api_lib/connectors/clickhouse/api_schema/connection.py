@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_core.connectors.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 
 from bi_api_connector.api_schema.extras import FieldExtra
 from bi_api_connector.api_schema.connection_base import ConnectionMetaMixin
