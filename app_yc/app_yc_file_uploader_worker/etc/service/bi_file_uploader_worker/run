@@ -4,4 +4,4 @@ set -x  # debug.
 set -eu
 
 exec \
-    file_uploader_worker
+    file-uploader-worker
