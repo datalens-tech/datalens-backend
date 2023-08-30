@@ -1,3 +1,48 @@
+0.140.0
+-------
+
+* [Sergei Borodin](http://staff/serayborodin@gmail.com)
+
+ * BI-4876 rename entrypoint file-worker (#207)  [ https://github.com/datalens-tech/datalens-backend-private/commit/31f12ca ]
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * BI-4803: Fix data filtering in selectors (#179)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d4f4a5f ]
+ * BI-4624: Use anyascii from pypi (#206)           [ https://github.com/datalens-tech/datalens-backend-private/commit/3c5403c ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Removed empty modules from bi_testing (#172)                                             [ https://github.com/datalens-tech/datalens-backend-private/commit/73b57b5 ]
+ * Moved TestClientConverterAiohttpToFlask from bi_testing_ya to bi_api_lib_testing (#175)  [ https://github.com/datalens-tech/datalens-backend-private/commit/15d0d59 ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * Remove bi_test_project_task_interface (#205)  [ https://github.com/datalens-tech/datalens-backend-private/commit/78cb3eb ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * gh-ci-cancel-in-progress-on-pr-update (#204)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c440263 ]
+ * build did image (#176)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/6f04fc3 ]
+
+* [Andrey Snytin](http://staff/asnytin@yandex-team.ru)
+
+ * remove ya-team specific apps from github (#197)  [ https://github.com/datalens-tech/datalens-backend-private/commit/e752fa6 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4830] Remove tier-0 build rudiments (entry points) (#199)                                 [ https://github.com/datalens-tech/datalens-backend-private/commit/5fc2705 ]
+ * [BI-4830] Remove tier-0 build rudiments (#196)                                                [ https://github.com/datalens-tech/datalens-backend-private/commit/cc681a8 ]
+ * [BI-4830] Cleanup bi-api image before moving libs to mainrepo (#194)                          [ https://github.com/datalens-tech/datalens-backend-private/commit/059aae5 ]
+ * [BI-4632] Externalize tenant resolution in public US workaround middleware & FU tasks (#158)  [ https://github.com/datalens-tech/datalens-backend-private/commit/b799e05 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * move sa_creds.py to bi_cloud_integration (#188)                 [ https://github.com/datalens-tech/datalens-backend-private/commit/c5ddc5b ]
+ * Move the greenplum core connector to a separate package (#181)  [ https://github.com/datalens-tech/datalens-backend-private/commit/feb99c5 ]
+ * BI-4852: clean up comments in the postgresql adapter (#185)     [ https://github.com/datalens-tech/datalens-backend-private/commit/4ff0e29 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-08-30 08:47:15+00:00
+
 0.139.0
 -------
 

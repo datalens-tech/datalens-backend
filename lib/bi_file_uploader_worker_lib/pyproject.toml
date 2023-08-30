@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-file-uploader-worker-lib"
-version = "0.139.0"
+version = "0.140.0"
 description = ""
 authors = ["Aleksei Konstantinov <konstasa@yandex-team.ru>"]
 packages = [{include = "bi_file_uploader_worker_lib"}]
