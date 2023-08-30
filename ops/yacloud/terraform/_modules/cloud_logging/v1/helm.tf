@@ -25,4 +25,9 @@ resource "helm_release" "this" {
       auth             = { json = jsonencode(local.sa_key) }
     })
   ]
+
+  set {
+    name = "trigger"
+    value = filemd5("${path.module}/fluentbit/templates/config-map.yaml")
+  }
 }
