@@ -8,4 +8,5 @@ module "sentry" {
   dns_zone_id           = module.constants.env_data.core_dns_zone_id
   alb_security_group_id = var.sentry_alb_security_group_id
   postgresql_config     = var.sentry_pg_config
+  sentry_version        = var.sentry_version
 }

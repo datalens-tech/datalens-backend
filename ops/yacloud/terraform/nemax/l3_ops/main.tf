@@ -81,10 +81,12 @@ module "main" {
     },
   ]
 
+  sentry_version               = "20.0.0"
   sentry_alb_security_group_id = module.infra_data.secgroup_allow_all.id
   sentry_pg_config = {
-    preset    = "c3-c2-m4"
-    locations = [module.subinfra_data.locations[module.constants.env_data.main_zone_idx]]
+    preset             = "c3-c2-m4"
+    locations          = [module.subinfra_data.locations[module.constants.env_data.main_zone_idx]]
+    security_group_ids = [module.infra_data.secgroup_allow_all.id]
   }
 
   jaeger_host = "collector.tracing.nemax.nebiuscloud.net:14250"
@@ -105,10 +107,10 @@ module "main" {
   enable_cloud_logs = false
 }
 
-module "cloud_logs" {
+module "cloud_logging" {
   source = "../../_modules/cloud_logging/v1"
 
-  folder_id      = module.constants.env_data.folder_id
-  k8s_cluster_id = module.infra_data.k8s_cluster.id
+  folder_id          = module.constants.env_data.folder_id
+  k8s_cluster_id     = module.infra_data.k8s_cluster.id
   cloud_api_endpoint = module.constants.env_data.cloud_api_endpoint
 }

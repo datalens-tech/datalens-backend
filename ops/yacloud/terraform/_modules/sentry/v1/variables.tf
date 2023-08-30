@@ -16,10 +16,15 @@ variable "alb_security_group_id" {
 
 variable "postgresql_config" {
   type = object({
-    preset = string
+    preset             = string
+    security_group_ids = list(string)
     locations = list(object({
       subnet_id = string
       zone      = string
     }))
   })
+}
+
+variable "sentry_version" {
+  type = string
 }

@@ -94,9 +94,15 @@ variable "enable_sentry" {
   type = bool
 }
 
+variable "sentry_version" {
+  type    = string
+  default = null
+}
+
 variable "sentry_pg_config" {
   type = object({
-    preset = string
+    preset             = string
+    security_group_ids = list(string)
     locations = list(object({
       subnet_id = string
       zone      = string

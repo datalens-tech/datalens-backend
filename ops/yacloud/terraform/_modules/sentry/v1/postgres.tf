@@ -1,7 +1,8 @@
 resource "yandex_mdb_postgresql_cluster" "sentry" {
-  name        = "sentry"
-  environment = "PRODUCTION"
-  network_id  = var.network_id
+  name               = "sentry"
+  environment        = "PRODUCTION"
+  network_id         = var.network_id
+  security_group_ids = var.postgresql_config.security_group_ids
 
   config {
     version = 14

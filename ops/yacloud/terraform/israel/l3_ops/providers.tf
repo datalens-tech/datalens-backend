@@ -10,7 +10,7 @@ terraform {
     }
     ycp = {
       source  = "terraform.storage.cloud-preprod.yandex.net/yandex-cloud/ycp"
-      version = "v0.114.0"
+      version = "0.114.0"
     }
   }
   backend "s3" {
