@@ -716,7 +716,7 @@ develop = false
 attrs = ">=22.2.0"
 bi-i18n = {path = "../../lib/bi_i18n"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 
@@ -894,7 +894,7 @@ attrs = ">=22.2.0"
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [package.source]
@@ -934,7 +934,7 @@ yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
@@ -7089,7 +7089,7 @@ yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -7290,7 +7290,7 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
@@ -7416,7 +7416,7 @@ asyncpg = ">=0.27.0"
 attrs = ">=22.2.0"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
@@ -7882,23 +7882,23 @@ develop = false
 [package.dependencies]
 asyncpg = ">=0.27.0"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../lib/bi_i18n"}
+bi-i18n = {path = "../../../lib/bi_i18n"}
 psycopg2-binary = ">=2.9.6"
 python-dateutil = ">=2.8.2"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../lib/bi_configs"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
-yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
-yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+yandex-bi-app-tools = {path = "../../../lib/bi_app_tools"}
+yandex-bi-configs = {path = "../../../lib/bi_configs"}
+yandex-bi-constants = {path = "../../../lib/bi_constants"}
+yandex-bi-core = {path = "../../../lib/bi_core"}
+yandex-bi-core-testing = {path = "../../../lib/bi_core_testing"}
+yandex-bi-db-testing = {path = "../../../lib/bi_db_testing"}
+yandex-bi-formula = {path = "../../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../../lib/bi_formula_ref"}
+yandex-bi-sqlalchemy-postgres = {path = "../../../lib/bi_sqlalchemy_postgres"}
 
 [package.source]
 type = "directory"
-url = "../../lib/bi_connector_postgresql"
+url = "../../mainrepo/lib/bi_connector_postgresql"
 
 [[package]]
 name = "yandex-bi-connector-promql"
@@ -8032,7 +8032,7 @@ Flask = ">=2.0.3"
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
@@ -8069,7 +8069,7 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8212,7 +8212,7 @@ develop = false
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
@@ -8249,7 +8249,7 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8294,7 +8294,7 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8637,7 +8637,7 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8695,7 +8695,7 @@ yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 
@@ -8719,7 +8719,7 @@ yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8745,7 +8745,7 @@ yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 
@@ -9370,4 +9370,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "2e3298490cb264c480b8ec740308176d0f0224794e506f4376f0ba3293a0860b"
+content-hash = "61c5057d190e797ef63ce60060dfcc41f3bd4d0039801cd7ce5fe4b8d0753e0d"

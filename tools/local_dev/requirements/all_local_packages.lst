@@ -42,7 +42,6 @@ lib/bi_connector_monitoring
 lib/bi_connector_mssql
 lib/bi_connector_mysql
 lib/bi_connector_oracle
-lib/bi_connector_postgresql
 lib/bi_connector_promql
 lib/bi_connector_snowflake
 lib/bi_connector_usage_tracking_ya_team
@@ -96,5 +95,6 @@ lib/sqlalchemy_metrika_api
 lib/statcommons
 lib/yc_apis_proto_stubs
 mainrepo/lib/bi_connector_bigquery
+mainrepo/lib/bi_connector_postgresql
 mainrepo/lib/bi_package_boilerplate
 ops/bi_integration_tests

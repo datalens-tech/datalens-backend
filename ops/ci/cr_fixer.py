@@ -54,6 +54,7 @@ def fix_in_root(root: Path):
 def fix_cr_images():
     root = Path(__file__).parent.parent.parent
     fix_in_root(root / "lib")
+    fix_in_root(root / "mainrepo/lib")
     fix_in_root(root / "app")
 
 if __name__ == "__main__":

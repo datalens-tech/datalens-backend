@@ -38,7 +38,7 @@ python-dateutil = ">=2.8.2"
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
 statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 [build-system]
 requires = ["poetry-core"]

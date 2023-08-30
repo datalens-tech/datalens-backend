@@ -15,12 +15,12 @@ yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
 yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
 yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 
 [build-system]
 requires = ["poetry-core"]
