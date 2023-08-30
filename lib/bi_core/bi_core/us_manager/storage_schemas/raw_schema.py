@@ -4,7 +4,6 @@ import logging
 from typing import Any, Dict
 
 from marshmallow import fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import BIType
 
@@ -21,7 +20,7 @@ class DataSourceRawSchemaEntryStorageSchema(BaseStorageSchema[SchemaColumn]):
     title = fields.String(required=False, allow_none=True)
     description = fields.String(required=False, allow_none=True)
 
-    type = EnumField(BIType, attribute='user_type')
+    type = fields.Enum(BIType, attribute='user_type')
     nullable = fields.Boolean(required=False, allow_none=True)
 
     lock_aggregation = fields.Boolean(required=False, allow_none=True)

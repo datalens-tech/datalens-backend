@@ -3,7 +3,6 @@ from typing import Any, Type
 
 from marshmallow import fields, post_load, EXCLUDE
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import FileProcessingStatus
 from bi_core.us_manager.storage_schemas.base_types import SchemaColumnStorageSchema
@@ -49,7 +48,7 @@ class FileProcessingErrorSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         target = FileProcessingError
 
-    level = EnumField(ErrorLevel)
+    level = fields.Enum(ErrorLevel)
     message = fields.String()
     code = fields.List(fields.String())
     details = fields.Dict()
@@ -67,14 +66,14 @@ class FileTypeOneOfSchema(OneOfSchema):
 
 
 class FileSettingsBaseSchema(BaseSchema):
-    file_type = EnumField(FileType)
+    file_type = fields.Enum(FileType)
 
 
 class CSVFileSettingsSchema(FileSettingsBaseSchema):
     class Meta(BaseSchema.Meta):
         target = CSVFileSettings
 
-    encoding = EnumField(CSVEncoding)
+    encoding = fields.Enum(CSVEncoding)
     dialect = fields.Nested(CSVDialectSchema)
 
 
@@ -90,7 +89,7 @@ class FileSettingsSchema(FileTypeOneOfSchema):
 
 
 class FileSourceSettingsBaseSchema(BaseSchema):
-    file_type = EnumField(FileType)
+    file_type = fields.Enum(FileType)
 
 
 class CSVFileSourceSettingsSchema(FileSourceSettingsBaseSchema):
@@ -127,7 +126,7 @@ class FileSourceSettingsSchema(FileTypeOneOfSchema):
 
 
 class UserSourcePropertiesBaseSchema(BaseSchema):
-    file_type = EnumField(FileType)
+    file_type = fields.Enum(FileType)
 
 
 class GSheetsUserSourcePropertiesSchema(UserSourcePropertiesBaseSchema):
@@ -145,7 +144,7 @@ class UserSourcePropertiesSchema(FileTypeOneOfSchema):
 
 
 class UserSourceDataSourcePropertiesBaseSchema(BaseSchema):
-    file_type = EnumField(FileType)
+    file_type = fields.Enum(FileType)
 
 
 class GSheetsUserSourceDataSourcePropertiesSchema(UserSourceDataSourcePropertiesBaseSchema):
@@ -172,7 +171,7 @@ class DataSourceSchema(BaseSchema):
     raw_schema = fields.Nested(SchemaColumnStorageSchema, many=True)
     file_source_settings = fields.Nested(FileSourceSettingsSchema, allow_none=True)
     user_source_dsrc_properties = fields.Nested(UserSourceDataSourcePropertiesSchema, allow_none=True)
-    status = EnumField(FileProcessingStatus)
+    status = fields.Enum(FileProcessingStatus)
     error = fields.Nested(FileProcessingErrorSchema, allow_none=True)
 
 
@@ -181,12 +180,12 @@ class DataFileSchema(BaseModelSchema):
         target = DataFile
 
     filename = fields.String()
-    file_type = EnumField(FileType, allow_none=True)
+    file_type = fields.Enum(FileType, allow_none=True)
     file_settings = fields.Nested(FileSettingsSchema, allow_none=True)
     user_source_properties = fields.Nested(UserSourcePropertiesSchema, allow_none=True)
     size = fields.Integer(allow_none=True)
     sources = fields.Nested(DataSourceSchema, many=True, allow_none=True)
-    status = EnumField(FileProcessingStatus)
+    status = fields.Enum(FileProcessingStatus)
     error = fields.Nested(FileProcessingErrorSchema, allow_none=True)
 
 
@@ -202,5 +201,5 @@ class RenameTenantStatusModelSchema(BaseModelSchema):
         target = RenameTenantStatusModel
 
     tenant_id = fields.String()
-    status = EnumField(RenameTenantStatus)
+    status = fields.Enum(RenameTenantStatus)
     mtime = fields.Float()

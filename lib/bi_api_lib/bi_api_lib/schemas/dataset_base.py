@@ -5,7 +5,6 @@ from copy import deepcopy
 from typing import Any, Dict
 
 from marshmallow import fields as ma_fields, ValidationError, pre_load, post_dump, validates_schema
-from marshmallow_enum import EnumField
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import (
@@ -71,23 +70,23 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     guid = ma_fields.String()
     hidden = ma_fields.Boolean(load_default=False)
     description = ma_fields.String()
-    initial_data_type = EnumField(BIType, allow_none=True)
-    cast = EnumField(BIType)
-    type = EnumField(FieldType, readonly=True)
-    data_type = EnumField(BIType, allow_none=True)
+    initial_data_type = ma_fields.Enum(BIType, allow_none=True)
+    cast = ma_fields.Enum(BIType)
+    type = ma_fields.Enum(FieldType, readonly=True)
+    data_type = ma_fields.Enum(BIType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
 
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
     calc_spec = ma_fields.Nested(CalculationSpecSchema)
 
-    aggregation = EnumField(AggregationFunction, load_default=AggregationFunction.none.name)
+    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
     aggregation_locked = ma_fields.Boolean(readonly=True, allow_none=True, load_default=False, dump_only=True)
     autoaggregated = ma_fields.Boolean(readonly=True, allow_none=True, dump_only=True)
     has_auto_aggregation = ma_fields.Boolean(allow_none=True)
     lock_aggregation = ma_fields.Boolean(allow_none=True)
 
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute='managed_by', dump_only=True)
 
     @post_dump(pass_many=False)
@@ -132,12 +131,12 @@ class ComponentErrorListSchema(DefaultSchema[component_errors.ComponentErrorRegi
             TARGET_CLS = component_errors.ComponentError
 
             message = ma_fields.String()
-            level = EnumField(ComponentErrorLevel)
+            level = ma_fields.Enum(ComponentErrorLevel)
             code = ErrorCodeField()
             details = ma_fields.Dict()
 
         id = ma_fields.String()
-        type = EnumField(ComponentType)
+        type = ma_fields.Enum(ComponentType)
         errors = ma_fields.List(ma_fields.Nested(ComponentErrorSchema))
 
     items = ma_fields.List(ma_fields.Nested(ComponentErrorPackSchema))

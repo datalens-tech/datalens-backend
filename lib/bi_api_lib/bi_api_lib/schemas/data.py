@@ -6,7 +6,6 @@ from typing import Any, ClassVar, Dict, List
 
 from marshmallow import fields as ma_fields, EXCLUDE, pre_load, pre_dump
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import (
     BIType, QueryItemRefType, FieldRole, FieldType, FieldVisibility, OrderDirection,
@@ -84,10 +83,10 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
 class FieldsResponseFieldSchema(BaseSchema):
     title = ma_fields.String()
     guid = ma_fields.String()
-    data_type = EnumField(BIType)
+    data_type = ma_fields.Enum(BIType)
     hidden = ma_fields.Boolean()
-    type = EnumField(FieldType)
-    calc_mode = EnumField(CalcMode)
+    type = ma_fields.Enum(FieldType)
+    calc_mode = ma_fields.Enum(CalcMode)
 
 
 class DatasetFieldsResponseSchema(BaseSchema):
@@ -107,7 +106,7 @@ class OrderBySchema(DefaultSchema[RawOrderByFieldSpec]):
     TARGET_CLS = RawOrderByFieldSpec
 
     column = ma_fields.String(required=True)
-    direction = EnumField(ApiOrderingDirection, required=True)
+    direction = ma_fields.Enum(ApiOrderingDirection, required=True)
 
     def to_object(self, data: dict) -> RawOrderByFieldSpec:
         data['direction'] = {
@@ -338,41 +337,41 @@ class RoleSpecSchema(OneOfSchema):
     class RoleSpecSchemaVariant(DefaultSchema[RawRoleSpec]):
         TARGET_CLS = RawRoleSpec
 
-        role = EnumField(FieldRole)
+        role = ma_fields.Enum(FieldRole)
 
     class OrderByRoleSpecSchemaVariant(DefaultSchema[RawOrderByRoleSpec]):
         TARGET_CLS = RawOrderByRoleSpec
 
-        role = EnumField(FieldRole)
-        direction = EnumField(OrderDirection)
+        role = ma_fields.Enum(FieldRole)
+        direction = ma_fields.Enum(OrderDirection)
 
     class RangeRoleSpecSchemaVariant(DefaultSchema[RawRangeRoleSpec]):
         TARGET_CLS = RawRangeRoleSpec
 
-        role = EnumField(FieldRole)
-        range_type = EnumField(RangeType)
+        role = ma_fields.Enum(FieldRole)
+        range_type = ma_fields.Enum(RangeType)
 
     class RowRoleSpecSchemaVariant(DefaultSchema[RawRowRoleSpec]):
         TARGET_CLS = RawRowRoleSpec
 
-        role = EnumField(FieldRole)
-        visibility = EnumField(FieldVisibility)
+        role = ma_fields.Enum(FieldRole)
+        visibility = ma_fields.Enum(FieldVisibility)
 
     class TemplateRoleSpecSchemaVariant(DefaultSchema[RawTemplateRoleSpec]):
         TARGET_CLS = RawTemplateRoleSpec
 
-        role = EnumField(FieldRole)
+        role = ma_fields.Enum(FieldRole)
         template = ma_fields.String()
-        visibility = EnumField(FieldVisibility)
+        visibility = ma_fields.Enum(FieldVisibility)
 
     class TreeRoleSpecSchemaVariant(DefaultSchema[RawTreeRoleSpec]):
         TARGET_CLS = RawTreeRoleSpec
 
-        role = EnumField(FieldRole)
+        role = ma_fields.Enum(FieldRole)
         level = ma_fields.Integer(allow_none=False)
         prefix = ma_fields.String(allow_none=False)
         dimension_values = ma_fields.Nested(DimensionValueSpecSchema, many=True, allow_none=False)
-        visibility = EnumField(FieldVisibility)
+        visibility = ma_fields.Enum(FieldVisibility)
 
         @pre_dump
         def dump_prefix(self, data: dict, *args: Any, **kwargs: Any) -> dict:
@@ -424,7 +423,7 @@ class QueryOrderByItemSchema(DefaultSchema[RawOrderByFieldSpec], _FlattenRefMixi
     TARGET_CLS = RawOrderByFieldSpec
 
     ref = ma_fields.Nested(ItemRefSchema, allow_none=False)
-    direction = EnumField(OrderDirection, required=True)
+    direction = ma_fields.Enum(OrderDirection, required=True)
     block_id = ma_fields.Integer(allow_none=True)
 
 
@@ -432,7 +431,7 @@ class QueryFiltersItemSchema(DefaultSchema[RawFilterFieldSpec], _FlattenRefMixin
     TARGET_CLS = RawFilterFieldSpec
 
     ref = ma_fields.Nested(ItemRefSchema, allow_none=False)
-    operation = EnumField(WhereClauseOperation, required=True)
+    operation = ma_fields.Enum(WhereClauseOperation, required=True)
     values = ma_fields.List(ma_fields.Raw(allow_none=True), required=True, allow_none=True)
     block_id = ma_fields.Integer(allow_none=True)
 
@@ -440,13 +439,13 @@ class QueryFiltersItemSchema(DefaultSchema[RawFilterFieldSpec], _FlattenRefMixin
 class RootBlockPlacementSchema(DefaultSchema[RawRootBlockPlacement]):
     TARGET_CLS = RawRootBlockPlacement
 
-    type = EnumField(QueryBlockPlacementType)
+    type = ma_fields.Enum(QueryBlockPlacementType)
 
 
 class AfterBlockPlacementSchema(DefaultSchema[RawAfterBlockPlacement]):
     TARGET_CLS = RawAfterBlockPlacement
 
-    type = EnumField(QueryBlockPlacementType)
+    type = ma_fields.Enum(QueryBlockPlacementType)
     dimension_values = ma_fields.Nested(DimensionValueSpecSchema, many=True, allow_none=True)
 
 
@@ -619,7 +618,7 @@ class V2DataStreamResponseSchema(BaseSchema):
 class NotificationSchema(BaseSchema):
     title = ma_fields.String()
     message = ma_fields.String()
-    level = EnumField(NotificationLevel)
+    level = ma_fields.Enum(NotificationLevel)
     locator = ma_fields.String()
 
 

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 import marshmallow as ma
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import FileProcessingStatus
 
@@ -23,7 +22,7 @@ def validate_authorized(data: dict) -> None:
 
 
 class FileLinkRequestSchema(BaseRequestSchema):
-    type = EnumField(FileType, required=True)
+    type = ma.fields.Enum(FileType, required=True)
     url = ma.fields.String(required=True)
     refresh_token = ma.fields.String(load_default=None, allow_none=True)
     connection_id = ma.fields.String(load_default=None, allow_none=True)
@@ -45,7 +44,7 @@ class FileStatusRequestSchema(BaseRequestSchema):
 
 class FileStatusResultSchema(ma.Schema):
     file_id = ma.fields.String(attribute='id')
-    status = EnumField(enum=FileProcessingStatus)
+    status = ma.fields.Enum(enum=FileProcessingStatus)
     errors = ma.fields.Nested(ErrorInfoSchema, many=True)
     error = ma.fields.Nested(FileProcessingErrorApiSchema, allow_none=True)
     # progress = ma.fields.Float()

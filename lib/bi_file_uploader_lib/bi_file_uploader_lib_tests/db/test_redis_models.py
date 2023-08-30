@@ -5,7 +5,6 @@ from enum import Enum
 import attr
 import pytest
 from marshmallow import fields
-from marshmallow_enum import EnumField
 
 from bi_api_commons.base_models import RequestContextInfo
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
@@ -90,7 +89,7 @@ class SomeModelSchema(BaseModelSchema):
     title = fields.String()
     value = fields.Integer()
     some_list = fields.List(fields.String)
-    enum_field = EnumField(SomeEnum)
+    enum_field = fields.Enum(SomeEnum)
     sub_model = fields.Nested(SomeSubModelSchema)
     sub_model_with_secret = fields.Nested(SomeSubModelWithSecretSchema)
 

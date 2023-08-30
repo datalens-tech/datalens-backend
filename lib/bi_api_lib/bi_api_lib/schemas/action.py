@@ -4,7 +4,6 @@ import logging
 
 from marshmallow import fields as ma_fields, EXCLUDE
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 from typing import Any, Dict
 
 from bi_constants.enums import AggregationFunction, BIType, CalcMode
@@ -28,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ActionBaseSchema(BaseSchema):
-    action = EnumField(DatasetAction, required=True)
+    action = ma_fields.Enum(DatasetAction, required=True)
     order_index = ma_fields.Integer(load_default=0, required=False)
 
 
@@ -46,13 +45,13 @@ class UpdateFieldActionSchema(FieldActionBaseSchema, DefaultValidateSchema[Field
     class UpdateFieldBaseSchema(WithNestedValueSchema, FieldActionBaseSchema.FieldBaseSchema):
         TYPE_FIELD_NAME = 'cast'
         source = ma_fields.String()
-        calc_mode = EnumField(CalcMode)
+        calc_mode = ma_fields.Enum(CalcMode)
         hidden = ma_fields.Boolean()
         description = ma_fields.String()
-        aggregation = EnumField(AggregationFunction)
+        aggregation = ma_fields.Enum(AggregationFunction)
         formula = ma_fields.String()
         guid_formula = ma_fields.String()
-        cast = EnumField(BIType, allow_none=True)
+        cast = ma_fields.Enum(BIType, allow_none=True)
         avatar_id = ma_fields.String(allow_none=True)
         new_id = ma_fields.String(allow_none=True)
         default_value = ma_fields.Nested(ValueSchema, allow_none=True)
@@ -83,8 +82,8 @@ class CloneFieldActionSchema(FieldActionBaseSchema, DefaultValidateSchema[FieldA
 
         title = ma_fields.String()
         from_guid = ma_fields.String()
-        aggregation = EnumField(AggregationFunction, allow_none=True)
-        cast = EnumField(BIType, allow_none=True)
+        aggregation = ma_fields.Enum(AggregationFunction, allow_none=True)
+        cast = ma_fields.Enum(BIType, allow_none=True)
 
     field = ma_fields.Nested(CloneFieldSchema, required=True)
 

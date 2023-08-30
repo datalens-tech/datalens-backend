@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields, EXCLUDE
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 from typing import Any
 
 from bi_model_tools.schema.base import DefaultSchema
@@ -20,7 +19,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
     type_field = 'type'
 
     class BaseParameterValueConstraintSchema(DefaultSchema):
-        type = EnumField(ParameterValueConstraintType)
+        type = ma_fields.Enum(ParameterValueConstraintType)
 
     class AllParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
         TARGET_CLS = ParameterValueConstraint

@@ -4,7 +4,6 @@ from typing import Any, Mapping, Optional, Union, TYPE_CHECKING
 
 from marshmallow import fields as ma_fields, EXCLUDE, post_load
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import (
     BIType, BinaryJoinOperator, ConditionPartCalcMode,
@@ -32,7 +31,7 @@ class RawSchemaColumnSchema(BaseSchema):
 
     native_type = ma_fields.Nested(OneOfNativeTypeSchema, allow_none=True)
 
-    user_type = EnumField(BIType)
+    user_type = ma_fields.Enum(BIType)
     description = ma_fields.String(dump_default='', allow_none=True)
     has_auto_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
@@ -54,7 +53,7 @@ class RawSchemaColumnSchema(BaseSchema):
 
 class IndexInfoSchema(BaseSchema):
     columns = ma_fields.List(ma_fields.String, required=True)
-    kind = EnumField(IndexKind, allow_none=True)
+    kind = ma_fields.Enum(IndexKind, allow_none=True)
 
     @post_load
     def make_index_info(self, data: dict, **kwargs: Any) -> IndexInfo:
@@ -141,7 +140,7 @@ class VirtualFlagField(ma_fields.Field):
 
 class DataSourceBaseSchema(DataSourceCommonSchema):
     id = ma_fields.String(required=True)
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute='managed_by', dump_only=True)
     valid = ma_fields.Boolean(load_default=True)
 
@@ -190,17 +189,17 @@ class SourceAvatarSchema(BaseSchema):
     source_id = ma_fields.String()
     title = ma_fields.String()
     is_root = ma_fields.Boolean()
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute='managed_by', dump_only=True)
     valid = ma_fields.Boolean(dump_only=True)
 
 
 class SourceAvatarStrictSchema(SourceAvatarSchema):
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user, required=True)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, required=True)
 
 
 class ConditionPartSchema(BaseSchema):
-    calc_mode = EnumField(ConditionPartCalcMode, required=True, dump_default=ConditionPartCalcMode.direct)
+    calc_mode = ma_fields.Enum(ConditionPartCalcMode, required=True, dump_default=ConditionPartCalcMode.direct)
 
 
 class ConditionPartDirectSchema(ConditionPartSchema):
@@ -245,8 +244,8 @@ class ConditionPartGenericSchema(OneOfSchema):
 
 class AvatarRelationSchema(BaseSchema):
     class JoinConditionSchema(BaseSchema):
-        type = EnumField(JoinConditionType, attribute='condition_type', required=True)
-        operator = EnumField(BinaryJoinOperator, required=True)
+        type = ma_fields.Enum(JoinConditionType, attribute='condition_type', required=True)
+        operator = ma_fields.Enum(BinaryJoinOperator, required=True)
         left = ma_fields.Nested(ConditionPartGenericSchema, attribute='left_part', required=True)
         right = ma_fields.Nested(ConditionPartGenericSchema, attribute='right_part', required=True)
 
@@ -262,6 +261,6 @@ class AvatarRelationSchema(BaseSchema):
     left_avatar_id = ma_fields.String()
     right_avatar_id = ma_fields.String()
     conditions = ma_fields.Nested(JoinConditionSchema, many=True)
-    join_type = EnumField(JoinType)
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
+    join_type = ma_fields.Enum(JoinType)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute='managed_by', dump_only=True)

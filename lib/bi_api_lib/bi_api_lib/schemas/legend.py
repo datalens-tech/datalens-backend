@@ -2,7 +2,6 @@ from typing import Any
 
 from marshmallow import fields as ma_fields, EXCLUDE
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import (
     BIType, FieldRole, FieldType, FieldVisibility, LegendItemType, OrderDirection, RangeType,
@@ -26,20 +25,20 @@ class RoleSpecSchema(OneOfSchema):
     type_field = 'role'
 
     class RoleSpecSchemaVariant(BaseSchema):
-        role = EnumField(FieldRole)
+        role = ma_fields.Enum(FieldRole)
 
     class OrderByRoleSpecSchemaVariant(RoleSpecSchemaVariant):
-        direction = EnumField(OrderDirection)
+        direction = ma_fields.Enum(OrderDirection)
 
     class AnnotationRoleSpecSchemaVariant(RoleSpecSchemaVariant):
         annotation_type = ma_fields.String()
         target_legend_item_ids = ma_fields.List(ma_fields.Integer(), allow_none=True)
 
     class RangeRoleSpecSchemaVariant(RoleSpecSchemaVariant):
-        range_type = EnumField(RangeType)
+        range_type = ma_fields.Enum(RangeType)
 
     class DimensionRoleSpecSchemaVariant(RoleSpecSchemaVariant):
-        visibility = EnumField(FieldVisibility)
+        visibility = ma_fields.Enum(FieldVisibility)
 
     class RowRoleSpecSchemaVariant(DimensionRoleSpecSchemaVariant):
         pass
@@ -76,9 +75,9 @@ class LegendItemSchema(BaseSchema):
     id = ma_fields.String()
     title = ma_fields.String()
     role_spec = ma_fields.Nested(RoleSpecSchema)
-    data_type = EnumField(BIType)
-    field_type = EnumField(FieldType)
-    item_type = EnumField(LegendItemType)
+    data_type = ma_fields.Enum(BIType)
+    field_type = ma_fields.Enum(FieldType)
+    item_type = ma_fields.Enum(LegendItemType)
 
 
 class LegendSchema(BaseSchema):

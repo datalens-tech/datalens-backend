@@ -42,6 +42,7 @@ See tests for more specifics.
 from __future__ import annotations
 
 from typing import Any, Callable, ClassVar, Generator, Optional, Sequence, Type, TypeVar
+from types import MappingProxyType
 
 
 _ANY_TV = TypeVar('_ANY_TV')
@@ -142,6 +143,10 @@ class DynamicEnumMetaclass(type):
 
     def __iter__(cls: Type[_ANY_TV]) -> Generator[_ANY_TV, None, None]:
         yield from cls.iter_items()  # type: ignore
+
+    @property
+    def __members__(cls) -> MappingProxyType:  # For compatibility with Enum
+        return MappingProxyType({elem.name: elem.value for elem in cls})  # type: ignore
 
 
 class DynamicEnum(metaclass=DynamicEnumMetaclass):

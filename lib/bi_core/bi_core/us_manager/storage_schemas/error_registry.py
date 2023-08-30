@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import ComponentErrorLevel, ComponentType
 
@@ -17,12 +16,12 @@ class GenericComponentErrorPackSchema(DefaultStorageSchema):
         TARGET_CLS = component_errors.ComponentError
 
         message = ma_fields.String()
-        level = EnumField(ComponentErrorLevel)
+        level = ma_fields.Enum(ComponentErrorLevel)
         code = ma_fields.List(ma_fields.String())
         details = ma_fields.Dict()
 
     id = ma_fields.String()
-    type = EnumField(ComponentType)
+    type = ma_fields.Enum(ComponentType)
     errors = ma_fields.List(ma_fields.Nested(GenericComponentErrorSchema))
 
 

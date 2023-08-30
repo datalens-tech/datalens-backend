@@ -8,7 +8,6 @@ from types import TracebackType
 import aiohttp
 import attr
 import marshmallow as ma
-from marshmallow_enum import EnumField
 
 from bi_constants.api_constants import DLHeadersCommon
 from bi_constants.enums import BIType
@@ -59,7 +58,7 @@ class RawSchemaColumnSchema(ma.Schema):
 
     native_type = ma.fields.Nested(OneOfNativeTypeSchema, allow_none=True)
 
-    user_type = EnumField(BIType)
+    user_type = ma.fields.Enum(BIType)
     description = ma.fields.String(dump_default='', allow_none=True)
     has_auto_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True)

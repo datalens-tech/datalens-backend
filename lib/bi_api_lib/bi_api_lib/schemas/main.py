@@ -6,7 +6,6 @@ from flask_restx import fields, Namespace
 from flask_restx.model import RawModel
 
 from marshmallow import fields as ma_fields, Schema
-from marshmallow_enum import EnumField
 from typing import Any, Dict, Optional
 
 from bi_constants.enums import DataSourceCreatedVia
@@ -49,7 +48,7 @@ def get_api_model(
                 as_list=_field.many,
                 required=_field.required,
             )
-        elif isinstance(_field, EnumField):
+        elif isinstance(_field, ma_fields.Enum):
             return fields.String(
                 required=_field.required,
                 enum=[x.name for x in list(_field.enum)]
@@ -85,7 +84,7 @@ class CreateDatasetSchema(DatasetContentSchema):
     workbook_id = ma_fields.String()
     # TODO FIX: BI-2663 Ensure that not used and remove
     preview = ma_fields.Boolean(load_default=False, required=False)
-    created_via = EnumField(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
+    created_via = ma_fields.Enum(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
 
 
 class CreateDatasetResponseSchema(DatasetContentSchema):

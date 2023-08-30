@@ -1,4 +1,3 @@
-from marshmallow_enum import EnumField
 from marshmallow import fields as ma_fields
 
 from bi_core.us_manager.storage_schemas.connection import (
@@ -14,7 +13,7 @@ class ConnectionPostgreSQLBaseDataStorageSchema(
         ConnectionMDBStorageDataSchemaMixin,
         ConnectionSQLDataStorageSchema[ConnectionPostgreSQLBase.DataModel],
 ):
-    enforce_collate = EnumField(
+    enforce_collate = ma_fields.Enum(
         PGEnforceCollateMode,
         required=False,
         allow_none=False,

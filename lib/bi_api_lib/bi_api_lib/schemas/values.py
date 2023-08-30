@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from marshmallow import fields as ma_fields, Schema, EXCLUDE, post_dump, pre_load
-from marshmallow_enum import EnumField
 from typing import Any, ClassVar, Dict, Mapping, cast
 
 from bi_model_tools.schema.base import DefaultSchema
@@ -46,7 +45,7 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
         return data['value']
 
     class BaseValueSchema(DefaultSchema):
-        type = EnumField(BIType)
+        type = ma_fields.Enum(BIType)
         value = ma_fields.Field()
 
     class StringValueSchema(BaseValueSchema):

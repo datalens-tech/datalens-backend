@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from marshmallow import fields as ma_fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import ComponentErrorLevel
 
@@ -28,7 +27,7 @@ class FieldErrorListSchema(BaseSchema):
         code = ErrorCodeField()
         column = ma_fields.Integer()
         row = ma_fields.Integer()
-        level = EnumField(ComponentErrorLevel)
+        level = ma_fields.Enum(ComponentErrorLevel)
         token = ma_fields.String()
 
     title = ma_fields.String()

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from marshmallow_enum import EnumField
+from marshmallow import fields as ma_fields
 
 from bi_connector_oracle.core.constants import OracleDbNameType
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
@@ -16,7 +16,9 @@ class OracleConnectionSchema(ConnectionMetaMixin, RawSQLLevelMixin,
     TARGET_CLS = ConnectionSQLOracle
     ALLOW_MULTI_HOST = True
 
-    db_connect_method = EnumField(
-        OracleDbNameType, attribute='data.db_name_type',
-        required=True, bi_extra=FieldExtra(editable=True)
+    db_connect_method = ma_fields.Enum(
+        OracleDbNameType,
+        attribute='data.db_name_type',
+        required=True,
+        bi_extra=FieldExtra(editable=True),
     )

@@ -1,4 +1,4 @@
-from marshmallow_enum import EnumField
+from marshmallow import fields as ma_fields
 
 from bi_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
@@ -11,4 +11,4 @@ class ConnectionSQLOracleDataStorageSchema(
 ):
     TARGET_CLS = ConnectionSQLOracle.DataModel
 
-    db_name_type = EnumField(OracleDbNameType, required=True, allow_none=False)
+    db_name_type = ma_fields.Enum(OracleDbNameType, required=True, allow_none=False)

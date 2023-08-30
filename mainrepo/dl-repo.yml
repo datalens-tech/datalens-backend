@@ -20,7 +20,6 @@ dl_repo:
     jaeger_client: jaeger-client
     jwt: pyjwt
     typing_extensions: typing-extensions
-    marshmallow_enum: marshmallow-enum
     marshmallow_oneofschema: marshmallow-oneofschema
     more_itertools: more-itertools
     psycopg2: psycopg2-binary

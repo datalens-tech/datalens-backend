@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Dict, Mapping
 
 from marshmallow import fields as ma_fields, EXCLUDE, post_dump, pre_load
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
@@ -181,20 +180,20 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
     title = ma_fields.String(required=True)
     source = ma_fields.String()
     guid = ma_fields.String(attribute='id')
-    calc_mode = EnumField(CalcMode, required=True)
+    calc_mode = ma_fields.Enum(CalcMode, required=True)
     hidden = ma_fields.Boolean(load_default=False)
     description = ma_fields.String()
     formula = ma_fields.String(load_default='')
-    initial_data_type = EnumField(BIType, allow_none=True)
-    cast = EnumField(BIType)
-    type = EnumField(FieldType, readonly=True)
-    data_type = EnumField(BIType, allow_none=True)
+    initial_data_type = ma_fields.Enum(BIType, allow_none=True)
+    cast = ma_fields.Enum(BIType)
+    type = ma_fields.Enum(FieldType, readonly=True)
+    data_type = ma_fields.Enum(BIType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
     avatar_id = ma_fields.String(allow_none=True)
-    aggregation = EnumField(AggregationFunction, load_default=AggregationFunction.none.name)
+    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
     has_auto_aggregation = ma_fields.Boolean(allow_none=True)
     lock_aggregation = ma_fields.Boolean(allow_none=True)
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     default_value = ma_fields.Nested(ValueSchema, allow_none=True)
     value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
 
@@ -218,7 +217,7 @@ class WhereClauseSchema(DefaultSchema[WhereClause]):
     TARGET_CLS = WhereClause
 
     column = ma_fields.String()
-    operation = EnumField(WhereClauseOperation)
+    operation = ma_fields.Enum(WhereClauseOperation)
     values = ma_fields.List(ma_fields.String())
 
 
@@ -228,7 +227,7 @@ class ObligatoryFilterSchema(DefaultSchema[ObligatoryFilter]):
     id = ma_fields.String()
     field_guid = ma_fields.String()
     default_filters = ma_fields.List(ma_fields.Nested(WhereClauseSchema))
-    managed_by = EnumField(ManagedBy)
+    managed_by = ma_fields.Enum(ManagedBy)
     valid = ma_fields.Boolean()
 
 
@@ -238,7 +237,7 @@ class ColumnSchema(DefaultSchema[Column]):
     name = ma_fields.String()
     title = ma_fields.String()
     native_type = ma_fields.Dict(allow_none=True)
-    user_type = EnumField(BIType)
+    user_type = ma_fields.Enum(BIType)
     description = ma_fields.String(dump_default='', allow_none=True)
     has_auto_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
@@ -255,7 +254,7 @@ class DataSourceSchema(DefaultSchema[DataSource]):
     raw_schema = ma_fields.Nested(ColumnSchema, allow_none=True, required=False, many=True)
     index_info_set = ma_fields.List(ma_fields.Dict, allow_none=True)
     parameters = ma_fields.Dict()
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean()
 
     # Only locally used
@@ -269,7 +268,7 @@ class SourceAvatarSchema(DefaultSchema[SourceAvatar]):
     source_id = ma_fields.String()
     title = ma_fields.String()
     is_root = ma_fields.Boolean()
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean()
 
     # Only locally used
@@ -316,8 +315,8 @@ class AvatarRelationSchema(DefaultSchema[AvatarRelation]):
     class JoinConditionSchema(DefaultSchema[JoinCondition]):
         TARGET_CLS = JoinCondition
 
-        type = EnumField(JoinConditionType, dump_default=JoinConditionType.binary, dump_only=True)
-        operator = EnumField(BinaryJoinOperator, required=True)
+        type = ma_fields.Enum(JoinConditionType, dump_default=JoinConditionType.binary, dump_only=True)
+        operator = ma_fields.Enum(BinaryJoinOperator, required=True)
         left = ma_fields.Nested(ConditionPartGenericSchema, attribute='left_part', required=True)
         right = ma_fields.Nested(ConditionPartGenericSchema, attribute='right_part', required=True)
 
@@ -325,8 +324,8 @@ class AvatarRelationSchema(DefaultSchema[AvatarRelation]):
     left_avatar_id = ma_fields.String()
     right_avatar_id = ma_fields.String()
     conditions = ma_fields.Nested(JoinConditionSchema, many=True)
-    join_type = EnumField(JoinType)
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
+    join_type = ma_fields.Enum(JoinType)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
 
     # Only locally used
     created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute='created_')  # Always True
@@ -342,12 +341,12 @@ class ComponentErrorListSchema(DefaultSchema[ComponentErrorRegistry]):
             TARGET_CLS = ComponentError
 
             message = ma_fields.String()
-            level = EnumField(ComponentErrorLevel)
+            level = ma_fields.Enum(ComponentErrorLevel)
             code = ma_fields.String()
             details = ma_fields.Dict()
 
         id = ma_fields.String()
-        type = EnumField(ComponentType)
+        type = ma_fields.Enum(ComponentType)
         errors = ma_fields.List(ma_fields.Nested(ComponentErrorSchema))
 
     items = ma_fields.List(ma_fields.Nested(ComponentErrorPackSchema))

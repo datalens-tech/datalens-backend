@@ -7,7 +7,6 @@ from typing import Type, Any, Optional, Iterable
 import attr
 import marshmallow
 from marshmallow import fields
-from marshmallow_enum import EnumField
 
 from dynamic_enum import DynamicEnum
 from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
@@ -180,7 +179,7 @@ class ModelMapperMarshmallow:
             enum_by_value = False if attrib_descriptor is None else attrib_descriptor.enum_by_value
 
             return FieldBundle(
-                ma_field=EnumField(
+                ma_field=fields.Enum(
                     the_type,
                     by_value=enum_by_value,
                     **common_ma_field_kwargs.to_common_ma_field_kwargs(),

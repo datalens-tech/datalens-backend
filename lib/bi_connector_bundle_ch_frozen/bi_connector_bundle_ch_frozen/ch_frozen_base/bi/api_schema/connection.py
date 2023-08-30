@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from marshmallow_enum import EnumField
+from marshmallow import fields
 
 from bi_constants.enums import RawSQLLevel
 
@@ -13,7 +13,7 @@ from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
 class BaseClickHouseFrozenConnectionSchema(ConnectionSchema, RawSQLLevelMixin):
     TARGET_CLS = ConnectionClickhouseFrozenBase
 
-    raw_sql_level = EnumField(  # explicitly overriden to be dump-only
+    raw_sql_level = fields.Enum(  # explicitly overriden to be dump-only
         RawSQLLevel,
         attribute='raw_sql_level',
         required=False, allow_none=False,

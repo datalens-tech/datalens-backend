@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from marshmallow import fields, pre_dump
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import IndexKind
 
@@ -25,7 +24,7 @@ class RawColumnInfoSchema(BaseQEAPISchema):
 
 class IndexInfoSchema(BaseQEAPISchema):
     columns = fields.List(fields.String())
-    kind = EnumField(IndexKind, allow_none=True)
+    kind = fields.Enum(IndexKind, allow_none=True)
     unique = fields.Boolean()
 
     def to_object(self, data: Dict[str, Any]) -> RawIndexInfo:

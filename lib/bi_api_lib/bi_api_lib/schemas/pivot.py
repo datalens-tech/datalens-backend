@@ -2,7 +2,6 @@ from typing import Any
 
 from marshmallow import fields as ma_fields, EXCLUDE, validate as ma_validate
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import PivotHeaderRole, PivotRole, OrderDirection
 
@@ -22,7 +21,7 @@ from bi_api_lib.query.formalization.pivot_legend import PivotRoleSpec
 class PivotHeaderRoleSpecSchema(DefaultSchema[PivotHeaderRoleSpec]):
     TARGET_CLS = PivotHeaderRoleSpec
 
-    role = EnumField(PivotHeaderRole, required=True)
+    role = ma_fields.Enum(PivotHeaderRole, required=True)
 
 
 class PivotHeaderValueSchema(DefaultSchema[PivotHeaderValue]):
@@ -35,7 +34,7 @@ class PivotMeasureSortingSettingsSchema(DefaultSchema[PivotMeasureSortingSetting
     TARGET_CLS = PivotMeasureSortingSettings
 
     header_values = ma_fields.List(ma_fields.Nested(PivotHeaderValueSchema), allow_none=False, required=True)
-    direction = EnumField(OrderDirection, load_default=OrderDirection.asc)
+    direction = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
     role_spec = ma_fields.Nested(PivotHeaderRoleSpecSchema, allow_none=False, required=True)
 
 
@@ -56,25 +55,25 @@ class PivotRoleSpecSchema(OneOfSchema):
     class PivotRoleSpecSchemaVariant(DefaultSchema[RawPivotRoleSpec]):
         TARGET_CLS = RawPivotRoleSpec
 
-        role = EnumField(PivotRole, required=True)
+        role = ma_fields.Enum(PivotRole, required=True)
 
     class DimensionPivotRoleSpecSchemaVariant(DefaultSchema[RawDimensionPivotRoleSpec]):
         TARGET_CLS = RawDimensionPivotRoleSpec
 
-        role = EnumField(PivotRole, required=True)
-        direction = EnumField(OrderDirection, load_default=OrderDirection.asc)
+        role = ma_fields.Enum(PivotRole, required=True)
+        direction = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
 
     class AnnotationPivotRoleSpecSchemaVariant(DefaultSchema[RawAnnotationPivotRoleSpec]):
         TARGET_CLS = RawAnnotationPivotRoleSpec
 
-        role = EnumField(PivotRole, required=True)
+        role = ma_fields.Enum(PivotRole, required=True)
         annotation_type = ma_fields.String(required=True)
         target_legend_item_ids = ma_fields.List(ma_fields.Integer(), allow_none=True)
 
     class MeasurePivotRoleSpecSchemaVariant(DefaultSchema[RawPivotMeasureRoleSpec]):
         TARGET_CLS = RawPivotMeasureRoleSpec
 
-        role = EnumField(PivotRole, required=True)
+        role = ma_fields.Enum(PivotRole, required=True)
         sorting = ma_fields.Nested(PivotMeasureSortingSchema, allow_none=True, load_default=None)
 
     type_schemas = {
@@ -138,5 +137,5 @@ class RequestPivotSpecSchema(DefaultSchema[RawPivotSpec]):
 class PivotHeaderInfoSchema(DefaultSchema[PivotHeaderInfo]):
     TARGET_CLS = PivotHeaderInfo
 
-    sorting_direction = EnumField(OrderDirection, allow_none=True)
+    sorting_direction = ma_fields.Enum(OrderDirection, allow_none=True)
     role_spec = ma_fields.Nested(PivotHeaderRoleSpecSchema, allow_none=False, required=True)

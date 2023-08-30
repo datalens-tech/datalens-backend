@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any, Type
 
 import marshmallow as ma
-from marshmallow_enum import EnumField
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import BIType, FileProcessingStatus
@@ -24,7 +23,7 @@ class SourceInfoBaseRequestSchema(BaseRequestSchema):
 class SourceStatusResultSchema(ma.Schema):
     file_id = ma.fields.String()
     source_id = ma.fields.String()
-    status = EnumField(enum=FileProcessingStatus)
+    status = ma.fields.Enum(enum=FileProcessingStatus)
     errors = ma.fields.Nested(ErrorInfoSchema, many=True)
     error = ma.fields.Nested(FileProcessingErrorApiSchema, allow_none=True)
     # progress = ma.fields.Float()
@@ -36,7 +35,7 @@ class RawSchemaColumnSchema(ma.Schema):
 
     native_type = ma.fields.Nested(OneOfNativeTypeSchema, allow_none=True, load_default=None)
 
-    user_type = EnumField(BIType)
+    user_type = ma.fields.Enum(BIType)
     description = ma.fields.String(dump_default='', allow_none=True, load_default='')
     has_auto_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True, load_default=False)
     lock_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True, load_default=False)
@@ -77,7 +76,7 @@ class SourceInfoSchemaBase(ma.Schema):
     class RawSchemaColumnSchemaShorten(ma.Schema):
         name = ma.fields.String()
         title = ma.fields.String()
-        user_type = EnumField(BIType)
+        user_type = ma.fields.Enum(BIType)
 
     source_id = ma.fields.String()
     title = ma.fields.String()
@@ -101,20 +100,20 @@ class SourceInfoSchema(FileTypeOneOfSchema):
 
 
 class CSVSettingsSchema(ma.Schema):
-    encoding = EnumField(CSVEncoding)
-    delimiter = EnumField(CSVDelimiter)
+    encoding = ma.fields.Enum(CSVEncoding)
+    delimiter = ma.fields.Enum(CSVDelimiter)
     first_line_is_header = ma.fields.Boolean()
 
 
 class CSVSettingsOptionsSchema(ma.Schema):
-    encoding = ma.fields.List(EnumField(CSVEncoding))
-    delimiter = ma.fields.List(EnumField(CSVDelimiter))
+    encoding = ma.fields.List(ma.fields.Enum(CSVEncoding))
+    delimiter = ma.fields.List(ma.fields.Enum(CSVDelimiter))
 
 
 class OptionsSchema(ma.Schema):
     class ColumnsOptionsSchema(ma.Schema):
         name = ma.fields.String()
-        user_type = ma.fields.List(EnumField(BIType))
+        user_type = ma.fields.List(ma.fields.Enum(BIType))
 
     data_settings = ma.fields.Nested(CSVSettingsOptionsSchema)
     columns = ma.fields.Nested(ColumnsOptionsSchema, many=True)
@@ -122,7 +121,7 @@ class OptionsSchema(ma.Schema):
 
 class SourceInfoResultSchema(ma.Schema):
     file_id = ma.fields.String()
-    file_type = EnumField(FileType)
+    file_type = ma.fields.Enum(FileType)
     errors = ma.fields.Nested(ErrorInfoSchema, many=True)
     source = ma.fields.Nested(SourceInfoSchema)
     data_settings = ma.fields.Nested(CSVSettingsSchema)     # TODO: One of schema by file_type

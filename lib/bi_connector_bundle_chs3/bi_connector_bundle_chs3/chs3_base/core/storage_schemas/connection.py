@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import FileProcessingStatus
 
@@ -15,7 +14,7 @@ class BaseFileConnectionSourceStorageSchema(DefaultStorageSchema):
     title = fields.String()
     s3_filename = fields.String(allow_none=True, load_default=None)
     raw_schema = fields.Nested(SchemaColumnStorageSchema, many=True, allow_none=True, load_default=None)
-    status = EnumField(FileProcessingStatus)
+    status = fields.Enum(FileProcessingStatus)
 
 
 class BaseFileConnectionDataStorageSchema(Schema):

@@ -7,7 +7,6 @@ import marshmallow as ma
 from bi_api_lib.error_handling import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 from bi_api_lib.schemas.dataset_base import ComponentErrorListSchema
 from marshmallow import fields, Schema, RAISE, validate, post_load, post_dump, pre_dump
-from marshmallow_enum import EnumField
 
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_constants.enums import BIType, FileProcessingStatus
@@ -27,13 +26,13 @@ class FileSourceColumnTypeSchema(Schema):
         unknown = RAISE
 
     name = fields.String()
-    user_type = EnumField(BIType)
+    user_type = fields.Enum(BIType)
 
 
 class RawSchemaColumnSchema(Schema):
     name = fields.String()
     title = fields.String()
-    user_type = EnumField(BIType)
+    user_type = fields.Enum(BIType)
 
 
 class BaseFileSourceSchema(Schema):
@@ -49,7 +48,7 @@ class BaseFileSourceSchema(Schema):
     id = fields.String()
     file_id = fields.String(load_default=None)
     title = fields.String(bi_extra=FieldExtra(editable=True))
-    status = EnumField(FileProcessingStatus, dump_only=True)
+    status = fields.Enum(FileProcessingStatus, dump_only=True)
     raw_schema = fields.Nested(
         RawSchemaColumnSchema,
         many=True,

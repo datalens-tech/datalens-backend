@@ -1,7 +1,6 @@
 from typing import Generic, TypeVar
 
 from marshmallow import Schema, fields as ma_fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import RawSQLLevel
 
@@ -34,7 +33,7 @@ class CacheableConnectionDataSchemaMixin(Schema):
 
 
 class SubselectConnectionDataSchemaMixin(Schema):
-    raw_sql_level = EnumField(RawSQLLevel, dump_default=RawSQLLevel.off)
+    raw_sql_level = ma_fields.Enum(RawSQLLevel, dump_default=RawSQLLevel.off)
 
 
 class ConnectionMDBStorageDataSchemaMixin(Schema):

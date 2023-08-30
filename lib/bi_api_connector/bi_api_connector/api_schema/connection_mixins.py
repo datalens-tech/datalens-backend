@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import marshmallow
 from marshmallow import fields as ma_fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import RawSQLLevel
 
@@ -22,7 +21,7 @@ class MDBDatabaseSchemaMixin(marshmallow.Schema):
 
 
 class RawSQLLevelMixin(marshmallow.Schema):
-    raw_sql_level = EnumField(
+    raw_sql_level = ma_fields.Enum(
         RawSQLLevel,
         attribute='data.raw_sql_level',
         required=False, allow_none=False,

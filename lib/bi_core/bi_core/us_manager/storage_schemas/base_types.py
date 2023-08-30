@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 from marshmallow import Schema, fields, post_load
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import BIType, ConnectionType
 
@@ -27,7 +26,7 @@ class SchemaColumnStorageSchema(Schema):
     """ (currently used for uploads / ProviderConnection) """
     name = fields.String(allow_none=False)
     title = fields.String(allow_none=True)
-    user_type = EnumField(BIType, by_value=False)
+    user_type = fields.Enum(BIType, by_value=False)
     nullable = fields.Boolean()
     native_type = fields.Nested(NativeTypeSchema, allow_none=True)
     source_id = fields.String(allow_none=True)

@@ -5,7 +5,6 @@ from typing import Any, Dict
 
 from marshmallow import fields as ma_fields, post_dump, post_load, pre_load
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import (
     BIType, ManagedBy, JoinType, BinaryJoinOperator,
@@ -42,12 +41,12 @@ class SourceAvatarSchema(DefaultStorageSchema):
     title = ma_fields.String()
     source_id = ma_fields.String()
     is_root = ma_fields.Boolean()
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean(allow_none=True)
 
 
 class ConditionPartBaseSchema(DefaultStorageSchema):
-    calc_mode = EnumField(ConditionPartCalcMode)
+    calc_mode = ma_fields.Enum(ConditionPartCalcMode)
 
 
 class ConditionPartDirectSchema(ConditionPartBaseSchema):
@@ -86,17 +85,17 @@ class AvatarRelationSchema(DefaultStorageSchema):
     class JoinConditionSchema(DefaultStorageSchema):
         TARGET_CLS = multisource.BinaryCondition
 
-        operator = EnumField(BinaryJoinOperator)
+        operator = ma_fields.Enum(BinaryJoinOperator)
         left_part = ma_fields.Nested(ConditionPartSchema)
         right_part = ma_fields.Nested(ConditionPartSchema)
-        condition_type = EnumField(JoinConditionType)
+        condition_type = ma_fields.Enum(JoinConditionType)
 
     id = ma_fields.String()
     left_avatar_id = ma_fields.String()
     right_avatar_id = ma_fields.String()
     conditions = ma_fields.List(ma_fields.Nested(JoinConditionSchema))
-    join_type = EnumField(JoinType)
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    join_type = ma_fields.Enum(JoinType)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean(allow_none=True)
 
 
@@ -109,7 +108,7 @@ class RLSSchema(DefaultStorageSchema):
         class RLSSubjectSchema(DefaultStorageSchema):
             TARGET_CLS = rls_module.RLSSubject
 
-            subject_type = EnumField(RLSSubjectType)
+            subject_type = ma_fields.Enum(RLSSubjectType)
             subject_id = ma_fields.String()
             subject_name = ma_fields.String()  # login, group name, etc
 
@@ -118,7 +117,7 @@ class RLSSchema(DefaultStorageSchema):
         #   * pattern_type=RLSPatternType.value and allowed_value is not None
         #   * pattern_type=RLSPatternType.all and allowed_value is None
         allowed_value = ma_fields.String(allow_none=True)
-        pattern_type = EnumField(RLSPatternType, dump_default=RLSPatternType.value)
+        pattern_type = ma_fields.Enum(RLSPatternType, dump_default=RLSPatternType.value)
         subject = ma_fields.Nested(RLSSubjectSchema)
 
     items = ma_fields.List(ma_fields.Nested(RLSEntrySchema))
@@ -132,7 +131,7 @@ class RLSSchema(DefaultStorageSchema):
 
 
 class BaseValueSchema(DefaultStorageSchema):
-    type = EnumField(BIType)
+    type = ma_fields.Enum(BIType)
     value = ma_fields.Field()
 
 
@@ -243,7 +242,7 @@ class ValueSchema(OneOfSchema):
 
 
 class BaseParameterValueConstraintSchema(DefaultStorageSchema):
-    type = EnumField(ParameterValueConstraintType)
+    type = ma_fields.Enum(ParameterValueConstraintType)
 
 
 class AllParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
@@ -313,17 +312,17 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
 
         title = ma_fields.String()
         guid = ma_fields.String()
-        aggregation = EnumField(AggregationFunction)
-        type = EnumField(FieldType)
+        aggregation = ma_fields.Enum(AggregationFunction)
+        type = ma_fields.Enum(FieldType)
         hidden = ma_fields.Boolean()
         description = ma_fields.String()
-        cast = EnumField(BIType, allow_none=True)
-        initial_data_type = EnumField(BIType, allow_none=True)
-        data_type = EnumField(BIType, allow_none=True)
+        cast = ma_fields.Enum(BIType, allow_none=True)
+        initial_data_type = ma_fields.Enum(BIType, allow_none=True)
+        data_type = ma_fields.Enum(BIType, allow_none=True)
         valid = ma_fields.Boolean(allow_none=True)
         has_auto_aggregation = ma_fields.Boolean(allow_none=True)
         lock_aggregation = ma_fields.Boolean(allow_none=True)
-        managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+        managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
 
         # this will be flattened on dump and un-flattened before load
         # TODO: dump/load as is and migrate data in storage respectively
@@ -411,7 +410,7 @@ class ResultSchemaAuxSchema(DefaultStorageSchema):
 class DefaultWhereClauseSchema(DefaultStorageSchema):
     TARGET_CLS = DefaultWhereClause
 
-    operation = EnumField(WhereClauseOperation)
+    operation = ma_fields.Enum(WhereClauseOperation)
     values = ma_fields.List(ma_fields.String())
 
 
@@ -421,7 +420,7 @@ class ObligatoryFilterSchema(DefaultStorageSchema):
     id = ma_fields.String()
     field_guid = ma_fields.String()
     default_filters = ma_fields.List(ma_fields.Nested(DefaultWhereClauseSchema))
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean(allow_none=True)
 
 

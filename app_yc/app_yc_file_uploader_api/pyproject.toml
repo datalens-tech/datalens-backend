@@ -15,7 +15,6 @@ arq = ">=0.25.0"
 attrs = ">=22.2.0"
 docker = ">=6.0.1"
 marshmallow = ">=3.19.0"
-marshmallow-enum = ">=1.5.1"
 python = ">=3.10, <3.12"
 sentry-sdk = ">=1.15.0"
 yandex-bi-configs = {path = "../../lib/bi_configs"}

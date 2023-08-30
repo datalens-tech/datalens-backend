@@ -12,7 +12,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 bi-i18n = {path = "../../lib/bi_i18n"}
-marshmallow-enum = ">=1.5.1"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../lib/bi_configs"}

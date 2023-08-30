@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from marshmallow_enum import EnumField
+from marshmallow import fields
 
 from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
@@ -18,7 +18,7 @@ class PostgreSQLConnectionSchema(ConnectionMetaMixin, MDBDatabaseSchemaMixin, Da
     TARGET_CLS = ConnectionPostgreSQL
     ALLOW_MULTI_HOST = True
 
-    enforce_collate = EnumField(
+    enforce_collate = fields.Enum(
         PGEnforceCollateMode,
         attribute='data.enforce_collate',
         required=False,

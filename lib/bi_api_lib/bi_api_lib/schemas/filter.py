@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from marshmallow import fields as ma_fields, post_dump
-from marshmallow_enum import EnumField
 from typing import Any, Dict
 
 from bi_constants.enums import ManagedBy
@@ -17,7 +16,7 @@ class WhereSchema(DefaultSchema[RawFilterFieldSpec]):
     TARGET_CLS = RawFilterFieldSpec
 
     column = ma_fields.String(required=True)
-    operation = EnumField(WhereClauseOperation, required=True)
+    operation = ma_fields.Enum(WhereClauseOperation, required=True)
     values = ma_fields.List(ma_fields.Raw(allow_none=True), required=True, allow_none=True)
 
     def to_object(self, data: dict) -> RawFilterFieldSpec:
@@ -34,7 +33,7 @@ class ObligatoryFilterSchema(DefaultValidateSchema[AddUpdateObligatoryFilter]):
     id = ma_fields.String(required=True)
     field_guid = ma_fields.String()
     default_filters = ma_fields.Nested(WhereSchema, many=True, load_default=[])
-    managed_by = EnumField(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
     valid = ma_fields.Boolean(load_default=True)
 
     @post_dump

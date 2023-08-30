@@ -5,7 +5,6 @@ from typing import Any, Optional
 
 from marshmallow import fields
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import ManagedBy, DataSourceCollectionType
 
@@ -24,7 +23,7 @@ class DataSourceCollectionSpecStorageSchema(BaseStorageSchema[DataSourceCollecti
 
     id = fields.String(required=False, allow_none=True)
     title = fields.String(required=False, allow_none=True, load_default=None)
-    managed_by = EnumField(ManagedBy, required=False, allow_none=True)
+    managed_by = fields.Enum(ManagedBy, required=False, allow_none=True)
     valid = fields.Boolean(load_default=True)
 
     # Sources

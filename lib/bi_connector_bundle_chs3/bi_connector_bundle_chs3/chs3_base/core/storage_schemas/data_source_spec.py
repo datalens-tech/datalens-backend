@@ -1,5 +1,4 @@
 from marshmallow import fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import FileProcessingStatus
 
@@ -12,5 +11,5 @@ class BaseFileS3DataSourceSpecStorageSchema(SQLDataSourceSpecStorageSchema):
 
     s3_endpoint = fields.String(required=False, allow_none=True, load_default=None)
     bucket = fields.String(required=False, allow_none=True, load_default=None)
-    status = EnumField(FileProcessingStatus, required=False, allow_none=True, load_default=None)
+    status = fields.Enum(FileProcessingStatus, required=False, allow_none=True, load_default=None)
     origin_source_id = fields.String(required=False, allow_none=True, load_default=None)

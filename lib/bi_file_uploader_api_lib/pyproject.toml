@@ -18,7 +18,6 @@ bi-file-uploader-task-interface = {path = "../../lib/bi_file_uploader_task_inter
 bi-task-processor = {path = "../../lib/bi_task_processor"}
 gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
-marshmallow-enum = ">=1.5.1"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.12"
 yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}

@@ -2,7 +2,6 @@ from typing import Any, TypeVar
 
 from marshmallow import fields as ma_fields, EXCLUDE
 from marshmallow_oneofschema import OneOfSchema
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import (
     BIType, QueryItemRefType, FieldRole, LegendItemType, FieldType, FieldVisibility, PivotRole,
@@ -40,7 +39,7 @@ class RoleSpecSchema(OneOfSchema):
     type_field = 'role'
 
     class RoleSpecSchemaVariantBase(DefaultSchema[_ROLE_SPEC_TV]):
-        role = EnumField(FieldRole)
+        role = ma_fields.Enum(FieldRole)
 
     class RoleSpecSchemaVariant(RoleSpecSchemaVariantBase[RoleSpec]):
         TARGET_CLS = RoleSpec
@@ -48,23 +47,23 @@ class RoleSpecSchema(OneOfSchema):
     class RowRoleSpecSchemaVariant(RoleSpecSchemaVariantBase[RoleSpec]):
         TARGET_CLS = RowRoleSpec
 
-        visibility = EnumField(FieldVisibility)
+        visibility = ma_fields.Enum(FieldVisibility)
 
     class OrderByRoleSpecSchemaVariant(RoleSpecSchemaVariantBase[RoleSpec]):
         TARGET_CLS = OrderByRoleSpec
 
-        direction = EnumField(OrderDirection)
+        direction = ma_fields.Enum(OrderDirection)
 
     class RangeRoleSpecSchemaVariant(RoleSpecSchemaVariantBase[RoleSpec]):
         TARGET_CLS = RangeRoleSpec
 
-        range_type = EnumField(RangeType)
+        range_type = ma_fields.Enum(RangeType)
 
     class TemplateRoleSpecSchemaVariant(RoleSpecSchemaVariantBase[RoleSpec]):
         TARGET_CLS = TemplateRoleSpec
 
         template = ma_fields.String()
-        visibility = EnumField(FieldVisibility)
+        visibility = ma_fields.Enum(FieldVisibility)
 
     class TreeRoleSpecSchemaVariant(RoleSpecSchemaVariantBase[RoleSpec]):
         TARGET_CLS = TreeRoleSpec
@@ -73,7 +72,7 @@ class RoleSpecSchema(OneOfSchema):
         prefix_req = ma_fields.String(dump_only=True, attribute='prefix', data_key='prefix')  # sent as a string
         prefix_resp = ma_fields.Raw(load_only=True, attribute='prefix', data_key='prefix')  # but returned as an array
         dimension_values = ma_fields.Nested(DimensionValueSpecSchema, many=True, allow_none=True)
-        visibility = EnumField(FieldVisibility)
+        visibility = ma_fields.Enum(FieldVisibility)
 
     type_schemas = {
         FieldRole.row.name: RowRoleSpecSchemaVariant,
@@ -99,7 +98,7 @@ class ItemRefSchema(OneOfSchema):
         unknown = EXCLUDE
 
     class RefSchema(BaseSchema):
-        type = EnumField(QueryItemRefType)
+        type = ma_fields.Enum(QueryItemRefType)
 
     class IdRefSchema(RefSchema):
         id = ma_fields.String(required=True)
@@ -139,7 +138,7 @@ class QueryFieldsItemSchema(BaseSchema):
 class FilterClauseSchema(BaseSchema):
     ref = ma_fields.Nested(ItemRefSchema)
     title = ma_fields.String(allow_none=True)
-    operation = EnumField(WhereClauseOperation)
+    operation = ma_fields.Enum(WhereClauseOperation)
     values = ma_fields.List(ma_fields.String())
     block_id = ma_fields.Integer(dump_default=None)
 
@@ -158,9 +157,9 @@ class LegendItemSchema(DefaultSchema[LegendItem]):
     id = ma_fields.String()
     title = ma_fields.String()
     role_spec = ma_fields.Nested(RoleSpecSchema)
-    data_type = EnumField(BIType)
-    field_type = EnumField(FieldType)
-    item_type = EnumField(LegendItemType)
+    data_type = ma_fields.Enum(BIType)
+    field_type = ma_fields.Enum(FieldType)
+    item_type = ma_fields.Enum(LegendItemType)
 
 
 class ResultSpecSchema(BaseSchema):
@@ -170,7 +169,7 @@ class ResultSpecSchema(BaseSchema):
 class PivotHeaderRoleSpecSchema(DefaultSchema[PivotHeaderRoleSpec]):
     TARGET_CLS = PivotHeaderRoleSpec
 
-    role = EnumField(PivotHeaderRole, required=True)
+    role = ma_fields.Enum(PivotHeaderRole, required=True)
 
 
 class PivotHeaderValueSchema(DefaultSchema[PivotHeaderValue]):
@@ -183,7 +182,7 @@ class PivotMeasureSortingSettingsSchema(DefaultSchema[PivotMeasureSortingSetting
     TARGET_CLS = PivotMeasureSortingSettings
 
     header_values = ma_fields.List(ma_fields.Nested(PivotHeaderValueSchema), allow_none=False, required=True)
-    direction = EnumField(OrderDirection, load_default=OrderDirection.asc)
+    direction = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
     role_spec = ma_fields.Nested(PivotHeaderRoleSpecSchema, allow_none=False, required=True)
 
 
@@ -204,25 +203,25 @@ class PivotRoleSpecSchema(OneOfSchema):
     class PivotRoleSpecSchemaVariant(DefaultSchema[PivotRoleSpec]):
         TARGET_CLS = PivotRoleSpec
 
-        role = EnumField(PivotRole)
+        role = ma_fields.Enum(PivotRole)
 
     class DimensionPivotRoleSpecSchemaVariant(DefaultSchema[DimensionPivotRoleSpec]):
         TARGET_CLS = DimensionPivotRoleSpec
 
-        role = EnumField(PivotRole)
-        direction = EnumField(OrderDirection)
+        role = ma_fields.Enum(PivotRole)
+        direction = ma_fields.Enum(OrderDirection)
 
     class AnnotationPivotRoleSpecSchemaVariant(DefaultSchema[AnnotationPivotRoleSpec]):
         TARGET_CLS = AnnotationPivotRoleSpec
 
-        role = EnumField(PivotRole)
+        role = ma_fields.Enum(PivotRole)
         annotation_type = ma_fields.String()
         target_legend_item_ids = ma_fields.List(ma_fields.Integer(), allow_none=True)
 
     class MeasurePivotRoleSpecSchemaVariant(DefaultSchema[PivotMeasureRoleSpec]):
         TARGET_CLS = PivotMeasureRoleSpec
 
-        role = EnumField(PivotRole, required=True)
+        role = ma_fields.Enum(PivotRole, required=True)
         sorting = ma_fields.Nested(PivotMeasureSortingSchema, allow_none=True, load_default=None)
 
     type_schemas = {
@@ -310,12 +309,12 @@ class PivotDataResponseSchema(BaseSchema):
 class NotificationSchema(BaseSchema):
     title = ma_fields.String()
     message = ma_fields.String()
-    level = EnumField(NotificationLevel)
+    level = ma_fields.Enum(NotificationLevel)
     locator = ma_fields.String()
 
 
 class BlockPlacementSchema(BaseSchema):
-    type = EnumField(QueryBlockPlacementType)
+    type = ma_fields.Enum(QueryBlockPlacementType)
 
 
 class RootBlockPlacementSchema(BlockPlacementSchema):

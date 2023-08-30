@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 
 from marshmallow import fields as ma_fields
-from marshmallow_enum import EnumField
 
 from bi_constants.enums import (
     BIType, JoinType, BinaryJoinOperator, AggregationFunction,
@@ -20,8 +19,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class JoinSchema(BaseSchema):
-    types = ma_fields.List(EnumField(JoinType))
-    operators = ma_fields.List(EnumField(BinaryJoinOperator))
+    types = ma_fields.List(ma_fields.Enum(JoinType))
+    operators = ma_fields.List(ma_fields.Enum(BinaryJoinOperator))
 
 
 class PreviewSchema(BaseSchema):
@@ -30,10 +29,10 @@ class PreviewSchema(BaseSchema):
 
 class DataTypesSchema(BaseSchema):
     class DataTypeListItemSchema(BaseSchema):
-        type = EnumField(BIType)
-        aggregations = ma_fields.List(EnumField(AggregationFunction))
-        casts = ma_fields.List(EnumField(BIType))
-        filter_operations = ma_fields.List(EnumField(WhereClauseOperation))
+        type = ma_fields.Enum(BIType)
+        aggregations = ma_fields.List(ma_fields.Enum(AggregationFunction))
+        casts = ma_fields.List(ma_fields.Enum(BIType))
+        filter_operations = ma_fields.List(ma_fields.Enum(WhereClauseOperation))
 
     items = ma_fields.List(ma_fields.Nested(DataTypeListItemSchema))
 
@@ -41,8 +40,8 @@ class DataTypesSchema(BaseSchema):
 class FieldsSchema(BaseSchema):
     class FieldListItemSchema(BaseSchema):
         guid = ma_fields.String()
-        casts = ma_fields.List(EnumField(BIType))
-        aggregations = ma_fields.List(EnumField(AggregationFunction))
+        casts = ma_fields.List(ma_fields.Enum(BIType))
+        aggregations = ma_fields.List(ma_fields.Enum(AggregationFunction))
 
     items = ma_fields.List(ma_fields.Nested(FieldListItemSchema))
 
