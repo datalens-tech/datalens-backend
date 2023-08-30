@@ -1,8 +1,6 @@
 [bi_api_lib.connectors]
 chs3_gsheets = bi_api_lib.connectors.chs3_gsheets.connector:GSheetsFileS3BiApiConnector
 file = bi_api_lib.connectors.file.connector:FileS3BiApiConnector
-greenplum = bi_api_lib.connectors.greenplum.connector:GreenplumBiApiConnector
-postgresql = bi_api_lib.connectors.postgresql.connector:PostgreSQLBiApiConnector
 solomon = bi_api_lib.connectors.solomon.connector:SolomonBiApiConnector
 ydb = bi_api_lib.connectors.ydb.connector:YDBBiApiConnector
 yq = bi_api_lib.connectors.yq.connector:YQBiApiConnector

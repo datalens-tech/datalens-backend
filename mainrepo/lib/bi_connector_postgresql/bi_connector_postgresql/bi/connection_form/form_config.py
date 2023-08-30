@@ -20,8 +20,8 @@ from bi_api_connector.form_config.models.common import CommonFieldName, FormFiel
 from bi_api_connector.form_config.models.rows.base import FormRow
 from bi_api_connector.form_config.models.shortcuts.mdb import get_db_host_section
 
-from bi_api_lib.connectors.postgresql.connection_info import PostgreSQLConnectionInfoProvider
-from bi_api_lib.i18n.localizer import Translatable
+from bi_connector_postgresql.bi.connection_info import PostgreSQLConnectionInfoProvider
+from bi_connector_postgresql.bi.i18n.localizer import Translatable
 
 
 @unique

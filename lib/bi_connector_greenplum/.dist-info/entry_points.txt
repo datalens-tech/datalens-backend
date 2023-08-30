@@ -1,2 +1,5 @@
+[bi_api_lib.connectors]
+greenplum = bi_connector_greenplum.bi.connector:GreenplumBiApiConnector
+
 [bi_core.connectors]
 greenplum = bi_connector_greenplum.core.connector:GreenplumCoreConnector

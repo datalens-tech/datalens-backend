@@ -25,10 +25,6 @@ msgstr "Google Sheets"
 msgid "label_connector-file"
 msgstr "Files"
 
-#: bi_api_lib/connectors/greenplum/connection_info.py:6
-msgid "label_connector-greenplum"
-msgstr "Greenplum"
-
 #: bi_api_lib/connectors/solomon/connection_form/form_config.py:22
 msgid "label_solomon-conn-description"
 msgstr ""
@@ -50,32 +46,6 @@ msgstr "SA key"
 #: bi_api_lib/connectors/yq/connection_info.py:8
 msgid "label_connector-yq"
 msgstr "Yandex Query"
-
-#: bi_api_lib/connectors/postgresql/connection_form/form_config.py:154
-msgid "field_enforce-collate"
-msgstr "Specifying collate in the request"
-
-#: bi_api_lib/connectors/postgresql/connection_form/form_config.py:161
-msgid "value_enforce-collate-auto"
-msgstr "Auto"
-
-#: bi_api_lib/connectors/postgresql/connection_form/form_config.py:165
-msgid "value_enforce-collate-off"
-msgstr "Off"
-
-#: bi_api_lib/connectors/postgresql/connection_form/form_config.py:169
-msgid "value_enforce-collate-on"
-msgstr "On"
-
-#: bi_api_lib/connectors/postgresql/connection_form/form_config.py:179
-msgid "label_postgres-ssl-enabled-tooltip"
-msgstr ""
-"When the option is enabled, the sslmode parameter takes the value required, "
-"and when disabled — prefer"
-
-#: bi_api_lib/connectors/postgresql/connection_info.py:6
-msgid "label_connector-postgres"
-msgstr "PostgreSQL"
 
 #: bi_api_lib/connectors/chydb/connection_form/form_config.py:46
 msgid "label_ydb-host-tooltip"
