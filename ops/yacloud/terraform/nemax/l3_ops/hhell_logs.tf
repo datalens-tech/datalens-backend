@@ -45,6 +45,10 @@ resource "yandex_mdb_clickhouse_cluster" "log-storage" {
     permission {
       database_name = "logs"
     }
+    settings {
+      async_insert = true
+      async_insert_busy_timeout = 10000
+    }
   }
 }
 

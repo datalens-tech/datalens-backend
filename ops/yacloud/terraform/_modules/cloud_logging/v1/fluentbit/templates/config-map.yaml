@@ -21,9 +21,6 @@ data:
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-yc.conf
-{{- if eq .Values.objectStorageExport true }}
-    @INCLUDE output-s3.conf
-{{- end }}
 
   input-kubernetes.conf: |
     [INPUT]
@@ -37,6 +34,22 @@ data:
         Refresh_Interval  10
 
   filter-kubernetes.conf: |
+    [FILTER]
+        Name parser
+        Match kube.*
+        Key_Name log
+        Parser cri
+        Parser docker
+
+    # then try to apply custom parsers
+    [FILTER]
+        Name parser
+        Match kube.*
+        Parser json
+        Parser unified_agent
+        Parser pongerd
+        Key_Name log
+
     [FILTER]
         Name                kubernetes
         Match               kube.*
@@ -55,10 +68,6 @@ data:
         Rule          $kubernetes['annotations']['yc.logging.tag'] ^(.+)$  yc.logging.$kubernetes['annotations']['yc.logging.tag'] false
         Emitter_Name  re_emitted
 
-    [FILTER]
-        Name  stdout
-        Match yc.logging.*
-
   output-yc.conf: |
     [OUTPUT]
         Name            yc-logging
@@ -67,58 +76,20 @@ data:
         resource_type   {kubernetes/namespace_name}
         resource_id     {kubernetes/pod_name}
         stream_name     {kubernetes/host}
-        message_key     log
-        level_key       severity
+        message_key     message
+        level_key       levelname
         default_level   DEBUG
         authorization   iam-key-file:/etc/secret/key.json
         endpoint        {{ .Values.cloudApiEndpoint }}
 
-  {{- if eq .Values.objectStorageExport true }}
-  output-s3.conf: |
-    [OUTPUT]
-        Name                         s3
-        Match                        *
-        bucket                       {{ .Values.objectStorageBucket }}
-        region                       ru-central1
-        endpoint                     https://storage.yandexcloud.net
-        total_file_size              10M
-        s3_key_format                /$TAG[2]/$TAG[0]/%Y-%m/%d/%H%M%S-$UUID.log
-        s3_key_format_tag_delimiters .-
-  {{- end }}
-
   parsers.conf: |
-    [PARSER]
-        Name   apache
-        Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
 
     [PARSER]
-        Name   apache2
+        Name cri
         Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache_error
-        Format regex
-        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
-
-    [PARSER]
-        Name   nginx
-        Format regex
-        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   json
-        Format json
-        Time_Key time
-{{/*        Time_Format %d/%b/%Y:%H:%M:%S %z*/}}
-        Time_Format %Y-%b-%dT%H:%M:%S:%zZ
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) ([^ ]*) (?<log>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
 
     [PARSER]
         Name        docker
@@ -128,22 +99,19 @@ data:
         Time_Keep   On
 
     [PARSER]
-        # http://rubular.com/r/tjUt3Awgg4
-        Name cri
+        Name   unified_agent
         Format regex
-        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Regex  ^(?<time>[^ ]+) (?<pid>\d+) (?<thread_id>\d+) (?<level>RESOURCES|DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL_INFO|ALERT|EMERG) (?<log>.*)$
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L%z
 
     [PARSER]
-        Name        syslog
-        Format      regex
-        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Name   pongerd
+        Format regex
+        Regex  ^pongerd\[(?<pid>\d+)\]: \[(?<time>[^ ]+)\] (?<log>.*)$
         Time_Key    time
-        Time_Format %b %d %H:%M:%S
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
 
     [PARSER]
-        Name   app_log_parser
-        Format regex
-        Regex  ^\[req_id=(?<req_id>[0-9a-fA-F\-]+)\] \[(?<severity>.*)\] (?<code>\d+) (?<log>.*)$
-        Types  code:integer
+        Name   json
+        Format json
