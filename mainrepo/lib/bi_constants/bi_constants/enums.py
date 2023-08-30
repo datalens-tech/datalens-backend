@@ -55,6 +55,7 @@ class RequestAuthMode(Enum):
 
 
 class SourceBackendType(DynamicEnum):
+    # Generic
     NONE = AutoEnumValue()
     # Databases
     CLICKHOUSE = AutoEnumValue()
