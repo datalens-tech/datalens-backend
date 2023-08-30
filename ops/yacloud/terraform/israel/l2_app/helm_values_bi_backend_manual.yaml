@@ -3,16 +3,18 @@ app:
 
 docker_images_info:
   bi_api:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api-tier-1  # CLOUD-122905
-    tag: "0.1964.0"
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api  # CLOUD-122905
+    tag: "0.1977.0"
   control_api:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api-tier-1
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api
+  data_api:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api
   file_uploader_api:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-tier-1
-    tag: "0.112.0"
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader
+    tag: "0.115.0"
   file_uploader_worker:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-worker-tier-1
-    tag: "0.135.0"
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-worker
+    tag: "0.140.0"
   external_api:
     repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-external-api-tier-1
     tag: "0.78.0"

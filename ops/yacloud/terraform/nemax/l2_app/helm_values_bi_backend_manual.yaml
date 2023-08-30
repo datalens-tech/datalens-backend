@@ -3,18 +3,18 @@ app:
 
 docker_images_info:
   bi_api:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api-tier-1
-    tag: "0.1969.0"
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
+    tag: "0.1977.0"
   control_api:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api-tier-1
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
   data_api:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api-tier-1
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
   rqe_int_sync:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-int-sync-tier-1
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-int-sync
   rqe_ext_async:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-ext-async-tier-1
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-ext-async
   rqe_ext_sync:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-ext-sync-tier-1
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-ext-sync
 #  file_uploader_api:
 #    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader
 #    tag: "0.102.0"
