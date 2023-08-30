@@ -52,7 +52,7 @@ yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
 yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
 yandex-bi-api-client = {path = "../../lib/bi_api_client"}
-# yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+# yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
