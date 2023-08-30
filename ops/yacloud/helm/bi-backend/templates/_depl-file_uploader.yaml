@@ -22,8 +22,11 @@ spec:
       labels:
         app: file-uploader-api
       annotations:
-        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+        injector.tumblr.com/request: {{ ternary (ternary "jaeger,nginx_v2" "jaeger,nginx" (eq .Values.enabled_features.rootless_mode true)) "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: main
           image: "{{ .Values.docker_images_info.file_uploader_api.repo }}:{{ .Values.docker_images_info.file_uploader_api.tag }}"
@@ -68,11 +71,15 @@ spec:
               memory: {{.Values.app_resources.file_uploader_api.ram}}
           readinessProbe:
             httpGet:
-              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              port: {{ ternary .Values.app_tls_port (ternary 8080 80 (eq .Values.rootless_mode true)) (eq .Values.tls_to_backends true) }}
               scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
               path: "/api/v2/ping"
             initialDelaySeconds: 60
             periodSeconds: 10
+          {{ if .Values.enabled_features.rootless_mode }}
+          securityContext:
+            {{- include "security-context-data-api" . | indent 12}}
+          {{ end }}
       volumes:
         - name: init-scripts
           configMap:
@@ -110,6 +117,9 @@ spec:
       annotations:
         injector.tumblr.com/request: jaeger-agent
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: main
           image: "{{ .Values.docker_images_info.file_uploader_worker.repo }}:{{ .Values.docker_images_info.file_uploader_worker.tag }}"
@@ -156,6 +166,10 @@ spec:
               - file-uploader-worker-health-check
             periodSeconds: 15
             timeoutSeconds: 10
+          {{ if .Values.enabled_features.rootless_mode }}
+          securityContext:
+            {{- include "security-context-data-api" . | indent 12}}
+          {{ end }}
       volumes:
         - name: init-scripts
           configMap:

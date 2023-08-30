@@ -122,7 +122,7 @@ spec:
   ports:
     - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
       port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
-      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port (ternary 8080 80 (eq .Values.enabled_features.rootless_mode true)) (eq .Values.tls_to_backends true) }}
       protocol: TCP
 
 {{ if .Values.enabled_features.network_policy }}

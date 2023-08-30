@@ -23,14 +23,14 @@ docker_images_info:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/dls
     tag: "1.285"
   file_uploader_api:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-uploader-tier-1
-    tag: "0.112.0"
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-file-uploader-api
+    tag: "0.115.0"
   file_uploader_worker:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-uploader-worker-tier-1
-    tag: "0.135.0"
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-file-uploader-worker
+    tag: "0.140.0"
   file_secure_reader:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-secure-reader
-    tag: "0.12.0"
+    tag: "0.13.0"
   docker_repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu
 
 yenv_type: testing
