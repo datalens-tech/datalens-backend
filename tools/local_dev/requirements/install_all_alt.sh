@@ -29,7 +29,7 @@ pip install --no-deps --ignore-installed -r "$reqsdir/requirements_conflicting.t
 pip install --no-deps --no-build-isolation "${editable_install[@]}"
 
 # local workaround
-pip install --no-deps --no-build-isolation -e /data/lib/bi_connector_bigquery
+pip install --no-deps --no-build-isolation -e /data/mainrepo/lib/bi_connector_bigquery
 
 # ensure that certifi yandex installed last
 pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat /bitools/requirements/requirements_a.txt | grep certifi-yandex)"

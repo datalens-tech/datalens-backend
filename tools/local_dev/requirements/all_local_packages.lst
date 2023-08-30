@@ -26,7 +26,6 @@ lib/bi_blackbox_client
 lib/bi_cloud_integration
 lib/bi_compeng_pg
 lib/bi_configs
-lib/bi_connector_bigquery
 lib/bi_connector_bitrix_gds
 lib/bi_connector_bundle_ch_filtered
 lib/bi_connector_bundle_ch_filtered_ya_cloud
@@ -96,5 +95,6 @@ lib/redis-cache-lock
 lib/sqlalchemy_metrika_api
 lib/statcommons
 lib/yc_apis_proto_stubs
+mainrepo/lib/bi_connector_bigquery
 mainrepo/lib/bi_package_boilerplate
 ops/bi_integration_tests

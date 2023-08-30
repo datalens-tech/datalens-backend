@@ -45,7 +45,7 @@ class ProjectRef:
 
             result.append(f"{parts[-2]}/{parts[-1]}")
 
-        result.append("lib/bi_connector_bigquery")  # workaround due to dependency hell in ops/ci/ deps
+        result.append("lib/mainrepo/bi_connector_bigquery")  # workaround due to dependency hell in ops/ci/ deps
         # remove this once it's dealt with
 
         return result

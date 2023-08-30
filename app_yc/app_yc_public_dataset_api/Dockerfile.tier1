@@ -26,7 +26,7 @@ WORKDIR /src/ops/ci
 RUN poetry export --only app_bi_yc_public_dataset_api --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
-RUN pip install --no-deps /src/lib/bi_connector_bigquery
+RUN pip install --no-deps /src/mainrepo/lib/bi_connector_bigquery
 RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat requirements.txt | grep certifi-yandex)"
 
 EXPOSE 8080
