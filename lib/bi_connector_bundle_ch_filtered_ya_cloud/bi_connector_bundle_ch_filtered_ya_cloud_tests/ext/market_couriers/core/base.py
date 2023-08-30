@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, MarketCouriersConnectorSettings
+from bi_configs.connectors_settings import MarketCouriersConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -24,9 +24,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.base import (
 
 class BaseMarketCouriersTestClass(BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseMarketCouriers]):
     conn_type = CONNECTION_TYPE_MARKET_COURIERS
-    connection_settings = ConnectorsSettingsByType(
-        MARKET_COURIERS=MarketCouriersConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = MarketCouriersConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

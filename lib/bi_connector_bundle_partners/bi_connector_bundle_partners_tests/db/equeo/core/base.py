@@ -4,7 +4,7 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, EqueoConnectorSettings
+from bi_configs.connectors_settings import EqueoConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_partners.equeo.core.us_connection import EqueoCHConnection
@@ -17,9 +17,7 @@ import bi_connector_bundle_partners_tests.db.config as test_config
 
 class BaseEqueoTestClass(BasePartnersClass[EqueoCHConnection]):
     conn_type = ConnectionType.equeo
-    connection_settings = ConnectorsSettingsByType(
-        EQUEO=EqueoConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = EqueoConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

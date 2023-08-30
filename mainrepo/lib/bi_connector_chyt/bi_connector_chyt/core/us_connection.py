@@ -6,6 +6,7 @@ from typing import Any, Callable, ClassVar, Optional
 import attr
 import marshmallow as ma
 
+from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_constants.enums import CreateDSFrom
 from bi_utils.utils import DataKey
 
@@ -17,14 +18,19 @@ from bi_connector_chyt.core.dto import CHYTDTO
 from bi_core.i18n.localizer import Translatable
 from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import (
-    ConnectionBase, DataSourceTemplate, ExecutorBasedMixin, SubselectMixin,
+    ConnectionBase, ConnectionHardcodedDataMixin, DataSourceTemplate, ExecutorBasedMixin, SubselectMixin,
 )
 from bi_core.utils import secrepr
 
 
-class BaseConnectionCHYT(SubselectMixin, ExecutorBasedMixin, ConnectionBase, abc.ABC):
+class BaseConnectionCHYT(
+        SubselectMixin, ExecutorBasedMixin, ConnectionBase,
+        ConnectionHardcodedDataMixin[CHYTConnectorSettings],
+        abc.ABC,
+):
     allow_dashsql: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = CHYTConnectorSettings
 
     chyt_table_source_type: ClassVar[CreateDSFrom]
     chyt_table_list_source_type: ClassVar[CreateDSFrom]
@@ -41,12 +47,8 @@ class BaseConnectionCHYT(SubselectMixin, ExecutorBasedMixin, ConnectionBase, abc
             changes: Optional[dict] = None,
             original_version: Optional[ConnectionBase] = None,
     ) -> None:
-        connector_settings = self.us_manager.get_services_registry().get_connectors_settings()
-        if (
-                connector_settings is not None and
-                (chyt_settings := connector_settings.CHYT) is not None and
-                self.data.alias in chyt_settings.FORBIDDEN_CLIQUES
-        ):
+        chyt_settings = self._connector_settings
+        if self.data.alias in chyt_settings.FORBIDDEN_CLIQUES:
             err_msg = f'It is forbidden to use the following cliques: {", ".join(chyt_settings.FORBIDDEN_CLIQUES)}.'
             if chyt_settings.PUBLIC_CLIQUES:
                 err_msg += f' Valid public cliques are: {", ".join(chyt_settings.PUBLIC_CLIQUES)}.'

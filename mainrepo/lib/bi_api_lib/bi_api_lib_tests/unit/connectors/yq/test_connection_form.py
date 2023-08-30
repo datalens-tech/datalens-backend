@@ -2,7 +2,7 @@ from typing import Optional
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, YQConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase, YQConnectorSettings
 
 from bi_api_connector.form_config.testing.test_connection_form_base import ConnectionFormTestBase
 from bi_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
@@ -19,10 +19,10 @@ class TestYQConnectionForm(ConnectionFormTestBase):
         params=(True, False),
         ids=('with_mdb', 'no_mdb'),
     )
-    def connectors_settings(self, request) -> Optional[ConnectorsSettingsByType]:
-        return ConnectorsSettingsByType(YQ=YQConnectorSettings(
+    def connectors_settings(self, request) -> Optional[ConnectorSettingsBase]:
+        return YQConnectorSettings(
             USE_MDB_CLUSTER_PICKER=request.param,
             HOST='',
             PORT=0,
             DB_NAME='',
-        ))
+        )

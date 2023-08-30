@@ -8,15 +8,22 @@ from aiohttp import web
 
 from bi_app_tools.aio_latency_tracking import LatencyTracker
 
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from bi_configs.settings_loaders.loader_env import (
+    load_settings_from_env_with_fallback_legacy, load_connectors_settings_from_env_with_fallback,
+)
+from bi_constants.enums import ConnectionType
 
 from bi_core.logging_config import configure_logging
 
 from bi_api_lib.app_common import LegacySRFactoryBuilder
 from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
 from bi_api_lib.app.data_api.app import DataApiAppFactory
+from bi_api_lib.loader import load_bi_api_lib
+
+from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 
 from bi import app_version
 from bi_defaults.environments import InstallationsMap, EnvAliasesMap
@@ -30,10 +37,15 @@ class DefaultDataApiAppFactory(DataApiAppFactory, LegacySRFactoryBuilder):
 
 
 # TODO CONSIDER: Pass all testing workarounds in constructor args
-def create_app(setting: AsyncAppSettings, test_setting: Optional[TestAppSettings] = None) -> web.Application:
+def create_app(
+        setting: AsyncAppSettings,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        test_setting: Optional[TestAppSettings] = None
+) -> web.Application:
     data_api_app_factory = DefaultDataApiAppFactory()
     return data_api_app_factory.create_app(
         setting=setting,
+        connectors_settings=connectors_settings,
         test_setting=test_setting,
     )
 
@@ -47,6 +59,12 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
         AsyncAppSettings,
         fallback_cfg_resolver=fallback_resolver,
     )
+    load_bi_api_lib()
+    connectors_settings = load_connectors_settings_from_env_with_fallback(
+        settings_registry=CONNECTORS_SETTINGS_CLASSES,
+        fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
+        fallback_cfg_resolver=fallback_resolver,
+    )
     configure_logging(
         app_name=settings.app_name,
         # TODO FIX: Find place to store logic of prefix selection
@@ -56,7 +74,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     )
     try:
         LOGGER.info("Creating application instance...")
-        app = create_app(setting=settings)
+        app = create_app(setting=settings, connectors_settings=connectors_settings)
         if start_selfcheck:
             LOGGER.info("Starting selfcheck aio task...")
             await LatencyTracker().run_task()

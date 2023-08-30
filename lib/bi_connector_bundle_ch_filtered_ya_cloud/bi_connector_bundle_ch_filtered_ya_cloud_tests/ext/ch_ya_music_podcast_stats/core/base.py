@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, CHYaMusicPodcastStatsConnectorSettings
+from bi_configs.connectors_settings import CHYaMusicPodcastStatsConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -26,9 +26,7 @@ class BaseClickhouseYaMusicPodcastStatsTestClass(
         BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseYaMusicPodcastStats]
 ):
     conn_type = CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS
-    connection_settings = ConnectorsSettingsByType(
-        CH_YA_MUSIC_PODCAST_STATS=CHYaMusicPodcastStatsConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = CHYaMusicPodcastStatsConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

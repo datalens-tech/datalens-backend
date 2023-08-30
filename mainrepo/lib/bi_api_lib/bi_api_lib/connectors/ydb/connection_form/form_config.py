@@ -4,7 +4,7 @@ from typing import Optional
 
 import attr
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase, YDBConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
 
@@ -36,12 +36,12 @@ class YDBDatabaseRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, Disabl
 class YDBConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connectors_settings is not None and connectors_settings.YDB is not None
+        assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
-        mdb_enabled = connectors_settings.YDB.USE_MDB_CLUSTER_PICKER
+        mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 
         db_section_rows: list[FormRow]
         common_api_schema_items: list[FormFieldApiSchema]
@@ -81,7 +81,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     fake_value='******' if self.mode == ConnectionFormMode.edit else None,
                     application=YDBOAuthApplication.ydb,
                 ),
-                rc.host_row(default_value=connectors_settings.YDB.DEFAULT_HOST_VALUE),
+                rc.host_row(default_value=connector_settings.DEFAULT_HOST_VALUE),
                 rc.port_row(default_value='2135'),
                 rc.db_name_row(),
             ]

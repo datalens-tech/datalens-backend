@@ -28,6 +28,7 @@ from bi_core_testing.flask_utils import FlaskTestClient, FlaskTestResponse
 import bi.app
 from bi import app_async
 from bi_api_lib.app_settings import ControlPlaneAppSettings, AsyncAppSettings, YCAuthSettings
+from bi_api_lib.loader import load_bi_api_lib
 
 from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 
@@ -134,8 +135,10 @@ def dc_rs_cp_app_settings(
 
 @pytest.fixture(scope="function")
 def dc_rs_cp_app(dc_rs_cp_app_settings) -> flask.Flask:
+    load_bi_api_lib()
     return bi.app.create_app(
-        dc_rs_cp_app_settings,
+        app_settings=dc_rs_cp_app_settings,
+        connectors_settings={},
         close_loop_after_request=False,
     )
 
@@ -204,7 +207,8 @@ def dc_rs_dp_app_settings(
 
 @pytest.fixture(scope='function')
 def dc_rs_dp_low_level_client(loop, aiohttp_client, dc_rs_dp_app_settings):
-    app = app_async.create_app(dc_rs_dp_app_settings)
+    load_bi_api_lib()
+    app = app_async.create_app(setting=dc_rs_dp_app_settings, connectors_settings={})
     return loop.run_until_complete(aiohttp_client(app))
 
 

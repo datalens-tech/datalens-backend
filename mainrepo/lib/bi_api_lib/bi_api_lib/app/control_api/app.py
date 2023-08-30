@@ -16,10 +16,10 @@ from bi_api_commons.yc_access_control_model import AuthorizationModeYandexCloud,
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
-from bi_constants.enums import USAuthMode
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.enums import AppType
+from bi_constants.enums import USAuthMode, ConnectionType
 
-from bi_api_lib.loader import load_bi_api_lib
 from bi_api_lib.app_settings import (
     ControlPlaneAppSettings,
     ControlPlaneAppTestingsSettings,
@@ -141,6 +141,7 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
     def create_app(
             self,
             app_settings: ControlPlaneAppSettings,
+            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
             close_loop_after_request: bool = True,
     ) -> flask.Flask:
@@ -156,8 +157,6 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
             ),
         ).wrap_flask_app(app)
         ContextVarMiddleware().wrap_flask_app(app)
-
-        load_bi_api_lib()
 
         if close_loop_after_request:
             AIOEventLoopMiddleware().wrap_flask_app(app)
@@ -206,8 +205,7 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
             connect_options_factory.add_mutator(set_use_manage_network_false_mutator)
 
         sr_factory = self.get_sr_factory(
-            settings=app_settings,
-            conn_opts_factory=connect_options_factory
+            settings=app_settings, conn_opts_factory=connect_options_factory, connectors_settings=connectors_settings,
         )
 
         ServicesRegistryMiddleware(

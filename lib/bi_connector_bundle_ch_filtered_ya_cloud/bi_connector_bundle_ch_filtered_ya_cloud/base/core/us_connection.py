@@ -1,5 +1,5 @@
 import abc
-from typing import Callable, Optional
+from typing import Callable, Generic, Optional
 
 import attr
 
@@ -7,7 +7,7 @@ from bi_utils.utils import DataKey
 
 from bi_core import exc
 from bi_core.utils import secrepr
-from bi_core.us_connection_base import ConnectionBase
+from bi_core.us_connection_base import ConnectionBase, CONNECTOR_SETTINGS_TV
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
 from bi_core.connectors.clickhouse_base.us_connection import (
@@ -16,7 +16,11 @@ from bi_core.connectors.clickhouse_base.us_connection import (
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 
 
-class ConnectionCHFilteredSubselectByPuidBase(ConnectionCHFilteredHardcodedDataBase, metaclass=abc.ABCMeta):
+class ConnectionCHFilteredSubselectByPuidBase(
+        ConnectionCHFilteredHardcodedDataBase[CONNECTOR_SETTINGS_TV],
+        Generic[CONNECTOR_SETTINGS_TV],
+        metaclass=abc.ABCMeta
+):
     passport_user_id: Optional[int] = None
 
     @attr.s(kw_only=True)

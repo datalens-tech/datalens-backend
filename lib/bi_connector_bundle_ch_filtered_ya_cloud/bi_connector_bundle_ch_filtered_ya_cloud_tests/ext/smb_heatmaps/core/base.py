@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, SMBHeatmapsConnectorSettings
+from bi_configs.connectors_settings import SMBHeatmapsConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.constants import (
@@ -23,9 +23,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.base import (
 
 class BaseSMBHeatmapsTestClass(BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseSMBHeatmaps]):
     conn_type = CONNECTION_TYPE_SMB_HEATMAPS
-    connection_settings = ConnectorsSettingsByType(
-        SMB_HEATMAPS=SMBHeatmapsConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = SMBHeatmapsConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

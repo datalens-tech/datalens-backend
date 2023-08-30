@@ -10,6 +10,9 @@ from bi_configs.rqe import rqe_config_from_env
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.connectors_settings import ConnectorsSettingsByType
 
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+
 from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.connections_security.base import InsecureConnectionSecurityManager, ConnectionSecurityManager
 from bi_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
@@ -50,6 +53,11 @@ def create_sr_factory_from_env_vars(connectors_settings: ConnectorsSettingsByTyp
             rqe_sock_read_timeout=int(os.environ.get('RQE_SOCK_READ_TIMEOUT', 30 * 60)),
         )
 
+    # TODO: get rid of ConnectorsSettingsByType
+    connectors_settings = {
+        CONNECTION_TYPE_FILE: connectors_settings.FILE,
+        CONNECTION_TYPE_GSHEETS_V2: connectors_settings.FILE,
+    }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),
         async_env=True,

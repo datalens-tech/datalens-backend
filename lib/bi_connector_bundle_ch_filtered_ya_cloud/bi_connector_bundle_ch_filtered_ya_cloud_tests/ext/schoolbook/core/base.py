@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, SchoolbookConnectorSettings
+from bi_configs.connectors_settings import SchoolbookConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -22,9 +22,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.base import (
 
 class BaseSchoolbookTestClass(BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseSchoolbook]):
     conn_type = CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS
-    connection_settings = ConnectorsSettingsByType(
-        SCHOOLBOOK=SchoolbookConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = SchoolbookConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

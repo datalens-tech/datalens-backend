@@ -18,7 +18,6 @@ from bi_constants.enums import ConnectionType, ProcessorType
 
 from bi_configs import env_var_definitions
 from bi_configs.connectors_settings import (
-    ConnectorsSettingsByType,
     FileS3ConnectorSettings,
 )
 from bi_configs.rqe import RQEBaseURL, RQEConfig
@@ -50,6 +49,8 @@ from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
 
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
@@ -331,16 +332,18 @@ def connectors_settings(clickhouse_db):
         USERNAME=ch_creds['username'],
         PASSWORD=ch_creds['password'],
     )
-
-    return ConnectorsSettingsByType(
-        FILE=FileS3ConnectorSettings(
-            ACCESS_KEY_ID='accessKey1',
-            SECRET_ACCESS_KEY='verySecretKey1',
-            BUCKET='bi-file-uploader',
-            S3_ENDPOINT='http://s3-storage:8000',
-            **base_settings_params,
-        ),
+    files3_settings = dict(
+        ACCESS_KEY_ID='accessKey1',
+        SECRET_ACCESS_KEY='verySecretKey1',
+        BUCKET='bi-file-uploader',
+        S3_ENDPOINT='http://s3-storage:8000',
+        **base_settings_params,
     )
+
+    return {
+        CONNECTION_TYPE_FILE: FileS3ConnectorSettings(**files3_settings),
+        CONNECTION_TYPE_GSHEETS_V2: FileS3ConnectorSettings(**files3_settings),
+    }
 
 
 @pytest.fixture(scope='function')

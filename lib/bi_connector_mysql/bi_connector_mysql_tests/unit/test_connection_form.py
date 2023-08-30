@@ -2,7 +2,7 @@ from typing import Optional
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, MysqlConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase, MysqlConnectorSettings
 
 from bi_api_commons.base_models import TenantDef, TenantYCFolder, TenantYCOrganization
 
@@ -21,8 +21,8 @@ class TestMySQLConnectionForm(ConnectionFormTestBase):
         params=(True, False),
         ids=('with_mdb', 'no_mdb'),
     )
-    def connectors_settings(self, request) -> Optional[ConnectorsSettingsByType]:
-        return ConnectorsSettingsByType(MYSQL=MysqlConnectorSettings(USE_MDB_CLUSTER_PICKER=request.param))
+    def connectors_settings(self, request) -> Optional[ConnectorSettingsBase]:
+        return MysqlConnectorSettings(USE_MDB_CLUSTER_PICKER=request.param)
 
     @pytest.fixture(
         params=(TenantYCFolder(folder_id='some_folder_id'), TenantYCOrganization(org_id='some_org_id')),

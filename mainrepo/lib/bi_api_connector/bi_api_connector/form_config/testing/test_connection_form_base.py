@@ -1,9 +1,9 @@
 import json
-from typing import ClassVar, Optional, Type, final, List
+from typing import ClassVar, Optional, Type, final
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef, TenantYCFolder
 
@@ -14,13 +14,13 @@ from bi_api_connector.form_config.models.base import ConnectionFormMode, Connect
 
 class ConnectionFormTestBase:
     CONN_FORM_FACTORY_CLS: ClassVar[Type[ConnectionFormFactory]]
-    TRANSLATION_CONFIGS: ClassVar[List[TranslationConfig]]
+    TRANSLATION_CONFIGS: ClassVar[list[TranslationConfig]]
 
     @pytest.fixture
-    def connectors_settings(self) -> Optional[ConnectorsSettingsByType]:
+    def connectors_settings(self) -> Optional[ConnectorSettingsBase]:
         """ Parametrize if a form has extra settings """
 
-        return ConnectorsSettingsByType()
+        return None
 
     @pytest.fixture
     def tenant(self) -> TenantDef:
@@ -38,7 +38,7 @@ class ConnectionFormTestBase:
     @pytest.fixture
     def form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connectors_settings: Optional[ConnectorSettingsBase],
             tenant: TenantDef,
             mode: ConnectionFormMode
     ) -> ConnectionForm:

@@ -4,7 +4,7 @@ import abc
 from enum import unique
 from typing import Optional, ClassVar
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase, MetricaConnectorSettings, AppmetricaConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
 
@@ -43,19 +43,19 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _allow_manual_counter_input(self, connector_settings: ConnectorsSettingsByType) -> bool:
+    def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _allow_auto_dash_creation(self, connector_settings: ConnectorsSettingsByType) -> bool:
+    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
         raise NotImplementedError
 
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connectors_settings is not None
+        assert connector_settings is not None
         rc = RowConstructor(localizer=self._localizer)
 
         rows: list[FormRow] = [
@@ -66,7 +66,7 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
                 label_text=self._localizer.translate(Translatable('field_oauth-token')),
                 button_text=self._localizer.translate(Translatable('button_get-token')),
             ),
-            self._counter_row(manual_input=self._allow_manual_counter_input(connectors_settings)),
+            self._counter_row(manual_input=self._allow_manual_counter_input(connector_settings)),
             C.AccuracyRow(name=MetricaFieldName.accuracy),
         ]
 
@@ -83,7 +83,7 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
             *self._get_top_level_create_api_schema_items(),
         ]) if self.mode == ConnectionFormMode.create else None
 
-        if self.mode == ConnectionFormMode.create and self._allow_auto_dash_creation(connectors_settings):
+        if self.mode == ConnectionFormMode.create and self._allow_auto_dash_creation(connector_settings):
             rows.append(rc.auto_create_dash_row())
 
         return ConnectionForm(
@@ -107,13 +107,13 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
             allow_manual_input=manual_input,
         )
 
-    def _allow_manual_counter_input(self, connector_settings: ConnectorsSettingsByType) -> bool:
-        assert (metrica_settings := connector_settings.METRICA) is not None
-        return metrica_settings.COUNTER_ALLOW_MANUAL_INPUT
+    def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
+        assert isinstance(connector_settings, MetricaConnectorSettings)
+        return connector_settings.COUNTER_ALLOW_MANUAL_INPUT
 
-    def _allow_auto_dash_creation(self, connector_settings: ConnectorsSettingsByType) -> bool:
-        assert (metrica_settings := connector_settings.METRICA) is not None
-        return metrica_settings.ALLOW_AUTO_DASH_CREATION
+    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
+        assert isinstance(connector_settings, MetricaConnectorSettings)
+        return connector_settings.ALLOW_AUTO_DASH_CREATION
 
 
 class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
@@ -129,10 +129,10 @@ class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
             allow_manual_input=manual_input,
         )
 
-    def _allow_manual_counter_input(self, connector_settings: ConnectorsSettingsByType) -> bool:
-        assert (appmetrica_settings := connector_settings.APPMETRICA) is not None
-        return appmetrica_settings.COUNTER_ALLOW_MANUAL_INPUT
+    def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
+        assert isinstance(connector_settings, AppmetricaConnectorSettings)
+        return connector_settings.COUNTER_ALLOW_MANUAL_INPUT
 
-    def _allow_auto_dash_creation(self, connector_settings: ConnectorsSettingsByType) -> bool:
-        assert (appmetrica_settings := connector_settings.APPMETRICA) is not None
-        return appmetrica_settings.ALLOW_AUTO_DASH_CREATION
+    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
+        assert isinstance(connector_settings, AppmetricaConnectorSettings)
+        return connector_settings.ALLOW_AUTO_DASH_CREATION

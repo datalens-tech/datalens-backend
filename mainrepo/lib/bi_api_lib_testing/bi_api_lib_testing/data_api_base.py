@@ -10,13 +10,15 @@ import pytest
 
 from bi_configs.enums import AppType
 from bi_configs.rqe import RQEConfig
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
+from bi_constants.enums import ConnectionType
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
 from bi_core.components.ids import FieldIdGeneratorType
 
 from bi_api_lib.app_settings import AsyncAppSettings, YCAuthSettings, MDBSettings
+from bi_api_lib.loader import load_bi_api_lib
 
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -56,7 +58,6 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             bi_test_config: BiApiTestEnvironmentConfiguration,
             rqe_config_subprocess: RQEConfig,
             iam_services_mock: IAMServicesMockFacade,
-            connectors_settings: ConnectorsSettingsByType,
     ) -> AsyncAppSettings:
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
@@ -82,7 +83,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
             YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
-            CONNECTORS=connectors_settings,
+            CONNECTORS=None,
             MUTATIONS_CACHES_ON=self.mutation_caches_on,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),
             BI_COMPENG_PG_ON=self.bi_compeng_pg_on,
@@ -96,10 +97,15 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
         )  # type: ignore
 
     @pytest.fixture(scope='function')
-    def data_api_app(self, data_api_app_settings: AsyncAppSettings) -> web.Application:
+    def data_api_app(
+            self, data_api_app_settings: AsyncAppSettings,
+            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+    ) -> web.Application:
         data_api_app_factory = TestingDataApiAppFactory()
+        load_bi_api_lib()
         return data_api_app_factory.create_app(
             setting=data_api_app_settings,
+            connectors_settings=connectors_settings,
             test_setting=None,
         )
 

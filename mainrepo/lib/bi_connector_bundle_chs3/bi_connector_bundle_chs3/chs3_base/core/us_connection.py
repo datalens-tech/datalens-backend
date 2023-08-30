@@ -32,6 +32,7 @@ LOGGER = logging.getLogger(__name__)
 class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings], ConnectionClickhouseBase):  # type: ignore
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
+    settings_type = FileS3ConnectorSettings
 
     editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
         'file_id', 'title', 's3_filename', 'status', 'preview_id',
@@ -67,12 +68,6 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             return '|'.join(src.str_for_hash() for src in self.sources)
 
     data: DataModel
-
-    @property
-    def _connector_settings(self) -> FileS3ConnectorSettings:
-        settings = self._all_connectors_settings.FILE
-        assert settings is not None
-        return settings
 
     def get_replace_secret(self) -> str:
         return xxhash.xxh64(self.data.str_for_hash() + self._connector_settings.REPLACE_SECRET_SALT, seed=0).hexdigest()

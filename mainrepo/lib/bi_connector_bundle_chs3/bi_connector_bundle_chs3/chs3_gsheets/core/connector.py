@@ -13,6 +13,7 @@ from bi_connector_bundle_chs3.chs3_gsheets.core.data_source_spec import (
     GSheetsFileS3DataSourceSpec,
 )
 from bi_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
+from bi_connector_bundle_chs3.chs3_gsheets.core.settings import GSheetsFileS3SettingDefinition
 from bi_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.connection import GSheetsFileConnectionDataStorageSchema
 from bi_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.data_source_spec import GSheetsFileS3DataSourceSpecStorageSchema
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
@@ -26,6 +27,7 @@ class GSheetsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     async_conn_executor_cls = GSheetsFileS3AsyncAdapterConnExecutor
     lifecycle_manager_cls = GSheetsFileS3ConnectionLifecycleManager
     dialect_string = 'bi_clickhouse'
+    settings_definition = GSheetsFileS3SettingDefinition
 
 
 class GSheetsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):

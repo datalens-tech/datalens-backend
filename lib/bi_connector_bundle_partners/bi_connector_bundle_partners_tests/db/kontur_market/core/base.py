@@ -4,7 +4,7 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, KonturMarketConnectorSettings
+from bi_configs.connectors_settings import KonturMarketConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_partners.kontur_market.core.us_connection import KonturMarketCHConnection
@@ -17,9 +17,7 @@ import bi_connector_bundle_partners_tests.db.config as test_config
 
 class BaseKonturMarketTestClass(BasePartnersClass[KonturMarketCHConnection]):
     conn_type = ConnectionType.kontur_market
-    connection_settings = ConnectorsSettingsByType(
-        KONTUR_MARKET=KonturMarketConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = KonturMarketConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

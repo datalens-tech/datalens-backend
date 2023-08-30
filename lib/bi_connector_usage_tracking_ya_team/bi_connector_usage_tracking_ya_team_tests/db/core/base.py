@@ -4,8 +4,6 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
-
 from bi_api_commons.base_models import RequestContextInfo
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
@@ -21,7 +19,7 @@ import bi_connector_usage_tracking_ya_team_tests.db.core.config as test_config
 class BaseUsageTrackingYaTeamTestClass(BaseConnectionTestClass[UsageTrackingYaTeamConnection]):
     conn_type = ConnectionType.usage_tracking_ya_team
     core_test_config = common_test_config.CORE_TEST_CONFIG
-    connection_settings = ConnectorsSettingsByType(USAGE_TRACKING_YA_TEAM=test_config.SR_CONNECTION_SETTINGS)
+    connection_settings = test_config.SR_CONNECTION_SETTINGS
 
     @pytest.fixture(scope='class')
     def db_url(self) -> str:

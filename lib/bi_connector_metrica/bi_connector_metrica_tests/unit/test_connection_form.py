@@ -2,11 +2,7 @@ from typing import Optional
 
 import pytest
 
-from bi_configs.connectors_settings import (
-    ConnectorsSettingsByType,
-    MetricaConnectorSettings,
-    AppmetricaConnectorSettings,
-)
+from bi_configs.connectors_settings import ConnectorSettingsBase, MetricaConnectorSettings, AppmetricaConnectorSettings
 
 from bi_api_connector.form_config.testing.test_connection_form_base import ConnectionFormTestBase
 from bi_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
@@ -42,11 +38,11 @@ class TestMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
             self,
             allow_auto_dash_creation,
             allow_counter_manual_input,
-    ) -> Optional[ConnectorsSettingsByType]:
-        return ConnectorsSettingsByType(METRICA=MetricaConnectorSettings(
+    ) -> Optional[ConnectorSettingsBase]:
+        return MetricaConnectorSettings(
             COUNTER_ALLOW_MANUAL_INPUT=allow_counter_manual_input,
             ALLOW_AUTO_DASH_CREATION=allow_auto_dash_creation,
-        ))
+        )
 
 
 class TestAppMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
@@ -58,8 +54,8 @@ class TestAppMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
             self,
             allow_auto_dash_creation,
             allow_counter_manual_input,
-    ) -> Optional[ConnectorsSettingsByType]:
-        return ConnectorsSettingsByType(APPMETRICA=AppmetricaConnectorSettings(
+    ) -> Optional[ConnectorSettingsBase]:
+        return AppmetricaConnectorSettings(
             COUNTER_ALLOW_MANUAL_INPUT=allow_counter_manual_input,
             ALLOW_AUTO_DASH_CREATION=allow_auto_dash_creation,
-        ))
+        )

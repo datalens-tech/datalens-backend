@@ -1,7 +1,5 @@
 import pytest
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
 
@@ -15,7 +13,7 @@ import bi_connector_yql_tests.db.config as test_config
 class BaseYQTestClass(BaseConnectionTestClass[YQConnection]):
     conn_type = CONNECTION_TYPE_YQ
     core_test_config = test_config.CORE_TEST_CONFIG
-    connection_settings = ConnectorsSettingsByType(YQ=test_config.SR_CONNECTION_SETTINGS)
+    connection_settings = test_config.SR_CONNECTION_SETTINGS
 
     @pytest.fixture(scope='class')
     def db_url(self) -> str:

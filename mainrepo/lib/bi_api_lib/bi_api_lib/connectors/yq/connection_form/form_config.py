@@ -6,7 +6,7 @@ from bi_api_connector.form_config.models.rows.base import FormRow
 
 from bi_constants.enums import RawSQLLevel
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase, YQConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
 
@@ -23,14 +23,14 @@ from bi_api_lib.i18n.localizer import Translatable
 class YQConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connectors_settings is not None and connectors_settings.YQ is not None
+        assert connector_settings is not None and isinstance(connector_settings, YQConnectorSettings)
 
         rc = RowConstructor(localizer=self._localizer)
 
-        mdb_enabled = connectors_settings.YQ.USE_MDB_CLUSTER_PICKER
+        mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 
         sa_section: list[FormRow]
         if not mdb_enabled:

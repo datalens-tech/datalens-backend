@@ -10,7 +10,7 @@ from bi_constants.enums import ConnectionType
 
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.settings_submodels import YCAuthSettings
 
 from bi_testing_ya.iam_mock import apply_iam_services_mock
@@ -26,6 +26,7 @@ from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.app_settings import ControlPlaneAppSettings, MDBSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.loader import load_bi_api_lib
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker, TestingControlApiAppFactory
@@ -51,8 +52,8 @@ class BiApiTestBase(abc.ABC):
         return bi_test_config.core_test_config
 
     @pytest.fixture(scope='class')
-    def connectors_settings(self) -> ConnectorsSettingsByType:
-        return ConnectorsSettingsByType()
+    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+        return {}
 
     def is_connector_available(self, conn_type: ConnectionType) -> bool:
         return True
@@ -82,7 +83,6 @@ class BiApiTestBase(abc.ABC):
             bi_test_config: BiApiTestEnvironmentConfiguration,
             rqe_config_subprocess: RQEConfig,
             iam_services_mock: IAMServicesMockFacade,
-            connectors_settings: ConnectorsSettingsByType,
     ) -> ControlPlaneAppSettings:
 
         core_test_config = bi_test_config.core_test_config
@@ -108,7 +108,7 @@ class BiApiTestBase(abc.ABC):
             ),  # type: ignore
             YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
             YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
-            CONNECTORS=connectors_settings,
+            CONNECTORS=None,
 
             RQE_CONFIG=rqe_config_subprocess,
             BI_COMPENG_PG_ON=self.bi_compeng_pg_on,
@@ -131,12 +131,15 @@ class BiApiTestBase(abc.ABC):
             self,
             environment_readiness: None,
             control_api_app_settings: ControlPlaneAppSettings,
+            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> Generator[Flask, None, None]:
         """Session-wide test `Flask` application."""
 
         control_app_factory = TestingControlApiAppFactory()
+        load_bi_api_lib()
         app = control_app_factory.create_app(
             control_api_app_settings,
+            connectors_settings=connectors_settings,
             testing_app_settings=ControlPlaneAppTestingsSettings(
                 fake_tenant=TenantYCFolder(folder_id='folder_1')
             ),

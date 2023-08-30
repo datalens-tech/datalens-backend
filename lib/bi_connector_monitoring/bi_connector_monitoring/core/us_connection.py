@@ -26,17 +26,12 @@ class MonitoringConnection(
 ):
     allow_cache: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
+    settings_type = MonitoringConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ConnCacheableMixin, ConnectionBase.DataModel):
         service_account_id: Optional[str] = attr.ib(default=None)
         folder_id: Optional[str] = attr.ib(default=None)
-
-    @property
-    def _connector_settings(self) -> MonitoringConnectorSettings:
-        settings = self._all_connectors_settings.MONITORING
-        assert settings is not None
-        return settings
 
     def get_conn_dto(self) -> MonitoringConnDTO:
         cs = self._connector_settings

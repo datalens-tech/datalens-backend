@@ -10,6 +10,7 @@ from typing import (
 
 from aiohttp import web
 
+from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from bi_connector_snowflake.core.notifications import check_for_refresh_token_expire
 from bi_constants.enums import ConnectionType, DataSourceRole
@@ -290,12 +291,10 @@ class DatasetDataBaseView(BaseView):
             else:
                 # FIXME: Connectorize
                 if conn.conn_type in (ConnectionType.ch_over_yt, ConnectionType.ch_over_yt_user_auth):
-                    connector_settings = self.dl_request.services_registry.get_connectors_settings()
-                    if (
-                        connector_settings is not None and
-                        (chyt_settings := connector_settings.CHYT) is not None and
-                        conn.data.alias in chyt_settings.PUBLIC_CLIQUES
-                    ):
+                    chyt_settings = self.dl_request.services_registry.get_connectors_settings(conn.conn_type)
+                    if chyt_settings is not None:
+                        assert isinstance(chyt_settings, CHYTConnectorSettings)
+                    if chyt_settings is not None and conn.data.alias in chyt_settings.PUBLIC_CLIQUES:
                         services_registry.get_reporting_registry().save_reporting_record(
                             get_notification_record(NotificationType.using_public_clickhouse_clique)
                         )

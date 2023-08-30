@@ -29,8 +29,9 @@ from bi_task_processor.processor import ARQTaskProcessorFactory
 if TYPE_CHECKING:
     from redis.asyncio import Redis
 
+    from bi_configs.connectors_settings import ConnectorSettingsBase
     from bi_configs.rqe import RQEConfig
-    from bi_configs.connectors_settings import ConnectorsSettingsByType
+    from bi_constants.enums import ConnectionType
 
     from bi_api_commons.base_models import RequestContextInfo
     from bi_core.data_processing.cache.primitives import CacheTTLConfig
@@ -79,7 +80,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
     conn_cls_whitelist: Optional[FrozenSet[Type[ExecutorBasedMixin]]] = attr.ib(default=None)
     connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
     entity_usage_checker: Optional[EntityUsageChecker] = attr.ib(default=None)
-    connectors_settings: Optional[ConnectorsSettingsByType] = attr.ib(default=None)
+    connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = attr.ib(factory=dict)
     file_uploader_settings: Optional[FileUploaderSettings] = attr.ib(default=None)
     redis_pool_settings: Optional[ArqRedisSettings] = attr.ib(default=None)
     mdb_domain_manager_settings: MDBDomainManagerSettings = attr.ib(factory=MDBDomainManagerSettings)

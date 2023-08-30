@@ -7,8 +7,6 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.us_connection import BillingAnalyticsCHConnection
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.lifecycle import (
@@ -26,7 +24,7 @@ import bi_connector_bundle_ch_filtered_tests.db.ch_billing_analytics.config as t
 class BaseCHBillingAnalyticsTestClass(BaseConnectionTestClass[BillingAnalyticsCHConnection]):
     conn_type = ConnectionType.ch_billing_analytics
     core_test_config = common_test_config.CORE_TEST_CONFIG
-    connection_settings = ConnectorsSettingsByType(CH_BILLING_ANALYTICS=test_config.SR_CONNECTION_SETTINGS)
+    connection_settings = test_config.SR_CONNECTION_SETTINGS
     inst_specific_sr_factory = common_test_config.YC_SR_FACTORY
 
     @pytest.fixture(autouse=True)

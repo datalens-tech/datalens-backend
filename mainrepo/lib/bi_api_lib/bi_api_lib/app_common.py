@@ -9,6 +9,10 @@ from bi_configs.enums import AppType, RequiredService, RQE_SERVICES
 
 from bi_task_processor.arq_wrapper import create_arq_redis_settings
 
+from bi_configs.connectors_settings import ConnectorSettingsBase
+from bi_configs.enums import AppType, RequiredService, RQE_SERVICES
+from bi_constants.enums import ConnectionType
+
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_i18n.localizer_base import LocalizerLoader
 from bi_core.services_registry.entity_checker import EntityUsageChecker
@@ -82,6 +86,7 @@ class SRFactoryBuilder(abc.ABC):
         self,
         settings: BaseAppSettings,
         conn_opts_factory: ConnOptionsMutatorsFactory,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> DefaultBiApiSRFactory:
         supported_functions_manager = SupportedFunctionsManager(app_type=settings.APP_TYPE)
 
@@ -115,7 +120,7 @@ class SRFactoryBuilder(abc.ABC):
             connect_options_factory=conn_opts_factory,
             env_manager_factory=self._get_env_manager_factory(settings),
             default_formula_parser_type=settings.FORMULA_PARSER_TYPE,
-            connectors_settings=settings.CONNECTORS,
+            connectors_settings=connectors_settings,
             entity_usage_checker=self._get_entity_usage_checker(settings),
             field_id_generator_type=settings.FIELD_ID_GENERATOR_TYPE,
             file_uploader_settings=file_uploader_settings,

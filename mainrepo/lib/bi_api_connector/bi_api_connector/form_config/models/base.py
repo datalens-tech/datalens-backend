@@ -8,7 +8,7 @@ import attr
 
 from bi_api_connector.form_config.models.rows import CustomizableRow
 from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef, TenantYCOrganization
 
@@ -150,7 +150,7 @@ class ConnectionFormFactory:
     @abc.abstractmethod
     def get_form_config(
         self,
-        connectors_settings: Optional[ConnectorsSettingsByType],
+        connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef]
     ) -> ConnectionForm:
         """ Returns a form config built according to the specified settings """

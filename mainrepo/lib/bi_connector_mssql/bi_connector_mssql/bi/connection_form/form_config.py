@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -18,10 +18,9 @@ from bi_connector_mssql.bi.connection_info import MSSQLConnectionInfoProvider
 class MSSQLConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connectors_settings is not None
         rc = RowConstructor(localizer=self._localizer)
 
         common_api_schema_items: list[FormFieldApiSchema] = [

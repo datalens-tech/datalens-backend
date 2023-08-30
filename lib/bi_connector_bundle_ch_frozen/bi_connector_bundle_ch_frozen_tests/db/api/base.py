@@ -5,7 +5,7 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 from bi_configs.connectors_settings import (
-    ConnectorsSettingsByType,
+    CHFrozenConnectorSettings,
     CHFrozenBumpyRoadsConnectorSettings,
     CHFrozenCovidConnectorSettings,
     CHFrozenDemoConnectorSettings,
@@ -75,22 +75,22 @@ class CHFrozenConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
     @pytest.fixture(scope='class')
-    def connectors_settings(self, sample_table: DbTable) -> ConnectorsSettingsByType:
+    def connectors_settings(self, sample_table: DbTable) -> dict[ConnectionType, CHFrozenConnectorSettings]:
         params = SR_CONNECTION_SETTINGS_PARAMS | dict(
             ALLOWED_TABLES=[sample_table.name],
             DB_NAME=sample_table.db.name,
         )
-        return ConnectorsSettingsByType(
-            CH_FROZEN_BUMPY_ROADS=CHFrozenBumpyRoadsConnectorSettings(**params),
-            CH_FROZEN_COVID=CHFrozenCovidConnectorSettings(**params),
-            CH_FROZEN_DEMO=CHFrozenDemoConnectorSettings(**params),
-            CH_FROZEN_DTP=CHFrozenDTPConnectorSettings(**params),
-            CH_FROZEN_GKH=CHFrozenGKHConnectorSettings(**params),
-            CH_FROZEN_HORECA=CHFrozenHorecaConnectorSettings(**params),
-            CH_FROZEN_SAMPLES=CHFrozenSamplesConnectorSettings(**params),
-            CH_FROZEN_TRANSPARENCY=CHFrozenTransparencyConnectorSettings(**params),
-            CH_FROZEN_WEATHER=CHFrozenWeatherConnectorSettings(**params),
-        )
+        return {
+            CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS: CHFrozenBumpyRoadsConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_COVID: CHFrozenCovidConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_DEMO: CHFrozenDemoConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_DTP: CHFrozenDTPConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_GKH: CHFrozenGKHConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_HORECA: CHFrozenHorecaConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_SAMPLES: CHFrozenSamplesConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_TRANSPARENCY: CHFrozenTransparencyConnectorSettings(**params),
+            CONNECTION_TYPE_CH_FROZEN_WEATHER: CHFrozenWeatherConnectorSettings(**params),
+        }
 
     @pytest.fixture(scope='class')
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:

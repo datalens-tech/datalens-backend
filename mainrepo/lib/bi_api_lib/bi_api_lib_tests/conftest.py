@@ -11,10 +11,20 @@ import aiobotocore.client
 import aiohttp.pytest_plugin
 import attr
 import pytest
+
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa
 from pytest_lazyfixture import lazy_fixture
+
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
+from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
+from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
+from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
+from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 
 from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, RawSQLLevel
 
@@ -29,7 +39,6 @@ from bi_api_lib.service_registry.dataset_validator_factory import DefaultDataset
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry, DefaultBiApiServiceRegistry
 from bi_configs import env_var_definitions
 from bi_configs.connectors_settings import (
-    ConnectorsSettingsByType,
     FileS3ConnectorSettings,
     YQConnectorSettings,
     CHFrozenDemoConnectorSettings,
@@ -204,7 +213,7 @@ def app(
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
-        CONNECTORS=connectors_settings,
+        CONNECTORS=None,
 
         RQE_CONFIG=rqe_config_subprocess,
         BI_COMPENG_PG_ON=True,
@@ -224,6 +233,7 @@ def app(
 
     app = create_app_sync(
         settings,
+        connectors_settings=connectors_settings,
         testing_app_settings=ControlPlaneAppTestingsSettings(
             fake_tenant=TenantYCFolder(folder_id='folder_1')
         ),
@@ -296,36 +306,38 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
         DB_NAME='samples',
         **base_settings_params,
     )
+    files3_settings = dict(
+        ACCESS_KEY_ID='accessKey1',
+        SECRET_ACCESS_KEY='verySecretKey1',
+        BUCKET='bi-file-uploader',
+        S3_ENDPOINT='http://s3-storage:8000',
+        **base_settings_params,
+    )
 
-    return ConnectorsSettingsByType(
-        CH_FROZEN_DEMO=CHFrozenDemoConnectorSettings(
+    return {
+        CONNECTION_TYPE_CH_FROZEN_DEMO: CHFrozenDemoConnectorSettings(
             PASS_DB_QUERY_TO_USER=True,
             RAW_SQL_LEVEL=RawSQLLevel.dashsql,
             **sample_ch_frozen_settings,
         ),
-        FILE=FileS3ConnectorSettings(
-            ACCESS_KEY_ID='accessKey1',
-            SECRET_ACCESS_KEY='verySecretKey1',
-            BUCKET='bi-file-uploader',
-            S3_ENDPOINT='http://s3-storage:8000',
-            **base_settings_params,
-        ),
-        METRICA=MetricaConnectorSettings(),
-        APPMETRICA=AppmetricaConnectorSettings(),
-        YDB=YDBConnectorSettings(),
-        CHYT=CHYTConnectorSettings(
+        CONNECTION_TYPE_FILE: FileS3ConnectorSettings(**files3_settings),
+        CONNECTION_TYPE_GSHEETS_V2: FileS3ConnectorSettings(**files3_settings),
+        CONNECTION_TYPE_METRICA_API: MetricaConnectorSettings(),
+        CONNECTION_TYPE_APPMETRICA_API: AppmetricaConnectorSettings(),
+        CONNECTION_TYPE_YDB: YDBConnectorSettings(),
+        CONNECTION_TYPE_CHYT: CHYTConnectorSettings(
             FORBIDDEN_CLIQUES=('*ch_public',),
         ),
-        CLICKHOUSE=ClickHouseConnectorSettings(),
-        GREENPLUM=GreenplumConnectorSettings(),
-        MYSQL=MysqlConnectorSettings(),
-        POSTGRES=PostgresConnectorSettings(),
-        YQ=YQConnectorSettings(
+        CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(),
+        CONNECTION_TYPE_GREENPLUM: GreenplumConnectorSettings(),
+        CONNECTION_TYPE_MYSQL: MysqlConnectorSettings(),
+        CONNECTION_TYPE_POSTGRES: PostgresConnectorSettings(),
+        CONNECTION_TYPE_YQ: YQConnectorSettings(
             HOST='grpcs://grpc.yandex-query.cloud-preprod.yandex.net',
             PORT=2135,
             DB_NAME='/root/default',
         ),
-    )
+    }
 
 
 def make_sync_services_registry(
@@ -582,7 +594,6 @@ def redis_setting_maker(bi_test_config) -> RedisSettingMaker:
 @pytest.fixture(scope='function')
 def async_app_settings_local_env(
         rqe_config_subprocess, bi_test_config, iam_services_mock,
-        connectors_settings,
 ) -> AsyncAppSettings:
     core_test_config = bi_test_config.core_test_config
     us_config = core_test_config.get_us_config()
@@ -605,7 +616,7 @@ def async_app_settings_local_env(
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
-        CONNECTORS=connectors_settings,
+        CONNECTORS=None,
         MUTATIONS_CACHES_ON=False,
         BI_COMPENG_PG_ON=True,
         BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
@@ -650,28 +661,34 @@ def test_settings_with_bb(tvm_info) -> TestAppSettings:
 
 
 @pytest.fixture(scope='function')
-def async_api_local_env_low_level_client(loop, aiohttp_client, async_app_settings_local_env):
-    app = create_app_async(async_app_settings_local_env)
+def async_api_local_env_low_level_client(
+        loop, aiohttp_client, async_app_settings_local_env, connectors_settings
+):
+    app = create_app_async(async_app_settings_local_env, connectors_settings)
     return loop.run_until_complete(aiohttp_client(app))
 
 
 @pytest.fixture(scope='function')
 def async_api_local_env_low_level_client_with_mutation_cache(
-    loop, aiohttp_client, async_app_settings_local_env_with_mutation_cache
+    loop, aiohttp_client, async_app_settings_local_env_with_mutation_cache, connectors_settings
 ):
-    app = create_app_async(async_app_settings_local_env_with_mutation_cache)
+    app = create_app_async(async_app_settings_local_env_with_mutation_cache, connectors_settings)
     return loop.run_until_complete(aiohttp_client(app))
 
 
 @pytest.fixture(scope='function')
-def async_api_local_env_low_level_client_with_bb(loop, aiohttp_client, async_app_settings_local_env, test_settings_with_bb):
-    app = create_app_async(async_app_settings_local_env, test_settings_with_bb)
+def async_api_local_env_low_level_client_with_bb(
+        loop, aiohttp_client, async_app_settings_local_env, test_settings_with_bb, connectors_settings
+):
+    app = create_app_async(async_app_settings_local_env, connectors_settings, test_settings_with_bb)
     return loop.run_until_complete(aiohttp_client(app))
 
 
 @pytest.fixture(scope='function')
-def async_api_local_env_low_level_client_with_caches(loop, aiohttp_client, async_app_settings_local_env_with_caches):
-    app = create_app_async(async_app_settings_local_env_with_caches)
+def async_api_local_env_low_level_client_with_caches(
+        loop, aiohttp_client, async_app_settings_local_env_with_caches, connectors_settings
+):
+    app = create_app_async(async_app_settings_local_env_with_caches, connectors_settings)
     return loop.run_until_complete(aiohttp_client(app))
 
 

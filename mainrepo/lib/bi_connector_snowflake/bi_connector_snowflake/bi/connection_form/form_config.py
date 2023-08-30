@@ -5,7 +5,7 @@ from typing import Optional
 
 import attr
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -79,7 +79,7 @@ def _basic_input_row(
 class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         on_create = self.mode == ConnectionFormMode.create

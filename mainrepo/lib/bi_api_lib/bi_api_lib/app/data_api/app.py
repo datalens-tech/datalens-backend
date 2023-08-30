@@ -9,8 +9,9 @@ from aiohttp import web
 import attr
 
 from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.api_constants import YcTokenHeaderMode
-from bi_constants.enums import ProcessorType, RedisInstanceKind
+from bi_constants.enums import ConnectionType, ProcessorType, RedisInstanceKind
 
 from bi_configs.enums import AppType, RedisMode
 
@@ -67,7 +68,6 @@ from bi_api_lib.app.data_api.resources.dataset.result import (
 from bi_api_lib.app.data_api.resources.metrics import DSDataApiMetricsView
 from bi_api_lib.app.data_api.resources.ping import PingView, PingReadyView
 from bi_api_lib.app.data_api.resources.unistat import UnistatView
-from bi_api_lib.loader import load_bi_api_lib
 
 if TYPE_CHECKING:
     from bi_core.connection_models import ConnectOptions
@@ -153,6 +153,7 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
     def set_up_environment(
             self,
             setting: AsyncAppSettings,
+            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
         # TODO: Move the rest of the env-dependent stuff here
@@ -162,7 +163,9 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
         usm_middleware_list: list[AIOHTTPMiddleware]
 
         conn_opts_factory = ConnOptionsMutatorsFactory()
-        sr_factory = self.get_sr_factory(settings=setting, conn_opts_factory=conn_opts_factory)
+        sr_factory = self.get_sr_factory(
+            settings=setting, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+        )
 
         # Auth middlewares
         if setting.APP_TYPE == AppType.CLOUD_PUBLIC:
@@ -448,15 +451,14 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
     def create_app(
             self,
             setting: AsyncAppSettings,
+            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None
     ) -> web.Application:
         if setting.SENTRY_ENABLED:
             self.set_up_sentry(setting=setting)
 
-        load_bi_api_lib()
-
         env_setup_result = self.set_up_environment(
-            setting=setting, test_setting=test_setting,
+            setting=setting, test_setting=test_setting, connectors_settings=connectors_settings,
         )
 
         req_id_service = RequestId(

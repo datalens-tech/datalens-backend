@@ -9,7 +9,7 @@ from bi_constants.enums import ConnectionType
 
 from bi_configs.rqe import RQEConfig
 from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_utils.aio import ContextVarExecutor
 
@@ -40,8 +40,9 @@ class USConfig(NamedTuple):
 
 
 class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
+    conn_type: ClassVar[ConnectionType]
     core_test_config: ClassVar[CoreTestEnvironmentConfigurationBase]
-    connection_settings: ClassVar[Optional[ConnectorsSettingsByType]] = None
+    connection_settings: ClassVar[Optional[ConnectorSettingsBase]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
 
     @pytest.fixture(scope='session')
@@ -83,7 +84,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                 conn_sec_mgr=InsecureConnectionSecurityManager(),
                 tpe=ContextVarExecutor(),
             ),
-            connectors_settings=self.connection_settings,
+            connectors_settings={self.conn_type: self.connection_settings} if self.connection_settings else {},
             inst_specific_sr=(
                 self.inst_specific_sr_factory.get_inst_specific_sr(sr_future_ref)
                 if self.inst_specific_sr_factory is not None else None

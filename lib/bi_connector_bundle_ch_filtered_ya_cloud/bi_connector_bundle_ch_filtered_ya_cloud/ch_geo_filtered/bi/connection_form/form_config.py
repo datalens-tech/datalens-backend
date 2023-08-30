@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -19,7 +19,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import Tran
 class CHGeoFilteredFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         return ConnectionForm(

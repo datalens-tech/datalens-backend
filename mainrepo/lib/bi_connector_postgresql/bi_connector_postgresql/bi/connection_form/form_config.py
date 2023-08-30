@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import unique
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase, PostgresConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
 
@@ -32,12 +32,12 @@ class PostgreSQLFieldName(FormFieldName):
 class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connectors_settings is not None and connectors_settings.POSTGRES is not None
+        assert connector_settings is not None and isinstance(connector_settings, PostgresConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
-        mdb_enabled = connectors_settings.POSTGRES.USE_MDB_CLUSTER_PICKER
+        mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 
         mdb_form_fill_row = C.MDBFormFillRow()
 

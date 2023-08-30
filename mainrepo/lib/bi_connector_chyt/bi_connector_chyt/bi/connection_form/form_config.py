@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import unique
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase, CHYTConnectorSettings
 from bi_api_commons.base_models import TenantDef
 
 import bi_api_connector.form_config.models.rows as C
@@ -24,16 +24,16 @@ class CHYTFieldName(FormFieldName):
 class CHYTConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef]
     ) -> ConnectionForm:
-        assert connectors_settings is not None and connectors_settings.CHYT is not None
+        assert connector_settings is not None and isinstance(connector_settings, CHYTConnectorSettings)
 
         rc = RowConstructor(localizer=self._localizer)
 
         clique_alias_row = C.CustomizableRow(items=[
             C.LabelRowItem(text=self._localizer.translate(Translatable('field_clique-alias'))),
-            C.InputRowItem(name=CHYTFieldName.alias, width='l', default_value=connectors_settings.CHYT.DEFAULT_CLIQUE),
+            C.InputRowItem(name=CHYTFieldName.alias, width='l', default_value=connector_settings.DEFAULT_CLIQUE),
         ])
 
         token_row = C.CustomizableRow(items=[

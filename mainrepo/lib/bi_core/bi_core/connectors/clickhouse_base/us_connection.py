@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 import abc
-from typing import Callable, Optional, Tuple, Any
+from typing import Callable, Generic, Optional, Tuple, Any
 from enum import Enum
 
 import attr
-
-from bi_configs.connectors_settings import CHFrozenConnectorSettings
 
 from bi_core.connection_models import ConnectOptions
 from bi_core.connection_executors.common_base import ConnExecutorQuery
 from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL, ConnectionHardcodedDataMixin
+from bi_core.us_connection_base import (
+    ConnectionBase, ClassicConnectionSQL, ConnectionHardcodedDataMixin, CONNECTOR_SETTINGS_TV,
+)
 from bi_core.base_models import ConnMDBMixin
 from bi_core.utils import parse_comma_separated_hosts
 from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
@@ -158,8 +158,9 @@ class ConnectionClickhouseFilteredBase(ConnectionClickhouseBase, metaclass=abc.A
 
 
 class ConnectionCHFilteredHardcodedDataBase(  # type: ignore  # TODO: fix
-    ConnectionHardcodedDataMixin[CHFrozenConnectorSettings],
+    ConnectionHardcodedDataMixin[CONNECTOR_SETTINGS_TV],
     ConnectionClickhouseFilteredBase,
+    Generic[CONNECTOR_SETTINGS_TV],
     metaclass=abc.ABCMeta,
 ):
     @property

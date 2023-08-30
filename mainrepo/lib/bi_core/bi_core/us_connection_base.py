@@ -14,7 +14,7 @@ from sqlalchemy.engine.default import DefaultDialect
 from bi_constants.enums import (
     ConnectionState, ConnectionType, CreateDSFrom, DataSourceRole, RawSQLLevel,
 )
-from bi_configs.connectors_settings import ConnectorsSettingsByType, ConnectorSettingsBase
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_utils.aio import await_sync
 from bi_utils.utils import DataKey
 
@@ -505,24 +505,26 @@ CONNECTOR_SETTINGS_TV = TypeVar('CONNECTOR_SETTINGS_TV', bound=ConnectorSettings
 class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
     """Connector type specific data is loaded from bi_configs.connectors_settings"""
 
+    conn_type: ConnectionType
+    settings_type: Type[CONNECTOR_SETTINGS_TV]
     us_manager: SyncUSManager
 
+    # TODO: remove
     @classmethod
-    def _get_all_connectors_settings(cls, usm: SyncUSManager) -> ConnectorsSettingsByType:
+    def _get_connector_settings(cls, usm: SyncUSManager) -> CONNECTOR_SETTINGS_TV:
         sr = usm.get_services_registry()
-        connectors_settings = sr.get_connectors_settings()
-        if not connectors_settings:
-            raise Exception('connectors settings was not loaded')
+        connectors_settings = sr.get_connectors_settings(cls.conn_type)
+        assert connectors_settings is not None
+        assert isinstance(connectors_settings, cls.settings_type)
         return connectors_settings
 
     @property
-    def _all_connectors_settings(self) -> ConnectorsSettingsByType:
-        return self._get_all_connectors_settings(usm=self.us_manager)
-
-    @property
-    @abc.abstractmethod
     def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:
-        pass
+        sr = self.us_manager.get_services_registry()
+        connectors_settings = sr.get_connectors_settings(self.conn_type)
+        assert connectors_settings is not None
+        assert isinstance(connectors_settings, self.settings_type)
+        return connectors_settings
 
 
 class HiddenDatabaseNameMixin(ConnectionSQL):

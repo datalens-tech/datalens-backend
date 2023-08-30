@@ -5,7 +5,7 @@ import shortuuid
 from bi_constants.enums import ConnectionType
 
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import CHFrozenConnectorSettings
 
 from bi_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 
@@ -17,15 +17,16 @@ class TestCHFrozenConnection(CHFrozenConnectionTestBase, DefaultConnectorConnect
             self,
             control_api_sync_client: SyncHttpClientBase,
             saved_connection_id: str,
-            connectors_settings: ConnectorsSettingsByType,
+            connectors_settings: dict[ConnectionType, CHFrozenConnectorSettings],
     ) -> None:
         sources_resp = control_api_sync_client.get(f'/api/v1/connections/{saved_connection_id}/info/sources')
         assert sources_resp.status_code == 200, sources_resp.json
         all_tables = [s['parameters']['table_name'] for s in sources_resp.json['sources']]
 
-        # all connectors' settings are the same, so we just pick from a random one
-        allowed_tables = connectors_settings.CH_FROZEN_DEMO.ALLOWED_TABLES
-        subselect_tables = connectors_settings.CH_FROZEN_DEMO.SUBSELECT_TEMPLATES
+        # all connectors settings are the same, so just pick from a random one
+        connector_settings = list(connectors_settings.values())[0]
+        allowed_tables = connector_settings.ALLOWED_TABLES
+        subselect_tables = connector_settings.SUBSELECT_TEMPLATES
         expected_tables = (allowed_tables + [subselect_template['title'] for subselect_template in subselect_tables])
         assert all_tables == expected_tables
 

@@ -134,7 +134,7 @@ class ConnectorForm(BIResource):
 
         form_factory = form_factory_cls(mode=mode, localizer=localizer)
         form_config = form_factory.get_form_config(
-            connectors_settings=self.get_service_registry().get_connectors_settings(),
+            connector_settings=self.get_service_registry().get_connectors_settings(ct),
             tenant=self.get_current_rci().tenant,
         )
 

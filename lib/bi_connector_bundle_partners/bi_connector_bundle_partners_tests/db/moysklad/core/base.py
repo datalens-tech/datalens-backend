@@ -4,7 +4,7 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType, MoySkladConnectorSettings
+from bi_configs.connectors_settings import MoySkladConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_partners.moysklad.core.us_connection import MoySkladCHConnection
@@ -17,9 +17,7 @@ import bi_connector_bundle_partners_tests.db.config as test_config
 
 class BaseMoySkladTestClass(BasePartnersClass[MoySkladCHConnection]):
     conn_type = ConnectionType.moysklad
-    connection_settings = ConnectorsSettingsByType(
-        MOYSKLAD=MoySkladConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
-    )
+    connection_settings = MoySkladConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')
     def saved_connection(

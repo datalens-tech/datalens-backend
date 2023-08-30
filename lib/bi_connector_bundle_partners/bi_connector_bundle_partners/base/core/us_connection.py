@@ -36,6 +36,7 @@ class PartnersCHConnectionBase(
 ):
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
+    settings_type = PartnerConnectorSettingsBase
 
     def get_conn_dto(self) -> ClickHouseConnDTO:
         cs = self._connector_settings
@@ -68,11 +69,6 @@ class PartnersCHConnectionBase(
         Don't execute `select 1` on our service databases - it's useless because user can't
         manage it anyway.
         """
-        pass
-
-    @classmethod
-    @abc.abstractmethod
-    def _get_connector_settings(cls, usm: SyncUSManager) -> PartnerConnectorSettingsBase:
         pass
 
     @classmethod

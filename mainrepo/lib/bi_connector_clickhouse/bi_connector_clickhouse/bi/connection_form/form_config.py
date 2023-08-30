@@ -4,7 +4,7 @@ from typing import Optional
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase, ClickHouseConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
 
@@ -25,12 +25,12 @@ from bi_connector_clickhouse.bi.i18n.localizer import Translatable
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connectors_settings is not None and connectors_settings.CLICKHOUSE is not None
+        assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
-        mdb_enabled = connectors_settings.CLICKHOUSE.USE_MDB_CLUSTER_PICKER
+        mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 
         mdb_form_fill_row = C.MDBFormFillRow()
         sql_user_management_hidden_row = C.CustomizableRow(items=[

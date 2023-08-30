@@ -5,20 +5,28 @@ from typing import Optional
 
 import flask
 
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from bi_configs.settings_loaders.loader_env import (
+    load_settings_from_env_with_fallback_legacy, load_connectors_settings_from_env_with_fallback,
+)
+from bi_constants.enums import ConnectionType
 
 from bi import app_version
+from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
+
+from bi_core.flask_utils.sentry import configure_raven_for_flask
+from bi_core.logging_config import hook_configure_logging
+
+from bi_api_lib.app_common import LegacySRFactoryBuilder
+from bi_api_lib.app.control_api.app import ControlApiAppFactory
 from bi_api_lib.app_settings import (
     ControlPlaneAppSettings,
     ControlPlaneAppTestingsSettings,
 )
-from bi_core.flask_utils.sentry import configure_raven_for_flask
+from bi_api_lib.loader import load_bi_api_lib
 
-from bi_core.logging_config import hook_configure_logging
-from bi_api_lib.app_common import LegacySRFactoryBuilder
-from bi_api_lib.app.control_api.app import ControlApiAppFactory
 from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 
@@ -28,12 +36,14 @@ class DefaultControlApiAppFactory(ControlApiAppFactory, LegacySRFactoryBuilder):
 
 def create_app(
         app_settings: ControlPlaneAppSettings,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = DefaultControlApiAppFactory()
     return mng_app_factory.create_app(
         app_settings=app_settings,
+        connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,
         close_loop_after_request=close_loop_after_request,
     )
@@ -48,7 +58,13 @@ def create_uwsgi_app():  # type: ignore  # TODO: fix
         ControlPlaneAppSettings,
         fallback_cfg_resolver=fallback_resolver,
     )
-    uwsgi_app = create_app(settings)
+    load_bi_api_lib()
+    connectors_settings = load_connectors_settings_from_env_with_fallback(
+        settings_registry=CONNECTORS_SETTINGS_CLASSES,
+        fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
+        fallback_cfg_resolver=fallback_resolver,
+    )
+    uwsgi_app = create_app(settings, connectors_settings)
 
     actual_sentry_dsn: Optional[str] = settings.SENTRY_DSN if settings.SENTRY_ENABLED else None
 

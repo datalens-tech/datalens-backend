@@ -13,6 +13,7 @@ from http import HTTPStatus
 import pytest
 import shortuuid
 
+from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTION_TYPE_CH_FROZEN_DEMO
 from bi_constants.enums import (
     AggregationFunction,
     BIType,
@@ -893,6 +894,7 @@ def test_replace_connection_clickhouse_to_frozen_preconfigured_subselect_source(
         ch_subselectable_connection_id,
 ):
     old_connection_id, new_connection_id = ch_subselectable_connection_id, static_ch_frozen_demo_connection_id
+    frozen_settings = connectors_settings[CONNECTION_TYPE_CH_FROZEN_DEMO]
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
@@ -900,7 +902,7 @@ def test_replace_connection_clickhouse_to_frozen_preconfigured_subselect_source(
         source_type=CreateDSFrom.CH_SUBSELECT,
         parameters=dict(
             subsql='select * from samples.SampleLite limit 10',
-            title=connectors_settings.CH_FROZEN_DEMO.SUBSELECT_TEMPLATES[0]['title'],
+            title=frozen_settings.SUBSELECT_TEMPLATES[0]['title'],
         ),
     )
 
@@ -929,7 +931,7 @@ def test_replace_connection_clickhouse_to_frozen_preconfigured_subselect_source(
 
     new_source_id = str(uuid.uuid4())
     db_name = 'samples'
-    table_name = connectors_settings.CH_FROZEN_DEMO.SUBSELECT_TEMPLATES[0]['title']
+    table_name = frozen_settings.SUBSELECT_TEMPLATES[0]['title']
 
     ds_resp = api_v1.apply_updates(dataset=ds, updates=[
         {
@@ -969,6 +971,7 @@ def test_replace_connection_clickhouse_to_frozen_subselect_source(
         ch_subselectable_connection_id,
 ):
     old_connection_id, new_connection_id = ch_subselectable_connection_id, static_ch_frozen_demo_connection_id
+    frozen_settings = connectors_settings[CONNECTION_TYPE_CH_FROZEN_DEMO]
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
@@ -976,7 +979,7 @@ def test_replace_connection_clickhouse_to_frozen_subselect_source(
         source_type=CreateDSFrom.CH_SUBSELECT,
         parameters=dict(
             subsql='select * from samples.SampleLite limit 10',
-            title=connectors_settings.CH_FROZEN_DEMO.SUBSELECT_TEMPLATES[0]['title'],
+            title=frozen_settings.SUBSELECT_TEMPLATES[0]['title'],
         ),
     )
 

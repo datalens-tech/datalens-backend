@@ -37,6 +37,7 @@ class YQConnection(
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
+    settings_type = YQConnectorSettings
 
     source_type = SOURCE_TYPE_YQ_TABLE
 
@@ -55,12 +56,6 @@ class YQConnection(
                 *super().get_secret_keys(),
                 DataKey(parts=('password',)),
             }
-
-    @property
-    def _connector_settings(self) -> YQConnectorSettings:
-        settings = self._all_connectors_settings.YQ
-        assert settings is not None
-        return settings
 
     def get_conn_options(self) -> YQConnectOptions:
         return super().get_conn_options().to_subclass(
