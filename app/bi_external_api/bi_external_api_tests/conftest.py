@@ -79,7 +79,10 @@ def sync_rqe_netloc_subprocess(bi_ext_api_test_env) -> RQEBaseURL:
             module='bi_core.bin.query_executor_sync',
             callable='app',
             ping_path='/ping',
-            env=dict(EXT_QUERY_EXECUTER_SECRET_KEY=bi_ext_api_test_env.EXT_QUERY_EXECUTOR_SECRET_KEY),
+            env=dict(
+                EXT_QUERY_EXECUTER_SECRET_KEY=bi_ext_api_test_env.EXT_QUERY_EXECUTOR_SECRET_KEY,
+                DEV_LOGGING='1',
+            ),
     ) as runner:
         yield RQEBaseURL(host=runner.bind_addr, port=runner.bind_port)
 

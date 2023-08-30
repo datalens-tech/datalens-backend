@@ -227,8 +227,7 @@ def run_flask_server(sentry_dsn: str, host: str, port: int):
         "flask_raven_sentry_client",
         app_prefix="tst_1",
         sentry_dsn=sentry_dsn,
-        # Default is `development`. Sentry logging integration will not be configured if we leave it.
-        env="NotADevelopment",
+        for_development=False,
     )
 
     def fail_on_any():

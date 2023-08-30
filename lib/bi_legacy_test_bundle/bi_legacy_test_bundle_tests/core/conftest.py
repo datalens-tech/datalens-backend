@@ -279,6 +279,7 @@ def make_sync_rqe_netloc_subprocess(tests_config) -> RQEBaseURL:
         env=dict(
             # Ensure the key matches:
             EXT_QUERY_EXECUTER_SECRET_KEY=tests_config.EXT_QUERY_EXECUTER_SECRET_KEY,
+            DEV_LOGGING='1',
         ),
     )
     with runner_cm as runner:

@@ -218,10 +218,13 @@ def setup_jaeger_client(service_name: str):  # type: ignore  # TODO: fix
 
 
 def configure_logging(  # type: ignore  # TODO: fix
-    app_name,
-    env=None, app_prefix=None, sentry_dsn=None, logcfg_processors=None,
-    use_jaeger_tracer: bool = False,
-    jaeger_service_name: Optional[str] = None,
+        app_name,
+        for_development: Optional[bool] = None,
+        app_prefix: Optional[str] = None,
+        sentry_dsn: Optional[str] = None,
+        logcfg_processors: Optional[Sequence[Callable]] = None,
+        use_jaeger_tracer: bool = False,
+        jaeger_service_name: Optional[str] = None,
 ) -> None:
     """
     Make sure the global logging state is configured.
@@ -235,11 +238,11 @@ def configure_logging(  # type: ignore  # TODO: fix
     Context includes `common_handlers`.
     Example: see `logcfg_process_enable_handler`.
     """
-    if env is None:
-        env = os.environ.get("YENV_TYPE", "development")
+    if for_development is None:
+        for_development = os.environ.get('DEV_LOGGING', '0').lower() in ('1', 'true')
 
     cfg = _make_logging_config(
-        for_development=(env == 'development'),
+        for_development=for_development,
         sentry_dsn=sentry_dsn,
         logcfg_processors=logcfg_processors,
     )

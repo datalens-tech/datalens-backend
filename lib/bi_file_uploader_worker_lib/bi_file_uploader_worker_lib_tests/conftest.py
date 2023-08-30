@@ -61,18 +61,6 @@ pytest_plugins = (
 def pytest_configure(config: Any) -> None:  # noqa
     common_pytest_configure(tracing_service_name="tests_bi_file_uploader_worker")
 
-    # TODO: remove
-    os.environ['YENV_TYPE'] = 'tests'
-    os.environ['YENV_NAME'] = 'intranet'
-    os.environ['REDIS_ARQ_PASSWORD'] = ''
-    os.environ['REDIS_APP_PASSWORD'] = ''
-    os.environ['S3_ACCESS_KEY_ID'] = 'accessKey1'
-    os.environ['S3_SECRET_ACCESS_KEY'] = 'verySecretKey1'
-    os.environ['US_MASTER_TOKEN'] = "AC1ofiek8coB"
-    os.environ['US_HOST'] = f"http://{get_test_container_hostport('us', fallback_port=51500).as_pair()}"
-    os.environ['CONNECTORS_FILE_PASSWORD'] = 'qwerty'
-    os.environ['CONNECTORS_FILE_SECRET_ACCESS_KEY'] = 'accessKey1'
-    os.environ['CONNECTORS_FILE_ACCESS_KEY_ID'] = 'verySecretKey1'
     os.environ['EXT_QUERY_EXECUTER_SECRET_KEY'] = 'qwerty'
 
 

@@ -68,16 +68,6 @@ def pytest_configure(config: Any) -> None:  # noqa
     common_pytest_configure(tracing_service_name="tests_bi_file_uploader")
 
 
-@pytest.fixture(scope='function')
-def fill_env_variables(monkeypatch):
-    monkeypatch.setenv('YENV_TYPE', 'tests')
-    monkeypatch.setenv('YENV_NAME', 'intranet')
-    monkeypatch.setenv('EXT_QUERY_EXECUTER_SECRET_KEY', 'dummy')
-
-    monkeypatch.setenv('DL_CRY_ACTUAL_KEY_ID', 'tests')
-    monkeypatch.setenv('DL_CRY_KEY_VAL_ID_tests', get_dummy_crypto_keys_config().actual_key_id)
-
-
 @pytest.fixture(autouse=True)
 def loop(event_loop):
     """
@@ -153,7 +143,9 @@ def crypto_keys_config() -> CryptoKeysConfig:
 
 
 @pytest.fixture(scope="function")
-def app_settings(fill_env_variables, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config):
+def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config):
+    monkeypatch.setenv('EXT_QUERY_EXECUTER_SECRET_KEY', 'dummy')
+
     settings = FileUploaderAPISettings(
         APP_TYPE=AppType.TESTS,
         REDIS_APP=redis_app_settings,

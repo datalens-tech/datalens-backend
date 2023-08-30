@@ -1,12 +1,8 @@
-import itertools
 import time
-from typing import Any, Callable, Optional, Sequence, Type
+from typing import Any, Callable, Optional, Type
 
 from dynamic_enum import DynamicEnum, AutoEnumValue
 
-from bi_configs.enums import AppType
-from bi_configs.env_var_reader import get_from_env
-from bi_configs.utils import app_type_env_var_converter
 from bi_constants.enums import NotificationLevel
 
 from bi_api_commons.reporting.models import NotificationReportingRecord
@@ -48,16 +44,11 @@ class BaseNotification:
 
 _NOTIFICATIONS: dict[NotificationType, Type[BaseNotification]] = {}
 
-INTRANET_APP_TYPES = [AppType.INTRANET, AppType.TESTS]
-CLOUD_APP_TYPES = [AppType.CLOUD, AppType.CLOUD_PUBLIC]
-OTHER_APP_TYPES = [app_type for app_type in list(AppType) if app_type not in itertools.chain(INTRANET_APP_TYPES, CLOUD_APP_TYPES)]
 
-
-# TODO: better way to customize notification based on environment?
-def register_notification(app_types: Optional[Sequence[AppType]] = None) -> Callable[[Type[BaseNotification]], Type[BaseNotification]]:
+# TODO: add control (via config/env) over which notifications should not be displayed
+def register_notification() -> Callable[[Type[BaseNotification]], Type[BaseNotification]]:
     def wrap(cls: Type[BaseNotification]) -> Type[BaseNotification]:
-        if app_types is None or get_from_env('YENV_TYPE', app_type_env_var_converter, None) in app_types:
-            _NOTIFICATIONS[cls.type] = cls
+        _NOTIFICATIONS[cls.type] = cls
         return cls
     return wrap
 

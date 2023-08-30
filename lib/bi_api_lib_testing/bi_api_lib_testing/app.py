@@ -25,7 +25,10 @@ class RQEConfigurationMaker:
                 module='bi_core.bin.query_executor_sync',
                 callable='app',
                 ping_path='/ping',
-                env=dict(EXT_QUERY_EXECUTER_SECRET_KEY=self.bi_test_config.ext_query_executer_secret_key),
+                env=dict(
+                    EXT_QUERY_EXECUTER_SECRET_KEY=self.bi_test_config.ext_query_executer_secret_key,
+                    DEV_LOGGING='1',
+                ),
         ) as runner:
             yield RQEBaseURL(  # type: ignore  # TODO: fix compatibility of models using `s_attrib` with mypy
                 host=runner.bind_addr,

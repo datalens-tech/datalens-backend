@@ -24,15 +24,7 @@ if [ x"${LAUNCH_TARGET}" = x"async_api" ]; then
         --worker-class aiohttp.GunicornWebWorker
 else
 
-    BI_API_UWSGI_WORKERS_COUNT="${BI_API_UWSGI_WORKERS_COUNT:-}"
-    if [ -z "$BI_API_UWSGI_WORKERS_COUNT" ]; then
-        if [ x"$YENV_TYPE" = x"testing" ] || [ x"$YENV_TYPE" = x"int-testing" ]; then
-            # Do not use too much memory in testing.
-            BI_API_UWSGI_WORKERS_COUNT=4
-        else
-            BI_API_UWSGI_WORKERS_COUNT=40
-        fi
-    fi
+    BI_API_UWSGI_WORKERS_COUNT="${BI_API_UWSGI_WORKERS_COUNT:-40}"
 
     # It is also set in the ini file, but that might not work in some cases.
     UWSGI_STATS=/tmp/uwsgi_stats.sock
