@@ -51,20 +51,6 @@ msgstr "Ключ SA"
 msgid "label_connector-yq"
 msgstr "Yandex Query"
 
-#: bi_api_lib/connectors/clickhouse/connection_form/form_config.py:147
-msgid "field_click-house-port"
-msgstr "Порт HTTP-интерфейса"
-
-#: bi_api_lib/connectors/clickhouse/connection_form/form_config.py:156
-msgid "label_clickhouse-ssl-enabled-tooltip"
-msgstr ""
-"Когда опция включена, при взаимодействии с БД используется протокол HTTPS, "
-"когда выключена — HTTP"
-
-#: bi_api_lib/connectors/clickhouse/connection_info.py:6
-msgid "label_connector-clickhouse"
-msgstr "ClickHouse"
-
 #: bi_api_lib/connectors/postgresql/connection_form/form_config.py:154
 msgid "field_enforce-collate"
 msgstr "Указание collate в запросе"

@@ -1,3 +1,6 @@
+[bi_api_lib.connectors]
+clickhouse = bi_connector_clickhouse.bi.connector:ClickHouseBiApiConnector
+
 [bi_core.connectors]
 clickhouse = bi_connector_clickhouse.core.connector:ClickHouseCoreConnector
 

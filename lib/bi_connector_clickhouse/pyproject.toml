@@ -24,6 +24,9 @@ yandex-bi-formula = {path = "../../lib/bi_formula"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+clickhouse = "bi_connector_clickhouse.bi.connector:ClickHouseBiApiConnector"
+
 [tool.poetry.plugins."bi_core.connectors"]
 clickhouse = "bi_connector_clickhouse.core.connector:ClickHouseCoreConnector"
 
@@ -83,6 +86,3 @@ root_dir = "bi_connector_clickhouse_tests/db"
 #[datalens.pytest.ext]
 #root_dir = "bi_connector_clickhouse_tests/ext"
 #labels = ["ext"]
-
-
-
