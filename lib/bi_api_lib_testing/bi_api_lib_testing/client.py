@@ -1,12 +1,78 @@
 from __future__ import annotations
 
-from typing import Optional
+import json
+from asyncio import AbstractEventLoop
+from typing import Any, Optional
 
 import attr
+import aiohttp.test_utils
 from werkzeug.test import Client as WClient
 
+from bi_utils.aio import await_sync
+
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase, ClientResponse
-from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
+
+
+@attr.s
+class TestClientConverterAiohttpToFlask:
+    _loop: AbstractEventLoop = attr.ib()
+    _aio_client: aiohttp.test_utils.TestClient = attr.ib()
+    _extra_headers: Optional[dict[str, str]] = attr.ib(default=None)
+    _cookies: Optional[dict[str, str]] = attr.ib(default=None)
+
+    @attr.s(frozen=True, auto_attribs=True)
+    class Resp:
+        status_code: int
+        data: bytes
+        _json: Optional[dict]
+
+        @property
+        def json(self) -> dict:
+            assert self._json is not None
+            return self._json
+
+    def set_cookie(self, server_name: str, key: str, value: str = "", **kwargs: Any) -> None:
+        if self._cookies is None:
+            self._cookies = {}
+        self._cookies.update({key: value})
+
+    def delete_cookie(self, server_name: str, key: str, **kwargs: Any) -> None:
+        if self._cookies is not None:
+            self._cookies.pop(key, None)
+
+    def post(self, url: str, **kwargs: Any) -> Resp:
+        return self.open(url, method='post', **kwargs)
+
+    def get(self, url: str, **kwargs: Any) -> Resp:
+        return self.open(url, method='get', **kwargs)
+
+    def open(
+            self,
+            url: str, *,
+            method: str,
+            data: Optional[str] = None,
+            content_type: Optional[str] = None,
+            headers: Optional[dict] = None,
+    ) -> Resp:
+        headers = dict(headers) if headers else {}
+        if self._extra_headers:
+            headers.update(self._extra_headers)
+
+        if content_type is not None:
+            headers['Content-Type'] = content_type
+        resp = await_sync(self._aio_client.request(
+            method, url, data=data, headers=headers, cookies=self._cookies,
+        ), loop=self._loop)
+        resp_data = await_sync(resp.read())
+
+        js: Optional[dict] = None
+        if resp_data is not None:
+            try:
+                js = json.loads(resp_data)
+            except json.JSONDecodeError:
+                pass
+
+        return self.Resp(status_code=resp.status, data=resp_data, json=js)
 
 
 @attr.s

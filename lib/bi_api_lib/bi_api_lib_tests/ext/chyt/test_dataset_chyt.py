@@ -10,12 +10,11 @@ import pytest
 
 from bi_constants.enums import CreateDSFrom
 
-from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
 
-from bi_api_lib_testing.client import WrappedAioSyncApiClient, FlaskSyncApiClient
+from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 
 from bi_api_lib_tests.utils import get_result_schema
 

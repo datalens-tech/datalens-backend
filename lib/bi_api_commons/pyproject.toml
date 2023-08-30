@@ -26,6 +26,8 @@ statcommons = {path = "../../lib/statcommons"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

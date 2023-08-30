@@ -12,8 +12,6 @@ from bi_configs.enums import AppType
 from bi_configs.rqe import RQEConfig
 from bi_configs.connectors_settings import ConnectorsSettingsByType
 
-from bi_testing_ya.api_wrappers import TestClientConverterAiohttpToFlask
-
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
 from bi_core.components.ids import FieldIdGeneratorType
@@ -27,7 +25,7 @@ from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV2, HttpDataApiRes
 from bi_api_lib_testing.app import RedisSettingMaker, TestingDataApiAppFactory
 from bi_api_lib_testing.base import BiApiTestBase
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from bi_api_lib_testing.client import WrappedAioSyncApiClient
+from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient
 from bi_api_lib_testing.dataset_base import DatasetTestBase
 from bi_core_testing.database import DbTable
 
