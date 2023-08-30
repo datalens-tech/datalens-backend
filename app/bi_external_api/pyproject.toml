@@ -14,31 +14,31 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 docker = ">=6.0.1"
-dynamic-enum = {path = "../../lib/dynamic_enum"}
 grpcio-health-checking = ">=1.44.0"
 grpcio-reflection = ">=1.44.0"
 python = ">=3.10, <3.12"
 pyyaml = ">=5.3.1"
 sentry-sdk = ">=1.15.0"
-yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
-yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
-yandex-bi-us-client = {path = "../../lib/bi_us_client"}
 yandex-dc-public-api-proto-stubs = {path = "../../lib/dc_public_api_proto_stubs"}
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
+yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
+dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 uwsgi = ">=2.0.21"
 yandex-bi-api = {path = "../../app/bi_api"}
-yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
-yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
+yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 gunicorn = ">=20.1.0"
-bi-file-secure-reader-lib = {path = "../../lib/bi_file_secure_reader_lib"}
+bi-file-secure-reader-lib = {path = "../../mainrepo/lib/bi_file_secure_reader_lib"}
 
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = ">=0.20.3"

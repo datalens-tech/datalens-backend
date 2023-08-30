@@ -12,35 +12,35 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle_chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
-yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-sqlalchemy-chyt = {path = "../../lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
+yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
+yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
+yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
+yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
+yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
+yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
+yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
+yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
+yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
+yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
+yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 
 [build-system]
 requires = ["poetry-core"]

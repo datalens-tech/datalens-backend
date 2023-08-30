@@ -11,12 +11,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-bi-i18n = {path = "../../lib/bi_i18n"}
-yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../lib/bi_configs"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connector:CHFrozenBumpyRoadsBiApiConnector"
@@ -43,9 +43,9 @@ ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.core.connec
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-yandex-bi-api-lib-testing = {path = "../../lib/bi_api_lib_testing"}
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
+yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,78 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-snowflake"
+version = "0.0.1"
+description = ""
+authors = ["Valentin Gologuzov <vgol@yandex-team.ru>"]
+packages = [{include = "bi_connector_snowflake"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+snowflake-connector-python = ">=2.9.0"
+snowflake-sqlalchemy = ">=1.4.6"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-api-commons = {path = "../bi_api_commons"}
+yandex-bi-api-connector = {path = "../bi_api_connector"}
+yandex-bi-constants = {path = "../bi_constants"}
+yandex-bi-core = {path = "../bi_core"}
+yandex-bi-db-testing = {path = "../bi_db_testing"}
+yandex-bi-formula = {path = "../bi_formula"}
+bi-i18n = {path = "../bi_i18n"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+snowflake = "bi_connector_snowflake.bi.connector:SnowFlakeBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+snowflake = "bi_connector_snowflake.core.connector:SnowFlakeCoreConnector"
+
+[tool.poetry.plugins."bi_db_testing.connectors"]
+snowflake = "bi_connector_snowflake.db_testing.connector:SnowFlakeDbTestingConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+snowflake = "bi_connector_snowflake.formula.connector:SnowFlakeFormulaConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-api-lib-testing = {path = "../bi_api_lib_testing"}
+yandex-bi-configs = {path = "../bi_configs"}
+yandex-bi-core-testing = {path = "../bi_core_testing"}
+yandex-bi-testing = {path = "../bi_testing"}
+statcommons = {path = "../statcommons"}
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_connector_snowflake_tests/ext", "bi_connector_snowflake_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+#[datalens.pytest.ext]
+#root_dir = "bi_connector_snowflake_tests/ext"
+#labels = ["ext"]
+
+[datalens.pytest.unit]
+root_dir = "bi_connector_snowflake_tests/unit"
+

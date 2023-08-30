@@ -143,7 +143,7 @@ services:
   # INFRA
   pg-us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
@@ -155,7 +155,7 @@ services:
   # TODO: Mulitinancy & DLS integration
   us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
     depends_on:
       - pg-us
@@ -181,7 +181,7 @@ services:
 
   s3-storage:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.s3-storage
     command: bash /data/entrypoint.sh
     environment:

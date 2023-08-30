@@ -1,0 +1,67 @@
+
+[tool.poetry]
+name = "yandex-bi-core-testing"
+version = "0.0.1"
+description = ""
+authors = ["Package Author <bipackageauthor@yandex-team.ru>"]
+packages = [{include = "bi_core_testing"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+Flask = ">=2.0.3"
+Werkzeug = ">=2.0.3"
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+psycopg2-binary = ">=2.9.6"
+pytest = ">=7.2.2"
+python = ">=3.10, <3.12"
+requests = ">=2.28.2"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+uwsgi = ">=2.0.21"
+yandex-bi-api-commons = {path = "../bi_api_commons"}
+yandex-bi-app-tools = {path = "../bi_app_tools"}
+yandex-bi-configs = {path = "../bi_configs"}
+yandex-bi-constants = {path = "../bi_constants"}
+yandex-bi-core = {path = "../bi_core"}
+yandex-bi-db-testing = {path = "../bi_db_testing"}
+yandex-bi-utils = {path = "../bi_utils"}
+statcommons = {path = "../statcommons"}
+
+[tool.poetry.plugins."bi_core.connectors"]
+testing = "bi_core_testing.connector:TestingCoreConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+
+
+[datalens_ci]
+skip_test = true

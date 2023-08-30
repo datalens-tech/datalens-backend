@@ -1,0 +1,87 @@
+
+[tool.poetry]
+name = "yandex-bi-connector-oracle"
+version = "0.0.1"
+description = ""
+authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "bi_connector_oracle"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+oracledb = ">=1.3.1"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-api-commons = {path = "../bi_api_commons"}
+yandex-bi-api-connector = {path = "../bi_api_connector"}
+yandex-bi-configs = {path = "../bi_configs"}
+yandex-bi-constants = {path = "../bi_constants"}
+yandex-bi-core = {path = "../bi_core"}
+yandex-bi-db-testing = {path = "../bi_db_testing"}
+yandex-bi-formula = {path = "../bi_formula"}
+yandex-bi-formula-ref = {path = "../bi_formula_ref"}
+bi-i18n = {path = "../bi_i18n"}
+yandex-bi-sqlalchemy-oracle = {path = "../bi_sqlalchemy_oracle"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+oracle = "bi_connector_oracle.bi.connector:OracleBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+oracle = "bi_connector_oracle.core.connector:OracleCoreConnector"
+
+[tool.poetry.plugins."bi_db_testing.connectors"]
+oracle = "bi_connector_oracle.db_testing.connector:OracleDbTestingConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+oracle = "bi_connector_oracle.formula.connector:OracleFormulaConnector"
+
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+oracle = "bi_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+yandex-bi-core-testing = {path = "../bi_core_testing"}
+
+[tool.poetry.group.tests_db.dependencies]
+oracledb = ">=1.3.1"
+yandex-bi-testing = {path = "../../lib/bi_testing"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["bi_connector_oracle_tests/db", "bi_connector_oracle_tests/unit"]
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens.pytest.db]
+root_dir = "bi_connector_oracle_tests/"
+target_path = "db unit"
+labels = ["fat"]
+
+[datalens.pytest.unit]
+root_dir = "bi_connector_oracle_tests/"
+target_path = "unit"
+skip_compose = "true"

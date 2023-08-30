@@ -16,7 +16,7 @@ services:
 
   pg-us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
@@ -27,7 +27,7 @@ services:
 
   pg-us-dc:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
@@ -38,7 +38,7 @@ services:
 
   us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
     ports:
       - 51000:80
@@ -54,7 +54,7 @@ services:
 
   us-dc:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
     ports:
       - 51001:80

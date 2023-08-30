@@ -18,13 +18,13 @@ opentracing = ">=2.4.0"
 pytest = ">=7.2.2"
 python = ">=3.10, <3.12"
 pyyaml = ">=5.3.1"
-yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../lib/bi_configs"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-testing = {path = "../../lib/bi_testing"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
 yandex-passport-vault-client = ">=1.5.2"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [tool.poetry.group.tests.dependencies]
 

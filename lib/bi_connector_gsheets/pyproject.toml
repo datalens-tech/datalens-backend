@@ -12,17 +12,17 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 python = ">=3.10, <3.12"
-yandex-bi-api-commons = {path = "../../lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../lib/bi_configs"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-query-processing = {path = "../../lib/bi_query_processing"}
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_api_lib.connectors"]

@@ -17,15 +17,15 @@ pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-us-client = {path = "../../lib/bi_us_client"}
+yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
 
 [tool.poetry.group.tests.dependencies]
 pandas = ">=1.5.3"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 
 [build-system]

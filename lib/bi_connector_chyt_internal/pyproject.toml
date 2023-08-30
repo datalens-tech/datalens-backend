@@ -12,16 +12,16 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 pytest-asyncio = ">=0.20.3"
-yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
-yandex-bi-connector-chyt = {path = "../../lib/bi_connector_chyt"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-connector-chyt = {path = "../../mainrepo/lib/bi_connector_chyt"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
+bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_api_lib.connectors"]
