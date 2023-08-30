@@ -4,6 +4,7 @@ from typing import Dict, TYPE_CHECKING
 
 import attr
 
+from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.definitions.scope import Scope
 
 from bi_formula_ref.examples.data_table import DataTable
@@ -28,9 +29,15 @@ class DataPreparer:
     _dumper_by_dialect: Dict[DialectCombo, DataDumper] = attr.ib(init=False, factory=dict)
     _storage: WritableDataStorage = attr.ib(init=False)
     _sa_compiler_by_dialect: Dict[DialectCombo, SaQueryCompiler] = attr.ib(init=False, factory=dict)
+    _default_example_dialect: DialectCombo = attr.ib(kw_only=True, default=D.DUMMY)
 
     def __attrs_post_init__(self) -> None:
         self._storage = WritableDataStorage(filename=self._storage_filename)
+
+    def _get_example_dialect(self, example: ExampleConfig) -> DialectCombo:
+        if example.dialect is not None:
+            return example.dialect
+        return self._default_example_dialect
 
     def _get_db(self, dialect: DialectCombo) -> Db:
         return self._db_by_dialect[dialect]
@@ -48,8 +55,8 @@ class DataPreparer:
         return self._sa_compiler_by_dialect[dialect]
 
     def apply_data_transformation(self, example: ExampleConfig, data_table: DataTable) -> DataTable:
-        dumper = self._get_dumper(dialect=example.dialect)
-        sa_compiler = self._get_sa_compiler(dialect=example.dialect)
+        dumper = self._get_dumper(dialect=self._get_example_dialect(example))
+        sa_compiler = self._get_sa_compiler(dialect=self._get_example_dialect(example))
         with dumper.temporary_data_table(data_table=data_table) as table_ref:
             raw_query = self._query_gen.generate_query(example=example)
             compiled_query_ctx = sa_compiler.compile_query(raw_query=raw_query, table_ref=table_ref)
@@ -70,7 +77,7 @@ class DataPreparer:
             example_from_result = ExampleConfig(
                 source=source_from_result,
                 formula_fields=formula_fields,
-                dialect=example.dialect,
+                dialect=self._get_example_dialect(example),
                 order_by=example.order_by,
             )
             data_table = self.apply_data_transformation(example=example_from_result, data_table=data_table)

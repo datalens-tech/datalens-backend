@@ -4,12 +4,6 @@ from typing import TYPE_CHECKING
 
 from bi_formula.core.dialect import DialectCombo, StandardDialect as D
 
-from bi_connector_clickhouse.formula.constants import ClickHouseDialect
-from bi_connector_mysql.formula.constants import MySQLDialect
-from bi_connector_oracle.formula.constants import OracleDialect
-from bi_connector_mssql.formula.constants import MssqlDialect
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
-
 from bi_formula_ref.registry.dialect_base import DialectExtractorBase
 
 if TYPE_CHECKING:
@@ -17,15 +11,13 @@ if TYPE_CHECKING:
     import bi_formula_ref.registry.base as _registry_base
 
 
-COMPENG_SUPPORT = (
-    # Lowest versions of all backends that are compatible with COMPENG
-    *ClickHouseDialect.CLICKHOUSE.to_list(),
-    *PostgreSQLDialect.POSTGRESQL.to_list(),
-    *MySQLDialect.MYSQL.to_list(),
-    *MssqlDialect.MSSQLSRV.to_list(),
-    *OracleDialect.ORACLE.to_list(),
-)
+# Lowest versions of all backends that are compatible with COMPENG. Filled from plugins
+COMPENG_SUPPORT: set[DialectCombo] = set()
 EXPAND_COMPENG = True
+
+
+def register_compeng_support_dialects(any_dialects: frozenset[DialectCombo]) -> None:
+    COMPENG_SUPPORT.update(any_dialects)
 
 
 class DefaultDialectExtractor(DialectExtractorBase):

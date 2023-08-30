@@ -8,3 +8,6 @@ metrica_api = bi_connector_metrica.core.connector:MetricaApiCoreConnector
 
 [bi_formula.connectors]
 metrica = bi_connector_metrica.formula.connector:MetricaFormulaConnector
+
+[bi_formula_ref.plugins]
+metrica = bi_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin

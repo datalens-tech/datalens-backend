@@ -16,19 +16,13 @@ jinja2 = ">=3.1.2"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
 tabulate = ">=0.9.0"
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
-yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
-yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 babel = ">=2.12.1"
 pytest = ">=7.2.2"
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 
 [tool.poetry.group.tests_db.dependencies]
 psycopg2-binary = ">=2.9.6"

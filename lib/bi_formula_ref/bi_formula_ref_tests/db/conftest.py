@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import time
-import os
 from typing import MutableSet
 
 import pytest
@@ -15,17 +14,11 @@ from bi_formula.testing.evaluator import DbEvaluator
 from bi_testing.containers import get_test_container_hostport
 
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 
 ALL_DB_CONFIGURATIONS = {
-    ClickHouseDialect.CLICKHOUSE_21_8: (
-        os.environ.get('DB_CLICKHOUSE_21_8_URL') or
-        f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-clickhouse-21-8", fallback_port=51110).as_pair()}/datalens_test'
-    ),
-    PostgreSQLDialect.COMPENG: (
-        os.environ.get('DB_COMPENG_URL') or
-        f'postgresql://datalens:qwerty@{get_test_container_hostport("db-postgres", fallback_port=51120).as_pair()}/datalens_test'
+    ClickHouseDialect.CLICKHOUSE_22_10: (
+        f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-clickhouse-22-10", fallback_port=51110).as_pair()}/datalens_test'
     ),
 }
 EXCLUDE_DIALECTS = []
@@ -111,18 +104,3 @@ def any_dialect(request) -> DialectCombo:
 @pytest.fixture(scope='session')
 def dbe(any_dialect):
     return dbe_for(any_dialect)
-
-
-@pytest.fixture(scope='session')
-def clickhouse_dbe():
-    return dbe_for(ClickHouseDialect.CLICKHOUSE_21_8)
-
-
-@pytest.fixture(scope='session')
-def compeng_dbe():
-    return dbe_for(PostgreSQLDialect.COMPENG)
-
-
-@pytest.fixture(scope='session')
-def all_dbe(clickhouse_dbe, compeng_dbe):
-    pass

@@ -4,6 +4,8 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 import attr
 
+from bi_i18n.localizer_base import Translatable
+
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import get_dialect_from_str
 
@@ -58,7 +60,7 @@ class MacroExpander:
     _cat_link_provider: \
         Optional[Callable[[str, Optional[str]], Tuple[str, str]]] = attr.ib(kw_only=True, default=None)
     _args: Optional[List[FuncArg]] = attr.ib(kw_only=True, default=None)
-    _translation_callable: Callable[[str], str] = attr.ib(kw_only=True, default=lambda s: s)
+    _translation_callable: Callable[[str | Translatable], str] = attr.ib(kw_only=True, default=lambda s: s)
 
     def _get_raw_link_url_by_alias(self, alias: str) -> str:
         return self._resources.get_link(alias).url
@@ -66,7 +68,7 @@ class MacroExpander:
     def _get_raw_text_body_by_alias(self, alias: str) -> str:
         return self._resources.get_text(alias).body
 
-    def _get_raw_table_body_by_alias(self, alias: str) -> List[List[str]]:
+    def _get_raw_table_body_by_alias(self, alias: str) -> list[list[str | Translatable]]:
         return self._resources.get_table(alias).table_body
 
     def _get_func_name_and_url(self, func_name: str, category_name: Optional[str] = None) -> Tuple[str, str]:
@@ -77,12 +79,12 @@ class MacroExpander:
         assert self._cat_link_provider is not None
         return self._cat_link_provider(category_name, anchor_name)
 
-    def _translate_text(self, text: str) -> str:
-        if not text:
+    def _translate_text(self, text: str | Translatable) -> str:
+        if isinstance(text, str) and not text:
             return text
         return self._translation_callable(text)
 
-    def expand_text(self, text: str) -> RichText:
+    def expand_text(self, text: str | Translatable) -> RichText:
         trans_text = self._translate_text(text)
         replacements: Dict[MacroReplacementKey, BaseTextElement] = {}
 

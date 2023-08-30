@@ -9,3 +9,6 @@ oracle = bi_connector_oracle.db_testing.connector:OracleDbTestingConnector
 
 [bi_formula.connectors]
 oracle = bi_connector_oracle.formula.connector:OracleFormulaConnector
+
+[bi_formula_ref.plugins]
+oracle = bi_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin

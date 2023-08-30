@@ -18,7 +18,7 @@ update-po-domain-api:
 
 .PHONY: update-po-domain-formula-ref
 update-po-domain-formula-ref:
-	DOMAIN_NAME=bi_formula_ref PATH_MASK="/formula_ref/" make update-po-domain
+	DOMAIN_NAME=bi_formula_ref_$(PACKAGE_NAME) PATH_MASK="/formula_ref/" make update-po-domain
 
 
 .PHONY: update-po
@@ -47,7 +47,7 @@ msgfmt-domain-api:
 
 .PHONY: msgfmt-domain-formula-ref
 msgfmt-domain-formula-ref:
-	DOMAIN_NAME=bi_formula_ref make msgfmt-domain
+	DOMAIN_NAME=bi_formula_ref_$(PACKAGE_NAME) make msgfmt-domain
 
 
 .PHONY: msgfmt

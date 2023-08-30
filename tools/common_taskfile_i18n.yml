@@ -18,7 +18,7 @@ tasks:
   update-po:
     deps:
       - {task: "_update-po-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}", PATH_MASK: "/bi/"}}
-      - {task: "_update-po-domain", vars: {DOMAIN_NAME: "bi_formula_ref", PATH_MASK: ".*formula_ref/"}}
+      - {task: "_update-po-domain", vars: {DOMAIN_NAME: "bi_formula_ref_{{.PACKAGE_NAME}}", PATH_MASK: ".*formula_ref/"}}
     ignore_error: true
 
   _msgfmt-domain:
@@ -32,6 +32,6 @@ tasks:
 
   msgfmt:
     deps:
-      - {task: "_msgfmt-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}", PATH_MASK: "/bi/"}}
-      - {task: "_msgfmt-domain", vars: {DOMAIN_NAME: "bi_formula_ref", PATH_MASK: ".*formula_ref/"}}
+      - {task: "_msgfmt-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}"}}
+      - {task: "_msgfmt-domain", vars: {DOMAIN_NAME: "bi_formula_ref_{{.PACKAGE_NAME}}"}}
     ignore_error: true

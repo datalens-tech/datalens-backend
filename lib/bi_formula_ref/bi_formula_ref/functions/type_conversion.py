@@ -1,3 +1,11 @@
+import attr
+
+from bi_i18n.localizer_base import Translatable
+
+from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.datatype import DataType
+from bi_formula.definitions.functions_type import DataTypeSpec, WhitelistTypeSpec
+
 from bi_formula_ref.registry.base import FunctionDocRegistryItem
 from bi_formula_ref.registry.example import SimpleExample
 from bi_formula_ref.registry.aliased_res import (
@@ -5,13 +13,7 @@ from bi_formula_ref.registry.aliased_res import (
 )
 from bi_formula_ref.categories.type_conversion import CATEGORY_TYPE_CONVERSION
 from bi_formula_ref.registry.note import Note, NoteLevel
-from bi_formula.core.dialect import DialectCombo
-from bi_formula.core.datatype import DataType
-from bi_formula.definitions.functions_type import DataTypeSpec
 from bi_formula_ref.localization import get_gettext
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
-from bi_connector_postgresql.formula.definitions.functions_type import FuncDbCastPostgreSQLBase
-from bi_connector_clickhouse.formula.definitions.functions_type import FuncDbCastClickHouseBase
 
 
 _ = get_gettext()
@@ -277,22 +279,23 @@ def _make_type_macro_from_dtype_spec(data_type_spec: DataTypeSpec) -> str:
         raise TypeError(type(data_type_spec))
 
 
-def _get_comment_for_type(dialect: DialectCombo, native_type_name: str) -> str:
+def _get_comment_for_type(dialect: DialectCombo, native_type_name: str) -> str | Translatable:
     return _DB_CAST_TYPE_COMMENTS.get((dialect, native_type_name), '')
 
 
-_DB_CAST_TYPE_COMMENTS: dict[tuple[DialectCombo, str], str] = {
-    (PostgreSQLDialect.NON_COMPENG_POSTGRESQL, 'character'): _('Alias: `char`'),
-    (PostgreSQLDialect.NON_COMPENG_POSTGRESQL, 'character varying'): _('Alias: `varchar`'),
-    (PostgreSQLDialect.NON_COMPENG_POSTGRESQL, 'char'): _('Alias for `character`'),
-    (PostgreSQLDialect.NON_COMPENG_POSTGRESQL, 'varchar'): _('Alias for `character varying`'),
-}
+@attr.s
+class DbCastExtension:
+    type_whitelists: dict[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]] = attr.ib(kw_only=True, factory=dict)
+    type_comments: dict[tuple[DialectCombo, str], str | Translatable] = attr.ib(kw_only=True, factory=dict)
 
-_DB_CAST_WHITELIST = {
-    # FIXME: Find a non-hard-code way to do this
-    **FuncDbCastClickHouseBase.WHITELISTS,
-    **FuncDbCastPostgreSQLBase.WHITELISTS,
-}
+
+_DB_CAST_TYPE_COMMENTS: dict[tuple[DialectCombo, str], str | Translatable] = {}
+_DB_CAST_WHITELIST: dict[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]] = {}
+
+
+def register_db_cast_extension(extension: DbCastExtension) -> None:
+    _DB_CAST_WHITELIST.update(extension.type_whitelists)
+    _DB_CAST_TYPE_COMMENTS.update(extension.type_comments)
 
 
 FUNCTION_DB_CAST = FunctionDocRegistryItem(
@@ -320,7 +323,6 @@ FUNCTION_DB_CAST = FunctionDocRegistryItem(
                     _DB_CAST_WHITELIST.items(),
                     key=lambda item: item[0].common_name.value
                 )
-                if dialect != PostgreSQLDialect.COMPENG
                 for data_type, spec_list in sorted(by_data_type.items(), key=lambda item: item[0].name)
                 for spec in spec_list
             ]

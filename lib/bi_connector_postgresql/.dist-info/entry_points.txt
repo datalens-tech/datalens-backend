@@ -6,3 +6,6 @@ postgresql = bi_connector_postgresql.db_testing.connector:PostgreSQLDbTestingCon
 
 [bi_formula.connectors]
 postgresql = bi_connector_postgresql.formula.connector:PostgreSQLFormulaConnector
+
+[bi_formula_ref.plugins]
+postgresql = bi_connector_postgresql.formula_ref.plugin:PostgresSQLFormulaRefPlugin

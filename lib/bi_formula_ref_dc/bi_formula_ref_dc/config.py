@@ -9,9 +9,6 @@ from bi_formula_ref.config import (
 
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect
 from bi_connector_mysql.formula.constants import MySQLDialect
-from bi_connector_yql.formula.constants import YqlDialect
-from bi_connector_metrica.formula.constants import MetricaDialect
-from bi_connector_oracle.formula.constants import OracleDialect
 from bi_connector_mssql.formula.constants import MssqlDialect
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
@@ -39,4 +36,5 @@ DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
         *MySQLDialect.and_above(MySQLDialect.MYSQL_5_6).to_list(),
         *PostgreSQLDialect.and_above(PostgreSQLDialect.POSTGRESQL_9_3).to_list(),
     }),
+    default_example_dialect=ClickHouseDialect.CLICKHOUSE_22_10,
 )

@@ -1,15 +1,10 @@
 from enum import Enum
 from typing import NamedTuple
 
+from bi_i18n.localizer_base import Translatable
+
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import StandardDialect as D, DialectCombo
-
-from bi_connector_mysql.formula.constants import MySQLDialect
-from bi_connector_yql.formula.constants import YqlDialect
-from bi_connector_metrica.formula.constants import MetricaDialect
-from bi_connector_oracle.formula.constants import OracleDialect
-from bi_connector_mssql.formula.constants import MssqlDialect
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 from bi_formula_ref.localization import get_gettext
 
@@ -118,9 +113,9 @@ class DialectStyle(Enum):
 
 
 class StyledDialect(NamedTuple):
-    simple: str
-    multiline: str
-    split_version: str
+    simple: str | Translatable
+    multiline: str | Translatable
+    split_version: str | Translatable
 
     def for_style(self, item):
         if isinstance(item, DialectStyle):
@@ -129,87 +124,16 @@ class StyledDialect(NamedTuple):
             return getattr(self, item)
 
 
+# These should be filled from plugins
 HIDDEN_DIALECTS: set[DialectCombo] = set()
-ANY_DIALECTS = {
-    *PostgreSQLDialect.NON_COMPENG_POSTGRESQL.to_list(),
-    *MySQLDialect.MYSQL.to_list(),
-    *MssqlDialect.MSSQLSRV.to_list(),
-    *OracleDialect.ORACLE.to_list(),
-    *MetricaDialect.METRIKAAPI.to_list(),
-    *YqlDialect.YDB.to_list(),
-}
+ANY_DIALECTS: set[DialectCombo] = set()
 
 
-HUMAN_DIALECTS = {
-    PostgreSQLDialect.POSTGRESQL: StyledDialect(
-        '`PostgreSQL`',
-        '`PostgreSQL`',
-        '`PostgreSQL`',
-    ),
-    PostgreSQLDialect.POSTGRESQL_9_3: StyledDialect(
-        '`PostgreSQL 9.3`',
-        '`PostgreSQL`<br/>`9.3`',
-        _('`PostgreSQL` version `9.3`'),
-    ),
-    PostgreSQLDialect.POSTGRESQL_9_4: StyledDialect(
-        '`PostgreSQL 9.4`',
-        '`PostgreSQL`<br/>`9.4`',
-        _('`PostgreSQL` version `9.4`'),
-    ),
-    MySQLDialect.MYSQL: StyledDialect(
-        '`MySQL`',
-        '`MySQL`',
-        '`MySQL`',
-    ),
-    MySQLDialect.MYSQL_5_6: StyledDialect(
-        '`MySQL 5.6`',
-        '`MySQL`<br/>`5.6`',
-        _('`MySQL` version `5.6`'),
-    ),
-    MySQLDialect.MYSQL_5_7: StyledDialect(
-        '`MySQL 5.7`',
-        '`MySQL`<br/>`5.7`',
-        _('`MySQL` version `5.7`'),
-    ),
-    MySQLDialect.MYSQL_8_0_12: StyledDialect(
-        '`MySQL 8.0.12`',
-        '`MySQL`<br/>`8.0.12`',
-        _('`MySQL` version `8.0.12`'),
-    ),
-    MssqlDialect.MSSQLSRV_14_0: StyledDialect(
-        '`Microsoft SQL Server 2017 (14.0)`',
-        '`Microsoft`<br/>`SQL Server 2017`<br/>`(14.0)`',
-        _('`Microsoft SQL Server` version `2017 (14.0)`'),
-    ),
-    OracleDialect.ORACLE_12_0: StyledDialect(
-        '`Oracle Database 12c (12.1)`',
-        '`Oracle`<br/>`Database 12c`<br/>`(12.1)`',
-        _('`Oracle Database` version `12c (12.1)`'),
-    ),
-    MetricaDialect.METRIKAAPI: StyledDialect(
-        '`Yandex Metrica`',
-        '`Yandex Metrica`',
-        '`Yandex Metrica`',
-    ),
-    D.SQLITE: StyledDialect(
+HUMAN_DIALECTS: dict[DialectCombo, StyledDialect] = {
+    D.SQLITE: StyledDialect(  # TODO: remove
         '`SQLite`',
         '`SQLite`',
         '`SQLite`',
-    ),
-    YqlDialect.YDB: StyledDialect(
-        '`YDB`',
-        '`YDB`<br/>(`YQL`)',
-        '`YDB` (`YQL`)',
-    ),
-    YqlDialect.YQ: StyledDialect(
-        '`YQ`',
-        '`YQ`',
-        '`YQ`',
-    ),
-    YqlDialect.YQL: StyledDialect(
-        '`YQL`',
-        '`YQL`',
-        '`YQL`',
     ),
 }
 

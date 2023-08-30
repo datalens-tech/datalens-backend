@@ -4,17 +4,15 @@ import tempfile
 import pytest
 
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 from bi_formula_ref.config import DOC_GEN_CONFIG_DEFAULT
 from bi_formula_ref.generator import ReferenceDocGenerator, ConfigVersion
 
 
 @pytest.fixture(scope='function')
-def example_db_conf_patch(monkeypatch, all_db_configurations, all_dbe):
+def example_db_conf_patch(monkeypatch, all_db_configurations, dbe):
     db_conf_data = {
-        'CLICKHOUSE_21_8': all_db_configurations[ClickHouseDialect.CLICKHOUSE_21_8],
-        'COMPENG': all_db_configurations[PostgreSQLDialect.COMPENG],
+        'CLICKHOUSE_22_10': all_db_configurations[ClickHouseDialect.CLICKHOUSE_22_10],
     }
     with tempfile.NamedTemporaryFile() as db_conf_f:
         # Prepare DB config
@@ -22,6 +20,7 @@ def example_db_conf_patch(monkeypatch, all_db_configurations, all_dbe):
             json.dump(db_conf_data, db_conf_f_w)
 
         monkeypatch.setattr(DOC_GEN_CONFIG_DEFAULT, 'db_config_file', db_conf_f.name)
+        monkeypatch.setattr(DOC_GEN_CONFIG_DEFAULT, 'default_example_dialect', ClickHouseDialect.CLICKHOUSE_22_10)
         yield
 
 

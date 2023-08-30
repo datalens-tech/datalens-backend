@@ -22,6 +22,7 @@ yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-utils = {path = "../../lib/bi_utils"}
 
 [tool.poetry.plugins]
@@ -35,6 +36,9 @@ metrica_api = "bi_connector_metrica.core.connector:MetricaApiCoreConnector"
 
 [tool.poetry.plugins."bi_formula.connectors"]
 metrica = "bi_connector_metrica.formula.connector:MetricaFormulaConnector"
+
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+metrica = "bi_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

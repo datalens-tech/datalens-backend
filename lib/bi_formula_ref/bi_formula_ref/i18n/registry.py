@@ -21,11 +21,13 @@ class _StringLocalizer:
     """
 
     _translatable_localizer: Localizer = attr.ib(kw_only=True)
-    _domain: str = attr.ib(kw_only=True)
+    _default_domain: str = attr.ib(kw_only=True)
 
-    def translate(self, text: str) -> str:
-        message = Translatable(text, domain=self._domain)
-        return self._translatable_localizer.translate(message)
+    def translate(self, text: str | Translatable) -> str:
+        if isinstance(text, str):
+            text = Translatable(text, domain=self._default_domain)
+        assert isinstance(text, Translatable)
+        return self._translatable_localizer.translate(text)
 
 
 def get_localizer(locale: str):
@@ -33,6 +35,6 @@ def get_localizer(locale: str):
     loc_factory = loc_loader.load()
     localizer = _StringLocalizer(
         translatable_localizer=loc_factory.get_for_locale(locale=locale),
-        domain=DOMAIN,
+        default_domain=DOMAIN,
     )
     return localizer

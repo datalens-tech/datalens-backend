@@ -1,20 +1,10 @@
 version: '3.7'
 
 services:
-  db-clickhouse-21-8:
+  db-clickhouse-22-10:
     ports:
      - "51110:8123"
      - "51111:9000"
     build:
       context: docker-compose
-      dockerfile: Dockerfile.db-clickhouse-21-8
-
-  db-postgres:
-    image: "registry.yandex.net/statinfra/postgres@sha256:b3ae2dad6f153711444221849919b98c0503e6eef57be18300713cbef7ada4bc"
-    environment:
-      POSTGRES_DB: "datalens_test"
-      POSTGRES_USER: "datalens"
-      POSTGRES_PASSWORD: "qwerty"
-      PGCTLTIMEOUT: "300"  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
-    ports:
-     - "51120:5432"
+      dockerfile: Dockerfile.db-clickhouse-22-10

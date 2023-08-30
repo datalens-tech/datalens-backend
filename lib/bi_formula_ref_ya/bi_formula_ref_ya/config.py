@@ -42,4 +42,5 @@ DOC_GEN_CONFIG_YC = RefDocGeneratorConfig(
         *PostgreSQLDialect.and_above(PostgreSQLDialect.POSTGRESQL_9_3).to_list(),
         YqlDialect.YDB,
     }),
+    default_example_dialect=ClickHouseDialect.CLICKHOUSE_22_10,
 )

@@ -22,6 +22,7 @@ yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
 
 [tool.poetry.plugins]
@@ -36,6 +37,9 @@ mssql = "bi_connector_mssql.db_testing.connector:MSSQLDbTestingConnector"
 
 [tool.poetry.plugins."bi_formula.connectors"]
 mssql = "bi_connector_mssql.formula.connector:MSSQLFormulaConnector"
+
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+mssql = "bi_connector_mssql.formula_ref.plugin:MSSQLFormulaRefPlugin"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]

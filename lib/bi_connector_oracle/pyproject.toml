@@ -23,6 +23,7 @@ yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
 
 [tool.poetry.plugins]
@@ -37,6 +38,9 @@ oracle = "bi_connector_oracle.db_testing.connector:OracleDbTestingConnector"
 
 [tool.poetry.plugins."bi_formula.connectors"]
 oracle = "bi_connector_oracle.formula.connector:OracleFormulaConnector"
+
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+oracle = "bi_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]

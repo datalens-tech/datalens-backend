@@ -21,6 +21,7 @@ yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_db_testing.connectors"]

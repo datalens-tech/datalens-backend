@@ -56,6 +56,7 @@ class RefDocGeneratorConfig:
     block_conditions: Mapping[str, bool] = attr.ib(kw_only=True, factory=dict)
 
     supported_dialects: frozenset[DialectCombo] = attr.ib(kw_only=True, default=frozenset({D.DUMMY}))
+    default_example_dialect: DialectCombo = attr.ib(kw_only=True, default=D.DUMMY)
 
     def clone(self, **kwargs: Any) -> RefDocGeneratorConfig:
         return attr.evolve(self, **kwargs)

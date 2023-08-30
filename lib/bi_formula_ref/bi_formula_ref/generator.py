@@ -404,6 +404,7 @@ class ReferenceDocGenerator:
         preparer = DataPreparer(
             storage_filename=self._gen_config.example_data_file,
             db_by_dialect=db_by_dialect,
+            default_example_dialect=self._gen_config.default_example_dialect,
         )
         examples: list[ExampleBase]
         for multi_func in raw_funcs:

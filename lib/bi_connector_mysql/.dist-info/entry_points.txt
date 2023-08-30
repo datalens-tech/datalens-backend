@@ -9,3 +9,6 @@ mysql = bi_connector_mysql.db_testing.connector:MySQLDbTestingConnector
 
 [bi_formula.connectors]
 mysql = bi_connector_mysql.formula.connector:MySQLFormulaConnector
+
+[bi_formula_ref.plugins]
+mysql = bi_connector_mysql.formula_ref.plugin:MySQLFormulaRefPlugin

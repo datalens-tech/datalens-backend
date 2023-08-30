@@ -2,8 +2,6 @@ from typing import List
 
 from bi_formula.core.datatype import DataType
 
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
-
 from bi_formula_ref.registry.base import FunctionDocRegistryItem
 from bi_formula_ref.examples.config import ExampleSource, ExampleConfig
 from bi_formula_ref.registry.example import SimpleExample, DataExample
@@ -49,7 +47,6 @@ def _make_standard_window_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with grouping'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]', '[Category]'],
                 order_by=['[City]', '[Category]'],
                 show_source_table=True,
@@ -81,7 +78,6 @@ def _make_rank_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with two arguments'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]'],
                 order_by=['[City]'],
                 show_source_table=True,
@@ -362,7 +358,6 @@ def _make_simple_order_by_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with ORDER BY'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]'],
                 order_by=['[City]'],
                 show_source_table=True,
@@ -401,7 +396,6 @@ def _make_rfunc_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with ORDER BY'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]'],
                 order_by=['[City]'],
                 show_source_table=True,
@@ -559,7 +553,6 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with two and three arguments'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]'],
                 order_by=['[City]'],
                 show_source_table=True,
@@ -584,7 +577,6 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with ORDER BY'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]'],
                 order_by=['[City]'],
                 show_source_table=True,
@@ -607,7 +599,6 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with grouping'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]', '[Category]'],
                 order_by=['[City]', '[Category]'],
                 show_source_table=True,
@@ -754,7 +745,6 @@ def _make_lag_examples(func: str) -> List[DataExample]:
             example_config=ExampleConfig(
                 name=_('Example with the optional argument'),
                 source=_SOURCE_SALES_DATA_1,
-                dialect=PostgreSQLDialect.COMPENG,
                 group_by=['[City]'],
                 order_by=['[City]'],
                 show_source_table=True,

@@ -7,6 +7,8 @@ from typing import List, Mapping, Optional
 import attr
 import tabulate
 
+from bi_i18n.localizer_base import Translatable
+
 from bi_formula_ref.rich_text.elements import (
     RichText, CodeSpanTextElement, TermTextElement, ExtMacroTextElement,
     ListTextElement, TableTextElement, LinkTextElement,

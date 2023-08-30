@@ -7,8 +7,6 @@ import attr
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo
 
-from bi_connector_clickhouse.formula.constants import ClickHouseDialect
-
 from bi_formula_ref.texts import EXAMPLE_TITLE
 from bi_formula_ref.examples.data_table import DataTable
 
@@ -24,7 +22,7 @@ class ExampleConfig:
     source: ExampleSource = attr.ib(kw_only=True)
     # e.g. formula_fields = (('My Field', 'STR([col1])'),)
     formula_fields: List[Tuple[str, str]] = attr.ib(kw_only=True)
-    dialect: DialectCombo = attr.ib(kw_only=True, default=ClickHouseDialect.CLICKHOUSE_21_8)
+    dialect: Optional[DialectCombo] = attr.ib(kw_only=True, default=None)
     name: str = attr.ib(kw_only=True, default=EXAMPLE_TITLE)
     # group_by and order_by are lists of formulas
     group_by: Sequence[str] = attr.ib(kw_only=True, default=())

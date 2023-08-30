@@ -7,3 +7,6 @@ yql = bi_connector_yql.db_testing.connector:YQLDbTestingConnector
 
 [bi_formula.connectors]
 yql = bi_connector_yql.formula.connector:YQLFormulaConnector
+
+[bi_formula_ref.plugins]
+yql = bi_connector_yql.formula_ref.plugin:YQLFormulaRefPlugin

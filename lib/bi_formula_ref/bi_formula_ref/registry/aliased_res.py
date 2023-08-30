@@ -5,6 +5,8 @@ from typing import Any, Iterable, MutableMapping, TypeVar
 
 import attr
 
+from bi_i18n.localizer_base import Translatable
+
 
 _RES_TV = TypeVar('_RES_TV', bound='AliasedResource')
 
@@ -27,7 +29,7 @@ class AliasedLinkResource(AliasedResource):
 
 @attr.s(frozen=True)
 class AliasedTableResource(AliasedResource):
-    table_body: list[list[str]] = attr.ib(kw_only=True)
+    table_body: list[list[str | Translatable]] = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)

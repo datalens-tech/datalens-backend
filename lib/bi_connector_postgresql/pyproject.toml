@@ -25,6 +25,7 @@ yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
 
 [tool.poetry.plugins]
@@ -36,6 +37,9 @@ postgresql = "bi_connector_postgresql.db_testing.connector:PostgreSQLDbTestingCo
 
 [tool.poetry.plugins."bi_formula.connectors"]
 postgresql = "bi_connector_postgresql.formula.connector:PostgreSQLFormulaConnector"
+
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+postgresql = "bi_connector_postgresql.formula_ref.plugin:PostgresSQLFormulaRefPlugin"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]

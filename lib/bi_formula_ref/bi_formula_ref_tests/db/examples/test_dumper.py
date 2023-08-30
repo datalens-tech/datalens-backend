@@ -1,9 +1,6 @@
-import pytest
 import sqlalchemy as sa
 
 from bi_formula.core.datatype import DataType
-
-from bi_connector_yql.formula.constants import YqlDialect
 
 from bi_formula_ref.examples.data_table import DataTable, DataColumn
 from bi_formula_ref.examples.dumper import get_dumper
@@ -11,9 +8,6 @@ from bi_formula_ref.examples.query import CompiledQueryContext
 
 
 def test_select_original_data(dbe):
-    if dbe.dialect & YqlDialect.YQL:
-        pytest.skip()
-
     db = dbe.db
     original_data_table = DataTable(
         columns=[

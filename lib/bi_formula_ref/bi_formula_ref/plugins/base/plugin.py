@@ -6,6 +6,7 @@ from bi_formula.core.dialect import DialectCombo
 
 from bi_formula_ref.config import ConfigVersion, RefDocGeneratorConfig
 from bi_formula_ref.texts import StyledDialect
+from bi_formula_ref.functions.type_conversion import DbCastExtension
 
 
 class FormulaRefPlugin:
@@ -17,3 +18,9 @@ class FormulaRefPlugin:
 
     # Human-readable dialect names
     human_dialects: ClassVar[dict[DialectCombo, StyledDialect]] = {}
+
+    # Dialects that work with compeng
+    compeng_support_dialects: ClassVar[frozenset[DialectCombo]] = frozenset()
+
+    # Connector-specific types and comments for the DB_CAST function
+    db_cast_extension: ClassVar[DbCastExtension] = DbCastExtension()

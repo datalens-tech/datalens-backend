@@ -23,6 +23,7 @@ yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 ydb = ">=2.10.1"
@@ -37,6 +38,9 @@ yql = "bi_connector_yql.db_testing.connector:YQLDbTestingConnector"
 
 [tool.poetry.plugins."bi_formula.connectors"]
 yql = "bi_connector_yql.formula.connector:YQLFormulaConnector"
+
+[tool.poetry.plugins."bi_formula_ref.plugins"]
+yql = "bi_connector_yql.formula_ref.plugin:YQLFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

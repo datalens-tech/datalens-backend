@@ -9,3 +9,6 @@ mssql = bi_connector_mssql.db_testing.connector:MSSQLDbTestingConnector
 
 [bi_formula.connectors]
 mssql = bi_connector_mssql.formula.connector:MSSQLFormulaConnector
+
+[bi_formula_ref.plugins]
+mssql = bi_connector_mssql.formula_ref.plugin:MSSQLFormulaRefPlugin
