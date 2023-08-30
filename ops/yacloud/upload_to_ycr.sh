@@ -25,8 +25,9 @@ case $YC_PROFILE in
 
 esac
 
+echo `yc iam create-token --profile yc-prod` | docker login --username iam --password-stdin cr.yandex
 echo `yc iam create-token --profile $YC_PROFILE` | docker login --username iam --password-stdin $REGISTRY_HOST
 
-docker pull registry.yandex.net/statinfra/${1}:${2}
-docker tag registry.yandex.net/statinfra/${1}:${2} $REGISTRY_HOST/$REGISTRY_ID/${1}:${2}
+docker pull cr.yandex/crpvqg9oj0ude1mj1mj2/${1}:${2}
+docker tag cr.yandex/crpvqg9oj0ude1mj1mj2/${1}:${2} $REGISTRY_HOST/$REGISTRY_ID/${1}:${2}
 docker push $REGISTRY_HOST/$REGISTRY_ID/${1}:${2}
