@@ -28,7 +28,7 @@ services:
   # INFRA
   pg-us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../testenv-common/images
       dockerfile: Dockerfile.pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
@@ -39,7 +39,7 @@ services:
 
   us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
     depends_on:
       - pg-us

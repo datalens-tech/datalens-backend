@@ -134,7 +134,7 @@ services:
 
   s3-storage:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../testenv-common/images
       dockerfile: Dockerfile.s3-storage
     command: bash /data/entrypoint.sh
     environment:
@@ -145,7 +145,7 @@ services:
 
   pg-us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../testenv-common/images
       dockerfile: Dockerfile.pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
@@ -157,7 +157,7 @@ services:
   # TODO: Multitenancy & DLS integration
   us:
     build:
-      context: ../../lib/testenv-common/images
+      context: ../testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
     ports:
       - 50500:80
