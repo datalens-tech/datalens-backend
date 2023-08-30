@@ -25,28 +25,9 @@ class MDBDomainManager:
 
     @classmethod
     def from_env(cls) -> 'MDBDomainManager':  # gotta be deleted someday
-        if (
-            (yenv_name := os.environ.get('YENV_NAME')) in ('cloud', 'intranet') and
-            os.environ.get('MDB_DOMAINS') is None
-        ):
-            mdb_domains = {
-                'cloud': (
-                    '.mdb.cloud-preprod.yandex.net',
-                    '.mdb.yandexcloud.net',
-                ),
-                'intranet': ('.db.yandex.net',),
-            }[yenv_name]
-
-            mdb_cname_domains = tuple([f".rw.{dmn}" for dmn in mdb_domains])
-            mdb_replacement = {
-                'cloud': '.db.yandex.net',
-                'intranet': '.mdb.yandex.net',
-            }[yenv_name]
-            renaming_map = {dmn: mdb_replacement for dmn in mdb_domains}
-        else:
-            mdb_domains = split_by_comma(os.environ.get('MDB_DOMAINS', ''))
-            mdb_cname_domains = split_by_comma(os.environ.get('MDB_CNAME_DOMAINS', ''))
-            renaming_map = json.loads(os.environ.get('MDB_MANAGED_NETWORK_REMAP', '{}'))
+        mdb_domains = split_by_comma(os.environ.get('MDB_DOMAINS', ''))
+        mdb_cname_domains = split_by_comma(os.environ.get('MDB_CNAME_DOMAINS', ''))
+        renaming_map = json.loads(os.environ.get('MDB_MANAGED_NETWORK_REMAP', '{}'))
 
         return cls(
             MDBDomainManagerSettings(
