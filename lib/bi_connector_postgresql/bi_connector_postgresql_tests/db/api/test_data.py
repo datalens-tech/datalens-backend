@@ -15,7 +15,6 @@ from bi_api_lib_testing.data_api_base import DataApiTestParams
 from bi_core_testing.database import C, Db, make_table, make_pg_table_with_enums
 import pytest
 
-
 from bi_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
 from http import HTTPStatus
 import sqlalchemy as sa

@@ -2,6 +2,7 @@ import json
 from typing import Any, ClassVar
 
 import pytest
+import datetime
 
 from bi_constants.enums import BIType, WhereClauseOperation
 
@@ -226,6 +227,38 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase):
         assert len(distinct_rows) > min_distinct_row_cnt
         values = [row[0] for row in distinct_rows]
         assert len(set(values)) == len(values), 'Values are not unique'
+
+    def test_date_filter_distinct(
+            self, db: Db,
+            saved_connection_id: str,
+            dataset_params: dict,
+            dataset_api: SyncHttpDatasetApiV1,
+            data_api: SyncHttpDataApiV2
+    ) -> None:
+        columns = [
+            C(name="date_val", user_type=BIType.date, nullable=True),
+        ]
+        data = [
+            {"date_val": datetime.date(2002, 1, 2)},
+            {"date_val": datetime.date(2023, 4, 2)},
+        ]
+        db_table = make_table(db, columns=columns, data=data)
+        params = self.get_dataset_params(dataset_params, db_table)
+        ds = self.make_basic_dataset(dataset_api, connection_id=saved_connection_id, dataset_params=params)
+
+        distinct_resp = data_api.get_distinct(
+            dataset=ds,
+            field=ds.find_field(title='date_val'),
+            filters=[
+                ds.find_field(title='date_val').filter(
+                    op=WhereClauseOperation.ICONTAINS,
+                    values=['20'],
+                ),
+            ],
+        )
+        assert distinct_resp.status_code == 200, distinct_resp.json
+        data_rows = get_data_rows(distinct_resp)
+        assert len(data_rows) == 2
 
 
 class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase):

@@ -336,11 +336,18 @@ class MainFilterFormulaCompiler(FilterFormulaCompiler):
                 arg_cast_type=DataType.DATE,  # actually unchanged, just making it explicit.
             )
         else:
-            # Cast both sides to datetime.
-            filter_params = filter_params.clone(
-                field_cast_type=DataType.DATETIME,
-                arg_cast_type=DataType.DATETIME,
-            )
+            if filter_params.operation in CONTAINMENT_OPS:
+                # Cast both sides to string.
+                filter_params = filter_params.clone(
+                    field_cast_type=DataType.STRING,
+                    arg_cast_type=DataType.STRING,
+                )
+            else:
+                # Cast both sides to datetime.
+                filter_params = filter_params.clone(
+                    field_cast_type=DataType.DATETIME,
+                    arg_cast_type=DataType.DATETIME,
+                )
         return filter_params
 
     def _mangle_containment_filter(self, filter_params: FilterParams) -> FilterParams:
