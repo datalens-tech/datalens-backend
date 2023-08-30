@@ -68,6 +68,19 @@ data:
         Rule          $kubernetes['annotations']['yc.logging.tag'] ^(.+)$  yc.logging.$kubernetes['annotations']['yc.logging.tag'] false
         Emitter_Name  re_emitted
 
+    [FILTER]
+        Name                modify
+        Match               kube.*
+        Condition           Key_Does_Not_Exist message
+        Condition           Key_Exists msg
+        Rename              msg message
+    [FILTER]
+        Name                modify
+        Match               kube.*
+        Condition           Key_Does_Not_Exist message
+        Condition           Key_Exists log
+        Rename              log message
+
   output-yc.conf: |
     [OUTPUT]
         Name            yc-logging
