@@ -14,12 +14,17 @@ from dl_repmanager.package_meta_reader import PackageMetaReader
 @attr.s
 class PackageIndex:
     _built: bool = attr.ib(kw_only=True, default=False)
+    _package_infos_by_reg_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_module_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_test_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_path: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
 
     def _is_built(self) -> bool:
         return self._built
+
+    def get_package_info_by_reg_name(self, package_reg_name: str) -> PackageInfo:
+        assert self._is_built()
+        return self._package_infos_by_reg_name[package_reg_name]
 
     def get_package_info_from_path(self, rel_package_dir_name: str) -> PackageInfo:
         assert self._is_built()
@@ -94,6 +99,7 @@ class PackageIndexBuilder:
         return package_info
 
     def build_index(self) -> PackageIndex:
+        package_infos_by_reg_name: dict[str, PackageInfo] = {}
         package_infos_by_module_name: dict[str, PackageInfo] = {}
         package_infos_by_test_name: dict[str, PackageInfo] = {}
         package_infos_by_path: dict[str, PackageInfo] = {}
@@ -108,6 +114,7 @@ class PackageIndexBuilder:
                 )
                 if package_info is None:
                     continue
+                package_infos_by_reg_name[package_info.package_reg_name] = package_info
                 package_infos_by_path[abs_package_dir_path] = package_info
 
                 for module_name in package_info.module_names:
@@ -118,6 +125,7 @@ class PackageIndexBuilder:
 
         package_index = PackageIndex(
             built=True,
+            package_infos_by_reg_name=package_infos_by_reg_name,
             package_infos_by_path=package_infos_by_path,
             package_infos_by_module_name=package_infos_by_module_name,
             package_infos_by_test_name=package_infos_by_test_name,

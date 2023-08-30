@@ -131,30 +131,28 @@ class PackageManager:
         )
 
         # Register package
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(package_info.package_type):
+        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+                package_type=package_info.package_type, package_index=self.package_index):
             mng_plugin.register_package(package_info=package_info)
 
     def change_package_type(self, package_module_name: str, new_package_type: str) -> None:
-        package_info = self.package_index.get_package_info_from_module_name(package_module_name)
-
-        # Unregister package
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(package_info.package_type):
-            mng_plugin.unregister_package(package_info=package_info)
+        old_package_info = self.package_index.get_package_info_from_module_name(package_module_name)
 
         # Move the package dir
-        old_pkg_path = package_info.abs_path
+        old_pkg_path = old_package_info.abs_path
         new_pkg_path = os.path.join(
             self.repo_env.get_root_package_dir(package_type=new_package_type),
-            os.path.basename(package_info.abs_path)
+            os.path.basename(old_package_info.abs_path)
         )
         self.fs_editor.move_path(old_path=old_pkg_path, new_path=new_pkg_path)
 
         # Update package info
-        new_package_info = package_info.clone(package_type=new_package_type, abs_path=new_pkg_path)
+        new_package_info = old_package_info.clone(package_type=new_package_type, abs_path=new_pkg_path)
 
-        # Register package
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(new_package_info.package_type):
-            mng_plugin.register_package(package_info=new_package_info)
+        # Re-register package
+        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+                package_type=new_package_info.package_type, package_index=self.package_index):
+            mng_plugin.re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
 
     def rename_module(
             self, old_import_name: str, new_import_name: str,

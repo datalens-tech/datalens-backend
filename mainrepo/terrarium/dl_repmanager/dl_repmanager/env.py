@@ -36,9 +36,10 @@ Description of the sections:
 
 """
 
+from __future__ import annotations
 
 import os
-from typing import ClassVar, Iterable, Optional, Type
+from typing import ClassVar, Iterable, Optional, Type, TYPE_CHECKING
 
 import attr
 import yaml
@@ -48,7 +49,11 @@ from dl_repmanager.management_plugins import (
     RepositoryManagementPlugin,
     MainTomlRepositoryManagementPlugin,
     CommonToolingRepositoryManagementPlugin,
+    DependencyReregistrationRepositoryManagementPlugin,
 )
+
+if TYPE_CHECKING:
+    from dl_repmanager.package_index import PackageIndex
 
 
 DEFAULT_CONFIG_FILE_NAME = 'dl-repo.yml'
@@ -76,6 +81,7 @@ class RepoEnvironment:
     plugin_classes: ClassVar[tuple[Type[RepositoryManagementPlugin], ...]] = (
         CommonToolingRepositoryManagementPlugin,
         MainTomlRepositoryManagementPlugin,
+        DependencyReregistrationRepositoryManagementPlugin,
     )
 
     def iter_package_abs_dirs(self) -> Iterable[tuple[str, str]]:
@@ -96,11 +102,18 @@ class RepoEnvironment:
     def get_tags(self, package_type: str) -> frozenset[str]:
         return self.package_types[package_type].tags
 
-    def get_plugins_for_package_type(self, package_type: str) -> list[RepositoryManagementPlugin]:
+    def get_plugins_for_package_type(
+            self, package_type: str, package_index: PackageIndex,
+    ) -> list[RepositoryManagementPlugin]:
         # TODO: parameterize and load plugins from config
         home_repo_path = self.package_types[package_type].home_repo_path
         return [
-            plugin_cls(repo_env=self, pkg_type_base_path=home_repo_path, base_path=self.base_path)
+            plugin_cls(
+                repo_env=self,
+                package_index=package_index,
+                pkg_type_base_path=home_repo_path,
+                base_path=self.base_path,
+            )
             for plugin_cls in self.plugin_classes
         ]
 

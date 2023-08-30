@@ -51,6 +51,10 @@ class PackageInfo:
     requirement_lists: frozendict[str, RequirementList] = attr.ib(kw_only=True, default=frozendict())
 
     @property
+    def toml_path(self) -> str:
+        return os.path.join(self.abs_path, 'pyproject.toml')
+
+    @property
     def single_module_name(self) -> str:
         assert len(self.module_names) == 1
         return self.module_names[0]
@@ -65,3 +69,17 @@ class PackageInfo:
 
     def clone(self, **kwargs: Any) -> PackageInfo:
         return attr.evolve(self, **kwargs)
+
+    def is_dependent_on(
+            self,
+            base_package_info: PackageInfo,
+            section_name: str,
+    ) -> bool:
+        req_specs = self.requirement_lists.get(section_name, RequirementList()).req_specs
+        for req_spec in req_specs:
+            if req_spec.package_name == base_package_info.package_reg_name:
+                # It really is a dependent package
+                assert isinstance(req_spec, LocalReqPackageSpec)
+                return True
+
+        return False
