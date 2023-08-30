@@ -858,7 +858,7 @@ url = "../../lib/bi_file_uploader_task_interface"
 
 [[package]]
 name = "bi-file-uploader-worker"
-version = "0.139.0"
+version = "0.140.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -895,7 +895,6 @@ yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
-yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [package.source]
@@ -7284,6 +7283,7 @@ yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch
 yandex-bi-connector-bundle-chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
@@ -7456,21 +7456,21 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../lib/bi_i18n"}
+bi-i18n = {path = "../../../lib/bi_i18n"}
 google-api-core = ">=2.11.1"
 google-auth = ">=2.21.0"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../lib/bi_formula"}
-yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-api-connector = {path = "../../../lib/bi_api_connector"}
+yandex-bi-constants = {path = "../../../lib/bi_constants"}
+yandex-bi-core = {path = "../../../lib/bi_core"}
+yandex-bi-db-testing = {path = "../../../lib/bi_db_testing"}
+yandex-bi-formula = {path = "../../../lib/bi_formula"}
+yandex-bi-testing = {path = "../../../lib/bi_testing"}
 
 [package.source]
 type = "directory"
-url = "../../lib/bi_connector_bigquery"
+url = "../../mainrepo/lib/bi_connector_bigquery"
 
 [[package]]
 name = "yandex-bi-connector-bitrix-gds"
@@ -7698,6 +7698,7 @@ yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 
 [package.source]
 type = "directory"
@@ -7751,6 +7752,7 @@ yandex-bi-configs = {path = "../../lib/bi_configs"}
 yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-utils = {path = "../../lib/bi_utils"}
 
 [package.source]
@@ -7803,6 +7805,7 @@ yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
 
 [package.source]
@@ -7832,6 +7835,7 @@ yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
 
 [package.source]
@@ -7859,6 +7863,7 @@ yandex-bi-constants = {path = "../../lib/bi_constants"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
 
 [package.source]
@@ -7888,6 +7893,7 @@ yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
 
 [package.source]
@@ -7986,6 +7992,7 @@ yandex-bi-core = {path = "../../lib/bi_core"}
 yandex-bi-core-testing = {path = "../../lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
+yandex-bi-formula-ref = {path = "../../lib/bi_formula_ref"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 ydb = ">=2.10.1"
@@ -8051,7 +8058,7 @@ develop = false
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
@@ -8231,7 +8238,7 @@ develop = false
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
@@ -8276,7 +8283,7 @@ develop = false
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_chs3 = {path = "../../lib/bi_connector_bundle_chs3"}
@@ -8435,7 +8442,7 @@ url = "../../lib/bi_file_uploader_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-lib"
-version = "0.139.0"
+version = "0.140.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8463,7 +8470,7 @@ url = "../../lib/bi_file_uploader_worker_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-yc"
-version = "0.139.0"
+version = "0.140.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8523,13 +8530,6 @@ Babel = ">=2.12.1"
 jinja2 = ">=3.1.2"
 sqlalchemy = ">=1.4.46, <2.0"
 tabulate = ">=0.9.0"
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
-yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
-yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-formula = {path = "../../lib/bi_formula"}
 
 [package.source]
@@ -8626,7 +8626,7 @@ develop = false
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_chs3 = {path = "../../lib/bi_connector_bundle_chs3"}

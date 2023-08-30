@@ -16,7 +16,7 @@ yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
-yandex-bi-connector-bigquery = {path = "../../lib/bi_connector_bigquery"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_chs3 = {path = "../../lib/bi_connector_bundle_chs3"}

@@ -11,18 +11,18 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../lib/bi_i18n"}
+bi-i18n = {path = "../../../lib/bi_i18n"}
 google-api-core = ">=2.11.1"
 google-auth = ">=2.21.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-connector = {path = "../../lib/bi_api_connector"}
-yandex-bi-constants = {path = "../../lib/bi_constants"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-db-testing = {path = "../../lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../lib/bi_formula"}
-yandex-bi-testing = {path = "../../lib/bi_testing"}
+yandex-bi-api-connector = {path = "../../../lib/bi_api_connector"}
+yandex-bi-constants = {path = "../../../lib/bi_constants"}
+yandex-bi-core = {path = "../../../lib/bi_core"}
+yandex-bi-db-testing = {path = "../../../lib/bi_db_testing"}
+yandex-bi-formula = {path = "../../../lib/bi_formula"}
+yandex-bi-testing = {path = "../../../lib/bi_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_api_lib.connectors"]
