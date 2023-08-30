@@ -82,6 +82,8 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
         with toml_writer.suppress_non_existent_key():
             toml_writer.get_editable_section('tool.poetry.dependencies').remove(package_info.package_reg_name)
         with toml_writer.suppress_non_existent_key():
+            toml_writer.get_editable_section('tool.poetry.group.dev.dependencies').remove(package_info.package_reg_name)
+        with toml_writer.suppress_non_existent_key():
             toml_writer.get_editable_section('tool.poetry.group.ci.dependencies').remove(package_info.package_reg_name)
 
     def _register_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
