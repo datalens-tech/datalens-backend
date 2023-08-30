@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import abc
 import os
-import re
 from typing import TYPE_CHECKING
 
 import attr
@@ -31,6 +30,10 @@ class RepositoryManagementPlugin(abc.ABC):
     def register_package(self, package_info: PackageInfo) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def unregister_package(self, package_info: PackageInfo) -> None:
+        raise NotImplementedError
+
 
 @attr.s
 class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
@@ -47,6 +50,17 @@ class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
         pkg_list_path = os.path.join(self.base_path, self._PACKAGE_LIST_REL_PATH)
         self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_package_list)
 
+    def unregister_package(self, package_info: PackageInfo) -> None:
+        def transform_package_list(old_text: str) -> str:
+            pkg_list = old_text.strip().split()
+            pkg_rel_path = package_info.get_relative_path(self.base_path)
+            pkg_list.remove(pkg_rel_path)
+            pkg_list.sort()
+            return '\n'.join(pkg_list) + '\n'
+
+        pkg_list_path = os.path.join(self.base_path, self._PACKAGE_LIST_REL_PATH)
+        self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_package_list)
+
 
 @attr.s
 class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
@@ -57,14 +71,20 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
         pkg_rel_path = package_info.get_relative_path(toml_abs_dir)
         return pkg_rel_path
 
-    def _register_main(self, toml_writer: TOMLWriter, package_info: PackageInfo):
+    def _register_main(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
         package_path_for_toml = self._get_path_for_toml(package_info)
         package_dep_table = tomlkit.inline_table()
         package_dep_table.add('path', package_path_for_toml)
         toml_writer.get_editable_section('tool.poetry.group.ci.dependencies').add(
             package_info.package_reg_name, package_dep_table)
 
-    def _register_app(self, toml_writer: TOMLWriter, package_info: PackageInfo):
+    def _unregister_main(self, toml_writer: TOMLWriter, package_info: PackageInfo):
+        with toml_writer.suppress_non_existent_key():
+            toml_writer.get_editable_section('tool.poetry.dependencies').remove(package_info.package_reg_name)
+        with toml_writer.suppress_non_existent_key():
+            toml_writer.get_editable_section('tool.poetry.group.ci.dependencies').remove(package_info.package_reg_name)
+
+    def _register_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
         package_path_for_toml = self._get_path_for_toml(package_info)
         package_base_name = os.path.basename(package_info.abs_path)
         package_dep_table = tomlkit.inline_table()
@@ -72,6 +92,10 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
         section = toml_writer.add_section(f'tool.poetry.group.app_{package_base_name}.dependencies')
         section.add(package_info.package_reg_name, package_dep_table)
         section.add(tomlkit.nl())
+
+    def _unregister_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
+        package_base_name = os.path.basename(package_info.abs_path)
+        toml_writer.delete_section(f'tool.poetry.group.app_{package_base_name}.dependencies')
 
     def register_package(self, package_info: PackageInfo) -> None:
         toml_path = os.path.join(self.base_path, self._CI_TOML_REL_PATH)
@@ -81,3 +105,12 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
                 self._register_main(toml_writer=toml_writer, package_info=package_info)
             if 'own_dependency_group' in self.repo_env.get_tags(package_info.package_type):
                 self._register_app(toml_writer=toml_writer, package_info=package_info)
+
+    def unregister_package(self, package_info: PackageInfo) -> None:
+        toml_path = os.path.join(self.base_path, self._CI_TOML_REL_PATH)
+
+        with TOMLWriter.from_file(toml_path) as toml_writer:
+            if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
+                self._unregister_main(toml_writer=toml_writer, package_info=package_info)
+            if 'own_dependency_group' in self.repo_env.get_tags(package_info.package_type):
+                self._unregister_app(toml_writer=toml_writer, package_info=package_info)

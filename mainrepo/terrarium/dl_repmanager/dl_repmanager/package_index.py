@@ -33,6 +33,9 @@ class PackageIndex:
         assert self._is_built()
         return self._package_infos_by_test_name[test_dir_name]
 
+    def list_package_infos(self) -> list[PackageInfo]:
+        return list(self._package_infos_by_path.values())
+
 
 @attr.s
 class PackageIndexBuilder:

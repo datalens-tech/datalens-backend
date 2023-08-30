@@ -18,7 +18,7 @@ from typing import Optional
 import attr
 
 from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
-from dl_repmanager.package_index import PackageIndexBuilder
+from dl_repmanager.package_index import PackageIndexBuilder, PackageIndex
 from dl_repmanager.package_navigator import PackageNavigator
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.package_manager import PackageManager, PackageGenerator
@@ -72,6 +72,21 @@ def make_parser() -> argparse.ArgumentParser:
     )
 
     subparsers.add_parser(
+        'ch-package-type', parents=[package_name_parser, package_type_parser],
+        help='Change package type (move it to another directory)',
+    )
+
+    package_list_subparser = subparsers.add_parser(
+        'package-list', parents=[package_type_parser],
+        help='List all packages of a given type',
+    )
+    package_list_subparser.add_argument('--mask', help='Formatting mask')
+    package_list_subparser.add_argument(
+        '--base-path', default='.',
+        help='Base path for formatting relative package paths'
+    )
+
+    subparsers.add_parser(
         'import-list', parents=[package_name_parser],
         help='List imports in a package',
     )
@@ -96,6 +111,7 @@ _BASE_DIR = os.getcwd()
 
 @attr.s
 class DlRepManagerTool:
+    package_index: PackageIndex = attr.ib(kw_only=True)
     package_manager: PackageManager = attr.ib(kw_only=True)
     package_navigator: PackageNavigator = attr.ib(kw_only=True)
 
@@ -108,6 +124,23 @@ class DlRepManagerTool:
 
     def copy(self, package_name: str, from_package_name: str) -> None:
         self.package_manager.copy_package(package_module_name=package_name, from_package_module_name=from_package_name)
+
+    def ch_package_type(self, package_name: str, package_type: str) -> None:
+        self.package_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
+
+    def package_list(self, package_type: str, mask: str, base_path: str) -> None:
+        for package_info in self.package_index.list_package_infos():
+            if package_info.package_type != package_type:
+                continue
+
+            printable_values = dict(
+                package_type=package_info.package_type,
+                abs_path=package_info.abs_path,
+                rel_path=os.path.relpath(package_info.abs_path, os.path.abspath(base_path)),
+                single_module_name=package_info.single_module_name,
+                package_reg_name=package_info.package_reg_name,
+            )
+            print(mask.format(**printable_values))
 
     def rename_module(
             self, old_import_name: str, new_import_name: str,
@@ -160,6 +193,7 @@ class DlRepManagerTool:
         package_index = index_builder.build_index()
         package_navigator = PackageNavigator(repo_env=repo_env, package_index=package_index)
         tool = cls(
+            package_index=package_index,
             package_navigator=package_navigator,
             package_manager=PackageManager(
                 repo_env=repo_env,
@@ -177,6 +211,12 @@ class DlRepManagerTool:
 
         elif args.command == 'copy':
             tool.copy(package_name=args.package_name, from_package_name=args.from_package_name)
+
+        elif args.command == 'ch-package-type':
+            tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)
+
+        elif args.command == 'package-list':
+            tool.package_list(package_type=args.package_type, mask=args.mask, base_path=args.base_path)
 
         elif args.command == 'rename-module':
             tool.rename_module(

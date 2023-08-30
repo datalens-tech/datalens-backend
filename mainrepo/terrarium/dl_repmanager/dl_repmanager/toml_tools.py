@@ -8,6 +8,7 @@ import tomlkit
 from tomlkit.toml_document import TOMLDocument
 from tomlkit.items import Item as TOMLItem, AbstractTable
 from tomlkit.container import Container as TOMLContainer, OutOfOrderTableProxy
+from tomlkit.exceptions import NonExistentKey
 
 
 @attr.s
@@ -84,3 +85,26 @@ class TOMLWriter(TOMLReaderBase):
 
         assert isinstance(section, AbstractTable)
         return section
+
+    def delete_section(self, key: str) -> None:
+        section: dict = self._toml
+        parts = key.split('.')
+        for part in parts[:-1]:
+            try:
+                item = section[part]
+            except KeyError:
+                # Parent section doesn't exist
+                return
+
+            assert isinstance(item, dict)
+            section = item
+
+        del section[parts[-1]]
+
+    @classmethod
+    @contextlib.contextmanager
+    def suppress_non_existent_key(cls) -> Generator[None, None, None]:
+        try:
+            yield
+        except NonExistentKey:
+            pass
