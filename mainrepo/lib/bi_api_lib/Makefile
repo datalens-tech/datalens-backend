@@ -1,7 +1,5 @@
 include ../../tools/common_makefile.mk
 
-LOCAL_LIBS := $(LOCAL_LIBS) lib/bi_formula
-
 
 PACKAGE_NAME = bi_api_lib
 
@@ -37,6 +35,3 @@ devenv-status:
 .PHONY: build-clean
 build-clean: build-tier1-clean
 
-
-.PHONY: build-prepare
-build-prepare: build-tier1-prepare
