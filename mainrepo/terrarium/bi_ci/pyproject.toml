@@ -69,3 +69,6 @@ labels = ["fat"]
 # just a placeholder to run at least one pytest
 root_dir = "bi_ci_tests/"
 target_path = "unit"
+
+[datalens.meta.mypy]
+targets = ["bi_ci"]

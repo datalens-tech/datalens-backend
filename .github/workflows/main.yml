@@ -404,10 +404,18 @@ jobs:
         value: ${{fromJson(needs.router.outputs.affected)}}
     steps:
       - run: ls "/data/${{ matrix.value }}/"
+      - name: 'Cleanup folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code, just to get access to .github/execute_mypy...
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
       - name: run mypy
         run: |
-          [ ! -f "/data/${{ matrix.value }}/mypy.ini" ]  &&  (echo "mypy.ini not present, skip") ||  ( cd "/data/${{ matrix.value }}" && TARGET=$(echo ${{ matrix.value }} | cut -d"/" -f2) && . /venv/bin/activate && mypy $TARGET )
-        # todo: add script to extract target name from pyproject.toml
+          . /venv/bin/activate 
+          python .github/execute_mypy.py ${{ matrix.value }}
 
 # todo:  uncomment when code is linted and being  re-formatted in pre-commit hooks
 #  codestyle:

@@ -100,7 +100,7 @@ target "ci_mypy" {
   tags = ["${CI_IMG_MYPY}"]
   dockerfile-inline = <<EOT
 FROM base_img
-RUN . /venv/bin/activate && pip install -r /data/ops/ci/docker_image_ci_mypy/requirements_types.txt
+RUN . /venv/bin/activate && pip install --no-deps -r /data/ops/ci/docker_image_ci_mypy/requirements_types.txt
 EOT
 }
 
