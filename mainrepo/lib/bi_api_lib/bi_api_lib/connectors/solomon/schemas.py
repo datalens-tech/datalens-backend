@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_core.connectors.solomon.us_connection import SolomonConnection
+from bi_connector_solomon.core.us_connection import SolomonConnection
 
 from bi_api_connector.api_schema.extras import FieldExtra
 from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin

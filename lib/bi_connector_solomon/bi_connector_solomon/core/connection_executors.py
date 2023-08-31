@@ -7,11 +7,11 @@ import attr
 from bi_constants.api_constants import DLCookiesCommon
 
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from bi_core.connectors.solomon.adapter import AsyncSolomonAdapter
-from bi_core.connectors.solomon.target_dto import SolomonConnTargetDTO
+from bi_connector_solomon.core.adapter import AsyncSolomonAdapter
+from bi_connector_solomon.core.target_dto import SolomonConnTargetDTO
 
 if TYPE_CHECKING:
-    from bi_core.connectors.solomon.dto import SolomonConnDTO
+    from bi_connector_solomon.core.dto import SolomonConnDTO
 
 
 @attr.s(cmp=False, hash=False)

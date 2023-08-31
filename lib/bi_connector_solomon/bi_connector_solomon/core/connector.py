@@ -6,13 +6,13 @@ from bi_core.connectors.base.connector import (
     CoreSourceDefinition,
 )
 
-from bi_core.connectors.solomon.constants import BACKEND_TYPE_SOLOMON, SOURCE_TYPE_SOLOMON
-from bi_core.connectors.solomon.adapter import AsyncSolomonAdapter
-from bi_core.connectors.solomon.storage_schemas.connection import ConnectionSolomonDataStorageSchema
-from bi_core.connectors.solomon.type_transformer import SolomonTypeTransformer
-from bi_core.connectors.solomon.us_connection import SolomonConnection
-from bi_core.connectors.solomon.data_source import SolomonDataSource
-from bi_core.connectors.solomon.connection_executors import SolomonAsyncAdapterConnExecutor
+from bi_connector_solomon.core.constants import BACKEND_TYPE_SOLOMON, SOURCE_TYPE_SOLOMON
+from bi_connector_solomon.core.adapter import AsyncSolomonAdapter
+from bi_connector_solomon.core.storage_schemas.connection import ConnectionSolomonDataStorageSchema
+from bi_connector_solomon.core.type_transformer import SolomonTypeTransformer
+from bi_connector_solomon.core.us_connection import SolomonConnection
+from bi_connector_solomon.core.data_source import SolomonDataSource
+from bi_connector_solomon.core.connection_executors import SolomonAsyncAdapterConnExecutor
 
 
 class SolomonCoreConnectionDefinition(CoreConnectionDefinition):

@@ -14,13 +14,13 @@ from urllib.parse import urljoin
 from bi_constants.enums import ConnectionType
 
 from bi_blackbox_client.authenticate import get_user_ticket_header
-from bi_core.connectors.solomon.tvm import TvmCliSingletonSolomon, get_solomon_tvm_destination
-from bi_core.connectors.solomon_base.adapter import AsyncBaseSolomonAdapter
+from bi_connector_solomon.core.tvm import TvmCliSingletonSolomon, get_solomon_tvm_destination
+from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 from bi_core.exc import DatabaseQueryError
 from bi_core.tvm import get_tvm_headers
 
 if TYPE_CHECKING:
-    from bi_core.connectors.solomon.target_dto import SolomonConnTargetDTO
+    from bi_connector_solomon.core.target_dto import SolomonConnTargetDTO
     from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
 

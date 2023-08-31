@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar, Any, Dict
+from typing import TYPE_CHECKING, ClassVar, Any
 
 import logging
 
@@ -12,7 +12,7 @@ from urllib.parse import urljoin
 
 from bi_constants.enums import ConnectionType
 
-from bi_core.connectors.solomon_base.adapter import AsyncBaseSolomonAdapter
+from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 from bi_core.exc import DatabaseQueryError
 
 if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class AsyncMonitoringAdapter(AsyncBaseSolomonAdapter):
         self._url = f'https://{self._target_dto.host}'
         super().__attrs_post_init__()
 
-    def get_session_headers(self) -> Dict[str, str]:
+    def get_session_headers(self) -> dict[str, str]:
         default_headers = {
             'Content-Type': 'application/json',
         }
@@ -110,7 +110,7 @@ class AsyncMonitoringAdapter(AsyncBaseSolomonAdapter):
 
         return dict(rows=rows, schema=schema)
 
-    def parse_response_body(self, response: Dict[str, Any], dba_query: DBAdapterQuery) -> dict:
+    def parse_response_body(self, response: dict[str, Any], dba_query: DBAdapterQuery) -> dict:
         data = response.get('metrics', [])
 
         try:

@@ -9,7 +9,7 @@ from bi_constants.api_constants import DLCookiesCommon
 from bi_core.base_models import ConnCacheableMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, SubselectMixin, ExecutorBasedMixin, DataSourceTemplate
-from bi_core.connectors.solomon.dto import SolomonConnDTO
+from bi_connector_solomon.core.dto import SolomonConnDTO
 
 
 class SolomonConnection(SubselectMixin, ExecutorBasedMixin, ConnectionBase):

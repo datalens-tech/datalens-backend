@@ -76,7 +76,6 @@ statcommons = {path = "../statcommons"}
 
 [tool.poetry.plugins."bi_core.connectors"]
 chydb = "bi_core.connectors.chydb.connector:CHYDBCoreConnector"
-solomon = "bi_core.connectors.solomon.connector:SolomonCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

@@ -28,6 +28,7 @@ lib/bi_connector_gsheets
 lib/bi_connector_metrica
 lib/bi_connector_monitoring
 lib/bi_connector_mysql
+lib/bi_connector_solomon
 lib/bi_connector_usage_tracking_ya_team
 lib/bi_connector_yql
 lib/bi_defaults

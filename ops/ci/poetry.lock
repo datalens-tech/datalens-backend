@@ -727,6 +727,29 @@ type = "directory"
 url = "../../mainrepo/lib/bi_connector_greenplum"
 
 [[package]]
+name = "bi-connector-solomon"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+tvmauth = ">=3.4.9"
+yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
+yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_connector_solomon"
+
+[[package]]
 name = "bi-defaults"
 version = "0.0.1"
 description = ""
@@ -7249,6 +7272,7 @@ develop = false
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 bi-connector-greenplum = {path = "../bi_connector_greenplum"}
+bi-connector-solomon = {path = "../../../lib/bi_connector_solomon"}
 bi-i18n = {path = "../bi_i18n"}
 blinker = ">=1.5"
 ciso8601 = ">=2.2.0"
@@ -7777,6 +7801,7 @@ bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
@@ -9373,4 +9398,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "6d23d2d3cefb690dd70bdc9c18e635cc19e1abe69ddcf705c43fa8ee38d273cb"
+content-hash = "867b1948901b2e6696b6c9492f84a81cfc074bf5eb12dc220db75dc8c5ec0ee2"

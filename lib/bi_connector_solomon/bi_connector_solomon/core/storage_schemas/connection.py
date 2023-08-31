@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from bi_core.connectors.solomon.us_connection import SolomonConnection
+from bi_connector_solomon.core.us_connection import SolomonConnection
 from bi_core.us_manager.storage_schemas.connection import (
     CacheableConnectionDataSchemaMixin,
     ConnectionBaseDataStorageSchema,

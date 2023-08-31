@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_core.connectors.solomon.connector import (
+from bi_connector_solomon.core.connector import (
     SolomonCoreConnectionDefinition,
     SolomonCoreConnector,
     SolomonCoreSourceDefinition,

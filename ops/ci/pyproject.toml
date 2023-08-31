@@ -201,6 +201,7 @@ statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalch
 dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
+bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 
 [tool.poetry.group.contour-ya-ci.dependencies]
 # Ya-Team requirements
