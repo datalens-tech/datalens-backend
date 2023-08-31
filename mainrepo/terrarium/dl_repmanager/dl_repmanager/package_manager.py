@@ -25,9 +25,13 @@ class PackageGenerator:
         return os.path.join(*parts)
 
     @staticmethod
-    def _generate_new_package_reg_name(package_name: str) -> str:
+    def generate_new_package_reg_name(package_name: str) -> str:
         internal_name = package_name.replace('_', '-')
         return internal_name
+
+    @staticmethod
+    def generate_default_test_dir_name(package_name: str) -> str:
+        return f'{package_name}_tests'
 
     def get_boilerplate_package_info(self, package_type: str) -> PackageInfo:
         return self.package_index.get_package_info_from_path(
@@ -47,7 +51,7 @@ class PackageGenerator:
 
         generated_package_info = PackageInfo(
             package_type=package_type,
-            package_reg_name=self._generate_new_package_reg_name(package_module_name),
+            package_reg_name=self.generate_new_package_reg_name(package_module_name),
             module_names=(package_module_name,),  # FIXME: define in template
             abs_path=self._generate_new_package_abs_path(
                 package_module_name=package_module_name, package_type=package_type,
@@ -81,43 +85,122 @@ class PackageManager:
 
         return updated_files
 
-    def init_package(self, package_module_name: str, package_type: str) -> None:
+    def _register_package(self, package_info: PackageInfo) -> None:
+        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+                package_type=package_info.package_type,
+                package_index=self.package_index
+        ):
+            mng_plugin.register_package(package_info=package_info)
+
+    def _unregister_package(self, package_info: PackageInfo) -> None:
+        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+                package_type=package_info.package_type,
+                package_index=self.package_index
+        ):
+            mng_plugin.register_package(package_info=package_info)
+
+    def _re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
+        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+                package_type=new_package_info.package_type,
+                package_index=self.package_index,
+        ):
+            mng_plugin.re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
+
+    def init_package(self, package_module_name: str, package_type: str) -> PackageInfo:
+        # Get boilerplate and generate new package meta
         boilerplate_info = self.package_generator.get_boilerplate_package_info(package_type=package_type)
         package_info = self.package_generator.generate_package_info_from_boilerplate(
             boilerplate_info=boilerplate_info,
             package_module_name=package_module_name,
             package_type=package_type,
         )
-        self._init_package_from_boilerplate(boilerplate_info, package_info)
 
-    def copy_package(self, package_module_name: str, from_package_module_name: str) -> None:
+        # Initialize the package
+        self._init_package_from_boilerplate(boilerplate_info=boilerplate_info, package_info=package_info)
+        return package_info
+
+    def copy_package(self, package_module_name: str, from_package_module_name: str) -> PackageInfo:
+        # Get boilerplate and generate new package meta
         boilerplate_info = self.package_index.get_package_info_from_module_name(from_package_module_name)
         package_info = self.package_generator.generate_package_info_from_boilerplate(
             boilerplate_info=boilerplate_info,
             package_module_name=package_module_name,
             package_type=boilerplate_info.package_type,
         )
-        self._init_package_from_boilerplate(boilerplate_info, package_info)
+
+        # Initialize the package
+        self._init_package_from_boilerplate(boilerplate_info=boilerplate_info, package_info=package_info)
+        return package_info
+
+    def remove_package(self, package_module_name: str) -> None:
+        package_info = self.package_index.get_package_info_from_module_name(package_module_name)
+
+        # Unregister package
+        self._unregister_package(package_info=package_info)
+
+        # Remove the directory
+        self.fs_editor.remove_path(package_info.abs_path)
+
+    def rename_package(self, old_package_module_name: str, new_package_module_name: str) -> PackageInfo:
+        old_package_info = self.package_index.get_package_info_from_module_name(old_package_module_name)
+
+        # Resolve all the new paths and names
+        new_package_abs_path = os.path.join(os.path.dirname(old_package_info.abs_path), new_package_module_name)
+        new_package_info = old_package_info.clone(
+            package_reg_name=self.package_generator.generate_new_package_reg_name(new_package_module_name),
+            module_names=(new_package_module_name,),
+            test_dirs=(self.package_generator.generate_default_test_dir_name(new_package_module_name),),
+            abs_path=new_package_abs_path,
+        )
+
+        # Update it
+        self._update_package(old_package_info=old_package_info, new_package_info=new_package_info)
+        return new_package_info
+
+    def _update_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> PackageInfo:
+        # Move the package dir
+        if new_package_info.abs_path != old_package_info.abs_path:
+            old_pkg_path = old_package_info.abs_path
+            new_pkg_path = new_package_info.abs_path
+            self.fs_editor.move_path(old_path=old_pkg_path, new_path=new_pkg_path)
+
+        # Rename and replace all the internals and update imports
+        if new_package_info.single_module_name != old_package_info.single_module_name:
+            self._rename_package_internals(old_package_info=old_package_info, new_package_info=new_package_info)
+            self._replace_imports(old_package_info.single_module_name, new_package_info.single_module_name)
+
+        # Re-register package under new name
+        self._re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
+        return new_package_info
 
     def _init_package_from_boilerplate(self, boilerplate_info: PackageInfo, package_info: PackageInfo) -> None:
         # Create a copy of the boilerplate dir
         boilerplate_dir = boilerplate_info.abs_path
         new_pkg_dir = package_info.abs_path
-        self.fs_editor.copy_dir(src_dir=boilerplate_dir, dst_dir=new_pkg_dir)
+        self.fs_editor.copy_path(src_dir=boilerplate_dir, dst_dir=new_pkg_dir)
+
+        # Rename and replace all the internals
+        self._rename_package_internals(old_package_info=boilerplate_info, new_package_info=package_info)
+
+        # Register package
+        self._register_package(package_info=package_info)
+
+    def _rename_package_internals(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
+        new_pkg_dir = new_package_info.abs_path
 
         # Rename the code dir
-        old_code_path = os.path.join(new_pkg_dir, boilerplate_info.single_module_name)
-        new_code_path = os.path.join(new_pkg_dir, package_info.single_module_name)
+        old_code_path = os.path.join(new_pkg_dir, old_package_info.single_module_name)
+        new_code_path = os.path.join(new_pkg_dir, new_package_info.single_module_name)
         self.fs_editor.move_path(old_path=old_code_path, new_path=new_code_path)
 
         # Rename the tests dir
-        for boilerplate_test_dir, package_test_dir in zip(boilerplate_info.test_dirs, package_info.test_dirs):
+        for boilerplate_test_dir, package_test_dir in zip(old_package_info.test_dirs, new_package_info.test_dirs):
             old_tests_path = os.path.join(new_pkg_dir, boilerplate_test_dir)
             new_tests_path = os.path.join(new_pkg_dir, package_test_dir)
             self.fs_editor.move_path(old_path=old_tests_path, new_path=new_tests_path)
 
         # Replace all package name occurrences with the given name
-        for boilerplate_mod_name, package_mod_name in zip(boilerplate_info.module_names, package_info.module_names):
+        for boilerplate_mod_name, package_mod_name in zip(old_package_info.module_names, new_package_info.module_names):
             self.fs_editor.replace_text_in_dir(
                 old_text=boilerplate_mod_name,
                 new_text=package_mod_name,
@@ -125,34 +208,29 @@ class PackageManager:
             )
 
         self.fs_editor.replace_text_in_dir(
-            old_text=boilerplate_info.package_reg_name,
-            new_text=package_info.package_reg_name,
+            old_text=old_package_info.package_reg_name,
+            new_text=new_package_info.package_reg_name,
             path=new_pkg_dir,
         )
 
-        # Register package
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(
-                package_type=package_info.package_type, package_index=self.package_index):
-            mng_plugin.register_package(package_info=package_info)
+    def change_package_type(self, package_module_name: str, new_package_type: str) -> PackageInfo:
 
-    def change_package_type(self, package_module_name: str, new_package_type: str) -> None:
         old_package_info = self.package_index.get_package_info_from_module_name(package_module_name)
 
-        # Move the package dir
-        old_pkg_path = old_package_info.abs_path
+        # Update package info
         new_pkg_path = os.path.join(
             self.repo_env.get_root_package_dir(package_type=new_package_type),
             os.path.basename(old_package_info.abs_path)
         )
-        self.fs_editor.move_path(old_path=old_pkg_path, new_path=new_pkg_path)
+        new_package_info = old_package_info.clone(
+            package_type=new_package_type,
+            abs_path=new_pkg_path,
+        )
 
-        # Update package info
-        new_package_info = old_package_info.clone(package_type=new_package_type, abs_path=new_pkg_path)
+        # Update it
+        self._update_package(old_package_info=old_package_info, new_package_info=new_package_info)
 
-        # Re-register package
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(
-                package_type=new_package_info.package_type, package_index=self.package_index):
-            mng_plugin.re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
+        return new_package_info
 
     def rename_module(
             self, old_import_name: str, new_import_name: str,

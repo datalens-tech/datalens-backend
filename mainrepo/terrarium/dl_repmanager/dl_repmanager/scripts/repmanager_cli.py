@@ -58,6 +58,14 @@ def make_parser() -> argparse.ArgumentParser:
         '--from-package-name', required=True, help='Name of the package folder to copy from',
     )
 
+    rename_subparser = subparsers.add_parser(
+        'rename', parents=[package_name_parser],
+        help='Rename package',
+    )
+    rename_subparser.add_argument(
+        '--new-package-name', required=True, help='New name of the package',
+    )
+
     move_code_parser = subparsers.add_parser(
         'rename-module', parents=[rename_parser],
         help='Rename module (move code from one package to another or within one package)',
@@ -124,6 +132,12 @@ class DlRepManagerTool:
 
     def copy(self, package_name: str, from_package_name: str) -> None:
         self.package_manager.copy_package(package_module_name=package_name, from_package_module_name=from_package_name)
+
+    def rename(self, package_name: str, new_package_name: str) -> None:
+        self.package_manager.rename_package(
+            old_package_module_name=package_name,
+            new_package_module_name=new_package_name,
+        )
 
     def ch_package_type(self, package_name: str, package_type: str) -> None:
         self.package_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
@@ -211,6 +225,9 @@ class DlRepManagerTool:
 
         elif args.command == 'copy':
             tool.copy(package_name=args.package_name, from_package_name=args.from_package_name)
+
+        elif args.command == 'rename':
+            tool.rename(package_name=args.package_name, new_package_name=args.new_package_name)
 
         elif args.command == 'ch-package-type':
             tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)

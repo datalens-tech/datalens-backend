@@ -22,7 +22,7 @@ class FilesystemEditor(abc.ABC):
         )
 
     @abc.abstractmethod
-    def copy_dir(self, src_dir: str, dst_dir: str) -> None:
+    def copy_path(self, src_dir: str, dst_dir: str) -> None:
         """Make a copy of `src_dir` named `dst_dir`."""
         raise NotImplementedError
 
@@ -37,9 +37,13 @@ class FilesystemEditor(abc.ABC):
     def move_path(self, old_path: str, new_path: str) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def remove_path(self, path: str) -> None:
+        raise NotImplementedError
+
 
 class DefaultFilesystemEditor(FilesystemEditor):
-    def copy_dir(self, src_dir: str, dst_dir: str) -> None:
+    def copy_path(self, src_dir: str, dst_dir: str) -> None:
         assert os.path.exists(src_dir), 'Source dir doesn\'t exist'
         assert not os.path.exists(dst_dir), 'Destination dir already exists'
         shutil.copytree(src_dir, dst_dir)
@@ -69,6 +73,9 @@ class DefaultFilesystemEditor(FilesystemEditor):
 
             shutil.move(old_path, new_path)
 
+    def remove_path(self, path: str) -> None:
+        shutil.rmtree(path)
+
 
 class GitFilesystemEditor(DefaultFilesystemEditor):
     """An FS editor that buses git to move files and directories"""
@@ -78,3 +85,6 @@ class GitFilesystemEditor(DefaultFilesystemEditor):
         rel_old_path = os.path.relpath(old_path, cwd)
         rel_new_path = os.path.relpath(new_path, cwd)
         subprocess.run(f'git add "{rel_old_path}" && git mv "{rel_old_path}" "{rel_new_path}"', shell=True)
+
+    def remove_path(self, path: str) -> None:
+        subprocess.run(f'git rm "{path}"', shell=True)

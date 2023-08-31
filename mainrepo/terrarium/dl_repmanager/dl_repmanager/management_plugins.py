@@ -150,28 +150,26 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
         pass  # FIXME: Remove package from dependencies
 
     def re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
-        assert old_package_info.package_reg_name == new_package_info.package_reg_name  # FIXME: Allow renaming
-        section_names = (
-            'tool.poetry.dependencies',
-            'tool.poetry.group.tests.dependencies',
-        )  # FIXME: custom test sections
         # Scan other packages to see if they are dependent on this one and update these dependency entries
         for other_package_info in self.package_index.list_package_infos():
             if other_package_info == old_package_info:
                 continue
 
-            for section_name in section_names:
+            for section_name in other_package_info.requirement_lists:
                 if other_package_info.is_dependent_on(old_package_info, section_name=section_name):
                     new_req_rel_path = os.path.relpath(new_package_info.abs_path, other_package_info.abs_path)
                     with PackageMetaWriter.from_file(other_package_info.toml_path) as pkg_meta_writer:
-                        pkg_meta_writer.update_requirement_item_path(
+                        pkg_meta_writer.update_requirement_item(
                             section_name=section_name,
-                            item_name=old_package_info.package_reg_name,  # FIXME: add support for renaming
+                            item_name=old_package_info.package_reg_name,
+                            new_item_name=new_package_info.package_reg_name,
                             new_path=new_req_rel_path,
                         )
 
-        # Update own dependency entries
-        if new_package_info.abs_path != old_package_info.abs_path:  # FIXME: add support for renaming
+        # Update own dependency entries if the package has moved to another dir
+        old_pkg_dir_path = os.path.dirname(old_package_info.abs_path)
+        new_pkg_dir_path = os.path.dirname(new_package_info.abs_path)
+        if new_pkg_dir_path != old_pkg_dir_path:
             for section_name, req_list in old_package_info.requirement_lists.items():
                 updated_requirements: dict[str, PackageInfo] = {}  # {<pkg_reg_name>: <req_package_info>}
                 for other_package_spec in req_list.req_specs:

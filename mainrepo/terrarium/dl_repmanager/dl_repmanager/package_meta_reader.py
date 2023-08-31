@@ -102,14 +102,28 @@ class PackageMetaWriter(PackageMetaReader):
             section = self.toml_writer.get_editable_section(section_name)
             section.remove(item_name)
 
-    def update_requirement_item_path(self, section_name: str, item_name: str, new_path: str) -> None:
-        with self.toml_writer.suppress_non_existent_key():
+    def _get_item_opt(self, section_name: str, item_name) -> Optional[dict[str, Any]]:
+        items = [
+            item for item in self.iter_requirement_items(section_name=section_name)
+            if item['name'] == item_name
+        ]
+        if not items:
+            return
+
+        assert len(items) == 1
+        return items[0]
+
+    def update_requirement_item(
+            self, section_name: str, item_name: str,
+            new_item_name: str, new_path: str,
+    ) -> None:
+        original_item = self._get_item_opt(section_name=section_name, item_name=item_name)
+        if original_item is not None:
             section = self.toml_writer.get_editable_section(section_name)
             section.remove(item_name)
-            # If it didn't exist, then the following code will not be executed, which is exactly what we need
             package_dep_table = tomlkit.inline_table()
             package_dep_table.add('path', new_path)
-            section.add(item_name, package_dep_table)
+            section.add(new_item_name, package_dep_table)
 
     def add_mypy_overrides_ignore(self, pkg_names: list[str]):
         with self.toml_writer.suppress_non_existent_key():
