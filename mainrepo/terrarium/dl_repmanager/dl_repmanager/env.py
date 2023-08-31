@@ -174,7 +174,7 @@ class RepoEnvironmentLoader:
         fs_editor_type: Optional[str] = env_settings.get('fs_editor')
 
         for include in env_settings.get('include', ()):
-            included_config_contents = self._load_params_from_yaml_file(base_path / include)
+            included_config_contents = self._load_params_from_yaml_file(Path(base_path) / include)
             package_types = dict(included_config_contents.package_types, **package_types)
             custom_package_map = dict(included_config_contents.custom_package_map, **custom_package_map)
             fs_editor_type = fs_editor_type or included_config_contents.fs_editor_type
@@ -193,7 +193,7 @@ class RepoEnvironmentLoader:
         assert fs_editor_type is not None
         fs_editor = self.fs_editor_classes[fs_editor_type]()
         return RepoEnvironment(
-            base_path=config_contents.base_path,
+            base_path=str(config_contents.base_path),
             package_types=config_contents.package_types,
             custom_package_map=config_contents.custom_package_map,
             fs_editor=fs_editor,
