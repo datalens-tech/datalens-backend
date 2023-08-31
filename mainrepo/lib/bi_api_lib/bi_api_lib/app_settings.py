@@ -4,6 +4,7 @@ import json
 from typing import Optional, Any, ClassVar
 
 import attr
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_configs.connectors_settings import ConnectorsSettingsByType, connectors_settings_fallback_factory
 from bi_configs.crypto_keys import CryptoKeysConfig
@@ -426,6 +427,11 @@ class ControlPlaneAppSettings(BaseAppSettings):
     ENV_TYPE: Optional[EnvType] = s_attrib(  # type: ignore
         "YENV_TYPE",
         env_var_converter=env_type_env_var_converter,
+    )
+
+    CONNECTOR_AVAILABILITY: ConnectorAvailabilityConfig = s_attrib(  # type: ignore
+        "CONNECTOR_AVAILABILITY",
+        fallback_factory=lambda cfg: ConnectorAvailabilityConfig.from_settings(cfg.CONNECTOR_AVAILABILITY),
     )
 
     DO_DSRC_IDX_FETCH: bool = s_attrib("DL_DO_DS_IDX_FETCH", missing=False)  # type: ignore  # TODO: fix

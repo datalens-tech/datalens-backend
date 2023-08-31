@@ -45,6 +45,15 @@ scaling:
     max_surge: 1
     max_unavailable: 100
 
+visible_connectors:
+  - "bigquery"
+  - "clickhouse"
+  - "file"
+  - "mssql"
+  - "mysql"
+  - "postgres"
+  - "snowflake"
+
 connector_forms_env:
   - name: ENABLED_BACKEND_DRIVEN_FORMS
     value: "ch_frozen_demo"

@@ -28,7 +28,7 @@ from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFac
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import AsyncAppSettings, BaseAppSettings
+from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.connector_availability.main import get_connector_availability_config_for_env
 from bi_api_lib.i18n.registry import LOCALIZATION_CONFIGS
@@ -224,3 +224,5 @@ class LegacySRFactoryBuilder(SRFactoryBuilder):
 
     def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
         return get_connector_availability_config_for_env(settings.ENV_TYPE) if settings.ENV_TYPE is not None else None
+        # return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlPlaneAppSettings) else None
+        # TODO use this^ when contour apps get their configs

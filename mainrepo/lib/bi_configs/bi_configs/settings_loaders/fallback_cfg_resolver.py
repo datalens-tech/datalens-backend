@@ -1,5 +1,6 @@
 import logging
-from typing import Any, ClassVar, Union, Optional
+from collections.abc import Mapping
+from typing import Any, ClassVar, Union, Optional, Iterator
 
 import yaml
 import attr
@@ -61,9 +62,15 @@ class YEnvFallbackConfigResolver(FallbackConfigResolver):
 
 
 @attr.s
-class ObjectLikeConfig:
+class ObjectLikeConfig(Mapping):
     _data: dict = attr.ib()
     _path: list = attr.ib(default=[])
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __iter__(self) -> Iterator:
+        return iter(self._data)
 
     def _get_key(self, key: Any):
         if key not in self._data:
@@ -84,13 +91,39 @@ class ObjectLikeConfig:
     def from_dict(cls, data: dict, path: Optional[list] = None) -> 'ObjectLikeConfig':
         if path is None:
             path = []
-        return cls(
+
+        def _get_value_for_cfg(k: Any, v: Any) -> Any:
+            if isinstance(v, dict):
+                return cls.from_dict(v, path + [k])
+            if isinstance(v, (list, tuple)):
+                return [
+                    cls.from_dict(item, path + [k] + [str(idx)])
+                    if isinstance(item, dict) else item
+                    for idx, item in enumerate(v)
+                ]
+            return v
+
+        ret = cls(
             data={
-                k: cls.from_dict(v, path + [k]) if isinstance(v, dict) else v
+                k: _get_value_for_cfg(k, v)
                 for k, v in data.items()
             },
             path=path,
         )
+        return ret
+
+    def to_dict(self) -> dict[str, Any]:
+        def _get_value_for_dict(v) -> Any:
+            if isinstance(v, ObjectLikeConfig):
+                return v.to_dict()
+            if isinstance(v, (list, tuple)):
+                return [item.to_dict if isinstance(item, ObjectLikeConfig) else item for item in v]
+            return v
+
+        return {
+            k: _get_value_for_dict(v)
+            for k, v in self._data.items()
+        }
 
 
 @attr.s

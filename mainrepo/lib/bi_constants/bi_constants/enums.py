@@ -457,3 +457,8 @@ class NotificationLevel(Enum):
     info = 'info'
     warning = 'warning'
     critical = 'critical'
+
+
+class ConnectorAvailability(Enum):
+    free = 'free'
+    whitelist = 'whitelist'

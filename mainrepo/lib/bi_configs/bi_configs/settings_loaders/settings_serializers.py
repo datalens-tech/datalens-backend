@@ -5,8 +5,10 @@ import enum
 from collections import defaultdict
 from typing import Type
 
+import attr
 import yaml
 
+from dynamic_enum import DynamicEnum
 from bi_configs.connectors_data import ConnectorsDataBase
 from bi_configs.environments import (
     CommonInstallation,
@@ -65,6 +67,12 @@ def defaults_to_dict(default_settings: CommonInstallation) -> dict:
         return result
 
     config = object_to_dict(default_settings)
+
+    if hasattr(default_settings, 'CONNECTOR_AVAILABILITY'):
+        config['CONNECTOR_AVAILABILITY'] = attr.asdict(
+            default_settings.CONNECTOR_AVAILABILITY,
+            value_serializer=lambda _, __, v: v.value if isinstance(v, (enum.Enum, DynamicEnum)) else v
+        )
 
     conn_classes = [
         cls for cls in inspect.getmro(default_settings.__class__)

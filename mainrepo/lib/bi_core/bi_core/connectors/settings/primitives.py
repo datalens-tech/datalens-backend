@@ -1,4 +1,4 @@
-from typing import Optional, Type, TypeVar
+from typing import Optional, Type, TypeVar, Any
 
 import attr
 
@@ -19,7 +19,16 @@ def get_connectors_settings_config(
         return full_cgf
     if isinstance(full_cgf, ObjectLikeConfig):  # yaml-style settings
         assert hasattr(full_cgf, 'CONNECTORS')
-        return getattr(full_cgf.CONNECTORS, object_like_config_key, None)
+        settings: Optional[ObjectLikeConfig] = getattr(full_cgf.CONNECTORS, object_like_config_key, None)
+        if settings is not None:
+            for key, setting in settings.items():  # type: str, Any  # converts left ObjectLikeConfigs to dicts
+                if isinstance(setting, (tuple, list)):
+                    settings._data[key] = [  # noqa  # TODO avoid changing cfg data directly
+                        item.to_dict()
+                        if isinstance(item, ObjectLikeConfig) else item
+                        for item in setting
+                    ]
+        return settings
     return None  # no settings from a given connector
 
 

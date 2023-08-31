@@ -32,6 +32,8 @@ spec:
             {{- include "secrets-bi_api" . | indent 12}}
             {{- include "secrets-bi_api_nonpublic" . | indent 12}}
             {{- include "secrets_us_master_token" . | indent 12}}
+            - name: CONNECTOR_AVAILABILITY_VISIBLE
+              value: "{{- join "," .Values.visible_connectors }}"
             {{ if .Values.enabled_features.service_connectors }}
               {{- include "secrets-service_connectors" . | indent 12}}
             {{ end }}

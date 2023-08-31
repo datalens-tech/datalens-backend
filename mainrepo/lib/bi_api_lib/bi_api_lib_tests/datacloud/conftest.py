@@ -29,6 +29,7 @@ import bi.app
 from bi import app_async
 from bi_api_lib.app_settings import ControlPlaneAppSettings, AsyncAppSettings, YCAuthSettings
 from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 
@@ -119,6 +120,7 @@ def dc_rs_cp_app_settings(
     assert dl_env == DLEnv.dc_testing
 
     return ControlPlaneAppSettings(
+        CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
         APP_TYPE=AppType.DATA_CLOUD,
         ENV_TYPE=EnvType.dc_any,
         US_BASE_URL=dc_rs_us_base_url,

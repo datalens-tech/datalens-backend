@@ -47,6 +47,15 @@ scaling:
 #  external_api:
 #    desired: 2
 
+visible_connectors:
+  - "bigquery"
+  - "chyt"
+  - "clickhouse"
+  - "mssql"
+  - "mysql"
+  - "postgres"
+  - "snowflake"
+
 connector_forms_env:
   - name: ENABLED_BACKEND_DRIVEN_FORMS
     value: "ch_frozen_demo"

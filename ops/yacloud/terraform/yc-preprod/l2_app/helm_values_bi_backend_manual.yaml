@@ -56,6 +56,34 @@ scaling:
   file_secure_reader:
     desired: 1
 
+visible_connectors:
+  - "appmetrica_api"
+  - "bigquery"
+  - "bitrix24"
+  - "ch_billing_analytics"
+  - "ch_ya_music_podcast_stats"
+  - "chyt"
+  - "clickhouse"
+  - "equeo"
+  - "file"
+  - "greenplum"
+  - "gsheets_v2"
+  - "kontur_market"
+  - "market_couriers"
+  - "metrika_api"
+  - "monitoring"
+  - "moysklad"
+  - "mssql"
+  - "mysql"
+  - "oracle"
+  - "postgres"
+  - "promql"
+  - "smb_heatmaps"
+  - "snowflake"
+  - "usage_tracking"
+  - "ydb"
+  - "yq"
+
 connector_forms_env:
   - name: CONNECTORS_METRICA_COUNTER_ALLOW_MANUAL_INPUT
     value: "0"

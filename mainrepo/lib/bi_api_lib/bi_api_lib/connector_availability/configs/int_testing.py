@@ -4,7 +4,6 @@ from bi_api_lib.connector_availability.base import (
     ConnectorAvailabilityConfig,
     Section,
     Connector,
-    ConnectorAvailability,
     ConnectorContainer,
 )
 from bi_api_lib.i18n.localizer import Translatable
@@ -28,8 +27,6 @@ CONFIG = ConnectorAvailabilityConfig(
             title_translatable=Translatable('section_title-db'),
             connectors=[
                 ConnectorContainer(
-                    availability=ConnectorAvailability.free,
-                    hidden=False,
                     alias='chyt_connectors',
                     title_translatable=Translatable('label_connector-ch_over_yt'),
                     includes=[

@@ -21,3 +21,5 @@ apps_to_run:
 sentry_dsns: {}
 
 connector_settings: {}
+
+visible_connectors: []

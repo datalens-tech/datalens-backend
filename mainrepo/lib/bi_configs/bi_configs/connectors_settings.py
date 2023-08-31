@@ -341,7 +341,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_BUMPY_ROADS.CONN_CH_FROZEN_BUMPY_ROADS_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_BUMPY_ROADS.CONN_CH_FROZEN_BUMPY_ROADS_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_BUMPY_ROADS.CONN_CH_FROZEN_BUMPY_ROADS_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_BUMPY_ROADS.CONN_CH_FROZEN_BUMPY_ROADS_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_BUMPY_ROADS.CONN_CH_FROZEN_BUMPY_ROADS_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_BUMPY_ROADS') else None,
         CH_FROZEN_COVID=CHFrozenCovidConnectorSettings(
@@ -351,7 +351,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_COVID.CONN_CH_FROZEN_COVID_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_COVID.CONN_CH_FROZEN_COVID_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_COVID.CONN_CH_FROZEN_COVID_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_COVID.CONN_CH_FROZEN_COVID_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_COVID.CONN_CH_FROZEN_COVID_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_COVID') else None,
         CH_FROZEN_DEMO=CHFrozenDemoConnectorSettings(
@@ -361,7 +361,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_SUBSELECT_TEMPLATES),
             RAW_SQL_LEVEL=RawSQLLevel(cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_RAW_SQL_LEVEL),
             PASS_DB_QUERY_TO_USER=cfg.CH_FROZEN_DEMO.CONN_CH_FROZEN_DEMO_PASS_DB_QUERY_TO_USER,
             PASSWORD=required(str),
@@ -373,7 +373,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_DTP.CONN_CH_FROZEN_DTP_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_DTP.CONN_CH_FROZEN_DTP_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_DTP.CONN_CH_FROZEN_DTP_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_DTP.CONN_CH_FROZEN_DTP_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_DTP.CONN_CH_FROZEN_DTP_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_DTP') else None,
         CH_FROZEN_GKH=CHFrozenGKHConnectorSettings(
@@ -383,7 +383,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_GKH.CONN_CH_FROZEN_GKH_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_GKH.CONN_CH_FROZEN_GKH_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_GKH.CONN_CH_FROZEN_GKH_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_GKH.CONN_CH_FROZEN_GKH_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_GKH.CONN_CH_FROZEN_GKH_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_GKH') else None,
         CH_FROZEN_SAMPLES=CHFrozenSamplesConnectorSettings(
@@ -393,7 +393,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_SAMPLES.CONN_CH_FROZEN_SAMPLES_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_SAMPLES.CONN_CH_FROZEN_SAMPLES_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_SAMPLES.CONN_CH_FROZEN_SAMPLES_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_SAMPLES.CONN_CH_FROZEN_SAMPLES_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_SAMPLES.CONN_CH_FROZEN_SAMPLES_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_SAMPLES') else None,
         CH_FROZEN_TRANSPARENCY=CHFrozenTransparencyConnectorSettings(
@@ -403,7 +403,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_TRANSPARENCY.CONN_CH_FROZEN_TRANSPARENCY_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_TRANSPARENCY.CONN_CH_FROZEN_TRANSPARENCY_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_TRANSPARENCY.CONN_CH_FROZEN_TRANSPARENCY_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_TRANSPARENCY.CONN_CH_FROZEN_TRANSPARENCY_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_TRANSPARENCY.CONN_CH_FROZEN_TRANSPARENCY_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_TRANSPARENCY') else None,
         CH_FROZEN_WEATHER=CHFrozenWeatherConnectorSettings(
@@ -413,7 +413,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_WEATHER.CONN_CH_FROZEN_WEATHER_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_WEATHER.CONN_CH_FROZEN_WEATHER_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_WEATHER.CONN_CH_FROZEN_WEATHER_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_WEATHER.CONN_CH_FROZEN_WEATHER_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_WEATHER.CONN_CH_FROZEN_WEATHER_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_WEATHER') else None,
         CH_FROZEN_HORECA=CHFrozenHorecaConnectorSettings(
@@ -423,7 +423,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_FROZEN_HORECA.CONN_CH_FROZEN_HORECA_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_FROZEN_HORECA.CONN_CH_FROZEN_HORECA_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_FROZEN_HORECA.CONN_CH_FROZEN_HORECA_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_FROZEN_HORECA.CONN_CH_FROZEN_HORECA_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_FROZEN_HORECA.CONN_CH_FROZEN_HORECA_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_FROZEN_HORECA') else None,
         METRICA=MetricaConnectorSettings(),
@@ -453,7 +453,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_YA_MUSIC_PODCAST_STATS.CONN_MUSIC_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_YA_MUSIC_PODCAST_STATS.CONN_MUSIC_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_YA_MUSIC_PODCAST_STATS.CONN_MUSIC_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_YA_MUSIC_PODCAST_STATS.CONN_MUSIC_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_YA_MUSIC_PODCAST_STATS.CONN_MUSIC_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_YA_MUSIC_PODCAST_STATS') else None,
         FILE=FileS3ConnectorSettings(  # type: ignore
@@ -473,7 +473,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.CH_BILLING_ANALYTICS.CONN_BILLING_USERNAME,
             USE_MANAGED_NETWORK=cfg.CH_BILLING_ANALYTICS.CONN_BILLING_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.CH_BILLING_ANALYTICS.CONN_BILLING_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.CH_BILLING_ANALYTICS.CONN_BILLING_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.CH_BILLING_ANALYTICS.CONN_BILLING_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'CH_BILLING_ANALYTICS') else None,
         MARKET_COURIERS=MarketCouriersConnectorSettings(  # type: ignore
@@ -483,7 +483,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.MARKET_COURIERS.CONN_MARKET_COURIERS_USERNAME,
             USE_MANAGED_NETWORK=cfg.MARKET_COURIERS.CONN_MARKET_COURIERS_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.MARKET_COURIERS.CONN_MARKET_COURIERS_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.MARKET_COURIERS.CONN_MARKET_COURIERS_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.MARKET_COURIERS.CONN_MARKET_COURIERS_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'MARKET_COURIERS') else None,
         SCHOOLBOOK=SchoolbookConnectorSettings(  # type: ignore
@@ -493,7 +493,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.SCHOOLBOOK.CONN_SCHOOLBOOK_USERNAME,
             USE_MANAGED_NETWORK=cfg.SCHOOLBOOK.CONN_SCHOOLBOOK_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.SCHOOLBOOK.CONN_SCHOOLBOOK_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.SCHOOLBOOK.CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.SCHOOLBOOK.CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'SCHOOLBOOK') else None,
         SMB_HEATMAPS=SMBHeatmapsConnectorSettings(  # type: ignore
@@ -503,7 +503,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.SMB_HEATMAPS.CONN_SMB_HEATMAPS_USERNAME,
             USE_MANAGED_NETWORK=cfg.SMB_HEATMAPS.CONN_SMB_HEATMAPS_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.SMB_HEATMAPS.CONN_SMB_HEATMAPS_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.SMB_HEATMAPS.CONN_SMB_HEATMAPS_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.SMB_HEATMAPS.CONN_SMB_HEATMAPS_SUBSELECT_TEMPLATES),
             PASSWORD=required(str),
         ) if hasattr(cfg, 'SMB_HEATMAPS') else None,
         MOYSKLAD=MoySkladConnectorSettings(  # type: ignore
@@ -537,7 +537,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_USERNAME,
             USE_MANAGED_NETWORK=cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_SUBSELECT_TEMPLATES),
             REQUIRED_IAM_ROLE=cfg.USAGE_TRACKING.CONN_USAGE_TRACKING_REQUIRED_IAM_ROLE,
             PASSWORD=required(str),
         ) if hasattr(cfg, 'USAGE_TRACKING') else None,
@@ -548,7 +548,7 @@ def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> O
             USERNAME=cfg.USAGE_TRACKING_YA_TEAM.CONN_USAGE_TRACKING_YA_TEAM_USERNAME,
             USE_MANAGED_NETWORK=cfg.USAGE_TRACKING_YA_TEAM.CONN_USAGE_TRACKING_YA_TEAM_USE_MANAGED_NETWORK,
             ALLOWED_TABLES=cfg.USAGE_TRACKING_YA_TEAM.CONN_USAGE_TRACKING_YA_TEAM_ALLOWED_TABLES,
-            SUBSELECT_TEMPLATES=tuple(cfg.USAGE_TRACKING_YA_TEAM.CONN_USAGE_TRACKING_YA_TEAM_SUBSELECT_TEMPLATES),
+            SUBSELECT_TEMPLATES=tuple(st.to_dict() for st in cfg.USAGE_TRACKING_YA_TEAM.CONN_USAGE_TRACKING_YA_TEAM_SUBSELECT_TEMPLATES),
             MAX_EXECUTION_TIME=cfg.USAGE_TRACKING_YA_TEAM.CONN_USAGE_TRACKING_YA_TEAM_MAX_EXECUTION_TIME,
             PASSWORD=required(str),
         ) if hasattr(cfg, 'USAGE_TRACKING_YA_TEAM') else None,

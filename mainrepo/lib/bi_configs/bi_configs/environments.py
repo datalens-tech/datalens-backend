@@ -12,6 +12,13 @@ from typing import ClassVar, Tuple, Optional, ItemsView, Set, TypeAlias, Union
 import attr
 
 from bi_configs import connectors_data as cd
+from bi_configs.connector_availability import (
+    ConnectorAvailabilityConfigSettings,
+    SectionSettings,
+    ConnectorSettings,
+    TranslatableSettings,
+    ConnectorContainerSettings,
+)
 from bi_configs.enums import EnvType, RedisMode
 from bi_constants.api_constants import DLHeadersCommon
 
@@ -61,6 +68,20 @@ class DataCloudInstallation(
 
     ENABLE_REGULAR_S3_LC_RULES_CLEANUP: ClassVar[bool] = True
 
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        uncategorized=[
+            ConnectorSettings(conn_type='clickhouse'),
+            ConnectorSettings(conn_type='postgres'),
+            ConnectorSettings(conn_type='mysql'),
+            ConnectorSettings(conn_type='chyt'),
+            ConnectorSettings(conn_type='mssql'),
+            ConnectorSettings(conn_type='file'),
+            ConnectorSettings(conn_type='promql'),
+            ConnectorSettings(conn_type='bigquery'),
+            ConnectorSettings(conn_type='snowflake'),
+        ],
+    )
+
 
 class DataCloudExposedInstallation(IAMAwareInstallation, DataCloudInstallation):
     # IAMAwareInstallation:
@@ -97,6 +118,8 @@ class CommonInstallation(
     @property
     def US_HOST(self):
         return self.US_BASE_URL
+
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings]
 
     # Note: `PING_…` values are not currently used.
     # Intended for liveness+connectivity check, e.g. into juggler.
@@ -214,6 +237,45 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
     FILE_UPLOADER_S3_TMP_BUCKET_NAME: ClassVar[str] = 'bi-file-uploader-tmp-testing'
     FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME: ClassVar[str] = 'bi-file-uploader-testing'
 
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        sections=[
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-db'),
+                connectors=[
+                    ConnectorContainerSettings(
+                        alias='chyt_connectors',
+                        title_translatable=TranslatableSettings(text='label_connector-ch_over_yt'),
+                        includes=[
+                            ConnectorSettings(conn_type='ch_over_yt'),
+                            ConnectorSettings(conn_type='ch_over_yt_user_auth'),
+                        ],
+                    ),
+                    ConnectorSettings(conn_type='clickhouse'),
+                    ConnectorSettings(conn_type='postgres'),
+                    ConnectorSettings(conn_type='mysql'),
+                    ConnectorSettings(conn_type='greenplum'),
+                    ConnectorSettings(conn_type='mssql'),
+                    ConnectorSettings(conn_type='oracle'),
+                    ConnectorSettings(conn_type='ydb'),
+                    ConnectorSettings(conn_type='promql'),
+                    ConnectorSettings(conn_type='bigquery'),
+                    ConnectorSettings(conn_type='snowflake'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                connectors=[
+                    ConnectorSettings(conn_type='file'),
+                    ConnectorSettings(conn_type='gsheets'),
+                    ConnectorSettings(conn_type='usage_tracking_ya_team'),
+                    ConnectorSettings(conn_type='metrika_api'),
+                    ConnectorSettings(conn_type='appmetrica_api'),
+                    ConnectorSettings(conn_type='yq'),
+                ],
+            ),
+        ],
+    )
+
 
 class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonInternalInstallation):
     """ datalens.yandex-team.ru """
@@ -255,6 +317,42 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
     )
 
     S3_ENDPOINT_URL: ClassVar[str] = 'https://s3.mds.yandex.net'
+
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        sections=[
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-db'),
+                connectors=[
+                    ConnectorContainerSettings(
+                        alias='chyt_connectors',
+                        title_translatable=TranslatableSettings(text='label_connector-ch_over_yt'),
+                        includes=[
+                            ConnectorSettings(conn_type='ch_over_yt'),
+                            ConnectorSettings(conn_type='ch_over_yt_user_auth'),
+                        ],
+                    ),
+                    ConnectorSettings(conn_type='clickhouse'),
+                    ConnectorSettings(conn_type='postgres'),
+                    ConnectorSettings(conn_type='mysql'),
+                    ConnectorSettings(conn_type='greenplum'),
+                    ConnectorSettings(conn_type='mssql'),
+                    ConnectorSettings(conn_type='oracle'),
+                    ConnectorSettings(conn_type='ydb'),
+                    ConnectorSettings(conn_type='promql'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                connectors=[
+                    ConnectorSettings(conn_type='file'),
+                    ConnectorSettings(conn_type='gsheets'),
+                    ConnectorSettings(conn_type='usage_tracking_ya_team'),
+                    ConnectorSettings(conn_type='metrika_api'),
+                    ConnectorSettings(conn_type='appmetrica_api'),
+                ],
+            ),
+        ],
+    )
 
 
 class CommonExternalInstallation(
@@ -310,6 +408,62 @@ class ExternalTestingInstallation(
         CommonExternalInstallation,
 ):
     """ datalens-preprod.yandex.ru """
+
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        sections=[
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-db'),
+                connectors=[
+                    ConnectorSettings(conn_type='clickhouse'),
+                    ConnectorSettings(conn_type='postgres'),
+                    ConnectorSettings(conn_type='mysql'),
+                    ConnectorSettings(conn_type='ydb'),
+                    ConnectorSettings(conn_type='chyt'),
+                    ConnectorSettings(conn_type='greenplum'),
+                    ConnectorSettings(conn_type='mssql'),
+                    ConnectorSettings(conn_type='oracle'),
+                    ConnectorSettings(conn_type='bigquery'),
+                    ConnectorSettings(conn_type='snowflake'),
+                    ConnectorSettings(conn_type='promql'),
+                    ConnectorSettings(conn_type='ch_frozen_bumpy_roads'),
+                    ConnectorSettings(conn_type='ch_frozen_covid'),
+                    ConnectorSettings(conn_type='ch_frozen_demo'),
+                    ConnectorSettings(conn_type='ch_frozen_dtp'),
+                    ConnectorSettings(conn_type='ch_frozen_gkh'),
+                    ConnectorSettings(conn_type='ch_frozen_samples'),
+                    ConnectorSettings(conn_type='ch_frozen_transparency'),
+                    ConnectorSettings(conn_type='ch_frozen_weather'),
+                    ConnectorSettings(conn_type='ch_frozen_horeca'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                connectors=[
+                    ConnectorSettings(conn_type='file'),
+                    ConnectorSettings(conn_type='gsheets_v2'),
+                    ConnectorSettings(conn_type='yq'),
+                    ConnectorSettings(conn_type='metrika_api'),
+                    ConnectorSettings(conn_type='appmetrica_api'),
+                    ConnectorSettings(conn_type='ch_billing_analytics'),
+                    ConnectorSettings(conn_type='monitoring'),
+                    ConnectorSettings(conn_type='usage_tracking'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-partner'),
+                connectors=[
+                    ConnectorSettings(conn_type='bitrix24'),
+                    ConnectorSettings(conn_type='ch_ya_music_podcast_stats'),
+                    ConnectorSettings(conn_type='moysklad'),
+                    ConnectorSettings(conn_type='equeo'),
+                    ConnectorSettings(conn_type='kontur_market'),
+                    ConnectorSettings(conn_type='market_couriers'),
+                    ConnectorSettings(conn_type='schoolbook_journal'),
+                    ConnectorSettings(conn_type='smb_heatmaps'),
+                ],
+            ),
+        ],
+    )
 
     ENV_TYPE: ClassVar[EnvType] = EnvType.yc_testing
 
@@ -443,6 +597,62 @@ class ExternalProductionInstallation(
         'rc1a-h0c0k98f4p8imglf.mdb.yandexcloud.net',
     )
 
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        sections=[
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-db'),
+                connectors=[
+                    ConnectorSettings(conn_type='clickhouse'),
+                    ConnectorSettings(conn_type='postgres'),
+                    ConnectorSettings(conn_type='mysql'),
+                    ConnectorSettings(conn_type='ydb'),
+                    ConnectorSettings(conn_type='chyt'),
+                    ConnectorSettings(conn_type='greenplum'),
+                    ConnectorSettings(conn_type='mssql'),
+                    ConnectorSettings(conn_type='oracle'),
+                    ConnectorSettings(conn_type='bigquery'),
+                    ConnectorSettings(conn_type='snowflake'),
+                    ConnectorSettings(conn_type='promql'),
+                    ConnectorSettings(conn_type='ch_frozen_bumpy_roads'),
+                    ConnectorSettings(conn_type='ch_frozen_covid'),
+                    ConnectorSettings(conn_type='ch_frozen_demo'),
+                    ConnectorSettings(conn_type='ch_frozen_dtp'),
+                    ConnectorSettings(conn_type='ch_frozen_gkh'),
+                    ConnectorSettings(conn_type='ch_frozen_samples'),
+                    ConnectorSettings(conn_type='ch_frozen_transparency'),
+                    ConnectorSettings(conn_type='ch_frozen_weather'),
+                    ConnectorSettings(conn_type='ch_frozen_horeca'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                connectors=[
+                    ConnectorSettings(conn_type='file'),
+                    ConnectorSettings(conn_type='gsheets_v2'),
+                    ConnectorSettings(conn_type='yq'),
+                    ConnectorSettings(conn_type='metrika_api'),
+                    ConnectorSettings(conn_type='appmetrica_api'),
+                    ConnectorSettings(conn_type='ch_billing_analytics'),
+                    ConnectorSettings(conn_type='monitoring'),
+                    ConnectorSettings(conn_type='usage_tracking'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-partner'),
+                connectors=[
+                    ConnectorSettings(conn_type='bitrix24'),
+                    ConnectorSettings(conn_type='ch_ya_music_podcast_stats'),
+                    ConnectorSettings(conn_type='moysklad'),
+                    ConnectorSettings(conn_type='equeo'),
+                    ConnectorSettings(conn_type='kontur_market'),
+                    ConnectorSettings(conn_type='market_couriers'),
+                    ConnectorSettings(conn_type='schoolbook_journal'),
+                    ConnectorSettings(conn_type='smb_heatmaps'),
+                ],
+            ),
+        ],
+    )
+
 
 class NebiusInstallation(InstallationBase):
     """ Base class for all white-lable installations """
@@ -458,13 +668,47 @@ class IsraelInstallation(NebiusInstallation):
     YC_SS_ENDPOINT: ClassVar[str] = "ss.private-api.yandexcloud.co.il:18655"
     YC_TS_ENDPOINT: ClassVar[str] = "ts.private-api.yandexcloud.co.il:14282"
 
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        uncategorized=[
+            ConnectorSettings(conn_type='clickhouse'),
+            ConnectorSettings(conn_type='postgres'),
+            ConnectorSettings(conn_type='mysql'),
+            ConnectorSettings(conn_type='chyt'),
+            ConnectorSettings(conn_type='mssql'),
+            ConnectorSettings(conn_type='bigquery'),
+            ConnectorSettings(conn_type='file'),
+            ConnectorSettings(conn_type='snowflake'),
+            ConnectorSettings(conn_type='ch_frozen_demo'),
+            ConnectorSettings(conn_type='monitoring'),
+            ConnectorSettings(conn_type='chyt'),
+        ],
+    )
+
 
 class NemaxInstallation(NebiusInstallation):
     ENV_TYPE: ClassVar[EnvType] = EnvType.nemax
 
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        uncategorized=[
+            ConnectorSettings(conn_type='clickhouse'),
+            ConnectorSettings(conn_type='postgres'),
+            ConnectorSettings(conn_type='mysql'),
+            ConnectorSettings(conn_type='chyt'),
+            ConnectorSettings(conn_type='mssql'),
+            ConnectorSettings(conn_type='bigquery'),
+            ConnectorSettings(conn_type='file'),
+            ConnectorSettings(conn_type='snowflake'),
+            ConnectorSettings(conn_type='ch_frozen_demo'),
+            ConnectorSettings(conn_type='monitoring'),
+            ConnectorSettings(conn_type='chyt'),
+        ],
+    )
+
 
 class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
     ENV_TYPE: ClassVar[EnvType] = EnvType.int_testing
+
+    US_BASE_URL = 'https://example.com'
 
     REDIS_CACHES_CLUSTER_NAME: ClassVar[str] = None
     REDIS_CACHES_HOSTS: ClassVar[tuple[str, ...]] = None
@@ -487,6 +731,71 @@ class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
     ENABLE_REGULAR_S3_LC_RULES_CLEANUP: ClassVar[bool] = True
 
     BLACKBOX_NAME: ClassVar[str] = 'Test'
+
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
+        sections=[
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-db'),
+                connectors=[
+                    ConnectorContainerSettings(
+                        alias='chyt_connectors',
+                        title_translatable=TranslatableSettings(text='label_connector-ch_over_yt'),
+                        includes=[
+                            ConnectorSettings(conn_type='ch_over_yt'),
+                            ConnectorSettings(conn_type='ch_over_yt_user_auth'),
+                        ],
+                    ),
+                    ConnectorSettings(conn_type='clickhouse'),
+                    ConnectorSettings(conn_type='postgres'),
+                    ConnectorSettings(conn_type='mysql'),
+                    ConnectorSettings(conn_type='greenplum'),
+                    ConnectorSettings(conn_type='mssql'),
+                    ConnectorSettings(conn_type='oracle'),
+                    ConnectorSettings(conn_type='bigquery'),
+                    ConnectorSettings(conn_type='snowflake'),
+                    ConnectorSettings(conn_type='chydb'),
+                    ConnectorSettings(conn_type='ydb'),
+                    ConnectorSettings(conn_type='promql'),
+                    ConnectorSettings(conn_type='chyt'),
+                    ConnectorSettings(conn_type='ch_frozen_bumpy_roads'),
+                    ConnectorSettings(conn_type='ch_frozen_covid'),
+                    ConnectorSettings(conn_type='ch_frozen_demo'),
+                    ConnectorSettings(conn_type='ch_frozen_dtp'),
+                    ConnectorSettings(conn_type='ch_frozen_gkh'),
+                    ConnectorSettings(conn_type='ch_frozen_samples'),
+                    ConnectorSettings(conn_type='ch_frozen_transparency'),
+                    ConnectorSettings(conn_type='ch_frozen_weather'),
+                    ConnectorSettings(conn_type='ch_frozen_horeca'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                connectors=[
+                    ConnectorSettings(conn_type='file'),
+                    ConnectorSettings(conn_type='gsheets_v2'),
+                    ConnectorSettings(conn_type='yq'),
+                    ConnectorSettings(conn_type='metrika_api'),
+                    ConnectorSettings(conn_type='appmetrica_api'),
+                    ConnectorSettings(conn_type='ch_billing_analytics'),
+                    ConnectorSettings(conn_type='monitoring'),
+                    ConnectorSettings(conn_type='usage_tracking'),
+                ],
+            ),
+            SectionSettings(
+                title_translatable=TranslatableSettings(text='section_title-partner'),
+                connectors=[
+                    ConnectorSettings(conn_type='bitrix24'),
+                    ConnectorSettings(conn_type='ch_ya_music_podcast_stats'),
+                    ConnectorSettings(conn_type='moysklad'),
+                    ConnectorSettings(conn_type='equeo'),
+                    ConnectorSettings(conn_type='market_couriers'),
+                    ConnectorSettings(conn_type='schoolbook_journal'),
+                    ConnectorSettings(conn_type='smb_heatmaps'),
+                    ConnectorSettings(conn_type='kontur_market'),
+                ],
+            ),
+        ],
+    )
 
 
 class BaseInstallationsMap:

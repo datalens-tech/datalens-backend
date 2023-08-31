@@ -22,6 +22,7 @@ from bi_configs.settings_loaders.fallback_cfg_resolver import (
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader
 from bi_configs.settings_loaders.settings_serializers import defaults_to_yaml
 
+
 SEC_REDIS_PASSWORD = 'someRedisPassowrd'
 
 
@@ -131,16 +132,32 @@ SYNC_APP_CASE = ConfigInstallationCase(
 )
 
 
-@pytest.mark.parametrize("installation_case", (
-    INT_PROD_INSTALLATION_CASE,
-    INT_TEST_INSTALLATION_CASE,
-    EXT_PROD_INSTALLATION_CASE,
-    EXT_TEST_INSTALLATION_CASE,
-))
-@pytest.mark.parametrize("app_case", (
-    ASYNC_APP_CASE,
-    SYNC_APP_CASE,
-))
+@pytest.mark.parametrize(
+    "installation_case",
+    argvalues=(
+        INT_PROD_INSTALLATION_CASE,
+        INT_TEST_INSTALLATION_CASE,
+        EXT_PROD_INSTALLATION_CASE,
+        EXT_TEST_INSTALLATION_CASE,
+    ),
+    ids=(
+        'int_prod',
+        'int_testing',
+        'ext_prod',
+        'ext_testing',
+    )
+)
+@pytest.mark.parametrize(
+    "app_case",
+    argvalues=(
+        ASYNC_APP_CASE,
+        SYNC_APP_CASE,
+    ),
+    ids=(
+        'async_app',
+        'sync_app',
+    )
+)
 def test_config_diff(installation_case, app_case):
     raw_config = defaults_to_yaml(installation_case.default_settings)
     dict_config = ObjectLikeConfig.from_dict(yaml.safe_load(raw_config), path=[])

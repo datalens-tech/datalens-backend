@@ -55,6 +55,7 @@ from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
+from bi_defaults.environments import TestsInstallation
 
 from bi_db_testing.loader import load_bi_db_testing
 
@@ -196,6 +197,7 @@ def app(
     core_test_config = bi_test_config.core_test_config
     us_config = core_test_config.get_us_config()
     settings = ControlPlaneAppSettings(
+        CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(TestsInstallation.CONNECTOR_AVAILABILITY),
         ENV_TYPE=EnvType.development,
         APP_TYPE=AppType.TESTS,
 

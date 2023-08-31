@@ -3,12 +3,23 @@ from __future__ import annotations
 import abc
 import itertools
 import logging
-from enum import Enum
-from typing import Optional, Any, Iterator
+from typing import Any, Iterator, Optional
 
 import attr
 
-from bi_constants.enums import ConnectionType
+from bi_configs.connector_availability import (
+    ConnectorAvailabilityConfigSettings,
+    SectionSettings,
+    ConnectorBaseSettings,
+    ConnectorContainerSettings,
+    ConnectorSettings,
+)
+from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from bi_configs.settings_loaders.meta_definition import s_attrib
+from bi_configs.settings_loaders.settings_obj_base import SettingsBase
+from bi_configs.utils import conn_type_set_env_var_converter
+
+from bi_constants.enums import ConnectionType, ConnectorAvailability
 
 from bi_i18n.localizer_base import Localizer
 from bi_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
@@ -25,15 +36,31 @@ class LocalizedSerializable(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-class ConnectorAvailability(Enum):
-    free = 'free'
-    whitelist = 'whitelist'
+def _make_translatable(text: str, domain: Optional[str]) -> Translatable:
+    translatable = Translatable(text)
+    if domain is not None:
+        translatable.domain = domain
+    return translatable
 
 
 @attr.s(kw_only=True)
 class Section(LocalizedSerializable):
     title_translatable: Translatable = attr.ib()
     connectors: list[ConnectorBase] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
+
+    @classmethod
+    def from_settings(cls, settings: SectionSettings) -> Section:
+        def _connector_from_settings(settings: ConnectorBaseSettings | ObjectLikeConfig) -> ConnectorBase:
+            if hasattr(settings, 'conn_type'):
+                return Connector.from_settings(settings)  # type: ignore
+            elif hasattr(settings, 'includes'):
+                return ConnectorContainer.from_settings(settings)  # typeL ignore
+            raise ValueError(f'Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
+
+        return cls(
+            title_translatable=_make_translatable(settings.title_translatable.text, settings.title_translatable.domain),
+            connectors=[_connector_from_settings(item) for item in settings.connectors],
+        )
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
@@ -44,9 +71,10 @@ class Section(LocalizedSerializable):
 
 @attr.s(kw_only=True)
 class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
-    availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free)
-    product_id: Optional[str] = attr.ib(default=None)
-    hidden: bool = attr.ib()
+    @property
+    @abc.abstractmethod
+    def hidden(self) -> bool:
+        raise NotImplementedError
 
     @property
     @abc.abstractmethod
@@ -81,7 +109,20 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 class Connector(ConnectorBase):
     """ Represents an actual connection type """
 
-    conn_type: ConnectionType = attr.ib()
+    _hidden: bool = attr.ib(default=False)
+    conn_type: ConnectionType = attr.ib(converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v)
+    availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
+
+    @classmethod
+    def from_settings(cls, settings: ConnectorSettings) -> Connector:
+        return cls(
+            conn_type=ConnectionType(settings.conn_type),
+            availability=settings.availability,
+        )
+
+    @property
+    def hidden(self) -> bool:
+        return self._hidden
 
     @property
     def alias(self) -> str:
@@ -108,8 +149,12 @@ class ConnectorContainer(ConnectorBase):
 
     conn_type_str = '__meta__'
     _alias: str = attr.ib()
-    includes: list[Connector] = attr.ib()
+    includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
     title_translatable: Translatable = attr.ib()
+
+    @property
+    def hidden(self) -> bool:
+        return all(connector.hidden for connector in self.includes)
 
     @property
     def alias(self) -> str:
@@ -125,6 +170,14 @@ class ConnectorContainer(ConnectorBase):
     def iter_connectors(self) -> Iterator[Connector]:
         return itertools.chain(self.includes)
 
+    @classmethod
+    def from_settings(cls, settings: ConnectorContainerSettings) -> ConnectorContainer:
+        return cls(
+            alias=settings.alias,
+            title_translatable=_make_translatable(settings.title_translatable.text, settings.title_translatable.domain),
+            includes=[Connector.from_settings(item) for item in settings.includes]
+        )
+
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
             **super().as_dict(localizer),
@@ -133,9 +186,29 @@ class ConnectorContainer(ConnectorBase):
 
 
 @attr.s(kw_only=True)
-class ConnectorAvailabilityConfig:
+class ConnectorAvailabilityConfig(SettingsBase):
     uncategorized: list[Connector] = attr.ib(factory=list)
     sections: list[Section] = attr.ib(factory=list)
+
+    visible_connectors: set[ConnectionType] = s_attrib(  # type: ignore
+        "VISIBLE",
+        env_var_converter=conn_type_set_env_var_converter,
+        missing_factory=set,
+    )
+
+    def __attrs_post_init__(self) -> None:
+        for connector in self._iter_connectors():
+            connector._hidden = connector.conn_type not in self.visible_connectors
+
+    @classmethod
+    def from_settings(cls, settings: ConnectorAvailabilityConfigSettings | ObjectLikeConfig) -> ConnectorAvailabilityConfig:
+        visible_connectors: set[ConnectionType] = {ConnectionType(item) for item in settings.visible_connectors}
+
+        return cls(
+            uncategorized=[Connector.from_settings(item) for item in settings.uncategorized],
+            sections=[Section.from_settings(item) for item in settings.sections],
+            visible_connectors=visible_connectors,
+        )
 
     def _iter_connectors(self) -> Iterator[Connector]:
         return itertools.chain(
@@ -147,21 +220,9 @@ class ConnectorAvailabilityConfig:
         )
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
-        result = [  # TODO REMOVE: backward compatibility
-            connector.as_dict(localizer)
-            for connector in self._iter_connectors()
-            if connector.availability == ConnectorAvailability.free
-        ]
-        for connector in result:
-            ct = connector.get('conn_type')
-            if ct == ConnectionType.ch_over_yt.name:
-                connector['alias'] = 'chyt'
-            if ct == ConnectionType.ch_over_yt_user_auth.name:
-                connector['hidden'] = True
         return dict(
             uncategorized=[connector.as_dict(localizer) for connector in self.uncategorized],
             sections=[section.as_dict(localizer) for section in self.sections],
-            result=result,
         )
 
     def check_connector_is_available(self, conn_type: ConnectionType) -> bool:

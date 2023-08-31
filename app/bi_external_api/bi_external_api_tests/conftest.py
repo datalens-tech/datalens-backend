@@ -15,6 +15,7 @@ from bi_api_commons.base_models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
 from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.enums import AppType, EnvType
 from bi_configs.environments import InternalTestingInstallation
 from bi_configs.rqe import RQEBaseURL, RQEConfig
@@ -144,6 +145,7 @@ def bi_ext_api_dc_test_env_us_config(bi_ext_api_dc_test_env) -> TestingUSConfig:
 
 def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock):
     settings = ControlPlaneAppSettings(
+        CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
         APP_TYPE=AppType.TESTS,
         ENV_TYPE=EnvType.development,
 

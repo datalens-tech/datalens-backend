@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"POT-Creation-Date: 2023-08-31 13:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,79 +16,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_api_lib/connectors/chs3_gsheets/connection_info.py:8
 msgid "label_connector-gsheets_v2"
 msgstr "Google Sheets"
 
-#: bi_api_lib/connectors/file/connection_info.py:8
-msgid "label_connector-file"
-msgstr "Файлы"
+msgid "label_connector-solomon"
+msgstr "Monitoring"
 
-#: bi_api_lib/connectors/solomon/connection_form/form_config.py:22
 msgid "label_solomon-conn-description"
 msgstr ""
 "Подключение позволяет создавать графики в DataLens по данным сервиса [Yandex "
 "Monitoring (Solomon)]({LINK})"
 
-#: bi_api_lib/connectors/solomon/connection_info.py:8
-msgid "label_connector-solomon"
-msgstr "Monitoring"
+msgid "label_connector-file"
+msgstr "Файлы"
 
-#: bi_api_lib/connectors/ydb/connection_info.py:6
-msgid "label_connector-ydb"
-msgstr "YDB"
-
-#: bi_api_lib/connectors/yq/connection_form/form_config.py:39
-msgid "field_sa-key"
-msgstr "Ключ SA"
-
-#: bi_api_lib/connectors/yq/connection_info.py:8
 msgid "label_connector-yq"
 msgstr "Yandex Query"
 
-#: bi_api_lib/connectors/chydb/connection_form/form_config.py:46
+msgid "field_sa-key"
+msgstr "Ключ SA"
+
+msgid "label_connector-chydb"
+msgstr "CH over YDB"
+
 msgid "label_ydb-host-tooltip"
 msgstr ""
 "Доступные кластера: `ydb-ru`, `ydb-ru-prestable`, `ydb-eu`\n"
 "Подробности в [документации](https://docs.yandex-team.ru/docs/ydb/"
 "getting_started/start_chydb)."
 
-#: bi_api_lib/connectors/chydb/connection_form/form_config.py:50
 msgid "field_default-cluster"
 msgstr "Кластер по умолчанию"
 
-#: bi_api_lib/connectors/chydb/connection_form/form_config.py:65
 msgid "field_default-database"
 msgstr "Имя базы данных по умолчанию"
 
-#: bi_api_lib/connectors/chydb/connection_info.py:6
-msgid "label_connector-chydb"
-msgstr "CH over YDB"
+msgid "label_connector-ydb"
+msgstr "YDB"
 
-#: bi_api_lib/connector_availability/configs/development.py:41
-#: bi_api_lib/connector_availability/configs/int_production.py:26
-#: bi_api_lib/connector_availability/configs/int_testing.py:29
-msgid "label_connector-ch_over_yt"
-msgstr "CHYT"
-
-#: bi_api_lib/connector_availability/configs/development.py:35
-#: bi_api_lib/connector_availability/configs/ext_production.py:33
-#: bi_api_lib/connector_availability/configs/ext_testing.py:33
-#: bi_api_lib/connector_availability/configs/int_production.py:20
-#: bi_api_lib/connector_availability/configs/int_testing.py:23
 msgid "section_title-db"
 msgstr "Базы данных"
 
-#: bi_api_lib/connector_availability/configs/development.py:71
-#: bi_api_lib/connector_availability/configs/ext_production.py:58
-#: bi_api_lib/connector_availability/configs/ext_testing.py:58
-#: bi_api_lib/connector_availability/configs/int_production.py:43
-#: bi_api_lib/connector_availability/configs/int_testing.py:48
+msgid "label_connector-ch_over_yt"
+msgstr "CHYT"
+
 msgid "section_title-files_and_services"
 msgstr "Файлы и сервисы"
 
-#: bi_api_lib/connector_availability/configs/development.py:85
-#: bi_api_lib/connector_availability/configs/ext_production.py:71
-#: bi_api_lib/connector_availability/configs/ext_testing.py:71
 msgid "section_title-partner"
 msgstr "Партнерские подключения"

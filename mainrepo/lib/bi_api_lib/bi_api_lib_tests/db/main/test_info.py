@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import itertools
+
 import pytest
 
 from bi_constants.enums import AggregationFunction, BIType, ConnectionType
@@ -35,18 +37,22 @@ def test_get_connectors(client):
     assert resp.status_code == 200, resp.json
     connector_info = resp.json
 
-    connectors_legacy = connector_info['result']
-    sections = connector_info['sections']
+    assert connector_info.get('sections') or connector_info.get('uncategorized')
 
-    assert all(section['title'] is not None for section in sections)
-    assert all('includes' not in connector for connector in connectors_legacy)
+    sections = connector_info.get('sections', [])
+    assert all(isinstance(section['title'], str) and not section['title'].startswith('section_title-') for section in sections)
 
-    assert set(conn_info['conn_type'] for conn_info in connectors_legacy if conn_info['conn_type'] != '')
-    assert all(isinstance(conn_info['alias'], str) for conn_info in connectors_legacy)
+    all_connectors = itertools.chain(
+        connector_info.get('uncategorized', []),
+        itertools.chain.from_iterable(
+            connector['includes'] if 'includes' in connector else (connector,)  # type: ignore
+            for connector in itertools.chain.from_iterable(section['connectors'] for section in sections)
+        )
+    )
+
     assert all(
-        conn_info['backend_driven_form'] ==
-        (CONN_FORM_FACTORY_BY_TYPE.get(ConnectionType(conn_info['conn_type'] or ConnectionType.unknown.name)) is not None)
-        for conn_info in connectors_legacy
+        conn_info['backend_driven_form'] == (ConnectionType(conn_info['conn_type']) in CONN_FORM_FACTORY_BY_TYPE)
+        for conn_info in all_connectors
     )
 
 
