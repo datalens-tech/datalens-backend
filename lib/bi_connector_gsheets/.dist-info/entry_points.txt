@@ -1,5 +1,0 @@
-[bi_api_lib.connectors]
-gsheets = bi_connector_gsheets.bi.connector:GSheetsBiApiConnector
-
-[bi_core.connectors]
-gsheets = bi_connector_gsheets.core.connector:GSheetsCoreConnector

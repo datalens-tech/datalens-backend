@@ -1,3 +1,0 @@
-[sqlalchemy.dialects]
-bi_clickhouse = bi_sqlalchemy_clickhouse.base:BIClickHouseDialect
-bi_clickhouse_basic = bi_sqlalchemy_clickhouse.base:BIClickHouseDialectBasic

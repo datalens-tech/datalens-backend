@@ -1,9 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-bi-connector-chyt-internal
-Version: 0.0.0
-Author: Nikolai Proskurin
-Author-email: mcpn@yandex-team.ru
-Requires-Dist: aiohttp (>=3.5)
-Requires-Dist: attrs
-Requires-Dist: marshmallow
-Provides-Extra: all

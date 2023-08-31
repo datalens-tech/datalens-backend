@@ -1,3 +1,0 @@
-[env_param_getters]
-direct = bi_testing.env_params.main:DirectEnvParamGetter
-osenv = bi_testing.env_params.main:OsEnvParamGetter

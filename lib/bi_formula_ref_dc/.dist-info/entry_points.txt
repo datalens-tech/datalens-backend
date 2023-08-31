@@ -1,2 +1,0 @@
-[bi_formula_ref.plugins]
-dc_env = bi_formula_ref_dc.plugins.dc_env:DcFormulaRefPlugin

@@ -57,7 +57,7 @@ class RequestAuthMode(Enum):
 class SourceBackendType(DynamicEnum):
     # Generic
     NONE = AutoEnumValue()
-    # Databases
+    # Connectors  # TODO: Remove
     CLICKHOUSE = AutoEnumValue()
     CHYT = AutoEnumValue()
     CHYDB = AutoEnumValue()

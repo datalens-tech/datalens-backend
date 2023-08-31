@@ -1,3 +1,0 @@
-[bi_core.data_processor_plugins]
-compeng_aiopg = bi_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin
-compeng_asyncpg = bi_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin

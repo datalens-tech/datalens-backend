@@ -1,5 +1,0 @@
-[bi_api_lib.connectors]
-usage_tracking_ya_team = bi_connector_usage_tracking_ya_team.bi.connector:UsageTrackingYaTeamBiApiConnector
-
-[bi_core.connectors]
-usage_tracking_ya_team = bi_connector_usage_tracking_ya_team.core.connector:UsageTrackingYaTeamCoreConnector

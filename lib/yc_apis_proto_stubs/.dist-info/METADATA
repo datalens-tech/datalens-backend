@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-yc-apis-proto-stubs
-Version: 0.0.1
-Author: Package Author
-Author-email: bipackageauthor@yandex-team.ru
-Requires-Dist: protobuf
-Provides-Extra: all
-

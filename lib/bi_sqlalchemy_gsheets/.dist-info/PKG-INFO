@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: sqlalchemy-gsheets
-Version: 0.2
-Author: Anton Vasilev
-Author-email: hhell@yandex-team.ru
-Requires-Dist: sqlalchemy (>=1.4)
-Provides-Extra: all
-

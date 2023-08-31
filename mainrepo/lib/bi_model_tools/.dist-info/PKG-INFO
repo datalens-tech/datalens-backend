@@ -1,9 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-bi-model-tools
-Version: 0.0.0
-Author: Grigory Statsenko
-Author-email: gstatsenko@yandex-team.ru
-Requires-Dist: attrs
-Requires-Dist: marshmallow
-Provides-Extra: all
-

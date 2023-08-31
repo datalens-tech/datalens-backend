@@ -1,9 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-bi-connector-promql
-Version: 0.0.0
-Author: Alexander Ushakov
-Author-email: alex-ushakov@yandex-team.ru
-Requires-Dist: attrs
-Requires-Dist: sqlalchemy (>=1.2)
-Provides-Extra: all
-

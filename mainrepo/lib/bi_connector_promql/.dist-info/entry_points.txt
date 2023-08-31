@@ -1,5 +1,0 @@
-[bi_api_lib.connectors]
-promql = bi_connector_promql.bi.connector:PromQLBiApiConnector
-
-[bi_core.connectors]
-promql = bi_connector_promql.core.connector:PromQLCoreConnector

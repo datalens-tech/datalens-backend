@@ -1,9 +1,0 @@
-[bi_api_lib.connectors]
-equeo = bi_connector_bundle_partners.equeo.bi.connector:EqueoBiApiConnector
-kontur_market = bi_connector_bundle_partners.kontur_market.bi.connector:KonturMarketBiApiConnector
-moysklad = bi_connector_bundle_partners.moysklad.bi.connector:MoySkladBiApiConnector
-
-[bi_core.connectors]
-equeo = bi_connector_bundle_partners.equeo.core.connector:EqueoCoreConnector
-kontur_market = bi_connector_bundle_partners.kontur_market.core.connector:KonturMarketCoreConnector
-moysklad = bi_connector_bundle_partners.moysklad.core.connector:MoySkladCoreConnector

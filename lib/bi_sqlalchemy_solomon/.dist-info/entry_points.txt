@@ -1,2 +1,0 @@
-[sqlalchemy.dialects]
-bi_solomon = bi_sqlalchemy_solomon.base:SolomonDialect

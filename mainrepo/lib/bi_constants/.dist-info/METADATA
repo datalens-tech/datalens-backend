@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-bi-constants
-Version: 0.0.0
-Author: Anton Vasilev
-Author-email: hhell@yandex-team.ru
-Requires-Dist: typing-extensions
-Provides-Extra: all
-

@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-bi-file-secure-reader-lib
-Version: 0.1.0
-Author: Sergey Borodin
-Author-email: seray@yandex-team.ru
-Requires-Dist: attrs
-Provides-Extra: all
-

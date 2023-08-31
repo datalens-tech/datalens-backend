@@ -1,3 +1,0 @@
-[sqlalchemy.dialects]
-bi_postgresql = bi_sqlalchemy_postgres.base:BIPGDialect
-bi_postgresql_basic = bi_sqlalchemy_postgres.base:BIPGDialectBasic

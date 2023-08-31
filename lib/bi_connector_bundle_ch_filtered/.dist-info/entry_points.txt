@@ -1,7 +1,0 @@
-[bi_api_lib.connectors]
-ch_billing_analytics = bi_connector_bundle_ch_filtered.ch_billing_analytics.bi.connector:CHBillingAnalyticsBiApiConnector
-usage_tracking = bi_connector_bundle_ch_filtered.usage_tracking.bi.connector:UsageTrackingBiApiConnector
-
-[bi_core.connectors]
-ch_billing_analytics = bi_connector_bundle_ch_filtered.ch_billing_analytics.core.connector:CHBillingAnalyticsCoreConnector
-usage_tracking = bi_connector_bundle_ch_filtered.usage_tracking.core.connector:UsageTrackingCoreConnector

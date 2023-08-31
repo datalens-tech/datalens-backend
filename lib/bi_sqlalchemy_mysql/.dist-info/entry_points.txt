@@ -1,3 +1,0 @@
-[sqlalchemy.dialects]
-bi_mysql = bi_sqlalchemy_mysql.base:BIMySQLDialect
-bi_mysql_basic = bi_sqlalchemy_mysql.base:BIMySQLDialectBasic

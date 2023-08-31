@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: yandex-bi-testing-ya
-Version: 0.0.0
-Author: Grigorii Statsenko
-Author-email: gstatsenko@yandex-team.ru
-Requires-Dist: attrs
-Provides-Extra: all
-

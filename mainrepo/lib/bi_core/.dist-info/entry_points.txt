@@ -1,6 +1,0 @@
-[bi_core.connectors]
-chydb = bi_core.connectors.chydb.connector:CHYDBCoreConnector
-solomon = bi_core.connectors.solomon.connector:SolomonCoreConnector
-
-[console_scripts]
-setup-iptables = bi_core.bin.setup_iptables:main
