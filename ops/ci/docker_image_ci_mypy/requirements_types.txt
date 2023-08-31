@@ -12,3 +12,8 @@ types-pytz==2022.7.1
 types-flask-sqlalchemy==2.5.1
 types-pytest-lazy-fixture==0.6.3
 types-cryptography==3.3.2
+types-protobuf==3.20.3
+types-PyMySQL==1.1.0
+types-Pygments==2.15.0
+types-psycopg2==2.9.6
+pandas-stubs==1.5.3.230321
