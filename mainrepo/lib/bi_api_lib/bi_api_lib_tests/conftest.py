@@ -240,6 +240,7 @@ def app(
         close_loop_after_request=False,
     )
     app.config['WE_ARE_IN_TESTS'] = True
+    app.config['DLS_HOST'] = settings.DLS_HOST
 
     # Establish an application context before running the tests.
     with app.app_context() as ctx:

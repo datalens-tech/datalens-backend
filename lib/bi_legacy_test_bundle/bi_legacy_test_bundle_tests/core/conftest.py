@@ -181,9 +181,6 @@ def bi_context() -> RequestContextInfo:
 def app_context(request, tests_config):
     app = Flask(__name__)
     ContextVarMiddleware().wrap_flask_app(app)
-    us_config = tests_config.CORE_TEST_CONFIG.get_us_config()
-    app.config['US_HOST'] = us_config.us_host
-    app.config['LOG_REQUEST_ID_G_OBJECT_ATTRIBUTE'] = 'request_id'
 
     with app.app_context() as ctx:
         yield ctx

@@ -203,9 +203,6 @@ class YCAccessController(YCBaseController):
         if secret_iam_token_from_headers is not None:
             return secret_iam_token_from_headers
 
-        # ENABLE_COOKIES_AUTH is `True` only in bi-converter - to *directly* process
-        # heavy data file upload requests to upload.datalens.yandex.ru/api/v1/upload
-        # (without frontend gateway).
         if self._cookie_auth_enabled and self.has_request_header("cookie"):
             try:
                 secret_cookies_header_value = self.get_request_header("cookie", required=True)

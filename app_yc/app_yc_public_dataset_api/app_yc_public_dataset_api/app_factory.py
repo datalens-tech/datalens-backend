@@ -65,7 +65,7 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder):
         )
 
     def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
-        return PublicEnvEntityUsageChecker(samples_hosts=settings.SAMPLES_CH_HOSTS)
+        return PublicEnvEntityUsageChecker()
 
     def _get_bleeding_edge_users(self, settings: BaseAppSettings) -> tuple[str, ...]:
         return tuple()

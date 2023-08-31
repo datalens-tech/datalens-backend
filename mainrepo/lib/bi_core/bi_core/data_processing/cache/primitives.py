@@ -11,7 +11,7 @@ from bi_core.data_processing.cache.exc import CacheKeyValidationError
 @attr.s(frozen=True)
 class CacheTTLConfig:
     ttl_sec_direct: int = attr.ib(default=60)
-    ttl_sec_materialized: int = attr.ib(default=3600)
+    ttl_sec_materialized: int = attr.ib(default=3600)  # TODO remove
 
     def clone(self, **kwargs: Any) -> CacheTTLConfig:
         return attr.evolve(self, **kwargs)

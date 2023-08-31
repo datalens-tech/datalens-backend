@@ -25,8 +25,6 @@ LOGGER = logging.getLogger(__name__)
 
 @attr.s
 class PublicEnvEntityUsageChecker(EntityUsageChecker):
-    samples_hosts: typing.Sequence[str] = attr.ib(factory=list)
-
     def ensure_dataset_can_be_used(
             self, rci: RequestContextInfo, dataset: us_dataset.Dataset,
             us_manager: USManagerBase,

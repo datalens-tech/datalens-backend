@@ -5,7 +5,6 @@ import logging.config
 from typing import TYPE_CHECKING, Optional, final
 
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from bi_configs.enums import AppType, RequiredService, RQE_SERVICES
 
 from bi_task_processor.arq_wrapper import create_arq_redis_settings
 
@@ -196,7 +195,7 @@ class LegacySRFactoryBuilder(SRFactoryBuilder):
 
     def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
         if settings.APP_TYPE == AppType.CLOUD_PUBLIC:
-            return PublicEnvEntityUsageChecker(samples_hosts=settings.SAMPLES_CH_HOSTS)
+            return PublicEnvEntityUsageChecker()
         return None
 
     def _get_bleeding_edge_users(self, settings: BaseAppSettings) -> tuple[str, ...]:

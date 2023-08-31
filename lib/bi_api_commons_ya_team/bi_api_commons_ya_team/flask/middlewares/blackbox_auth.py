@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import Any
 
 import flask
 import requests
@@ -17,7 +18,7 @@ from bi_blackbox_client.authenticate import authenticate
 LOGGER = logging.getLogger(__name__)
 
 
-def _check_auth(skip_auth_path_list: tuple[str, ...]) -> None:
+def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
     """
     Check current request is authorized using blackbox api.
     """
@@ -52,7 +53,7 @@ def _check_auth(skip_auth_path_list: tuple[str, ...]) -> None:
         host=host,
         userip=user_ip,
         requests_session=flask.current_app.blackbox_requests_session,
-        timeout=flask.current_app.config['BLACKBOX_TIMEOUT'],
+        timeout=timeout,
         statbox_id=req_id,
     )
 
@@ -77,12 +78,17 @@ def _check_auth(skip_auth_path_list: tuple[str, ...]) -> None:
     ReqCtxInfoMiddleware.replace_temp_rci(enriched_temp_rci)
 
 
-def set_up(app: flask.Flask, skip_auth_path_list: tuple[str, ...] = ()) -> None:
+def set_up(
+        app: flask.Flask,
+        retry_params: dict[str, Any],
+        timeout: int,
+        skip_auth_path_list: tuple[str, ...] = (),
+) -> None:
     session = requests.Session()
     adapter = requests.adapters.HTTPAdapter(
         max_retries=requests.packages.urllib3.Retry(
             **dict(
-                app.config['BLACKBOX_RETRY_PARAMS'],
+                retry_params,
                 method_whitelist=('GET', 'POST'),
             ),
         ),
@@ -90,4 +96,4 @@ def set_up(app: flask.Flask, skip_auth_path_list: tuple[str, ...] = ()) -> None:
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     app.blackbox_requests_session = session
-    app.before_request(lambda: _check_auth(skip_auth_path_list=skip_auth_path_list))
+    app.before_request(lambda: _check_auth(skip_auth_path_list=skip_auth_path_list, timeout=timeout))

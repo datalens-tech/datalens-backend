@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from flask import current_app
 from marshmallow import fields as ma_fields, Schema
 
 from bi_constants.enums import BIType, ConnectionType
@@ -69,9 +68,7 @@ class DatasetsPublicityChecker(BIResource):
         responses = []
         us_manager = self.get_us_manager()
 
-        public_usage_checker = PublicEnvEntityUsageChecker(
-            samples_hosts=current_app.config['SAMPLES_CH_HOST'],
-        )
+        public_usage_checker = PublicEnvEntityUsageChecker()
 
         for ds in self.get_us_manager().get_collection(
                 Dataset, raise_on_broken_entry=True, include_data=True, ids=ds_ids

@@ -78,24 +78,6 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder):
 
 
 class ControlApiAppFactoryYC(ControlApiAppFactory, ControlApiSRFactoryBuilderYC):
-    def push_settings_to_flask_app_config(
-            self,
-            target_app: flask.Flask,
-            app_settings: ControlPlaneAppSettings,
-    ) -> None:
-        cfg = target_app.config
-        super().push_settings_to_flask_app_config(target_app, app_settings)
-
-        if app_settings.YC_AUTH_SETTINGS:
-            cfg["YC_AUTHORIZE_PERMISSION"] = app_settings.YC_AUTH_SETTINGS.YC_AUTHORIZE_PERMISSION
-            cfg["YC_AS_ENDPOINT"] = app_settings.YC_AUTH_SETTINGS.YC_AS_ENDPOINT
-
-        cfg["YC_TS_ENDPOINT"] = app_settings.YC_IAM_TS_ENDPOINT
-
-        cfg["CLOUD_API_IAM_ENDPOINT"] = app_settings.YC_IAM_CP_ENDPOINT
-        cfg["CLOUD_API_RM_ENDPOINT"] = app_settings.YC_RM_CP_ENDPOINT
-        cfg["YC_BILLING_HOST"] = app_settings.YC_BILLING_HOST
-
     def set_up_environment(
             self,
             app: flask.Flask, app_settings: ControlPlaneAppSettings,

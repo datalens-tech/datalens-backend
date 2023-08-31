@@ -56,33 +56,7 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
             target_app: Flask,
             app_settings: ControlPlaneAppSettings,
     ) -> None:
-        cfg = target_app.config
-
-        cfg["US_MASTER_TOKEN"] = app_settings.US_MASTER_TOKEN
-        cfg["US_HOST"] = app_settings.US_BASE_URL
-
-        cfg["SAMPLES_CH_HOST"] = app_settings.SAMPLES_CH_HOSTS
-
-        cfg["BLACKBOX_RETRY_PARAMS"] = app_settings.BLACKBOX_RETRY_PARAMS
-        cfg["BLACKBOX_TIMEOUT"] = app_settings.BLACKBOX_TIMEOUT
-        cfg["ENABLE_COOKIES_AUTH"] = False
-
-        # Auth
-        if app_settings.YC_AUTH_SETTINGS:
-            cfg["YC_AS_ENDPOINT"] = app_settings.YC_AUTH_SETTINGS.YC_AS_ENDPOINT
-            if app_settings.APP_TYPE == AppType.CLOUD:
-                cfg["YC_AUTHORIZE_PERMISSION"] = app_settings.YC_AUTH_SETTINGS.YC_AUTHORIZE_PERMISSION
-        cfg["YC_TS_ENDPOINT"] = app_settings.YC_IAM_TS_ENDPOINT
-        # cfg["BLACKBOX_NAME"] = app_settings.BLACKBOX_NAME
-
-        # DLS
-        cfg["DLS_HOST"] = app_settings.DLS_HOST
-        cfg["DLS_API_KEY"] = app_settings.DLS_API_KEY
-
-        # Other YC endpoints
-        cfg["CLOUD_API_IAM_ENDPOINT"] = app_settings.YC_IAM_CP_ENDPOINT
-        cfg["CLOUD_API_RM_ENDPOINT"] = app_settings.YC_RM_CP_ENDPOINT
-        cfg["YC_BILLING_HOST"] = app_settings.YC_BILLING_HOST
+        pass
 
     def set_up_environment(
             self,
@@ -94,7 +68,7 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
         us_auth_mode: USAuthMode
         if app_settings.APP_TYPE == AppType.INTRANET:
             from bi_api_commons_ya_team.flask.middlewares import blackbox_auth
-            blackbox_auth.set_up(app)
+            blackbox_auth.set_up(app, app_settings.BLACKBOX_RETRY_PARAMS, app_settings.BLACKBOX_TIMEOUT)
             us_auth_mode = USAuthMode.regular
         elif app_settings.APP_TYPE in (AppType.CLOUD, AppType.NEBIUS):
             yc_auth_settings = app_settings.YC_AUTH_SETTINGS
