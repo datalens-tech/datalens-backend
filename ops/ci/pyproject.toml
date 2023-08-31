@@ -205,17 +205,14 @@ statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 
 
-
-[tool.poetry.group.app_bi_api.dependencies]
 #
 # This section defines dependencies groups per app.
 # To export/install specific app without other dependencies - use `--only` flag
 # Group naming convention: `app_${APP_FOLDER_NAME}`
 #
+
+[tool.poetry.group.app_bi_api.dependencies]
 yandex-bi-api = {path = "../../app/bi_api"}
-# TODO FIX: Remove after resolving issue with conflicts with BigQuery
-#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
-google-auth = "*"
 
 [tool.poetry.group.app_bi_external_api.dependencies]
 bi-external-api = {path = "../../app/bi_external_api"}
@@ -234,30 +231,18 @@ yandex-bi-rqe-ext-async = {path = "../../app/bi_rqe_ext_async"}
 
 [tool.poetry.group.app_bi_rqe_ext_sync.dependencies]
 yandex-bi-rqe-ext-sync = {path = "../../app/bi_rqe_ext_sync"}
-# TODO FIX: Remove after resolving issue with conflicts with BigQuery
-#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
-google-auth = "*"
 
 [tool.poetry.group.app_bi_rqe_int_sync.dependencies]
 yandex-bi-rqe-int-sync = {path = "../../app/bi_rqe_int_sync"}
 
 [tool.poetry.group.app_bi_os_control_api.dependencies]
 yandex-bi-control-api-os = {path = "../../app_os/app_os_control_api"}
-# TODO FIX: Remove after resolving issue with conflicts with BigQuery
-#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
-google-auth = "*"
 
 [tool.poetry.group.app_bi_os_data_api.dependencies]
 yandex-bi-data-api-os = {path = "../../app_os/app_os_data_api"}
-# TODO FIX: Remove after resolving issue with conflicts with BigQuery
-#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
-google-auth = "*"
 
 [tool.poetry.group.app_bi_yc_control_api.dependencies]
 yandex-bi-control-api-yc = {path = "../../app_yc/app_yc_control_api"}
-# TODO FIX: Remove after resolving issue with conflicts with BigQuery
-#  google-auth is presented in Poetry lock, so we add it here to prevent pining duplicate in requirements_conflicting.txt
-google-auth = "*"
 
 [tool.poetry.group.app_bi_yc_data_api.dependencies]
 yandex-bi-data-api-yc = {path = "../../app_yc/app_yc_data_api"}
