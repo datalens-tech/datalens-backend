@@ -1,7 +1,7 @@
 # This file is used by dl-repmanager as the main configuration file
 
 dl_repo:
-  fs_editor: default
+  fs_editor: git
 
   package_types:
     - type: terrarium  # Repository tools

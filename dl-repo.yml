@@ -4,7 +4,8 @@ dl_repo:
   include:
     - mainrepo/dl-repo.yml  # The "main" open-source repo
 
-  fs_editor: default
+  fs_editor: git
+
   package_types:
     - type: lib_ya  # Main libraries (internal repo)
       root_path: lib
