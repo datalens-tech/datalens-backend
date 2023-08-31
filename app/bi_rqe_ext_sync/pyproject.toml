@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 uwsgi = ">=2.0.21"
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}

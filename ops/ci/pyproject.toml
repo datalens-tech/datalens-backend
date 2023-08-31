@@ -22,7 +22,6 @@ yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-# yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
@@ -156,6 +155,7 @@ bi-formula-ref-ya = {path = "../../lib/bi_formula_ref_ya"}
 bi-formula-ref-dc = {path = "../../lib/bi_formula_ref_dc"}
 bi-formula-ref-nebius = {path = "../../lib/bi_formula_ref_nebius"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-api-client = {path = "../../mainrepo/lib/bi_api_client"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}

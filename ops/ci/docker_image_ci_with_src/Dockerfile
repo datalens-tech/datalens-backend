@@ -11,9 +11,6 @@ RUN . /venv/bin/activate \
 COPY local_deps_install.sh /local_deps_install.sh
 RUN bash /local_deps_install.sh
 
-RUN . /venv/bin/activate \
-    && python -m pip install --no-deps /data/mainrepo/lib/bi_connector_bigquery
-
 # ensure that certifi yandex installed last
 RUN . /venv/bin/activate \
     pip install  --no-deps --ignore-installed --force-reinstall $(cat /requirements_external.txt | grep certifi-yandex)
