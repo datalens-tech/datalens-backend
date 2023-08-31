@@ -1,3 +1,4 @@
+grpc-stubs==1.53.0.2
 mypy==1.5.1
 pandas-stubs==1.5.3.230321
 types-PyMySQL==1.1.0
