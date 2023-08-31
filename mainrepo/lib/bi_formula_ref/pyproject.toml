@@ -23,8 +23,6 @@ yandex-bi-formula = {path = "../bi_formula"}
 babel = ">=2.12.1"
 pytest = ">=7.2.2"
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
-
-[tool.poetry.group.tests_db.dependencies]
 psycopg2-binary = ">=2.9.6"
 
 [build-system]

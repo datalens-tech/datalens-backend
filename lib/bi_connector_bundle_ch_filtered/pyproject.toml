@@ -36,8 +36,6 @@ usage_tracking = "bi_connector_bundle_ch_filtered.usage_tracking.core.connector:
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
-
-[tool.poetry.group.tests_db.dependencies]
 python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
 

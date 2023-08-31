@@ -27,13 +27,10 @@ dynamic-enum = {path = "../dynamic_enum"}
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-
-[tool.poetry.group.tests_unit.dependencies]
 mysqlclient = ">=1.4.6"
 oracledb = ">=1.3.1"
 psycopg2-binary = ">=2.9.6"
 pyodbc = ">=4.0.35"
-pytest = ">=7.2.2"
 python-dateutil = ">=2.8.2"
 sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
 statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}

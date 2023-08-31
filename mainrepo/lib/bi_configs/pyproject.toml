@@ -18,8 +18,6 @@ yandex-bi-utils = {path = "../bi_utils"}
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-
-[tool.poetry.group.tests_unit.dependencies]
 shortuuid = ">=1.0.11"
 
 [build-system]

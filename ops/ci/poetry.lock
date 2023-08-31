@@ -9398,4 +9398,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "867b1948901b2e6696b6c9492f84a81cfc074bf5eb12dc220db75dc8c5ec0ee2"
+content-hash = "d3cd22cf8d73c969a12ca3d2692b6eea60ccf411d86d26794242f730a5c97425"

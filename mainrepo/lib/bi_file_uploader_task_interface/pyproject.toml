@@ -23,8 +23,6 @@ uwsgi = ">=2.0.21"
 yandex-bi-core = {path = "../bi_core"}
 yandex-bi-testing = {path = "../bi_testing"}
 
-[tool.poetry.group.tests_mypy.dependencies]
-yandex-bi-core = {path = "../../lib/bi_core"}
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
