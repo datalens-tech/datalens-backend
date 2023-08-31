@@ -9,7 +9,7 @@ ARG LOCALES_DIR=generated_locales
 WORKDIR /src
 COPY --from=src . .
 
-RUN find $PACKAGE_NAME | grep ".*\.\(py\)\|\(jinja\)" | grep $PATH_MASK > POTFILES
+RUN find $PACKAGE_NAME | grep ".*\.\(py\)\|\(jinja\)" | grep -E "$PATH_MASK" > POTFILES
 RUN xgettext --no-location -d $DOMAIN_NAME --keyword=Translatable --files-from=POTFILES --from-code=utf-8
 RUN for locale in $(ls $PACKAGE_NAME/locales/) ; do \
     mkdir -p $LOCALES_DIR/$locale/LC_MESSAGES; \

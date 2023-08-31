@@ -17,7 +17,7 @@ tasks:
 
   update-po:
     deps:
-      - {task: "_update-po-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}", PATH_MASK: "/bi/"}}
+      - {task: "_update-po-domain", vars: {DOMAIN_NAME: "{{.PACKAGE_NAME}}", PATH_MASK: "bi/\\|bi_core/\\|bi_api_lib/\\|bi_api_connector/"}}
       - {task: "_update-po-domain", vars: {DOMAIN_NAME: "bi_formula_ref_{{.PACKAGE_NAME}}", PATH_MASK: ".*formula_ref/"}}
     ignore_error: true
 
