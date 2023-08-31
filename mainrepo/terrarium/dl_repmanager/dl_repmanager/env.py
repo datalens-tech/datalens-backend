@@ -39,17 +39,18 @@ Description of the sections:
 from __future__ import annotations
 
 import os
-from typing import ClassVar, Iterable, Optional, Type, TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, ClassVar, Iterable, Optional, Type
 
 import attr
 import yaml
 
-from dl_repmanager.fs_editor import FilesystemEditor, DefaultFilesystemEditor, GitFilesystemEditor
+from dl_repmanager.fs_editor import DefaultFilesystemEditor, FilesystemEditor, GitFilesystemEditor
 from dl_repmanager.management_plugins import (
-    RepositoryManagementPlugin,
-    MainTomlRepositoryManagementPlugin,
     CommonToolingRepositoryManagementPlugin,
     DependencyReregistrationRepositoryManagementPlugin,
+    MainTomlRepositoryManagementPlugin,
+    RepositoryManagementPlugin,
 )
 
 if TYPE_CHECKING:
@@ -132,6 +133,16 @@ class ConfigContents:
     fs_editor_type: str = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
 
 
+def discover_config(base_path: Path, config_file_name: str) -> Path:
+    while base_path and base_path.exists():
+        config_path = base_path / config_file_name
+        if config_path.exists():
+            return config_path
+        base_path = base_path.parent
+
+    raise RuntimeError('Failed to discover the repo config file. This does not seem to be a managed repository.')
+
+
 @attr.s
 class RepoEnvironmentLoader:
     config_file_name: str = attr.ib(kw_only=True, default=DEFAULT_CONFIG_FILE_NAME)
@@ -141,7 +152,7 @@ class RepoEnvironmentLoader:
         'git': GitFilesystemEditor,
     }
 
-    def _load_params_from_yaml_file(self, config_path: str) -> ConfigContents:
+    def _load_params_from_yaml_file(self, config_path: Path) -> ConfigContents:
         with open(config_path) as config_file:
             config_data = yaml.safe_load(config_file)
 
@@ -163,7 +174,7 @@ class RepoEnvironmentLoader:
         fs_editor_type: Optional[str] = env_settings.get('fs_editor')
 
         for include in env_settings.get('include', ()):
-            included_config_contents = self._load_params_from_yaml_file(os.path.join(base_path, include))
+            included_config_contents = self._load_params_from_yaml_file(base_path / include)
             package_types = dict(included_config_contents.package_types, **package_types)
             custom_package_map = dict(included_config_contents.custom_package_map, **custom_package_map)
             fs_editor_type = fs_editor_type or included_config_contents.fs_editor_type
@@ -176,7 +187,7 @@ class RepoEnvironmentLoader:
             fs_editor_type=fs_editor_type,
         )
 
-    def _load_from_yaml_file(self, config_path: str) -> RepoEnvironment:
+    def _load_from_yaml_file(self, config_path: Path) -> RepoEnvironment:
         config_contents = self._load_params_from_yaml_file(config_path)
         fs_editor_type = config_contents.fs_editor_type or _DEFAULT_FS_EDITOR_TYPE
         assert fs_editor_type is not None
@@ -188,17 +199,7 @@ class RepoEnvironmentLoader:
             fs_editor=fs_editor,
         )
 
-    def _discover_config(self, base_path: str) -> str:
-        base_path = os.path.abspath(base_path)
-        while base_path and os.path.exists(base_path):
-            config_path = os.path.join(base_path, self.config_file_name)
-            if os.path.exists(config_path):
-                return config_path
-            base_path = os.path.dirname(base_path)
-
-        raise RuntimeError('Failed to discover the repo config file. This does not seem to be a managed repository.')
-
     def load_env(self, base_path: str) -> RepoEnvironment:
         return self._load_from_yaml_file(
-            config_path=self._discover_config(base_path)
+            config_path=discover_config(Path(base_path), self.config_file_name)
         )

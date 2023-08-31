@@ -1,12 +1,24 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Any, Generator, Iterable, Optional
+import logging
+from typing import (
+    Any,
+    Generator,
+    Iterable,
+    Optional,
+)
 
 import attr
 import tomlkit
 
-from dl_repmanager.toml_tools import TOMLReaderBase, TOMLReader, TOMLWriter
+from dl_repmanager.toml_tools import (
+    TOMLReader,
+    TOMLReaderBase,
+    TOMLWriter,
+)
+
+log = logging.getLogger(__name__)
 
 
 @attr.s
@@ -68,6 +80,9 @@ class PackageMetaReader:
 
         return result
 
+    def get_mypy_overrides(self):
+        return dict(self._toml_reader.get_section(f"{self._SECTION_NAME_META}.mypy_stubs_packages_override"))
+
 
 @attr.s
 class PackageMetaWriter(PackageMetaReader):
@@ -95,3 +110,11 @@ class PackageMetaWriter(PackageMetaReader):
             package_dep_table = tomlkit.inline_table()
             package_dep_table.add('path', new_path)
             section.add(item_name, package_dep_table)
+
+    def add_mypy_overrides_ignore(self, pkg_names: list[str]):
+        with self.toml_writer.suppress_non_existent_key():
+            section = self.toml_writer.get_editable_section(f"datalens.meta.mypy_stubs_packages_override")
+            for name in pkg_names:
+                override = tomlkit.inline_table()
+                override.add("ignore", True)
+                section.add(name, override)
