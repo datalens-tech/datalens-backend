@@ -5,7 +5,7 @@ import pytest
 
 from bi_configs.connectors_settings import ConnectorSettingsBase
 
-from bi_api_commons.base_models import TenantDef, TenantYCFolder
+from bi_api_commons.base_models import TenantDef, TenantCommon
 
 from bi_i18n.localizer_base import LocalizerLoader, TranslationConfig
 
@@ -26,7 +26,7 @@ class ConnectionFormTestBase:
     def tenant(self) -> TenantDef:
         """ Parametrize if a form depends on tenant type """
 
-        return TenantYCFolder(folder_id='some_folder_id')
+        return TenantCommon()
 
     @final
     @pytest.fixture(
@@ -46,7 +46,7 @@ class ConnectionFormTestBase:
             configs=self.TRANSLATION_CONFIGS,
         )
         factory = loader.load()
-        localizer = factory.get_for_locale('ru')
+        localizer = factory.get_for_locale('en')
         form_factory = self.CONN_FORM_FACTORY_CLS(mode=mode, localizer=localizer)
         form_config = form_factory.get_form_config(connectors_settings, tenant)
         return form_config

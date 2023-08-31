@@ -1,7 +1,7 @@
 import typing
 
 import attr
-from typing import Optional, List
+from typing import Optional
 
 from bi_constants.enums import RawSQLLevel
 
@@ -106,7 +106,7 @@ class RowConstructor:
             ),
         }[raw_sql_level]
 
-    def _raw_sql_level_default_options(self) -> List[C.RadioGroupRowItemOption]:
+    def _raw_sql_level_default_options(self) -> list[C.RadioGroupRowItemOption]:
         return [
             self.raw_sql_level_to_radio_group_option(raw_sql_level)
             for raw_sql_level in (RawSQLLevel.off, RawSQLLevel.subselect, RawSQLLevel.dashsql)
