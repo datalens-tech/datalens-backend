@@ -87,7 +87,7 @@ class SRFactoryBuilder(abc.ABC):
         conn_opts_factory: ConnOptionsMutatorsFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> DefaultBiApiSRFactory:
-        supported_functions_manager = SupportedFunctionsManager(app_type=settings.APP_TYPE)
+        supported_functions_manager = SupportedFunctionsManager(supported_tags=settings.FORMULA_SUPPORTED_FUNC_TAGS)
 
         file_uploader_settings = FileUploaderSettings(
             base_url=settings.FILE_UPLOADER_BASE_URL,

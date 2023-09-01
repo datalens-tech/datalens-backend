@@ -1,9 +1,9 @@
+from functools import reduce
+from operator import ior
+
 import attr
 from itertools import chain
 
-from typing import List
-
-from bi_configs.enums import AppType
 from bi_constants.enums import WhereClauseOperation, BIType, AggregationFunction
 
 from bi_utils.func_tools import method_lru
@@ -21,15 +21,8 @@ from bi_query_processing.compilation.filter_compiler import FilterFormulaCompile
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 
-_APP_TYPE_TO_SCOPE_MAP: dict[AppType, Scope] = {
-    AppType.INTRANET: Scope.INTERNAL,
-    AppType.CLOUD: Scope.YACLOUD,
-    AppType.CLOUD_PUBLIC: Scope.YACLOUD,
-    AppType.CLOUD_EMBED: Scope.YACLOUD,
-    AppType.DATA_CLOUD: Scope.DOUBLECLOUD,
-    AppType.NEBIUS: Scope.YACLOUD,  # FIXME maybe
-    AppType.TESTS: Scope.INTERNAL,
-    AppType.DATA_CLOUD_EMBED: Scope.DOUBLECLOUD,
+_FUNCTION_TAG_TO_SCOPE_MAP: dict[str, Scope] = {
+    'stable': Scope.STABLE,
 }
 
 
@@ -39,18 +32,18 @@ class SupportedFunctionsManager:
     Service-helper.
     Translate env type to formula's format and provide some wrappers for get_supported_functions.
     """
-    _app_type: AppType = attr.ib()
+    _supported_tags: tuple[str] = attr.ib()
     _operation_registry: OperationRegistry = attr.ib(default=OPERATION_REGISTRY)
 
     @method_lru(maxsize=1000)
-    def get_supported_filters(self, dialect: DialectCombo, user_type: BIType) -> List[WhereClauseOperation]:
+    def get_supported_filters(self, dialect: DialectCombo, user_type: BIType) -> list[WhereClauseOperation]:
         return [
             op for op in self._get_supported_filters_for_dialect(dialect=dialect)
             if op in FILTERS_BY_TYPE.get(user_type, [])
         ]
 
     @method_lru(maxsize=1000)
-    def get_supported_aggregations(self, dialect: DialectCombo, user_type: BIType) -> List[AggregationFunction]:
+    def get_supported_aggregations(self, dialect: DialectCombo, user_type: BIType) -> list[AggregationFunction]:
         supported_func_names = set(
             name
             for name, *_ in self._get_supported_functions(
@@ -65,7 +58,7 @@ class SupportedFunctionsManager:
             if FormulaCompiler._agg_functions.get(ag_type, ag_type.name) in supported_func_names
         ]
 
-    def get_supported_function_names(self, dialect: DialectCombo) -> List[str]:
+    def get_supported_function_names(self, dialect: DialectCombo) -> list[str]:
         native_supp_funcs = self._get_supported_functions(
             dialect=dialect,
             scope=Scope.SUGGESTED,
@@ -82,8 +75,8 @@ class SupportedFunctionsManager:
         return supported_function_names
 
     @property
-    def _app_scope(self) -> int:
-        return _APP_TYPE_TO_SCOPE_MAP[self._app_type].value
+    def _supported_scopes(self) -> tuple[int, ...]:
+        return tuple(_FUNCTION_TAG_TO_SCOPE_MAP[tag].value for tag in self._supported_tags)
 
     @method_lru(maxsize=1000)
     def _get_supported_functions(
@@ -91,15 +84,15 @@ class SupportedFunctionsManager:
         dialect: DialectCombo,
         scope: int = Scope.EXPLICIT_USAGE,
         only_functions: bool = True,
-    ) -> List[FuncKey]:
+    ) -> list[FuncKey]:
         return self._operation_registry.get_supported_functions(
             require_dialects=dialect,
             only_functions=only_functions,
-            function_scopes=scope | self._app_scope,
+            function_scopes=scope | reduce(ior, self._supported_scopes),
         )
 
     @method_lru(maxsize=20)
-    def _get_supported_filters_for_dialect(self, dialect: DialectCombo) -> List[WhereClauseOperation]:
+    def _get_supported_filters_for_dialect(self, dialect: DialectCombo) -> list[WhereClauseOperation]:
         result = []
         supported_funcs = {
             (name, arg_cnt)

@@ -13,6 +13,8 @@ def _auto_bit() -> int:
 
 @unique
 class Scope(IntEnum):
+    STABLE = _auto_bit()
+
     # Functionality-bound scopes
     EXPLICIT_USAGE = _auto_bit()  # Can be used in formulas explicitly
     SUGGESTED = _auto_bit()  # Function is listed in suggestions

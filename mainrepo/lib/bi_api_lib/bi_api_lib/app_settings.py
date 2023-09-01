@@ -113,6 +113,11 @@ class AppSettings:
         env_var_converter=lambda s: ParserType[s.lower()],
         missing=ParserType.antlr_py,
     )
+    FORMULA_SUPPORTED_FUNC_TAGS: tuple[str] = s_attrib(
+        "FORMULA_SUPPORTED_FUNC_TAGS",
+        env_var_converter=split_by_comma,
+        missing=('stable',),
+    )
 
     CONNECTORS: Optional[ConnectorsSettingsByType] = s_attrib(  # type: ignore
         "CONNECTORS",

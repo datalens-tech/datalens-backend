@@ -390,6 +390,7 @@ class NodeTranslation:
     supports_bfb: ClassVar[bool] = False
 
     scopes: ClassVar[int] = (
+        Scope.STABLE |
         Scope.EXPLICIT_USAGE |
         Scope.SUGGESTED |
         Scope.DOCUMENTED |
