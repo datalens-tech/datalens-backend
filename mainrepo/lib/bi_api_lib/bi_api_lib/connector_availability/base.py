@@ -109,7 +109,7 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 class Connector(ConnectorBase):
     """ Represents an actual connection type """
 
-    _hidden: bool = attr.ib(default=False)
+    _hidden: bool = attr.ib(init=False, default=False)
     conn_type: ConnectionType = attr.ib(converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v)
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
 

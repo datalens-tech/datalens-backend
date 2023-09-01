@@ -10,7 +10,11 @@ from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_PO
 
 CONFIG = ConnectorAvailabilityConfig(
     uncategorized=[
-        Connector(conn_type=ConnectionType.clickhouse, hidden=False),
-        Connector(conn_type=CONNECTION_TYPE_POSTGRES, hidden=False),
+        Connector(conn_type=ConnectionType.clickhouse),
+        Connector(conn_type=CONNECTION_TYPE_POSTGRES),
     ],
+    visible_connectors={
+        ConnectionType.clickhouse,
+        CONNECTION_TYPE_POSTGRES,
+    },
 )

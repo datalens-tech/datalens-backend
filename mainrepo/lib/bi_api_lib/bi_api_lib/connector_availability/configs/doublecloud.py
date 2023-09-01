@@ -15,14 +15,24 @@ from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 
 CONFIG = ConnectorAvailabilityConfig(
     uncategorized=[
-        Connector(conn_type=CT.clickhouse, hidden=False),
-        Connector(conn_type=CONNECTION_TYPE_POSTGRES, hidden=False),
-        Connector(conn_type=CONNECTION_TYPE_MYSQL, hidden=False),
-        Connector(conn_type=CT.chyt, hidden=True),
-        Connector(conn_type=CONNECTION_TYPE_MSSQL, hidden=False),
-        Connector(conn_type=CT.file, hidden=False),
-        Connector(conn_type=CT.promql, hidden=False),
-        Connector(conn_type=CONNECTION_TYPE_BIGQUERY, hidden=False),
-        Connector(conn_type=CONNECTION_TYPE_SNOWFLAKE, hidden=False),
+        Connector(conn_type=CT.clickhouse),
+        Connector(conn_type=CONNECTION_TYPE_POSTGRES),
+        Connector(conn_type=CONNECTION_TYPE_MYSQL),
+        Connector(conn_type=CT.chyt),
+        Connector(conn_type=CONNECTION_TYPE_MSSQL),
+        Connector(conn_type=CT.file),
+        Connector(conn_type=CT.promql),
+        Connector(conn_type=CONNECTION_TYPE_BIGQUERY),
+        Connector(conn_type=CONNECTION_TYPE_SNOWFLAKE),
     ],
+    visible_connectors={
+        CT.clickhouse,
+        CONNECTION_TYPE_POSTGRES,
+        CONNECTION_TYPE_MYSQL,
+        CONNECTION_TYPE_MSSQL,
+        CT.file,
+        CT.promql,
+        CONNECTION_TYPE_BIGQUERY,
+        CONNECTION_TYPE_SNOWFLAKE,
+    },
 )
