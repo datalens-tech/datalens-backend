@@ -13,7 +13,7 @@ from aiohttp import web
 from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from bi_connector_snowflake.core.notifications import check_for_refresh_token_expire
-from bi_constants.enums import ConnectionType, DataSourceRole
+from bi_constants.enums import ConnectionType, DataSourceRole, NotificationType
 
 from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from bi_core.exc import USObjectNotFoundException
@@ -23,7 +23,7 @@ from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.data_source.collection import DataSourceCollectionFactory
 from bi_core.data_source.base import DataSource
 from bi_core.dataset_capabilities import DatasetCapabilities
-from bi_core.reporting.notifications import get_notification_record, NotificationType
+from bi_core.reporting.notifications import get_notification_record
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 
 from bi_utils.task_runner import ConcurrentTaskRunner

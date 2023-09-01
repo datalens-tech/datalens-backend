@@ -3,9 +3,9 @@ from typing import Optional
 import pytest
 
 from bi_constants.internal_constants import MEASURE_NAME_TITLE
-from bi_constants.enums import WhereClauseOperation, PivotHeaderRole, OrderDirection
-
-from bi_core.reporting.notifications import NotificationType
+from bi_constants.enums import (
+    WhereClauseOperation, PivotHeaderRole, OrderDirection, NotificationType,
+)
 
 from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from bi_api_client.dsmaker.pivot_utils import check_pivot_response

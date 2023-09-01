@@ -7,7 +7,7 @@ from marshmallow_oneofschema import OneOfSchema
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, AbstractSet, Union
 
 
-class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
+class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
     """
     OneOfSchema has disabled all pre/post_dump/load hooks by default so we add the following copy-paste from marshmallow
     to be able to use those hooks

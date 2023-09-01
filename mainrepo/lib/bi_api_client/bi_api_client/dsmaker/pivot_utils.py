@@ -3,15 +3,15 @@ from http import HTTPStatus
 from itertools import chain
 from typing import AbstractSet, Optional, Tuple
 
-from bi_constants.enums import OrderDirection, FieldRole, PivotRole, FieldType, QueryItemRefType
+from bi_constants.enums import (
+    OrderDirection, FieldRole, PivotRole, FieldType, QueryItemRefType, NotificationType,
+)
 from bi_constants.internal_constants import MEASURE_NAME_TITLE, DIMENSION_NAME_TITLE
-
-from bi_core.reporting.notifications import NotificationType
 
 from bi_api_client.dsmaker.primitives import (
     Dataset, RequestLegendItem, OrderedField,
     RequestPivotItem, PivotPagination, WhereClause,
-    PivotTotals,
+    PivotTotals, PivotMeasureSorting,
 )
 from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV2, HttpDataApiResponse
 from bi_api_client.dsmaker.data_abstraction.primitives import DataItemTag, DataCellTuple, DataItem
@@ -19,7 +19,6 @@ from bi_api_client.dsmaker.data_abstraction.mapping_base import DataCellMapper1D
 from bi_api_client.dsmaker.data_abstraction.mapping_comparator import SimpleMapper1DComparator
 from bi_api_client.dsmaker.data_abstraction.result import ResultDataAbstraction
 from bi_api_client.dsmaker.data_abstraction.pivot import PivotDataAbstraction
-from bi_api_lib.pivot.primitives import PivotMeasureSorting
 
 
 SPECIAL_TITLES = {

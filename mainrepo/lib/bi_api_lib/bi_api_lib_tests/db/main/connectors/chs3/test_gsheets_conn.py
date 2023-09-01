@@ -11,12 +11,12 @@ from bi_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
     ComponentErrorLevel,
+    NotificationType,
 )
 
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from bi_core.reporting.notifications import NotificationType
 from bi_core import exc
 
 from bi_api_client.dsmaker.primitives import Dataset

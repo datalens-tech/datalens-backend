@@ -1,11 +1,11 @@
 import datetime
 
-from bi_constants.enums import FileProcessingStatus
+from bi_constants.enums import FileProcessingStatus, NotificationType
 
 from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from bi_connector_bundle_chs3.chs3_base.core.lifecycle import BaseFileS3ConnectionLifecycleManager
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from bi_core.reporting.notifications import get_notification_record, NotificationType
+from bi_core.reporting.notifications import get_notification_record
 from bi_core.utils import make_user_auth_headers, make_user_auth_cookies
 
 

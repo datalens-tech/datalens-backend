@@ -1,18 +1,9 @@
 import time
 from typing import Any, Callable, Optional, Type
 
-from dynamic_enum import DynamicEnum, AutoEnumValue
-
-from bi_constants.enums import NotificationLevel
+from bi_constants.enums import NotificationLevel, NotificationType
 
 from bi_api_commons.reporting.models import NotificationReportingRecord
-
-
-class NotificationType(DynamicEnum):
-    totals_removed_due_to_measure_filter = AutoEnumValue()
-    using_public_clickhouse_clique = AutoEnumValue()
-    stale_data = AutoEnumValue()
-    data_update_failure = AutoEnumValue()
 
 
 class BaseNotification:

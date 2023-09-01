@@ -9,18 +9,16 @@ from bi_constants.enums import (
     PivotHeaderRole,
 )
 
-from bi_api_lib.pivot.primitives import (
-    PivotHeaderRoleSpec, PivotHeaderValue, PivotMeasureSortingSettings, PivotMeasureSorting
-)
 from bi_api_client.dsmaker.primitives import (
     RoleSpec, RowRoleSpec, TemplateRoleSpec,
     OrderByRoleSpec, RangeRoleSpec, TreeRoleSpec,
     LegendItem, RequestLegendItemRef,
     PivotRoleSpec, DimensionPivotRoleSpec, AnnotationPivotRoleSpec,
     PivotItem, PivotPagination, BlockPlacement, PivotMeasureRoleSpec,
+    PivotHeaderRoleSpec, PivotHeaderValue, PivotMeasureSortingSettings,
+    PivotMeasureSorting, PivotHeaderInfo,
 )
 from bi_api_client.dsmaker.api.schemas.base import BaseSchema, DefaultSchema
-from bi_api_lib.schemas.pivot import PivotHeaderInfoSchema
 
 
 _ROLE_SPEC_TV = TypeVar('_ROLE_SPEC_TV', bound=RoleSpec)
@@ -259,6 +257,13 @@ class PivotSpecSchema(BaseSchema):
     with_totals = ma_fields.Boolean()
     structure = ma_fields.Nested(PivotItemSchema, many=True)
     totals = ma_fields.Nested(PivotTotalsSchema)
+
+
+class PivotHeaderInfoSchema(DefaultSchema[PivotHeaderInfo]):
+    TARGET_CLS = PivotHeaderInfo
+
+    sorting_direction = ma_fields.Enum(OrderDirection, allow_none=True)
+    role_spec = ma_fields.Nested(PivotHeaderRoleSpecSchema, allow_none=False, required=True)
 
 
 class PivotDimensionWithInfoSchema(BaseSchema):

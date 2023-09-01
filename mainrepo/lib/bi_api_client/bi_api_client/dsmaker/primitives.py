@@ -17,9 +17,8 @@ from bi_constants.enums import (
     AggregationFunction, ConditionPartCalcMode, JoinType, ManagedBy,
     ComponentErrorLevel, ComponentType, WhereClauseOperation,
     OrderDirection, ParameterValueConstraintType, QueryBlockPlacementType,
-    RangeType, PivotRole,
+    RangeType, PivotRole, PivotHeaderRole,
 )
-from bi_api_lib.pivot.primitives import PivotMeasureSorting
 
 
 class Action(Enum):
@@ -800,6 +799,35 @@ class RequestPivotItem(PivotItemBase):
 class PivotItem(PivotItemBase):
     pivot_item_id: int = attr.ib(kw_only=True)
     title: str = attr.ib(kw_only=True)
+
+
+@attr.s
+class PivotHeaderRoleSpec:
+    role: PivotHeaderRole = attr.ib(kw_only=True, default=PivotHeaderRole.data)
+
+
+@attr.s(frozen=True)
+class PivotHeaderValue:
+    value: str = attr.ib(kw_only=True)
+
+
+@attr.s(slots=True)
+class PivotHeaderInfo:
+    sorting_direction: Optional[OrderDirection] = attr.ib(kw_only=True, default=None)
+    role_spec: PivotHeaderRoleSpec = attr.ib(kw_only=True, factory=PivotHeaderRoleSpec)
+
+
+@attr.s(frozen=True)
+class PivotMeasureSortingSettings:
+    header_values: list[PivotHeaderValue] = attr.ib(kw_only=True)
+    direction: OrderDirection = attr.ib(kw_only=True, default=OrderDirection.asc)
+    role_spec: PivotHeaderRoleSpec = attr.ib(kw_only=True, factory=PivotHeaderRoleSpec)
+
+
+@attr.s(frozen=True)
+class PivotMeasureSorting:
+    column: Optional[PivotMeasureSortingSettings] = attr.ib(kw_only=True, default=None)
+    row: Optional[PivotMeasureSortingSettings] = attr.ib(kw_only=True, default=None)
 
 
 @attr.s

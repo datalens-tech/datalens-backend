@@ -9,6 +9,7 @@ from bi_constants.enums import (
     CreateDSFrom,
     FileProcessingStatus,
     ComponentErrorLevel,
+    NotificationType,
 )
 
 from bi_core import exc
@@ -18,7 +19,7 @@ from bi_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3D
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
 from bi_core.db import SchemaInfo
-from bi_core.reporting.notifications import get_notification_record, NotificationType
+from bi_core.reporting.notifications import get_notification_record
 from bi_core.utils import sa_plain_text
 
 if TYPE_CHECKING:

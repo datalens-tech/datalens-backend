@@ -1,5 +1,4 @@
-from bi_constants.enums import SourceBackendType, CreateDSFrom, ConnectionType
-from bi_core.reporting.notifications import NotificationType
+from bi_constants.enums import SourceBackendType, CreateDSFrom, ConnectionType, NotificationType
 
 
 BACKEND_TYPE_SNOWFLAKE = SourceBackendType.declare('SNOWFLAKE')

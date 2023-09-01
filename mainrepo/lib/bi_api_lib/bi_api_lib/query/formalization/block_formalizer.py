@@ -6,10 +6,10 @@ from typing import List, Optional, Tuple, TypeVar
 import attr
 
 import bi_query_processing.exc
-from bi_constants.enums import FieldRole, FieldType
+from bi_constants.enums import FieldRole, FieldType, NotificationType
 
 from bi_core.us_dataset import Dataset
-from bi_core.reporting.notifications import get_notification_record, NotificationType
+from bi_core.reporting.notifications import get_notification_record
 from bi_api_commons.reporting import ReportingRegistry
 
 from bi_query_processing.enums import EmptyQueryMode, QueryType
