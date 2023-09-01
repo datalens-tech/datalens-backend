@@ -1,3 +1,35 @@
+0.1983.0
+--------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Update old connector availability configs (#280)  [ https://github.com/datalens-tech/datalens-backend-private/commit/2ceaead ]
+
+* [dmi-feo](http://staff/fdi1992@gmail.com)
+
+ * remove unused stuff from statcommons + run tests on file removals (#266)  [ https://github.com/datalens-tech/datalens-backend-private/commit/e9a2985 ]
+ * BI-4904: mount internal cert in int-rqe containers (#281)                 [ https://github.com/datalens-tech/datalens-backend-private/commit/70ea817 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4834: move the yql bi api connectors to a separate package (#247)     [ https://github.com/datalens-tech/datalens-backend-private/commit/8323adc ]
+ * BI-4834: move the solomon bi api connector to a separate package (#243)  [ https://github.com/datalens-tech/datalens-backend-private/commit/12f30a0 ]
+ * BI-4834: move the file bi api connectors to a separate package (#242)    [ https://github.com/datalens-tech/datalens-backend-private/commit/8097203 ]
+
+* [Andrey Snytin](http://staff/asnytin@yandex-team.ru)
+
+ * delete bi_sqlalchemy_mysql dependency, drop legacy maintenance script, fix deps (#279)  [ https://github.com/datalens-tech/datalens-backend-private/commit/372eb59 ]
+ * BI-4385: cleanup (#272)                                                                 [ https://github.com/datalens-tech/datalens-backend-private/commit/8f4f9c0 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Normalized bi_api_lib's requirements (but without test deps) (#274)                                     [ https://github.com/datalens-tech/datalens-backend-private/commit/e36bc96 ]
+ * Normalized bi_api_commons' requirements (#270)                                                          [ https://github.com/datalens-tech/datalens-backend-private/commit/6805eb3 ]
+ * Normalized bi_api_connector requirements by moving ConnectionFormTestBase to bi_api_lib_testing (#271)  [ https://github.com/datalens-tech/datalens-backend-private/commit/b3a71a1 ]
+ * Added path validation to fs editor (#259)                                                               [ https://github.com/datalens-tech/datalens-backend-private/commit/b11a258 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-01 21:24:42+00:00
+
 0.1982.0
 --------
 
