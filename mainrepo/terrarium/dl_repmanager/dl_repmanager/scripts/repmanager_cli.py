@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import os
+from pathlib import Path
 from typing import Optional
 
 import attr
@@ -114,7 +115,7 @@ def make_parser() -> argparse.ArgumentParser:
     return parser
 
 
-_BASE_DIR = os.getcwd()
+_BASE_DIR = Path.cwd()
 
 
 @attr.s
@@ -142,7 +143,7 @@ class DlRepManagerTool:
     def ch_package_type(self, package_name: str, package_type: str) -> None:
         self.package_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
 
-    def package_list(self, package_type: str, mask: str, base_path: str) -> None:
+    def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
         for package_info in self.package_index.list_package_infos():
             if package_info.package_type != package_type:
                 continue
@@ -150,7 +151,7 @@ class DlRepManagerTool:
             printable_values = dict(
                 package_type=package_info.package_type,
                 abs_path=package_info.abs_path,
-                rel_path=os.path.relpath(package_info.abs_path, os.path.abspath(base_path)),
+                rel_path=os.path.relpath(package_info.abs_path, base_path),
                 single_module_name=package_info.single_module_name,
                 package_reg_name=package_info.package_reg_name,
             )
@@ -233,7 +234,7 @@ class DlRepManagerTool:
             tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)
 
         elif args.command == 'package-list':
-            tool.package_list(package_type=args.package_type, mask=args.mask, base_path=args.base_path)
+            tool.package_list(package_type=args.package_type, mask=args.mask, base_path=Path(args.base_path))
 
         elif args.command == 'rename-module':
             tool.rename_module(

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import os
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import attr
@@ -21,8 +22,8 @@ if TYPE_CHECKING:
 class RepositoryManagementPlugin(abc.ABC):
     repo_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
-    base_path: str = attr.ib(kw_only=True)
-    pkg_type_base_path: str = attr.ib(kw_only=True)
+    base_path: Path = attr.ib(kw_only=True)
+    pkg_type_base_path: Path = attr.ib(kw_only=True)
     fs_editor: FilesystemEditor = attr.ib(init=False)
 
     @fs_editor.default
@@ -50,22 +51,22 @@ class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
         def transform_package_list(old_text: str) -> str:
             pkg_list = old_text.strip().split()
             pkg_rel_path = package_info.get_relative_path(self.base_path)
-            pkg_list.append(pkg_rel_path)
+            pkg_list.append(str(pkg_rel_path))
             pkg_list.sort()
             return '\n'.join(pkg_list) + '\n'
 
-        pkg_list_path = os.path.join(self.base_path, self._PACKAGE_LIST_REL_PATH)
+        pkg_list_path = self.base_path / self._PACKAGE_LIST_REL_PATH
         self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_package_list)
 
     def unregister_package(self, package_info: PackageInfo) -> None:
         def transform_package_list(old_text: str) -> str:
             pkg_list = old_text.strip().split()
             pkg_rel_path = package_info.get_relative_path(self.base_path)
-            pkg_list.remove(pkg_rel_path)
+            pkg_list.remove(str(pkg_rel_path))
             pkg_list.sort()
             return '\n'.join(pkg_list) + '\n'
 
-        pkg_list_path = os.path.join(self.base_path, self._PACKAGE_LIST_REL_PATH)
+        pkg_list_path = self.base_path / self._PACKAGE_LIST_REL_PATH
         self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_package_list)
 
 
@@ -73,10 +74,9 @@ class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
 class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
     _CI_TOML_REL_PATH = 'ops/ci/pyproject.toml'
 
-    def _get_path_for_toml(self, package_info: PackageInfo) -> str:
-        toml_abs_dir = os.path.dirname(os.path.join(self.base_path, self._CI_TOML_REL_PATH))
-        pkg_rel_path = package_info.get_relative_path(toml_abs_dir)
-        return pkg_rel_path
+    def _get_path_for_toml(self, package_info: PackageInfo) -> Path:
+        toml_abs_dir = (self.base_path / self._CI_TOML_REL_PATH).parent
+        return package_info.get_relative_path(toml_abs_dir)
 
     def _register_main(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
         package_path_for_toml = self._get_path_for_toml(package_info)
@@ -95,7 +95,7 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
 
     def _register_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
         package_path_for_toml = self._get_path_for_toml(package_info)
-        package_base_name = os.path.basename(package_info.abs_path)
+        package_base_name = package_info.abs_path.name
         package_dep_table = tomlkit.inline_table()
         package_dep_table.add('path', package_path_for_toml)
         section = toml_writer.add_section(f'tool.poetry.group.app_{package_base_name}.dependencies')
@@ -103,11 +103,11 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
         section.add(tomlkit.nl())
 
     def _unregister_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
-        package_base_name = os.path.basename(package_info.abs_path)
+        package_base_name = package_info.abs_path.name
         toml_writer.delete_section(f'tool.poetry.group.app_{package_base_name}.dependencies')
 
     def register_package(self, package_info: PackageInfo) -> None:
-        toml_path = os.path.join(self.base_path, self._CI_TOML_REL_PATH)
+        toml_path = self.base_path / self._CI_TOML_REL_PATH
 
         with TOMLWriter.from_file(toml_path) as toml_writer:
             if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
@@ -116,7 +116,7 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
                 self._register_app(toml_writer=toml_writer, package_info=package_info)
 
     def unregister_package(self, package_info: PackageInfo) -> None:
-        toml_path = os.path.join(self.base_path, self._CI_TOML_REL_PATH)
+        toml_path = self.base_path / self._CI_TOML_REL_PATH
 
         with TOMLWriter.from_file(toml_path) as toml_writer:
             if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
@@ -157,7 +157,7 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
 
             for section_name in other_package_info.requirement_lists:
                 if other_package_info.is_dependent_on(old_package_info, section_name=section_name):
-                    new_req_rel_path = os.path.relpath(new_package_info.abs_path, other_package_info.abs_path)
+                    new_req_rel_path = Path(os.path.relpath(new_package_info.abs_path, other_package_info.abs_path))
                     with PackageMetaWriter.from_file(other_package_info.toml_path) as pkg_meta_writer:
                         pkg_meta_writer.update_requirement_item(
                             section_name=section_name,
@@ -167,8 +167,8 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
                         )
 
         # Update own dependency entries if the package has moved to another dir
-        old_pkg_dir_path = os.path.dirname(old_package_info.abs_path)
-        new_pkg_dir_path = os.path.dirname(new_package_info.abs_path)
+        old_pkg_dir_path = old_package_info.abs_path.parent
+        new_pkg_dir_path = new_package_info.abs_path.parent
         if new_pkg_dir_path != old_pkg_dir_path:
             for section_name, req_list in old_package_info.requirement_lists.items():
                 updated_requirements: dict[str, PackageInfo] = {}  # {<pkg_reg_name>: <req_package_info>}
@@ -180,7 +180,7 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
 
                 with PackageMetaWriter.from_file(new_package_info.toml_path) as pkg_meta_writer:
                     for req_package_reg_name, req_package_info in updated_requirements.items():
-                        updated_req_path = os.path.relpath(req_package_info.abs_path, new_package_info.abs_path)
+                        updated_req_path = Path(os.path.relpath(req_package_info.abs_path, new_package_info.abs_path))
                         pkg_meta_writer.update_requirement_item_path(
                             section_name=section_name,
                             item_name=req_package_info.package_reg_name,

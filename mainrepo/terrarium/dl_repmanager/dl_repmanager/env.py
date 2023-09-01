@@ -38,7 +38,6 @@ Description of the sections:
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar, Iterable, Optional, Type
 
@@ -62,9 +61,9 @@ DEFAULT_CONFIG_FILE_NAME = 'dl-repo.yml'
 
 @attr.s(frozen=True)
 class PackageTypeConfig:
-    home_repo_path: str = attr.ib(kw_only=True)
-    path: str = attr.ib(kw_only=True)
-    boilerplate_path: str = attr.ib(kw_only=True)
+    home_repo_path: Path = attr.ib(kw_only=True)
+    path: Path = attr.ib(kw_only=True)
+    boilerplate_path: Path = attr.ib(kw_only=True)
     tags: frozenset[str] = attr.ib(kw_only=True, default=frozenset())
 
 
@@ -74,7 +73,7 @@ class RepoEnvironment:
     Provides information about repository folders and boilerplates
     """
 
-    base_path: str = attr.ib(kw_only=True)
+    base_path: Path = attr.ib(kw_only=True)
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor: FilesystemEditor = attr.ib(kw_only=True)
@@ -85,7 +84,7 @@ class RepoEnvironment:
         DependencyReregistrationRepositoryManagementPlugin,
     )
 
-    def iter_package_abs_dirs(self) -> Iterable[tuple[str, str]]:
+    def iter_package_abs_dirs(self) -> Iterable[tuple[str, Path]]:
         return sorted(
             [
                 (package_type, pkg_type_config.path)
@@ -94,10 +93,10 @@ class RepoEnvironment:
             key=lambda pair: pair[0]
         )
 
-    def get_boilerplate_package_dir(self, package_type: str) -> str:
+    def get_boilerplate_package_dir(self, package_type: str) -> Path:
         return self.package_types[package_type].boilerplate_path
 
-    def get_root_package_dir(self, package_type: str) -> str:
+    def get_root_package_dir(self, package_type: str) -> Path:
         return self.package_types[package_type].path
 
     def get_tags(self, package_type: str) -> frozenset[str]:
@@ -127,7 +126,7 @@ _DEFAULT_FS_EDITOR_TYPE = 'default'
 
 @attr.s(frozen=True)
 class ConfigContents:
-    base_path: str = attr.ib(kw_only=True)
+    base_path: Path = attr.ib(kw_only=True)
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True, factory=dict)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor_type: str = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
@@ -156,15 +155,15 @@ class RepoEnvironmentLoader:
         with open(config_path) as config_file:
             config_data = yaml.safe_load(config_file)
 
-        base_path = os.path.dirname(config_path)
+        base_path = config_path.parent
         package_types: dict[str, PackageTypeConfig] = {}
         env_settings = config_data.get('dl_repo', {})
         for package_type_data in env_settings.get('package_types', ()):
             package_type = package_type_data['type']
             pkg_type_config = PackageTypeConfig(
                 home_repo_path=base_path,
-                path=os.path.join(base_path, package_type_data['root_path']),
-                boilerplate_path=os.path.join(base_path, package_type_data['boilerplate_path']),
+                path=base_path / package_type_data['root_path'],
+                boilerplate_path=base_path / package_type_data['boilerplate_path'],
                 tags=frozenset(package_type_data.get('tags', ())),
             )
             package_types[package_type] = pkg_type_config
@@ -193,13 +192,13 @@ class RepoEnvironmentLoader:
         assert fs_editor_type is not None
         fs_editor = self.fs_editor_classes[fs_editor_type]()
         return RepoEnvironment(
-            base_path=str(config_contents.base_path),
+            base_path=config_contents.base_path,
             package_types=config_contents.package_types,
             custom_package_map=config_contents.custom_package_map,
             fs_editor=fs_editor,
         )
 
-    def load_env(self, base_path: str) -> RepoEnvironment:
+    def load_env(self, base_path: Path) -> RepoEnvironment:
         return self._load_from_yaml_file(
-            config_path=discover_config(Path(base_path), self.config_file_name)
+            config_path=discover_config(base_path, self.config_file_name)
         )

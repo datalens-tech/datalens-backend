@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import contextlib
 from pathlib import Path
-from typing import Any, Generator, Iterable, Optional
+from typing import Any, Generator, Iterable
 
 import attr
 import tomlkit
 from tomlkit.toml_document import TOMLDocument
-from tomlkit.items import Item as TOMLItem, AbstractTable, SingleKey
+from tomlkit.items import Item as TOMLItem, AbstractTable
 from tomlkit.container import Container as TOMLContainer, OutOfOrderTableProxy
 from tomlkit.exceptions import NonExistentKey
 
@@ -45,8 +45,8 @@ class TOMLReader(TOMLReaderBase):
 
     @classmethod
     @contextlib.contextmanager
-    def from_file(cls, filename: str) -> Generator[TOMLReader, None, None]:
-        with open(filename) as f:
+    def from_file(cls, file_path: Path) -> Generator[TOMLReader, None, None]:
+        with open(file_path) as f:
             yield TOMLReader(toml=tomlkit.load(f))
 
 
@@ -55,8 +55,8 @@ class TOMLWriter(TOMLReaderBase):
 
     @classmethod
     @contextlib.contextmanager
-    def from_file(cls, filename: str | Path) -> Generator[TOMLWriter, None, None]:
-        with open(filename, 'r+') as f:
+    def from_file(cls, file_path: Path) -> Generator[TOMLWriter, None, None]:
+        with open(file_path, 'r+') as f:
             toml = tomlkit.load(f)
             yield TOMLWriter(toml=toml)
             f.seek(0)

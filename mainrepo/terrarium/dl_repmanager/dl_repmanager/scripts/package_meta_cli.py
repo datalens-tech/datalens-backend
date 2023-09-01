@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import logging
-import os
 import sys
 from pathlib import Path
 
@@ -56,7 +55,7 @@ class DlPackageMetaTool:
 
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
-        toml_path = os.path.join(args.package_path, 'pyproject.toml')
+        toml_path = Path(args.package_path) / 'pyproject.toml'
         with (
             PackageMetaReader.from_file(toml_path) as meta_reader,
             PackageMetaWriter.from_file(toml_path) as meta_writer,

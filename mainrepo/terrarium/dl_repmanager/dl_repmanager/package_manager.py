@@ -1,4 +1,6 @@
 import os
+
+from pathlib import Path
 from typing import Mapping, Optional, Sequence
 
 import attr
@@ -16,13 +18,9 @@ class PackageGenerator:
     package_index: PackageIndex = attr.ib(kw_only=True)
     repo_env: RepoEnvironment = attr.ib(kw_only=True)
 
-    def _generate_new_package_abs_path(self, package_module_name: str, package_type: str) -> str:
+    def _generate_new_package_abs_path(self, package_module_name: str, package_type: str) -> Path:
         """Generate package path for new package"""
-        parts = [
-            self.repo_env.get_root_package_dir(package_type=package_type),
-            package_module_name,
-        ]
-        return os.path.join(*parts)
+        return self.repo_env.get_root_package_dir(package_type=package_type) / package_module_name
 
     @staticmethod
     def generate_new_package_reg_name(package_name: str) -> str:
@@ -74,10 +72,10 @@ class PackageManager:
     def _make_fs_editor(self) -> FilesystemEditor:
         return self.repo_env.get_fs_editor()
 
-    def _replace_imports(self, old_import_name: str, new_import_name: str) -> list[str]:
+    def _replace_imports(self, old_import_name: str, new_import_name: str) -> list[Path]:
         """Replace imports in all project files, return list of updated files"""
 
-        updated_files: list[str] = []
+        updated_files: list[Path] = []
         for file_path in self.package_navigator.recurse_files_with_import(old_import_name):
             # TODO: Refactor replacement to work by finding the imports in the module AST
             self.fs_editor.replace_text_in_file(file_path, old_import_name, new_import_name)
@@ -145,7 +143,7 @@ class PackageManager:
         old_package_info = self.package_index.get_package_info_from_module_name(old_package_module_name)
 
         # Resolve all the new paths and names
-        new_package_abs_path = os.path.join(os.path.dirname(old_package_info.abs_path), new_package_module_name)
+        new_package_abs_path = old_package_info.abs_path.parent / new_package_module_name
         new_package_info = old_package_info.clone(
             package_reg_name=self.package_generator.generate_new_package_reg_name(new_package_module_name),
             module_names=(new_package_module_name,),
@@ -189,14 +187,14 @@ class PackageManager:
         new_pkg_dir = new_package_info.abs_path
 
         # Rename the code dir
-        old_code_path = os.path.join(new_pkg_dir, old_package_info.single_module_name)
-        new_code_path = os.path.join(new_pkg_dir, new_package_info.single_module_name)
+        old_code_path = new_pkg_dir / old_package_info.single_module_name
+        new_code_path = new_pkg_dir / new_package_info.single_module_name
         self.fs_editor.move_path(old_path=old_code_path, new_path=new_code_path)
 
         # Rename the tests dir
         for boilerplate_test_dir, package_test_dir in zip(old_package_info.test_dirs, new_package_info.test_dirs):
-            old_tests_path = os.path.join(new_pkg_dir, boilerplate_test_dir)
-            new_tests_path = os.path.join(new_pkg_dir, package_test_dir)
+            old_tests_path = new_pkg_dir / boilerplate_test_dir
+            new_tests_path = new_pkg_dir / package_test_dir
             self.fs_editor.move_path(old_path=old_tests_path, new_path=new_tests_path)
 
         # Replace all package name occurrences with the given name
@@ -217,11 +215,9 @@ class PackageManager:
 
         old_package_info = self.package_index.get_package_info_from_module_name(package_module_name)
 
-        # Update package info
-        new_pkg_path = os.path.join(
-            self.repo_env.get_root_package_dir(package_type=new_package_type),
-            os.path.basename(old_package_info.abs_path)
-        )
+        root_pkg_dir = self.repo_env.get_root_package_dir(package_type=new_package_type)
+        new_pkg_path = root_pkg_dir / old_package_info.abs_path.name
+
         new_package_info = old_package_info.clone(
             package_type=new_package_type,
             abs_path=new_pkg_path,
@@ -330,7 +326,7 @@ class PackageManager:
         def _normalize_req_path(req: ReqPackageSpec) -> ReqPackageSpec:
             if isinstance(req, LocalReqPackageSpec):
                 req_pkg_info = self.package_index.get_package_info_by_reg_name(req.package_name)
-                req_path = os.path.relpath(req_pkg_info.abs_path, package_info.abs_path)
+                req_path = Path(os.path.relpath(req_pkg_info.abs_path, package_info.abs_path))
                 req = req.clone(path=req_path)
             return req
 

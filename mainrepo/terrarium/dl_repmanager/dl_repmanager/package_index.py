@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from typing import Optional
 
 import attr
@@ -17,7 +17,7 @@ class PackageIndex:
     _package_infos_by_reg_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_module_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
     _package_infos_by_test_name: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
-    _package_infos_by_path: dict[str, PackageInfo] = attr.ib(kw_only=True, factory=dict)
+    _package_infos_by_path: dict[Path, PackageInfo] = attr.ib(kw_only=True, factory=dict)
 
     def _is_built(self) -> bool:
         return self._built
@@ -26,7 +26,7 @@ class PackageIndex:
         assert self._is_built()
         return self._package_infos_by_reg_name[package_reg_name]
 
-    def get_package_info_from_path(self, rel_package_dir_name: str) -> PackageInfo:
+    def get_package_info_from_path(self, rel_package_dir_name: Path) -> PackageInfo:
         assert self._is_built()
         return self._package_infos_by_path[rel_package_dir_name]
 
@@ -53,12 +53,12 @@ class PackageIndexBuilder:
         return PypiReqPackageSpec(package_name=item_as_dict['name'], version=item_as_dict['version'])
 
     def _load_package_info_from_package_dir(
-            self, abs_package_dir_path: str, default_package_type: str
+            self, abs_package_dir_path: Path, default_package_type: str
     ) -> Optional[PackageInfo]:
 
-        toml_path = os.path.join(abs_package_dir_path, 'pyproject.toml')
+        toml_path = abs_package_dir_path / 'pyproject.toml'
 
-        if not os.path.exists(toml_path):
+        if not toml_path.exists():
             return None
 
         req_list_names = [
@@ -80,13 +80,12 @@ class PackageIndexBuilder:
                     )
 
         test_dirs: list[str] = []
-        for test_dir in os.listdir(abs_package_dir_path):  # TODO: read info about tests from pyproject.toml
-            abs_test_dir = os.path.join(abs_package_dir_path, test_dir)
-            if not os.path.isdir(abs_test_dir):
+        for test_dir in abs_package_dir_path.iterdir():  # TODO: read info about tests from pyproject.toml
+            if not test_dir.is_dir():
                 continue
-            if not 'tests' in test_dir or test_dir in module_names:
+            if 'tests' not in test_dir.name or test_dir.name in module_names:
                 continue  # it is not a test dir
-            test_dirs.append(test_dir)
+            test_dirs.append(test_dir.name)
 
         package_info = PackageInfo(
             package_type=package_type,
@@ -102,20 +101,20 @@ class PackageIndexBuilder:
         package_infos_by_reg_name: dict[str, PackageInfo] = {}
         package_infos_by_module_name: dict[str, PackageInfo] = {}
         package_infos_by_test_name: dict[str, PackageInfo] = {}
-        package_infos_by_path: dict[str, PackageInfo] = {}
+        package_infos_by_path: dict[Path, PackageInfo] = {}
 
-        for package_type, abs_parent_dir_name in self.repo_env.iter_package_abs_dirs():
-            for package_dir in os.listdir(abs_parent_dir_name):
-                abs_package_dir_path = os.path.join(abs_parent_dir_name, package_dir)
-                if not os.path.isdir(abs_package_dir_path):
+        for package_type, abs_parent_dir in self.repo_env.iter_package_abs_dirs():
+            for package_dir in abs_parent_dir.iterdir():
+                if not package_dir.is_dir():
                     continue
+
                 package_info = self._load_package_info_from_package_dir(
-                    abs_package_dir_path, default_package_type=package_type,
+                    package_dir, default_package_type=package_type,
                 )
                 if package_info is None:
                     continue
                 package_infos_by_reg_name[package_info.package_reg_name] = package_info
-                package_infos_by_path[abs_package_dir_path] = package_info
+                package_infos_by_path[package_dir] = package_info
 
                 for module_name in package_info.module_names:
                     package_infos_by_module_name[module_name] = package_info

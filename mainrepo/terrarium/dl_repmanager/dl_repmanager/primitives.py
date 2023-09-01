@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import os
+from pathlib import Path
 from typing import Any, Optional, TypeVar
 
 import attr
@@ -61,7 +62,7 @@ class PypiReqPackageSpec(ReqPackageSpec):
 
 @attr.s(frozen=True)
 class LocalReqPackageSpec(ReqPackageSpec):
-    path: str = attr.ib(kw_only=True)
+    path: Path = attr.ib(kw_only=True)
 
     def pretty(self) -> str:
         return f'{self.package_name} ({self.path})'
@@ -84,14 +85,14 @@ class RequirementList:
 class PackageInfo:
     package_type: str = attr.ib(kw_only=True)
     package_reg_name: str = attr.ib(kw_only=True)
-    abs_path: str = attr.ib(kw_only=True)
+    abs_path: Path = attr.ib(kw_only=True)
     module_names: tuple[str, ...] = attr.ib(kw_only=True)
     test_dirs: tuple[str, ...] = attr.ib(kw_only=True, default=())
     requirement_lists: frozendict[str, RequirementList] = attr.ib(kw_only=True, default=frozendict())
 
     @property
-    def toml_path(self) -> str:
-        return os.path.join(self.abs_path, 'pyproject.toml')
+    def toml_path(self) -> Path:
+        return self.abs_path / 'pyproject.toml'
 
     @property
     def single_module_name(self) -> str:
@@ -103,8 +104,8 @@ class PackageInfo:
         assert len(self.module_names) == 1
         return self.module_names[0]
 
-    def get_relative_path(self, base_path: str) -> str:
-        return os.path.relpath(self.abs_path, base_path)
+    def get_relative_path(self, base_path: Path) -> Path:
+        return Path(os.path.relpath(self.abs_path, base_path))
 
     def clone(self, **kwargs: Any) -> PackageInfo:
         return attr.evolve(self, **kwargs)

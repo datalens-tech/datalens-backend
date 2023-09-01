@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import logging
+from pathlib import Path
 from typing import (
     Any,
     Generator,
@@ -36,8 +37,8 @@ class PackageMetaReader:
 
     @classmethod
     @contextlib.contextmanager
-    def from_file(cls, filename: str) -> Generator[PackageMetaReader, None, None]:
-        with TOMLReader.from_file(filename) as toml_reader:
+    def from_file(cls, file_path: Path) -> Generator[PackageMetaReader, None, None]:
+        with TOMLReader.from_file(file_path) as toml_reader:
             yield PackageMetaReader(toml_reader=toml_reader)
 
     def _get_main_section(self) -> dict:
@@ -88,8 +89,8 @@ class PackageMetaReader:
 class PackageMetaWriter(PackageMetaReader):
     @classmethod
     @contextlib.contextmanager
-    def from_file(cls, filename: str) -> Generator[PackageMetaWriter, None, None]:
-        with TOMLWriter.from_file(filename) as toml_writer:
+    def from_file(cls, file_path: Path) -> Generator[PackageMetaWriter, None, None]:
+        with TOMLWriter.from_file(file_path) as toml_writer:
             yield PackageMetaWriter(toml_reader=toml_writer)
 
     @property

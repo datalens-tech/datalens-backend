@@ -1,14 +1,8 @@
 import logging
-import sys
 from pathlib import Path
 
 import attr
-import tomlkit
 
-from dl_repmanager.exceptions import MypyStubsOutOfSyncError
-from dl_repmanager.package_meta_reader import PackageMetaReader
-from dl_repmanager.pypi_tools import get_package_info_by_version
-from dl_repmanager.toml_tools import TOMLWriter
 
 log = logging.getLogger(__name__)
 

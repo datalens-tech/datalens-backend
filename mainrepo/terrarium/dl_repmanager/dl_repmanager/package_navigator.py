@@ -2,6 +2,7 @@ import ast
 import os
 import re
 import sys
+from pathlib import Path
 from typing import ClassVar, Generator, Optional
 
 import attr
@@ -18,16 +19,13 @@ class PackageNavigator:
 
     _IMPORT_REGEX: ClassVar[re.Pattern] = re.compile(r'^\s*(import|from)\s+(?P<import_name>[\w.]+)')
 
-    def recurse_code_files(self, dir_path: str) -> Generator[str, None, None]:
+    @staticmethod
+    def recurse_code_files(dir_path: Path) -> Generator[Path, None, None]:
         assert dir_path is not None
-        for dirpath, dirnames, filenames in os.walk(dir_path):
-            for filename in filenames:
-                if not filename.endswith('.py'):
-                    continue
-                full_fn = os.path.join(dirpath, filename)
-                yield full_fn
+        for full_fn in dir_path.rglob("*.py"):
+            yield full_fn
 
-    def _file_contains_imports(self, file_path: str, import_name: str) -> bool:
+    def _file_contains_imports(self, file_path: Path, import_name: str) -> bool:
         file_imports = self._collect_imports_from_file(file_path, exclude_standard=False)
         prefix = f'{import_name}.'
         for found_import_name in file_imports:
@@ -35,14 +33,15 @@ class PackageNavigator:
                 return True
         return False
 
-    def recurse_files_with_import(self, import_name: str) -> Generator[str, None, None]:
+    def recurse_files_with_import(self, import_name: str) -> Generator[Path, None, None]:
         for package_type, pkg_type_root in self.repo_env.iter_package_abs_dirs():
             for file_path in self.recurse_code_files(pkg_type_root):
                 if self._file_contains_imports(file_path, import_name):
                     yield file_path
 
+    @staticmethod
     def _collect_imports_from_file(
-            self, file_path: str, mask: Optional[re.Pattern] = None, exclude_standard: bool = True,
+            file_path: Path, mask: Optional[re.Pattern] = None, exclude_standard: bool = True,
     ) -> set[str]:
         result: set[str] = set()
         std_modules = set(sys.stdlib_module_names)
@@ -72,7 +71,7 @@ class PackageNavigator:
         return result
 
     def _collect_imports_from_dir(
-            self, dir_path: str, mask: Optional[re.Pattern] = None, exclude_standard: bool = True,
+            self, dir_path: Path, mask: Optional[re.Pattern] = None, exclude_standard: bool = True,
     ) -> set[str]:
         result: set[str] = set()
         for file_path in self.recurse_code_files(dir_path):
@@ -103,10 +102,11 @@ class PackageNavigator:
             )
         }
 
-    def make_file_module_path(self, module_name: str) -> str:
-        return self.make_package_module_path(module_name) + '.py'
+    def make_file_module_path(self, module_name: str) -> Path:
+        path = self.make_package_module_path(module_name)
+        return path.parent / (path.name + ".py")
 
-    def make_package_module_path(self, module_name: str) -> str:
+    def make_package_module_path(self, module_name: str) -> Path:
         package_module_name = module_name.split('.')[0]
         package_info: PackageInfo
         try:
@@ -117,17 +117,16 @@ class PackageNavigator:
                 test_dir_name=package_module_name)
 
         package_root = package_info.abs_path
-        assert os.path.exists(os.path.join(package_root, package_module_name)), (
+        assert (package_root / package_module_name).exists(), (
             f'Package {package_module_name} does not exist'
         )
-        return os.path.join(package_root, module_name.replace('.', os.path.sep))
+        return package_root / module_name.replace('.', os.path.sep)
 
     def module_is_package(self, module_name: str) -> bool:
         package_path = self.make_package_module_path(module_name)
-        if os.path.exists(package_path):
-            assert os.path.isdir(package_path)
+        if package_path.exists() and package_path.is_dir():
             return True
 
         file_path = self.make_file_module_path(module_name)
-        assert os.path.isfile(file_path)
+        assert file_path.is_file()
         return False
