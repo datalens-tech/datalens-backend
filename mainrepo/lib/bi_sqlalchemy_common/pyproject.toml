@@ -18,7 +18,6 @@ sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-sqlalchemy-chyt = {path = "../../lib/bi_sqlalchemy_chyt"}
 yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
-yandex-bi-sqlalchemy-mysql = {path = "../../../lib/bi_sqlalchemy_mysql"}
 yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
 

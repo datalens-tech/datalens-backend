@@ -30,7 +30,7 @@ yandex-bi-api-commons-ya-team = {path = "../../../lib/bi_api_commons_ya_team"}
 yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
-yandex-bi-dls-client = {path = "../bi_dls_client"}
+yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
 yandex-bi-formula = {path = "../bi_formula"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../../lib/bi_connector_bundle_ch_frozen"}

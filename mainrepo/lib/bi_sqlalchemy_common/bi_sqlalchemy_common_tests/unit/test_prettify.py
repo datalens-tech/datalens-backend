@@ -106,11 +106,6 @@ def get_dialects():
     except ImportError:
         pass
     try:
-        from bi_sqlalchemy_mysql.base import BIMySQLDialect
-        yield BIMySQLDialect()
-    except ImportError:
-        pass
-    try:
         from bi_sqlalchemy_oracle.base import BIOracleDialect
         yield BIOracleDialect()
     except ImportError:
