@@ -91,7 +91,7 @@ jobs:
       id: get_affected
       run: |
         . /venv/bin/activate
-        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
+        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
         echo "Changed files from git diff: $TARGET"
         detect_affected_packages --repo=/data --changes="$TARGET"
         detect_affected_packages --repo=/data --changes="$TARGET" >> "$GITHUB_OUTPUT"
