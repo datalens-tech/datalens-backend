@@ -686,9 +686,13 @@ def load_connectors_settings_from_env_with_fallback(
 
     loaded_settings = load_settings_from_env_with_fallback(connectors, env, fallback_cfg_resolver)
     connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = {}
+    if loaded_settings.CONNECTORS is None:
+        return connectors_settings
+
     for name in attr.fields_dict(settings_class):
         conn_type = ConnectionType(name.lower())
         connector_settings = getattr(loaded_settings.CONNECTORS, name)
-        assert isinstance(connector_settings, ConnectorSettingsBase)
-        connectors_settings[conn_type] = connector_settings
+        if connector_settings is not None:
+            assert isinstance(connector_settings, ConnectorSettingsBase)
+            connectors_settings[conn_type] = connector_settings
     return connectors_settings
