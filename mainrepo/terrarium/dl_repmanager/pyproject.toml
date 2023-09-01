@@ -47,6 +47,3 @@ target-version = ['py310']
 [tool.poetry.scripts]
 dl-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package-meta = "dl_repmanager.scripts.package_meta_cli:main"
-
-[datalens_ci]
-skip_test = true

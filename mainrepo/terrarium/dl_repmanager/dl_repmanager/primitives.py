@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import abc
 import os
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar
 
 import attr
 from frozendict import frozendict
 from tomlkit import inline_table
+
+
+_REQ_SPEC_TV = TypeVar('_REQ_SPEC_TV', bound='ReqPackageSpec')
 
 
 @attr.s(frozen=True)
@@ -18,8 +21,15 @@ class ReqPackageSpec(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def as_req_str(self) -> str:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def to_toml_value(self) -> Any:
         raise NotImplementedError
+
+    def clone(self: _REQ_SPEC_TV, **kwargs: Any) -> _REQ_SPEC_TV:
+        return attr.evolve(self, **kwargs)
 
 
 @attr.s(frozen=True)
@@ -40,6 +50,11 @@ class PypiReqPackageSpec(ReqPackageSpec):
             raise ValueError(f"{str(self)} does not have an exact version")
         return self.version[2:]
 
+    def as_req_str(self) -> str:
+        if not self.version:
+            return self.package_name
+        return f'{self.package_name} = "{self.version}"'
+
     def to_toml_value(self) -> Any:
         return self.version if self.version else "*"
 
@@ -50,6 +65,9 @@ class LocalReqPackageSpec(ReqPackageSpec):
 
     def pretty(self) -> str:
         return f'{self.package_name} ({self.path})'
+
+    def as_req_str(self) -> str:
+        return f'{self.package_name} = {{path = "{self.path}"}}'
 
     def to_toml_value(self) -> Any:
         it = inline_table()

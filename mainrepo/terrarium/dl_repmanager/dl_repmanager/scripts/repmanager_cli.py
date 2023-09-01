@@ -188,12 +188,12 @@ class DlRepManagerTool:
         if extra_import_specs:
             print('Missing requirements:')
             for req_item in extra_import_specs:
-                print(f'    {req_item.pretty()}')
+                print(f'    {req_item.as_req_str()}')
             print()
         if extra_req_specs:
             print('Extra requirements:')
             for req_item in extra_req_specs:
-                print(f'    {req_item.pretty()}')
+                print(f'    {req_item.as_req_str()}')
             print()
         if not extra_req_specs and not extra_import_specs:
             print('Requirements are in sync with imports')

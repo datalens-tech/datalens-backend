@@ -3,7 +3,7 @@ from typing import Mapping, Optional, Sequence
 
 import attr
 
-from dl_repmanager.primitives import PackageInfo, RequirementList, ReqPackageSpec
+from dl_repmanager.primitives import PackageInfo, RequirementList, ReqPackageSpec, LocalReqPackageSpec
 from dl_repmanager.env import RepoEnvironment
 from dl_repmanager.package_navigator import PackageNavigator
 from dl_repmanager.fs_editor import FilesystemEditor
@@ -326,5 +326,15 @@ class PackageManager:
                 extra_import_specs.append(import_req_specs[package_name])
             if package_name not in import_req_specs:
                 extra_req_specs.append(actual_req_specs[package_name])
+
+        def _normalize_req_path(req: ReqPackageSpec) -> ReqPackageSpec:
+            if isinstance(req, LocalReqPackageSpec):
+                req_pkg_info = self.package_index.get_package_info_by_reg_name(req.package_name)
+                req_path = os.path.relpath(req_pkg_info.abs_path, package_info.abs_path)
+                req = req.clone(path=req_path)
+            return req
+
+        extra_import_specs = [_normalize_req_path(req) for req in extra_import_specs]
+        extra_req_specs = [_normalize_req_path(req) for req in extra_req_specs]
 
         return extra_import_specs, extra_req_specs
