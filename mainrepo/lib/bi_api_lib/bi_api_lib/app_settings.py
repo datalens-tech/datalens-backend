@@ -118,6 +118,11 @@ class AppSettings:
         "CONNECTORS",
         fallback_factory=connectors_settings_fallback_factory,
     )
+    CONNECTOR_WHITELIST: Optional[tuple[str]] = s_attrib(  # type: ignore
+        'CONNECTOR_WHITELIST',
+        env_var_converter=split_by_comma,
+        missing=None
+    )
 
     FIELD_ID_GENERATOR_TYPE: FieldIdGeneratorType = s_attrib(  # type: ignore
         "FIELD_ID_GENERATOR_TYPE",
