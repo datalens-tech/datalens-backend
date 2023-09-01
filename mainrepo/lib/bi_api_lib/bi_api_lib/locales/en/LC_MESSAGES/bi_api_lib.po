@@ -16,12 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "label_connector-yq"
-msgstr "Yandex Query"
-
-msgid "field_sa-key"
-msgstr "SA key"
-
 msgid "label_connector-chydb"
 msgstr "CH over YDB"
 
@@ -36,9 +30,6 @@ msgstr "Default cluster"
 
 msgid "field_default-database"
 msgstr "Default database name"
-
-msgid "label_connector-ydb"
-msgstr "YDB"
 
 msgid "section_title-db"
 msgstr "Databases"

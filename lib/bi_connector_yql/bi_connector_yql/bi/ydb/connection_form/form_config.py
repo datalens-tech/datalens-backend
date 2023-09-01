@@ -16,7 +16,7 @@ from bi_api_connector.form_config.models.common import CommonFieldName, OAuthApp
 from bi_api_connector.form_config.models.rows.base import FormRow, DisplayConditionsMixin, FormFieldMixin
 from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
 
-from bi_api_lib.connectors.ydb.connection_info import YDBConnectionInfoProvider
+from bi_connector_yql.bi.ydb.connection_info import YDBConnectionInfoProvider
 
 
 class YDBOAuthApplication(OAuthApplication):

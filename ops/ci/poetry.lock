@@ -8018,6 +8018,8 @@ bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 grpcio = ">=1.45.0rc1"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}

@@ -1,10 +1,3 @@
-from bi_connector_yql.core.ydb.connector import (
-    YDBCoreConnector,
-    YDBCoreConnectionDefinition,
-    YDBCoreSourceDefinition,
-    YDBCoreSubselectSourceDefinition,
-)
-
 from bi_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
@@ -14,10 +7,17 @@ from bi_api_connector.api_schema.source_base import (
     SQLDataSourceSchema, SQLDataSourceTemplateSchema, SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
 
+from bi_connector_yql.bi.ydb.api_schema.connection import YDBConnectionSchema
+from bi_connector_yql.bi.ydb.connection_form.form_config import YDBConnectionFormFactory
+from bi_connector_yql.bi.ydb.connection_info import YDBConnectionInfoProvider
+from bi_connector_yql.bi.yql_base.i18n.localizer import CONFIGS
+from bi_connector_yql.core.ydb.connector import (
+    YDBCoreConnector,
+    YDBCoreConnectionDefinition,
+    YDBCoreSourceDefinition,
+    YDBCoreSubselectSourceDefinition,
+)
 from bi_connector_yql.formula.constants import DIALECT_NAME_YDB
-from bi_api_lib.connectors.ydb.api_schema.connection import YDBConnectionSchema
-from bi_api_lib.connectors.ydb.connection_form.form_config import YDBConnectionFormFactory
-from bi_api_lib.connectors.ydb.connection_info import YDBConnectionInfoProvider
 
 
 class YDBBiApiTableSourceDefinition(BiApiSourceDefinition):
@@ -47,4 +47,4 @@ class YDBBiApiConnector(BiApiConnector):
         YDBBiApiSubselectSourceDefinition,
     )
     formula_dialect_name = DIALECT_NAME_YDB
-    # translation_configs = frozenset(CONFIGS)  TODO: add after a connectorization
+    translation_configs = frozenset(CONFIGS)

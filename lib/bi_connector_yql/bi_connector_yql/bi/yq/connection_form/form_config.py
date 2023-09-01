@@ -16,8 +16,8 @@ from bi_api_connector.form_config.models.api_schema import FormActionApiSchema, 
 from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
 from bi_api_connector.form_config.models.common import CommonFieldName
 
-from bi_api_lib.connectors.yq.connection_info import YQConnectionInfoProvider
-from bi_api_lib.i18n.localizer import Translatable
+from bi_connector_yql.bi.yq.connection_info import YQConnectionInfoProvider
+from bi_connector_yql.bi.yql_base.i18n.localizer import Translatable
 
 
 class YQConnectionFormFactory(ConnectionFormFactory):
