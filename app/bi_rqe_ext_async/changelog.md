@@ -1,3 +1,46 @@
+0.1981.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * more mypy fixes for bi_api_lib (#255)           [ https://github.com/datalens-tech/datalens-backend-private/commit/ff09d70 ]
+ * BI-4852: implement connectors whitelist (#251)  [ https://github.com/datalens-tech/datalens-backend-private/commit/3cb7ff5 ]
+ * add grpc stubs to the mypy image (#252)         [ https://github.com/datalens-tech/datalens-backend-private/commit/ac0fffa ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * BI-4359: fast fix app configs (it should fix the build) (#262)  [ https://github.com/datalens-tech/datalens-backend-private/commit/78711a8 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4902] Initial implementation of OS metapkg sync (#265)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/ae74f54 ]
+ * [BI-4902] Cleanup BQ crunches in meta pkg (#260)                                  [ https://github.com/datalens-tech/datalens-backend-private/commit/8d74841 ]
+ * [BI-4902] Sort dependencies in meta-package by groups according to policy (#258)  [ https://github.com/datalens-tech/datalens-backend-private/commit/22b92ab ]
+ * [BI-4830] Remove manual installation of BQ (#221)                                 [ https://github.com/datalens-tech/datalens-backend-private/commit/caed181 ]
+
+* [Sergei Borodin](http://staff/seray@yandex-team.ru)
+
+ * BI-4884 rootless yc-dls (#257)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4b419ad ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Remove some private stuff from base connection forms (#263)         [ https://github.com/datalens-tech/datalens-backend-private/commit/b1b3037 ]
+ * Remove hardcoded relative env file path in OsEnvParamGetter (#239)  [ https://github.com/datalens-tech/datalens-backend-private/commit/cb820a5 ]
+ * BI-4229 Move connector availability into configs (#156)             [ https://github.com/datalens-tech/datalens-backend-private/commit/88a7aec ]
+ * BI-4898 Separate base app settings for bi-api (#238)                [ https://github.com/datalens-tech/datalens-backend-private/commit/312acf2 ]
+ * Fix .po generation for non-connnector packages (#254)               [ https://github.com/datalens-tech/datalens-backend-private/commit/98dee9a ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * custom runner for mypy, repsects [datalens.meta.mypy] > targets section in the sub project's pyproject.toml (#253)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f51fd03 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Implemented renaming of packages (#244)         [ https://github.com/datalens-tech/datalens-backend-private/commit/532d804 ]
+ * Removed custom test dependency sections (#248)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d1aee37 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-01 12:03:36+00:00
+
 0.1980.0
 --------
 
