@@ -1,23 +1,21 @@
 from __future__ import annotations
 
+from bi_api_connector.connector import (
+    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+)
+
+from bi_connector_bundle_chs3.chs3_base.bi.api_schema.connection import BaseFileS3ConnectionSchema
+from bi_connector_bundle_chs3.chs3_base.bi.api_schema.source import (
+    BaseFileS3DataSourceSchema,
+    BaseFileS3DataSourceTemplateSchema,
+)
+from bi_connector_bundle_chs3.chs3_base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3TableCoreSourceDefinition,
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3CoreConnector,
 )
-
-from bi_formula.core.dialect import DialectName
-
-from bi_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
-)
-
 from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
-from bi_api_lib.connectors.chs3_base.schemas import (
-    BaseFileS3ConnectionSchema,
-    BaseFileS3DataSourceSchema,
-    BaseFileS3DataSourceTemplateSchema,
-)
 
 
 class BaseFileS3TableBiApiSourceDefinition(BiApiSourceDefinition):
@@ -40,3 +38,4 @@ class BaseFileS3BiApiConnector(BiApiConnector):
     source_definitions = (
         BaseFileS3TableBiApiSourceDefinition,
     )
+    translation_configs = frozenset(CONFIGS)

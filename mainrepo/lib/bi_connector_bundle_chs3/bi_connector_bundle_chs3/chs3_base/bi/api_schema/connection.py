@@ -1,69 +1,22 @@
 from __future__ import annotations
 
-from typing import Any, Type
+from typing import Any
 
-import marshmallow as ma
+from marshmallow import fields, validate, post_dump, pre_dump
 
-from bi_api_lib.error_handling import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
-from bi_api_lib.schemas.dataset_base import ComponentErrorListSchema
-from marshmallow import fields, Schema, RAISE, validate, post_load, post_dump, pre_dump
+from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-from bi_constants.enums import BIType, FileProcessingStatus
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from bi_core.utils import make_user_auth_headers, make_user_auth_cookies
 from bi_core import exc
 
-from bi_model_tools.schema.base import BaseSchema
+from bi_api_connector.api_schema.component_errors import ComponentErrorListSchema
 from bi_api_connector.api_schema.connection_base import ConnectionSchema
 from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
-
-class FileSourceColumnTypeSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
-    name = fields.String()
-    user_type = fields.Enum(BIType)
-
-
-class RawSchemaColumnSchema(Schema):
-    name = fields.String()
-    title = fields.String()
-    user_type = fields.Enum(BIType)
-
-
-class BaseFileSourceSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
-        target: Type[BaseFileS3Connection.FileDataSource]
-
-    @post_load(pass_many=False)
-    def to_object(self, data: dict[str, Any], **kwargs: Any) -> BaseFileS3Connection.FileDataSource:
-        return self.Meta.target(**data)
-
-    id = fields.String()
-    file_id = fields.String(load_default=None)
-    title = fields.String(bi_extra=FieldExtra(editable=True))
-    status = fields.Enum(FileProcessingStatus, dump_only=True)
-    raw_schema = fields.Nested(
-        RawSchemaColumnSchema,
-        many=True,
-        dump_only=True,
-    )
-    preview = fields.List(fields.List(fields.Raw), dump_only=True, dump_default=None)
-    # meta_info = {"row_num": 100500, "size": 256, "file_name": 'file_name.csv', }
-
-
-class ReplaceFileSourceSchema(Schema):
-    class Meta:
-        unknown = RAISE
-
-    old_source_id = fields.String()
-    new_source_id = fields.String()
+from bi_connector_bundle_chs3.chs3_base.bi.api_schema.source import BaseFileSourceSchema, ReplaceFileSourceSchema
+from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
 class BaseFileS3ConnectionSchema(ConnectionSchema):
@@ -86,11 +39,6 @@ class BaseFileS3ConnectionSchema(ConnectionSchema):
     )
 
     component_errors = fields.Nested(ComponentErrorListSchema, attribute='data.component_errors', required=False)
-
-    # @validates_schema
-    # def validate_sources(self, data: Optional[dict], *_args: Any, **_kwargs: Any) -> None:
-    #     if data is None:
-    #         return
 
     def create_data_model_constructor_kwargs(self, data_attributes: dict[str, Any]) -> dict[str, Any]:
         base_kwargs = super().create_data_model_constructor_kwargs(data_attributes)
@@ -128,15 +76,3 @@ class BaseFileS3ConnectionSchema(ConnectionSchema):
                 if len(error.code) < len(expected_prefix) or error.code[:len(expected_prefix)] != expected_prefix:
                     error.code = expected_prefix + error.code
         return conn
-
-
-class BaseFileS3DataSourceParametersSchema(BaseSchema):
-    origin_source_id = ma.fields.String(allow_none=True, load_default=None)
-
-
-class BaseFileS3DataSourceSchema(SQLDataSourceSchema):
-    parameters = ma.fields.Nested(BaseFileS3DataSourceParametersSchema)
-
-
-class BaseFileS3DataSourceTemplateSchema(SQLDataSourceTemplateSchema):
-    parameters = ma.fields.Nested(BaseFileS3DataSourceParametersSchema)

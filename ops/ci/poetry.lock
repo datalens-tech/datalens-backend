@@ -7618,11 +7618,13 @@ marshmallow = ">=3.19.0"
 statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 xxhash = ">=3.2.0"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
+yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
+yandex-bi-model-tools = {path = "../bi_model_tools"}
 yandex-bi-testing = {path = "../bi_testing"}
 yandex-bi-utils = {path = "../bi_utils"}
 

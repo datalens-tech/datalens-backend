@@ -6,6 +6,7 @@ from typing import Any, List, Optional, Set, Tuple
 
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
 from bi_constants.enums import AggregationFunction, BIType, BinaryJoinOperator, ConnectionType, ManagedBy
+from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
 from bi_core.data_source.base import DbInfo
 from bi_core.dataset_capabilities import DatasetCapabilities
@@ -23,7 +24,6 @@ from bi_api_lib.utils.rls import FieldRLSSerializer
 from bi_api_lib.dataset.utils import get_dataset_conn_types, allow_rls_for_dataset
 from bi_api_lib.dataset.dialect import resolve_dialect_name
 from bi_api_lib.enums import BI_TYPE_AGGREGATIONS, CASTS_BY_TYPE
-from bi_api_lib.error_handling import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 from bi_api_lib.api_common.dataset_loader import DatasetApiLoader, DatasetUpdateInfo
 from bi_api_lib.app.control_api.resources.base import BIResource
 

@@ -9,6 +9,8 @@ from typing import Any, Dict, ClassVar, FrozenSet, Tuple, Optional, Type
 import attr
 from marshmallow import ValidationError as MValidationError
 
+from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
+
 import bi_core.exc
 from bi_api_commons.exc import RequestTimeoutError
 from bi_dls_client.exc import DLSSubjectNotFound
@@ -89,9 +91,6 @@ EXCEPTION_CODES = {
     common_exc.WrongQueryParameterization: status.BAD_REQUEST,
     RequestTimeoutError: status.FAILED_DEPENDENCY,
 }
-GLOBAL_ERR_PREFIX = 'ERR'
-DEFAULT_ERR_CODE_API_PREFIX = 'DS_API'
-CODE_OK = 'OK'
 
 
 # TODO CONSIDER: Add private fields to store in logs for further quantity analytics

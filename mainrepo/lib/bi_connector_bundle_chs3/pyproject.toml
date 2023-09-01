@@ -16,6 +16,7 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 xxhash = ">=3.2.0"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
+yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../bi_constants"}
@@ -23,10 +24,16 @@ yandex-bi-core = {path = "../bi_core"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 bi-file-uploader-task-interface = {path = "../bi_file_uploader_task_interface"}
 bi-i18n = {path = "../bi_i18n"}
+yandex-bi-model-tools = {path = "../bi_model_tools"}
 bi-task-processor = {path = "../bi_task_processor"}
 yandex-bi-testing = {path = "../bi_testing"}
 yandex-bi-utils = {path = "../bi_utils"}
 statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."bi_api_lib.connectors"]
+file = "bi_connector_bundle_chs3.file.bi.connector:FileS3BiApiConnector"
+gsheets_v2 = "bi_connector_bundle_chs3.chs3_gsheets.bi.connector:GSheetsFileS3BiApiConnector"
 
 [tool.poetry.plugins."bi_core.connectors"]
 file = "bi_connector_bundle_chs3.file.core.connector:FileS3CoreConnector"

@@ -2,12 +2,9 @@ from __future__ import annotations
 
 from typing import Type
 
-from bi_constants.exc import DLBaseException
+from bi_constants.exc import DLBaseException, GLOBAL_ERR_PREFIX
 
 from bi_file_uploader_lib.enums import ErrorLevel
-
-
-GLOBAL_ERR_PREFIX = 'ERR'
 
 
 def make_err_code(exc: Type[DLFileUploaderBaseError] | DLFileUploaderBaseError) -> str:

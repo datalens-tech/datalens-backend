@@ -16,9 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "label_connector-gsheets_v2"
-msgstr "Google Sheets"
-
 msgid "label_connector-solomon"
 msgstr "Monitoring"
 
@@ -26,9 +23,6 @@ msgid "label_solomon-conn-description"
 msgstr ""
 "This connection allows you to create charts in DataLens according to the "
 "[Yandex Monitoring (Solomon)]({LINK}) data"
-
-msgid "label_connector-file"
-msgstr "Files"
 
 msgid "label_connector-yq"
 msgstr "Yandex Query"

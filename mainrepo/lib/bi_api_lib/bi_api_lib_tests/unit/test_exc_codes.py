@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
+
 import bi_core.exc
 import bi_formula.core.exc
 
 import bi_query_processing.exc
-from bi_api_lib.error_handling import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
 
 def exc_cls_to_code(exc_cls):

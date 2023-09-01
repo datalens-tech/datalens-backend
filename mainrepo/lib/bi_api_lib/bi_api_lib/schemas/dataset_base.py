@@ -7,10 +7,7 @@ from typing import Any, Dict
 from marshmallow import fields as ma_fields, ValidationError, pre_load, post_dump, validates_schema
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import (
-    AggregationFunction, BIType, CalcMode, FieldType, ManagedBy,
-    ComponentErrorLevel, ComponentType,
-)
+from bi_constants.enums import AggregationFunction, BIType, CalcMode, FieldType, ManagedBy
 
 from bi_model_tools.schema.base import BaseSchema, DefaultSchema
 
@@ -18,13 +15,12 @@ from bi_core.fields import (
     BIField, CalculationSpec, DirectCalculationSpec, FormulaCalculationSpec, ParameterCalculationSpec,
     del_calc_spec_kwargs_from, filter_calc_spec_kwargs
 )
-from bi_core import component_errors
-from bi_core.marshmallow import ErrorCodeField
 
 from bi_api_lib.schemas.fields import ResultSchemaAuxSchema
 from bi_api_lib.schemas.filter import ObligatoryFilterSchema
 from bi_api_lib.schemas.options import OptionsMixin
 from bi_api_lib.schemas.parameters import ParameterValueConstraintSchema
+from bi_api_connector.api_schema.component_errors import ComponentErrorListSchema
 from bi_api_connector.api_schema.source import DataSourceStrictSchema
 from bi_api_connector.api_schema.source_base import AvatarRelationSchema, SourceAvatarStrictSchema, VirtualFlagField
 from bi_api_lib.schemas.values import ValueSchema, WithNestedValueSchema
@@ -119,27 +115,6 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
 
     def to_object(self, data: dict) -> BIField:
         return BIField.make(**data)
-
-
-class ComponentErrorListSchema(DefaultSchema[component_errors.ComponentErrorRegistry]):
-    TARGET_CLS = component_errors.ComponentErrorRegistry
-
-    class ComponentErrorPackSchema(DefaultSchema[component_errors.ComponentErrorPack]):
-        TARGET_CLS = component_errors.ComponentErrorPack
-
-        class ComponentErrorSchema(DefaultSchema[component_errors.ComponentError]):
-            TARGET_CLS = component_errors.ComponentError
-
-            message = ma_fields.String()
-            level = ma_fields.Enum(ComponentErrorLevel)
-            code = ErrorCodeField()
-            details = ma_fields.Dict()
-
-        id = ma_fields.String()
-        type = ma_fields.Enum(ComponentType)
-        errors = ma_fields.List(ma_fields.Nested(ComponentErrorSchema))
-
-    items = ma_fields.List(ma_fields.Nested(ComponentErrorPackSchema))
 
 
 class DatasetContentInternalSchema(BaseSchema):

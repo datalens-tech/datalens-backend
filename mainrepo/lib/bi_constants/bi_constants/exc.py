@@ -4,6 +4,11 @@ from typing_extensions import final
 from bi_constants.types import TJSONLike
 
 
+GLOBAL_ERR_PREFIX = 'ERR'
+DEFAULT_ERR_CODE_API_PREFIX = 'DS_API'
+CODE_OK = 'OK'
+
+
 # TODO FIX: Simplify exc data structures to simplify serialization
 #  Make only 2 arguments in constructor: data & orig
 class DLBaseException(Exception):

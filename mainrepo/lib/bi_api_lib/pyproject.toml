@@ -71,8 +71,6 @@ yandex-bi-model-tools = {path = "../bi_model_tools"}
 yandex-bi-query-processing = {path = "../bi_query_processing"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
-chs3_gsheets = "bi_api_lib.connectors.chs3_gsheets.connector:GSheetsFileS3BiApiConnector"
-file = "bi_api_lib.connectors.file.connector:FileS3BiApiConnector"
 solomon = "bi_api_lib.connectors.solomon.connector:SolomonBiApiConnector"
 ydb = "bi_api_lib.connectors.ydb.connector:YDBBiApiConnector"
 yq = "bi_api_lib.connectors.yq.connector:YQBiApiConnector"

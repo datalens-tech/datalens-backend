@@ -1,18 +1,17 @@
 from __future__ import annotations
 
+from bi_connector_bundle_chs3.chs3_base.bi.connector import (
+    BaseFileS3TableBiApiSourceDefinition,
+    BaseFileS3BiApiConnectionDefinition,
+    BaseFileS3BiApiConnector,
+)
+from bi_connector_bundle_chs3.chs3_gsheets.bi.api_schema.connection import GSheetsFileS3ConnectionSchema
+from bi_connector_bundle_chs3.chs3_gsheets.bi.connection_info import GSheetsFileS3ConnectionInfoProvider
 from bi_connector_bundle_chs3.chs3_gsheets.core.connector import (
     GSheetsFileS3TableCoreSourceDefinition,
     GSheetsFileS3CoreConnectionDefinition,
     GSheetsFileS3CoreConnector,
 )
-
-from bi_api_lib.connectors.chs3_base.connector import (
-    BaseFileS3TableBiApiSourceDefinition,
-    BaseFileS3BiApiConnectionDefinition,
-    BaseFileS3BiApiConnector,
-)
-from bi_api_lib.connectors.chs3_gsheets.connection_info import GSheetsFileS3ConnectionInfoProvider
-from bi_api_lib.connectors.chs3_gsheets.schemas import GSheetsFileS3ConnectionSchema
 
 
 class GSheetsFileS3TableBiApiSourceDefinition(BaseFileS3TableBiApiSourceDefinition):

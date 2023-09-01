@@ -6,16 +6,8 @@ from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFile
 
 from bi_api_connector.api_schema.extras import FieldExtra
 
-from bi_api_lib.connectors.chs3_base.schemas import BaseFileSourceSchema, BaseFileS3ConnectionSchema
-
-
-class GSheetsFileSourceSchema(BaseFileSourceSchema):
-    class Meta(BaseFileSourceSchema.Meta):
-        target = GSheetsFileS3Connection.FileDataSource
-
-    spreadsheet_id = fields.String(dump_only=True)
-    sheet_id = fields.Integer(dump_only=True)
-    first_line_is_header = fields.Boolean(dump_only=True)
+from bi_connector_bundle_chs3.chs3_base.bi.api_schema.connection import BaseFileS3ConnectionSchema
+from bi_connector_bundle_chs3.chs3_gsheets.bi.api_schema.source import GSheetsFileSourceSchema
 
 
 class GSheetsFileS3ConnectionSchema(BaseFileS3ConnectionSchema):

@@ -6,6 +6,9 @@ from typing import NamedTuple, Optional
 
 import attr
 
+from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
+from bi_utils.aio import await_sync
+
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
 
 import bi_core.exc as core_exc
@@ -23,9 +26,7 @@ from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_api_lib.utils.rls import FieldRLSSerializer
 from bi_api_lib.dataset.utils import allow_rls_for_dataset
-from bi_api_lib.error_handling import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 from bi_api_lib import exc
-from bi_utils.aio import await_sync
 
 LOGGER = logging.getLogger(__name__)
 
