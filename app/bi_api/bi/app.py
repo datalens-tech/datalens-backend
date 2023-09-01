@@ -27,7 +27,7 @@ from bi_api_lib.app_settings import (
 )
 from bi_api_lib.loader import load_bi_api_lib
 
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
+from bi_configs.environments import InstallationsMap, EnvAliasesMap
 
 
 class DefaultControlApiAppFactory(ControlApiAppFactory, LegacySRFactoryBuilder):

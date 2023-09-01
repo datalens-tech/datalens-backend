@@ -7,7 +7,7 @@ from aiohttp import web
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_core.logging_config import configure_logging
 from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
+from bi_configs.environments import InstallationsMap, EnvAliasesMap
 from bi_file_uploader_worker_lib.app import FileUploaderWorkerFactory
 from bi_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings
 from bi_task_processor.controller import Cli

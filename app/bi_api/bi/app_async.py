@@ -26,7 +26,7 @@ from bi_api_lib.loader import load_bi_api_lib
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 
 from bi import app_version
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
+from bi_configs.environments import InstallationsMap, EnvAliasesMap
 
 LOGGER = logging.getLogger(__name__)
 
