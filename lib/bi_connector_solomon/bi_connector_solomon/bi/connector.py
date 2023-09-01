@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-from bi_connector_solomon.core.connector import (
-    SolomonCoreConnectionDefinition,
-    SolomonCoreConnector,
-    SolomonCoreSourceDefinition,
-)
-
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
@@ -14,9 +8,15 @@ from bi_api_connector.api_schema.source_base import (
     SimpleDataSourceTemplateSchema,
 )
 
-from bi_api_lib.connectors.solomon.connection_form.form_config import SolomonConnectionFormFactory
-from bi_api_lib.connectors.solomon.connection_info import SolomonConnectionInfoProvider
-from bi_api_lib.connectors.solomon.schemas import SolomonConnectionSchema
+from bi_connector_solomon.bi.api_schema.connection import SolomonConnectionSchema
+from bi_connector_solomon.bi.connection_form.form_config import SolomonConnectionFormFactory
+from bi_connector_solomon.bi.connection_info import SolomonConnectionInfoProvider
+from bi_connector_solomon.bi.i18n.localizer import CONFIGS
+from bi_connector_solomon.core.connector import (
+    SolomonCoreConnectionDefinition,
+    SolomonCoreConnector,
+    SolomonCoreSourceDefinition,
+)
 
 
 class SolomonBiApiConnectionDefinition(BiApiConnectionDefinition):
@@ -40,3 +40,4 @@ class SolomonBiApiConnector(BiApiConnector):
     source_definitions = (
         SolomonBiApiSourceDefinition,
     )
+    translation_configs = frozenset(CONFIGS)

@@ -16,14 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "label_connector-solomon"
-msgstr "Monitoring"
-
-msgid "label_solomon-conn-description"
-msgstr ""
-"Подключение позволяет создавать графики в DataLens по данным сервиса [Yandex "
-"Monitoring (Solomon)]({LINK})"
-
 msgid "label_connector-yq"
 msgstr "Yandex Query"
 

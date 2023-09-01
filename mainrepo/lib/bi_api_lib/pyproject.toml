@@ -64,7 +64,6 @@ sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
 statcommons = {path = "../statcommons"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
-solomon = "bi_api_lib.connectors.solomon.connector:SolomonBiApiConnector"
 ydb = "bi_api_lib.connectors.ydb.connector:YDBBiApiConnector"
 yq = "bi_api_lib.connectors.yq.connector:YQBiApiConnector"
 

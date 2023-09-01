@@ -738,9 +738,13 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 tvmauth = ">=3.4.9"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
