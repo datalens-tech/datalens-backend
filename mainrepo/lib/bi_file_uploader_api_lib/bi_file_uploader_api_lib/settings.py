@@ -44,11 +44,16 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
         "SENTRY_DSN", fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_API", missing=None,
     )
 
-    YC_AUTH_SETTINGS: Optional[YCAuthSettings] = s_attrib("YC_AUTH_SETTINGS", fallback_factory=default_yc_auth_settings)  # type: ignore
-    SA_KEY_DATA: Optional[dict[str, str]] = s_attrib(  # type: ignore
-        "SA_KEY_DATA", sensitive=True, missing=None, env_var_converter=json.loads,
-    )
-
     FILE_UPLOADER_MASTER_TOKEN: str = s_attrib("FILE_UPLOADER_MASTER_TOKEN", sensitive=True)  # type: ignore
 
     ALLOW_XLSX: bool = s_attrib("ALLOW_XLSX", missing=False)  # type: ignore
+
+
+@attr.s(frozen=True)
+class DefaultFileUploaderAPISettings(FileUploaderAPISettings):
+    YC_AUTH_SETTINGS: Optional[YCAuthSettings] = s_attrib(  # type: ignore
+        "YC_AUTH_SETTINGS", fallback_factory=default_yc_auth_settings,
+    )
+    SA_KEY_DATA: Optional[dict[str, str]] = s_attrib(  # type: ignore
+        "SA_KEY_DATA", sensitive=True, missing=None, env_var_converter=json.loads,
+    )

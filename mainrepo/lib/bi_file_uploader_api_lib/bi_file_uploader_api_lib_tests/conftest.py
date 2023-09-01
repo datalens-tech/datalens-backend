@@ -19,11 +19,13 @@ from bi_configs.enums import AppType, RedisMode
 from bi_configs.settings_submodels import RedisSettings, CorsSettings, CsrfSettings, S3Settings, GoogleAppSettings
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config, CryptoKeysConfig
 from bi_constants.api_constants import DLHeadersCommon
-from bi_core.services_registry.top_level import DummyServiceRegistry
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage
+from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.loader import load_bi_core
+from bi_core.services_registry.top_level import DummyServiceRegistry
 from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.us_manager.us_manager_async import AsyncUSManager
+from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons.base_models import RequestContextInfo, TenantCommon
 from bi_testing_ya.api_wrappers import APIClient
 from bi_testing.s3_utils import create_s3_bucket, create_s3_client
@@ -168,7 +170,6 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
         ),
         S3_TMP_BUCKET_NAME='bi-file-uploader-tmp',
         S3_PERSISTENT_BUCKET_NAME='bi-file-uploader',
-        YC_AUTH_SETTINGS=None,
         FILE_UPLOADER_MASTER_TOKEN='valid-master-token',
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         ALLOW_XLSX=True,
@@ -176,8 +177,14 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
     yield settings
 
 
-class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory):
-    pass
+class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPISettings]):
+    def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
+        return [
+            auth_trust_middleware(
+                fake_user_id='_the_tests_file_uploader_api_user_id_',
+                fake_user_name='_the_tests_file_uploader_api_user_name_',
+            )
+        ]
 
 
 @pytest.fixture(scope="function")

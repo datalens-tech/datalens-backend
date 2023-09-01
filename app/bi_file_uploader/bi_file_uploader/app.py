@@ -8,8 +8,8 @@ from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_f
 from bi_core.logging_config import configure_logging
 from bi_configs.environments import InstallationsMap, EnvAliasesMap
 
-from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
-from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
+from bi_file_uploader_api_lib.app import LegacyFileUploaderApiAppFactory
+from bi_file_uploader_api_lib.settings import DefaultFileUploaderAPISettings
 
 from bi_file_uploader import app_version
 
@@ -17,7 +17,7 @@ from bi_file_uploader import app_version
 LOGGER = logging.getLogger(__name__)
 
 
-class DefaultFileUploaderApiAppFactory(FileUploaderApiAppFactory):
+class DefaultFileUploaderApiAppFactory(LegacyFileUploaderApiAppFactory):
     pass
 
 
@@ -27,7 +27,7 @@ async def create_gunicorn_app() -> web.Application:
         env_map=EnvAliasesMap,
     )
     settings = load_settings_from_env_with_fallback_legacy(
-        FileUploaderAPISettings,
+        DefaultFileUploaderAPISettings,
         fallback_cfg_resolver=fallback_resolver,
     )
     configure_logging(app_name='bi_file_uploader_api')

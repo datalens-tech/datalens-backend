@@ -9,13 +9,11 @@ from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
 from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
-from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
+from bi_file_uploader_api_lib.settings import DefaultFileUploaderAPISettings
 
 
 @attr.s(kw_only=True)
-class FileUploaderApiAppFactoryYC(FileUploaderApiAppFactory):
-    _settings: FileUploaderAPISettings = attr.ib()
-
+class FileUploaderApiAppFactoryYC(FileUploaderApiAppFactory[DefaultFileUploaderAPISettings]):
     def get_auth_middlewares(self) -> Sequence[Any]:
         auth_mw_list: Sequence[Any]
         yc_auth_settings = self._settings.YC_AUTH_SETTINGS
