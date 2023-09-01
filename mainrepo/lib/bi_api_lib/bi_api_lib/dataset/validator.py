@@ -3,11 +3,7 @@ from __future__ import annotations
 import logging
 import uuid
 from contextlib import contextmanager
-from typing import (
-    Collection, FrozenSet, Generator, List,
-    Optional, Sequence, Type,
-    TYPE_CHECKING,
-)
+from typing import Collection, Generator, Optional, Sequence, Type, TYPE_CHECKING
 
 import attr
 
@@ -211,7 +207,7 @@ class DatasetValidator(DatasetBaseWrapper):
         self.update_validity_of_affected_components()
 
     def _check_for_orphaned_component_errors(self) -> None:
-        missing_components: List[DatasetComponentRef] = []
+        missing_components: list[DatasetComponentRef] = []
         for err_pack in self._ds.error_registry.items:
             component_ref = DatasetComponentRef(component_type=err_pack.type, component_id=err_pack.id)
             component = self._ds_ca.get_component(component_ref=component_ref)
@@ -247,7 +243,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 code=exc.TooManyFieldsError.err_code,
             )
 
-    def get_dependent_fields(self, field: Optional[BIField]) -> List[BIField]:
+    def get_dependent_fields(self, field: Optional[BIField]) -> list[BIField]:
         """Return list of fields directly dependent on the given one"""
 
         if field is None:
@@ -260,7 +256,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         return result
 
-    def _get_field_errors(self, field: BIField) -> List[FormulaErrorCtx]:
+    def _get_field_errors(self, field: BIField) -> list[FormulaErrorCtx]:
         errors = self.formula_compiler.get_field_errors(field=field)
         try:
             formula_info = self.formula_compiler.compile_field_formula(field=field, collect_errors=True)
@@ -274,9 +270,9 @@ class DatasetValidator(DatasetBaseWrapper):
             pass
         return errors  # type: ignore  # TODO: fix
 
-    def _get_relation_errors(self, relation: AvatarRelation) -> List[FormulaErrorCtx]:
+    def _get_relation_errors(self, relation: AvatarRelation) -> list[FormulaErrorCtx]:
         # TODO: switch to ComponentError items
-        errors: List[FormulaErrorCtx] = []
+        errors: list[FormulaErrorCtx] = []
 
         # Validate expressions
         try:
@@ -312,7 +308,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         return errors
 
-    def _get_formula_errors(self, formula: str, feature_errors: bool = True) -> List[FormulaErrorCtx]:
+    def _get_formula_errors(self, formula: str, feature_errors: bool = True) -> list[FormulaErrorCtx]:
         errors = self.formula_compiler.get_formula_errors(formula=formula)
         try:
             formula_info = self.formula_compiler.compile_text_formula(formula=formula, collect_errors=True)
@@ -415,7 +411,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
     def _update_dependent_fields(
             self, old_field: Optional[BIField], new_field: Optional[BIField],
-            visited_guids: FrozenSet[str],
+            visited_guids: frozenset[str],
     ) -> None:
         """Automatically update all fields dependent on the given one"""
         dep_field_ids = set()
@@ -455,9 +451,9 @@ class DatasetValidator(DatasetBaseWrapper):
             self,
             old_field: Optional[BIField],
             new_field: Optional[BIField],
-            order_index: int = None,
+            order_index: Optional[int] = None,
             recursive: bool = False,
-            visited_guids: FrozenSet[str] = frozenset(),
+            visited_guids: frozenset[str] = frozenset(),
             explicitly_updated: bool = False,
     ) -> None:
         """Update/delete/add field and apply autofixes."""
@@ -552,7 +548,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 ref_field_ids=self.formula_compiler.get_referenced_fields(new_field)
             )
 
-    def _get_unpatched_field_ids(self) -> List[str]:
+    def _get_unpatched_field_ids(self) -> list[str]:
         """Return fields that required patching of properties (e.g. cast, initial_data_type, etc.)"""
         return [f.guid for f in self._ds.result_schema if (
             f.type is None
@@ -587,7 +583,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
     @generic_profiler("validator-apply-field-action")
     def apply_field_action(
-            self, action: DatasetAction, field_data: UpdateField, order_index: int = None,
+            self, action: DatasetAction, field_data: UpdateField, order_index: Optional[int] = None,
             by: Optional[ManagedBy] = ManagedBy.user,
     ) -> None:
         """Apply update to the result schema configuration"""
@@ -762,7 +758,7 @@ class DatasetValidator(DatasetBaseWrapper):
             self,
             old_raw_schema: Sequence[SchemaColumn],
             new_raw_schema: Optional[Sequence[SchemaColumn]],
-            avatar_ids: List[str],
+            avatar_ids: list[str],
             do_delete_fields: bool = False,
             force_update_fields: bool = False,
     ) -> None:
@@ -777,7 +773,7 @@ class DatasetValidator(DatasetBaseWrapper):
             for old_field, new_field in updated_fields:
                 self.formula_compiler.uncache_field(field_not_none(old_field or new_field))
             # Now move on to updating
-            updated_ids: List[str] = []
+            updated_ids: list[str] = []
             by_id: dict[str, tuple[Optional[BIField], Optional[BIField]]] = {}
             for old_field, new_field in updated_fields:
                 self._update_field(old_field, new_field, recursive=False)
@@ -1294,7 +1290,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
     def _try_generate_conditions_from_columns(
             self, left_avatar_id: str, right_avatar_id: str,
-    ) -> List[BinaryCondition]:
+    ) -> list[BinaryCondition]:
         """Automatically generate condition for first pair of matching field names"""
 
         left_columns = self._get_data_source_strict(
@@ -1581,7 +1577,7 @@ class DatasetValidator(DatasetBaseWrapper):
             self._ds_editor.remove_obligatory_filter(obfilter_id=filter_data.id)
 
     @generic_profiler("validator-get-single-formula-errors")
-    def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> List[ErrorInfo]:
+    def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> list[ErrorInfo]:
         if not self._has_sources:
             errors = [FormulaErrorCtx(message='No data sources have been defined', level=MessageLevel.ERROR)]
 
@@ -1618,19 +1614,19 @@ class DatasetValidator(DatasetBaseWrapper):
                     code=common_exc.ReferencedUSEntryNotFound.err_code, details={},
                 )
 
-    def _find_phantom_error_refs(self) -> List[DatasetComponentRef]:
+    def _find_phantom_error_refs(self) -> list[DatasetComponentRef]:
         all_error_refs = [
             DatasetComponentRef(component_type=item.type, component_id=item.id)
             for item in self._ds.error_registry.items
         ]
-        phantom_refs: List[DatasetComponentRef] = []
+        phantom_refs: list[DatasetComponentRef] = []
         for component_ref in all_error_refs:
             if self._ds_ca.get_component(component_ref=component_ref) is None:
                 phantom_refs.append(component_ref)
 
         return phantom_refs
 
-    def _remove_phantom_errors_for_refs(self, phantom_refs: List[DatasetComponentRef]) -> None:
+    def _remove_phantom_errors_for_refs(self, phantom_refs: list[DatasetComponentRef]) -> None:
         for ref in phantom_refs:
             self._ds.error_registry.remove_errors(id=ref.component_id)
 

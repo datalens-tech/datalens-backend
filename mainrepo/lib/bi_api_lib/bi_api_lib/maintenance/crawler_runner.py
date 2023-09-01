@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Optional
 
 from bi_app_tools import ylog
 from bi_core.maintenance.logging_config import configure_logging_for_shell
@@ -13,7 +14,12 @@ from bi_api_lib.maintenance.common import MaintenanceEnvironmentManager
 LOGGER = logging.getLogger(__name__)
 
 
-async def run_crawler(crawler: USEntryCrawler, usm: AsyncUSManager = None, configure_logging: bool = True, use_sr_factory: bool = False) -> None:
+async def run_crawler(
+        crawler: USEntryCrawler,
+        usm: Optional[AsyncUSManager] = None,
+        configure_logging: bool = True,
+        use_sr_factory: bool = False
+) -> None:
     """Runner to run crawler in interactive shell"""
     red = "\x1b[31m"
     nc = "\x1b[0m"

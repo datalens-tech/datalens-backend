@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Hashable, NamedTuple, Tuple, Optional
+from typing import Hashable, NamedTuple, Optional
 
 import attr
 
@@ -25,11 +25,11 @@ class DataCellVector(NamedTuple):
         return self[0][0][0]  # self.cells[0].value
 
     @property
-    def main_legend_item_id(self) -> Hashable:
+    def main_legend_item_id(self) -> int:
         return self[0][0][1]  # self.cells[0].legend_item_id
 
     @property
-    def main_pivot_item_id(self) -> Hashable:
+    def main_pivot_item_id(self) -> int:
         return self[0][0][2]  # self.cells[0].pivot_item_id
 
 
@@ -103,8 +103,7 @@ class PivotHeader:
         return sorting_values == main_values
 
 
-# TODO: replace Tuple -> tuple after moving to fresh mypy. See https://github.com/python/mypy/issues/10242
-MeasureValues = Tuple[Optional[DataCellVector], ...]
+MeasureValues = tuple[Optional[DataCellVector], ...]
 
 
 class DataRow(NamedTuple):

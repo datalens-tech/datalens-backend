@@ -15,6 +15,7 @@ from bi_api_lib.pivot.pandas.data_frame import (
     PdPivotDataFrame, PdHSeriesPivotDataFrame, PdVSeriesPivotDataFrame,
 )
 from bi_api_lib.pivot.base.sorter import PivotSorter
+from bi_api_lib.pivot.primitives import DataCellVector
 
 if TYPE_CHECKING:
     from bi_api_lib.pivot.primitives import PivotHeader, PivotMeasureSortingSettings
@@ -99,7 +100,9 @@ class PdPivotSorterBase(PivotSorter):
 
         def sorting_key_func(idx: pd.Index) -> pd.Index:
             """Convert cell vectors in data frame index to simple orderable values"""
-            legend_item_id = idx[0].main_legend_item_id
+            idx_item = idx[0]
+            assert isinstance(idx_item, DataCellVector)
+            legend_item_id = idx_item.main_legend_item_id
             pivot_item_ids = self._pivot_legend.leg_item_id_to_pivot_item_id_list(legend_item_id=legend_item_id)
             # FIXME: Find a way to determine which of the several possible pivot items this really is
             pivot_item_id = next(iter(pivot_item_ids))

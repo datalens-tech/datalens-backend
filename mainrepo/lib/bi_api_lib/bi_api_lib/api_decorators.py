@@ -6,7 +6,7 @@ import json
 import logging
 import sys
 from functools import wraps
-from typing import Callable, Dict, Tuple, Optional
+from typing import Callable, Optional
 
 import flask
 from flask import request, current_app as capp
@@ -49,9 +49,9 @@ def abort_request(code, message=None, response_data: Optional[dict] = None):  # 
 
 def schematic_request(  # type: ignore  # TODO: fix
         ns: Namespace,
-        body: Schema = None,
-        query: Schema = None,
-        responses: Dict[int, Tuple[str, Schema]] = None,
+        body: Optional[Schema] = None,
+        query: Optional[Schema] = None,
+        responses: Optional[dict[int, tuple[str, Schema]]] = None,
         dump: bool = True
 ):
     """

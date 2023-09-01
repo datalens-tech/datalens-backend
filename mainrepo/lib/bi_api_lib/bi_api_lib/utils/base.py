@@ -48,7 +48,7 @@ def query_execution_context(
 
 
 @contextmanager
-def profile_stats(stats_dir: str = None) -> Iterator[None]:
+def profile_stats(stats_dir: Optional[str] = None) -> Iterator[None]:
     """Save profiler stats to file"""
     stats_dir = stats_dir or './cprofiler'
     if not os.path.exists(stats_dir):
