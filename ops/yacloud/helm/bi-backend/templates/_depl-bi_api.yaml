@@ -155,6 +155,9 @@ spec:
             periodSeconds: 10
           securityContext:
             {{- include "security-context-data-api" . | indent 12}}
+          volumeMounts:
+            - mountPath: /etc/ssl/certs
+              name: internal-cert
         {{ end }}
       volumes:
         - name: init-scripts
@@ -162,6 +165,12 @@ spec:
             name: "{{ .Release.Name }}-init-scripts"
         - name: app-secrets
           emptyDir: {}
+        - name: internal-cert
+          secret:
+            secretName: yc-internal-ca-cert
+            items:
+              - key: cert
+                path: ca-certificates.crt
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"
