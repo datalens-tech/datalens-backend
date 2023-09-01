@@ -1,3 +1,26 @@
+0.1982.0
+--------
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * replaced plain str with pathlib.Path in dl_repmanager (#261)  [ https://github.com/datalens-tech/datalens-backend-private/commit/e8cc05b ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4860: allow empty connector settings (#275)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7ec4d37 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Normalized bi_api_client's requirements (#269)                            [ https://github.com/datalens-tech/datalens-backend-private/commit/db39ebc ]
+ * Switched to prproject.toml-compatible format in requirement check (#273)  [ https://github.com/datalens-tech/datalens-backend-private/commit/fb1ae2d ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * BI-4899 Tags instead of APP_TYPE to control function availability (#264)  [ https://github.com/datalens-tech/datalens-backend-private/commit/9c96e0a ]
+ * BI-4901 Separate base app settings for file-uploader-api (#240)           [ https://github.com/datalens-tech/datalens-backend-private/commit/026ab89 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-01 14:06:53+00:00
+
 0.1981.0
 --------
 
