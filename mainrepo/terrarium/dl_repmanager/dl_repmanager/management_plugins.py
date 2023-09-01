@@ -81,7 +81,7 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
     def _register_main(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
         package_path_for_toml = self._get_path_for_toml(package_info)
         package_dep_table = tomlkit.inline_table()
-        package_dep_table.add('path', package_path_for_toml)
+        package_dep_table.add('path', str(package_path_for_toml))
         toml_writer.get_editable_section('tool.poetry.group.ci.dependencies').add(
             package_info.package_reg_name, package_dep_table)
 
@@ -97,7 +97,7 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
         package_path_for_toml = self._get_path_for_toml(package_info)
         package_base_name = package_info.abs_path.name
         package_dep_table = tomlkit.inline_table()
-        package_dep_table.add('path', package_path_for_toml)
+        package_dep_table.add('path', str(package_path_for_toml))
         section = toml_writer.add_section(f'tool.poetry.group.app_{package_base_name}.dependencies')
         section.add(package_info.package_reg_name, package_dep_table)
         section.add(tomlkit.nl())
@@ -181,8 +181,9 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
                 with PackageMetaWriter.from_file(new_package_info.toml_path) as pkg_meta_writer:
                     for req_package_reg_name, req_package_info in updated_requirements.items():
                         updated_req_path = Path(os.path.relpath(req_package_info.abs_path, new_package_info.abs_path))
-                        pkg_meta_writer.update_requirement_item_path(
+                        pkg_meta_writer.update_requirement_item(
                             section_name=section_name,
                             item_name=req_package_info.package_reg_name,
+                            new_item_name=req_package_info.package_reg_name,
                             new_path=updated_req_path,
                         )

@@ -116,14 +116,14 @@ class PackageMetaWriter(PackageMetaReader):
 
     def update_requirement_item(
             self, section_name: str, item_name: str,
-            new_item_name: str, new_path: str,
+            new_item_name: str, new_path: Path,
     ) -> None:
         original_item = self._get_item_opt(section_name=section_name, item_name=item_name)
         if original_item is not None:
             section = self.toml_writer.get_editable_section(section_name)
             section.remove(item_name)
             package_dep_table = tomlkit.inline_table()
-            package_dep_table.add('path', new_path)
+            package_dep_table.add('path', str(new_path))
             section.add(new_item_name, package_dep_table)
 
     def add_mypy_overrides_ignore(self, pkg_names: list[str]):

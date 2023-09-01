@@ -44,11 +44,12 @@ class PypiReqPackageSpec(ReqPackageSpec):
         return f'{self.package_name}{extra}'
 
     def is_exact_version(self) -> bool:
-        return bool(self.version) and self.version.startswith("==")
+        return bool(self.version and self.version.startswith("=="))
 
     def get_exact_version(self) -> str:
         if not self.is_exact_version():
             raise ValueError(f"{str(self)} does not have an exact version")
+        assert self.version is not None
         return self.version[2:]
 
     def as_req_str(self) -> str:

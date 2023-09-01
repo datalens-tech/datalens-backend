@@ -28,6 +28,7 @@ from dl_repmanager.package_manager import PackageManager, PackageGenerator
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog='DL Repository Management CLI')
     parser.add_argument('--config', help='Specify configuration file', default=DEFAULT_CONFIG_FILE_NAME)
+    parser.add_argument('--fs-editor', help='Override the FS editor type')
 
     # mix-in parsers
     package_name_parser = argparse.ArgumentParser(add_help=False)
@@ -203,9 +204,14 @@ class DlRepManagerTool:
     def run(cls, args: argparse.Namespace) -> None:
         config_file_name = args.config
 
-        repo_env = RepoEnvironmentLoader(config_file_name=config_file_name).load_env(base_path=_BASE_DIR)
+        repo_env = RepoEnvironmentLoader(
+            config_file_name=config_file_name,
+            override_fs_editor_type=args.fs_editor,
+        ).load_env(base_path=_BASE_DIR)
+
         index_builder = PackageIndexBuilder(repo_env=repo_env)
         package_index = index_builder.build_index()
+
         package_navigator = PackageNavigator(repo_env=repo_env, package_index=package_index)
         tool = cls(
             package_index=package_index,
