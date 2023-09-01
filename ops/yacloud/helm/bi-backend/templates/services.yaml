@@ -101,7 +101,7 @@ spec:
   ports:
     - name: {{ ternary "https" "http" (eq .Values.tls_to_backends true) }}
       port: {{ ternary 443 80 (eq .Values.tls_to_backends true) }}
-      targetPort: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+      targetPort: {{ ternary .Values.app_tls_port 8080 (eq .Values.tls_to_backends true) }}
       protocol: TCP
 
 ---

@@ -20,8 +20,8 @@ docker_images_info:
   rqe_ext_sync:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-sync
   dls:
-    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/dls
-    tag: "1.285"
+    repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-dls
+    tag: "1.287"
   file_uploader_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-file-uploader-api
     tag: "0.115.0"

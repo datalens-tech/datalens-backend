@@ -78,7 +78,7 @@ spec:
             periodSeconds: 10
           {{ if .Values.enabled_features.rootless_mode }}
           securityContext:
-            {{- include "security-context-data-api" . | indent 12}}
+            {{- include "security-context-common" . | indent 12}}
           {{ end }}
       volumes:
         - name: init-scripts
@@ -168,7 +168,7 @@ spec:
             timeoutSeconds: 10
           {{ if .Values.enabled_features.rootless_mode }}
           securityContext:
-            {{- include "security-context-data-api" . | indent 12}}
+            {{- include "security-context-common" . | indent 12}}
           {{ end }}
       volumes:
         - name: init-scripts

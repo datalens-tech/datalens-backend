@@ -22,8 +22,11 @@ spec:
       labels:
         app: dls-api
       annotations:
-        injector.tumblr.com/request: {{ ternary "jaeger,nginx" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
+        injector.tumblr.com/request: {{ ternary "jaeger,nginx_v2" "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -48,17 +51,21 @@ spec:
               value: {{ .Values.dls_env }}
             - name: NGINX_SERVER_NAME
               value: "dls-api"
+            - name: DLS_ERRFILE_LOG
+              value: ""
           resources:
             requests:
               cpu: {{ .Values.app_resources.dls_api.cpu }}
               memory: {{.Values.app_resources.dls_api.ram}}
           readinessProbe:
             httpGet:
-              port: {{ ternary .Values.app_tls_port 80 (eq .Values.tls_to_backends true) }}
+              port: {{ ternary .Values.app_tls_port 8080 (eq .Values.tls_to_backends true) }}
               scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
               path: "/_dls/debug/"
             initialDelaySeconds: 60
             periodSeconds: 10
+          securityContext:
+            {{- include "security-context-common" . | indent 12}}
       volumes:
         - name: init-scripts
           configMap:
@@ -96,6 +103,9 @@ spec:
       annotations:
         injector.tumblr.com/request: jaeger-agent
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -117,10 +127,14 @@ spec:
               value: tasks
             - name: DLS_ENV
               value: {{ .Values.dls_env }}
+            - name: DLS_ERRFILE_LOG
+              value: ""
           resources:
             requests:
               cpu: {{ .Values.app_resources.dls_tasks.cpu }}
               memory: {{.Values.app_resources.dls_tasks.ram}}
+          securityContext:
+            {{- include "security-context-common" . | indent 12}}
       volumes:
         - name: init-scripts
           configMap:
