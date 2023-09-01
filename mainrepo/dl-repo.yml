@@ -17,6 +17,7 @@ dl_repo:
   custom_package_map:
     flask_marshmallow: flask-marshmallow
     flask_restx: flask-restx
+    grpc: grpcio
     jaeger_client: jaeger-client
     jwt: pyjwt
     typing_extensions: typing-extensions
