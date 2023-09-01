@@ -12,44 +12,32 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-blinker = ">=1.5"
-ciso8601 = ">=2.2.0"
 flask = ">=2.0.3"
 flask-marshmallow = ">=0.14.0"
 flask-restx = ">=1.1.0"
-flask-sqlalchemy = ">=2.5.1"
-gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
-marshmallow-sqlalchemy = ">=0.25.0"
 more-itertools = ">=9.1.0"
 pandas = ">=1.5.3"
-pyjwt = ">=2.3.0"
-pyopenssl = ">=21.0.0"
 python = ">=3.10, <3.12"
-python-dateutil = ">=2.8.2"
-raven = ">=6.10.0"
-requests = ">=2.28.2"
 sentry-sdk = ">=1.15.0"
-simplejson = ">=3.18.4"
 sqlalchemy = ">=1.4.46, <2.0"
 tabulate = ">=0.9.0"
-uwsgi = ">=2.0.21"
 werkzeug = ">=2.0.3"
+yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../../lib/bi_api_commons_ya_team"}
-yandex-bi-connector-bitrix-gds = {path = "../../../lib/bi_connector_bitrix_gds"}
-yandex-bi-connector-bundle-ch-filtered = {path = "../../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
+yandex-bi-configs = {path = "../bi_configs"}
+yandex-bi-core-testing = {path = "../bi_core_testing"}
+yandex-bi-dls-client = {path = "../bi_dls_client"}
+yandex-bi-formula = {path = "../bi_formula"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-partners = {path = "../../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-chyt-internal = {path = "../../../lib/bi_connector_chyt_internal"}
-yandex-bi-connector-gsheets = {path = "../../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../../lib/bi_connector_metrica"}
-yandex-bi-connector-monitoring = {path = "../../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mysql = {path = "../../../lib/bi_connector_mysql"}
 bi-connector-solomon = {path = "../../../lib/bi_connector_solomon"}
-yandex-bi-connector-usage-tracking-ya-team = {path = "../../../lib/bi_connector_usage_tracking_ya_team"}
 yandex-bi-connector-yql = {path = "../../../lib/bi_connector_yql"}
 yandex-bi-service-registry-ya-cloud = {path = "../../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-service-registry-ya-team = {path = "../../../lib/bi_service_registry_ya_team"}
@@ -60,15 +48,20 @@ yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
 yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 bi-connector-greenplum = {path = "../bi_connector_greenplum"}
+yandex-bi-connector-bigquery = {path = "../bi_connector_bigquery"}
+yandex-bi-connector-chyt = {path = "../bi_connector_chyt"}
 yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../bi_connector_snowflake"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}
 bi-i18n = {path = "../bi_i18n"}
 yandex-bi-model-tools = {path = "../bi_model_tools"}
 yandex-bi-query-processing = {path = "../bi_query_processing"}
+bi-task-processor = {path = "../bi_task_processor"}
+yandex-bi-utils = {path = "../bi_utils"}
+sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
+statcommons = {path = "../statcommons"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 solomon = "bi_api_lib.connectors.solomon.connector:SolomonBiApiConnector"
