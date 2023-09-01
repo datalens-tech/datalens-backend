@@ -18,7 +18,6 @@ from bi_utils.utils import get_type_full_name
 
 
 LOGGER = logging.getLogger(__name__)
-LOGGER = LOGGER  # compat to be removed
 
 
 TTraceback = Any  # ?builtins?.?traceback?
@@ -195,9 +194,6 @@ class GenericProfiler:
         extra = dict(
             self.extra_data,
             event_code=self.EVENT_CODE,
-            # See:
-            # https://a.yandex-team.ru/arc/trunk/arcadia/statbox/jam/libs/outer_action/datalens/bi_analytics/logs_config.py?rev=6459895#L140
-            # maybe in `extra_data`: request_id
             stage=self.stage,
             stage_stack=list(self.get_current_stages_stack()),
             stage_stack_str=self.get_current_stages_stack_str(),

@@ -104,7 +104,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
             'system',
             'mdb_system',
             '_system',
-            'information_schema',   # in DoubleCloud
+            'information_schema',
         )
         conn_executor = conn_executor_factory(self)
         query = ConnExecutorQuery(query='SELECT `database`, `name` from `system`.`tables`', db_name='system')

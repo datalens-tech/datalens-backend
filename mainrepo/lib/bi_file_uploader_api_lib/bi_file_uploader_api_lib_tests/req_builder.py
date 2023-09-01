@@ -7,7 +7,7 @@ from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFile
 
 
 class ReqBuilder:
-    ORIGIN: ClassVar[str] = 'https://datalens-preprod.yandex.ru'
+    ORIGIN: ClassVar[str] = 'https://foo.bar'
 
     @classmethod
     def upload_csv(cls, csv_data: str) -> Req:

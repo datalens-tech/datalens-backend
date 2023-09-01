@@ -153,7 +153,7 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         CORS=CorsSettings(
-            ALLOWED_ORIGINS=('https://datalens-preprod.yandex.ru', 'https://datalens-staging.yandex.ru'),
+            ALLOWED_ORIGINS=('https://foo.bar', 'https://fee.bar'),
             ALLOWED_HEADERS=('Content-Type', 'X-Request-ID', 'x-csrf-token', 'x-unauthorized'),
             EXPOSE_HEADERS=('X-Request-ID',),
         ),

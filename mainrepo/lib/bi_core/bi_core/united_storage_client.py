@@ -330,7 +330,6 @@ class UStorageClientBase:
                 response.content,
                 response.request.get_header(DLHeadersCommon.FOLDER_ID.value),
                 response.request.get_header(DLHeadersCommon.ORG_ID.value),
-                # self._session.headers.get('X-YaCloud-FolderId'),
                 response.get_header('X-Request-ID'),
             )
         try:

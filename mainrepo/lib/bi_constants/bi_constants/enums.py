@@ -41,19 +41,6 @@ class BIType(_Normalizable['BIType'], Enum):
     genericdatetime = auto()
 
 
-@unique
-class RequestAuthMode(Enum):
-    # Authentication by X-YaCloud-SubjectToken or Cookie yc_session
-    yc_auth = 'yc_auth'
-    # Legacy/transition alias for 'yc_auth' (used in env vars)
-    yc_auth_legacy = 'gauthling'
-    # Authentication through yandex-team.ru / yandex.ru blackbox
-    # (Cookie sessionid2, Authorization OAuth, ...)
-    blackbox = 'blackbox'
-    # Disabled authentication (for development / tests)
-    noauth = 'noauth'
-
-
 class SourceBackendType(DynamicEnum):
     # Generic
     NONE = AutoEnumValue()

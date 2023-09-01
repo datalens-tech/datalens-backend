@@ -48,7 +48,7 @@ class CleanupTenantView(FileUploaderBaseView):
 
 
 class RenameTenantFilesView(FileUploaderBaseView):
-    # TODO: Delete this API handler (and task) after YC org migration
+    # TODO: Delete this API handler (and task) after migration to organizations
 
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset({
         RequiredResourceCommon.SKIP_AUTH,

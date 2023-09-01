@@ -30,7 +30,7 @@ async def test_cors(fu_client):
 
                 'Access-Control-Request-Headers': 'x-csrf-token,x-request-id',
                 'Access-Control-Request-Method': 'POST',
-                'Origin': 'https://datalens-preprod.yandex.ru',
+                'Origin': 'https://foo.bar',
                 'x-request-id': 'qwerty',
             },
         ),
@@ -48,7 +48,7 @@ async def test_cors(fu_client):
 
                 'Access-Control-Request-Headers': 'x-csrf-token,x-request-id',
                 'Access-Control-Request-Method': 'POST',
-                'Origin': 'https://yandex.ru',   # wrong host
+                'Origin': 'https://some.host',   # wrong host
             },
         ),
     )
