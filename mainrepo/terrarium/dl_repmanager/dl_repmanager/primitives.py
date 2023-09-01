@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 import attr
 from frozendict import frozendict
+from tomlkit import inline_table
 
 
 @attr.s(frozen=True)
@@ -14,6 +15,10 @@ class ReqPackageSpec(abc.ABC):
 
     @abc.abstractmethod
     def pretty(self) -> str:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def to_toml_value(self) -> Any:
         raise NotImplementedError
 
 
@@ -35,6 +40,9 @@ class PypiReqPackageSpec(ReqPackageSpec):
             raise ValueError(f"{str(self)} does not have an exact version")
         return self.version[2:]
 
+    def to_toml_value(self) -> Any:
+        return self.version if self.version else "*"
+
 
 @attr.s(frozen=True)
 class LocalReqPackageSpec(ReqPackageSpec):
@@ -42,6 +50,11 @@ class LocalReqPackageSpec(ReqPackageSpec):
 
     def pretty(self) -> str:
         return f'{self.package_name} ({self.path})'
+
+    def to_toml_value(self) -> Any:
+        it = inline_table()
+        it["path"] = self.path
+        return it
 
 
 @attr.s(frozen=True)
