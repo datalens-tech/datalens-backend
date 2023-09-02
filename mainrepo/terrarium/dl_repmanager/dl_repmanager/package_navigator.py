@@ -39,13 +39,13 @@ class PackageNavigator:
                 if self._file_contains_imports(file_path, import_name):
                     yield file_path
 
-    @staticmethod
     def _collect_imports_from_file(
-            file_path: Path, mask: Optional[re.Pattern] = None, exclude_standard: bool = True,
+            self, file_path: Path, mask: Optional[re.Pattern] = None, exclude_standard: bool = True,
     ) -> set[str]:
         result: set[str] = set()
         std_modules = set(sys.stdlib_module_names)
-        with open(file_path) as code_file:
+        fs_editor = self.repo_env.get_fs_editor()
+        with fs_editor.open(file_path, mode='r') as code_file:
             code_ast = ast.parse(code_file.read())
             for node in ast.walk(code_ast):
                 found_modules: set[str]

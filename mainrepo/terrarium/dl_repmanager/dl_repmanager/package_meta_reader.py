@@ -13,8 +13,9 @@ from typing import (
 import attr
 import tomlkit
 
+from dl_repmanager.fs_editor import FilesystemEditor
 from dl_repmanager.toml_tools import (
-    TOMLReader,
+    TOMLIOFactory,
     TOMLReaderBase,
     TOMLWriter,
 )
@@ -34,12 +35,6 @@ class PackageMetaReader:
     _SECTION_NAME_MAIN = 'tool.poetry'
     _SECTION_NAME_META = 'datalens.meta'  # get this from env?
     _SECTION_NAME_I18N_DOMAINS = 'datalens.i18n.domains'
-
-    @classmethod
-    @contextlib.contextmanager
-    def from_file(cls, file_path: Path) -> Generator[PackageMetaReader, None, None]:
-        with TOMLReader.from_file(file_path) as toml_reader:
-            yield PackageMetaReader(toml_reader=toml_reader)
 
     def _get_main_section(self) -> dict:
         return self._toml_reader.get_section(self._SECTION_NAME_MAIN)
@@ -87,12 +82,6 @@ class PackageMetaReader:
 
 @attr.s
 class PackageMetaWriter(PackageMetaReader):
-    @classmethod
-    @contextlib.contextmanager
-    def from_file(cls, file_path: Path) -> Generator[PackageMetaWriter, None, None]:
-        with TOMLWriter.from_file(file_path) as toml_writer:
-            yield PackageMetaWriter(toml_reader=toml_writer)
-
     @property
     def toml_writer(self) -> TOMLWriter:
         assert isinstance(self._toml_reader, TOMLWriter)
@@ -109,7 +98,7 @@ class PackageMetaWriter(PackageMetaReader):
             if item['name'] == item_name
         ]
         if not items:
-            return
+            return None
 
         assert len(items) == 1
         return items[0]
@@ -133,3 +122,23 @@ class PackageMetaWriter(PackageMetaReader):
                 override = tomlkit.inline_table()
                 override.add("ignore", True)
                 section.add(name, override)
+
+
+@attr.s
+class PackageMetaIOFactory:
+    fs_editor: FilesystemEditor = attr.ib(kw_only=True)
+    toml_io_factory: TOMLIOFactory = attr.ib(init=False)
+
+    @toml_io_factory.default
+    def __make_toml_io_factory(self) -> TOMLIOFactory:
+        return TOMLIOFactory(fs_editor=self.fs_editor)
+
+    @contextlib.contextmanager
+    def package_meta_reader(self, file_path: Path) -> Generator[PackageMetaReader, None, None]:
+        with self.toml_io_factory.toml_reader(file_path) as toml_reader:
+            yield PackageMetaReader(toml_reader=toml_reader)
+
+    @contextlib.contextmanager
+    def package_meta_writer(self, file_path: Path) -> Generator[PackageMetaWriter, None, None]:
+        with self.toml_io_factory.toml_writer(file_path) as toml_writer:
+            yield PackageMetaWriter(toml_reader=toml_writer)

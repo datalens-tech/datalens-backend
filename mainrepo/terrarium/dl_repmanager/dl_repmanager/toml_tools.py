@@ -11,6 +11,8 @@ from tomlkit.items import Item as TOMLItem, AbstractTable
 from tomlkit.container import Container as TOMLContainer, OutOfOrderTableProxy
 from tomlkit.exceptions import NonExistentKey
 
+from dl_repmanager.fs_editor import FilesystemEditor
+
 
 @attr.s
 class TOMLReaderBase:
@@ -43,25 +45,9 @@ class TOMLReaderBase:
 class TOMLReader(TOMLReaderBase):
     """Generic pyproject.toml reader"""
 
-    @classmethod
-    @contextlib.contextmanager
-    def from_file(cls, file_path: Path) -> Generator[TOMLReader, None, None]:
-        with open(file_path) as f:
-            yield TOMLReader(toml=tomlkit.load(f))
-
 
 class TOMLWriter(TOMLReaderBase):
     """Generic pyproject.toml writer"""
-
-    @classmethod
-    @contextlib.contextmanager
-    def from_file(cls, file_path: Path) -> Generator[TOMLWriter, None, None]:
-        with open(file_path, 'r+') as f:
-            toml = tomlkit.load(f)
-            yield TOMLWriter(toml=toml)
-            f.seek(0)
-            f.truncate(0)
-            f.write(tomlkit.dumps(toml))
 
     def get_editable_section(self, key: str) -> AbstractTable:
         # None of this makes any sense. This is just the way the tomlkit library is.
@@ -109,3 +95,22 @@ class TOMLWriter(TOMLReaderBase):
             yield
         except NonExistentKey:
             pass
+
+
+@attr.s
+class TOMLIOFactory:
+    fs_editor: FilesystemEditor = attr.ib(kw_only=True)
+
+    @contextlib.contextmanager
+    def toml_reader(self, file_path: Path) -> Generator[TOMLReader, None, None]:
+        with self.fs_editor.open(file_path, mode='r') as f:
+            yield TOMLReader(toml=tomlkit.load(f))
+
+    @contextlib.contextmanager
+    def toml_writer(self, file_path: Path) -> Generator[TOMLWriter, None, None]:
+        with self.fs_editor.open(file_path, mode='r+') as f:
+            toml = tomlkit.load(f)
+            yield TOMLWriter(toml=toml)
+            f.seek(0)
+            f.truncate(0)
+            f.write(tomlkit.dumps(toml))

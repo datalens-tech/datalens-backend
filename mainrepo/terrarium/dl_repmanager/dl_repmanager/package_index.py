@@ -8,7 +8,7 @@ from dl_repmanager.primitives import (
     PackageInfo, RequirementList, ReqPackageSpec, PypiReqPackageSpec, LocalReqPackageSpec,
 )
 from dl_repmanager.env import RepoEnvironment
-from dl_repmanager.package_meta_reader import PackageMetaReader
+from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 
 
 @attr.s
@@ -66,7 +66,8 @@ class PackageIndexBuilder:
             'tool.poetry.group.tests.dependencies',
         ]
         requirement_lists: dict[str, RequirementList] = {}
-        with PackageMetaReader.from_file(toml_path) as pkg_meta_reader:
+        package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.repo_env.get_fs_editor())
+        with package_meta_io_factory.package_meta_reader(toml_path) as pkg_meta_reader:
             package_reg_name = pkg_meta_reader.get_package_reg_name()
             module_names = pkg_meta_reader.get_package_module_names()
             package_type = pkg_meta_reader.get_package_type() or default_package_type

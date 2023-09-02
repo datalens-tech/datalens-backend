@@ -7,9 +7,10 @@ from pathlib import Path
 
 import attr
 
+from dl_repmanager.fs_editor import DefaultFilesystemEditor
 from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, discover_config
 from dl_repmanager.exceptions import PackageMetaCliError, InconsistentStateError
-from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaWriter
+from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaWriter, PackageMetaIOFactory
 from dl_repmanager.mypy_stubs_sync import stubs_sync, RequirementsPathProvider
 
 
@@ -56,9 +57,11 @@ class DlPackageMetaTool:
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
         toml_path = Path(args.package_path) / 'pyproject.toml'
+        fs_editor = DefaultFilesystemEditor(base_path=toml_path.parent)
+        package_meta_io_factory = PackageMetaIOFactory(fs_editor=fs_editor)
         with (
-            PackageMetaReader.from_file(toml_path) as meta_reader,
-            PackageMetaWriter.from_file(toml_path) as meta_writer,
+            package_meta_io_factory.package_meta_reader(toml_path) as meta_reader,
+            package_meta_io_factory.package_meta_writer(toml_path) as meta_writer,
         ):
             tool = cls(meta_reader=meta_reader, meta_writer=meta_writer)
 

@@ -10,8 +10,8 @@ import tomlkit
 
 from dl_repmanager.primitives import PackageInfo, RequirementList, LocalReqPackageSpec
 from dl_repmanager.fs_editor import FilesystemEditor
-from dl_repmanager.toml_tools import TOMLWriter
-from dl_repmanager.package_meta_reader import PackageMetaWriter
+from dl_repmanager.toml_tools import TOMLWriter, TOMLIOFactory
+from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 
 if TYPE_CHECKING:
     from dl_repmanager.env import RepoEnvironment
@@ -109,7 +109,8 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
     def register_package(self, package_info: PackageInfo) -> None:
         toml_path = self.base_path / self._CI_TOML_REL_PATH
 
-        with TOMLWriter.from_file(toml_path) as toml_writer:
+        toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
+        with toml_io_factory.toml_writer(toml_path) as toml_writer:
             if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
                 self._register_main(toml_writer=toml_writer, package_info=package_info)
             if 'own_dependency_group' in self.repo_env.get_tags(package_info.package_type):
@@ -118,7 +119,8 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
     def unregister_package(self, package_info: PackageInfo) -> None:
         toml_path = self.base_path / self._CI_TOML_REL_PATH
 
-        with TOMLWriter.from_file(toml_path) as toml_writer:
+        toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
+        with toml_io_factory.toml_writer(toml_path) as toml_writer:
             if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
                 self._unregister_main(toml_writer=toml_writer, package_info=package_info)
             if 'own_dependency_group' in self.repo_env.get_tags(package_info.package_type):
@@ -150,6 +152,8 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
         pass  # FIXME: Remove package from dependencies
 
     def re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
+        package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.fs_editor)
+
         # Scan other packages to see if they are dependent on this one and update these dependency entries
         for other_package_info in self.package_index.list_package_infos():
             if other_package_info == old_package_info:
@@ -158,7 +162,7 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
             for section_name in other_package_info.requirement_lists:
                 if other_package_info.is_dependent_on(old_package_info, section_name=section_name):
                     new_req_rel_path = Path(os.path.relpath(new_package_info.abs_path, other_package_info.abs_path))
-                    with PackageMetaWriter.from_file(other_package_info.toml_path) as pkg_meta_writer:
+                    with package_meta_io_factory.package_meta_writer(other_package_info.toml_path) as pkg_meta_writer:
                         pkg_meta_writer.update_requirement_item(
                             section_name=section_name,
                             item_name=old_package_info.package_reg_name,
@@ -178,7 +182,7 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
                     req_package_info = self.package_index.get_package_info_by_reg_name(other_package_spec.package_name)
                     updated_requirements[other_package_spec.package_name] = req_package_info
 
-                with PackageMetaWriter.from_file(new_package_info.toml_path) as pkg_meta_writer:
+                with package_meta_io_factory.package_meta_writer(new_package_info.toml_path) as pkg_meta_writer:
                     for req_package_reg_name, req_package_info in updated_requirements.items():
                         updated_req_path = Path(os.path.relpath(req_package_info.abs_path, new_package_info.abs_path))
                         pkg_meta_writer.update_requirement_item(
