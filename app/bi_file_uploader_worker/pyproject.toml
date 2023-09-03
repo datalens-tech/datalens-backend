@@ -20,9 +20,20 @@ bi-file-secure-reader-lib = {path = "../../mainrepo/lib/bi_file_secure_reader_li
 bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
 yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
 bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
+
+[[tool.mypy.overrides]]
+module = "zope.*"
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "aiogoogle.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -50,8 +61,6 @@ gunicorn = "gunicorn.app.wsgiapp:run"
 line-length = 140
 target-version = ['py310']
 
-
-
 [datalens_ci]
 skip_test = true
 
@@ -60,3 +69,9 @@ skip_test = true
 name = "ya"
 url = "https://pypi.yandex-team.ru/simple/"
 priority = "default"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

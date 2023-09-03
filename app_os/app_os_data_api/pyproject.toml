@@ -54,3 +54,9 @@ skip_test = true
 name = "ya"
 url = "https://pypi.yandex-team.ru/simple/"
 priority = "default"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

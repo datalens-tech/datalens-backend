@@ -14,15 +14,18 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
+from pprint import pprint
 from typing import Optional
 
 import attr
 
 from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
+from dl_repmanager.logging import setup_basic_logging
 from dl_repmanager.package_index import PackageIndexBuilder, PackageIndex
 from dl_repmanager.package_navigator import PackageNavigator
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.package_manager import PackageManager, PackageGenerator
+from dl_repmanager.project_editor import PyPrjEditor
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -113,6 +116,10 @@ def make_parser() -> argparse.ArgumentParser:
     req_check_subparser.add_argument('--ignore-prefix', type=str, help='Package prefix to ignore when comparing')
     req_check_subparser.add_argument('--tests', action='store_true', help='Check for tests, not the main package')
 
+    subparsers.add_parser(
+        'ensure-mypy-common',
+        help='Checks and updates all sub projects with mypy config using template in the meta package',
+    )
     return parser
 
 
@@ -124,6 +131,7 @@ class DlRepManagerTool:
     package_index: PackageIndex = attr.ib(kw_only=True)
     package_manager: PackageManager = attr.ib(kw_only=True)
     package_navigator: PackageNavigator = attr.ib(kw_only=True)
+    py_prj_editor: PyPrjEditor = attr.ib(kw_only=True)
 
     @classmethod
     def validate_env(cls) -> None:
@@ -146,7 +154,7 @@ class DlRepManagerTool:
 
     def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
         for package_info in self.package_index.list_package_infos():
-            if package_info.package_type != package_type:
+            if package_type.lower() != "__all__" and package_info.package_type != package_type:
                 continue
 
             printable_values = dict(
@@ -156,7 +164,10 @@ class DlRepManagerTool:
                 single_module_name=package_info.single_module_name,
                 package_reg_name=package_info.package_reg_name,
             )
-            print(mask.format(**printable_values))
+            if mask:
+                print(mask.format(**printable_values))
+            else:
+                pprint(printable_values)
 
     def rename_module(
             self, old_import_name: str, new_import_name: str,
@@ -200,6 +211,9 @@ class DlRepManagerTool:
         if not extra_req_specs and not extra_import_specs:
             print('Requirements are in sync with imports')
 
+    def ensure_mypy_common(self):
+        self.py_prj_editor.update_mypy_common()
+
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
         config_file_name = args.config
@@ -222,46 +236,46 @@ class DlRepManagerTool:
                 package_navigator=package_navigator,
                 package_generator=PackageGenerator(package_index=package_index, repo_env=repo_env),
                 package_reference=PackageReference(package_index=package_index, repo_env=repo_env),
-            )
+            ),
+            py_prj_editor=PyPrjEditor(
+                repo_env=repo_env,
+                package_index=package_index,
+
+            ),
         )
 
         tool.validate_env()
 
-        if args.command == 'init':
-            tool.init(package_name=args.package_name, package_type=args.package_type)
-
-        elif args.command == 'copy':
-            tool.copy(package_name=args.package_name, from_package_name=args.from_package_name)
-
-        elif args.command == 'rename':
-            tool.rename(package_name=args.package_name, new_package_name=args.new_package_name)
-
-        elif args.command == 'ch-package-type':
-            tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)
-
-        elif args.command == 'package-list':
-            tool.package_list(package_type=args.package_type, mask=args.mask, base_path=Path(args.base_path))
-
-        elif args.command == 'rename-module':
-            tool.rename_module(
-                old_import_name=args.old_import_name, new_import_name=args.new_import_name,
-                no_fix_imports=args.no_fix_imports, no_move_files=args.no_move_files,
-            )
-
-        elif args.command == 'import-list':
-            tool.import_list(package_name=args.package_name)
-
-        elif args.command == 'req-list':
-            tool.req_list(package_name=args.package_name)
-
-        elif args.command == 'req-check':
-            tool.check_requirements(package_name=args.package_name, ignore_prefix=args.ignore_prefix, tests=args.tests)
-
-        else:
-            raise RuntimeError(f'Got unknown command: {args.command}')
+        match args.command:
+            case 'init':
+                tool.init(package_name=args.package_name, package_type=args.package_type)
+            case 'copy':
+                tool.copy(package_name=args.package_name, from_package_name=args.from_package_name)
+            case 'rename':
+                tool.rename(package_name=args.package_name, new_package_name=args.new_package_name)
+            case 'ch-package-type':
+                tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)
+            case 'package-list':
+                tool.package_list(package_type=args.package_type, mask=args.mask, base_path=Path(args.base_path))
+            case 'rename-module':
+                tool.rename_module(
+                    old_import_name=args.old_import_name, new_import_name=args.new_import_name,
+                    no_fix_imports=args.no_fix_imports, no_move_files=args.no_move_files,
+                )
+            case 'import-list':
+                tool.import_list(package_name=args.package_name)
+            case 'req-list':
+                tool.req_list(package_name=args.package_name)
+            case 'req-check':
+                tool.check_requirements(package_name=args.package_name, ignore_prefix=args.ignore_prefix, tests=args.tests)
+            case 'ensure-mypy-common':
+                tool.ensure_mypy_common()
+            case _:
+                raise RuntimeError(f'Got unknown command: {args.command}')
 
 
 def main() -> None:
+    setup_basic_logging()
     parser = make_parser()
     DlRepManagerTool.run(parser.parse_args())
 

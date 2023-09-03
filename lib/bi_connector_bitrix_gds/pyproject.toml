@@ -35,9 +35,16 @@ bitrix_gds = "bi_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -64,3 +71,9 @@ target-version = ['py310']
 root_dir = "bi_connector_bitrix_gds_tests/"
 target_path = "unit"
 skip_compose = "true"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

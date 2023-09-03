@@ -27,9 +27,16 @@ usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.core.connector:Usa
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -60,3 +67,9 @@ target_path = "."
 root_dir = "bi_connector_usage_tracking_ya_team_tests/unit"
 target_path = "."
 skip_compose = "true"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

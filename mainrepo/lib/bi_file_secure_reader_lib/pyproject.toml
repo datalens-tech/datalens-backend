@@ -17,9 +17,15 @@ python = ">=3.10, <3.12"
 
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = ">=0.20.3"
+
+[tool.mypy]
+overrides = []
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -42,10 +48,6 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
-
-
 [[tool.poetry.source]]
 name = "ya"
 url = "https://pypi.yandex-team.ru/simple/"
@@ -55,3 +57,9 @@ priority = "default"
 [datalens.pytest.db]
 root_dir = "bi_file_secure_reader_lib_tests/"
 target_path = "db"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

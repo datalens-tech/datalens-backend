@@ -24,9 +24,14 @@ yandex-bi-testing = {path = "../bi_testing"}
 statcommons = {path = "../../lib/statcommons"}
 yandex-bi-core = {path = "../../lib/bi_core"}
 
+[tool.mypy]
+overrides = []
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -50,5 +55,8 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

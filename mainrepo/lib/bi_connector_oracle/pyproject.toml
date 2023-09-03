@@ -49,9 +49,15 @@ yandex-bi-core-testing = {path = "../bi_core_testing"}
 oracledb = ">=1.3.1"
 yandex-bi-testing = {path = "../../lib/bi_testing"}
 
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -83,3 +89,9 @@ labels = ["fat"]
 root_dir = "bi_connector_oracle_tests/"
 target_path = "unit"
 skip_compose = "true"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

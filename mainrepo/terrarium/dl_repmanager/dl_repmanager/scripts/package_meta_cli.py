@@ -11,6 +11,8 @@ from dl_repmanager.fs_editor import DefaultFilesystemEditor
 from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, discover_config
 from dl_repmanager.exceptions import PackageMetaCliError, InconsistentStateError
 from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaWriter, PackageMetaIOFactory
+from dl_repmanager.logging import setup_basic_logging
+
 from dl_repmanager.mypy_stubs_sync import stubs_sync, RequirementsPathProvider
 
 
@@ -72,15 +74,6 @@ class DlPackageMetaTool:
                     tool.sync_mypy_stubs(Path(args.package_path), args.dry_run, args.config)
                 case _:
                     raise RuntimeError(f'Got unknown command: {args.command}')
-
-
-def setup_basic_logging() -> None:
-    logging.basicConfig(
-        level=logging.INFO,
-        format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
-        datefmt='%H:%M:%S'
-    )
-    log.debug("Logger initiated")
 
 
 def main() -> None:

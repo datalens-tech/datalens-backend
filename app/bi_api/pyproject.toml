@@ -75,9 +75,20 @@ bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
 yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
+
+[[tool.mypy.overrides]]
+module = "zope.*"
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -100,8 +111,6 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
 [datalens_ci]
 skip_test = true
 
@@ -110,3 +119,15 @@ skip_test = true
 name = "ya"
 url = "https://pypi.yandex-team.ru/simple/"
 priority = "default"
+
+[datalens.meta.mypy_common]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

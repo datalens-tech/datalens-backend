@@ -7,7 +7,7 @@ from typing import Any, Generator, Iterable
 import attr
 import tomlkit
 from tomlkit.toml_document import TOMLDocument
-from tomlkit.items import Item as TOMLItem, AbstractTable
+from tomlkit.items import Item as TOMLItem, AbstractTable, AoT, SingleKey
 from tomlkit.container import Container as TOMLContainer, OutOfOrderTableProxy
 from tomlkit.exceptions import NonExistentKey
 

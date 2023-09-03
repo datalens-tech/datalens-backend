@@ -51,3 +51,9 @@ priority = "default"
 [tool.poetry.scripts]
 file-uploader-worker = "app_yc_file_uploader_worker.app:run_standalone_worker"
 file-uploader-worker-health-check = "app_yc_file_uploader_worker.app:run_health_check"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

@@ -111,7 +111,7 @@ def stubs_sync(
     annotations_io = PipRequirementsIO(path_provider.get_mypy_path())
     annotations_requirements = annotations_io.read_existing()
 
-    overrides_map = meta_reader.get_mypy_overrides()
+    overrides_map = meta_reader.get_mypy_stubs_overrides()
     ignore_pkg_set = {k for k, v in overrides_map.items() if "ignore" in v}
 
     packages_to_ignore: list[str] = []

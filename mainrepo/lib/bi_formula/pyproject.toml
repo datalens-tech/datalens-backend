@@ -38,9 +38,60 @@ yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
 yandex-bi-sqlalchemy-yq = {path = "../../../lib/bi_sqlalchemy_yq"}
 
+
+[[tool.mypy.overrides]]
+module = "ciso8601"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "ydb"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "sqlalchemy"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "clickhouse_sqlalchemy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "graphviz.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytest.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytz.tzinfo.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "bi_sqlalchemy_bitrix.base.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "bi_sqlalchemy_gsheets.base.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "sqlalchemy_metrika_api.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "bi_formula.parser.antlr.gen.DataLensLexer,bi_formula.parser.antlr.gen.DataLensParser,bi_formula.parser.antlr.gen.DataLensVisitor"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -65,3 +116,9 @@ target-version = ['py310']
 
 [tool.poetry.scripts]
 bi-formula-cli = "bi_formula.scripts.formula_cli:main"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

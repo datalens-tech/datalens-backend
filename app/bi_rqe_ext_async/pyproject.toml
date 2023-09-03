@@ -53,3 +53,9 @@ priority = "default"
 
 [tool.poetry.scripts]
 bi_rqe_ext_async = "bi_rqe_ext_async.app:app"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

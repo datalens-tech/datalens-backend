@@ -25,9 +25,16 @@ pytest = ">=7.2.2"
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 psycopg2-binary = ">=2.9.6"
 
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -57,3 +64,9 @@ bi-formula-ref-exdata = "bi_formula_ref.scripts.example_data:main"
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_formula_ref.plugins"]
 default = "bi_formula_ref.plugins.default.plugin:DefaultFormulaRefPlugin"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

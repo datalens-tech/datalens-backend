@@ -44,9 +44,28 @@ yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-testing = {path = "../bi_testing"}
 statcommons = {path = "../statcommons"}
+
+[[tool.mypy.overrides]]
+module = "snowflake.*"
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "pytest.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytz.tzinfo.*"
+ignore_missing_imports = true
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -76,3 +95,8 @@ target-version = ['py310']
 [datalens.pytest.unit]
 root_dir = "bi_connector_snowflake_tests/unit"
 
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

@@ -21,9 +21,14 @@ yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
 
+[tool.mypy]
+overrides = []
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -46,5 +51,8 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

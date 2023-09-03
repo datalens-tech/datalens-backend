@@ -24,9 +24,15 @@ yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 
+
+[tool.mypy]
+overrides = []
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -55,3 +61,9 @@ ya_env = "bi_formula_ref_ya.plugins.ya_env:YaFormulaRefPlugin"
 
 [datalens_ci]
 skip_test = true
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

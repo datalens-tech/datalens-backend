@@ -52,9 +52,15 @@ yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 mysqlclient = ">=1.4.6"
 
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -77,9 +83,12 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
-
 [datalens.pytest.local]
 root_dir = "bi_connector_mysql_tests/"
 target_path = "db unit"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

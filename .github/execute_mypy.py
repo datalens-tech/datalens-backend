@@ -13,24 +13,27 @@ def get_mypy_targets(pkg_dir: Path) -> list[str]:
     try:
         with open(pkg_dir / "pyproject.toml") as fh:
             meta = tomlkit.load(fh)
-            return meta["datalens"]["meta"]["mypy"]["targets"]
+            if not meta.get("tool", {}).get("mypy", None):
+                return []
+            return [
+                x["include"] for x in
+                meta["tool"]["poetry"]["packages"]
+            ]
+
     except NonExistentKey:
         pass
-
-    # fallback to the same name defaults
-    return [pkg_dir.name]
+    return []
 
 
 def main(target: str):
     pkg_dir = SRC_ROOT / target
-    if (pkg_dir / "mypy.ini").exists():
-        run_args = [
-
-            PYTHON,
-            "-m",
-            "mypy",
-        ]
-        targets = get_mypy_targets(pkg_dir)
+    run_args = [
+        PYTHON,
+        "-m",
+        "mypy",
+    ]
+    targets = get_mypy_targets(pkg_dir)
+    if len(targets) > 0:
         run_args.extend(targets)
         sys.exit(
             subprocess.run(" ".join(run_args), shell=True, cwd=str(pkg_dir)).returncode

@@ -39,9 +39,20 @@ yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
 yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+
+[[tool.mypy.overrides]]
+module = "zope.*"
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -85,3 +96,9 @@ target_path = "."
 #target_path = "dc dc_preprod int_preprod local local_int_prod"
 #labels = ["ext"]
 
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

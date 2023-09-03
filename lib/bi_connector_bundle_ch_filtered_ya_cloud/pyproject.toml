@@ -41,9 +41,16 @@ pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -66,7 +73,6 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
 [datalens.pytest.db]
 root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
 target_path = "db"
@@ -80,3 +86,9 @@ target_path = "db"
 root_dir = "bi_connector_bundle_ch_filtered_ya_cloud_tests/"
 target_path = "unit"
 skip_compose = "true"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

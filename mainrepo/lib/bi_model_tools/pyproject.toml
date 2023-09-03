@@ -18,9 +18,16 @@ dynamic-enum = {path = "../dynamic_enum"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+
+[[tool.mypy.overrides]]
+module = "bi_model_tools.contrib.enum_field"
+ignore_errors = true
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -43,5 +50,8 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

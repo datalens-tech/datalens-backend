@@ -20,9 +20,16 @@ ydb = ">=2.10.1"
 bi_yq = "bi_sqlalchemy_yq.base:BIYQDialect"
 
 [tool.poetry.group.tests.dependencies]
+
+[[tool.mypy.overrides]]
+module = "kikimr.*"
+ignore_missing_imports = true
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -45,7 +52,12 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
 [datalens_ci]
 # currently we have only one test which is skipped unconditionnaly, but import fails due to missing pb2 stubs in py pkg
 skip_test = true
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

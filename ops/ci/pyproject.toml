@@ -323,6 +323,13 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
+[datalens.meta.mypy_common]
+# this section will be inserted into all packages under
+warn_unused_configs = true
+disallow_untyped_defs = true
+#; to make `disallow_untyped_defs = False` overrides more useful:
+check_untyped_defs = true
+strict_optional = true
 
 [datalens.meta.mypy_stubs_packages_override]
 # bunch of overrides for different case

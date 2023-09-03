@@ -45,9 +45,15 @@ yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 statcommons = {path = "../statcommons"}
 
+[[tool.mypy.overrides]]
+module = "dill.*"
+follow_imports = "skip"
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -70,7 +76,6 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
 [datalens.pytest.unit]
 root_dir = "bi_connector_bigquery_tests/unit"
 skip_compose = "true"
@@ -80,3 +85,9 @@ skip_compose = "true"
 #skip_compose = "true"
 #labels = ["ext"]
 
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

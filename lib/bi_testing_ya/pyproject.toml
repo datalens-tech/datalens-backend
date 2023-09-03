@@ -31,9 +31,15 @@ yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 [tool.poetry.plugins.env_param_getters]
 yav = "bi_testing_ya.env_params.yav:YavEnvParamGetter"
 
+[[tool.mypy.overrides]]
+module = "vault_client.*"
+ignore_missing_imports = true
+
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -56,7 +62,11 @@ select = [
 line-length = 140
 target-version = ['py310']
 
-
-
 [datalens_ci]
 skip_test = true
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
