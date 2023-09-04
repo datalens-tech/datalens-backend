@@ -1,3 +1,12 @@
+0.1986.0
+--------
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * BI-4776: Fix typo in code (#300)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f7892a5d ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-04 12:15:17+00:00
+
 0.1985.0
 --------
 
