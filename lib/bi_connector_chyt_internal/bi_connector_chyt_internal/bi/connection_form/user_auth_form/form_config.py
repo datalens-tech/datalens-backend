@@ -18,7 +18,7 @@ from bi_connector_chyt_internal.bi.connection_info import CHYTUserAuthConnection
 class CHYTInternalUserConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connectors_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorsSettingsByType],
             tenant: Optional[TenantDef]
     ) -> ConnectionForm:
 
