@@ -1,3 +1,12 @@
+0.1988.0
+--------
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * single mypy (#296)  [ https://github.com/datalens-tech/datalens-backend-private/commit/57787881 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-04 12:51:16+00:00
+
 0.1987.0
 --------
 
