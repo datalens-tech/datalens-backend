@@ -14,6 +14,11 @@ import attr
 class FilesystemEditor(abc.ABC):
     base_path: Path = attr.ib(kw_only=True)
 
+    def _is_subpath(self, root: Path, child: Path) -> bool:
+        root_parts = root.absolute().parts
+        child_parts = child.absolute().parts
+        return child_parts[:len(root_parts)] == root_parts
+
     def _validate_paths(self, *paths: Path) -> None:
         base_path_parts = self.base_path.absolute().parts
         for path in paths:
@@ -91,7 +96,7 @@ class FilesystemEditor(abc.ABC):
     @contextmanager
     def open(self, path: Path, mode: str) -> Generator[TextIO, None, None]:
         # TODO: Make all toml editors open files via this method to enforce path restrictions
-        assert mode in ('r', 'r+')
+        assert mode in ('r', 'r+', 'w')
         self._validate_paths(path)
         with self._open(path, mode=mode) as file_obj:
             yield file_obj
@@ -158,8 +163,27 @@ class VirtualFilesystemEditor(FilesystemEditor):
             raise RuntimeError(f'Path does not exist: {path}')
 
     def ensure_path_doesnt_exist(self, path: Path) -> None:
-        if not path.exists():
+        if path.exists():
             raise RuntimeError(f'Path already exists: {path}')
+
+    def _recursive_children(self, path: Path) -> list[Path]:
+        children: set[Path] = set()
+        for real_child in path.rglob('*/'):
+            if real_child in self._moved_paths.values():
+                # It has been moved
+                continue
+            if real_child in self._removed_paths:
+                # It has been deleted
+                continue
+
+            children.add(real_child)
+
+        for virtual_child in set(self._moved_paths) | set(self._copied_paths):
+            if self._is_subpath(root=path, child=virtual_child):
+                continue
+            children.add(virtual_child)
+
+        return sorted(children)
 
     def _copy_single_path(self, src_path: Path, dst_path: Path) -> None:
         self.ensure_path_exists(src_path)
@@ -175,7 +199,7 @@ class VirtualFilesystemEditor(FilesystemEditor):
 
     def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
         self._copy_single_path(src_path=src_dir, dst_path=dst_dir)
-        for src_child_path in src_dir.rglob('*/'):
+        for src_child_path in self._recursive_children(src_dir):
             dst_child_path = dst_dir / src_child_path.relative_to(src_dir)
             self._copy_single_path(src_path=src_child_path, dst_path=dst_child_path)
 
@@ -197,7 +221,7 @@ class VirtualFilesystemEditor(FilesystemEditor):
 
     def _move_path(self, old_path: Path, new_path: Path) -> None:
         self._move_single_path(src_path=old_path, dst_path=new_path)
-        for src_child_path in old_path.rglob('*/'):
+        for src_child_path in self._recursive_children(old_path):
             dst_child_path = new_path / src_child_path.relative_to(old_path)
             self._move_single_path(src_path=src_child_path, dst_path=dst_child_path)
 
@@ -219,19 +243,25 @@ class VirtualFilesystemEditor(FilesystemEditor):
         original_path = path
         if path in self._moved_paths:
             original_path = self._moved_paths[path]
-        elif path in self._moved_paths:
+        elif path in self._copied_paths:
             original_path = self._copied_paths[path]
 
         if path in self._edited_files:
             original_text = self._edited_files[path]
+        elif mode == 'w' and not original_path.exists():
+            original_text = ''
         else:
             with super()._open(original_path, mode='r') as file_obj:
                 original_text = file_obj.read()
 
-        str_io = io.StringIO(original_text)
+        str_io: io.StringIO
+        if mode == 'w':
+            str_io = io.StringIO()
+        else:
+            str_io = io.StringIO(original_text)
         yield str_io
 
-        if mode == 'r+':
+        if mode in ('r+', 'w'):
             new_text = str_io.getvalue()
             if new_text != original_text:
                 self._edited_files[path] = new_text
