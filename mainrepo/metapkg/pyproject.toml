@@ -26,9 +26,7 @@ gunicorn = "==20.1.0"
 shortuuid = "==1.0.11"
 sqlalchemy = "==1.4.46, <2.0"
 Flask = "==2.0.3"
-Flask-SQLAlchemy = "==2.5.1"
 Werkzeug = "==2.0.3"
-blinker = "==1.5"
 certifi-yandex = "==2021.10.08"
 flask-marshmallow = "==0.14.0"
 flask-restx = "==1.1.0"
@@ -79,10 +77,7 @@ tornado = "==6.2"
 yandex-passport-vault-client = "==1.5.2"
 cryptography = "==3.3.2"
 typeguard = "==2.13.3"
-flask-sqlalchemy = "==2.5.1"
-marshmallow-sqlalchemy = "==0.25.0"
 more-itertools = "==9.1.0"
-simplejson = "==3.18.4"
 aiochclient = "==2.2.0"
 apispec = "==3.3.2"
 cchardet = "==2.1.7"
@@ -216,6 +211,13 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
+[datalens.meta.mypy_common]
+# this section will be inserted into all packages under
+warn_unused_configs = true
+disallow_untyped_defs = true
+#; to make `disallow_untyped_defs = False` overrides more useful:
+check_untyped_defs = true
+strict_optional = true
 
 [datalens.meta.mypy_stubs_packages_override]
 # bunch of overrides for different case

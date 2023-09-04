@@ -1,5 +1,6 @@
 import itertools
 import os.path
+from pathlib import Path
 from typing import Optional
 
 import attr
@@ -38,8 +39,8 @@ class MetaPackageManager:
         for group in itertools.chain([None], self.list_poetry_groups()):
             for dependency in self.get_dependencies(group):
                 if isinstance(dependency, LocalReqPackageSpec):
-                    dep_abs_path = os.path.realpath(os.path.join(self.dir_path, dependency.path))
-                    dep_new_rel_path = os.path.relpath(dep_abs_path, new_path)
+                    dep_abs_path = Path(self.dir_path) / dependency.path
+                    dep_new_rel_path = Path(os.path.relpath(dep_abs_path, new_path))
 
                     clone.write_dependency(group, attr.evolve(dependency, path=dep_new_rel_path))
 
@@ -88,7 +89,7 @@ class MetaPackageManager:
                 ret.append(PypiReqPackageSpec(package_name=key.key, version=val))
             elif isinstance(val, dict):
                 if "path" in val:
-                    ret.append(LocalReqPackageSpec(package_name=key.key, path=val["path"]))
+                    ret.append(LocalReqPackageSpec(package_name=key.key, path=Path(val["path"])))
                 else:
                     raise ValueError(f"No path in local dependency: {key}: {val}")
             else:

@@ -73,7 +73,7 @@ class LocalReqPackageSpec(ReqPackageSpec):
 
     def to_toml_value(self) -> Any:
         it = inline_table()
-        it["path"] = self.path
+        it["path"] = str(self.path)
         return it
 
 
