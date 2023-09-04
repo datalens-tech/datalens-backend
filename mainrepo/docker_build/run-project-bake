@@ -4,12 +4,11 @@
 # It launch `docker buildx bake ...` with appropriate CWD and add all required .hcl files to arguments
 # All extra arguments will be passed to bake
 
-set -x
+set -eux
 
 ALL_BAKE_FILES=(
     _bake_vars_functions.hcl
-    bake.hcl
-    bake_ci.hcl
+    bake_code_gen.hcl
 )
 
 FILE_AGS=()
@@ -20,8 +19,7 @@ do
 done
 
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-export PROJECT_ROOT=$(realpath "${HERE}/..")
-export ARC_ROOT=$(realpath "${PROJECT_ROOT}/../arc/arcadia")
+export DL_B_PROJECT_ROOT=$(realpath "${HERE}/..")
 
 cd "${HERE}"
 

@@ -58,7 +58,7 @@ build-cloud-preprod:
 .PHONY: gen-parser
 SHELL = /bin/bash
 gen-parser:
-	cd ../../docker_build && docker buildx bake -f bake.hcl gen_antlr
+	cd ../../mainrepo/docker_build && docker buildx bake -f bake.hcl gen_antlr
 
 
 .PHONY: build-like-gh

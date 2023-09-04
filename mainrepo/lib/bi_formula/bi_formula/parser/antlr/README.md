@@ -6,7 +6,7 @@
 
 Run
 ```bash
-${PROJECT_ROOT}/docker_build/run-project-bake gen_antlr
+${DL_B_PROJECT_ROOT}/docker_build/run-project-bake gen_antlr
 ```
 
 ### PyCharm
