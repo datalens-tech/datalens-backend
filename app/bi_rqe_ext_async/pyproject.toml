@@ -9,6 +9,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
+gunicorn = ">=20.1.0"
 python = ">=3.10, <3.12"
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
