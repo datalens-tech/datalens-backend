@@ -1,3 +1,16 @@
+0.1985.0
+--------
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * BI-4776: Chyt forms (#256)  [ https://github.com/datalens-tech/datalens-backend-private/commit/01ecf70 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Implemented virtual FS editor and dry run for repmanager (#287)  [ https://github.com/datalens-tech/datalens-backend-private/commit/78f6aa8 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-04 11:46:56+00:00
+
 0.1984.0
 --------
 

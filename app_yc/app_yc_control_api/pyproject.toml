@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-control-api-yc"
-version = "0.1984.0"
+version = "0.1985.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "app_yc_control_api"}]
