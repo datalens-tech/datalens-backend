@@ -5,6 +5,7 @@ from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase, DLRequestView
+from bi_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
 
 from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from bi_core.aio.ping_view import PingView
@@ -18,10 +19,15 @@ class FileUploaderWorkerDLRequest(DLRequestBase):
     pass
 
 
+class HealthCheckFileUploaderWorkerFactory(FileUploaderWorkerFactory[FileUploaderWorkerSettings]):
+    def _get_tenant_resolver(self) -> TenantResolver:
+        return CommonTenantResolver()  # does not matter in healthcheck
+
+
 class HealthCheckView(DLRequestView):
     async def get(self) -> web.StreamResponse:
         settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
-        worker = FileUploaderWorkerFactory(settings=settings).create_worker()
+        worker = HealthCheckFileUploaderWorkerFactory(settings=settings).create_worker()
         health_checker = HealthChecker(worker)
         await health_checker.check_and_raise()
         return web.Response()

@@ -24,7 +24,7 @@ from bi_testing.s3_utils import create_s3_bucket, create_s3_client, create_sync_
 from bi_testing.utils import wait_for_initdb
 from bi_testing.containers import get_test_container_hostport
 
-from bi_configs.enums import AppType, RedisMode
+from bi_configs.enums import RedisMode
 from bi_configs.settings_submodels import RedisSettings, S3Settings, GoogleAppSettings
 from bi_configs.connectors_settings import ConnectorsSettingsByType, FileS3ConnectorSettings
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
@@ -37,9 +37,10 @@ from bi_task_processor.worker import ArqWorkerTestWrapper
 
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
 
-from bi_file_uploader_worker_lib.app import FileUploaderContextFab, FileUploaderWorkerFactory
+from bi_file_uploader_worker_lib.app import FileUploaderContextFab
 from bi_file_uploader_worker_lib.tasks import REGISTRY
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from bi_file_uploader_worker_lib.testing.app_factory import TestingFileUploaderWorkerFactory
 
 try:
     # Arcadia testing stuff
@@ -169,7 +170,6 @@ def file_uploader_worker_settings(
         secure_reader_socket,
 ):
     settings = FileUploaderWorkerSettings(
-        APP_TYPE=AppType.TESTS,
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         S3=S3Settings(
@@ -211,7 +211,7 @@ def task_state():
 @pytest.fixture(scope='function')
 async def task_processor_arq_worker(loop, task_state, file_uploader_worker_settings):
     LOGGER.info('Set up worker')
-    worker = FileUploaderWorkerFactory(settings=file_uploader_worker_settings).create_worker(state=task_state)
+    worker = TestingFileUploaderWorkerFactory(settings=file_uploader_worker_settings).create_worker(state=task_state)
     wrapper = ArqWorkerTestWrapper(loop=loop, worker=worker)
     yield await wrapper.start()
     await wrapper.stop()

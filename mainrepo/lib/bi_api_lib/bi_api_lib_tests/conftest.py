@@ -1061,7 +1061,6 @@ def file_uploader_worker_settings(
 ):
     us_config = core_test_config.get_us_config()
     settings = FileUploaderWorkerSettings(
-        APP_TYPE=AppType.TESTS,
         REDIS_APP=redis_setting_maker.get_redis_settings_default(),
         REDIS_ARQ=redis_setting_maker.get_redis_settings_arq(),
         S3=S3Settings(

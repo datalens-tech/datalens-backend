@@ -2,7 +2,6 @@ import os
 
 import pytest
 
-from bi_configs.enums import AppType
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
@@ -41,7 +40,6 @@ def file_uploader_worker_settings(
         crypto_keys_config,
 ):
     settings = FileUploaderWorkerSettings(
-        APP_TYPE=AppType.TESTS,
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         S3=S3Settings(

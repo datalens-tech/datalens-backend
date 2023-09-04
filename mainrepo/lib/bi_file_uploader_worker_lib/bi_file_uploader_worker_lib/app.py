@@ -1,10 +1,10 @@
+import abc
 import os
+from typing import TypeVar, Generic
 
 import attr
 
 from bi_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
-from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC, TenantResolverDC
-from bi_configs.enums import AppType
 from bi_utils.aio import ContextVarExecutor
 from bi_core.aio.web_app_services.gsheets import GSheetsSettings
 from bi_core.aio.web_app_services.s3 import S3Service
@@ -23,9 +23,13 @@ from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from bi_file_uploader_worker_lib.tasks import REGISTRY
 
 
+_TSettings = TypeVar('_TSettings', bound=FileUploaderWorkerSettings)
+
+
 @attr.s
 class FileUploaderContextFab(BaseContextFabric):
     _settings: FileUploaderWorkerSettings = attr.ib()
+    _tenant_resolver: TenantResolver = attr.ib(factory=lambda: CommonTenantResolver())
 
     async def make(self) -> FileUploaderTaskContext:
         load_bi_core()
@@ -54,16 +58,8 @@ class FileUploaderContextFab(BaseContextFabric):
             redis_pool=redis_pool,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             secure_reader_socket=self._settings.SECURE_READER_SOCKET,
-            tenant_resolver=self.get_tenant_resolver(),
+            tenant_resolver=self._tenant_resolver,
         )
-
-    # TODO FIX: Inject appropriate resolver in app for particular contour
-    def get_tenant_resolver(self) -> TenantResolver:
-        return {
-            AppType.CLOUD: TenantResolverYC(),
-            AppType.DATA_CLOUD: TenantResolverDC(),
-            AppType.NEBIUS: TenantResolverYC(),
-        }.get(self._settings.APP_TYPE, CommonTenantResolver())
 
     async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore
         await inst.s3_service.tear_down()
@@ -72,8 +68,12 @@ class FileUploaderContextFab(BaseContextFabric):
 
 
 @attr.s(kw_only=True)
-class FileUploaderWorkerFactory:
-    _settings: FileUploaderWorkerSettings = attr.ib()
+class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
+    _settings: _TSettings = attr.ib()
+
+    @abc.abstractmethod
+    def _get_tenant_resolver(self) -> TenantResolver:
+        raise NotImplementedError()
 
     def create_worker(self, state: TaskState = None) -> ArqWorker:
         if state is None:
@@ -90,7 +90,7 @@ class FileUploaderWorkerFactory:
                 registry=REGISTRY,
                 state=state,
             ),
-            context_fab=FileUploaderContextFab(self._settings),
+            context_fab=FileUploaderContextFab(self._settings, tenant_resolver=self._get_tenant_resolver()),
             worker_settings=WorkerSettings(),
             cron_tasks=cron_tasks,
         )

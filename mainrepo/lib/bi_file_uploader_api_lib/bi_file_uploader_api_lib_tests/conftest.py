@@ -15,7 +15,7 @@ import pytest
 
 from bi_testing.containers import get_test_container_hostport
 from bi_configs.connectors_settings import ConnectorsSettingsByType, FileS3ConnectorSettings
-from bi_configs.enums import AppType, RedisMode
+from bi_configs.enums import RedisMode
 from bi_configs.settings_submodels import RedisSettings, CorsSettings, CsrfSettings, S3Settings, GoogleAppSettings
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config, CryptoKeysConfig
 from bi_constants.api_constants import DLHeadersCommon
@@ -149,7 +149,6 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
     monkeypatch.setenv('EXT_QUERY_EXECUTER_SECRET_KEY', 'dummy')
 
     settings = FileUploaderAPISettings(
-        APP_TYPE=AppType.TESTS,
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         CORS=CorsSettings(
@@ -295,7 +294,6 @@ def file_uploader_worker_settings(
         secure_reader_socket,
 ):
     settings = FileUploaderWorkerSettings(
-        APP_TYPE=AppType.TESTS,
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         S3=S3Settings(

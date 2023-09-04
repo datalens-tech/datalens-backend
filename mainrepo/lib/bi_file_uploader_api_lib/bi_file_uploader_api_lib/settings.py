@@ -1,14 +1,11 @@
 from typing import Optional
 
-import json
 import attr
 
 from bi_configs.settings_loaders.meta_definition import s_attrib, required
 from bi_configs.settings_submodels import (
     CorsSettings,
     CsrfSettings,
-    YCAuthSettings,
-    default_yc_auth_settings,
 )
 from bi_configs.environments import CSRFAwareInstallation, CORSAwareInstallation
 
@@ -47,13 +44,3 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
     FILE_UPLOADER_MASTER_TOKEN: str = s_attrib("FILE_UPLOADER_MASTER_TOKEN", sensitive=True)  # type: ignore
 
     ALLOW_XLSX: bool = s_attrib("ALLOW_XLSX", missing=False)  # type: ignore
-
-
-@attr.s(frozen=True)
-class DefaultFileUploaderAPISettings(FileUploaderAPISettings):
-    YC_AUTH_SETTINGS: Optional[YCAuthSettings] = s_attrib(  # type: ignore
-        "YC_AUTH_SETTINGS", fallback_factory=default_yc_auth_settings,
-    )
-    SA_KEY_DATA: Optional[dict[str, str]] = s_attrib(  # type: ignore
-        "SA_KEY_DATA", sensitive=True, missing=None, env_var_converter=json.loads,
-    )

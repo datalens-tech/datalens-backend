@@ -8,10 +8,9 @@ from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_f
 from bi_core.logging_config import configure_logging
 from bi_configs.environments import InstallationsMap, EnvAliasesMap
 
-from bi_file_uploader_api_lib.app import LegacyFileUploaderApiAppFactory
-from bi_file_uploader_api_lib.settings import DefaultFileUploaderAPISettings
-
 from bi_file_uploader import app_version
+from bi_file_uploader.app_factory import LegacyFileUploaderApiAppFactory
+from bi_file_uploader.app_settings import DefaultFileUploaderAPISettings
 
 
 LOGGER = logging.getLogger(__name__)

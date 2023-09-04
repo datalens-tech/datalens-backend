@@ -11,9 +11,10 @@ from bi_task_processor.processor import ARQProcessorImpl, TaskProcessor, LocalPr
 from bi_task_processor.state import TaskState
 from bi_task_processor.worker import ArqWorkerTestWrapper, ArqWorker
 
-from bi_file_uploader_worker_lib.app import FileUploaderContextFab, FileUploaderWorkerFactory
+from bi_file_uploader_worker_lib.app import FileUploaderContextFab
 from bi_file_uploader_worker_lib.tasks import REGISTRY
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from bi_file_uploader_worker_lib.testing.app_factory import TestingFileUploaderWorkerFactory
 
 
 LOGGER = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ async def task_processor_arq_worker(
         file_uploader_worker_settings: FileUploaderWorkerSettings,
 ) -> AsyncGenerator[ArqWorker, None]:
     LOGGER.info('Set up worker')
-    worker = FileUploaderWorkerFactory(settings=file_uploader_worker_settings).create_worker(state=task_state)
+    worker = TestingFileUploaderWorkerFactory(settings=file_uploader_worker_settings).create_worker(state=task_state)
     wrapper = ArqWorkerTestWrapper(loop=loop, worker=worker)
     try:
         yield await wrapper.start()

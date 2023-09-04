@@ -2,12 +2,10 @@ from typing import Optional
 
 import attr
 
-from bi_configs.enums import AppType
 from bi_configs.environments import CommonInstallation
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.settings_loaders.meta_definition import required, s_attrib
 from bi_configs.settings_submodels import RedisSettings, S3Settings
-from bi_configs.utils import app_type_env_var_converter
 
 
 def _make_redis_persistent_settings(cfg: Optional[CommonInstallation], db: int) -> Optional[RedisSettings]:
@@ -25,12 +23,6 @@ def _make_redis_persistent_settings(cfg: Optional[CommonInstallation], db: int) 
 
 @attr.s(frozen=True)
 class FileUploaderBaseSettings:
-    APP_TYPE: AppType = s_attrib(  # type: ignore
-        "YENV_TYPE",
-        is_app_cfg_type=True,
-        env_var_converter=app_type_env_var_converter,
-    )
-
     REDIS_APP: RedisSettings = s_attrib(  # type: ignore
         "REDIS_APP",
         fallback_factory=(
