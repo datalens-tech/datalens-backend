@@ -28,6 +28,7 @@ def collect_affected_packages(repo_root: Path, refs: list[PkgRef], paths: list[s
 
 
 def gen_pkg_dirs(repo_path: Path) -> Iterator[Path]:
+    # todo: relay of dl_repmanager to walk sub projects
     roots = ("lib", "app", "mainrepo/lib", "mainrepo/app")
     for root in roots:
         root_path = (Path(repo_path) / root).resolve()
@@ -91,7 +92,7 @@ def get_deep_affection_map(dependencies: dict[str, list[str]]) -> dict[str, set[
     return affected
 
 
-def process(repo_root: Path, affected: Iterable[str]) -> list[PkgRef]:
+def process(repo_root: Path, affected: Iterable[str], get_all: bool = False) -> list[PkgRef]:
     affected = list(affected)
 
     depends_on = defaultdict(list)
@@ -109,26 +110,29 @@ def process(repo_root: Path, affected: Iterable[str]) -> list[PkgRef]:
         for req in ref.extract_local_requirements():  # include_groups=["test", "tests"]):
             depends_on[ref.self_pkg_name].append(req)
 
-    affection_map = get_deep_affection_map(depends_on)
+    if get_all:
+        to_test = set(pkg_by_ref.keys())
+    else:
+        affection_map = get_deep_affection_map(depends_on)
+        if len(affected) == 0:
+            return all_refs
 
-    if len(affected) == 0:
-        return all_refs
+        direct_affected = collect_affected_packages(repo_root, all_refs, affected)
+        to_test = set()
 
-    direct_affected = collect_affected_packages(repo_root, all_refs, affected)
-    to_test = set()
-
-    for pkg in direct_affected:
-        to_test.add(pkg.self_pkg_name)
-        to_test.update(affection_map.get(pkg.self_pkg_name, {}))
+        for pkg in direct_affected:
+            to_test.add(pkg.self_pkg_name)
+            to_test.update(affection_map.get(pkg.self_pkg_name, {}))
 
     return [pkg_by_ref[k] for k in to_test]
 
 
 def main() -> None:
     if override := os.environ.get("TEST_TARGET_OVERRIDE", ""):
-        overrides = override.strip().split(",")
-        print(f"affected={json.dumps(overrides)}")
-        return
+        if override != "__ALL__":
+            overrides = override.strip().split(",")
+            print(f"affected={json.dumps(overrides)}")
+            return
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo")
@@ -138,17 +142,20 @@ def main() -> None:
     repo_root = args.repo
     paths = args.changes
 
-    paths = paths.strip().split(" ")
-    to_check = process(
-        Path(repo_root), [p for p in paths if not (p.startswith("ops/") or p.startswith("terrarium/") or p.startswith("mainrepo/terrarium/"))]
-    )
+    if override == "__ALL__":
+        to_check = process(repo_root, [], get_all=True)
+    else:
+        paths = paths.strip().split(" ")
+        to_check = process(
+            Path(repo_root), [p for p in paths if not (p.startswith("ops/") or p.startswith("terrarium/") or p.startswith("mainrepo/terrarium/"))]
+        )
+
     to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci"))
     result = []
 
     for sub in to_check:
         if sub.skip_test:
             continue
-
         result.append(str(sub.partial_parent_path))
     print(f"affected={json.dumps(result)}")
 

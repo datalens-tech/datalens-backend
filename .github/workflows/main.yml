@@ -17,17 +17,13 @@ on:
       test_targets:
         default: ""
         description: "Comma separated list to run pytest on, e.g.: `lib/bi_constants,lib/bi_utils`. "
-      run_mypy:
-        type: boolean
-        default: false
-        description: "Check to run mypy (in addition to other tests)"
       run_mypy_only:
         type: boolean
         default: false
         description: "Check to only run mypy"
       pytest_timeout_minutes:
         type: number
-        default: 5
+        default: 10
         description: "Timeout for pytest JOB in minutes"
 
 jobs:
@@ -82,7 +78,6 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-
     # https://github.com/actions/runner-images/issues/6775
     - run: git config --global --add safe.directory .
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
@@ -383,8 +378,7 @@ jobs:
           report_individual_runs: "true"
 
   mypy:
-    runs-on: [ self-hosted, linux ]
-    if: ${{ github.event.inputs.run_mypy == 'true' }} ||  ${{ github.event.inputs.run_mypy_only == 'true' }}
+    runs-on: [ self-hosted, linux, light ]
     needs: router
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
@@ -394,16 +388,9 @@ jobs:
         password: "${{ secrets.DL_CI_CR_TOKEN }}"
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-    name: "🐲[mypy]${{ matrix.value }}"
-    # set more when tuning
-    # from json attempt to workaround
-    timeout-minutes: ${{ inputs.pytest_timeout_minutes && fromJSON(inputs.pytest_timeout_minutes ) || 5 }}
-    strategy:
-      fail-fast: false
-      matrix:
-        value: ${{fromJson(needs.router.outputs.affected)}}
+    name: "🐲 mypy"
+    timeout-minutes: ${{ inputs.pytest_timeout_minutes && fromJSON(inputs.pytest_timeout_minutes ) || 10 }}
     steps:
-      - run: ls "/data/${{ matrix.value }}/"
       - name: 'Cleanup folder'
         run: |
           rm -rf ./* || true
@@ -412,10 +399,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
+      - run: echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
       - name: run mypy
         run: |
           . /venv/bin/activate 
-          python .github/execute_mypy.py ${{ matrix.value }}
+          python .github/execute_mypy_multi.py /tmp/dl_test_targets.json
+        env:
+          PYTHONUNBUFFERED: "1"
+      
 
 # todo:  uncomment when code is linted and being  re-formatted in pre-commit hooks
 #  codestyle:
