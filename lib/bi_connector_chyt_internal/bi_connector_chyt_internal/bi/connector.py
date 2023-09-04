@@ -23,6 +23,9 @@ from bi_connector_chyt_internal.bi.connection_info import (
     CHYTInternalTokenConnectionInfoProvider, CHYTUserAuthConnectionInfoProvider,
 )
 from bi_connector_chyt_internal.bi.i18n.localizer import CONFIGS
+from bi_connector_chyt_internal.bi.connection_form.user_auth_form.form_config import CHYTInternalUserConnectionFormFactory
+from bi_connector_chyt_internal.bi.connection_form.token_auth_form.form_config import CHYTInternalTokenConnectionFormFactory
+
 
 from bi_connector_chyt_internal.core.connector import (
     CHYTInternalCoreConnectionDefinition,
@@ -43,6 +46,7 @@ class CHYTInternalBiApiConnectionDefinition(BiApiConnectionDefinition):
     core_conn_def_cls = CHYTInternalCoreConnectionDefinition
     api_generic_schema_cls = CHYTConnectionSchema
     info_provider_cls = CHYTInternalTokenConnectionInfoProvider
+    form_factory_cls = CHYTInternalTokenConnectionFormFactory
 
 
 class CHYTTableBiApiSourceDefinition(BiApiSourceDefinition):
@@ -73,6 +77,7 @@ class CHYTUserAuthBiApiConnectionDefinition(BiApiConnectionDefinition):
     core_conn_def_cls = CHYTUserAuthCoreConnectionDefinition
     api_generic_schema_cls = CHYTUserAuthConnectionSchema
     info_provider_cls = CHYTUserAuthConnectionInfoProvider
+    form_factory_cls = CHYTInternalUserConnectionFormFactory
 
 
 class CHYTUserAuthTableBiApiSourceDefinition(BiApiSourceDefinition):

@@ -23,13 +23,6 @@ class OAuthTokenRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, Disable
 
 
 @attr.s(kw_only=True, frozen=True)
-class OAuthTokenCHYTRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledMixin):  # TODO move to connector?
-    type = 'oauth_chyt'
-
-    fake_value: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null('fakeValue'))
-
-
-@attr.s(kw_only=True, frozen=True)
 class CacheTTLRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledMixin):
     type = 'cache_ttl_sec'
 

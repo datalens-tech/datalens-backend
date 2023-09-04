@@ -1,6 +1,5 @@
 from .components import (
     OAuthTokenRow,
-    OAuthTokenCHYTRow,
     CacheTTLRow,
     CounterRow,
     MetricaCounterRowItem,
@@ -18,7 +17,6 @@ from .components import (
 
 __all__ = (
     'OAuthTokenRow',
-    'OAuthTokenCHYTRow',
     'CacheTTLRow',
     'CounterRow',
     'MetricaCounterRowItem',
