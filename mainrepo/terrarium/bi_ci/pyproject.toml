@@ -13,8 +13,9 @@ clize = ">=5.0.0"
 poetry = ">=1.5.0"
 
 
-[tool.mypy]
-overrides = []
+[[tool.mypy.overrides]]
+module = "clize.*"
+ignore_missing_imports = true
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

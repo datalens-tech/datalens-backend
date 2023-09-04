@@ -105,7 +105,7 @@ def process(repo_root: Path, affected: Iterable[str], get_all: bool = False) -> 
         if ref.self_pkg_name is None:
             continue
         pkg_by_ref[ref.self_pkg_name] = ref
-        for req in ref.extract_local_requirements():  # include_groups=["test", "tests"]):
+        for req in ref.extract_local_requirements():
             depends_on[ref.self_pkg_name].append(req)
 
     if get_all:

@@ -6,14 +6,15 @@ import tomlkit
 
 
 def get_compose_path(prj_root: Path, target: str, with_local_suffix: str = '') -> str:
-    rel_path, section = target.split(":")
+    rel_path, section_name = target.split(":")
 
+    ref: dict
     try:
         ref = tomlkit.load(open(prj_root / rel_path / "pyproject.toml"))
     except FileNotFoundError:
         ref = {}
 
-    section = ref.get("datalens", {}).get("pytest", {}).get(section)
+    section = ref.get("datalens", {}).get("pytest", {}).get(section_name, {})
 
     base_path = prj_root / rel_path
     base_name = "docker-compose"

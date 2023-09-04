@@ -55,7 +55,7 @@ def pkg_to_targets_ref(pkg_dir: Path, doc: TOMLDocument, sections: list[str] | N
 def run_pytest_one(t: Target) -> int:
     print(f"Running pytest for {t.name} in {str(t.root_dir)} for {t.target_path or '.'}")
     report_name = f"{str(t.root_dir)}-{t.target_path or '.'}-{uuid.uuid4().hex}.xml".replace("/", "_")
-    run_args = [
+    run_args: list[str] = [
         "/venv/bin/python",
         "-m",
         "pytest",
@@ -66,7 +66,7 @@ def run_pytest_one(t: Target) -> int:
     if t.target_path:
         run_args.append(t.target_path)
 
-    subprocess_kwargs = dict(
+    subprocess_kwargs: dict[str, str | bool] = dict(
         universal_newlines=True,
     )
     if t.root_dir:
@@ -74,7 +74,7 @@ def run_pytest_one(t: Target) -> int:
     print(f"{run_args=}")
     print(f"{subprocess_kwargs=}")
 
-    process = subprocess.run(run_args, **subprocess_kwargs)
+    process = subprocess.run(run_args, **subprocess_kwargs)  # type: ignore
     return process.returncode
 
 
@@ -87,8 +87,8 @@ def runner(test_target: str):
     """
     # todo: consider multiple targets for one pkg_root, maybe comma separated
 
-    pkg_root, target_section = test_target.split(":")
-    pkg_root = Path("/data") / pkg_root
+    pkg_root_str, target_section = test_target.split(":")
+    pkg_root: Path = Path("/data") / pkg_root_str
 
     print("Datalens gh ci tests Runner welcomes you!")
     doc = read_pkg(pkg_root / "pyproject.toml")

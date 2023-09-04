@@ -6,28 +6,13 @@ import tomlkit
 
 
 @attrs.define(slots=False)
-class LocalPkg:
-    root_path: Path
-    partial_parent_path: str
-
-    @cached_property
-    def path(self) -> Path:
-        return self.root_path / self.partial_parent_path
-
-
-@attrs.define(slots=False)
 class PkgRef:
     root: Path
     full_path: Path
 
-
     @cached_property
     def partial_parent_path(self):
         return self.full_path.relative_to(self.root)
-
-    @property
-    def root_path(self) -> Path:
-        return self.pkg.root_path
 
     @cached_property
     def self_toml(self):
@@ -37,7 +22,7 @@ class PkgRef:
             print(err)
             return None
 
-    def extract_local_requirements(self, include_groups: list[str] | None = False) -> set[str]:
+    def extract_local_requirements(self, include_groups: list[str] | None = None) -> set[str]:
         """
         Returns pkg names listed in dependencies of current pkg
         """
