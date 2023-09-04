@@ -57,7 +57,7 @@ jobs:
           GIT_SHA: "${{ github.sha }}"
 
   router:
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, linux, light]
     needs: gh_build_image
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
@@ -94,7 +94,7 @@ jobs:
         TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
 
   pytest_split:
-    runs-on: [ self-hosted, linux ]
+    runs-on: [ self-hosted, linux, light ]
     needs: router
     if: ${{ github.event.inputs.run_mypy_only != 'true' }}
     container:
@@ -354,7 +354,7 @@ jobs:
           retention-days: 1
 
   publish-result:
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, linux, light]
     # needs: [ "pytest", "pytest_fat", "pytest_ext_public", "pytest_ext_private"]
     needs: [ "pytest", "pytest_fat", "pytest_ext_public"]
     if: "!cancelled() && ${{ github.event.inputs.run_mypy_only != 'true' }}"
@@ -410,7 +410,7 @@ jobs:
 
 # todo:  uncomment when code is linted and being  re-formatted in pre-commit hooks
 #  codestyle:
-#    runs-on: [self-hosted, linux]
+#    runs-on: [self-hosted, linux, light]
 #    needs: wait_for_image
 #    container:
 #      # until https://github.com/github/docs/issues/25520 is resolved, using vars
