@@ -10,7 +10,6 @@ import math
 import uuid
 from http import HTTPStatus
 
-import pytest
 import shortuuid
 
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTION_TYPE_CH_FROZEN_DEMO
@@ -200,7 +199,6 @@ def test_get_dataset_fields(client, data_api_v1, dataset_id):
     _check_fields(r.json['fields'])
 
 
-@pytest.mark.skip(reason="This test is broken by my favorite devtools team")
 def test_dataset_revision_id(caplog, client, data_api_v1, dataset_id):
     caplog.set_level('WARNING')
 
