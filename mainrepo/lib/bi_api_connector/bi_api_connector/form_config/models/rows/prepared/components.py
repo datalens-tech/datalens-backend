@@ -33,25 +33,6 @@ class CacheTTLRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledM
 
 
 @attr.s(kw_only=True, frozen=True)
-class CounterRow(PreparedRow, FormFieldMixin, DisabledMixin):
-    label_text: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null('labelText'))
-    allow_manual_input: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null('allowManualInput'))
-
-    class Inner(PreparedRow.Inner):
-        counter_input_method = 'counter_input_method'
-
-
-@attr.s(kw_only=True, frozen=True)
-class MetricaCounterRowItem(CounterRow):
-    type = 'metrica_counter'
-
-
-@attr.s(kw_only=True, frozen=True)
-class AppMetricaCounterRowItem(CounterRow):
-    type = 'appmetrica_counter'
-
-
-@attr.s(kw_only=True, frozen=True)
 class CollapseRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin):
     """ https://a.yandex-team.ru/arcadia/data-ui/common/src/components/Collapse """
 

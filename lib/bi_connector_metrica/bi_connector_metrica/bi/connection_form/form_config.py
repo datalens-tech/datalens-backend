@@ -15,6 +15,7 @@ from bi_api_connector.form_config.models.base import ConnectionFormFactory, Conn
 from bi_api_connector.form_config.models.common import CommonFieldName, FormFieldName, OAuthApplication
 from bi_api_connector.form_config.models.rows.base import FormRow
 
+from bi_connector_metrica.bi.connection_form.rows import CounterRow, MetricaCounterRowItem, AppMetricaCounterRowItem
 from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
 from bi_connector_metrica.bi.i18n.localizer import Translatable
 
@@ -39,7 +40,7 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _counter_row(self, manual_input: bool) -> C.CounterRow:
+    def _counter_row(self, manual_input: bool) -> CounterRow:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -101,8 +102,8 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
     def _title(self) -> str:
         return MetricaConnectionInfoProvider.get_title(self._localizer)
 
-    def _counter_row(self, manual_input: bool) -> C.MetricaCounterRowItem:
-        return C.MetricaCounterRowItem(
+    def _counter_row(self, manual_input: bool) -> MetricaCounterRowItem:
+        return MetricaCounterRowItem(
             name=MetricaFieldName.counter_id,
             allow_manual_input=manual_input,
         )
@@ -123,8 +124,8 @@ class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
     def _title(self) -> str:
         return AppMetricaConnectionInfoProvider.get_title(self._localizer)
 
-    def _counter_row(self, manual_input: bool) -> C.AppMetricaCounterRowItem:
-        return C.AppMetricaCounterRowItem(
+    def _counter_row(self, manual_input: bool) -> AppMetricaCounterRowItem:
+        return AppMetricaCounterRowItem(
             name=MetricaFieldName.counter_id,
             allow_manual_input=manual_input,
         )
