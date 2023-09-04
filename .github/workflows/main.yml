@@ -49,7 +49,7 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - run: /bin/bash ops/ci/gha_build_bake.sh
         env:
@@ -75,7 +75,7 @@ jobs:
         rm -rf ./.??* || true
         ls -la ./
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     # https://github.com/actions/runner-images/issues/6775
@@ -116,7 +116,7 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
@@ -163,7 +163,7 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
       - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
@@ -217,7 +217,7 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
       - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
@@ -272,7 +272,7 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
       - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
@@ -332,7 +332,7 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
       - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
@@ -396,7 +396,7 @@ jobs:
           rm -rf ./* || true
           rm -rf ./.??* || true
       - name: Checkout code, just to get access to .github/execute_mypy...
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - run: echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
