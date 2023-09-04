@@ -4,11 +4,11 @@ import logging
 from typing import Optional
 
 from bi_app_tools import ylog
-from bi_core.maintenance.logging_config import configure_logging_for_shell
-from bi_core.maintenance.us_crawler_base import USEntryCrawler
+from bi_maintenance.core.logging_config import configure_logging_for_shell
+from bi_maintenance.core.us_crawler_base import USEntryCrawler
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 
-from bi_api_lib.maintenance.common import MaintenanceEnvironmentManager
+from bi_maintenance.api.common import MaintenanceEnvironmentManager
 
 
 LOGGER = logging.getLogger(__name__)

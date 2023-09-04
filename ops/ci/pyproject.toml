@@ -212,6 +212,7 @@ dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
 # To export/install specific app without other dependencies - use `--only` flag
 # Group naming convention: `app_${APP_FOLDER_NAME}`
 #
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 
 [tool.poetry.group.app_bi_api.dependencies]
 yandex-bi-api = {path = "../../app/bi_api"}

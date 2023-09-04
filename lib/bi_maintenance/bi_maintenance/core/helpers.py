@@ -1,7 +1,7 @@
 """
 Common cases:
 
-from bi_core.maintenance.helpers import get_migration_entry, dump_entry_data
+from bi_maintenance.core.helpers import get_migration_entry, dump_entry_data
 entry = get_migration_entry('fweavr4awr332c')
 dump_entry_data(entry)
 """
@@ -12,10 +12,10 @@ import json
 from bi_core.us_entry import USMigrationEntry, USEntry
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 try:
-    from bi_api_lib.maintenance.common import MaintenanceEnvironmentManager  # type: ignore  # TODO: fix
+    from bi_maintenance.api.common import MaintenanceEnvironmentManager  # type: ignore  # TODO: fix
 except ImportError:
     # Most likely will lead to errors
-    from bi_core.maintenance.common import MaintenanceEnvironmentManagerBase as MaintenanceEnvironmentManager
+    from bi_maintenance.core.common import MaintenanceEnvironmentManagerBase as MaintenanceEnvironmentManager
 
 from bi_core.us_dataset import Dataset
 

@@ -82,6 +82,7 @@ bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
 yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 
 [[tool.mypy.overrides]]
 module = "zope.*"

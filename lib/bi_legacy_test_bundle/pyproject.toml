@@ -33,6 +33,7 @@ yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
+yandex-bi-maintenance = {path = "../bi_maintenance"}
 
 [tool.mypy]
 overrides = []

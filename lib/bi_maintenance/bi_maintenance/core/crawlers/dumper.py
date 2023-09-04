@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, AsyncIterable, Optional
 
 import attr
 
-from bi_core.maintenance.us_crawler_base import USEntryCrawler
+from bi_maintenance.core.us_crawler_base import USEntryCrawler
 from bi_core.us_entry import USMigrationEntry
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 

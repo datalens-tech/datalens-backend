@@ -6,13 +6,13 @@ import attr
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 
-from bi_core.maintenance.us_crawler_base import USEntryCrawler
+from bi_maintenance.core.us_crawler_base import USEntryCrawler
 from bi_core.us_entry import USEntry, USMigrationEntry
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 
 from bi_utils.task_runner import TaskRunner, ImmediateTaskRunner
 
-from bi_api_lib.maintenance.crawler_runner import run_crawler
+from bi_maintenance.api.crawler_runner import run_crawler
 
 
 @attr.s

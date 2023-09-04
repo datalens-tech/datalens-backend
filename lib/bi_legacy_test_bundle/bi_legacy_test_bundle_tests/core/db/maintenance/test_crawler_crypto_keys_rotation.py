@@ -4,7 +4,7 @@ from cryptography import fernet
 
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_core.base_models import PathEntryLocation
-from bi_core.maintenance.crawlers.crypto_keys_rotation import RotateCryptoKeyInConnection
+from bi_maintenance.core.crawlers.crypto_keys_rotation import RotateCryptoKeyInConnection
 from bi_core.us_entry import USMigrationEntry
 from bi_core.us_manager.crypto.main import CryptoController
 from bi_core.us_manager.us_manager_sync_mock import MockedSyncUSManager

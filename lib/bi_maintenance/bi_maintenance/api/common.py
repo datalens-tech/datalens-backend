@@ -11,7 +11,7 @@ from bi_configs.settings_loaders.loader_env import (
     load_settings_from_env_with_fallback, load_connectors_settings_from_env_with_fallback,
 )
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
-from bi_core.maintenance.common import MaintenanceEnvironmentManagerBase
+from bi_maintenance.core.common import MaintenanceEnvironmentManagerBase
 
 if TYPE_CHECKING:
     from bi_core.services_registry.sr_factories import SRFactory

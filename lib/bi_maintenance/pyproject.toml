@@ -1,0 +1,66 @@
+
+[tool.poetry]
+name = "bi-maintenance"
+version = "0.0.1"
+description = ""
+authors = ["Package Author <bipackageauthor@yandex-team.ru>"]
+packages = [{include = "bi_maintenance"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+shortuuid = ">=1.0.11"
+tabulate = ">=0.9.0"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
+yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
+yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[tool.mypy]
+overrides = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens_ci]
+skip_test = true
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
