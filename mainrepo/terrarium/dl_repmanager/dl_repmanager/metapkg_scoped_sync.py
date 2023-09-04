@@ -1,4 +1,3 @@
-import os
 import re
 import shutil
 import subprocess
@@ -9,14 +8,14 @@ from dl_repmanager.metapkg_manager import MetaPackageManager
 from dl_repmanager.primitives import LocalReqPackageSpec, PypiReqPackageSpec
 
 
-def run_poetry_lock(dir_path: str) -> None:
+def run_poetry_lock(dir_path: Path) -> None:
     subprocess.run(["poetry", "lock", "--no-update"], cwd=dir_path, check=True)
 
 
 def sync_scoped_metapkg(
         *,
-        original_metapkg_path: str,
-        scoped_metapkg_path: str,
+        original_metapkg_path: Path,
+        scoped_metapkg_path: Path,
         package_dirs_to_include: Sequence[Path],  # Relative to scoped package
         preserve_lock: bool = False,
 ):
@@ -31,8 +30,8 @@ def sync_scoped_metapkg(
 
     if not preserve_lock:
         shutil.copy(
-            os.path.join(original_metapkg_path, "poetry.lock"),
-            os.path.join(scoped_metapkg_path, "poetry.lock"),
+            original_metapkg_path / "poetry.lock",
+            scoped_metapkg_path / "poetry.lock",
         )
 
     scoped_metapkg.save()

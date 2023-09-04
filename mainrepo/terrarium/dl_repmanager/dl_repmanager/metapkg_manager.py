@@ -14,11 +14,11 @@ from dl_repmanager.toml_tools import TOMLReader, TOMLWriter
 
 @attr.s()
 class MetaPackageManager:
-    dir_path: str = attr.ib()
+    dir_path: Path = attr.ib()
     _toml: TOMLDocument = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
-        toml_path = os.path.join(self.dir_path, "pyproject.toml")
+        toml_path = self.dir_path / "pyproject.toml"
 
         if self._toml is None:
             with open(toml_path) as fp:
@@ -30,7 +30,7 @@ class MetaPackageManager:
     def get_writer(self) -> TOMLWriter:
         return TOMLWriter(toml=self._toml)
 
-    def as_new_location(self, new_path: str) -> "MetaPackageManager":
+    def as_new_location(self, new_path: Path) -> "MetaPackageManager":
         clone = MetaPackageManager(
             dir_path=new_path,
             toml=tomlkit.loads(tomlkit.dumps(self._toml)),
@@ -97,7 +97,7 @@ class MetaPackageManager:
         return ret
 
     def save(self) -> None:
-        file_path = os.path.join(self.dir_path, "pyproject.toml")
+        file_path = self.dir_path / "pyproject.toml"
 
         with open(file_path, "w") as fp:
             fp.write(tomlkit.dumps(self._toml))
