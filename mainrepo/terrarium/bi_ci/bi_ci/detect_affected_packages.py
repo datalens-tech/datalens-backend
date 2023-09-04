@@ -29,7 +29,7 @@ def collect_affected_packages(repo_root: Path, refs: list[PkgRef], paths: list[s
 
 def gen_pkg_dirs(repo_path: Path) -> Iterator[Path]:
     # todo: relay of dl_repmanager to walk sub projects
-    roots = ("lib", "app", "mainrepo/lib", "mainrepo/app")
+    roots = ("lib", "app", "mainrepo/lib", "mainrepo/app", "mainrepo/terrarium")
     for root in roots:
         root_path = (Path(repo_path) / root).resolve()
         if not root_path.exists():
@@ -100,9 +100,7 @@ def process(repo_root: Path, affected: Iterable[str], get_all: bool = False) -> 
 
     all_refs = []
     for item in gen_pkg_dirs(repo_root):
-        # print(f"==> {item}")
         ref = PkgRef(root=repo_root, full_path=item)
-        # ref = PkgRef(item)
         all_refs.append(ref)
         if ref.self_pkg_name is None:
             continue
@@ -147,17 +145,17 @@ def main() -> None:
     else:
         paths = paths.strip().split(" ")
         to_check = process(
-            Path(repo_root), [p for p in paths if not (p.startswith("ops/") or p.startswith("terrarium/") or p.startswith("mainrepo/terrarium/"))]
+            Path(repo_root), [p for p in paths if not p.startswith("ops/")]
         )
 
     to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci"))
-    result = []
+    result = set()
 
     for sub in to_check:
         if sub.skip_test:
             continue
-        result.append(str(sub.partial_parent_path))
-    print(f"affected={json.dumps(result)}")
+        result.add(str(sub.partial_parent_path))
+    print(f"affected={json.dumps(list(result))}")
 
 
 if __name__ == "__main__":
