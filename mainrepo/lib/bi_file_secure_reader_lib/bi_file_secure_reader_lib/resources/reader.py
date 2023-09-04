@@ -15,7 +15,7 @@ LOGGER = logging.getLogger(__name__)
 
 def parse_excel_data(data: BinaryIO) -> List:
     result = []
-    wb = load_workbook(data, read_only=True, data_only=True, keep_links=False)
+    wb = load_workbook(data, data_only=True, keep_links=False)
     for sheetname in wb.sheetnames:
         sheet = wb[sheetname]
         result.append({
