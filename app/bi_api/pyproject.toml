@@ -23,6 +23,7 @@ certifi-yandex = ">=2021.10.08"
 flask-marshmallow = ">=0.14.0"
 flask-restx = ">=1.1.0"
 graphviz = ">=0.17"
+gunicorn = ">=20.1.0"
 ipdb = ">=0.13.13"
 ipython = ">=8.10.0"
 marshmallow = ">=3.19.0"
@@ -39,9 +40,14 @@ sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
 tabulate = ">=0.9.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
+yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
+yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
+yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
@@ -54,6 +60,7 @@ yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}

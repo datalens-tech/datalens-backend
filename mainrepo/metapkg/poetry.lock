@@ -6381,7 +6381,7 @@ yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../../lib/bi_api_commons_ya_team"}
 yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
-yandex-bi-connector-bitrix-gds = {path = "../../../lib/bi_connector_bitrix_gds"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../../lib/bi_connector_bundle_ch_frozen"}

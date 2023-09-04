@@ -7067,7 +7067,7 @@ reference = "ya"
 
 [[package]]
 name = "yandex-bi-api"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7088,6 +7088,7 @@ flask-marshmallow = ">=0.14.0"
 flask-restx = ">=1.1.0"
 Flask-SQLAlchemy = ">=2.5.1"
 graphviz = ">=0.17"
+gunicorn = ">=20.1.0"
 ipdb = ">=0.13.13"
 ipython = ">=8.10.0"
 marshmallow = ">=3.19.0"
@@ -7112,16 +7113,22 @@ yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
+yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
+yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
@@ -7271,7 +7278,7 @@ url = "../../mainrepo/lib/bi_api_connector"
 
 [[package]]
 name = "yandex-bi-api-lib"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8055,7 +8062,7 @@ url = "../../mainrepo/lib/bi_constants"
 
 [[package]]
 name = "yandex-bi-control-api-os"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8063,7 +8070,9 @@ files = []
 develop = false
 
 [package.dependencies]
+blinker = ">=1.5"
 Flask = ">=2.0.3"
+raven = ">=6.10.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
@@ -8082,7 +8091,7 @@ url = "../../app_os/app_os_control_api"
 
 [[package]]
 name = "yandex-bi-control-api-yc"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8090,10 +8099,13 @@ files = []
 develop = false
 
 [package.dependencies]
+blinker = ">=1.5"
+raven = ">=6.10.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
@@ -8236,7 +8248,7 @@ url = "../../mainrepo/lib/bi_core_testing"
 
 [[package]]
 name = "yandex-bi-data-api-os"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8244,6 +8256,7 @@ files = []
 develop = false
 
 [package.dependencies]
+gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
@@ -8262,7 +8275,7 @@ url = "../../app_os/app_os_data_api"
 
 [[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8270,10 +8283,12 @@ files = []
 develop = false
 
 [package.dependencies]
+gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
@@ -8307,7 +8322,7 @@ url = "../../app_yc/app_yc_data_api_sec_embeds"
 
 [[package]]
 name = "yandex-bi-data-api-yc"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8315,10 +8330,12 @@ files = []
 develop = false
 
 [package.dependencies]
+gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
@@ -8650,7 +8667,7 @@ url = "../../mainrepo/lib/bi_package_boilerplate"
 
 [[package]]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8658,10 +8675,12 @@ files = []
 develop = false
 
 [package.dependencies]
+gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
@@ -8718,7 +8737,7 @@ url = "../../mainrepo/lib/bi_query_processing"
 
 [[package]]
 name = "yandex-bi-rqe-ext-async"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8740,7 +8759,7 @@ url = "../../app/bi_rqe_ext_async"
 
 [[package]]
 name = "yandex-bi-rqe-ext-sync"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8767,7 +8786,7 @@ url = "../../app/bi_rqe_ext_sync"
 
 [[package]]
 name = "yandex-bi-rqe-int-sync"
-version = "0.1982.0"
+version = "0.1983.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"

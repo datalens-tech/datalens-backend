@@ -11,9 +11,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
+gunicorn = ">=20.1.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
+yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
