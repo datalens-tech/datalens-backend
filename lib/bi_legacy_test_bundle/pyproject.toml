@@ -70,7 +70,7 @@ line-length = 140
 target-version = ['py310']
 
 [datalens_ci]
-skip_test = true
+skip_test = false
 
 [datalens.pytest.unit]
 root_dir = "bi_legacy_test_bundle_tests/core/"
