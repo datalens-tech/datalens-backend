@@ -1,4 +1,5 @@
 import abc
+import io
 import os
 import shutil
 import subprocess
@@ -81,14 +82,19 @@ class FilesystemEditor(abc.ABC):
         self._validate_paths(path)
         self._remove_path(path=path)
 
+    @contextmanager
+    def _open(self, path: Path, mode: str) -> Generator[TextIO, None, None]:
+        with open(path, mode=mode) as file_obj:
+            yield cast(TextIO, file_obj)
+
     @final
     @contextmanager
     def open(self, path: Path, mode: str) -> Generator[TextIO, None, None]:
         # TODO: Make all toml editors open files via this method to enforce path restrictions
         assert mode in ('r', 'r+')
         self._validate_paths(path)
-        with open(path, mode=mode) as file_obj:
-            yield cast(TextIO, file_obj)
+        with self._open(path, mode=mode) as file_obj:
+            yield file_obj
 
 
 @attr.s(frozen=True)
@@ -140,9 +146,101 @@ class GitFilesystemEditor(DefaultFilesystemEditor):
         subprocess.run(f'git rm "{path}"', shell=True)
 
 
+@attr.s(frozen=True)
+class VirtualFilesystemEditor(FilesystemEditor):
+    _moved_paths: dict[Path, Path] = attr.ib(init=False, factory=dict)  # {<new_path>: <old_path>}
+    _copied_paths: dict[Path, Path] = attr.ib(init=False, factory=dict)  # {<new_path>: <original_path>}
+    _removed_paths: set[Path] = attr.ib(init=False, factory=set)
+    _edited_files: dict[Path, str] = attr.ib(init=False, factory=dict)  # {<current_path>: <content>}
+
+    def ensure_path_exists(self, path: Path) -> None:
+        if not path.exists():
+            raise RuntimeError(f'Path does not exist: {path}')
+
+    def ensure_path_doesnt_exist(self, path: Path) -> None:
+        if not path.exists():
+            raise RuntimeError(f'Path already exists: {path}')
+
+    def _copy_single_path(self, src_path: Path, dst_path: Path) -> None:
+        self.ensure_path_exists(src_path)
+        self.ensure_path_doesnt_exist(dst_path)
+
+        if src_path in self._moved_paths:
+            self._copied_paths[dst_path] = self._moved_paths[src_path]
+        elif src_path in self._copied_paths:
+            self._copied_paths[dst_path] = self._copied_paths[src_path]
+
+        if src_path in self._edited_files:
+            self._edited_files[dst_path] = self._edited_files[src_path]
+
+    def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
+        self._copy_single_path(src_path=src_dir, dst_path=dst_dir)
+        for src_child_path in src_dir.rglob('*/'):
+            dst_child_path = dst_dir / src_child_path.relative_to(src_dir)
+            self._copy_single_path(src_path=src_child_path, dst_path=dst_child_path)
+
+    def _move_single_path(self, src_path: Path, dst_path: Path) -> None:
+        self.ensure_path_exists(src_path)
+        self.ensure_path_doesnt_exist(dst_path)
+
+        if src_path in self._moved_paths:
+            original_path = self._moved_paths[src_path]
+            del self._moved_paths[src_path]
+            self._moved_paths[dst_path] = original_path
+        elif src_path in self._copied_paths:
+            original_path = self._copied_paths[src_path]
+            del self._copied_paths[src_path]
+            self._copied_paths[dst_path] = original_path
+
+        if src_path in self._edited_files:
+            self._edited_files[dst_path] = self._edited_files.pop(src_path)
+
+    def _move_path(self, old_path: Path, new_path: Path) -> None:
+        self._move_single_path(src_path=old_path, dst_path=new_path)
+        for src_child_path in old_path.rglob('*/'):
+            dst_child_path = new_path / src_child_path.relative_to(old_path)
+            self._move_single_path(src_path=src_child_path, dst_path=dst_child_path)
+
+    def _remove_path(self, path: Path) -> None:
+        if path in self._moved_paths:
+            original_path = self._moved_paths[path]
+            del self._moved_paths[path]
+            self._removed_paths.add(original_path)
+        elif path in self._copied_paths:
+            del self._copied_paths[path]
+        else:
+            self._removed_paths.add(path)
+
+        if path in self._edited_files:
+            del self._edited_files[path]
+
+    @contextmanager
+    def _open(self, path: Path, mode: str) -> Generator[TextIO, None, None]:
+        original_path = path
+        if path in self._moved_paths:
+            original_path = self._moved_paths[path]
+        elif path in self._moved_paths:
+            original_path = self._copied_paths[path]
+
+        if path in self._edited_files:
+            original_text = self._edited_files[path]
+        else:
+            with super()._open(original_path, mode='r') as file_obj:
+                original_text = file_obj.read()
+
+        str_io = io.StringIO(original_text)
+        yield str_io
+
+        if mode == 'r+':
+            new_text = str_io.getvalue()
+            if new_text != original_text:
+                self._edited_files[path] = new_text
+
+
 _FS_EDITOR_CLASSES: dict[str, Type[FilesystemEditor]] = {
     'default': DefaultFilesystemEditor,
     'git': GitFilesystemEditor,
+    'virtual': VirtualFilesystemEditor,
 }
 
 

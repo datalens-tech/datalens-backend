@@ -32,6 +32,7 @@ def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog='DL Repository Management CLI')
     parser.add_argument('--config', help='Specify configuration file', default=DEFAULT_CONFIG_FILE_NAME)
     parser.add_argument('--fs-editor', help='Override the FS editor type')
+    parser.add_argument('--dry-run', action='store_true', help='Force usage of virtual FS editor')
 
     # mix-in parsers
     package_name_parser = argparse.ArgumentParser(add_help=False)
@@ -218,9 +219,10 @@ class DlRepManagerTool:
     def run(cls, args: argparse.Namespace) -> None:
         config_file_name = args.config
 
+        fs_editor_type = args.fs_editor if not args.dry_run else 'virtual'
         repo_env = RepoEnvironmentLoader(
             config_file_name=config_file_name,
-            override_fs_editor_type=args.fs_editor,
+            override_fs_editor_type=fs_editor_type,
         ).load_env(base_path=_BASE_DIR)
 
         index_builder = PackageIndexBuilder(repo_env=repo_env)
