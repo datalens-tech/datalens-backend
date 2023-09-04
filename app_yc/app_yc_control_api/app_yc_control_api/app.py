@@ -28,9 +28,8 @@ def create_app(
         testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
-    mng_app_factory = ControlApiAppFactoryYC()
+    mng_app_factory = ControlApiAppFactoryYC(settings=app_settings)
     return mng_app_factory.create_app(
-        app_settings=app_settings,
         connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,
         close_loop_after_request=close_loop_after_request,

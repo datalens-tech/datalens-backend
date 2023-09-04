@@ -7,9 +7,10 @@ import flask
 from bi_configs.enums import RequiredService
 from bi_constants.enums import USAuthMode
 
-from bi_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_settings import BaseAppSettings, ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactoryBase
+from bi_api_lib.app_common import SRFactoryBuilder, StandaloneServiceRegistryFactory
+from bi_api_lib.app_settings import (
+    BaseAppSettings, ControlPlaneAppTestingsSettings, ControlApiAppSettings, AppSettings)
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.connector_availability.configs.open_source import CONFIG as OPEN_SOURCE_CONNECTORS
 
@@ -19,10 +20,8 @@ from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 
-from dl_control_api.service_registry import StandaloneServiceRegistryFactory
 
-
-class ControlApiSRFactoryBuilderOS(SRFactoryBuilder):
+class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
     def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
         return set()
 
@@ -51,10 +50,10 @@ class ControlApiSRFactoryBuilderOS(SRFactoryBuilder):
         return OPEN_SOURCE_CONNECTORS
 
 
-class ControlApiAppFactoryOS(ControlApiAppFactory, ControlApiSRFactoryBuilderOS):
+class ControlApiAppFactoryOS(ControlApiAppFactoryBase[ControlApiAppSettings], ControlApiSRFactoryBuilderOS):
     def set_up_environment(
             self,
-            app: flask.Flask, app_settings: ControlPlaneAppSettings,
+            app: flask.Flask,
             testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Generic, TypeVar
 
 import attr
 import flask
@@ -21,6 +21,7 @@ from bi_configs.enums import AppType
 from bi_constants.enums import USAuthMode, ConnectionType
 
 from bi_api_lib.app_settings import (
+    ControlApiAppSettings,
     ControlPlaneAppSettings,
     ControlPlaneAppTestingsSettings,
 )
@@ -48,80 +49,45 @@ class EnvSetupResult:
     us_auth_mode: USAuthMode = attr.ib(kw_only=True)
 
 
-class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
-    IS_ASYNC_ENV = False
+TControlApiAppSettings = TypeVar("TControlApiAppSettings", bound=ControlApiAppSettings)
 
-    def push_settings_to_flask_app_config(
-            self,
-            target_app: Flask,
-            app_settings: ControlPlaneAppSettings,
-    ) -> None:
-        pass
 
+@attr.s(kw_only=True)
+class ControlApiAppFactoryBase(SRFactoryBuilder, Generic[TControlApiAppSettings], abc.ABC):
+    _settings: TControlApiAppSettings = attr.ib()
+
+    @abc.abstractmethod
     def set_up_environment(
             self,
-            app: flask.Flask, app_settings: ControlPlaneAppSettings,
+            app: flask.Flask,
             testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
     ) -> EnvSetupResult:
-        # TODO: Split into env-specific implementation classes
+        raise NotImplementedError()
 
-        us_auth_mode: USAuthMode
-        if app_settings.APP_TYPE == AppType.INTRANET:
-            from bi_api_commons_ya_team.flask.middlewares import blackbox_auth
-            blackbox_auth.set_up(app, app_settings.BLACKBOX_RETRY_PARAMS, app_settings.BLACKBOX_TIMEOUT)
-            us_auth_mode = USAuthMode.regular
-        elif app_settings.APP_TYPE in (AppType.CLOUD, AppType.NEBIUS):
-            yc_auth_settings = app_settings.YC_AUTH_SETTINGS
-            assert yc_auth_settings is not None, "app_settings.YC_AUTH_SETTINGS must not be None with AppType.CLOUD"
+    @property
+    def _is_async_env(self) -> bool:
+        return False
 
-            FlaskYCAuthService(
-                authorization_mode=AuthorizationModeYandexCloud(
-                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(yc_auth_settings.YC_AS_ENDPOINT),
-            ).set_up(app)
-            us_auth_mode = USAuthMode.regular
-        elif app_settings.APP_TYPE == AppType.TESTS:
-            from bi_core.flask_utils.trust_auth import TrustAuthService
-            TrustAuthService(
-                fake_user_id='_the_tests_syncapp_user_id_',
-                fake_user_name='_the_tests_syncapp_user_name_',
-                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant
-            ).set_up(app)
+    def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
+        conn_opts_mutators_factory = ConnOptionsMutatorsFactory()
 
-            us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
+        def enable_index_fetching_mutator(
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+        ) -> Optional[ConnectOptions]:
+            return conn_opts.clone(fetch_table_indexes=True)
 
-            us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
-        elif app_settings.APP_TYPE == AppType.DATA_CLOUD:
-            yc_auth_settings = app_settings.YC_AUTH_SETTINGS
-            assert yc_auth_settings is not None, "app_settings.YC_AUTH_SETTINGS must not be None with AppType.CLOUD"
+        if self._settings.DO_DSRC_IDX_FETCH:
+            conn_opts_mutators_factory.add_mutator(enable_index_fetching_mutator)
 
-            FlaskYCAuthService(
-                authorization_mode=AuthorizationModeDataCloud(
-                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(yc_auth_settings.YC_AS_ENDPOINT),
-            ).set_up(app)
-            us_auth_mode = USAuthMode.regular
-        else:
-            raise AssertionError(f"AppType not supported here: {app_settings.APP_TYPE!r}")
-
-        result = EnvSetupResult(us_auth_mode=us_auth_mode)
-        return result
+        return conn_opts_mutators_factory
 
     def create_app(
             self,
-            app_settings: ControlPlaneAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
             close_loop_after_request: bool = True,
     ) -> flask.Flask:
-
         app = Flask(__name__)
-        self.push_settings_to_flask_app_config(app, app_settings)
 
         TracingMiddleware(
             url_prefix_exclude=(
@@ -144,7 +110,7 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
         RequestLoggingContextControllerMiddleWare().set_up(app)
         TracingContextMiddleware().set_up(app)
         RequestIDService(
-            request_id_app_prefix=app_settings.app_prefix,
+            request_id_app_prefix=self._settings.app_prefix,
         ).set_up(app)
         profiling_middleware.set_up(app, accept_outer_stages=False)
 
@@ -154,32 +120,15 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
         register_unistat_hax(app)
         register_metrics(app)
 
-        env_setup_result = self.set_up_environment(
-            app=app, app_settings=app_settings, testing_app_settings=testing_app_settings,
-        )
+        env_setup_result = self.set_up_environment(app=app, testing_app_settings=testing_app_settings)
 
         ReqCtxInfoMiddleware().set_up(app)
 
-        connect_options_factory = ConnOptionsMutatorsFactory()
-
-        def enable_index_fetching_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            return conn_opts.clone(fetch_table_indexes=True)
-
-        if app_settings.DO_DSRC_IDX_FETCH:
-            connect_options_factory.add_mutator(enable_index_fetching_mutator)
-
-        def set_use_manage_network_false_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            return conn_opts.clone(use_managed_network=False)
-
-        if app_settings.APP_TYPE == AppType.CLOUD and app_settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-            connect_options_factory.add_mutator(set_use_manage_network_false_mutator)
+        conn_opts_mutators_factory = self._get_conn_opts_mutators_factory()
 
         sr_factory = self.get_sr_factory(
-            settings=app_settings, conn_opts_factory=connect_options_factory, connectors_settings=connectors_settings,
+            settings=self._settings, conn_opts_factory=conn_opts_mutators_factory,
+            connectors_settings=connectors_settings,
         )
 
         ServicesRegistryMiddleware(
@@ -187,9 +136,9 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
         ).set_up(app)
 
         USManagerFlaskMiddleware(
-            crypto_keys_config=app_settings.CRYPTO_KEYS_CONFIG,
-            us_base_url=app_settings.US_BASE_URL,
-            us_master_token=app_settings.US_MASTER_TOKEN,
+            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
+            us_base_url=self._settings.US_BASE_URL,
+            us_master_token=self._settings.US_MASTER_TOKEN,
             us_auth_mode=env_setup_result.us_auth_mode,
         ).set_up(app)
 
@@ -200,8 +149,76 @@ class ControlApiAppFactory(SRFactoryBuilder, abc.ABC):
 
         init_apis(
             app,
-            # TODO FIX: https://st.yandex-team.ru/BI-2708 move exception handling to common error-response formatter
+            # TODO FIX: move exception handling to common error-response formatter
             FlaskYCAuthService.get_flask_rest_plus_err_handler_map(),
         )
 
         return app
+
+
+# TODO SPLIT move to app/bi_api when tests are resolved
+class ControlApiAppFactory(ControlApiAppFactoryBase[ControlPlaneAppSettings], abc.ABC):
+    def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
+        conn_opts_mutators_factory = super()._get_conn_opts_mutators_factory()
+
+        def set_use_manage_network_false_mutator(
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+        ) -> Optional[ConnectOptions]:
+            return conn_opts.clone(use_managed_network=False)
+
+        if self._settings.APP_TYPE == AppType.CLOUD and self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
+            conn_opts_mutators_factory.add_mutator(set_use_manage_network_false_mutator)
+
+        return conn_opts_mutators_factory
+
+    def set_up_environment(
+            self,
+            app: flask.Flask,
+            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+    ) -> EnvSetupResult:
+        us_auth_mode: USAuthMode
+        if self._settings.APP_TYPE == AppType.INTRANET:
+            from bi_api_commons_ya_team.flask.middlewares import blackbox_auth
+            blackbox_auth.set_up(app, self._settings.BLACKBOX_RETRY_PARAMS, self._settings.BLACKBOX_TIMEOUT)
+            us_auth_mode = USAuthMode.regular
+        elif self._settings.APP_TYPE in (AppType.CLOUD, AppType.NEBIUS):
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings is not None, "settings.YC_AUTH_SETTINGS must not be None with AppType.CLOUD"
+
+            FlaskYCAuthService(
+                authorization_mode=AuthorizationModeYandexCloud(
+                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+                enable_cookie_auth=False,
+                access_service_cfg=make_default_yc_auth_service_config(yc_auth_settings.YC_AS_ENDPOINT),
+            ).set_up(app)
+            us_auth_mode = USAuthMode.regular
+        elif self._settings.APP_TYPE == AppType.TESTS:
+            from bi_core.flask_utils.trust_auth import TrustAuthService
+            TrustAuthService(
+                fake_user_id='_the_tests_syncapp_user_id_',
+                fake_user_name='_the_tests_syncapp_user_name_',
+                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant
+            ).set_up(app)
+
+            us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
+
+            us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
+        elif self._settings.APP_TYPE == AppType.DATA_CLOUD:
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings is not None, "settings.YC_AUTH_SETTINGS must not be None with AppType.CLOUD"
+
+            FlaskYCAuthService(
+                authorization_mode=AuthorizationModeDataCloud(
+                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+                enable_cookie_auth=False,
+                access_service_cfg=make_default_yc_auth_service_config(yc_auth_settings.YC_AS_ENDPOINT),
+            ).set_up(app)
+            us_auth_mode = USAuthMode.regular
+        else:
+            raise AssertionError(f"AppType not supported here: {self._settings.APP_TYPE!r}")
+
+        result = EnvSetupResult(us_auth_mode=us_auth_mode)
+        return result

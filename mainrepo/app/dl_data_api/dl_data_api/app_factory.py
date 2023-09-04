@@ -17,8 +17,8 @@ from bi_core.services_registry.rqe_caches import RQECachesSetting
 
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
-from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
+from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactoryBase
+from bi_api_lib.app_settings import TestAppSettings, DataApiAppSettings, AppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
@@ -27,42 +27,44 @@ from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_data_api import app_version
 
 
-class DataApiSRFactoryBuilderOS(SRFactoryBuilder):
-    def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
+class DataApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
+    def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
         return set()
 
-    def _get_env_manager_factory(self, settings: BaseAppSettings) -> EnvManagerFactory:
+    def _get_env_manager_factory(self, settings: AppSettings) -> EnvManagerFactory:
         return TestEnvManagerFactory()
 
     def _get_inst_specific_sr_factory(
             self,
-            settings: BaseAppSettings,
+            settings: AppSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         return None
 
-    def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: AppSettings) -> Optional[EntityUsageChecker]:
         return None
 
-    def _get_bleeding_edge_users(self, settings: BaseAppSettings) -> tuple[str, ...]:
+    def _get_bleeding_edge_users(self, settings: AppSettings) -> tuple[str, ...]:
         return tuple()
 
-    def _get_rqe_caches_settings(self, settings: AsyncAppSettings) -> Optional[RQECachesSetting]:  # type: ignore[override]
+    def _get_rqe_caches_settings(self, settings: DataApiAppSettings) -> Optional[RQECachesSetting]:  # type: ignore[override]
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: AsyncAppSettings) -> Optional[CacheTTLConfig]:  # type: ignore[override]
+    def _get_default_cache_ttl_settings(self, settings: DataApiAppSettings) -> Optional[CacheTTLConfig]:  # type: ignore[override]
         return None
 
-    def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
+    def _get_connector_availability(self, settings: AppSettings) -> Optional[ConnectorAvailabilityConfig]:
         return None
 
 
-class DataApiAppFactoryOS(DataApiAppFactory, DataApiSRFactoryBuilderOS):
+class DataApiAppFactoryOS(DataApiAppFactoryBase[DataApiAppSettings], DataApiSRFactoryBuilderOS):
+    def _is_public(self) -> bool:
+        return False
+
     def get_app_version(self) -> str:
         return app_version
 
     def set_up_environment(
             self,
-            setting: AsyncAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
@@ -72,7 +74,7 @@ class DataApiAppFactoryOS(DataApiAppFactory, DataApiSRFactoryBuilderOS):
 
         conn_opts_factory = ConnOptionsMutatorsFactory()
         sr_factory = self.get_sr_factory(
-            settings=setting, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+            settings=self._settings, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
         )
 
         # Auth middlewares
@@ -87,20 +89,20 @@ class DataApiAppFactoryOS(DataApiAppFactory, DataApiSRFactoryBuilderOS):
         sr_middleware_list = [
             services_registry_middleware(
                 services_registry_factory=sr_factory,
-                use_query_cache=setting.CACHES_ON,
-                use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
+                use_query_cache=self._settings.CACHES_ON,
+                use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
             ),
         ]
 
         # US manager middlewares
         common_us_kw = dict(
-            us_base_url=setting.US_BASE_URL,
-            crypto_keys_config=setting.CRYPTO_KEYS_CONFIG,
+            us_base_url=self._settings.US_BASE_URL,
+            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
         )
         usm_middleware_list = [
-            service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, **common_us_kw),  # type: ignore
-            service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore
         ]
 
         result = EnvSetupResult(

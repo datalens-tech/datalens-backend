@@ -17,7 +17,7 @@ from bi_constants.enums import ConnectionType
 
 from bi_core.logging_config import configure_logging
 
-from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
+from bi_api_lib.app_settings import TestAppSettings, DataApiAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
@@ -29,20 +29,19 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_app(
-        setting: AsyncAppSettings,
+        setting: DataApiAppSettings,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         test_setting: Optional[TestAppSettings] = None
 ) -> web.Application:
-    data_api_app_factory = DataApiAppFactoryOS()
+    data_api_app_factory = DataApiAppFactoryOS(settings=setting)
     return data_api_app_factory.create_app(
-        setting=setting,
         connectors_settings=connectors_settings,
         test_setting=test_setting,
     )
 
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
-    settings = load_settings_from_env_with_fallback(AsyncAppSettings)
+    settings = load_settings_from_env_with_fallback(DataApiAppSettings)
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,

@@ -83,7 +83,7 @@ class BiApiTestBase(abc.ABC):
             bi_test_config: BiApiTestEnvironmentConfiguration,
             rqe_config_subprocess: RQEConfig,
             iam_services_mock: IAMServicesMockFacade,
-    ) -> ControlPlaneAppSettings:
+    ) -> ControlPlaneAppSettings:  # TODO SPLIT switch to proper settings
 
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
@@ -136,10 +136,9 @@ class BiApiTestBase(abc.ABC):
     ) -> Generator[Flask, None, None]:
         """Session-wide test `Flask` application."""
 
-        control_app_factory = TestingControlApiAppFactory()
+        control_app_factory = TestingControlApiAppFactory(settings=control_api_app_settings)
         load_bi_api_lib()
         app = control_app_factory.create_app(
-            control_api_app_settings,
             connectors_settings=connectors_settings,
             testing_app_settings=ControlPlaneAppTestingsSettings(
                 fake_tenant=TenantYCFolder(folder_id='folder_1')

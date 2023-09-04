@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import abc
 import logging.config
-from typing import TYPE_CHECKING, Optional, final
+from typing import TYPE_CHECKING, Optional, final, Generic, TypeVar
+
+import attr
 
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
 
@@ -11,6 +13,7 @@ from bi_task_processor.arq_wrapper import create_arq_redis_settings
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.enums import AppType, RequiredService, RQE_SERVICES
 from bi_constants.enums import ConnectionType
+from bi_constants.enums import RLSSubjectType
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_i18n.localizer_base import LocalizerLoader
@@ -19,16 +22,22 @@ from bi_core.services_registry.env_manager_factory import (
     CloudEnvManagerFactory, IntranetEnvManagerFactory, DataCloudEnvManagerFactory,
 )
 from bi_core.services_registry.file_uploader_client_factory import FileUploaderSettings
-from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
+from bi_core.services_registry.inst_specific_sr import (
+    InstallationSpecificServiceRegistryFactory,
+    InstallationSpecificServiceRegistry,
+)
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory  # FIXME
 from bi_core.mdb_utils import MDBDomainManagerSettings
+from bi_core.rls import BaseSubjectResolver, RLSSubject, RLS_FAILED_USER_NAME_PREFIX
+from bi_core.utils import FutureRef
+from bi_core.services_registry.top_level import ServicesRegistry
 
 from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFactory
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings
+from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, AppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.connector_availability.main import get_connector_availability_config_for_env
 from bi_api_lib.i18n.registry import LOCALIZATION_CONFIGS
@@ -43,47 +52,77 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class SRFactoryBuilder(abc.ABC):
-    IS_ASYNC_ENV: bool
+@attr.s
+class NotFoundSubjectResolver(BaseSubjectResolver):
+    def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
+        return [
+            RLSSubject(
+                subject_id='',
+                subject_type=RLSSubjectType.notfound,
+                subject_name=RLS_FAILED_USER_NAME_PREFIX + name,
+            ) for name in names
+        ]
+
+
+@attr.s
+class StandaloneServiceRegistry(InstallationSpecificServiceRegistry):
+    async def get_subject_resolver(self) -> BaseSubjectResolver:
+        return NotFoundSubjectResolver()
+
+
+@attr.s
+class StandaloneServiceRegistryFactory(InstallationSpecificServiceRegistryFactory):
+    def get_inst_specific_sr(self, sr_ref: FutureRef[ServicesRegistry]) -> StandaloneServiceRegistry:
+        return StandaloneServiceRegistry(service_registry_ref=sr_ref)
+
+
+TSettings = TypeVar("TSettings", bound=AppSettings)
+
+
+class SRFactoryBuilder(Generic[TSettings], abc.ABC):
+    @property
+    @abc.abstractmethod
+    def _is_async_env(self) -> bool:
+        raise NotImplementedError()
 
     @abc.abstractmethod
-    def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
+    def _get_required_services(self, settings: TSettings) -> set[RequiredService]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_env_manager_factory(self, settings: BaseAppSettings) -> EnvManagerFactory:
+    def _get_env_manager_factory(self, settings: TSettings) -> EnvManagerFactory:
         raise NotImplementedError
 
     @abc.abstractmethod
     def _get_inst_specific_sr_factory(
-            self, settings: BaseAppSettings,
+            self, settings: TSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: TSettings) -> Optional[EntityUsageChecker]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_bleeding_edge_users(self, settings: BaseAppSettings) -> tuple[str, ...]:
+    def _get_bleeding_edge_users(self, settings: TSettings) -> tuple[str, ...]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_rqe_caches_settings(self, settings: BaseAppSettings) -> Optional[RQECachesSetting]:
+    def _get_rqe_caches_settings(self, settings: TSettings) -> Optional[RQECachesSetting]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_default_cache_ttl_settings(self, settings: BaseAppSettings) -> Optional[CacheTTLConfig]:
+    def _get_default_cache_ttl_settings(self, settings: TSettings) -> Optional[CacheTTLConfig]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
+    def _get_connector_availability(self, settings: TSettings) -> Optional[ConnectorAvailabilityConfig]:
         raise NotImplementedError
 
     @final
     def get_sr_factory(
         self,
-        settings: BaseAppSettings,
+        settings: TSettings,
         conn_opts_factory: ConnOptionsMutatorsFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> DefaultBiApiSRFactory:
@@ -112,7 +151,7 @@ class SRFactoryBuilder(abc.ABC):
         ) if settings.DEFAULT_LOCALE else None
 
         sr_factory = DefaultBiApiSRFactory(
-            async_env=self.IS_ASYNC_ENV,
+            async_env=self._is_async_env,
             rqe_config=settings.RQE_CONFIG,
             default_cache_ttl_config=self._get_default_cache_ttl_settings(settings),
             bleeding_edge_users=self._get_bleeding_edge_users(settings),
@@ -137,7 +176,7 @@ class SRFactoryBuilder(abc.ABC):
         return sr_factory
 
 
-class LegacySRFactoryBuilder(SRFactoryBuilder):
+class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings]):
     def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
         required_services: set[RequiredService] = {  # type: ignore
             AppType.CLOUD: RQE_SERVICES,

@@ -15,7 +15,7 @@ from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CO
 from bi_core.flask_utils.sentry import configure_raven_for_flask
 from bi_core.logging_config import hook_configure_logging
 
-from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.app_settings import ControlPlaneAppTestingsSettings, ControlApiAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
 from dl_control_api.app_factory import ControlApiAppFactoryOS
@@ -23,14 +23,13 @@ from dl_control_api import app_version
 
 
 def create_app(
-        app_settings: ControlPlaneAppSettings,
+        app_settings: ControlApiAppSettings,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
-    mng_app_factory = ControlApiAppFactoryOS()
+    mng_app_factory = ControlApiAppFactoryOS(settings=app_settings)
     return mng_app_factory.create_app(
-        app_settings=app_settings,
         connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,
         close_loop_after_request=close_loop_after_request,
@@ -38,7 +37,7 @@ def create_app(
 
 
 def create_uwsgi_app() -> flask.Flask:
-    settings = load_settings_from_env_with_fallback(ControlPlaneAppSettings)
+    settings = load_settings_from_env_with_fallback(ControlApiAppSettings)
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,

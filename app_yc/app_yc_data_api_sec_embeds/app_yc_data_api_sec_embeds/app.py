@@ -33,9 +33,8 @@ def create_app(
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         test_setting: Optional[TestAppSettings] = None
 ) -> web.Application:
-    data_api_app_factory = DataApiSecEmbedsAppFactoryYC()
+    data_api_app_factory = DataApiSecEmbedsAppFactoryYC(settings=setting)
     return data_api_app_factory.create_app(
-        setting=setting,
         connectors_settings=connectors_settings,
         test_setting=test_setting,
     )

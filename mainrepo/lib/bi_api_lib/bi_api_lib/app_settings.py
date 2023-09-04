@@ -54,12 +54,6 @@ def _list_to_tuple(value: Any) -> Any:
 
 @attr.s(frozen=True)
 class AppSettings:
-    APP_TYPE: AppType = s_attrib(  # type: ignore  # TODO SPLIT: remove after SupportedFunctionsManager stops using it
-        "YENV_TYPE",
-        is_app_cfg_type=True,
-        env_var_converter=app_type_env_var_converter,
-    )
-
     BLEEDING_EDGE_USERS: tuple[str, ...] = s_attrib(  # type: ignore
         "DL_BLEEDING_EDGE_USERS",
         env_var_converter=split_by_comma,
@@ -99,7 +93,7 @@ class AppSettings:
         missing=None,
     )
 
-    SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore  # TODO SPLIT: this has to go at some point
+    SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore
         "SAMPLES_CH_HOST",
         env_var_converter=split_by_comma,
         missing_factory=list
@@ -150,6 +144,11 @@ class AppSettings:
 @attr.s(frozen=True)
 class ControlApiAppSettings(AppSettings):
     DO_DSRC_IDX_FETCH: bool = s_attrib("DL_DO_DS_IDX_FETCH", missing=False)  # type: ignore
+
+    CONNECTOR_AVAILABILITY: ConnectorAvailabilityConfig = s_attrib(  # type: ignore
+        "CONNECTOR_AVAILABILITY",
+        fallback_factory=lambda cfg: ConnectorAvailabilityConfig.from_settings(cfg.CONNECTOR_AVAILABILITY),
+    )
 
     REDIS_ARQ: Optional[RedisSettings] = s_attrib(  # type: ignore
         "REDIS_ARQ",
@@ -219,11 +218,11 @@ class DataApiAppSettings(AppSettings):
     BI_ASYNC_APP_DISABLE_KEEPALIVE: bool = s_attrib("BI_ASYNC_APP_DISABLE_KEEPALIVE", missing=False)  # type: ignore  # TODO: fix
 
     @property
-    def app_name(self) -> str:  # TODO SPLIT: make it a setting
+    def app_name(self) -> str:
         return 'bi_data_api'
 
     @property
-    def jaeger_service_name(self) -> str:  # TODO SPLIT: make it a setting
+    def jaeger_service_name(self) -> str:
         return 'bi-data-api'
 
     app_prefix: ClassVar[str] = 'y'
@@ -289,11 +288,6 @@ class BaseAppSettings(AppSettings):
     # TODO: delete
     MDB_FORCE_IGNORE_MANAGED_NETWORK: bool = s_attrib("DL_MDB_FORCE_IGNORE_MANAGED_NETWORK", missing=False)  # type: ignore  # TODO: fix
 
-    MDB: MDBSettings = s_attrib(  # type: ignore  # TODO: fix
-        "MDB",
-        missing_factory=MDBSettings  # type: ignore  # TODO: fix
-    )
-
     CHYT_MIRRORING: Optional[CHYTMirroringConfig] = s_attrib("DL_CHYT_MIRRORING", enabled_key_name="ON", missing=None)  # type: ignore  # TODO: fix
 
     # Sentry
@@ -319,12 +313,6 @@ class BaseAppSettings(AppSettings):
 
     SENTRY_ENABLED: bool = s_attrib("DL_SENTRY_ENABLED", fallback_factory=default_sentry_enabled, missing=False)  # type: ignore  # TODO: fix
     SENTRY_DSN: Optional[str] = s_attrib("DL_SENTRY_DSN", fallback_factory=default_sentry_dsn, missing=None)  # type: ignore  # TODO: fix
-
-    SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore  # TODO: fix
-        "SAMPLES_CH_HOST",
-        env_var_converter=split_by_comma,
-        missing_factory=list
-    )
 
     PUBLIC_CH_QUERY_TIMEOUT: Optional[int] = s_attrib(  # type: ignore  # TODO: fix
         "DL_PUBLIC_CH_QUERY_TIMEOUT",
@@ -360,56 +348,9 @@ class BaseAppSettings(AppSettings):
 
 
 @attr.s(frozen=True)
-class AsyncAppSettings(BaseAppSettings):
-    COMMON_TIMEOUT_SEC: int = s_attrib("COMMON_TIMEOUT_SEC", missing=90)  # type: ignore  # TODO: fix
-
-    # Caches
-    CACHES_ON: bool = s_attrib("CACHES_ON", missing=True)  # type: ignore  # TODO: fix
-    CACHES_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # TODO: fix
-        "CACHES_REDIS",
-        fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # TODO: fix
-                MODE=RedisMode.sentinel,
-                CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
-                PORT=cfg.REDIS_CACHES_PORT,
-                SSL=cfg.REDIS_CACHES_SSL,
-                DB=cfg.REDIS_CACHES_DB,
-                PASSWORD=required(str),
-            ) if isinstance(cfg, CommonInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_CACHES_CLUSTER_NAME')) else None
-        ),
-        missing=None,
-    )
-    MUTATIONS_CACHES_ON: bool = s_attrib("MUTATIONS_CACHES_ON", missing=False)  # type: ignore  # TODO: fix
-    MUTATIONS_CACHES_DEFAULT_TTL: float = s_attrib("MUTATIONS_CACHES_DEFAULT_TTL", missing=3 * 60 * 60)  # type: ignore
-    MUTATIONS_REDIS: Optional[RedisSettings] = s_attrib(
-        "MUTATIONS_REDIS",
-        fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # TODO: fix
-                MODE=RedisMode.sentinel,
-                CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
-                PORT=cfg.REDIS_CACHES_PORT,
-                SSL=cfg.REDIS_CACHES_SSL,
-                DB=cfg.REDIS_MUTATIONS_CACHES_DB,
-                PASSWORD=required(str),
-            ) if isinstance(cfg, CommonInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_CACHES_CLUSTER_NAME')) else None
-        ),
-        missing=None,
-    )
-    CACHES_TTL_SETTINGS: Optional[CachesTTLSettings] = s_attrib(  # type: ignore  # TODO: fix
-        "CACHES_TTL",
-        fallback_factory=lambda: CachesTTLSettings(  # type: ignore  # TODO: fix
-            MATERIALIZED=3600,
-            OTHER=300,
-        ),
-        missing=None,
-    )
-
-    # Public
+class AsyncAppSettings(BaseAppSettings, DataApiAppSettings):
     PUBLIC_API_KEY: Optional[str] = s_attrib("PUBLIC_API_KEY", sensitive=True, missing=None)  # type: ignore  # TODO: fix
     US_PUBLIC_API_TOKEN: Optional[str] = s_attrib("US_PUBLIC_API_TOKEN", sensitive=True, missing=None)  # type: ignore  # TODO: fix
-    BI_ASYNC_APP_DISABLE_KEEPALIVE: bool = s_attrib("BI_ASYNC_APP_DISABLE_KEEPALIVE", missing=False)  # type: ignore  # TODO: fix
 
     @property
     def app_name(self) -> str:
@@ -433,18 +374,11 @@ class AsyncAppSettings(BaseAppSettings):
 
 
 @attr.s(frozen=True)
-class ControlPlaneAppSettings(BaseAppSettings):
+class ControlPlaneAppSettings(BaseAppSettings, ControlApiAppSettings):
     ENV_TYPE: Optional[EnvType] = s_attrib(  # type: ignore
         "YENV_TYPE",
         env_var_converter=env_type_env_var_converter,
     )
-
-    CONNECTOR_AVAILABILITY: ConnectorAvailabilityConfig = s_attrib(  # type: ignore
-        "CONNECTOR_AVAILABILITY",
-        fallback_factory=lambda cfg: ConnectorAvailabilityConfig.from_settings(cfg.CONNECTOR_AVAILABILITY),
-    )
-
-    DO_DSRC_IDX_FETCH: bool = s_attrib("DL_DO_DS_IDX_FETCH", missing=False)  # type: ignore  # TODO: fix
 
     # BlackBox/Passport
     BLACKBOX_RETRY_PARAMS: dict[str, Any] = s_attrib(  # type: ignore  # TODO: fix
@@ -457,24 +391,6 @@ class ControlPlaneAppSettings(BaseAppSettings):
     # DLS
     DLS_HOST: str = s_attrib("DLS_HOST", fallback_cfg_key="DATALENS_API_LB_DLS_BASE_URL", missing=None)  # type: ignore  # TODO: fix
     DLS_API_KEY: Optional[str] = s_attrib("DLS_API_KEY", missing=None)  # type: ignore  # TODO: fix
-
-    REDIS_ARQ: Optional[RedisSettings] = s_attrib(  # type: ignore  # TODO: fix
-        "REDIS_ARQ",
-        fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # TODO: fix
-                MODE=RedisMode(cfg.REDIS_PERSISTENT_MODE),
-                CLUSTER_NAME=cfg.REDIS_PERSISTENT_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_PERSISTENT_HOSTS),
-                PORT=cfg.REDIS_PERSISTENT_PORT,
-                SSL=cfg.REDIS_PERSISTENT_SSL,
-                DB=cfg.REDIS_FILE_UPLOADER_TASKS_DB,
-                PASSWORD=required(str),
-            ) if isinstance(cfg, CommonInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_PERSISTENT_MODE')) else None
-        ),
-        missing=None,
-    )
-
-    app_prefix: ClassVar[str] = 'a'
 
 # # #
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import functools
 import logging.config
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Generic, TypeVar
 
 from aiohttp import web
 import attr
@@ -49,7 +49,7 @@ from bi_api_lib.aio.middlewares.json_body_middleware import json_body_middleware
 from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
+from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings, DataApiAppSettings
 from bi_api_lib.app.data_api.resources.dashsql import DashSQLView
 from bi_api_lib.app.data_api.resources.dataset.distinct import (
     DatasetDistinctViewV1, DatasetDistinctViewV1_5, DatasetDistinctViewV2,
@@ -110,308 +110,35 @@ class EnvSetupResult:
     usm_middleware_list: list[AIOHTTPMiddleware] = attr.ib(kw_only=True)
 
 
-class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
-    IS_ASYNC_ENV = True
+TDataApiSettings = TypeVar("TDataApiSettings", bound=DataApiAppSettings)
 
+
+@attr.s(kw_only=True)
+class DataApiAppFactoryBase(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
+    _settings: TDataApiSettings = attr.ib()
+
+    @abc.abstractmethod
     def get_app_version(self) -> str:
-        return ''
+        raise NotImplementedError()
 
-    def set_up_sentry(self, setting: AsyncAppSettings) -> None:
-        import sentry_sdk
-        from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-        from sentry_sdk.integrations.atexit import AtexitIntegration
-        from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-        from sentry_sdk.integrations.stdlib import StdlibIntegration
-        from sentry_sdk.integrations.modules import ModulesIntegration
-        from sentry_sdk.integrations.argv import ArgvIntegration
-        from sentry_sdk.integrations.logging import LoggingIntegration
-        from sentry_sdk.integrations.threading import ThreadingIntegration
-
-        from bi_api_commons.logging_sentry import cleanup_common_secret_data
-
-        sentry_sdk.init(
-            dsn=setting.SENTRY_DSN,
-            default_integrations=False,
-            before_send=cleanup_common_secret_data,
-            integrations=[
-                # # Default
-                AtexitIntegration(),
-                ExcepthookIntegration(),
-                # https://st.yandex-team.ru/BI-1392
-                # DedupeIntegration(),
-                StdlibIntegration(),
-                ModulesIntegration(),
-                ArgvIntegration(),
-                LoggingIntegration(event_level=logging.WARNING),
-                ThreadingIntegration(),
-                #  # Custom
-                AioHttpIntegration(),
-            ],
-            release=self.get_app_version(),
-        )
-
+    @abc.abstractmethod
     def set_up_environment(
             self,
-            setting: AsyncAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
-        # TODO: Move the rest of the env-dependent stuff here
+        raise NotImplementedError()
 
-        auth_mw_list: list[AIOHTTPMiddleware]
-        sr_middleware_list: list[AIOHTTPMiddleware]
-        usm_middleware_list: list[AIOHTTPMiddleware]
+    @property
+    @abc.abstractmethod
+    def _is_public(self) -> bool:
+        raise NotImplementedError()
 
-        conn_opts_factory = ConnOptionsMutatorsFactory()
-        sr_factory = self.get_sr_factory(
-            settings=setting, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
-        )
+    @property
+    def _is_async_env(self) -> bool:
+        return True
 
-        # Auth middlewares
-        if setting.APP_TYPE == AppType.CLOUD_PUBLIC:
-            auth_mw_list = [
-                public_api_key_middleware(api_key=setting.PUBLIC_API_KEY),  # type: ignore  # TODO: fix
-                public_usm_workaround_middleware(
-                    us_base_url=setting.US_BASE_URL,
-                    crypto_keys_config=setting.CRYPTO_KEYS_CONFIG,
-                    dataset_id_match_info_code='ds_id',
-                    conn_id_match_info_code='conn_id',
-                    us_public_token=setting.US_PUBLIC_API_TOKEN,  # type: ignore  # TODO: fix
-                    us_master_token=setting.US_MASTER_TOKEN,
-                    tenant_resolver=TenantResolverYC(),
-                ),
-            ]
-        elif setting.APP_TYPE == AppType.CLOUD:
-            yc_auth_settings = setting.YC_AUTH_SETTINGS
-            assert yc_auth_settings
-            yc_auth_service = YCAuthService(
-                allowed_folder_ids=None,
-                yc_token_header_mode=YcTokenHeaderMode.INTERNAL,
-                authorization_mode=AuthorizationModeYandexCloud(
-                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(
-                    endpoint=yc_auth_settings.YC_AS_ENDPOINT,
-                ),
-            )
-            auth_mw_list = [yc_auth_service.middleware]
-        elif setting.APP_TYPE == AppType.INTRANET:
-            auth_mw_list = [
-                blackbox_auth_middleware(),
-            ]
-        elif setting.APP_TYPE == AppType.TESTS:
-            if test_setting is not None and test_setting.use_bb_in_test:  # NOTE used only in solomon tests
-                auth_mw_list = [
-                    blackbox_auth_middleware(tvm_info=test_setting.tvm_info),
-                ]
-            else:
-                auth_mw_list = [
-                    auth_trust_middleware(
-                        fake_user_id='_the_tests_asyncapp_user_id_',
-                        fake_user_name='_the_tests_asyncapp_user_name_',
-                    )
-                ]
-        elif setting.APP_TYPE == AppType.DATA_CLOUD:
-            yc_auth_settings = setting.YC_AUTH_SETTINGS
-            assert yc_auth_settings
-            dc_yc_auth_service = YCAuthService(
-                allowed_folder_ids=None,
-                yc_token_header_mode=YcTokenHeaderMode.INTERNAL,
-                authorization_mode=AuthorizationModeDataCloud(
-                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(
-                    endpoint=yc_auth_settings.YC_AS_ENDPOINT,
-                ),
-            )
-            auth_mw_list = [dc_yc_auth_service.middleware]
-        elif setting.APP_TYPE == AppType.NEBIUS:
-            yc_auth_settings = setting.YC_AUTH_SETTINGS
-            assert yc_auth_settings
-            yc_auth_service = YCAuthService(
-                allowed_folder_ids=None,
-                yc_token_header_mode=YcTokenHeaderMode.INTERNAL,
-                authorization_mode=AuthorizationModeYandexCloud(
-                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(
-                    endpoint=yc_auth_settings.YC_AS_ENDPOINT,
-                ),
-            )
-            auth_mw_list = [yc_auth_service.middleware]
-        elif setting.APP_TYPE == AppType.DATA_CLOUD_EMBED:
-            yc_auth_settings = setting.YC_AUTH_SETTINGS
-            assert yc_auth_settings
-            dc_yc_embed_auth_service = YCEmbedAuthService(
-                authorization_mode=AuthorizationModeDataCloud(
-                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-            )
-            auth_mw_list = [dc_yc_embed_auth_service.middleware]
-        elif setting.APP_TYPE == AppType.CLOUD_EMBED:
-            yc_auth_settings = setting.YC_AUTH_SETTINGS
-            assert yc_auth_settings
-            yc_embed_auth_service = YCEmbedAuthService(
-                authorization_mode=AuthorizationModeYandexCloud(
-                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-            )
-            auth_mw_list = [yc_embed_auth_service.middleware]
-        else:
-            raise ValueError(f"Unsupported auth mode: {setting.APP_TYPE}")
-
-        # SR middlewares
-
-        def ignore_managed_conn_opts_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            if setting.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-                return conn_opts.clone(use_managed_network=False)
-            return None
-
-        if setting.APP_TYPE in (AppType.CLOUD, AppType.CLOUD_EMBED, AppType.NEBIUS):
-
-            conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
-
-            sr_middleware_list = [
-                services_registry_middleware(
-                    services_registry_factory=sr_factory,
-                    use_query_cache=setting.CACHES_ON,
-                    use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                    mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
-                ),
-            ]
-        elif setting.APP_TYPE == AppType.CLOUD_PUBLIC:
-
-            def public_timeout_conn_opts_mutator(
-                    conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-            ) -> Optional[ConnectOptions]:
-                if setting.PUBLIC_CH_QUERY_TIMEOUT is not None:
-                    if isinstance(conn, ConnectionClickhouse):
-                        return conn_opts.clone(
-                            total_timeout=setting.PUBLIC_CH_QUERY_TIMEOUT,
-                            max_execution_time=setting.PUBLIC_CH_QUERY_TIMEOUT - 2,
-                        )
-                return None
-
-            conn_opts_factory.add_mutator(public_timeout_conn_opts_mutator)
-            conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
-
-            sr_middleware_list = [
-                services_registry_middleware(
-                    services_registry_factory=sr_factory,
-                    use_query_cache=setting.CACHES_ON,
-                    use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                    mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
-                ),
-            ]
-        elif setting.APP_TYPE == AppType.INTRANET:
-            def chyt_mirroring_conn_opts_mutator(
-                    conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-            ) -> Optional[ConnectOptions]:
-                if not isinstance(conn, BaseConnectionCHYTInternal):
-                    return None
-                mirroring_config = setting.CHYT_MIRRORING
-
-                if mirroring_config is None:
-                    return None
-                conn_dto = conn.get_conn_dto()
-                cluster_name = conn_dto.cluster.lower()  # type: ignore  # TODO: fix
-                mirroring_clique_alias = (
-                    mirroring_config.MAP.get(
-                        (cluster_name, conn_dto.clique_alias)  # type: ignore  # TODO: fix
-                    ) or mirroring_config.MAP.get((cluster_name, None))
-                )
-                if not mirroring_clique_alias:
-                    return None
-                return conn_opts.clone(
-                    mirroring_frac=mirroring_config.FRAC,
-                    mirroring_clique_req_timeout_sec=mirroring_config.REQ_TIMEOUT_SEC,
-                    mirroring_clique_alias=mirroring_clique_alias,
-                )
-
-            conn_opts_factory.add_mutator(chyt_mirroring_conn_opts_mutator)
-
-            sr_middleware_list = [
-                services_registry_middleware(
-                    services_registry_factory=sr_factory,
-                    use_query_cache=setting.CACHES_ON,
-                    use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                    mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
-                ),
-            ]
-        elif setting.APP_TYPE in (AppType.DATA_CLOUD, AppType.DATA_CLOUD_EMBED):
-            sr_middleware_list = [
-                services_registry_middleware(
-                    services_registry_factory=sr_factory,
-                    use_query_cache=setting.CACHES_ON,
-                    use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                    mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
-                ),
-            ]
-        elif setting.APP_TYPE == AppType.TESTS:
-            sr_middleware_list = [
-                services_registry_middleware(
-                    services_registry_factory=sr_factory,
-                    use_query_cache=setting.CACHES_ON,
-                    use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                    mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
-                ),
-            ]
-        else:
-            raise ValueError(f"Unsupported auth mode: {setting.APP_TYPE}")
-
-        # US manager middleware list
-        common_us_kw = dict(
-            us_base_url=setting.US_BASE_URL,
-            crypto_keys_config=setting.CRYPTO_KEYS_CONFIG,
-        )
-        if setting.APP_TYPE == AppType.CLOUD_PUBLIC:
-            usm_middleware_list = [
-                public_us_manager_middleware(
-                    us_public_token=setting.US_PUBLIC_API_TOKEN, **common_us_kw  # type: ignore  # TODO: fix
-                ),
-            ]
-
-        elif setting.APP_TYPE == AppType.TESTS:
-            usm_middleware_list = [
-                service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # TODO: fix
-                service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # TODO: fix
-            ]
-
-        elif setting.APP_TYPE in (AppType.DATA_CLOUD_EMBED, AppType.CLOUD_EMBED):
-            usm_middleware_list = [
-                us_manager_middleware(embed=True, **common_us_kw),  # type: ignore  # TODO: fix
-                service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, **common_us_kw)  # type: ignore  # TODO: fix
-            ]
-
-        else:
-            usm_middleware_list = [
-                us_manager_middleware(**common_us_kw),  # type: ignore  # TODO: fix
-                service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, **common_us_kw)  # type: ignore  # TODO: fix
-            ]
-
-        result = EnvSetupResult(
-            auth_mw_list=auth_mw_list,
-            sr_middleware_list=sr_middleware_list,
-            usm_middleware_list=usm_middleware_list,
-        )
-
-        return result
-
-    def set_up_routes(
-            self,
-            app: web.Application,
-            setting: AsyncAppSettings,
-    ) -> None:
-
-        # Routes
+    def set_up_routes(self, app: web.Application) -> None:
         app.router.add_route('get', '/ping', PingView)
         app.router.add_route('get', '/ping_ready', PingReadyView)
         app.router.add_route('get', '/unistat/', UnistatView)
@@ -438,7 +165,7 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
         app.router.add_route('get', '/api/data/v1/datasets/{ds_id}/fields', DatasetFieldsView)
         app.router.add_route('get', '/api/data/v2/datasets/{ds_id}/fields', DatasetFieldsView)
 
-        if setting.APP_TYPE != AppType.CLOUD_PUBLIC:
+        if not self._is_public:
             app.router.add_route('post', '/api/v1/datasets/data/preview', DatasetPreviewViewV1)  # FIXME: Remove
             app.router.add_route('post', '/api/data/v1/datasets/data/preview', DatasetPreviewViewV1)
             app.router.add_route('post', '/api/v1/datasets/{ds_id}/versions/draft/preview', DatasetPreviewViewV1)  # FIXME: Remove
@@ -448,30 +175,62 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
             app.router.add_route('post', '/api/data/v2/datasets/data/preview', DatasetPreviewViewV2)
             app.router.add_route('post', '/api/data/v2/datasets/{ds_id}/preview', DatasetPreviewViewV2)
 
+    def set_up_sentry(self) -> None:
+        import sentry_sdk
+        from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+        from sentry_sdk.integrations.atexit import AtexitIntegration
+        from sentry_sdk.integrations.excepthook import ExcepthookIntegration
+        from sentry_sdk.integrations.stdlib import StdlibIntegration
+        from sentry_sdk.integrations.modules import ModulesIntegration
+        from sentry_sdk.integrations.argv import ArgvIntegration
+        from sentry_sdk.integrations.logging import LoggingIntegration
+        from sentry_sdk.integrations.threading import ThreadingIntegration
+
+        from bi_api_commons.logging_sentry import cleanup_common_secret_data
+
+        sentry_sdk.init(
+            dsn=self._settings.SENTRY_DSN,
+            default_integrations=False,
+            before_send=cleanup_common_secret_data,
+            integrations=[
+                # # Default
+                AtexitIntegration(),
+                ExcepthookIntegration(),
+                # DedupeIntegration(),
+                StdlibIntegration(),
+                ModulesIntegration(),
+                ArgvIntegration(),
+                LoggingIntegration(event_level=logging.WARNING),
+                ThreadingIntegration(),
+                #  # Custom
+                AioHttpIntegration(),
+            ],
+            release=self.get_app_version(),
+        )
+
     def create_app(
             self,
-            setting: AsyncAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None
     ) -> web.Application:
-        if setting.SENTRY_ENABLED:
-            self.set_up_sentry(setting=setting)
+        if self._settings.SENTRY_ENABLED:
+            self.set_up_sentry()
 
         env_setup_result = self.set_up_environment(
-            setting=setting, test_setting=test_setting, connectors_settings=connectors_settings,
+            test_setting=test_setting, connectors_settings=connectors_settings,
         )
 
         req_id_service = RequestId(
             dl_request_cls=DSAPIRequest,
             append_own_req_id=True,
-            app_prefix=setting.app_prefix,
-            is_public_env=(setting.APP_TYPE == AppType.CLOUD_PUBLIC),  # FIXME: remove APP_TYPE
+            app_prefix=self._settings.app_prefix,
+            is_public_env=self._is_public,
         )
 
         error_handler = DatasetAPIErrorHandler(
-            public_mode=(setting.APP_TYPE in (AppType.CLOUD_PUBLIC, AppType.CLOUD_EMBED, AppType.DATA_CLOUD_EMBED)),  # FIXME: remove APP_TYPE
-            use_sentry=setting.SENTRY_ENABLED,
-            sentry_app_name_tag=setting.app_name,
+            public_mode=self._is_public,
+            use_sentry=self._settings.SENTRY_ENABLED,
+            sentry_app_name_tag=self._settings.app_name,
         )
 
         middleware_list = [
@@ -479,7 +238,7 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
             RequestBootstrap(
                 req_id_service=req_id_service,
                 error_handler=error_handler,
-                timeout_sec=setting.COMMON_TIMEOUT_SEC,
+                timeout_sec=self._settings.COMMON_TIMEOUT_SEC,
             ).middleware,
             *env_setup_result.auth_mw_list,
             commit_rci_middleware(),
@@ -493,82 +252,80 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
         )
 
         wrapper = AppWrapper(
-            allow_query_cache_usage=setting.CACHES_ON,
-            allow_notifications=(setting.APP_TYPE != AppType.CLOUD_PUBLIC),  # FIXME: remove APP_TYPE
+            allow_query_cache_usage=self._settings.CACHES_ON,
+            allow_notifications=not self._is_public,
         )
         wrapper.bind(app)
 
         ServerHeader("DataLensAPI").add_signal_handlers(app)
         app.on_response_prepare.append(req_id_service.on_response_prepare)
 
-        if setting.BI_ASYNC_APP_DISABLE_KEEPALIVE:
+        if self._settings.BI_ASYNC_APP_DISABLE_KEEPALIVE:
             app.on_response_prepare.append(add_connection_close)
 
-        # Redis
-        if setting.CACHES_ON and setting.CACHES_REDIS:
-            if setting.CACHES_REDIS.MODE == RedisMode.single_host:
+        if self._settings.CACHES_ON and self._settings.CACHES_REDIS:
+            if self._settings.CACHES_REDIS.MODE == RedisMode.single_host:
                 redis_server_single_host = SingleHostSimpleRedisService(
                     instance_kind=RedisInstanceKind.caches,
                     url=make_url(
-                        protocol="rediss" if setting.CACHES_REDIS.SSL else "redis",
-                        host=setting.CACHES_REDIS.HOSTS[0],
-                        port=setting.CACHES_REDIS.PORT,
-                        path=str(setting.CACHES_REDIS.DB),
+                        protocol="rediss" if self._settings.CACHES_REDIS.SSL else "redis",
+                        host=self._settings.CACHES_REDIS.HOSTS[0],
+                        port=self._settings.CACHES_REDIS.PORT,
+                        path=str(self._settings.CACHES_REDIS.DB),
                     ),
-                    password=setting.CACHES_REDIS.PASSWORD,
-                    ssl=setting.CACHES_REDIS.SSL,
+                    password=self._settings.CACHES_REDIS.PASSWORD,
+                    ssl=self._settings.CACHES_REDIS.SSL,
                 )
                 app.on_startup.append(_log_exc(redis_server_single_host.init_hook))
                 app.on_cleanup.append(_log_exc(redis_server_single_host.tear_down_hook))
-            elif setting.CACHES_REDIS.MODE == RedisMode.sentinel:
+            elif self._settings.CACHES_REDIS.MODE == RedisMode.sentinel:
                 redis_server_sentinel = RedisSentinelService(
                     instance_kind=RedisInstanceKind.caches,
-                    namespace=setting.CACHES_REDIS.CLUSTER_NAME,
-                    sentinel_hosts=setting.CACHES_REDIS.HOSTS,
-                    sentinel_port=setting.CACHES_REDIS.PORT,
-                    db=setting.CACHES_REDIS.DB,
-                    password=setting.CACHES_REDIS.PASSWORD,
-                    ssl=setting.CACHES_REDIS.SSL,
+                    namespace=self._settings.CACHES_REDIS.CLUSTER_NAME,
+                    sentinel_hosts=self._settings.CACHES_REDIS.HOSTS,
+                    sentinel_port=self._settings.CACHES_REDIS.PORT,
+                    db=self._settings.CACHES_REDIS.DB,
+                    password=self._settings.CACHES_REDIS.PASSWORD,
+                    ssl=self._settings.CACHES_REDIS.SSL,
                 )
                 app.on_startup.append(_log_exc(redis_server_sentinel.init_hook))
                 app.on_cleanup.append(_log_exc(redis_server_sentinel.tear_down_hook))
             else:
-                raise ValueError(f'Unknown redis mode {setting.CACHES_REDIS.MODE}')
+                raise ValueError(f'Unknown redis mode {self._settings.CACHES_REDIS.MODE}')
 
-        if setting.MUTATIONS_CACHES_ON and setting.MUTATIONS_REDIS:
-            if setting.MUTATIONS_REDIS.MODE == RedisMode.single_host:
+        if self._settings.MUTATIONS_CACHES_ON and self._settings.MUTATIONS_REDIS:
+            if self._settings.MUTATIONS_REDIS.MODE == RedisMode.single_host:
                 mutations_redis_server_single_host = SingleHostSimpleRedisService(
                     instance_kind=RedisInstanceKind.mutations,
                     url=make_url(
-                        protocol="rediss" if setting.MUTATIONS_REDIS.SSL else "redis",
-                        host=setting.MUTATIONS_REDIS.HOSTS[0],
-                        port=setting.MUTATIONS_REDIS.PORT,
-                        path=str(setting.MUTATIONS_REDIS.DB),
+                        protocol="rediss" if self._settings.MUTATIONS_REDIS.SSL else "redis",
+                        host=self._settings.MUTATIONS_REDIS.HOSTS[0],
+                        port=self._settings.MUTATIONS_REDIS.PORT,
+                        path=str(self._settings.MUTATIONS_REDIS.DB),
                     ),
-                    password=setting.MUTATIONS_REDIS.PASSWORD,
-                    ssl=setting.MUTATIONS_REDIS.SSL,
+                    password=self._settings.MUTATIONS_REDIS.PASSWORD,
+                    ssl=self._settings.MUTATIONS_REDIS.SSL,
                 )
                 app.on_startup.append(_log_exc(mutations_redis_server_single_host.init_hook))
                 app.on_cleanup.append(_log_exc(mutations_redis_server_single_host.tear_down_hook))
             else:
                 mutations_redis_server_sentinel: SingleHostSimpleRedisService | RedisSentinelService = RedisSentinelService(
                     instance_kind=RedisInstanceKind.mutations,
-                    namespace=setting.MUTATIONS_REDIS.CLUSTER_NAME,
-                    sentinel_hosts=setting.MUTATIONS_REDIS.HOSTS,
-                    sentinel_port=setting.MUTATIONS_REDIS.PORT,
-                    db=setting.MUTATIONS_REDIS.DB,
-                    password=setting.MUTATIONS_REDIS.PASSWORD,
-                    ssl=setting.MUTATIONS_REDIS.SSL,
+                    namespace=self._settings.MUTATIONS_REDIS.CLUSTER_NAME,
+                    sentinel_hosts=self._settings.MUTATIONS_REDIS.HOSTS,
+                    sentinel_port=self._settings.MUTATIONS_REDIS.PORT,
+                    db=self._settings.MUTATIONS_REDIS.DB,
+                    password=self._settings.MUTATIONS_REDIS.PASSWORD,
+                    ssl=self._settings.MUTATIONS_REDIS.SSL,
                 )
                 app.on_startup.append(_log_exc(mutations_redis_server_sentinel.init_hook))
                 app.on_cleanup.append(_log_exc(mutations_redis_server_sentinel.tear_down_hook))
 
-        # Compeng
-        if setting.BI_COMPENG_PG_ON and setting.BI_COMPENG_PG_URL is not None:
+        if self._settings.BI_COMPENG_PG_ON and self._settings.BI_COMPENG_PG_URL is not None:
             compeng_service = make_compeng_service(
                 processor_type=ProcessorType.ASYNCPG,
                 config=CompEngPgConfig(
-                    url=setting.BI_COMPENG_PG_URL,
+                    url=self._settings.BI_COMPENG_PG_URL,
                 ),
             )
             app.on_startup.append(_log_exc(compeng_service.init_hook))
@@ -576,10 +333,269 @@ class DataApiAppFactory(SRFactoryBuilder, abc.ABC):
 
         # TODO: don't use it again!
         # special hack for gettings bleeding edge users in dashsql
-        # https://st.yandex-team.ru/BI-3114
-        app['settings'] = setting
+        app['BLEEDING_EDGE_USERS'] = self._settings.BLEEDING_EDGE_USERS
 
-        # Routes
-        self.set_up_routes(app=app, setting=setting)
+        self.set_up_routes(app=app)
 
         return app
+
+
+# TODO move to app/bi_api when tests are resolved
+class DataApiAppFactory(DataApiAppFactoryBase[AsyncAppSettings], abc.ABC):
+    @property
+    def _is_public(self) -> bool:
+        return self._settings.APP_TYPE in (AppType.CLOUD_PUBLIC, AppType.CLOUD_EMBED, AppType.DATA_CLOUD_EMBED)
+
+    def set_up_environment(
+            self,
+            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+            test_setting: Optional[TestAppSettings] = None,
+    ) -> EnvSetupResult:
+        # TODO: Move the rest of the env-dependent stuff here
+
+        auth_mw_list: list[AIOHTTPMiddleware]
+        sr_middleware_list: list[AIOHTTPMiddleware]
+        usm_middleware_list: list[AIOHTTPMiddleware]
+
+        conn_opts_factory = ConnOptionsMutatorsFactory()
+        sr_factory = self.get_sr_factory(
+            settings=self._settings, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+        )
+
+        # Auth middlewares
+        if self._settings.APP_TYPE == AppType.CLOUD_PUBLIC:
+            auth_mw_list = [
+                public_api_key_middleware(api_key=self._settings.PUBLIC_API_KEY),  # type: ignore  # TODO: fix
+                public_usm_workaround_middleware(
+                    us_base_url=self._settings.US_BASE_URL,
+                    crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
+                    dataset_id_match_info_code='ds_id',
+                    conn_id_match_info_code='conn_id',
+                    us_public_token=self._settings.US_PUBLIC_API_TOKEN,  # type: ignore  # TODO: fix
+                    us_master_token=self._settings.US_MASTER_TOKEN,
+                    tenant_resolver=TenantResolverYC(),
+                ),
+            ]
+        elif self._settings.APP_TYPE == AppType.CLOUD:
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings
+            yc_auth_service = YCAuthService(
+                allowed_folder_ids=None,
+                yc_token_header_mode=YcTokenHeaderMode.INTERNAL,
+                authorization_mode=AuthorizationModeYandexCloud(
+                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+                enable_cookie_auth=False,
+                access_service_cfg=make_default_yc_auth_service_config(
+                    endpoint=yc_auth_settings.YC_AS_ENDPOINT,
+                ),
+            )
+            auth_mw_list = [yc_auth_service.middleware]
+        elif self._settings.APP_TYPE == AppType.INTRANET:
+            auth_mw_list = [
+                blackbox_auth_middleware(),
+            ]
+        elif self._settings.APP_TYPE == AppType.TESTS:
+            if test_setting is not None and test_setting.use_bb_in_test:  # NOTE used only in solomon tests
+                auth_mw_list = [
+                    blackbox_auth_middleware(tvm_info=test_setting.tvm_info),
+                ]
+            else:
+                auth_mw_list = [
+                    auth_trust_middleware(
+                        fake_user_id='_the_tests_asyncapp_user_id_',
+                        fake_user_name='_the_tests_asyncapp_user_name_',
+                    )
+                ]
+        elif self._settings.APP_TYPE == AppType.DATA_CLOUD:
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings
+            dc_yc_auth_service = YCAuthService(
+                allowed_folder_ids=None,
+                yc_token_header_mode=YcTokenHeaderMode.INTERNAL,
+                authorization_mode=AuthorizationModeDataCloud(
+                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+                enable_cookie_auth=False,
+                access_service_cfg=make_default_yc_auth_service_config(
+                    endpoint=yc_auth_settings.YC_AS_ENDPOINT,
+                ),
+            )
+            auth_mw_list = [dc_yc_auth_service.middleware]
+        elif self._settings.APP_TYPE == AppType.NEBIUS:
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings
+            yc_auth_service = YCAuthService(
+                allowed_folder_ids=None,
+                yc_token_header_mode=YcTokenHeaderMode.INTERNAL,
+                authorization_mode=AuthorizationModeYandexCloud(
+                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+                enable_cookie_auth=False,
+                access_service_cfg=make_default_yc_auth_service_config(
+                    endpoint=yc_auth_settings.YC_AS_ENDPOINT,
+                ),
+            )
+            auth_mw_list = [yc_auth_service.middleware]
+        elif self._settings.APP_TYPE == AppType.DATA_CLOUD_EMBED:
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings
+            dc_yc_embed_auth_service = YCEmbedAuthService(
+                authorization_mode=AuthorizationModeDataCloud(
+                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+            )
+            auth_mw_list = [dc_yc_embed_auth_service.middleware]
+        elif self._settings.APP_TYPE == AppType.CLOUD_EMBED:
+            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
+            assert yc_auth_settings
+            yc_embed_auth_service = YCEmbedAuthService(
+                authorization_mode=AuthorizationModeYandexCloud(
+                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
+                ),
+            )
+            auth_mw_list = [yc_embed_auth_service.middleware]
+        else:
+            raise ValueError(f"Unsupported auth mode: {self._settings.APP_TYPE}")
+
+        # SR middlewares
+
+        def ignore_managed_conn_opts_mutator(
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+        ) -> Optional[ConnectOptions]:
+            if self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
+                return conn_opts.clone(use_managed_network=False)
+            return None
+
+        if self._settings.APP_TYPE in (AppType.CLOUD, AppType.CLOUD_EMBED, AppType.NEBIUS):
+
+            conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
+
+            sr_middleware_list = [
+                services_registry_middleware(
+                    services_registry_factory=sr_factory,
+                    use_query_cache=self._settings.CACHES_ON,
+                    use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                    mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
+                ),
+            ]
+        elif self._settings.APP_TYPE == AppType.CLOUD_PUBLIC:
+
+            def public_timeout_conn_opts_mutator(
+                    conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+            ) -> Optional[ConnectOptions]:
+                if self._settings.PUBLIC_CH_QUERY_TIMEOUT is not None:
+                    if isinstance(conn, ConnectionClickhouse):
+                        return conn_opts.clone(
+                            total_timeout=self._settings.PUBLIC_CH_QUERY_TIMEOUT,
+                            max_execution_time=self._settings.PUBLIC_CH_QUERY_TIMEOUT - 2,
+                        )
+                return None
+
+            conn_opts_factory.add_mutator(public_timeout_conn_opts_mutator)
+            conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
+
+            sr_middleware_list = [
+                services_registry_middleware(
+                    services_registry_factory=sr_factory,
+                    use_query_cache=self._settings.CACHES_ON,
+                    use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                    mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
+                ),
+            ]
+        elif self._settings.APP_TYPE == AppType.INTRANET:
+            def chyt_mirroring_conn_opts_mutator(
+                    conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+            ) -> Optional[ConnectOptions]:
+                if not isinstance(conn, BaseConnectionCHYTInternal):
+                    return None
+                mirroring_config = self._settings.CHYT_MIRRORING
+
+                if mirroring_config is None:
+                    return None
+                conn_dto = conn.get_conn_dto()
+                cluster_name = conn_dto.cluster.lower()  # type: ignore  # TODO: fix
+                mirroring_clique_alias = (
+                    mirroring_config.MAP.get(
+                        (cluster_name, conn_dto.clique_alias)  # type: ignore  # TODO: fix
+                    ) or mirroring_config.MAP.get((cluster_name, None))
+                )
+                if not mirroring_clique_alias:
+                    return None
+                return conn_opts.clone(
+                    mirroring_frac=mirroring_config.FRAC,
+                    mirroring_clique_req_timeout_sec=mirroring_config.REQ_TIMEOUT_SEC,
+                    mirroring_clique_alias=mirroring_clique_alias,
+                )
+
+            conn_opts_factory.add_mutator(chyt_mirroring_conn_opts_mutator)
+
+            sr_middleware_list = [
+                services_registry_middleware(
+                    services_registry_factory=sr_factory,
+                    use_query_cache=self._settings.CACHES_ON,
+                    use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                    mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
+                ),
+            ]
+        elif self._settings.APP_TYPE in (AppType.DATA_CLOUD, AppType.DATA_CLOUD_EMBED):
+            sr_middleware_list = [
+                services_registry_middleware(
+                    services_registry_factory=sr_factory,
+                    use_query_cache=self._settings.CACHES_ON,
+                    use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                    mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
+                ),
+            ]
+        elif self._settings.APP_TYPE == AppType.TESTS:
+            sr_middleware_list = [
+                services_registry_middleware(
+                    services_registry_factory=sr_factory,
+                    use_query_cache=self._settings.CACHES_ON,
+                    use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                    mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
+                ),
+            ]
+        else:
+            raise ValueError(f"Unsupported auth mode: {self._settings.APP_TYPE}")
+
+        # US manager middleware list
+        common_us_kw = dict(
+            us_base_url=self._settings.US_BASE_URL,
+            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
+        )
+        if self._settings.APP_TYPE == AppType.CLOUD_PUBLIC:
+            usm_middleware_list = [
+                public_us_manager_middleware(
+                    us_public_token=self._settings.US_PUBLIC_API_TOKEN, **common_us_kw  # type: ignore  # TODO: fix
+                ),
+            ]
+
+        elif self._settings.APP_TYPE == AppType.TESTS:
+            usm_middleware_list = [
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # TODO: fix
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # TODO: fix
+            ]
+
+        elif self._settings.APP_TYPE in (AppType.DATA_CLOUD_EMBED, AppType.CLOUD_EMBED):
+            usm_middleware_list = [
+                us_manager_middleware(embed=True, **common_us_kw),  # type: ignore  # TODO: fix
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw)  # type: ignore  # TODO: fix
+            ]
+
+        else:
+            usm_middleware_list = [
+                us_manager_middleware(**common_us_kw),  # type: ignore  # TODO: fix
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw)  # type: ignore  # TODO: fix
+            ]
+
+        result = EnvSetupResult(
+            auth_mw_list=auth_mw_list,
+            sr_middleware_list=sr_middleware_list,
+            usm_middleware_list=usm_middleware_list,
+        )
+
+        return result

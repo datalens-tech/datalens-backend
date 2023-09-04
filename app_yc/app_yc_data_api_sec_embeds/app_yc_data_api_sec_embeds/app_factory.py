@@ -18,7 +18,7 @@ from bi_core.services_registry.inst_specific_sr import InstallationSpecificServi
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.us_connection_base import ExecutorBasedMixin
 
-from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
+from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactoryBase
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
@@ -32,7 +32,7 @@ from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFa
 from app_yc_data_api_sec_embeds import app_version
 
 
-class DataApiSecEmbedsSRFactoryBuilderYC(SRFactoryBuilder):
+class DataApiSecEmbedsSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
     def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
         return set(RQE_SERVICES)
 
@@ -88,13 +88,15 @@ class DataApiSecEmbedsSRFactoryBuilderYC(SRFactoryBuilder):
         return None
 
 
-class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory, DataApiSecEmbedsSRFactoryBuilderYC):
+class DataApiSecEmbedsAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], DataApiSecEmbedsSRFactoryBuilderYC):
+    def _is_public(self) -> bool:
+        return True
+
     def get_app_version(self) -> str:
         return app_version
 
     def set_up_environment(
             self,
-            setting: AsyncAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
@@ -104,11 +106,11 @@ class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory, DataApiSecEmbedsSRFactoryB
 
         conn_opts_factory = ConnOptionsMutatorsFactory()
         sr_factory = self.get_sr_factory(
-            settings=setting, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+            settings=self._settings, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
         )
 
         # Auth middlewares
-        yc_auth_settings = setting.YC_AUTH_SETTINGS
+        yc_auth_settings = self._settings.YC_AUTH_SETTINGS
         assert yc_auth_settings
         yc_embed_auth_service = YCEmbedAuthService(
             authorization_mode=AuthorizationModeYandexCloud(
@@ -123,7 +125,7 @@ class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory, DataApiSecEmbedsSRFactoryB
         def ignore_managed_conn_opts_mutator(
                 conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
-            if setting.MDB_FORCE_IGNORE_MANAGED_NETWORK:
+            if self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
                 return conn_opts.clone(use_managed_network=False)
             return None
 
@@ -132,20 +134,20 @@ class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory, DataApiSecEmbedsSRFactoryB
         sr_middleware_list = [
             services_registry_middleware(
                 services_registry_factory=sr_factory,
-                use_query_cache=setting.CACHES_ON,
-                use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
+                use_query_cache=self._settings.CACHES_ON,
+                use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
             ),
         ]
 
         # US manager middlewares
         common_us_kw = dict(
-            us_base_url=setting.US_BASE_URL,
-            crypto_keys_config=setting.CRYPTO_KEYS_CONFIG,
+            us_base_url=self._settings.US_BASE_URL,
+            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
         )
         usm_middleware_list = [
             us_manager_middleware(embed=True, **common_us_kw),  # type: ignore
-            service_us_manager_middleware(us_master_token=setting.US_MASTER_TOKEN, **common_us_kw) # type: ignore
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw) # type: ignore
         ]
 
         result = EnvSetupResult(

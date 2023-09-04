@@ -19,6 +19,7 @@ from pytest_lazyfixture import lazy_fixture
 
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT, CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
 from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
@@ -331,6 +332,8 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
         CONNECTION_TYPE_CHYT: CHYTConnectorSettings(
             FORBIDDEN_CLIQUES=('*ch_public',),
         ),
+        CONNECTION_TYPE_CH_OVER_YT: CHYTConnectorSettings(),
+        CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: CHYTConnectorSettings(),
         CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(),
         CONNECTION_TYPE_GREENPLUM: GreenplumConnectorSettings(),
         CONNECTION_TYPE_MYSQL: MysqlConnectorSettings(),

@@ -24,7 +24,7 @@ from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse  # T
 from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
+from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactoryBase
 from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
@@ -35,7 +35,7 @@ from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFa
 from app_yc_public_dataset_api import app_version
 
 
-class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder):
+class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
     def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
         return set(RQE_SERVICES)
 
@@ -91,13 +91,15 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder):
         return None
 
 
-class PublicDatasetApiAppFactoryYC(DataApiAppFactory, PublicDatasetApiSRFactoryBuilderYC):
+class PublicDatasetApiAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], PublicDatasetApiSRFactoryBuilderYC):
+    def _is_public(self) -> bool:
+        return True
+
     def get_app_version(self) -> str:
         return app_version
 
     def set_up_environment(
             self,
-            setting: AsyncAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
             test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
@@ -107,21 +109,21 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory, PublicDatasetApiSRFactoryB
 
         conn_opts_factory = ConnOptionsMutatorsFactory()
         sr_factory = self.get_sr_factory(
-            settings=setting, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+            settings=self._settings, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
         )
 
         # Auth middlewares
-        assert setting.PUBLIC_API_KEY is not None
-        assert setting.US_PUBLIC_API_TOKEN is not None
+        assert self._settings.PUBLIC_API_KEY is not None
+        assert self._settings.US_PUBLIC_API_TOKEN is not None
         auth_mw_list = [
-            public_api_key_middleware(api_key=setting.PUBLIC_API_KEY),
+            public_api_key_middleware(api_key=self._settings.PUBLIC_API_KEY),
             public_usm_workaround_middleware(
-                us_base_url=setting.US_BASE_URL,
-                crypto_keys_config=setting.CRYPTO_KEYS_CONFIG,
+                us_base_url=self._settings.US_BASE_URL,
+                crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
                 dataset_id_match_info_code='ds_id',
                 conn_id_match_info_code='conn_id',
-                us_public_token=setting.US_PUBLIC_API_TOKEN,
-                us_master_token=setting.US_MASTER_TOKEN,
+                us_public_token=self._settings.US_PUBLIC_API_TOKEN,
+                us_master_token=self._settings.US_MASTER_TOKEN,
                 tenant_resolver=TenantResolverYC(),
             ),
         ]
@@ -131,18 +133,18 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory, PublicDatasetApiSRFactoryB
         def ignore_managed_conn_opts_mutator(
                 conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
-            if setting.MDB_FORCE_IGNORE_MANAGED_NETWORK:
+            if self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
                 return conn_opts.clone(use_managed_network=False)
             return None
 
         def public_timeout_conn_opts_mutator(
                 conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
-            if setting.PUBLIC_CH_QUERY_TIMEOUT is not None:
+            if self._settings.PUBLIC_CH_QUERY_TIMEOUT is not None:
                 if isinstance(conn, ConnectionClickhouse):
                     return conn_opts.clone(
-                        total_timeout=setting.PUBLIC_CH_QUERY_TIMEOUT,
-                        max_execution_time=setting.PUBLIC_CH_QUERY_TIMEOUT - 2,
+                        total_timeout=self._settings.PUBLIC_CH_QUERY_TIMEOUT,
+                        max_execution_time=self._settings.PUBLIC_CH_QUERY_TIMEOUT - 2,
                     )
             return None
 
@@ -152,20 +154,20 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory, PublicDatasetApiSRFactoryB
         sr_middleware_list = [
             services_registry_middleware(
                 services_registry_factory=sr_factory,
-                use_query_cache=setting.CACHES_ON,
-                use_mutation_cache=setting.MUTATIONS_CACHES_ON,
-                mutation_cache_default_ttl=setting.MUTATIONS_CACHES_DEFAULT_TTL,
+                use_query_cache=self._settings.CACHES_ON,
+                use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
+                mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
             ),
         ]
 
         # US manager middlewares
         common_us_kw = dict(
-            us_base_url=setting.US_BASE_URL,
-            crypto_keys_config=setting.CRYPTO_KEYS_CONFIG,
+            us_base_url=self._settings.US_BASE_URL,
+            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
         )
         usm_middleware_list = [
             public_us_manager_middleware(
-                us_public_token=setting.US_PUBLIC_API_TOKEN, **common_us_kw  # type: ignore
+                us_public_token=self._settings.US_PUBLIC_API_TOKEN, **common_us_kw  # type: ignore
             ),
         ]
 

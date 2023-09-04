@@ -18,7 +18,6 @@ from bi_query_processing.utils.datetime import parse_datetime
 from bi_api_lib.app.data_api.resources.base import BaseView, RequiredResourceDSAPI, requires
 from bi_api_lib.utils.base import need_permission_on_entry
 from bi_app_tools.profiling_base import generic_profiler_async
-from bi_configs.enums import AppType
 from bi_constants.enums import BIType, ConnectionType
 from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from bi_core.data_processing.dashsql import BindParamInfo, DashSQLCachedSelector, DashSQLEvent, TRow
@@ -275,9 +274,7 @@ class DashSQLView(BaseView):
             ]
 
         # TODO: move dashsql selector's construction to factory
-        # https://st.yandex-team.ru/BI-3114
-        settings = self.request.app['settings']
-        bleeding_edge_users = settings.BLEEDING_EDGE_USERS if settings.APP_TYPE in (AppType.INTRANET, AppType.TESTS) else tuple()
+        bleeding_edge_users = self.request.app.get('BLEEDING_EDGE_USERS', ())
         is_bleeding_edge_user = self.dl_request.rci.user_name in bleeding_edge_users
 
         dashsql_selector = self.dashsql_selector_cls(

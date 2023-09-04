@@ -18,7 +18,8 @@ if TYPE_CHECKING:
 
 
 class MaintenanceDataApiAppFactory(DataApiAppFactory, LegacySRFactoryBuilder):
-    pass
+    def get_app_version(self) -> str:
+        return ''
 
 
 class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
@@ -30,7 +31,7 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
     def get_sr_factory(self, is_async_env: bool) -> Optional[SRFactory]:
         conn_opts_factory = ConnOptionsMutatorsFactory()
         settings = self.get_app_settings()
-        sr_factory = MaintenanceDataApiAppFactory().get_sr_factory(
+        sr_factory = MaintenanceDataApiAppFactory(settings=settings).get_sr_factory(
             settings=settings,
             conn_opts_factory=conn_opts_factory,
             connectors_settings=load_connectors_settings_from_env_with_fallback(

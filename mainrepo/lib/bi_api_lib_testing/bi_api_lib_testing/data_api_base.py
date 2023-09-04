@@ -58,7 +58,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             bi_test_config: BiApiTestEnvironmentConfiguration,
             rqe_config_subprocess: RQEConfig,
             iam_services_mock: IAMServicesMockFacade,
-    ) -> AsyncAppSettings:
+    ) -> AsyncAppSettings:  # TODO SPLIT switch to proper settings
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
         redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
@@ -101,10 +101,9 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             self, data_api_app_settings: AsyncAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
-        data_api_app_factory = TestingDataApiAppFactory()
+        data_api_app_factory = TestingDataApiAppFactory(settings=data_api_app_settings)
         load_bi_api_lib()
         return data_api_app_factory.create_app(
-            setting=data_api_app_settings,
             connectors_settings=connectors_settings,
             test_setting=None,
         )
