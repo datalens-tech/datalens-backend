@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-api-lib"
-version = "0.1983.0"
+version = "0.1984.0"
 description = ""
 authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
 packages = [{include = "bi_api_lib"}]

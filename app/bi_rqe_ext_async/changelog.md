@@ -1,3 +1,21 @@
+0.1984.0
+--------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Add missing dependencies to app/bi_api (#283)  [ https://github.com/datalens-tech/datalens-backend-private/commit/74c7546 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * added script to distribute common mypy settings across repo (#286)  [ https://github.com/datalens-tech/datalens-backend-private/commit/4b34547 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Switching to fully managed FS access in repmanager (#278)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f326b39 ]
+ * Fixes for connectorization of bi_formula_ref (#267)        [ https://github.com/datalens-tech/datalens-backend-private/commit/3f5c290 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-04 08:51:02+00:00
+
 0.1983.0
 --------
 
