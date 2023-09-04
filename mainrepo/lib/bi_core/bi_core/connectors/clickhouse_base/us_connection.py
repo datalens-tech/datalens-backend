@@ -51,8 +51,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
     def get_conn_dto(self) -> ClickHouseConnDTO:
         return ClickHouseConnDTO(
             conn_id=self.uuid,
-            # TODO: remove me after CHARTS-1095
-            protocol='https' if self.data.port in (8443, 443) or self.data.secure else 'http',
+            protocol='https' if self.data.secure else 'http',
             host=self.data.host,
             multihosts=self.parse_multihosts(),  # type: ignore  # TODO: fix
             port=self.data.port,
