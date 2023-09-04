@@ -20,12 +20,6 @@ dl_repo:
         - main_dependency_group
         - own_dependency_group
 
-    - type: app_os_legacy
-      root_path: app_os
-      boilerplate_path: mainrepo/lib/bi_package_boilerplate
-      tags:
-        - own_dependency_group
-
     - type: app_yc
       root_path: app_yc
       boilerplate_path: mainrepo/lib/bi_package_boilerplate

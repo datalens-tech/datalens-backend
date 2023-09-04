@@ -309,7 +309,7 @@ target "app_os_data_api" {
     bake_ctx_base_img = "target:base_focal_db_tier_1"
     bake_ctx_src_lib  = "target:src_lib"
   }
-  context    = "${PROJECT_ROOT}/app_os/app_os_data_api"
+  context    = "${PROJECT_ROOT}/mainrepo/app/dl_data_api"
   dockerfile = "Dockerfile.tier1"
 }
 

@@ -1926,6 +1926,33 @@ type = "directory"
 url = "../../mainrepo/app/dl_control_api"
 
 [[package]]
+name = "dl-data-api"
+version = "0.1988.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+gunicorn = ">=20.1.0"
+yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
+yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
+yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
+yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+yandex-bi-core = {path = "../../lib/bi_core"}
+yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
+yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
+yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
+yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
+yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
+yandex-bi-utils = {path = "../../lib/bi_utils"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/app/dl_data_api"
+
+[[package]]
 name = "dnspython"
 version = "2.2.1"
 description = "DNS toolkit"
@@ -8247,33 +8274,6 @@ type = "directory"
 url = "../../mainrepo/lib/bi_core_testing"
 
 [[package]]
-name = "yandex-bi-data-api-os"
-version = "0.1988.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-gunicorn = ">=20.1.0"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../app_os/app_os_data_api"
-
-[[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
 version = "0.1988.0"
 description = ""
@@ -9425,4 +9425,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "5e24a61e6eaebfbdf9a0aa67155b61b1d7af66b8f281339589beca6f4e5c940c"
+content-hash = "aaf1d8d5b72a5599f54c8f5051d24b94e1064d614052c556b1cf3d9cb1eddd5c"

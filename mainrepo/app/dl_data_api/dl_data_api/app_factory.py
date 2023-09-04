@@ -24,7 +24,7 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 
-from app_os_data_api import app_version
+from dl_data_api import app_version
 
 
 class DataApiSRFactoryBuilderOS(SRFactoryBuilder):

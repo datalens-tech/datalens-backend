@@ -204,6 +204,7 @@ redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
+dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
 
 
 #
@@ -240,7 +241,7 @@ yandex-bi-rqe-int-sync = {path = "../../app/bi_rqe_int_sync"}
 dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
 
 [tool.poetry.group.app_bi_os_data_api.dependencies]
-yandex-bi-data-api-os = {path = "../../app_os/app_os_data_api"}
+dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
 
 [tool.poetry.group.app_bi_yc_control_api.dependencies]
 yandex-bi-control-api-yc = {path = "../../app_yc/app_yc_control_api"}
