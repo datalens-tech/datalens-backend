@@ -23,6 +23,7 @@ target "src_all" {
     app     = "${PROJECT_ROOT}/app"
     app_yc  = "${PROJECT_ROOT}/app_yc"
     app_os  = "${PROJECT_ROOT}/app_os"
+    app_mr  = "${PROJECT_ROOT}/mainrepo/app"
     bi_integration_tests = "${PROJECT_ROOT}/ops/bi_integration_tests"
   }
   dockerfile-inline = <<EOT
@@ -31,6 +32,7 @@ COPY --from=src_lib / /src
 COPY --from=app / /src/app
 COPY --from=app_yc / /src/app_yc
 COPY --from=app_os / /src/app_os
+COPY --from=app_mr / /src/mainrepo/app
 COPY --from=bi_integration_tests / /src/ops/bi_integration_tests
 FROM scratch
 COPY --from=build /src /

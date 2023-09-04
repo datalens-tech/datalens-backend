@@ -19,7 +19,7 @@ from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 
-from app_os_control_api.service_registry import StandaloneServiceRegistryFactory
+from dl_control_api.service_registry import StandaloneServiceRegistryFactory
 
 
 class ControlApiSRFactoryBuilderOS(SRFactoryBuilder):

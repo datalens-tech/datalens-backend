@@ -6,7 +6,6 @@ app/bi_file_uploader_worker
 app/bi_rqe_ext_async
 app/bi_rqe_ext_sync
 app/bi_rqe_int_sync
-app_os/app_os_control_api
 app_os/app_os_data_api
 app_yc/app_yc_control_api
 app_yc/app_yc_data_api
@@ -50,6 +49,7 @@ lib/bi_testing_ya
 lib/dc_public_api_proto_stubs
 lib/sqlalchemy_metrika_api
 lib/yc_apis_proto_stubs
+mainrepo/app/dl_control_api
 mainrepo/lib/bi_api_client
 mainrepo/lib/bi_api_commons
 mainrepo/lib/bi_api_connector

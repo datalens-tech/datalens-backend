@@ -14,6 +14,13 @@ dl_repo:
       tags:
         - main_dependency_group
 
+    - type: app  # Apps
+      root_path: app
+      boilerplate_path: lib/bi_package_boilerplate
+      tags:
+        - main_dependency_group
+        - own_dependency_group
+
   custom_package_map:
     flask_marshmallow: flask-marshmallow
     flask_restx: flask-restx

@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1.4
 FROM bake_ctx_base_img
 
-ENV APP_DIR="app_os/app_os_control_api"
+ENV APP_DIR="mainrepo/app/dl_control_api"
 
 RUN mkdir -p /code
 COPY /etc /etc
@@ -13,7 +13,7 @@ COPY --from=bake_ctx_src_lib / /src
 # Sources copy
 RUN mkdir -p /src/$APP_DIR
 COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
-COPY /app_os_control_api /src/$APP_DIR/app_os_control_api
+COPY /dl_control_api /src/$APP_DIR/dl_control_api
 COPY /README.md /src/$APP_DIR/README.md
 
 # Installation

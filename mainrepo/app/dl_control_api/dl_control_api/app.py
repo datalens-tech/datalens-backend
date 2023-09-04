@@ -18,8 +18,8 @@ from bi_core.logging_config import hook_configure_logging
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
-from app_os_control_api.app_factory import ControlApiAppFactoryOS
-from app_os_control_api import app_version
+from dl_control_api.app_factory import ControlApiAppFactoryOS
+from dl_control_api import app_version
 
 
 def create_app(
