@@ -1,3 +1,12 @@
+0.1987.0
+--------
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * BI-4791: Delete port check (#295)  [ https://github.com/datalens-tech/datalens-backend-private/commit/3c616d15 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-04 12:30:04+00:00
+
 0.1986.0
 --------
 
