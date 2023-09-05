@@ -22,6 +22,7 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 sentry-sdk = ">=1.15.0"
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-file-uploader-api-lib = {path = "../../mainrepo/lib/bi_file_uploader_api_lib"}

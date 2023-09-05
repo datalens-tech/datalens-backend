@@ -25,8 +25,8 @@ from bi_api_lib.connector_availability.configs.development import CONFIG as DEVE
 from bi_api_lib.connector_availability.configs.ext_production import CONFIG as EXT_PRODUCTION_CONNECTORS
 from bi_api_lib.connector_availability.configs.ext_testing import CONFIG as EXT_TESTING_CONNECTORS
 
-from bi_api_commons.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 

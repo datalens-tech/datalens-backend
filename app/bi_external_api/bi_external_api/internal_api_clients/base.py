@@ -4,7 +4,7 @@ from typing import Optional
 import attr
 
 from bi_constants.api_constants import DLHeaders, DLHeadersCommon
-from bi_api_commons.base_models import IAMAuthData
+from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_external_api.internal_api_clients.models import CollectionContentsPage
 
 

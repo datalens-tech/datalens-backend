@@ -19,8 +19,8 @@ from bi_constants.api_constants import YcTokenHeaderMode, DLHeadersCommon
 from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
 

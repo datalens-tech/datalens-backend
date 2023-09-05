@@ -4,8 +4,8 @@ import attr
 
 from bi_constants.api_constants import YcTokenHeaderMode
 
-from bi_api_commons.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
 from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory

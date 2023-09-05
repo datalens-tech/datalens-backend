@@ -10,10 +10,13 @@ from werkzeug.exceptions import Forbidden
 
 from bi_constants.api_constants import DLHeadersCommon, DLCookiesCommon
 from bi_api_commons.access_control_common import match_path_prefix, get_token_from_authorization_header, AuthTokenType
-from bi_api_commons.base_models import TenantCommon, YaTeamAuthData
+from bi_api_commons.base_models import TenantCommon
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 
 from bi_blackbox_client.authenticate import authenticate
+
+from bi_api_commons_ya_team.models import YaTeamAuthData
+
 
 LOGGER = logging.getLogger(__name__)
 

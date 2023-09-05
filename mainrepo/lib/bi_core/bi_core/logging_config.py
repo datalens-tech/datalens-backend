@@ -231,7 +231,7 @@ def configure_logging(  # type: ignore  # TODO: fix
 
     Mostly idempotent but does some checks to ensure the configuration has not changed.
 
-    `app_prefix` is not currently used; see `REQUEST_ID_APP_PREFIX` instead.
+    `app_prefix` is not currently used; see `request_id_app_prefix` instead.
 
     `logcfg_processors`: convenient (but dangerous) processing of the logging config.
     Iterable of Callables `(log_cfg, **context) -> log_cfg`.

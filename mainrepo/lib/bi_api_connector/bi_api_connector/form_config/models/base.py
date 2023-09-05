@@ -10,7 +10,8 @@ from bi_api_connector.form_config.models.rows import CustomizableRow
 from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from bi_configs.connectors_settings import ConnectorSettingsBase
 
-from bi_api_commons.base_models import TenantDef, TenantYCOrganization
+from bi_api_commons.base_models import TenantDef
+from bi_api_commons_ya_cloud.models import TenantYCOrganization
 
 from bi_api_connector.form_config.models.api_schema import FormApiSchema, FormFieldApiSchema
 from bi_api_connector.form_config.models.common import (

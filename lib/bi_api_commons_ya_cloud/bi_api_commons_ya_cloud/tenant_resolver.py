@@ -1,7 +1,9 @@
 from typing import Optional
 
-from bi_api_commons.base_models import TenantDef, TenantYCOrganization, TenantYCFolder, TenantDCProject
+from bi_api_commons.base_models import TenantDef
 from bi_api_commons.tenant_resolver import TenantResolver
+
+from bi_api_commons_ya_cloud.models import TenantYCFolder, TenantYCOrganization, TenantDCProject
 
 
 class TenantResolverYC(TenantResolver):

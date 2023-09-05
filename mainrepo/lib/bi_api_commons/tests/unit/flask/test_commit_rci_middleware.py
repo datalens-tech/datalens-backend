@@ -37,7 +37,7 @@ def test_integration(caplog):
     resp = client.get("/test", headers={
         'x-request-id': 'asdf1234',
         'include-me': 'include_me',
-        'exclude-me': 'exclide_me',
+        'exclude-me': 'exclude_me',
         'referer': 'referer',
         'x-chart-id': 'x-chart-id',
     })

@@ -11,7 +11,7 @@ import pytest
 from werkzeug.serving import make_server
 
 import bi.app
-from bi_api_commons.base_models import IAMAuthData
+from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib

@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Optional, Generic, TypeVar
 from aiohttp import web
 import attr
 
-from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.api_constants import YcTokenHeaderMode
 from bi_constants.enums import ConnectionType, ProcessorType, RedisInstanceKind
@@ -31,15 +30,16 @@ from bi_core.aio.web_app_services.redis import RedisSentinelService, SingleHostS
 from bi_core.aio.web_app_services.server_header import ServerHeader
 from bi_core.utils import make_url
 
-from bi_api_commons.yc_access_control_model import (
-    AuthorizationModeDataCloud, AuthorizationModeYandexCloud,
-)
 from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService, YCEmbedAuthService
+from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
+from bi_api_commons_ya_cloud.yc_access_control_model import (
+    AuthorizationModeDataCloud, AuthorizationModeYandexCloud,
+)
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 

@@ -25,7 +25,6 @@ class OpenTracingLoggingContextController(RequestLoggingContextController):
     span_tag_prefix: ClassVar[str] = 'bi'
 
     def put_to_context(self, key: str, value: Any) -> None:
-        # TODO FIX: BI-1967 consider multivalues
         if key in self.root_span_tags:
             self.root_span.set_tag(f"{self.span_tag_prefix}.{key}", value)
         elif key == 'endpoint_code':

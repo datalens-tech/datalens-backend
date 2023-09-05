@@ -8,7 +8,6 @@ import pkgutil
 import pytest
 import responses
 
-from bi_api_commons.cloud_manager import CloudManagerAPI
 from bi_cloud_integration.yc_subjects import SubjectInfo, DLYCMSClient
 from bi_constants.enums import RLSSubjectType
 
@@ -16,7 +15,8 @@ from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_core.us_dataset import Dataset
 from bi_core.rls import RLS, RLSEntry, RLSSubject, RLSPatternType
 from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.base_models import TenantYCOrganization
+from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI
+from bi_api_commons_ya_cloud.models import TenantYCOrganization
 
 from bi_api_lib.utils.rls import FieldRLSSerializer
 from bi_service_registry_ya_cloud.iam_subject_resolver import IAMSubjectResolver

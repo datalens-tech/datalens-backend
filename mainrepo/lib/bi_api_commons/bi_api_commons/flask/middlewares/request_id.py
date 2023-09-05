@@ -22,7 +22,6 @@ from bi_app_tools.ylog.context import put_to_context
 LOGGER = logging.getLogger(__name__)
 
 
-# TODO FIX: Remove REQUEST_ID_APP_PREFIX
 @attr.s
 class RequestIDService:
     _request_id_app_prefix: Optional[str] = attr.ib()

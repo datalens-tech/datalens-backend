@@ -16,7 +16,7 @@ from bi_configs.settings_submodels import YCAuthSettings
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
-from bi_api_commons.base_models import TenantYCFolder
+from bi_api_commons.base_models import TenantCommon
 
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 
@@ -142,7 +142,7 @@ class BiApiTestBase(abc.ABC):
         app = control_app_factory.create_app(
             connectors_settings=connectors_settings,
             testing_app_settings=ControlPlaneAppTestingsSettings(
-                fake_tenant=TenantYCFolder(folder_id='folder_1')
+                fake_tenant=TenantCommon()
             ),
             close_loop_after_request=False,
         )

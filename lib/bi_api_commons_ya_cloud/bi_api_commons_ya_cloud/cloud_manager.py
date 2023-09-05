@@ -2,19 +2,18 @@ from __future__ import annotations
 
 import asyncio
 import attr
-from typing import (
-    ClassVar,
-    Sequence, Optional,
-)
+from typing import ClassVar, Sequence, Optional
+
+from bi_utils.aio import alist
 
 from bi_cloud_integration.iam_rm_client import DLFolderServiceClient
 from bi_cloud_integration.yc_subjects import (
     DLYCMSClient,
 )
-from bi_api_commons.base_models import TenantYCFolder, TenantYCOrganization, TenantDCProject
 from bi_api_commons.base_models import TenantDef
 
-from bi_utils.aio import alist
+from bi_api_commons_ya_cloud.models import TenantYCFolder, TenantYCOrganization, TenantDCProject
+
 
 DEFAULT_DOMAIN = 'yandex.ru'
 

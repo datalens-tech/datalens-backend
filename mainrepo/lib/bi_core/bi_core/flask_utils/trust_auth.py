@@ -3,9 +3,7 @@ from typing import Optional
 import attr
 import flask
 
-from bi_constants.api_constants import DLHeadersCommon
-
-from bi_api_commons.base_models import IAMAuthData, NoAuthData, TenantCommon, TenantDef
+from bi_api_commons.base_models import NoAuthData, TenantCommon, TenantDef
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 
 
@@ -32,11 +30,6 @@ class TrustAuthService:
             temp_rci = temp_rci.clone(user_id=fake_user_id)
         if fake_user_name is not None:
             temp_rci = temp_rci.clone(user_name=fake_user_name)
-
-        # Make it possible to test some iamtoken-passing features in the tests:
-        iam_token = flask.request.headers.get(DLHeadersCommon.IAM_TOKEN.value)
-        if iam_token:
-            temp_rci = temp_rci.clone(auth_data=IAMAuthData(iam_token=iam_token))
 
         ReqCtxInfoMiddleware.replace_temp_rci(temp_rci)
 

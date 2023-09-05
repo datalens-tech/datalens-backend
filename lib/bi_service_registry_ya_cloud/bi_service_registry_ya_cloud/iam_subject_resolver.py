@@ -2,7 +2,6 @@ import logging
 
 import attr
 
-from bi_api_commons.cloud_manager import CloudManagerAPI, SubjectInfo
 from bi_constants.enums import RLSSubjectType
 from bi_core.rls import (
     BaseSubjectResolver,
@@ -11,6 +10,8 @@ from bi_core.rls import (
 )
 
 from bi_utils.aio import await_sync
+
+from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI, SubjectInfo
 
 
 LOGGER = logging.getLogger(__name__)

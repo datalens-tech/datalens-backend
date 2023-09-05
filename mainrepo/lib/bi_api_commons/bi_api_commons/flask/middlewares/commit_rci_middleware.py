@@ -41,10 +41,6 @@ class ReqCtxInfoMiddleware:
 
         final_rci = temp_rci.clone(
             # TODO CONSIDER: Add default user agent if not passed in header
-            # removed reference from materializer
-            # ua = flask.request.headers.get('User-Agent')
-            # if ua:
-            #   result.info_headers['User-Agent'] = 'DataLens Materializer ({})'.format(ua)
             plain_headers=CIMultiDict((
                 (header, flask.request.headers.get(header),)
                 for header in self.plain_headers

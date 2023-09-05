@@ -36,7 +36,6 @@ _endpoint_code_attr_name = "endpoint_code"
 def get_endpoint_code(request: web.Request) -> Optional[str]:
     final_handler = request.match_info.handler
 
-    # TODO FIX: Change to base view subclass check after https://st.yandex-team.ru/BI-1506
     if hasattr(final_handler, _endpoint_code_attr_name):
         maybe_endpoint_code = getattr(final_handler, _endpoint_code_attr_name)
         if isinstance(maybe_endpoint_code, str):

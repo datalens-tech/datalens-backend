@@ -46,6 +46,7 @@ werkzeug = ">=2.0.3"
 xxhash = ">=3.2.0"
 yandex-bi-blackbox-client = {path = "../../../lib/bi_blackbox_client"}
 yandex-bi-api-commons = {path = "../bi_api_commons"}
+yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}

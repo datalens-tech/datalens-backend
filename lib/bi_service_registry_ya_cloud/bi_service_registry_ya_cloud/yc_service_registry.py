@@ -2,7 +2,6 @@ from typing import Optional
 
 import attr
 
-from bi_api_commons.cloud_manager import CloudManagerAPI
 from bi_blackbox_client.client import BlackboxClient
 from bi_cloud_integration.iam_rm_client import DLFolderServiceClient
 from bi_cloud_integration.sa_creds import SACredsRetrieverFactory
@@ -18,6 +17,7 @@ from bi_core.services_registry.inst_specific_sr import (
 )
 from bi_core.utils import FutureRef
 from bi_core.services_registry.top_level import ServicesRegistry
+from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI
 
 from bi_service_registry_ya_cloud.iam_subject_resolver import IAMSubjectResolver
 

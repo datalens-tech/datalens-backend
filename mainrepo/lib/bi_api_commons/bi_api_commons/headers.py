@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Sequence, Tuple
+from typing import Sequence
 
 from bi_constants.api_constants import DLHeadersCommon
 
@@ -33,7 +33,7 @@ DEFAULT_RCI_PLAIN_HEADERS = (
 DEFAULT_RCI_SECRET_HEADERS = (
     'Authorization',
     'Cookie',
-    DLHeadersCommon.IAM_TOKEN.value,
+    DLHeadersCommon.IAM_TOKEN.value,  # TODO add injection of extra secret headers to app factories
 )
 
 
@@ -42,8 +42,7 @@ def normalize_header_name(hdr: str) -> str:
 
 
 # TODO FIX: Add headers normalization function and use it here and in RCI handling middleware
-# https://bb.yandex-team.ru/projects/STATBOX/repos/bi-common/pull-requests/821/overview?commentId=883062
-def append_extra_headers_and_normalize(default: Sequence[str], extra: Sequence[str]) -> Tuple[str, ...]:
+def append_extra_headers_and_normalize(default: Sequence[str], extra: Sequence[str]) -> tuple[str, ...]:
     """Chains default and extra with CI deduplication. Translating result to lower case."""
     default_norm = tuple(normalize_header_name(hdr) for hdr in default)
     extra_norm = tuple(normalize_header_name(hdr) for hdr in extra)

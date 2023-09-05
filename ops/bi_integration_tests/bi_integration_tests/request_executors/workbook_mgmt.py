@@ -5,7 +5,8 @@ from typing import Optional, Callable
 
 import aiohttp
 
-from bi_api_commons.base_models import IAMAuthData, TenantDef
+from bi_api_commons.base_models import TenantDef
+from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons.client.base import get_default_aiohttp_session
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_us_client.us_workbook_cmd_client import USWorkbookCommandClient

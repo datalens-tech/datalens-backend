@@ -25,7 +25,7 @@ from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSe
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_api_commons.yc_access_control_model import AuthorizationModeYandexCloud
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCEmbedAuthService
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 

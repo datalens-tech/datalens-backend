@@ -1,10 +1,11 @@
-from typing import Generic, TypeVar, ClassVar, Type, Union
+from typing import Generic, TypeVar, ClassVar, Union
 
 import attr
 from typeguard import check_type
 
-from bi_api_commons.base_models import TenantYCFolder, TenantYCOrganization, TenantDCProject
 from bi_api_commons.base_models import TenantDef
+from bi_api_commons_ya_cloud.models import TenantYCFolder, TenantYCOrganization, TenantDCProject
+
 
 _AUTH_OBJ_TV = TypeVar("_AUTH_OBJ_TV")
 

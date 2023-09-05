@@ -8,7 +8,8 @@ import pytz
 import yaml
 
 from bi_configs.environments import InternalTestingInstallation
-from bi_api_commons.base_models import TenantCommon, YaTeamAuthData
+from bi_api_commons.base_models import TenantCommon
+from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import (

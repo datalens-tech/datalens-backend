@@ -1,26 +1,22 @@
-# builtin
-
 from __future__ import annotations
 
 import logging
 import threading
 from typing import Optional, Tuple, Type, Callable, Any
 
-# global (public)
 import attr
 import flask
 
-# local (bi)
 from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ss_client import DLSSClient
 from bi_constants.api_constants import YcTokenHeaderMode
 
-# this package
 from bi_api_commons.access_control_common import match_path_prefix, AuthFailureError
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-from bi_api_commons.yc_access_control import YCAccessController
-from bi_api_commons.yc_access_control_model import AuthorizationMode
+
+from bi_api_commons_ya_cloud.yc_access_control import YCAccessController
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationMode
 
 
 LOGGER = logging.getLogger(__name__)

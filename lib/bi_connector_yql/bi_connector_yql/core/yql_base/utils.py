@@ -6,7 +6,8 @@ from bi_cloud_integration.exc import YCPermissionDenied
 from bi_cloud_integration.model import IAMResource
 
 from bi_core import exc
-from bi_api_commons.base_models import IAMAuthData, RequestContextInfo
+from bi_api_commons.base_models import RequestContextInfo
+from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 
 if TYPE_CHECKING:

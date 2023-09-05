@@ -10,8 +10,9 @@ import pytest
 import yaml
 from opentracing import tracer
 
-from bi_api_commons.base_models import RequestContextInfo, TenantDef, TenantYCOrganization
+from bi_api_commons.base_models import RequestContextInfo, TenantDef
 from bi_api_commons.tracing import get_current_tracing_headers
+from bi_api_commons_ya_cloud.models import TenantYCOrganization
 from bi_cloud_integration.iam_rm_client import IAMRMClient
 from bi_cloud_integration.model import AccessBindingAction
 from bi_configs.environments import IntegrationTestConfig

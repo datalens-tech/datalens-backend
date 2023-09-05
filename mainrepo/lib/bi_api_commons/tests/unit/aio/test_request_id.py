@@ -178,8 +178,6 @@ async def test_endpoint_code(app_factory: _AppFactory, caplog):
     log_rec = next(r for r in caplog.records if r.msg == msg)
     assert log_rec.endpoint_code is None
 
-# TODO FIX: More tests for another RequestId functions
-
 
 async def test_request_id(app_factory: _AppFactory, caplog):
     caplog.set_level('INFO')

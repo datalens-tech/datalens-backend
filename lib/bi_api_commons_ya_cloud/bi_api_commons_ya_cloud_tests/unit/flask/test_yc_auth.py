@@ -1,23 +1,23 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 import flask
 import pytest
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_constants.api_constants import YcTokenHeaderMode
-from bi_api_commons.yc_access_control_model import (
-    AuthorizationMode,
-    AuthorizationModeYandexCloud,
-    AuthorizationModeDataCloud,
-)
-from bi_api_commons.base_models import IAMAuthData
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.flask.middlewares.request_id import RequestIDService
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
+from bi_api_commons_ya_cloud.models import IAMAuthData
+from bi_api_commons_ya_cloud.yc_access_control_model import (
+    AuthorizationMode,
+    AuthorizationModeYandexCloud,
+    AuthorizationModeDataCloud,
+)
 
 from ..test_yc_auth_scenarios import (
     Scenario_YCAuth_ModeYC_AllowCookieAuth,
@@ -33,6 +33,7 @@ def create_yc_auth_enabled_app(
         yc_token_header_mode: YcTokenHeaderMode,
         skip_auth_exact_path: str,
         skip_auth_prefixed_path: str,
+        dummy_tenant_id: Optional[str] = None,
 ) -> flask.Flask:
     app = flask.Flask(__name__)
     ContextVarMiddleware().wrap_flask_app(app)
@@ -68,8 +69,8 @@ def create_yc_auth_enabled_app(
             user_id=rci.user_id,
             iam_token=auth_data.iam_token,
         )
-        tenant_id = rci.get_tenant_id_if_cloud_env_none_else()
-        if tenant_id is not None:
+        tenant_id = rci.tenant.get_tenant_id() if rci.tenant is not None else None
+        if dummy_tenant_id is None or dummy_tenant_id is not None and tenant_id != dummy_tenant_id:
             response.update(tenant_id=tenant_id)
 
         return flask.jsonify(response)
@@ -85,7 +86,7 @@ class Test_Flask_YCAuth_ModeDataCloud_DenyCookieAuth(Scenario_YCAuth_ModeDataClo
     @pytest.fixture()
     def client(
         self, iam, yc_token_header_mode, project_required_permission,
-        skip_auth_exact_path, skip_auth_prefixed_path
+        skip_auth_exact_path, skip_auth_prefixed_path, project_id,
     ) -> Any:
         app = create_yc_auth_enabled_app(
             authorization_mode=AuthorizationModeDataCloud(
@@ -96,6 +97,7 @@ class Test_Flask_YCAuth_ModeDataCloud_DenyCookieAuth(Scenario_YCAuth_ModeDataClo
             yc_token_header_mode=yc_token_header_mode,
             skip_auth_exact_path=skip_auth_exact_path,
             skip_auth_prefixed_path=skip_auth_prefixed_path,
+            dummy_tenant_id=project_id,
         )
         return app.test_client()
 

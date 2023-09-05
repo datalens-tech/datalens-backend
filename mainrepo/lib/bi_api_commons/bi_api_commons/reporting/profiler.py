@@ -127,12 +127,10 @@ class DefaultReportingProfiler(ReportingProfiler):
         x_dl_context = self.rci.x_dl_context
         extra: Dict[str, Union[str, int, float, None]] = dict(
             event_code='profile_db_request',
-            # See:
-            # https://a.yandex-team.ru/arc/trunk/arcadia/statbox/jam/libs/outer_action/datalens/bi_analytics/logs_config.py?rev=6459895#L64
             dataset_id=start_record.dataset_id,
             # auto: request_id
             user_id=self.rci.user_id,
-            billing_folder_id=self.rci.get_tenant_id_if_cloud_env_none_else(),
+            billing_folder_id=self.rci.tenant.get_tenant_id() if self.rci.tenant is not None else None,
             connection_type=start_record.connection_type.name,
             source=self.rci.endpoint_code,
             username=self.rci.user_name,

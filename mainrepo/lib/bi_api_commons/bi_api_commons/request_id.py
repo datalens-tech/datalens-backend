@@ -24,16 +24,6 @@ def make_uuid_from_parts(current: str, parent: Optional[str]) -> str:
 
 
 def request_id_generator(prefix: Optional[str] = None) -> str:
-    """
-    Known prefixes:
-
-      * 'a': bi-api (dataset-api)
-      * 'c': bi-converter
-      * 'm': bi-materializer
-      * 'p': bi-api async public
-      * 'y': bi-api async
-
-    """
     result = uuid.uuid4().hex
     if prefix is not None:
         result = prefix + '.' + result

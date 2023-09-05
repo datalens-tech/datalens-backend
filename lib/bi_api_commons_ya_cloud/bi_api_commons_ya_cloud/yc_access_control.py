@@ -15,16 +15,24 @@ from bi_constants.api_constants import DLHeadersCommon, DLHeaders, YcTokenHeader
 from bi_api_commons.access_control_common import AuthFailureError
 from bi_api_commons.error_messages import UserErrorMessages
 from bi_api_commons.logging import RequestLoggingContextController
-from bi_api_commons.yc_access_control_model import (
+from bi_api_commons.base_models import RequestContextInfo, TenantCommon
+from bi_api_commons.base_models import TenantDef
+from bi_app_tools.profiling_base import generic_profiler_async
+from bi_utils.aio import await_sync
+
+from bi_api_commons_ya_cloud.models import (
+    TenantYCFolder,
+    TenantYCOrganization,
+    TenantDCProject,
+    IAMAuthData,
+    EmbedAuthData,
+)
+from bi_api_commons_ya_cloud.yc_access_control_model import (
     AuthorizationMode,
     AuthorizationModeYandexCloud,
     AuthorizationModeDataCloud,
 )
-from bi_api_commons.base_models import IAMAuthData, RequestContextInfo, EmbedAuthData, TenantCommon
-from bi_api_commons.base_models import TenantYCFolder, TenantYCOrganization, TenantDCProject
-from bi_api_commons.base_models import TenantDef
-from bi_app_tools.profiling_base import generic_profiler_async
-from bi_utils.aio import await_sync
+
 
 LOGGER = logging.getLogger(__name__)
 

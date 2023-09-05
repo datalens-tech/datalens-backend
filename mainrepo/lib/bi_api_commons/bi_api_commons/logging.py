@@ -13,10 +13,8 @@ from bi_app_tools import ylog
 
 from .headers import normalize_header_name
 
-LOGGER = logging.getLogger(__name__)
 
-# See also:
-# https://wiki.yandex-team.ru/logfeller/security/#kakjetomozhnodelat
+LOGGER = logging.getLogger(__name__)
 
 NON_TRANSITIVE_LOGGING_CTX_KEYS = frozenset({
     'request_id',
@@ -24,7 +22,6 @@ NON_TRANSITIVE_LOGGING_CTX_KEYS = frozenset({
 })
 
 SECRET_HEADERS: frozenset[str] = frozenset(h.lower() for h in (
-    'X-YaCloud-SubjectToken',
     'Authorization',
     'X-Us-Master-Token',
     'Master-Token',

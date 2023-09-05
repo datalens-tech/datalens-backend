@@ -8,7 +8,6 @@ from bi_constants.api_constants import DLContextKey
 from bi_constants.enums import QueryType, ConnectionType
 
 from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.base_models import TenantYCFolder
 from bi_api_commons.reporting.models import (
     QueryExecutionStartReportingRecord,
     QueryExecutionEndReportingRecord,
@@ -16,6 +15,7 @@ from bi_api_commons.reporting.models import (
 )
 from bi_api_commons.reporting import DefaultReportingRegistry, RequestResultReportingRecord
 from bi_api_commons.reporting.profiler import DefaultReportingProfiler
+from bi_api_commons_ya_cloud.models import TenantYCFolder
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 
@@ -226,7 +226,7 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
     expected_extras = dict(
         event_code='profile_db_request',
         source=rci.endpoint_code,
-        billing_folder_id=rci.get_tenant_id_if_cloud_env_none_else(),
+        billing_folder_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
         user_id=rci.user_id,
         username=rci.user_name,
         is_public=0,

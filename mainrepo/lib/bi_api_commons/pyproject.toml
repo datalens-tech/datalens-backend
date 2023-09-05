@@ -24,7 +24,6 @@ raven = ">=6.10.0"
 sentry-sdk = ">=1.15.0"
 typeguard = "==2.13.3"
 typing-extensions = ">=4.5.0"
-yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
 yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}

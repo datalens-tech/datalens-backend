@@ -33,7 +33,6 @@ class CommonInternalAPIClient(DLCommonAPIClient):
             yield None
         except marshmallow.exceptions.ValidationError as ma_exc:
             LOGGER.info(f"Deserialization fail in internal API client: {type(self).__name__}", exc_info=True)
-            # TODO FIX: BI-3005 ensure and adopt to dict
             effective_messages: dict[str, Any] = ma_exc.messages  # type: ignore
 
             raise bi_api_commons.exc.MalformedAPIResponseErr(self.create_exc_data(

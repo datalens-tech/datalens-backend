@@ -15,10 +15,13 @@ from bi_api_commons.aiohttp import aiohttp_wrappers
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons.access_control_common import AuthTokenType, get_token_from_authorization_header, \
     BadHeaderPrefixError
-from bi_api_commons.base_models import TenantCommon, YaTeamAuthData
+from bi_api_commons.base_models import TenantCommon
 
 from bi_blackbox_client.authenticate import authenticate_async
 from bi_blackbox_client.exc import InsufficientAuthData
+
+from bi_api_commons_ya_team.models import YaTeamAuthData
+
 
 LOGGER = logging.getLogger(__name__)
 
