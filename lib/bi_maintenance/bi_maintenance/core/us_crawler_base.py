@@ -13,7 +13,7 @@ import shortuuid
 from bi_api_commons.logging import extra_with_evt_code, format_dict
 from bi_api_commons.base_models import TenantDef
 from bi_core.us_entry import USEntry, USMigrationEntry
-from bi_core.us_manager.diff_utils import get_pre_save_top_level_dict, get_diff_text
+from bi_maintenance.diff_utils import get_pre_save_top_level_dict, get_diff_text
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_utils.task_runner import TaskRunner, ConcurrentTaskRunner
 
@@ -253,7 +253,7 @@ class USEntryCrawler:
         async with self.locked_entry_cm(entry_id, entry_handling_extra, usm=usm) as target_entry:  # type: ignore  # TODO: fix
             assert target_entry is not None
             # For future diff calculation reliability
-            # (see `bi_core.us_manager.diff_utils.get_pre_save_top_level_dict`)
+            # (see `bi_maintenance.diff_utils.get_pre_save_top_level_dict`)
             assert target_entry._us_resp is not None
             us_resp: dict = copy.deepcopy(target_entry._us_resp)
             target_entry._us_resp = us_resp

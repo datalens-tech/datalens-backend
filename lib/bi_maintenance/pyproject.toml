@@ -11,7 +11,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
+pygments = ">=2.4.0"
 python = ">=3.10, <3.12"
+pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 tabulate = ">=0.9.0"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
