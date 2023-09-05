@@ -1,5 +1,5 @@
 # FROM yandex/clickhouse-server:22.3
-FROM registry.yandex.net/statinfra/clickhouse-server:22.11
+FROM cr.yandex/crpsufj53lhl0via9iam/clickhouse-server:22.11
 COPY db-common/data /common-data
 COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
 COPY db-clickhouse/cluster.xml /etc/clickhouse-server/config.d/cluster.xml

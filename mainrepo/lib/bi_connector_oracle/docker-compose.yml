@@ -3,16 +3,18 @@ version: '3.7'
 x-constants:
   US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
 
-
 services:
   db-oracle:
     labels:
       datalens.ci.service: db-oracle
     ports:
      - "51800:1521"
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.db-oracle
+    # image: "ghcr.io/gvenzl/oracle-xe:21.3.0-slim-faststart"
+    image: "ghcr.io/gvenzl/oracle-xe:18-slim-faststart"
+    environment:
+      ORACLE_PASSWORD: "qwerty"
+      APP_USER: "datalens"
+      APP_USER_PASSWORD: "qwerty"
 
   init-db:
     depends_on:

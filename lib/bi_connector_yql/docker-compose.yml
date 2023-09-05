@@ -6,7 +6,7 @@ x-constants:
 services:
   db-ydb:
     # image: "registry.yandex.net/yandex-docker-local-ydb:latest"
-    image: "registry.yandex.net/yandex-docker-local-ydb@sha256:882755b316b72490702e372e82c84df770b046fd3ecdd77163fc088a82c043a1"
+    image: "cr.yandex/crpsufj53lhl0via9iam/yandex-docker-local-ydb:latest"
     environment:
       YDB_LOCAL_SURVIVE_RESTART: "true"
       GRPC_PORT: "51900"

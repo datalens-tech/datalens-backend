@@ -77,9 +77,7 @@ DB_PARAMS = {
 }
 
 
-# tmp workaround until we moved away from arcadia
-is_arcadia_python = hasattr(sys, "extra_modules")
-ORACLE_PDB = 'ORCLPDB1.localdomain' if is_arcadia_python else 'XEPDB1'
+ORACLE_PDB = 'XEPDB1'
 
 
 DB_URLS = {

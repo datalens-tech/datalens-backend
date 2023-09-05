@@ -1,5 +1,5 @@
 # FROM yandex/clickhouse-server:22.3
-FROM registry.yandex.net/statinfra/clickhouse-server@sha256:74e094253baa15b18ec1ea3a79fb4015451de3bb23c40c99dcc37d1f85c1ac09
+FROM cr.yandex/crpsufj53lhl0via9iam/clickhouse-server:22.3
 
 COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
 

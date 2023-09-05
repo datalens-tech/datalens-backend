@@ -9,7 +9,7 @@ services:
       datalens.ci.service: db-mssql-14
 
     # image: "microsoft/mssql-server-linux:2017-CU12"
-    image: "registry.yandex.net/statinfra/mssql-server-linux@sha256:6522290393006d93b88f63a295c5137010e4e0fea548d3fce9892c07262f7a1a"
+    image: "mcr.microsoft.com/mssql/server:2017-CU12@sha256:19b9392f035fc9f82b77f6833d1490bca8cb041b445cd451de0d1f1f3efe70e8"
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "qweRTY123"

@@ -34,9 +34,7 @@ class PkgRef:
             for group in include_groups or []:
                 if "group" not in spec["tool"]["poetry"]:
                     continue
-                raw.update(
-                    spec["tool"]["poetry"]["group"].get(group, {}).get("dependencies", {})
-                )
+                raw.update(spec["tool"]["poetry"]["group"].get(group, {}).get("dependencies", {}))
 
         for name, specifier in raw.items():
             if isinstance(specifier, dict) and "path" in specifier:

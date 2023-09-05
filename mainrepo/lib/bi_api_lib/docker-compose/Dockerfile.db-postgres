@@ -1,6 +1,6 @@
 # the earliest version supported by BI
 # FROM postgres:9.3-alpine
-FROM registry.yandex.net/statinfra/postgres@sha256:094358a1a64da927d5c26dcac9dad022cf0db840b6b627b143e5e4fd9adf982b
+FROM postgres:9.3-alpine@sha256:028cb3bc3792c307a490864b5deecfaec9027cef4aad16d33882e32003052756
 
 # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
 ENV PGCTLTIMEOUT=300

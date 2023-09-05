@@ -12,10 +12,6 @@ def test_get_compose_path(resource_dir):
     expected = str(resource_dir / "alt_docker-compose.yml")
     assert result == expected
 
-    result = get_compose_path(prj_root, f"{rel_path}:{section}", True)
-    expected = str(resource_dir / "alt_docker-compose.local.yml")
-    assert result == expected
-
     section = "snowflake"
     result = get_compose_path(prj_root, f"{rel_path}:{section}")
     expected = str(resource_dir / "docker-compose.yml")

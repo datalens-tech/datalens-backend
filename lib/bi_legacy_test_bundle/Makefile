@@ -19,13 +19,13 @@ force-cleanup-git:
 
 # Create a development environment (start all the services required for testing the project)
 devenv-core-d:
-	docker-compose -f docker-compose.core.local.yml up --build --force-recreate -d
+	docker-compose -f docker-compose.core.yml up --build --force-recreate -d
 
 devenv-core:
-	docker-compose -f docker-compose.core.local.yml up --build --force-recreate
+	docker-compose -f docker-compose.core.yml up --build --force-recreate
 
 devenv-core-status:
-	docker-compose -f docker-compose.core.local.yml ps
+	docker-compose -f docker-compose.core.yml ps
 
 
 

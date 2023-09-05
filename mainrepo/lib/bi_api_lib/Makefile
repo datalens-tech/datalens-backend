@@ -21,14 +21,14 @@ cleanup: docker-cleanup tests-cleanup
 # Create a development environment (start all the services required for bi-api)
 .PHONY: devenv-d
 devenv-d:
-	docker-compose -f docker-compose.local.yml up --build --force-recreate -d
+	docker-compose -f docker-compose.yml up --build --force-recreate -d
 
 .PHONY: devenv
 devenv:
-	docker-compose -f docker-compose.local.yml up --build --force-recreate
+	docker-compose -f docker-compose.yml up --build --force-recreate
 
 devenv-status:
-	docker-compose -f docker-compose.local.yml ps
+	docker-compose -f docker-compose.yml ps
 
 
 

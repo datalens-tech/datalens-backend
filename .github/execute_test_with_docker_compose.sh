@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-#!/usr/bin/env bash
-
 set -eux
 
 TARGET_PATH=$1
-
-# from ${job.container.network}"
 NET_NAME=$2
 export NET_NAME
 COMPOSE_PROJECT_NAME=$3
@@ -19,26 +15,17 @@ echo "Running py tests for $TARGET_PATH"
 
 source /venv/bin/activate
 
-if [ -f _gh_ci_fix.sh ]; then
-    echo "Executing workaround script"
-    bash _gh_ci_fix.sh
-fi
 
-# todo: remove local compose after migration from arc
-local_compose_file="$(get_compose_path '/data' $TARGET_PATH with_local_suffix )"
 main_compose_file="$(get_compose_path '/data' $TARGET_PATH )"
 
 if [ "$(do_we_need_compose "/data" $TARGET_PATH)" == "1" ]; then
 
-    # Use local compose until we leave arcadia ci
-    if [ -f $local_compose_file ]; then
-        cp -f $local_compose_file $main_compose_file
-    fi
 
     # Add network config to the compose file
     cat /data/ops/ci/networks_addon.yml >> $main_compose_file
     cat $main_compose_file
 
+    # fix ports from used in local dev to native service ones
     fix_ports_in_compose $main_compose_file "docker-compose.fixed.yml"
     cat "docker-compose.fixed.yml"
 

@@ -2,7 +2,7 @@
 # FROM registry.yandex.net/statinfra/s3server@sha256:35fe6b8587847159303779d53cd917ea260ee4b524772df74132825acb939f20
 
 # FROM zenko/cloudserver
-FROM registry.yandex.net/statinfra/s3cloudserver@sha256:b53e57829cf7df357323e60a19c9f98d2218f1b7ccb1d7cea5761a5a227a9ee3
+FROM cr.yandex/crpsufj53lhl0via9iam/s3cloudserver
 
 COPY s3-storage /data
 CMD /s3-storage/entrypoint.sh

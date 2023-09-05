@@ -6,7 +6,7 @@ x-constants:
 services:
   db-postgres:
     # image: "postgres:13-alpine"
-    image: "registry.yandex.net/statinfra/postgres@sha256:3335d0494b62ae52f0c18a1e4176a83991c9d3727fe67d8b1907b569de2f6175"
+    image: "postgres:13-alpine@sha256:b9f66c57932510574fb17bccd175776535cec9abcfe7ba306315af2f0b7bfbb4"
     environment:
       POSTGRES_DB: datalens
       POSTGRES_USER: datalens

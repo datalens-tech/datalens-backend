@@ -52,9 +52,7 @@ def get_leafs(dependencies):
     for deps in dependencies.values():
         all_values.extend(deps)
     all_values = set(all_values)
-    leafs = set(all_values) - set(
-        [k for k in dependencies.keys() if len(dependencies[k]) > 0]
-    )
+    leafs = set(all_values) - set([k for k in dependencies.keys() if len(dependencies[k]) > 0])
     return leafs
 
 
@@ -144,9 +142,7 @@ def main() -> None:
         to_check = process(repo_root, [], get_all=True)
     else:
         paths = paths.strip().split(" ")
-        to_check = process(
-            Path(repo_root), [p for p in paths if not p.startswith("ops/")]
-        )
+        to_check = process(Path(repo_root), [p for p in paths if not p.startswith("ops/")])
 
     to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci"))
     result = set()

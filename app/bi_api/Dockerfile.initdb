@@ -1,4 +1,4 @@
-FROM registry.yandex.net/statinfra/base/bi/initdb:latest
+FROM cr.yandex/crpsufj53lhl0via9iam/initdb:latest
 # ^ https://bb.yandex-team.ru/projects/STATBOX/repos/docker/browse/bi_initdb/Dockerfile
 
 ENTRYPOINT ["sh", "/entrypoint.sh"]

@@ -1,11 +1,12 @@
 #! /bin/bash
 
+set -x
 
-echo 'Waiting for Oracle DB to initialize...'
-until [[ `echo SELECT 1 FROM DUAL | sqlplus sys/Oradoc_db1@db-oracle/ORCLPDB1.localdomain as sysdba | grep -c ERROR` == 0 ]]
+until [[  $(echo SELECT 1 FROM DUAL | sqlplus -L  datalens/qwerty@//db-oracle/XEPDB1 | grep -c ERROR) == 0 ]]
 do
-    sleep 15
+    echo "waiting for oracle startup"
+    echo SELECT 1 FROM DUAL | sqlplus -L  datalens/qwerty@//db-oracle/XEPDB1
+    sleep 5
 done
-echo Connected
 
-sqlplus sys/Oradoc_db1@db-oracle/ORCLPDB1.localdomain as sysdba < /oracle/docker-entrypoint-initdb.d/initialize.sql
+

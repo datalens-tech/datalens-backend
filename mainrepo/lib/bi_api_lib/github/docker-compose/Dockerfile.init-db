@@ -1,7 +1,0 @@
-FROM registry.yandex.net/statinfra/base/bi/initdb@sha256:41477e01d5e1017d31c09776ded1b135ce7e58add715a024fc294c0490b95c44
-
-COPY init-db/mssql /mssql
-COPY init-db/oracle /oracle
-COPY init-db/entrypoint.sh /entrypoint.sh
-
-ENTRYPOINT ["sh", "/entrypoint.sh"]

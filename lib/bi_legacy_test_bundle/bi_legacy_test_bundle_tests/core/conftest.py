@@ -121,21 +121,6 @@ def db_dispenser() -> CoreDbDispenser:
             compose_project=tests_config_mod.COMPOSE_PROJECT_NAME,
         )
     )
-    # tmp workaround to run both in arcadia and gh ci
-    # to be removed after complete migration to git from arc
-    import sys
-    is_arcadia_python = hasattr(sys, "extra_modules")
-    if is_arcadia_python:
-        db_dispenser.add_reinit_hook(
-            db_config=make_db_config(
-                conn_type=CONNECTION_TYPE_ORACLE,
-                url=tests_config_mod.DB_CONFIGURATIONS['oracle'][0],
-            ),
-            reinit_hook=lambda: restart_container_by_label(
-                label=tests_config_mod.ORACLE_CONTAINER_LABEL,
-                compose_project=tests_config_mod.COMPOSE_PROJECT_NAME,
-            )
-        )
     return db_dispenser
 
 

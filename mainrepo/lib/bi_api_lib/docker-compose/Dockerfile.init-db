@@ -1,4 +1,4 @@
-FROM registry.yandex.net/statinfra/base/bi/initdb@sha256:41477e01d5e1017d31c09776ded1b135ce7e58add715a024fc294c0490b95c44
+FROM cr.yandex/crpsufj53lhl0via9iam/initdb:41477
 
 COPY init-db/mssql /mssql
 COPY init-db/oracle /oracle

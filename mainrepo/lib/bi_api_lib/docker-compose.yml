@@ -8,15 +8,13 @@ x-constants:
   S3_SECRET_ACCESS_KEY: &c-s3-secret-access-key "verySecretKey1"
   REDIS_PASSWORD: &c-redis-password "AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5"
   EXT_QUERY_EXECUTER_SECRET_KEY: &c-qe-secret-key '_some_test_secret_key_'
-  # DB_ORACLE_CONTAINER_NAME: &c-db-oracle-cont-name bi-api_db-oracle
-  # DB_MSSQL_CONTAINER_NAME: &c-db-mssql-cont-name bi-api_db-mssql
 
 
 services:
   redis:
     # image: "bitnami/redis:5.0.8"
     # also used for mutation cache
-    image: "registry.yandex.net/statinfra/redis@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
     environment:
       REDIS_PASSWORD: *c-redis-password
       # REDIS_REPLICATION_MODE: master  # ??
@@ -25,7 +23,7 @@ services:
 
   zookeeper-1:
     # image: "zookeeper:3.4"
-    image: "registry.yandex.net/statinfra/zookeeper@sha256:ad460bd234a3166cb37e14a1526d677052f7c42e1d1dccd040ca3e24ed1bec1f"
+    image: "zookeeper:3.4@sha256:d2b1ea8db9241d31daed9b1b90e22b62d9ffb14e29d355d0d0c8d0a87819d929"
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888
@@ -79,7 +77,7 @@ services:
     labels:
       datalens.ci.service: db-mssql
     # image: "microsoft/mssql-server-linux:2017-CU12"
-    image: "registry.yandex.net/statinfra/mssql-server-linux@sha256:6522290393006d93b88f63a295c5137010e4e0fea548d3fce9892c07262f7a1a"
+    image: "mcr.microsoft.com/mssql/server:2017-CU12@sha256:19b9392f035fc9f82b77f6833d1490bca8cb041b445cd451de0d1f1f3efe70e8"
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=qweRTY123
@@ -87,13 +85,14 @@ services:
     - 50514:1433
 
   db-oracle:
-    labels:
-      datalens.ci.service: db-oracle
     ports:
       - 50515:1521
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.db-oracle
+    # image: "ghcr.io/gvenzl/oracle-xe:21.3.0-slim-faststart"
+    image: "ghcr.io/gvenzl/oracle-xe:18-slim-faststart"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "yes"
+      APP_USER: "datalens"
+      APP_USER_PASSWORD: "qwerty"
 
   db-prometheus:
     depends_on:
@@ -113,7 +112,7 @@ services:
 
   db-ydb:
     # image: "registry.yandex.net/yandex-docker-local-ydb:latest"
-    image: "registry.yandex.net/yandex-docker-local-ydb@sha256:882755b316b72490702e372e82c84df770b046fd3ecdd77163fc088a82c043a1"
+    image: "cr.yandex/crpsufj53lhl0via9iam/yandex-docker-local-ydb:latest"
     environment:
       YDB_LOCAL_SURVIVE_RESTART: "true"
       GRPC_PORT: "50481"

@@ -9,10 +9,10 @@ PACKAGE_NAME = bi_connector_oracle
 
 
 devenv-d:
-	docker-compose -f docker-compose.local.yml up --build --force-recreate -d
+	docker-compose -f docker-compose.yml up --build --force-recreate -d
 
 devenv:
-	docker-compose -f docker-compose.local.yml up --build --force-recreate
+	docker-compose -f docker-compose.yml up --build --force-recreate
 
 devenv-status:
-	docker-compose -f docker-compose.local.yml ps
+	docker-compose -f docker-compose.yml ps

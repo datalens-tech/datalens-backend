@@ -260,14 +260,13 @@ def oracle_connection_id(app, client, request):
 
     # tmp workaround until we moved away from arcadia
     import sys
-    is_arcadia_python = hasattr(sys, "extra_modules")
     conn_params = {
         'name': 'oracle_test_{}'.format(get_random_str()),
         'type': 'oracle',
         'host': db_params.host.split(':')[0],
         'port': int(db_params.host.split(':')[1]),
         'db_connect_method': 'service_name',
-        'db_name': 'ORCLPDB1.localdomain' if is_arcadia_python else 'XEPDB1',
+        'db_name': 'XEPDB1',
         'username': 'datalens',
         'password': db_params.password,
         'raw_sql_level': 'dashsql',  # NOTE: allowing by default

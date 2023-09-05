@@ -7,7 +7,7 @@ services:
   db-mysql-5-6:
     # the earliest version supported by BI
     # image: "mysql:5.6"
-    image: "registry.yandex.net/statinfra/mysql@sha256:d8e4032005f53a774f2361281ebf61fa3d7635d5dacf9c58bc54e823ddcf9f1d"
+    image: "mysql:5.6@sha256:897086d07d1efa876224b147397ea8d3147e61dd84dce963aace1d5e9dc2802d"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "1"
       MYSQL_DATABASE: "test_data"
