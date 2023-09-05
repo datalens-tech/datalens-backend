@@ -79,7 +79,7 @@ def _blackbox_req_prepare(  # type: ignore  # TODO: fix
         tvm_info = TVM_INFO
 
     if tvm_info is not None:
-        # TODO: use `bi_core.tvm`
+        # TODO: use `bi_blackbox_client.tvm`
         tvm_headers = get_tvm_headers(tvm_info=tvm_info, blackbox_client_id_name=blackbox_client_id_name)
         headers.update(tvm_headers)
 

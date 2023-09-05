@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional
 
 import aiohttp
 
-from bi_core.tvm import TvmCliSingleton, TvmDestination, get_tvm_headers
+from bi_blackbox_client.tvm import TvmCliSingleton, TvmDestination, get_tvm_headers
 
 GOZORA_PROXY = 'http://go.zora.yandex.net:1080'
 

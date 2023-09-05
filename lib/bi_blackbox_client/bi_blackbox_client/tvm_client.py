@@ -25,7 +25,7 @@ DEFAULT_BLACKBOX_NAME = 'ProdYateam'
 
 def get_tvm_client(tvm_info=None, blackbox_client_id_name=None, require=True):  # type: ignore  # TODO: fix
     """
-    Deprecated. Use `bi_core.tvm`
+    FIXME: Deprecated. Use `bi_blackbox_client.tvm`
     """
     # Defaults
     if not tvm_info:
@@ -74,7 +74,7 @@ def get_tvm_headers(  # type: ignore  # TODO: fix
         tvm_info=None, blackbox_client_id_name=None, destination_client_id=None,
         destination_title=None, attempts=3, require=True) -> dict:
     """
-    Deprecated. Use `bi_core.tvm`
+    FIXME: Deprecated. Use `bi_blackbox_client.tvm`
     """
     # reference:
     # https://a.yandex-team.ru/arc/trunk/arcadia/library/python/blackbox/blackbox.py?rev=6126855#L308

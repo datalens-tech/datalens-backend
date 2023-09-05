@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from bi_core.exc import DatabaseQueryError
-from bi_core.tvm import TvmCliSingleton, TvmDestination, TvmDestinationSet
+from bi_blackbox_client.tvm import TvmCliSingleton, TvmDestination, TvmDestinationSet
 
 
 SOLOMON_TVM_MAP = {

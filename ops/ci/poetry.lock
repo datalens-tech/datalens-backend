@@ -7529,8 +7529,10 @@ attrs = ">=22.2.0"
 blackbox = ">=0.72"
 requests = ">=2.28.2"
 tvm2 = ">=5.0"
+tvmauth = ">=3.4.9"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 
 [package.source]
 type = "directory"
@@ -7897,6 +7899,7 @@ sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
+yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
@@ -8301,7 +8304,6 @@ shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 statcommons = {path = "../statcommons"}
 statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-tvmauth = ">=3.4.9"
 typing-extensions = ">=4.5.0"
 uwsgi = ">=2.0.21"
 Werkzeug = ">=2.0.3"

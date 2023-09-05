@@ -1,6 +1,7 @@
 import os
 
 
+# FIXME: remove
 def update_global_tvm_info(tvm_info: tuple[str, str, str]):  # type: ignore  # TODO: fix
     """
     Unfortunately, passing the value all the way to CHYDB adapter is too problematic,
