@@ -974,6 +974,22 @@ type = "directory"
 url = "../../lib/bi_formula_ref_ya"
 
 [[package]]
+name = "bi-formula-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/bi_formula_testing"
+
+[[package]]
 name = "bi-i18n"
 version = "0.0.1"
 description = ""
@@ -1000,6 +1016,8 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+pygments = ">=2.4.0"
+pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 tabulate = ">=0.9.0"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
@@ -9472,4 +9490,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "7ff5a921cade3802fcdfe33643dd7080d56c482f5fb0a7578e9c5b679c27e1ec"
+content-hash = "c78043f25cf1fa541048ec7708a4961163f622e00724e485a4f26ca6422381f9"

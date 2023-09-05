@@ -49,7 +49,7 @@ postgresql = "bi_connector_postgresql.formula_ref.plugin:PostgresSQLFormulaRefPl
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 aiohttp = ">=3.8.1"
-psycopg2-binary = ">=2.9.6"
+bi-formula-testing = {path = "../bi_formula_testing"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 pytz = ">=2022.7.1"

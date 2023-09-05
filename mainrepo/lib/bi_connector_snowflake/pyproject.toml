@@ -44,6 +44,7 @@ snowflake = "bi_connector_snowflake.formula.connector:SnowFlakeFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
 mock = ">=4.0.3"
+bi-formula-testing = {path = "../bi_formula_testing"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-client = {path = "../bi_api_client"}

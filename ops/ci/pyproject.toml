@@ -205,6 +205,7 @@ statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
 dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
+bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 
 
 #

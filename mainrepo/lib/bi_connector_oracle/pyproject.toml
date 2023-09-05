@@ -45,6 +45,7 @@ oracle = "bi_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 oracledb = ">=1.3.1"
+bi-formula-testing = {path = "../bi_formula_testing"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-lib-testing = {path = "../bi_api_lib_testing"}

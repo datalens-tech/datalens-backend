@@ -80,6 +80,7 @@ mainrepo/lib/bi_file_uploader_task_interface
 mainrepo/lib/bi_file_uploader_worker_lib
 mainrepo/lib/bi_formula
 mainrepo/lib/bi_formula_ref
+mainrepo/lib/bi_formula_testing
 mainrepo/lib/bi_i18n
 mainrepo/lib/bi_model_tools
 mainrepo/lib/bi_package_boilerplate

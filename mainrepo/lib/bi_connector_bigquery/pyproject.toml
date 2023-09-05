@@ -42,6 +42,7 @@ bigquery = "bi_connector_bigquery.db_testing.connector:BigQueryDbTestingConnecto
 bigquery = "bi_connector_bigquery.formula.connector:BigQueryFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
+bi-formula-testing = {path = "../bi_formula_testing"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-lib = {path = "../bi_api_lib"}

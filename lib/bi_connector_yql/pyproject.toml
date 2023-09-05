@@ -49,6 +49,7 @@ yql = "bi_connector_yql.formula.connector:YQLFormulaConnector"
 yql = "bi_connector_yql.formula_ref.plugin:YQLFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
+bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 pytest = ">=7.2.2"
 
 [[tool.mypy.overrides]]
