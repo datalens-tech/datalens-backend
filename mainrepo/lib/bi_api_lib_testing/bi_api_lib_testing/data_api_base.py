@@ -18,7 +18,7 @@ from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_core.components.ids import FieldIdGeneratorType
 
 from bi_api_lib.app_settings import AsyncAppSettings, YCAuthSettings, MDBSettings
-from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -84,6 +84,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
             CONNECTORS=None,
+            CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
             MUTATIONS_CACHES_ON=self.mutation_caches_on,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),
             BI_COMPENG_PG_ON=self.bi_compeng_pg_on,
@@ -102,7 +103,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
         data_api_app_factory = TestingDataApiAppFactory(settings=data_api_app_settings)
-        load_bi_api_lib()
+        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=data_api_app_settings.CONNECTOR_WHITELIST))
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,
             test_setting=None,

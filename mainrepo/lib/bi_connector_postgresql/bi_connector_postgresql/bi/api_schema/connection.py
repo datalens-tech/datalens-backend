@@ -7,13 +7,12 @@ from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPost
 
 from bi_api_connector.api_schema.extras import FieldExtra
 from bi_api_connector.api_schema.connection_base import ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_mixins import MDBDatabaseSchemaMixin,\
-    RawSQLLevelMixin, DataExportForbiddenMixin
+from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
 from bi_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 import bi_core.marshmallow as core_ma_fields
 
 
-class PostgreSQLConnectionSchema(ConnectionMetaMixin, MDBDatabaseSchemaMixin, DataExportForbiddenMixin, RawSQLLevelMixin,
+class PostgreSQLConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, RawSQLLevelMixin,
                                  ClassicSQLConnectionSchema):
     TARGET_CLS = ConnectionPostgreSQL
     ALLOW_MULTI_HOST = True

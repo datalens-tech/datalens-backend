@@ -81,6 +81,17 @@ class DataCloudInstallation(
             ConnectorSettings(conn_type='snowflake'),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'chyt',
+        'mssql',
+        'file',
+        'promql',
+        'bigquery',
+        'snowflake',
+    ])
 
 
 class DataCloudExposedInstallation(IAMAwareInstallation, DataCloudInstallation):
@@ -120,6 +131,7 @@ class CommonInstallation(
         return self.US_BASE_URL
 
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings]
+    CONNECTOR_WHITELIST: ClassVar[str]
 
     # Note: `PING_…` values are not currently used.
     # Intended for liveness+connectivity check, e.g. into juggler.
@@ -275,6 +287,28 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
             ),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'chyt_internal',
+        'clickhouse',
+        'postgresql',
+        'mysql',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'ydb',
+        'chydb',
+        'promql',
+        'bigquery',
+        'snowflake',
+
+        'file',
+        'gsheets',
+        'usage_tracking_ya_team',
+        'metrica_api',
+        'appmetrica_api',
+        'yq',
+        'solomon',
+    ])
 
 
 class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonInternalInstallation):
@@ -353,6 +387,28 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
             ),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'chyt_internal',
+        'clickhouse',
+        'postgresql',
+        'mysql',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'ydb',
+        'chydb',
+        'promql',
+        'bigquery',
+        'snowflake',
+
+        'file',
+        'gsheets',
+        'usage_tracking_ya_team',
+        'metrica_api',
+        'appmetrica_api',
+        'yq',
+        'solomon',
+    ])
 
 
 class CommonExternalInstallation(
@@ -464,6 +520,47 @@ class ExternalTestingInstallation(
             ),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'ydb',
+        'chyt',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'bigquery',
+        'snowflake',
+        'promql',
+
+        'ch_frozen_bumpy_roads',
+        'ch_frozen_covid',
+        'ch_frozen_demo',
+        'ch_frozen_dtp',
+        'ch_frozen_gkh',
+        'ch_frozen_samples',
+        'ch_frozen_transparency',
+        'ch_frozen_weather',
+        'ch_frozen_horeca',
+
+        'file',
+        'gsheets_v2',
+        'yq',
+        'metrica_api',
+        'appmetrica_api',
+        'ch_billing_analytics',
+        'monitoring',
+        'usage_tracking',
+
+        'bitrix_gds',
+        'ch_ya_music_podcast_stats',
+        'moysklad',
+        'equeo',
+        'kontur_market',
+        'market_couriers',
+        'schoolbook',
+        'smb_heatmaps',
+    ])
 
     ENV_TYPE: ClassVar[EnvType] = EnvType.yc_testing
 
@@ -652,6 +749,47 @@ class ExternalProductionInstallation(
             ),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'ydb',
+        'chyt',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'bigquery',
+        'snowflake',
+        'promql',
+
+        'ch_frozen_bumpy_roads',
+        'ch_frozen_covid',
+        'ch_frozen_demo',
+        'ch_frozen_dtp',
+        'ch_frozen_gkh',
+        'ch_frozen_samples',
+        'ch_frozen_transparency',
+        'ch_frozen_weather',
+        'ch_frozen_horeca',
+
+        'file',
+        'gsheets_v2',
+        'yq',
+        'metrica_api',
+        'appmetrica_api',
+        'ch_billing_analytics',
+        'monitoring',
+        'usage_tracking',
+
+        'bitrix_gds',
+        'ch_ya_music_podcast_stats',
+        'moysklad',
+        'equeo',
+        'kontur_market',
+        'market_couriers',
+        'schoolbook',
+        'smb_heatmaps',
+    ])
 
 
 class NebiusInstallation(InstallationBase):
@@ -680,9 +818,20 @@ class IsraelInstallation(NebiusInstallation):
             ConnectorSettings(conn_type='snowflake'),
             ConnectorSettings(conn_type='ch_frozen_demo'),
             ConnectorSettings(conn_type='monitoring'),
-            ConnectorSettings(conn_type='chyt'),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'chyt',
+        'mssql',
+        'bigquery',
+        'file',
+        'snowflake',
+        'ch_frozen_demo',
+        'monitoring',
+    ])
 
 
 class NemaxInstallation(NebiusInstallation):
@@ -700,9 +849,20 @@ class NemaxInstallation(NebiusInstallation):
             ConnectorSettings(conn_type='snowflake'),
             ConnectorSettings(conn_type='ch_frozen_demo'),
             ConnectorSettings(conn_type='monitoring'),
-            ConnectorSettings(conn_type='chyt'),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'chyt',
+        'mssql',
+        'bigquery',
+        'file',
+        'snowflake',
+        'ch_frozen_demo',
+        'monitoring',
+    ])
 
 
 class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
@@ -796,6 +956,51 @@ class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
             ),
         ],
     )
+    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'bigquery',
+        'snowflake',
+        'ydb',
+        'chydb',
+        'promql',
+        'chyt',
+        'chyt_internal',
+
+        'ch_frozen_bumpy_roads',
+        'ch_frozen_covid',
+        'ch_frozen_demo',
+        'ch_frozen_dtp',
+        'ch_frozen_gkh',
+        'ch_frozen_samples',
+        'ch_frozen_transparency',
+        'ch_frozen_weather',
+        'ch_frozen_horeca',
+
+        'file',
+        'gsheets_v2',
+        'yq',
+        'metrica_api',
+        'appmetrica_api',
+        'ch_billing_analytics',
+        'monitoring',
+        'solomon',
+        'usage_tracking',
+
+        'bitrix_gds',
+        'ch_ya_music_podcast_stats',
+        'moysklad',
+        'equeo',
+        'kontur_market',
+        'market_couriers',
+        'schoolbook',
+        'smb_heatmaps',
+        'ch_geo_filtered',
+    ])
 
 
 class BaseInstallationsMap:

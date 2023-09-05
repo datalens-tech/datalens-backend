@@ -203,6 +203,7 @@ dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
+bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
 dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
 bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}

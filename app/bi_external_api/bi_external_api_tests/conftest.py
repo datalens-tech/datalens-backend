@@ -14,10 +14,10 @@ import bi.app
 from bi_api_commons.base_models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
-from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.enums import AppType, EnvType
-from bi_configs.environments import InternalTestingInstallation
+from bi_configs.environments import InternalTestingInstallation, TestsInstallation
 from bi_configs.rqe import RQEBaseURL, RQEConfig
 from bi_configs.settings_submodels import YCAuthSettings
 from bi_constants.enums import USAuthMode
@@ -168,9 +168,10 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         CONNECTORS=None,
+        CONNECTOR_WHITELIST=tuple(TestsInstallation.CONNECTOR_WHITELIST.split(',')),
     )
 
-    load_bi_api_lib()
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
     app = bi.app.create_app(
         app_settings=settings,
         connectors_settings={},

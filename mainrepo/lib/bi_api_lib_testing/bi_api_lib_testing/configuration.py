@@ -4,7 +4,7 @@ from typing import Any
 
 import attr
 
-from bi_configs.environments import InternalTestingInstallation
+from bi_configs.environments import InternalTestingInstallation, TestsInstallation
 
 from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 
@@ -29,6 +29,8 @@ class BiApiTestEnvironmentConfiguration:
     redis_db_cache: int = attr.ib(kw_only=True, default=1)
     redis_db_mutation: int = attr.ib(kw_only=True, default=2)
     redis_db_arq: int = attr.ib(kw_only=True, default=11)
+
+    connector_whitelist: str = attr.ib(kw_only=True, default=TestsInstallation.CONNECTOR_WHITELIST)
 
     def clone(self, **kwargs: Any) -> BiApiTestEnvironmentConfiguration:
         return attr.evolve(self, **kwargs)

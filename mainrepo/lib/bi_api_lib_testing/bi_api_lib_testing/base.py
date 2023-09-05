@@ -26,7 +26,7 @@ from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.app_settings import ControlPlaneAppSettings, MDBSettings, ControlPlaneAppTestingsSettings
-from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker, TestingControlApiAppFactory
@@ -110,6 +110,7 @@ class BiApiTestBase(abc.ABC):
             YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
             YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
             CONNECTORS=None,
+            CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
 
             RQE_CONFIG=rqe_config_subprocess,
             BI_COMPENG_PG_ON=self.bi_compeng_pg_on,
@@ -137,7 +138,7 @@ class BiApiTestBase(abc.ABC):
         """Session-wide test `Flask` application."""
 
         control_app_factory = TestingControlApiAppFactory(settings=control_api_app_settings)
-        load_bi_api_lib()
+        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=control_api_app_settings.CONNECTOR_WHITELIST))
         app = control_app_factory.create_app(
             connectors_settings=connectors_settings,
             testing_app_settings=ControlPlaneAppTestingsSettings(

@@ -11,7 +11,7 @@ from bi_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlPlaneAppTestingsSettings,
 )
-from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 from bi_api_lib_testing.app import TestingControlApiAppFactory
 
 
@@ -22,7 +22,7 @@ def create_app(
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = TestingControlApiAppFactory(settings=app_settings)
-    load_bi_api_lib()
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=app_settings.CONNECTOR_WHITELIST))
     return mng_app_factory.create_app(
         connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,

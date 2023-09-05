@@ -8,7 +8,7 @@ from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.enums import ConnectionType
 
 from bi_api_lib.app_settings import TestAppSettings, DataApiAppSettings
-from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 from bi_api_lib_testing.app import TestingDataApiAppFactory
 
 
@@ -18,7 +18,7 @@ def create_app(
         test_setting: Optional[TestAppSettings] = None
 ) -> web.Application:
     data_api_app_factory = TestingDataApiAppFactory(settings=setting)
-    load_bi_api_lib()
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=setting.CONNECTOR_WHITELIST))
     return data_api_app_factory.create_app(
         connectors_settings=connectors_settings,
         test_setting=test_setting,

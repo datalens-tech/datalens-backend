@@ -1,0 +1,53 @@
+
+[tool.poetry]
+name = "bi-connector-postgresql-mdb"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_postgresql_mdb"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
+
+[tool.poetry.plugins."bi_api_lib.connectors"]
+postgresql_mdb = "bi_connector_postgresql_mdb.bi.connector:PostgreSQLMDBBiApiConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens.pytest.unit]
+root_dir = "bi_connector_postgresql_mdb_tests/"
+target_path = "unit"
+skip_compose = "true"

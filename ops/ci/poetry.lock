@@ -727,6 +727,25 @@ type = "directory"
 url = "../../mainrepo/lib/bi_connector_greenplum"
 
 [[package]]
+name = "bi-connector-postgresql-mdb"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_connector_postgresql_mdb"
+
+[[package]]
 name = "bi-connector-solomon"
 version = "0.0.1"
 description = ""
@@ -1944,7 +1963,7 @@ reference = "ya"
 
 [[package]]
 name = "dl-control-api"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -1973,7 +1992,7 @@ url = "../../mainrepo/app/dl_control_api"
 
 [[package]]
 name = "dl-data-api"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7169,7 +7188,7 @@ reference = "ya"
 
 [[package]]
 name = "yandex-bi-api"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7179,6 +7198,7 @@ develop = false
 [package.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
+bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
@@ -7228,7 +7248,6 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
@@ -7381,7 +7400,7 @@ url = "../../mainrepo/lib/bi_api_connector"
 
 [[package]]
 name = "yandex-bi-api-lib"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8196,7 +8215,7 @@ url = "../../mainrepo/lib/bi_constants"
 
 [[package]]
 name = "yandex-bi-control-api-yc"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8204,6 +8223,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 blinker = ">=1.5"
 raven = ">=6.10.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
@@ -8221,7 +8241,6 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8338,7 +8357,7 @@ url = "../../mainrepo/lib/bi_core_testing"
 
 [[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8346,6 +8365,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
@@ -8362,7 +8382,6 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8385,7 +8404,7 @@ url = "../../app_yc/app_yc_data_api_sec_embeds"
 
 [[package]]
 name = "yandex-bi-data-api-yc"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8393,6 +8412,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
@@ -8409,7 +8429,6 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8731,7 +8750,7 @@ url = "../../mainrepo/lib/bi_package_boilerplate"
 
 [[package]]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8739,6 +8758,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
@@ -8755,7 +8775,6 @@ yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
@@ -8801,7 +8820,7 @@ url = "../../mainrepo/lib/bi_query_processing"
 
 [[package]]
 name = "yandex-bi-rqe-ext-async"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8824,7 +8843,7 @@ url = "../../app/bi_rqe_ext_async"
 
 [[package]]
 name = "yandex-bi-rqe-ext-sync"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8851,7 +8870,7 @@ url = "../../app/bi_rqe_ext_sync"
 
 [[package]]
 name = "yandex-bi-rqe-int-sync"
-version = "0.1988.0"
+version = "0.1989.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9490,4 +9509,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "c78043f25cf1fa541048ec7708a4961163f622e00724e485a4f26ca6422381f9"
+content-hash = "4b91d4070e131e4c4dfc05cbf9b741164161e41362cc894eb37426144abde619"

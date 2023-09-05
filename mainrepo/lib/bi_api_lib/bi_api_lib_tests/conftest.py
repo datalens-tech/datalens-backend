@@ -30,7 +30,7 @@ from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, RawSQLLevel
 
 import bi_api_lib_tests.config as tests_config_mod
-from bi_api_lib.loader import load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 from bi_api_lib.app_settings import (
     AsyncAppSettings, ControlPlaneAppSettings, ControlPlaneAppTestingsSettings,
     YCAuthSettings, TestAppSettings, MDBSettings,
@@ -143,9 +143,14 @@ def pytest_configure(config):  # noqa
     LOGMUTATORS.add_mutator('ylog_context', add_ylog_context)  # obsolete?
 
 
+@pytest.fixture(scope='session')
+def bi_test_config() -> BiApiTestEnvironmentConfiguration:
+    return tests_config_mod.BI_TEST_CONFIG
+
+
 @pytest.fixture(scope='session', autouse=True)
-def loaded_libraries() -> None:
-    load_bi_api_lib()
+def loaded_libraries(bi_test_config) -> None:
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=bi_test_config.connector_whitelist.split(',')))
     load_bi_db_testing()
 
 
@@ -156,11 +161,6 @@ def loop(event_loop):
     # Attempt to cover an old version of pytest-asyncio:
     # https://github.com/pytest-dev/pytest-asyncio/commit/51d986cec83fdbc14fa08015424c79397afc7ad9
     asyncio.set_event_loop_policy(None)
-
-
-@pytest.fixture(scope='session')
-def bi_test_config() -> BiApiTestEnvironmentConfiguration:
-    return tests_config_mod.BI_TEST_CONFIG
 
 
 @pytest.fixture(scope='session')
@@ -217,6 +217,7 @@ def app(
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
         CONNECTORS=None,
+        CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),
 
         RQE_CONFIG=rqe_config_subprocess,
         BI_COMPENG_PG_ON=True,
@@ -623,6 +624,7 @@ def async_app_settings_local_env(
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
         CONNECTORS=None,
+        CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),
         MUTATIONS_CACHES_ON=False,
         BI_COMPENG_PG_ON=True,
         BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
