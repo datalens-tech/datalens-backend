@@ -252,13 +252,27 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase):
             filters=[
                 ds.find_field(title='date_val').filter(
                     op=WhereClauseOperation.ICONTAINS,
-                    values=['20'],
+                    values=['2023-04-02'],
                 ),
             ],
         )
         assert distinct_resp.status_code == 200, distinct_resp.json
         data_rows = get_data_rows(distinct_resp)
-        assert len(data_rows) == 2
+        assert len(data_rows) == 1
+
+        distinct_resp = data_api.get_distinct(
+            dataset=ds,
+            field=ds.find_field(title='date_val'),
+            filters=[
+                ds.find_field(title='date_val').filter(
+                    op=WhereClauseOperation.ICONTAINS,
+                    values=['202'],
+                ),
+            ],
+        )
+        assert distinct_resp.status_code == 200, distinct_resp.json
+        data_rows = get_data_rows(distinct_resp)
+        assert len(data_rows) == 1
 
 
 class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase):
