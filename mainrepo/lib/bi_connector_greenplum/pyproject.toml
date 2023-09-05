@@ -29,6 +29,7 @@ greenplum = "bi_connector_greenplum.core.connector:GreenplumCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+yandex-bi-api-lib-testing = {path = "../bi_api_lib_testing"}
 
 [tool.mypy]
 overrides = []

@@ -9,11 +9,12 @@ license = "MIT"
 
 
 [tool.poetry.dependencies]
+attrs = ">=22.2.0"
 opentracing = ">=2.4.0"
 python = ">=3.10, <3.12"
-uwsgi = ">=2.0.21"
+six = ">=1.9.0"
+sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-utils = {path = "../bi_utils"}
-statcommons = {path = "../statcommons"}
 
 [tool.poetry.group.tests.dependencies]
 

@@ -34,3 +34,4 @@ dl_repo:
     pytest_lazyfixture: pytest-lazyfixture
     pyuwsgi: uwsgi
     sentry_sdk: sentry-sdk
+    snowflake: snowflake-connector-python
