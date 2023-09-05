@@ -1,3 +1,58 @@
+0.1989.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * cleanup enums (#331)                                    [ https://github.com/datalens-tech/datalens-backend-private/commit/c199b8df ]
+ * unskip test_dataset_revision_id (#323)                  [ https://github.com/datalens-tech/datalens-backend-private/commit/70646a0c ]
+ * move metrica form rows to the connector package (#321)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d0cbea49 ]
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * BI-4803: Fix full date filtering (#312)    [ https://github.com/datalens-tech/datalens-backend-private/commit/7b9a852c ]
+ * BI-4758: Get rid of read_only=True (#303)  [ https://github.com/datalens-tech/datalens-backend-private/commit/363e2cd6 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Fix import in chyt internal connector tests (#334)         [ https://github.com/datalens-tech/datalens-backend-private/commit/96a27451 ]
+ * BI-4898 Separate base bi-api app factories (#288)          [ https://github.com/datalens-tech/datalens-backend-private/commit/ca3234ca ]
+ * BI-4901 Separate file-uploader-* base app settings (#299)  [ https://github.com/datalens-tech/datalens-backend-private/commit/43eeff3a ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Normalized dependencies for connectors and some other libraries (#290)  [ https://github.com/datalens-tech/datalens-backend-private/commit/e9fdf9c4 ]
+ * Moved diff_utils to bi_maintenance (#330)                               [ https://github.com/datalens-tech/datalens-backend-private/commit/b0b35d6f ]
+ * Moved maintenance tools and crawlers to bi_maintenance (#293)           [ https://github.com/datalens-tech/datalens-backend-private/commit/1072a661 ]
+ * Partailly normalized bi_core dependencies (#291)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/62db91ba ]
+ * Added a simple test to dl_repmanager (#308)                             [ https://github.com/datalens-tech/datalens-backend-private/commit/971790c2 ]
+ * Removed ArcadiaFileLoader from bi_testing (#294)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/f8373c2a ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * Enable tests in legacy bundle (#326)  [ https://github.com/datalens-tech/datalens-backend-private/commit/76e7240d ]
+
+* [Andrey Snytin](http://staff/asnytin@yandex-team.ru)
+
+ * removed bi_core/_aux (#284)  [ https://github.com/datalens-tech/datalens-backend-private/commit/21a15c8f ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * GH_CI_mypy_job_fix (#316)                                                                [ https://github.com/datalens-tech/datalens-backend-private/commit/e468d967 ]
+ * pathlib-in-dl-repmanager instead of plain str (#317)                                     [ https://github.com/datalens-tech/datalens-backend-private/commit/607f4eb8 ]
+ * fix_mypy_bi_ci (#320)                                                                    [ https://github.com/datalens-tech/datalens-backend-private/commit/1eda379b ]
+ * GH_CI up_gh_ci_actions_checkout (#309)                                                   [ https://github.com/datalens-tech/datalens-backend-private/commit/3ecafe1d ]
+ * GH_CI_router_and_split_on_light_runners (#305)                                           [ https://github.com/datalens-tech/datalens-backend-private/commit/59da4c1b ]
+ * Modified GH CI test targets discovery logic to also search in mainrepo/terrarium (#307)  [ https://github.com/datalens-tech/datalens-backend-private/commit/adc314a1 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4902] Move OS data API to main repo (#319)                               [ https://github.com/datalens-tech/datalens-backend-private/commit/3c1d36fe ]
+ * [BI-4902] Move OS control API to main repo (#318)                            [ https://github.com/datalens-tech/datalens-backend-private/commit/cb29e57e ]
+ * [BI-4902] Cleanup metapkg scope-shrinker & fix transition to pathlib (#310)  [ https://github.com/datalens-tech/datalens-backend-private/commit/19f09dda ]
+ * [BI-4902] Move antlr code-gen to main repo (#301)                            [ https://github.com/datalens-tech/datalens-backend-private/commit/b638276a ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-05 10:37:26+00:00
+
 0.1988.0
 --------
 
