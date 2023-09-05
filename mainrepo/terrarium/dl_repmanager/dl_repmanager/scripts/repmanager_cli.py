@@ -12,6 +12,7 @@ Examples:
 from __future__ import annotations
 
 import argparse
+import difflib
 import os
 from pathlib import Path
 from pprint import pprint
@@ -20,11 +21,13 @@ from typing import Optional
 import attr
 
 from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
+from dl_repmanager.git_manager import GitManager
 from dl_repmanager.logging import setup_basic_logging
+from dl_repmanager.metapkg_manager import MetaPackageManager
 from dl_repmanager.package_index import PackageIndexBuilder, PackageIndex
+from dl_repmanager.package_manager import PackageManager, PackageGenerator
 from dl_repmanager.package_navigator import PackageNavigator
 from dl_repmanager.package_reference import PackageReference
-from dl_repmanager.package_manager import PackageManager, PackageGenerator
 from dl_repmanager.project_editor import PyPrjEditor
 
 
@@ -121,6 +124,24 @@ def make_parser() -> argparse.ArgumentParser:
         'ensure-mypy-common',
         help='Checks and updates all sub projects with mypy config using template in the meta package',
     )
+
+    compare_resulting_dependencies = subparsers.add_parser(
+        'compare-resulting-deps',
+        help=(
+            'Compare resulting dependencies (including transitive) for Poetry dependency group.'
+            ' Should be called from meta package dir.'
+            ' Poetry lock for current packages will be called.'
+            ' repository with specified revision (as compare base) will be checked out in ${DL_REPMGR_REPO_CLONE_PATH}.'
+        )
+    )
+    compare_resulting_dependencies.add_argument(
+        '--group', type=str, required=True,
+        help='Poetry dependency group to check',
+    )
+    compare_resulting_dependencies.add_argument(
+        '--base-rev', type=str, default='origin/trunk',
+        help='git revision to compare with'
+    )
     return parser
 
 
@@ -215,6 +236,36 @@ class DlRepManagerTool:
     def ensure_mypy_common(self):
         self.py_prj_editor.update_mypy_common()
 
+    def compare_resulting_deps(self, base_revision: str, group: str):
+        repo_root = self.py_prj_editor.base_path
+        main_git_mgr = GitManager(repo_root)
+
+        repo_clone_dest = Path(os.environ["DL_REPMGR_REPO_CLONE_PATH"])
+        assert repo_clone_dest.parent.exists(), "Parent dir for repo clone does not exits"
+
+        cmp_base_git_mgr = main_git_mgr.copy_repo(repo_clone_dest, fetch_if_exists=True)
+        cmp_base_git_mgr.checkout(base_revision)
+
+        metapkg_rel_path = Path.cwd().relative_to(repo_root)
+
+        current_metapkg_mgr = MetaPackageManager(Path.cwd())
+
+        current_metapkg_mgr.run_poetry_lock(suppress_stdout=True)
+
+        cmp_base_metapkg_mgr = MetaPackageManager(repo_clone_dest / metapkg_rel_path)
+
+        current_deps = current_metapkg_mgr.export_dependencies(group)
+        cmp_base_deps = cmp_base_metapkg_mgr.export_dependencies(group)
+
+        diff_lines = difflib.unified_diff(
+            [dep.pretty() for dep in cmp_base_deps],
+            [dep.pretty() for dep in current_deps],
+            fromfile="cmp_base.txt",
+            tofile="actual.txt"
+        )
+        for line in diff_lines:
+            print(line, end=None)
+
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
         config_file_name = args.config
@@ -269,9 +320,12 @@ class DlRepManagerTool:
             case 'req-list':
                 tool.req_list(package_name=args.package_name)
             case 'req-check':
-                tool.check_requirements(package_name=args.package_name, ignore_prefix=args.ignore_prefix, tests=args.tests)
+                tool.check_requirements(package_name=args.package_name, ignore_prefix=args.ignore_prefix,
+                                        tests=args.tests)
             case 'ensure-mypy-common':
                 tool.ensure_mypy_common()
+            case 'compare-resulting-deps':
+                tool.compare_resulting_deps(base_revision=args.base_rev, group=args.group)
             case _:
                 raise RuntimeError(f'Got unknown command: {args.command}')
 

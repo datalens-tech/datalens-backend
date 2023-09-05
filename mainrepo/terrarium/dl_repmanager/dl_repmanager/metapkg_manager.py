@@ -1,7 +1,9 @@
 import itertools
 import os.path
+import subprocess
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 import attr
 import tomlkit
@@ -95,6 +97,52 @@ class MetaPackageManager:
             else:
                 raise ValueError(f"Unknown types of key/val in dependency: {key}: {val}")
         return ret
+
+    def export_dependencies_raw(self, group: str) -> str:
+        proc = subprocess.run(
+            [
+                "poetry",
+                "export",
+                "--only",
+                group,
+                "--without-hashes",
+                "--format",
+                "requirements.txt",
+            ],
+            cwd=self.dir_path,
+            stdout=subprocess.PIPE,
+            check=True,
+        )
+        dependencies = proc.stdout.decode("ascii")
+        return dependencies
+
+    def export_dependencies(self, group: str) -> list[ReqPackageSpec]:
+        raw_deps = self.export_dependencies_raw(group)
+        ret: list[ReqPackageSpec] = []
+        for line in raw_deps.splitlines():
+            if " ; " not in line:
+                continue
+            dep = line.split(";")[0].strip()
+            if "@" in dep:
+                pkg_name, pkg_url = dep.split("@")
+                ret.append(LocalReqPackageSpec(
+                    package_name=pkg_name.strip(),
+                    path=Path(os.path.relpath(
+                        urlparse(pkg_url.strip()).path,
+                        self.dir_path,
+                    ))
+                ))
+            else:
+                pkg_name = dep.split("==")[0]
+                ret.append(PypiReqPackageSpec(
+                    package_name=pkg_name,
+                    version=dep.removeprefix(pkg_name)
+                ))
+        return ret
+
+    def run_poetry_lock(self, suppress_stdout: bool = False) -> None:
+        stdout_target = subprocess.DEVNULL if suppress_stdout else None
+        subprocess.run(["poetry", "lock", "--no-update"], cwd=self.dir_path, check=True, stdout=stdout_target)
 
     def save(self) -> None:
         file_path = self.dir_path / "pyproject.toml"
