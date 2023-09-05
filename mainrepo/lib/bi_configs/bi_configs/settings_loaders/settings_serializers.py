@@ -90,7 +90,7 @@ def defaults_to_dict(default_settings: CommonInstallation) -> dict:
             all_connectors_keys.add(key)
     for conn_key in all_connectors_keys:
         del config[conn_key]
-    config['CONNECTORS_DATA'] = connectors_data
+    config['CONNECTORS'] = connectors_data
     return config
 
 

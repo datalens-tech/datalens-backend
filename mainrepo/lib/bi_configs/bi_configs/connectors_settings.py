@@ -332,7 +332,7 @@ class ConnectorsSettingsByType(SettingsBase):
 
 
 def connectors_settings_fallback_factory_config(full_cfg: ObjectLikeConfig) -> Optional[ConnectorsSettingsByType]:
-    cfg = full_cfg.CONNECTORS_DATA
+    cfg = full_cfg.CONNECTORS
     return ConnectorsSettingsByType(  # type: ignore
         CH_FROZEN_BUMPY_ROADS=CHFrozenBumpyRoadsConnectorSettings(
             HOST=cfg.CH_FROZEN_BUMPY_ROADS.CONN_CH_FROZEN_BUMPY_ROADS_HOST,
