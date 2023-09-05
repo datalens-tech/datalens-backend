@@ -28,8 +28,8 @@ DOC_GEN_CONFIG_YC = RefDocGeneratorConfig(
     doc_all_filename='function-ref/all.md',
     doc_avail_filename='function-ref/availability.md',
     function_scopes={
-        Audience(name='internal'): Scope.DOCUMENTED | Scope.INTERNAL,
-        Audience(name='external'): Scope.DOCUMENTED | Scope.YACLOUD,
+        Audience(name='internal'): Scope.DOCUMENTED | Scope.STABLE | Scope.UNSTABLE,
+        Audience(name='external'): Scope.DOCUMENTED | Scope.STABLE,
     },
     block_conditions={'ycloud': True},
     supported_dialects=frozenset({

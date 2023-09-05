@@ -1,5 +1,5 @@
 from bi_formula.definitions.scope import Scope
 
 
-SCOPES_BASE = Scope.DOCUMENTED
-SCOPES_DEFAULT = SCOPES_BASE | Scope.INTERNAL | Scope.YACLOUD | Scope.DOUBLECLOUD
+SCOPES_BASE = Scope.DOCUMENTED | Scope.STABLE
+SCOPES_DEFAULT = SCOPES_BASE

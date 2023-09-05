@@ -26,7 +26,7 @@ DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
     doc_avail_filename='availability.md',
     gen_availability_table=False,
     function_scopes={
-        DEFAULT_AUDIENCE: Scope.DOCUMENTED | Scope.DOUBLECLOUD,
+        DEFAULT_AUDIENCE: Scope.DOCUMENTED | Scope.STABLE,
     },
     block_conditions={'doublecloud': True},
     supported_dialects=frozenset({

@@ -393,10 +393,7 @@ class NodeTranslation:
         Scope.STABLE |
         Scope.EXPLICIT_USAGE |
         Scope.SUGGESTED |
-        Scope.DOCUMENTED |
-        Scope.INTERNAL |
-        Scope.YACLOUD |
-        Scope.DOUBLECLOUD
+        Scope.DOCUMENTED
     )
 
     arg_names: ClassVar[Optional[list[str]]] = None
