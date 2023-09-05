@@ -259,36 +259,12 @@ class CreateDSFrom(DynamicEnum):
 
 
 @unique
-class DatasetMode(Enum):
-    DIRECT = 'DIRECT'
-    MATERIALIZED = 'MATERIALIZED'
-
-
-@unique
 class ConnectionState(IntEnum):
     new = 0
     parsing_error = 1
     unvalidated = 2
     saved = 3
     error = 4
-    materializing = 5
-    materialized = 6
-    materialized_final = 7
-
-
-DRAFT_CONN_STATUSES = (
-    ConnectionState.new.name,
-    ConnectionState.parsing_error.name,
-    ConnectionState.unvalidated.name,
-)
-
-SAVED_CONN_STATUSES = (
-    ConnectionState.error.name,
-    ConnectionState.saved.name,
-    ConnectionState.materializing.name,
-    ConnectionState.materialized.name,
-    ConnectionState.materialized_final.name,
-)
 
 
 class DataSourceRole(Enum):
@@ -342,18 +318,6 @@ class ManagedBy(_Normalizable['ManagedBy'], Enum):
     user = 'user'
     feature = 'feature'
     compiler_runtime = 'compiler_runtime'
-
-
-@unique
-class BillingAction(Enum):
-    materialize = 'materialize'
-    select_data = 'select_data'
-    create_dataset = 'create_dataset'
-    edit_dataset = 'edit_dataset'
-    create_connection = 'create_connection'
-    edit_connection = 'edit_connection'
-    geocode = 'geocode'
-    use_product = 'use_product'
 
 
 @unique
