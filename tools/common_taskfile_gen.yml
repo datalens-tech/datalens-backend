@@ -5,7 +5,13 @@ vars:
     sh: basename {{.USER_WORKING_DIR}}
 
 tasks:
-  update-po:
+  antlr:
+    deps:
+    dir: ../mainrepo/docker_build
+    cmds:
+      - ./run-project-bake gen_antlr --progress=plain
+
+  i18n-po:
     deps:
     dir: ../docker_build
     cmds:
@@ -14,9 +20,8 @@ tasks:
         --set update-po.contexts.src={{.USER_WORKING_DIR}}
         --set update-po.output="type=local,dest={{.USER_WORKING_DIR}}/{{.PACKAGE_NAME}}"
         --progress=plain
-        || true
 
-  msgfmt:
+  i18n-binaries:
     dir: ../docker_build
     cmds:
       - ./run-project-bake msgfmt
@@ -24,7 +29,6 @@ tasks:
         --set msgfmt.contexts.src={{.USER_WORKING_DIR}}
         --set msgfmt.output="type=local,dest={{.USER_WORKING_DIR}}/{{.PACKAGE_NAME}}"
         --progress=plain
-        || true
 
   _gen-formula-ref-locale:
     dir: ../docker_build
@@ -37,11 +41,8 @@ tasks:
         --set gen-formula-ref.args.CONFIG_VERSION={{.CONFIG_VERSION}}
         --set gen-formula-ref.output="type=local,dest={{.OUTPUT_DIR}}/{{.LOCALE_NAME}}"
         --progress=plain
-        || true
 
-  gen-formula-ref:
-    # `task i18n:gen-formula-ref -- <doc_config_version>`
-    # Generates docs for all locales in <repo_root>/artifacts/generated_docs
+  formula-ref:
     # FIXME: Generate only supported locales (listed in formula_ref config)
     vars:
       CONFIG_VERSION: "{{.CLI_ARGS}}"

@@ -8,6 +8,9 @@ includes:
   env:
     taskfile: tools/common_taskfile_env.yml
     dir: tools
-  i18n:
-    taskfile: tools/common_taskfile_i18n.yml
+  gen:
+    taskfile: tools/common_taskfile_gen.yml
+    dir: tools
+  rep:
+    taskfile: tools/common_taskfile_rep.yml
     dir: tools

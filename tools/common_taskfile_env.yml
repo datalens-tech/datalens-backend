@@ -52,9 +52,3 @@ tasks:
       - docker volume rm -f local_dev_pi-venv
       - docker-compose build --pull pi
       - docker-compose run --rm pi
-
-  mypy:
-    dir: local_dev
-    deps: ["secrets-update"]
-    cmds:
-      - docker-compose run -e SKIP_DEPS_INSTALL=1 --rm pi bash -c "cd /data/{{.USER_REL_PATH}} && mypy ./{{.CLI_ARGS}}"

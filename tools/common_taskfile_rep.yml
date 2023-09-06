@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  poetry-lock:
+    dir: ../ops/ci
+    dotenv: [".env"]  # FIXME: Use single dotenv in /tools
+    vars:
+      TMP_DIR:
+        sh: shuf -er -n20  {A..Z} {a..z} {0..9} | tr -d '\n'
+    cmds:
+      - mkdir -p /tmp/{{.TMP_DIR}}
+      - source $HOST_VENV_ROOT/bin/activate &&
+        poetry lock --no-update &&
+        poetry export --without-hashes --with=dev --with=ci --format=requirements.txt > /tmp/{{.TMP_DIR}}/requirements.txt &&
+        cat /tmp/{{.TMP_DIR}}/requirements.txt | grep -v "@ file:///" > $BASE_IMG_CTX/requirements_external.txt
+      - rm -rf /tmp/{{.TMP_DIR}}/
+
+  mypy:
+    dir: local_dev
+    cmds:
+      - docker-compose run -e SKIP_DEPS_INSTALL=1 --rm pi bash -c "cd /data/{{.USER_REL_PATH}} && pip install mypy && mypy ./{{.CLI_ARGS}}"
