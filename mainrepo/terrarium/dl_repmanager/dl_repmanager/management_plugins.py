@@ -14,13 +14,13 @@ from dl_repmanager.toml_tools import TOMLWriter, TOMLIOFactory
 from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 
 if TYPE_CHECKING:
-    from dl_repmanager.env import RepoEnvironment
+    from dl_repmanager.repository_env import RepoEnvironment
     from dl_repmanager.package_index import PackageIndex
 
 
 @attr.s
 class RepositoryManagementPlugin(abc.ABC):
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
     base_path: Path = attr.ib(kw_only=True)
     pkg_type_base_path: Path = attr.ib(kw_only=True)
@@ -28,7 +28,7 @@ class RepositoryManagementPlugin(abc.ABC):
 
     @fs_editor.default
     def _make_fs_editor(self) -> FilesystemEditor:
-        return self.repo_env.get_fs_editor()
+        return self.repository_env.get_fs_editor()
 
     @abc.abstractmethod
     def register_package(self, package_info: PackageInfo) -> None:
@@ -111,9 +111,9 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
 
         toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
         with toml_io_factory.toml_writer(toml_path) as toml_writer:
-            if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
+            if 'main_dependency_group' in self.repository_env.get_tags(package_info.package_type):
                 self._register_main(toml_writer=toml_writer, package_info=package_info)
-            if 'own_dependency_group' in self.repo_env.get_tags(package_info.package_type):
+            if 'own_dependency_group' in self.repository_env.get_tags(package_info.package_type):
                 self._register_app(toml_writer=toml_writer, package_info=package_info)
 
     def unregister_package(self, package_info: PackageInfo) -> None:
@@ -121,9 +121,9 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
 
         toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
         with toml_io_factory.toml_writer(toml_path) as toml_writer:
-            if 'main_dependency_group' in self.repo_env.get_tags(package_info.package_type):
+            if 'main_dependency_group' in self.repository_env.get_tags(package_info.package_type):
                 self._unregister_main(toml_writer=toml_writer, package_info=package_info)
-            if 'own_dependency_group' in self.repo_env.get_tags(package_info.package_type):
+            if 'own_dependency_group' in self.repository_env.get_tags(package_info.package_type):
                 self._unregister_app(toml_writer=toml_writer, package_info=package_info)
 
 

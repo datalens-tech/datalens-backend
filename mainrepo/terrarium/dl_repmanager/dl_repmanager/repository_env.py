@@ -109,7 +109,7 @@ class RepoEnvironment:
         home_repo_path = self.package_types[package_type].home_repo_path
         return [
             plugin_cls(  # type: ignore
-                repo_env=self,
+                repository_env=self,
                 package_index=package_index,
                 pkg_type_base_path=home_repo_path,
                 base_path=self.base_path,

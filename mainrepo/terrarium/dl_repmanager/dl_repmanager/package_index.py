@@ -7,7 +7,7 @@ from frozendict import frozendict
 from dl_repmanager.primitives import (
     PackageInfo, RequirementList, ReqPackageSpec, PypiReqPackageSpec, LocalReqPackageSpec,
 )
-from dl_repmanager.env import RepoEnvironment
+from dl_repmanager.repository_env import RepoEnvironment
 from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 
 
@@ -44,7 +44,7 @@ class PackageIndex:
 
 @attr.s
 class PackageIndexBuilder:
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     load_requirements: bool = attr.ib(kw_only=True, default=True)
 
     def _req_spec_from_dict(self, item_as_dict: dict) -> ReqPackageSpec:
@@ -66,7 +66,7 @@ class PackageIndexBuilder:
             'tool.poetry.group.tests.dependencies',
         ]
         requirement_lists: dict[str, RequirementList] = {}
-        package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.repo_env.get_fs_editor())
+        package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.repository_env.get_fs_editor())
         with package_meta_io_factory.package_meta_reader(toml_path) as pkg_meta_reader:
             package_reg_name = pkg_meta_reader.get_package_reg_name()
             module_names = pkg_meta_reader.get_package_module_names()
@@ -104,7 +104,7 @@ class PackageIndexBuilder:
         package_infos_by_test_name: dict[str, PackageInfo] = {}
         package_infos_by_path: dict[Path, PackageInfo] = {}
 
-        for package_type, abs_parent_dir in self.repo_env.iter_package_abs_dirs():
+        for package_type, abs_parent_dir in self.repository_env.iter_package_abs_dirs():
             for package_dir in abs_parent_dir.iterdir():
                 if not package_dir.is_dir():
                     continue

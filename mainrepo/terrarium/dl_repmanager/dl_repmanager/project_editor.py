@@ -8,7 +8,7 @@ from pathlib import Path
 
 import attr
 
-from dl_repmanager.env import RepoEnvironment
+from dl_repmanager.repository_env import RepoEnvironment
 from dl_repmanager.package_index import PackageIndex
 from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaIOFactory
 
@@ -17,16 +17,16 @@ log = getLogger()
 
 @attr.s
 class PyPrjEditor:
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
 
     @cached_property
     def base_path(self) -> Path:
-        return self.repo_env.base_path
+        return self.repository_env.base_path
 
     @cached_property
     def package_meta_io_factory(self) -> PackageMetaIOFactory:
-        return PackageMetaIOFactory(fs_editor=self.repo_env.fs_editor)
+        return PackageMetaIOFactory(fs_editor=self.repository_env.fs_editor)
 
     @cached_property
     def meta_project_reader(self) -> PackageMetaReader:

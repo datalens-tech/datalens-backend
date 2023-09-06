@@ -3,13 +3,13 @@ from importlib.metadata import packages_distributions
 import attr
 
 from dl_repmanager.primitives import ReqPackageSpec, LocalReqPackageSpec, PypiReqPackageSpec
-from dl_repmanager.env import RepoEnvironment
+from dl_repmanager.repository_env import RepoEnvironment
 from dl_repmanager.package_index import PackageIndex
 
 
 @attr.s
 class PackageReference:
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
 
     def get_package_req_spec(self, module_name: str) -> ReqPackageSpec:
@@ -24,7 +24,7 @@ class PackageReference:
             try:
                 package_name = packages_distributions()[module_name][0]
             except KeyError:
-                package_name = self.repo_env.custom_package_map.get(module_name, module_name)
+                package_name = self.repository_env.custom_package_map.get(module_name, module_name)
 
             spec = PypiReqPackageSpec(package_name=package_name, version=None)
 

@@ -6,8 +6,8 @@ from typing import Mapping, Optional, Sequence
 import attr
 
 from dl_repmanager.primitives import PackageInfo, RequirementList, ReqPackageSpec, LocalReqPackageSpec
-from dl_repmanager.env import RepoEnvironment
-from dl_repmanager.package_navigator import PackageNavigator
+from dl_repmanager.repository_env import RepoEnvironment
+from dl_repmanager.repository_navigator import RepositoryNavigator
 from dl_repmanager.fs_editor import FilesystemEditor
 from dl_repmanager.package_index import PackageIndex
 from dl_repmanager.package_reference import PackageReference
@@ -16,11 +16,11 @@ from dl_repmanager.package_reference import PackageReference
 @attr.s
 class PackageGenerator:
     package_index: PackageIndex = attr.ib(kw_only=True)
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
 
     def _generate_new_package_abs_path(self, package_module_name: str, package_type: str) -> Path:
         """Generate package path for new package"""
-        return self.repo_env.get_root_package_dir(package_type=package_type) / package_module_name
+        return self.repository_env.get_root_package_dir(package_type=package_type) / package_module_name
 
     @staticmethod
     def generate_new_package_reg_name(package_name: str) -> str:
@@ -33,7 +33,7 @@ class PackageGenerator:
 
     def get_boilerplate_package_info(self, package_type: str) -> PackageInfo:
         return self.package_index.get_package_info_from_path(
-            self.repo_env.get_boilerplate_package_dir(package_type=package_type),
+            self.repository_env.get_boilerplate_package_dir(package_type=package_type),
         )
 
     def generate_package_info_from_boilerplate(
@@ -60,23 +60,23 @@ class PackageGenerator:
 
 
 @attr.s
-class PackageManager:
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+class RepositoryManager:
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
-    package_navigator: PackageNavigator = attr.ib(kw_only=True)
+    repository_navigator: RepositoryNavigator = attr.ib(kw_only=True)
     package_generator: PackageGenerator = attr.ib(kw_only=True)
     package_reference: PackageReference = attr.ib(kw_only=True)
     fs_editor: FilesystemEditor = attr.ib(init=False)
 
     @fs_editor.default
     def _make_fs_editor(self) -> FilesystemEditor:
-        return self.repo_env.get_fs_editor()
+        return self.repository_env.get_fs_editor()
 
     def _replace_imports(self, old_import_name: str, new_import_name: str) -> list[Path]:
         """Replace imports in all project files, return list of updated files"""
 
         updated_files: list[Path] = []
-        for file_path in self.package_navigator.recurse_files_with_import(old_import_name):
+        for file_path in self.repository_navigator.recurse_files_with_import(old_import_name):
             # TODO: Refactor replacement to work by finding the imports in the module AST
             self.fs_editor.replace_text_in_file(file_path, old_import_name, new_import_name)
             updated_files.append(file_path)
@@ -84,21 +84,21 @@ class PackageManager:
         return updated_files
 
     def _register_package(self, package_info: PackageInfo) -> None:
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+        for mng_plugin in self.repository_env.get_plugins_for_package_type(
                 package_type=package_info.package_type,
                 package_index=self.package_index
         ):
             mng_plugin.register_package(package_info=package_info)
 
     def _unregister_package(self, package_info: PackageInfo) -> None:
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+        for mng_plugin in self.repository_env.get_plugins_for_package_type(
                 package_type=package_info.package_type,
                 package_index=self.package_index
         ):
             mng_plugin.register_package(package_info=package_info)
 
     def _re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
-        for mng_plugin in self.repo_env.get_plugins_for_package_type(
+        for mng_plugin in self.repository_env.get_plugins_for_package_type(
                 package_type=new_package_info.package_type,
                 package_index=self.package_index,
         ):
@@ -215,7 +215,7 @@ class PackageManager:
 
         old_package_info = self.package_index.get_package_info_from_module_name(package_module_name)
 
-        root_pkg_dir = self.repo_env.get_root_package_dir(package_type=new_package_type)
+        root_pkg_dir = self.repository_env.get_root_package_dir(package_type=new_package_type)
         new_pkg_path = root_pkg_dir / old_package_info.abs_path.name
 
         new_package_info = old_package_info.clone(
@@ -235,12 +235,12 @@ class PackageManager:
         """Move code from one package to another or within one package"""
 
         if move_files:
-            if self.package_navigator.module_is_package(old_import_name):
-                old_path = self.package_navigator.make_package_module_path(old_import_name)
-                new_path = self.package_navigator.make_package_module_path(new_import_name)
+            if self.repository_navigator.module_is_package(old_import_name):
+                old_path = self.repository_navigator.make_package_module_path(old_import_name)
+                new_path = self.repository_navigator.make_package_module_path(new_import_name)
             else:
-                old_path = self.package_navigator.make_file_module_path(old_import_name)
-                new_path = self.package_navigator.make_file_module_path(new_import_name)
+                old_path = self.repository_navigator.make_file_module_path(old_import_name)
+                new_path = self.repository_navigator.make_file_module_path(new_import_name)
 
             self.fs_editor.move_path(old_path, new_path)
 
@@ -253,7 +253,7 @@ class PackageManager:
         package_info = self.package_index.get_package_info_from_module_name(
             package_module_name=module_name,
         )
-        return sorted(self.package_navigator.collect_import_bases_from_module(package_info.single_module_name))
+        return sorted(self.repository_navigator.collect_import_bases_from_module(package_info.single_module_name))
 
     def get_requirements(self, module_name: str) -> Mapping[str, RequirementList]:
         package_info = self.package_index.get_package_info_from_module_name(
@@ -280,7 +280,7 @@ class PackageManager:
         def _get_imports(scan_modules: Sequence[str]) -> dict[str, ReqPackageSpec]:
             _result: dict[str, ReqPackageSpec] = {}
             for module_name in scan_modules:
-                for req_module_name in self.package_navigator.collect_import_bases_from_module(module_name):
+                for req_module_name in self.repository_navigator.collect_import_bases_from_module(module_name):
                     if req_module_name in scan_modules:
                         # Skip the package itself
                         continue

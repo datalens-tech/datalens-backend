@@ -8,7 +8,7 @@ from pathlib import Path
 import attr
 
 from dl_repmanager.fs_editor import DefaultFilesystemEditor
-from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, discover_config
+from dl_repmanager.repository_env import DEFAULT_CONFIG_FILE_NAME, discover_config
 from dl_repmanager.exceptions import PackageMetaCliError, InconsistentStateError
 from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaWriter, PackageMetaIOFactory
 from dl_repmanager.logging import setup_basic_logging

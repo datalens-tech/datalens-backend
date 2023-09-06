@@ -47,6 +47,9 @@ line-length = 140
 target-version = ['py310']
 
 [tool.poetry.scripts]
+dl-repo = "dl_repmanager.scripts.repmanager_cli:main"
+dl-package = "dl_repmanager.scripts.package_meta_cli:main"
+# Legacy names
 dl-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package-meta = "dl_repmanager.scripts.package_meta_cli:main"
 

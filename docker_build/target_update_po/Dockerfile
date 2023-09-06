@@ -17,7 +17,7 @@ RUN echo "[python: **.py]\n[jinja2: **.jinja]" > babel_.ini
 RUN pip install Babel pytz
 
 # For each domain -> for each locale -> generate raw .po, merge it into the existing .po
-RUN for domain_pair in $(dl-package-meta . list-i18n-domains) ; do \
+RUN for domain_pair in $(dl-package . list-i18n-domains) ; do \
     # Read the <domain_name=scan_path> pair into vars
     export DOMAIN_NAME=$(echo $domain_pair | cut -d "=" -f 1) ; \
     export SCAN_PATHS="$(echo $domain_pair | cut -d "=" -f 2 | sed 's/;/ /g')" ; \

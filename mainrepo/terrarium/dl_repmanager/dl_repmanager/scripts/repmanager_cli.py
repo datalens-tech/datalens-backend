@@ -20,13 +20,13 @@ from typing import Optional
 
 import attr
 
-from dl_repmanager.env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
+from dl_repmanager.repository_env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
 from dl_repmanager.git_manager import GitManager
 from dl_repmanager.logging import setup_basic_logging
 from dl_repmanager.metapkg_manager import MetaPackageManager
 from dl_repmanager.package_index import PackageIndexBuilder, PackageIndex
-from dl_repmanager.package_manager import PackageManager, PackageGenerator
-from dl_repmanager.package_navigator import PackageNavigator
+from dl_repmanager.repository_manager import RepositoryManager, PackageGenerator
+from dl_repmanager.repository_navigator import RepositoryNavigator
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.project_editor import PyPrjEditor
 
@@ -151,8 +151,8 @@ _BASE_DIR = Path.cwd()
 @attr.s
 class DlRepManagerTool:
     package_index: PackageIndex = attr.ib(kw_only=True)
-    package_manager: PackageManager = attr.ib(kw_only=True)
-    package_navigator: PackageNavigator = attr.ib(kw_only=True)
+    repository_manager: RepositoryManager = attr.ib(kw_only=True)
+    repository_navigator: RepositoryNavigator = attr.ib(kw_only=True)
     py_prj_editor: PyPrjEditor = attr.ib(kw_only=True)
 
     @classmethod
@@ -160,19 +160,19 @@ class DlRepManagerTool:
         """Validate that the tool is being run correctly"""
 
     def init(self, package_name: str, package_type: str) -> None:
-        self.package_manager.init_package(package_module_name=package_name, package_type=package_type)
+        self.repository_manager.init_package(package_module_name=package_name, package_type=package_type)
 
     def copy(self, package_name: str, from_package_name: str) -> None:
-        self.package_manager.copy_package(package_module_name=package_name, from_package_module_name=from_package_name)
+        self.repository_manager.copy_package(package_module_name=package_name, from_package_module_name=from_package_name)
 
     def rename(self, package_name: str, new_package_name: str) -> None:
-        self.package_manager.rename_package(
+        self.repository_manager.rename_package(
             old_package_module_name=package_name,
             new_package_module_name=new_package_name,
         )
 
     def ch_package_type(self, package_name: str, package_type: str) -> None:
-        self.package_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
+        self.repository_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
 
     def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
         for package_info in self.package_index.list_package_infos():
@@ -195,20 +195,20 @@ class DlRepManagerTool:
             self, old_import_name: str, new_import_name: str,
             no_fix_imports: bool, no_move_files: bool,
     ) -> None:
-        self.package_manager.rename_module(
+        self.repository_manager.rename_module(
             old_import_name=old_import_name, new_import_name=new_import_name,
             fix_imports=not no_fix_imports, move_files=not no_move_files,
         )
 
     def import_list(self, package_name: str) -> None:
         """List imports in a package"""
-        imports = self.package_manager.get_imports(package_name)
+        imports = self.repository_manager.get_imports(package_name)
         for imported_name in imports:
             print(imported_name)
 
     def req_list(self, package_name: str) -> None:
         """List requirements of a package"""
-        req_lists = self.package_manager.get_requirements(package_name)
+        req_lists = self.repository_manager.get_requirements(package_name)
         for req_list_name, req_list in sorted(req_lists.items()):
             print(req_list_name)
             for req_item in req_list.req_specs:
@@ -216,7 +216,7 @@ class DlRepManagerTool:
 
     def check_requirements(self, package_name: str, ignore_prefix: Optional[str] = None, tests: bool = False) -> None:
         """Compares imports and requirements of a package"""
-        extra_import_specs, extra_req_specs = self.package_manager.compare_imports_and_requirements(
+        extra_import_specs, extra_req_specs = self.repository_manager.compare_imports_and_requirements(
             package_name, ignore_prefix=ignore_prefix, tests=tests,
         )
 
@@ -271,27 +271,27 @@ class DlRepManagerTool:
         config_file_name = args.config
 
         fs_editor_type = args.fs_editor if not args.dry_run else 'virtual'
-        repo_env = RepoEnvironmentLoader(
+        repository_env = RepoEnvironmentLoader(
             config_file_name=config_file_name,
             override_fs_editor_type=fs_editor_type,
         ).load_env(base_path=_BASE_DIR)
 
-        index_builder = PackageIndexBuilder(repo_env=repo_env)
+        index_builder = PackageIndexBuilder(repository_env=repository_env)
         package_index = index_builder.build_index()
 
-        package_navigator = PackageNavigator(repo_env=repo_env, package_index=package_index)
+        repository_navigator = RepositoryNavigator(repository_env=repository_env, package_index=package_index)
         tool = cls(
             package_index=package_index,
-            package_navigator=package_navigator,
-            package_manager=PackageManager(
-                repo_env=repo_env,
+            repository_navigator=repository_navigator,
+            repository_manager=RepositoryManager(
+                repository_env=repository_env,
                 package_index=package_index,
-                package_navigator=package_navigator,
-                package_generator=PackageGenerator(package_index=package_index, repo_env=repo_env),
-                package_reference=PackageReference(package_index=package_index, repo_env=repo_env),
+                repository_navigator=repository_navigator,
+                package_generator=PackageGenerator(package_index=package_index, repository_env=repository_env),
+                package_reference=PackageReference(package_index=package_index, repository_env=repository_env),
             ),
             py_prj_editor=PyPrjEditor(
-                repo_env=repo_env,
+                repository_env=repository_env,
                 package_index=package_index,
 
             ),

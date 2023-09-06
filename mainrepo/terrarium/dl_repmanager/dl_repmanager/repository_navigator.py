@@ -8,13 +8,13 @@ from typing import ClassVar, Generator, Optional
 import attr
 
 from dl_repmanager.primitives import PackageInfo
-from dl_repmanager.env import RepoEnvironment
+from dl_repmanager.repository_env import RepoEnvironment
 from dl_repmanager.package_index import PackageIndex
 
 
 @attr.s
-class PackageNavigator:
-    repo_env: RepoEnvironment = attr.ib(kw_only=True)
+class RepositoryNavigator:
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True, factory=PackageIndex)
 
     _IMPORT_REGEX: ClassVar[re.Pattern] = re.compile(r'^\s*(import|from)\s+(?P<import_name>[\w.]+)')
@@ -34,7 +34,7 @@ class PackageNavigator:
         return False
 
     def recurse_files_with_import(self, import_name: str) -> Generator[Path, None, None]:
-        for package_type, pkg_type_root in self.repo_env.iter_package_abs_dirs():
+        for package_type, pkg_type_root in self.repository_env.iter_package_abs_dirs():
             for file_path in self.recurse_code_files(pkg_type_root):
                 if self._file_contains_imports(file_path, import_name):
                     yield file_path
@@ -44,7 +44,7 @@ class PackageNavigator:
     ) -> set[str]:
         result: set[str] = set()
         std_modules = set(sys.stdlib_module_names)
-        fs_editor = self.repo_env.get_fs_editor()
+        fs_editor = self.repository_env.get_fs_editor()
         with fs_editor.open(file_path, mode='r') as code_file:
             code_ast = ast.parse(code_file.read())
             for node in ast.walk(code_ast):
