@@ -15,10 +15,12 @@ python = ">=3.10, <3.12"
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 
 [tool.poetry.group.tests.dependencies]
+# common
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 sentry-sdk = ">=1.15.0"
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
+# core
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
@@ -34,6 +36,16 @@ yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-maintenance = {path = "../bi_maintenance"}
+# api_lib
+pytest-lazy-fixture = ">=0.6.3"
+responses = ">=0.23.1"
+uwsgi = ">=2.0.21"
+yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
+yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
+yandex-bi-api-client = {path = "../../mainrepo/lib/bi_api_client"}
+yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
+yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
+yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 
 [tool.mypy]
 overrides = []
@@ -50,7 +62,11 @@ addopts = "-ra"
 testpaths = [
     "bi_legacy_test_bundle_tests/core/db",
     "bi_legacy_test_bundle_tests/core/ext",
-    "bi_legacy_test_bundle_tests/core/unit"
+    "bi_legacy_test_bundle_tests/core/unit",
+    "bi_legacy_test_bundle_tests/db/data_api",
+    "bi_legacy_test_bundle_tests/db/main",
+    "bi_legacy_test_bundle_tests/ext",
+    "bi_legacy_test_bundle_tests/unit",
 ]
 timeout = 600
 
@@ -73,25 +89,25 @@ target-version = ['py310']
 [datalens_ci]
 skip_test = false
 
-[datalens.pytest.unit]
+[datalens.pytest.core_unit]
 root_dir = "bi_legacy_test_bundle_tests/core/"
 target_path = "unit"
 skip_compose = "true"
 
-[datalens.pytest.db_part_1]
+[datalens.pytest.core_db_part_1]
 root_dir = "bi_legacy_test_bundle_tests/core/db/"
 target_path = "aio caches capabilities common compeng"
 compose_file_base = "docker-compose.core"
 labels = ["fat"]
 # todo: add "required_services" and run only them before starting tests with docker compose
 
-[datalens.pytest.db_part_2]
+[datalens.pytest.core_db_part_2]
 root_dir = "bi_legacy_test_bundle_tests/core/db/"
 target_path = "connectors data_processing maintenance services_registry us_manager"
 compose_file_base = "docker-compose.core"
 labels = ["fat"]
 
-[datalens.pytest.db_conn_executors]
+[datalens.pytest.core_db_connexecutors]
 root_dir = "bi_legacy_test_bundle_tests/core/db/"
 target_path = "conn_executors"
 compose_file_base = "docker-compose.core"
@@ -102,6 +118,26 @@ labels = ["fat"]
 #target_path = "ext"
 #compose_file_base = "docker-compose.core"
 #labels = ["ext"]
+
+[datalens.pytest.apilib_db]
+root_dir = "bi_legacy_test_bundle_tests/api_lib"
+target_path = "db"
+compose_file_base = "docker-compose.api_lib"
+labels = ["fat"]
+
+[datalens.pytest.apilib_unit]
+root_dir = "bi_legacy_test_bundle_tests/api_lib"
+target_path = "unit"
+skip_compose = "true"
+
+[datalens.pytest.apilib_bitrix]
+root_dir = "bi_legacy_test_bundle_tests/api_lib"
+target_path = "ext/bitrix"
+compose_file_base = "docker-compose.api_lib.bitrix"
+labels = ["ext"]
+
+[tool.poetry.scripts]
+bi-core-rqe-async = "bi_core.connection_executors.remote_query_executor.app_async:async_qe_main"
 
 [tools.mypy]
 warn_unused_configs = true

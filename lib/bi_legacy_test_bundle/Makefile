@@ -28,5 +28,23 @@ devenv-core-status:
 	docker-compose -f docker-compose.core.yml ps
 
 
+devenv-api-lib-d:
+	docker-compose -f docker-compose.api-lib.yml up --build --force-recreate -d
+
+devenv-api-lib:
+	docker-compose -f docker-compose.api-lib.yml up --build --force-recreate
+
+devenv-api-lib-status:
+	docker-compose -f docker-compose.api-lib.yml ps
+
+
+devenv-api-lib-bitrix-d:
+	docker-compose -f docker-compose.api-lib-bitrix.yml up --build --force-recreate -d
+
+devenv-api-bitrix-lib:
+	docker-compose -f docker-compose.api-lib-bitrix.yml up --build --force-recreate
+
+devenv-api-lib-bitrix-status:
+	docker-compose -f docker-compose.api-lib-bitrix.yml ps
 
 PACKAGE_NAME = bi_legacy_test_bundle

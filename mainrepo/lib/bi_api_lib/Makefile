@@ -18,20 +18,6 @@ tests-cleanup: tests-tier1-clean
 cleanup: docker-cleanup tests-cleanup
 
 
-# Create a development environment (start all the services required for bi-api)
-.PHONY: devenv-d
-devenv-d:
-	docker-compose -f docker-compose.yml up --build --force-recreate -d
-
-.PHONY: devenv
-devenv:
-	docker-compose -f docker-compose.yml up --build --force-recreate
-
-devenv-status:
-	docker-compose -f docker-compose.yml ps
-
-
-
 .PHONY: build-clean
 build-clean: build-tier1-clean
 

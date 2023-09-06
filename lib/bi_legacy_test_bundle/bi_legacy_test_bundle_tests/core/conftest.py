@@ -453,6 +453,12 @@ async def local_private_usm(loop, bi_context, qc_async_redis, default_async_serv
 def initdb_ready(tests_config):
     """ Synchronization fixture that ensures that initdb has finished. Primarily for `db` tests. """
     return wait_for_initdb(
-        initdb_host=tests_config_mod.get_test_container_hostport('init-db', fallback_port=50308).host,
-        initdb_port=tests_config_mod.get_test_container_hostport('init-db', fallback_port=50308).port
+        initdb_host=tests_config_mod.get_test_container_hostport(
+            'init-db',
+            fallback_port=50308,
+        ).host,
+        initdb_port=tests_config_mod.get_test_container_hostport(
+            'init-db',
+            fallback_port=50308,
+        ).port
     )

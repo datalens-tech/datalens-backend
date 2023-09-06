@@ -151,11 +151,13 @@ services:
     ports:
      - "50309:5432"
 
-  # TODO: Mulitinancy & DLS integration
+  # TODO: Multitenancy & DLS integration
   us:
     build:
       context: ../../mainrepo/lib/testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
+    ports:
+     - "50300:80"
     depends_on:
       - pg-us
     #      - dls
@@ -167,8 +169,6 @@ services:
       #      DLS_ENDPOINT: "http://dls"
       #      DLS_API_KEY: *c-dls-api-key
       MASTER_TOKEN: *c-us-master-token
-    ports:
-     - "50300:80"
 
   redis-caches:
     # image: "bitnami/redis:5.0.8"
