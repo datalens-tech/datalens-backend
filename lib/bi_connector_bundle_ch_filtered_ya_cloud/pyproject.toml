@@ -92,3 +92,12 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_connector_bundle_ch_filtered_ya_cloud = [
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi"},
+]

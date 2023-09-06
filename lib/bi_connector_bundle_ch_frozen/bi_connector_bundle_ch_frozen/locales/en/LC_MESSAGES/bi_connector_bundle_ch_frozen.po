@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-06 00:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_base/bi/connection_form/form_config.py:29
 msgid "label_ch-frozen-description"
 msgstr "This is a special connection to ClickHouse. You can't edit it."
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_bumpy_roads"
 msgstr "ClickHouse. Bumpy Roads"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_covid/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_covid"
 msgstr "ClickHouse. Coronavirus"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_demo/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_demo"
 msgstr "ClickHouse. Demo Dashboard"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_dtp/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_dtp"
 msgstr "ClickHouse. Road Accidents"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_gkh/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_gkh"
 msgstr "ClickHouse. Unfit Housing"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_horeca/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_horeca"
 msgstr "ClickHouse. Food Services in Moscow"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_samples/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_samples"
 msgstr "ClickHouse. Sample Superstore"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_transparency/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_transparency"
 msgstr "ClickHouse. Social Advertisement"
 
-#: bi_connector_bundle_ch_frozen/ch_frozen_weather/bi/connection_info.py:8
 msgid "label_connector-ch_frozen_weather"
 msgstr "ClickHouse. Weather"

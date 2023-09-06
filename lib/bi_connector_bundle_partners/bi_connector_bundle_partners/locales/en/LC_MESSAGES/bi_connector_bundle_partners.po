@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-22 10:33+0000\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-06 00:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_bundle_partners/kontur_market/bi/connection_info.py:8
+msgid "label_connector-equeo"
+msgstr "E-queo"
+
 msgid "label_connector-kontur_market"
 msgstr "Kontur.Market"
 
-#: bi_connector_bundle_partners/kontur_market/bi/connection_form/form_config.py:18
 msgid "label_kontur_market_description"
 msgstr ""
 "Коннектор выгружает данные из сервиса [Контур.Маркет](https://kontur.ru/"
@@ -48,14 +49,8 @@ msgstr ""
 "При первом подключении необходимо подождать пока данные из Контур.Маркета "
 "загрузятся в дашборд. Обычно это занимает от 2 до 5 минут."
 
-#: bi_connector_bundle_partners/equeo/bi/connection_info.py:8
-msgid "label_connector-equeo"
-msgstr "E-queo"
-
-#: bi_connector_bundle_partners/moysklad/bi/connection_info.py:8
 msgid "label_connector-moysklad"
 msgstr "MoySklad"
 
-#: bi_connector_bundle_partners/moysklad/bi/connection_form/form_config.py:24
 msgid "label_moysklad-token-hint"
 msgstr "Check [developer's documentation]({DOC_LINK}) on how to get token."

@@ -112,5 +112,10 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[datalens.i18n.domains]
+bi_api_lib = [
+    {path = "bi_api_lib"},
+]
+
 [datalens_ci]
 skip_test = true

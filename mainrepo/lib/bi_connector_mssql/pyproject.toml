@@ -101,3 +101,11 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_connector_mssql = [
+    {path = "bi_connector_mssql/bi"},
+]
+bi_formula_ref_bi_connector_mssql = [
+    {path = "bi_connector_mssql/formula_ref"},
+]

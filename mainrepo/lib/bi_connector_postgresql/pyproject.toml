@@ -98,3 +98,11 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_connector_postgresql = [
+    {path = "bi_connector_postgresql/bi"},
+]
+bi_formula_ref_bi_connector_postgresql = [
+    {path = "bi_connector_postgresql/formula_ref"},
+]

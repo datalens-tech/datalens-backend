@@ -69,10 +69,13 @@ class PackageMetaReader:
 
             yield item_as_dict
 
-    def get_i18n_domains(self) -> dict[str, str]:
-        result: dict[str, str] = {}
-        for domain, path in self._toml_reader.iter_section_items(self._SECTION_NAME_I18N_DOMAINS, strict=False):
-            result[str(domain).strip()] = str(path).strip()
+    def get_i18n_domains(self) -> dict[str, list[str]]:
+        result: dict[str, list[str]] = {}
+        for domain, item_data in self._toml_reader.iter_section_items(self._SECTION_NAME_I18N_DOMAINS, strict=False):
+            domain_str = str(domain).strip()
+            result[domain_str] = []
+            for path_data in item_data:
+                result[domain_str].append(str(path_data['path']).strip())
 
         return result
 

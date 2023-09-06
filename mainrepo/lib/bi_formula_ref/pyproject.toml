@@ -70,3 +70,8 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_formula_ref_bi_formula_ref = [
+    {path = "bi_formula_ref"},
+]

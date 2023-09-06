@@ -91,3 +91,17 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_connector_bundle_ch_frozen = [
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_base/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_covid/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_demo/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_dtp/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_gkh/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_horeca/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_samples/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_transparency/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_weather/bi"},
+]

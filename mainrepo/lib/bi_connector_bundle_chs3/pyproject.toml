@@ -81,3 +81,9 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_connector_bundle_chs3 = [
+    {path = "bi_connector_bundle_chs3/chs3_gsheets/bi"},
+    {path = "bi_connector_bundle_chs3/file/bi"},
+]
