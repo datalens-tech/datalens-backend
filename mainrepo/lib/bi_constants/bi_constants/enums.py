@@ -412,9 +412,6 @@ class NotificationLevel(Enum):
 
 class NotificationType(DynamicEnum):
     totals_removed_due_to_measure_filter = AutoEnumValue()
-    using_public_clickhouse_clique = AutoEnumValue()
-    stale_data = AutoEnumValue()
-    data_update_failure = AutoEnumValue()
 
 
 class ConnectorAvailability(Enum):

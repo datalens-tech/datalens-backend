@@ -20,8 +20,9 @@ from bi_connector_snowflake.core.data_source_spec import (
 )
 from bi_connector_snowflake.core.lifecycle import SnowFlakeConnectionLifecycleManager
 from bi_connector_snowflake.core.storage_schemas.connection import SnowFlakeConnectionDataStorageSchema
-from bi_connector_snowflake.core.storage_schemas.data_source_spec import SnowFlakeTableDataSourceSpecStorageSchema, \
-    SnowFlakeSubselectDataSourceSpecStorageSchema
+from bi_connector_snowflake.core.storage_schemas.data_source_spec import (
+    SnowFlakeTableDataSourceSpecStorageSchema, SnowFlakeSubselectDataSourceSpecStorageSchema,
+)
 from bi_connector_snowflake.core.type_transformer import SnowFlakeTypeTransformer
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from bi_connector_snowflake.core.notifications import SnowflakeRefreshTokenSoonToExpire

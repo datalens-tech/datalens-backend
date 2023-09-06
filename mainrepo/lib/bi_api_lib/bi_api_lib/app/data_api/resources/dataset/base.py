@@ -10,10 +10,7 @@ from typing import (
 
 from aiohttp import web
 
-from bi_configs.connectors_settings import CHYTConnectorSettings
-from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
-from bi_connector_snowflake.core.notifications import check_for_refresh_token_expire
-from bi_constants.enums import ConnectionType, DataSourceRole, NotificationType
+from bi_constants.enums import DataSourceRole
 
 from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from bi_core.exc import USObjectNotFoundException
@@ -23,7 +20,6 @@ from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.data_source.collection import DataSourceCollectionFactory
 from bi_core.data_source.base import DataSource
 from bi_core.dataset_capabilities import DatasetCapabilities
-from bi_core.reporting.notifications import get_notification_record
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 
 from bi_utils.task_runner import ConcurrentTaskRunner
@@ -289,17 +285,13 @@ class DatasetDataBaseView(BaseView):
             except Exception:
                 LOGGER.info('Failed to get loaded us connection %s', conn_id, exc_info=True)
             else:
-                # FIXME: Connectorize
-                if conn.conn_type in (ConnectionType.ch_over_yt, ConnectionType.ch_over_yt_user_auth):
-                    chyt_settings = self.dl_request.services_registry.get_connectors_settings(conn.conn_type)
-                    if chyt_settings is not None:
-                        assert isinstance(chyt_settings, CHYTConnectorSettings)
-                    if chyt_settings is not None and conn.data.alias in chyt_settings.PUBLIC_CLIQUES:
-                        services_registry.get_reporting_registry().save_reporting_record(
-                            get_notification_record(NotificationType.using_public_clickhouse_clique)
-                        )
-                elif conn.conn_type == CONNECTION_TYPE_SNOWFLAKE:
-                    check_for_refresh_token_expire(services_registry.get_reporting_registry(), conn)
+                conn_notifications = conn.check_for_notifications()
+                if not conn_notifications:
+                    continue
+
+                reporting_registry = services_registry.get_reporting_registry()
+                for notification_record in conn_notifications:
+                    reporting_registry.save_reporting_record(notification_record)
 
     def make_legend_formalizer(self, query_type: QueryType, autofill_legend: bool = False) -> LegendFormalizer:
         legend_formalizer_cls: Type[LegendFormalizer]

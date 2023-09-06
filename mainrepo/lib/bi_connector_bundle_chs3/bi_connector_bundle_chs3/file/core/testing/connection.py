@@ -7,19 +7,19 @@ from bi_constants.enums import FileProcessingStatus
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.database import DbTable
 from bi_core.mdb_utils import MDBDomainManagerFactory
+from bi_core_testing.database import DbTable
 
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 
 
-def make_saved_file_connection(  # type: ignore  # TODO: fix
+def make_saved_file_connection(
     sync_usm: SyncUSManager,
     clickhouse_table: DbTable,
     filename: str,
-    **kwargs
-):
-    from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
+    **kwargs,
+) -> FileS3Connection:
     from bi_core.connection_executors import SyncWrapperForAsyncConnExecutor
     from bi_core.connectors.clickhouse_base.connection_executors import ClickHouseSyncAdapterConnExecutor
     from bi_core.connection_executors import ExecutionMode
@@ -34,13 +34,13 @@ def make_saved_file_connection(  # type: ignore  # TODO: fix
     cluster = engine_config.cluster
     assert cluster is not None
     with SyncWrapperForAsyncConnExecutor(
-        async_conn_executor=ClickHouseSyncAdapterConnExecutor(  # type: ignore  # TODO: fix
+        async_conn_executor=ClickHouseSyncAdapterConnExecutor(
             conn_dto=ClickHouseConnDTO(
                 conn_id=None,
                 protocol='http',
                 endpoint=None,
                 cluster_name=cluster,
-                multihosts=clickhouse_table.db.get_conn_hosts(),  # type: ignore  # TODO: fix
+                multihosts=clickhouse_table.db.get_conn_hosts(),
                 **clickhouse_table.db.get_conn_credentials(full=True),
             ),
             conn_options=CHConnectOptions(max_execution_time=None, connect_timeout=None, total_timeout=None),

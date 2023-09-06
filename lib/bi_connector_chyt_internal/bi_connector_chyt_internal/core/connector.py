@@ -50,6 +50,7 @@ from bi_connector_chyt_internal.core.settings import CHYTInternalSettingDefiniti
 from bi_connector_chyt_internal.core.data_source_migration import (
     CHYTInternalDataSourceMigrator, CHYTInternalUserAuthDataSourceMigrator,
 )
+from bi_connector_chyt_internal.core.notifications import UsingPublicClickhouseCliqueNotification
 
 
 class CHYTInternalCoreConnectionDefinition(CoreConnectionDefinition):
@@ -155,3 +156,6 @@ class CHYTInternalCoreConnector(CoreConnector):
         AsyncCHYTUserAuthAdapter,
     })
     sa_types = SQLALCHEMY_CHYT_INTERNAL_TYPES
+    notification_classes = (
+        UsingPublicClickhouseCliqueNotification,
+    )

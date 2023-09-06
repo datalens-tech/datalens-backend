@@ -7,7 +7,9 @@ from typing import Callable, ClassVar, Optional
 import attr
 import marshmallow as ma
 
-from bi_connector_snowflake.core.constants import ACCOUNT_NAME_RE
+from bi_api_commons.reporting.models import NotificationReportingRecord
+from bi_connector_snowflake.auth import SFAuthProvider
+from bi_connector_snowflake.core.constants import ACCOUNT_NAME_RE, NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 from bi_connector_snowflake.core.constants import (
     CONNECTION_TYPE_SNOWFLAKE,
     SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
@@ -18,6 +20,7 @@ from bi_core.base_models import (
     ConnCacheableMixin,
     ConnSubselectMixin,
 )
+from bi_core.reporting.notifications import get_notification_record
 from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionSQL, DataSourceTemplate, ConnectionBase
@@ -59,6 +62,15 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
     ) -> None:
         if not re.fullmatch(ACCOUNT_NAME_RE, self.data.account_name):
             raise ma.ValidationError(message="Field account_name is not valid")
+
+    def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+        notifications = super().check_for_notifications()
+
+        sf_auth_provider = SFAuthProvider.from_dto(self.get_conn_dto())
+        if sf_auth_provider.should_notify_refresh_token_to_expire_soon():
+            notifications.append(get_notification_record(NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE))
+
+        return notifications
 
     @property
     def schema_name(self) -> Optional[str]:

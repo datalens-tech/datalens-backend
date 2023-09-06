@@ -13,6 +13,9 @@ from bi_connector_bundle_chs3.chs3_gsheets.core.data_source_spec import (
     GSheetsFileS3DataSourceSpec,
 )
 from bi_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
+from bi_connector_bundle_chs3.chs3_gsheets.core.notifications import (
+    StaleDataNotification, DataUpdateFailureNotification,
+)
 from bi_connector_bundle_chs3.chs3_gsheets.core.settings import GSheetsFileS3SettingDefinition
 from bi_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.connection import GSheetsFileConnectionDataStorageSchema
 from bi_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.data_source_spec import GSheetsFileS3DataSourceSpecStorageSchema
@@ -45,3 +48,7 @@ class GSheetsFileS3CoreConnector(BaseFileS3CoreConnector):
         GSheetsFileS3TableCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({ClickHouseAdapter, AsyncGSheetsFileS3Adapter})
+    notification_classes = (
+        StaleDataNotification,
+        DataUpdateFailureNotification,
+    )

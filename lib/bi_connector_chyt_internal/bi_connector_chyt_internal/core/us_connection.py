@@ -4,16 +4,21 @@ from typing import Optional, ClassVar, Any
 
 import attr
 
+from bi_constants.enums import CreateDSFrom
 from bi_utils.utils import DataKey
 
-from bi_constants.enums import CreateDSFrom
-from bi_connector_chyt.core.us_connection import BaseConnectionCHYT
-from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
-from bi_connector_chyt_internal.core.dto import CHYTInternalDTO, CHYTUserAuthDTO
-from bi_core.i18n.localizer import Translatable
 from bi_i18n.localizer_base import Localizer
+
+from bi_api_commons.reporting.models import NotificationReportingRecord
+from bi_core.i18n.localizer import Translatable
+from bi_core.reporting.notifications import get_notification_record
 from bi_core.us_connection_base import DataSourceTemplate
 from bi_core.utils import secrepr
+
+from bi_connector_chyt.core.us_connection import BaseConnectionCHYT
+from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
+from bi_connector_chyt_internal.core.constants import NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE
+from bi_connector_chyt_internal.core.dto import CHYTInternalDTO, CHYTUserAuthDTO
 
 
 class BaseConnectionCHYTInternal(BaseConnectionCHYT):
@@ -31,6 +36,14 @@ class BaseConnectionCHYTInternal(BaseConnectionCHYT):
             CHYTInternalConnectOptions,
             mirroring_clique_alias=None,
         )
+
+    def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+        notifications = super().check_for_notifications()
+
+        if self.data.alias in self._connector_settings.PUBLIC_CLIQUES:
+            notifications.append(get_notification_record(NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE))
+
+        return notifications
 
     _table_source_field_doc_key: ClassVar[str] = "CHYT_TABLE/table_name"
 

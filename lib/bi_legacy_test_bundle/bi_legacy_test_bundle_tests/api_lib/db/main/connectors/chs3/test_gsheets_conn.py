@@ -11,13 +11,15 @@ from bi_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
     ComponentErrorLevel,
-    NotificationType,
 )
 
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
-from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from bi_core import exc
+from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import (
+    SOURCE_TYPE_GSHEETS_V2,
+    NOTIF_TYPE_GSHEETS_V2_STALE_DATA,
+)
+from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 from bi_api_client.dsmaker.primitives import Dataset
 
@@ -319,7 +321,7 @@ def test_update_data(
 
     resp = make_request_result()
     assert all(
-        notification['locator'] != NotificationType.stale_data.value
+        notification['locator'] != NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value
         for notification in resp.json.get('notifications', [])
     ), resp.json.get('notifications', 'No notifications')
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
@@ -335,7 +337,7 @@ def test_update_data(
     usm.save(conn)
     resp = make_request_result()
     assert any(
-        notification['locator'] == NotificationType.stale_data.value
+        notification['locator'] == NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value
         for notification in resp.json.get('notifications', [])
     ), resp.json.get('notifications', 'No notifications')
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)

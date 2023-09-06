@@ -8,19 +8,17 @@ from clickhouse_sqlalchemy.quoting import Quoter
 from bi_constants.enums import (
     CreateDSFrom,
     FileProcessingStatus,
-    ComponentErrorLevel,
-    NotificationType,
 )
 
 from bi_core import exc
 from bi_core.connectors.clickhouse_base.ch_commons import create_column_sql
 from bi_core.connectors.clickhouse_base.data_source import ClickHouseDataSourceBase
+from bi_core.db import SchemaInfo
+from bi_core.utils import sa_plain_text
+
 from bi_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
-from bi_core.db import SchemaInfo
-from bi_core.reporting.notifications import get_notification_record
-from bi_core.utils import sa_plain_text
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -105,31 +103,16 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
             self._quoter = Quoter()
         return self._quoter.quote_str(value)
 
+    def _handle_component_errors(self) -> None:
+        pass
+
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
-        conn_src_id = self.origin_source_id
         origin_src = self._get_origin_src()
         status = origin_src.status
         raw_schema = self.spec.raw_schema
         s3_filename = origin_src.s3_filename
 
-        if conn_src_id is not None and (error_pack := self.connection.data.component_errors.get_pack(conn_src_id)):
-            single_error = error_pack.errors[0]
-
-            if single_error.level == ComponentErrorLevel.error:
-                class ThisDataSourceError(exc.DataSourceErrorFromComponentError):
-                    err_code = exc.DataSourceErrorFromComponentError.err_code + single_error.code
-                    default_message = single_error.message
-
-                raise ThisDataSourceError(
-                    details=single_error.details,
-                )
-            else:
-                reporting_registry = self._get_connection().us_manager.get_services_registry().get_reporting_registry()
-                reporting_registry.save_reporting_record(get_notification_record(
-                    NotificationType.data_update_failure,
-                    err_code='.'.join(single_error.code),
-                    request_id=single_error.details.get('request-id'),
-                ))
+        self._handle_component_errors()
 
         if status != FileProcessingStatus.ready or raw_schema is None or s3_filename is None:
             raise exc.MaterializationNotFinished

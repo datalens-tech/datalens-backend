@@ -18,6 +18,8 @@ from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_utils.aio import await_sync
 from bi_utils.utils import DataKey
 
+from bi_api_commons.reporting.models import NotificationReportingRecord
+
 from bi_core import connection_models, exc
 from bi_core.base_models import (
     ConnectionRef,
@@ -303,6 +305,9 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             changes=changes,
             original_version=original_version,
         ))
+
+    def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+        return []
 
 
 class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):

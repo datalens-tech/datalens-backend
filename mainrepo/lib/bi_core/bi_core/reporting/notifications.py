@@ -52,42 +52,6 @@ class TotalsRemovedDueToMeasureFilterNotification(BaseNotification):
     _level = NotificationLevel.info
 
 
-@register_notification()
-class UsingPublicClickhouseCliqueNotification(BaseNotification):
-    type = NotificationType.using_public_clickhouse_clique
-    _title = 'Using public clique'
-    _message = 'Public clique has no guarantees on availability and resources, avoid using it in important processes'
-    _level = NotificationLevel.info
-
-
-@register_notification()
-class StaleDataNotification(BaseNotification):
-    type = NotificationType.stale_data
-    _title = 'Stale data'
-    _message = 'The data has not been updated for more than 30 minutes, a background update is in progress'
-    _level = NotificationLevel.info
-
-
-@register_notification()
-class DataUpdateFailureNotification(BaseNotification):
-    def __init__(self, err_code: str, request_id: Optional[str]) -> None:
-        super().__init__()
-        self.err_code = err_code
-        self.request_id = request_id or 'unknown'
-
-    type = NotificationType.data_update_failure
-    _title = 'Data update failed'
-    _message = (
-        'The displayed data may be outdated due to the failure of the last update.\n'
-        'Reason: {err_code}, Request-ID: {request_id}.'
-    )
-    _level = NotificationLevel.warning
-
-    @property
-    def message(self) -> str:
-        return self._message.format(err_code=self.err_code, request_id=self.request_id)
-
-
 def get_notification_record(
     notification_type: NotificationType,
     **kwargs: Any
