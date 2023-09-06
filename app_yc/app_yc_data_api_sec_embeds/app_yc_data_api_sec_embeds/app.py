@@ -19,7 +19,7 @@ from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CO
 from bi_core.logging_config import configure_logging
 
 from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from app_yc_data_api_sec_embeds.app_factory import DataApiSecEmbedsAppFactoryYC
 
@@ -41,6 +41,7 @@ def create_app(
 
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
+    preload_bi_api_lib()
     settings = load_settings_from_env_with_fallback(AsyncAppSettings)
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
     connectors_settings = load_connectors_settings_from_env_with_fallback(

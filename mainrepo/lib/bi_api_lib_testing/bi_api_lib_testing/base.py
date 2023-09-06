@@ -26,7 +26,7 @@ from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.app_settings import ControlPlaneAppSettings, MDBSettings, ControlPlaneAppTestingsSettings
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker, TestingControlApiAppFactory
@@ -84,6 +84,7 @@ class BiApiTestBase(abc.ABC):
             rqe_config_subprocess: RQEConfig,
             iam_services_mock: IAMServicesMockFacade,
     ) -> ControlPlaneAppSettings:  # TODO SPLIT switch to proper settings
+        preload_bi_api_lib()
 
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
@@ -91,7 +92,7 @@ class BiApiTestBase(abc.ABC):
         redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
 
         settings = ControlPlaneAppSettings(
-            CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
+            CONNECTOR_AVAILABILITY=bi_test_config.connector_availability,
             APP_TYPE=AppType.TESTS,
             ENV_TYPE=EnvType.development,
 

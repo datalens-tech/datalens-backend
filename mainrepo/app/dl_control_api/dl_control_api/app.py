@@ -16,7 +16,7 @@ from bi_core.flask_utils.sentry import configure_raven_for_flask
 from bi_core.logging_config import hook_configure_logging
 
 from bi_api_lib.app_settings import ControlPlaneAppTestingsSettings, ControlApiAppSettings
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from dl_control_api.app_factory import ControlApiAppFactoryOS
 from dl_control_api import app_version
@@ -37,6 +37,7 @@ def create_app(
 
 
 def create_uwsgi_app() -> flask.Flask:
+    preload_bi_api_lib()
     settings = load_settings_from_env_with_fallback(ControlApiAppSettings)
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
     connectors_settings = load_connectors_settings_from_env_with_fallback(

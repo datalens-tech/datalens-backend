@@ -21,7 +21,7 @@ from bi_core.logging_config import configure_logging
 from bi_api_lib.app_common import LegacySRFactoryBuilder
 from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
 from bi_api_lib.app.data_api.app import DataApiAppFactory
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 
@@ -50,6 +50,7 @@ def create_app(
 
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
+    preload_bi_api_lib()
     fallback_resolver = YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
         env_map=EnvAliasesMap,

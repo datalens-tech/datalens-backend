@@ -18,7 +18,7 @@ from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_core.components.ids import FieldIdGeneratorType
 
 from bi_api_lib.app_settings import AsyncAppSettings, YCAuthSettings, MDBSettings
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -59,6 +59,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             rqe_config_subprocess: RQEConfig,
             iam_services_mock: IAMServicesMockFacade,
     ) -> AsyncAppSettings:  # TODO SPLIT switch to proper settings
+        preload_bi_api_lib()
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
         redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)

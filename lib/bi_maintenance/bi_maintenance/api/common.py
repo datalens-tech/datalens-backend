@@ -6,7 +6,7 @@ from bi_api_lib.app_common import LegacySRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import AsyncAppSettings
 from bi_api_lib.app.data_api.app import DataApiAppFactory
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_configs.settings_loaders.loader_env import (
     load_settings_from_env_with_fallback, load_connectors_settings_from_env_with_fallback,
 )
@@ -24,6 +24,7 @@ class MaintenanceDataApiAppFactory(DataApiAppFactory, LegacySRFactoryBuilder):
 
 class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
     def get_app_settings(self) -> AsyncAppSettings:
+        preload_bi_api_lib()
         settings = load_settings_from_env_with_fallback(AsyncAppSettings)
         load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
         return settings

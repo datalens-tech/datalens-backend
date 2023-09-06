@@ -30,7 +30,7 @@ from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, RawSQLLevel
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
 from bi_api_lib.app_settings import (
     AsyncAppSettings, ControlPlaneAppSettings, ControlPlaneAppTestingsSettings,
     YCAuthSettings, TestAppSettings, MDBSettings,
@@ -150,6 +150,7 @@ def bi_test_config() -> BiApiTestEnvironmentConfiguration:
 
 @pytest.fixture(scope='session', autouse=True)
 def loaded_libraries(bi_test_config) -> None:
+    preload_bi_api_lib()
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=bi_test_config.connector_whitelist.split(',')))
     load_bi_db_testing()
 

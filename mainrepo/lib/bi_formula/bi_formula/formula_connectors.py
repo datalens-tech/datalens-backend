@@ -23,6 +23,10 @@ def _get_all_ep_connectors() -> dict[str, Type[FormulaConnector]]:
     return {ep.name: ep.load() for ep in entrypoints}
 
 
+def load_all_connectors() -> None:
+    _get_all_ep_connectors()
+
+
 def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
     connectors = _get_all_ep_connectors()
     for ep_name, connector_cls in sorted(connectors.items()):

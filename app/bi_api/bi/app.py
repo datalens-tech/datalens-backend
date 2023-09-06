@@ -22,7 +22,7 @@ from bi_core.logging_config import hook_configure_logging
 from bi_api_lib.app_common import LegacySRFactoryBuilder
 from bi_api_lib.app.control_api.app import ControlApiAppFactory
 from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_configs.environments import InstallationsMap, EnvAliasesMap
 
@@ -46,6 +46,7 @@ def create_app(
 
 
 def create_uwsgi_app():  # type: ignore  # TODO: fix
+    preload_bi_api_lib()
     fallback_resolver = YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
         env_map=EnvAliasesMap,
