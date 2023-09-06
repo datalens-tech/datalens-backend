@@ -12,10 +12,11 @@ from bi_cloud_integration.model import ServiceAccountData, AccessBindingAction, 
 from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ts_client import get_yc_service_token_sync
-from bi_testing import shared_testing_constants
 from bi_testing_ya.external_systems_helpers.top import ExternalSystemsHelperCloud
 from bi_testing.utils import skip_outside_devhost
 
+# TODO FIX: Ask IAM team why there is so big lag in sync with AS
+ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY = 5
 DEFAULT_TEST_ROBOT_DESCRIPTION = 'DataLensRobot created during auto-tests. Can be removed without any consequences.'
 
 
@@ -194,7 +195,7 @@ def test_grant_role_on_sa(
     )
     actual_roles = ctrl.list_svc_acct_role_ids_on_folder_sync(svc_acct_id=svc_acct.id, folder_id=folder_id)
     assert actual_roles == [role]
-    time.sleep(shared_testing_constants.ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY)
+    time.sleep(ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY)
 
     check_against_access_service()
 
@@ -206,7 +207,7 @@ def test_grant_role_on_sa(
     )
     actual_roles = ctrl.list_svc_acct_role_ids_on_folder_sync(svc_acct_id=svc_acct.id, folder_id=folder_id)
     assert actual_roles == []
-    time.sleep(shared_testing_constants.ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY)
+    time.sleep(ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY)
 
     with pytest.raises(YCPermissionDenied):
         check_against_access_service()
