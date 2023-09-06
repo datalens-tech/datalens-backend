@@ -1,3 +1,24 @@
+0.142.0
+-------
+
+* [Sergei Borodin](http://staff/seray@yandex-team.ru)
+
+ * BI-4428 fix file-worker deps (#366)  [ https://github.com/datalens-tech/datalens-backend-private/commit/db51dd62 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * some more mypy stubs and fixes for mypy sync tool (#362)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c98cd2ac ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Taskfile cleanup (#359)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7ca2daec ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version app/bi_file_secure_reader 0.14.0 (#363)  [ https://github.com/datalens-tech/datalens-backend-private/commit/246f33b6 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-06 15:20:00+00:00
+
 0.141.0
 -------
 
