@@ -168,7 +168,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             role: Optional[DataSourceRole] = None,
             raw_schema: Optional[list] = None,
             remove_raw_schema: bool = False,
-            **parameters: dict[str, Any],
+            **parameters: Any,
     ) -> None:
         if role != DataSourceRole.origin:
             raise ValueError(f'Unsupported role for {self.__class__.__name__} datasource.')

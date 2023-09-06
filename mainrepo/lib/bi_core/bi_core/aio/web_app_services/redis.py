@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 import logging
 
 import redis.asyncio
@@ -49,7 +50,7 @@ async def extract_redis_conn_params(redis_cli: Optional[redis.asyncio.Redis]) ->
 
 
 @attr.s
-class RedisBaseService:
+class RedisBaseService(metaclass=abc.ABCMeta):
     APP_KEY: ClassVar[str] = "REDIS_SERVICE"
     _instance_kind: RedisInstanceKind = attr.ib()
     _ssl: Optional[bool] = attr.ib(default=None)
@@ -62,6 +63,7 @@ class RedisBaseService:
     async def tear_down_hook(self, target_app: web.Application) -> None:
         await self.tear_down()
 
+    @abc.abstractmethod
     def get_redis(self, allow_slave: bool = False) -> redis.asyncio.Redis:
         pass
 
@@ -77,9 +79,11 @@ class RedisBaseService:
 
         return service
 
+    @abc.abstractmethod
     async def initialize(self) -> None:
         pass
 
+    @abc.abstractmethod
     async def tear_down(self) -> None:
         pass
 

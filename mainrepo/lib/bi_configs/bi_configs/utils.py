@@ -84,5 +84,5 @@ def jaeger_service_suffix_env_var_converter(env_value: str) -> str:
     return "-testing" if env_value.lower() in ("testing", "testing-public", "testing-sec-embeds", "int-testing") else ""
 
 
-def conn_type_set_env_var_converter(s: str) -> set[ConnectionType, ...]:
+def conn_type_set_env_var_converter(s: str) -> set[ConnectionType]:
     return set(ConnectionType(entry.strip()) for entry in s.split(",") if entry)

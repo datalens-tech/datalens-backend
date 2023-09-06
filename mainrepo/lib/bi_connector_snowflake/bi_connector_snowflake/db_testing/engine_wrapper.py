@@ -22,10 +22,12 @@ class SnowFlakeEngineWrapper(EngineWrapperBase):
 
     @property
     def name(self) -> str:
-        return self.execute('SELECT CURRENT_DATABASE()').scalar()
+        name = self.execute('SELECT CURRENT_DATABASE()').scalar()
+        assert isinstance(name, str)
+        return name
 
     def get_version(self) -> Optional[str]:
-        return self.execute('SELECT CURRENT_VERSION()').scalar()
+        return self.name
 
     def drop_table(self, db_name: str, table: sa.Table) -> None:
         table.drop(bind=self.engine, checkfirst=True)

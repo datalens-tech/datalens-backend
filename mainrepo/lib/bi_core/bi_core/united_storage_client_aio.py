@@ -38,7 +38,7 @@ class UStorageClientAIO(UStorageClientBase):
         def status_code(self) -> int:
             return self._response.status
 
-        def get_header(self, name: str) -> str:
+        def get_header(self, name: str) -> Optional[str]:
             return self._response.headers.get(name)
 
         @property
@@ -79,7 +79,7 @@ class UStorageClientAIO(UStorageClientBase):
         def method(self) -> str:
             return self._request_data.method
 
-        def get_header(self, name: str) -> str:
+        def get_header(self, name: str) -> Optional[str]:
             return self._request.headers.get(name)
 
         @property

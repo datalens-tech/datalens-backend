@@ -6,7 +6,7 @@ import re
 import time
 from contextlib import contextmanager
 from json.decoder import JSONDecodeError
-from typing import Any, ClassVar, Dict, NamedTuple, Optional, Type, cast, Union, Iterable, Generator
+from typing import Any, ClassVar, NamedTuple, Optional, Type, cast, Union, Iterable, Generator
 
 import attr
 import requests
@@ -182,7 +182,7 @@ class UStorageClientBase:
             pass
 
         @abc.abstractmethod
-        def get_header(self, name: str) -> str:
+        def get_header(self, name: str) -> Optional[str]:
             pass
 
         @property
@@ -198,7 +198,7 @@ class UStorageClientBase:
             pass
 
         @abc.abstractmethod
-        def get_header(self, name: str) -> str:
+        def get_header(self, name: str) -> Optional[str]:
             pass
 
         @property
@@ -237,7 +237,7 @@ class UStorageClientBase:
     RequestData = NamedTuple('RequestData', [
         ('method', str),
         ('relative_url', str),
-        ('params', Optional[Dict[str, str]]),
+        ('params', Optional[dict[str, str]]),
         ('json', Optional[dict]),
     ])
 
@@ -294,7 +294,7 @@ class UStorageClientBase:
             )
 
     @staticmethod
-    def _auth_ctx_to_default_headers(ctx: USAuthContextBase) -> Dict[str, str]:
+    def _auth_ctx_to_default_headers(ctx: USAuthContextBase) -> dict[str, str]:
         headers: dict[DLHeaders, str] = {
             **ctx.get_outbound_headers(include_tenancy=False),
             DLHeadersCommon.DL_COMPONENT: ctx.dl_component,
@@ -302,7 +302,7 @@ class UStorageClientBase:
         return stringify_dl_headers(headers)
 
     @staticmethod
-    def _auth_ctx_to_cookies(ctx: USAuthContextBase) -> Dict[str, str]:
+    def _auth_ctx_to_cookies(ctx: USAuthContextBase) -> dict[str, str]:
         return stringify_dl_cookies(ctx.get_outbound_cookies())
 
     def _get_full_url(self, relative_url: str) -> str:
@@ -507,7 +507,7 @@ class UStorageClientBase:
         else:
             endpoint = '/entries'
 
-        params: Dict[Any, Any] = dict(page=page, **req_params)
+        params: dict[Any, Any] = dict(page=page, **req_params)
         return cls.RequestData(
             method='get',
             relative_url=endpoint,
@@ -576,7 +576,7 @@ class UStorageClient(UStorageClientBase):
         def method(self) -> str:
             return self.req.method.lower()
 
-        def get_header(self, name: str) -> str:
+        def get_header(self, name: str) -> Optional[str]:
             return self.req.headers.get(name)
 
         @property
@@ -592,8 +592,8 @@ class UStorageClient(UStorageClientBase):
         def status_code(self) -> int:
             return self.resp.status_code
 
-        def get_header(self, name: str) -> str:
-            return self.resp.headers.get(name)  # type: ignore  # TODO: fix
+        def get_header(self, name: str) -> Optional[str]:
+            return self.resp.headers.get(name)
 
         @property
         def elapsed_seconds(self) -> int:
@@ -641,7 +641,7 @@ class UStorageClient(UStorageClientBase):
     def close(self) -> None:
         self._session.close()
 
-    def _request(self, request_data: UStorageClientBase.RequestData) -> Dict[str, Any]:
+    def _request(self, request_data: UStorageClientBase.RequestData) -> dict[str, Any]:
         self._raise_for_disabled_interactions()
 
         url = self._get_full_url(request_data.relative_url)
@@ -669,11 +669,11 @@ class UStorageClient(UStorageClientBase):
 
     def create_entry(
         self, key: EntryLocation, scope: str,
-        meta: Optional[Dict[str, str]] = None,
-        data: Optional[Dict[str, Any]] = None, unversioned_data: Optional[Dict[str, Any]] = None,
-        type_: Optional[str] = None, hidden: Optional[bool] = None, links: Optional[Dict[str, Any]] = None,
+        meta: Optional[dict[str, str]] = None,
+        data: Optional[dict[str, Any]] = None, unversioned_data: Optional[dict[str, Any]] = None,
+        type_: Optional[str] = None, hidden: Optional[bool] = None, links: Optional[dict[str, Any]] = None,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         rq_data = self._req_data_create_entry(
             key=key, scope=scope,
             meta=meta, data=data, unversioned_data=unversioned_data,
@@ -684,10 +684,10 @@ class UStorageClient(UStorageClientBase):
     def get_entry(
         self,
         entry_id: str,
-        params: Optional[Dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
         include_permissions: bool = True,
         include_links: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._request(self._req_data_get_entry(
             entry_id, params=params, include_permissions=include_permissions, include_links=include_links
         ))
@@ -710,10 +710,10 @@ class UStorageClient(UStorageClientBase):
 
     def update_entry(  # type: ignore  # TODO: fix
         self, entry_id: str,
-        data: Optional[Dict[str, Any]] = None, unversioned_data: Optional[Dict[str, Any]] = None,
-        meta: Optional[Dict[str, str]] = None,
+        data: Optional[dict[str, Any]] = None, unversioned_data: Optional[dict[str, Any]] = None,
+        meta: Optional[dict[str, str]] = None,
         mode: str = 'save', lock: Optional[str] = None,
-        hidden: Optional[bool] = None, links: Optional[Dict[str, Any]] = None,
+        hidden: Optional[bool] = None, links: Optional[dict[str, Any]] = None,
     ):
         return self._request(self._req_data_update_entry(
             entry_id, data=data, unversioned_data=unversioned_data, meta=meta,

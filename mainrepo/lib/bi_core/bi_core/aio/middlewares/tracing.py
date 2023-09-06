@@ -60,7 +60,7 @@ class TracingService:
             try:
                 resp = await handler(request)
             except Exception:  # noqa
-                self.set_span_tag(root_span, opentracing.span.tags.ERROR, True)
+                self.set_span_tag(root_span, opentracing.tags.ERROR, True)
                 raise
             else:
                 self.set_span_tag(root_span, opentracing.tags.HTTP_STATUS_CODE, resp.status)

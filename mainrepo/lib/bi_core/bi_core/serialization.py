@@ -24,15 +24,15 @@ import decimal
 import json
 import uuid
 
-from typing import Any, ClassVar, Type, TypeVar, Union
+from typing import Any, ClassVar, Generic, Type, TypeVar, Union
 
 from bi_constants.types import TJSONLike, TJSONExt
 
 
-_TS_TV = TypeVar('_TS_TV', bound=type)
+_TS_TV = TypeVar('_TS_TV')
 
 
-class TypeSerializer:
+class TypeSerializer(Generic[_TS_TV]):
     typeobj: ClassVar[Type[_TS_TV]]  # type: ignore  # TODO: fix
     typename: ClassVar[str]
 
@@ -47,26 +47,26 @@ class TypeSerializer:
         raise NotImplementedError
 
 
-class DateSerializer(TypeSerializer):
+class DateSerializer(TypeSerializer[datetime.date]):
     typeobj = datetime.date
     typename = 'date'
 
     @staticmethod
-    def to_jsonable(obj: datetime.date) -> TJSONLike:  # type: ignore  # TODO: fix
+    def to_jsonable(obj: datetime.date) -> TJSONLike:
         return obj.isoformat()
 
     @staticmethod
-    def from_jsonable(value: TJSONLike) -> datetime.date:  # type: ignore  # TODO: fix
+    def from_jsonable(value: TJSONLike) -> datetime.date:
         assert isinstance(value, str)
         return datetime.date.fromisoformat(value)
 
 
-class DatetimeSerializer(TypeSerializer):
+class DatetimeSerializer(TypeSerializer[datetime.datetime]):
     typeobj = datetime.datetime
     typename = 'datetime'
 
     @staticmethod
-    def to_jsonable(obj: datetime.datetime) -> TJSONLike:  # type: ignore  # TODO: fix
+    def to_jsonable(obj: datetime.datetime) -> TJSONLike:
         tzinfo = (
             obj.tzinfo.utcoffset(obj).total_seconds()  # type: ignore  # TODO: fix
             if obj.tzinfo is not None else None)
@@ -76,7 +76,7 @@ class DatetimeSerializer(TypeSerializer):
         )
 
     @staticmethod
-    def from_jsonable(value: TJSONLike) -> datetime.datetime:  # type: ignore  # TODO: fix
+    def from_jsonable(value: TJSONLike) -> datetime.datetime:
         assert isinstance(value, (list, tuple))
         assert len(value) == 2
         parts, offset_sec = value
@@ -87,12 +87,12 @@ class DatetimeSerializer(TypeSerializer):
         return datetime.datetime(*parts, tzinfo=tzinfo)  # type: ignore  # TODO: fix
 
 
-class TimeSerializer(TypeSerializer):
+class TimeSerializer(TypeSerializer[datetime.time]):
     typeobj = datetime.time
     typename = 'time'
 
     @staticmethod
-    def to_jsonable(obj: datetime.time) -> TJSONLike:  # type: ignore  # TODO: fix
+    def to_jsonable(obj: datetime.time) -> TJSONLike:
         # Not expecting this to be valid for non-constant time tzinfos.
         tzinfo = (
             obj.tzinfo.utcoffset(datetime.datetime(1970, 1, 1)).total_seconds()  # type: ignore  # TODO: fix
@@ -103,7 +103,7 @@ class TimeSerializer(TypeSerializer):
         )
 
     @staticmethod
-    def from_jsonable(value: TJSONLike) -> datetime.time:  # type: ignore  # TODO: fix
+    def from_jsonable(value: TJSONLike) -> datetime.time:
         assert isinstance(value, (list, tuple))
         assert len(value) == 2, value
         parts, offset_sec = value
@@ -115,44 +115,44 @@ class TimeSerializer(TypeSerializer):
         return datetime.time(*parts, tzinfo=tzinfo)  # type: ignore  # TODO: fix
 
 
-class TimedeltaSerializer(TypeSerializer):
+class TimedeltaSerializer(TypeSerializer[datetime.timedelta]):
     typeobj = datetime.timedelta
     typename = 'timedelta'
 
     @staticmethod
-    def to_jsonable(obj: datetime.timedelta) -> TJSONLike:  # type: ignore  # TODO: fix
+    def to_jsonable(obj: datetime.timedelta) -> TJSONLike:
         return obj.total_seconds()
 
     @staticmethod
-    def from_jsonable(value: TJSONLike) -> datetime.timedelta:  # type: ignore  # TODO: fix
+    def from_jsonable(value: TJSONLike) -> datetime.timedelta:
         assert isinstance(value, float)
         return datetime.timedelta(seconds=value)
 
 
-class DecimalSerializer(TypeSerializer):
+class DecimalSerializer(TypeSerializer[decimal.Decimal]):
     typeobj = decimal.Decimal
     typename = 'decimal'
 
     @staticmethod
-    def to_jsonable(obj: decimal.Decimal) -> TJSONLike:  # type: ignore  # TODO: fix
+    def to_jsonable(obj: decimal.Decimal) -> TJSONLike:
         return str(obj)
 
     @staticmethod
-    def from_jsonable(value: TJSONLike) -> decimal.Decimal:  # type: ignore  # TODO: fix
+    def from_jsonable(value: TJSONLike) -> decimal.Decimal:
         assert isinstance(value, str)
         return decimal.Decimal(value)
 
 
-class UUIDSerializer(TypeSerializer):
+class UUIDSerializer(TypeSerializer[uuid.UUID]):
     typeobj = uuid.UUID
     typename = 'uuid'
 
     @staticmethod
-    def to_jsonable(obj: uuid.UUID) -> TJSONLike:  # type: ignore  # TODO: fix
+    def to_jsonable(obj: uuid.UUID) -> TJSONLike:
         return str(obj)
 
     @staticmethod
-    def from_jsonable(value: TJSONLike) -> uuid.UUID:  # type: ignore  # TODO: fix
+    def from_jsonable(value: TJSONLike) -> uuid.UUID:
         assert isinstance(value, str)
         return uuid.UUID(value)
 

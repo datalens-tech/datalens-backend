@@ -1,6 +1,6 @@
 import abc
 import os
-from typing import TypeVar, Generic
+from typing import Generic, Optional, TypeVar
 
 import attr
 
@@ -75,7 +75,7 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
     def _get_tenant_resolver(self) -> TenantResolver:
         raise NotImplementedError()
 
-    def create_worker(self, state: TaskState = None) -> ArqWorker:
+    def create_worker(self, state: Optional[TaskState] = None) -> ArqWorker:
         if state is None:
             state = TaskState(DummyStateImpl())
         cron_tasks = []
