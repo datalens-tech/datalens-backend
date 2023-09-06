@@ -29,20 +29,20 @@ devenv-core-status:
 
 
 devenv-api-lib-d:
-	docker-compose -f docker-compose.api-lib.yml up --build --force-recreate -d
+	docker-compose -f docker-compose.api_lib.yml up --build --force-recreate -d
 
 devenv-api-lib:
-	docker-compose -f docker-compose.api-lib.yml up --build --force-recreate
+	docker-compose -f docker-compose.api_lib.yml up --build --force-recreate
 
 devenv-api-lib-status:
-	docker-compose -f docker-compose.api-lib.yml ps
+	docker-compose -f docker-compose.api_lib.yml ps
 
 
 devenv-api-lib-bitrix-d:
-	docker-compose -f docker-compose.api-lib-bitrix.yml up --build --force-recreate -d
+	docker-compose -f docker-compose.api_lib.bitrix.yml up --build --force-recreate -d
 
-devenv-api-bitrix-lib:
-	docker-compose -f docker-compose.api-lib-bitrix.yml up --build --force-recreate
+devenv-api-lib-bitrix:
+	docker-compose -f docker-compose.api_lib.bitrix.yml up --build --force-recreate
 
 devenv-api-lib-bitrix-status:
 	docker-compose -f docker-compose.api-lib-bitrix.yml ps
