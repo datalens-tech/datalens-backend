@@ -107,51 +107,6 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
         CH_SCHOOLBOOK_PASSWORD='...censored...',
 
         FILE_UPLOADER_MASTER_TOKEN='...censored...',
-        CONNECTORS_FILE_PASSWORD='...censored...',
-        CONNECTORS_FILE_ACCESS_KEY_ID='...censored...',
-        CONNECTORS_FILE_SECRET_ACCESS_KEY='...censored...',
-
-        **{
-            env_key: env_value for connector_settings in
-            {
-                connector: {
-                    f'CONNECTORS_CH_FROZEN_{connector}_HOST': 'host_value',
-                    f'CONNECTORS_CH_FROZEN_{connector}_PORT': '8443',
-                    f'CONNECTORS_CH_FROZEN_{connector}_DB_NAME': 'db_value',
-                    f'CONNECTORS_CH_FROZEN_{connector}_USERNAME': 'username_value',
-                    f'CONNECTORS_CH_FROZEN_{connector}_USE_MANAGED_NETWORK': '0',
-                    f'CONNECTORS_CH_FROZEN_{connector}_ALLOWED_TABLES': "[\"list\",\"of\",\"tables\"]",
-                    f'CONNECTORS_CH_FROZEN_{connector}_SUBSELECT_TEMPLATES': "[{\"sql_query\":\"\\nSELECT\\n    *\\nFROM\\n    samples.orders t1\\n\",\"title\":\"SQL for cohorts\"}]",
-                    f'CONNECTORS_CH_FROZEN_{connector}_PASSWORD': '...censored...',
-                }
-                for connector in (
-                    'BUMPY_ROADS',
-                    'COVID',
-                    'DEMO',
-                    'DTP',
-                    'GKH',
-                    'SAMPLES',
-                    'TRANSPARENCY',
-                    'WEATHER',
-                    'HORECA',
-                )
-            }.values() for env_key, env_value in connector_settings.items()
-        },
-
-        CONNECTORS_MOYSKLAD_PASSWORD='...censored...',
-        CONNECTORS_MOYSKLAD_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-        CONNECTORS_EQUEO_PASSWORD='...censored...',
-        CONNECTORS_EQUEO_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-        CONNECTORS_BITRIX_PASSWORD='...censored...',
-        CONNECTORS_BITRIX_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-        CONNECTORS_KONTUR_MARKET_PASSWORD='...censored...',
-        CONNECTORS_KONTUR_MARKET_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-        CONNECTORS_CH_BILLING_ANALYTICS_PASSWORD='...censored...',
-        CONNECTORS_MARKET_COURIERS_PASSWORD='...censored...',
-        CONNECTORS_SMB_HEATMAPS_PASSWORD='...censored...',
-        CONNECTORS_CH_YA_MUSIC_PODCAST_STATS_PASSWORD='...censored...',
-        CONNECTORS_SCHOOLBOOK_PASSWORD='...censored...',
-        CONNECTORS_USAGE_TRACKING_PASSWORD='...censored...',
 
         YENV_NAME='cloud',
         YENV_TYPE='testing',
@@ -335,9 +290,6 @@ DEV_CONTROL_API_CASE = ConfigLoadingCase(
         CH_SCHOOLBOOK_PASSWORD='...censored...',
 
         FILE_UPLOADER_MASTER_TOKEN='...censored...',
-        CONNECTORS_FILE_PASSWORD='...censored...',
-        CONNECTORS_FILE_ACCESS_KEY_ID='...censored...',
-        CONNECTORS_FILE_SECRET_ACCESS_KEY='...censored...',
         REDIS_ARQ_PASSWORD='...censored...',
         US_BASE_URL='https://example.com',
 
@@ -435,15 +387,7 @@ def test_config_loading(case: ConfigLoadingCase):
         )
     )
 
-    assert isinstance(actual_config.CONNECTORS, ConnectorsSettingsByType)
-
-    if isinstance(actual_config, AsyncAppSettings):
-        assert actual_config.CONNECTORS.CH_FROZEN_SAMPLES.PORT == 8443
-        assert actual_config.CONNECTORS.CH_FROZEN_SAMPLES.USE_MANAGED_NETWORK is False
-        assert actual_config.CONNECTORS.CH_FROZEN_SAMPLES.ALLOWED_TABLES == ['list', 'of', 'tables']
-        assert actual_config.CONNECTORS.CH_FROZEN_SAMPLES.SUBSELECT_TEMPLATES == \
-               ({'title': 'SQL for cohorts', 'sql_query': '\nSELECT\n    *\nFROM\n    samples.orders t1\n'},)
-    else:
+    if not isinstance(actual_config, AsyncAppSettings):
         assert actual_config.CONNECTOR_AVAILABILITY.visible_connectors == {ConnectionType('clickhouse'), ConnectionType('postgres')}
         actual_config = attr.evolve(actual_config, CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig())
 
@@ -451,8 +395,60 @@ def test_config_loading(case: ConfigLoadingCase):
     assert actual_config == expected_config
 
 
+SPECIAL_CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
+    env=dict(
+        **CLOUD_PRE_PROD_DATA_API_CASE.env,
+        **dict(
+            CONNECTORS_FILE_PASSWORD='...censored...',
+            CONNECTORS_FILE_ACCESS_KEY_ID='...censored...',
+            CONNECTORS_FILE_SECRET_ACCESS_KEY='...censored...',
+
+            **{
+                env_key: env_value for connector_settings in
+                {
+                    connector: {
+                        f'CONNECTORS_CH_FROZEN_{connector}_HOST': 'host_value',
+                        f'CONNECTORS_CH_FROZEN_{connector}_PORT': '8443',
+                        f'CONNECTORS_CH_FROZEN_{connector}_DB_NAME': 'db_value',
+                        f'CONNECTORS_CH_FROZEN_{connector}_USERNAME': 'username_value',
+                        f'CONNECTORS_CH_FROZEN_{connector}_USE_MANAGED_NETWORK': '0',
+                        f'CONNECTORS_CH_FROZEN_{connector}_ALLOWED_TABLES': "[\"list\",\"of\",\"tables\"]",
+                        f'CONNECTORS_CH_FROZEN_{connector}_SUBSELECT_TEMPLATES': "[{\"sql_query\":\"\\nSELECT\\n    *\\nFROM\\n    samples.orders t1\\n\",\"title\":\"SQL for cohorts\"}]",
+                        f'CONNECTORS_CH_FROZEN_{connector}_PASSWORD': '...censored...',
+                    }
+                    for connector in (
+                        'BUMPY_ROADS',
+                        'COVID',
+                        'DEMO',
+                        'DTP',
+                        'GKH',
+                        'SAMPLES',
+                        'TRANSPARENCY',
+                        'WEATHER',
+                        'HORECA',
+                    )
+                }.values() for env_key, env_value in connector_settings.items()
+            },
+            CONNECTORS_MOYSKLAD_PASSWORD='...censored...',
+            CONNECTORS_MOYSKLAD_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
+            CONNECTORS_EQUEO_PASSWORD='...censored...',
+            CONNECTORS_EQUEO_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
+            CONNECTORS_BITRIX_PASSWORD='...censored...',
+            CONNECTORS_BITRIX_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
+            CONNECTORS_KONTUR_MARKET_PASSWORD='...censored...',
+            CONNECTORS_KONTUR_MARKET_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
+            CONNECTORS_CH_BILLING_ANALYTICS_PASSWORD='...censored...',
+            CONNECTORS_MARKET_COURIERS_PASSWORD='...censored...',
+            CONNECTORS_SMB_HEATMAPS_PASSWORD='...censored...',
+            CONNECTORS_CH_YA_MUSIC_PODCAST_STATS_PASSWORD='...censored...',
+            CONNECTORS_SCHOOLBOOK_PASSWORD='...censored...',
+            CONNECTORS_USAGE_TRACKING_PASSWORD='...censored...',
+        ),
+    ),
+    expected_config=CLOUD_PRE_PROD_DATA_API_CASE.expected_config,
+)
 @pytest.mark.parametrize("case", (
-    CLOUD_PRE_PROD_DATA_API_CASE,
+    SPECIAL_CLOUD_PRE_PROD_DATA_API_CASE,
 ))
 def test_connectors_settings_loading(case: ConfigLoadingCase):
     settings_registry = {CONNECTION_TYPE_CH_FROZEN_SAMPLES: CHFrozenSamplesConnectorSettings}

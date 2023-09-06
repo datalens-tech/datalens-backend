@@ -87,104 +87,39 @@ MIN_REQUIRED_SUB_ENV_CACHES = dict(
     MUTATIONS_REDIS_PASSWORD="SomeRedisPassword",
 )
 
-MIN_REQUIRED_SUB_ENV_FILE_CONN = dict(
-    CONNECTORS_FILE_PASSWORD='...censored...',
-    CONNECTORS_FILE_ACCESS_KEY_ID='...censored...',
-    CONNECTORS_FILE_SECRET_ACCESS_KEY='...censored...',
-)
-
-FROZEN_CONECTORS = (
-    'BUMPY_ROADS',
-    'COVID',
-    'DEMO',
-    'DTP',
-    'GKH',
-    'SAMPLES',
-    'TRANSPARENCY',
-    'WEATHER',
-    'HORECA',
-)
-
-MIN_REQUIRED_SUB_ENV_FROZEN_PASSWORDS = {
-    f'CONNECTORS_CH_FROZEN_{connector}_PASSWORD': '...censored...'
-    for connector in FROZEN_CONECTORS
-}
-
-MIN_REQUIRED_SUB_ENV_FROZEN_ALL_BUT_PASSWORDS = {
-    **{
-        env_key: env_value for connector_settings in
-        {
-            connector: {
-                f'CONNECTORS_CH_FROZEN_{connector}_HOST': 'host_value',
-                f'CONNECTORS_CH_FROZEN_{connector}_PORT': '8443',
-                f'CONNECTORS_CH_FROZEN_{connector}_DB_NAME': 'db_value',
-                f'CONNECTORS_CH_FROZEN_{connector}_USERNAME': 'username_value',
-                f'CONNECTORS_CH_FROZEN_{connector}_USE_MANAGED_NETWORK': '0',
-                f'CONNECTORS_CH_FROZEN_{connector}_ALLOWED_TABLES': "[\"list\",\"of\",\"tables\"]",
-                f'CONNECTORS_CH_FROZEN_{connector}_SUBSELECT_TEMPLATES': "[{\"sql_query\":\"\\nSELECT\\n    *\\nFROM\\n    samples.orders t1\\n\",\"title\":\"SQL for cohorts\"}]",
-            }
-            for connector in FROZEN_CONECTORS
-        }.values() for env_key, env_value in connector_settings.items()
-    },
-}
-
 # Intranet
 
 MIN_REQUIRED_ENV_INTRANET_CONTROL = dict(
-    CONNECTORS_USAGE_TRACKING_YA_TEAM_PASSWORD='...censored...',
     **MIN_REQUIRED_ENV_COMMON,
-    **MIN_REQUIRED_SUB_ENV_FILE_CONN,
 )
 
 MIN_REQUIRED_ENV_INTRANET_DATA = dict(
-    CONNECTORS_USAGE_TRACKING_YA_TEAM_PASSWORD='...censored...',
     **MIN_REQUIRED_ENV_COMMON,
     **MIN_REQUIRED_SUB_ENV_CACHES,
-    **MIN_REQUIRED_SUB_ENV_FILE_CONN,
 )
 
 # Yandex Cloud
 
 MIN_REQUIRED_ENV_CLOUD_COMMON = dict(
-    CONNECTORS_MARKET_COURIERS_PASSWORD='...censored...',
-    CONNECTORS_SMB_HEATMAPS_PASSWORD='...censored...',
-    CONNECTORS_MOYSKLAD_PASSWORD='...censored...',
-    CONNECTORS_MOYSKLAD_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-    CONNECTORS_EQUEO_PASSWORD='...censored...',
-    CONNECTORS_EQUEO_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-    CONNECTORS_BITRIX_PASSWORD='...censored...',
-    CONNECTORS_BITRIX_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-    CONNECTORS_KONTUR_MARKET_PASSWORD='...censored...',
-    CONNECTORS_KONTUR_MARKET_PARTNER_KEYS='{"dl_private": {"1": "dl_priv_key_pem"}, "partner_public": {"1": "partner_pub_key_pem"}}',
-    CONNECTORS_CH_BILLING_ANALYTICS_PASSWORD='...censored...',
-    CONNECTORS_CH_YA_MUSIC_PODCAST_STATS_PASSWORD='...censored...',
-    CONNECTORS_SCHOOLBOOK_PASSWORD='...censored...',
     RQE_CACHES_REDIS_PASSWORD='...censored...',
     **MIN_REQUIRED_ENV_COMMON,
-    **MIN_REQUIRED_SUB_ENV_FILE_CONN,
 )
 
 MIN_REQUIRED_ENV_CLOUD_CONTROL = dict(
     **MIN_REQUIRED_ENV_CLOUD_COMMON,
-    **MIN_REQUIRED_SUB_ENV_FROZEN_PASSWORDS,
 )
 
 MIN_REQUIRED_ENV_CLOUD_CONTROL_TESTING = dict(
-    CONNECTORS_USAGE_TRACKING_PASSWORD='...censored...',
     **MIN_REQUIRED_ENV_CLOUD_CONTROL,
-    **MIN_REQUIRED_SUB_ENV_FROZEN_ALL_BUT_PASSWORDS,
 )
 
 MIN_REQUIRED_ENV_CLOUD_DATA = dict(
     **MIN_REQUIRED_ENV_CLOUD_COMMON,
     **MIN_REQUIRED_SUB_ENV_CACHES,
-    **MIN_REQUIRED_SUB_ENV_FROZEN_PASSWORDS,
 )
 
 MIN_REQUIRED_ENV_CLOUD_DATA_TESTING = dict(
-    CONNECTORS_USAGE_TRACKING_PASSWORD='...censored...',
     **MIN_REQUIRED_ENV_CLOUD_DATA,
-    **MIN_REQUIRED_SUB_ENV_FROZEN_ALL_BUT_PASSWORDS,
 )
 
 # Yandex Cloud public
@@ -192,13 +127,10 @@ MIN_REQUIRED_ENV_CLOUD_DATA_TESTING = dict(
 MIN_REQUIRED_ENV_CLOUD_PUBLIC_DATA = dict(
     **MIN_REQUIRED_ENV_CLOUD_COMMON,
     **MIN_REQUIRED_SUB_ENV_CACHES,
-    **MIN_REQUIRED_SUB_ENV_FROZEN_PASSWORDS,
 )
 
 MIN_REQUIRED_ENV_CLOUD_PUBLIC_DATA_TESTING = dict(
-    CONNECTORS_USAGE_TRACKING_PASSWORD='...censored...',
     **MIN_REQUIRED_ENV_CLOUD_PUBLIC_DATA,
-    **MIN_REQUIRED_SUB_ENV_FROZEN_ALL_BUT_PASSWORDS,
 )
 
 # DataCloud
