@@ -12,7 +12,7 @@ from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResourceCommon, RequiredResource
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from bi_core.aio.middlewares.csrf import csrf_middleware, generate_csrf_token
+from bi_core.aio.middlewares.csrf import CSRFMiddleware, generate_csrf_token
 
 
 _SAMPLE_YANDEXUID = _SAMPLE_USER_ID = '123'
@@ -26,6 +26,10 @@ _AppFactory = Callable[[bool], Awaitable[TestClient]]
 
 def ts_now():
     return int(time.time())
+
+
+class CSRFMiddlewareYa(CSRFMiddleware):
+    USER_ID_COOKIES = ('yandexuid',)
 
 
 @pytest.fixture(scope='function')
@@ -53,12 +57,12 @@ async def csrf_app_factory(aiohttp_client) -> _AppFactory:
                 req_id_service=req_id_service,
             ).middleware,
             auth_trust_middleware(fake_user_id=_SAMPLE_USER_ID if authorized else None),
-            csrf_middleware(
+            CSRFMiddlewareYa(
                 csrf_header_name='x-csrf-token',
                 csrf_time_limit=_CSRF_TIME_LIMIT,
                 csrf_secret=_VALID_CSRF_SECRET,
                 csrf_methods=('POST', 'PUT', 'DELETE'),
-            ),
+            ).middleware,
         ])
 
         app.router.add_get('/', non_csrf_handler)

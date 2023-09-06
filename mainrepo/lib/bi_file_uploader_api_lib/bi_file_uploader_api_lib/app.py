@@ -1,6 +1,6 @@
 import abc
 import logging
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Type
 
 import attr
 from aiohttp import web
@@ -14,7 +14,7 @@ from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_constants.api_constants import DLHeadersCommon
 
 from bi_core.aio.metrics_view import MetricsView
-from bi_core.aio.middlewares.csrf import csrf_middleware
+from bi_core.aio.middlewares.csrf import CSRFMiddleware
 from bi_core.aio.middlewares.master_key import master_key_middleware
 from bi_core.aio.middlewares.tracing import TracingService
 from bi_core.aio.ping_view import PingView
@@ -37,6 +37,8 @@ _TSettings = TypeVar('_TSettings', bound=FileUploaderAPISettings)
 
 @attr.s(kw_only=True)
 class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
+    CSRF_MIDDLEWARE_CLS: Type[CSRFMiddleware] = CSRFMiddleware
+
     _settings: _TSettings = attr.ib()
 
     @abc.abstractmethod
@@ -110,12 +112,12 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             ),
             *self.get_auth_middlewares(),
             commit_rci_middleware(),
-            csrf_middleware(
+            self.CSRF_MIDDLEWARE_CLS(
                 csrf_header_name=self._settings.CSRF.HEADER_NAME,
                 csrf_time_limit=self._settings.CSRF.TIME_LIMIT,
                 csrf_secret=self._settings.CSRF.SECRET,
                 csrf_methods=self._settings.CSRF.METHODS,
-            ),
+            ).middleware,
             # TODO FIX: Add when json_body_middleware will be moved to bi_core
             # json_body_middleware(),
         ]

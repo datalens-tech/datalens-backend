@@ -4,6 +4,7 @@ from bi_constants.api_constants import YcTokenHeaderMode
 from bi_configs.enums import AppType
 
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from bi_core.aio.middlewares.csrf import CSRFMiddleware
 
 from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
 
@@ -17,8 +18,14 @@ from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_m
 from bi_file_uploader.app_settings import DefaultFileUploaderAPISettings
 
 
+class DefaultCSRFMiddleware(CSRFMiddleware):
+    USER_ID_COOKIES = ('yandexuid',)
+
+
 @attr.s(kw_only=True)
 class LegacyFileUploaderApiAppFactory(FileUploaderApiAppFactory[DefaultFileUploaderAPISettings]):
+    CSRF_MIDDLEWARE_CLS = DefaultCSRFMiddleware
+
     def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
         app_type = self._settings.APP_TYPE
 
