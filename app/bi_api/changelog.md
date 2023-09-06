@@ -1,3 +1,60 @@
+0.1990.0
+--------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * BI-4896 Connectorize notifications; some mypy fixes (#358)                                   [ https://github.com/datalens-tech/datalens-backend-private/commit/bfacbbea ]
+ * Add user-id cookie customization to CSRF middlewares to avoid hardcoded yandexuid (#347)     [ https://github.com/datalens-tech/datalens-backend-private/commit/78543050 ]
+ * Preload entrypoint connectors before loading settings to force constants declaration (#360)  [ https://github.com/datalens-tech/datalens-backend-private/commit/5e7ea9be ]
+ * BI-4905 Split bi_api_commons into public and private parts (#311)                            [ https://github.com/datalens-tech/datalens-backend-private/commit/d5fc8a87 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4902] Resync OS metapkg after dependencies cleanup (#369)                      [ https://github.com/datalens-tech/datalens-backend-private/commit/eb7ffeb2 ]
+ * [BI-4902] Actualize dependencies in main-repo (#365)                               [ https://github.com/datalens-tech/datalens-backend-private/commit/671b951c ]
+ * [BI-4902] Move `bi-connector-solomon` from bi-api-lib to bi-api (path fix) (#350)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0c6b5efe ]
+ * [BI-4902] Move `bi-connector-solomon` from bi-api-lib to bi-api (#349)             [ https://github.com/datalens-tech/datalens-backend-private/commit/8602265a ]
+ * [BI-4902] Tool to compare resolved depdendencies for apps (#345)                   [ https://github.com/datalens-tech/datalens-backend-private/commit/196cedfa ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version mainrepo/lib/bi_file_uploader_worker_lib 0.142.0 (#367)  [ https://github.com/datalens-tech/datalens-backend-private/commit/1d265ea4 ]
+ * releasing version app/bi_file_secure_reader 0.14.0 (#363)                  [ https://github.com/datalens-tech/datalens-backend-private/commit/246f33b6 ]
+ * releasing version mainrepo/lib/bi_file_uploader_worker_lib 0.141.0 (#361)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f29eb9a4 ]
+
+* [Sergei Borodin](http://staff/seray@yandex-team.ru)
+
+ * BI-4428 fix file-worker deps (#366)                                     [ https://github.com/datalens-tech/datalens-backend-private/commit/db51dd62 ]
+ * BI-4428 adding an ability to connect to security-reader via TCP (#346)  [ https://github.com/datalens-tech/datalens-backend-private/commit/1be37cd6 ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * some more mypy stubs and fixes for mypy sync tool (#362)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c98cd2ac ]
+ * move ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY (#357)        [ https://github.com/datalens-tech/datalens-backend-private/commit/def5dfa2 ]
+ * mypy fixes vol. 6 (#351)                                  [ https://github.com/datalens-tech/datalens-backend-private/commit/d4aa169e ]
+ * move tvm.py from bi_core (#343)                           [ https://github.com/datalens-tech/datalens-backend-private/commit/63170213 ]
+ * BI-4852: postgresql mdb-specific bi api connector (#277)  [ https://github.com/datalens-tech/datalens-backend-private/commit/2a6649a4 ]
+ * BI-4860: CONNECTORS_DATA -> CONNECTORS (#340)             [ https://github.com/datalens-tech/datalens-backend-private/commit/d6a0ca42 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Taskfile cleanup (#359)                                      [ https://github.com/datalens-tech/datalens-backend-private/commit/7ca2daec ]
+ * Added bake for doc generation (#353)                         [ https://github.com/datalens-tech/datalens-backend-private/commit/4c5cb1e4 ]
+ * Some renamings in dl-repmanager (#355)                       [ https://github.com/datalens-tech/datalens-backend-private/commit/13da9dd3 ]
+ * Correct generation of localizations for all packages (#352)  [ https://github.com/datalens-tech/datalens-backend-private/commit/54969d19 ]
+ * Removed env-dependent scopes from formula_ref (#338)         [ https://github.com/datalens-tech/datalens-backend-private/commit/726e0b59 ]
+ * Created empty package for formula testing tools (#246)       [ https://github.com/datalens-tech/datalens-backend-private/commit/e72b3057 ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * BI-4359: move bi_api_lib tests to legacy bundle (#322)  [ https://github.com/datalens-tech/datalens-backend-private/commit/205b6109 ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * Removing workaround  for different docker-compose in arc ci and gh ci. (#341)  [ https://github.com/datalens-tech/datalens-backend-private/commit/490493ed ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-06 16:44:33+00:00
+
 0.1989.0
 --------
 
