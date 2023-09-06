@@ -1,3 +1,27 @@
+0.143.0
+-------
+
+* [Sergei Borodin](http://staff/seray@yandex-team.ru)
+
+ * BI-4428 reinstall certifi-yandex (#372)  [ https://github.com/datalens-tech/datalens-backend-private/commit/8aeb1501 ]
+
+* [github-actions[bot]](http://staff/41898282+github-actions[bot]@users.noreply.github.com)
+
+ * releasing version mainrepo/lib/bi_api_lib 0.1990.0 (#370)  [ https://github.com/datalens-tech/datalens-backend-private/commit/8a908796 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * BI-4896 Connectorize notifications; some mypy fixes (#358)                                   [ https://github.com/datalens-tech/datalens-backend-private/commit/bfacbbea ]
+ * Add user-id cookie customization to CSRF middlewares to avoid hardcoded yandexuid (#347)     [ https://github.com/datalens-tech/datalens-backend-private/commit/78543050 ]
+ * Preload entrypoint connectors before loading settings to force constants declaration (#360)  [ https://github.com/datalens-tech/datalens-backend-private/commit/5e7ea9be ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4902] Resync OS metapkg after dependencies cleanup (#369)  [ https://github.com/datalens-tech/datalens-backend-private/commit/eb7ffeb2 ]
+ * [BI-4902] Actualize dependencies in main-repo (#365)           [ https://github.com/datalens-tech/datalens-backend-private/commit/671b951c ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-06 18:52:10+00:00
+
 0.142.0
 -------
 
