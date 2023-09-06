@@ -136,3 +136,17 @@ COPY --from=bake_ctx_3rd_party_requirements_txt /requirements.txt /requirements.
 RUN pip install -r /requirements.txt
 EOT
 }
+
+target "gen-formula-ref" {
+  args = {
+    LOCALE_NAME = ".." # need to pass via --set flag
+    OUTPUT_DIR = ".." # need to pass via --set flag
+    CONFIG_VERSION = ".." # need to pass via --set flag
+  }
+  contexts = {
+    base_img = "target:ci_with_src"
+  }
+
+  dockerfile = "./target_gen_formula_ref/Dockerfile"
+  output     = ["type=local,dest=."] # need to pass via --set flag
+}

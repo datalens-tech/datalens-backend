@@ -15,3 +15,4 @@ local_dev_2/requirements.txt
 __pycache__
 ci_artifacts
 .DS_Store
+artifacts
