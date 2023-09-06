@@ -143,11 +143,11 @@ async def uploaded_excel_id(uploaded_excel) -> str:
 
 
 @pytest.fixture(scope="function")
-def reader_app(loop, secure_reader_socket):
+def reader_app(loop, secure_reader):
     current_app = create_reader_app()
     runner = aiohttp.web.AppRunner(current_app)
     loop.run_until_complete(runner.setup())
-    site = aiohttp.web.UnixSite(runner, path=secure_reader_socket)
+    site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)
     return loop.run_until_complete(site.start())
 
 

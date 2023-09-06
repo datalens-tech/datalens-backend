@@ -23,6 +23,12 @@ from bi_file_uploader_task_interface.utils_service_registry import (
 
 
 @attr.s
+class SecureReaderSettings:
+    socket: str = attr.ib()
+    endpoint: Optional[str] = attr.ib(default=None)
+
+
+@attr.s
 class FileUploaderTaskContext(BaseContext):
     settings: Optional[Any] = attr.ib()
     tpe: ContextVarExecutor = attr.ib()
@@ -31,7 +37,7 @@ class FileUploaderTaskContext(BaseContext):
     gsheets_settings: GSheetsSettings = attr.ib()
     redis_pool: arq.ArqRedis = attr.ib()
     crypto_keys_config: CryptoKeysConfig = attr.ib()
-    secure_reader_socket: str = attr.ib()
+    secure_reader_settings: SecureReaderSettings = attr.ib()
     tenant_resolver: TenantResolver = attr.ib()
 
     def get_rci(self) -> RequestContextInfo:

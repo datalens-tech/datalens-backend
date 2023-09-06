@@ -94,7 +94,7 @@ from statcommons.logs import LOGMUTATORS
 from bi_api_lib.query.registry import register_for_connectors_with_native_wf
 
 from bi_file_uploader_worker_lib.app import FileUploaderContextFab
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
 from bi_file_uploader_worker_lib.tasks import REGISTRY as FILE_UPLOADER_WORKER_TASK_REGISTRY
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
@@ -1076,6 +1076,9 @@ def file_uploader_worker_settings(
             API_KEY='dummy',
             CLIENT_ID='dummy',
             CLIENT_SECRET='dummy',
+        ),
+        SECURE_READER=SecureReader(
+            SOCKET='/var/reader.sock',
         ),
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
     )

@@ -38,6 +38,7 @@ def file_uploader_worker_settings(
         connectors_settings,
         us_config,
         crypto_keys_config,
+        secure_reader,
 ):
     settings = FileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
@@ -58,6 +59,7 @@ def file_uploader_worker_settings(
             CLIENT_ID='dummy',  # TODO test auth properly
             CLIENT_SECRET='dummy',
         ),
+        SECURE_READER=secure_reader,
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
     )
     yield settings

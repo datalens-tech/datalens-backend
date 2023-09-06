@@ -53,18 +53,24 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
             )
             file_obj = await s3_resp['Body'].read()
 
-            socket_path = self._ctx.secure_reader_socket
-            conn = aiohttp.UnixConnector(path=socket_path)
-            session = aiohttp.ClientSession(connector=conn, loop=loop)
-            with aiohttp.MultipartWriter() as mpwriter:
-                part = mpwriter.append(file_obj)
-                part.set_content_disposition('form-data', name='file')
-                async with session.post(
-                    f'http+unix://{urllib.parse.quote_plus(socket_path)}/reader/excel',
-                    data=mpwriter,
-                ) as resp:
-                    file_data = await resp.json()
-            await session.close()
+            conn: aiohttp.BaseConnector
+            if self._ctx.secure_reader_settings.endpoint is not None:
+                secure_reader_endpoint = self._ctx.secure_reader_settings.endpoint
+                conn = aiohttp.TCPConnector()
+            else:
+                socket_path = self._ctx.secure_reader_settings.socket
+                secure_reader_endpoint = f'http+unix://{urllib.parse.quote_plus(socket_path)}'
+                conn = aiohttp.UnixConnector(path=socket_path)
+
+            async with aiohttp.ClientSession(connector=conn, loop=loop) as session:
+                with aiohttp.MultipartWriter() as mpwriter:
+                    part = mpwriter.append(file_obj)
+                    part.set_content_disposition('form-data', name='file')
+                    async with session.post(
+                        url=f'{secure_reader_endpoint}/reader/excel',
+                        data=mpwriter,
+                    ) as resp:
+                        file_data = await resp.json()
 
             for spreadsheet in file_data:
                 sheetname = spreadsheet['sheetname']

@@ -5,9 +5,16 @@ import attr
 from bi_configs.environments import CommonInstallation
 from bi_configs.settings_loaders.meta_definition import s_attrib, required
 from bi_configs.connectors_settings import ConnectorsSettingsByType, connectors_settings_file_only_fallback_factory
+from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import GoogleAppSettings
 
 from bi_file_uploader_lib.settings import FileUploaderBaseSettings
+
+
+@attr.s(frozen=True)
+class SecureReader(SettingsBase):
+    SOCKET: str = s_attrib("SOCKET")  # type: ignore
+    ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore
 
 
 @attr.s(frozen=True)
@@ -36,4 +43,12 @@ class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     )
 
     ENABLE_REGULAR_S3_LC_RULES_CLEANUP: bool = s_attrib("ENABLE_REGULAR_S3_LC_RULES_CLEANUP", missing=False)  # type: ignore
-    SECURE_READER_SOCKET: str = s_attrib("SECURE_READER_SOCKET", missing="/var/reader.sock")  # type: ignore
+    SECURE_READER: SecureReader = s_attrib(  # type: ignore
+        "SECURE_READER",
+        fallback_factory=(
+            lambda: SecureReader(  # type: ignore
+                SOCKET="/var/reader.sock",
+                ENDPOINT=None,
+            )
+        ),
+    )

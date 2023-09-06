@@ -36,7 +36,8 @@ def main() -> None:
     current_app = create_gunicorn_app()
     web.run_app(
         current_app,
-        path=os.environ["APP_SOCKET"],
+        host=os.environ["APP_HOST"],
+        port=int(os.environ["APP_PORT"]),
     )
 
 

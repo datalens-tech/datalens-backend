@@ -4,14 +4,17 @@ set -x  # debug.
 set -eu
 
 socket="${GUNICORN_SOCKET_PATH:-/var/reader.sock}"
+port="${GUNICORN_LISTEN_PORT:-8080}"
 workers="${GUNICORN_WORKERS_COUNT:-1}"
 max_rq="${GUNICORN_MAX_RQ:-5000}"
 max_rq_jitter="${GUNICORN_MAX_RQ_JITTER:-500}"
 
+if [ "${READER_USE_SOCKET:-1}" = "1" ]; then BIND_ADDR="unix:${socket}"; else BIND_ADDR="[::]:${port}"; fi
+
 exec \
     gunicorn \
     bi_file_secure_reader.app:create_gunicorn_app \
-    --bind "unix:${socket}" \
+    --bind "${BIND_ADDR}" \
     --max-requests "$max_rq" \
     --max-requests-jitter "$max_rq_jitter" \
     --workers="$workers" \

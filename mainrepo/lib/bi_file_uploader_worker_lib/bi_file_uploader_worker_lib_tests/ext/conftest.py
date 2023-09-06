@@ -33,7 +33,7 @@ def file_uploader_worker_settings(
         s3_settings,
         connectors_settings,
         us_config,
-        secure_reader_socket,
+        secure_reader,
 ):
     settings = FileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
@@ -55,6 +55,6 @@ def file_uploader_worker_settings(
             CLIENT_SECRET='dummy',
         ),
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
-        SECURE_READER_SOCKET=secure_reader_socket,
+        SECURE_READER=secure_reader,
     )
     yield settings

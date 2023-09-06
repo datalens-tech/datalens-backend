@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import sys
 from typing import Any
 
 import attr
@@ -36,7 +37,7 @@ from bi_task_processor.state import TaskState, BITaskStateImpl
 
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
 
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
 from bi_file_uploader_worker_lib.testing.task_processor_client import get_task_processor_client
 from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
@@ -44,11 +45,6 @@ from bi_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 
 from bi_file_secure_reader.app import create_app as create_reader_app
 
-try:
-    # Arcadia testing stuff
-    import yatest.common as yatest_common
-except ImportError:
-    yatest_common = None
 
 from .config import TestingUSConfig
 
@@ -130,13 +126,16 @@ def s3_settings() -> S3Settings:
 
 
 @pytest.fixture(scope='session')
-def secure_reader_socket():
+def secure_reader():
     socket_name = 'reader.sock'
-    if yatest_common is not None:
-        path = '/place/sandbox-data/build_cache'
+    if sys.platform == 'darwin':
+        path = '/var/tmp'
     else:
         path = '/var'
-    return os.path.join(path, socket_name)
+
+    return SecureReader(
+        SOCKET=os.path.join(path, socket_name),
+    )
 
 
 @pytest.fixture(scope="session")
@@ -291,7 +290,7 @@ def file_uploader_worker_settings(
         connectors_settings,
         us_config,
         crypto_keys_config,
-        secure_reader_socket,
+        secure_reader,
 ):
     settings = FileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
@@ -313,7 +312,7 @@ def file_uploader_worker_settings(
             CLIENT_SECRET='dummy',
         ),
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
-        SECURE_READER_SOCKET=secure_reader_socket,
+        SECURE_READER=secure_reader,
     )
     yield settings
 
@@ -368,9 +367,9 @@ def default_async_usm_per_test(bi_context, prepare_us, us_config):
 
 
 @pytest.fixture(scope="function")
-def reader_app(loop, secure_reader_socket):
+def reader_app(loop, secure_reader):
     current_app = create_reader_app()
     runner = aiohttp.web.AppRunner(current_app)
     loop.run_until_complete(runner.setup())
-    site = aiohttp.web.UnixSite(runner, path=secure_reader_socket)
+    site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)
     return loop.run_until_complete(site.start())

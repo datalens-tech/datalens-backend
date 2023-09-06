@@ -9,7 +9,7 @@ from bi_utils.aio import ContextVarExecutor
 from bi_core.aio.web_app_services.gsheets import GSheetsSettings
 from bi_core.aio.web_app_services.s3 import S3Service
 from bi_core.loader import load_bi_core
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext
+from bi_file_uploader_task_interface.context import FileUploaderTaskContext, SecureReaderSettings
 from bi_file_uploader_task_interface.tasks import CleanS3LifecycleRulesTask
 from bi_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings, make_cron_task, CronSchedule
 from bi_task_processor.context import BaseContextFabric
@@ -57,7 +57,10 @@ class FileUploaderContextFab(BaseContextFabric):
             ),
             redis_pool=redis_pool,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
-            secure_reader_socket=self._settings.SECURE_READER_SOCKET,
+            secure_reader_settings=SecureReaderSettings(
+                socket=self._settings.SECURE_READER.SOCKET,
+                endpoint=self._settings.SECURE_READER.ENDPOINT,
+            ),
             tenant_resolver=self._tenant_resolver,
         )
 

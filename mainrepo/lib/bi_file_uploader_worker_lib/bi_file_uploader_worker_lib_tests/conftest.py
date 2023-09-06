@@ -39,14 +39,9 @@ from bi_file_uploader_lib.redis_model.base import RedisModelManager
 
 from bi_file_uploader_worker_lib.app import FileUploaderContextFab
 from bi_file_uploader_worker_lib.tasks import REGISTRY
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
 from bi_file_uploader_worker_lib.testing.app_factory import TestingFileUploaderWorkerFactory
 
-try:
-    # Arcadia testing stuff
-    import yatest.common as yatest_common
-except ImportError:
-    yatest_common = None
 
 from .config import TestingUSConfig
 
@@ -131,15 +126,16 @@ def s3_settings() -> S3Settings:
 
 
 @pytest.fixture(scope='session')
-def secure_reader_socket():
+def secure_reader():
     socket_name = 'reader.sock'
-    if yatest_common is not None:
-        path = '/place/sandbox-data/build_cache'
-    elif sys.platform == 'darwin':
+    if sys.platform == 'darwin':
         path = '/var/tmp'
     else:
         path = '/var'
-    return os.path.join(path, socket_name)
+
+    return SecureReader(
+        SOCKET=os.path.join(path, socket_name),
+    )
 
 
 @pytest.fixture(scope='session')
@@ -167,7 +163,7 @@ def file_uploader_worker_settings(
         s3_settings,
         connectors_settings,
         us_config,
-        secure_reader_socket,
+        secure_reader,
 ):
     settings = FileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
@@ -189,7 +185,7 @@ def file_uploader_worker_settings(
             CLIENT_SECRET='dummy',
         ),
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
-        SECURE_READER_SOCKET=secure_reader_socket,
+        SECURE_READER=secure_reader,
     )
     yield settings
 
