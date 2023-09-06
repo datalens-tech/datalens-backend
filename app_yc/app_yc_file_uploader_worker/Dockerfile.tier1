@@ -18,6 +18,7 @@ COPY /README.md /src/$APP_DIR/README.md
 WORKDIR /src/ops/ci
 RUN poetry export --only app_bi_yc_file_uploader_worker --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat requirements.txt | grep certifi-yandex)"
 
 WORKDIR /src/$APP_DIR
 
