@@ -37,7 +37,7 @@ def process_one(requirement: PipRequirement, override: dict | None = None):
             return override_name, override_version
         case {"version": override_version}:
             if check_if_exists_in_pypi(guessed_name, override_version):
-                return override_version, override_version
+                return guessed_name, override_version
             else:
                 log.error(f"PyPI doesn't have package {guessed_name} with version from overrides: {override_version}")
                 return None

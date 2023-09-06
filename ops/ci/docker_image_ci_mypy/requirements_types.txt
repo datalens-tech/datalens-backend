@@ -1,3 +1,5 @@
+boto3-stubs==1.24.59
+botocore-stubs==1.27.59
 grpc-stubs==1.53.0.2
 mypy==1.5.1
 pandas-stubs==1.5.3.230321
@@ -35,4 +37,5 @@ types-sqlalchemy==1.4.46
 types-tabulate==0.9.0
 types-toml==0.10.2
 types-tzlocal==5.0.1
+types-ujson==5.8.0.1
 types-urllib3==1.26.16

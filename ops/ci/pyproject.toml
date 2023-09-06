@@ -359,7 +359,7 @@ babel =  {ignore = true}
 black =  {ignore = true}
 blackbox =  {ignore = true}
 blinker =  {ignore = true}
-boto3 =  {ignore = true}
+boto3 =  {name = "boto3-stubs"}
 cchardet =  {ignore = true}
 celery =  {ignore = true}
 certifi =  {ignore = true}
@@ -428,7 +428,7 @@ tvm2 =  {ignore = true}
 tvmauth =  {ignore = true}
 typeguard =  {ignore = true}
 typing-extensions =  {ignore = true}
-ujson =  {ignore = true}
+ujson =  {version = "5.8.0.1"}
 uvloop =  {ignore = true}
 uwsgi =  {ignore = true}
 werkzeug =  {ignore = true}
@@ -448,7 +448,7 @@ asttokens = {ignore = true}
 backcall = {ignore = true}
 bcrypt = {ignore = true}
 billiard = {ignore = true}
-botocore = {ignore = true}
+botocore = {name = "botocore-stubs"}
 build = {ignore = true}
 "cachecontrol[filecache]" = {ignore = true}
 cachetools = {ignore = true}

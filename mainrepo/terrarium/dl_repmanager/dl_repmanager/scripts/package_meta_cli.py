@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog='DL Package Meta CLI')
-    parser.add_argument('package_path')
+    parser.add_argument('--package-path')
 
     subparsers = parser.add_subparsers(title='command', dest='command')
 
@@ -29,7 +29,7 @@ def make_parser() -> argparse.ArgumentParser:
     subparsers.add_parser('list-external-dependencies', help='List external dependencies')
 
     sync_mypy_stubs = argparse.ArgumentParser(add_help=False)
-    sync_mypy_stubs.add_argument("--dry-run", default=True, action=argparse.BooleanOptionalAction)
+    sync_mypy_stubs.add_argument("--dry-run", action='store_true')
     sync_mypy_stubs.add_argument("--config", default=DEFAULT_CONFIG_FILE_NAME)
     subparsers.add_parser(
         'sync-mypy-stubs',
