@@ -11,6 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
+attrs = ">=22.2.0"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 
 [tool.poetry.group.tests.dependencies]

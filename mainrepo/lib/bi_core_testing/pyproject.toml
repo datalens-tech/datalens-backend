@@ -28,6 +28,7 @@ yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}
 yandex-bi-db-testing = {path = "../bi_db_testing"}
+yandex-bi-testing = {path = "../bi_testing"}
 yandex-bi-utils = {path = "../bi_utils"}
 statcommons = {path = "../statcommons"}
 
@@ -36,6 +37,7 @@ testing = "bi_core_testing.connector:TestingCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+docker = ">=6.0.1"  # Here is to prevent installation in prod deps as transitive dependency
 
 [[tool.mypy.overrides]]
 module = "dill.*"
