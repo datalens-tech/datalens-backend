@@ -145,7 +145,7 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
 
     def get_dataset_params(self, dataset_params: dict, db_table: DbTable) -> dict:
         return dataset_params | dict(
-            parameters=dict(
+            parameters=dataset_params.get('parameters', {}) | dict(
                 schema_name=db_table.schema,
                 table_name=db_table.name,
             )
