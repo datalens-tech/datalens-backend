@@ -92,7 +92,9 @@ class BiApiTestBase(abc.ABC):
         redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
 
         settings = ControlPlaneAppSettings(
-            CONNECTOR_AVAILABILITY=bi_test_config.connector_availability,
+            CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
+                bi_test_config.connector_availability_settings,
+            ),
             APP_TYPE=AppType.TESTS,
             ENV_TYPE=EnvType.development,
 

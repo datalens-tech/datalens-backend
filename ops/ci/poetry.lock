@@ -915,7 +915,7 @@ url = "../../mainrepo/lib/bi_file_uploader_task_interface"
 
 [[package]]
 name = "bi-file-uploader-worker"
-version = "0.141.0"
+version = "0.142.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7439,7 +7439,6 @@ yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
 yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
 yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-bigquery = {path = "../bi_connector_bigquery"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
@@ -8588,7 +8587,7 @@ url = "../../mainrepo/lib/bi_file_uploader_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-lib"
-version = "0.141.0"
+version = "0.142.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8621,7 +8620,7 @@ url = "../../mainrepo/lib/bi_file_uploader_worker_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-yc"
-version = "0.141.0"
+version = "0.142.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"

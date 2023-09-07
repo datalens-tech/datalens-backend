@@ -4,7 +4,7 @@ from typing import Any
 
 import attr
 
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from bi_configs.connector_availability import ConnectorAvailabilityConfigSettings
 from bi_configs.environments import InternalTestingInstallation, TestsInstallation
 
 from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
@@ -31,7 +31,7 @@ class BiApiTestEnvironmentConfiguration:
     redis_db_mutation: int = attr.ib(default=2)
     redis_db_arq: int = attr.ib(default=11)
 
-    connector_availability: ConnectorAvailabilityConfig = attr.ib(default=TestsInstallation.CONNECTOR_AVAILABILITY)
+    connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(default=TestsInstallation.CONNECTOR_AVAILABILITY)
     connector_whitelist: str = attr.ib(default=TestsInstallation.CONNECTOR_WHITELIST)
 
     def clone(self, **kwargs: Any) -> BiApiTestEnvironmentConfiguration:

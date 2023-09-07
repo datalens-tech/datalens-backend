@@ -9,10 +9,8 @@ from bi_constants.enums import USAuthMode
 
 from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactoryBase
 from bi_api_lib.app_common import SRFactoryBuilder, StandaloneServiceRegistryFactory
-from bi_api_lib.app_settings import (
-    BaseAppSettings, ControlPlaneAppTestingsSettings, ControlApiAppSettings, AppSettings)
+from bi_api_lib.app_settings import ControlPlaneAppTestingsSettings, ControlApiAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.connector_availability.configs.open_source import CONFIG as OPEN_SOURCE_CONNECTORS
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
@@ -21,33 +19,33 @@ from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 
 
-class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
-    def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
+class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
+    def _get_required_services(self, settings: ControlApiAppSettings) -> set[RequiredService]:
         return set()
 
-    def _get_env_manager_factory(self, settings: BaseAppSettings) -> EnvManagerFactory:
+    def _get_env_manager_factory(self, settings: ControlApiAppSettings) -> EnvManagerFactory:
         return TestEnvManagerFactory()
 
     def _get_inst_specific_sr_factory(
             self,
-            settings: BaseAppSettings,
+            settings: ControlApiAppSettings,
     ) -> StandaloneServiceRegistryFactory:
         return StandaloneServiceRegistryFactory()
 
-    def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: ControlApiAppSettings) -> Optional[EntityUsageChecker]:
         return None
 
-    def _get_bleeding_edge_users(self, settings: BaseAppSettings) -> tuple[str, ...]:
+    def _get_bleeding_edge_users(self, settings: ControlApiAppSettings) -> tuple[str, ...]:
         return tuple()
 
-    def _get_rqe_caches_settings(self, settings: BaseAppSettings) -> Optional[RQECachesSetting]:
+    def _get_rqe_caches_settings(self, settings: ControlApiAppSettings) -> Optional[RQECachesSetting]:
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: BaseAppSettings) -> Optional[CacheTTLConfig]:
+    def _get_default_cache_ttl_settings(self, settings: ControlApiAppSettings) -> Optional[CacheTTLConfig]:
         return None
 
-    def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
-        return OPEN_SOURCE_CONNECTORS
+    def _get_connector_availability(self, settings: ControlApiAppSettings) -> Optional[ConnectorAvailabilityConfig]:
+        return settings.CONNECTOR_AVAILABILITY
 
 
 class ControlApiAppFactoryOS(ControlApiAppFactoryBase[ControlApiAppSettings], ControlApiSRFactoryBuilderOS):

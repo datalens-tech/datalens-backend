@@ -120,8 +120,6 @@ class ConnectionsList(BIResource):
     @put_to_request_context(endpoint_code="ConnectionCreate")
     @schematic_request(ns=ns)
     def post(self):  # type: ignore  # TODO: fix
-        # TODO FIX: BI-2598 Make dedicated connector availability checker
-        #  configure it in process of app creation
         us_manager = self.get_us_manager()
 
         conn_availability = self.get_service_registry().get_connector_availability()

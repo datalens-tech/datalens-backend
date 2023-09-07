@@ -147,7 +147,8 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
     preload_bi_api_lib()
     settings = ControlPlaneAppSettings(
         CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
-            InternalTestingInstallation.CONNECTOR_AVAILABILITY),
+            InternalTestingInstallation.CONNECTOR_AVAILABILITY
+        ),
         APP_TYPE=AppType.TESTS,
         ENV_TYPE=EnvType.development,
 

@@ -5,7 +5,7 @@ from typing import Optional
 import flask
 
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from bi_configs.enums import RequiredService, EnvType
+from bi_configs.enums import RequiredService
 from bi_constants.enums import USAuthMode
 
 from bi_core.connection_models import ConnectOptions
@@ -19,11 +19,8 @@ from bi_core.us_connection_base import ExecutorBasedMixin
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactoryBase
-from bi_api_lib.app_settings import BaseAppSettings, ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.connector_availability.configs.development import CONFIG as DEVELOPMENT_CONNECTORS
-from bi_api_lib.connector_availability.configs.ext_production import CONFIG as EXT_PRODUCTION_CONNECTORS
-from bi_api_lib.connector_availability.configs.ext_testing import CONFIG as EXT_TESTING_CONNECTORS
 
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
@@ -31,16 +28,16 @@ from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
 
-class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
-    def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
+class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
+    def _get_required_services(self, settings: ControlPlaneAppSettings) -> set[RequiredService]:
         return set()
 
-    def _get_env_manager_factory(self, settings: BaseAppSettings) -> EnvManagerFactory:
+    def _get_env_manager_factory(self, settings: ControlPlaneAppSettings) -> EnvManagerFactory:
         return CloudEnvManagerFactory(samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS))
 
     def _get_inst_specific_sr_factory(
             self,
-            settings: BaseAppSettings,
+            settings: ControlPlaneAppSettings,
     ) -> YCServiceRegistryFactory:
         sa_creds_settings = SACredsSettings(
             mode=settings.YC_SA_CREDS_MODE,
@@ -59,25 +56,20 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
             ) if sa_creds_settings else None
         )
 
-    def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: ControlPlaneAppSettings) -> Optional[EntityUsageChecker]:
         return None
 
-    def _get_bleeding_edge_users(self, settings: BaseAppSettings) -> tuple[str, ...]:
+    def _get_bleeding_edge_users(self, settings: ControlPlaneAppSettings) -> tuple[str, ...]:
         return tuple()
 
-    def _get_rqe_caches_settings(self, settings: BaseAppSettings) -> Optional[RQECachesSetting]:
+    def _get_rqe_caches_settings(self, settings: ControlPlaneAppSettings) -> Optional[RQECachesSetting]:
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: BaseAppSettings) -> Optional[CacheTTLConfig]:
+    def _get_default_cache_ttl_settings(self, settings: ControlPlaneAppSettings) -> Optional[CacheTTLConfig]:
         return None
 
-    def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
-        if (env_type := settings.ENV_TYPE) is not None:
-            if env_type == EnvType.yc_testing:
-                return EXT_TESTING_CONNECTORS
-            elif env_type == EnvType.development:
-                return DEVELOPMENT_CONNECTORS
-        return EXT_PRODUCTION_CONNECTORS
+    def _get_connector_availability(self, settings: ControlPlaneAppSettings) -> Optional[ConnectorAvailabilityConfig]:
+        return settings.CONNECTOR_AVAILABILITY
 
 
 class ControlApiAppFactoryYC(ControlApiAppFactoryBase[ControlPlaneAppSettings], ControlApiSRFactoryBuilderYC):
