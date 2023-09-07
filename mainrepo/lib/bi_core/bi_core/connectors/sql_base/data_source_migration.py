@@ -13,9 +13,13 @@ from bi_core.connectors.base.data_source_migration import (
 
 @attr.s(frozen=True)
 class SQLTableDSMI(DataSourceMigrationInterface):
-    db_name: Optional[str] = attr.ib(kw_only=True, default=None)
     schema_name: Optional[str] = attr.ib(kw_only=True, default=None)
     table_name: Optional[str] = attr.ib(kw_only=True)
+
+
+@attr.s(frozen=True)
+class SQLTableWDbDSMI(SQLTableDSMI):
+    db_name: Optional[str] = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -26,6 +30,7 @@ class SQLSubselectDSMI(DataSourceMigrationInterface):
 class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
     table_source_type: ClassVar[Optional[CreateDSFrom]] = None
     table_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = StandardSQLDataSourceSpec
+    with_db_name: ClassVar[bool] = False
 
     subselect_source_type: ClassVar[Optional[CreateDSFrom]] = None
     subselect_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = SubselectDataSourceSpec
@@ -60,7 +65,6 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                     dto_cls=SQLTableDSMI,
                     dsrc_spec_cls=self.table_dsrc_spec_cls,
                     migration_mapping_items=(
-                        MigrationKeyMappingItem(migration_dto_key='db_name', source_spec_key='db_name'),
                         MigrationKeyMappingItem(
                             migration_dto_key='schema_name', source_spec_key='schema_name',
                             custom_export_resolver=self._resolve_schema_name_for_export,
@@ -70,6 +74,24 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                     ),
                 )
             )
+
+            if self.with_db_name:
+                result.append(
+                    MigrationSpec(
+                        source_type=self.table_source_type,
+                        dto_cls=SQLTableWDbDSMI,
+                        dsrc_spec_cls=self.table_dsrc_spec_cls,
+                        migration_mapping_items=(
+                            MigrationKeyMappingItem(migration_dto_key='db_name', source_spec_key='db_name'),
+                            MigrationKeyMappingItem(
+                                migration_dto_key='schema_name', source_spec_key='schema_name',
+                                custom_export_resolver=self._resolve_schema_name_for_export,
+                                custom_import_resolver=self._resolve_schema_name_for_import,
+                            ),
+                            MigrationKeyMappingItem(migration_dto_key='table_name', source_spec_key='table_name'),
+                        ),
+                    )
+                )
 
         if self.subselect_source_type is not None:
             assert self.subselect_dsrc_spec_cls is not None

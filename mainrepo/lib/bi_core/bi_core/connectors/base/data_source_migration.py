@@ -138,13 +138,17 @@ class SpecBasedSourceMigrator(DataSourceMigrator):
                         migration_dto, mapping_item.migration_dto_key)
                 elif mapping_item.source_spec_key in migration_spec.dsrc_spec_cls.get_public_fields():
                     params[mapping_item.source_spec_key] = getattr(migration_dto, mapping_item.migration_dto_key)
+
+            params = {key: value for key, value in params.items() if value is not None}
             dsrc_spec = migration_spec.dsrc_spec_cls(**params)
             return dsrc_spec
 
         raise TypeError(f'Invalid dto class: {type(migration_dto)}')
 
 
-_SOURCE_MIGRATORS: dict[ConnectionType, Type[DataSourceMigrator]] = {}
+_SOURCE_MIGRATORS: dict[ConnectionType, Type[DataSourceMigrator]] = {
+    ConnectionType.unknown: DefaultDataSourceMigrator,
+}
 
 
 def register_data_source_migrator(conn_type: ConnectionType, migrator_cls: Type[DataSourceMigrator]) -> None:

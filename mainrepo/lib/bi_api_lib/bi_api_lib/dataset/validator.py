@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import uuid
 from contextlib import contextmanager
-from typing import Collection, Generator, Optional, Sequence, Type, TYPE_CHECKING
+from typing import Collection, Generator, Optional, Sequence, TYPE_CHECKING
 
 import attr
 
@@ -29,47 +29,28 @@ from bi_app_tools.profiling_base import generic_profiler
 from bi_constants.enums import (
     AggregationFunction, BinaryJoinOperator, CalcMode, ComponentType,
     CreateDSFrom, DataSourceRole, ManagedBy, ComponentErrorLevel, TopLevelComponentId,
+    ConnectionType,
 )
 from bi_core.base_models import DefaultConnectionRef, DefaultWhereClause
 from bi_core.constants import DatasetConstraints
-from bi_core.data_source import DataSource, BaseSQLDataSource
+from bi_core.data_source.base import DataSource
+from bi_core.data_source.sql import BaseSQLDataSource
 from bi_core.data_source.collection import DataSourceCollectionBase
 from bi_core.db import SchemaColumn, SchemaInfo
 from bi_core.fields import (
     BIField, DirectCalculationSpec, FormulaCalculationSpec, create_calc_spec_from, del_calc_spec_kwargs_from,
 )
 from bi_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect, SourceAvatar
-from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
+from bi_core.us_connection_base import ConnectionBase
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
 from bi_core.us_manager.us_manager_sync import SyncUSManager
+from bi_core.connectors.base.data_source_migration import get_data_source_migrator
+from bi_core.data_source.type_mapping import get_data_source_class
+
 from bi_formula.core import exc as formula_exc
 from bi_formula.core.message_ctx import FormulaErrorCtx, MessageLevel
 from bi_utils.utils import enum_not_none
-
-# TODO: Remove connector dependencies
-from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_SUBSELECT
-from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
-from bi_connector_chyt.core.us_connection import ConnectionCHYTToken
-from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
-from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_SUBSELECT
-from bi_connector_mssql.core.us_connection import ConnectionMSSQL
-from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_SUBSELECT
-from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
-from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API
-from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import SOURCE_TYPE_CH_FROZEN_SOURCE
-from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_SUBSELECT
-from bi_connector_mysql.core.us_connection import ConnectionMySQL
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants import (
-    SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
-)
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.constants import (
-    SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,
-)
-
-from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespaces
-from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -1393,87 +1374,38 @@ class DatasetValidator(DatasetBaseWrapper):
             self,
             old_connection: Optional[ConnectionBase],
             new_connection: ConnectionBase,
-            old_source_type: CreateDSFrom,
             dsrc: DataSource,
     ) -> tuple[dict, CreateDSFrom]:
-        parameters = dsrc.get_parameters().copy()
 
-        ch_table_family = (
-            CreateDSFrom.CH_TABLE,
-            SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
-            SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,
-            CreateDSFrom.CH_BILLING_ANALYTICS_TABLE,
+        old_conn_type: ConnectionType
+        if old_connection is not None:
+            old_conn_type = old_connection.conn_type
+        else:
+            old_conn_type = dsrc.conn_type
+
+        src_migrator = get_data_source_migrator(conn_type=old_conn_type)
+        dst_migrator = get_data_source_migrator(conn_type=new_connection.conn_type)
+
+        migration_dtos = src_migrator.export_migration_dtos(
+            data_source_spec=dsrc.spec,
         )
+        try:
+            new_dsrc_spec = dst_migrator.import_migration_dtos(
+                migration_dtos=migration_dtos,
+                connection_ref=new_connection.conn_ref,
+            )
+        except common_exc.DataSourceMigrationImpossible:
+            # Failed to migrate anything.
+            # Let's just go with an empty default data source
+            return {}, new_connection.source_type
 
-        conn_type_to_subselect_src_type: dict[Type[ConnectionBase], CreateDSFrom] = {
-            ConnectionCHYTToken: CreateDSFrom.CHYT_YTSAURUS_SUBSELECT,
-            ConnectionCHYTUserAuth: CreateDSFrom.CHYT_USER_AUTH_SUBSELECT,
-            ConnectionCHYTInternalToken: CreateDSFrom.CHYT_SUBSELECT,
-            ConnectionClickhouse: CreateDSFrom.CH_SUBSELECT,
-            ConnectionPostgreSQL: SOURCE_TYPE_PG_SUBSELECT,
-            ConnectionMySQL: SOURCE_TYPE_MYSQL_SUBSELECT,
-            ConnectionMSSQL: SOURCE_TYPE_MSSQL_SUBSELECT,
-            ConnectionSQLOracle: SOURCE_TYPE_ORACLE_SUBSELECT,
-            # and so on
-        }
-
-        conn_type_to_range_src_type: dict[Type[ConnectionBase], CreateDSFrom] = {
-            ConnectionCHYTToken: CreateDSFrom.CHYT_YTSAURUS_TABLE_RANGE,
-            ConnectionCHYTUserAuth: CreateDSFrom.CHYT_USER_AUTH_TABLE_RANGE,
-            ConnectionCHYTInternalToken: CreateDSFrom.CHYT_TABLE_RANGE,
-        }
-
-        conn_type_to_list_src_type: dict[Type[ConnectionBase], CreateDSFrom] = {
-            ConnectionCHYTToken: CreateDSFrom.CHYT_YTSAURUS_TABLE_LIST,
-            ConnectionCHYTUserAuth: CreateDSFrom.CHYT_USER_AUTH_TABLE_LIST,
-            ConnectionCHYTInternalToken: CreateDSFrom.CHYT_TABLE_LIST,
-        }
-
-        new_source_type = old_source_type
-        if new_connection.conn_type != dsrc.conn_type:
-            new_source_type = new_connection.source_type  # type: ignore  # TODO: fix  # essentially 'default_source_type'
-            if new_source_type != SOURCE_TYPE_CH_FROZEN_SOURCE:
-                for special_src_case_mapping in (
-                    conn_type_to_subselect_src_type,
-                    conn_type_to_range_src_type,
-                    conn_type_to_list_src_type,
-                ):
-                    if old_source_type in special_src_case_mapping.values():
-                        new_source_type = special_src_case_mapping[type(new_connection)]
-                        break
-
-            if new_source_type not in ch_table_family:
-                parameters['db_name'] = None
-            if new_source_type in ch_table_family and isinstance(old_connection, ClassicConnectionSQL):
-                parameters['db_name'] = old_connection.db_name
-            if isinstance(old_connection, ClassicConnectionSQL) and old_connection.has_schema:
-                if (
-                        isinstance(new_connection, ClassicConnectionSQL) and new_connection.has_schema
-                        and new_connection.default_schema_name is not None
-                ):
-                    if parameters.get('schema_name') == old_connection.default_schema_name:
-                        parameters['schema_name'] = new_connection.default_schema_name
-                else:
-                    parameters.pop('schema_name', None)
-            new_namespace_enum = None
-            if new_source_type in (SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API):
-                new_namespace_enum = {
-                    SOURCE_TYPE_METRICA_API: MetrikaApiCounterSource,
-                    SOURCE_TYPE_APPMETRICA_API: AppMetricaFieldsNamespaces,
-                }[new_source_type]
-            if new_namespace_enum is not None:
-                namespace_name = parameters.get('db_name') or getattr(old_connection, 'db_name', None)
-                try:
-                    parameters['db_name'] = new_namespace_enum[namespace_name].name
-                except KeyError:
-                    # first value by default
-                    parameters['db_name'] = next(iter(new_namespace_enum)).name
-        # else nothing special to do for “new_connection.conn_type == old_connection.conn_type”
-
-        if 'db_version' in parameters:
-            parameters['db_version'] = None
-
-        return parameters, new_source_type
+        new_dsrc_cls = get_data_source_class(new_dsrc_spec.source_type)
+        new_dsrc_dummy = new_dsrc_cls(
+            id='', spec=new_dsrc_spec,
+            us_entry_buffer=self._us_manager.get_entry_buffer(),
+        )
+        new_dsrc_parameters = new_dsrc_dummy.get_parameters()
+        return new_dsrc_parameters, new_dsrc_spec.source_type
 
     @generic_profiler("validator-apply-connection-action")
     def apply_connection_action(
@@ -1505,7 +1437,6 @@ class DatasetValidator(DatasetBaseWrapper):
                 parameters, new_source_type = self._migrate_source_parameters(
                     old_connection=old_connection,
                     new_connection=new_connection,
-                    old_source_type=dsrc.spec.source_type,  # type: ignore  # TODO: fix
                     dsrc=dsrc,  # type: ignore  # TODO: fix
                 )
 

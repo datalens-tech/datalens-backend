@@ -28,6 +28,10 @@ from bi_connector_metrica.core.type_transformer import MetrikaApiTypeTransformer
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection
 from bi_connector_metrica.core.dto import MetricaAPIConnDTO, AppMetricaAPIConnDTO
 from bi_connector_metrica.core.settings import MetricaSettingDefinition, AppMetricaSettingDefinition
+from bi_connector_metrica.core.data_source_migration import (
+    AppMetricaApiDataSourceMigrator,
+    MetricaApiDataSourceMigrator,
+)
 
 
 class MetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
@@ -40,6 +44,7 @@ class MetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     lifecycle_manager_cls = MetricaConnectionLifecycleManager
     dialect_string = 'metrika_api'
     settings_definition = MetricaSettingDefinition
+    data_source_migrator_cls = MetricaApiDataSourceMigrator
 
 
 class MetricaApiCoreSourceDefinition(CoreSourceDefinition):
@@ -71,6 +76,7 @@ class AppMetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     lifecycle_manager_cls = MetricaConnectionLifecycleManager
     dialect_string = 'appmetrica_api'
     settings_definition = AppMetricaSettingDefinition
+    data_source_migrator_cls = AppMetricaApiDataSourceMigrator
 
 
 class AppMetricaApiCoreSourceDefinition(CoreSourceDefinition):

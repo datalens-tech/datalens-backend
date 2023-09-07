@@ -45,7 +45,6 @@ yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
 yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 bi-connector-greenplum = {path = "../bi_connector_greenplum"}
-yandex-bi-connector-chyt = {path = "../bi_connector_chyt"}
 yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
 yandex-bi-connector-snowflake = {path = "../bi_connector_snowflake"}
