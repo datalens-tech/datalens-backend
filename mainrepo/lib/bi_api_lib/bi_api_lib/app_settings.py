@@ -117,7 +117,7 @@ class AppSettings:
         "CONNECTORS",
         missing=[],
     )
-    CONNECTOR_WHITELIST: Optional[tuple[str]] = s_attrib(  # type: ignore
+    CONNECTOR_WHITELIST: Optional[tuple[str, ...]] = s_attrib(  # type: ignore
         'CONNECTOR_WHITELIST',
         env_var_converter=split_by_comma,
         fallback_factory=lambda cfg: split_by_comma(cfg.CONNECTOR_WHITELIST) if hasattr(cfg, 'CONNECTOR_WHITELIST') else None

@@ -1,6 +1,6 @@
 import os
 
-from typing import Tuple, TypeVar, Container, Callable
+from typing import TypeVar, Container, Callable
 
 from bi_constants.enums import ConnectionType
 
@@ -38,7 +38,7 @@ def get_temp_root_certificates_folder_path() -> str:
     return TEMP_ROOT_CERTIFICATES_FOLDER_PATH
 
 
-def split_by_comma(s: str) -> Tuple[str, ...]:
+def split_by_comma(s: str) -> tuple[str, ...]:
     return tuple(entry.strip() for entry in s.split(",") if entry)
 
 
