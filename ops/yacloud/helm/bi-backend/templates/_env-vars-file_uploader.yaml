@@ -57,6 +57,14 @@
 {{ end }}
 
 {{- define "env_vars-file_uploader_data_access" }}
+- name: CONNECTORS_GSHEETS_V2_S3_ENDPOINT
+  value: {{ .Values.file_connector_config.s3_endpoint }}
+- name: CONNECTORS_GSHEETS_V2_HOST
+  value: {{ join "," .Values.file_connector_config.ch_hosts }}
+- name: CONNECTORS_GSHEETS_V2_BUCKET
+  value: {{ .Values.file_connector_config.persistent_bucket_name }}
+- name: CONNECTORS_GSHEETS_V2_USERNAME
+  value: {{ .Values.file_connector_config.ch_username }}
 - name: CONNECTORS_FILE_S3_ENDPOINT
   value: {{ .Values.file_connector_config.s3_endpoint }}
 - name: CONNECTORS_FILE_HOST

@@ -64,6 +64,14 @@ spec:
             {{ end }}
             {{ if not .Values.apps_to_run.file_uploader }}
             # https://st.yandex-team.ru/BI-4799
+            - name: CONNECTORS_GSHEETS_V2_BUCKET
+              value: "TBD"
+            - name: CONNECTORS_GSHEETS_V2_HOST
+              value: "TBD"
+            - name: CONNECTORS_GSHEETS_V2_USERNAME
+              value: "TBD"
+            - name: CONNECTORS_GSHEETS_V2_S3_ENDPOINT
+              value: "TBD"
             - name: CONNECTORS_FILE_BUCKET
               value: "TBD"
             - name: CONNECTORS_FILE_HOST
@@ -223,6 +231,14 @@ spec:
             {{ end }}
             {{ if not .Values.apps_to_run.file_uploader }}
             # https://st.yandex-team.ru/BI-4799
+            - name: CONNECTORS_GSHEETS_V2_BUCKET
+              value: "TBD"
+            - name: CONNECTORS_GSHEETS_V2_HOST
+              value: "TBD"
+            - name: CONNECTORS_GSHEETS_V2_USERNAME
+              value: "TBD"
+            - name: CONNECTORS_GSHEETS_V2_S3_ENDPOINT
+              value: "TBD"
             - name: CONNECTORS_FILE_BUCKET
               value: "TBD"
             - name: CONNECTORS_FILE_HOST

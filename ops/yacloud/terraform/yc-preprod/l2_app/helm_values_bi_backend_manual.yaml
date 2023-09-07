@@ -4,7 +4,7 @@ app:
 docker_images_info:
   bi_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
-    tag: "0.1979.0"
+    tag: "0.2000.0"
   control_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-control-api
   data_api:
@@ -92,6 +92,14 @@ connector_forms_env:
   - name: CONNECTORS_APPMETRICA_COUNTER_ALLOW_MANUAL_INPUT
     value: "0"
   - name: CONNECTORS_APPMETRICA_ALLOW_AUTO_DASH_CREATION
+    value: "1"
+  - name: CONNECTORS_METRIKA_API_COUNTER_ALLOW_MANUAL_INPUT
+    value: "0"
+  - name: CONNECTORS_METRIKA_API_ALLOW_AUTO_DASH_CREATION
+    value: "1"
+  - name: CONNECTORS_APPMETRICA_API_COUNTER_ALLOW_MANUAL_INPUT
+    value: "0"
+  - name: CONNECTORS_APPMETRICA_API_ALLOW_AUTO_DASH_CREATION
     value: "1"
   - name: CONNECTORS_YQ_USE_MDB_CLUSTER_PICKER
     value: "1"
