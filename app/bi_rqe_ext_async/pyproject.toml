@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-rqe-ext-async"
-version = "0.1997.0"
+version = "0.1998.0"
 description = ""
 authors = ["Sergei Borodin <seray@yandex-team.ru>"]
 packages = [{include = "bi_rqe_ext_async"}]

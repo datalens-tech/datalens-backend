@@ -1,3 +1,12 @@
+0.1998.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4860: remove ConnectorsSettingsByType and CONNECTORS field from the bi api config (#395)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0187da4f ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 16:19:51+00:00
+
 0.1997.0
 --------
 
