@@ -60,6 +60,7 @@ class FileUploaderContextFab(BaseContextFabric):
             secure_reader_settings=SecureReaderSettings(
                 socket=self._settings.SECURE_READER.SOCKET,
                 endpoint=self._settings.SECURE_READER.ENDPOINT,
+                cafile=self._settings.SECURE_READER.CAFILE,
             ),
             tenant_resolver=self._tenant_resolver,
         )

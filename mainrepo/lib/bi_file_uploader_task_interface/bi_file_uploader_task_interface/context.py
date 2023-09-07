@@ -26,6 +26,7 @@ from bi_file_uploader_task_interface.utils_service_registry import (
 class SecureReaderSettings:
     socket: str = attr.ib()
     endpoint: Optional[str] = attr.ib(default=None)
+    cafile: Optional[str] = attr.ib(default=None)
 
 
 @attr.s

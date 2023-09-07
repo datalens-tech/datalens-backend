@@ -15,6 +15,7 @@ from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 class SecureReader(SettingsBase):
     SOCKET: str = s_attrib("SOCKET")  # type: ignore
     ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore
+    CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)  # type: ignore
 
 
 @attr.s(frozen=True)
@@ -49,6 +50,7 @@ class FileUploaderWorkerSettings(FileUploaderBaseSettings):
             lambda: SecureReader(  # type: ignore
                 SOCKET="/var/reader.sock",
                 ENDPOINT=None,
+                CAFILE=None,
             )
         ),
     )

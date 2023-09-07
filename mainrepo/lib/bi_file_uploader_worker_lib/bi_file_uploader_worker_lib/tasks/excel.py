@@ -4,6 +4,7 @@ from typing import Optional, Iterator
 import aiohttp
 import attr
 import asyncio
+import ssl
 import urllib.parse
 
 from bi_core.db import SchemaColumn
@@ -56,7 +57,11 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
             conn: aiohttp.BaseConnector
             if self._ctx.secure_reader_settings.endpoint is not None:
                 secure_reader_endpoint = self._ctx.secure_reader_settings.endpoint
-                conn = aiohttp.TCPConnector()
+                ssl_context: Optional[ssl.SSLContext] = None
+                if self._ctx.secure_reader_settings.cafile is not None:
+                    ssl_context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS)
+                    ssl_context.load_verify_locations(cafile=self._ctx.secure_reader_settings.cafile)
+                conn = aiohttp.TCPConnector(ssl=ssl_context)
             else:
                 socket_path = self._ctx.secure_reader_settings.socket
                 secure_reader_endpoint = f'http+unix://{urllib.parse.quote_plus(socket_path)}'
