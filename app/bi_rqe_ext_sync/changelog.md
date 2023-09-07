@@ -1,3 +1,12 @@
+0.1999.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4860: fix schoolbook journal settings (#410)  [ https://github.com/datalens-tech/datalens-backend-private/commit/a6d2011a ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 16:58:32+00:00
+
 0.1998.0
 --------
 
