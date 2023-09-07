@@ -101,7 +101,7 @@ target-version = ['py310']
 [datalens.pytest.unit]
 root_dir = "bi_connector_snowflake_tests/unit"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

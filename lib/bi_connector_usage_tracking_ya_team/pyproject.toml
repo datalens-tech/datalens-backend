@@ -68,7 +68,7 @@ root_dir = "bi_connector_usage_tracking_ya_team_tests/unit"
 target_path = "."
 skip_compose = "true"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

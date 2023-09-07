@@ -95,7 +95,7 @@ root_dir = "bi_connector_clickhouse_tests/db"
 #root_dir = "bi_connector_clickhouse_tests/ext"
 #labels = ["ext"]
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

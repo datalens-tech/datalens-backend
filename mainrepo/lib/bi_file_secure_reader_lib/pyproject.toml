@@ -58,7 +58,7 @@ priority = "default"
 root_dir = "bi_file_secure_reader_lib_tests/"
 target_path = "db"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

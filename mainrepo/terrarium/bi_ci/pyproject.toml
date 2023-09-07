@@ -80,7 +80,7 @@ target_path = "unit"
 [datalens.meta.mypy]
 targets = ["bi_ci"]
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

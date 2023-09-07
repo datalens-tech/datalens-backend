@@ -64,7 +64,7 @@ bi-formula-ref-exdata = "bi_formula_ref.scripts.example_data:main"
 [tool.poetry.plugins."bi_formula_ref.plugins"]
 default = "bi_formula_ref.plugins.default.plugin:DefaultFormulaRefPlugin"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

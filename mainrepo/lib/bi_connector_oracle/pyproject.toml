@@ -93,7 +93,7 @@ root_dir = "bi_connector_oracle_tests/"
 target_path = "unit"
 skip_compose = "true"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

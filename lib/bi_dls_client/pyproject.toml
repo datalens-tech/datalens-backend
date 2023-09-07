@@ -54,7 +54,7 @@ target-version = ['py310']
 [datalens_ci]
 skip_test = true
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

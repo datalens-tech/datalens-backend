@@ -53,7 +53,7 @@ dl-package = "dl_repmanager.scripts.package_meta_cli:main"
 dl-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package-meta = "dl_repmanager.scripts.package_meta_cli:main"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

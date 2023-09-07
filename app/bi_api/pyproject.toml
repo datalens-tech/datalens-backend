@@ -135,7 +135,7 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

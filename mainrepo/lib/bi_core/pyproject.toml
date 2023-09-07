@@ -129,7 +129,7 @@ root_dir = "bi_core_tests/"
 target_path = "db"
 labels = ["fat"]
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

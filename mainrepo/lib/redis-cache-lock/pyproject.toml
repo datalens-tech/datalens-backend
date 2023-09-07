@@ -43,7 +43,7 @@ target-version = ['py310']
 [datalens.pytest.unit]
 root_dir = "tests/"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

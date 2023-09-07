@@ -139,7 +139,7 @@ labels = ["ext"]
 [tool.poetry.scripts]
 bi-core-rqe-async = "bi_core.connection_executors.remote_query_executor.app_async:async_qe_main"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

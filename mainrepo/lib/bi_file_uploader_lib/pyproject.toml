@@ -77,7 +77,7 @@ root_dir = "bi_file_uploader_lib_tests"
 target_path = "ext"
 labels = ["ext"]
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
