@@ -12,7 +12,7 @@ def schoolbook_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Co
     if cfg is None:
         return {}
     return dict(
-        SCHOOLBOOK=SchoolbookConnectorSettings(  # type: ignore
+        SCHOOLBOOK_JOURNAL=SchoolbookConnectorSettings(  # type: ignore
             HOST=cfg.CONN_SCHOOLBOOK_HOST,
             PORT=cfg.CONN_SCHOOLBOOK_PORT,
             DB_NAME=cfg.CONN_SCHOOLBOOK_DB_MAME,
