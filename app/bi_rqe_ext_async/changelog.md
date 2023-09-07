@@ -1,3 +1,20 @@
+0.1993.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4852: fix CONNECTOR_WHITELIST (#397)     [ https://github.com/datalens-tech/datalens-backend-private/commit/773eea3c ]
+ * BI-4779: remove chydb tests (#398)          [ https://github.com/datalens-tech/datalens-backend-private/commit/9eb7b69e ]
+ * remove (oracle|mssql)_libs (#389)           [ https://github.com/datalens-tech/datalens-backend-private/commit/eb601242 ]
+ * BI-4779: remove the CHYDB connector (#297)  [ https://github.com/datalens-tech/datalens-backend-private/commit/3a0da5cc ]
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * Fix double tool.mypy sections in .tomls (#396)         [ https://github.com/datalens-tech/datalens-backend-private/commit/ea4562c3 ]
+ * Fix typo in pyproject tomls, mypy section name (#393)  [ https://github.com/datalens-tech/datalens-backend-private/commit/8a739fc7 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 15:07:08+00:00
+
 0.1992.0
 --------
 
