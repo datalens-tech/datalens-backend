@@ -125,7 +125,6 @@ class DatasetDataBaseView(BaseView):
                 except Exception:  # noqa
                     LOGGER.exception("Can not save connection info to logging context")
 
-            await stack.enter_async_context(utils.worker_control_cm_async(exec_info=exec_info))
             stack.enter_context(GenericProfiler(f'{self.profiler_prefix}-{profiling_code}'))  # type: ignore  # TODO: fix
             stack.enter_context(
                 utils.query_execution_context(dataset_id=self.dataset.uuid, version='draft', body=body)
