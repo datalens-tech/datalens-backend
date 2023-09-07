@@ -14,7 +14,6 @@ from .pkg_ref import PkgRef
 def collect_affected_packages(repo_root: Path, refs: list[PkgRef], paths: list[str]) -> list[PkgRef]:
     # path relative to project root
     seen = set()
-    # pkg_by_path = {str(p.pkg.path.relative_to(repo_root)): p for p in refs}
     pkg_by_path = {str(p.partial_parent_path): p for p in refs}
 
     # slow, but should work ...
@@ -65,14 +64,17 @@ def get_deep_deps(dependencies: dict[str, list[str]]) -> dict[str, set[str]]:
 
     result = defaultdict(set)
 
+    seen = set()
     ws = deque(leafs)
     while len(ws) > 0:
         node = ws.popleft()
+        seen.add(node)
         for child in dependencies.get(node, []):
             result[node].add(child)
             result[node] |= result.get(child, set())
         for parent in aff_dict.get(node, []):
-            ws.append(parent)
+            if parent not in seen:
+                ws.append(parent)
 
     return result
 
@@ -103,7 +105,7 @@ def process(repo_root: Path, affected: Iterable[str], get_all: bool = False) -> 
         if ref.self_pkg_name is None:
             continue
         pkg_by_ref[ref.self_pkg_name] = ref
-        for req in ref.extract_local_requirements():
+        for req in ref.extract_local_requirements(include_groups=["tests"]):
             depends_on[ref.self_pkg_name].append(req)
 
     if get_all:
