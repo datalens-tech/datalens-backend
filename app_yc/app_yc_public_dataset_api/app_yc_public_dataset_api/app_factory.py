@@ -92,6 +92,7 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
 
 
 class PublicDatasetApiAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], PublicDatasetApiSRFactoryBuilderYC):
+    @property
     def _is_public(self) -> bool:
         return True
 

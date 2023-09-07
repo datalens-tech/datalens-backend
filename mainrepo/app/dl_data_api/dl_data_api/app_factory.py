@@ -57,6 +57,7 @@ class DataApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
 
 
 class DataApiAppFactoryOS(DataApiAppFactoryBase[DataApiAppSettings], DataApiSRFactoryBuilderOS):
+    @property
     def _is_public(self) -> bool:
         return False
 

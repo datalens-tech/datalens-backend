@@ -89,6 +89,7 @@ class DataApiSecEmbedsSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
 
 
 class DataApiSecEmbedsAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], DataApiSecEmbedsSRFactoryBuilderYC):
+    @property
     def _is_public(self) -> bool:
         return True
 

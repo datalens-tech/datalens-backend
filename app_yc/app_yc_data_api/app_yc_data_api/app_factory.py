@@ -91,6 +91,7 @@ class DataApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
 
 
 class DataApiAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], DataApiSRFactoryBuilderYC):
+    @property
     def _is_public(self) -> bool:
         return False
 
