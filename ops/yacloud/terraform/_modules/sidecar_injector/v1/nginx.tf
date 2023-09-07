@@ -7,7 +7,7 @@ resource "tls_self_signed_cert" "nginx_cert" {
   private_key_pem = tls_private_key.nginx_private_key.private_key_pem
 
   subject {
-    common_name = "localhost"
+    common_name = "*.${var.apps_namespace}.svc.cluster.local"
   }
 
   validity_period_hours = 8760 //  365 days or 1 year

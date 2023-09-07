@@ -38,4 +38,30 @@ spec:
       - {}
     - toEntities:
       - cluster
+{{ if .Values.apps_to_run.secure_reader }}
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "secure-reader-isolation"
+spec:
+  endpointSelector:
+    matchLabels:
+      app: file-secure-reader
+  ingress:
+    - fromEndpoints:
+      - matchLabels:
+          app: file-uploader-worker
+      toPorts:
+        - ports:
+          {{ if .Values.tls_to_backends }}
+          - port: "8443"
+            protocol: TCP
+          {{ else }}
+          - port: "8080"
+            protocol: TCP
+          {{ end }}
+  egress:
+    - {}
+{{ end }}
 {{ end }}

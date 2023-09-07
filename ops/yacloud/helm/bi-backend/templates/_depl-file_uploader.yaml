@@ -124,8 +124,9 @@ spec:
         - name: main
           image: "{{ .Values.docker_images_info.file_uploader_worker.repo }}:{{ .Values.docker_images_info.file_uploader_worker.tag }}"
           volumeMounts:
-            - name: socket-folder
-              mountPath: "/var/sockets"
+            - name: selfsign-cert
+              mountPath: /etc/ssl/certs/k8s-cert.pem
+              subPath: cert.pem
           env:
             {{- include "secrets-common" . | indent 12}}
             {{- include "secrets_us_master_token" . | indent 12}}
@@ -176,10 +177,9 @@ spec:
             name: "{{ .Release.Name }}-init-scripts"
         - name: app-secrets
           emptyDir: {}
-        - name: socket-folder
-          hostPath:
-            path: "/var/sockets"
-
+        - name: selfsign-cert
+          configMap:
+            name: nginx-data-v2
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"
@@ -209,34 +209,15 @@ spec:
     metadata:
       labels:
         app: file-secure-reader
+      annotations:
+        injector.tumblr.com/request: jaeger,nginx_v2
     spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - file-uploader-worker
-            topologyKey: "kubernetes.io/hostname"
-      hostNetwork: false
-      initContainers:
-        - name: change-ownership-container
-          image: busybox
-          command: ["/bin/chown", "-R", "1000:1000", "/var/sockets"]
-          volumeMounts:
-            - name: socket-folder
-              mountPath: "/var/sockets"
       containers:
         - name: main
           image: "{{ .Values.docker_images_info.file_secure_reader.repo }}:{{ .Values.docker_images_info.file_secure_reader.tag }}"
-          volumeMounts:
-            - name: socket-folder
-              mountPath: "/var/sockets"
           env:
             {{- include "env_vars-yenv" . | indent 12 }}
             {{- include "env_vars-file_secure_reader" . | indent 12}}
@@ -249,10 +230,13 @@ spec:
             requests:
               cpu: {{ .Values.app_resources.file_secure_reader.cpu }}
               memory: {{.Values.app_resources.file_secure_reader.ram}}
-      volumes:
-        - name: socket-folder
-          hostPath:
-            path: "/var/sockets"
+          readinessProbe:
+            httpGet:
+              port: {{ ternary .Values.app_tls_port 8080 (eq .Values.tls_to_backends true) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (eq .Values.tls_to_backends true) }}
+              path: "/reader/ping"
+            initialDelaySeconds: 10
+            periodSeconds: 10
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"

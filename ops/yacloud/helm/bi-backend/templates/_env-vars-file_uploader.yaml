@@ -71,10 +71,16 @@
 {{ if .Values.apps_to_run.secure_reader }}
 - name: SECURE_READER_SOCKET
   value: {{ .Values.secure_reader_socket_path }}
+- name: SECURE_READER_ENDPOINT
+  value: https://file-secure-reader.bi-backend.svc.cluster.local
+- name: SECURE_READER_CAFILE
+  value: "/etc/ssl/certs/k8s-cert.pem"
 {{ end }}
 {{ end }}
 
 {{- define "env_vars-file_secure_reader" }}
 - name: GUNICORN_SOCKET_PATH
   value: {{ .Values.secure_reader_socket_path }}
+- name: READER_USE_SOCKET
+  value: "0"
 {{ end }}
