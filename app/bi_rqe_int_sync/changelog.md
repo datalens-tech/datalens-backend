@@ -1,3 +1,12 @@
+0.1992.0
+--------
+
+* [Valentin Gologuzov](http://staff/evilkost@users.noreply.github.com)
+
+ * fix-detect-affected-packages-to-handle-tests-deps (#390)  [ https://github.com/datalens-tech/datalens-backend-private/commit/3ec751ff ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 13:31:26+00:00
+
 0.1991.0
 --------
 
