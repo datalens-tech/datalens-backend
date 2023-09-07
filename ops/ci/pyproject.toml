@@ -210,6 +210,7 @@ bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
+bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 
 
 #

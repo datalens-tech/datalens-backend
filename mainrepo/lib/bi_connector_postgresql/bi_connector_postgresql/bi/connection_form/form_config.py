@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import unique
-from typing import Optional
+from typing import Optional, Sequence
 
 from bi_api_connector.form_config.models.rows.base import FormRow
 
@@ -44,19 +44,19 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
             ],
         )
 
-    def get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> Optional[FormActionApiSchema]:
+    def get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 *edit_api_schema.items,
                 *self._get_top_level_create_api_schema_items(),
             ],
             conditions=edit_api_schema.conditions.copy(),
-        ) if self.mode == ConnectionFormMode.create else None
+        )
 
     def get_base_form_config(
-            self, host_section: list[FormRow],
-            username_section: list[FormRow],
-            db_name_section: list[FormRow],
+            self, host_section: Sequence[FormRow],
+            username_section: Sequence[FormRow],
+            db_name_section: Sequence[FormRow],
             create_api_schema: FormActionApiSchema,
             edit_api_schema: FormActionApiSchema,
             rc: RowConstructor,

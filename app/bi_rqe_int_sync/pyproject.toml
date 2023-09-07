@@ -10,6 +10,7 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
+bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
 python = ">=3.10, <3.12"
 uwsgi = ">=2.0.21"
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}

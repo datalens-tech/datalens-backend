@@ -9,6 +9,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
+bi-connector-greenplum = {path = "../../lib/bi_connector_greenplum"}
 python = ">=3.10, <3.12"
 gunicorn = ">=20.1.0"
 yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}

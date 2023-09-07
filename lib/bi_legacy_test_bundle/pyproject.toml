@@ -37,6 +37,7 @@ yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-maintenance = {path = "../bi_maintenance"}
 # api_lib
+bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 pytest-lazy-fixture = ">=0.6.3"
 responses = ">=0.23.1"
 uwsgi = ">=2.0.21"
