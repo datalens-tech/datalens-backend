@@ -913,7 +913,6 @@ class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
                     ConnectorSettings(conn_type='oracle'),
                     ConnectorSettings(conn_type='bigquery'),
                     ConnectorSettings(conn_type='snowflake'),
-                    ConnectorSettings(conn_type='chydb'),
                     ConnectorSettings(conn_type='ydb'),
                     ConnectorSettings(conn_type='promql'),
                     ConnectorSettings(conn_type='chyt'),

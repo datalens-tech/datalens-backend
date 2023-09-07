@@ -57,9 +57,6 @@ statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 redis_cache_lock = {path = "../redis-cache-lock"}
 statcommons = {path = "../statcommons"}
 
-[tool.poetry.plugins."bi_core.connectors"]
-chydb = "bi_core.connectors.chydb.connector:CHYDBCoreConnector"
-
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"

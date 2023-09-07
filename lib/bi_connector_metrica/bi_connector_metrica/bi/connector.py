@@ -9,7 +9,7 @@ from bi_api_connector.connector import (
     BiApiConnectionDefinition,
     BiApiConnector,
 )
-from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
 from bi_connector_metrica.formula.constants import DIALECT_NAME_METRICAAPI
 from bi_connector_metrica.bi.api_schema.connection import ConnectionMetrikaAPISchema, ConnectionAppMetricaAPISchema

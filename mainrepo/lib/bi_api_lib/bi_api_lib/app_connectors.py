@@ -8,7 +8,6 @@ from bi_api_connector.connector import BiApiConnector
 
 import bi_api_lib as package
 from bi_api_lib.connector_registrator import CONN_REG_BI_API
-from bi_api_lib.manual_connector_registration import register_non_connectorized_source_schemas
 
 
 def _register_connector(connector_cls: Type[BiApiConnector]) -> None:
@@ -29,5 +28,3 @@ def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None
         if connector_ep_names is not None and ep_name not in connector_ep_names:
             continue
         CONN_REG_BI_API.register_connector(connector_cls)
-
-    register_non_connectorized_source_schemas()  # FIXME: Remove

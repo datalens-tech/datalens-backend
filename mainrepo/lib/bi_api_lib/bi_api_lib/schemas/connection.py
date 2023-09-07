@@ -15,8 +15,6 @@ from bi_api_connector.api_schema.source import DataSourceSchema
 from bi_api_connector.api_schema.source_base import DataSourceTemplateResponseField, RawSchemaColumnSchema
 from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
 
-from bi_api_lib.schemas import connection_other
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -103,5 +101,3 @@ class UnknownConnectionSchema(ConnectionMetaMixin, ConnectionSchema):
 
 
 register_sub_schema_class(CT.unknown, UnknownConnectionSchema)
-
-register_sub_schema_class(CT.chydb, connection_other.CHYDBConnectionSchema)

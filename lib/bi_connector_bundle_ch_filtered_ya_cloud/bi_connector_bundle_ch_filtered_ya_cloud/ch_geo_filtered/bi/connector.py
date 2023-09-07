@@ -10,7 +10,7 @@ from bi_api_connector.connector import (
     BiApiConnector,
 )
 
-from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
 from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 

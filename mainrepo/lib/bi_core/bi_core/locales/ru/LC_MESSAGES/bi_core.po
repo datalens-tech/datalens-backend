@@ -18,24 +18,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bi_core/connectors/ydb/us_connection.py:75
-#: bi_core/connectors/chydb/us_connection.py:75
 #: bi_core/connectors/chyt/us_connection.py:138
 #: bi_core/connectors/chyt_internal/us_connection.py:48
 msgid "source_templates-tab_title-table"
 msgstr "Таблица"
 
 #: bi_core/connectors/ydb/us_connection.py:82
-#: bi_core/connectors/chydb/us_connection.py:85
 msgid "source_templates-label-ydb_table"
 msgstr "Путь к таблице в YDB"
-
-#: bi_core/connectors/chydb/us_connection.py:91
-msgid "source_templates-label-ydb_database"
-msgstr "Имя базы данных"
-
-#: bi_core/connectors/chydb/us_connection.py:98
-msgid "source_templates-label-ydb_cluster"
-msgstr "Кластер"
 
 #: bi_core/connectors/chyt/us_connection.py:144
 msgid "source_templates-label-ytsaurus_table"

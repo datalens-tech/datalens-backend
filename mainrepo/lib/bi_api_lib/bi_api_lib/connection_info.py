@@ -4,8 +4,6 @@ from bi_constants.enums import ConnectionType
 
 from bi_api_connector.connection_info import ConnectionInfoProvider
 
-from bi_api_lib.connectors.chydb.connection_info import CHYDBConnectionInfoProvider
-
 
 class InfoProviderNotFound(Exception):
     pass
@@ -22,10 +20,6 @@ def register_connector_info_provider_cls(
 
 
 def get_connector_info_provider_cls(conn_type: ConnectionType) -> Type[ConnectionInfoProvider]:
-    try:
-        return CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE[conn_type]
-    except KeyError as exc:
-        raise InfoProviderNotFound(conn_type) from exc
-
-
-register_connector_info_provider_cls(ConnectionType.chydb, CHYDBConnectionInfoProvider)
+    if (conn_info_provider := CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE.get(conn_type)) is not None:
+        return conn_info_provider
+    raise InfoProviderNotFound(conn_type)

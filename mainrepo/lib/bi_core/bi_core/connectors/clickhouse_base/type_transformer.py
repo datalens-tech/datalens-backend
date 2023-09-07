@@ -9,7 +9,7 @@ from bi_core.db.conversion_base import (
 )
 from clickhouse_sqlalchemy import types as ch_types
 
-CH_CONN_TYPES = frozenset((CT.clickhouse, CT.ch_over_yt, CT.ch_over_yt_user_auth, CT.chydb))
+CH_CONN_TYPES = frozenset((CT.clickhouse, CT.ch_over_yt, CT.ch_over_yt_user_auth))
 
 CH_TYPES_INT = frozenset((
     ch_types.Int, ch_types.Int8, ch_types.Int16, ch_types.Int32, ch_types.Int64,

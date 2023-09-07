@@ -32,19 +32,6 @@ def get_ch_settings(
         # The type of the corresponding field is converted to Nullable, and empty cells are filled with NULL.
         'join_use_nulls': 1,
 
-        # TODO:
-        #   - find a way how change this option in Materializer
-        #   - think, how is it better connect this setting with "row_count_hard_limit" in select_data
-        # # https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-result-rows
-        # # Limit on the number of rows in the result.
-        # # Also checked for subqueries, and on remote servers when running parts of a distributed query.
-        # 'max_result_rows': 10**6 + 1,
-
-        # TODO: find a way how to change this option in Materializer
-        # # https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-result-bytes
-        # # Limit on the number of bytes in the result.
-        # 'max_result_bytes': 50 * 10**6,     # 50 MB
-
         # Limits the time to wait for a response from the servers in the cluster.
         # If a ddl request has not been performed on all hosts, a response will contain
         # a timeout error and a request will be executed in an async mode.
@@ -272,35 +259,6 @@ def get_chyt_user_auth_headers(
         auth_headers['X-CSRF-Token'] = csrf_token
 
     return auth_headers
-
-
-class CHYDBUtils(ClickHouseBaseUtils):
-    add_real_user_header = True
-
-    chydb_expr_exc = {
-        # CHYDB
-        # Not sure about `e.what()`, but `type: yexception` might possibly be in CHYT just as well.
-        # Example: (
-        #     'std::exception. Code: 1001, type: yexception, e.what() = kikimr/kikhouse/ydb_meta.cpp:104: '
-        #     'Failed to get description for table /ru-prestable/home/hhell/mydb/test_table_d: '
-        #     'CLIENT_UNAUTHENTICATED: <main>: Error: GRpc error: (16): unauthenticated'
-        # )
-        r'type: yexception, e\.what\(\) = kikimr': exc.CHYDBQueryError,
-    }
-    chydb_fallback_exc_cls = exc.CHYDBQueryError
-
-    @classmethod
-    def get_exc_class_by_parsed_message(
-        cls, msg: ParsedErrorMsg
-    ) -> Optional[tuple[Type[exc.DatabaseQueryError], Dict[str, str]]]:
-        if msg.code in [901, 1001]:
-            LOGGER.info('Recognized as CHYDB error code')
-            for err_re, chydb_exc_cls in cls.chydb_expr_exc.items():
-                if re.search(err_re, msg.full_msg):
-                    return chydb_exc_cls, {}
-            return cls.chydb_fallback_exc_cls, {}
-
-        return super().get_exc_class_by_parsed_message(msg)
 
 
 def get_clickhouse_on_cluster_expr(cluster_name: str) -> str:

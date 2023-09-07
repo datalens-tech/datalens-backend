@@ -45,7 +45,7 @@ class ClickHouseBaseMixin(BaseSQLDataSource):
 
 class ActualClickHouseBaseMixin(ClickHouseBaseMixin):
     """
-    Data source base class / mixin for actual ClickHouse (i.e. not chyt/chydb).
+    Data source base class / mixin for actual ClickHouse (i.e. not chyt).
     """
 
     conn_type = ConnectionType.clickhouse

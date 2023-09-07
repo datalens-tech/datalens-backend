@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, AbstractSet, Type, Union
+from typing import Any, Iterable, Mapping, Optional, Sequence, AbstractSet, Type, Union
 
-from marshmallow import fields as ma_fields, EXCLUDE, ValidationError
+from marshmallow import EXCLUDE, ValidationError
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import CreateDSFrom
@@ -10,25 +10,7 @@ from bi_constants.enums import CreateDSFrom
 from bi_api_connector.api_schema.source_base import (
     DataSourceBaseSchema,
     DataSourceTemplateBaseSchema,
-    SQLParametersSchema, SQLDataSourceSchema, SQLDataSourceTemplateSchema,
 )
-
-
-# ### CHYDB ###
-
-
-class CHYDBTableParametersSchema(SQLParametersSchema):
-    ydb_cluster = ma_fields.String(required=False, allow_none=True, load_default=None)
-    ydb_database = ma_fields.String(required=False, allow_none=True, load_default=None)
-
-
-# Note: these might as well inherit from `DataSourceBaseSchema`, currently.
-class CHYDBTableDataSourceSchema(SQLDataSourceSchema):
-    parameters = ma_fields.Nested(CHYDBTableParametersSchema)
-
-
-class CHYDBTableDataSourceTemplateSchema(SQLDataSourceTemplateSchema):
-    parameters = ma_fields.Nested(CHYDBTableParametersSchema)
 
 
 class DataSourceSchema(OneOfSchema):
@@ -37,9 +19,9 @@ class DataSourceSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = 'source_type'
-    type_schemas: Dict[str, Type[DataSourceBaseSchema]] = {}
+    type_schemas: dict[str, Type[DataSourceBaseSchema]] = {}
 
-    def get_obj_type(self, obj: Dict[str, Any]) -> str:
+    def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name
 
 
@@ -65,9 +47,9 @@ class DataSourceTemplateResponseSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = 'source_type'
-    type_schemas: Dict[str, Type[DataSourceTemplateBaseSchema]] = {}
+    type_schemas: dict[str, Type[DataSourceTemplateBaseSchema]] = {}
 
-    def get_obj_type(self, obj: Dict[str, Any]) -> str:
+    def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name
 
 

@@ -6,7 +6,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.connector imp
     CHMarketCouriersCoreConnector,
 )
 
-from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )

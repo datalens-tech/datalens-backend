@@ -13,7 +13,7 @@ from bi_query_processing.compilation.filter_compiler import FilterFormulaCompile
 from bi_query_processing.legacy_pipeline.planning.planner import ExecutionPlanner, WindowToCompengExecutionPlanner
 from bi_query_processing.multi_query.factory import MultiQueryMutatorFactoryBase, DefaultMultiQueryMutatorFactory
 
-from bi_api_connector.api_schema.source import DataSourceBaseSchema, DataSourceTemplateBaseSchema
+from bi_api_connector.api_schema.source_base import DataSourceBaseSchema, DataSourceTemplateBaseSchema
 from bi_api_connector.api_schema.connection_base import ConnectionSchema
 from bi_api_connector.connection_info import ConnectionInfoProvider
 from bi_api_connector.form_config.models.base import ConnectionFormFactory

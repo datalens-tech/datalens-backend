@@ -687,11 +687,6 @@ class CHYTSubqueryWeightLimitExceeded(CHYTQueryError):
     default_message = 'Subquery exceeds data weight limit'
 
 
-class CHYDBQueryError(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['CHYDB']
-    default_message = 'CHYDB Error'
-
-
 class QueryConstructorError(Exception):
     pass
 

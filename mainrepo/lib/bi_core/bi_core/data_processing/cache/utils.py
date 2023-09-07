@@ -214,7 +214,6 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
     DB_LESS_CONNECTIONS = (
         ConnectionType.ch_over_yt,
         ConnectionType.ch_over_yt_user_auth,
-        ConnectionType.chydb,
         ConnectionType.gsheets,
         ConnectionType.file,
     )

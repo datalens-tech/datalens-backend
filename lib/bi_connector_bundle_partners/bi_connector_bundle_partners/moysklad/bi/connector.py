@@ -6,7 +6,7 @@ from bi_connector_bundle_partners.moysklad.core.connector import (
     MoySkladCoreConnector,
 )
 
-from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )

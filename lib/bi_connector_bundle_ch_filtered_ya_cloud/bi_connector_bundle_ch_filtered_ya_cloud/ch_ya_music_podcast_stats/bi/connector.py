@@ -6,7 +6,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.con
     CHYaMusicPodcastStatsCoreConnector,
 )
 
-from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )

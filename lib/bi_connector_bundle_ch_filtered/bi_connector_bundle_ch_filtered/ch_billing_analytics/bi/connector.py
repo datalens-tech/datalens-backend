@@ -9,7 +9,7 @@ from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.connector import 
 from bi_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
-from bi_api_connector.api_schema.source import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
 from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 

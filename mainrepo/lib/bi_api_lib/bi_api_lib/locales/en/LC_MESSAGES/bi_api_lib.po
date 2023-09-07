@@ -16,15 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "label_connector-chydb"
-msgstr "CH over YDB"
-
-msgid "label_ydb-host-tooltip"
-msgstr ""
-"Available clusters: `ydb-ru`, `ydb-ru-prestable`, `ydb-eu`\n"
-"Details in [documentation](https://docs.yandex-team.ru/docs/ydb/"
-"getting_started/start_chydb)."
-
 msgid "field_default-cluster"
 msgstr "Default cluster"
 
