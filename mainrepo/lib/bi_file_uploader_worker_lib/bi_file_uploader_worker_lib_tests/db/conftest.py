@@ -20,15 +20,8 @@ from bi_file_secure_reader.app import create_app as create_reader_app
 
 from .utils import create_file_connection
 
-try:
-    # Arcadia testing stuff
-    import yatest.common as yatest_common
-except ImportError:
-    yatest_common = None
-
 
 LOGGER = logging.getLogger(__name__)
-ARCADIA_PREFIX = 'datalens/backend/lib/bi_file_uploader_worker_lib/bi_file_uploader_worker_lib_tests/db/'
 
 
 @pytest.fixture(scope="function")
@@ -119,11 +112,8 @@ async def uploaded_excel(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_m
         status=FileProcessingStatus.in_progress,
     )
 
-    if yatest_common is not None:
-        path = yatest_common.source_path(ARCADIA_PREFIX + filename)
-    else:
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(dirname, filename)
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(dirname, filename)
 
     with open(path, 'rb') as fd:
         await s3_client.put_object(

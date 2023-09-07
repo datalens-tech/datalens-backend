@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 
 from library.python.testing import recipe
-import yatest.common
+import logging
 
 from datalens.backend.tools import dblib_common
 
@@ -17,7 +17,7 @@ PATH = 'mssql_libs_with_deps'
 
 
 def start(argv):
-    logger = yatest.common.yatest_logger
+    logger = logging.getLogger(__name__)
     path = PATH
     path = os.path.realpath(path)
 

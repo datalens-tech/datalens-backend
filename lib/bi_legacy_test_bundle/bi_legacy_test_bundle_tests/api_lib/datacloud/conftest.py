@@ -21,7 +21,6 @@ from bi_testing_ya.dlenv import DLEnv
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 
 from bi_core_testing.flask_utils import FlaskTestClient, FlaskTestResponse
 
@@ -60,7 +59,6 @@ def _get_aws_secret_value(client: Any, secret_id: str) -> str:
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 

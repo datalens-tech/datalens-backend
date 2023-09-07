@@ -3,7 +3,6 @@ import os
 
 from bi_core_testing.configuration import DefaultCoreTestConfiguration
 from bi_testing.containers import get_test_container_hostport
-import bi_testing.files as bi_testing_files
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
@@ -22,7 +21,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
 def get_postgres_ssl_ca() -> str:
     path = os.path.join(os.path.dirname(__file__), '../../docker-compose/db-postgres/ssl', 'root.crt')
 
-    with bi_testing_files.get_file_loader().open(path) as f:
+    with open(path) as f:
         return f.read()
 
 

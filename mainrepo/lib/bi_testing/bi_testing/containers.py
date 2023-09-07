@@ -6,8 +6,6 @@ from typing import Optional
 import attr
 import yaml
 
-from bi_testing.files import get_file_loader
-
 
 _CONTAINER_HOST_FROM_COMPOSE_MARKER = 'from_compose'
 _APPLIB_PATH_RE = re.compile(r'.+\/(?:app|lib|site-packages)\/[^\/]+\/')
@@ -38,8 +36,7 @@ def _get_docker_compose_file_path(filename: Optional[str] = None) -> str | None:
     if not re_match:
         return None
     applib_path = re_match.group(0)
-    dc_file_path = get_file_loader().resolve_path(os.path.join(applib_path, filename))
-    return dc_file_path
+    return os.path.join(applib_path, filename)
 
 
 def get_test_container_hostport(

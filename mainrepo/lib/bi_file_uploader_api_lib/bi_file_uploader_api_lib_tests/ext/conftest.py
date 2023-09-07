@@ -5,7 +5,6 @@ import pytest
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 from bi_testing.tvm_info import TvmSecretReader
 
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
@@ -19,7 +18,6 @@ async def use_local_task_processor_auto(use_local_task_processor):
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 

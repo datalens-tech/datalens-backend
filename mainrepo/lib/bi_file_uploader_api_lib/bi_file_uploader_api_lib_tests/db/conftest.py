@@ -11,15 +11,7 @@ from bi_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
 from bi_file_uploader_api_lib_tests.req_builder import ReqBuilder
 
 
-try:
-    # Arcadia testing stuff
-    import yatest.common as yatest_common
-except ImportError:
-    yatest_common = None
-
-
 LOGGER = logging.getLogger(__name__)
-ARCADIA_PREFIX = 'datalens/backend/lib/bi_file_uploader_api_lib/bi_file_uploader_api_lib_tests/db/'
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -42,11 +34,8 @@ zxc,456,,,2021-02-06 11:59:00
 def excel_data():
     filename = 'data.xlsx'
 
-    if yatest_common is not None:
-        path = yatest_common.source_path(ARCADIA_PREFIX + filename)
-    else:
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(dirname, filename)
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(dirname, filename)
 
     with open(path, 'rb') as fd:
         return fd.read()

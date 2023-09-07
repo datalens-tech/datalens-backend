@@ -5,7 +5,6 @@ import pytest
 from bi_core_testing.initialization import initialize_core_test
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 
 from bi_formula.loader import load_bi_formula
 from bi_formula.testing.forced_literal import forced_literal_use
@@ -28,7 +27,6 @@ def pytest_configure(config):  # noqa
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 

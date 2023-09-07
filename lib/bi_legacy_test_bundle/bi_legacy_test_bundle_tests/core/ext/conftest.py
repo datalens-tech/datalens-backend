@@ -5,7 +5,6 @@ import os
 import pytest
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 from bi_testing.tvm_info import TvmSecretReader
 
 from bi_blackbox_client.testing import update_global_tvm_info
@@ -25,7 +24,6 @@ def pytest_configure(config):  # noqa
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 

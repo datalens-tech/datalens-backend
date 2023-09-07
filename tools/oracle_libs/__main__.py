@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 
 from library.python.testing import recipe
-import yatest.common
+import logging
 
 from datalens.backend.tools import dblib_common
 
@@ -26,7 +26,7 @@ LINKS = ()
 
 
 def start(argv):
-    logger = yatest.common.yatest_logger
+    logger = logging.getLogger(__name__)
     path = PATH
     dblib_common.add_to_ldlp(name='oracle_libs', path=path, logger=logger)
 

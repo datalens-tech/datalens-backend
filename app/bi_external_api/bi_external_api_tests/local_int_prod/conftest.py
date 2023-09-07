@@ -36,7 +36,6 @@ from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 
 
 @attr.s
@@ -47,7 +46,6 @@ class DevAuthData:
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 

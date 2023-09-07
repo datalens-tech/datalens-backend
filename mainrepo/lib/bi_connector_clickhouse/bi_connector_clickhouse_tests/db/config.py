@@ -7,8 +7,6 @@ from bi_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
-import bi_testing.files as bi_testing_files
-
 # Infra settings
 SSL_CA_FILENAME = 'marsnet_ca.crt'
 
@@ -20,7 +18,7 @@ def get_clickhouse_ssl_ca_path() -> str:
 def get_clickhouse_ssl_ca() -> str:
     path = get_clickhouse_ssl_ca_path()
 
-    with bi_testing_files.get_file_loader().open(path) as f:
+    with open(path) as f:
         return f.read()
 
 

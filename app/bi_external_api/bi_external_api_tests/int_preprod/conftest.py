@@ -27,7 +27,6 @@ from bi_external_api.testings import PGSubSelectDatasetFactory, SingleTabDashboa
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 
 from ..test_acceptance import ConnectionTestingData
 
@@ -35,7 +34,6 @@ from ..test_acceptance import ConnectionTestingData
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 

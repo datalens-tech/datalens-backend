@@ -28,7 +28,6 @@ from bi_external_api.testings import WorkbookOpsClient
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.files import get_file_loader
 from ..test_acceptance import ConnectionTestingData
 
 
@@ -56,7 +55,6 @@ def dl_env() -> DLEnv:
 @pytest.fixture(scope='session')
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
-    filepath = get_file_loader().resolve_path(filepath)
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
