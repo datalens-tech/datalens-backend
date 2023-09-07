@@ -38,46 +38,8 @@ RUN apt-get update -y \
 #     && rm -rf /tmp/mssqldeb \
 #     && apt-get clean
 
-# # sandbox resource version:
-# See also: https://st.yandex-team.ru/BI-1585#5ed122525117d84ced2e3a40
-# See also: ./mssql_libs.tgz.external
-RUN wget \
-        -O /tmp/mssql_deb.tgz \
-        --progress=dot:giga \
-        https://proxy.sandbox.yandex-team.ru/1539658731 \
-    && mkdir /tmp/mssql_deb \
-    && cd /tmp/mssql_deb \
-    && tar -xvf /tmp/mssql_deb.tgz \
-    && rm /tmp/mssql_deb.tgz \
-    && apt-get update -y \
-    && apt-get install -y libltdl3-dev tdsodbc \
-    && ACCEPT_EULA=Y dpkg -i /tmp/mssql_deb/*.deb \
-    && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc \
-    && cat /usr/share/tdsodbc/odbcinst.ini >> /etc/odbcinst.ini \
-    && rm -rf /tmp/mssql_deb \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc
-
-# Install Oracle tools (libraries and CLI)
-# See also: https://st.yandex-team.ru/BI-1585#5ed122525117d84ced2e3a40
-# See also: ./oracle_libs.tgz.external
-# See also: ./oracle_cli.tgz.external
-RUN wget \
-        -O /tmp/oracle_libs.tgz \
-        --progress=dot:giga \
-        https://proxy.sandbox.yandex-team.ru/1539662156 \
-    && wget \
-        -O /tmp/oracle_cli.tgz \
-        --progress=dot:giga \
-        https://proxy.sandbox.yandex-team.ru/1539663420 \
-    && mkdir /opt/oracle-tools \
-    && cd /opt/oracle-tools \
-    && tar -xvf /tmp/oracle_libs.tgz \
-    && tar -xvf /tmp/oracle_cli.tgz \
-    && rm /tmp/oracle_libs.tgz \
-    && rm /tmp/oracle_cli.tgz
 
 ENV PATH $PATH:/opt/oracle-tools
 ENV SQLPATH $SQLPATH:/opt/oracle-tools

@@ -52,20 +52,6 @@ RUN echo 'deb https://repo.yandex.ru/clickhouse/deb stable main' >> /etc/apt/sou
 RUN cat /usr/share/tdsodbc/odbcinst.ini >> /etc/odbcinst.ini
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc
 
-# See also: https://st.yandex-team.ru/BI-1585#5ed122525117d84ced2e3a40
-# See also: ./oracle_libs.tgz.external
-# ADD https://proxy.sandbox.yandex-team.ru/1539662156 /opt/oracle-tools  # but it doesn't get properly detected as an archive
-RUN wget \
-        -O /tmp/oracle_libs.tgz \
-        --progress=dot:giga \
-        https://proxy.sandbox.yandex-team.ru/1539662156 \
-    && mkdir /opt/oracle-tools \
-    && cd /opt/oracle-tools \
-    && tar -xvf /tmp/oracle_libs.tgz \
-    && rm /tmp/oracle_libs.tgz
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/opt/oracle-tools
-ENV NLS_LANG .AL32UTF8
-
 
 # ### py ###
 
