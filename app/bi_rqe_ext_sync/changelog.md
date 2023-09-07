@@ -1,3 +1,16 @@
+0.1995.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * did you know that tuple[str] is a tuple with exactly one string? (#402)  [ https://github.com/datalens-tech/datalens-backend-private/commit/1e61fbf7 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Removed make_foreign_native_type_conversion from TypeTransformer (#382)  [ https://github.com/datalens-tech/datalens-backend-private/commit/086c6ca8 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 15:49:58+00:00
+
 0.1994.0
 --------
 
