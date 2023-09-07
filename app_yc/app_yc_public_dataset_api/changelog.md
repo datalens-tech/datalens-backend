@@ -1,3 +1,12 @@
+0.1994.0
+--------
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * BI-4511: remove yt semaphores (#381)  [ https://github.com/datalens-tech/datalens-backend-private/commit/422e9fb2 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 15:12:57+00:00
+
 0.1993.0
 --------
 
