@@ -1,3 +1,24 @@
+0.144.0
+-------
+
+* [Sergei Borodin](http://staff/seray@yandex-team.ru)
+
+ * BI-4428 use custom ca_cert (#384)  [ https://github.com/datalens-tech/datalens-backend-private/commit/630e5498 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Minor updates to the local_dev README (#377)  [ https://github.com/datalens-tech/datalens-backend-private/commit/8739bbbb ]
+
+* [Ovsyannikov Dmitrii](http://staff/tamatuk@ya.ru)
+
+ * BI-4907: remove yatest (#335)  [ https://github.com/datalens-tech/datalens-backend-private/commit/c1f0f17a ]
+
+* [Max Zuev](http://staff/mail@thenno.me)
+
+ * BI-4359: delete black fabric magic for connectors (#374)  [ https://github.com/datalens-tech/datalens-backend-private/commit/0fcce078 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 12:45:15+00:00
+
 0.143.0
 -------
 
