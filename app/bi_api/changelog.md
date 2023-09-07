@@ -1,3 +1,12 @@
+0.1997.0
+--------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * BI-4229 Remove old-style connector availability configs (#337)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7828b9e7 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 16:07:08+00:00
+
 0.1996.0
 --------
 
