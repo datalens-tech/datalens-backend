@@ -238,29 +238,15 @@ class TypeTransformer:
         except KeyError:
             raise exc.UnsupportedNativeTypeError(native_t)
 
-    def make_foreign_native_type_conversion(self, native_t: GenericNativeType) -> GenericNativeType:
-        """
-        Attempt to make a native type for the current database that corresponds
-        to a native type of another database.
-
-        If there is no known direct conversion, should return `native_t` as-is
-        (with non-matching `conn_type`).
-        """
-        return native_t  # no known conversion
-
     def type_user_to_native(self, user_t: BIType, native_t: Optional[GenericNativeType] = None) -> GenericNativeType:
         if native_t is not None:
             # original NT is given, try to do a direct conversion
 
-            if native_t.conn_type != self.conn_type:
-                # attempt to translate to own native type
-                native_t = self.make_foreign_native_type_conversion(native_t)
-
-            if native_t.conn_type == self.conn_type:
-                # it is from the same DB type, so try to validate against UT
-                if (user_t == self.native_to_user_map.get(native_t) or
-                        user_t == self.native_to_user_map.get(native_t.as_generic)):
-                    return native_t
+            assert native_t.conn_type == self.conn_type
+            # it is from the same DB type, so try to validate against UT
+            if (user_t == self.native_to_user_map.get(native_t) or
+                    user_t == self.native_to_user_map.get(native_t.as_generic)):
+                return native_t
 
         try:
             result = self.user_to_native_map[user_t]

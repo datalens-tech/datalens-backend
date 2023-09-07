@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import attr
 import sqlalchemy as sa
 
 from bi_constants.enums import BIType, ConnectionType as CT
@@ -9,7 +8,6 @@ from bi_core.db.conversion_base import (
 )
 from clickhouse_sqlalchemy import types as ch_types
 
-CH_CONN_TYPES = frozenset((CT.clickhouse, CT.ch_over_yt, CT.ch_over_yt_user_auth))
 
 CH_TYPES_INT = frozenset((
     ch_types.Int, ch_types.Int8, ch_types.Int16, ch_types.Int32, ch_types.Int64,
@@ -66,10 +64,3 @@ class ClickHouseTypeTransformer(TypeTransformer):
         BIType.unsupported: make_native_type(CT.clickhouse, sa.sql.sqltypes.NullType),
     }
 
-    def make_foreign_native_type_conversion(self, native_t):  # type: ignore  # TODO: fix
-        # All CH conn_types are supposed to have equivalent types.
-        if native_t.conn_type in CH_CONN_TYPES:
-            return attr.evolve(
-                native_t,
-                conn_type=self.conn_type)
-        return super().make_foreign_native_type_conversion(native_t)
