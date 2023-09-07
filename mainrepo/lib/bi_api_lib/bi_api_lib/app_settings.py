@@ -6,7 +6,6 @@ from typing import Optional, Any, ClassVar
 import attr
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
-from bi_configs.connectors_settings import ConnectorsSettingsByType
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.enums import EnvType, AppType, RedisMode
 from bi_configs.environments import (
@@ -113,10 +112,6 @@ class AppSettings:
         missing=('stable',),
     )
 
-    CONNECTORS: Optional[ConnectorsSettingsByType] = s_attrib(  # type: ignore
-        "CONNECTORS",
-        missing=[],
-    )
     CONNECTOR_WHITELIST: Optional[tuple[str, ...]] = s_attrib(  # type: ignore
         'CONNECTOR_WHITELIST',
         env_var_converter=split_by_comma,

@@ -16,7 +16,7 @@ from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.rqe import RQEConfig, RQEBaseURL
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader, load_connectors_settings_from_env_with_fallback
-from bi_configs.connectors_settings import ConnectorsSettingsByType, CHFrozenSamplesConnectorSettings
+from bi_configs.connectors_settings import CHFrozenSamplesConnectorSettings
 
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.constants import CONNECTION_TYPE_CH_FROZEN_SAMPLES
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ch_frozen_samples_settings_fallback
@@ -216,7 +216,6 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
         YC_IAM_TS_ENDPOINT='ts.private-api.cloud-preprod.yandex.net:4282',
         BLACKBOX_NAME='Mimino',
         FORMULA_PARSER_TYPE=ParserType.antlr_py,
-        CONNECTORS=None,
         FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.readable,
         FILE_UPLOADER_BASE_URL="https://upload.datalens-preprod.yandex.ru",
         FILE_UPLOADER_MASTER_TOKEN='...censored...',
@@ -355,7 +354,6 @@ DEV_CONTROL_API_CASE = ConfigLoadingCase(
         BI_COMPENG_PG_URL='postgresql://postgres@%2Fvar%2Frun%2Fpostgresql/postgres',
         PUBLIC_CH_QUERY_TIMEOUT=30,
         FORMULA_PARSER_TYPE=ParserType.antlr_py,
-        CONNECTORS=None,
         FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.readable,
         FILE_UPLOADER_MASTER_TOKEN='...censored...',
         YC_AUTH_SETTINGS=None,
@@ -391,7 +389,6 @@ def test_config_loading(case: ConfigLoadingCase):
         assert actual_config.CONNECTOR_AVAILABILITY.visible_connectors == {ConnectionType('clickhouse'), ConnectionType('postgres')}
         actual_config = attr.evolve(actual_config, CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig())
 
-    actual_config = attr.evolve(actual_config, CONNECTORS=None)
     assert actual_config == expected_config
 
 

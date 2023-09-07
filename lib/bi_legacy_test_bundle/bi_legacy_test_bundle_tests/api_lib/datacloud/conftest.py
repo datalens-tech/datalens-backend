@@ -123,7 +123,6 @@ def dc_rs_cp_app_settings(
         ENV_TYPE=EnvType.dc_any,
         US_BASE_URL=dc_rs_us_base_url,
         US_MASTER_TOKEN=dc_rs_us_master_token,
-        CONNECTORS=None,
         YC_AUTH_SETTINGS=YCAuthSettings(
             YC_AS_ENDPOINT=ext_sys_requisites.YC_AS_ENDPOINT,
             YC_AUTHORIZE_PERMISSION=ext_sys_requisites.YC_AUTHORIZE_PERMISSION,
@@ -192,7 +191,6 @@ def dc_rs_dp_app_settings(
         APP_TYPE=AppType.DATA_CLOUD,
         US_BASE_URL=dc_rs_us_base_url,
         US_MASTER_TOKEN=dc_rs_us_master_token,
-        CONNECTORS=None,
         YC_AUTH_SETTINGS=YCAuthSettings(
             YC_AS_ENDPOINT=ext_sys_requisites.YC_AS_ENDPOINT,
             YC_AUTHORIZE_PERMISSION=ext_sys_requisites.YC_AUTHORIZE_PERMISSION,

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from bi_api_commons.base_models import TenantDef
-from bi_configs.connectors_settings import ConnectorsSettingsByType
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
 from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
@@ -18,7 +18,7 @@ from bi_connector_chyt_internal.bi.connection_info import CHYTUserAuthConnection
 class CHYTInternalUserConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
             self,
-            connector_settings: Optional[ConnectorsSettingsByType],
+            connector_settings: Optional[ConnectorSettingsBase],
             tenant: Optional[TenantDef]
     ) -> ConnectionForm:
 

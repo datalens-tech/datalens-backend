@@ -8,7 +8,6 @@ import attr
 
 from bi_configs.rqe import rqe_config_from_env
 from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_configs.connectors_settings import ConnectorsSettingsByType
 
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
@@ -22,6 +21,7 @@ from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_core.services_registry.top_level import ServicesRegistry
 
+from bi_file_uploader_worker_lib.settings import FileUploaderConnectorsSettings
 
 if TYPE_CHECKING:
     from bi_core.connection_models import ConnectOptions
@@ -36,7 +36,7 @@ class InsecureEnvManagerFactory(DefaultEnvManagerFactory):
         return InsecureConnectionSecurityManager()
 
 
-def create_sr_factory_from_env_vars(connectors_settings: ConnectorsSettingsByType) -> DefaultSRFactory:
+def create_sr_factory_from_env_vars(connectors_settings: FileUploaderConnectorsSettings) -> DefaultSRFactory:
 
     def get_conn_options(conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
         opts = conn.get_conn_options()
@@ -53,7 +53,6 @@ def create_sr_factory_from_env_vars(connectors_settings: ConnectorsSettingsByTyp
             rqe_sock_read_timeout=int(os.environ.get('RQE_SOCK_READ_TIMEOUT', 30 * 60)),
         )
 
-    # TODO: get rid of ConnectorsSettingsByType
     connectors_settings = {
         CONNECTION_TYPE_FILE: connectors_settings.FILE,
         CONNECTION_TYPE_GSHEETS_V2: connectors_settings.FILE,

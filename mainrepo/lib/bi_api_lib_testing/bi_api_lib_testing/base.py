@@ -112,7 +112,6 @@ class BiApiTestBase(abc.ABC):
             ),  # type: ignore
             YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
             YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
-            CONNECTORS=None,
             CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
 
             RQE_CONFIG=rqe_config_subprocess,

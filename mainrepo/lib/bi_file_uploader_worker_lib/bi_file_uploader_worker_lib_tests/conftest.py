@@ -26,7 +26,7 @@ from bi_testing.containers import get_test_container_hostport
 
 from bi_configs.enums import RedisMode
 from bi_configs.settings_submodels import RedisSettings, S3Settings, GoogleAppSettings
-from bi_configs.connectors_settings import ConnectorsSettingsByType, FileS3ConnectorSettings
+from bi_configs.connectors_settings import FileS3ConnectorSettings
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 
 from bi_task_processor.arq_wrapper import create_arq_redis_settings, create_redis_pool
@@ -39,7 +39,9 @@ from bi_file_uploader_lib.redis_model.base import RedisModelManager
 
 from bi_file_uploader_worker_lib.app import FileUploaderContextFab
 from bi_file_uploader_worker_lib.tasks import REGISTRY
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
+from bi_file_uploader_worker_lib.settings import (
+    FileUploaderConnectorsSettings, FileUploaderWorkerSettings, SecureReader,
+)
 from bi_file_uploader_worker_lib.testing.app_factory import TestingFileUploaderWorkerFactory
 
 
@@ -140,7 +142,7 @@ def secure_reader():
 
 @pytest.fixture(scope='session')
 def connectors_settings(s3_settings):
-    return ConnectorsSettingsByType(
+    return FileUploaderConnectorsSettings(
         FILE=FileS3ConnectorSettings(
             SECURE=False,
             HOST=get_test_container_hostport('db-clickhouse', original_port=8123).host,

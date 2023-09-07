@@ -84,7 +84,6 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
             YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
-            CONNECTORS=None,
             CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
             MUTATIONS_CACHES_ON=self.mutation_caches_on,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),

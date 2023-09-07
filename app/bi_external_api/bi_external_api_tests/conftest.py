@@ -170,7 +170,6 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
             YC_AUTHORIZE_PERMISSION=None,
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
-        CONNECTORS=None,
         CONNECTOR_WHITELIST=tuple(TestsInstallation.CONNECTOR_WHITELIST.split(',')),
     )
 

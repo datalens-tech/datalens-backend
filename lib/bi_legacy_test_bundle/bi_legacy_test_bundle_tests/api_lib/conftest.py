@@ -223,7 +223,6 @@ def app(
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
-        CONNECTORS=None,
         CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),
 
         RQE_CONFIG=rqe_config_subprocess,
@@ -630,7 +629,6 @@ def async_app_settings_local_env(
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
-        CONNECTORS=None,
         CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),
         MUTATIONS_CACHES_ON=False,
         BI_COMPENG_PG_ON=True,

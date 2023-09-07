@@ -9,7 +9,7 @@ import json
 from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_constants.enums import RawSQLLevel
 
-from bi_configs.settings_loaders.meta_definition import s_attrib, required
+from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.environments import (
     CommonInstallation,
 )
@@ -287,58 +287,3 @@ class UsageTrackingConnectionSettings(ServiceConnectorSettingsBase):
 class UsageTrackingYaTeamConnectionSettings(ServiceConnectorSettingsBase):
     MAX_EXECUTION_TIME: int = s_attrib("MAX_EXECUTION_TIME", missing=None)  # type: ignore
     """"""
-
-
-@attr.s(frozen=True)
-class ConnectorsSettingsByType(SettingsBase):
-    CH_FROZEN_BUMPY_ROADS: Optional[CHFrozenBumpyRoadsConnectorSettings] = s_attrib("CH_FROZEN_BUMPY_ROADS", missing=None)  # type: ignore
-    CH_FROZEN_COVID: Optional[CHFrozenCovidConnectorSettings] = s_attrib("CH_FROZEN_COVID", missing=None)  # type: ignore
-    CH_FROZEN_DEMO: Optional[CHFrozenDemoConnectorSettings] = s_attrib("CH_FROZEN_DEMO", missing=None)  # type: ignore
-    CH_FROZEN_DTP: Optional[CHFrozenDTPConnectorSettings] = s_attrib("CH_FROZEN_DTP", missing=None)  # type: ignore
-    CH_FROZEN_GKH: Optional[CHFrozenGKHConnectorSettings] = s_attrib("CH_FROZEN_GKH", missing=None)  # type: ignore
-    CH_FROZEN_SAMPLES: Optional[CHFrozenSamplesConnectorSettings] = s_attrib("CH_FROZEN_SAMPLES", missing=None)  # type: ignore
-    CH_FROZEN_TRANSPARENCY: Optional[CHFrozenTransparencyConnectorSettings] = s_attrib("CH_FROZEN_TRANSPARENCY", missing=None)  # type: ignore
-    CH_FROZEN_WEATHER: Optional[CHFrozenWeatherConnectorSettings] = s_attrib("CH_FROZEN_WEATHER", missing=None)  # type: ignore
-    CH_FROZEN_HORECA: Optional[CHFrozenHorecaConnectorSettings] = s_attrib("CH_FROZEN_HORECA", missing=None)  # type: ignore
-    FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore
-    YQ: Optional[YQConnectorSettings] = s_attrib("YQ", missing=None)  # type: ignore
-    MONITORING: Optional[MonitoringConnectorSettings] = s_attrib("MONITORING", missing=None)  # type: ignore
-    CH_YA_MUSIC_PODCAST_STATS: Optional[CHYaMusicPodcastStatsConnectorSettings] = s_attrib(  # type: ignore
-        "CH_YA_MUSIC_PODCAST_STATS",
-        missing=None,
-    )
-    CH_BILLING_ANALYTICS: Optional[BillingConnectorSettings] = s_attrib("CH_BILLING_ANALYTICS", missing=None)  # type: ignore
-    MARKET_COURIERS: Optional[MarketCouriersConnectorSettings] = s_attrib("MARKET_COURIERS", missing=None)  # type: ignore
-    SCHOOLBOOK: Optional[SchoolbookConnectorSettings] = s_attrib("SCHOOLBOOK", missing=None)  # type: ignore
-    SMB_HEATMAPS: Optional[SMBHeatmapsConnectorSettings] = s_attrib("SMB_HEATMAPS", missing=None)  # type: ignore
-    MOYSKLAD: Optional[MoySkladConnectorSettings] = s_attrib("MOYSKLAD", missing=None)  # type: ignore
-    EQUEO: Optional[EqueoConnectorSettings] = s_attrib("EQUEO", missing=None)  # type: ignore
-    KONTUR_MARKET: Optional[KonturMarketConnectorSettings] = s_attrib("KONTUR_MARKET", missing=None)  # type: ignore
-    USAGE_TRACKING: Optional[UsageTrackingConnectionSettings] = s_attrib("USAGE_TRACKING", missing=None)  # type: ignore
-    USAGE_TRACKING_YA_TEAM: Optional[UsageTrackingYaTeamConnectionSettings] = s_attrib(
-        "USAGE_TRACKING_YA_TEAM",
-        missing=None
-    )  # type: ignore
-    METRICA: Optional[MetricaConnectorSettings] = s_attrib("METRICA", missing=None)  # type: ignore
-    APPMETRICA: Optional[AppmetricaConnectorSettings] = s_attrib("APPMETRICA", missing=None)  # type: ignore
-    YDB: Optional[YDBConnectorSettings] = s_attrib("YDB", missing=None)  # type: ignore
-    CLICKHOUSE: Optional[ClickHouseConnectorSettings] = s_attrib("CLICKHOUSE", missing=None)  # type: ignore
-    CHYT: Optional[CHYTConnectorSettings] = s_attrib("CHYT", missing=None)  # type: ignore
-    GREENPLUM: Optional[GreenplumConnectorSettings] = s_attrib("GREENPLUM", missing=None)  # type: ignore
-    MYSQL: Optional[MysqlConnectorSettings] = s_attrib("MYSQL", missing=None)  # type: ignore
-    POSTGRES: Optional[PostgresConnectorSettings] = s_attrib("POSTGRES", missing=None)  # type: ignore
-
-
-def connectors_settings_file_only_fallback_factory(cfg: CommonInstallation) -> Optional[ConnectorsSettingsByType]:
-    return ConnectorsSettingsByType(  # type: ignore
-        FILE=FileS3ConnectorSettings(  # type: ignore
-            HOST=cfg.CONN_FILE_CH_HOST,
-            PORT=cfg.CONN_FILE_CH_PORT,
-            USERNAME=cfg.CONN_FILE_CH_USERNAME,
-            PASSWORD=required(str),
-            ACCESS_KEY_ID=required(str),
-            SECRET_ACCESS_KEY=required(str),
-            S3_ENDPOINT=cfg.S3_ENDPOINT_URL,
-            BUCKET=cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,
-        ) if isinstance(cfg, cd.ConnectorsDataFileBase) and isinstance(cfg, CommonInstallation) else None,
-    )
