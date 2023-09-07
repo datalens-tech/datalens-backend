@@ -3,8 +3,8 @@ import pytest
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.enums import ConnectionType
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from bi_api_lib_testing.connection_base import ConnectionTestBase
+from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
+from bi_api_lib_testing_ya.connection_base import ConnectionTestPrivateBase
 
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from bi_connector_bundle_ch_filtered_tests.db.config import BI_TEST_CONFIG
@@ -12,7 +12,7 @@ from bi_connector_bundle_ch_filtered_tests.db.ch_billing_analytics.core.base imp
 from bi_connector_bundle_ch_filtered_tests.db.ch_billing_analytics.config import SR_CONNECTION_SETTINGS
 
 
-class CHBillingAnalyticsConnectionTestBase(BaseCHBillingAnalyticsTestClass, ConnectionTestBase):
+class CHBillingAnalyticsConnectionTestBase(BaseCHBillingAnalyticsTestClass, ConnectionTestPrivateBase):
     bi_compeng_pg_on = False
 
     @pytest.fixture(scope='class')
@@ -20,7 +20,7 @@ class CHBillingAnalyticsConnectionTestBase(BaseCHBillingAnalyticsTestClass, Conn
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
     @pytest.fixture(scope='class')
-    def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
+    def bi_test_config(self) -> BiApiTestEnvironmentConfigurationPrivate:
         return BI_TEST_CONFIG
 
     @pytest.fixture(scope='class')

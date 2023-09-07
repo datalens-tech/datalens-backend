@@ -61,7 +61,7 @@ class CHFrozenConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
         CONNECTION_TYPE_CH_FROZEN_SAMPLES,
         CONNECTION_TYPE_CH_FROZEN_TRANSPARENCY,
         CONNECTION_TYPE_CH_FROZEN_WEATHER,
-    ])
+    ], ids=lambda param: param.value)
     def _conn_type(self, request) -> ConnectionType:
         request.cls.conn_type = request.param
         return request.param

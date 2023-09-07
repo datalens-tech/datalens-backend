@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from typing import Any
-
 import attr
 
 from bi_configs.connector_availability import ConnectorAvailabilityConfigSettings
-from bi_configs.environments import InternalTestingInstallation, TestsInstallation
+from bi_configs.environments import TestsInstallation
 
 from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 
@@ -13,9 +11,6 @@ from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 @attr.s(kw_only=True)
 class BiApiTestEnvironmentConfiguration:
     core_test_config: CoreTestEnvironmentConfigurationBase = attr.ib()
-
-    dls_host: str = attr.ib(default=InternalTestingInstallation.DATALENS_API_LB_DLS_BASE_URL)
-    dls_key: str = attr.ib(default='_tests_dls_api_key_')
 
     ext_query_executer_secret_key: str = attr.ib()
 
@@ -33,6 +28,3 @@ class BiApiTestEnvironmentConfiguration:
 
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(default=TestsInstallation.CONNECTOR_AVAILABILITY)
     connector_whitelist: str = attr.ib(default=TestsInstallation.CONNECTOR_WHITELIST)
-
-    def clone(self, **kwargs: Any) -> BiApiTestEnvironmentConfiguration:
-        return attr.evolve(self, **kwargs)

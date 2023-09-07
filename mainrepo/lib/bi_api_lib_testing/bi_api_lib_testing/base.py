@@ -1,6 +1,6 @@
 import abc
 from asyncio import AbstractEventLoop
-from typing import Any, ClassVar, Generator, Optional
+from typing import Any, ClassVar, Generator, Optional, Type
 
 from flask.app import Flask
 from flask.testing import FlaskClient
@@ -8,13 +8,8 @@ import pytest
 
 from bi_constants.enums import ConnectionType
 
-from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
 from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.settings_submodels import YCAuthSettings
-
-from bi_testing_ya.iam_mock import apply_iam_services_mock
-from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
 from bi_api_commons.base_models import TenantCommon
 
@@ -25,7 +20,8 @@ from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.app_settings import ControlPlaneAppSettings, MDBSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.app.control_api.app import ControlApiAppFactoryBase
+from bi_api_lib.app_settings import MDBSettings, ControlPlaneAppTestingsSettings, ControlApiAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
@@ -38,7 +34,12 @@ class BiApiTestBase(abc.ABC):
     Base class defining the basic fixtures of bi-api tests
     """
 
+    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactoryBase]] = TestingControlApiAppFactory
     bi_compeng_pg_on: ClassVar[bool] = True
+
+    @pytest.fixture(scope='function', autouse=True)
+    def preload(self):
+        preload_bi_api_lib()
 
     @pytest.fixture(scope='class')
     @abc.abstractmethod
@@ -73,49 +74,30 @@ class BiApiTestBase(abc.ABC):
         with RQEConfigurationMaker(bi_test_config=bi_test_config).rqe_config_subprocess_cm() as rqe_config:
             yield rqe_config
 
-    @pytest.fixture(scope='function')
-    def iam_services_mock(self, monkeypatch: Any) -> Generator[IAMServicesMockFacade, None, None]:
-        yield from apply_iam_services_mock(monkeypatch)
-
-    @pytest.fixture(scope='function')
-    def control_api_app_settings(
-            self,
+    @classmethod
+    def create_control_api_settings(
+            cls,
             bi_test_config: BiApiTestEnvironmentConfiguration,
             rqe_config_subprocess: RQEConfig,
-            iam_services_mock: IAMServicesMockFacade,
-    ) -> ControlPlaneAppSettings:  # TODO SPLIT switch to proper settings
-        preload_bi_api_lib()
-
+    ) -> ControlApiAppSettings:
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
 
         redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
 
-        settings = ControlPlaneAppSettings(
+        settings = ControlApiAppSettings(
             CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
                 bi_test_config.connector_availability_settings,
             ),
-            APP_TYPE=AppType.TESTS,
-            ENV_TYPE=EnvType.development,
 
             US_BASE_URL=us_config.us_host,
             US_MASTER_TOKEN=us_config.us_master_token,
             CRYPTO_KEYS_CONFIG=core_test_config.get_crypto_keys_config(),
 
-            DLS_HOST=bi_test_config.dls_host,
-            DLS_API_KEY=bi_test_config.dls_key,
-
-            YC_AUTH_SETTINGS=YCAuthSettings(
-                YC_AS_ENDPOINT=iam_services_mock.service_config.endpoint,
-                YC_API_ENDPOINT_IAM=iam_services_mock.service_config.endpoint,
-                YC_AUTHORIZE_PERMISSION=None,
-            ),  # type: ignore
-            YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
-            YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
             CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
 
             RQE_CONFIG=rqe_config_subprocess,
-            BI_COMPENG_PG_ON=self.bi_compeng_pg_on,
+            BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
             BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
 
             DO_DSRC_IDX_FETCH=True,
@@ -127,19 +109,30 @@ class BiApiTestBase(abc.ABC):
             FILE_UPLOADER_BASE_URL='http://127.0.0.1:9999',  # fake url
             FILE_UPLOADER_MASTER_TOKEN='qwerty',
             MDB=MDBSettings(),
-        )  # type: ignore
+        )
         return settings
+
+    @pytest.fixture(scope='function')
+    def control_api_app_settings(
+            self,
+            bi_test_config: BiApiTestEnvironmentConfiguration,
+            rqe_config_subprocess: RQEConfig,
+    ) -> ControlApiAppSettings:
+        return self.create_control_api_settings(
+            bi_test_config=bi_test_config,
+            rqe_config_subprocess=rqe_config_subprocess,
+        )
 
     @pytest.fixture(scope='function')
     def control_api_app(
             self,
             environment_readiness: None,
-            control_api_app_settings: ControlPlaneAppSettings,
+            control_api_app_settings: ControlApiAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> Generator[Flask, None, None]:
         """Session-wide test `Flask` application."""
 
-        control_app_factory = TestingControlApiAppFactory(settings=control_api_app_settings)
+        control_app_factory = self.control_api_app_factory_cls(settings=control_api_app_settings)
         load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=control_api_app_settings.CONNECTOR_WHITELIST))
         app = control_app_factory.create_app(
             connectors_settings=connectors_settings,

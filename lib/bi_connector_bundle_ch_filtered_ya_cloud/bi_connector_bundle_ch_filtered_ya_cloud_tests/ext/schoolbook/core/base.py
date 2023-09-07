@@ -6,9 +6,7 @@ from bi_configs.connectors_settings import SchoolbookConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.constants import (
-    CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS,
-)
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.constants import CONNECTION_TYPE_SCHOOLBOOK_JOURNAL
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.us_connection import ConnectionClickhouseSchoolbook
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.testing.connection import (
     make_saved_schoolbook_journal_connection,
@@ -21,7 +19,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.base import (
 
 
 class BaseSchoolbookTestClass(BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseSchoolbook]):
-    conn_type = CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS
+    conn_type = CONNECTION_TYPE_SCHOOLBOOK_JOURNAL
     connection_settings = SchoolbookConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
     @pytest.fixture(scope='function')

@@ -207,6 +207,9 @@ bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
 dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
 bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
 
 
 #
@@ -214,7 +217,6 @@ bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 # To export/install specific app without other dependencies - use `--only` flag
 # Group naming convention: `app_${APP_FOLDER_NAME}`
 #
-bi-maintenance = {path = "../../lib/bi_maintenance"}
 
 [tool.poetry.group.app_bi_api.dependencies]
 yandex-bi-api = {path = "../../app/bi_api"}

@@ -1,24 +1,22 @@
 import abc
 import asyncio
 from http import HTTPStatus
-from typing import ClassVar, Generator, Iterable, NamedTuple
+from typing import ClassVar, Generator, Iterable, NamedTuple, Type
 
 from aiohttp import web
 from aiohttp.pytest_plugin import AiohttpClient
 from aiohttp.test_utils import TestClient
 import pytest
 
-from bi_configs.enums import AppType
 from bi_configs.rqe import RQEConfig
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.enums import ConnectionType
 
-from bi_cloud_integration.iam_mock import IAMServicesMockFacade
-
 from bi_core.components.ids import FieldIdGeneratorType
 
-from bi_api_lib.app_settings import AsyncAppSettings, YCAuthSettings, MDBSettings
-from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
+from bi_api_lib.app.data_api.app import DataApiAppFactoryBase
+from bi_api_lib.app_settings import MDBSettings, DataApiAppSettings
+from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -41,6 +39,7 @@ class DataApiTestParams(NamedTuple):
 
 
 class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
+    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactoryBase]] = TestingDataApiAppFactory
     mutation_caches_on: ClassVar[bool] = True
     data_caches_on: ClassVar[bool] = True
 
@@ -52,42 +51,30 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
         # https://github.com/pytest-dev/pytest-asyncio/commit/51d986cec83fdbc14fa08015424c79397afc7ad9
         asyncio.set_event_loop_policy(None)
 
-    @pytest.fixture(scope='function')
-    def data_api_app_settings(
-            self,
+    @classmethod
+    def create_data_api_settings(
+            cls,
             bi_test_config: BiApiTestEnvironmentConfiguration,
             rqe_config_subprocess: RQEConfig,
-            iam_services_mock: IAMServicesMockFacade,
-    ) -> AsyncAppSettings:  # TODO SPLIT switch to proper settings
-        preload_bi_api_lib()
+    ) -> DataApiAppSettings:
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
         redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
 
-        return AsyncAppSettings(
-            APP_TYPE=AppType.TESTS,
-            PUBLIC_API_KEY=None,
+        return DataApiAppSettings(
             SENTRY_ENABLED=False,
             US_BASE_URL=us_config.us_host,
             US_MASTER_TOKEN=us_config.us_master_token,
             CRYPTO_KEYS_CONFIG=core_test_config.get_crypto_keys_config(),
             # TODO FIX: Configure caches
-            CACHES_ON=self.data_caches_on,
+            CACHES_ON=cls.data_caches_on,
             SAMPLES_CH_HOSTS=(),
             RQE_CONFIG=rqe_config_subprocess,
 
-            YC_AUTH_SETTINGS=YCAuthSettings(
-                YC_AS_ENDPOINT=iam_services_mock.service_config.endpoint,
-                YC_API_ENDPOINT_IAM=iam_services_mock.service_config.endpoint,
-                YC_AUTHORIZE_PERMISSION=None,
-            ),  # type: ignore
-            YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
-            YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
-
             CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
-            MUTATIONS_CACHES_ON=self.mutation_caches_on,
+            MUTATIONS_CACHES_ON=cls.mutation_caches_on,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),
-            BI_COMPENG_PG_ON=self.bi_compeng_pg_on,
+            BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
             BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
 
@@ -98,11 +85,23 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
         )  # type: ignore
 
     @pytest.fixture(scope='function')
+    def data_api_app_settings(
+            self,
+            bi_test_config: BiApiTestEnvironmentConfiguration,
+            rqe_config_subprocess: RQEConfig,
+    ) -> DataApiAppSettings:
+        return self.create_data_api_settings(
+            bi_test_config=bi_test_config,
+            rqe_config_subprocess=rqe_config_subprocess,
+        )
+
+    @pytest.fixture(scope='function')
     def data_api_app(
-            self, data_api_app_settings: AsyncAppSettings,
+            self,
+            data_api_app_settings: DataApiAppSettings,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
-        data_api_app_factory = TestingDataApiAppFactory(settings=data_api_app_settings)
+        data_api_app_factory = self.data_api_app_factory_cls(settings=data_api_app_settings)
         load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=data_api_app_settings.CONNECTOR_WHITELIST))
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,

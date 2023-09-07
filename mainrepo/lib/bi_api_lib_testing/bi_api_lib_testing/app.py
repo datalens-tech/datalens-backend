@@ -21,12 +21,12 @@ from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 
-from bi_api_lib.app_common import LegacySRFactoryBuilder, SRFactoryBuilder, StandaloneServiceRegistryFactory
+from bi_api_lib.app_common import SRFactoryBuilder, StandaloneServiceRegistryFactory
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import (
     ControlApiAppSettings, ControlPlaneAppTestingsSettings, DataApiAppSettings, TestAppSettings, AppSettings)
-from bi_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult as ControlApiEnvSetupResult, ControlApiAppFactoryBase
-from bi_api_lib.app.data_api.app import DataApiAppFactory, DataApiAppFactoryBase, EnvSetupResult as DataApiEnvSetupResult
+from bi_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult, ControlApiAppFactoryBase
+from bi_api_lib.app.data_api.app import DataApiAppFactoryBase, EnvSetupResult as DataApiEnvSetupResult
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
@@ -76,34 +76,6 @@ class RQEConfigurationMaker:
             )
 
 
-class TestsSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
-    def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
-        return {RequiredService.RQE_INT_SYNC, RequiredService.RQE_EXT_SYNC}
-
-    def _get_env_manager_factory(self, settings: AppSettings) -> EnvManagerFactory:
-        return TestEnvManagerFactory()
-
-    def _get_inst_specific_sr_factory(
-            self, settings: AppSettings,
-    ) -> Optional[InstallationSpecificServiceRegistryFactory]:
-        return StandaloneServiceRegistryFactory()
-
-    def _get_entity_usage_checker(self, settings: AppSettings) -> Optional[EntityUsageChecker]:
-        return None
-
-    def _get_bleeding_edge_users(self, settings: AppSettings) -> tuple[str, ...]:
-        return ()
-
-    def _get_rqe_caches_settings(self, settings: AppSettings) -> Optional[RQECachesSetting]:
-        return None
-
-    def _get_default_cache_ttl_settings(self, settings: AppSettings) -> Optional[CacheTTLConfig]:
-        return None
-
-    def _get_connector_availability(self, settings: AppSettings) -> Optional[ConnectorAvailabilityConfig]:
-        return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlApiAppSettings) else None
-
-
 @attr.s
 class RedisSettingMaker:
     bi_test_config: BiApiTestEnvironmentConfiguration = attr.ib(kw_only=True)
@@ -131,22 +103,35 @@ class RedisSettingMaker:
         return self.get_redis_settings(self.bi_test_config.redis_db_arq)
 
 
-# TODO SPLIT remove these and use the factories below
+class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
+    def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
+        return {RequiredService.RQE_INT_SYNC, RequiredService.RQE_EXT_SYNC}
 
-class TestingControlApiAppFactory(ControlApiAppFactory, LegacySRFactoryBuilder):
-    """Management API app factory for tests"""
+    def _get_env_manager_factory(self, settings: AppSettings) -> EnvManagerFactory:
+        return TestEnvManagerFactory()
+
+    def _get_inst_specific_sr_factory(
+            self, settings: AppSettings,
+    ) -> Optional[InstallationSpecificServiceRegistryFactory]:
+        return StandaloneServiceRegistryFactory()
+
+    def _get_entity_usage_checker(self, settings: AppSettings) -> Optional[EntityUsageChecker]:
+        return None
+
+    def _get_bleeding_edge_users(self, settings: AppSettings) -> tuple[str, ...]:
+        return ()
+
+    def _get_rqe_caches_settings(self, settings: AppSettings) -> Optional[RQECachesSetting]:
+        return None
+
+    def _get_default_cache_ttl_settings(self, settings: AppSettings) -> Optional[CacheTTLConfig]:
+        return None
+
+    def _get_connector_availability(self, settings: AppSettings) -> Optional[ConnectorAvailabilityConfig]:
+        return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlApiAppSettings) else None
 
 
-class TestingDataApiAppFactory(DataApiAppFactory, LegacySRFactoryBuilder):
-    """Data API app factory for tests"""
-
-    def get_app_version(self) -> str:
-        return 'tests'
-
-# # #
-
-
-class ActualTestingControlApiAppFactory(ControlApiAppFactoryBase[ControlApiAppSettings], TestsSRFactoryBuilder):
+class TestingControlApiAppFactory(ControlApiAppFactoryBase[ControlApiAppSettings], TestingSRFactoryBuilder):
     """Management API app factory for tests"""
 
     def set_up_environment(
@@ -169,7 +154,7 @@ class ActualTestingControlApiAppFactory(ControlApiAppFactoryBase[ControlApiAppSe
         return result
 
 
-class ActualTestingDataApiAppFactory(DataApiAppFactoryBase[DataApiAppSettings], TestsSRFactoryBuilder):
+class TestingDataApiAppFactory(DataApiAppFactoryBase[DataApiAppSettings], TestingSRFactoryBuilder):
     """Data API app factory for tests"""
 
     @property
@@ -211,8 +196,8 @@ class ActualTestingDataApiAppFactory(DataApiAppFactoryBase[DataApiAppSettings], 
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
         )
         usm_middleware_list = [
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore[arg-type]
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore[arg-type]
         ]
 
         result = DataApiEnvSetupResult(

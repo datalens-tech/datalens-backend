@@ -17,12 +17,10 @@ flask = ">=2.0.3"
 pytest = ">=7.2.2"
 python = ">=3.10, <3.12"
 werkzeug = ">=2.0.3"
-yandex-bi-testing-ya = {path = "../../../lib/bi_testing_ya"}
 yandex-bi-api-client = {path = "../bi_api_client"}
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-api-lib = {path = "../bi_api_lib"}
-yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}

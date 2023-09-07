@@ -1,7 +1,7 @@
 from typing import ClassVar
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_core_testing.configuration import DefaultCoreTestConfiguration
+from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 from bi_testing.containers import get_test_container_hostport
 
@@ -29,7 +29,7 @@ YC_SR_FACTORY = YCServiceRegistryFactory(
     yc_as_endpoint='fake_host',
 )
 
-BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
+BI_TEST_CONFIG = BiApiTestEnvironmentConfigurationPrivate(
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key='_some_test_secret_key_',
 )

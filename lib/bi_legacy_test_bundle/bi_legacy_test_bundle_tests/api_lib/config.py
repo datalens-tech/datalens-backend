@@ -6,7 +6,7 @@ from typing import Optional
 from bi_core_testing.configuration import DefaultCoreTestConfiguration
 from bi_testing.containers import get_test_container_hostport as _get_test_container_hostport
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
 
 
 DOCKER_COMPOSE_FILE_NAME = 'docker-compose.api_lib.yml'
@@ -145,7 +145,7 @@ DB_URLS = {
 }
 
 
-BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
+BI_TEST_CONFIG = BiApiTestEnvironmentConfigurationPrivate(
     core_test_config=DefaultCoreTestConfiguration(
         host_us_http=get_test_container_hostport("us", fallback_port=50500).host,
         port_us_http=get_test_container_hostport("us", fallback_port=50500).port,

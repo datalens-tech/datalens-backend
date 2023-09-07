@@ -100,6 +100,7 @@ from bi_file_uploader_worker_lib.tasks import REGISTRY as FILE_UPLOADER_WORKER_T
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker
 from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
+from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTION_TYPE_CH_FROZEN_DEMO
@@ -144,7 +145,7 @@ def pytest_configure(config):  # noqa
 
 
 @pytest.fixture(scope='session')
-def bi_test_config() -> BiApiTestEnvironmentConfiguration:
+def bi_test_config() -> BiApiTestEnvironmentConfigurationPrivate:
     return tests_config_mod.BI_TEST_CONFIG
 
 
@@ -193,7 +194,7 @@ def initdb_ready():
 
 @pytest.fixture(scope='function')
 def app(
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
         initdb_ready,
         rqe_config_subprocess,
         iam_services_mock,
@@ -354,7 +355,7 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
 
 
 def make_sync_services_registry(
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
         rci: RequestContextInfo,
         async_env: bool,
         rqe_config,

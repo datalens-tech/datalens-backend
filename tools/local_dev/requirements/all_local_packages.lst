@@ -14,6 +14,8 @@ app_yc/app_yc_file_uploader_worker
 app_yc/app_yc_public_dataset_api
 lib/bi_api_commons_ya_cloud
 lib/bi_api_commons_ya_team
+lib/bi_api_lib_testing_ya
+lib/bi_api_lib_ya
 lib/bi_blackbox_client
 lib/bi_cloud_integration
 lib/bi_connector_bitrix_gds
