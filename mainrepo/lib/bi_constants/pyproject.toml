@@ -15,8 +15,7 @@ dynamic-enum = {path = "../dynamic_enum"}
 
 [tool.poetry.group.tests.dependencies]
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

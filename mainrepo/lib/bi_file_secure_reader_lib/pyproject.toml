@@ -18,8 +18,7 @@ python = ">=3.10, <3.12"
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = ">=0.20.3"
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

@@ -47,8 +47,7 @@ yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

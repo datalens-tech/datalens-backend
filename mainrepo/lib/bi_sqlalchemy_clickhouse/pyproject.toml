@@ -21,8 +21,7 @@ bi_clickhouse_basic = "bi_sqlalchemy_clickhouse.base:BIClickHouseDialectBasic"
 
 [tool.poetry.group.tests.dependencies]
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

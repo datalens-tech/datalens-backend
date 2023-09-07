@@ -19,8 +19,7 @@ bi_promql = "bi_sqlalchemy_promql.base:PromQLDialect"
 
 [tool.poetry.group.tests.dependencies]
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

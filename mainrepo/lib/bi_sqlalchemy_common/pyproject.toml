@@ -21,8 +21,7 @@ yandex-bi-sqlalchemy-mssql = {path = "../../lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-oracle = {path = "../../lib/bi_sqlalchemy_oracle"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

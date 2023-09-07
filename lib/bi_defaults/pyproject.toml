@@ -17,8 +17,7 @@ yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

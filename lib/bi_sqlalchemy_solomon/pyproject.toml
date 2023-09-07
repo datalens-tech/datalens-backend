@@ -18,8 +18,7 @@ bi_solomon = "bi_sqlalchemy_solomon.base:SolomonDialect"
 
 [tool.poetry.group.tests.dependencies]
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

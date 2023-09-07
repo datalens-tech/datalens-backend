@@ -34,8 +34,7 @@ solomon = "bi_connector_solomon.core.connector:SolomonCoreConnector"
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

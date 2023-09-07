@@ -18,8 +18,7 @@ bi_bitrix = "bi_sqlalchemy_bitrix.base:BitrixDialect"
 
 [tool.poetry.group.tests.dependencies]
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

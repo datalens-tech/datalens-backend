@@ -18,8 +18,7 @@ yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 pytest = ">=7.2.2"
 
 
-[tool.mypy]
-overrides = []
+
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
