@@ -1,3 +1,12 @@
+0.2000.0
+--------
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Fix config loading test by adding CONNECTOR_WHITELIST (#407)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7c2a2469 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 17:00:25+00:00
+
 0.1999.0
 --------
 
