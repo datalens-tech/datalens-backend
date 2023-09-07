@@ -1,3 +1,12 @@
+0.1996.0
+--------
+
+* [Sergei Borodin](http://staff/seray@yandex-team.ru)
+
+ * BI-4428 secure-reader via TCP (#394)  [ https://github.com/datalens-tech/datalens-backend-private/commit/451c9f58 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-07 15:58:12+00:00
+
 0.1995.0
 --------
 
