@@ -1,7 +1,7 @@
 import logging
 import uuid
 import ssl
-from typing import Union, Optional, Any, Mapping
+from typing import Union, Optional, Any, Mapping, AsyncIterable
 
 import aiohttp
 import attr
@@ -22,6 +22,7 @@ class Req:
     url: str = attr.ib()
     params: dict[str, Union[str, int]] = attr.ib(default=None)
     data_json: Optional[dict[str, Any]] = attr.ib(default=None)
+    data: Union[bytes, str, AsyncIterable[bytes], aiohttp.MultipartWriter, None] = attr.ib(default=None, kw_only=True)
 
     require_ok: bool = attr.ib(default=True, kw_only=True)
     extra_headers: Optional[dict[DLHeaders, str]] = attr.ib(default=None, kw_only=True)
@@ -116,12 +117,16 @@ class DLCommonAPIClient:
         return f"{self._base_url.rstrip('/')}/{path.lstrip('/')}"
 
     async def make_request(self, rq: Req) -> Resp:
+        if rq.data is not None and rq.data_json is not None:
+            raise ValueError("data_json and data can not be provided simultaneously")
+
         req_id = uuid.uuid4().hex if self._req_id is None else self._req_id
         resp = await self._session.request(
             rq.method, self.make_full_url(rq.url),
             headers=self.get_effective_headers_for_request(rq, req_id),
             params=rq.params,
-            json=rq.data_json
+            json=rq.data_json,
+            data=rq.data,
         )
         content = await resp.read()
 

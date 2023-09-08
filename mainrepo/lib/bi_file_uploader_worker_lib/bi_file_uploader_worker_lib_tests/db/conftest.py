@@ -7,7 +7,8 @@ import aiohttp.web
 import pytest
 
 from bi_constants.enums import FileProcessingStatus
-from bi_testing_ya.api_wrappers import APIClient
+from bi_api_commons.base_models import TenantCommon, NoAuthData
+from bi_api_commons.client.common import DLCommonAPIClient
 from bi_task_processor.state import wait_task
 from bi_file_uploader_task_interface.tasks import ParseFileTask, SaveSourceTask
 
@@ -94,11 +95,11 @@ def health_check_app(loop, aiohttp_client):
 
 
 @pytest.fixture(scope="function")
-def health_check_api_client(health_check_app) -> APIClient:
-    return APIClient(
-        web_app=health_check_app,
-        folder_id="common",
-        public_api_key="123",
+def health_check_api_client(health_check_app) -> DLCommonAPIClient:
+    return DLCommonAPIClient(
+        base_url=f"http://{health_check_app.host}:{health_check_app.port}",
+        tenant=TenantCommon(),
+        auth_data=NoAuthData(),
     )
 
 

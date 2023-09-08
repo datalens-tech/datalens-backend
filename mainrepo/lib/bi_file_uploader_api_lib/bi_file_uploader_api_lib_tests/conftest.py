@@ -27,8 +27,8 @@ from bi_core.services_registry.top_level import DummyServiceRegistry
 from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_api_commons.base_models import RequestContextInfo, TenantCommon
-from bi_testing_ya.api_wrappers import APIClient
+from bi_api_commons.base_models import RequestContextInfo, TenantCommon, NoAuthData
+from bi_api_commons.client.common import DLCommonAPIClient
 from bi_testing.s3_utils import create_s3_bucket, create_s3_client
 from bi_testing.utils import wait_for_initdb
 from bi_file_uploader_task_interface.context import FileUploaderTaskContext
@@ -195,11 +195,11 @@ def bi_file_uploader_app(loop, aiohttp_client, app_settings):
 
 
 @pytest.fixture(scope="function")
-def fu_client(bi_file_uploader_app) -> APIClient:
-    return APIClient(
-        web_app=bi_file_uploader_app,
-        folder_id="common",
-        public_api_key="123",
+def fu_client(bi_file_uploader_app) -> DLCommonAPIClient:
+    return DLCommonAPIClient(
+        base_url=f"http://{bi_file_uploader_app.host}:{bi_file_uploader_app.port}",
+        tenant=TenantCommon(),
+        auth_data=NoAuthData(),
     )
 
 

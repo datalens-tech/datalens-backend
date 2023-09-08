@@ -4,7 +4,7 @@ import os
 import pytest
 import asyncio
 
-from bi_testing_ya.api_wrappers import Req
+from bi_api_commons.client.common import Req
 
 from bi_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
 
