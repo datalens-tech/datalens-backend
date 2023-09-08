@@ -117,6 +117,51 @@ def test_bitrix_add_formula(client, data_api_v1, api_v1, bitrix_dataset):
     assert preview_resp.status_code == 200, preview_resp.json
 
 
+def test_bitrix_string_to_date(client, data_api_v1, api_v1, bitrix_smart_table_dataset):
+    ds_id = bitrix_smart_table_dataset.id
+
+    _ = add_formulas_to_dataset(api_v1=api_v1, dataset_id=ds_id, formulas={
+        'Date from string user_field': 'DATE([UF_CRM_5_1694020695771])',
+    })
+
+    preview_resp = data_api_v1.get_response_for_dataset_preview(
+        dataset_id=ds_id,
+    )
+    assert preview_resp.status_code == 200, preview_resp.json
+
+    result_schema = get_result_schema(client, ds_id)
+    req_data = {
+        'columns': guids_from_titles(result_schema, ['ID', 'UPDATED_TIME']),
+        'where': [{
+            'column': guids_from_titles(result_schema, ['UPDATED_TIME'])[0],
+            'operation': 'BETWEEN',
+            'values': ['2023-09-05', '2023-09-06'],
+        }]
+    }
+
+    response = data_api_v1.get_response_for_dataset_result(
+        dataset_id=ds_id,
+        raw_body=req_data,
+    )
+    assert response.status_code == 200
+
+    result_schema = get_result_schema(client, ds_id)
+    req_data = {
+        'columns': guids_from_titles(result_schema, ['ID', 'Date from string user_field']),
+        'where': [{
+            'column': guids_from_titles(result_schema, ['Date from string user_field'])[0],
+            'operation': 'BETWEEN',
+            'values': ['2023-09-05', '2023-09-06'],
+        }]
+    }
+
+    response = data_api_v1.get_response_for_dataset_result(
+        dataset_id=ds_id,
+        raw_body=req_data,
+    )
+    assert response.status_code == 200
+
+
 def test_bitrix_result(client, data_api_v1, bitrix_dataset):
     ds_id = bitrix_dataset.id
     result_schema = get_result_schema(client, ds_id)

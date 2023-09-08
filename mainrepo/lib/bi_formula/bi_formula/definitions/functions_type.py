@@ -73,7 +73,7 @@ class FuncDate1FromDatetimeTZ(FuncDate1):
 class FuncDate1FromString(FuncDate1):
     variants = [
         # TODO: sqlite3: sa.func.date
-        V(D.DUMMY, lambda expr: sa.cast(expr, sa.Date())),
+        V(D.DUMMY | D.BITRIX, lambda expr: sa.cast(expr, sa.Date())),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -145,7 +145,7 @@ class FuncTypeGenericDatetime1FromNumberImpl(FuncTypeGenericDatetime1Impl):
 
 class FuncTypeGenericDatetime1FromStringImpl(FuncTypeGenericDatetime1Impl):
     variants = [
-        V(D.DUMMY, lambda expr: sa.cast(expr, sa.DateTime())),
+        V(D.DUMMY | D.BITRIX, lambda expr: sa.cast(expr, sa.DateTime())),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
