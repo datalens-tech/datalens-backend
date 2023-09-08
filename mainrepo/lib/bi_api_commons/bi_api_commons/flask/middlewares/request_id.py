@@ -17,7 +17,7 @@ from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.headers import HEADER_LOGGING_CONTEXT, HEADER_DEBUG_MODE_ENABLED, get_x_dl_context
 from bi_api_commons.logging import log_request_end_extended, NON_TRANSITIVE_LOGGING_CTX_KEYS
-from bi_app_tools.ylog.context import put_to_context
+from bi_app_tools.log.context import put_to_context
 
 LOGGER = logging.getLogger(__name__)
 

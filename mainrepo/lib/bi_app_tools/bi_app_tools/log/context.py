@@ -1,26 +1,4 @@
 # coding: utf-8
-"""
-Контекстное логирование — прозрачное для пользователя добавление в сообщения
-лога произвольной строчки -- ID контекста (например веб-запроса). Потом в логе
-легко отличать строки, сделанные в разных запросах.
-
-Использование:
-
-    from ylog import log_req_id
-
-    @log_req_id
-    def func_that_logs_something():
-        log.info('something')
-
-    ...
-
-    func_that_logs_something(req_id=some_id)
-
-В логе будет написано:
-
-    время logger INFO something; req_id=12345
-"""
-
 from __future__ import annotations
 
 import contextvars
@@ -54,22 +32,11 @@ def reset_context():  # type: ignore  # TODO: fix
 
 
 def put_to_context(key, value):  # type: ignore  # TODO: fix
-    """
-    Публичная функция, чтобы положить ключ-значение в контекст.
-    """
     ctx = ContextFormatter.get_or_create_logging_context()
     ctx[key].append(value)
 
 
 def pop_from_context(key):  # type: ignore  # TODO: fix
-    """
-    Публичная функция, чтобы достать значение с вершины стека для ключа
-    из контекста.
-
-    Перед использованием функции убедитесь, что вызов не происходит внутри
-    контекста менеджера log_context и не манипулирует значениями ключей,
-    добавленных вызовом менеджера.
-    """
     if not ContextFormatter.is_context_exist():
         return
     ctx = ContextFormatter.get_or_create_logging_context()
@@ -95,7 +62,7 @@ class LogContext(object):
     def __exit__(self, exc_type, exc_val, exc_tb):  # type: ignore  # TODO: fix
         for key in self.context:  # type: ignore  # TODO: fix
             pop_from_context(key)
-        return False  # не подавлять исключений
+        return False
 
 
 log_context = LogContext
@@ -105,6 +72,4 @@ def get_log_context():  # type: ignore  # TODO: fix
     if not ContextFormatter.is_context_exist():
         return {}
     ctx = ContextFormatter.get_or_create_logging_context()
-    # В logging_context каждому ключу соответствует стек из значений,
-    # нам нужно значение с вершины стека.
     return {key: values[-1] for key, values in ctx.items()}

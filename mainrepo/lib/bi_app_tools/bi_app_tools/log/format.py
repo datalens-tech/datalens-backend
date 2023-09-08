@@ -20,7 +20,7 @@ DEFAULT_RECORD_ATTRS = frozenset((
     'message',
 
     # Around here and in BI:
-    'ylog_context', 'dlog_context',
+    'log_context', 'dlog_context',
 ))
 
 
@@ -31,13 +31,11 @@ def get_record_extra(record):  # type: ignore  # TODO: fix
         if key not in DEFAULT_RECORD_ATTRS}
 
 
-class QloudJsonFormatter(logging.Formatter):
+class JsonFormatter(logging.Formatter):
     """
-    https://docs.qloud.yandex-team.ru/doc/logs#json
+    Formatting log records as JSON.
 
-    Форматирует сообщение как JSON в формате Qloud.
-
-    Сообщение будет иметь следующий формат:
+    Message will be formatted as JSON with the following structure:
     {
         "msg": "message",
         "stackTrace": "your very long stacktrace \n with newlines \n and all the things",
@@ -55,15 +53,7 @@ class QloudJsonFormatter(logging.Formatter):
         }
     }
 
-    В словарь @fields.context попадут поля, перечисленные в log_context.
-
-    Если приложение запущено в Deploy - в сообщение автоматически добавятся следующие поля
-    {
-        "levelStr": "INFO",
-        "loggerName": "name-of-the-logger",
-        "level": 20,
-    }
-
+    Dict @fields.context will contain all the fields from log_context.
     """
 
     LOG_RECORD_USEFUL_FIELDS = ('funcName', 'lineno', 'name')
@@ -91,7 +81,7 @@ class QloudJsonFormatter(logging.Formatter):
             fields['std'] = standard_fields
 
         context = {}
-        log_context_fields = record.ylog_context if hasattr(record, 'ylog_context') else get_log_context()
+        log_context_fields = record.log_context if hasattr(record, 'log_context') else get_log_context()
         context.update(log_context_fields)
         context.update(get_record_extra(record))
         if context:

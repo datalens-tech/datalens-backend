@@ -7,7 +7,7 @@ from __future__ import annotations
 from flask import request, Flask
 
 from bi_api_commons import headers
-from bi_app_tools.ylog import context
+from bi_app_tools.log import context
 
 from bi_app_tools.profiling_base import GenericProfiler
 

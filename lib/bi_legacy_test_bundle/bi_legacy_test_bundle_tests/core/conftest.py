@@ -26,13 +26,13 @@ from bi_testing.utils import wait_for_initdb
 
 from bi_db_testing.loader import load_bi_db_testing
 
-from bi_app_tools import ylog
+from bi_app_tools import log
 
 from bi_api_commons.base_models import RequestContextInfo, TenantCommon
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 
 from bi_core.connections_security.base import InsecureConnectionSecurityManager
-from bi_core.logging_config import add_ylog_context_scoped
+from bi_core.logging_config import add_log_context_scoped
 from bi_core.services_registry.cache_engine_factory import DefaultCacheEngineFactory
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from bi_core.services_registry import DefaultServicesRegistry, ServicesRegistry
@@ -97,10 +97,10 @@ def pytest_configure(config):  # noqa
     config.addinivalue_line("markers", "slow: ...")
     config.addinivalue_line("markers", "yt: ...")
 
-    # Add YLog context to logging records (not only in format phase)
+    # Add Log context to logging records (not only in format phase)
     LOGMUTATORS.apply(require=False)
-    # TODO FIX: Replace with add_ylog_context after all tests will be refactored to use unscoped ylog context
-    LOGMUTATORS.add_mutator('ylog_context_scoped', add_ylog_context_scoped)
+    # TODO FIX: Replace with add_log_context after all tests will be refactored to use unscoped log context
+    LOGMUTATORS.add_mutator('log_context_scoped', add_log_context_scoped)
 
     common_pytest_configure(
         use_jaeger_tracer=env_var_definitions.use_jaeger_tracer(),
@@ -126,7 +126,7 @@ def db_dispenser() -> CoreDbDispenser:
 
 @pytest.fixture(scope='function', autouse=True)
 def clear_logging_context():
-    ylog.context.reset_context()
+    log.context.reset_context()
 
 
 @pytest.fixture(scope='session')

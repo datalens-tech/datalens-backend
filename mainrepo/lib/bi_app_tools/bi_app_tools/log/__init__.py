@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from .format import (
-    QloudJsonFormatter,
+    JsonFormatter,
 )
 
 
 __all__ = (
-    'QloudJsonFormatter',
+    'JsonFormatter',
 )

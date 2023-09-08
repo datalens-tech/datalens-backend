@@ -71,7 +71,7 @@ from bi_api_commons_ya_cloud.models import TenantYCFolder
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_core.connections_security.base import InsecureConnectionSecurityManager
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.us_connection import ConnectionClickhouseFrozenBase
-from bi_core.logging_config import add_ylog_context
+from bi_core.logging_config import add_log_context
 from bi_core.mdb_utils import MDBDomainManagerFactory
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from bi_core_testing.connection import make_saved_connection
@@ -142,7 +142,7 @@ def pytest_configure(config):  # noqa
         tracing_service_name="tests_bi_api",
     )
     LOGMUTATORS.apply(require=False)
-    LOGMUTATORS.add_mutator('ylog_context', add_ylog_context)  # obsolete?
+    LOGMUTATORS.add_mutator('log_context', add_log_context)  # obsolete?
 
 
 @pytest.fixture(scope='session')

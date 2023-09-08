@@ -11,7 +11,7 @@ from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_core.connection_executors.models.exc import QueryExecutorException
 from bi_api_commons.base_models import RequestContextInfo
-from bi_app_tools.ylog.context import log_context
+from bi_app_tools.log.context import log_context
 
 
 class TestsQESpecific:
@@ -112,7 +112,7 @@ class TestsQESpecific:
         for qe_r in qe_logs:
             filtered_inner_ctx = {
                 k: v
-                for k, v in qe_r.ylog_context.items() if k in outer_logging_ctx
+                for k, v in qe_r.log_context.items() if k in outer_logging_ctx
             }
 
             assert filtered_inner_ctx == outer_logging_ctx
@@ -126,6 +126,6 @@ class TestsQESpecific:
         rec = cursor_executed_logs[0]
         filtered_inner_ctx = {
             k: v
-            for k, v in rec.ylog_context.items() if k in outer_logging_ctx
+            for k, v in rec.log_context.items() if k in outer_logging_ctx
         }
         assert filtered_inner_ctx == outer_logging_ctx

@@ -11,11 +11,11 @@ from opentracing.scope_managers.contextvars import ContextVarsScopeManager
 
 import statcommons.logs
 import statcommons.log_config
-import bi_app_tools.ylog.context as ylog_context
-from bi_app_tools.ylog.format import QloudJsonFormatter
-from bi_api_commons.logging_config import add_ylog_context
+import bi_app_tools.log.context as log_context
+from bi_app_tools.log.format import JsonFormatter
+from bi_api_commons.logging_config import add_log_context
 
-# Same check as in `bi_app_tools.ylog.format.QloudJsonFormatter`
+# Same check as in `bi_app_tools.log.format.JsonFormatter`
 
 IS_DEPLOY = 'DEPLOY_BOX_ID' in os.environ
 
@@ -40,7 +40,7 @@ class FastlogsFilter(logging.Filter):
         return False
 
 
-_YDEPLOY_FORMATTER = QloudJsonFormatter()
+_LOG_FORMATTER = JsonFormatter()
 _JSON_FORMATTER = statcommons.logs.JsonExtFormatter()
 
 
@@ -52,7 +52,7 @@ class StdoutFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         if IS_DEPLOY:
-            return _YDEPLOY_FORMATTER.format(record)
+            return _LOG_FORMATTER.format(record)
         return _JSON_FORMATTER.format(record)
 
 
@@ -147,10 +147,10 @@ def _make_logging_config(
     return logging_config
 
 
-# TODO FIX: Remove after all tests will be refactored to use unscoped ylog context
-def add_ylog_context_scoped(record):  # type: ignore  # TODO: fix
-    context = ylog_context.get_log_context()
-    record.ylog_context = context
+# TODO FIX: Remove after all tests will be refactored to use unscoped log context
+def add_log_context_scoped(record):  # type: ignore  # TODO: fix
+    context = log_context.get_log_context()
+    record.log_context = context
 
 
 def update_tags(record):  # type: ignore  # TODO: fix
@@ -247,7 +247,7 @@ def configure_logging(  # type: ignore  # TODO: fix
         logcfg_processors=logcfg_processors,
     )
     statcommons.log_config.configure_logging(app_name=app_name, cfg=cfg)
-    LOGMUTATORS.add_mutator('ylog_context', add_ylog_context)
+    LOGMUTATORS.add_mutator('log_context', add_log_context)
     LOGMUTATORS.add_mutator('update_tags', update_tags)
 
     if use_jaeger_tracer:

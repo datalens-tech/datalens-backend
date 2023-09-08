@@ -38,7 +38,7 @@ from bi_core.connection_executors.qe_serializer import (
 )
 from bi_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from bi_core.connection_models.conn_options import ConnectOptions
-from bi_app_tools import ylog
+from bi_app_tools import log
 from bi_app_tools.profiling_base import generic_profiler_async, GenericProfiler
 from bi_api_commons.tracing import get_current_tracing_headers
 from bi_core import exc as common_exc
@@ -107,7 +107,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         if rel_path is None:
             rel_path = self.DEFAULT_REL_PATH
 
-        logging_context = ylog.context.get_log_context()
+        logging_context = log.context.get_log_context()
         serialized_context = json.dumps(logging_context)
 
         qe = self._rqe_data

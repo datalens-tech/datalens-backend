@@ -1,9 +1,9 @@
 from logging import LogRecord
 
-import bi_app_tools.ylog.context as ylog_context
+import bi_app_tools.log.context as log_context
 
 
-def add_ylog_context(record: LogRecord) -> None:
-    context = ylog_context.get_log_context()
+def add_log_context(record: LogRecord) -> None:
+    context = log_context.get_log_context()
     for key, value in context.items():
         setattr(record, key, value)

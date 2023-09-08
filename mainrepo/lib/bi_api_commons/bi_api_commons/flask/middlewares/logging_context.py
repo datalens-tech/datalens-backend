@@ -4,7 +4,7 @@ import functools
 from typing import Any, TypeVar, Callable
 
 import flask
-from bi_api_commons.logging import CompositeLoggingContextController, YLogRequestLoggingContextController
+from bi_api_commons.logging import CompositeLoggingContextController, LogRequestLoggingContextController
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 
 
@@ -20,7 +20,7 @@ class RequestLoggingContextControllerMiddleWare:
 
     def _bind_logging_request_controller_to_request(self) -> None:
         setattr(flask.g, self._G_ATTR_NAME, CompositeLoggingContextController([
-            YLogRequestLoggingContextController(),
+            LogRequestLoggingContextController(),
         ]))
 
     @classmethod

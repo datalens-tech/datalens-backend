@@ -7,7 +7,7 @@ from typing import Type, Optional
 import attr
 from aiohttp import web
 
-from bi_app_tools import ylog
+from bi_app_tools import log
 
 from bi_constants.api_constants import DLHeadersCommon
 
@@ -76,14 +76,14 @@ class RequestId:
             dl_request.log_ctx_controller.put_to_context('parent_request_id', parent_request_id)
             dl_request.log_ctx_controller.put_to_context('endpoint_code', endpoint_code)
 
-        ylog.context.reset_context()
-        initial_log_context = ylog.context.get_log_context()
+        log.context.reset_context()
+        initial_log_context = log.context.get_log_context()
         assert len(initial_log_context) == 0, f'Initial log context for request {request_id}' \
                                               f' is not empty: {initial_log_context}'
 
-        ylog.context.put_to_context('request_id', request_id)
-        ylog.context.put_to_context('parent_request_id', parent_request_id)
-        ylog.context.put_to_context('endpoint_code', endpoint_code)
+        log.context.put_to_context('request_id', request_id)
+        log.context.put_to_context('parent_request_id', parent_request_id)
+        log.context.put_to_context('endpoint_code', endpoint_code)
 
         if self.accept_logging_ctx and self.logging_ctx_header_name in request.headers:
             assert self.logging_ctx_header_name is not None
@@ -103,7 +103,7 @@ class RequestId:
                             initial_log_context[ctx_key],
                         )
                     else:
-                        ylog.context.put_to_context(ctx_key, ctx_val)
+                        log.context.put_to_context(ctx_key, ctx_val)
 
         log_request_start(
             logger=LOGGER,

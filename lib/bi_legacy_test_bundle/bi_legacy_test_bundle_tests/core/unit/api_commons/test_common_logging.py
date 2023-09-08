@@ -167,10 +167,10 @@ def test_common_logging_flask(caplog):
     assert expected_end_msg == records[1].message
 
     # Check that own request id was appended
-    internal_request_id = records[0].ylog_context.get("request_id")
+    internal_request_id = records[0].log_context.get("request_id")
     assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
 
-    parent_request_id = records[0].ylog_context.get("parent_request_id")
+    parent_request_id = records[0].log_context.get("parent_request_id")
     assert parent_request_id and parent_request_id == 'parentreqid1234'
 
 
@@ -221,7 +221,7 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
     assert expected_end_msg == req_id_records[1].message
 
     # Check that own request id was appended
-    internal_request_id = req_id_records[0].ylog_context.get("request_id")
+    internal_request_id = req_id_records[0].log_context.get("request_id")
     assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
 
 

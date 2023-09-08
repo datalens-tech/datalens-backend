@@ -213,7 +213,7 @@ class RecordDataFormatterMixin:
         # 'exc',
 
         # compat, just-in-case, remove-later:
-        'ylog_context',
+        'log_context',
         'dlog_context',
     )
 

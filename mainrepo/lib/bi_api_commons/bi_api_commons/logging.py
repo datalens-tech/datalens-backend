@@ -9,7 +9,7 @@ from typing import Any, ClassVar, Iterable, Optional, Pattern, Sequence
 
 import attr
 
-from bi_app_tools import ylog
+from bi_app_tools import log
 
 from .headers import normalize_header_name
 
@@ -203,7 +203,7 @@ class RequestLoggingContextController(metaclass=abc.ABCMeta):
     """
     Just an interface to mutate logging context (python logging, sentry, etc...)
     At this moment there is only one implementation: for sentry context.
-    In near future it should completely replace ylog.context.log_context(...)
+    In near future it should completely replace log.context.log_context(...)
     """
 
     @abc.abstractmethod
@@ -302,7 +302,7 @@ def mask_sensitive_fields_by_name_in_json_recursive(
     return process_value(None, source)
 
 
-class YLogRequestLoggingContextController(RequestLoggingContextController):
+class LogRequestLoggingContextController(RequestLoggingContextController):
     allowed_keys: ClassVar[tuple[str, ...]] = (
         'request_id',
         'parent_request_id',
@@ -317,4 +317,4 @@ class YLogRequestLoggingContextController(RequestLoggingContextController):
         if key in self.allowed_keys:
             # Each request assumed to be executed in individual ContextVars context so we don't need to pop it back
             # see `bi_core.flask_utils.context_var_middleware`
-            ylog.context.put_to_context(key, value)
+            log.context.put_to_context(key, value)
