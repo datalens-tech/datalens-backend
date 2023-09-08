@@ -1,0 +1,11 @@
+name: debug
+# override this workflow if you need to create new or existing workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: [ self-hosted, linux ]
+    steps:
+      - run: echo "Hello world"

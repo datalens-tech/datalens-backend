@@ -57,13 +57,13 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
           GIT_SHA: "${{ github.sha }}"
 
-  fake-router:
-    runs-on: [self-hosted, linux]
-    needs: gh_build_image
-    container:
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
-      options: -v /var/run/docker.sock:/var/run/docker.sock
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
+#  fake-router:
+#    runs-on: [self-hosted, linux]
+#    needs: gh_build_image
+#    container:
+#      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+#      options: -v /var/run/docker.sock:/var/run/docker.sock
+#      credentials:
+#        username: ${{ github.actor }}
+#        password: ${{ secrets.GITHUB_TOKEN }}
+#    steps:

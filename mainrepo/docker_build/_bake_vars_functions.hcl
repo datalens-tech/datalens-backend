@@ -1,5 +1,9 @@
 # All variables should be prefixed with `DL_B_`
 
+variable BASE_LINUX {
+  default = "ubuntu:22.04"
+}
+
 variable DL_B_PROJECT_ROOT {
   default = ".."
 }
@@ -7,7 +11,6 @@ variable DL_B_PROJECT_ROOT {
 variable DL_B_FILE_OPS_IMG {
   default = "debian:bookworm-slim"
 }
-
 
 function dl_dockerfile_prepare_src {
   params = [cmd_list]
@@ -24,4 +27,8 @@ function dl_dockerfile_prepare_src {
       "COPY --from=build /src /",
     ]
   ))
+}
+
+variable CR_TAG_BASE_OS {
+  default = ""
 }
