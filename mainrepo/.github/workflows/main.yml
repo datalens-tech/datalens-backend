@@ -1,0 +1,69 @@
+name: main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+#  push:
+#    paths:
+#      - lib/**
+#      - utils/**
+#      - ops/ci/**
+#      - '.github/workflows/main.yml'
+  workflow_dispatch:
+    inputs:
+      test_targets:
+        default: ""
+        description: "Comma separated list to run pytest on, e.g.: `lib/bi_constants,lib/bi_utils`. "
+      run_mypy_only:
+        type: boolean
+        default: false
+        description: "Check to only run mypy"
+      pytest_timeout_minutes:
+        type: number
+        default: 10
+        description: "Timeout for pytest JOB in minutes"
+
+jobs:
+  gh_build_image:
+    runs-on: [ self-hosted, linux ]
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: "ghcr.io"
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - run: |
+          export ROOT_DIR="$(realpath .)"
+          /bin/bash ci/build_naive.sh
+        env:
+          REPO_OWNER: ${{ github.event.repository.name }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          GIT_SHA: "${{ github.sha }}"
+
+  fake-router:
+    runs-on: [self-hosted, linux]
+    needs: gh_build_image
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
