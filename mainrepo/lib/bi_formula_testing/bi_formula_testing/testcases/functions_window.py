@@ -6,8 +6,8 @@ from typing import Callable, ClassVar, List, Optional, Sequence, TypeVar, Union
 import pytest
 import sqlalchemy as sa
 
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
 
 
 NUMERIC = Union[decimal.Decimal, int, float]

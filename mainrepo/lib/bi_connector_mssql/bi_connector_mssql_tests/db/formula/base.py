@@ -1,7 +1,7 @@
 import pytest
 
 from bi_connector_mssql_tests.db.config import DB_URLS
-from bi_formula.connectors.base.testing.base import (
+from bi_formula_testing.testcases.base import (
     FormulaConnectorTestBase
 )
 from bi_connector_mssql.formula.constants import MssqlDialect as D

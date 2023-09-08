@@ -6,9 +6,9 @@ from typing import ClassVar, Collection, TypeVar, Union
 import pytest
 import sqlalchemy as sa
 
-from bi_formula.testing.util import utc_ts
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.util import utc_ts
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
 
 
 class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):

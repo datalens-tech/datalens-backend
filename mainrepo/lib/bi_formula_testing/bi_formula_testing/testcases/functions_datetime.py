@@ -8,9 +8,9 @@ import pytz
 import sqlalchemy.exc as sa_exc
 
 from bi_formula.core.exc import TranslationError
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.util import approx_datetime, now, dt_strip
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.util import approx_datetime, now, dt_strip
 
 
 def int_value(value: Any) -> int:

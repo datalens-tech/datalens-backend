@@ -21,8 +21,8 @@ from bi_formula.mutation.window import DefaultWindowOrderingMutation, AmongToWit
 from bi_formula.parser.factory import get_parser, ParserType
 from bi_formula.translation.ext_nodes import CompiledExpression
 from bi_formula.translation.translator import translate, TranslationCtx
-from bi_formula.testing.database import Db
-from bi_formula.testing.forced_literal import forced_literal_use  # noqa
+from bi_formula_testing.database import Db
+from bi_formula_testing.forced_literal import forced_literal_use  # noqa
 
 
 FIELD_TYPES = {

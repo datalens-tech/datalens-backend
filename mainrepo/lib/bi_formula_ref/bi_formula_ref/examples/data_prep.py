@@ -17,7 +17,7 @@ from bi_formula_ref.examples.utils import make_key_for_example, make_data_table_
 
 if TYPE_CHECKING:
     from bi_formula.core.dialect import DialectCombo
-    from bi_formula.testing.database import Db
+    from bi_formula_testing.database import Db
 
 
 @attr.s

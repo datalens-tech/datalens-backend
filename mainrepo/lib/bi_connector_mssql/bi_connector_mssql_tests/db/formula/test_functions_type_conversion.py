@@ -1,7 +1,7 @@
 from bi_connector_mssql_tests.db.formula.base import (
     MSSQLTestBase,
 )
-from bi_formula.connectors.base.testing.functions_type_conversion import (
+from bi_formula_testing.testcases.functions_type_conversion import (
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,

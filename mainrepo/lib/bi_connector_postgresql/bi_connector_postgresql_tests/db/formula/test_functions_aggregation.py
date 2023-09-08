@@ -1,4 +1,4 @@
-from bi_formula.connectors.base.testing.functions_aggregation import (
+from bi_formula_testing.testcases.functions_aggregation import (
     DefaultMainAggFunctionFormulaConnectorTestSuite,
 )
 from bi_connector_postgresql_tests.db.formula.base import (

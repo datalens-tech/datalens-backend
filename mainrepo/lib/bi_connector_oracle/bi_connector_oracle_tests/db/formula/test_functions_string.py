@@ -2,10 +2,10 @@ import os
 
 import sqlalchemy as sa
 
-from bi_formula.connectors.base.testing.functions_string import (
+from bi_formula_testing.testcases.functions_string import (
     DefaultStringFunctionFormulaConnectorTestSuite,
 )
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.evaluator import DbEvaluator
 
 from bi_connector_oracle_tests.db.formula.base import (
     OracleTestBase,

@@ -7,10 +7,10 @@ import sqlalchemy as sa
 import clickhouse_sqlalchemy.exceptions as ch_exc
 
 import bi_formula.core.exc as exc
-from bi_formula.connectors.base.testing.base import (
+from bi_formula_testing.testcases.base import (
     FormulaConnectorTestBase,
 )
-from bi_formula.connectors.base.testing.functions_type_conversion import (
+from bi_formula_testing.testcases.functions_type_conversion import (
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
@@ -22,8 +22,8 @@ from bi_formula.connectors.base.testing.functions_type_conversion import (
     DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
     DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 )
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.util import to_str, utc_ts, dt_strip, as_tz
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.util import to_str, utc_ts, dt_strip, as_tz
 
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect as D
 

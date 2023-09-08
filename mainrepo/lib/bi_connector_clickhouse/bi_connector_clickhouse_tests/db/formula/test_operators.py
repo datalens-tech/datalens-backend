@@ -1,8 +1,8 @@
 import datetime
 
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.evaluator import DbEvaluator
 
-from bi_formula.connectors.base.testing.operators import (
+from bi_formula_testing.testcases.operators import (
     DefaultOperatorFormulaConnectorTestSuite,
 )
 from bi_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase, ClickHouse_22_10TestBase

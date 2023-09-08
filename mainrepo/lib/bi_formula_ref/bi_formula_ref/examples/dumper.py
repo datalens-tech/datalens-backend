@@ -8,7 +8,7 @@ from sqlalchemy.types import TypeEngine
 
 from bi_formula.core.datatype import DataType
 from bi_formula.connectors.base.type_constructor import get_type_constructor
-from bi_formula.testing.database import Db
+from bi_formula_testing.database import Db
 
 from bi_formula_ref.examples.data_table import DataTable, DataColumn
 from bi_formula_ref.examples.query import CompiledQueryContext, TableReference

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from bi_formula.scripts.formula_cli import parser, FormulaCliTool
-from bi_formula.testing.tool_runner import ToolRunner
+from bi_formula_testing.tool_runner import ToolRunner
 
 
 @pytest.fixture(scope='module')

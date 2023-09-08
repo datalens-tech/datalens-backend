@@ -4,10 +4,10 @@ from bi_formula.core.datatype import DataType
 from bi_formula.core import nodes
 from bi_formula.translation import ext_nodes
 from bi_formula.translation.context import TranslationCtx
-from bi_formula.connectors.base.testing.functions_string import (
+from bi_formula_testing.testcases.functions_string import (
     DefaultStringFunctionFormulaConnectorTestSuite,
 )
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.evaluator import DbEvaluator
 
 from bi_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 

@@ -3,7 +3,7 @@ import re
 import pytest
 import sqlalchemy.exc as sa_exc
 
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from bi_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
 from bi_connector_bigquery.formula.constants import BigQueryDialect as D

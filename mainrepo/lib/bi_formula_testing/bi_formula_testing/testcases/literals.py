@@ -7,11 +7,11 @@ import dateutil
 import pytest
 import pytz
 
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 from bi_formula.definitions.literals import literal
 from bi_formula.shortcuts import n
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.util import dt_strip, to_str
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.util import dt_strip, to_str
 
 
 def as_dt(value: Union[str, datetime.datetime]) -> datetime.datetime:

@@ -15,7 +15,7 @@ import bi_formula.core.exc as exc
 from bi_formula.core.dialect import StandardDialect as D, DialectCombo, get_all_basic_dialects, get_dialect_from_str
 from bi_formula.definitions.base import MultiVariantTranslation
 from bi_formula.definitions.registry import OPERATION_REGISTRY
-from bi_formula.testing.database import Db, make_db_from_config, make_db_config
+from bi_formula_testing.database import Db, make_db_from_config, make_db_config
 
 from bi_formula_ref.audience import Audience, DEFAULT_AUDIENCE
 from bi_formula_ref.texts import (

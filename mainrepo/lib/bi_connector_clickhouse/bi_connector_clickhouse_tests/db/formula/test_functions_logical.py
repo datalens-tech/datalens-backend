@@ -1,7 +1,7 @@
 import pytest
 
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.connectors.base.testing.functions_logical import (
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.functions_logical import (
     DefaultLogicalFunctionFormulaConnectorTestSuite,
 )
 from bi_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase

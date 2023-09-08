@@ -3,7 +3,7 @@ import pytest
 from bi_connector_mssql_tests.db.config import CORE_TEST_CONFIG, INIT_DB_PORT
 from bi_core_testing.initialization import initialize_core_test
 from bi_formula.loader import load_bi_formula
-from bi_formula.testing.forced_literal import forced_literal_use
+from bi_formula_testing.forced_literal import forced_literal_use
 from bi_testing.utils import wait_for_initdb
 
 

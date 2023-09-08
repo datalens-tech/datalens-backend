@@ -1,4 +1,4 @@
-from bi_formula.connectors.base.testing.functions_markup import (
+from bi_formula_testing.testcases.functions_markup import (
     DefaultMarkupFunctionFormulaConnectorTestSuite,
 )
 from bi_connector_yql_tests.db.formula.base import (

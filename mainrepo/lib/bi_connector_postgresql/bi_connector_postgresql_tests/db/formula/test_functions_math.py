@@ -1,9 +1,9 @@
 import pytest
 
-from bi_formula.connectors.base.testing.functions_math import (
+from bi_formula_testing.testcases.functions_math import (
     DefaultMathFunctionFormulaConnectorTestSuite,
 )
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.evaluator import DbEvaluator
 from bi_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
 )

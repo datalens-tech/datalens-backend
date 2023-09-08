@@ -7,7 +7,7 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 
 import bi_formula.core.exc as exc
-from bi_formula.connectors.base.testing.functions_type_conversion import (
+from bi_formula_testing.testcases.functions_type_conversion import (
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
@@ -19,8 +19,8 @@ from bi_formula.connectors.base.testing.functions_type_conversion import (
     DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
     DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 )
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.util import to_str, dt_strip, as_tz
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.util import to_str, dt_strip, as_tz
 from bi_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
 )

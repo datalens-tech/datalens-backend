@@ -7,9 +7,9 @@ import pytest
 import sqlalchemy as sa
 
 import bi_formula.core.exc as exc
-from bi_formula.testing.util import to_str
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.util import to_str
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
 
 
 SAMPLE_DATA_ARRAYS_LENGTH = 4

@@ -6,9 +6,9 @@ from typing import ClassVar
 
 import pytest
 
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.util import to_str, dt_strip
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.util import to_str, dt_strip
 
 
 class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):

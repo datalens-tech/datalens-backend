@@ -8,11 +8,7 @@ from typing import Any, ClassVar, Generator, Sequence, Type
 import pytz
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
-
-try:
-    import pytest
-except ImportError:
-    import bi_formula.testing.pytest_dummy as pytest   # type: ignore
+import pytest
 
 from bi_db_testing.database.engine_wrapper import TableSpec, DbEngineConfig
 from bi_db_testing.database.dispenser import DbDispenserBase
@@ -20,9 +16,9 @@ from bi_db_testing.database.base import DbBase
 
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo
-from bi_formula.testing.database import FormulaDbConfig, FormulaDbDispenser
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.table import (
+from bi_formula_testing.database import FormulaDbConfig, FormulaDbDispenser
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.table import (
     generate_sample_data, get_column_sa_type, ColumnSpec,
     TABLE_SPEC, TABLE_SPEC_ARRAYS, NULL_DATA_TABLE_SPEC,
 )

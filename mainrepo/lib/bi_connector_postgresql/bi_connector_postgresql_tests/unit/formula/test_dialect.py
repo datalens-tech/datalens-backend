@@ -1,4 +1,4 @@
-from bi_formula.connectors.base.testing.dialect import DefaultDialectFormulaConnectorTestSuite
+from bi_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
 
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D, DIALECT_NAME_POSTGRESQL
 

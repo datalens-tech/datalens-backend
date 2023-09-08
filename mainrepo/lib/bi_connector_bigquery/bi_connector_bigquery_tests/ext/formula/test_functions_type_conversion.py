@@ -1,4 +1,4 @@
-from bi_formula.connectors.base.testing.functions_type_conversion import (
+from bi_formula_testing.testcases.functions_type_conversion import (
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,

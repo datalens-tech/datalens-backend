@@ -5,9 +5,9 @@ from typing import Any, ClassVar
 import pytest
 import sqlalchemy as sa
 
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.testing.util import to_str, to_unicode
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.util import to_str, to_unicode
 
 
 CONTAINS_TESTS = [

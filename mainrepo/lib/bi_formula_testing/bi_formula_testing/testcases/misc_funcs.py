@@ -5,8 +5,8 @@ import sqlalchemy as sa
 
 import bi_formula.core.exc as exc
 from bi_formula.core.dialect import from_name_and_version
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
 from bi_formula.shortcuts import n
 from bi_formula.translation.ext_nodes import CompiledExpression
 from bi_formula.translation.translator import translate

@@ -5,7 +5,7 @@ import pytz
 
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
-from bi_formula.connectors.base.testing.base import (
+from bi_formula_testing.testcases.base import (
     FormulaConnectorTestBase
 )
 

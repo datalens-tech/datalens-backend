@@ -1,4 +1,4 @@
-from bi_formula.connectors.base.testing.conditional_blocks import (
+from bi_formula_testing.testcases.conditional_blocks import (
     DefaultConditionalBlockFormulaConnectorTestSuite,
 )
 from bi_connector_yql_tests.db.formula.base import (

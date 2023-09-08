@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 
-from bi_formula.connectors.base.testing.functions_array import (
+from bi_formula_testing.testcases.functions_array import (
     DefaultArrayFunctionFormulaConnectorTestSuite,
 )
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.evaluator import DbEvaluator
 from bi_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
 )

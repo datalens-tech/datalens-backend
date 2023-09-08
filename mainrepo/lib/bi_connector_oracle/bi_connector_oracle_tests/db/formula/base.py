@@ -1,6 +1,6 @@
 import pytest
 
-from bi_formula.connectors.base.testing.base import (
+from bi_formula_testing.testcases.base import (
     FormulaConnectorTestBase
 )
 

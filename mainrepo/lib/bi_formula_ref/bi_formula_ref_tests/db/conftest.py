@@ -8,8 +8,8 @@ import pytest
 from bi_formula.core.dialect import DialectCombo
 from bi_formula.definitions.literals import literal
 
-from bi_formula.testing.database import Db, make_db_from_config, make_db_config
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.database import Db, make_db_from_config, make_db_config
+from bi_formula_testing.evaluator import DbEvaluator
 
 from bi_testing.containers import get_test_container_hostport
 

@@ -2,7 +2,7 @@ import pytest
 
 from bi_formula.parser.base import FormulaParser
 from bi_formula.parser.factory import ParserType, get_parser
-from bi_formula.testing.forced_literal import forced_literal_use  # noqa
+from bi_formula_testing.forced_literal import forced_literal_use  # noqa
 from bi_formula.loader import load_bi_formula
 
 

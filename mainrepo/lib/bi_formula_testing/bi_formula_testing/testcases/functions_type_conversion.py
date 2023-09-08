@@ -8,9 +8,9 @@ import pytest
 import pytz
 import sqlalchemy as sa
 
-from bi_formula.testing.util import to_str, utc_ts, dt_strip, to_datetime, as_tz
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
-from bi_formula.testing.evaluator import DbEvaluator
+from bi_formula_testing.util import to_str, utc_ts, dt_strip, to_datetime, as_tz
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.evaluator import DbEvaluator
 
 
 class DefaultStrTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):

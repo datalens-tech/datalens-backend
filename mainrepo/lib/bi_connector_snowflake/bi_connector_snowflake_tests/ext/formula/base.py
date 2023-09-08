@@ -3,7 +3,7 @@ from typing import Callable
 
 import pytest
 
-from bi_formula.connectors.base.testing.base import FormulaConnectorTestBase
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from bi_connector_snowflake.formula.constants import SnowFlakeDialect as D
 from bi_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig

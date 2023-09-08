@@ -3,8 +3,8 @@ from functools import reduce
 import pytest
 import sqlalchemy as sa
 
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.connectors.base.testing.functions_array import (
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.functions_array import (
     DefaultArrayFunctionFormulaConnectorTestSuite,
 )
 

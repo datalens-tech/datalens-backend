@@ -5,7 +5,7 @@ import pytest
 from bi_core_testing.initialization import initialize_core_test
 
 from bi_api_lib.loader import load_bi_api_lib
-from bi_formula.testing.forced_literal import forced_literal_use
+from bi_formula_testing.forced_literal import forced_literal_use
 
 from bi_connector_bigquery.testing.secrets import BigQuerySecretReaderBase, BigQuerySecretReader
 

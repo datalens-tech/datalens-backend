@@ -1,8 +1,8 @@
-from bi_formula.testing.evaluator import DbEvaluator
-from bi_formula.connectors.base.testing.conditional_blocks import (
+from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.conditional_blocks import (
     DefaultConditionalBlockFormulaConnectorTestSuite,
 )
-from bi_formula.testing.util import to_str
+from bi_formula_testing.util import to_str
 
 from bi_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 

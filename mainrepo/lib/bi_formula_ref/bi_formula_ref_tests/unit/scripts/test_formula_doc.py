@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from bi_formula.testing.tool_runner import ToolRunner
+from bi_formula_testing.tool_runner import ToolRunner
 
 import bi_formula_ref
 from bi_formula_ref.config import _CONFIGS_BY_VERSION, ConfigVersion
