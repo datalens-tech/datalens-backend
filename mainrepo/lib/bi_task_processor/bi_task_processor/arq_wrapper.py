@@ -125,7 +125,7 @@ async def arq_base_task(context: Dict, params: Dict) -> None:
     LOGGER.info('Run arq task with params %s', params)
     context[EXECUTOR_KEY]: Executor
     # transition
-    # i'll delete it in the next release
+    # i'll delete it later
     if 'task_params' in params:
         name = params['name']
         instance_id = params['instance_id']

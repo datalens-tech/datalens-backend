@@ -27,7 +27,7 @@ def get_ch_settings(
     output_format_json_quote_denormals: Optional[int] = None,
 ) -> dict:
     settings = {
-        # https://clickhouse.yandex/docs/en/operations/settings/settings/#settings-join_use_nulls
+        # https://clickhouse.com/docs/en/operations/settings/settings#settings-join_use_nulls
         # 1 — JOIN behaves the same way as in standard SQL.
         # The type of the corresponding field is converted to Nullable, and empty cells are filled with NULL.
         'join_use_nulls': 1,
@@ -37,7 +37,7 @@ def get_ch_settings(
         # a timeout error and a request will be executed in an async mode.
         'distributed_ddl_task_timeout': 280,
 
-        # https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time
+        # https://clickhouse.com/docs/en/operations/settings/query-complexity#max-execution-time
         # Maximum query execution time in seconds.
         # By default, specify a large value to ensure there are no
         # forever-running queries (which is also known to break old-version CH
@@ -47,7 +47,7 @@ def get_ch_settings(
 
         'readonly': read_only_level,
 
-        # https://clickhouse.tech/docs/en/operations/settings/settings/#settings-insert_quorum
+        # https://clickhouse.com/docs/en/operations/settings/settings#settings-insert_quorum
         # INSERT succeeds only when ClickHouse manages to correctly write data to the insert_quorum
         # of replicas during the insert_quorum_timeout
         'insert_quorum': insert_quorum,
@@ -57,7 +57,7 @@ def get_ch_settings(
         # otherwise clickhouse sends nulls in X-ClickHouse-Summary
         'send_progress_in_http_headers': 0,  # temporary disabling for DLHELP-1730 investigation
 
-        # https://clickhouse.tech/docs/en/operations/settings/settings/#settings-output_format_json_quote_denormals
+        # https://clickhouse.com/docs/en/operations/settings/formats#output_format_json_quote_denormals
         # Enables +nan, -nan, +inf, -inf outputs in JSON output format.
         # Currently enabling only in sync wrapper (for materializer).
         # After CHARTS-3488 should be enabled by default in all cases.

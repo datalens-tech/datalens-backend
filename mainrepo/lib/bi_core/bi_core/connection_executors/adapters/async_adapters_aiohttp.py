@@ -105,7 +105,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
                 raise
             except aiohttp.client_exceptions.ServerTimeoutError as aiohttp_timeout_err:
                 if aiohttp_timeout_err.args[0].startswith('Connection timeout'):
-                    # https://a.yandex-team.ru/arc_vcs/contrib/python/aiohttp/aiohttp/client.py?rev=f8fdcb1e#L532
+                    # https://github.com/aio-libs/aiohttp/blob/3.8/aiohttp/client.py#L541
                     raise exc.AIOHttpConnTimeoutError() from aiohttp_timeout_err
                 raise
         except Exception as err:

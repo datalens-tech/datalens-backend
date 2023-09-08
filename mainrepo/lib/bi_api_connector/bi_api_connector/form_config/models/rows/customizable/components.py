@@ -32,8 +32,6 @@ class HiddenRowItem(RowItem, FormFieldMixin, InnerFieldMixin, DisplayConditionsM
 
 @attr.s(kw_only=True, frozen=True)
 class LabelRowItem(RowItem, DisplayConditionsMixin):
-    """ https://a.yandex-team.ru/arcadia/data-ui/datalens/src/ui/units/connections/components/ConnectorForm/components/Label """
-
     component_id = 'label'
     text: str = attr.ib()
     align: Optional[Align] = attr.ib(default=None, metadata=skip_if_null())
@@ -48,11 +46,6 @@ class SelectableOption:  # TODO rename to RadioButtonOption
 
 @attr.s(kw_only=True, frozen=True)
 class InputRowItem(ControlRowItem, PlaceholderMixin):
-    """
-    https://github.com/gravity-ui/uikit/tree/main/src/components/TextInput
-    https://preview.gravity-ui.com/uikit/?path=/story/components-textinput--default
-    """
-
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         multiline: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())  # false if undefined
@@ -75,8 +68,6 @@ class SelectOption(SerializableConfig):
 
 @attr.s(kw_only=True, frozen=True)
 class SelectRowItem(ControlRowItem, PlaceholderMixin):
-    """ https://a.yandex-team.ru/arcadia/data-ui/common/src/components/YCSelect """
-
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         show_search: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null('showSearch'))
@@ -89,11 +80,6 @@ class SelectRowItem(ControlRowItem, PlaceholderMixin):
 
 @attr.s(kw_only=True, frozen=True)
 class RadioButtonRowItem(ControlRowItem):
-    """
-    https://github.com/gravity-ui/uikit/tree/main/src/components/RadioButton
-    https://preview.gravity-ui.com/uikit/?path=/story/components-radiobutton--default
-    """
-
     component_id = 'radio_button'
 
     options: list[SelectableOption] = attr.ib()
@@ -113,11 +99,6 @@ class RadioGroupRowItemOption(SerializableConfig):
 
 @attr.s(kw_only=True, frozen=True)
 class RadioGroupRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin):
-    """
-    https://github.com/gravity-ui/uikit/tree/main/src/components/RadioGroup
-    https://preview.gravity-ui.com/uikit/?path=/story/components-radiogroup--default
-    """
-
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
@@ -138,11 +119,6 @@ class RadioGroupRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFi
 
 @attr.s(kw_only=True, frozen=True)
 class CheckboxRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin, DefaultValueMixin):
-    """
-    https://github.com/gravity-ui/uikit/tree/main/src/components/Checkbox
-    https://preview.gravity-ui.com/uikit/?path=/story/components-checkbox--default
-    """
-
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         size: Optional[Literal['m', 'l']] = attr.ib(default=None, metadata=skip_if_null())
@@ -156,8 +132,6 @@ class CheckboxRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFiel
 
 @attr.s(kw_only=True, frozen=True)
 class DatepickerRowItem(ControlRowItem):
-    """ https://a.yandex-team.ru/arcadia/data-ui/common/src/components/SimpleDatepicker """
-
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         size: Optional[Literal['s', 'm', 'l', 'xl']] = attr.ib(default=None, metadata=skip_if_null())
@@ -170,8 +144,6 @@ class DatepickerRowItem(ControlRowItem):
 
 @attr.s(kw_only=True, frozen=True)
 class PlainTextRowItem(RowItem, DisplayConditionsMixin):
-    """ https://a.yandex-team.ru/arcadia/data-ui/datalens/src/ui/units/connections/components/ConnectorForm/components/PlainText """
-
     component_id = 'plain_text'
 
     text: str = attr.ib()
@@ -180,8 +152,6 @@ class PlainTextRowItem(RowItem, DisplayConditionsMixin):
 
 @attr.s(kw_only=True, frozen=True)
 class DescriptionRowItem(RowItem, DisplayConditionsMixin):
-    """ https://a.yandex-team.ru/arcadia/data-ui/datalens/src/ui/units/connections/components/ConnectorForm/components/Description """
-
     component_id = 'description'
 
     text: MarkdownStr = attr.ib()
@@ -189,6 +159,4 @@ class DescriptionRowItem(RowItem, DisplayConditionsMixin):
 
 @attr.s(kw_only=True, frozen=True)
 class FileInputRowItem(RowItem, FormFieldMixin, InnerFieldMixin, DisplayConditionsMixin):
-    """ https://a.yandex-team.ru/arcadia/data-ui/common/src/components/FileInput """
-
     component_id = 'file-input'

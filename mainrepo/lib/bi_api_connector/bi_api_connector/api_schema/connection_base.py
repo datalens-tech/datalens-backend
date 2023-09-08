@@ -8,7 +8,6 @@ from bi_constants.enums import ConnectionState, ConnectionType as CT
 
 from bi_core.us_connection_base import ConnectionBase
 
-from bi_api_connector.api_schema.extras import EditMode
 from bi_api_connector.api_schema.top_level import USEntryBaseSchema
 
 
@@ -25,14 +24,6 @@ class ConnectionSchema(USEntryBaseSchema):
     # Create only fields
     permissions_mode = ma_fields.Raw(load_default=None, load_only=True)
     initial_permissions = ma_fields.Raw(load_default=None, load_only=True)
-
-    def get_allowed_unknown_fields(self) -> set[str]:
-        super_unknown_fields = super().get_allowed_unknown_fields()
-        if isinstance(self.operations_mode, EditMode):
-            # TODO FIX: Temporary workaround for https://st.yandex-team.ru/CHARTS-3484
-            super_unknown_fields.update(['name', 'type'])
-
-        return super_unknown_fields
 
     def create_data_model_constructor_kwargs(self, data_attributes: dict[str, Any]) -> dict[str, Any]:
         """

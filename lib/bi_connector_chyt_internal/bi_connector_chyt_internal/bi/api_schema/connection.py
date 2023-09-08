@@ -17,14 +17,6 @@ class CHYTConnectionBaseSchema(ConnectionMetaMixin, RawSQLLevelMixin, DataExport
     )
     cache_ttl_sec = cache_ttl_field(attribute='data.cache_ttl_sec')
 
-    def get_allowed_unknown_fields(self) -> set[str]:
-        super_fields = super().get_allowed_unknown_fields()
-        super_fields.update(
-            'pool',
-            'instance_count',
-        )
-        return super_fields
-
 
 class CHYTConnectionSchema(CHYTConnectionBaseSchema):
     TARGET_CLS = ConnectionCHYTInternalToken

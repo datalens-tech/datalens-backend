@@ -70,7 +70,7 @@ JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = :schema AND c.relkind in ('r', 'p')
 """
 
-# https://a.yandex-team.ru/arc/trunk/arcadia/contrib/python/sqlalchemy/sqlalchemy-1.4/sqlalchemy/dialects/postgresql/base.py?rev=r8825837#L3585
+# https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/base.py#L3802
 PG_LIST_VIEW_NAMES = """
 SELECT c.relname FROM pg_class c
 JOIN pg_namespace n ON n.oid = c.relnamespace

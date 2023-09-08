@@ -95,7 +95,6 @@ async def add_connection_close(request: web.Request, response: web.StreamRespons
     HTTP client is sending a next request) by forcing
     single-request-per-connection (telling the client to close the
     connection after the first request).
-    https://st.yandex-team.ru/BI-1752
     """
     response.headers.add('Connection', 'close')
 

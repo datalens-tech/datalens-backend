@@ -64,5 +64,5 @@ CREATE TABLE IF NOT EXISTS "SAMPLE_TABLE"
 CREATE OR REPLACE FILE FORMAT mycsvformat TYPE = 'CSV' FIELD_DELIMITER = ',' FIELD_OPTIONALLY_ENCLOSED_BY = '"';
 CREATE OR REPLACE STAGE my_csv_stage FILE_FORMAT = mycsvformat;
 -- fix path
-put file:///~/arcadia/datalens/backend/app/bi_api/docker-compose/db-common/data/sample.csv @my_csv_stage AUTO_COMPRESS = TRUE;
+put sample.csv @my_csv_stage AUTO_COMPRESS = TRUE;
 COPY INTO SAMPLE_TABLE FROM @my_csv_stage/sample.csv.gz FILE_FORMAT = (FORMAT_NAME = mycsvformat) ON_ERROR = 'skip_file';

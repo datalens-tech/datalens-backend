@@ -21,7 +21,7 @@ SA_DIALECTS: tuple[tuple[str, str, str], ...] = (
 
 def register_sa_dialects() -> None:
     """
-    In case entrypoint-register does not work (e.g. in the arcadia build),
+    In case entrypoint-register does not work,
     register all known SQLAlchemy dialects explicitly.
     """
     import sqlalchemy as sa  # type: ignore

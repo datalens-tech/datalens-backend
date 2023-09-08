@@ -53,8 +53,7 @@ BI_TYPE_TO_SA_TYPE: Dict[BIType, sa.sql.type_api.TypeEngine] = {
 
 def get_value_sa_type(bi_type: BIType, conn_type: ConnectionType, value_base: TValueBase) -> sa.sql.type_api.TypeEngine:
     if bi_type == BIType.string and conn_type == CONNECTION_TYPE_ORACLE:
-        # See also:
-        # https://a.yandex-team.ru/arc/trunk/arcadia/datalens/backend/lib/bi_formula/bi_formula/definitions/literals.py?rev=r8187689#L104
+        # See also: bi_formula/definitions/literals.py
         value_lst = [value_base] if isinstance(value_base, str) else value_base
         max_len = max(len(val) for val in value_lst)
         try:

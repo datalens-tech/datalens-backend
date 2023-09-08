@@ -1,7 +1,6 @@
 #syntax=docker/dockerfile:1.4
 FROM adoptopenjdk/openjdk11:alpine AS antlr_build
 
-# Current Arcadian ANTLR version:
 ENV ANTLR_VERSION 4.11.1
 ENV CLASSPATH .:/antlr.jar:$CLASSPATH
 

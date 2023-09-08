@@ -270,7 +270,6 @@ class MainFilterFormulaCompiler(FilterFormulaCompiler):
         (`2017-01-01T00:00:00 < 2017-01-01T00:00:01`);
 
         However, this hurts database performance in some cases
-        https://st.yandex-team.ru/BI-1346
 
         so, if the filter arg dt is at midnight, cast it to date,
         without cast-wrapping the field itself.

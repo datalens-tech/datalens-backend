@@ -38,8 +38,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
 
     @property
     def dialect(self) -> sa.engine.default.DefaultDialect:
-        # we should replace it on
-        # https://a.yandex-team.ru/arc/trunk/arcadia/contrib/python/sqlalchemy/sqlalchemy-1.4/sqlalchemy/dialects/postgresql/asyncpg.py?rev=r8825051#L862
+        # we should replace it with sqlalchemy.dialects.postgresql.asyncpg
         # now it produces wrong types
         dialect = pypostgresql.dialect(paramstyle='pyformat', dbapi=DBAPIMock())
 
@@ -54,7 +53,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
 
     def _compile_query(self, query):  # type: ignore  # TODO: fix
         # exclude {AsyncAdapt_asyncpg_dbapi.ENUM}
-        # https://a.yandex-team.ru/arc/trunk/arcadia/contrib/python/sqlalchemy/sqlalchemy-1.4/sqlalchemy/dialects/postgresql/asyncpg.py?rev=r8893939#L323
+        # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/asyncpg.py#L345
         return compile_pg_query(query, self.dialect, exclude_types={DBAPIMock.ENUM}, add_types=False)
 
     async def _execute(self, query: Union[str, sa.sql.base.Executable]) -> None:

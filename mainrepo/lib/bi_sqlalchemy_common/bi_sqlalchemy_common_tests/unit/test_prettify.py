@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, MetaData, String, Table, desc
 from sqlalchemy.sql import column, table
 
 # Reference:
-# https://github.com/sqlalchemy/sqlalchemy/blob/979ea6b21f71605314dc0ac1231dd385eced98c4/test/sql/test_compiler.py#L101
+# https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/test/sql/test_compiler.py#L107
 
 
 table1 = table(

@@ -34,8 +34,6 @@ class CacheTTLRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledM
 
 @attr.s(kw_only=True, frozen=True)
 class CollapseRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin):
-    """ https://a.yandex-team.ru/arcadia/data-ui/common/src/components/Collapse """
-
     type = 'collapse'
 
     @attr.s(kw_only=True, frozen=True)

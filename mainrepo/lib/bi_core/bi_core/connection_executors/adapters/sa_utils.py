@@ -12,7 +12,7 @@ from sqlalchemy.engine import Dialect
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_core.connection_models import DBIdent
 
-# TODO CONSIDER: Use another logger name
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -72,8 +72,6 @@ class CursorLogger:
 
         extra = dict(
             event_code='db_exec',
-            # See:
-            # https://a.yandex-team.ru/arc/trunk/arcadia/statbox/jam/libs/outer_action/datalens/bi_analytics/logs_config.py?rev=6459895#L115
             username=engine_url.username,
             query_id=str(getattr(cursor, '_query_id', None)),
             # missing: folder_id
@@ -83,7 +81,6 @@ class CursorLogger:
             drivername=engine_url.drivername,
             statement=statement,
             parameters_size=len(parameters),
-            # missing: task_id (materializer)
             # missing: dataset_id
             # missing: connection_id
         )
