@@ -19,7 +19,6 @@ ENV_CONTEXT = {
     'hostname': HOSTNAME,
     # e.g. 'dataset-api-1.dataset-api.int-testing.bi.datalens.stable.qloud-d.yandex.net'
     'app_instance': os.environ.get('QLOUD_DISCOVERY_INSTANCE'),
-    # e.g 'registry.yandex.net/statinfra/bi-api:0.795.5'
     'app_version': os.environ.get('QLOUD_DOCKER_IMAGE'),
     # global IP addresses, maybe?
 }

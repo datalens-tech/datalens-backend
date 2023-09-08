@@ -17,7 +17,6 @@ REPLACE_MAP = {
     "registry.yandex.net/data-ui/united-storage:latest": "cr.yandex/crpsufj53lhl0via9iam/united-storage:latest",
     "registry.yandex.net/statinfra/base/bi/initdb:latest": "cr.yandex/crpsufj53lhl0via9iam/initdb:latest",
     "registry.yandex.net/statinfra/base/bi/initdb@sha256:41477e01d5e1017d31c09776ded1b135ce7e58add715a024fc294c0490b95c44": "cr.yandex/crpsufj53lhl0via9iam/initdb:41477",
-    "registry.yandex.net/statinfra/oracle-database-enterprise@sha256:25b0ec7cc3987f86b1e754fc214e7f06761c57bc11910d4be87b0d42ee12d254": "cr.yandex/crpsufj53lhl0via9iam/oracle-database-enterprise:12.2.0.1-slim",
     "registry.yandex.net/statinfra/clickhouse-server:22.11": "cr.yandex/crpsufj53lhl0via9iam/clickhouse-server:22.11",
     "registry.yandex.net/statinfra/clickhouse-server@sha256:74e094253baa15b18ec1ea3a79fb4015451de3bb23c40c99dcc37d1f85c1ac09": "cr.yandex/crpsufj53lhl0via9iam/clickhouse-server:22.3",
     "registry.yandex.net/statinfra/clickhouse-server@sha256:1c4b87bfec402ff477a9490752c908d2e3e920f74a0d10f1c904c4fac5f62dd8": "cr.yandex/crpsufj53lhl0via9iam/clickhouse-server:19.3",

@@ -29,12 +29,6 @@ update-po:
 	@make update-po-domain-formula-ref 2> /dev/null || true
 
 
-.PHONY: translations-docker
-translations-docker:
-	docker build --file Dockerfile.translations --tag bi_formula_ref_tst .
-	docker run --rm --name bi_formula_ref_make_translations --volume "$$(pwd):/data" --volume "$$(pwd)/docker-compose/translations/entrypoint.sh:/entrypoint.sh" bi_formula_ref_tst
-
-
 .PHONY: translations-local
 translations-local:
 	ls -1 bi_formula_ref/locales/ \

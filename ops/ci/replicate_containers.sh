@@ -39,10 +39,6 @@ MYSQL_8012_SRC="registry.yandex.net/statinfra/mysql@sha256:574bf8a61e3276788bcaa
 MYSQL_8012_DST="cr.yandex/$DOCKER_REGISTRY_YC_EXT/mysql:8.0.12"
 pull_push $MYSQL_8012_SRC $MYSQL_8012_DST
 
-ORA_SRC="registry.yandex.net/statinfra/oracle-database-enterprise@sha256:25b0ec7cc3987f86b1e754fc214e7f06761c57bc11910d4be87b0d42ee12d254"
-ORA_DST="cr.yandex/$DOCKER_REGISTRY_YC_EXT/oracle-database-enterprise:12.2.0.1-slim"
-pull_push $ORA_SRC $ORA_DST
-
 INIT_DB_SRC="registry.yandex.net/statinfra/base/bi/initdb@sha256:41477e01d5e1017d31c09776ded1b135ce7e58add715a024fc294c0490b95c44"
 INIT_DB_DST="cr.yandex/$DOCKER_REGISTRY_YC_EXT/initdb:41477"
 pull_push $INIT_DB_SRC $INIT_DB_DST

@@ -1,6 +1,0 @@
-# image: "registry.yandex.net/statinfra/oracle-database-enterprise:12.2.0.1-slim"
-FROM cr.yandex/crpsufj53lhl0via9iam/oracle-database-enterprise:12.2.0.1-slim
-
-# fix error ORA-04031
-# set SGA_TARGET to 5GB
-COPY db-oracle/configDBora.sh /home/oracle/setup/configDBora.sh
