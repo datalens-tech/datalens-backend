@@ -4,6 +4,9 @@ vars:
   USER_REL_PATH:
     sh: python -c "import os,sys;print(os.path.relpath('{{.USER_WORKING_DIR}}'))"
 
+  ROOT_DIR:
+    sh: pwd
+
 includes:
   env:
     taskfile: tools/common_taskfile_env.yml
@@ -17,3 +20,6 @@ includes:
   pub:
     taskfile: tools/common_taskfile_pub.yml
     dir: tools
+  cq:
+    taskfile: mainrepo/tools/taskfile_code_quality.yml
+    dir: mainrepo/tools

@@ -1,0 +1,20 @@
+# todo. remove prefix after all common tasks are moved here
+
+version: '3'
+
+vars:
+  USER_REL_PATH:
+    sh: python -c "import os,sys;print(os.path.relpath('{{.USER_WORKING_DIR}}'))"
+
+  ROOT_DIR:
+    sh: pwd
+
+
+includes:
+  env:
+    taskfile: tools/taskfile_env.yml
+    dir: tools
+
+  cq:
+    taskfile: tools/taskfile_code_quality.yml
+    dir: tools

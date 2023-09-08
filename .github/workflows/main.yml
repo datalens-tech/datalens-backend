@@ -44,10 +44,8 @@ jobs:
           password: ${{ secrets.DL_CI_CR_TOKEN }}
       - name: 'Cleanup build folder'
         run: |
-          ls -la ./
           rm -rf ./* || true
           rm -rf ./.??* || true
-          ls -la ./
       - name: Checkout code
         uses: actions/checkout@v4
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
@@ -410,17 +408,43 @@ jobs:
       
 
 # todo:  uncomment when code is linted and being  re-formatted in pre-commit hooks
-#  codestyle:
+#  codestyle_all:
 #    runs-on: [self-hosted, linux, light]
-#    needs: wait_for_image
+#    needs: gh_build_image
 #    container:
 #      # until https://github.com/github/docs/issues/25520 is resolved, using vars
-#      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_with_code:${{ github.sha }}"
+#      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_code_quality:${{ github.sha }}"
 #      credentials:
 #        username: ${{ secrets.DL_CI_CR_USER }}
 #        password: ${{ secrets.DL_CI_CR_TOKEN }}
 #    steps:
-#    - name: Analysing the code with ruff
-#      run: . /venv/bin/activate && ruff check lib/ utils/
-#    - name: Check style with black
-#      run: . /venv/bin/activate && black --check lib/ utils/
+#    - run: cd /data && task ld:check_all
+
+  codestyle_changed:
+    runs-on: [ self-hosted, linux, light ]
+    needs: gh_build_image
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_code_quality:${{ github.sha }}"
+      credentials:
+        username: ${{ secrets.DL_CI_CR_USER }}
+        password: ${{ secrets.DL_CI_CR_TOKEN }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # https://github.com/actions/runner-images/issues/6775
+      - run: git config --global --add safe.directory .
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - run: |
+          TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr '\n' ' ' || echo '')
+          echo $TARGET
+          task ld:check_target -- "$TARGET"
+          task ld:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
+        env:
+          VENV_PATH: /venv

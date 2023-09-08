@@ -104,6 +104,25 @@ RUN . /venv/bin/activate && pip install --no-deps -r /data/ops/ci/docker_image_c
 EOT
 }
 
+target "ci_code_quality" {
+  contexts = {
+    base_img = "target:ci_with_src"
+  }
+  tags = ["${CI_IMG_CODE_QUALITY}"]
+  dockerfile-inline = <<EOT
+FROM base_img
+RUN export DEBIAN_FRONTEND=noninteractive && \
+  apt-get update && \
+  apt-get install --yes curl gpg ca-certificates wget && \
+  cd /tmp/ && wget https://github.com/go-task/task/releases/download/v3.29.1/task_linux_amd64.deb && \
+  echo "e411770abf73d5e094100ab7a1c8278f35b591ecadbfd778200b6b2ad1ee340b task_linux_amd64.deb" | sha256sum -c - && \
+  dpkg -i task_linux_amd64.deb && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN . /venv/bin/activate && pip install --no-deps -r /data/ops/ci/requirements-localhost.txt
+EOT
+}
+
 target "3rd_party_requirements_txt" {
   contexts = {
     bake_ctx_all_pkg_info = "target:app_pkg_info"

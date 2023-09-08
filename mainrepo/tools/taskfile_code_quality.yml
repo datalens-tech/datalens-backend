@@ -1,0 +1,298 @@
+version: '3'
+
+vars:
+  THIS_DIR:
+    sh: realpath "."
+
+  PACKAGE_NAME:
+    sh: basename {{.USER_WORKING_DIR}}
+
+  CHECK_TARGET:
+    # space separated list of relative paths from the project root
+    sh: echo {{.CLI_ARGS}}
+
+  # Files from cli args, passed after '--'
+  TARGET_PY:
+    sh: echo $(echo "{{.CHECK_TARGET}}" | tr ' ' '\n' | grep '\.py$')
+
+  TARGET_TOML:
+    sh: echo $(echo "{{.CHECK_TARGET}}" | tr ' ' '\n' | grep 'pyproject.toml$')
+
+  # Files changed since last commit
+  CHANGED_PY_SINGLE_LINE:
+    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --name-only HEAD | grep '\.py$' )
+
+  CHANGED_PYPROJECT_SINGLE_LINE:
+    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --name-only HEAD | grep 'pyproject.toml$' )
+
+
+includes:
+  env:
+    taskfile: ./taskfile_env.yml
+
+tasks:
+  common_deps:
+    deps: [ env:ensure_venv]
+
+  ruff_run:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    shell: bash
+    vars:
+      FIX_FLAG:
+        sh: fix_flag=""; if [ '{{.APPLY_FIX|default false}}' == 'true' ]; then fix_flag="--fix"; fi; echo $fix_flag
+      IGNORE_ERRORS:
+        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
+    cmds:
+      - |
+        . $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}     
+        ruff {{.FIX_FLAG}}  {{.TARGET}}  {{.IGNORE_ERRORS}}
+    silent: true
+    status:
+      - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
+
+  isort_run:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    shell: bash
+    vars:
+      CHECK_FLAG:
+        sh: check_flag="--check"; if [ '{{.APPLY_FIX|default false}}' == 'true' ]; then check_flag=""; fi; echo $check_flag
+      IGNORE_ERRORS:
+        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
+    cmds:
+      - |
+        . $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}
+        exit_code=0
+        set +ex
+        for file in {{.TARGET}}; do
+          # echo "$file"
+          eval 'isort "$file" {{.CHECK_FLAG}}'
+          exit_code=$(expr $exit_code + $?)
+        done
+        
+        if [ "{{.STRICT|default false}}" == "true" ]
+        then 
+          if [ "$exit_code" -gt 0 ]; then
+            exit 1
+          else
+            exit 0
+          fi        
+        fi
+    silent: true
+    status:
+      - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
+
+  black_run:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    shell: bash
+    vars:
+      CHECK_FLAG:
+        sh: check_flag="--check"; if [ '{{.APPLY_FIX|default false}}' == 'true' ]; then check_flag=""; fi; echo $check_flag
+      IGNORE_ERRORS:
+        sh: if [ "{{.STRICT|default false}}" == "true" ]; then echo ""; else echo "|| true";  fi;
+#        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
+    cmds:
+      - |
+        . $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}
+        black {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+    silent: true
+    status:
+      - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
+
+  toml_sort_run:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    shell: bash
+    vars:
+      CHECK_FLAG:
+        sh: check_flag="--check"; if [ '{{.APPLY_FIX|default false}}' == 'true' ]; then check_flag="--in-place"; fi; echo $check_flag
+      IGNORE_ERRORS:
+        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
+    cmds:
+      - |
+        . $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}
+        toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+    silent: true
+    status:
+      - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
+
+  _run_tools:
+    internal: true
+    silent: true
+    cmds:
+      - task: toml_sort_run
+        vars:
+          TARGET: "{{.TARGET_TOML}}"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+      - task: isort_run
+        vars:
+          TARGET: "{{.TARGET}}"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+      - task: black_run
+        vars:
+          TARGET: "{{.TARGET}}"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+      - task: ruff_run
+        vars:
+          TARGET: "{{.TARGET}}"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+
+
+  _run_tools_changed:
+    internal: true
+    silent: true
+    cmds:
+      - task: _run_tools
+        vars:
+          TARGET: "{{.CHANGED_PY_SINGLE_LINE}}"
+          TARGET_TOML: "{{.CHANGED_PYPROJECT_SINGLE_LINE}}"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+
+  check_changed:
+    cmds:
+      - task: _run_tools_changed
+        vars:
+          APPLY_FIX: "false"
+          STRICT: "false"
+
+  check_changed_strict:
+    cmds:
+      - task: _run_tools_changed
+        vars:
+          APPLY_FIX: "false"
+          STRICT: "true"
+
+  fix_changed:
+    cmds:
+      - task: _run_tools_changed
+        vars:
+          APPLY_FIX: "true"
+          STRICT: "true"
+
+  _run_tool_on_cli_target:
+    internal: true
+    silent: true
+    cmds:
+      - task: _run_tools
+        vars:
+          TARGET: "{{.TARGET_PY}}"
+          TARGET_TOML: "{{.TARGET_TOML}}"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+
+  check_target:
+    silent: true
+    cmds:
+      - task: _run_tool_on_cli_target
+        vars:
+          APPLY_FIX: "false"
+          STRICT: "false"
+
+  check_target_strict:
+    silent: true
+    cmds:
+      - task: _run_tool_on_cli_target
+        vars:
+          APPLY_FIX: "false"
+          STRICT: "true"
+
+  fix_target:
+    silent: true
+    cmds:
+      - task: _run_tool_on_cli_target
+        vars:
+          APPLY_FIX: "true"
+          STRICT: "false"
+
+  _run_tool_on_cli_target_dir:
+    internal: true
+    silent: true
+    cmds:
+      - task: _run_tools
+        vars:
+          TARGET: "{{.CHECK_TARGET}}"
+          TARGET_TOML:
+            sh: find "{{.CHECK_TARGET}}" -type f -name "*.toml" | grep . || echo "__missing__"
+          APPLY_FIX: "{{.APPLY_FIX}}"
+          STRICT: "{{.STRICT}}"
+
+  check_dir:
+    silent: true
+    cmds:
+      - task: _run_tool_on_cli_target_dir
+        vars:
+          APPLY_FIX: "false"
+          STRICT: "false"
+
+  fix_dir:
+    silent: true
+    cmds:
+      - task: _run_tool_on_cli_target_dir
+        vars:
+          APPLY_FIX: "true"
+          STRICT: "false"
+
+
+  install_pre_commit_codestyle_checks:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    cmds:
+      - rm -f {{.ROOT_DIR}}/.git/pre-commit
+      - |        
+        echo "#!/usr/bin/env bash
+        task ld:check_changed
+        task ld:check_changed_strict 1> /dev/null 2>/dev/null
+        
+        " > {{.ROOT_DIR}}/.git/hooks/pre-commit
+      - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
+    silent: true
+
+  install_pre_commit_codestyle_checks_non_blocking:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    cmds:
+      - rm -f {{.ROOT_DIR}}/.git/pre-commit
+      - |
+        echo "#!/usr/bin/env bash
+        task ld:check_changed
+        
+        " > {{.ROOT_DIR}}/.git/hooks/pre-commit
+      - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
+    silent: true
+
+  install_pre_commit_codestyle_autofix:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    cmds:
+      - rm -f {{.ROOT_DIR}}/.git/pre-commit
+      - |
+        echo "#!/usr/bin/env bash        
+        task ld:check_changed_strict || task ld:fix_changed
+        unstaged=\$(git diff --name-only)     
+        if [ \"\$unstaged\" == \"\"  ]; then exit 0; fi;
+        echo ''
+        echo \"There are some un-staged files, please review before commit.\"
+        echo ''
+        git status
+        exit 1
+        " > {{.ROOT_DIR}}/.git/hooks/pre-commit
+      - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
+    silent: true

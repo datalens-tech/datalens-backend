@@ -11,6 +11,7 @@ CI_MYPY_IMG="datalens_ci_mypy:$GIT_SHA"
 export BASE_CI_IMG="$CR_URI/$BASE_IMG"
 export CI_IMG_WITH_SRC="$CR_URI/$CI_IMG"
 export CI_IMG_MYPY="$CR_URI/$CI_MYPY_IMG"
+export CI_IMG_CODE_QUALITY="$CR_URI/datalens_ci_code_quality:$GIT_SHA"
 
 # Wait for the base image presence and pull it
 c=0
@@ -28,6 +29,7 @@ docker inspect $BASE_CI_IMG
 
 # Building images with bake
 export BASE_CI_TAG_OVERRIDE=$BASE_CI_IMG
-bash docker_build/run-project-bake ci_with_src ci_mypy
+bash docker_build/run-project-bake ci_with_src ci_mypy ci_code_quality
 docker push $CI_IMG_MYPY
 docker push $CI_IMG_WITH_SRC
+docker push $CI_IMG_CODE_QUALITY

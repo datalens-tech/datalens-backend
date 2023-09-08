@@ -1,0 +1,30 @@
+version: '3'
+
+vars:
+  THIS_DIR:
+    sh: realpath "."
+
+  PACKAGE_NAME:
+    sh: basename {{.USER_WORKING_DIR}}
+
+tasks:
+  mk_dot_env:
+    cmds:
+      - cp .env.sample .env
+      - echo 'fix env to point to the correct python executable'
+
+  ensure_venv:
+    dotenv:
+      - .env
+    cmds:
+      - |
+        $PYTHON -m venv $VENV_PATH
+        . $VENV_PATH/bin/activate
+        pip install -r requirements-localhost.txt
+        pip install -e $(realpath  {{.THIS_DIR}}/../terrarium/dl_repmanager) $(realpath {{.THIS_DIR}}/../terrarium/bi_ci)
+    status:
+      - test -f $VENV_PATH/bin/activate
+    # todo: deal with ci to skip ensure_venv
+    #    sources:
+    #      - requirements-localhost.txt
+    silent: true

@@ -6,12 +6,17 @@ from collections import (
     deque,
 )
 from pathlib import Path
-from typing import Iterator, Iterable
+from typing import (
+    Iterable,
+    Iterator,
+)
 
 from .pkg_ref import PkgRef
 
 
-def collect_affected_packages(repo_root: Path, refs: list[PkgRef], paths: list[str]) -> list[PkgRef]:
+def collect_affected_packages(
+    repo_root: Path, refs: list[PkgRef], paths: list[str]
+) -> list[PkgRef]:
     # path relative to project root
     seen = set()
     pkg_by_path = {str(p.partial_parent_path): p for p in refs}
@@ -51,7 +56,9 @@ def get_leafs(dependencies):
     for deps in dependencies.values():
         all_values.extend(deps)
     all_values = set(all_values)
-    leafs = set(all_values) - set([k for k in dependencies.keys() if len(dependencies[k]) > 0])
+    leafs = set(all_values) - set(
+        [k for k in dependencies.keys() if len(dependencies[k]) > 0]
+    )
     return leafs
 
 
@@ -92,7 +99,9 @@ def get_deep_affection_map(dependencies: dict[str, list[str]]) -> dict[str, set[
     return affected
 
 
-def process(repo_root: Path, affected: Iterable[str], get_all: bool = False) -> list[PkgRef]:
+def process(
+    repo_root: Path, affected: Iterable[str], get_all: bool = False
+) -> list[PkgRef]:
     affected = list(affected)
 
     depends_on = defaultdict(list)
@@ -144,9 +153,16 @@ def main() -> None:
         to_check = process(repo_root, [], get_all=True)
     else:
         paths = paths.strip().split(" ")
-        to_check = process(Path(repo_root), [p for p in paths if not p.startswith("ops/")])
+        to_check = process(
+            Path(repo_root), [p for p in paths if not p.startswith("ops/")]
+        )
 
-    to_check.append(PkgRef(root=repo_root, full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci"))
+    to_check.append(
+        PkgRef(
+            root=repo_root,
+            full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci",
+        )
+    )
     result = set()
 
     for sub in to_check:

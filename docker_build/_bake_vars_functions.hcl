@@ -34,6 +34,10 @@ variable CI_IMG_MYPY {
   default = ""
 }
 
+variable CI_IMG_CODE_QUALITY {
+  default = ""
+}
+
 function "interim_ext_cache_to" {
   params = []
   result = (CACHE_REGISTRY_PREFIX == null) ? [] : ["type=inline"]
