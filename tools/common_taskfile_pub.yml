@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  validate-dotenv:
+    dir: .
+    dotenv: [ "./.env" ]
+    cmds:
+      - "[ -z $PUB_SYNC_TARGET_REPO_DIR ]  # Should be set in particular task. Not in .env"
+      - "[ ! -z $PUB_SYNC_TARGET_REPO_DIR_PREPUBLIC ]"
+
+  prepublic-file-sync:
+    deps: [ validate-dotenv ]
+    dir: .
+    dotenv: [ "./.env" ]
+    env:
+      STRICT_MODE: "0"
+    cmds:
+      # Did not find a way to substitute env var in `env` section with value from .env file
+      #  So we substitute it in shell...
+      - PUB_SYNC_TARGET_REPO_DIR=${PUB_SYNC_TARGET_REPO_DIR_PREPUBLIC} bash "public_repo_sync/run_files_sync.bash"
