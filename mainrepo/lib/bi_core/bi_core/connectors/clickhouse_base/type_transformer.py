@@ -3,10 +3,12 @@ from __future__ import annotations
 import sqlalchemy as sa
 
 from bi_constants.enums import BIType, ConnectionType as CT
+from bi_core.db.elements import GenericNativeType
 from bi_core.db.conversion_base import (
     TypeTransformer, make_native_type,
 )
 from clickhouse_sqlalchemy import types as ch_types
+from bi_core.backend_types import get_backend_type
 
 
 CH_TYPES_INT = frozenset((
@@ -64,3 +66,11 @@ class ClickHouseTypeTransformer(TypeTransformer):
         BIType.unsupported: make_native_type(CT.clickhouse, sa.sql.sqltypes.NullType),
     }
 
+    def make_foreign_native_type_conversion(self, native_t: GenericNativeType) -> GenericNativeType:
+        # All CH conn_types are supposed to have equivalent types.
+        nt_backend_type = get_backend_type(conn_type=native_t.conn_type)
+        own_backend_type = get_backend_type(self.conn_type)
+
+        if nt_backend_type == own_backend_type:
+            return native_t.clone(conn_type=self.conn_type)
+        return super().make_foreign_native_type_conversion(native_t)
