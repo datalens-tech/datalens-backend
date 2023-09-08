@@ -9,6 +9,7 @@ set -eux
 ALL_BAKE_FILES=(
     _bake_vars_functions.hcl
     bake_code_gen.hcl
+    bake_sources.hcl
 )
 
 FILE_AGS=()

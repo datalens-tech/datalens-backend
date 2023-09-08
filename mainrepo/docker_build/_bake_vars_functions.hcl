@@ -3,3 +3,25 @@
 variable DL_B_PROJECT_ROOT {
   default = ".."
 }
+
+variable DL_B_FILE_OPS_IMG {
+  default = "debian:bookworm-slim"
+}
+
+
+function dl_dockerfile_prepare_src {
+  params = [cmd_list]
+  result = join("\n", concat(
+    [
+      "FROM ${DL_B_FILE_OPS_IMG} AS build",
+    ],
+    [
+    for cmd in cmd_list :
+    ((cmd.cmd == "copy") ? "COPY --from=${cmd.ctx} / /src/${cmd.target_path}" : "RUN ${cmd.run}")
+    ],
+    [
+      "FROM scratch",
+      "COPY --from=build /src /",
+    ]
+  ))
+}
