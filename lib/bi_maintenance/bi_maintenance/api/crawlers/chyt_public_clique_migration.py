@@ -2,8 +2,6 @@ from typing import Any, AsyncIterable, Optional
 
 import attr
 
-from bi_constants.enums import ConnectionType
-
 from bi_maintenance.core.us_crawler_base import USEntryCrawler
 from bi_core.us_entry import USEntry, USMigrationEntry
 from bi_core.us_manager.us_manager_async import AsyncUSManager
@@ -19,14 +17,14 @@ class CHYTPublicCliqueCrawler(USEntryCrawler):
     async def get_raw_entry_iterator(self, crawl_all_tenants: bool = True) -> AsyncIterable[dict[str, Any]]:
         async for entry in self.usm.get_raw_collection(
             entry_scope='connection',
-            entry_type=ConnectionType.ch_over_yt.name,
+            entry_type='ch_over_yt',
             all_tenants=crawl_all_tenants,
         ):
             yield entry
 
         async for entry in self.usm.get_raw_collection(
             entry_scope='connection',
-            entry_type=ConnectionType.ch_over_yt_user_auth.name,
+            entry_type='ch_over_yt_user_auth',
             all_tenants=crawl_all_tenants,
         ):
             yield entry

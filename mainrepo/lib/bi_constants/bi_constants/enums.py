@@ -46,18 +46,11 @@ class SourceBackendType(DynamicEnum):
     NONE = AutoEnumValue()
     # Connectors  # TODO: Remove
     CLICKHOUSE = AutoEnumValue()
-    CHYT = AutoEnumValue()
-    CHS3 = AutoEnumValue()
 
 
 class ConnectionType(DynamicEnum):
     unknown = AutoEnumValue()
     clickhouse = AutoEnumValue()
-    file = AutoEnumValue()
-    gsheets_v2 = AutoEnumValue()
-    chyt = AutoEnumValue()
-    ch_over_yt = AutoEnumValue()  # CHYT internal
-    ch_over_yt_user_auth = AutoEnumValue()  # CHYT internal
 
     ch_billing_analytics = AutoEnumValue()
 
@@ -227,20 +220,6 @@ class WhereClauseOperation(Enum):
 class CreateDSFrom(DynamicEnum):
     CH_TABLE = AutoEnumValue()
     CH_SUBSELECT = AutoEnumValue()
-    FILE_S3_TABLE = AutoEnumValue()
-    GSHEETS_V2 = AutoEnumValue()
-    CHYT_YTSAURUS_TABLE = AutoEnumValue()
-    CHYT_YTSAURUS_TABLE_LIST = AutoEnumValue()
-    CHYT_YTSAURUS_TABLE_RANGE = AutoEnumValue()
-    CHYT_YTSAURUS_SUBSELECT = AutoEnumValue()
-    CHYT_TABLE = AutoEnumValue()
-    CHYT_TABLE_LIST = AutoEnumValue()
-    CHYT_TABLE_RANGE = AutoEnumValue()
-    CHYT_SUBSELECT = AutoEnumValue()
-    CHYT_USER_AUTH_TABLE = AutoEnumValue()
-    CHYT_USER_AUTH_TABLE_LIST = AutoEnumValue()
-    CHYT_USER_AUTH_TABLE_RANGE = AutoEnumValue()
-    CHYT_USER_AUTH_SUBSELECT = AutoEnumValue()
     CH_BILLING_ANALYTICS_TABLE = AutoEnumValue()
     CH_USAGE_TRACKING_TABLE = AutoEnumValue()
     CH_USAGE_TRACKING_YA_TEAM_TABLE = AutoEnumValue()

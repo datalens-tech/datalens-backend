@@ -7,7 +7,12 @@ from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import datasets
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+)
 
 
 @attr.s
@@ -47,26 +52,26 @@ MAP_EXT_DSRC_TYPE_CONN_TYPE_INT_DSRC_TYPE: dict[
     Type[ext.DataSourceSpec], dict[ConnectionType, Type[datasets.DataSource]]
 ] = {
     ext.TableDataSourceSpec: {
-        ConnectionType.ch_over_yt: datasets.DataSourceCHYTTable,
-        ConnectionType.ch_over_yt_user_auth: datasets.DataSourceCHYTUserAuthTable,
-        ConnectionType.clickhouse: datasets.DataSourceClickHouseTable,
+        CONNECTION_TYPE_CH_OVER_YT: datasets.DataSourceCHYTTable,
+        CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: datasets.DataSourceCHYTUserAuthTable,
+        CONNECTION_TYPE_CLICKHOUSE: datasets.DataSourceClickHouseTable,
     },
     ext.SchematizedTableDataSourceSpec: {
         CONNECTION_TYPE_POSTGRES: datasets.DataSourcePGTable,
     },
     ext.SubSelectDataSourceSpec: {
-        ConnectionType.ch_over_yt: datasets.DataSourceCHYTSubSelect,
-        ConnectionType.ch_over_yt_user_auth: datasets.DataSourceCHYTUserAuthSubSelect,
+        CONNECTION_TYPE_CH_OVER_YT: datasets.DataSourceCHYTSubSelect,
+        CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: datasets.DataSourceCHYTUserAuthSubSelect,
         CONNECTION_TYPE_POSTGRES: datasets.DataSourcePGSubSQL,
-        ConnectionType.clickhouse: datasets.DataSourceClickHouseSubSQL,
+        CONNECTION_TYPE_CLICKHOUSE: datasets.DataSourceClickHouseSubSQL,
     },
     ext.CHYTTableRangeDataSourceSpec: {
-        ConnectionType.ch_over_yt: datasets.DataSourceCHYTTableRange,
-        ConnectionType.ch_over_yt_user_auth: datasets.DataSourceCHYTUserAuthTableRange,
+        CONNECTION_TYPE_CH_OVER_YT: datasets.DataSourceCHYTTableRange,
+        CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: datasets.DataSourceCHYTUserAuthTableRange,
     },
     ext.CHYTTableListDataSourceSpec: {
-        ConnectionType.ch_over_yt: datasets.DataSourceCHYTTableList,
-        ConnectionType.ch_over_yt_user_auth: datasets.DataSourceCHYTUserAuthTableList,
+        CONNECTION_TYPE_CH_OVER_YT: datasets.DataSourceCHYTTableList,
+        CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: datasets.DataSourceCHYTUserAuthTableList,
     }
 }
 

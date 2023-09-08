@@ -3,14 +3,12 @@ from typing import Any, AsyncIterable, Optional
 
 import attr
 
-from bi_constants.enums import ConnectionType
-
 from bi_maintenance.core.us_crawler_base import USEntryCrawler
 from bi_core.us_entry import USEntry, USMigrationEntry
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 
 
-ALLOWED_CONNECTIONS = (ConnectionType.file.name, ConnectionType.gsheets_v2.name)
+ALLOWED_CONNECTIONS = ('file', 'gsheets_v2')
 
 
 class DataTypeMigrationCrawler(USEntryCrawler, metaclass=abc.ABCMeta):

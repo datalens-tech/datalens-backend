@@ -13,14 +13,21 @@ from bi_utils.utils import DataKey
 from bi_core.base_models import ConnCacheableMixin, ConnSubselectMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
-from bi_connector_chyt.core.conn_options import CHYTConnectOptions
-from bi_connector_chyt.core.dto import CHYTDTO
 from bi_core.i18n.localizer import Translatable
 from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import (
     ConnectionBase, ConnectionHardcodedDataMixin, DataSourceTemplate, ExecutorBasedMixin, SubselectMixin,
 )
 from bi_core.utils import secrepr
+
+from bi_connector_chyt.core.constants import (
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+)
+from bi_connector_chyt.core.conn_options import CHYTConnectOptions
+from bi_connector_chyt.core.dto import CHYTDTO
 
 
 class BaseConnectionCHYT(
@@ -80,18 +87,18 @@ class BaseConnectionCHYT(
 class ConnectionCHYTToken(BaseConnectionCHYT):
     allow_cache: ClassVar[bool] = True
 
-    source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
     allowed_source_types = frozenset((
-        CreateDSFrom.CHYT_YTSAURUS_TABLE,
-        CreateDSFrom.CHYT_YTSAURUS_TABLE_LIST,
-        CreateDSFrom.CHYT_YTSAURUS_TABLE_RANGE,
-        CreateDSFrom.CHYT_YTSAURUS_SUBSELECT,
+        SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+        SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+        SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+        SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
     ))
 
-    chyt_table_source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE
-    chyt_table_list_source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE_LIST
-    chyt_table_range_source_type = CreateDSFrom.CHYT_YTSAURUS_TABLE_RANGE
-    chyt_subselect_source_type = CreateDSFrom.CHYT_YTSAURUS_SUBSELECT
+    chyt_table_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
+    chyt_table_list_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST
+    chyt_table_range_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE
+    chyt_subselect_source_type = SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT
 
     @attr.s(kw_only=True)
     class DataModel(BaseConnectionCHYT.DataModel):

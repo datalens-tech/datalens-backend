@@ -18,6 +18,17 @@ from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, Wrapped
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 
+from bi_connector_chyt_internal.core.constants import (
+    SOURCE_TYPE_CHYT_TABLE,
+    SOURCE_TYPE_CHYT_TABLE_LIST,
+    SOURCE_TYPE_CHYT_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+)
+
 # ####### Commons #######
 
 
@@ -285,10 +296,10 @@ class BaseTestDatasetChyt:
 
 
 class TestDatasetChyt(BaseTestDatasetChyt):
-    table_source_type = CreateDSFrom.CHYT_TABLE
-    table_list_source_type = CreateDSFrom.CHYT_TABLE_LIST
-    table_range_source_type = CreateDSFrom.CHYT_TABLE_RANGE
-    subselect_source_type = CreateDSFrom.CHYT_SUBSELECT
+    table_source_type = SOURCE_TYPE_CHYT_TABLE
+    table_list_source_type = SOURCE_TYPE_CHYT_TABLE_LIST
+    table_range_source_type = SOURCE_TYPE_CHYT_TABLE_RANGE
+    subselect_source_type = SOURCE_TYPE_CHYT_SUBSELECT
 
     TABLE_CONCAT_CASES = _get_chyt_table_concat_cases(
         table_source_type=table_source_type,
@@ -327,10 +338,10 @@ class TestDatasetChyt(BaseTestDatasetChyt):
 
 
 class TestDatasetChytUserAuth(BaseTestDatasetChyt):
-    table_source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE
-    table_list_source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE_LIST
-    table_range_source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE_RANGE
-    subselect_source_type = CreateDSFrom.CHYT_USER_AUTH_SUBSELECT
+    table_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE
+    table_list_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST
+    table_range_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE
+    subselect_source_type = SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT
 
     TABLE_CONCAT_CASES = _get_chyt_table_concat_cases(
         table_source_type=table_source_type,

@@ -5,6 +5,17 @@ import attr
 from bi_constants.enums import ManagedBy, CreateDSFrom
 from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
 from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
+from bi_connector_chyt_internal.core.constants import (
+    SOURCE_TYPE_CHYT_TABLE,
+    SOURCE_TYPE_CHYT_TABLE_LIST,
+    SOURCE_TYPE_CHYT_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+)
 
 from .data_source_parameters import (
     DataSourceParams,
@@ -96,49 +107,49 @@ class DataSourceAnyCHYTTableRange(DataSource):
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTSubSelect(DataSourceSubSQL):
-    source_type = CreateDSFrom.CHYT_SUBSELECT
+    source_type = SOURCE_TYPE_CHYT_SUBSELECT
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTUserAuthSubSelect(DataSourceSubSQL):
-    source_type = CreateDSFrom.CHYT_USER_AUTH_SUBSELECT
+    source_type = SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTTable(DataSourceSQL):
-    source_type = CreateDSFrom.CHYT_TABLE
+    source_type = SOURCE_TYPE_CHYT_TABLE
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTUserAuthTable(DataSourceSQL):
-    source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE
+    source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTTableList(DataSourceAnyCHYTTableList):
-    source_type = CreateDSFrom.CHYT_TABLE_LIST
+    source_type = SOURCE_TYPE_CHYT_TABLE_LIST
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTUserAuthTableList(DataSourceAnyCHYTTableList):
-    source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE_LIST
+    source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTTableRange(DataSourceAnyCHYTTableRange):
-    source_type = CreateDSFrom.CHYT_TABLE_RANGE
+    source_type = SOURCE_TYPE_CHYT_TABLE_RANGE
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceCHYTUserAuthTableRange(DataSourceAnyCHYTTableRange):
-    source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE_RANGE
+    source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE
 
 
 @ModelDescriptor()
@@ -156,10 +167,10 @@ class DataSourcePGSubSQL(DataSourceSubSQL):
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceClickHouseTable(DataSourceSQL):
-    source_type = CreateDSFrom.CH_TABLE
+    source_type = SOURCE_TYPE_CH_TABLE
 
 
 @ModelDescriptor()
 @attr.s(kw_only=True)
 class DataSourceClickHouseSubSQL(DataSourceSubSQL):
-    source_type = CreateDSFrom.CH_SUBSELECT
+    source_type = SOURCE_TYPE_CH_SUBSELECT

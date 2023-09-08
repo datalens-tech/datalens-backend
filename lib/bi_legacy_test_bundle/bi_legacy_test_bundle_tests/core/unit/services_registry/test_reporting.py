@@ -18,6 +18,8 @@ from bi_api_commons.reporting.profiler import DefaultReportingProfiler
 from bi_api_commons_ya_cloud.models import TenantYCFolder
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
+from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT
+
 
 _QID = 'some_qid_1234'
 
@@ -47,7 +49,7 @@ _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
     query_id=_QID,
     timestamp=0,
     dataset_id='ds_123',
-    connection_type=ConnectionType.ch_over_yt,
+    connection_type=CONNECTION_TYPE_CH_OVER_YT,
     conn_reporting_data={
         'connection_id': 'conn_123',
         'cluster': 'my_cluster',
@@ -60,7 +62,7 @@ _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
 _CHYT_REPORT_FIELDS_FROM_START = dict(
     dataset_id='ds_123',
     connection_id='conn_123',
-    connection_type=ConnectionType.ch_over_yt.name,
+    connection_type=CONNECTION_TYPE_CH_OVER_YT.name,
     cluster='my_cluster',
     clique_alias='*ch_my_clique',
     query_type=QueryType.external.name,

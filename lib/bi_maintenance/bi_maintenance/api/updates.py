@@ -1,9 +1,9 @@
 """
 Sample usage (replace connection and switch data source to subselect)::
 
-    from bi_constants.enums import CreateDSFrom
     from bi_core.maintenance.helpers import get_sync_usm, get_dataset
     from bi_api_lib.maintenance.updates import SimpleDatasetUpdateGen, update_dataset
+    from bi_connector_chyt_internal.core.constants import SOURCE_TYPE_CHYT_SUBSELECT
 
     subsql = 'SELECT * FROM my_table'
     ds = get_dataset('hfu4hg98wh48', is_async_env=False)
@@ -16,7 +16,7 @@ Sample usage (replace connection and switch data source to subselect)::
             update_gen.replace_connection(old_id='abzgni02ra8a7', new_id='lg6crpowhm3ij'),
             update_gen.update_source_as_subselect(
                 id='bb46b7c1-9d5f-11eb-841a-43a71976c9af',
-                source_type=CreateDSFrom.CHYT_SUBSELECT, subsql=subsql,
+                source_type=SOURCE_TYPE_CHYT_SUBSELECT, subsql=subsql,
             ),
         ],
     )

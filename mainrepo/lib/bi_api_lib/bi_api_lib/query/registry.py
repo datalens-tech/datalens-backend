@@ -17,8 +17,9 @@ from bi_query_processing.multi_query.factory import (
 )
 
 # FIXME: Remove connectors
-from bi_connector_mysql.formula.constants import MySQLDialect
 from bi_connector_mysql.core.constants import BACKEND_TYPE_MYSQL
+from bi_connector_mysql.formula.constants import MySQLDialect
+from bi_connector_clickhouse.core.constants import BACKEND_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect
 from bi_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect
@@ -118,7 +119,7 @@ def register_for_connectors_with_native_wf() -> None:
         )
     if os.environ.get('NATIVE_WF_CLICKHOUSE', '0') == '1':
         register_multi_query_mutator_factory_cls(
-            backend_type=SourceBackendType.CLICKHOUSE,
+            backend_type=BACKEND_TYPE_CLICKHOUSE,
             dialects=ClickHouseDialect.and_above(ClickHouseDialect.CLICKHOUSE_22_10).to_list(),
             factory_cls=DefaultNativeWFMultiQueryMutatorFactory,
         )

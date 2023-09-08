@@ -15,6 +15,10 @@ from bi_core.connection_executors import ConnExecutorQuery
 from bi_core.connection_models import ConnDTO, TableIdent
 from bi_core.db import SchemaInfo, IndexInfo
 
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+)
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
 from bi_connector_chyt_internal.core.connection_executors import (
     CHYTInternalSyncAdapterConnExecutor,
@@ -323,28 +327,28 @@ class BaseCHYTSyncTestSet(BaseCHYTTestSet):
 
 @pytest.mark.yt
 class TestCHYTSyncAdapterConnExecutor(CHYTTokenAuthMixin, BaseCHYTSyncTestSet):
-    connection_type = ConnectionType.ch_over_yt
+    connection_type = CONNECTION_TYPE_CH_OVER_YT
 
     executor_cls = CHYTInternalSyncAdapterConnExecutor
 
 
 @pytest.mark.yt
 class TestCHYTAsyncAdapterConnExecutor(CHYTTokenAuthMixin, BaseTestCHYTAsyncAdapterConnExecutor):
-    connection_type = ConnectionType.ch_over_yt
+    connection_type = CONNECTION_TYPE_CH_OVER_YT
 
     executor_cls = CHYTInternalAsyncAdapterConnExecutor
 
 
 @pytest.mark.yt
 class TestCHYTUserAuthSyncAdapterConnExecutor(CHYTUserAuthAuthMixin, BaseCHYTSyncTestSet):
-    connection_type = ConnectionType.ch_over_yt_user_auth
+    connection_type = CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
 
     executor_cls = CHYTUserAuthSyncAdapterConnExecutor
 
 
 @pytest.mark.yt
 class TestCHYTUserAuthAsyncAdapterConnExecutor(CHYTUserAuthAuthMixin, BaseTestCHYTAsyncAdapterConnExecutor):
-    connection_type = ConnectionType.ch_over_yt_user_auth
+    connection_type = CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
 
     executor_cls = CHYTUserAuthAsyncAdapterConnExecutor
 

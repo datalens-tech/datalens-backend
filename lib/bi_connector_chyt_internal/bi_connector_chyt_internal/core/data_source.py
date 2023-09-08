@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import attr
 
-from bi_constants.enums import ConnectionType, CreateDSFrom
+from bi_constants.enums import CreateDSFrom
 
 from bi_connector_chyt.core.data_source import (
     BaseCHYTTableDataSource,
@@ -12,17 +12,31 @@ from bi_connector_chyt.core.data_source import (
     CHYTTokenAuthDataSourceMixin,
 )
 
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+    SOURCE_TYPE_CHYT_TABLE,
+    SOURCE_TYPE_CHYT_TABLE_LIST,
+    SOURCE_TYPE_CHYT_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+)
+
+
 
 class CHYTInternalTokenAuthDataSourceMixin(CHYTTokenAuthDataSourceMixin):
-    conn_type = ConnectionType.ch_over_yt
+    conn_type = CONNECTION_TYPE_CH_OVER_YT
 
     @classmethod
     def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
         return source_type in {
-            CreateDSFrom.CHYT_TABLE,
-            CreateDSFrom.CHYT_TABLE_LIST,
-            CreateDSFrom.CHYT_TABLE_RANGE,
-            CreateDSFrom.CHYT_SUBSELECT,
+            SOURCE_TYPE_CHYT_TABLE,
+            SOURCE_TYPE_CHYT_TABLE_LIST,
+            SOURCE_TYPE_CHYT_TABLE_RANGE,
+            SOURCE_TYPE_CHYT_SUBSELECT,
         }
 
 
@@ -45,15 +59,15 @@ class CHYTInternalTableSubselectDataSource(CHYTInternalTokenAuthDataSourceMixin,
 class CHYTUserAuthMixin:
     _cache_enabled: bool = attr.ib(default=False)
 
-    conn_type = ConnectionType.ch_over_yt_user_auth
+    conn_type = CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
 
     @classmethod
     def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
         return source_type in {
-            CreateDSFrom.CHYT_USER_AUTH_TABLE,
-            CreateDSFrom.CHYT_USER_AUTH_TABLE_LIST,
-            CreateDSFrom.CHYT_USER_AUTH_TABLE_RANGE,
-            CreateDSFrom.CHYT_USER_AUTH_SUBSELECT,
+            SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+            SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+            SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+            SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
         }
 
 

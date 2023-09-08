@@ -8,15 +8,19 @@ from typing import Optional
 import attr
 from aiohttp import ClientResponse, BasicAuth
 
-from bi_constants.enums import ConnectionType
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from bi_core.connectors.clickhouse_base.ch_commons import get_chyt_user_auth_headers
 from bi_connector_chyt.core.async_adapters import AsyncCHYTAdapter
+
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+)
 from bi_connector_chyt_internal.core.target_dto import (
     BaseCHYTInternalConnTargetDTO,
     CHYTInternalConnTargetDTO,
     CHYTUserAuthConnTargetDTO,
 )
-from bi_core.connectors.clickhouse_base.ch_commons import get_chyt_user_auth_headers
 
 
 LOGGER = logging.getLogger(__name__)
@@ -82,13 +86,13 @@ class BaseAsyncCHYTInternalAdapter(AsyncCHYTAdapter):
 
 
 class AsyncCHYTInternalAdapter(BaseAsyncCHYTInternalAdapter):
-    conn_type = ConnectionType.ch_over_yt
+    conn_type = CONNECTION_TYPE_CH_OVER_YT
 
     _target_dto: CHYTInternalConnTargetDTO = attr.ib()
 
 
 class AsyncCHYTUserAuthAdapter(BaseAsyncCHYTInternalAdapter):
-    conn_type = ConnectionType.ch_over_yt_user_auth
+    conn_type = CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
 
     _target_dto: CHYTUserAuthConnTargetDTO = attr.ib()
 

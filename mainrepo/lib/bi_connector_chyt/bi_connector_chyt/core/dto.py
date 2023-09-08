@@ -1,8 +1,8 @@
 import attr
 
-from bi_constants.enums import ConnectionType
-
 from bi_core.connectors.clickhouse_base.dto import ClickHouseBaseDTO
+
+from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 
 
 @attr.s(frozen=True, kw_only=True)
@@ -12,7 +12,7 @@ class BaseCHYTDTO(ClickHouseBaseDTO):
 
 @attr.s(frozen=True, kw_only=True)
 class CHYTDTO(BaseCHYTDTO):
-    conn_type = ConnectionType.chyt
+    conn_type = CONNECTION_TYPE_CHYT
 
     port: int = attr.ib()
     host: str = attr.ib()

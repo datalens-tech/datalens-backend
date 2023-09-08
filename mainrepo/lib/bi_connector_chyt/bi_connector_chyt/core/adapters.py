@@ -8,7 +8,7 @@ from aiochclient.http_clients import aiohttp
 
 from bi_utils.aio import await_sync
 
-from bi_constants.enums import ConnectionType, IndexKind
+from bi_constants.enums import IndexKind
 
 from bi_core import exc
 from bi_core.connection_executors.models.db_adapter_data import RawIndexInfo
@@ -16,8 +16,10 @@ from bi_core.connection_models import TableIdent
 from bi_core.connectors.base.error_transformer import DBExcKWArgs
 from bi_core.connectors.clickhouse_base.adapters import BaseClickHouseConnLineConstructor, BaseClickHouseAdapter
 from bi_core.connectors.clickhouse_base.ch_commons import CHYTUtils, get_ch_settings, ensure_db_message
-from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO, CHYTConnTargetDTO
 from bi_core.utils import get_current_w3c_tracing_headers, make_url
+
+from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
+from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO, CHYTConnTargetDTO
 
 
 class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):
@@ -138,7 +140,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
 
 
 class CHYTAdapter(BaseCHYTAdapter):
-    conn_type = ConnectionType.chyt
+    conn_type = CONNECTION_TYPE_CHYT
 
     _target_dto: CHYTConnTargetDTO = attr.ib()
 

@@ -6,7 +6,7 @@ from typing import Generic, Generator, TypeVar
 import pytest
 from multidict import CIMultiDict
 
-from bi_constants.enums import ConnectionType, BIType
+from bi_constants.enums import BIType
 
 from bi_api_commons.base_models import RequestContextInfo
 
@@ -19,6 +19,10 @@ from bi_core_testing.testcases.connection import BaseConnectionTestClass
 from bi_core_testing.database import Db, DbTable, make_table, C
 from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+)
 import bi_connector_chyt_internal_tests.ext.config as common_test_config
 import bi_connector_chyt_internal_tests.ext.core.config as test_config
 
@@ -62,7 +66,7 @@ class CHYTTestSetup(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
 
 
 class BaseCHYTTestClass(CHYTTestSetup[ConnectionCHYTInternalToken]):
-    conn_type = ConnectionType.ch_over_yt
+    conn_type = CONNECTION_TYPE_CH_OVER_YT
     core_test_config = common_test_config.CORE_TEST_CONFIG
 
     @pytest.fixture(scope='function')
@@ -110,7 +114,7 @@ class CHYTNotExistsTestClass(BaseCHYTTestClass):
 
 
 class BaseCHYTUserAuthTestClass(CHYTTestSetup[ConnectionCHYTUserAuth]):
-    conn_type = ConnectionType.ch_over_yt_user_auth
+    conn_type = CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
     core_test_config = common_test_config.CORE_TEST_CONFIG
 
     @pytest.fixture(scope='session')

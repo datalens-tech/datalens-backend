@@ -4,9 +4,12 @@ from bi_sqlalchemy_chyt import types as chyt_types
 
 from bi_constants.enums import BIType, ConnectionType as CT
 
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 from bi_core.db.conversion_base import YTBooleanTypeCaster, make_native_type, TypeCaster
 from bi_core.db.native_type import GenericNativeType
+
+from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+
+from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 
 
 def make_chyt_native_to_user_map(conn_type: CT) -> dict[GenericNativeType, BIType]:
@@ -30,10 +33,10 @@ def make_chyt_user_to_native_map(conn_type: CT) -> dict[BIType, GenericNativeTyp
 
 
 class CHYTTypeTransformer(ClickHouseTypeTransformer):
-    conn_type = CT.chyt
+    conn_type = CONNECTION_TYPE_CHYT
 
-    native_to_user_map = make_chyt_native_to_user_map(CT.chyt)
-    user_to_native_map = make_chyt_user_to_native_map(CT.chyt)
+    native_to_user_map = make_chyt_native_to_user_map(CONNECTION_TYPE_CHYT)
+    user_to_native_map = make_chyt_user_to_native_map(CONNECTION_TYPE_CHYT)
 
     casters: ClassVar[dict[BIType, TypeCaster]] = {
         **ClickHouseTypeTransformer.casters,

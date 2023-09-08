@@ -4,7 +4,6 @@ from typing import Optional, ClassVar, Any
 
 import attr
 
-from bi_constants.enums import CreateDSFrom
 from bi_utils.utils import DataKey
 
 from bi_i18n.localizer_base import Localizer
@@ -17,7 +16,18 @@ from bi_core.utils import secrepr
 
 from bi_connector_chyt.core.us_connection import BaseConnectionCHYT
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
-from bi_connector_chyt_internal.core.constants import NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE
+
+from bi_connector_chyt_internal.core.constants import (
+    SOURCE_TYPE_CHYT_TABLE,
+    SOURCE_TYPE_CHYT_TABLE_LIST,
+    SOURCE_TYPE_CHYT_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+    NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE,
+)
 from bi_connector_chyt_internal.core.dto import CHYTInternalDTO, CHYTUserAuthDTO
 
 
@@ -117,18 +127,18 @@ class BaseConnectionCHYTInternal(BaseConnectionCHYT):
 class ConnectionCHYTInternalToken(BaseConnectionCHYTInternal):
     allow_cache: ClassVar[bool] = True
 
-    source_type = CreateDSFrom.CHYT_TABLE  # Essentially, 'default source type', for `replace_connection`.
+    source_type = SOURCE_TYPE_CHYT_TABLE  # Essentially, 'default source type', for `replace_connection`.
     allowed_source_types = frozenset((
-        CreateDSFrom.CHYT_TABLE,
-        CreateDSFrom.CHYT_TABLE_LIST,
-        CreateDSFrom.CHYT_TABLE_RANGE,
-        CreateDSFrom.CHYT_SUBSELECT,
+        SOURCE_TYPE_CHYT_TABLE,
+        SOURCE_TYPE_CHYT_TABLE_LIST,
+        SOURCE_TYPE_CHYT_TABLE_RANGE,
+        SOURCE_TYPE_CHYT_SUBSELECT,
     ))
 
-    chyt_table_source_type = CreateDSFrom.CHYT_TABLE
-    chyt_table_list_source_type = CreateDSFrom.CHYT_TABLE_LIST
-    chyt_table_range_source_type = CreateDSFrom.CHYT_TABLE_RANGE
-    chyt_subselect_source_type = CreateDSFrom.CHYT_SUBSELECT
+    chyt_table_source_type = SOURCE_TYPE_CHYT_TABLE
+    chyt_table_list_source_type = SOURCE_TYPE_CHYT_TABLE_LIST
+    chyt_table_range_source_type = SOURCE_TYPE_CHYT_TABLE_RANGE
+    chyt_subselect_source_type = SOURCE_TYPE_CHYT_SUBSELECT
 
     @attr.s(kw_only=True)
     class DataModel(BaseConnectionCHYTInternal.DataModel):
@@ -157,18 +167,18 @@ class ConnectionCHYTInternalToken(BaseConnectionCHYTInternal):
 class ConnectionCHYTUserAuth(BaseConnectionCHYTInternal):
     allow_cache: ClassVar[bool] = False  # Just to make this explicit.
 
-    source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE  # Essentially, 'default source type', for `replace_connection`.
+    source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE  # Essentially, 'default source type', for `replace_connection`.
     allowed_source_types = frozenset((
-        CreateDSFrom.CHYT_USER_AUTH_TABLE,
-        CreateDSFrom.CHYT_USER_AUTH_TABLE_LIST,
-        CreateDSFrom.CHYT_USER_AUTH_TABLE_RANGE,
-        CreateDSFrom.CHYT_USER_AUTH_SUBSELECT,
+        SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+        SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+        SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+        SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
     ))
 
-    chyt_table_source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE
-    chyt_table_list_source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE_LIST
-    chyt_table_range_source_type = CreateDSFrom.CHYT_USER_AUTH_TABLE_RANGE
-    chyt_subselect_source_type = CreateDSFrom.CHYT_USER_AUTH_SUBSELECT
+    chyt_table_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE
+    chyt_table_list_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST
+    chyt_table_range_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE
+    chyt_subselect_source_type = SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT
     _table_source_field_doc_key: ClassVar[str] = "CHYT_USER_AUTH_TABLE/table_name"
 
     @attr.s(kw_only=True)

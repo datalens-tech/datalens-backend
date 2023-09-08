@@ -7,8 +7,13 @@ from bi_constants.enums import ConnectionType, RawSQLLevel
 
 from bi_core.us_manager.us_manager import USManagerBase
 from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 from bi_core_testing.connection import make_connection_base
+
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+)
+from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 
 if TYPE_CHECKING:
     from bi_core.us_connection_base import ConnectionBase
@@ -16,7 +21,7 @@ if TYPE_CHECKING:
 
 def make_chyt_connection(
         sync_usm: USManagerBase,
-        conn_type: ConnectionType = ConnectionType.ch_over_yt,
+        conn_type: ConnectionType = CONNECTION_TYPE_CH_OVER_YT,
         conn_cls: Type[ConnectionBase] = ConnectionCHYTInternalToken,
         alias: Optional[str] = "*chyt_datalens_back",
         cluster: str = "hahn",
@@ -61,7 +66,7 @@ def make_chyt_user_auth_connection(
 ) -> ConnectionCHYTUserAuth:
     conn = make_chyt_connection(
         sync_usm,
-        conn_type=ConnectionType.ch_over_yt_user_auth,
+        conn_type=CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
         conn_cls=ConnectionCHYTUserAuth,
         alias=alias,
         cluster=cluster,

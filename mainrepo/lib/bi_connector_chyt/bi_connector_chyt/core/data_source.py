@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 from bi_sqlalchemy_chyt import CHYTTablesConcat, CHYTTablesRange, CHYTTableSubselect
 
-from bi_constants.enums import BIType, CreateDSFrom, ConnectionType
+from bi_constants.enums import BIType, CreateDSFrom
 
 from bi_core import exc
 from bi_core.connection_models.common_models import SATextTableDefinition, TableDefinition, TableIdent
@@ -19,6 +19,14 @@ from bi_core.data_source.sql import BaseSQLDataSource, TableSQLDataSourceMixin, 
 from bi_core.db import SchemaInfo, SchemaColumn
 from bi_core.db.native_type import ClickHouseNativeType
 from bi_core.connectors.clickhouse_base.data_source import CommonClickHouseSubselectDataSource, ClickHouseBaseMixin
+
+from bi_connector_chyt.core.constants import (
+    CONNECTION_TYPE_CHYT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+)
 from bi_connector_chyt.core.data_source_spec import (
     CHYTTableDataSourceSpec, CHYTTableRangeDataSourceSpec,
     CHYTTableListDataSourceSpec,
@@ -238,15 +246,15 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
 
 
 class CHYTTokenAuthDataSourceMixin:
-    conn_type = ConnectionType.chyt
+    conn_type = CONNECTION_TYPE_CHYT
 
     @classmethod
     def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
         return source_type in {
-            CreateDSFrom.CHYT_YTSAURUS_TABLE,
-            CreateDSFrom.CHYT_YTSAURUS_TABLE_LIST,
-            CreateDSFrom.CHYT_YTSAURUS_TABLE_RANGE,
-            CreateDSFrom.CHYT_YTSAURUS_SUBSELECT,
+            SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+            SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+            SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+            SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
         }
 
 

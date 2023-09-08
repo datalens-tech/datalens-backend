@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Collection, Dict, List, Optional, cast
 import attr
 from sqlalchemy.exc import DatabaseError
 
-from bi_constants.enums import ConnectionType, DataSourceRole
+from bi_constants.enums import DataSourceRole
 
 from bi_core.data_processing.cache.exc import CachePreparationFailed
 from bi_core.data_processing.cache.primitives import (
@@ -211,13 +211,6 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
             refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
         )
 
-    DB_LESS_CONNECTIONS = (
-        ConnectionType.ch_over_yt,
-        ConnectionType.ch_over_yt_user_auth,
-        ConnectionType.gsheets,
-        ConnectionType.file,
-    )
-
     def make_data_select_cache_key(
             self,
             joint_dsrc_info: PreparedMultiFromInfo,
@@ -233,23 +226,11 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
         connection_id = target_connection.uuid
         assert connection_id is not None
 
-        conn_type = target_connection.conn_type
-        # TODO: Maybe make some kind of per-conn_type cache key generator class instead of this hack
-        require_db_name = conn_type not in self.DB_LESS_CONNECTIONS
-
         local_key_rep = LocalKeyRepresentation()
         local_key_rep = self.extend_key_for_connection(local_key_rep, target_connection)
         if joint_dsrc_info.db_name is not None:
             local_key_rep = local_key_rep.extend(
                 part_type='db_name', part_content=joint_dsrc_info.db_name)
-        elif require_db_name:
-            # FIXME: Investigate why sometimes db_name is None, fix it and switch to enforcement mode
-            src_cls_name = 'Unknown'
-            if joint_dsrc_info.data_source_list:
-                src_cls_name = joint_dsrc_info.data_source_list[0].__class__.__name__
-            LOGGER.warning(
-                f'db_name is required, but is missing for `{conn_type.name}` connection, '
-                f'`{src_cls_name}` data source')
         local_key_rep = local_key_rep.extend(
             part_type='query', part_content=str(compiled_query))
         local_key_rep = local_key_rep.extend(

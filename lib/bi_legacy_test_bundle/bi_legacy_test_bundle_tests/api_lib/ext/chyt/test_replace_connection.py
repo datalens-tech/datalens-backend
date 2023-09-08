@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from bi_constants.enums import CreateDSFrom
-
 from bi_api_client.dsmaker.primitives import Dataset
 
 from bi_legacy_test_bundle_tests.api_lib.utils import replace_dataset_connection as replace_connection
+
+from bi_connector_chyt_internal.core.constants import (
+    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+)
 
 
 def _test_chyt_to_chyt(
@@ -49,8 +52,8 @@ def test_chyt_to_chyt(
     _test_chyt_to_chyt(
         api_v1, client,
         public_ch_over_yt_connection_id, public_ch_over_yt_second_connection_id,
-        CreateDSFrom.CHYT_SUBSELECT,
-        expected_source_type=CreateDSFrom.CHYT_SUBSELECT
+        SOURCE_TYPE_CHYT_SUBSELECT,
+        expected_source_type=SOURCE_TYPE_CHYT_SUBSELECT,
     )
 
 
@@ -61,6 +64,6 @@ def test_chyt_user_auth_to_chyt(
     _test_chyt_to_chyt(
         api_v1_with_token, client,
         public_ch_over_yt_user_auth_connection_id, public_ch_over_yt_connection_id,
-        CreateDSFrom.CHYT_USER_AUTH_SUBSELECT,
-        expected_source_type=CreateDSFrom.CHYT_SUBSELECT
+        SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+        expected_source_type=SOURCE_TYPE_CHYT_SUBSELECT,
     )
