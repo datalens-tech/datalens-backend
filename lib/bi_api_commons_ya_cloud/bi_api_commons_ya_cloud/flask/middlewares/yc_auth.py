@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import threading
-from typing import Optional, Tuple, Type, Callable, Any
+from typing import Optional, Tuple
 
 import attr
 import flask
@@ -17,6 +17,8 @@ from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 
 from bi_api_commons_ya_cloud.yc_access_control import YCAccessController
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationMode
+
+from bi_api_lib.app.control_api.resources import handle_auth_error
 
 
 LOGGER = logging.getLogger(__name__)
@@ -135,36 +137,11 @@ class FlaskYCAuthService:
         else:
             LOGGER.info("check_yc_auth successful.")
 
-    @classmethod
-    def get_flask_rest_plus_err_handler_map(cls) -> dict[Type[Exception], Callable[[Any], Any]]:
-        return {AuthFailureError: cls._flask_rest_plus_err_handler}
-
-    @classmethod
-    def _flask_rest_plus_err_handler(cls, err: AuthFailureError) -> Tuple[dict, int]:
-        return cls.exc_to_response_dict_plus_status(err)
-
+    # TODO FIX: https://st.yandex-team.ru/BI-2708 move exception handling to common error-response formatter
     @classmethod
     def _plain_flask_err_handler(cls, err: AuthFailureError) -> Tuple[flask.Response, int]:
-        resp_dict, status = cls.exc_to_response_dict_plus_status(err)
+        resp_dict, status = handle_auth_error(err)
         return flask.jsonify(resp_dict), status
-
-    # TODO FIX: https://st.yandex-team.ru/BI-2708 move exception handling to common error-response formatter
-    @staticmethod
-    def exc_to_response_dict_plus_status(err: AuthFailureError) -> Tuple[dict, int]:
-        assert isinstance(err, AuthFailureError)
-
-        if err.response_code in (401, 403):
-            if err.user_message is None:
-                LOGGER.warning("No user message for AuthFailureError with defined response code", exc_info=True)
-                user_message = "Auth failure"
-            else:
-                user_message = err.user_message
-            http_response_code = err.response_code
-        else:
-            user_message = "Internal server error"
-            http_response_code = 500
-
-        return {"message": user_message}, http_response_code
 
     def set_up(self, app: flask.Flask) -> None:
         LOGGER.info("Set up yc auth with access service")

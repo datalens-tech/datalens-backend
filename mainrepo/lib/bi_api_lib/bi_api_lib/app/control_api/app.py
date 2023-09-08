@@ -12,7 +12,6 @@ from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.flask.middlewares.request_id import RequestIDService
-from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService  # TODO do something
 
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_constants.enums import USAuthMode, ConnectionType
@@ -143,10 +142,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma = Marshmallow()
         ma.init_app(app)
 
-        init_apis(
-            app,
-            # TODO FIX: move exception handling to common error-response formatter
-            FlaskYCAuthService.get_flask_rest_plus_err_handler_map(),
-        )
+        init_apis(app)
 
         return app
