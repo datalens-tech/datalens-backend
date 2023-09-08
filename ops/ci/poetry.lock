@@ -803,6 +803,25 @@ type = "directory"
 url = "../../lib/bi_connector_greenplum_mdb"
 
 [[package]]
+name = "bi-connector-mysql-mdb"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_connector_mysql_mdb"
+
+[[package]]
 name = "bi-connector-postgresql-mdb"
 version = "0.0.1"
 description = ""
@@ -2049,7 +2068,7 @@ reference = "ya"
 
 [[package]]
 name = "dl-control-api"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -2079,7 +2098,7 @@ url = "../../mainrepo/app/dl_control_api"
 
 [[package]]
 name = "dl-data-api"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7275,7 +7294,7 @@ reference = "ya"
 
 [[package]]
 name = "yandex-bi-api"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -7287,6 +7306,7 @@ arq = ">=0.25.0"
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 bi-defaults = {path = "../../lib/bi_defaults"}
@@ -7336,7 +7356,6 @@ yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
@@ -7487,7 +7506,7 @@ url = "../../mainrepo/lib/bi_api_connector"
 
 [[package]]
 name = "yandex-bi-api-lib"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8297,7 +8316,7 @@ url = "../../mainrepo/lib/bi_constants"
 
 [[package]]
 name = "yandex-bi-control-api-yc"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8307,6 +8326,7 @@ develop = false
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 blinker = ">=1.5"
 raven = ">=6.10.0"
@@ -8323,7 +8343,6 @@ yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickh
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
@@ -8439,7 +8458,7 @@ url = "../../mainrepo/lib/bi_core_testing"
 
 [[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8449,6 +8468,7 @@ develop = false
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
@@ -8464,7 +8484,6 @@ yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickh
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
@@ -8488,7 +8507,7 @@ url = "../../app_yc/app_yc_data_api_sec_embeds"
 
 [[package]]
 name = "yandex-bi-data-api-yc"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8498,6 +8517,7 @@ develop = false
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
@@ -8513,7 +8533,6 @@ yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickh
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
@@ -8844,7 +8863,7 @@ url = "../../mainrepo/lib/bi_package_boilerplate"
 
 [[package]]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8853,6 +8872,7 @@ develop = false
 
 [package.dependencies]
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
@@ -8868,7 +8888,6 @@ yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickh
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
@@ -8915,7 +8934,7 @@ url = "../../mainrepo/lib/bi_query_processing"
 
 [[package]]
 name = "yandex-bi-rqe-ext-async"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8939,7 +8958,7 @@ url = "../../app/bi_rqe_ext_async"
 
 [[package]]
 name = "yandex-bi-rqe-ext-sync"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8967,7 +8986,7 @@ url = "../../app/bi_rqe_ext_sync"
 
 [[package]]
 name = "yandex-bi-rqe-int-sync"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -9609,4 +9628,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "211fba33d2ad863fbd742b44b198da0e962c391867c4b25c31f39a2ff17976d3"
+content-hash = "06d5cb1efce096c5756e60f726b7162135c730467a0292e9ada5135a0a663e8f"

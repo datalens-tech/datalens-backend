@@ -49,7 +49,7 @@ yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}

@@ -84,7 +84,7 @@ class DataCloudInstallation(
     CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'chyt',
         'mssql',
         'file',
@@ -581,7 +581,7 @@ class ExternalProductionInstallation(
     CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'ydb',
         'chyt',
         'greenplum',
@@ -652,7 +652,7 @@ class IsraelInstallation(NebiusInstallation):
     CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'chyt',
         'mssql',
         'bigquery',
@@ -683,7 +683,7 @@ class NemaxInstallation(NebiusInstallation):
     CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'chyt',
         'mssql',
         'bigquery',
@@ -784,7 +784,7 @@ class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
     )
     CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
         'clickhouse',
-        'postgresql_mdb',
+        'postgresql',
         'mysql',
         'greenplum',
         'mssql',

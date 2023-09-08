@@ -21,7 +21,7 @@ yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}

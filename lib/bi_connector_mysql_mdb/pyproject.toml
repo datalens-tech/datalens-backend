@@ -1,0 +1,64 @@
+
+[tool.poetry]
+name = "bi-connector-mysql-mdb"
+version = "0.0.1"
+description = ""
+authors = ["Nikolai Proskurin <mcpn@yandex-team.ru>"]
+packages = [{include = "bi_connector_mysql_mdb"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+
+[tool.poetry.plugins."bi_api_lib.connectors"]
+mysql_mdb = "bi_connector_mysql_mdb.bi.connector:MySQLMDBBiApiConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[tool.mypy]
+overrides = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.ruff]
+line-length = 140
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py310']
+
+[datalens.pytest.unit]
+root_dir = "bi_connector_mysql_mdb_tests/"
+target_path = "unit"
+skip_compose = "true"
+
+[tools.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
