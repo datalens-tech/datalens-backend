@@ -7543,7 +7543,6 @@ yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
-yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
 yandex-bi-formula = {path = "../bi_formula"}
 yandex-bi-model-tools = {path = "../bi_model_tools"}
 yandex-bi-query-processing = {path = "../bi_query_processing"}
