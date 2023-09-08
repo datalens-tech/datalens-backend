@@ -11,13 +11,10 @@ from marshmallow import ValidationError as MValidationError
 
 from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
-import bi_core.exc
 from bi_api_commons.exc import RequestTimeoutError
-from bi_dls_client.exc import DLSSubjectNotFound
 from bi_formula.core import exc as formula_exc
 from bi_core import exc as common_exc
 from marshmallow import Schema, fields
-from sqlalchemy_metrika_api import exceptions as sqla_metrika_exc
 
 from bi_api_lib import exc
 import bi_query_processing.exc
@@ -38,7 +35,7 @@ EXCEPTION_CODES = {
     common_exc.ConnectionConfigurationError: status.BAD_REQUEST,
     common_exc.USAccessDeniedException: status.FORBIDDEN,
     common_exc.USObjectNotFoundException: status.NOT_FOUND,
-    common_exc.USDLSError: 530,
+    common_exc.USPermissionCheckError: 530,
     common_exc.USLockUnacquiredException: status.LOCKED,
     common_exc.USBadRequestException: status.BAD_REQUEST,
     common_exc.USNotCorrectFolderIdException: status.CONFLICT,
@@ -58,10 +55,9 @@ EXCEPTION_CODES = {
     common_exc.DashSQLNotAllowed: status.BAD_REQUEST,
     common_exc.InvalidFieldError: status.BAD_REQUEST,
     common_exc.FieldNotFound: status.BAD_REQUEST,
-    bi_core.exc.USPermissionRequired: status.FORBIDDEN,
-    sqla_metrika_exc.NotSupportedError: status.BAD_REQUEST,
+    common_exc.USPermissionRequired: status.FORBIDDEN,
     exc.RLSConfigParsingError: status.BAD_REQUEST,
-    DLSSubjectNotFound: status.BAD_REQUEST,
+    common_exc.RLSSubjectNotFound: status.BAD_REQUEST,
     exc.FeatureNotAvailable: status.BAD_REQUEST,
     bi_query_processing.exc.ObligatoryFilterMissing: status.BAD_REQUEST,
     bi_query_processing.exc.FilterError: status.BAD_REQUEST,

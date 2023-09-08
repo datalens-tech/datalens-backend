@@ -246,12 +246,12 @@ class USLockUnacquiredException(USReqException):
     err_code = USReqException.err_code + ['ENTRY_LOCKED']
 
 
-class USDLSError(USReqException):
+class USPermissionCheckError(USReqException):
     err_code = USReqException.err_code + ['DLS_ERR']
 
     @property
     def message(self) -> str:
-        return 'US-DLS error'
+        return 'US permission check error'
 
 
 class USBadRequestException(USReqException):
@@ -829,3 +829,7 @@ class LargeCHYTRowError(SourceProtocolError):
 
 class DataSourceMigrationImpossible(DLBaseException):
     err_code = DLBaseException.err_code + ['DSRC_MIGRATION_IMPOSSIBLE']
+
+
+class RLSSubjectNotFound(DLBaseException):
+    err_code = DLBaseException.err_code + ['RLS_SUBJECT_NOT_FOUND']

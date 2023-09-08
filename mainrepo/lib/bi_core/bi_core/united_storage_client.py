@@ -231,7 +231,7 @@ class UStorageClientBase:
         (409, re.compile("The entry already exists"), exc.USAlreadyExistsException),
         (409, None, exc.USNotCorrectFolderIdException),
         (423, None, exc.USLockUnacquiredException),
-        (530, None, exc.USDLSError),
+        (530, None, exc.USPermissionCheckError),
     ]
 
     RequestData = NamedTuple('RequestData', [
