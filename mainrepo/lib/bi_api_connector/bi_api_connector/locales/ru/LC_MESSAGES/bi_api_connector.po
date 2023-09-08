@@ -47,9 +47,7 @@ msgstr "Разрешить подзапросы в датасетах"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:97
 msgid "value_raw-sql-level-subselect-note"
-msgstr ""
-"Изменить SQL-подзапрос может только пользователь с правами на "
-"администрирование или редактирование датасета"
+msgstr "Опция позволяет описывать источники датасета с помощью SQL-запросов"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:103
 msgid "value_raw-sql-level-dashsql"
@@ -57,7 +55,7 @@ msgstr "Разрешить подзапросы в датасетах и зап�
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:104
 msgid "value_raw-sql-level-dashsql-note"
-msgstr "Пользователь c доступом к подключению может выполнить любой SQL-запрос"
+msgstr "Опция позволяет описывать источники датасета с помощью SQL-запросов и создавать QL-чарты"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:121
 msgid "label_allow-subselect-hint-2"

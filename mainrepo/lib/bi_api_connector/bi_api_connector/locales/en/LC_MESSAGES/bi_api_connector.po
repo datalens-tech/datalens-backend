@@ -47,9 +47,7 @@ msgstr "Allow subselects in datasets"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:97
 msgid "value_raw-sql-level-subselect-note"
-msgstr ""
-"Only users with the rights to administer or edit the dataset can edit the "
-"SQL subquery"
+msgstr "This option allows you to describe dataset sources using SQL queries"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:103
 msgid "value_raw-sql-level-dashsql"
@@ -57,7 +55,7 @@ msgstr "Allow subselects in datasets and queries from charts"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:104
 msgid "value_raw-sql-level-dashsql-note"
-msgstr "A user with connection access can execute any SQL query"
+msgstr "This option allows you to describe dataset sources using SQL queries and create QL charts"
 
 #: bi_api_connector/form_config/models/shortcuts/rows.py:121
 msgid "label_allow-subselect-hint-2"
