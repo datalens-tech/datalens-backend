@@ -43,6 +43,7 @@ bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
+yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
