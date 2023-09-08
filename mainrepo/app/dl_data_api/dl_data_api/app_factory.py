@@ -17,7 +17,7 @@ from bi_core.services_registry.rqe_caches import RQECachesSetting
 
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactoryBase
+from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
 from bi_api_lib.app_settings import TestAppSettings, DataApiAppSettings, AppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
@@ -56,7 +56,7 @@ class DataApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
         return None
 
 
-class DataApiAppFactoryOS(DataApiAppFactoryBase[DataApiAppSettings], DataApiSRFactoryBuilderOS):
+class DataApiAppFactoryOS(DataApiAppFactory[DataApiAppSettings], DataApiSRFactoryBuilderOS):
     @property
     def _is_public(self) -> bool:
         return False

@@ -20,8 +20,8 @@ from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.app.control_api.app import ControlApiAppFactoryBase
-from bi_api_lib.app_settings import MDBSettings, ControlPlaneAppTestingsSettings, ControlApiAppSettings
+from bi_api_lib.app.control_api.app import ControlApiAppFactory
+from bi_api_lib.app_settings import MDBSettings, ControlApiAppTestingsSettings, ControlApiAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
@@ -34,7 +34,7 @@ class BiApiTestBase(abc.ABC):
     Base class defining the basic fixtures of bi-api tests
     """
 
-    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactoryBase]] = TestingControlApiAppFactory
+    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactory]] = TestingControlApiAppFactory
     bi_compeng_pg_on: ClassVar[bool] = True
 
     @pytest.fixture(scope='function', autouse=True)
@@ -136,7 +136,7 @@ class BiApiTestBase(abc.ABC):
         load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=control_api_app_settings.CONNECTOR_WHITELIST))
         app = control_app_factory.create_app(
             connectors_settings=connectors_settings,
-            testing_app_settings=ControlPlaneAppTestingsSettings(
+            testing_app_settings=ControlApiAppTestingsSettings(
                 fake_tenant=TenantCommon()
             ),
             close_loop_after_request=False,

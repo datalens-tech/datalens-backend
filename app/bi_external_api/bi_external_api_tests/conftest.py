@@ -13,7 +13,8 @@ from werkzeug.serving import make_server
 import bi.app
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
-from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.app_settings import ControlApiAppTestingsSettings
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.enums import AppType, EnvType
@@ -177,7 +178,7 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
     app = bi.app.create_app(
         app_settings=settings,
         connectors_settings={},
-        testing_app_settings=ControlPlaneAppTestingsSettings(
+        testing_app_settings=ControlApiAppTestingsSettings(
             us_auth_mode_override=USAuthMode.regular,
         ),
     )

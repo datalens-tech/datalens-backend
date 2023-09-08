@@ -714,6 +714,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 pytest = ">=7.2.2"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
@@ -739,6 +740,20 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+Flask = ">=2.0.3"
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-commons-ya-cloud = {path = "../bi_api_commons_ya_cloud"}
+yandex-bi-api-commons-ya-team = {path = "../bi_api_commons_ya_team"}
+yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
+yandex-bi-cloud-integration = {path = "../bi_cloud_integration"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-chyt-internal = {path = "../bi_connector_chyt_internal"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
+yandex-bi-service-registry-ya-cloud = {path = "../bi_service_registry_ya_cloud"}
+yandex-bi-service-registry-ya-team = {path = "../bi_service_registry_ya_team"}
 
 [package.source]
 type = "directory"
@@ -862,6 +877,7 @@ develop = false
 
 [package.dependencies]
 aiohttp = ">=3.8.1"
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 docker = ">=6.0.1"
 dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 grpcio-health-checking = ">=1.44.0"
@@ -1102,6 +1118,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 pygments = ">=2.4.0"
 pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
@@ -7268,6 +7285,7 @@ develop = false
 [package.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
@@ -7496,16 +7514,13 @@ statcommons = {path = "../statcommons"}
 werkzeug = ">=2.0.3"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-commons-ya-team = {path = "../../../lib/bi_api_commons_ya_team"}
 yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
 yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
-yandex-bi-connector-chyt = {path = "../bi_connector_chyt"}
 yandex-bi-connector-chyt-internal = {path = "../../../lib/bi_connector_chyt_internal"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../../lib/bi_connector_metrica"}
@@ -7522,8 +7537,6 @@ yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
 yandex-bi-formula = {path = "../bi_formula"}
 yandex-bi-model-tools = {path = "../bi_model_tools"}
 yandex-bi-query-processing = {path = "../bi_query_processing"}
-yandex-bi-service-registry-ya-cloud = {path = "../../../lib/bi_service_registry_ya_cloud"}
-yandex-bi-service-registry-ya-team = {path = "../../../lib/bi_service_registry_ya_team"}
 yandex-bi-utils = {path = "../bi_utils"}
 
 [package.source]
@@ -8292,6 +8305,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 blinker = ">=1.5"
@@ -8433,6 +8447,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"
@@ -8481,6 +8496,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 gunicorn = ">=20.1.0"

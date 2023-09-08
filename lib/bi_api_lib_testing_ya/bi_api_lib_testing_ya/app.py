@@ -13,10 +13,10 @@ from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
-from bi_api_lib.app.control_api.app import ControlApiAppFactory
-from bi_api_lib.app.data_api.app import DataApiAppFactory
+from bi_api_lib_ya.app.control_api.app import LegacyControlApiAppFactory
+from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
 from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 
@@ -76,11 +76,11 @@ class PrivateTestingSRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC)
         return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlPlaneAppSettings) else None
 
 
-class TestingControlApiAppFactoryPrivate(ControlApiAppFactory, PrivateTestingSRFactoryBuilder):
+class TestingControlApiAppFactoryPrivate(LegacyControlApiAppFactory, PrivateTestingSRFactoryBuilder):
     """Management API app factory for tests"""
 
 
-class TestingDataApiAppFactoryPrivate(DataApiAppFactory, PrivateTestingSRFactoryBuilder):
+class TestingDataApiAppFactoryPrivate(LegacyDataApiAppFactory, PrivateTestingSRFactoryBuilder):
     """Data API app factory for tests"""
 
     def get_app_version(self) -> str:

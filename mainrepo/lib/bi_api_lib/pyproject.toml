@@ -24,8 +24,6 @@ sqlalchemy = ">=1.4.46, <2.0"
 werkzeug = ">=2.0.3"
 yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-commons-ya-team = {path = "../../../lib/bi_api_commons_ya_team"}
-yandex-bi-cloud-integration = {path = "../../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
@@ -36,8 +34,6 @@ yandex-bi-connector-chyt-internal = {path = "../../../lib/bi_connector_chyt_inte
 yandex-bi-connector-metrica = {path = "../../../lib/bi_connector_metrica"}
 yandex-bi-connector-mysql = {path = "../../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../../lib/bi_connector_yql"}
-yandex-bi-service-registry-ya-cloud = {path = "../../../lib/bi_service_registry_ya_cloud"}
-yandex-bi-service-registry-ya-team = {path = "../../../lib/bi_service_registry_ya_team"}
 yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 yandex-bi-api-connector = {path = "../bi_api_connector"}

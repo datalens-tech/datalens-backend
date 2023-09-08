@@ -5,7 +5,7 @@ from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
 
 
 def test_load_settings(monkeypatch, fill_secret_env_variables):
-    monkeypatch.setenv('YENV_TYPE', 'tests')
+    monkeypatch.setenv('YENV_TYPE', 'tests')  # TODO remove
     monkeypatch.setenv('DL_CRY_ACTUAL_KEY_ID', 'tests')
     monkeypatch.setenv('DL_CRY_KEY_VAL_ID_tests', get_dummy_crypto_keys_config().actual_key_id)
 

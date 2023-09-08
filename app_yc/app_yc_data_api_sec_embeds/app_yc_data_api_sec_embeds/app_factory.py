@@ -18,11 +18,12 @@ from bi_core.services_registry.inst_specific_sr import InstallationSpecificServi
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.us_connection_base import ExecutorBasedMixin
 
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactoryBase
+from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
+from bi_api_lib.app_settings import TestAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
 
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
@@ -88,7 +89,7 @@ class DataApiSecEmbedsSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
         return None
 
 
-class DataApiSecEmbedsAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], DataApiSecEmbedsSRFactoryBuilderYC):
+class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory[AsyncAppSettings], DataApiSecEmbedsSRFactoryBuilderYC):
     @property
     def _is_public(self) -> bool:
         return True

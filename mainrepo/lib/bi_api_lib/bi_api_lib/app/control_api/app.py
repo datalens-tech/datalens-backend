@@ -12,18 +12,14 @@ from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.flask.middlewares.request_id import RequestIDService
-from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
-from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud, AuthorizationModeDataCloud
-from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
+from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService  # TODO do something
 
 from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.enums import AppType
 from bi_constants.enums import USAuthMode, ConnectionType
 
 from bi_api_lib.app_settings import (
     ControlApiAppSettings,
-    ControlPlaneAppSettings,
-    ControlPlaneAppTestingsSettings,
+    ControlApiAppTestingsSettings,
 )
 
 from bi_core import profiling_middleware
@@ -53,14 +49,14 @@ TControlApiAppSettings = TypeVar("TControlApiAppSettings", bound=ControlApiAppSe
 
 
 @attr.s(kw_only=True)
-class ControlApiAppFactoryBase(SRFactoryBuilder, Generic[TControlApiAppSettings], abc.ABC):
+class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], abc.ABC):
     _settings: TControlApiAppSettings = attr.ib()
 
     @abc.abstractmethod
     def set_up_environment(
             self,
             app: flask.Flask,
-            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         raise NotImplementedError()
 
@@ -84,7 +80,7 @@ class ControlApiAppFactoryBase(SRFactoryBuilder, Generic[TControlApiAppSettings]
     def create_app(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
             close_loop_after_request: bool = True,
     ) -> flask.Flask:
         app = Flask(__name__)
@@ -154,71 +150,3 @@ class ControlApiAppFactoryBase(SRFactoryBuilder, Generic[TControlApiAppSettings]
         )
 
         return app
-
-
-# TODO SPLIT move to app/bi_api when tests are resolved
-class ControlApiAppFactory(ControlApiAppFactoryBase[ControlPlaneAppSettings], abc.ABC):
-    def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
-        conn_opts_mutators_factory = super()._get_conn_opts_mutators_factory()
-
-        def set_use_manage_network_false_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            return conn_opts.clone(use_managed_network=False)
-
-        if self._settings.APP_TYPE == AppType.CLOUD and self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-            conn_opts_mutators_factory.add_mutator(set_use_manage_network_false_mutator)
-
-        return conn_opts_mutators_factory
-
-    def set_up_environment(
-            self,
-            app: flask.Flask,
-            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
-    ) -> EnvSetupResult:
-        us_auth_mode: USAuthMode
-        if self._settings.APP_TYPE == AppType.INTRANET:
-            from bi_api_commons_ya_team.flask.middlewares import blackbox_auth
-            blackbox_auth.set_up(app, self._settings.BLACKBOX_RETRY_PARAMS, self._settings.BLACKBOX_TIMEOUT)
-            us_auth_mode = USAuthMode.regular
-        elif self._settings.APP_TYPE in (AppType.CLOUD, AppType.NEBIUS):
-            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
-            assert yc_auth_settings is not None, "settings.YC_AUTH_SETTINGS must not be None with AppType.CLOUD"
-
-            FlaskYCAuthService(
-                authorization_mode=AuthorizationModeYandexCloud(
-                    folder_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                    organization_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(yc_auth_settings.YC_AS_ENDPOINT),
-            ).set_up(app)
-            us_auth_mode = USAuthMode.regular
-        elif self._settings.APP_TYPE == AppType.TESTS:
-            from bi_core.flask_utils.trust_auth import TrustAuthService
-            TrustAuthService(
-                fake_user_id='_the_tests_syncapp_user_id_',
-                fake_user_name='_the_tests_syncapp_user_name_',
-                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant
-            ).set_up(app)
-
-            us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
-
-            us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
-        elif self._settings.APP_TYPE == AppType.DATA_CLOUD:
-            yc_auth_settings = self._settings.YC_AUTH_SETTINGS
-            assert yc_auth_settings is not None, "settings.YC_AUTH_SETTINGS must not be None with AppType.CLOUD"
-
-            FlaskYCAuthService(
-                authorization_mode=AuthorizationModeDataCloud(
-                    project_permission_to_check=yc_auth_settings.YC_AUTHORIZE_PERMISSION,
-                ),
-                enable_cookie_auth=False,
-                access_service_cfg=make_default_yc_auth_service_config(yc_auth_settings.YC_AS_ENDPOINT),
-            ).set_up(app)
-            us_auth_mode = USAuthMode.regular
-        else:
-            raise AssertionError(f"AppType not supported here: {self._settings.APP_TYPE!r}")
-
-        result = EnvSetupResult(us_auth_mode=us_auth_mode)
-        return result

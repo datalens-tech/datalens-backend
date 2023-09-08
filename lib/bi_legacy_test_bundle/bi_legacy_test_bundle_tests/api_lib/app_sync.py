@@ -9,7 +9,7 @@ from bi_constants.enums import ConnectionType
 
 from bi_api_lib.app_settings import (
     ControlApiAppSettings,
-    ControlPlaneAppTestingsSettings,
+    ControlApiAppTestingsSettings,
 )
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
@@ -18,7 +18,7 @@ from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
 def create_app(
         app_settings: ControlApiAppSettings,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = TestingControlApiAppFactoryPrivate(settings=app_settings)

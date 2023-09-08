@@ -6,13 +6,11 @@ import attr
 import pytest
 import yaml
 
-from bi_api_lib.app_settings import (
-    AsyncAppSettings,
-    ControlPlaneAppSettings, BaseAppSettings,
-)
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
 from bi_configs.environments import (
     CommonInstallation,
-    InstallationsMap, EnvAliasesMap,
+    InstallationsMap,
+    EnvAliasesMap,
 )
 from bi_configs.settings_loaders.fallback_cfg_resolver import (
     ObjectLikeConfig,

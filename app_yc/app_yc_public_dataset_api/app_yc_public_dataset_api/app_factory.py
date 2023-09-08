@@ -24,8 +24,9 @@ from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse  # T
 from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactoryBase
-from bi_api_lib.app_settings import BaseAppSettings, AsyncAppSettings, TestAppSettings
+from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
+from bi_api_lib.app_settings import TestAppSettings
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 
@@ -91,7 +92,7 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
         return None
 
 
-class PublicDatasetApiAppFactoryYC(DataApiAppFactoryBase[AsyncAppSettings], PublicDatasetApiSRFactoryBuilderYC):
+class PublicDatasetApiAppFactoryYC(DataApiAppFactory[AsyncAppSettings], PublicDatasetApiSRFactoryBuilderYC):
     @property
     def _is_public(self) -> bool:
         return True

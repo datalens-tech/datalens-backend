@@ -5,10 +5,11 @@ import pytest
 
 from bi_configs.enums import AppType
 from bi_configs.rqe import RQEConfig
+from bi_configs.settings_submodels import YCAuthSettings
 
 from bi_core.utils import attrs_evolve_to_subclass
-from bi_api_lib.app_settings import AsyncAppSettings, YCAuthSettings
-from bi_api_lib.app.data_api.app import DataApiAppFactoryBase
+from bi_api_lib_ya.app_settings import AsyncAppSettings
+from bi_api_lib.app.data_api.app import DataApiAppFactory
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_api_lib_testing.data_api_base import DataApiTestBase
@@ -18,7 +19,7 @@ from bi_api_lib_testing_ya.base import BiApiTestPrivateBase
 
 
 class DataApiTestPrivateBase(DataApiTestBase, BiApiTestPrivateBase, metaclass=abc.ABCMeta):
-    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactoryBase]] = TestingDataApiAppFactoryPrivate
+    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactoryPrivate
 
     @pytest.fixture(scope='function')
     def data_api_app_settings(  # type: ignore[override]

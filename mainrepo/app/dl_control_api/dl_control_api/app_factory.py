@@ -7,9 +7,9 @@ import flask
 from bi_configs.enums import RequiredService
 from bi_constants.enums import USAuthMode
 
-from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactoryBase
+from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
 from bi_api_lib.app_common import SRFactoryBuilder, StandaloneServiceRegistryFactory
-from bi_api_lib.app_settings import ControlPlaneAppTestingsSettings, ControlApiAppSettings
+from bi_api_lib.app_settings import ControlApiAppTestingsSettings, ControlApiAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
@@ -48,11 +48,11 @@ class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
         return settings.CONNECTOR_AVAILABILITY
 
 
-class ControlApiAppFactoryOS(ControlApiAppFactoryBase[ControlApiAppSettings], ControlApiSRFactoryBuilderOS):
+class ControlApiAppFactoryOS(ControlApiAppFactory[ControlApiAppSettings], ControlApiSRFactoryBuilderOS):
     def set_up_environment(
             self,
             app: flask.Flask,
-            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
         from bi_core.flask_utils.trust_auth import TrustAuthService

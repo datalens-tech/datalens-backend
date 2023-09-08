@@ -14,7 +14,7 @@ from bi_constants.enums import ConnectionType
 
 from bi_core.components.ids import FieldIdGeneratorType
 
-from bi_api_lib.app.data_api.app import DataApiAppFactoryBase
+from bi_api_lib.app.data_api.app import DataApiAppFactory
 from bi_api_lib.app_settings import MDBSettings, DataApiAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
@@ -39,7 +39,7 @@ class DataApiTestParams(NamedTuple):
 
 
 class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
-    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactoryBase]] = TestingDataApiAppFactory
+    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactory
     mutation_caches_on: ClassVar[bool] = True
     data_caches_on: ClassVar[bool] = True
 

@@ -8,8 +8,8 @@ from bi_configs.rqe import RQEConfig
 from bi_configs.settings_submodels import YCAuthSettings
 
 from bi_core.utils import attrs_evolve_to_subclass
-from bi_api_lib.app_settings import ControlPlaneAppSettings
-from bi_api_lib.app.control_api.app import ControlApiAppFactoryBase
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_api_lib.app.control_api.app import ControlApiAppFactory
 
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
@@ -20,7 +20,7 @@ from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfiguratio
 
 
 class BiApiTestPrivateBase(BiApiTestBase, abc.ABC):
-    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactoryBase]] = TestingControlApiAppFactoryPrivate
+    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactory]] = TestingControlApiAppFactoryPrivate
 
     @pytest.fixture(scope='function')
     def iam_services_mock(self, monkeypatch: Any) -> Generator[IAMServicesMockFacade, None, None]:

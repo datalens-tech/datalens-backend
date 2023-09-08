@@ -16,6 +16,7 @@ from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.rqe import RQEConfig, RQEBaseURL
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader, load_connectors_settings_from_env_with_fallback
+from bi_configs.settings_submodels import YCAuthSettings
 from bi_configs.connectors_settings import CHFrozenSamplesConnectorSettings
 
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.constants import CONNECTION_TYPE_CH_FROZEN_SAMPLES
@@ -24,9 +25,8 @@ from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ch_fro
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_formula.parser.factory import ParserType
 
-from bi_api_lib.app_settings import (
-    ControlPlaneAppSettings, AsyncAppSettings, RedisSettings, CachesTTLSettings, YCAuthSettings, MDBSettings
-)
+from bi_api_lib.app_settings import RedisSettings, CachesTTLSettings, MDBSettings
+from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 

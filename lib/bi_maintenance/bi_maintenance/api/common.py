@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 
-from bi_api_lib.app_common import LegacySRFactoryBuilder
+from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import AsyncAppSettings
-from bi_api_lib.app.data_api.app import DataApiAppFactory
+from bi_api_lib_ya.app_settings import AsyncAppSettings
+from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_configs.settings_loaders.loader_env import (
     load_settings_from_env_with_fallback, load_connectors_settings_from_env_with_fallback,
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from bi_core.services_registry.sr_factories import SRFactory
 
 
-class MaintenanceDataApiAppFactory(DataApiAppFactory, LegacySRFactoryBuilder):
+class MaintenanceDataApiAppFactory(LegacyDataApiAppFactory, LegacySRFactoryBuilder):
     def get_app_version(self) -> str:
         return ''
 

@@ -6,11 +6,7 @@ from typing import Any
 import pytest
 from cryptography import fernet
 
-from bi_api_lib.app_settings import (
-    AsyncAppSettings,
-    ControlPlaneAppSettings,
-    BaseAppSettings,
-)
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
 from bi_configs.enums import AppType
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.environments import (

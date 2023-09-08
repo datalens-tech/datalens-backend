@@ -43,6 +43,7 @@ responses = ">=0.23.1"
 uwsgi = ">=2.0.21"
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 yandex-bi-api-client = {path = "../../mainrepo/lib/bi_api_client"}
 yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}

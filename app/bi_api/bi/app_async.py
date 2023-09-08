@@ -18,10 +18,11 @@ from bi_constants.enums import ConnectionType
 
 from bi_core.logging_config import configure_logging
 
-from bi_api_lib.app_common import LegacySRFactoryBuilder
-from bi_api_lib.app_settings import AsyncAppSettings, TestAppSettings
-from bi_api_lib.app.data_api.app import DataApiAppFactory
+from bi_api_lib.app_settings import TestAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
+from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
+from bi_api_lib_ya.app_settings import AsyncAppSettings
+from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
 
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 
@@ -31,7 +32,7 @@ from bi_configs.environments import InstallationsMap, EnvAliasesMap
 LOGGER = logging.getLogger(__name__)
 
 
-class DefaultDataApiAppFactory(DataApiAppFactory, LegacySRFactoryBuilder):
+class DefaultDataApiAppFactory(LegacyDataApiAppFactory, LegacySRFactoryBuilder):
     def get_app_version(self) -> str:
         return app_version
 

@@ -24,9 +24,14 @@ from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_api_lib.app_common import SRFactoryBuilder, StandaloneServiceRegistryFactory
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import (
-    ControlApiAppSettings, ControlPlaneAppTestingsSettings, DataApiAppSettings, TestAppSettings, AppSettings)
-from bi_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult, ControlApiAppFactoryBase
-from bi_api_lib.app.data_api.app import DataApiAppFactoryBase, EnvSetupResult as DataApiEnvSetupResult
+    AppSettings,
+    ControlApiAppSettings,
+    DataApiAppSettings,
+    TestAppSettings,
+    ControlApiAppTestingsSettings,
+)
+from bi_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult, ControlApiAppFactory
+from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult as DataApiEnvSetupResult
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
@@ -131,13 +136,13 @@ class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
         return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlApiAppSettings) else None
 
 
-class TestingControlApiAppFactory(ControlApiAppFactoryBase[ControlApiAppSettings], TestingSRFactoryBuilder):
+class TestingControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], TestingSRFactoryBuilder):
     """Management API app factory for tests"""
 
     def set_up_environment(
             self,
             app: flask.Flask,
-            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> ControlApiEnvSetupResult:
         us_auth_mode: USAuthMode
         TrustAuthService(
@@ -154,7 +159,7 @@ class TestingControlApiAppFactory(ControlApiAppFactoryBase[ControlApiAppSettings
         return result
 
 
-class TestingDataApiAppFactory(DataApiAppFactoryBase[DataApiAppSettings], TestingSRFactoryBuilder):
+class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRFactoryBuilder):
     """Data API app factory for tests"""
 
     @property

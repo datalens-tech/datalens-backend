@@ -19,22 +19,23 @@ from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CO
 from bi_core.flask_utils.sentry import configure_raven_for_flask
 from bi_core.logging_config import hook_configure_logging
 
-from bi_api_lib.app_common import LegacySRFactoryBuilder
-from bi_api_lib.app.control_api.app import ControlApiAppFactory
-from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
+from bi_api_lib_ya.app.control_api.app import LegacyControlApiAppFactory
+from bi_api_lib.app_settings import ControlApiAppTestingsSettings
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
 from bi_configs.environments import InstallationsMap, EnvAliasesMap
 
 
-class DefaultControlApiAppFactory(ControlApiAppFactory, LegacySRFactoryBuilder):
+class DefaultControlApiAppFactory(LegacyControlApiAppFactory, LegacySRFactoryBuilder):
     """The "real" app factory that is used in runtime"""
 
 
 def create_app(
         app_settings: ControlPlaneAppSettings,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = DefaultControlApiAppFactory(settings=app_settings)

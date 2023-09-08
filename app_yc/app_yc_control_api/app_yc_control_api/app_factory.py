@@ -18,9 +18,10 @@ from bi_core.us_connection_base import ExecutorBasedMixin
 
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactoryBase
-from bi_api_lib.app_settings import ControlPlaneAppSettings, ControlPlaneAppTestingsSettings
+from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
+from bi_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
@@ -72,7 +73,7 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
         return settings.CONNECTOR_AVAILABILITY
 
 
-class ControlApiAppFactoryYC(ControlApiAppFactoryBase[ControlPlaneAppSettings], ControlApiSRFactoryBuilderYC):
+class ControlApiAppFactoryYC(ControlApiAppFactory[ControlPlaneAppSettings], ControlApiSRFactoryBuilderYC):
     def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
         conn_opts_mutators_factory = super()._get_conn_opts_mutators_factory()
 
@@ -89,7 +90,7 @@ class ControlApiAppFactoryYC(ControlApiAppFactoryBase[ControlPlaneAppSettings], 
     def set_up_environment(
             self,
             app: flask.Flask,
-            testing_app_settings: Optional[ControlPlaneAppTestingsSettings] = None,
+            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
         yc_auth_settings = self._settings.YC_AUTH_SETTINGS

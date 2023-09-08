@@ -32,9 +32,10 @@ from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVi
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
 from bi_api_lib.app_settings import (
-    AsyncAppSettings, ControlPlaneAppSettings, ControlPlaneAppTestingsSettings,
-    YCAuthSettings, TestAppSettings, MDBSettings,
+    ControlApiAppTestingsSettings,
+    TestAppSettings, MDBSettings,
 )
+from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry, DefaultBiApiServiceRegistry
@@ -55,7 +56,7 @@ from bi_configs.connectors_settings import (
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
-from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
+from bi_configs.settings_submodels import S3Settings, GoogleAppSettings, YCAuthSettings
 from bi_defaults.environments import TestsInstallation
 
 from bi_db_testing.loader import load_bi_db_testing
@@ -245,7 +246,7 @@ def app(
     app = create_app_sync(
         settings,
         connectors_settings=connectors_settings,
-        testing_app_settings=ControlPlaneAppTestingsSettings(
+        testing_app_settings=ControlApiAppTestingsSettings(
             fake_tenant=TenantYCFolder(folder_id='folder_1')
         ),
         close_loop_after_request=False,
