@@ -170,10 +170,10 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
             YC_AUTHORIZE_PERMISSION=None,
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
-        CONNECTOR_WHITELIST=tuple(TestsInstallation.CONNECTOR_WHITELIST.split(',')),
+        BI_API_CONNECTOR_WHITELIST=TestsInstallation.BI_API_CONNECTOR_WHITELIST,
     )
 
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
     app = bi.app.create_app(
         app_settings=settings,
         connectors_settings={},

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import attr
 
 from bi_configs.connector_availability import ConnectorAvailabilityConfigSettings
@@ -27,4 +29,4 @@ class BiApiTestEnvironmentConfiguration:
     redis_db_arq: int = attr.ib(default=11)
 
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(default=TestsInstallation.CONNECTOR_AVAILABILITY)
-    connector_whitelist: str = attr.ib(default=TestsInstallation.CONNECTOR_WHITELIST)
+    bi_api_connector_whitelist: Optional[list[str]] = attr.ib(default=TestsInstallation.BI_API_CONNECTOR_WHITELIST)

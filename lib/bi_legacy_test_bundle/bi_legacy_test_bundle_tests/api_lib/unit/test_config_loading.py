@@ -113,7 +113,7 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
     ),
     expected_config=AsyncAppSettings(
         APP_TYPE=AppType.CLOUD,
-        CONNECTOR_WHITELIST=tuple(ExternalTestingInstallation.CONNECTOR_WHITELIST.split(',')),
+        BI_API_CONNECTOR_WHITELIST=ExternalTestingInstallation.BI_API_CONNECTOR_WHITELIST,
         PUBLIC_API_KEY=None,
         CACHES_ON=True,
         CACHES_REDIS=RedisSettings(
@@ -239,7 +239,7 @@ DEV_CONTROL_API_CASE = ConfigLoadingCase(
         CACHES_ON='True',
         CACHES_REDIS_PASSWORD=SEC_REDIS_PASSWORD,
 
-        CONNECTOR_WHITELIST='clickhouse,postgresql_mdb',
+        BI_API_CONNECTOR_WHITELIST='clickhouse,postgresql',
         CONNECTOR_AVAILABILITY_VISIBLE='clickhouse,postgres',
 
         MDB_DOMAINS='.mdb.cloud-preprod.yandex.net,.mdb.cloud.yandex.net',
@@ -299,7 +299,7 @@ DEV_CONTROL_API_CASE = ConfigLoadingCase(
     ),
     expected_config=ControlPlaneAppSettings(
         CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
-        CONNECTOR_WHITELIST=('clickhouse', 'postgresql_mdb'),
+        BI_API_CONNECTOR_WHITELIST=['clickhouse', 'postgresql'],
         ENV_TYPE=EnvType.development,
         APP_TYPE=AppType.TESTS,
         MDB=MDBSettings(

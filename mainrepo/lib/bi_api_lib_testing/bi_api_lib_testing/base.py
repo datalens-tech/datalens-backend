@@ -94,7 +94,7 @@ class BiApiTestBase(abc.ABC):
             US_MASTER_TOKEN=us_config.us_master_token,
             CRYPTO_KEYS_CONFIG=core_test_config.get_crypto_keys_config(),
 
-            CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
+            BI_API_CONNECTOR_WHITELIST=bi_test_config.bi_api_connector_whitelist,
 
             RQE_CONFIG=rqe_config_subprocess,
             BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
@@ -133,7 +133,7 @@ class BiApiTestBase(abc.ABC):
         """Session-wide test `Flask` application."""
 
         control_app_factory = self.control_api_app_factory_cls(settings=control_api_app_settings)
-        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=control_api_app_settings.CONNECTOR_WHITELIST))
+        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=control_api_app_settings.BI_API_CONNECTOR_WHITELIST))
         app = control_app_factory.create_app(
             connectors_settings=connectors_settings,
             testing_app_settings=ControlApiAppTestingsSettings(

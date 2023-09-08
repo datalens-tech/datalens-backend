@@ -71,7 +71,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             SAMPLES_CH_HOSTS=(),
             RQE_CONFIG=rqe_config_subprocess,
 
-            CONNECTOR_WHITELIST=tuple(bi_test_config.connector_whitelist.split(',')),  # FIXME: make a separate classvar
+            BI_API_CONNECTOR_WHITELIST=bi_test_config.bi_api_connector_whitelist,
             MUTATIONS_CACHES_ON=cls.mutation_caches_on,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),
             BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
@@ -102,7 +102,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
         data_api_app_factory = self.data_api_app_factory_cls(settings=data_api_app_settings)
-        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=data_api_app_settings.CONNECTOR_WHITELIST))
+        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=data_api_app_settings.BI_API_CONNECTOR_WHITELIST))
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,
             test_setting=None,

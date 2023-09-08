@@ -332,6 +332,8 @@ def test_create_greenplum_conn(client, pg_connection_params):
     assert conn['db_type'] == 'greenplum'
     assert conn['cache_ttl_sec'] is None
 
+    params.pop('name')
+    params.pop('type')
     resp = client.post(
         f'/api/v1/connections/test_connection/{conn_id}',
         data=json.dumps(params),

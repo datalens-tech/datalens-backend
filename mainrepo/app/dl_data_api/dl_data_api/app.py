@@ -43,7 +43,7 @@ def create_app(
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     preload_bi_api_lib()
     settings = load_settings_from_env_with_fallback(DataApiAppSettings)
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,

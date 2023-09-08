@@ -18,7 +18,7 @@ def create_app(
         test_setting: Optional[TestAppSettings] = None
 ) -> web.Application:
     data_api_app_factory = TestingDataApiAppFactoryPrivate(settings=setting)
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=setting.CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=setting.BI_API_CONNECTOR_WHITELIST))
     return data_api_app_factory.create_app(
         connectors_settings=connectors_settings,
         test_setting=test_setting,

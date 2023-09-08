@@ -81,7 +81,7 @@ class DataCloudInstallation(
             ConnectorSettings(conn_type='snowflake'),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
         'mysql_mdb',
@@ -91,7 +91,7 @@ class DataCloudInstallation(
         'promql',
         'bigquery',
         'snowflake',
-    ])
+    ]
 
 
 class DataCloudExposedInstallation(IAMAwareInstallation, DataCloudInstallation):
@@ -129,6 +129,9 @@ class CommonInstallation(
     @property
     def US_HOST(self):
         return self.US_BASE_URL
+
+    CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings]
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]]
 
     # Note: `PING_…` values are not currently used.
     # Intended for liveness+connectivity check, e.g. into juggler.
@@ -284,7 +287,7 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
             ),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'chyt_internal',
         'clickhouse',
         'postgresql',
@@ -304,7 +307,7 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
         'appmetrica_api',
         'yq',
         'solomon',
-    ])
+    ]
 
 
 class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonInternalInstallation):
@@ -383,7 +386,7 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
             ),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'chyt_internal',
         'clickhouse',
         'postgresql',
@@ -402,7 +405,7 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
         'appmetrica_api',
         'yq',
         'solomon',
-    ])
+    ]
 
 
 class CommonExternalInstallation(
@@ -578,7 +581,7 @@ class ExternalProductionInstallation(
             ),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
         'mysql_mdb',
@@ -618,7 +621,7 @@ class ExternalProductionInstallation(
         'market_couriers',
         'schoolbook',
         'smb_heatmaps',
-    ])
+    ]
 
 
 class NebiusInstallation(InstallationBase):
@@ -649,7 +652,7 @@ class IsraelInstallation(NebiusInstallation):
             ConnectorSettings(conn_type='monitoring'),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
         'mysql_mdb',
@@ -660,7 +663,7 @@ class IsraelInstallation(NebiusInstallation):
         'snowflake',
         'ch_frozen_demo',
         'monitoring',
-    ])
+    ]
 
 
 class NemaxInstallation(NebiusInstallation):
@@ -680,7 +683,7 @@ class NemaxInstallation(NebiusInstallation):
             ConnectorSettings(conn_type='monitoring'),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
         'mysql_mdb',
@@ -691,7 +694,7 @@ class NemaxInstallation(NebiusInstallation):
         'snowflake',
         'ch_frozen_demo',
         'monitoring',
-    ])
+    ]
 
 
 class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
@@ -782,7 +785,7 @@ class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
             ),
         ],
     )
-    CONNECTOR_WHITELIST: ClassVar[str] = ','.join([
+    BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql',
         'mysql',
@@ -825,7 +828,7 @@ class TestsInstallation(cd.ConnectorsDataFileIntTesting, CommonInstallation):
         'schoolbook',
         'smb_heatmaps',
         'ch_geo_filtered',
-    ])
+    ]
 
 
 class BaseInstallationsMap:

@@ -26,7 +26,7 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
     def get_app_settings(self) -> AsyncAppSettings:
         preload_bi_api_lib()
         settings = load_settings_from_env_with_fallback(AsyncAppSettings)
-        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
+        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
         return settings
 
     def get_sr_factory(self, is_async_env: bool) -> Optional[SRFactory]:

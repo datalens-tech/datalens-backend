@@ -108,10 +108,11 @@ class AppSettings:
         missing=('stable',),
     )
 
-    CONNECTOR_WHITELIST: Optional[tuple[str, ...]] = s_attrib(  # type: ignore
-        'CONNECTOR_WHITELIST',
-        env_var_converter=split_by_comma,
-        fallback_factory=lambda cfg: split_by_comma(cfg.CONNECTOR_WHITELIST) if hasattr(cfg, 'CONNECTOR_WHITELIST') else None
+    BI_API_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore
+        'BI_API_CONNECTOR_WHITELIST',
+        env_var_converter=lambda s: list(split_by_comma(s)),
+        fallback_cfg_key="BI_API_CONNECTOR_WHITELIST",
+        missing=None,
     )
 
     FIELD_ID_GENERATOR_TYPE: FieldIdGeneratorType = s_attrib(  # type: ignore

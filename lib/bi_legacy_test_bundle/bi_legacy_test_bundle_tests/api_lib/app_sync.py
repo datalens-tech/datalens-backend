@@ -22,7 +22,7 @@ def create_app(
         close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = TestingControlApiAppFactoryPrivate(settings=app_settings)
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=app_settings.CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=app_settings.BI_API_CONNECTOR_WHITELIST))
     return mng_app_factory.create_app(
         connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,
