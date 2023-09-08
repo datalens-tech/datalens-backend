@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-api"
-version = "0.2000.0"
+version = "0.2001.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>"]
 packages = [{include = "bi"}]

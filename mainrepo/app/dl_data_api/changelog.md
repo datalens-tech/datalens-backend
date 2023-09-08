@@ -1,3 +1,34 @@
+0.2001.0
+--------
+
+* [vallbull](http://staff/33630435+vallbull@users.noreply.github.com)
+
+ * Fix string to date cast in bitrix (#386)  [ https://github.com/datalens-tech/datalens-backend-private/commit/7243a441 ]
+
+* [Konstantin Chupin](http://staff/91148200+ya-kc@users.noreply.github.com)
+
+ * [BI-4902] Files sync script for pre-public repo (#420)  [ https://github.com/datalens-tech/datalens-backend-private/commit/f24d5de8 ]
+
+* [Grigory Statsenko](http://staff/altvod@users.noreply.github.com)
+
+ * Moved more declarations to connectors (#416)                        [ https://github.com/datalens-tech/datalens-backend-private/commit/9c154eff ]
+ * Moved testing modules from bi_formula to bi_formula_testing (#356)  [ https://github.com/datalens-tech/datalens-backend-private/commit/a11f1abe ]
+ * Partially reverted the TypeTransformer changes (#414)               [ https://github.com/datalens-tech/datalens-backend-private/commit/3c82c986 ]
+ * Switched to new logic in replace_connection (#327)                  [ https://github.com/datalens-tech/datalens-backend-private/commit/0a518276 ]
+
+* [KonstantAnxiety](http://staff/58992437+KonstantAnxiety@users.noreply.github.com)
+
+ * Remove some private links in mainrepo (#417)                           [ https://github.com/datalens-tech/datalens-backend-private/commit/99863160 ]
+ * BI-4914 Split bi_api_lib_testing into public and private parts (#399)  [ https://github.com/datalens-tech/datalens-backend-private/commit/d5cee55f ]
+
+* [Nick Proskurin](http://staff/42863572+MCPN@users.noreply.github.com)
+
+ * _is_public is a property (#415)                               [ https://github.com/datalens-tech/datalens-backend-private/commit/73f94dc3 ]
+ * BI-4852: greenplum mdb bi api connector (#348)                [ https://github.com/datalens-tech/datalens-backend-private/commit/1be7a74e ]
+ * BI-4860: env variables for the k8s-like installations (#413)  [ https://github.com/datalens-tech/datalens-backend-private/commit/581becc8 ]
+
+[Continuous Integration](http://staff/username@users.noreply.github.com) 2023-09-08 09:57:34+00:00
+
 0.2000.0
 --------
 
