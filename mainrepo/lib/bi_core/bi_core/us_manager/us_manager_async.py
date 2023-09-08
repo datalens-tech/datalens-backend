@@ -110,9 +110,6 @@ class AsyncUSManager(USManagerBase):
 
         return obj
 
-    async def list_all_tenants(self) -> list[str]:
-        return await self._us_client.list_all_tenants()
-
     async def save(self, entry: USEntry) -> None:
         self.get_lifecycle_manager(entry=entry).pre_save_hook()
 

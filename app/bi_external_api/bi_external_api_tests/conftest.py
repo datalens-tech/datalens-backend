@@ -138,7 +138,6 @@ def bi_ext_api_dc_test_env_us_config(bi_ext_api_dc_test_env) -> TestingUSConfig:
         us_master_token=us_config.master_token,
         us_pg_dsn=us_config.psycopg2_pg_dns,
         force=us_config.force_clear_db_on_launch,
-        use_ping_db_check=True,
     )
 
     return us_config

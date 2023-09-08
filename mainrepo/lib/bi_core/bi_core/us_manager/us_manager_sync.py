@@ -97,9 +97,6 @@ class SyncUSManager(USManagerBase):
         except Exception:
             LOGGER.warning("Error during closing SyncUSManager", exc_info=True)
 
-    def list_all_tenants(self) -> List[str]:
-        return self._us_client.list_all_tenants()
-
     # CRUD
     #
     def save(self, entry: USEntry) -> None:
@@ -226,9 +223,6 @@ class SyncUSManager(USManagerBase):
 
     def get_raw_entry(self, entry_id: str, include_permissions: bool = True, include_links: bool = True) -> dict:
         return self._us_client.get_entry(entry_id, include_permissions=include_permissions, include_links=include_links)
-
-    def get_raw_entry_by_key(self, key: str):  # type: ignore  # TODO: fix
-        return self._us_client.get_entry_by_key(key)
 
     def get_raw_collection(
             self,

@@ -67,7 +67,6 @@ def prepare_united_storage(
         folder_id: str = 'common',
         us_pg_dsn: Optional[str] = None,
         force: bool = False,
-        use_ping_db_check: bool = False,
 ) -> None:
     if not force and not os.environ.get("CLEAR_US_DATABASE", ""):
         LOGGER.debug('prepare_united_storage: CLEAR_US_DATABASE env is disabled, skipping.')
@@ -85,11 +84,7 @@ def prepare_united_storage(
     def _wait_for_us() -> tuple[bool, str]:
         try:
             with requests.Session() as reqr:
-                if use_ping_db_check:
-                    resp = reqr.get(f'{us_host}/ping-db', headers=headers)
-                else:
-                    resp = reqr.post(f'{us_host}/private/getTenantsList', headers=headers)
-
+                resp = reqr.get(f'{us_host}/ping-db', headers=headers)
                 resp.raise_for_status()
                 return True, ''
         except Exception as e:

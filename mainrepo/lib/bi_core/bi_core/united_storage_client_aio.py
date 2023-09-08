@@ -163,9 +163,6 @@ class UStorageClientAIO(UStorageClientBase):
     async def get_entry(self, entry_id: str) -> dict:
         return await self._request(self._req_data_get_entry(entry_id=entry_id))
 
-    async def get_entry_by_key(self, key) -> dict:  # type: ignore  # TODO: fix
-        return await self._request(self._req_data_get_entry_by_key(key))
-
     async def create_entry(  # type: ignore  # TODO: fix
             self, key: EntryLocation, scope: str,
             meta=None, data=None, unversioned_data=None,
@@ -267,7 +264,3 @@ class UStorageClientAIO(UStorageClientBase):
 
     async def close(self):  # type: ignore  # TODO: fix
         await self._session.close()
-
-    async def list_all_tenants(self) -> list:
-        resp = await self._request(self._req_data_list_tenants())
-        return [ten_info['tenantId'] for ten_info in resp if ten_info['enabled']]

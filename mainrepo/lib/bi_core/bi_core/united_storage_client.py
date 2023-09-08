@@ -412,15 +412,6 @@ class UStorageClientBase:
         )
 
     @classmethod
-    def _req_data_get_entry_by_key(cls, key: str):  # type: ignore  # TODO: fix
-        return cls.RequestData(
-            method='get',
-            relative_url='/entriesByKey',
-            params={'key': key},
-            json=None,
-        )
-
-    @classmethod
     def _req_data_move_entry(cls, entry_id: str, destination: str):  # type: ignore  # TODO: fix
         return cls.RequestData(
             method='post',
@@ -542,10 +533,6 @@ class UStorageClientBase:
             params={'lockToken': lock},
             json=None
         )
-
-    @classmethod
-    def _req_data_list_tenants(cls):  # type: ignore  # TODO: fix
-        return cls.RequestData(method='post', relative_url='/getTenantsList', params=None, json=None)
 
     @classmethod
     def _req_data_entries_in_path(cls, *, us_path: str, page_size: int, page_idx: int) -> RequestData:
@@ -692,21 +679,11 @@ class UStorageClient(UStorageClientBase):
             entry_id, params=params, include_permissions=include_permissions, include_links=include_links
         ))
 
-    def get_entry_by_key(self, key):  # type: ignore  # TODO: fix
-        return self._request(self._req_data_get_entry_by_key(key))
-
     def move_entry(self, entry_id, destination):  # type: ignore  # TODO: fix
         return self._request(self._req_data_move_entry(entry_id, destination=destination))
 
     def rename_entry(self, entry_id, new_name):  # type: ignore  # TODO: fix  # TODO: delete after https://st.yandex-team.ru/CHARTS-1088
         return self._request(self._req_data_rename_entry(entry_id, new_name=new_name))
-
-    def key_exists(self, key):  # type: ignore  # TODO: fix
-        try:
-            self.get_entry_by_key(key)
-        except exc.USObjectNotFoundException:
-            return False
-        return True
 
     def update_entry(  # type: ignore  # TODO: fix
         self, entry_id: str,
@@ -790,11 +767,6 @@ class UStorageClient(UStorageClientBase):
             self._request(self._req_data_release_lock(entry_id, lock=lock))
         except exc.USReqException:
             LOGGER.exception('Unable to release lock "%s"', lock)
-
-    def list_all_tenants(self):  # type: ignore  # TODO: fix
-        # private api only
-        resp = self._request(self._req_data_list_tenants())
-        return [ten_info['tenantId'] for ten_info in resp if ten_info['enabled']]  # type: ignore  # TODO: fix
 
     def get_entries_info_in_path(self, us_path: str) -> list[dict[str, Any]]:
         # TODO FIX: BI-3005 Perform error handling & pagination

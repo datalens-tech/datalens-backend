@@ -88,37 +88,6 @@ def test_create_dataset_from_oracle(client, api_v1, oracle_connection_id, oracle
     client.delete('/api/v1/datasets/{}'.format(dataset_id))
 
 
-def test_create_pg_dataset_in_custom_us_dir(client, api_v1, pg_connection_id, default_sync_usm_per_test):
-    usm = default_sync_usm_per_test
-
-    try:
-        # clean up in case this test failed previously
-        entry = usm.get_raw_entry_by_key('special_dir/my_dataset')
-        client.delete('/api/v1/datasets/{}'.format(entry['entryId']))
-    except USObjectNotFoundException:
-        pass
-
-    ds = Dataset(name='my_dataset')
-    ds.sources['source_1'] = ds.source(
-        source_type=SOURCE_TYPE_PG_TABLE,
-        connection_id=pg_connection_id,
-        parameters=dict(
-            table_name='supersample',
-        )
-    )
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds_resp = api_v1.save_dataset(dataset=ds, dir_path='special_dir')
-    assert ds_resp.status_code == 200
-    ds = ds_resp.dataset
-    dataset_id = ds.id
-
-    entry = usm.get_raw_entry_by_key('special_dir/my_dataset')
-    assert entry['entryId'] == dataset_id
-
-    client.delete('/api/v1/datasets/{}'.format(dataset_id))
-
-
 def test_create_entity_with_existing_name(client, api_v1, connection_id):
     name = 'double_test__{}'.format(random.randint(0, 10000000))
 
