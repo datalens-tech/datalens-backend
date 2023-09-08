@@ -68,6 +68,17 @@ class MetaPackageManager:
     def remove_poetry_group(self, name: str) -> None:
         del self._toml["tool"]["poetry"]["group"][name]
 
+    def list_mypy_stubs_override(self) -> list[str]:
+        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]
+        return list(mypy_section.keys())
+
+    def remove_mypy_stubs_override(self, name: str) -> None:
+        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]
+        del mypy_section[name]
+
+    def remove_package_sources_section(self) -> None:
+        del self._toml["tool"]["poetry"]["source"]
+
     @staticmethod
     def get_dependencies_section_name(group: Optional[str]) -> str:
         if group is None:

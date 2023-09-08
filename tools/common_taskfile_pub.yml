@@ -18,3 +18,22 @@ tasks:
       # Did not find a way to substitute env var in `env` section with value from .env file
       #  So we substitute it in shell...
       - PUB_SYNC_TARGET_REPO_DIR=${PUB_SYNC_TARGET_REPO_DIR_PREPUBLIC} bash "public_repo_sync/run_files_sync.bash"
+
+  sync-pub-metapkg:
+    dir: ..
+    dotenv:
+      - "./ops/ci/.env"  # FIXME: Use single dotenv in /tools
+    cmds:
+      - source $HOST_VENV_ROOT/bin/activate &&
+        python -m dl_repmanager.scripts.scoped_metapkg_sync
+        --orig-metapkg-path ./ops/ci
+        --scoped-metapkg-path ./mainrepo/metapkg
+        --remove-private-pypi
+        ../lib/bi_package_boilerplate
+        ../lib/bi_api_commons
+        ../lib/dynamic_enum
+        ../lib/bi_api_commons
+        ../lib/bi_app_tools
+        ../lib/bi_configs
+        ../lib/bi_constants
+        ../lib/bi_utils

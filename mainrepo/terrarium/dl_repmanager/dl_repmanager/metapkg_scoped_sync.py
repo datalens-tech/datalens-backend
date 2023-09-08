@@ -1,3 +1,4 @@
+import itertools
 import re
 import shutil
 import subprocess
@@ -17,7 +18,9 @@ def sync_scoped_metapkg(
         original_metapkg_path: Path,
         scoped_metapkg_path: Path,
         package_dirs_to_include: Sequence[Path],  # Relative to scoped package
-        preserve_lock: bool = False,
+        prevent_prune_for_deps: Sequence[str],
+        remove_private_pypi: bool = False,
+        use_target_lock: bool = False,
 ):
     def is_local_package_in_scope(dep_from_scoped_pkg: LocalReqPackageSpec) -> bool:
         for package_dir in package_dirs_to_include:
@@ -28,7 +31,7 @@ def sync_scoped_metapkg(
     original_metapkg = MetaPackageManager(original_metapkg_path)
     scoped_metapkg = original_metapkg.as_new_location(scoped_metapkg_path)
 
-    if not preserve_lock:
+    if not use_target_lock:
         shutil.copy(
             original_metapkg_path / "poetry.lock",
             scoped_metapkg_path / "poetry.lock",
@@ -54,19 +57,14 @@ def sync_scoped_metapkg(
     scoped_metapkg.save()
 
     # Rerun lock 
-    if not preserve_lock:
-        run_poetry_lock(scoped_metapkg_path)
+    run_poetry_lock(scoped_metapkg_path)
 
-    poetry_export = subprocess.run(
-        ["poetry", "export", "--only", "ci", "--without-hashes"],
-        stdout=subprocess.PIPE,
-        stderr=None,
-        cwd=scoped_metapkg_path,
-        check=True,
-    )
+    ci_deps_raw = scoped_metapkg.export_dependencies_raw("ci")
+    dev_deps_raw = scoped_metapkg.export_dependencies_raw("dev")
+
     effective_external_dependencies: set[str] = set()
 
-    for line in poetry_export.stdout.decode("ascii").split("\n"):
+    for line in itertools.chain(ci_deps_raw.splitlines(), dev_deps_raw.splitlines()):
         ext_dependency_re = re.compile(r"(^\S+)==\S+ ;")
         m = ext_dependency_re.match(line)
 
@@ -74,10 +72,19 @@ def sync_scoped_metapkg(
             effective_external_dependencies.add(m.group(1).lower())
 
     for ext_dep in declared_external_dependencies:
-        if ext_dep.package_name.lower() not in effective_external_dependencies:
+        ext_dep_name = ext_dep.package_name.lower()
+
+        if ext_dep_name not in effective_external_dependencies and ext_dep_name not in prevent_prune_for_deps:
             scoped_metapkg.remove_dependency(None, ext_dep.package_name)
+
+    for mypy_override in scoped_metapkg.list_mypy_stubs_override():
+        if mypy_override not in effective_external_dependencies and mypy_override not in prevent_prune_for_deps:
+            scoped_metapkg.remove_mypy_stubs_override(mypy_override)
 
     scoped_metapkg.save()
 
-    if not preserve_lock:
-        run_poetry_lock(scoped_metapkg_path)
+    if remove_private_pypi:
+        scoped_metapkg.remove_package_sources_section()
+        scoped_metapkg.save()
+
+    run_poetry_lock(scoped_metapkg_path)
