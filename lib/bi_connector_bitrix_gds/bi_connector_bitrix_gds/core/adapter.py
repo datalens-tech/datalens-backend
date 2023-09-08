@@ -246,17 +246,19 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         raise NotImplementedError()
 
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        smart_process_tables = await self._get_smart_process_tables(schema_ident)
+        known_general_tables = BITRIX_TABLES_MAP.keys()
+        user_tables = await self._get_user_tables(schema_ident)
+        tables = [table_name for table_name in user_tables
+                  if table_name in known_general_tables or table_name.startswith(SMART_PROCESS_TABLE_PREFIX)]
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
                 schema_name=schema_ident.schema_name,
                 table_name=table_name,
-            )
-            for table_name in BITRIX_TABLES_MAP
-        ] + smart_process_tables
+            ) for table_name in tables
+        ]
 
-    async def _get_smart_process_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def _get_user_tables(self, schema_ident: SchemaIdent) -> list[str]:
         body: dict[str, Any] = {
             'key': self._target_dto.token,
         }
@@ -266,14 +268,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             json=body,
         )
         tables: list[str] = [table[0] for table in await resp.json()]
-        return [
-            TableIdent(
-                db_name=schema_ident.db_name,
-                schema_name=schema_ident.schema_name,
-                table_name=table_name,
-            )
-            for table_name in tables if table_name.startswith(SMART_PROCESS_TABLE_PREFIX)
-        ]
+        return tables
 
     @generic_profiler_async("db-table-info")  # type: ignore  # TODO: fix
     async def get_table_info(self, table_def: Optional[TableDefinition] = None, fetch_idx_info: bool = False) -> RawSchemaInfo:
