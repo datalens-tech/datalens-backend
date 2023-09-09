@@ -24,7 +24,7 @@ class DLRequestDataCore(DLRequestBase):
         return self.request.get(self.KEY_US_MANAGER)  # type: ignore  # TODO: fix
 
     @us_manager.setter
-    def us_manager(self, value: AsyncUSManager):  # type: ignore  # TODO: fix
+    def us_manager(self, value: AsyncUSManager) -> None:
         self._set_attr_once(self.KEY_US_MANAGER, value)
 
     @property
@@ -33,7 +33,7 @@ class DLRequestDataCore(DLRequestBase):
         return self.request.get(self.KEY_SERVICE_US_MANAGER)  # type: ignore  # TODO: fix
 
     @service_us_manager.setter
-    def service_us_manager(self, value: AsyncUSManager):  # type: ignore  # TODO: fix
+    def service_us_manager(self, value: AsyncUSManager) -> None:
         self._set_attr_once(self.KEY_SERVICE_US_MANAGER, value)
 
     @property

@@ -11,7 +11,7 @@ _T_CONN_OPTIONS_MUTATOR = Callable[['ConnectOptions', 'ExecutorBasedMixin'], Opt
 
 
 class ConnOptionsMutatorsFactory:
-    def __init__(self):  # type: ignore  # TODO: fix
+    def __init__(self) -> None:
         self.mutators: List[_T_CONN_OPTIONS_MUTATOR] = []
 
     def add_mutator(self, func: _T_CONN_OPTIONS_MUTATOR) -> None:

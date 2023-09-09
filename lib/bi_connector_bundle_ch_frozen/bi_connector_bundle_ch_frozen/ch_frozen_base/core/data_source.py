@@ -45,7 +45,7 @@ class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, Cli
         raise exc.SourceDoesNotExist(db_message='', query='')
 
     @property
-    def spec(self) -> StandardSQLDataSourceSpec:  # type: ignore  # TODO: fix
+    def spec(self) -> StandardSQLDataSourceSpec:
         assert isinstance(self._spec, StandardSQLDataSourceSpec)
         return self._spec
 

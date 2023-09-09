@@ -14,7 +14,7 @@ from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResou
 class MetricsView(DLRequestView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset({RequiredResourceCommon.SKIP_AUTH})
 
-    async def get(self):  # type: ignore  # TODO: fix
+    async def get(self) -> web.Response:
         result = []
         if os.environ.get('UWSGI_STATS'):
             uwsgi_metrics = uwsgi_prometheus(label_prefix='uwsgi_')

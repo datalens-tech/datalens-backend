@@ -25,7 +25,7 @@ LOGGER = logging.getLogger(__name__)
 
 @requires(RequiredResourceCommon.SKIP_AUTH)
 class PingView(BaseView):
-    async def get(self):  # type: ignore  # TODO: fix
+    async def get(self) -> web.Response:
         return web.json_response({
             'request_id': self.dl_request.rci.request_id,
         })

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Dict, List, Optional, TYPE_CHECKING, Union
+from typing import Callable, ClassVar, Optional, TYPE_CHECKING, Union
 
 import attr
 
@@ -32,7 +32,7 @@ class RoleResolutionInfo:
     origin: RoleReason = attr.ib(kw_only=True, default=RoleReason.not_needed)
     materialization: RoleReason = attr.ib(kw_only=True, default=RoleReason.not_needed)
     sample: RoleReason = attr.ib(kw_only=True, default=RoleReason.not_needed)
-    priorities: List[DataSourceRole] = attr.ib(kw_only=True, factory=list)
+    priorities: list[DataSourceRole] = attr.ib(kw_only=True, factory=list)
 
 
 LazyDataSourceType = Union[base.DataSource, dict]  # data source instance or param dict
@@ -51,7 +51,7 @@ class DataSourceCollectionBase:
         return self._spec
 
     @property
-    def id(self):  # type: ignore  # TODO: fix
+    def id(self) -> str:
         return self.spec.id
 
     @property
@@ -177,7 +177,7 @@ class DataSourceCollectionBase:
 
         return resolution_info
 
-    def resolve_role(self, for_preview: bool = False):  # type: ignore  # TODO: fix
+    def resolve_role(self, for_preview: bool = False) -> DataSourceRole:
         """
         Decide, which source role to use for main source or preview
         taking into account the current configuration and states
@@ -259,10 +259,7 @@ class DataSourceCollectionBase:
 class DataSourceCollection(DataSourceCollectionBase):
     dsrc_coll_type = DataSourceCollectionType.collection
 
-    _loaded_sources: Dict[DataSourceRole, base.DataSource] = attr.ib(init=False)
-
-    def __attrs_post_init__(self) -> None:
-        self._loaded_sources = {}
+    _loaded_sources: dict[DataSourceRole, Optional[base.DataSource]] = attr.ib(init=False, factory=dict)
 
     @property
     def spec(self) -> DataSourceCollectionSpec:
@@ -296,7 +293,7 @@ class DataSourceCollection(DataSourceCollectionBase):
         if role not in self._loaded_sources:
             dsrc_spec = self._get_spec_for_role(role=role)
             if dsrc_spec is None:
-                self._loaded_sources[role] = None  # type: ignore  # TODO: fix
+                self._loaded_sources[role] = None
             else:
                 self._loaded_sources[role] = self._initialize_dsrc(dsrc_spec=dsrc_spec)
         return self._loaded_sources[role]

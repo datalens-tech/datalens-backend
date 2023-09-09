@@ -30,7 +30,7 @@ class Table:
     _data_length: Optional[int] = attr.ib(default=None)
 
     @property
-    def data_length(self):  # type: ignore  # TODO: fix
+    def data_length(self) -> int:
         if self._data_length is not None:
             return self._data_length
 

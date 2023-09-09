@@ -37,7 +37,7 @@ class RequestId:
     #  Remove after adding mechanisms to detect if request in anonymous via RCI (e.g. based on user ID/AuthData)
     is_public_env: bool = attr.ib(default=False)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         if self.append_own_req_id and self.accept_logging_ctx:
             raise ValueError("Flags accept_logging_ctx and append_own_req_id can not be used together")
 

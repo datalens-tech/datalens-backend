@@ -118,7 +118,7 @@ class DataSource(metaclass=abc.ABCMeta):
         return self._id
 
     @property
-    def connection(self):  # type: ignore  # TODO: fix
+    def connection(self) -> ConnectionBase:
         return self._get_connection()
 
     def _get_connection(self) -> ConnectionBase:

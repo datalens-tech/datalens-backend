@@ -65,7 +65,7 @@ class DLRequestBase:
             return request[cls.KEY_DL_REQUEST]
         return None
 
-    def _set_attr_once(self, name, value):  # type: ignore  # TODO: fix
+    def _set_attr_once(self, name, value) -> None:
         if name in self.request:
             raise ValueError(f'Request key \'{name}\' already set')
         self.request[name] = value

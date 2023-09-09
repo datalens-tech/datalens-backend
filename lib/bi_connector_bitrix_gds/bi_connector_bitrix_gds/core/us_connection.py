@@ -23,7 +23,7 @@ class BitrixGDSConnectOptions(ConnectOptions):
     total_timeout: Optional[int] = attr.ib(default=None)
 
 
-class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):  # type: ignore  # TODO: fix
+class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):
     allow_cache: ClassVar[bool] = True
 
     @attr.s(kw_only=True)

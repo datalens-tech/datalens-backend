@@ -11,6 +11,6 @@ class DatasetFieldsView(DatasetDataBaseView):
     endpoint_code = 'DatasetFieldsGet'
 
     @DatasetDataBaseView.with_resolved_entities
-    async def get(self):  # type: ignore  # TODO: fix
+    async def get(self) -> web.Response:
         fields = get_fields_data_serializable(self.dataset)
         return web.json_response(dict(fields=fields, revision_id=self.dataset.revision_id))

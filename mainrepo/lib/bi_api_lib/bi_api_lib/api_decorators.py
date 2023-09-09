@@ -25,7 +25,7 @@ from bi_api_lib.schemas.main import get_api_model
 LOGGER = logging.getLogger(__name__)
 
 
-def abort_request(code, message=None, response_data: Optional[dict] = None):  # type: ignore  # TODO: fix
+def abort_request(code, message=None, response_data: Optional[dict] = None) -> None:
     """
     Copy-paste of `flask_restx.abort`, but without passing additional data through **kwargs.
     So we can to pass field "code" to response json.

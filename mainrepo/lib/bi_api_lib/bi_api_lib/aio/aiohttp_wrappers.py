@@ -21,7 +21,7 @@ class AppWrapper:
     def from_app(cls, app: web.Application) -> 'AppWrapper':
         return app[cls._APP_KEY]
 
-    def bind(self, app: web.Application):  # type: ignore  # TODO: fix
+    def bind(self, app: web.Application) -> None:
         app[self._APP_KEY] = self
 
 
@@ -43,7 +43,7 @@ class DSAPIRequest(DLRequestDataCore):
     KEY_BODY_JSON = "body_json"
 
     # TODO FIX: Move to common
-    def store_parsed_json_body(self, val: Dict[str, Any]):  # type: ignore  # TODO: fix
+    def store_parsed_json_body(self, val: Dict[str, Any]) -> None:
         self._set_attr_once(self.KEY_BODY_JSON, val)
 
     # TODO FIX: Move to common

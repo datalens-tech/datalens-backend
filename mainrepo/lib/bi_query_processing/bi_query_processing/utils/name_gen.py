@@ -23,7 +23,7 @@ class NameGen:  # TODO: Rename
 
     sep = '_'
 
-    def __init__(self):  # type: ignore  # TODO: fix
+    def __init__(self) -> None:
         self.counters = defaultdict(lambda: 0)
 
     def __call__(self, node: formula_nodes.FormulaItem, name: str) -> str:
@@ -35,11 +35,11 @@ class MappedNameGen(NameGen):
 
     sep = ''
 
-    def __init__(self, namemap):  # type: ignore  # TODO: fix
+    def __init__(self, namemap) -> None:
         super().__init__()
         self.namemap = namemap
 
-    def __call__(self, node, name):  # type: ignore  # TODO: fix
+    def __call__(self, node, name) -> str:
         return super().__call__(node, self.namemap.get(name, name))
 
 
@@ -48,7 +48,7 @@ class PrefixedIdGen:
     Simplistic non-random prefixed ID generator.
     """
 
-    def __init__(self, prefix: str):
+    def __init__(self, prefix: str) -> None:
         self._prefix = prefix
         self._cnt = count()
 

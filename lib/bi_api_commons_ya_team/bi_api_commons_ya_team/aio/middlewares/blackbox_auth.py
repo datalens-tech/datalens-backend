@@ -56,7 +56,8 @@ def blackbox_auth_middleware(
                 client_host = ip_list[0]
         else:
             # No X-Forward-For -> use source IP address of request
-            client_host = req.remote  # type: ignore  # TODO: fix
+            assert req.remote is not None
+            client_host = req.remote
 
         secret_session_id_cookie = req.cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID.value)
         secret_sessionid2_cookie = req.cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID_2.value)
