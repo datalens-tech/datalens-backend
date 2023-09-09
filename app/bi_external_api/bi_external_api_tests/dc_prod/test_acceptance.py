@@ -8,6 +8,7 @@ import pytest
 import pytz
 import yaml
 
+from bi_external_api.grpc_proxy.auth import iam_token_to_grpc_headers
 from bi_external_api.grpc_proxy.client import GrpcClientCtx
 from bi_external_api.grpc_proxy.common import GHeaders
 from bi_external_api.testing_no_deps import DomainScene
@@ -26,9 +27,7 @@ class TestGRPCAcceptanceScenarioAgainstDeployedProdDoubleCloudExtAPI(GrpcAccepta
         return GrpcClientCtx(
             endpoint="visualization.api.double.cloud",
             channel_credentials=grpc.ssl_channel_credentials(),
-            headers=GHeaders({
-                "authorization": f"Bearer {dc_rs_user_account.token}",
-            }),
+            headers=GHeaders(iam_token_to_grpc_headers(dc_rs_user_account.token)),
         )
 
     @pytest.fixture()

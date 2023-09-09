@@ -8,6 +8,7 @@ import pytest
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.domain import external as ext
 from bi_external_api.enums import ExtAPIType
+from bi_external_api.grpc_proxy.auth import iam_token_to_grpc_headers
 from bi_external_api.grpc_proxy.client import GrpcClientCtx
 from bi_external_api.grpc_proxy.common import GHeaders
 from bi_external_api.internal_api_clients.main import InternalAPIClients
@@ -107,9 +108,7 @@ class TestGRPCAcceptanceScenarioAgainstLocalExtAPI(GrpcAcceptanceScenarioDC):
         return GrpcClientCtx(
             endpoint=bi_ext_api_grpc_against_dc_preprod.grpc_endpoint,
             channel_credentials=None,
-            headers=GHeaders({
-                "authorization": f"Bearer {dc_rc_user_account.token}",
-            }),
+            headers=GHeaders(iam_token_to_grpc_headers(dc_rc_user_account.token)),
         )
 
     @pytest.fixture()
@@ -131,9 +130,7 @@ class TestGRPCAcceptanceScenarioAgainstLocalExtAPI(GrpcAcceptanceScenarioDC):
         return GrpcClientCtx(
             endpoint=bi_ext_api_grpc_against_dc_preprod.grpc_endpoint,
             channel_credentials=None,
-            headers=GHeaders({
-                "authorization": f"Bearer {account.token}",
-            }),
+            headers=GHeaders(iam_token_to_grpc_headers(account.token)),
         )
 
     @pytest.fixture()
@@ -172,9 +169,7 @@ class TestGRPCAcceptanceScenarioAgainstDeployedPreprodDoubleCloudExtAPI(GrpcAcce
         return GrpcClientCtx(
             endpoint="visualization.api.yadc.io",
             channel_credentials=grpc.ssl_channel_credentials(),
-            headers=GHeaders({
-                "authorization": f"Bearer {dc_rc_user_account.token}",
-            }),
+            headers=GHeaders(iam_token_to_grpc_headers(dc_rc_user_account.token)),
         )
 
     @pytest.fixture()
@@ -194,9 +189,7 @@ class TestGRPCAcceptanceScenarioAgainstDeployedPreprodDoubleCloudExtAPI(GrpcAcce
         return GrpcClientCtx(
             endpoint="visualization.api.yadc.io",
             channel_credentials=grpc.ssl_channel_credentials(),
-            headers=GHeaders({
-                "authorization": f"Bearer {account.token}",
-            }),
+            headers=GHeaders(iam_token_to_grpc_headers(account.token)),
         )
 
     @pytest.fixture()

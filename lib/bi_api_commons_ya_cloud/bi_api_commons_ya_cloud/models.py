@@ -62,6 +62,14 @@ class IAMAuthData(AuthData):
         return {}
 
 
+@attr.s()
+class ExternalIAMAuthData(IAMAuthData):
+    def get_headers(self) -> dict[DLHeaders, str]:
+        return {
+            DLHeadersCommon.AUTHORIZATION_TOKEN: f"Bearer {self.iam_token}"
+        }
+
+
 @attr.s(frozen=True)
 class EmbedAuthData(AuthData):
     embed_token: str = attr.ib(repr=False)

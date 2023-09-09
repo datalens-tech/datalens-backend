@@ -11,13 +11,12 @@ from aiochclient.http_clients import aiohttp
 import bi_external_api.grpc_proxy.ext_api_client
 from bi_api_commons.base_models import NoAuthData, TenantCommon
 from bi_api_commons.client.common import CommonInternalAPIClient
-from bi_api_commons_ya_cloud.models import TenantDCProject, IAMAuthData
+from bi_api_commons_ya_cloud.models import TenantDCProject, IAMAuthData, ExternalIAMAuthData
 from bi_configs.enums import AppType
 from bi_configs.settings_submodels import YCAuthSettings
 from bi_external_api.app import create_app
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy import server as grpc_proxy
-from bi_external_api.internal_api_clients.base import ExternalIAMAuthData
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
 from bi_external_api.internal_api_clients.dash_api import APIClientDashboard
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
