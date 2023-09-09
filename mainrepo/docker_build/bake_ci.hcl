@@ -9,3 +9,12 @@ target "base_ci" {
   }
 }
 
+target "ci_with_src" {
+  context = "target_ci_with_src"
+  contexts = {
+    dl_src_lib  = "target:dl_src_lib"
+  }
+  args = {
+    BASE_IMG = "${CR_BASE_IMG}"
+  }
+}

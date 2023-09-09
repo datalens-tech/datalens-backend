@@ -32,3 +32,7 @@ function dl_dockerfile_prepare_src {
 variable CR_TAG_BASE_OS {
   default = ""
 }
+
+variable CR_BASE_IMG {
+  default = ""
+}

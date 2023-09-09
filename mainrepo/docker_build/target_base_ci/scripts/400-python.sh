@@ -2,9 +2,7 @@
 
 set -exu
 
-
 add-apt-repository -y ppa:deadsnakes/ppa
-# echo 'deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy main' > /etc/apt/sources.list.d/deadsnakes.list
 
 for y in $(seq 1 5)
 do
