@@ -1,31 +1,35 @@
-from typing import ClassVar, Optional, Any
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import aiohttp
-
 from bi_api_commons.client.common import Req
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+from bi_constants.api_constants import (
+    DLHeaders,
+    DLHeadersCommon,
+)
 
 
 class ReqBuilder:
-    ORIGIN: ClassVar[str] = 'https://foo.bar'
+    ORIGIN: ClassVar[str] = "https://foo.bar"
 
     @classmethod
     def upload_csv(cls, csv_data: str) -> Req:
         upload_req_data = (
-            f'--111111111111\n'
+            f"--111111111111\n"
             f'Content-Disposition: form-data; name="file"; filename="sample.csv"\n'
-            f'Content-Type: application/octet-stream\n'
-            f'\n'
-            f'{csv_data}'
+            f"Content-Type: application/octet-stream\n"
+            f"\n"
+            f"{csv_data}"
         )
 
         return Req(
-            method='post',
-            url='/api/v2/files',
-            extra_headers={
-                'Content-Type': 'multipart/form-data; boundary=111111111111',
-                'Origin': cls.ORIGIN
-            },
+            method="post",
+            url="/api/v2/files",
+            extra_headers={DLHeadersCommon.CONTENT_TYPE: "multipart/form-data; boundary=111111111111", DLHeadersCommon.ORIGIN: cls.ORIGIN},
             data=upload_req_data,
         )
 
@@ -33,13 +37,11 @@ class ReqBuilder:
     def upload_xlsx(cls, xlsx_data: str) -> Req:
         with aiohttp.MultipartWriter() as mpwriter:
             part = mpwriter.append(xlsx_data)
-            part.set_content_disposition('form-data', name='file', filename='data.xlsx')
+            part.set_content_disposition("form-data", name="file", filename="data.xlsx")
             return Req(
-                method='post',
-                url='/api/v2/files',
-                extra_headers={
-                    'Origin': cls.ORIGIN
-                },
+                method="post",
+                url="/api/v2/files",
+                extra_headers={DLHeadersCommon.ORIGIN: cls.ORIGIN},
                 data=mpwriter,
             )
 
@@ -53,17 +55,17 @@ class ReqBuilder:
         require_ok: bool = True,
     ) -> Req:
         if (spreadsheet_id is None) ^ (url is not None):
-            raise ValueError('Expected exactly one of [`spreadsheet_id`, `url`] to be specified')
+            raise ValueError("Expected exactly one of [`spreadsheet_id`, `url`] to be specified")
         if url is None:
-            url = f'https://docs.google.com/spreadsheets/d/{spreadsheet_id}'
+            url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
 
         return Req(
-            method='post',
-            url='/api/v2/links',
+            method="post",
+            url="/api/v2/links",
             data_json={
-                'type': 'gsheets',
-                'url': url,
-                'authorized': authorized,
+                "type": "gsheets",
+                "url": url,
+                "authorized": authorized,
             },
             require_ok=require_ok,
         )
@@ -71,38 +73,34 @@ class ReqBuilder:
     @classmethod
     def file_status(cls, file_id: str) -> Req:
         return Req(
-            method='get',
-            url=f'/api/v2/files/{file_id}/status',
+            method="get",
+            url=f"/api/v2/files/{file_id}/status",
         )
 
     @classmethod
     def file_sources(cls, file_id, *, require_ok: bool = True) -> Req:
-        return Req(
-            method='get',
-            url=f'/api/v2/files/{file_id}/sources',
-            require_ok=require_ok
-        )
+        return Req(method="get", url=f"/api/v2/files/{file_id}/sources", require_ok=require_ok)
 
     @classmethod
     def source_status(cls, file_id: str, source_id: str) -> Req:
         return Req(
-            method='get',
-            url=f'/api/v2/files/{file_id}/sources/{source_id}/status',
+            method="get",
+            url=f"/api/v2/files/{file_id}/sources/{source_id}/status",
         )
 
     @classmethod
     def source_info(cls, file_id: str, source_id: str, data_json: Optional[dict[str, Any]] = None) -> Req:
         return Req(
-            method='post',
-            url=f'/api/v2/files/{file_id}/sources/{source_id}',
+            method="post",
+            url=f"/api/v2/files/{file_id}/sources/{source_id}",
             data_json=data_json,
         )
 
     @classmethod
     def apply_source_settings(cls, file_id: str, source_id: str, data_json: Optional[dict[str, Any]] = None) -> Req:
         return Req(
-            method='post',
-            url=f'/api/v2/files/{file_id}/sources/{source_id}/apply_settings',
+            method="post",
+            url=f"/api/v2/files/{file_id}/sources/{source_id}/apply_settings",
             data_json=data_json,
         )
 
@@ -111,12 +109,12 @@ class ReqBuilder:
         cls,
         file_id: str,
         source_id: str,
-        master_token_header: Optional[dict[str, str]],
+        master_token_header: Optional[dict[DLHeaders, str]],
         data_json: Optional[dict[str, Any]] = None,
     ) -> Req:
         return Req(
-            method='post',
-            url=f'/api/v2/files/{file_id}/sources/{source_id}/preview',
+            method="post",
+            url=f"/api/v2/files/{file_id}/sources/{source_id}/preview",
             extra_headers=master_token_header,
             data_json=data_json,
         )
@@ -126,14 +124,14 @@ class ReqBuilder:
         cls,
         file_id: str,
         source_id: str,
-        master_token_header: Optional[dict[str, str]],
+        master_token_header: Optional[dict[DLHeaders, str]],
         data_json: Optional[dict[str, Any]] = None,
         *,
         require_ok: bool = True,
     ) -> Req:
         return Req(
-            method='post',
-            url=f'/api/v2/files/{file_id}/sources/{source_id}/internal_params',
+            method="post",
+            url=f"/api/v2/files/{file_id}/sources/{source_id}/internal_params",
             extra_headers=master_token_header,
             data_json=data_json,
             require_ok=require_ok,
@@ -149,13 +147,13 @@ class ReqBuilder:
     ) -> Req:
         sources_desc = [src.get_desc() for src in connection.data.sources]
         return Req(
-            method='post',
-            url='/api/v2/update_connection_data',
+            method="post",
+            url="/api/v2/update_connection_data",
             data_json={
-                'connection_id': connection.uuid,
-                'authorized': False,
-                'save': save,
-                'sources': [
+                "connection_id": connection.uuid,
+                "authorized": False,
+                "save": save,
+                "sources": [
                     dict(
                         id=src_desc.source_id,
                         title=src_desc.title,
@@ -173,31 +171,27 @@ class ReqBuilder:
     def cleanup(
         cls,
         tenant_id: str,
-        master_token_header: Optional[dict[str, str]] = None,
+        master_token_header: Optional[dict[DLHeaders, str]] = None,
         *,
         require_ok: bool = True,
     ) -> Req:
         return Req(
-            method='post',
-            url='/api/v2/cleanup',
+            method="post",
+            url="/api/v2/cleanup",
             extra_headers=master_token_header,
             data_json={
-                'tenant_id': tenant_id,
+                "tenant_id": tenant_id,
             },
             require_ok=require_ok,
         )
 
     @classmethod
-    def rename_tenant_files(
-        cls,
-        master_token_header: Optional[dict[str, str]],
-        tenant_id: str
-    ) -> Req:
+    def rename_tenant_files(cls, master_token_header: Optional[dict[DLHeaders, str]], tenant_id: str) -> Req:
         return Req(
-            method='post',
-            url='/api/v2/rename_tenant_files',
+            method="post",
+            url="/api/v2/rename_tenant_files",
             extra_headers=master_token_header,
             data_json={
-                'tenant_id': tenant_id,
+                "tenant_id": tenant_id,
             },
         )
