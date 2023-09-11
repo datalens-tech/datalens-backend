@@ -12,8 +12,10 @@ from urllib.parse import urljoin
 
 from bi_constants.enums import ConnectionType
 
-from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 from bi_core.exc import DatabaseQueryError
+
+from bi_connector_monitoring.core.constants import CONNECTION_TYPE_MONITORING
+from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 
 if TYPE_CHECKING:
     from bi_connector_monitoring.core.target_dto import MonitoringConnTargetDTO
@@ -24,7 +26,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class AsyncMonitoringAdapter(AsyncBaseSolomonAdapter):
-    conn_type: ClassVar[ConnectionType] = ConnectionType.monitoring
+    conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_MONITORING
     _target_dto: MonitoringConnTargetDTO = attr.ib()
 
     def __attrs_post_init__(self) -> None:

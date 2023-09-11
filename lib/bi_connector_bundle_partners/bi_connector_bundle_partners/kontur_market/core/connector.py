@@ -12,14 +12,17 @@ from bi_connector_bundle_partners.base.core.storage_schemas.connection import Pa
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
-from bi_connector_bundle_partners.kontur_market.core.constants import SOURCE_TYPE_KONTUR_MARKET_CH_TABLE
+from bi_connector_bundle_partners.kontur_market.core.constants import (
+    CONNECTION_TYPE_KONTUR_MARKET,
+    SOURCE_TYPE_KONTUR_MARKET_CH_TABLE,
+)
 from bi_connector_bundle_partners.kontur_market.core.data_source import KonturMarketCHDataSource
 from bi_connector_bundle_partners.kontur_market.core.settings import KonturMarketSettingDefinition
 from bi_connector_bundle_partners.kontur_market.core.us_connection import KonturMarketCHConnection
 
 
 class KonturMarketCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.kontur_market
+    conn_type = CONNECTION_TYPE_KONTUR_MARKET
     connection_cls = KonturMarketCHConnection
     us_storage_schema_cls = PartnersCHConnectionDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer

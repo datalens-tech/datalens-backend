@@ -12,14 +12,17 @@ from bi_connector_bundle_partners.base.core.storage_schemas.connection import Pa
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
-from bi_connector_bundle_partners.moysklad.core.constants import SOURCE_TYPE_MOYSKLAD_CH_TABLE
+from bi_connector_bundle_partners.moysklad.core.constants import (
+    CONNECTION_TYPE_MOYSKLAD,
+    SOURCE_TYPE_MOYSKLAD_CH_TABLE,
+)
 from bi_connector_bundle_partners.moysklad.core.data_source import MoySkladCHDataSource
 from bi_connector_bundle_partners.moysklad.core.settings import MoySkladSettingDefinition
 from bi_connector_bundle_partners.moysklad.core.us_connection import MoySkladCHConnection
 
 
 class MoySkladCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.moysklad
+    conn_type = CONNECTION_TYPE_MOYSKLAD
     connection_cls = MoySkladCHConnection
     us_storage_schema_cls = PartnersCHConnectionDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer

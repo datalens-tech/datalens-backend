@@ -5,12 +5,6 @@ from bi_constants.enums import ConnectionType, CreateDSFrom
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
-from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.data_source import BillingAnalyticsCHDataSource
-from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.lifecycle import (
-    BillingAnalyticsCHConnectionLifecycleManager,
-)
-from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import BillingAnalyticsSettingDefinition
-from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.us_connection import BillingAnalyticsCHConnection
 from bi_core.connectors.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
@@ -22,9 +16,20 @@ from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnector
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import (
+    CONNECTION_TYPE_CH_BILLING_ANALYTICS,
+    SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE,
+)
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.data_source import BillingAnalyticsCHDataSource
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.lifecycle import (
+    BillingAnalyticsCHConnectionLifecycleManager,
+)
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import BillingAnalyticsSettingDefinition
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.us_connection import BillingAnalyticsCHConnection
+
 
 class CHBillingAnalyticsCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.ch_billing_analytics
+    conn_type = CONNECTION_TYPE_CH_BILLING_ANALYTICS
     connection_cls = BillingAnalyticsCHConnection
     us_storage_schema_cls = ConnectionCHFilteredHardcodedDataBaseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
@@ -36,7 +41,7 @@ class CHBillingAnalyticsCoreConnectionDefinition(CoreConnectionDefinition):
 
 
 class CHBillingAnalyticsTableCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CH_BILLING_ANALYTICS_TABLE
+    source_type = SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE
     source_cls = BillingAnalyticsCHDataSource
     source_spec_cls = StandardSQLDataSourceSpec
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema

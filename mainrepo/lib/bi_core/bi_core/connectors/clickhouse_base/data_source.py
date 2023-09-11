@@ -55,8 +55,6 @@ class ActualClickHouseBaseMixin(ClickHouseBaseMixin):
         return source_type in {
             CreateDSFrom.CH_TABLE,
             CreateDSFrom.CH_SUBSELECT,
-            CreateDSFrom.CH_BILLING_ANALYTICS_TABLE,
-            CreateDSFrom.CH_USAGE_TRACKING_TABLE,
         }
 
 

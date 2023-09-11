@@ -4,14 +4,14 @@ from typing import Optional
 
 import attr
 
-from bi_constants.enums import ConnectionType
-
 from bi_core.connection_models.dto_defs import ConnDTO
+
+from bi_connector_solomon.core.constants import CONNECTION_TYPE_SOLOMON
 
 
 @attr.s(frozen=True)
 class SolomonConnDTO(ConnDTO):
-    conn_type = ConnectionType.solomon
+    conn_type = CONNECTION_TYPE_SOLOMON
 
     host: str = attr.ib(kw_only=True)
     cookie_session_id: Optional[str] = attr.ib(default=None, repr=False, kw_only=True)

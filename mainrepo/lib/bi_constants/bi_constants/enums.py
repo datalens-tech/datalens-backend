@@ -44,26 +44,17 @@ class BIType(_Normalizable['BIType'], Enum):
 class SourceBackendType(DynamicEnum):
     # Generic
     NONE = AutoEnumValue()
-    # Connectors  # TODO: Remove
-    CLICKHOUSE = AutoEnumValue()
+    CLICKHOUSE = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
 
 
 class ConnectionType(DynamicEnum):
     unknown = AutoEnumValue()
-    clickhouse = AutoEnumValue()
-
-    ch_billing_analytics = AutoEnumValue()
-
-    gsheets = AutoEnumValue()
-    promql = AutoEnumValue()
-    moysklad = AutoEnumValue()
-    equeo = AutoEnumValue()
-    kontur_market = AutoEnumValue()
-    solomon = AutoEnumValue()
-    monitoring = AutoEnumValue()
-    bitrix24 = AutoEnumValue()
-    usage_tracking = AutoEnumValue()
-    usage_tracking_ya_team = AutoEnumValue()
+    clickhouse = AutoEnumValue()  # FIXME: Blocked by usage in clickhouse_base
+    gsheets = AutoEnumValue()  # FIXME: Blocked by usage in options
+    promql = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
+    solomon = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
+    monitoring = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
+    bitrix24 = AutoEnumValue()  # FIXME: Blocked by usage in options
 
 
 @unique
@@ -218,11 +209,8 @@ class WhereClauseOperation(Enum):
 
 
 class CreateDSFrom(DynamicEnum):
-    CH_TABLE = AutoEnumValue()
-    CH_SUBSELECT = AutoEnumValue()
-    CH_BILLING_ANALYTICS_TABLE = AutoEnumValue()
-    CH_USAGE_TRACKING_TABLE = AutoEnumValue()
-    CH_USAGE_TRACKING_YA_TEAM_TABLE = AutoEnumValue()
+    CH_TABLE = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
+    CH_SUBSELECT = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
 
     @classmethod
     def normalize(cls, value: CreateDSFrom | str | None) -> Optional[CreateDSFrom]:

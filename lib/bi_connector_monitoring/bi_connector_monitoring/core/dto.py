@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import attr
 
-from bi_constants.enums import ConnectionType
-
 from bi_core.connection_models.dto_defs import ConnDTO
+
+from bi_connector_monitoring.core.constants import CONNECTION_TYPE_MONITORING
 
 
 @attr.s(frozen=True)
 class MonitoringConnDTO(ConnDTO):
-    conn_type = ConnectionType.monitoring
+    conn_type = CONNECTION_TYPE_MONITORING
 
     host: str = attr.ib(kw_only=True)
     url_path: str = attr.ib(kw_only=True)

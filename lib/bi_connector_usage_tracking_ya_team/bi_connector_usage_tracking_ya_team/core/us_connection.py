@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import ClassVar
 
 from bi_configs.connectors_settings import UsageTrackingYaTeamConnectionSettings
-from bi_constants.enums import CreateDSFrom
 
 from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.connectors.clickhouse_base.us_connection import (
@@ -11,13 +10,17 @@ from bi_core.connectors.clickhouse_base.us_connection import (
 )
 from bi_core.us_connection_base import HiddenDatabaseNameMixin
 
+from bi_connector_usage_tracking_ya_team.core.constants import (
+    SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,
+)
+
 
 class UsageTrackingYaTeamConnection(
         HiddenDatabaseNameMixin,
         ConnectionCHFilteredHardcodedDataBase[UsageTrackingYaTeamConnectionSettings]
 ):
-    source_type = CreateDSFrom.CH_USAGE_TRACKING_YA_TEAM_TABLE
-    allowed_source_types = frozenset((CreateDSFrom.CH_USAGE_TRACKING_YA_TEAM_TABLE,))
+    source_type = SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE
+    allowed_source_types = frozenset((SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,))
     is_always_internal_source = True
     allow_cache: ClassVar[bool] = True
     settings_type = UsageTrackingYaTeamConnectionSettings

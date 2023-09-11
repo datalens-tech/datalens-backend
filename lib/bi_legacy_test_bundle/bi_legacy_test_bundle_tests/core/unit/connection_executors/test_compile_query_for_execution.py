@@ -1,14 +1,15 @@
 from typing import Type
 
-from bi_constants.enums import ConnectionType
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter, _TARGET_DTO_TV, _DBA_TV
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core.utils import sa_plain_text
 
+from bi_connector_solomon.core.constants import CONNECTION_TYPE_SOLOMON
+
 
 class TestBaseDirectAdapter(CommonBaseDirectAdapter):
 
-    conn_type = ConnectionType.solomon
+    conn_type = CONNECTION_TYPE_SOLOMON
 
     @classmethod
     def create(

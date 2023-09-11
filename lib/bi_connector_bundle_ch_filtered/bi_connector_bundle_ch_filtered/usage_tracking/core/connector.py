@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from bi_constants.enums import ConnectionType, CreateDSFrom
-
+from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -13,16 +13,19 @@ from bi_core.connectors.clickhouse_base.storage_schemas.connection import (
     ConnectionCHFilteredHardcodedDataBaseDataStorageSchema,
 )
 from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+
+from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
+    CONNECTION_TYPE_USAGE_TRACKING,
+    SOURCE_TYPE_CH_USAGE_TRACKING_TABLE,
+)
 from bi_connector_bundle_ch_filtered.usage_tracking.core.data_source import UsageTrackingDataSource
 from bi_connector_bundle_ch_filtered.usage_tracking.core.lifecycle import UsageTrackingConnectionLifecycleManager
 from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import UsageTrackingSettingDefinition
 from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
-from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 
 class UsageTrackingCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.usage_tracking
+    conn_type = CONNECTION_TYPE_USAGE_TRACKING
     connection_cls = UsageTrackingConnection
     us_storage_schema_cls = ConnectionCHFilteredHardcodedDataBaseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
@@ -34,7 +37,7 @@ class UsageTrackingCoreConnectionDefinition(CoreConnectionDefinition):
 
 
 class UsageTrackingCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CH_USAGE_TRACKING_TABLE
+    source_type = SOURCE_TYPE_CH_USAGE_TRACKING_TABLE
     source_cls = UsageTrackingDataSource
     source_spec_cls = StandardSQLDataSourceSpec
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema

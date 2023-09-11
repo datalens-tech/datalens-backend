@@ -7,12 +7,15 @@ from bi_api_lib_testing.connection_base import ConnectionTestBase
 
 from bi_core_testing.database import Db, CoreDbConfig
 from bi_core_testing.engine_wrapper import TestingEngineWrapper
+
+from bi_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
+
 from bi_connector_promql_tests.db.config import API_CONNECTION_SETTINGS, BI_TEST_CONFIG
 
 
 class PromQLConnectionTestBase(ConnectionTestBase):
     bi_compeng_pg_on = False
-    conn_type = ConnectionType.promql
+    conn_type = CONNECTION_TYPE_PROMQL
 
     @pytest.fixture(scope='class')
     def db_url(self) -> str:

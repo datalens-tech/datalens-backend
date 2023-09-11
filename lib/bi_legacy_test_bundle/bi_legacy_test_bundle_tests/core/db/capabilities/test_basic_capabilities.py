@@ -1,10 +1,15 @@
 from __future__ import annotations
 
-from bi_constants.enums import CreateDSFrom, DataSourceRole, JoinType
+from bi_constants.enums import DataSourceRole, JoinType
 
 from bi_core.dataset_capabilities import DatasetCapabilities
 from bi_core_testing.dataset import get_created_from
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+
+from bi_connector_clickhouse.core.constants import (
+    SOURCE_TYPE_CH_SUBSELECT,
+    SOURCE_TYPE_CH_TABLE,
+)
 
 
 def test_compatibility_info(db, saved_connection, saved_dataset, default_sync_usm):
@@ -18,12 +23,10 @@ def test_compatibility_info(db, saved_connection, saved_dataset, default_sync_us
     dsrc_type = dsrc.spec.source_type
     actual_compat_stypes = capabilities.get_compatible_source_types()
 
-    if dsrc_type == CreateDSFrom.CH_TABLE:
+    if dsrc_type == SOURCE_TYPE_CH_TABLE:
         assert actual_compat_stypes == frozenset([
             dsrc_type,
-            CreateDSFrom.CH_SUBSELECT,
-            CreateDSFrom.CH_USAGE_TRACKING_TABLE,
-            CreateDSFrom.CH_BILLING_ANALYTICS_TABLE,
+            SOURCE_TYPE_CH_SUBSELECT,
         ])
     else:
         assert actual_compat_stypes.issuperset(frozenset([dsrc_type]))

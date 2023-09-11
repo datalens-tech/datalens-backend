@@ -1,12 +1,14 @@
-from bi_constants.enums import ConnectionType
-
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
 )
 
-from bi_connector_monitoring.core.constants import BACKEND_TYPE_MONITORING, SOURCE_TYPE_MONITORING
+from bi_connector_monitoring.core.constants import (
+    BACKEND_TYPE_MONITORING,
+    CONNECTION_TYPE_MONITORING,
+    SOURCE_TYPE_MONITORING,
+)
 from bi_connector_monitoring.core.adapter import AsyncMonitoringAdapter
 from bi_connector_monitoring.core.storage_schemas.connection import MonitoringConnectionDataStorageSchema
 from bi_connector_monitoring.core.type_transformer import MonitoringTypeTransformer
@@ -18,7 +20,7 @@ from bi_connector_monitoring.core.settings import MonitoringSettingDefinition
 
 
 class MonitoringCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.monitoring
+    conn_type = CONNECTION_TYPE_MONITORING
     connection_cls = MonitoringConnection
     us_storage_schema_cls = MonitoringConnectionDataStorageSchema
     type_transformer_cls = MonitoringTypeTransformer

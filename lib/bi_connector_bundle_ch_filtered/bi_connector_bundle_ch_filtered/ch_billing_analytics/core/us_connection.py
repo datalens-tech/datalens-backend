@@ -3,16 +3,19 @@ from __future__ import annotations
 from typing import ClassVar, Optional
 
 from bi_configs.connectors_settings import BillingConnectorSettings
-from bi_constants.enums import CreateDSFrom
 
 from bi_core.connectors.clickhouse_base.us_connection import (
     ConnectionCHFilteredHardcodedDataBase, SubselectParameter, SubselectParameterType
 )
 
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import (
+    SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE,
+)
+
 
 class BillingAnalyticsCHConnection(ConnectionCHFilteredHardcodedDataBase[BillingConnectorSettings]):
-    source_type = CreateDSFrom.CH_BILLING_ANALYTICS_TABLE
-    allowed_source_types = frozenset((CreateDSFrom.CH_BILLING_ANALYTICS_TABLE,))
+    source_type = SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE
+    allowed_source_types = frozenset((SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE,))
     is_always_internal_source = True
     allow_cache: ClassVar[bool] = True
     settings_type = BillingConnectorSettings

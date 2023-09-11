@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from bi_constants.enums import ConnectionType, CreateDSFrom
-
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -16,13 +14,17 @@ from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTr
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
+from bi_connector_usage_tracking_ya_team.core.constants import (
+    CONNECTION_TYPE_USAGE_TRACKING_YA_TEAM,
+    SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,
+)
 from bi_connector_usage_tracking_ya_team.core.data_source import UsageTrackingYaTeamDataSource
 from bi_connector_usage_tracking_ya_team.core.settings import UsageTrackingYaTeamSettingDefinition
 from bi_connector_usage_tracking_ya_team.core.us_connection import UsageTrackingYaTeamConnection
 
 
 class UsageTrackingYaTeamCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.usage_tracking_ya_team
+    conn_type = CONNECTION_TYPE_USAGE_TRACKING_YA_TEAM
     connection_cls = UsageTrackingYaTeamConnection
     us_storage_schema_cls = ConnectionCHFilteredHardcodedDataBaseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
@@ -33,7 +35,7 @@ class UsageTrackingYaTeamCoreConnectionDefinition(CoreConnectionDefinition):
 
 
 class UsageTrackingYaTeamCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CH_USAGE_TRACKING_YA_TEAM_TABLE
+    source_type = SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE
     source_cls = UsageTrackingYaTeamDataSource
     source_spec_cls = StandardSQLDataSourceSpec
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema

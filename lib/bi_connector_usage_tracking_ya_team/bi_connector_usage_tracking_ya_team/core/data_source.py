@@ -3,8 +3,11 @@ from __future__ import annotations
 import logging
 from typing import ClassVar, FrozenSet
 
-from bi_constants.enums import JoinType, ConnectionType
+from bi_constants.enums import JoinType
 
+from bi_connector_usage_tracking_ya_team.core.constants import (
+    CONNECTION_TYPE_USAGE_TRACKING_YA_TEAM,
+)
 from bi_core.connectors.clickhouse_base.data_source import ClickHouseTemplatedSubselectDataSource
 
 
@@ -17,4 +20,4 @@ class UsageTrackingYaTeamDataSource(ClickHouseTemplatedSubselectDataSource):
     """
     supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset()
 
-    conn_type = ConnectionType.usage_tracking_ya_team
+    conn_type = CONNECTION_TYPE_USAGE_TRACKING_YA_TEAM

@@ -6,7 +6,11 @@ from bi_core.connectors.base.connector import (
     CoreSourceDefinition,
 )
 
-from bi_connector_solomon.core.constants import BACKEND_TYPE_SOLOMON, SOURCE_TYPE_SOLOMON
+from bi_connector_solomon.core.constants import (
+    BACKEND_TYPE_SOLOMON,
+    CONNECTION_TYPE_SOLOMON,
+    SOURCE_TYPE_SOLOMON,
+)
 from bi_connector_solomon.core.adapter import AsyncSolomonAdapter
 from bi_connector_solomon.core.storage_schemas.connection import ConnectionSolomonDataStorageSchema
 from bi_connector_solomon.core.type_transformer import SolomonTypeTransformer
@@ -16,7 +20,7 @@ from bi_connector_solomon.core.connection_executors import SolomonAsyncAdapterCo
 
 
 class SolomonCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.solomon
+    conn_type = CONNECTION_TYPE_SOLOMON
     connection_cls = SolomonConnection
     us_storage_schema_cls = ConnectionSolomonDataStorageSchema
     type_transformer_cls = SolomonTypeTransformer

@@ -19,6 +19,8 @@ from bi_connector_solomon.core.tvm import TvmCliSingletonSolomon, get_solomon_tv
 from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 from bi_core.exc import DatabaseQueryError
 
+from bi_connector_solomon.core.constants import CONNECTION_TYPE_SOLOMON
+
 if TYPE_CHECKING:
     from bi_connector_solomon.core.target_dto import SolomonConnTargetDTO
     from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
@@ -28,7 +30,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class AsyncSolomonAdapter(AsyncBaseSolomonAdapter):
-    conn_type: ClassVar[ConnectionType] = ConnectionType.solomon
+    conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_SOLOMON
     _target_dto: SolomonConnTargetDTO = attr.ib()
     _tvm_cli: tvmauth.TvmClient = attr.ib(init=False)
 

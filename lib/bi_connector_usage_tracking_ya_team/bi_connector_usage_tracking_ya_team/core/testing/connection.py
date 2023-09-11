@@ -3,11 +3,15 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from bi_constants.enums import ConnectionType, RawSQLLevel
+from bi_constants.enums import RawSQLLevel
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_connector_usage_tracking_ya_team.core.us_connection import UsageTrackingYaTeamConnection
 from bi_core_testing.connection import make_conn_key
+
+from bi_connector_usage_tracking_ya_team.core.constants import (
+    CONNECTION_TYPE_USAGE_TRACKING_YA_TEAM,
+)
+from bi_connector_usage_tracking_ya_team.core.us_connection import UsageTrackingYaTeamConnection
 
 
 def make_saved_usage_tracking_ya_team_connection(
@@ -31,7 +35,7 @@ def make_saved_usage_tracking_ya_team_connection(
             raw_sql_level=raw_sql_level,
         ),
         ds_key=make_conn_key('connections', conn_name),
-        type_=ConnectionType.usage_tracking_ya_team.name,
+        type_=CONNECTION_TYPE_USAGE_TRACKING_YA_TEAM.name,
         meta={'title': conn_name, 'state': 'saved'},
         us_manager=sync_usm,
         **kwargs

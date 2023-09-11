@@ -7,12 +7,15 @@ from bi_api_lib_testing.connection_base import ConnectionTestBase
 
 from bi_core_testing.database import Db, CoreDbConfig
 from bi_core_testing.engine_wrapper import TestingEngineWrapper
+
+from bi_connector_monitoring.core.constants import CONNECTION_TYPE_MONITORING
+
 from bi_connector_monitoring_tests.db.config import API_CONNECTION_SETTINGS, BI_TEST_CONFIG
 
 
 class MonitoringConnectionTestBase(ConnectionTestBase):
     bi_compeng_pg_on = False
-    conn_type = ConnectionType.monitoring
+    conn_type = CONNECTION_TYPE_MONITORING
 
     @pytest.fixture(scope='class')
     def db_url(self) -> str:

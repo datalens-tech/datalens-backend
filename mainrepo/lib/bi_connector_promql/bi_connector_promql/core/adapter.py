@@ -23,6 +23,9 @@ from bi_core.exc import DatabaseQueryError
 from bi_app_tools.profiling_base import generic_profiler_async
 from bi_core.utils import make_url
 
+from bi_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
+
+
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
     from bi_connector_promql.core.target_dto import PromQLConnTargetDTO
@@ -56,7 +59,7 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor['PromQLConnTargetD
 
 @attr.s
 class PromQLAdapter(BaseClassicAdapter['PromQLConnTargetDTO']):
-    conn_type: ClassVar[ConnectionType] = ConnectionType.promql
+    conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_PROMQL
     conn_line_constructor_type: ClassVar[Type[PromQLConnLineConstructor]] = PromQLConnLineConstructor
 
     _type_code_to_sa = {
@@ -76,7 +79,7 @@ class PromQLAdapter(BaseClassicAdapter['PromQLConnTargetDTO']):
 
 
 class AsyncPromQLAdapter(AiohttpDBAdapter):
-    conn_type: ClassVar[ConnectionType] = ConnectionType.promql
+    conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_PROMQL
 
     _target_dto: PromQLConnTargetDTO = attr.ib()
 

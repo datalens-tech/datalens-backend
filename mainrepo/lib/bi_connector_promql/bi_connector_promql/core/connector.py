@@ -1,5 +1,4 @@
 from bi_connector_promql.core.storage_schemas.connection import PromQLConnectionDataStorageSchema
-from bi_constants.enums import ConnectionType
 
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition,
@@ -7,7 +6,11 @@ from bi_core.connectors.base.connector import (
     CoreSourceDefinition,
 )
 
-from bi_connector_promql.core.constants import BACKEND_TYPE_PROMQL, SOURCE_TYPE_PROMQL
+from bi_connector_promql.core.constants import (
+    BACKEND_TYPE_PROMQL,
+    CONNECTION_TYPE_PROMQL,
+    SOURCE_TYPE_PROMQL,
+)
 from bi_connector_promql.core.adapter import AsyncPromQLAdapter, PromQLAdapter
 from bi_connector_promql.core.connection_executors import (
     PromQLConnExecutor, PromQLAsyncAdapterConnExecutor,
@@ -18,7 +21,7 @@ from bi_connector_promql.core.data_source import PromQLDataSource
 
 
 class PromQLCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.promql
+    conn_type = CONNECTION_TYPE_PROMQL
     connection_cls = PromQLConnection
     us_storage_schema_cls = PromQLConnectionDataStorageSchema
     type_transformer_cls = PromQLTypeTransformer
