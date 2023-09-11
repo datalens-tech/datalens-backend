@@ -38,8 +38,12 @@ class PackageIndex:
         assert self._is_built()
         return self._package_infos_by_test_name[test_dir_name]
 
-    def list_package_infos(self) -> list[PackageInfo]:
-        return list(self._package_infos_by_path.values())
+    def list_package_infos(self, package_type: Optional[str] = None) -> list[PackageInfo]:
+        return [
+            package_info
+            for package_info in self._package_infos_by_path.values()
+            if package_type is None or package_info.package_type == package_type
+        ]
 
 
 @attr.s

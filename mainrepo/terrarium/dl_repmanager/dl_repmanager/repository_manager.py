@@ -235,9 +235,9 @@ class RepositoryManager:
         """Move code from one package to another or within one package"""
 
         if move_files:
-            if self.repository_navigator.module_is_package(old_import_name):
-                old_path = self.repository_navigator.make_package_module_path(old_import_name)
-                new_path = self.repository_navigator.make_package_module_path(new_import_name)
+            if self.repository_navigator.module_is_dir(old_import_name):
+                old_path = self.repository_navigator.make_dir_module_path(old_import_name)
+                new_path = self.repository_navigator.make_dir_module_path(new_import_name)
             else:
                 old_path = self.repository_navigator.make_file_module_path(old_import_name)
                 new_path = self.repository_navigator.make_file_module_path(new_import_name)

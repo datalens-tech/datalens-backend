@@ -2,12 +2,27 @@ from __future__ import annotations
 
 import abc
 import os
+from ast import AST
+from enum import Enum, auto
 from pathlib import Path
 from typing import Any, Optional, TypeVar
 
 import attr
 from frozendict import frozendict
 from tomlkit import inline_table
+
+
+class EntityReferenceType(Enum):
+    package_type = auto()
+    package_reg = auto()
+    module = auto()
+    path = auto()
+
+
+@attr.s(frozen=True)
+class EntityReference:
+    ref_type: EntityReferenceType = attr.ib(kw_only=True)
+    name: str = attr.ib(kw_only=True)
 
 
 _REQ_SPEC_TV = TypeVar('_REQ_SPEC_TV', bound='ReqPackageSpec')
@@ -106,6 +121,24 @@ class PackageInfo:
         assert len(self.module_names) == 1
         return self.module_names[0]
 
+    @property
+    def reg_entity_ref(self) -> EntityReference:
+        return EntityReference(
+            ref_type=EntityReferenceType.package_reg,
+            name=self.package_reg_name,
+        )
+
+    @property
+    def package_type_entity_ref(self) -> EntityReference:
+        return EntityReference(
+            ref_type=EntityReferenceType.package_type,
+            name=self.package_type,
+        )
+
+    @property
+    def tests_and_modules(self) -> tuple[str, ...]:
+        return tuple(*self.module_names, *self.test_dirs)
+
     def get_relative_path(self, base_path: Path) -> Path:
         return Path(os.path.relpath(self.abs_path, base_path))
 
@@ -125,3 +158,10 @@ class PackageInfo:
                 return True
 
         return False
+
+
+@attr.s(frozen=True)
+class ImportSpec:
+    import_ast: AST = attr.ib(kw_only=True)
+    import_module_name: str = attr.ib(kw_only=True)
+    source_path: Path = attr.ib(kw_only=True)

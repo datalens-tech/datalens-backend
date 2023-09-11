@@ -20,7 +20,8 @@ from typing import Optional
 
 import attr
 
-from dl_repmanager.repository_env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironmentLoader
+from dl_repmanager.primitives import EntityReferenceType, EntityReference
+from dl_repmanager.repository_env import DEFAULT_CONFIG_FILE_NAME, RepoEnvironment, RepoEnvironmentLoader
 from dl_repmanager.git_manager import GitManager
 from dl_repmanager.logging import setup_basic_logging
 from dl_repmanager.metapkg_manager import MetaPackageManager
@@ -29,6 +30,28 @@ from dl_repmanager.repository_manager import RepositoryManager, PackageGenerator
 from dl_repmanager.repository_navigator import RepositoryNavigator
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.project_editor import PyPrjEditor
+
+
+def _entity_ref_type_type(value: str | EntityReferenceType) -> EntityReferenceType:
+    if isinstance(value, str):
+        value = EntityReferenceType[value.replace('-', '_')]
+    assert isinstance(value, EntityReferenceType)
+    return value
+
+
+def _entity_ref_type(value: str | EntityReference) -> EntityReference:
+    if isinstance(value, str):
+        ref_type_str, ref_name = value.split(':')
+        value = EntityReference(ref_type=EntityReferenceType[ref_type_str], name=ref_name)
+    assert isinstance(value, EntityReference)
+    return value
+
+
+def _entity_ref_list_type(value: str | list[EntityReference]) -> list[EntityReference]:
+    if isinstance(value, str):
+        value = [_entity_ref_type(part) for part in value.split(',')]
+    assert isinstance(value, list)
+    return value
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -142,6 +165,34 @@ def make_parser() -> argparse.ArgumentParser:
         '--base-rev', type=str, default='origin/trunk',
         help='git revision to compare with'
     )
+
+    entities_parser = argparse.ArgumentParser(add_help=False)
+    entities_parser.add_argument(
+        '--entities', type=_entity_ref_list_type, required=True,
+        help=(
+            'Comma-separated list of repository entities which can be: '
+            'package_type:<type_name>, package_reg:<package_reg_name> '
+            'path:<path_to_py_file>, module:<module_name>'
+        ),
+    )
+
+    resolve_parser = subparsers.add_parser(
+        'resolve', parents=[entities_parser],
+        help='Resolve repository entities from one type to another',
+    )
+    resolve_parser.add_argument(
+        '--to-type', type=_entity_ref_type_type, required=True, help='Output entity type'
+    )
+
+    search_imports_parser = subparsers.add_parser(
+        'search-imports', parents=[entities_parser],
+        help='Search imports of of one set of entities in another',
+    )
+    search_imports_parser.add_argument(
+        '--imported', type=_entity_ref_list_type, required=True,
+        help='List of imported entites to search for'
+    )
+
     return parser
 
 
@@ -150,6 +201,7 @@ _BASE_DIR = Path.cwd()
 
 @attr.s
 class DlRepManagerTool:
+    repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
     repository_manager: RepositoryManager = attr.ib(kw_only=True)
     repository_navigator: RepositoryNavigator = attr.ib(kw_only=True)
@@ -175,8 +227,8 @@ class DlRepManagerTool:
         self.repository_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
 
     def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
-        for package_info in self.package_index.list_package_infos():
-            if package_type.lower() != "__all__" and package_info.package_type != package_type:
+        for package_info in self.package_index.list_package_infos(package_type=package_type):
+            if package_type.lower() != "__all__":
                 continue
 
             printable_values = dict(
@@ -266,6 +318,27 @@ class DlRepManagerTool:
         for line in diff_lines:
             print(line, end=None)
 
+    def resolve_entities(self, entities: list[EntityReference], to_ref_type: EntityReferenceType) -> None:
+        resolved_entities = self.repository_navigator.resolve_entities_to_type(
+            entities, to_ref_type=to_ref_type)
+        for entity in sorted(resolved_entities, key=lambda item: item.name):
+            print(entity.name)
+
+    def search_imports(self, entities: list[EntityReference], imported: list[EntityReference]) -> None:
+        import_specs = self.repository_navigator.collect_imports_of_entities_from_entities(
+            src_entity_list=entities, imported_entity_list=imported)
+
+        base_path_len = len(str(self.repository_env.base_path)) + 1  # +1 for the slash
+        formatted_imports = [
+            (
+                f'{str(import_spec.source_path)[base_path_len:]}:'
+                f'{import_spec.import_ast.lineno}: '
+                f'{import_spec.import_module_name}'
+            )
+            for import_spec in sorted(import_specs, key=lambda item: item.source_path)
+        ]
+        print('\n'.join(sorted(formatted_imports)))
+
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
         config_file_name = args.config
@@ -281,6 +354,7 @@ class DlRepManagerTool:
 
         repository_navigator = RepositoryNavigator(repository_env=repository_env, package_index=package_index)
         tool = cls(
+            repository_env=repository_env,
             package_index=package_index,
             repository_navigator=repository_navigator,
             repository_manager=RepositoryManager(
@@ -326,6 +400,10 @@ class DlRepManagerTool:
                 tool.ensure_mypy_common()
             case 'compare-resulting-deps':
                 tool.compare_resulting_deps(base_revision=args.base_rev, group=args.group)
+            case 'resolve':
+                tool.resolve_entities(entities=args.entities, to_ref_type=args.to_type)
+            case 'search-imports':
+                tool.search_imports(entities=args.entities, imported=args.imported)
             case _:
                 raise RuntimeError(f'Got unknown command: {args.command}')
 
