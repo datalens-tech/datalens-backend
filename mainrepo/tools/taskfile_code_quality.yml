@@ -130,11 +130,11 @@ tasks:
     internal: true
     silent: true
     cmds:
-      - task: toml_sort_run
-        vars:
-          TARGET: "{{.TARGET_TOML}}"
-          APPLY_FIX: "{{.APPLY_FIX}}"
-          STRICT: "{{.STRICT}}"
+#      - task: toml_sort_run
+#        vars:
+#          TARGET: "{{.TARGET_TOML}}"
+#          APPLY_FIX: "{{.APPLY_FIX}}"
+#          STRICT: "{{.STRICT}}"
       - task: isort_run
         vars:
           TARGET: "{{.TARGET}}"

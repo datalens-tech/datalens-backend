@@ -444,7 +444,7 @@ jobs:
       - run: |
           TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr '\n' ' ' || echo '')
           echo $TARGET
-          task ld:check_target -- "$TARGET"
-          task ld:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
+          task cq:check_target -- "$TARGET"
+          task cq:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
         env:
           VENV_PATH: /venv
