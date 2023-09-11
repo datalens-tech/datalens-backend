@@ -29,8 +29,6 @@ def test_create_edit_and_delete_connection(client, default_sync_usm_per_test: Sy
         'host': 'localhost',
         'port': 1337,
         'username': 'root',
-        'mdb_cluster_id': 'some_cluster_id',
-        'mdb_folder_id': 'some_folder_id',
     }
     conn_id = client.post(
         '/api/v1/connections',
@@ -57,15 +55,12 @@ def test_create_edit_and_delete_connection(client, default_sync_usm_per_test: Sy
     assert conn['username'] == 'user123'
     assert 'password' not in conn
     assert conn['secure'] == 'on'
-    assert conn['mdb_cluster_id'] == conn_data['mdb_cluster_id']
-    assert conn['mdb_folder_id'] == conn_data['mdb_folder_id']
 
     saved_password_after_put = usm.get_by_id(conn_id, expected_type=ConnectionClickhouse).password
     assert saved_password_after_put == initial_saved_password
     assert conn['cache_ttl_sec'] is None
 
-    conn_data['mdb_cluster_id'] = 'new_db_cluster_id'
-    conn_data['mdb_folder_id'] = 'some_folder_id'
+    conn_data['secure'] = 'off'
     r = client.put(
         '/api/v1/connections/{}'.format(conn_id),
         data=json.dumps(conn_data),
@@ -75,8 +70,7 @@ def test_create_edit_and_delete_connection(client, default_sync_usm_per_test: Sy
 
     r = client.get(f'/api/v1/connections/{conn_id}')
     assert r.status_code == 200
-    assert conn_data['mdb_cluster_id'] == r.json['mdb_cluster_id']
-    assert conn_data['mdb_folder_id'] == r.json['mdb_folder_id']
+    assert conn_data['secure'] == r.json['secure']
 
     # Cache TTL override
     cache_ttl_override = 100500
@@ -117,8 +111,6 @@ def test_create_edit_conn_with_data_export_forbidden_flag(client, default_sync_u
         'host': 'localhost',
         'port': 1337,
         'username': 'root',
-        'mdb_cluster_id': 'some_cluster_id',
-        'mdb_folder_id': 'some_folder_id',
     }
     r = client.post(
         '/api/v1/connections',
