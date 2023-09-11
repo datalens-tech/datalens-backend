@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Collection, Dict, Type
+from typing import Callable, Collection, Type
 from functools import partial
 
 import sqlalchemy as sa
@@ -96,7 +96,7 @@ SQLALCHEMY_CLICKHOUSE_BASE_TYPES = (
 
 def _generate_complex_ch_types(
         base_ch_types: Collection[Type[TypeEngine]], conn_type: ConnectionType
-) -> Dict[GenericNativeType, Callable[..., TypeEngine]]:
+) -> dict[GenericNativeType, Callable[..., TypeEngine]]:
     return {
         **{make_native_type(conn_type, typecls): ch_instantiator(typecls)
            for typecls in base_ch_types},

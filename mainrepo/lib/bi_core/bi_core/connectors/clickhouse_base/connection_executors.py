@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Optional
 
 import attr
 
@@ -18,7 +18,7 @@ class ClickHouseSyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[ClickHouse
     _conn_dto: ClickHouseConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> List[ClickHouseConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[ClickHouseConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
         for host in self._conn_hosts_pool:
             # TODO FIX: May be pin host here?
@@ -46,7 +46,7 @@ class ClickHouseSyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[ClickHouse
             ))
         return dto_pool
 
-    def mutate_for_dashsql(self, db_params: Optional[Dict[str, str]] = None):  # type: ignore  # TODO: fix
+    def mutate_for_dashsql(self, db_params: Optional[dict[str, str]] = None):  # type: ignore  # TODO: fix
         if db_params:  # TODO.
             raise Exception("`db_params` are not supported at the moment")
         return self.clone(

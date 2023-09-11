@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from bi_core import exc
 
@@ -14,10 +14,10 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
         db_message: Optional[str] = None,
         query: Optional[str] = None,
         message: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
         orig: Optional[Exception] = None,
-        debug_info: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        debug_info: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ):
         super(ClickHouseSourceDoesNotExistError, self).__init__(
             db_message=db_message,

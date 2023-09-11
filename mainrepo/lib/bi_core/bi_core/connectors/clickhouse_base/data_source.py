@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, ClassVar, FrozenSet, Optional, Iterable
+from typing import TYPE_CHECKING, ClassVar, Optional, Iterable
 
 import abc
 import logging
@@ -31,7 +31,7 @@ class CommonClickHouseSubselectDataSource(SubselectDataSource):
 
 class ClickHouseBaseMixin(BaseSQLDataSource):
     default_server_version = None
-    supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset({
+    supported_join_types: ClassVar[frozenset[JoinType]] = frozenset({
         JoinType.inner,
         JoinType.left,
         JoinType.full,

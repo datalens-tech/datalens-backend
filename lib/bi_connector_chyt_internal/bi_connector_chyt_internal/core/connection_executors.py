@@ -4,12 +4,13 @@ import abc
 import asyncio
 import random
 import logging
-from typing import List
 
 import aiohttp
 import attr
 
 from bi_core import exc
+from bi_core.utils import raise_for_status_and_hide_secret_headers
+
 from bi_connector_chyt.core.connection_executors import BaseCHYTAdapterConnExecutor
 from bi_connector_chyt_internal.core.async_adapters import AsyncCHYTInternalAdapter, AsyncCHYTUserAuthAdapter
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
@@ -20,8 +21,7 @@ from bi_connector_chyt_internal.core.target_dto import (
     CHYTUserAuthConnTargetDTO,
 )
 from bi_connector_chyt_internal.core.adapters import CHYTInternalAdapter, CHYTUserAuthAdapter
-from bi_core.connectors.clickhouse_base.ch_commons import get_chyt_user_auth_headers
-from bi_core.utils import raise_for_status_and_hide_secret_headers
+from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 
 LOGGER = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class BaseCHYTInternalSyncAdapterConnExecutor(BaseCHYTAdapterConnExecutor):
     async def _get_target_conn_dto(self) -> BaseCHYTInternalConnTargetDTO:
         raise NotImplementedError
 
-    async def _make_target_conn_dto_pool(self) -> List[BaseCHYTInternalConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[BaseCHYTInternalConnTargetDTO]:  # type: ignore  # TODO: fix
         base_conn_target_dto = await self._get_target_conn_dto()
 
         target_dto = base_conn_target_dto

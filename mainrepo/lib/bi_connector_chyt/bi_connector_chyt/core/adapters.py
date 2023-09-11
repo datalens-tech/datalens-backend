@@ -15,11 +15,12 @@ from bi_core.connection_executors.models.db_adapter_data import RawIndexInfo
 from bi_core.connection_models import TableIdent
 from bi_core.connectors.base.error_transformer import DBExcKWArgs
 from bi_core.connectors.clickhouse_base.adapters import BaseClickHouseConnLineConstructor, BaseClickHouseAdapter
-from bi_core.connectors.clickhouse_base.ch_commons import CHYTUtils, get_ch_settings, ensure_db_message
+from bi_core.connectors.clickhouse_base.ch_commons import get_ch_settings, ensure_db_message
 from bi_core.utils import get_current_w3c_tracing_headers, make_url
 
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO, CHYTConnTargetDTO
+from bi_connector_chyt.core.utils import CHYTUtils
 
 
 class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):

@@ -9,8 +9,9 @@ import attr
 from aiohttp import ClientResponse, BasicAuth
 
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_core.connectors.clickhouse_base.ch_commons import get_chyt_user_auth_headers
+
 from bi_connector_chyt.core.async_adapters import AsyncCHYTAdapter
+from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
