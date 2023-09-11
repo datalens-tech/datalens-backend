@@ -30,6 +30,7 @@ YC_SR_FACTORY = YCServiceRegistryFactory(
 )
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfigurationPrivate(
+    bi_api_connector_whitelist=['ch_billing_analytics', 'usage_tracking'],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key='_some_test_secret_key_',
 )

@@ -22,7 +22,7 @@ from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.app.control_api.app import ControlApiAppFactory
 from bi_api_lib.app_settings import MDBSettings, ControlApiAppTestingsSettings, ControlApiAppSettings
-from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
+from bi_api_lib.loader import preload_bi_api_lib
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker, TestingControlApiAppFactory
@@ -133,7 +133,6 @@ class BiApiTestBase(abc.ABC):
         """Session-wide test `Flask` application."""
 
         control_app_factory = self.control_api_app_factory_cls(settings=control_api_app_settings)
-        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=control_api_app_settings.BI_API_CONNECTOR_WHITELIST))
         app = control_app_factory.create_app(
             connectors_settings=connectors_settings,
             testing_app_settings=ControlApiAppTestingsSettings(

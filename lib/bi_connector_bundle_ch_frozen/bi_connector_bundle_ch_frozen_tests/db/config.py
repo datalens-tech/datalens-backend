@@ -17,6 +17,17 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
 DB_CORE_URL = f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).as_pair()}/test_data'
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
+    bi_api_connector_whitelist=[
+        'ch_frozen_bumpy_roads',
+        'ch_frozen_covid',
+        'ch_frozen_demo',
+        'ch_frozen_dtp',
+        'ch_frozen_gkh',
+        'ch_frozen_samples',
+        'ch_frozen_transparency',
+        'ch_frozen_weather',
+        'ch_frozen_horeca',
+    ],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key='_some_test_secret_key_',
 )

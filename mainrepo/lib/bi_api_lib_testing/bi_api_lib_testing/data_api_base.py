@@ -16,7 +16,6 @@ from bi_core.components.ids import FieldIdGeneratorType
 
 from bi_api_lib.app.data_api.app import DataApiAppFactory
 from bi_api_lib.app_settings import MDBSettings, DataApiAppSettings
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
 
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -102,7 +101,6 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
         data_api_app_factory = self.data_api_app_factory_cls(settings=data_api_app_settings)
-        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=data_api_app_settings.BI_API_CONNECTOR_WHITELIST))
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,
         )
