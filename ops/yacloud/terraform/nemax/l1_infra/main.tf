@@ -54,6 +54,12 @@ module "k8s" {
 
   v4_cidrs = module.subinfra_data.v4_cidrs
 
+  bastion = {
+    enable          = false
+    cidr            = null
+    endpoint_suffix = null
+  }
+
   providers = {
     yandex = yandex
   }

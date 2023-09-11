@@ -39,6 +39,7 @@ module "k8s" {
 }
 
 module "bastion" {
+  count  = module.constants.env_data.k8s_use_bastion ? 1 : 0
   source = "../../k8s-bastion/v1"
 
   cluster_id      = module.k8s.cluster_id

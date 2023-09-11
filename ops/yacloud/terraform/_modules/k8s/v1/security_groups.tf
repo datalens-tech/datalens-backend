@@ -105,6 +105,8 @@ resource "yandex_vpc_security_group" "k8s_master_whitelist" {
 }
 
 resource "yandex_vpc_security_group" "k8s_bastion" {
+  count = var.bastion.enable ? 1 : 0
+
   name        = "k8s-bastion"
   description = "Access Kubernetes masters from bastions."
   network_id  = var.network_id

@@ -17,6 +17,14 @@ provider "registry.terraform.io/hashicorp/null" {
   ]
 }
 
+provider "registry.terraform.io/scottwinkler/shell" {
+  version     = "1.7.10"
+  constraints = "1.7.10"
+  hashes = [
+    "h1:JQSzisQQJATfDuN1voS1ZvXGrJnLjaFbtcwx+fiMr9w=",
+  ]
+}
+
 provider "registry.terraform.io/yandex-cloud/yandex" {
   version = "0.84.0"
   hashes = [
