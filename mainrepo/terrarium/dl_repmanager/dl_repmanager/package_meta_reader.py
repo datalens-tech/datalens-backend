@@ -79,6 +79,11 @@ class PackageMetaReader:
 
         return result
 
+    def get_implicit_dependencies(self) -> list[str]:
+        meta_section = self._toml_reader.get_section(self._SECTION_NAME_META, strict=False)
+        implicit_deps = meta_section.get('implicit_dependencies', ())
+        return [item for item in implicit_deps]
+
     def get_mypy_stubs_overrides(self) -> dict:
         return dict(self._toml_reader.get_section(f"{self._SECTION_NAME_META}.mypy_stubs_packages_override"))
 

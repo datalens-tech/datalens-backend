@@ -90,6 +90,7 @@ class PackageInfo:
     module_names: tuple[str, ...] = attr.ib(kw_only=True)
     test_dirs: tuple[str, ...] = attr.ib(kw_only=True, default=())
     requirement_lists: frozendict[str, RequirementList] = attr.ib(kw_only=True, default=frozendict())
+    implicit_deps: frozenset[str] = attr.ib(kw_only=True, default=frozenset())
 
     @property
     def toml_path(self) -> Path:

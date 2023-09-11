@@ -93,3 +93,8 @@ strict_optional = true
 bi_connector_snowflake = [
     {path = "bi_connector_snowflake/bi"},
 ]
+
+[datalens.meta]
+implicit_dependencies = [
+    "snowflake-sqlalchemy",
+]

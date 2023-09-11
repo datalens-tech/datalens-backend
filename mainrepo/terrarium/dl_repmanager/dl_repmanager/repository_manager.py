@@ -307,6 +307,11 @@ class RepositoryManager:
             _normalize_name(req_spec.package_name): req_spec
             for req_spec in package_info.requirement_lists.get(req_section_name, RequirementList()).req_specs
         }
+        actual_req_specs = {
+            req_name: req_spec for req_name, req_spec in actual_req_specs.items()
+            if req_name not in package_info.implicit_deps
+        }
+        # TODO: Check that implicit deps are all listed in either the main or the test section
 
         special_excludes = {
             # Always ignore these imports/requirements

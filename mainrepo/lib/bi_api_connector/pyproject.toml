@@ -58,3 +58,8 @@ ignore_missing_imports = true
 bi_api_connector = [
     {path = "bi_api_connector"},
 ]
+
+[datalens.meta]
+implicit_dependencies = [
+    "pytest",
+]

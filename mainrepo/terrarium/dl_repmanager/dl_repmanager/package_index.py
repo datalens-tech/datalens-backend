@@ -71,6 +71,7 @@ class PackageIndexBuilder:
             package_reg_name = pkg_meta_reader.get_package_reg_name()
             module_names = pkg_meta_reader.get_package_module_names()
             package_type = pkg_meta_reader.get_package_type() or default_package_type
+            implicit_reqs = frozenset(pkg_meta_reader.get_implicit_dependencies())
             if self.load_requirements:
                 for req_list_name in req_list_names:
                     requirement_lists[req_list_name] = RequirementList(
@@ -95,6 +96,7 @@ class PackageIndexBuilder:
             module_names=module_names,
             test_dirs=tuple(test_dirs),
             requirement_lists=frozendict(requirement_lists),
+            implicit_deps=implicit_reqs,
         )
         return package_info
 

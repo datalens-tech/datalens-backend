@@ -24,7 +24,6 @@ sqlalchemy = ">=1.4.46, <2.0"
 werkzeug = ">=2.0.3"
 yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-formula = {path = "../bi_formula"}
 yandex-bi-connector-metrica = {path = "../../../lib/bi_connector_metrica"}
 yandex-bi-connector-mysql = {path = "../../../lib/bi_connector_mysql"}
