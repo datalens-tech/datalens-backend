@@ -760,6 +760,26 @@ type = "directory"
 url = "../../lib/bi_api_lib_ya"
 
 [[package]]
+name = "bi-connector-clickhouse-mdb"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_connector_clickhouse_mdb"
+
+[[package]]
 name = "bi-connector-greenplum"
 version = "0.0.1"
 description = ""
@@ -7304,6 +7324,7 @@ develop = false
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
@@ -7351,7 +7372,6 @@ yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../lib/bi_connecto
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
@@ -8315,6 +8335,7 @@ develop = false
 
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
@@ -8329,7 +8350,6 @@ yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connecto
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
@@ -8457,6 +8477,7 @@ develop = false
 
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
@@ -8470,7 +8491,6 @@ yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connecto
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
@@ -8506,6 +8526,7 @@ develop = false
 
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
@@ -8519,7 +8540,6 @@ yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connecto
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
@@ -8861,6 +8881,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
@@ -8874,7 +8895,6 @@ yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connecto
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
@@ -9618,4 +9638,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "06d5cb1efce096c5756e60f726b7162135c730467a0292e9ada5135a0a663e8f"
+content-hash = "640aee6cd272d57ff898599faa76b72409e18e5f5217bff0512a77a6ef246ae2"

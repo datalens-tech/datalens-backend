@@ -82,7 +82,7 @@ class DataCloudInstallation(
         ],
     )
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'chyt',
@@ -519,12 +519,12 @@ class ExternalTestingInstallation(
         ],
     )
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
+        'greenplum_mdb',
         'ydb',
         'chyt',
-        'greenplum_mdb',
         'mssql',
         'oracle',
         'bigquery',
@@ -748,12 +748,12 @@ class ExternalProductionInstallation(
         ],
     )
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
+        'greenplum_mdb',
         'ydb',
         'chyt',
-        'greenplum_mdb',
         'mssql',
         'oracle',
         'bigquery',
@@ -819,7 +819,7 @@ class IsraelInstallation(NebiusInstallation):
         ],
     )
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'chyt',
@@ -850,7 +850,7 @@ class NemaxInstallation(NebiusInstallation):
         ],
     )
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'chyt',

@@ -4,14 +4,13 @@ from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 
 from bi_api_connector.api_schema.extras import FieldExtra
 from bi_api_connector.api_schema.connection_base import ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_mixins import MDBDatabaseSchemaMixin,\
-    RawSQLLevelMixin, DataExportForbiddenMixin
+from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
 from bi_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 import bi_core.marshmallow as core_ma_fields
 
 
-class ClickHouseConnectionSchema(ConnectionMetaMixin, MDBDatabaseSchemaMixin, RawSQLLevelMixin,
-                                 DataExportForbiddenMixin, ClassicSQLConnectionSchema):
+class ClickHouseConnectionSchema(ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin,
+                                 ClassicSQLConnectionSchema):
     TARGET_CLS = ConnectionClickhouse
     ALLOW_MULTI_HOST = True
 

@@ -66,7 +66,7 @@ yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
