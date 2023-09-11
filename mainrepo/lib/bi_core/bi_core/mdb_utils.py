@@ -44,7 +44,7 @@ class MDBDomainManager:
         return host.endswith(self.settings.mdb_domains)
 
     def host_is_mdb_cname(self, host: str) -> bool:
-        return self.host_in_mdb(host) and host.split('.')[-4] == 'rw'
+        return host.endswith(self.settings.mdb_cname_domains)
 
     def get_host_for_managed_network(self, host: str) -> str:
         # This hack replaces an external ("overlay", user-network) A-record
