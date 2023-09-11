@@ -13,7 +13,7 @@ from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.environments import LegacyDefaults
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.utils import split_by_comma
-from bi_configs import connectors_data as cd
+from bi_configs.connectors_data import normalize_sql_query
 
 
 def _env_loading_unimplemented(_: str) -> Any:
@@ -25,7 +25,7 @@ def _subselect_templates_env_var_converter(v: str) -> tuple[dict[str, str], ...]
     for tpl in templates:
         tpl_keys = set(tpl.keys())
         assert tpl_keys == {'sql_query', 'title'}, f'Unexpected keys for a subselect template: {tpl_keys}'
-        tpl['sql_query'] = cd.normalize_sql_query(tpl['sql_query'])
+        tpl['sql_query'] = normalize_sql_query(tpl['sql_query'])
 
     return templates
 
