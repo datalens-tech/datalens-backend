@@ -103,3 +103,19 @@ resource "yandex_vpc_security_group" "k8s_master_whitelist" {
     port           = 443
   }
 }
+
+resource "yandex_vpc_security_group" "k8s_bastion" {
+  name        = "k8s-bastion"
+  description = "Access Kubernetes masters from bastions."
+  network_id  = var.network_id
+
+  dynamic "ingress" {
+    for_each = var.bastion.enable ? [1] : []
+    content {
+      protocol       = "TCP"
+      description    = "Access Kubernetes API on 443"
+      v6_cidr_blocks = var.bastion.cidr
+      port           = 443
+    }
+  }
+}

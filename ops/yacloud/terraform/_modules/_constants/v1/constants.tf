@@ -20,6 +20,9 @@ variable "data" {
     ycp_environment             = string
     k8s_use_ext_v6              = bool
     k8s_use_cilium              = bool
+    k8s_use_bastion             = bool
+    bastion_cidr                = list(string)
+    bastion_endpoint_suffix     = string
     apps_to_run = object({
       bi_api        = bool
       bi_api_public = bool
@@ -65,6 +68,13 @@ variable "data" {
       ycp_environment    = "preprod"
       k8s_use_ext_v6     = true
       k8s_use_cilium     = true
+      k8s_use_bastion    = true
+      bastion_cidr = [
+        "2a02:6b8:c03:501:0:fca0::/112",
+        "2a02:6b8:c0e:501:0:fca0::/112",
+        "2a02:6b8:c02:901:0:fca0::/112",
+      ]
+      bastion_endpoint_suffix = "k8s.bastion.cloud-preprod.yandex.net"
       apps_to_run = {
         bi_api        = true
         bi_api_public = true
@@ -105,6 +115,9 @@ variable "data" {
       ycp_environment    = "israel"
       k8s_use_ext_v6     = true
       k8s_use_cilium     = false
+      k8s_use_bastion    = false
+      bastion_cidr       = []
+      bastion_endpoint_suffix = "k8s.bastion.yandexcloud.co.il"
       apps_to_run = {
         bi_api        = true
         bi_api_public = false
@@ -143,6 +156,9 @@ variable "data" {
       ycp_environment    = "nemax"
       k8s_use_ext_v6     = true
       k8s_use_cilium     = true
+      k8s_use_bastion    = false
+      bastion_cidr       = []
+      bastion_endpoint_suffix = "k8s.bastion.nemax.nebiuscloud.net"
       apps_to_run = {
         bi_api        = true
         bi_api_public = false

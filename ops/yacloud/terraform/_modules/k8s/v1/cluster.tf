@@ -26,7 +26,11 @@ resource "yandex_kubernetes_cluster" "this" {
     version             = var.k8s_version
     public_ip           = !var.use_ext_v6
     external_v6_address = var.use_ext_v6 ? ycp_vpc_address.master_v6[0].ipv6_address[0].address : null
-    security_group_ids = [
+    security_group_ids  = var.bastion.enable ? [
+      yandex_vpc_security_group.k8s_main.id,
+      yandex_vpc_security_group.k8s_master_whitelist.id,
+      yandex_vpc_security_group.k8s_bastion.id
+    ] : [
       yandex_vpc_security_group.k8s_main.id,
       yandex_vpc_security_group.k8s_master_whitelist.id
     ]
@@ -73,6 +77,7 @@ locals {
     var.use_ext_v6 ?
     "[${yandex_kubernetes_cluster.this.master[0].external_v6_address}]" : yandex_kubernetes_cluster.this.master[0].external_v4_address
   )
-  endpoint = "https://${local.preferrable_address}"
+  bastion_address = "https://${yandex_kubernetes_cluster.this.id}.${var.bastion.endpoint_suffix}"
+  endpoint = var.bastion.enable ? "${local.bastion_address}" : "https://${local.preferrable_address}"
   ca       = yandex_kubernetes_cluster.this.master[0].cluster_ca_certificate
 }

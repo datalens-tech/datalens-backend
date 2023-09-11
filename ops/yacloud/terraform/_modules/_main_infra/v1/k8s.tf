@@ -27,7 +27,21 @@ module "k8s" {
 
   v4_cidrs = module.subinfra_data.v4_cidrs
 
+  bastion = {
+    enable          = module.constants.env_data.k8s_use_bastion
+    cidr            = module.constants.env_data.bastion_cidr
+    endpoint_suffix = module.constants.env_data.bastion_endpoint_suffix
+  }
+
   providers = {
     yandex = yandex
   }
+}
+
+module "bastion" {
+  source = "../../k8s-bastion/v1"
+
+  cluster_id      = module.k8s.cluster_id
+  environment     = var.yc_profile
+  bastion_enabled = module.constants.env_data.k8s_use_bastion
 }

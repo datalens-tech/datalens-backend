@@ -88,3 +88,11 @@ variable "enable_silo" {
 variable "use_cilium" {
   type = bool
 }
+
+variable "bastion" {
+  type = object({
+    enable          = bool
+    cidr            = list(string)
+    endpoint_suffix = string
+  })
+}
