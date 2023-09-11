@@ -38,6 +38,9 @@ from bi_core.us_entry import BaseAttrsDataModel, USEntry
 from bi_core.utils import parse_comma_separated_hosts, secrepr
 from bi_core.mdb_utils import MDBDomainManager
 from bi_core.connection_executors.adapters.common_base import get_dialect_for_conn_type
+from bi_core.data_processing.cache.primitives import (
+    BIQueryCacheOptions, CacheTTLConfig, CacheTTLInfo, DataKeyPart, LocalKeyRepresentation,
+)
 
 if TYPE_CHECKING:
     from bi_core.connection_executors import SyncConnExecutorBase
@@ -309,6 +312,20 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
         return []
 
+    def get_cache_key_part(self) -> LocalKeyRepresentation:
+        local_key_rep = LocalKeyRepresentation()
+        local_key_rep = local_key_rep.multi_extend(
+            DataKeyPart(
+                part_type='connection_id',
+                part_content=self.uuid,
+            ),
+            DataKeyPart(
+                part_type='connection_revision_id',
+                part_content=self.revision_id,
+            ),
+        )
+        return local_key_rep
+
 
 class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
 
@@ -478,6 +495,13 @@ class ConnectionSQL(SubselectMixin, ExecutorBasedMixin, ConnectionBase):  # type
 
     def validate(self) -> None:
         pass
+
+    def get_cache_key_part(self) -> LocalKeyRepresentation:
+        local_key_rep = super().get_cache_key_part()
+        if hasattr(self.data, 'db_name') and self.db_name:
+            local_key_rep = local_key_rep.extend(part_type='db_name', part_content=self.db_name)
+
+        return local_key_rep
 
 
 class ClassicConnectionSQL(ConnectionSQL):

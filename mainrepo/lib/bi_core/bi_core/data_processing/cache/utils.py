@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Collection, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Collection, Optional
 
 import attr
 from sqlalchemy.exc import DatabaseError
@@ -121,22 +121,6 @@ class CacheOptionsBuilderBase:
             data_source_list=data_source_list,
         )
 
-    @staticmethod
-    def extend_key_for_connection(
-            local_key_rep: LocalKeyRepresentation,
-            connection: ConnectionBase,
-    ) -> LocalKeyRepresentation:
-        return local_key_rep.multi_extend(
-            DataKeyPart(
-                part_type='connection_id',
-                part_content=connection.uuid,
-            ),
-            DataKeyPart(
-                part_type='connection_revision_id',
-                part_content=connection.revision_id,
-            ),
-        )
-
 
 @attr.s
 class CacheOptionsBuilderDataProcessor(CacheOptionsBuilderBase):
@@ -175,7 +159,7 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
             role: DataSourceRole,
             joint_dsrc_info: PreparedMultiFromInfo,
             query: Select,
-            user_types: List[BIType],
+            user_types: list[BIType],
             dataset: Dataset,
     ) -> BIQueryCacheOptions:
         """Returns cache key, TTL for new entries, refresh TTL flag"""
@@ -215,7 +199,7 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
             self,
             joint_dsrc_info: PreparedMultiFromInfo,
             compiled_query: str,
-            user_types: List[BIType],
+            user_types: list[BIType],
             data_dump_id: str,
             is_bleeding_edge_user: bool,
     ) -> LocalKeyRepresentation:
@@ -226,9 +210,11 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
         connection_id = target_connection.uuid
         assert connection_id is not None
 
-        local_key_rep = LocalKeyRepresentation()
-        local_key_rep = self.extend_key_for_connection(local_key_rep, target_connection)
+        local_key_rep = target_connection.get_cache_key_part()
         if joint_dsrc_info.db_name is not None:
+            # FIXME: Replace with key parts for every participating dsrc
+            # For now db_name will be duplicated in some source types
+            # (one from connection, one from source)
             local_key_rep = local_key_rep.extend(
                 part_type='db_name', part_content=joint_dsrc_info.db_name)
         local_key_rep = local_key_rep.extend(
@@ -256,18 +242,14 @@ class DashSQLCacheOptionsBuilder(CacheOptionsBuilderBase):
             conn: ConnectionBase,
             query_text: str,
             params: TJSONExt,
-            db_params: Dict[str, str],
+            db_params: dict[str, str],
             connector_specific_params: TJSONExt,
     ) -> BIQueryCacheOptions:
         cache_enabled = self.get_cache_enabled(conn=conn)
         ttl_config = self.get_actual_ttl_config(connection=conn, dataset=None)
         ttl_info = self.config_to_ttl_info(ttl_config, is_materialized=False, data_source_list=None)
 
-        local_key_rep: Optional[LocalKeyRepresentation] = LocalKeyRepresentation()
-        local_key_rep = self.extend_key_for_connection(
-            local_key_rep=cast(LocalKeyRepresentation, local_key_rep),
-            connection=conn,
-        )
+        local_key_rep: Optional[LocalKeyRepresentation] = conn.get_cache_key_part()
         local_key_rep = local_key_rep.multi_extend(
             DataKeyPart(part_type='query', part_content=query_text),
             DataKeyPart(part_type='params', part_content=hashable_dumps(params)),
