@@ -91,13 +91,11 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         if query_type == QueryType.value_range:
             legend_item_ids = [legend_item_ids[0]]
         legend_items = [merged_stream.legend.get_item(liid) for liid in legend_item_ids]
-        yql_schema = cls.get_yql_schema(legend_items)
-        LOGGER.info('YQL schema for data', extra=dict(yql_schema=yql_schema))
         data: Dict[str, Any] = {
             'result': {
                 'data': {
                     'Data': [row.data for row in merged_stream.rows],
-                    'Type': yql_schema,
+                    'Type': cls.get_yql_schema(legend_items),
                 },
             },
         }

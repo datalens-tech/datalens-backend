@@ -30,7 +30,7 @@ class SectionAliasMode(Enum):
 
     * `unaliased`: e.g. `select {expr} … group by {expr}`
     * `by_alias_in_section`: `select {expr} as col … group by col` (ClickHouse, PostgreSQL, MySQL)
-    * `by_alias_in_select`: `select col … group by {expr} as col` (YQL)
+    * `by_alias_in_select`: `select col … group by {expr} as col` (YQL)
 
     In a more general case, this would be 'section priority order for placing
     the column expression with alias', but there's only 3 known cases anyway.

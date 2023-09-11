@@ -4,8 +4,13 @@ import logging
 
 import pytest
 
-from bi_testing.test_data.sql_queries import (
-    CH_QUERY, CH_QUERY_FULL, PG_QUERY_FULL, ORACLE_QUERY_FULL, DASHSQL_EXAMPLE_PARAMS
+from bi_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
+
+from bi_testing_ya.sql_queries import (
+    CH_QUERY,
+    CH_QUERY_FULL,
+    PG_QUERY_FULL,
+    ORACLE_QUERY_FULL,
 )
 
 LOGGER = logging.getLogger(__name__)

@@ -31,13 +31,13 @@ from bi_core_testing.environment import common_pytest_configure, prepare_united_
 from bi_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_testing.s3_utils import create_s3_client, create_s3_bucket, s3_tbl_func_maker
-from bi_testing.test_data.sql_queries import CH_QUERY_FULL
+from bi_testing_ya.sql_queries import CH_QUERY_FULL
 from clickhouse_sqlalchemy import types as ch_types
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_SUBSELECT
+from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2, SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
 
