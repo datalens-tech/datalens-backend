@@ -4,6 +4,7 @@ locals {
     endpoint            = local.endpoint
     cluster_auth_base64 = base64encode(local.ca)
     yc_profile          = var.yc_profile
+    bastion             = var.bastion.enable
   })
 }
 

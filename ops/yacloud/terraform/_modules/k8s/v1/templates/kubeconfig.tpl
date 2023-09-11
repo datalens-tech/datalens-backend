@@ -5,7 +5,9 @@ kind: Config
 clusters:
 - cluster:
     server: ${endpoint}
+    %{ if bastion == false }
     certificate-authority-data: ${cluster_auth_base64}
+    %{ endif }
 
   name: ${kubeconfig_name}
 
