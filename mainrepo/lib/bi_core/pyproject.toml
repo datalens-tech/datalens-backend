@@ -76,21 +76,7 @@ addopts = "-ra"
 testpaths = ["bi_core_tests/unit", "bi_core_tests/db"]
 timeout = 600
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [tool.poetry.scripts]
 setup-iptables = "bi_core.bin.setup_iptables:main"

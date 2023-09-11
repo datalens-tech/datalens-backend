@@ -17,9 +17,6 @@ python = ">=3.10, <3.12"
 
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = ">=0.20.3"
-
-
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -31,21 +28,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_file_secure_reader_lib_tests/db"]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [[tool.poetry.source]]
 name = "ya"

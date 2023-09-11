@@ -14,9 +14,6 @@ yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-
-
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -28,21 +25,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [datalens_ci]
 skip_test = true

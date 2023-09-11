@@ -37,22 +37,3 @@ build-backend = "poetry.core.masonry.api"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_integration_tests_tests"]
-
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
-
-[tool.black]
-line-length = 140
-target-version = ['py310']
-
-
-

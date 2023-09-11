@@ -24,21 +24,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
-
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [[tool.poetry.source]]
 name = "ya"

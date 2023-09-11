@@ -50,21 +50,7 @@ requires = [
   "poetry-core",
 ]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [tool.poetry.scripts]
 bi-core-rqe-async = "bi_core.connection_executors.remote_query_executor.app_async:async_qe_main"

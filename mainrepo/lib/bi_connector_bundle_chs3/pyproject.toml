@@ -53,21 +53,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [datalens_ci]
 skip_test = true

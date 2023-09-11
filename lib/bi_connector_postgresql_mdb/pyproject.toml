@@ -32,21 +32,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_postgresql_mdb_tests/"

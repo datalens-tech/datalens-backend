@@ -64,21 +64,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_connector_clickhouse_tests/db", "bi_connector_clickhouse_tests/unit"]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_clickhouse_tests/unit"

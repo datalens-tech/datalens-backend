@@ -1,3 +1,13 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Aleksandr Ushakov <alex-ushakov@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -5,10 +15,11 @@ requires = [
 ]
 
 [tool.black]
-line-length = 140
+line-length = 120
+target-version = ['py310']
 
 [tool.isort]
-line_length = 140
+line_length = 120
 profile = "black"
 multi_line_output = 3
 force_grid_wrap = 2
@@ -30,18 +41,8 @@ known_connectors = [
   "bi_connector_*"
 ]
 
-[tool.poetry]
-name = "backend"
-version = "0.1.0"
-description = ""
-authors = ["Aleksandr Ushakov <alex-ushakov@gmail.com>"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.10"
-
 [tool.ruff]
-line-length = 140
+line-length = 120
 select = [
   # Pyflakes
   "F",
@@ -52,6 +53,9 @@ select = [
   # "I"
   # Bugbear
   "B"
+]
+ignore = [
+  "E501",  # line lengh, should be checked and fixed by black
 ]
 exclude = [
   ".bzr",

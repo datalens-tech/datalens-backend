@@ -32,25 +32,11 @@ ipdb = "0.13.13"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
-
-
 [tool.ruff.isort]
 split-on-trailing-comma = true
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
+
+
 
 [tool.poetry.scripts]
 print-deps = "datalens_local_dev.get_submodules:print_project_dependencies"

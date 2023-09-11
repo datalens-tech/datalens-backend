@@ -44,21 +44,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_file_uploader_lib_tests/db", "bi_file_uploader_lib_tests/ext"]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [datalens.pytest.db]
 root_dir = "bi_file_uploader_lib_tests"

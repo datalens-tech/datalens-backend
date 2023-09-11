@@ -104,9 +104,6 @@ lz4 = "==4.3.2"
 tvmauth = "==3.4.9"
 blackbox = "==0.72"
 tvm2 = "==5.0"
-
-
-
 [tool.poetry.group.ci.dependencies]
 boto3 = ">=1.24.59"  # TODO FIX: This is used in tests in some packages. Try to fix with dependency in relevant packages
 #
@@ -319,9 +316,8 @@ select = [
 [tool.ruff.isort]
 split-on-trailing-comma = true
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
+
+
 
 [[tool.poetry.source]]
 name = "ya"

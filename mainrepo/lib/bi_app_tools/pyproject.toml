@@ -17,9 +17,6 @@ sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-utils = {path = "../bi_utils"}
 
 [tool.poetry.group.tests.dependencies]
-
-
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -31,21 +28,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_app_tools_tests/unit"]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [tool.mypy]
 warn_unused_configs = true

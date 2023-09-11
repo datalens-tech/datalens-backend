@@ -43,9 +43,6 @@ pytest = "==7.2.2"
 cryptography = "==3.3.2"
 typeguard = "==2.13.3"
 more-itertools = "==9.1.0"
-
-
-
 [tool.poetry.group.ci.dependencies]
 boto3 = ">=1.24.59"  # TODO FIX: This is used in tests in some packages. Try to fix with dependency in relevant packages
 #
@@ -112,9 +109,8 @@ select = [
 [tool.ruff.isort]
 split-on-trailing-comma = true
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
+
+
 
 [tool.pytest.ini_options]
 minversion = "6.0"

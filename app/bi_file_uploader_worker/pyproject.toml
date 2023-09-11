@@ -40,30 +40,13 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
-
 [tool.poetry.scripts]
 file-uploader-worker = "bi_file_uploader_worker.app:run_standalone_worker"
 file-uploader-worker-health-check = "bi_file_uploader_worker.app:run_health_check"
 gunicorn = "gunicorn.app.wsgiapp:run"
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
-
 [datalens_ci]
 skip_test = true
-
 
 [[tool.poetry.source]]
 name = "ya"

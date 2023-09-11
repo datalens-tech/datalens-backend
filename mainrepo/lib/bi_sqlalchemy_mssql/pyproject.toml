@@ -28,23 +28,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_sqlalchemy_mssql_tests/unit"]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
-
-[tool.black]
-line-length = 140
-target-version = ['py310']
-
-
 
 
 [tool.mypy]

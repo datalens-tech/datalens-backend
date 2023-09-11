@@ -36,21 +36,7 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_sqlalchemy_yq_tests/unit"]
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-]
 
-[tool.black]
-line-length = 140
-target-version = ['py310']
 
 [datalens_ci]
 # currently we have only one test which is skipped unconditionnaly, but import fails due to missing pb2 stubs in py pkg
