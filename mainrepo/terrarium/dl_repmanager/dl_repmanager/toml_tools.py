@@ -7,7 +7,7 @@ from typing import Any, Generator, Iterable
 import attr
 import tomlkit
 from tomlkit.toml_document import TOMLDocument
-from tomlkit.items import Item as TOMLItem, AbstractTable, AoT, SingleKey
+from tomlkit.items import Item as TOMLItem, AbstractTable
 from tomlkit.container import Container as TOMLContainer, OutOfOrderTableProxy
 from tomlkit.exceptions import NonExistentKey
 
@@ -38,7 +38,7 @@ class TOMLReaderBase:
     def iter_section_items(self, key: str, strict: bool = True) -> Iterable[tuple[Any, Any]]:
         section = self.get_section(key=key, strict=strict)
         assert isinstance(section, AbstractTable)
-        for item_key, item in section.value.body:
+        for item_key, item in section.items():
             yield item_key, item
 
 
