@@ -91,7 +91,7 @@ from bi_testing.s3_utils import create_s3_client, create_s3_bucket
 from bi_testing.utils import wait_for_initdb
 from statcommons.logs import LOGMUTATORS
 
-from bi_api_lib.query.registry import register_for_connectors_with_native_wf
+from bi_api_lib_ya.query_registry import register_for_connectors_with_native_wf
 
 from bi_file_uploader_worker_lib.app import FileUploaderContextFab
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader

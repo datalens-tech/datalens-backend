@@ -21,6 +21,7 @@ from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_
 from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
 from bi_api_lib_ya.app_settings import AsyncAppSettings
 from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
+from bi_api_lib_ya.query_registry import register_for_connectors_with_native_wf
 
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 
@@ -68,6 +69,9 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware(settings.jaeger_service_name),
     )
+
+    register_for_connectors_with_native_wf()  # FIXME: Remove this after removing the NATIVE_WF_* switches
+
     try:
         LOGGER.info("Creating application instance...")
         app = create_app(setting=settings, connectors_settings=connectors_settings)
