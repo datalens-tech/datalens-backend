@@ -105,7 +105,6 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
         load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=data_api_app_settings.BI_API_CONNECTOR_WHITELIST))
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,
-            test_setting=None,
         )
 
     @pytest.fixture(scope='function')

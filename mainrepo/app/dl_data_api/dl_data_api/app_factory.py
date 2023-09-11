@@ -18,7 +18,7 @@ from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
-from bi_api_lib.app_settings import TestAppSettings, DataApiAppSettings, AppSettings
+from bi_api_lib.app_settings import DataApiAppSettings, AppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
@@ -67,7 +67,6 @@ class DataApiAppFactoryOS(DataApiAppFactory[DataApiAppSettings], DataApiSRFactor
     def set_up_environment(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
         auth_mw_list: list[AIOHTTPMiddleware]
         sr_middleware_list: list[AIOHTTPMiddleware]

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Optional
 
 from aiohttp import web
 
@@ -18,7 +17,6 @@ from bi_constants.enums import ConnectionType
 
 from bi_core.logging_config import configure_logging
 
-from bi_api_lib.app_settings import TestAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
 from bi_api_lib_ya.app_settings import AsyncAppSettings
@@ -37,16 +35,13 @@ class DefaultDataApiAppFactory(LegacyDataApiAppFactory, LegacySRFactoryBuilder):
         return app_version
 
 
-# TODO CONSIDER: Pass all testing workarounds in constructor args
 def create_app(
         setting: AsyncAppSettings,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        test_setting: Optional[TestAppSettings] = None
 ) -> web.Application:
     data_api_app_factory = DefaultDataApiAppFactory(settings=setting)
     return data_api_app_factory.create_app(
         connectors_settings=connectors_settings,
-        test_setting=test_setting,
     )
 
 

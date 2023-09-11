@@ -220,12 +220,6 @@ class DataApiAppSettings(AppSettings):
     app_prefix: ClassVar[str] = 'y'
 
 
-@attr.s(frozen=True)
-class TestAppSettings:
-    use_bb_in_test: bool = attr.ib(kw_only=True, default=False)
-    tvm_info: Optional[str] = attr.ib(kw_only=True, default=None, repr=False)
-
-
 @attr.s(frozen=True, kw_only=True)
 class ControlApiAppTestingsSettings:
     us_auth_mode_override: Optional[USAuthMode] = attr.ib(default=None)

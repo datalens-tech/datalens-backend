@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import functools
 import logging.config
-from typing import Optional, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from aiohttp import web
 import attr
@@ -28,7 +28,7 @@ from bi_api_lib.aio.aiohttp_wrappers import AppWrapper, DSAPIRequest
 from bi_api_lib.aio.middlewares.error_handling_outer import DatasetAPIErrorHandler
 from bi_api_lib.aio.middlewares.json_body_middleware import json_body_middleware
 from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_settings import TestAppSettings, DataApiAppSettings
+from bi_api_lib.app_settings import DataApiAppSettings
 from bi_api_lib.app.data_api.resources.dashsql import DashSQLView
 from bi_api_lib.app.data_api.resources.dataset.distinct import (
     DatasetDistinctViewV1, DatasetDistinctViewV1_5, DatasetDistinctViewV2,
@@ -74,9 +74,6 @@ async def add_connection_close(request: web.Request, response: web.StreamRespons
     response.headers.add('Connection', 'close')
 
 
-# TODO CONSIDER: Pass all testing workarounds in constructor args
-
-
 @attr.s(frozen=True)
 class EnvSetupResult:
     auth_mw_list: list[AIOHTTPMiddleware] = attr.ib(kw_only=True)
@@ -99,7 +96,6 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     def set_up_environment(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
         raise NotImplementedError()
 
@@ -185,13 +181,12 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     def create_app(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            test_setting: Optional[TestAppSettings] = None
     ) -> web.Application:
         if self._settings.SENTRY_ENABLED:
             self.set_up_sentry()
 
         env_setup_result = self.set_up_environment(
-            test_setting=test_setting, connectors_settings=connectors_settings,
+            connectors_settings=connectors_settings,
         )
 
         req_id_service = RequestId(

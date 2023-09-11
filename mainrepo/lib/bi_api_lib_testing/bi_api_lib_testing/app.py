@@ -27,7 +27,6 @@ from bi_api_lib.app_settings import (
     AppSettings,
     ControlApiAppSettings,
     DataApiAppSettings,
-    TestAppSettings,
     ControlApiAppTestingsSettings,
 )
 from bi_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult, ControlApiAppFactory
@@ -172,7 +171,6 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
     def set_up_environment(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            test_setting: Optional[TestAppSettings] = None,
     ) -> DataApiEnvSetupResult:
 
         conn_opts_factory = ConnOptionsMutatorsFactory()

@@ -22,7 +22,6 @@ from bi_core.us_connection_base import ExecutorBasedMixin
 from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
 from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import TestAppSettings
 from bi_api_lib_ya.app_settings import AsyncAppSettings
 
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
@@ -44,7 +43,6 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
     def set_up_environment(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
         # TODO: Move the rest of the env-dependent stuff here
 
@@ -92,17 +90,12 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
                 blackbox_auth_middleware(),
             ]
         elif self._settings.APP_TYPE == AppType.TESTS:
-            if test_setting is not None and test_setting.use_bb_in_test:  # NOTE used only in solomon tests
-                auth_mw_list = [
-                    blackbox_auth_middleware(tvm_info=test_setting.tvm_info),
-                ]
-            else:
-                auth_mw_list = [
-                    auth_trust_middleware(
-                        fake_user_id='_the_tests_asyncapp_user_id_',
-                        fake_user_name='_the_tests_asyncapp_user_name_',
-                    )
-                ]
+            auth_mw_list = [
+                auth_trust_middleware(
+                    fake_user_id='_the_tests_asyncapp_user_id_',
+                    fake_user_name='_the_tests_asyncapp_user_name_',
+                )
+            ]
         elif self._settings.APP_TYPE == AppType.DATA_CLOUD:
             yc_auth_settings = self._settings.YC_AUTH_SETTINGS
             assert yc_auth_settings

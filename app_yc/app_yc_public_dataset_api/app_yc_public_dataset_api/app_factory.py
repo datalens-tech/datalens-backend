@@ -25,7 +25,6 @@ from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
-from bi_api_lib.app_settings import TestAppSettings
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
@@ -103,7 +102,6 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory[AsyncAppSettings], PublicDa
     def set_up_environment(
             self,
             connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
         auth_mw_list: list[AIOHTTPMiddleware]
         sr_middleware_list: list[AIOHTTPMiddleware]

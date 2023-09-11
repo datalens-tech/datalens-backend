@@ -17,6 +17,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa
 from pytest_lazyfixture import lazy_fixture
 
+from bi_api_commons.logging_config import add_log_context
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT, CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
@@ -33,7 +34,7 @@ import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
 from bi_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
-    TestAppSettings, MDBSettings,
+    MDBSettings,
 )
 from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -71,7 +72,6 @@ from bi_api_commons_ya_cloud.models import TenantYCFolder
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_core.connections_security.base import InsecureConnectionSecurityManager
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.us_connection import ConnectionClickhouseFrozenBase
-from bi_core.logging_config import add_log_context
 from bi_core.mdb_utils import MDBDomainManagerFactory
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from bi_core_testing.connection import make_saved_connection
@@ -668,14 +668,6 @@ def async_app_settings_local_env_with_caches(
 
 
 @pytest.fixture(scope='function')
-def test_settings_with_bb(tvm_info) -> TestAppSettings:
-    return TestAppSettings(
-        use_bb_in_test=True,
-        tvm_info=tvm_info,
-    )
-
-
-@pytest.fixture(scope='function')
 def async_api_local_env_low_level_client(
         loop, aiohttp_client, async_app_settings_local_env, connectors_settings
 ):
@@ -688,14 +680,6 @@ def async_api_local_env_low_level_client_with_mutation_cache(
     loop, aiohttp_client, async_app_settings_local_env_with_mutation_cache, connectors_settings
 ):
     app = create_app_async(async_app_settings_local_env_with_mutation_cache, connectors_settings)
-    return loop.run_until_complete(aiohttp_client(app))
-
-
-@pytest.fixture(scope='function')
-def async_api_local_env_low_level_client_with_bb(
-        loop, aiohttp_client, async_app_settings_local_env, test_settings_with_bb, connectors_settings
-):
-    app = create_app_async(async_app_settings_local_env, connectors_settings, test_settings_with_bb)
     return loop.run_until_complete(aiohttp_client(app))
 
 

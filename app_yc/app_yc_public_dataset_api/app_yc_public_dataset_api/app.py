@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Optional
 
 from aiohttp import web
 
@@ -18,7 +17,6 @@ from bi_constants.enums import ConnectionType
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 from bi_core.logging_config import configure_logging
 
-from bi_api_lib.app_settings import TestAppSettings
 from bi_api_lib_ya.app_settings import AsyncAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
@@ -28,16 +26,13 @@ from app_yc_public_dataset_api.app_factory import PublicDatasetApiAppFactoryYC
 LOGGER = logging.getLogger(__name__)
 
 
-# TODO CONSIDER: Pass all testing workarounds in constructor args
 def create_app(
         setting: AsyncAppSettings,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        test_setting: Optional[TestAppSettings] = None
 ) -> web.Application:
     data_api_app_factory = PublicDatasetApiAppFactoryYC(settings=setting)
     return data_api_app_factory.create_app(
         connectors_settings=connectors_settings,
-        test_setting=test_setting,
     )
 
 
