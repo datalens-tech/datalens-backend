@@ -1,7 +1,6 @@
 #syntax=docker/dockerfile:1.4
 FROM base_img as build
 
-ARG LOCALE_NAME
 ARG OUTPUT_DIR
 ARG CONFIG_VERSION
 ARG DOC_DIR=generated_docs
@@ -10,7 +9,9 @@ WORKDIR /src
 
 RUN mkdir -p generated_docs
 RUN . /venv/bin/activate && \
-    bi-formula-ref-doc generate --locale $LOCALE_NAME $DOC_DIR --config-version $CONFIG_VERSION
+    for locale in $(bi-formula-ref-doc locales --config-version $CONFIG_VERSION) ; do \
+    bi-formula-ref-doc generate --config-version $CONFIG_VERSION --locale $locale $DOC_DIR/$locale ; \
+    done
 
 
 # Resulting artifact

@@ -39,7 +39,7 @@ Generate binary `.mo` files from `.po` files for package (run it from a package 
 ```
 task gen:formula-ref -- <config_version>
 ```
-Generate formula reference for all locales for the given `config_version`.
+Generate formula reference for all supported locales for the given `config_version`.
 Resulting doc files are placed in `artifacts/generated_docs`
 
 

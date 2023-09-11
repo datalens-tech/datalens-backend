@@ -158,7 +158,6 @@ EOT
 
 target "gen-formula-ref" {
   args = {
-    LOCALE_NAME = ".." # need to pass via --set flag
     OUTPUT_DIR = ".." # need to pass via --set flag
     CONFIG_VERSION = ".." # need to pass via --set flag
   }

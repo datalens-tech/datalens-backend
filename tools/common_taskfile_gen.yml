@@ -6,7 +6,6 @@ vars:
 
 tasks:
   antlr:
-    deps:
     dir: ../mainrepo/docker_build
     cmds:
       - ./run-project-bake gen_antlr --progress=plain
@@ -30,22 +29,15 @@ tasks:
         --set msgfmt.output="type=local,dest={{.USER_WORKING_DIR}}/{{.PACKAGE_NAME}}"
         --progress=plain
 
-  _gen-formula-ref-locale:
+  formula-ref:
     dir: ../docker_build
     vars:
-      OUTPUT_DIR: "../artifacts/doc_formula_ref"
+      CONFIG_VERSION: "{{.CLI_ARGS}}"
+      OUTPUT_DIR: "../artifacts/doc_formula_ref/{{.CONFIG_VERSION}}"
     cmds:
+      - rm -rf {{.OUTPUT_DIR}}
       - ./run-project-bake gen-formula-ref
-        --set gen-formula-ref.args.LOCALE_NAME={{.LOCALE_NAME}}
         --set gen-formula-ref.args.OUTPUT_DIR={{.OUTPUT_DIR}}
         --set gen-formula-ref.args.CONFIG_VERSION={{.CONFIG_VERSION}}
-        --set gen-formula-ref.output="type=local,dest={{.OUTPUT_DIR}}/{{.LOCALE_NAME}}"
+        --set gen-formula-ref.output="type=local,dest={{.OUTPUT_DIR}}"
         --progress=plain
-
-  formula-ref:
-    # FIXME: Generate only supported locales (listed in formula_ref config)
-    vars:
-      CONFIG_VERSION: "{{.CLI_ARGS}}"
-    deps:
-      - {task: "_gen-formula-ref-locale", vars: {LOCALE_NAME: "en", CONFIG_VERSION: "{{.CONFIG_VERSION}}"}}
-      - {task: "_gen-formula-ref-locale", vars: {LOCALE_NAME: "ru", CONFIG_VERSION: "{{.CONFIG_VERSION}}"}}

@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 
 from bi_formula_ref.loader import load_formula_ref
-from bi_formula_ref.generator import ReferenceDocGenerator, ConfigVersion
-from bi_formula_ref.localization import DEFAULT_LOCALE, get_locales
+from bi_formula_ref.generator import ReferenceDocGenerator, ConfigVersion, get_generator_config
+from bi_formula_ref.localization import DEFAULT_LOCALE
 
 
 def conf_version_type(s: str) -> ConfigVersion:
@@ -13,31 +13,40 @@ def conf_version_type(s: str) -> ConfigVersion:
 parser = argparse.ArgumentParser(prog='Formula documentation command line tool')
 subparsers = parser.add_subparsers(title='command', dest='command')
 
+config_version = argparse.ArgumentParser(add_help=False)
+config_version.add_argument(
+    '--config-version', type=conf_version_type, default=ConfigVersion.default.name,
+    help='Configuration version'
+)
+
 locale_parser = argparse.ArgumentParser(add_help=False)
 locale_parser.add_argument('--locale', help='Locale', default=DEFAULT_LOCALE)
 
 outdir_parser = argparse.ArgumentParser(add_help=False)
 outdir_parser.add_argument('outdir', help='Directory where to save generated files')
 
-subparsers.add_parser('locales', help='List available locales')
+subparsers.add_parser('config-versions', help='List available config versions')
 
-generate_parser = subparsers.add_parser(
-    'generate', parents=[outdir_parser, locale_parser],
+subparsers.add_parser('locales', parents=[config_version], help='List available locales')
+
+subparsers.add_parser(
+    'generate', parents=[outdir_parser, config_version, locale_parser],
     help='Generate function documentation directory'
-)
-generate_parser.add_argument(
-    '--config-version', type=conf_version_type, default=ConfigVersion.yacloud.name,  # FIXME
-    help='Configuration version'
 )
 
 
 class FormulaDocTool:
     @staticmethod
-    def print_locales():
-        print('\n'.join(sorted(get_locales())))
+    def print_versions():
+        print('\n'.join(sorted([version.name for version in ConfigVersion])))
+
+    @staticmethod
+    def print_locales(config_version: ConfigVersion):
+        gen_config = get_generator_config(version=config_version)
+        print('\n'.join(sorted(gen_config.supported_locales)))
 
     @classmethod
-    def generate_doc(cls, outdir: str, locale: str, config_version: ConfigVersion = ConfigVersion.default):
+    def generate_doc(cls, outdir: str, locale: str, config_version: ConfigVersion):
         ref_doc_generator = ReferenceDocGenerator(locale=locale, config_version=config_version)
         ref_doc_generator.generate_doc_full_dir(outdir=outdir)
 
@@ -45,12 +54,13 @@ class FormulaDocTool:
     def run(cls, args):
         tool = cls()
 
-        if args.command == 'locales':
-            tool.print_locales()
-        elif args.command == 'generate':
-            tool.generate_doc(
-                outdir=args.outdir, locale=args.locale, config_version=args.config_version,
-            )
+        match args.command:
+            case 'config-versions':
+                tool.print_versions()
+            case 'locales':
+                tool.print_locales(config_version=args.config_version)
+            case 'generate':
+                tool.generate_doc(outdir=args.outdir, locale=args.locale, config_version=args.config_version)
 
 
 def main():

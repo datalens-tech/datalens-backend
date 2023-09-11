@@ -13,6 +13,8 @@ import bi_formula_ref
 from bi_formula_ref.config import _CONFIGS_BY_VERSION, ConfigVersion
 from bi_formula_ref.scripts.formula_doc import parser, FormulaDocTool
 
+from bi_connector_clickhouse.formula.constants import ClickHouseDialect
+
 
 @pytest.fixture(scope='module')
 def tool():
@@ -30,9 +32,12 @@ def example_data_patch(monkeypatch):
         with open(ex_filename, 'wb') as ex_file_w:
             ex_file_w.write(data)
 
-        tested_version = ConfigVersion.yacloud
+        tested_version = ConfigVersion.default
         original_config = _CONFIGS_BY_VERSION[tested_version]
-        config_patched = original_config.clone(example_data_file=ex_filename)
+        config_patched = original_config.clone(
+            example_data_file=ex_filename,
+            supported_dialects=frozenset({ClickHouseDialect.CLICKHOUSE_22_10}),
+        )
         _CONFIGS_BY_VERSION[tested_version] = config_patched
         try:
             yield
@@ -42,10 +47,18 @@ def example_data_patch(monkeypatch):
 
 def test_locales(tool):
     stdout, stderr = tool.run([
-        'locales'
+        'locales', '--config-version', 'default',
     ])
     assert stderr == ''
-    assert 'ru' in stdout
+    assert 'en' in stdout
+
+
+def test_versions(tool):
+    stdout, stderr = tool.run([
+        'config-versions',
+    ])
+    assert stderr == ''
+    assert 'default' in stdout
 
 
 def test_doc_full_dir(tool, example_data_patch):

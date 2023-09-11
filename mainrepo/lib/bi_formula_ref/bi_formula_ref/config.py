@@ -28,9 +28,6 @@ class FuncDocConfigVersion(Enum):
 
 class ConfigVersion(DynamicEnum):
     default = AutoEnumValue()
-    yacloud = AutoEnumValue()
-    nebius = AutoEnumValue()
-    doublecloud = AutoEnumValue()
 
 
 @attr.s
@@ -55,6 +52,7 @@ class RefDocGeneratorConfig:
     function_scopes: dict[Audience, int] = attr.ib(kw_only=True, default={DEFAULT_AUDIENCE: Scope.DOCUMENTED})
     block_conditions: Mapping[str, bool] = attr.ib(kw_only=True, factory=dict)
 
+    supported_locales: frozenset[str] = attr.ib(kw_only=True, default=frozenset({'en'}))
     supported_dialects: frozenset[DialectCombo] = attr.ib(kw_only=True, default=frozenset({D.DUMMY}))
     default_example_dialect: DialectCombo = attr.ib(kw_only=True, default=D.DUMMY)
 

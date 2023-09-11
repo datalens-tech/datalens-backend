@@ -36,5 +36,6 @@ DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
         *MySQLDialect.and_above(MySQLDialect.MYSQL_5_6).to_list(),
         *PostgreSQLDialect.and_above(PostgreSQLDialect.POSTGRESQL_9_3).to_list(),
     }),
+    supported_locales=frozenset({'en'}),
     default_example_dialect=ClickHouseDialect.CLICKHOUSE_22_10,
 )
