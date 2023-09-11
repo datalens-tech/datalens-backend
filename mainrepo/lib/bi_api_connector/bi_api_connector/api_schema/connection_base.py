@@ -16,7 +16,8 @@ class ConnectionSchema(USEntryBaseSchema):
     CONN_TYPE_CTX_KEY: ClassVar[str] = 'conn_type'
 
     # From ConnectionBase.as_dict()
-    db_type = ma_fields.Enum(CT, by_value=False, attribute='conn_type', dump_only=True)
+    # TODO CONSIDER: is it okay to use a dynamic enum in this context?
+    db_type = ma_fields.Enum(CT, by_value=False, attribute='conn_type', dump_only=True)  # type: ignore
     # TODO FIX: Change for datetime field after created/updated _at become datetime instead of string
     created_at = ma_fields.String(dump_only=True)
     updated_at = ma_fields.String(dump_only=True)

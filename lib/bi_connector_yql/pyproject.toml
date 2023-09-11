@@ -52,10 +52,6 @@ yql = "bi_connector_yql.formula_ref.plugin:YQLFormulaRefPlugin"
 bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 pytest = ">=7.2.2"
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

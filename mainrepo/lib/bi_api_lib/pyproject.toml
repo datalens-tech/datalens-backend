@@ -44,14 +44,6 @@ yandex-bi-utils = {path = "../bi_utils"}
 sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
 statcommons = {path = "../statcommons"}
 
-[[tool.mypy.overrides]]
-module = "zope.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -95,6 +87,10 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["flask_restx.*", "marshmallow_oneofschema.*"]
+ignore_missing_imports = true
 
 [datalens.i18n.domains]
 bi_api_lib = [

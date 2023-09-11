@@ -49,10 +49,6 @@ yandex-bi-api-lib = {path = "../bi_api_lib"}
 yandex-bi-api-lib-testing = {path = "../bi_api_lib_testing"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

@@ -40,10 +40,6 @@ bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
 python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

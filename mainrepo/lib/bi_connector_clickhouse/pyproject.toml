@@ -53,10 +53,6 @@ yandex-bi-api-lib-testing = {path = "../bi_api_lib_testing"}
 yandex-bi-testing = {path = "../bi_testing"}
 pytz = ">=2022.7.1"
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

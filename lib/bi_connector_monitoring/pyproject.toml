@@ -35,10 +35,6 @@ pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

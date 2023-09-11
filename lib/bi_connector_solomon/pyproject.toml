@@ -74,6 +74,10 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = ["tvmauth.*"]
+ignore_missing_imports = true
+
 [datalens.i18n.domains]
 bi_connector_solomon = [
     {path = "bi_connector_solomon/bi"},

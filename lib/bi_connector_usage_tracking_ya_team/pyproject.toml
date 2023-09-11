@@ -28,10 +28,6 @@ usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.core.connector:Usa
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

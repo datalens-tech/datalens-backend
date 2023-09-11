@@ -83,10 +83,6 @@ ignore_missing_imports = true
 module = "bi_formula.parser.antlr.gen.DataLensLexer,bi_formula.parser.antlr.gen.DataLensParser,bi_formula.parser.antlr.gen.DataLensVisitor"
 ignore_errors = true
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

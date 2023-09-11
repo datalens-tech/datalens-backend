@@ -42,14 +42,6 @@ yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
 yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 
-[[tool.mypy.overrides]]
-module = "zope.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

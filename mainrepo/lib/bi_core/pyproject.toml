@@ -64,27 +64,6 @@ yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-testing = {path = "../bi_testing"}
 
-
-[[tool.mypy.overrides]]
-module = "zope.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "vault_client.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pyodbc.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "aiogoogle.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -131,6 +110,10 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["aiodns.*", "aiogoogle.*", "anyascii.*", "lz4.*", "marshmallow_oneofschema.*", "raven.*"]
+ignore_missing_imports = true
 
 [datalens.i18n.domains]
 bi_core = [

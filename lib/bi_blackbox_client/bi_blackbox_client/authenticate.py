@@ -156,7 +156,7 @@ async def authenticate_async(  # type: ignore  # TODO: fix
         authorization_header=None,
         userip=None,
         host=None,
-        aiohttp_client_session: aiohttp.ClientSession = None,
+        aiohttp_client_session: Optional[aiohttp.ClientSession] = None,
         blackbox_uri='https://blackbox.yandex-team.ru/blackbox',
         tvm_info=None,
         blackbox_client_id_name=None,

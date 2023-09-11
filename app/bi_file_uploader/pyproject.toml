@@ -30,18 +30,6 @@ yandex-bi-file-uploader-lib = {path = "../../mainrepo/lib/bi_file_uploader_lib"}
 bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
 bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
 
-[[tool.mypy.overrides]]
-module = "zope.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "aiogoogle.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

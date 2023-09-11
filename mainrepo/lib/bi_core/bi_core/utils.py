@@ -22,10 +22,8 @@ import requests
 import requests.adapters
 import requests.exceptions
 import shortuuid
-# noinspection PyUnresolvedReferences
 from aiohttp import ClientResponseError, ClientResponse, RequestInfo
 from multidict import CIMultiDict, CIMultiDictProxy
-from requests.packages.urllib3.util import Retry
 import sqlalchemy as sa
 
 from bi_configs.settings_loaders.env_remap import remap_env
@@ -61,7 +59,7 @@ def get_requests_session() -> requests.Session:
 def get_retriable_requests_session() -> requests.Session:
     session = get_requests_session()
 
-    retry_conf = Retry(
+    retry_conf = requests.adapters.Retry(
         total=5,
         backoff_factor=0.5,
         status_forcelist=[500, 501, 502, 503, 504, 521],

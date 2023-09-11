@@ -37,18 +37,6 @@ bi-file-secure-reader = {path = "../../../app/bi_file_secure_reader"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-testing = {path = "../bi_testing"}
 
-[[tool.mypy.overrides]]
-module = "zope.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "aiogoogle.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -91,3 +79,7 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["aiogoogle.*", "cchardet.*"]
+ignore_missing_imports = true

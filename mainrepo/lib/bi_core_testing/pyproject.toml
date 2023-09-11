@@ -39,10 +39,6 @@ testing = "bi_core_testing.connector:TestingCoreConnector"
 pytest = ">=7.2.2"
 docker = ">=6.0.1"  # Here is to prevent installation in prod deps as transitive dependency
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

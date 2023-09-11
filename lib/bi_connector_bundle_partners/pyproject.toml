@@ -35,10 +35,6 @@ pytest = ">=7.2.2"
 python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

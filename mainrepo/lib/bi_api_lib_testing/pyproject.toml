@@ -27,12 +27,6 @@ yandex-bi-core = {path = "../bi_core"}
 yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-utils = {path = "../bi_utils"}
 
-[tool.poetry.group.tests.dependencies]
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

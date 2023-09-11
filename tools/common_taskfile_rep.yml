@@ -1,5 +1,9 @@
 version: '3'
 
+vars:
+  TYPES_REQS:
+    sh: if [ "$TYPES_REQS" == "" ]; then echo "/data/ops/ci/docker_image_ci_mypy/requirements_types.txt"; else echo $TYPES_REQS; fi
+
 tasks:
   poetry-lock:
     dir: ../ops/ci
@@ -18,4 +22,4 @@ tasks:
   mypy:
     dir: local_dev
     cmds:
-      - docker-compose run -e SKIP_DEPS_INSTALL=1 --rm pi bash -c "cd /data/{{.USER_REL_PATH}} && pip install mypy && mypy ./{{.CLI_ARGS}}"
+      - docker-compose run -e SKIP_DEPS_INSTALL=1 --rm pi bash -c "cd /data/{{.USER_REL_PATH}} && pip install -r {{.TYPES_REQS}} && mypy ./{{.CLI_ARGS}}"

@@ -42,10 +42,6 @@ gsheets_v2 = "bi_connector_bundle_chs3.chs3_gsheets.core.connector:GSheetsFileS3
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

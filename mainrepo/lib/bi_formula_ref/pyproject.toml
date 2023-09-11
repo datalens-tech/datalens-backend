@@ -24,11 +24,6 @@ pytest = ">=7.2.2"
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 psycopg2-binary = ">=2.9.6"
 
-
-[[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

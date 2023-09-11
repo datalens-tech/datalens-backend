@@ -62,3 +62,7 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["tvm2.*", "tvmauth.*"]
+ignore_missing_imports = true

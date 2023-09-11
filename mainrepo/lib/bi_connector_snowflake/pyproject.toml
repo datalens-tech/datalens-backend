@@ -56,10 +56,6 @@ module = "snowflake.*"
 follow_imports = "skip"
 
 [[tool.mypy.overrides]]
-module = "dill.*"
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
 module = "pytest.*"
 ignore_missing_imports = true
 
