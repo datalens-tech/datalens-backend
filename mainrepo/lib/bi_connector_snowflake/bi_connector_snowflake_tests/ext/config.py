@@ -44,7 +44,8 @@ SAMPLE_TABLE_SIMPLIFIED_SCHEMA = [
 
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=['promql'],
+    bi_api_connector_whitelist=['snowflake'],
+    core_connector_whitelist=['snowflake'],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key='_some_test_secret_key_',
 )

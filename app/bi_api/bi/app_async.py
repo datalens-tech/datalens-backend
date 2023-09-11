@@ -14,6 +14,7 @@ from bi_configs.settings_loaders.loader_env import (
     load_settings_from_env_with_fallback_legacy, load_connectors_settings_from_env_with_fallback,
 )
 from bi_constants.enums import ConnectionType
+from bi_core.loader import CoreLibraryConfig
 
 from bi_core.logging_config import configure_logging
 
@@ -56,7 +57,10 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
         AsyncAppSettings,
         fallback_cfg_resolver=fallback_resolver,
     )
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(
+        api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
+        core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+    ))
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,

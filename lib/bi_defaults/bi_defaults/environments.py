@@ -95,6 +95,7 @@ class DataCloudInstallation(
         'bigquery',
         'snowflake',
     ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
 
 
 class DataCloudExposedInstallation(IAMAwareInstallation, DataCloudInstallation):
@@ -135,6 +136,7 @@ class CommonInstallation(
 
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings]
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]]
+    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
 
     # Note: `PING_…` values are not currently used.
     # Intended for liveness+connectivity check, e.g. into juggler.
@@ -833,6 +835,7 @@ class IsraelInstallation(NebiusInstallation):
         'ch_frozen_demo',
         'monitoring',
     ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
 
 
 class NemaxInstallation(NebiusInstallation):
@@ -864,6 +867,7 @@ class NemaxInstallation(NebiusInstallation):
         'ch_frozen_demo',
         'monitoring',
     ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
 
 
 AllInstallations: TypeAlias = Union[CommonInstallation, NebiusInstallation, DataCloudInstallation]

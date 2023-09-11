@@ -110,6 +110,12 @@ class AppSettings:
         fallback_cfg_key="BI_API_CONNECTOR_WHITELIST",
         missing=None,
     )
+    CORE_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore
+        'CORE_CONNECTOR_WHITELIST',
+        env_var_converter=lambda s: list(split_by_comma(s)),
+        fallback_cfg_key="CORE_CONNECTOR_WHITELIST",
+        missing=None,
+    )
 
     FIELD_ID_GENERATOR_TYPE: FieldIdGeneratorType = s_attrib(  # type: ignore
         "FIELD_ID_GENERATOR_TYPE",

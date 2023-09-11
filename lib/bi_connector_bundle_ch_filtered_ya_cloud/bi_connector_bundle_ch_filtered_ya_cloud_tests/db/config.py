@@ -16,6 +16,7 @@ DB_CORE_URL = f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-cl
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
     bi_api_connector_whitelist=['ch_geo_filtered'],
+    core_connector_whitelist=['ch_geo_filtered'],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key='_some_test_secret_key_',
 )

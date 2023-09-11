@@ -145,3 +145,4 @@ class BiApiTestEnvironmentConfiguration:
 
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(default=CONNECTOR_AVAILABILITY)
     bi_api_connector_whitelist: Optional[list[str]] = attr.ib(default=CONNECTOR_WHITELIST)
+    core_connector_whitelist: Optional[list[str]] = attr.ib(default=CONNECTOR_WHITELIST)

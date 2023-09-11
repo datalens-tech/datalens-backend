@@ -95,6 +95,7 @@ class BiApiTestBase(abc.ABC):
             CRYPTO_KEYS_CONFIG=core_test_config.get_crypto_keys_config(),
 
             BI_API_CONNECTOR_WHITELIST=bi_test_config.bi_api_connector_whitelist,
+            CORE_CONNECTOR_WHITELIST=bi_test_config.core_connector_whitelist,
 
             RQE_CONFIG=rqe_config_subprocess,
             BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,

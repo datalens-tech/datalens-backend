@@ -22,6 +22,7 @@ from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEBaseURL, RQEConfig
 from bi_configs.settings_submodels import YCAuthSettings
 from bi_constants.enums import USAuthMode
+from bi_core.loader import CoreLibraryConfig
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage
 from bi_core_testing.fixture_server_runner import WSGIRunner
 from bi_defaults.environments import InternalTestingInstallation
@@ -172,9 +173,13 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         BI_API_CONNECTOR_WHITELIST=CONNECTOR_WHITELIST,
+        CORE_CONNECTOR_WHITELIST=CONNECTOR_WHITELIST,
     )
 
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(
+        api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
+        core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+    ))
     app = bi.app.create_app(
         app_settings=settings,
         connectors_settings={},

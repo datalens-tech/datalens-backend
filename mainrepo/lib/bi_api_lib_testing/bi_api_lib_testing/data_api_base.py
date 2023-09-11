@@ -71,6 +71,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             RQE_CONFIG=rqe_config_subprocess,
 
             BI_API_CONNECTOR_WHITELIST=bi_test_config.bi_api_connector_whitelist,
+            CORE_CONNECTOR_WHITELIST=bi_test_config.core_connector_whitelist,
             MUTATIONS_CACHES_ON=cls.mutation_caches_on,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),
             BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,

@@ -115,6 +115,7 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
     expected_config=AsyncAppSettings(
         APP_TYPE=AppType.CLOUD,
         BI_API_CONNECTOR_WHITELIST=ExternalTestingInstallation.BI_API_CONNECTOR_WHITELIST,
+        CORE_CONNECTOR_WHITELIST=ExternalTestingInstallation.CORE_CONNECTOR_WHITELIST,
         PUBLIC_API_KEY=None,
         CACHES_ON=True,
         CACHES_REDIS=RedisSettings(

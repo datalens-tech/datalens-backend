@@ -15,6 +15,7 @@ from bi_constants.enums import ConnectionType
 
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 from bi_core.flask_utils.sentry import configure_raven_for_flask
+from bi_core.loader import CoreLibraryConfig
 from bi_core.logging_config import hook_configure_logging
 
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
@@ -50,7 +51,10 @@ def create_uwsgi_app() -> flask.Flask:
         ControlPlaneAppSettings,
         default_fallback_cfg_resolver=fallback_resolver,
     )
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
+    load_bi_api_lib(ApiLibraryConfig(
+        api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
+        core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+    ))
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,

@@ -13,6 +13,7 @@ from bi_configs.settings_loaders.loader_env import (
     load_connectors_settings_from_env_with_fallback,
 )
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
+from bi_core.loader import CoreLibraryConfig
 from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 from bi_maintenance.core.common import MaintenanceEnvironmentManagerBase
 
@@ -36,7 +37,10 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
             AsyncAppSettings,
             default_fallback_cfg_resolver=fallback_resolver,
         )
-        load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
+        load_bi_api_lib(ApiLibraryConfig(
+            api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
+            core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+        ))
         return settings
 
     def get_sr_factory(self, is_async_env: bool) -> Optional[SRFactory]:

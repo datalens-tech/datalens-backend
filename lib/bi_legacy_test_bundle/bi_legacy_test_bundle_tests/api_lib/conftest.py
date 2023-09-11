@@ -58,6 +58,7 @@ from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings, YCAuthSettings
+from bi_core.loader import CoreLibraryConfig
 
 from bi_db_testing.loader import load_bi_db_testing
 
@@ -152,7 +153,10 @@ def bi_test_config() -> BiApiTestEnvironmentConfigurationPrivate:
 @pytest.fixture(scope='session', autouse=True)
 def loaded_libraries(bi_test_config) -> None:
     preload_bi_api_lib()
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=bi_test_config.bi_api_connector_whitelist))
+    load_bi_api_lib(ApiLibraryConfig(
+        api_connector_ep_names=bi_test_config.bi_api_connector_whitelist,
+        core_lib_config=CoreLibraryConfig(core_connector_ep_names=bi_test_config.core_connector_whitelist),
+    ))
     load_bi_db_testing()
 
 
@@ -225,6 +229,7 @@ def app(
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
         BI_API_CONNECTOR_WHITELIST=bi_test_config.bi_api_connector_whitelist,
+        CORE_CONNECTOR_WHITELIST=bi_test_config.core_connector_whitelist,
 
         RQE_CONFIG=rqe_config_subprocess,
         BI_COMPENG_PG_ON=True,
@@ -631,6 +636,7 @@ def async_app_settings_local_env(
         YC_IAM_TS_ENDPOINT=iam_services_mock.service_config.endpoint,
 
         BI_API_CONNECTOR_WHITELIST=bi_test_config.bi_api_connector_whitelist,
+        CORE_CONNECTOR_WHITELIST=bi_test_config.core_connector_whitelist,
         MUTATIONS_CACHES_ON=False,
         BI_COMPENG_PG_ON=True,
         BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
