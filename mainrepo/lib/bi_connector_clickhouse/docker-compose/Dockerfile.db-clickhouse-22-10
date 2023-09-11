@@ -1,4 +1,5 @@
-FROM cr.yandex/crpsufj53lhl0via9iam/clickhouse-server:22.11
+# clickhouse/clickhouse-server:22.11-alpine
+FROM docker.io/clickhouse/clickhouse-server@sha256:144ae73d876ee7d04691cb57f040f1ac98da05be689d171938f9a0e01a996578
 
 COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
 
