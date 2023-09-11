@@ -3,25 +3,36 @@
 set -eux
 
 # Expected env vars from gha
-# ROOT_DIR
-# REPO_OWNER
-# REPO_NAME
+ROOT_DIR=${ROOT_DIR}
+REPO_OWNER=${REPO_OWNER}
+REPO_NAME=${REPO_NAME}
+# Optional
+DKR_IMG_REPO_PREFIX=${DKR_IMG_REPO_PREFIX:-"ghcr.io/${REPO_OWNER}/${REPO_NAME}"}
 
+# Internal constants
+BAKE_TARGET_BASE_CI="base_ci"
+BAKE_TARGET_CI_W_SRC="ci_with_src"
+BAKE_EXECUTABLE="${ROOT_DIR}/docker_build/run-project-bake"
 
-echo "==$ROOT_DIR=="
-BASE_IMG="datalens_base_ci:$(bash $ROOT_DIR/ci/get_base_img_hash.sh)"
+# Will be used as base image for ci_with_src
+#  Caching is used to speed-up 3rd party dependencies installation ()
+#  Should be removed after implementation of bake cache
+DKR_IMG_CACHED_TARGET_DL_CI_BASE="${DKR_IMG_REPO_PREFIX}/datalens_base_ci:$(bash ${ROOT_DIR}/ci/get_base_img_hash.sh)"
+
+# CI image with all sources will be pushed here
+DKR_IMG_TARGET_DL_CI_WITH_SRC="${DKR_IMG_REPO_PREFIX}/datalens_ci_with_code:${GIT_SHA}"
 
 set +x
 
-export CR_BASE="ghcr.io/$REPO_OWNER/$REPO_NAME"
-export CR_TAG_BASE_OS="$CR_BASE/dl_base_os:latest"
+echo "Looking for Cached CI base image: ${DKR_IMG_CACHED_TARGET_DL_CI_BASE}"
 
-export CR_BASE_IMG="$CR_BASE/$BASE_IMG"
-echo "Going to build and push $CR_BASE_IMG"
-
-if ! docker image inspect $CR_BASE_IMG --format="ignore" ; then
-    if ! docker pull $CR_BASE_IMG; then
-      ./docker_build/run-project-bake base_ci  --set "base_ci.tags=$CR_BASE_IMG"  # --push  # saving space )
+if ! docker image inspect "${DKR_IMG_CACHED_TARGET_DL_CI_BASE}" --format="ignore" ; then
+    if ! docker pull -q "${DKR_IMG_CACHED_TARGET_DL_CI_BASE}"; then
+      echo "Cached CI base image not found in registry or locally. Going to build it..."
+      "${BAKE_EXECUTABLE}" "${BAKE_TARGET_BASE_CI}" \
+        --set "${BAKE_TARGET_BASE_CI}.tags=${DKR_IMG_CACHED_TARGET_DL_CI_BASE}" \
+        --progress=plain \
+#        --push  # saving space )
     else
       echo "Got image from registry"
     fi
@@ -29,14 +40,12 @@ else
   echo "Image available locally"
 fi
 
-
-CI_IMG="datalens_ci_with_code:$GIT_SHA"
-# CI_MYPY_IMG="datalens_ci_mypy:$GIT_SHA"
-
-export CR_CI_IMG_WITH_SRC="$CR_BASE/$CI_IMG"
-# export CI_IMG_MYPY="$CR_BASE/$CI_MYPY_IMG"
-
-./docker_build/run-project-bake ci_with_src  --set "ci_with_src.tags=$CR_CI_IMG_WITH_SRC" --push
+echo "Building & pushing CI docker image with sources"
+DL_B_EXT_CACHED_TARGET_BASE_CI="${DKR_IMG_CACHED_TARGET_DL_CI_BASE}" \
+  "${BAKE_EXECUTABLE}" "${BAKE_TARGET_CI_W_SRC}" \
+  --set "${BAKE_TARGET_CI_W_SRC}.tags=${DKR_IMG_TARGET_DL_CI_WITH_SRC}" \
+  --progress=plain \
+  --push
 
 ## Building images with bake
 #export BASE_CI_TAG_OVERRIDE=$BASE_IMG_CR

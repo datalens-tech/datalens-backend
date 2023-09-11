@@ -58,6 +58,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       CR_TAG_BASE_OS: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/dl_base_os:latest"
+      BAKE_TARGET: "dl_base_linux_w_db_bin_dependencies"
     steps:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -74,4 +75,4 @@ jobs:
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - run: |
           cd docker_build
-          ./run-project-bake base_os --push --set "base_os.tags=$CR_TAG_BASE_OS"
+          ./run-project-bake "${BAKE_TARGET}" --push --set "${BAKE_TARGET}.tags=${CR_TAG_BASE_OS}"
