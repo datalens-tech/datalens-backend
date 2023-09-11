@@ -14,7 +14,7 @@ from google.protobuf.timestamp_pb2 import Timestamp  # noqa
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from bi_core.logging_config import configure_logging
-from bi_configs.environments import InstallationsMap, EnvAliasesMap
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy.common_interceptor import RequestBootstrapInterceptor
 from bi_external_api.grpc_proxy.ext_api_client import ExtApiClient

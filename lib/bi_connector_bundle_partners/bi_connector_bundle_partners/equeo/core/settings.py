@@ -1,10 +1,23 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import (
     ConnectorsConfigType, ConnectorSettingsBase, EqueoConnectorSettings, PartnerKeys,
 )
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataEqueoBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataEqueoBase(ConnectorsDataBase):
+    CONN_EQUEO_HOST: ClassVar[Optional[str]] = None
+    CONN_EQUEO_PORT: ClassVar[Optional[int]] = None
+    CONN_EQUEO_USERNAME: ClassVar[Optional[str]] = None
+    CONN_EQUEO_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'EQUEO'
 
 
 def equeo_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

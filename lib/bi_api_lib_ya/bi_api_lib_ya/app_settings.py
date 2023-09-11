@@ -6,13 +6,13 @@ from typing import Optional, Any
 import attr
 
 from bi_configs.enums import AppType, EnvType
-from bi_configs.environments import CommonInstallation, CommonExternalInstallation
 from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_configs.settings_loaders.loader_env import NOT_SET
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import YCAuthSettings, default_yc_auth_settings
 from bi_configs.utils import app_type_env_var_converter, env_type_env_var_converter
+from bi_defaults.environments import CommonInstallation, CommonExternalInstallation
 
 from bi_api_lib.app_settings import AppSettings, DataApiAppSettings, ControlApiAppSettings
 

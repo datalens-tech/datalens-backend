@@ -16,6 +16,7 @@ python = ">=3.10, <3.12"
 pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 tabulate = ">=0.9.0"
+bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}

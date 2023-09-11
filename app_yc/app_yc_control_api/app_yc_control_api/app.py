@@ -6,8 +6,10 @@ import flask
 
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import (
-    load_settings_from_env_with_fallback, load_connectors_settings_from_env_with_fallback,
+    load_settings_from_env_with_fallback,
+    load_connectors_settings_from_env_with_fallback,
 )
 from bi_constants.enums import ConnectionType
 
@@ -21,6 +23,7 @@ from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 
 from app_yc_control_api.app_factory import ControlApiAppFactoryYC
 from app_yc_control_api import app_version
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 
 def create_app(
@@ -39,7 +42,14 @@ def create_app(
 
 def create_uwsgi_app() -> flask.Flask:
     preload_bi_api_lib()
-    settings = load_settings_from_env_with_fallback(ControlPlaneAppSettings)
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback(
+        ControlPlaneAppSettings,
+        default_fallback_cfg_resolver=fallback_resolver,
+    )
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,

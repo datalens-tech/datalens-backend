@@ -2,12 +2,12 @@ from typing import Optional
 
 import attr
 
+from bi_configs.environments import is_setting_applicable
 from bi_configs.settings_loaders.meta_definition import s_attrib, required
 from bi_configs.settings_submodels import (
     CorsSettings,
     CsrfSettings,
 )
-from bi_configs.environments import CSRFAwareInstallation, CORSAwareInstallation
 
 from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 
@@ -21,7 +21,8 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
                 ALLOWED_ORIGINS=cfg.CORS_ALLOWED_ORIGINS,
                 ALLOWED_HEADERS=cfg.CORS_ALLOWED_HEADERS,
                 EXPOSE_HEADERS=cfg.CORS_EXPOSE_HEADERS,
-            ) if isinstance(cfg, CORSAwareInstallation) else None
+                # TODO: move this values to a separate key
+            ) if is_setting_applicable(cfg, 'CORS_ALLOWED_ORIGINS') else None
         ),
     )
 
@@ -33,7 +34,8 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
                 HEADER_NAME=cfg.CSRF_HEADER_NAME,
                 TIME_LIMIT=cfg.CSRF_TIME_LIMIT,
                 SECRET=required(str),
-            ) if isinstance(cfg, CSRFAwareInstallation) else None
+                # TODO: move this values to a separate key
+            ) if is_setting_applicable(cfg, 'CSRF_METHODS') else None
         ),
     )
 

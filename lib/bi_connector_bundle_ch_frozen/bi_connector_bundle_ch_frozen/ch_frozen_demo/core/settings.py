@@ -1,10 +1,28 @@
+from typing import Optional, ClassVar
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, CHFrozenDemoConnectorSettings
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataCHFrozenDemoBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_constants.enums import RawSQLLevel
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataCHFrozenDemoBase(ConnectorsDataBase):
+    CONN_CH_FROZEN_DEMO_HOST: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_DEMO_PORT: ClassVar[Optional[int]] = None
+    CONN_CH_FROZEN_DEMO_DB_MAME: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_DEMO_USERNAME: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_DEMO_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_CH_FROZEN_DEMO_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_CH_FROZEN_DEMO_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+    CONN_CH_FROZEN_DEMO_RAW_SQL_LEVEL: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+    CONN_CH_FROZEN_DEMO_PASS_DB_QUERY_TO_USER: ClassVar[Optional[bool]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'CH_FROZEN_DEMO'
 
 
 def ch_frozen_demo_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

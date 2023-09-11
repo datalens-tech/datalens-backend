@@ -1,8 +1,24 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, MarketCouriersConnectorSettings
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataMarketCouriersBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataMarketCouriersBase(ConnectorsDataBase):
+    CONN_MARKET_COURIERS_HOST: ClassVar[Optional[str]] = None
+    CONN_MARKET_COURIERS_PORT: ClassVar[Optional[int]] = None
+    CONN_MARKET_COURIERS_DB_MAME: ClassVar[Optional[str]] = None
+    CONN_MARKET_COURIERS_USERNAME: ClassVar[Optional[str]] = None
+    CONN_MARKET_COURIERS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_MARKET_COURIERS_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_MARKET_COURIERS_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'MARKET_COURIERS'
 
 
 def market_couriers_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

@@ -14,16 +14,17 @@ import bi.app
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
+from bi_api_lib_testing.configuration import CONNECTOR_WHITELIST
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.enums import AppType, EnvType
-from bi_configs.environments import InternalTestingInstallation, TestsInstallation
 from bi_configs.rqe import RQEBaseURL, RQEConfig
 from bi_configs.settings_submodels import YCAuthSettings
 from bi_constants.enums import USAuthMode
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage
 from bi_core_testing.fixture_server_runner import WSGIRunner
+from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.app import create_app
 from bi_external_api.domain import external as ext
 from bi_external_api.enums import ExtAPIType
@@ -170,7 +171,7 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
             YC_AUTHORIZE_PERMISSION=None,
         ),
         YC_RM_CP_ENDPOINT=iam_services_mock.service_config.endpoint,
-        BI_API_CONNECTOR_WHITELIST=TestsInstallation.BI_API_CONNECTOR_WHITELIST,
+        BI_API_CONNECTOR_WHITELIST=CONNECTOR_WHITELIST,
     )
 
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))

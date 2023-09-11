@@ -1,7 +1,30 @@
 from __future__ import annotations
 
-import abc
 from typing import ClassVar, Optional
+
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import ConnectorsDataBillingBase
+from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import ConnectorsDataUsageTrackingBase
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.settings import ConnectorsDataMusicBase
+from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.settings import ConnectorsDataMarketCouriersBase
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.settings import ConnectorsDataSchoolbookBase
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.settings import ConnectorsDataSMBHeatmapsBase
+from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.settings import ConnectorsDataCHFrozenBumpyRoadsBase
+from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.settings import ConnectorsDataCHFrozenCovidBase
+from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.settings import ConnectorsDataCHFrozenDemoBase
+from bi_connector_bundle_ch_frozen.ch_frozen_dtp.core.settings import ConnectorsDataCHFrozenDTPBase
+from bi_connector_bundle_ch_frozen.ch_frozen_gkh.core.settings import ConnectorsDataCHFrozenGKHBase
+from bi_connector_bundle_ch_frozen.ch_frozen_horeca.core.settings import ConnectorsDataCHFrozenHorecaBase
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ConnectorsDataCHFrozenSamplesBase
+from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.settings import ConnectorsDataCHFrozenTransparencyBase
+from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.settings import ConnectorsDataCHFrozenWeatherBase
+from bi_connector_bundle_chs3.chs3_base.core.settings import ConnectorsDataFileBase
+from bi_connector_bundle_partners.equeo.core.settings import ConnectorsDataEqueoBase
+from bi_connector_bundle_partners.kontur_market.core.settings import ConnectorsDataKonturMarketBase
+from bi_connector_bundle_partners.moysklad.core.settings import ConnectorsDataMoyskladBase
+from bi_connector_chyt.core.settings import ConnectorsDataCHYTBase
+from bi_connector_monitoring.core.settings import ConnectorsDataMonitoringBase
+from bi_connector_usage_tracking_ya_team.core.settings import ConnectorsDataUsageTrackingYaTeamBase
+from bi_connector_yql.core.yq.settings import ConnectorsDataYQBase
 
 from bi_constants.enums import RawSQLLevel
 
@@ -843,285 +866,6 @@ SETTINGS join_use_nulls = 1
 ''')
 
 
-class ConnectorsDataBase(metaclass=abc.ABCMeta):
-    @classmethod
-    @abc.abstractmethod
-    def connector_name(cls) -> str:
-        """
-        TODO: BI-4359 just remove it after migration to new scheme
-        """
-        raise NotImplementedError
-
-
-class ConnectorsDataCHFrozenBumpyRoadsBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_BUMPY_ROADS_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_BUMPY_ROADS_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_BUMPY_ROADS_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_BUMPY_ROADS_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_BUMPY_ROADS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_BUMPY_ROADS_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_BUMPY_ROADS_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_BUMPY_ROADS'
-
-
-class ConnectorsDataCHFrozenCovidBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_COVID_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_COVID_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_COVID_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_COVID_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_COVID_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_COVID_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_COVID_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_COVID'
-
-
-class ConnectorsDataCHFrozenDemoBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_DEMO_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_DEMO_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_DEMO_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_DEMO_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_DEMO_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_DEMO_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_DEMO_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-    CONN_CH_FROZEN_DEMO_RAW_SQL_LEVEL: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-    CONN_CH_FROZEN_DEMO_PASS_DB_QUERY_TO_USER: ClassVar[Optional[bool]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_DEMO'
-
-
-class ConnectorsDataCHFrozenDTPBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_DTP_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_DTP_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_DTP_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_DTP_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_DTP_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_DTP_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_DTP_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_DTP'
-
-
-class ConnectorsDataCHFrozenGKHBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_GKH_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_GKH_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_GKH_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_GKH_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_GKH_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_GKH_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_GKH_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_GKH'
-
-
-class ConnectorsDataCHFrozenSamplesBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_SAMPLES_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_SAMPLES_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_SAMPLES_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_SAMPLES_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_SAMPLES_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_SAMPLES_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_SAMPLES_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_SAMPLES'
-
-
-class ConnectorsDataCHFrozenTransparencyBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_TRANSPARENCY_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_TRANSPARENCY_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_TRANSPARENCY_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_TRANSPARENCY_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_TRANSPARENCY_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_TRANSPARENCY_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_TRANSPARENCY_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_TRANSPARENCY'
-
-
-class ConnectorsDataCHFrozenWeatherBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_WEATHER_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_WEATHER_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_WEATHER_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_WEATHER_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_WEATHER_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_WEATHER_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_WEATHER_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_WEATHER'
-
-
-class ConnectorsDataCHFrozenHorecaBase(ConnectorsDataBase):
-    CONN_CH_FROZEN_HORECA_HOST: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_HORECA_PORT: ClassVar[Optional[int]] = None
-    CONN_CH_FROZEN_HORECA_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_HORECA_USERNAME: ClassVar[Optional[str]] = None
-    CONN_CH_FROZEN_HORECA_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_CH_FROZEN_HORECA_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_CH_FROZEN_HORECA_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_FROZEN_HORECA'
-
-
-class ConnectorsDataCHYTBase(ConnectorsDataBase):
-    CONN_CHYT_PUBLIC_CLIQUES: ClassVar[Optional[tuple[str]]] = None
-    CONN_CHYT_FORBIDDEN_CLIQUES: ClassVar[Optional[tuple[str]]] = None
-    CONN_CHYT_DEFAULT_CLIQUE: ClassVar[Optional[str]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CHYT'
-
-
-class ConnectorsDataYQBase(ConnectorsDataBase):
-    CONN_YQ_HOST: ClassVar[Optional[str]] = None
-    CONN_YQ_PORT: ClassVar[Optional[int]] = None
-    CONN_YQ_DB_NAME: ClassVar[Optional[str]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'YQ'
-
-
-class ConnectorsDataMusicBase(ConnectorsDataBase):
-    CONN_MUSIC_HOST: ClassVar[Optional[str]] = None
-    CONN_MUSIC_PORT: ClassVar[Optional[int]] = None
-    CONN_MUSIC_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_MUSIC_USERNAME: ClassVar[Optional[str]] = None
-    CONN_MUSIC_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_MUSIC_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_MUSIC_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_YA_MUSIC_PODCAST_STATS'
-
-
-class ConnectorsDataBillingBase(ConnectorsDataBase):
-    CONN_BILLING_HOST: ClassVar[Optional[str]] = None
-    CONN_BILLING_PORT: ClassVar[Optional[int]] = None
-    CONN_BILLING_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_BILLING_USERNAME: ClassVar[Optional[str]] = None
-    CONN_BILLING_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_BILLING_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_BILLING_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'CH_BILLING_ANALYTICS'
-
-
-class ConnectorsDataFileBase(ConnectorsDataBase):
-    CONN_FILE_CH_HOST: ClassVar[Optional[str]] = None
-    CONN_FILE_CH_PORT: ClassVar[int] = 8443
-    CONN_FILE_CH_USERNAME: ClassVar[Optional[str]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'FILE'
-
-
-class ConnectorsDataMarketCouriersBase(ConnectorsDataBase):
-    CONN_MARKET_COURIERS_HOST: ClassVar[Optional[str]] = None
-    CONN_MARKET_COURIERS_PORT: ClassVar[Optional[int]] = None
-    CONN_MARKET_COURIERS_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_MARKET_COURIERS_USERNAME: ClassVar[Optional[str]] = None
-    CONN_MARKET_COURIERS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_MARKET_COURIERS_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_MARKET_COURIERS_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'MARKET_COURIERS'
-
-
-class ConnectorsDataSchoolbookBase(ConnectorsDataBase):
-    CONN_SCHOOLBOOK_HOST: ClassVar[Optional[str]] = None
-    CONN_SCHOOLBOOK_PORT: ClassVar[Optional[int]] = None
-    CONN_SCHOOLBOOK_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_SCHOOLBOOK_USERNAME: ClassVar[Optional[str]] = None
-    CONN_SCHOOLBOOK_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_SCHOOLBOOK_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'SCHOOLBOOK'
-
-
-class ConnectorsDataSMBHeatmapsBase(ConnectorsDataBase):
-    CONN_SMB_HEATMAPS_HOST: ClassVar[Optional[str]] = None
-    CONN_SMB_HEATMAPS_PORT: ClassVar[Optional[int]] = None
-    CONN_SMB_HEATMAPS_DB_MAME: ClassVar[Optional[str]] = None
-    CONN_SMB_HEATMAPS_USERNAME: ClassVar[Optional[str]] = None
-    CONN_SMB_HEATMAPS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_SMB_HEATMAPS_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_SMB_HEATMAPS_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'SMB_HEATMAPS'
-
-
-class ConnectorsDataMoyskladBase(ConnectorsDataBase):
-    CONN_MOYSKLAD_HOST: ClassVar[Optional[str]] = None
-    CONN_MOYSKLAD_PORT: ClassVar[Optional[int]] = None
-    CONN_MOYSKLAD_USERNAME: ClassVar[Optional[str]] = None
-    CONN_MOYSKLAD_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'MOYSKLAD'
-
-
-class ConnectorsDataEqueoBase(ConnectorsDataBase):
-    CONN_EQUEO_HOST: ClassVar[Optional[str]] = None
-    CONN_EQUEO_PORT: ClassVar[Optional[int]] = None
-    CONN_EQUEO_USERNAME: ClassVar[Optional[str]] = None
-    CONN_EQUEO_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'EQUEO'
-
-
-class ConnectorsDataKonturMarketBase(ConnectorsDataBase):
-    CONN_KONTUR_MARKET_HOST: ClassVar[Optional[str]] = None
-    CONN_KONTUR_MARKET_PORT: ClassVar[Optional[int]] = None
-    CONN_KONTUR_MARKET_USERNAME: ClassVar[Optional[str]] = None
-    CONN_KONTUR_MARKET_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'KONTUR_MARKET'
-
-
-class ConnectorsDataMonitoringBase(ConnectorsDataBase):
-    CONN_MONITORING_HOST: ClassVar[Optional[str]] = None
-
-    @classmethod
-    def connector_name(cls) -> str:
-        return 'MONITORING'
-
-
 class ConnectorsDataCHFrozenBumpyRoadsExtProduction(ConnectorsDataCHFrozenBumpyRoadsBase):
     CONN_CH_FROZEN_BUMPY_ROADS_HOST: ClassVar[Optional[str]] = ','.join(CH_EXT_DATA_HOSTS)
     CONN_CH_FROZEN_BUMPY_ROADS_PORT: ClassVar[Optional[int]] = 8443
@@ -1348,6 +1092,67 @@ class ConnectorsDataKonturMarketExternalInstallation(ConnectorsDataKonturMarketB
     CONN_KONTUR_MARKET_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = True
 
 
+class ConnectorsDataYQExtTesting(ConnectorsDataYQExternalInstallation):
+    CONN_YQ_HOST: ClassVar[str] = 'grpcs://grpc.yandex-query.cloud-preprod.yandex.net'
+
+
+class ConnectorsDataMusicExtTesting(ConnectorsDataMusicExternalInstallation):
+    CONN_MUSIC_USE_MANAGED_NETWORK: ClassVar[bool] = False
+
+
+class ConnectorsDataFileExtTesting(ConnectorsDataFileBase):
+    # materialization ch cluster
+    # https://console-preprod.cloud.yandex.ru/folders/aoevv1b69su5144mlro3/managed-clickhouse/cluster/e4umim6f3jr14ois49i9
+    CONN_FILE_CH_HOST: ClassVar[str] = ','.join((
+        'rc1a-qr19go7vdcaukxsd.mdb.cloud-preprod.yandex.net',
+        'rc1c-8afsacczmoytzlo5.mdb.cloud-preprod.yandex.net',
+    ))
+    CONN_FILE_CH_USERNAME: ClassVar[str] = 'dl_file_conn'
+
+
+class ConnectorsDataBillingExtTesting(ConnectorsDataBillingExternalInstallation):
+    CONN_BILLING_HOST: ClassVar[Optional[str]] = ','.join((
+        'rc1a-rvwp0jt22z68ybre.mdb.cloud-preprod.yandex.net',
+        'rc1b-6kjlsmsl0l7u5308.mdb.cloud-preprod.yandex.net',
+        'rc1b-xtsv1236xrz6gd20.mdb.cloud-preprod.yandex.net',
+        'rc1c-ct03ung4rmxwqg7f.mdb.cloud-preprod.yandex.net',
+    ))
+
+
+class ConnectorsDataMarketCouriersExtTesting(ConnectorsDataMarketCouriersExternalInstallation):
+    CONN_MARKET_COURIERS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
+
+
+class ConnectorsDataSMBHeatmapsExtTesting(ConnectorsDataSMBHeatmapsExternalInstallation):
+    CONN_SMB_HEATMAPS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
+
+
+class ConnectorsDataSchoolbookExtTesting(ConnectorsDataSchoolbookBase):
+    CONN_SCHOOLBOOK_HOST: ClassVar[Optional[str]] = ','.join((
+        'vla-ws8isxcg383rpugb.db.yandex.net',
+        'sas-0vu6ols4s7prltlm.db.yandex.net',
+        'man-c4i8hlp8hp0qkmfo.db.yandex.net',
+    ))
+    CONN_SCHOOLBOOK_PORT: ClassVar[Optional[int]] = 8443
+    CONN_SCHOOLBOOK_DB_MAME: ClassVar[Optional[str]] = 'pelican_db_prod_db'
+    CONN_SCHOOLBOOK_USERNAME: ClassVar[Optional[str]] = 'datalens'
+    CONN_SCHOOLBOOK_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = False
+    CONN_SCHOOLBOOK_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = []
+    CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = (
+        dict(title='Stats', sql_query=SQL_SCHOOLBOOK_STATS_TESTING),
+    )
+
+
+class ConnectorsDataMoyskladExtTesting(ConnectorsDataMoyskladExternalInstallation):
+    # https://console-preprod.cloud.yandex.ru/folders/aoen5db923vq956hvb91/managed-clickhouse/cluster/e4usmt8rjpinn0ot4kac
+    CONN_MOYSKLAD_HOST: ClassVar[Optional[str]] = 'rc1a-247svhto6jy5iymw.mdb.cloud-preprod.yandex.net'
+    CONN_MOYSKLAD_USERNAME: ClassVar[Optional[str]] = 'moysklad_test_db_user'
+
+
+class ConnectorsDataMonitoringExtTesting(ConnectorsDataMonitoringBase):
+    CONN_MONITORING_HOST: ClassVar[Optional[str]] = 'monitoring.api.cloud-preprod.yandex.net'
+
+
 class ConnectorsDataFileExtProduction(ConnectorsDataFileBase):
     CONN_FILE_CH_HOST: ClassVar[str] = ','.join((
         # https://console.cloud.yandex.ru/folders/b1g77mbejmj4m6flq848/managed-clickhouse/cluster/c9q7c5ibbkf7vl65h94t/view
@@ -1401,21 +1206,6 @@ class ConnectorsDataMonitoringExtProduction(ConnectorsDataMonitoringBase):
     CONN_MONITORING_HOST: ClassVar[Optional[str]] = 'monitoring.api.cloud.yandex.net'
 
 
-class ConnectorsDataUsageTrackingBase(ConnectorsDataBase):
-    CONN_USAGE_TRACKING_HOST: ClassVar[Optional[str]] = None
-    CONN_USAGE_TRACKING_PORT: ClassVar[Optional[int]] = None
-    CONN_USAGE_TRACKING_DB_NAME: ClassVar[Optional[str]] = None
-    CONN_USAGE_TRACKING_USERNAME: ClassVar[Optional[str]] = None
-    CONN_USAGE_TRACKING_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_USAGE_TRACKING_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_USAGE_TRACKING_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-    CONN_USAGE_TRACKING_REQUIRED_IAM_ROLE: ClassVar[Optional[str]] = None
-
-    @classmethod
-    def connector_name(self) -> str:
-        return 'USAGE_TRACKING'
-
-
 class ConnectorsDataUsageTrackingExternalInstallation(ConnectorsDataUsageTrackingBase):
     CONN_USAGE_TRACKING_PORT: ClassVar[Optional[int]] = 8443
     CONN_USAGE_TRACKING_DB_NAME: ClassVar[str] = 'usage_tracking'
@@ -1435,19 +1225,11 @@ class ConnectorsDataUsageTrackingExtProduction(ConnectorsDataUsageTrackingExtern
     ))
 
 
-class ConnectorsDataUsageTrackingYaTeamBase(ConnectorsDataBase):
-    CONN_USAGE_TRACKING_YA_TEAM_HOST: ClassVar[Optional[str]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_PORT: ClassVar[Optional[int]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_DB_NAME: ClassVar[Optional[str]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_USERNAME: ClassVar[Optional[str]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
-    CONN_USAGE_TRACKING_YA_TEAM_MAX_EXECUTION_TIME: ClassVar[Optional[int]] = None
-
-    @classmethod
-    def connector_name(self) -> str:
-        return 'USAGE_TRACKING_YA_TEAM'
+class ConnectorsDataUsageTrackingExtTesting(ConnectorsDataUsageTrackingExternalInstallation):
+    CONN_USAGE_TRACKING_HOST = ','.join((
+        'rc1a-sj4j1pnhotgffpn1.mdb.cloud-preprod.yandex.net',
+        'rc1c-2g6441917n15umos.mdb.cloud-preprod.yandex.net',
+    ))
 
 
 class ConnectorsDataUsageTrackingYaTeamInternalInstallation(ConnectorsDataUsageTrackingYaTeamBase):

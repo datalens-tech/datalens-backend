@@ -1,5 +1,7 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, CHYTConnectorSettings
-from bi_configs.connectors_data import ConnectorsDataCHYTBase
+from bi_connector_chyt.core.settings import ConnectorsDataCHYTBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 

@@ -1,10 +1,27 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import (
     ConnectorsConfigType, ConnectorSettingsBase, CHFrozenBumpyRoadsConnectorSettings,
 )
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataCHFrozenBumpyRoadsBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from bi_configs.connectors_data import ConnectorsDataBase
+
+
+class ConnectorsDataCHFrozenBumpyRoadsBase(ConnectorsDataBase):
+    CONN_CH_FROZEN_BUMPY_ROADS_HOST: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_BUMPY_ROADS_PORT: ClassVar[Optional[int]] = None
+    CONN_CH_FROZEN_BUMPY_ROADS_DB_MAME: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_BUMPY_ROADS_USERNAME: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_BUMPY_ROADS_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_CH_FROZEN_BUMPY_ROADS_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_CH_FROZEN_BUMPY_ROADS_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'CH_FROZEN_BUMPY_ROADS'
+
 
 
 def ch_frozen_bumpy_roads_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

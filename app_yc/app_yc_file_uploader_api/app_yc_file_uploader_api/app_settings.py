@@ -4,7 +4,7 @@ from typing import Optional
 import attr
 
 from bi_configs.settings_submodels import YCAuthSettings
-from bi_configs.environments import CommonExternalInstallation
+from bi_defaults.environments import CommonExternalInstallation
 
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
 

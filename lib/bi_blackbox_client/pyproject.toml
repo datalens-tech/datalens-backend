@@ -20,6 +20,7 @@ tvmauth = ">=3.4.9"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-defaults = {path = "../bi_defaults"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

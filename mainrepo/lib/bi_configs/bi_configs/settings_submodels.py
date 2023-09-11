@@ -1,12 +1,13 @@
-from typing import Optional
+from typing import Optional, Union
 
 import attr
 
+from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.utils import split_by_comma
 from bi_configs.enums import RedisMode, AppType
-from bi_configs.environments import CommonExternalInstallation
+from bi_configs.environments import LegacyDefaults
 
 
 def redis_mode_env_var_converter(env_value: str) -> RedisMode:
@@ -36,9 +37,10 @@ class YCAuthSettings(SettingsBase):
     YC_API_ENDPOINT_IAM: str = s_attrib("ENDPOINT_IAM", missing=None)
 
 
-def default_yc_auth_settings(cfg: CommonExternalInstallation, app_type: AppType) -> Optional[YCAuthSettings]:
+def default_yc_auth_settings(cfg: Union[LegacyDefaults, ObjectLikeConfig], app_type: AppType) -> Optional[YCAuthSettings]:
+    # TODO: move this values to a separate key
     if app_type == AppType.CLOUD:
-        assert isinstance(cfg, CommonExternalInstallation) or hasattr(cfg, 'YC_AUTHORIZE_PERMISSION')
+        assert hasattr(cfg, 'YC_AUTHORIZE_PERMISSION')
         return YCAuthSettings(  # type: ignore  # TODO: fix
             YC_AUTHORIZE_PERMISSION=cfg.YC_AUTHORIZE_PERMISSION,
             YC_AS_ENDPOINT=cfg.YC_AS_ENDPOINT,

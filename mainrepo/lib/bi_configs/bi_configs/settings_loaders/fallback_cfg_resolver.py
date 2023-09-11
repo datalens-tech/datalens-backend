@@ -1,13 +1,11 @@
 import logging
 from collections.abc import Mapping
-from typing import Any, ClassVar, Union, Optional, Iterator
+from typing import Any, ClassVar, Optional, Iterator
 
 import yaml
 import attr
 
-from bi_configs.environments import (
-    CommonInstallation, DataCloudInstallation, NebiusInstallation
-)
+from bi_configs.environments import LegacyDefaults
 from bi_configs.settings_loaders.common import SDict
 from bi_configs.settings_loaders.exc import SettingsLoadingException
 
@@ -15,7 +13,7 @@ from bi_configs.settings_loaders.exc import SettingsLoadingException
 LOGGER = logging.getLogger(__name__)
 
 
-def resolve_by_yenv_type(yenv_type: str, env_map: Any, install_map: Any) -> Union[CommonInstallation, DataCloudInstallation, NebiusInstallation]:
+def resolve_by_yenv_type(yenv_type: str, env_map: Any, install_map: Any) -> LegacyDefaults:
     public_env_postfix = "-public"
     sec_embeds_postfix = "-sec-embeds"
 
@@ -49,7 +47,7 @@ class YEnvFallbackConfigResolver(FallbackConfigResolver):
     _installation_map: Any = attr.ib()
     _env_map: Any = attr.ib()
 
-    def resolve(self, s_dict: SDict) -> CommonInstallation:
+    def resolve(self, s_dict: SDict) -> LegacyDefaults:
         LOGGER.info('Resolve by YEnvFallbackConfigResolver')
         yenv_type = s_dict.get(self.yenv_type_key)
         if yenv_type is None:

@@ -25,7 +25,7 @@ from bi_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 
-from bi_configs.environments import InstallationsMap, EnvAliasesMap
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 
 class DefaultControlApiAppFactory(LegacyControlApiAppFactory, LegacySRFactoryBuilder):

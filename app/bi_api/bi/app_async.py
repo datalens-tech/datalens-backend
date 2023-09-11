@@ -25,7 +25,7 @@ from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
 
 from bi import app_version
-from bi_configs.environments import InstallationsMap, EnvAliasesMap
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 LOGGER = logging.getLogger(__name__)
 

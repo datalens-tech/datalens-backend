@@ -7,7 +7,7 @@ import time
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import ClassVar, Dict, FrozenSet, Optional, Tuple
 
-from bi_configs.environments import TvmDestination
+from bi_defaults.environments import TvmDestination
 
 import tvmauth
 

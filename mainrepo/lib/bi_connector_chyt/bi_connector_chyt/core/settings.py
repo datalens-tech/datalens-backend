@@ -1,7 +1,19 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, CHYTConnectorSettings
-from bi_configs.connectors_data import ConnectorsDataCHYTBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataCHYTBase(ConnectorsDataBase):
+    CONN_CHYT_PUBLIC_CLIQUES: ClassVar[Optional[tuple[str]]] = None
+    CONN_CHYT_FORBIDDEN_CLIQUES: ClassVar[Optional[tuple[str]]] = None
+    CONN_CHYT_DEFAULT_CLIQUE: ClassVar[Optional[str]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'CHYT'
 
 
 def chyt_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

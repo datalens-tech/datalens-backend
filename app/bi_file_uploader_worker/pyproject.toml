@@ -16,10 +16,15 @@ bi-defaults = {path = "../../lib/bi_defaults"}
 gunicorn = "==20.1.0"
 python = ">=3.10, <3.12"
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-configs  = {path = "../../mainrepo/lib/bi_configs"}
 bi-file-secure-reader-lib = {path = "../../mainrepo/lib/bi_file_secure_reader_lib"}
 bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
 yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
 bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
 
 [[tool.mypy.overrides]]
 module = "zope.*"

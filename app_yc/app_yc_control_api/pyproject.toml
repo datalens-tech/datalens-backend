@@ -13,6 +13,7 @@ python = ">=3.10, <3.12"
 blinker = ">=1.5"
 raven = ">=6.10.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}

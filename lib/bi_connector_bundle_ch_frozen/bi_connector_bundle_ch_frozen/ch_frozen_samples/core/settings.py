@@ -1,8 +1,24 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, CHFrozenSamplesConnectorSettings
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataCHFrozenSamplesBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataCHFrozenSamplesBase(ConnectorsDataBase):
+    CONN_CH_FROZEN_SAMPLES_HOST: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_SAMPLES_PORT: ClassVar[Optional[int]] = None
+    CONN_CH_FROZEN_SAMPLES_DB_MAME: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_SAMPLES_USERNAME: ClassVar[Optional[str]] = None
+    CONN_CH_FROZEN_SAMPLES_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_CH_FROZEN_SAMPLES_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_CH_FROZEN_SAMPLES_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'CH_FROZEN_SAMPLES'
 
 
 def ch_frozen_samples_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

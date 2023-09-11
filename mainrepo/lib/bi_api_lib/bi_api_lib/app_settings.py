@@ -8,12 +8,8 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.enums import RedisMode
-from bi_configs.environments import (
-    CommonInstallation,
-    CommonExternalInstallation,
-)
+from bi_configs.environments import is_setting_applicable
 from bi_configs.rqe import RQEConfig
-from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_configs.settings_loaders.meta_definition import s_attrib, required
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import RedisSettings
@@ -83,7 +79,7 @@ class AppSettings:
                 SSL=cfg.REDIS_RQE_CACHES_SSL,
                 DB=cfg.REDIS_RQE_CACHES_DB,
                 PASSWORD=required(str),
-            ) if isinstance(cfg, CommonExternalInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_RQE_CACHES_CLUSTER_NAME')) else None
+            ) if is_setting_applicable(cfg, 'REDIS_RQE_CACHES_DB') else None
         ),
         missing=None,
     )
@@ -143,6 +139,7 @@ class ControlApiAppSettings(AppSettings):
     )
 
     REDIS_ARQ: Optional[RedisSettings] = s_attrib(  # type: ignore
+        # TODO: move this values to a separate key
         "REDIS_ARQ",
         fallback_factory=(
             lambda cfg: RedisSettings(  # type: ignore
@@ -153,7 +150,7 @@ class ControlApiAppSettings(AppSettings):
                 SSL=cfg.REDIS_PERSISTENT_SSL,
                 DB=cfg.REDIS_FILE_UPLOADER_TASKS_DB,
                 PASSWORD=required(str),
-            ) if isinstance(cfg, CommonInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_PERSISTENT_MODE')) else None
+            ) if is_setting_applicable(cfg, 'REDIS_PERSISTENT_CLUSTER_NAME') else None
         ),
         missing=None,
     )
@@ -167,6 +164,7 @@ class DataApiAppSettings(AppSettings):
 
     CACHES_ON: bool = s_attrib("CACHES_ON", missing=True)  # type: ignore
     CACHES_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore
+        # TODO: move this values to a separate key
         "CACHES_REDIS",
         fallback_factory=(
             lambda cfg: RedisSettings(  # type: ignore
@@ -177,13 +175,14 @@ class DataApiAppSettings(AppSettings):
                 SSL=cfg.REDIS_CACHES_SSL,
                 DB=cfg.REDIS_CACHES_DB,
                 PASSWORD=required(str),
-            ) if isinstance(cfg, CommonInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_CACHES_CLUSTER_NAME')) else None
+            ) if is_setting_applicable(cfg, 'REDIS_CACHES_DB') else None
         ),
         missing=None,
     )
     MUTATIONS_CACHES_ON: bool = s_attrib("MUTATIONS_CACHES_ON", missing=False)  # type: ignore
     MUTATIONS_CACHES_DEFAULT_TTL: float = s_attrib("MUTATIONS_CACHES_DEFAULT_TTL", missing=3 * 60 * 60)  # type: ignore
     MUTATIONS_REDIS: Optional[RedisSettings] = s_attrib(
+        # TODO: move this values to a separate key
         "MUTATIONS_REDIS",
         fallback_factory=(
             lambda cfg: RedisSettings(  # type: ignore
@@ -194,7 +193,7 @@ class DataApiAppSettings(AppSettings):
                 SSL=cfg.REDIS_CACHES_SSL,
                 DB=cfg.REDIS_MUTATIONS_CACHES_DB,
                 PASSWORD=required(str),
-            ) if isinstance(cfg, CommonInstallation) or (isinstance(cfg, ObjectLikeConfig) and cfg.get('REDIS_CACHES_CLUSTER_NAME')) else None
+            ) if is_setting_applicable(cfg, 'REDIS_MUTATIONS_CACHES_DB') else None
         ),
         missing=None,
     )

@@ -4,9 +4,9 @@ from typing import Type
 import aiohttp
 import pytest
 
-from bi_configs.environments import InternalTestingInstallation
 from bi_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
+from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts

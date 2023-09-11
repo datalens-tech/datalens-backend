@@ -1,10 +1,27 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import (
     ConnectorsConfigType, ConnectorSettingsBase, UsageTrackingYaTeamConnectionSettings,
 )
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataUsageTrackingYaTeamBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataUsageTrackingYaTeamBase(ConnectorsDataBase):
+    CONN_USAGE_TRACKING_YA_TEAM_HOST: ClassVar[Optional[str]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_PORT: ClassVar[Optional[int]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_DB_NAME: ClassVar[Optional[str]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_USERNAME: ClassVar[Optional[str]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+    CONN_USAGE_TRACKING_YA_TEAM_MAX_EXECUTION_TIME: ClassVar[Optional[int]] = None
+
+    @classmethod
+    def connector_name(self) -> str:
+        return 'USAGE_TRACKING_YA_TEAM'
 
 
 def usage_tracking_ya_team_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

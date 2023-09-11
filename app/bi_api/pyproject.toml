@@ -87,6 +87,7 @@ yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
+yandex-bi-defaults = {path = "../../lib/bi_defaults"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

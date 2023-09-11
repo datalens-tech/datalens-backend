@@ -10,8 +10,16 @@ import opentracing
 import pytest
 import yaml
 
-from bi_configs import environments
-from bi_configs.environments import IntegrationTestConfig, CommonInstallation, DataCloudExposedInstallationTesting
+from bi_defaults.environments import (
+    IntegrationTestConfig,
+    CommonInstallation,
+    DataCloudExposedInstallationTesting,
+    InstallationsMap,
+    CommonExternalInstallation,
+    DataCloudExposedInstallation,
+    InternalTestingInstallation,
+    InternalProductionInstallation,
+)
 from bi_testing import shared_testing_constants
 from bi_testing_ya.cloud_tokens import AccountCredentials, ServiceAccountAndKeyData
 from bi_testing_ya.dlenv import DLEnv
@@ -82,11 +90,11 @@ def ci_safe_yav_token() -> Optional[str]:
 
 # External systems
 EXT_SYS_REQUISITES_MAP = {
-    DLEnv.cloud_preprod: environments.InstallationsMap.ext_testing,
-    DLEnv.cloud_prod: environments.InstallationsMap.ext_prod,
-    DLEnv.internal_preprod: environments.InstallationsMap.int_testing,
-    DLEnv.internal_prod: environments.InstallationsMap.int_prod,
-    DLEnv.dc_testing: environments.DataCloudExposedInstallationTesting(),
+    DLEnv.cloud_preprod: InstallationsMap.ext_testing,
+    DLEnv.cloud_prod: InstallationsMap.ext_prod,
+    DLEnv.internal_preprod: InstallationsMap.int_testing,
+    DLEnv.internal_prod: InstallationsMap.int_prod,
+    DLEnv.dc_testing: DataCloudExposedInstallationTesting(),
 }
 
 
@@ -109,7 +117,7 @@ def ext_sys_helpers_factory(
 
     def factory() -> ExternalSystemsHelperBase:
         if dl_env.name == DLEnv.dynamic.name:
-            assert isinstance(ext_sys_requisites, environments.IntegrationTestConfig)
+            assert isinstance(ext_sys_requisites, IntegrationTestConfig)
             return ExternalSystemsHelperCloud(
                 ext_sys_requisites=ext_sys_requisites,
                 root_certs_file_content=root_certs_file_content,
@@ -118,7 +126,7 @@ def ext_sys_helpers_factory(
         if dl_env.name.startswith("cloud_") or dl_env.name.startswith("dc_"):
             assert isinstance(
                 ext_sys_requisites,
-                (environments.CommonExternalInstallation, environments.DataCloudExposedInstallation),
+                (CommonExternalInstallation, DataCloudExposedInstallation),
             )
             return ExternalSystemsHelperCloud(
                 ext_sys_requisites=ext_sys_requisites,
@@ -128,7 +136,7 @@ def ext_sys_helpers_factory(
         elif dl_env.name.startswith("internal_"):
             assert isinstance(
                 ext_sys_requisites,
-                (environments.InternalTestingInstallation, environments.InternalProductionInstallation),
+                (InternalTestingInstallation, InternalProductionInstallation),
             )
             return ExternalSystemsHelperInternalInstallation(
                 ext_sys_requisites=ext_sys_requisites,

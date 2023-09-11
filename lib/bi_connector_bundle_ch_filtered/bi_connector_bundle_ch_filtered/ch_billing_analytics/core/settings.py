@@ -1,8 +1,24 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, BillingConnectorSettings
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataBillingBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataBillingBase(ConnectorsDataBase):
+    CONN_BILLING_HOST: ClassVar[Optional[str]] = None
+    CONN_BILLING_PORT: ClassVar[Optional[int]] = None
+    CONN_BILLING_DB_MAME: ClassVar[Optional[str]] = None
+    CONN_BILLING_USERNAME: ClassVar[Optional[str]] = None
+    CONN_BILLING_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_BILLING_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_BILLING_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'CH_BILLING_ANALYTICS'
 
 
 def ch_billing_analytics_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

@@ -22,7 +22,7 @@ from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.aio.middlewares.tracing import TracingService
 from bi_core.aio.ping_view import PingView
 from bi_core.logging_config import configure_logging
-from bi_configs.environments import InstallationsMap, EnvAliasesMap
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 from bi_external_api.aiohttp_services.base import ExtAPIRequest, AppConfig
 from bi_external_api.aiohttp_services.error_handler import ExternalAPIErrorHandler

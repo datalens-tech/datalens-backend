@@ -1,8 +1,24 @@
+from typing import ClassVar, Optional
+
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, SchoolbookConnectorSettings
 from bi_configs.settings_loaders.meta_definition import required
-from bi_configs.connectors_data import ConnectorsDataSchoolbookBase
+from bi_configs.connectors_data import ConnectorsDataBase
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+class ConnectorsDataSchoolbookBase(ConnectorsDataBase):
+    CONN_SCHOOLBOOK_HOST: ClassVar[Optional[str]] = None
+    CONN_SCHOOLBOOK_PORT: ClassVar[Optional[int]] = None
+    CONN_SCHOOLBOOK_DB_MAME: ClassVar[Optional[str]] = None
+    CONN_SCHOOLBOOK_USERNAME: ClassVar[Optional[str]] = None
+    CONN_SCHOOLBOOK_USE_MANAGED_NETWORK: ClassVar[Optional[bool]] = None
+    CONN_SCHOOLBOOK_ALLOWED_TABLES: ClassVar[Optional[list[str]]] = None
+    CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES: ClassVar[Optional[tuple[dict[str, str], ...]]] = None
+
+    @classmethod
+    def connector_name(cls) -> str:
+        return 'SCHOOLBOOK'
 
 
 def schoolbook_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

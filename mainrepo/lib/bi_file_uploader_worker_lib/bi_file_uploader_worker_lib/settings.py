@@ -2,8 +2,7 @@ from typing import Optional
 
 import attr
 
-from bi_configs.environments import CommonInstallation
-from bi_configs.settings_loaders.meta_definition import s_attrib, required
+from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.connectors_settings import FileS3ConnectorSettings
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import GoogleAppSettings
@@ -39,14 +38,8 @@ class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     )
 
     GSHEETS_APP: GoogleAppSettings = s_attrib(  # type: ignore
+        # TODO: check gsheets connector availability
         "GSHEETS_APP",
-        fallback_factory=(
-            lambda cfg: GoogleAppSettings(  # type: ignore
-                API_KEY=required(str),
-                CLIENT_ID=required(str),
-                CLIENT_SECRET=required(str),
-            ) if isinstance(cfg, CommonInstallation) else None
-        ),
     )
 
     ENABLE_REGULAR_S3_LC_RULES_CLEANUP: bool = s_attrib("ENABLE_REGULAR_S3_LC_RULES_CLEANUP", missing=False)  # type: ignore

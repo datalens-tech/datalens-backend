@@ -10,9 +10,7 @@ from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_constants.enums import RawSQLLevel
 
 from bi_configs.settings_loaders.meta_definition import s_attrib
-from bi_configs.environments import (
-    CommonInstallation,
-)
+from bi_configs.environments import LegacyDefaults
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.utils import split_by_comma
 from bi_configs import connectors_data as cd
@@ -54,7 +52,7 @@ class ConnectorSettingsBase(SettingsBase):
     """"""
 
 
-ConnectorsConfigType = ObjectLikeConfig | CommonInstallation
+ConnectorsConfigType = ObjectLikeConfig | LegacyDefaults
 SettingsFallbackType = Callable[[ConnectorsConfigType], dict[str, ConnectorSettingsBase]]
 
 

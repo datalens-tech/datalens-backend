@@ -7,10 +7,13 @@ from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib_ya.app_settings import AsyncAppSettings
 from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import (
-    load_settings_from_env_with_fallback, load_connectors_settings_from_env_with_fallback,
+    load_settings_from_env_with_fallback,
+    load_connectors_settings_from_env_with_fallback,
 )
 from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 from bi_maintenance.core.common import MaintenanceEnvironmentManagerBase
 
 if TYPE_CHECKING:
@@ -25,7 +28,14 @@ class MaintenanceDataApiAppFactory(LegacyDataApiAppFactory, LegacySRFactoryBuild
 class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
     def get_app_settings(self) -> AsyncAppSettings:
         preload_bi_api_lib()
-        settings = load_settings_from_env_with_fallback(AsyncAppSettings)
+        fallback_resolver = YEnvFallbackConfigResolver(
+            installation_map=InstallationsMap,
+            env_map=EnvAliasesMap,
+        )
+        settings = load_settings_from_env_with_fallback(
+            AsyncAppSettings,
+            default_fallback_cfg_resolver=fallback_resolver,
+        )
         load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST))
         return settings
 

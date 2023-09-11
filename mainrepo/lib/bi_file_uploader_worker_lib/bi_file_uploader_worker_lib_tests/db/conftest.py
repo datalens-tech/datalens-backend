@@ -7,8 +7,6 @@ import aiohttp.web
 import pytest
 
 from bi_constants.enums import FileProcessingStatus
-from bi_api_commons.base_models import TenantCommon, NoAuthData
-from bi_api_commons.client.common import DLCommonAPIClient
 from bi_task_processor.state import wait_task
 from bi_file_uploader_task_interface.tasks import ParseFileTask, SaveSourceTask
 
@@ -16,7 +14,6 @@ from bi_file_uploader_lib.enums import FileType
 from bi_file_uploader_lib.redis_model.models import DataFile
 from bi_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
 
-from bi_file_uploader_worker_lib.app_health_check import FileUploaderWorkerHealthCheckAppFactory
 from bi_file_secure_reader.app import create_app as create_reader_app
 
 from .utils import create_file_connection
@@ -85,22 +82,6 @@ async def uploaded_10mb_file_id(s3_tmp_bucket, s3_persistent_bucket, s3_client, 
 
     await data_file_desc.save()
     yield data_file_desc.id
-
-
-@pytest.fixture(scope="function")
-def health_check_app(loop, aiohttp_client):
-    app_factory = FileUploaderWorkerHealthCheckAppFactory()
-    app = app_factory.create_app()
-    return loop.run_until_complete(aiohttp_client(app))
-
-
-@pytest.fixture(scope="function")
-def health_check_api_client(health_check_app) -> DLCommonAPIClient:
-    return DLCommonAPIClient(
-        base_url=f"http://{health_check_app.host}:{health_check_app.port}",
-        tenant=TenantCommon(),
-        auth_data=NoAuthData(),
-    )
 
 
 @pytest.fixture(scope="function")

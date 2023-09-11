@@ -6,18 +6,19 @@ import attr
 import pytest
 
 from bi_constants.enums import ConnectionType
-from bi_configs.environments import (
-    ExternalTestingInstallation,
-    EnvAliasesMap,
-    InstallationsMap,
-)
-from bi_configs.enums import AppType, RedisMode, EnvType
+from bi_configs.enums import AppType, RedisMode
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.rqe import RQEConfig, RQEBaseURL
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader, load_connectors_settings_from_env_with_fallback
 from bi_configs.settings_submodels import YCAuthSettings
 from bi_configs.connectors_settings import CHFrozenSamplesConnectorSettings
+
+from bi_defaults.environments import (
+    ExternalTestingInstallation,
+    EnvAliasesMap,
+    InstallationsMap,
+)
 
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.constants import CONNECTION_TYPE_CH_FROZEN_SAMPLES
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ch_frozen_samples_settings_fallback
@@ -26,7 +27,7 @@ from bi_core.components.ids import FieldIdGeneratorType
 from bi_formula.parser.factory import ParserType
 
 from bi_api_lib.app_settings import RedisSettings, CachesTTLSettings, MDBSettings
-from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings
+from bi_api_lib_ya.app_settings import AsyncAppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 
@@ -224,157 +225,8 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
 )
 
 
-DEV_CONTROL_API_CASE = ConfigLoadingCase(
-    env=dict(
-        ALLOW_SUBQUERY_IN_PREVIEW='1',
-        AUTH_MODE='gauthling',
-
-        BI_COMPENG_PG_URL='postgresql://postgres@%2Fvar%2Frun%2Fpostgresql/postgres',
-        BI_FORMULA_PARSER_TYPE='antlr_py',
-
-        DL_BLACKBOX_NAME=None,
-
-        DL_SENTRY_DSN=None,
-
-        CACHES_ON='True',
-        CACHES_REDIS_PASSWORD=SEC_REDIS_PASSWORD,
-
-        BI_API_CONNECTOR_WHITELIST='clickhouse,postgresql',
-        CONNECTOR_AVAILABILITY_VISIBLE='clickhouse,postgres',
-
-        MDB_DOMAINS='.mdb.cloud-preprod.yandex.net,.mdb.cloud.yandex.net',
-        MDB_CNAME_DOMAINS='.rw.mdb.yandex.net',
-        MDB_MANAGED_NETWORK_ENABLED='1',
-        MDB_MANAGED_NETWORK_REMAP='{".mdb.cloud-preprod.yandex.net": ".db.yandex.net",'
-                                  ' ".mdb.cloud.yandex.net": ".db.yandex.net"}',
-
-        MUTATIONS_CACHES_ON='True',
-        MUTATIONS_CACHES_DEFAULT_TTL='120',
-        MUTATIONS_REDIS_PASSWORD=SEC_REDIS_PASSWORD,
-
-        # RQE_CACHES_ON='True',
-        # RQE_CACHES_REDIS_PASSWORD=SEC_REDIS_PASSWORD,
-
-        DL_CRY_ACTUAL_KEY_ID='cloud_preprod_1',
-        DL_CRY_FALLBACK_KEY_ID='0',
-        DL_CRY_KEY_VAL_ID_0=SEC_CRY_KEY_0,
-        DL_CRY_KEY_VAL_ID_cloud_preprod_1=SEC_CRY_KEY_cloud_preprod_1,
-
-        DL_USE_JAEGER_TRACER='1',
-
-        EXT_QUERY_EXECUTER_SECRET_KEY=SEC_EXT_QUERY_EXECUTER_SECRET_KEY,
-
-        QLOUD_TVM_CONFIG='...censored...',
-        QLOUD_TVM_TOKEN='...censored...',
-
-        SAMPLES_CH_HOST=(
-            'myt-g2ucdqpavskt6irw.db.yandex.net,'
-            'sas-1h1276u34g7nt0vx.db.yandex.net,'
-            'sas-t2pl126yki67ztly.db.yandex.net,'
-            'vla-1zwdkyy37cy8iz7f.db.yandex.net,'
-            'c-mdbd60phvp3hvq7d3sq6.rw.db.yandex.net,'
-            'c-mdbggsqlf0pf2rar6cck.rw.db.yandex.net,'
-            'c-mdb636es44gm87hucoip.rw.db.yandex.net,'
-            'sas-gvwzxfe1s83fmwex.db.yandex.net,'
-            'vla-wwc7qtot5u6hhcqc.db.yandex.net'
-        ),
-
-        RQE_EXT_ASYNC_SCHEME='https',
-
-        TVM_INFO='...censored...',
-        TVM_SECRET='...censored...',
-
-        US_MASTER_TOKEN=SEC_US_MASTER_TOKEN,
-
-        YA_MUSIC_PODCAST_STATS_PASSWORD='...censored...',
-        YC_BILLING_ANALYTICS_PASSWORD='...censored...',
-        CH_SCHOOLBOOK_PASSWORD='...censored...',
-
-        FILE_UPLOADER_MASTER_TOKEN='...censored...',
-        REDIS_ARQ_PASSWORD='...censored...',
-        US_BASE_URL='https://example.com',
-
-        YENV_NAME='development',
-        YENV_TYPE='tests',
-    ),
-    expected_config=ControlPlaneAppSettings(
-        CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
-        BI_API_CONNECTOR_WHITELIST=['clickhouse', 'postgresql'],
-        ENV_TYPE=EnvType.development,
-        APP_TYPE=AppType.TESTS,
-        MDB=MDBSettings(
-            DOMAINS=('.mdb.cloud-preprod.yandex.net', '.mdb.cloud.yandex.net'),
-            CNAME_DOMAINS=('.rw.mdb.yandex.net',),
-            MANAGED_NETWORK_ENABLED=True,
-            MANAGED_NETWORK_REMAP={
-                '.mdb.cloud-preprod.yandex.net': '.db.yandex.net',
-                '.mdb.cloud.yandex.net': '.db.yandex.net'
-            }
-        ),
-        RQE_CACHES_TTL=600,
-        BLEEDING_EDGE_USERS=(),
-        CHYT_MIRRORING=None,
-        CRYPTO_KEYS_CONFIG=CryptoKeysConfig(
-            actual_key_id="cloud_preprod_1",
-            map_id_key={
-                "0": SEC_CRY_KEY_0,
-                "cloud_preprod_1": SEC_CRY_KEY_cloud_preprod_1,
-            }
-        ),
-        US_BASE_URL='https://example.com',
-        US_MASTER_TOKEN=SEC_US_MASTER_TOKEN,
-        RQE_CONFIG=RQEConfig(
-            ext_sync_rqe=RQEBaseURL(
-                scheme='http',
-                host='[::1]',
-                port=9876,
-            ),
-            ext_async_rqe=RQEBaseURL(
-                scheme='https',
-                host='[::1]',
-                port=9877,
-            ),
-            int_sync_rqe=RQEBaseURL(
-                scheme='http',
-                host='[::1]',
-                port=9874,
-            ),
-            int_async_rqe=RQEBaseURL(
-                scheme='http',
-                host='[::1]',
-                port=9875,
-            ),
-            hmac_key=SEC_EXT_QUERY_EXECUTER_SECRET_KEY.encode("ascii"),
-        ),
-        SAMPLES_CH_HOSTS=(
-            'myt-g2ucdqpavskt6irw.db.yandex.net', 'sas-1h1276u34g7nt0vx.db.yandex.net',
-            'sas-t2pl126yki67ztly.db.yandex.net', 'vla-1zwdkyy37cy8iz7f.db.yandex.net',
-            'c-mdbd60phvp3hvq7d3sq6.rw.db.yandex.net', 'c-mdbggsqlf0pf2rar6cck.rw.db.yandex.net',
-            'c-mdb636es44gm87hucoip.rw.db.yandex.net', 'sas-gvwzxfe1s83fmwex.db.yandex.net',
-            'vla-wwc7qtot5u6hhcqc.db.yandex.net',
-        ),  # List was replaced with tuple
-        BI_COMPENG_PG_ON=True,
-        BI_COMPENG_PG_URL='postgresql://postgres@%2Fvar%2Frun%2Fpostgresql/postgres',
-        PUBLIC_CH_QUERY_TIMEOUT=30,
-        FORMULA_PARSER_TYPE=ParserType.antlr_py,
-        FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.readable,
-        FILE_UPLOADER_MASTER_TOKEN='...censored...',
-        YC_AUTH_SETTINGS=None,
-        REDIS_ARQ=RedisSettings(
-            PASSWORD='...censored...',
-            MODE=RedisMode.single_host,
-            CLUSTER_NAME=None,
-            HOSTS=('127.0.0.1',),
-            PORT=None,
-            DB=11,
-        ),
-    )
-)
-
-
 @pytest.mark.parametrize("case", (
     CLOUD_PRE_PROD_DATA_API_CASE,
-    DEV_CONTROL_API_CASE,
 ))
 def test_config_loading(case: ConfigLoadingCase):
     expected_config = case.expected_config
@@ -395,7 +247,7 @@ def test_config_loading(case: ConfigLoadingCase):
     assert actual_config == expected_config
 
 
-SPECIAL_CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
+CLOUD_PRE_PROD_DATA_API_WITH_CONNECTORS_CASE = ConfigLoadingCase(
     env=dict(
         **CLOUD_PRE_PROD_DATA_API_CASE.env,
         **dict(
@@ -448,7 +300,7 @@ SPECIAL_CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
     expected_config=CLOUD_PRE_PROD_DATA_API_CASE.expected_config,
 )
 @pytest.mark.parametrize("case", (
-    SPECIAL_CLOUD_PRE_PROD_DATA_API_CASE,
+        CLOUD_PRE_PROD_DATA_API_WITH_CONNECTORS_CASE,
 ))
 def test_connectors_settings_loading(case: ConfigLoadingCase):
     settings_registry = {CONNECTION_TYPE_CH_FROZEN_SAMPLES: CHFrozenSamplesConnectorSettings}

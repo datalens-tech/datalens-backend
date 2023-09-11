@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import logging
 import os
 import typing
 from functools import reduce
@@ -16,15 +17,12 @@ import typeguard
 from bi_constants.enums import ConnectionType
 
 from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, SettingsFallbackType
-from bi_configs.environments import InstallationsMap, EnvAliasesMap
 from bi_configs.settings_loaders.common import SDict, FallbackFactory
 from bi_configs.settings_loaders.connectors_settings import generate_connectors_settings_class
 from bi_configs.settings_loaders.env_remap import remap_env
 from bi_configs.settings_loaders.exc import SettingsLoadingException
 from bi_configs.settings_loaders.fallback_cfg_resolver import (
-    FallbackConfigResolver,
-    YEnvFallbackConfigResolver,
-    YamlFileConfigResolver,
+    FallbackConfigResolver, YamlFileConfigResolver,
 )
 from bi_configs.settings_loaders.meta_definition import s_attrib, SMeta, ReservedKeys, RequiredValue
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
@@ -33,6 +31,9 @@ from bi_utils.utils import get_type_full_name
 _SETTINGS_TV = TypeVar("_SETTINGS_TV")
 
 SEP = "_"
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class InvalidConfigValueException(SettingsLoadingException):
@@ -626,18 +627,9 @@ class EnvSettingsLoader:
         return extractor.extract(effective_s_dict)
 
 
-def get_default_resolver(env: SDict):
-    if YamlFileConfigResolver.is_config_enabled(s_dict=env):
-        return YamlFileConfigResolver()
-    return YEnvFallbackConfigResolver(
-        installation_map=InstallationsMap,
-        env_map=EnvAliasesMap,
-    )
-
-
 def load_settings_from_env_with_fallback_legacy(
         settings_type: Type[_SETTINGS_TV],
-        fallback_cfg_resolver: Optional[FallbackConfigResolver],
+        fallback_cfg_resolver: FallbackConfigResolver,
         env: Optional[SDict] = None,
 ) -> _SETTINGS_TV:
     effective_env = os.environ if env is None else env
@@ -651,16 +643,19 @@ def load_settings_from_env_with_fallback_legacy(
 def load_settings_from_env_with_fallback(
         settings_type: Type[_SETTINGS_TV],
         env: Optional[SDict] = None,
-        fallback_cfg_resolver: Optional[FallbackConfigResolver] = None,
+        default_fallback_cfg_resolver: Optional[FallbackConfigResolver] = None,
 ) -> _SETTINGS_TV:
     effective_env = os.environ if env is None else env
 
-    if fallback_cfg_resolver is None:
-        fallback_cfg_resolver = get_default_resolver(effective_env)
+    if YamlFileConfigResolver.is_config_enabled(s_dict=env):
+        default_fallback_cfg_resolver = YamlFileConfigResolver()
+
+    if default_fallback_cfg_resolver is None:
+        LOGGER.warning('No fallback resolver')
 
     return EnvSettingsLoader(effective_env).load_settings(
         settings_type,
-        fallback_cfg_resolver=fallback_cfg_resolver,
+        fallback_cfg_resolver=default_fallback_cfg_resolver,
     )
 
 

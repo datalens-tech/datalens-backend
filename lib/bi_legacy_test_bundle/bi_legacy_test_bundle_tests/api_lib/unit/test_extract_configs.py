@@ -7,11 +7,6 @@ import pytest
 import yaml
 
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
-from bi_configs.environments import (
-    CommonInstallation,
-    InstallationsMap,
-    EnvAliasesMap,
-)
 from bi_configs.settings_loaders.fallback_cfg_resolver import (
     ObjectLikeConfig,
     ConstantFallbackConfigResolver,
@@ -19,6 +14,11 @@ from bi_configs.settings_loaders.fallback_cfg_resolver import (
 )
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader
 from bi_configs.settings_loaders.settings_serializers import defaults_to_yaml
+from bi_defaults.environments import (
+    CommonInstallation,
+    InstallationsMap,
+    EnvAliasesMap,
+)
 
 
 SEC_REDIS_PASSWORD = 'someRedisPassowrd'

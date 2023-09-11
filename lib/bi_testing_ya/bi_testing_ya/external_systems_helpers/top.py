@@ -15,8 +15,12 @@ from bi_testing_ya.cloud_tokens import CloudCredentialsConverter
 from bi_testing_ya.factories import FolderServiceFactory
 
 if TYPE_CHECKING:
-    from bi_configs.environments import CommonExternalInstallation, DataCloudExposedInstallation, \
-        CommonInternalInstallation, IntegrationTestConfig
+    from bi_defaults.environments import (
+        CommonExternalInstallation,
+        DataCloudExposedInstallation,
+        CommonInternalInstallation,
+        IntegrationTestConfig,
+    )
 
 
 _EXT_SYS_HELPER_TV = TypeVar('_EXT_SYS_HELPER_TV', bound='ExternalSystemsHelperBase')

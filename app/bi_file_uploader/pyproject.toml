@@ -27,6 +27,8 @@ yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundl
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-file-uploader-api-lib = {path = "../../mainrepo/lib/bi_file_uploader_api_lib"}
 yandex-bi-file-uploader-lib = {path = "../../mainrepo/lib/bi_file_uploader_lib"}
+yandex-bi-defaults = {path = "../../lib/bi_defaults"}
+yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
 bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
 

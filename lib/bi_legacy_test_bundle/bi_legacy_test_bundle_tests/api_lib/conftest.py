@@ -58,7 +58,6 @@ from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings, YCAuthSettings
-from bi_defaults.environments import TestsInstallation
 
 from bi_db_testing.loader import load_bi_db_testing
 
@@ -98,7 +97,7 @@ from bi_file_uploader_worker_lib.app import FileUploaderContextFab
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
 from bi_file_uploader_worker_lib.tasks import REGISTRY as FILE_UPLOADER_WORKER_TASK_REGISTRY
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration, CONNECTOR_AVAILABILITY
 from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker
 from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
@@ -207,7 +206,7 @@ def app(
     core_test_config = bi_test_config.core_test_config
     us_config = core_test_config.get_us_config()
     settings = ControlPlaneAppSettings(
-        CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(TestsInstallation.CONNECTOR_AVAILABILITY),
+        CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(CONNECTOR_AVAILABILITY),
         ENV_TYPE=EnvType.development,
         APP_TYPE=AppType.TESTS,
 

@@ -15,7 +15,7 @@ from bi_api_commons.tracing import get_current_tracing_headers
 from bi_api_commons_ya_cloud.models import TenantYCOrganization
 from bi_cloud_integration.iam_rm_client import IAMRMClient
 from bi_cloud_integration.model import AccessBindingAction
-from bi_configs.environments import IntegrationTestConfig
+from bi_defaults.environments import IntegrationTestConfig
 from bi_dls_client.dls_client import DLSClient
 from bi_integration_tests.account_credentials import TestCredentialsConverter
 from bi_integration_tests.report_formatting import ReportFormatter

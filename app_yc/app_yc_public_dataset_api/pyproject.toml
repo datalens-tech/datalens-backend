@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 gunicorn = ">=20.1.0"
+bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}

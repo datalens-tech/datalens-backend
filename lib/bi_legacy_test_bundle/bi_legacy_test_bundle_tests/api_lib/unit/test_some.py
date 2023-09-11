@@ -9,18 +9,17 @@ from cryptography import fernet
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
 from bi_configs.enums import AppType
 from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_configs.environments import (
-    CommonInstallation,
-    EnvAliasesMap,
-    InstallationsMap,
-)
 from bi_configs.settings_loaders.fallback_cfg_resolver import (
     YEnvFallbackConfigResolver,
     YamlFileConfigResolver, ObjectLikeConfig,
 )
 from bi_configs.settings_loaders.loader_env import (
     EnvSettingsLoader,
-    get_default_resolver,
+)
+from bi_defaults.environments import (
+    CommonInstallation,
+    EnvAliasesMap,
+    InstallationsMap,
 )
 
 
@@ -196,19 +195,6 @@ def test_load_settings_with_minimal_required_environments(yenv_type, app_type, m
         actual_key_id=EXPECTED_CRY_ACTUAL_KEY_ID,
         map_id_key=EXPECTED_CRY_KEY_MAP,
     )
-
-
-def test_get_default_resolver():
-    resolver = get_default_resolver(
-        env={}
-    )
-    assert isinstance(resolver, YEnvFallbackConfigResolver)
-    resolver = get_default_resolver(
-        env={
-            YamlFileConfigResolver.config_path_key: 'bla'
-        }
-    )
-    assert isinstance(resolver, YamlFileConfigResolver)
 
 
 def test_yenv_fallback_resolver_with_custom_params():

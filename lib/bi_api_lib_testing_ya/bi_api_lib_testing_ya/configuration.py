@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import attr
 
-from bi_configs.environments import InternalTestingInstallation
+from bi_defaults.environments import InternalTestingInstallation
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 

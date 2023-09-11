@@ -7,7 +7,8 @@ import flask
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
 from bi_configs.settings_loaders.loader_env import (
-    load_settings_from_env_with_fallback, load_connectors_settings_from_env_with_fallback,
+    load_settings_from_env_with_fallback,
+    load_connectors_settings_from_env_with_fallback,
 )
 from bi_constants.enums import ConnectionType
 

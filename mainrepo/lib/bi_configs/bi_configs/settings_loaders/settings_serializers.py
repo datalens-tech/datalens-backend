@@ -10,9 +10,7 @@ import yaml
 
 from dynamic_enum import DynamicEnum
 from bi_configs.connectors_data import ConnectorsDataBase
-from bi_configs.environments import (
-    CommonInstallation,
-)
+from bi_configs.environments import LegacyEnvAliasesMap
 
 
 def object_to_dict(obj: object) -> dict:
@@ -33,7 +31,7 @@ def object_to_dict(obj: object) -> dict:
     return config
 
 
-def defaults_to_dict(default_settings: CommonInstallation) -> dict:
+def defaults_to_dict(default_settings: LegacyEnvAliasesMap) -> dict:
     def _uniq_connector_settings(conn_classes: list[Type[ConnectorsDataBase]]) -> dict[str, Type[ConnectorsDataBase]]:
         conn_cls_by_type = defaultdict(list)
         result: dict[str, Type[ConnectorsDataBase]] = {}
@@ -94,6 +92,6 @@ def defaults_to_dict(default_settings: CommonInstallation) -> dict:
     return config
 
 
-def defaults_to_yaml(defaults: CommonInstallation) -> str:
+def defaults_to_yaml(defaults: LegacyEnvAliasesMap) -> str:
     config = defaults_to_dict(defaults)
     return yaml.safe_dump(config)

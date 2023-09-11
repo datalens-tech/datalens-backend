@@ -6,9 +6,11 @@ from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase, DLRequestView
 from bi_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
+from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from bi_core.aio.ping_view import PingView
+from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 from bi_task_processor.worker import HealthChecker
 
 from bi_file_uploader_worker_lib.app import FileUploaderWorkerFactory
@@ -26,7 +28,14 @@ class HealthCheckFileUploaderWorkerFactory(FileUploaderWorkerFactory[FileUploade
 
 class HealthCheckView(DLRequestView):
     async def get(self) -> web.StreamResponse:
-        settings = load_settings_from_env_with_fallback(FileUploaderWorkerSettings)
+        fallback_resolver = YEnvFallbackConfigResolver(
+            installation_map=InstallationsMap,
+            env_map=EnvAliasesMap,
+        )
+        settings = load_settings_from_env_with_fallback_legacy(
+            FileUploaderWorkerSettings,
+            fallback_cfg_resolver=fallback_resolver,
+        )
         worker = HealthCheckFileUploaderWorkerFactory(settings=settings).create_worker()
         health_checker = HealthChecker(worker)
         await health_checker.check_and_raise()

@@ -23,6 +23,7 @@ yandex-passport-vault-client = ">=1.5.2"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-defaults = {path = "../bi_defaults"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
