@@ -1,13 +1,5 @@
-getters:
-  - name: yav_main
-    type: yav
-    settings:
-      secret_id: {type: value, value: sec-01eb6ngzk58g1hw91t2aggr3kv}
-      yav_token: {type: param, key: YAV_TOKEN}
-
 params:
-  YAV_TOKEN: {getter: $osenv, key: YAV_TOKEN}
-  SNOWFLAKE_CONFIG: {getter: yav_main, key: SNOWFLAKE_CONFIG}
-  SNOWFLAKE_CLIENT_SECRET: {getter: yav_main, key: SNOWFLAKE_CLIENT_SECRET}
-  SNOWFLAKE_REFRESH_TOKEN_EXPIRED: {getter: yav_main, key: SNOWFLAKE_REFRESH_TOKEN_EXPIRED}
-  SNOWFLAKE_REFRESH_TOKEN_X: {getter: yav_main, key: SNOWFLAKE_REFRESH_TOKEN_X}
+  SNOWFLAKE_CONFIG: {getter: $osenv, key: SNOWFLAKE_CONFIG}
+  SNOWFLAKE_CLIENT_SECRET: {getter: $osenv, key: SNOWFLAKE_CLIENT_SECRET}
+  SNOWFLAKE_REFRESH_TOKEN_EXPIRED: {getter: $osenv, key: SNOWFLAKE_REFRESH_TOKEN_EXPIRED}
+  SNOWFLAKE_REFRESH_TOKEN_X: {getter: $osenv, key: SNOWFLAKE_REFRESH_TOKEN_X}

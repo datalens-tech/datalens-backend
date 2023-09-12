@@ -1,5 +1,4 @@
 import abc
-import json
 from typing import ClassVar
 
 import attr
@@ -56,29 +55,6 @@ class SnowFlakeSecretReaderBase(abc.ABC):
     @abc.abstractmethod
     def get_refresh_token_x(self) -> str:
         raise NotImplementedError
-
-
-@attr.s
-class LegacySnowFlakeSecretReader(SnowFlakeSecretReaderBase):
-    _secrets: dict = attr.ib()
-    _project_config: dict = attr.ib(init=False)
-
-    @_project_config.default
-    def _make_project_config(self) -> dict:
-        return json.loads(self._secrets[self.KEY_CONFIG])
-
-    @property
-    def project_config(self) -> dict:
-        return self._project_config
-
-    def get_client_secret(self) -> str:
-        return self._secrets[self.KEY_CLIENT_SECRET]
-
-    def get_refresh_token_expired(self) -> str:
-        return self._secrets[self.KEY_REFRESH_TOKEN_EXPIRED]
-
-    def get_refresh_token_x(self) -> str:
-        return self._secrets[self.KEY_REFRESH_TOKEN_X]
 
 
 @attr.s

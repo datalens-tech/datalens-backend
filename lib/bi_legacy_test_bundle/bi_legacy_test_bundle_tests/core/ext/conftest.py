@@ -5,7 +5,7 @@ import os
 import pytest
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.tvm_info import TvmSecretReader
+from bi_testing_ya.tvm_info import TvmSecretReader
 
 from bi_blackbox_client.testing import update_global_tvm_info
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config

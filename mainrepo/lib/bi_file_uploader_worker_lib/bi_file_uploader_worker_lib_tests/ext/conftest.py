@@ -6,7 +6,6 @@ from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.tvm_info import TvmSecretReader
 
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 
@@ -15,11 +14,6 @@ from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 def env_param_getter() -> GenericEnvParamGetter:
     filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
     return GenericEnvParamGetter.from_yaml_file(filepath)
-
-
-@pytest.fixture(scope='session')
-def tvm_secret_reader(env_param_getter) -> TvmSecretReader:
-    return TvmSecretReader(env_param_getter)
 
 
 # overriding top-level fixture to set google app settings that are only needed in ext tests

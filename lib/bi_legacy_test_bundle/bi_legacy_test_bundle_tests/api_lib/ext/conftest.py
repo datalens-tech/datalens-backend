@@ -9,7 +9,7 @@ from bi_core.connection_executors.adapters.async_adapters_remote import RemoteAs
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
 
 from bi_testing.env_params.generic import GenericEnvParamGetter
-from bi_testing.tvm_info import TvmSecretReader
+from bi_testing_ya.tvm_info import TvmSecretReader
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
 from bi_legacy_test_bundle_tests.api_lib.conftest import loaded_libraries  # noqa
