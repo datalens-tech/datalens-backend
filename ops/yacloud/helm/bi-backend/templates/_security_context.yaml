@@ -3,6 +3,9 @@ allowPrivilegeEscalation: false
 runAsNonRoot: true
 runAsUser: 1000
 runAsGroup: 1000
+capabilities:
+  drop:
+    - all
 {{ end }}
 
 {{- define "security-context-data-api" }}
@@ -18,4 +21,8 @@ capabilities:
 runAsUser: 999
 runAsGroup: 999
 runAsNonRoot: true
+allowPrivilegeEscalation: false
+capabilities:
+  drop:
+    - all
 {{ end }}

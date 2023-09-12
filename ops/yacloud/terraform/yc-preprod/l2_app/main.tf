@@ -95,9 +95,9 @@ module "main" {
     }
     dls = {
       size          = 2
-      cores         = 2
+      cores         = 4
       core_fraction = 100
-      memory        = 4
+      memory        = 8
       dedicated     = true
     }
     rest = {

@@ -16,14 +16,22 @@ containers:
       - --reporter.grpc.tls.enabled=true
       - --reporter.grpc.tls.ca=${jaeger_map_path}/YandexInternalRootCA.crt
     securityContext:
+      allowPrivilegeEscalation: false
       runAsNonRoot: true
+      capabilities:
+        drop:
+          - all
   - name: nginx
     image: ${docker_registry}/nginx-unprivileged:1.18-alpine
     imagePullPolicy: IfNotPresent
     ports:
       - containerPort: ${nginx_port}
     securityContext:
+      allowPrivilegeEscalation: false
       runAsNonRoot: true
+      capabilities:
+        drop:
+          - all
 
 volumeMounts:
   - name: nginx-data

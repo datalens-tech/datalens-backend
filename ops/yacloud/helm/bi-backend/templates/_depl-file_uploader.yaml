@@ -223,9 +223,6 @@ spec:
             {{- include "env_vars-file_secure_reader" . | indent 12}}
           securityContext:
             {{- include "security-context-common" . | indent 12}}
-            capabilities:
-              drop:
-                - all
           resources:
             requests:
               cpu: {{ .Values.app_resources.file_secure_reader.cpu }}

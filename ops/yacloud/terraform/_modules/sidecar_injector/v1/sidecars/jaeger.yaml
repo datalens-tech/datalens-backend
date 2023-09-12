@@ -16,7 +16,11 @@ containers:
       - --reporter.grpc.tls.enabled=true
       - --reporter.grpc.tls.ca=${jaeger_map_path}/YandexInternalRootCA.crt
     securityContext:
+      allowPrivilegeEscalation: false
       runAsNonRoot: true
+      capabilities:
+        drop:
+          - all
 
 volumeMounts:
   - name: jaeger-data
