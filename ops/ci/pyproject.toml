@@ -166,8 +166,6 @@ yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundl
 yandex-bi-connector-chyt = {path = "../../mainrepo/lib/bi_connector_chyt"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
@@ -210,6 +208,8 @@ bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 
 
 #

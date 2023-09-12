@@ -34,8 +34,6 @@ yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
@@ -45,6 +43,8 @@ yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
 yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
 yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 
 [build-system]
 requires = ["poetry-core"]

@@ -29,8 +29,10 @@ lib/bi_connector_greenplum_mdb
 lib/bi_connector_gsheets
 lib/bi_connector_metrica
 lib/bi_connector_monitoring
+lib/bi_connector_mssql
 lib/bi_connector_mysql
 lib/bi_connector_mysql_mdb
+lib/bi_connector_oracle
 lib/bi_connector_postgresql_mdb
 lib/bi_connector_solomon
 lib/bi_connector_usage_tracking_ya_team
@@ -70,8 +72,6 @@ mainrepo/lib/bi_connector_bundle_chs3
 mainrepo/lib/bi_connector_chyt
 mainrepo/lib/bi_connector_clickhouse
 mainrepo/lib/bi_connector_greenplum
-mainrepo/lib/bi_connector_mssql
-mainrepo/lib/bi_connector_oracle
 mainrepo/lib/bi_connector_postgresql
 mainrepo/lib/bi_connector_promql
 mainrepo/lib/bi_connector_snowflake

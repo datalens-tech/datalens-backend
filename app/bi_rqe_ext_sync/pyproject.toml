@@ -19,11 +19,11 @@ yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 
 [build-system]
 requires = ["poetry-core"]

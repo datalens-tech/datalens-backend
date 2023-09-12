@@ -26,10 +26,10 @@ yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 # end connectors
+yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

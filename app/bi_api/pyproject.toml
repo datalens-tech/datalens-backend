@@ -66,8 +66,6 @@ yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
@@ -87,6 +85,8 @@ statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalch
 statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

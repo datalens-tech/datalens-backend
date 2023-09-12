@@ -17,9 +17,9 @@ yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
+yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

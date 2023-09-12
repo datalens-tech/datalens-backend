@@ -31,8 +31,6 @@ yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgr
 yandex-bi-compeng-pg = {path = "../../mainrepo/lib/bi_compeng_pg"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
-yandex-bi-connector-mssql = {path = "../../mainrepo/lib/bi_connector_mssql"}
-yandex-bi-connector-oracle = {path = "../../mainrepo/lib/bi_connector_oracle"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-maintenance = {path = "../bi_maintenance"}
@@ -50,6 +48,8 @@ yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploade
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
 bi-defaults = {path = "../bi_defaults"}
+yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
+yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
