@@ -57,6 +57,18 @@ resource "yandex_kubernetes_cluster" "this" {
       }
     }
 
+    dynamic "master_logging" {
+      for_each = var.enable_silo ? [1] : []
+      content {
+        enabled = true
+        log_group_id = ycp_logging_group.mk8s-audit-logs[0].id
+        kube_apiserver_enabled = true
+        cluster_autoscaler_enabled = true
+        events_enabled = true
+        audit_enabled = true
+      }
+    }
+
   }
 
   dynamic "network_implementation" {
@@ -70,6 +82,10 @@ resource "yandex_kubernetes_cluster" "this" {
     secplatform-deploy-group    = "canary"
     secplatform-force-bootstrap = true
   } : {}
+
+  depends_on = [
+    ycp_logging_group.mk8s-audit-logs,
+  ]
 }
 
 locals {

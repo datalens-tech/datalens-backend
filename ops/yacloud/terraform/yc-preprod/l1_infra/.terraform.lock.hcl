@@ -2,11 +2,9 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/hashicorp/local" {
-  version = "2.3.0"
+  version = "2.4.0"
   hashes = [
-    "h1:+l9ZTDGmGdwnuYI5ftUjwP8UgoLw4f4V9xoCzal4LW0=",
-    "h1:7y8CXQKtfyvrMCSWgCkCclNN9L161u6jO1dEGVaB5RQ=",
-    "h1:U+DbBqKnXSIqC2z7qIko2dy8w6wwuZd89orPvfeqHk0=",
+    "h1:ZUEYUmm2t4vxwzxy1BvN1wL6SDWrDxfH7pxtzX8c6d0=",
   ]
 }
 
@@ -27,23 +25,21 @@ provider "registry.terraform.io/scottwinkler/shell" {
 }
 
 provider "registry.terraform.io/yandex-cloud/yandex" {
-  version = "0.84.0"
+  version = "0.98.0"
   hashes = [
-    "h1:0qXDFW1FBkJT0S5X3rU+/dpbp2f8l3gp7cnB+sjh+AI=",
-    "h1:77x7WR5CNtpWlo4h+Y3FIbhGMzE6IQpJN+foZktGDcQ=",
-    "h1:8R3T4MZsUK+0ivHPbfgKB/Ho4SNRKbho0sMv5Tf4K5w=",
+    "h1:dD90WIpEtaYkgfc6K4j+IBOA6CVGUYqMhKlriaat1Vs=",
   ]
 }
 
 provider "terraform.storage.cloud-preprod.yandex.net/yandex-cloud/ycp" {
-  version = "0.111.0"
+  version = "0.116.0"
   hashes = [
-    "h1:hglFiyUIY5rl6Cj6vROvhbeWkMQewmIZsV4LzxPv/vI=",
-    "zh:1387decc994aeaedce03d50acc117b044d622e27fd906bc3311dd753526b0533",
-    "zh:32f324c9113f177e5c3febd5e9eac99af560354960ae3944d67ff0b8fad64613",
-    "zh:33a1e44a81a1b094866d8a671a45f7a5b793387a533a5c0291571fc0e4e1c189",
-    "zh:838ccd886eece410b56131c5819dbaedf87cbfbb75fed105573b8caa89633ab7",
-    "zh:8c384706222fe79080a080f2128ee116278851d5ade4bdbe361623ea1649db2f",
-    "zh:aba34bae5a647fbce6fd95cfcf103e51363f872329a5e2e62f35172ca937b617",
+    "h1:e/Rv38QcvxMQTIv4qb5qeOM+c65LGqTgDU7EdbdvlOg=",
+    "zh:1717493acac3172312523d5d51f4fb9a617d139f352b913e25e7906590524450",
+    "zh:6a19e80fdfc328ed5657f96d62a6619202ba082079449c5544c9e64282b23be2",
+    "zh:bdd6ea98c6b0fc9fe90fbd4bf6bee7c9ba505b65057789db9575e2eea0497cff",
+    "zh:c7d4861442a287f28d298af9c00451ccd111181e754b341f3ff6ee67aa450f98",
+    "zh:d7a1daa676d3ae5eed9ca50cf4c81887adb0c7a4fa677ea7cc9fa286d2cea62f",
+    "zh:e3a5041f26969453c912a2334df50b779616a849d93990e82bb5cc2ce154ae59",
   ]
 }

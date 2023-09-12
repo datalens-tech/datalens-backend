@@ -96,3 +96,9 @@ variable "bastion" {
     endpoint_suffix = string
   })
 }
+
+variable "k8s_audit_security_stream" {
+  type        = string
+  description = "YDS stream for K8S audit logs."
+  default     = null
+}

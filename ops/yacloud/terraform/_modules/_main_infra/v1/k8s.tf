@@ -33,6 +33,8 @@ module "k8s" {
     endpoint_suffix = module.constants.env_data.bastion_endpoint_suffix
   }
 
+  k8s_audit_security_stream = module.constants.env_data.k8s_audit_security_stream
+
   providers = {
     yandex = yandex
   }
