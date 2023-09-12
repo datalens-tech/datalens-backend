@@ -49,7 +49,7 @@ yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
-yandex-bi-defaults = {path = "../bi_defaults"}
+bi-defaults = {path = "../bi_defaults"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

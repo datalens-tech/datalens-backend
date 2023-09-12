@@ -29,7 +29,7 @@ yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-defaults = {path = "../../lib/bi_defaults"}
+bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
 yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
 dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}

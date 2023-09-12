@@ -22,7 +22,6 @@ bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-defaults = {path = "../../bi_defaults"}
 yandex-bi-file-uploader-api-lib = {path = "../../mainrepo/lib/bi_file_uploader_api_lib"}
 
 [build-system]

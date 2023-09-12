@@ -28,7 +28,7 @@ pytest-asyncio = ">=0.20.3"
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-defaults = {path = "../../lib/bi_defaults"}
+bi-defaults = {path = "../../lib/bi_defaults"}
 
 [build-system]
 requires = ["poetry-core"]

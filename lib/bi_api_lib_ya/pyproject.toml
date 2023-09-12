@@ -23,7 +23,7 @@ yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickh
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-defaults = {path = "../bi_defaults"}
+bi-defaults = {path = "../bi_defaults"}
 yandex-bi-service-registry-ya-cloud = {path = "../bi_service_registry_ya_cloud"}
 yandex-bi-service-registry-ya-team = {path = "../bi_service_registry_ya_team"}
 
