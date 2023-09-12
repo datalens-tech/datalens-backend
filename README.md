@@ -73,10 +73,17 @@ All local changes in pre-public repo **will be reset** and **trunk** will be che
 Current `mainrepo/` (**including local changes**) will be dumped (only files added to GIT).
 
 
-### Code quality (`cq:`)
+### [Mainrepo] Code quality (`cq:`)
 
 Experimental task to check and fix source files. 
 - task cq:fix_changed : applies all auto-fixes
 - task cq:check_changed : check for any non-conformity in code style/format/lint
-- task cq:fix_dir -- {single dir} : applies all auto-fixes to the given dir
-- task cq:check_dir -- {single dir} : check for any non-conformity in code style/format/lint in the given dir
+- task cq:fix_dir -- {single dir} : applies all auto-fixes to the given dir absolute path
+- task cq:check_dir -- {single dir} : check for any non-conformity in code style/format/lint in the given dir abs path
+
+### [Mainrepo] Main env (`main_env`)
+
+Command to create virtual env for the mainrepo tools. It requires presence of .env in the mainrepo/tools.
+```
+task main_env:ensure_venv
+```

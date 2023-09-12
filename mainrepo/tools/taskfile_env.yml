@@ -18,6 +18,7 @@ tasks:
       - .env
     cmds:
       - |
+        if [ -f .env ]; then echo ""; else echo "Please create .env (at $(realpath .)), use .env.sample as reference"; exit 1; fi;
         $PYTHON -m venv $VENV_PATH
         . $VENV_PATH/bin/activate
         pip install -r requirements-localhost.txt

@@ -23,3 +23,6 @@ includes:
   cq:
     taskfile: mainrepo/tools/taskfile_code_quality.yml
     dir: mainrepo/tools
+  main_env:
+    taskfile: mainrepo/tools/taskfile_env.yml
+    dir: mainrepo/tools
