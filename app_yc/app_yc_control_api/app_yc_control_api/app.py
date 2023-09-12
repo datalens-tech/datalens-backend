@@ -2,43 +2,59 @@ from __future__ import annotations
 
 from typing import Optional
 
+from app_yc_control_api import app_version
+from app_yc_control_api.app_factory import ControlApiAppFactoryYC
 import flask
 
+from bi_api_lib.app_settings import ControlApiAppTestingsSettings
+from bi_api_lib.loader import (
+    ApiLibraryConfig,
+    load_bi_api_lib,
+    preload_bi_api_lib,
+)
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
+from bi_configs.env_var_definitions import (
+    jaeger_service_name_env_aware,
+    use_jaeger_tracer,
+)
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import (
-    load_settings_from_env_with_fallback,
     load_connectors_settings_from_env_with_fallback,
+    load_settings_from_env_with_fallback,
 )
 from bi_constants.enums import ConnectionType
-
-from bi_core.connectors.settings.registry import CONNECTORS_SETTINGS_CLASSES, CONNECTORS_SETTINGS_FALLBACKS
+from bi_core.connectors.settings.registry import (
+    CONNECTORS_SETTINGS_CLASSES,
+    CONNECTORS_SETTINGS_FALLBACKS,
+)
 from bi_core.flask_utils.sentry import configure_raven_for_flask
 from bi_core.loader import CoreLibraryConfig
 from bi_core.logging_config import hook_configure_logging
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
 
-from bi_api_lib.app_settings import ControlApiAppTestingsSettings
-from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 
-from app_yc_control_api.app_factory import ControlApiAppFactoryYC
-from app_yc_control_api import app_version
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
+def register_local_apis() -> None:
+    from bi_connector_metrica.bi import bi_api_handler  # noqa
 
 
 def create_app(
-        app_settings: ControlPlaneAppSettings,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
-        close_loop_after_request: bool = True,
+    app_settings: ControlPlaneAppSettings,
+    connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+    testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+    close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = ControlApiAppFactoryYC(settings=app_settings)
-    return mng_app_factory.create_app(
+    flask_app = mng_app_factory.create_app(
         connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,
         close_loop_after_request=close_loop_after_request,
     )
+    register_local_apis()
+    return flask_app
 
 
 def create_uwsgi_app() -> flask.Flask:
@@ -51,10 +67,12 @@ def create_uwsgi_app() -> flask.Flask:
         ControlPlaneAppSettings,
         default_fallback_cfg_resolver=fallback_resolver,
     )
-    load_bi_api_lib(ApiLibraryConfig(
-        api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
-        core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
-    ))
+    load_bi_api_lib(
+        ApiLibraryConfig(
+            api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
+            core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+        )
+    )
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
@@ -65,11 +83,11 @@ def create_uwsgi_app() -> flask.Flask:
 
     hook_configure_logging(
         uwsgi_app,
-        app_name='bi_api_app',
-        app_prefix='a',
+        app_name="bi_api_app",
+        app_prefix="a",
         sentry_dsn=actual_sentry_dsn,
         use_jaeger_tracer=use_jaeger_tracer(),
-        jaeger_service_name=jaeger_service_name_env_aware('bi-api-app'),
+        jaeger_service_name=jaeger_service_name_env_aware("bi-api-app"),
     )
 
     # Sentry in the flask app: 'BadRequest' / 'InternalServerError' / ..., 'in werkzeug/exceptions.py'.

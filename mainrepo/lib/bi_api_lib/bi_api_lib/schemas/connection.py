@@ -1,20 +1,31 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, ClassVar, Dict, Type
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Type,
+)
 
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import ConnectionType as CT
-
-from bi_model_tools.schema.base import BaseSchema
-from bi_core.us_connection_base import ConnectionBase, UnknownConnection
-
+from bi_api_connector.api_schema.connection_base import (
+    ConnectionMetaMixin,
+    ConnectionSchema,
+)
 from bi_api_connector.api_schema.source import DataSourceSchema
-from bi_api_connector.api_schema.source_base import DataSourceTemplateResponseField, RawSchemaColumnSchema
-from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
-
+from bi_api_connector.api_schema.source_base import (
+    DataSourceTemplateResponseField,
+    RawSchemaColumnSchema,
+)
+from bi_constants.enums import ConnectionType as CT
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    UnknownConnection,
+)
+from bi_model_tools.schema.base import BaseSchema
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,14 +50,6 @@ class ConnectionSourceTemplatesResponseSchema(BaseSchema):
 
 class ConnectionInfoSourceSchemaResponseSchema(BaseSchema):
     raw_schema = ma_fields.Nested(RawSchemaColumnSchema, many=True, allow_none=True)
-
-
-class MetricaConnectionAvailableCountersSchema(BaseSchema):
-    class CounterInfo(BaseSchema):
-        id = ma_fields.String()
-        name = ma_fields.String()
-
-    counters = ma_fields.Nested(CounterInfo, many=True)
 
 
 class GenericConnectionSchema(OneOfSchema):
@@ -89,8 +92,9 @@ class GenericConnectionSchema(OneOfSchema):
 def register_sub_schema_class(conn_type: CT, schema_cls: Type[ConnectionSchema]) -> None:
     if conn_type.name in GenericConnectionSchema.type_schemas:
         registered_schema = GenericConnectionSchema.type_schemas[conn_type.name]
-        assert registered_schema == schema_cls, \
-            f'Already have {registered_schema} serving {conn_type}, can not register {schema_cls} for it'
+        assert (
+            registered_schema == schema_cls
+        ), f"Already have {registered_schema} serving {conn_type}, can not register {schema_cls} for it"
 
     GenericConnectionSchema.type_schemas[conn_type.name] = schema_cls
     GenericConnectionSchema.supported_connections.add(schema_cls.TARGET_CLS)

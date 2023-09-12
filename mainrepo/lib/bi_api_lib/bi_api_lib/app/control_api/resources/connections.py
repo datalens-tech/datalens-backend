@@ -7,36 +7,33 @@ from flask import request
 from flask_restx import abort
 from marshmallow import ValidationError as MValidationError
 
-from sqlalchemy_metrika_api.exceptions import MetrikaApiAccessDeniedException
-
-from bi_constants.enums import ConnectionType as ct
-from bi_constants.exc import DLBaseException
-
-from bi_core.exc import DatabaseUnavailable, ConnectionConfigurationError, USPermissionRequired
 from bi_api_commons.flask.middlewares.logging_context import put_to_request_context
-from bi_app_tools.profiling_base import generic_profiler
-from bi_core.us_connection_base import ConnectionBase
-from bi_connector_metrica.core.us_connection import MetrikaBaseMixin
-from bi_core.data_source_merge_tools import make_spec_from_dict
-from bi_core.data_source.type_mapping import get_data_source_class
-
+from bi_api_connector.api_schema.extras import (
+    CreateMode,
+    EditMode,
+)
 from bi_api_lib import exc
 from bi_api_lib.api_decorators import schematic_request
-from bi_api_lib.enums import USPermissionKind
 from bi_api_lib.app.control_api.resources import API
 from bi_api_lib.app.control_api.resources.base import BIResource
-from bi_api_connector.api_schema.extras import CreateMode, EditMode
+from bi_api_lib.enums import USPermissionKind
 from bi_api_lib.schemas.connection import (
+    ConnectionInfoSourceSchemaQuerySchema,
+    ConnectionInfoSourceSchemaResponseSchema,
     ConnectionSourcesQuerySchema,
     ConnectionSourceTemplatesResponseSchema,
     GenericConnectionSchema,
-    ConnectionInfoSourceSchemaQuerySchema,
-    ConnectionInfoSourceSchemaResponseSchema,
-    MetricaConnectionAvailableCountersSchema,
 )
 from bi_api_lib.utils import need_permission_on_entry
-
-from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
+from bi_constants.enums import ConnectionType as ct
+from bi_constants.exc import DLBaseException
+from bi_core.data_source.type_mapping import get_data_source_class
+from bi_core.data_source_merge_tools import make_spec_from_dict
+from bi_core.exc import (
+    DatabaseUnavailable,
+    USPermissionRequired,
+)
+from bi_core.us_connection_base import ConnectionBase
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -44,28 +41,28 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-ns = API.namespace('Connections', path='/connections')
+ns = API.namespace("Connections", path="/connections")
 
 
 def _handle_conn_test_exc(exception: Exception):  # type: ignore  # TODO: fix
     if isinstance(exception, DLBaseException):
         raise exception
     else:
-        LOGGER.exception('Got unhandled exception')
+        LOGGER.exception("Got unhandled exception")
         raise DatabaseUnavailable() from exception
 
 
-@ns.route('/test_connection_params')
+@ns.route("/test_connection_params")
 class ConnectionParamsTester(BIResource):
     @schematic_request(ns=ns)
     def post(self):  # type: ignore  # TODO: fix
         service_registry = self.get_service_registry()
         schema = GenericConnectionSchema(context=self.get_schema_ctx(schema_operations_mode=CreateMode.test))
         body_json = dict(request.json)
-        body_json['name'] = 'mocked_name'  # FIXME: https://st.yandex-team.ru/BI-4639
+        body_json["name"] = "mocked_name"  # FIXME: https://st.yandex-team.ru/BI-4639
         try:
             conn: ConnectionBase = schema.load(body_json)
-            conn_type = body_json.get('type')
+            conn_type = body_json.get("type")
         except MValidationError as err:
             return err.messages, 400
 
@@ -73,13 +70,13 @@ class ConnectionParamsTester(BIResource):
 
         try:
             conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)
-        except NotImplementedError:
-            raise exc.UnsupportedForEntityType(f'Connector {conn_type} does not support testing')
+        except NotImplementedError as err:
+            raise exc.UnsupportedForEntityType(f"Connector {conn_type} does not support testing") from err
         except Exception as err:
             _handle_conn_test_exc(err)
 
 
-@ns.route('/test_connection/<connection_id>')
+@ns.route("/test_connection/<connection_id>")
 class ConnectionTester(BIResource):
     @schematic_request(ns=ns)
     def post(self, connection_id):  # type: ignore  # TODO: fix
@@ -109,13 +106,13 @@ class ConnectionTester(BIResource):
 
         try:
             conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)
-        except NotImplementedError:
-            raise exc.UnsupportedForEntityType(f'Connector {conn.conn_type.name} does not support testing')
+        except NotImplementedError as err:
+            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support testing") from err
         except Exception as e:
             _handle_conn_test_exc(e)
 
 
-@ns.route('/')
+@ns.route("/")
 class ConnectionsList(BIResource):
     @put_to_request_context(endpoint_code="ConnectionCreate")
     @schematic_request(ns=ns)
@@ -123,11 +120,11 @@ class ConnectionsList(BIResource):
         us_manager = self.get_us_manager()
 
         conn_availability = self.get_service_registry().get_connector_availability()
-        conn_type_is_available = conn_availability.check_connector_is_available(ct[request.json.get('type')])
+        conn_type_is_available = conn_availability.check_connector_is_available(ct[request.json.get("type")])
         if not conn_type_is_available:
             # TODO: remove `abort` after migration to schematic_request decorator with common error handling
-            abort(400, 'This connection type is not editable')
-            raise exc.UnsupportedForEntityType('This connection type is not editable')
+            abort(400, "This connection type is not editable")
+            raise exc.UnsupportedForEntityType("This connection type is not editable")
 
         schema = GenericConnectionSchema(context=self.get_schema_ctx(schema_operations_mode=CreateMode.create))
         try:
@@ -139,15 +136,18 @@ class ConnectionsList(BIResource):
 
         us_manager.save(conn)
 
-        return {'id': conn.uuid}
+        return {"id": conn.uuid}
 
 
-@ns.route('/<connection_id>')
+@ns.route("/<connection_id>")
 class ConnectionItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionGet")
-    @schematic_request(ns=ns, responses={
-        # 200: ('Success', GetConnectionResponseSchema()),
-    })
+    @schematic_request(
+        ns=ns,
+        responses={
+            # 200: ('Success', GetConnectionResponseSchema()),
+        },
+    )
     def get(self, connection_id):  # type: ignore  # TODO: fix
         conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.read)
@@ -189,17 +189,12 @@ class ConnectionItem(BIResource):
 def _dump_source_templates(tpls) -> dict:  # type: ignore  # TODO: fix
     if tpls is None:
         return None  # type: ignore  # TODO: fix
-    return [  # type: ignore  # TODO: fix
-        dict(tpl._asdict(), parameter_hash=tpl.get_param_hash())
-        for tpl in tpls
-    ]
+    return [dict(tpl._asdict(), parameter_hash=tpl.get_param_hash()) for tpl in tpls]  # type: ignore  # TODO: fix
 
 
-@ns.route('/<connection_id>/info/metadata_sources')
+@ns.route("/<connection_id>/info/metadata_sources")
 class ConnectionInfoMetadataSources(BIResource):
-    @schematic_request(
-        ns=ns, responses={200: ('Success', ConnectionSourceTemplatesResponseSchema())}
-    )
+    @schematic_request(ns=ns, responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())})
     def get(self, connection_id):  # type: ignore  # TODO: fix
         connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
 
@@ -215,18 +210,18 @@ class ConnectionInfoMetadataSources(BIResource):
             source_templates = connection.get_data_source_local_templates()
 
         return {
-            'sources': _dump_source_templates(source_templates),
+            "sources": _dump_source_templates(source_templates),
             # Partially stabilized feature. See https://st.yandex-team.ru/BI-1603
-            'freeform_sources': _dump_source_templates(source_template_templates),
+            "freeform_sources": _dump_source_templates(source_template_templates),
         }
 
 
-@ns.route('/<connection_id>/info/sources')
+@ns.route("/<connection_id>/info/sources")
 class ConnectionInfoSources(BIResource):
     @schematic_request(
         ns=ns,
         query=ConnectionSourcesQuerySchema(),
-        responses={200: ('Success', ConnectionSourceTemplatesResponseSchema())}
+        responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())},
     )
     def get(self, connection_id, query):  # type: ignore  # TODO: fix
         connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
@@ -245,31 +240,27 @@ class ConnectionInfoSources(BIResource):
                 conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor,
             )
 
-        search_text = query.get('search_text')
+        search_text = query.get("search_text")
         if search_text is not None:
             # TODO: for some connections, do the filtering in the database.
             search_text = search_text.lower()
-            source_templates = [
-                item
-                for item in source_templates
-                if search_text in item.title.lower()
-            ]
-        limit = query.get('limit')
+            source_templates = [item for item in source_templates if search_text in item.title.lower()]
+        limit = query.get("limit")
         if limit is not None:  # Note that `load_default=1000` in the schema, so it should always be defined.
             source_templates = source_templates[:limit]
         return {
-            'sources': _dump_source_templates(source_templates),
+            "sources": _dump_source_templates(source_templates),
             # Partially stabilized feature. See https://st.yandex-team.ru/BI-1603
-            'freeform_sources': _dump_source_templates(source_template_templates),
+            "freeform_sources": _dump_source_templates(source_template_templates),
         }
 
 
-@ns.route('/<connection_id>/info/source/schema')
+@ns.route("/<connection_id>/info/source/schema")
 class ConnectionInfoSourceSchema(BIResource):
     @schematic_request(
         ns=ns,
         body=ConnectionInfoSourceSchemaQuerySchema(),
-        responses={200: ('Success', ConnectionInfoSourceSchemaResponseSchema())}
+        responses={200: ("Success", ConnectionInfoSourceSchemaResponseSchema())},
     )
     def post(self, connection_id: str, body: dict):  # type: ignore  # TODO: fix
         connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
@@ -281,35 +272,15 @@ class ConnectionInfoSourceSchema(BIResource):
 
         need_permission_on_entry(connection, USPermissionKind.read)
         if not connection.is_dashsql_allowed:
-            abort(400, 'Not supported for connector without dashsql allowed')
+            abort(400, "Not supported for connector without dashsql allowed")
 
-        src = body['source']
-        dsrc_spec = make_spec_from_dict(source_type=src['source_type'], data=src['parameters'])
-        dsrc_cls = get_data_source_class(src['source_type'])
+        src = body["source"]
+        dsrc_spec = make_spec_from_dict(source_type=src["source_type"], data=src["parameters"])
+        dsrc_cls = get_data_source_class(src["source_type"])
         dsrc = dsrc_cls(spec=dsrc_spec, connection=connection)  # type: ignore
 
         schema_info = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory_func)
 
         return {
-            'raw_schema': schema_info.schema,
+            "raw_schema": schema_info.schema,
         }
-
-
-@ns.route('/<connection_id>/metrica_available_counters')
-class MetricaConnectionAvailableCounters(BIResource):
-    @schematic_request(ns=ns, responses={200: ('Success', MetricaConnectionAvailableCountersSchema())})
-    @generic_profiler("metrica-available-counters")
-    def get(self, connection_id: str) -> dict:
-        conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
-        need_permission_on_entry(conn, USPermissionKind.edit)
-        if conn.conn_type not in (CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API):
-            raise exc.UnsupportedForEntityType('Unsupported connection type')
-        assert isinstance(conn, MetrikaBaseMixin)
-        try:
-            counters = conn.get_available_counters()
-        except MetrikaApiAccessDeniedException as ex:
-            raise ConnectionConfigurationError(
-                'Unable to load available counters. Possibly caused by invalid OAuth token.'
-            ) from ex
-        else:
-            return dict(counters=counters)
