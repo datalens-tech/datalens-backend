@@ -20,8 +20,6 @@ pytz = ">=2022.7.1"
 sqlalchemy = ">=1.4.46, <2.0"
 sqlalchemy-gsheets = {path = "../../../lib/bi_sqlalchemy_gsheets"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-utils = {path = "../bi_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 
 [tool.poetry.group]
@@ -32,11 +30,9 @@ oracledb = ">=1.3.1"
 psycopg2-binary = ">=2.9.6"
 pyodbc = ">=4.0.35"
 python-dateutil = ">=2.8.2"
-sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
 statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
-yandex-bi-sqlalchemy-yq = {path = "../../../lib/bi_sqlalchemy_yq"}
 
 
 [[tool.mypy.overrides]]

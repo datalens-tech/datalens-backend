@@ -8443,7 +8443,6 @@ Werkzeug = ">=2.0.3"
 xxhash = ">=3.2.0"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-blackbox-client = {path = "../../../lib/bi_blackbox_client"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-model-tools = {path = "../bi_model_tools"}
@@ -8793,9 +8792,7 @@ jinja2 = ">=3.1.2"
 pytz = ">=2022.7.1"
 sqlalchemy = ">=1.4.46, <2.0"
 sqlalchemy-gsheets = {path = "../../../lib/bi_sqlalchemy_gsheets"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-utils = {path = "../bi_utils"}
 
 [package.source]
 type = "directory"
