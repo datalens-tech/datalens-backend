@@ -75,11 +75,6 @@ addopts = "-ra"
 testpaths = ["bi_core_tests/unit", "bi_core_tests/db"]
 timeout = 600
 
-
-
-[tool.poetry.scripts]
-setup-iptables = "bi_core.bin.setup_iptables:main"
-
 [datalens.pytest.unit]
 root_dir = "bi_core_tests/"
 target_path = "unit"

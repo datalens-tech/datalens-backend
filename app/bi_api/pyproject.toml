@@ -8,7 +8,6 @@ packages = [{include = "bi"}]
 license = "MIT"
 readme = "README.md"
 
-
 [tool.poetry.dependencies]
 Flask = ">=2.0.3"
 Flask-SQLAlchemy = ">=2.5.1"
@@ -93,6 +92,9 @@ build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
+
+[tool.poetry.scripts]
+setup-iptables = "bi.bin.setup_iptables:main"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
