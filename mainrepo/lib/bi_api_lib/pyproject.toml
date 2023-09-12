@@ -25,14 +25,11 @@ werkzeug = ">=2.0.3"
 yandex-bi-app-tools = {path = "../bi_app_tools"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-connector-metrica = {path = "../../../lib/bi_connector_metrica"}
-yandex-bi-connector-mysql = {path = "../../../lib/bi_connector_mysql"}
 yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
 yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
-yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}
 bi-i18n = {path = "../bi_i18n"}
@@ -40,7 +37,6 @@ yandex-bi-model-tools = {path = "../bi_model_tools"}
 yandex-bi-query-processing = {path = "../bi_query_processing"}
 bi-task-processor = {path = "../bi_task_processor"}
 yandex-bi-utils = {path = "../bi_utils"}
-sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
 statcommons = {path = "../statcommons"}
 
 [build-system]
