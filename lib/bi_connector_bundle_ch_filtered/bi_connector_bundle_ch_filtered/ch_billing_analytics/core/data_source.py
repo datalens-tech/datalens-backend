@@ -4,7 +4,7 @@ import logging
 
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
-from bi_core.connectors.clickhouse_base.data_source import ClickHouseTemplatedSubselectDataSource
+from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import (
     CONNECTION_TYPE_CH_BILLING_ANALYTICS,

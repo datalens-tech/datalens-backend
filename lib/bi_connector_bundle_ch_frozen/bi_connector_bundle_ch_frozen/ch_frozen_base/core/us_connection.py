@@ -8,7 +8,7 @@ from bi_core.us_connection_base import DataSourceTemplate
 from bi_configs.connectors_settings import CHFrozenConnectorSettings
 from bi_constants.enums import CreateDSFrom, RawSQLLevel
 
-from bi_core.connectors.clickhouse_base.us_connection import ConnectionCHFilteredHardcodedDataBase
+from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT
 )

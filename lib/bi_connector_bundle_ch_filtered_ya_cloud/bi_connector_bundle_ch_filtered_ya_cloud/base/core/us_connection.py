@@ -5,20 +5,22 @@ import attr
 
 from bi_utils.utils import DataKey
 
+from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+
 from bi_core import exc
 from bi_core.utils import secrepr
-from bi_core.us_connection_base import ConnectionBase, CONNECTOR_SETTINGS_TV
+from bi_core.us_connection_base import ConnectionBase
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
-from bi_core.connectors.clickhouse_base.us_connection import (
-    ConnectionCHFilteredHardcodedDataBase, SubselectParameter, SubselectParameterType,
+from bi_core.connectors.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
+from bi_connector_bundle_ch_filtered.base.core.us_connection import (
+    CH_FILTERED_SETTINGS_TV, ConnectionCHFilteredHardcodedDataBase,
 )
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 
 
 class ConnectionCHFilteredSubselectByPuidBase(
-        ConnectionCHFilteredHardcodedDataBase[CONNECTOR_SETTINGS_TV],
-        Generic[CONNECTOR_SETTINGS_TV],
+        ConnectionCHFilteredHardcodedDataBase[CH_FILTERED_SETTINGS_TV],
+        Generic[CH_FILTERED_SETTINGS_TV],
         metaclass=abc.ABCMeta
 ):
     passport_user_id: Optional[int] = None

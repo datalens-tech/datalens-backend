@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import attr
 
+from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionClickhouseFilteredBase
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants import (
     SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
 )
-from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseFilteredBase
 
 
 class ConnectionClickhouseGeoFiltered(ConnectionClickhouseFilteredBase):

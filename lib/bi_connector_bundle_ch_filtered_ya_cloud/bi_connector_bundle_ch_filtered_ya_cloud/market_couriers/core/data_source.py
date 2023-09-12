@@ -9,7 +9,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants imp
     CONNECTION_TYPE_MARKET_COURIERS, SOURCE_TYPE_CH_MARKET_COURIERS_TABLE,
 )
 
-from bi_core.connectors.clickhouse_base.data_source import ClickHouseTemplatedSubselectDataSource
+from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 
 
 LOGGER = logging.getLogger(__name__)

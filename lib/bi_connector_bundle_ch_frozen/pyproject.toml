@@ -14,6 +14,7 @@ python = ">=3.10, <3.12"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}

@@ -7,7 +7,7 @@ from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnector
 from bi_core.connectors.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
-from bi_core.connectors.clickhouse_base.storage_schemas.connection import (
+from bi_connector_bundle_ch_filtered.base.core.storage_schemas.connection import (
     ConnectionCHFilteredHardcodedDataBaseDataStorageSchema,
 )
 from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer

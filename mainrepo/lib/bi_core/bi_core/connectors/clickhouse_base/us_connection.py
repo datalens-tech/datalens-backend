@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import abc
-from typing import Callable, Generic, Optional, Tuple, Any
+from typing import Callable, Optional, Any
 from enum import Enum
 
 import attr
@@ -10,11 +9,8 @@ from bi_core.connection_models import ConnectOptions
 from bi_core.connection_executors.common_base import ConnExecutorQuery
 from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import (
-    ConnectionBase, ClassicConnectionSQL, ConnectionHardcodedDataMixin, CONNECTOR_SETTINGS_TV,
-)
+from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
 from bi_core.base_models import ConnMDBMixin
-from bi_core.utils import parse_comma_separated_hosts
 from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
 
 
@@ -112,91 +108,3 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
             for db_name, table_name in conn_executor.execute(query=query).get_all()
             if db_name.lower() not in ch_system_dbs
         ]
-
-
-class ConnectionClickhouseFilteredBase(ConnectionClickhouseBase, metaclass=abc.ABCMeta):
-    @property
-    @abc.abstractmethod
-    def allowed_tables(self) -> list[str]:
-        pass
-
-    @property
-    def subselect_templates(self) -> Tuple[SubselectTemplate, ...]:
-        return tuple()
-
-    def get_subselect_template_by_title(self, title: str) -> SubselectTemplate:
-        for sst in self.subselect_templates:
-            if sst.title == title:
-                return sst
-        raise ValueError(f'Unknown subselect template {title}')
-
-    @property
-    def subselect_parameters(self) -> list[SubselectParameter]:
-        return []
-
-    def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-    ) -> list[dict]:
-        all_combinations = super().get_parameter_combinations(conn_executor_factory=conn_executor_factory)
-        filtered_combinations = list(filter(
-            lambda c: c['db_name'] == self.db_name and c['table_name'] in self.allowed_tables,
-            all_combinations,
-        ))
-        filtered_combinations.extend([
-            {'db_name': self.db_name, 'table_name': sst.title}
-            for sst in self.subselect_templates
-        ])
-        return filtered_combinations
-
-    def test(self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]) -> None:
-        """
-        Don't execute `select 1` on our service databases - it's useless because user can't
-        manage it anyway.
-        """
-        pass
-
-
-class ConnectionCHFilteredHardcodedDataBase(  # type: ignore  # TODO: fix
-    ConnectionHardcodedDataMixin[CONNECTOR_SETTINGS_TV],
-    ConnectionClickhouseFilteredBase,
-    Generic[CONNECTOR_SETTINGS_TV],
-    metaclass=abc.ABCMeta,
-):
-    @property
-    def db_name(self) -> Optional[str]:
-        return self._connector_settings.DB_NAME
-
-    @property
-    def allowed_tables(self) -> list[str]:
-        return self._connector_settings.ALLOWED_TABLES
-
-    @property
-    def subselect_templates(self) -> tuple[SubselectTemplate, ...]:
-        return tuple(
-            SubselectTemplate(title=sst['title'], sql_query=sst['sql_query'])  # type: ignore  # TODO: fix
-            for sst in self._connector_settings.SUBSELECT_TEMPLATES
-        )
-
-    def get_conn_dto(self) -> 'ClickHouseConnDTO':
-        cs = self._connector_settings
-        conn_dto = attr.evolve(
-            super().get_conn_dto(),
-
-            protocol='https' if cs.SECURE else 'http',
-            host=cs.HOST,
-            multihosts=parse_comma_separated_hosts(cs.HOST),  # type: ignore  # TODO: fix
-            port=cs.PORT,
-            db_name=cs.DB_NAME,
-            username=cs.USERNAME,
-            password=cs.PASSWORD,
-        )
-        return conn_dto
-
-    @property
-    def allow_public_usage(self) -> bool:
-        return self._connector_settings.ALLOW_PUBLIC_USAGE
-
-    def get_conn_options(self) -> CHConnectOptions:
-        return super().get_conn_options().clone(
-            use_managed_network=self._connector_settings.USE_MANAGED_NETWORK,
-        )

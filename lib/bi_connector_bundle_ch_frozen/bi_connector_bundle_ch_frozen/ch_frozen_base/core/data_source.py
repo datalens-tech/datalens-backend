@@ -5,13 +5,14 @@ from typing import Callable, ClassVar, Optional, Any, TYPE_CHECKING
 from bi_constants.enums import CreateDSFrom
 
 from bi_core import exc
-from bi_core.connectors.clickhouse_base.data_source import (
-    ClickHouseTemplatedSubselectDataSource,
-    ClickHouseFilteredDataSourceBase,
-)
 from bi_core.data_source import StandardSQLDataSource
 from bi_core.data_source.sql import SubselectDataSource
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+
+from bi_connector_bundle_ch_filtered.base.core.data_source import (
+    ClickHouseTemplatedSubselectDataSource,
+    ClickHouseFilteredDataSourceBase,
+)
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import SOURCE_TYPE_CH_FROZEN_SOURCE
 
 if TYPE_CHECKING:

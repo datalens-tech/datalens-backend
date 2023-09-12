@@ -4,9 +4,8 @@ from typing import ClassVar, Optional
 
 from bi_configs.connectors_settings import BillingConnectorSettings
 
-from bi_core.connectors.clickhouse_base.us_connection import (
-    ConnectionCHFilteredHardcodedDataBase, SubselectParameter, SubselectParameterType
-)
+from bi_core.connectors.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
+from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
 
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import (
     SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE,

@@ -4,12 +4,11 @@ from typing import ClassVar
 
 from bi_configs.connectors_settings import UsageTrackingYaTeamConnectionSettings
 
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
-from bi_core.connectors.clickhouse_base.us_connection import (
-    ConnectionCHFilteredHardcodedDataBase, SubselectParameter, SubselectParameterType
-)
 from bi_core.us_connection_base import HiddenDatabaseNameMixin
 
+from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
+from bi_core.connectors.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
+from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
 from bi_connector_usage_tracking_ya_team.core.constants import (
     SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,
 )

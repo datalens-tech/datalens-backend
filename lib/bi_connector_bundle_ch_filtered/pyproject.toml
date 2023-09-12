@@ -10,7 +10,9 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
+attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}

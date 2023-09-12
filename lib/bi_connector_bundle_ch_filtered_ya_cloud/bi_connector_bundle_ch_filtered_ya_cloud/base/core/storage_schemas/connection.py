@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from bi_core.connectors.clickhouse_base.storage_schemas.connection import (
+from bi_connector_bundle_ch_filtered.base.core.storage_schemas.connection import (
     ConnectionClickhouseFilteredBaseDataStorageSchema,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import ConnectionCHFilteredSubselectByPuidBase

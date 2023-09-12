@@ -11,8 +11,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
