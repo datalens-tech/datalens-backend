@@ -70,7 +70,6 @@ tasks:
         exit_code=0
         set +ex
         for file in {{.TARGET}}; do
-          # echo "$file"
           eval 'isort "$file" {{.CHECK_FLAG}}'
           exit_code=$(expr $exit_code + $?)
         done
@@ -102,7 +101,7 @@ tasks:
       - |
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
-        black {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+        black -v --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
