@@ -23,12 +23,12 @@ from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from bi_core.data_processing.dashsql import BindParamInfo, DashSQLCachedSelector, DashSQLEvent, TRow
 from bi_core.exc import UnexpectedUSEntryType
 from bi_core.us_connection_base import ConnectionBase, ExecutorBasedMixin, SubselectMixin
+from bi_core.db import get_type_transformer
+from bi_core.db.sa_types import make_sa_type
 
 if TYPE_CHECKING:
     from bi_core.data_processing.dashsql import DashSQLSelector, TResultEvents
     from bi_constants.types import TJSONLike
-
-from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
 
 TValueBase = Union[str, List[str], Tuple[str, ...]]
@@ -52,17 +52,13 @@ BI_TYPE_TO_SA_TYPE: Dict[BIType, sa.sql.type_api.TypeEngine] = {
 
 
 def get_value_sa_type(bi_type: BIType, conn_type: ConnectionType, value_base: TValueBase) -> sa.sql.type_api.TypeEngine:
-    if bi_type == BIType.string and conn_type == CONNECTION_TYPE_ORACLE:
-        # See also: bi_formula/definitions/literals.py
-        value_lst = [value_base] if isinstance(value_base, str) else value_base
-        max_len = max(len(val) for val in value_lst)
-        try:
-            for val in value_lst:
-                val.encode('ascii')
-        except UnicodeEncodeError:
-            return sa.NCHAR(max_len)
-        return sa.CHAR(max_len)
-    return BI_TYPE_TO_SA_TYPE[bi_type]
+    tt = get_type_transformer(conn_type=conn_type)
+    native_type = tt.type_user_to_native(user_t=bi_type)
+    try:
+        sa_type = make_sa_type(native_type)
+    except KeyError:
+        sa_type = BI_TYPE_TO_SA_TYPE[bi_type]
+    return sa_type
 
 
 def parse_value(value: Optional[str], bi_type: BIType) -> Any:
