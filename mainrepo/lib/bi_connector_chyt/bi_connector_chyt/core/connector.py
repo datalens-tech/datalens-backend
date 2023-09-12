@@ -1,3 +1,5 @@
+from clickhouse_sqlalchemy.orm.query import Query as CHQuery
+
 from bi_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -95,3 +97,4 @@ class CHYTCoreConnector(CoreConnector):
         CHYTAdapter,
         AsyncCHYTAdapter,
     })
+    query_cls = CHQuery

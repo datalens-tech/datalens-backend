@@ -1,3 +1,5 @@
+from clickhouse_sqlalchemy.orm.query import Query as CHQuery
+
 from bi_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
@@ -159,3 +161,4 @@ class CHYTInternalCoreConnector(CoreConnector):
     notification_classes = (
         UsingPublicClickhouseCliqueNotification,
     )
+    query_cls = CHQuery

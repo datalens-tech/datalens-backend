@@ -1,3 +1,5 @@
+from clickhouse_sqlalchemy.orm.query import Query as CHQuery
+
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
 )
@@ -19,3 +21,4 @@ class BaseFileS3TableCoreSourceDefinition(CoreSourceDefinition):
 class BaseFileS3CoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_CHS3
     safe_dto_classes = frozenset({BaseFileS3ConnDTO})
+    query_cls = CHQuery

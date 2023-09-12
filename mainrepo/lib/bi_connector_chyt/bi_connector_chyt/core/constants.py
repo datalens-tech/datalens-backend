@@ -1,7 +1,8 @@
-from bi_constants.enums import SourceBackendType, ConnectionType, CreateDSFrom
+from bi_constants.enums import ConnectionType, CreateDSFrom
 
+from bi_connector_clickhouse.core.constants import BACKEND_TYPE_CLICKHOUSE
 
-BACKEND_TYPE_CHYT = SourceBackendType.declare('CHYT')
+BACKEND_TYPE_CHYT = BACKEND_TYPE_CLICKHOUSE
 CONNECTION_TYPE_CHYT = ConnectionType.declare('chyt')
 
 SOURCE_TYPE_CHYT_YTSAURUS_TABLE = CreateDSFrom.declare('CHYT_YTSAURUS_TABLE')
