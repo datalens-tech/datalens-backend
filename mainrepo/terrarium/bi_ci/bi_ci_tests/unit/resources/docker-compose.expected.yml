@@ -60,7 +60,7 @@ services:
   us:
     build:
       context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.us-single-tenant
+      dockerfile: Dockerfile.us
     depends_on:
     - pg-us
     environment:

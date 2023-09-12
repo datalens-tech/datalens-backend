@@ -38,7 +38,7 @@ services:
 
   us:
     build:
-      context: ../../mainrepo/lib/testenv-common/images
+      context: ../../lib/testenv_common_private/images
       dockerfile: Dockerfile.us-single-tenant
     ports:
       - 51000:80
@@ -54,7 +54,7 @@ services:
 
   us-dc:
     build:
-      context: ../../mainrepo/lib/testenv-common/images
+      context: ../../lib/testenv_common_private/images
       dockerfile: Dockerfile.us-single-tenant
     ports:
       - 51001:80

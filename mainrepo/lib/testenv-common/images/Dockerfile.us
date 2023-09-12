@@ -1,0 +1,11 @@
+# United Storage with predefined env
+# TODO FIX: Replace with open source version
+FROM cr.yandex/crpsufj53lhl0via9iam/united-storage:latest
+
+# TODO FIX: Double-check after replacing with open source version
+ENV DEV_MODE="true"
+ENV SQL_DEBUG="true"
+ENV MULTITENANT="false"
+ENV DEBUG="knex:*"
+ENV APP_INSTALLATION="yandex-team"
+ENV APP_ENV="preprod"

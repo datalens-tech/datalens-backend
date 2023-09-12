@@ -48,7 +48,7 @@ services:
   us:
     build:
       context: ../testenv-common/images
-      dockerfile: Dockerfile.us-single-tenant
+      dockerfile: Dockerfile.us
     ports:
       - 51500:80
     depends_on:
