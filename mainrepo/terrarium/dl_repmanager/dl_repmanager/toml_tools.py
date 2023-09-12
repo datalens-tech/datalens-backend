@@ -35,11 +35,11 @@ class TOMLReaderBase:
         assert isinstance(section, dict)
         return section
 
-    def iter_section_items(self, key: str, strict: bool = True) -> Iterable[tuple[Any, Any]]:
+    def iter_section_items(self, key: str, strict: bool = True) -> Iterable[tuple[str, Any]]:
         section = self.get_section(key=key, strict=strict)
         assert isinstance(section, AbstractTable)
         for item_key, item in section.items():
-            yield item_key, item
+            yield str(item_key), item
 
 
 class TOMLReader(TOMLReaderBase):

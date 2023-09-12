@@ -61,7 +61,7 @@ class PackageMetaReader:
             if key is None:
                 continue
 
-            item_as_dict = {'name': key.key}
+            item_as_dict = {'name': key}
             if isinstance(item.value, str):
                 item_as_dict['version'] = item.value
             elif isinstance(item.value, dict):

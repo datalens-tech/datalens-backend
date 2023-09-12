@@ -90,23 +90,19 @@ class MetaPackageManager:
 
         ret: list[ReqPackageSpec] = []
 
-        for key, val in r.iter_section_items(self.get_dependencies_section_name(group)):
-            if not isinstance(key, Key):
-                continue
-
-            key_str = key.key
+        for key_str, val in r.iter_section_items(self.get_dependencies_section_name(group)):
             if key_str == "python":
                 continue
 
             if isinstance(val, str):
-                ret.append(PypiReqPackageSpec(package_name=key.key, version=val))
+                ret.append(PypiReqPackageSpec(package_name=key_str, version=val))
             elif isinstance(val, dict):
                 if "path" in val:
-                    ret.append(LocalReqPackageSpec(package_name=key.key, path=Path(val["path"])))
+                    ret.append(LocalReqPackageSpec(package_name=key_str, path=Path(val["path"])))
                 else:
-                    raise ValueError(f"No path in local dependency: {key}: {val}")
+                    raise ValueError(f"No path in local dependency: {key_str}: {val}")
             else:
-                raise ValueError(f"Unknown types of key/val in dependency: {key}: {val}")
+                raise ValueError(f"Unknown types of key/val in dependency: {key_str}: {val}")
         return ret
 
     def export_dependencies_raw(self, group: str) -> str:
