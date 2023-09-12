@@ -44,7 +44,7 @@ locals {
 
 locals {
   k8s_endpoint = module.infra_data.k8s_endpoint
-  k8s_ca       = module.infra_data.k8s_cluster.master[0].cluster_ca_certificate
+  k8s_ca       = module.constants.env_data.k8s_use_bastion ? null : module.infra_data.k8s_cluster.master[0].cluster_ca_certificate
 }
 
 data "yandex_client_config" "client" {}
