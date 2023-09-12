@@ -22,6 +22,9 @@ from bi_core.db.native_type import CommonNativeType
 from bi_core.exc import ConnectionConfigurationError, DatabaseQueryError
 from bi_app_tools.profiling_base import generic_profiler_async
 
+from bi_connector_gsheets.core.constants import CONNECTION_TYPE_GSHEETS
+
+
 if TYPE_CHECKING:
     from aiohttp.client import ClientResponse
 
@@ -52,7 +55,7 @@ class Uniqualizer:
 @attr.s
 class GSheetsDefaultAdapter(AiohttpDBAdapter):
 
-    conn_type: ClassVar[ConnectionType] = ConnectionType.gsheets
+    conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_GSHEETS
     _default_host: ClassVar[str] = 'docs.google.com'
     _allowed_hosts: ClassVar[frozenset[str]] = frozenset({_default_host})
     _allowed_params: ClassVar[tuple[str, ...]] = ('gid', 'sheet', 'range')

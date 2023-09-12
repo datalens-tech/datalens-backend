@@ -6,7 +6,11 @@ from bi_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
 
-from bi_connector_gsheets.core.constants import BACKEND_TYPE_GSHEETS, SOURCE_TYPE_GSHEETS
+from bi_connector_gsheets.core.constants import (
+    BACKEND_TYPE_GSHEETS,
+    CONNECTION_TYPE_GSHEETS,
+    SOURCE_TYPE_GSHEETS,
+)
 from bi_connector_gsheets.core.us_connection import GSheetsConnection
 from bi_connector_gsheets.core.storage_schemas.connection import GSheetsConnectionDataStorageSchema
 from bi_connector_gsheets.core.type_transformer import GSheetsTypeTransformer
@@ -16,7 +20,7 @@ from bi_connector_gsheets.core.adapter import GSheetsDefaultAdapter
 
 
 class GSheetsCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.gsheets  # type: ignore
+    conn_type = CONNECTION_TYPE_GSHEETS
     connection_cls = GSheetsConnection
     us_storage_schema_cls = GSheetsConnectionDataStorageSchema
     type_transformer_cls = GSheetsTypeTransformer

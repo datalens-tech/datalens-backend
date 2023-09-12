@@ -1,10 +1,10 @@
 from enum import Enum, unique
 
-from bi_constants.enums import SourceBackendType, CreateDSFrom
+from bi_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
 
 
 BACKEND_TYPE_BITRIX_GDS = SourceBackendType.declare('BITRIX_GDS')
-
+CONNECTION_TYPE_BITRIX24 = ConnectionType.bitrix24  # FIXME: declaration
 SOURCE_TYPE_BITRIX_GDS = CreateDSFrom.declare('BITRIX_GDS')
 
 DEFAULT_DB = 'default'

@@ -1,9 +1,11 @@
 import datetime
 from typing import Optional
 
-from bi_constants.enums import BIType, ConnectionType as CT
+from bi_constants.enums import BIType
 
 from bi_core.db.conversion_base import TypeCaster, TypeTransformer, make_native_type
+
+from bi_connector_gsheets.core.constants import CONNECTION_TYPE_GSHEETS
 
 
 def preparse_gsheets_date_value(
@@ -67,20 +69,20 @@ class GSheetsGenericDatetimeTypeCaster(TypeCaster):
 
 
 class GSheetsTypeTransformer(TypeTransformer):
-    conn_type = CT.gsheets
+    conn_type = CONNECTION_TYPE_GSHEETS
     native_to_user_map = {
-        # make_native_type(CT.gsheets, 'number'): BIType.integer,
-        make_native_type(CT.gsheets, 'number'): BIType.float,
-        make_native_type(CT.gsheets, 'string'): BIType.string,
-        make_native_type(CT.gsheets, 'date'): BIType.date,
-        make_native_type(CT.gsheets, 'datetime'): BIType.genericdatetime,
-        make_native_type(CT.gsheets, 'boolean'): BIType.boolean,
-        # make_native_type(CT.gsheets, 'unsupported'): BIType.unsupported,
+        # make_native_type(CONNECTION_TYPE_GSHEETS, 'number'): BIType.integer,
+        make_native_type(CONNECTION_TYPE_GSHEETS, 'number'): BIType.float,
+        make_native_type(CONNECTION_TYPE_GSHEETS, 'string'): BIType.string,
+        make_native_type(CONNECTION_TYPE_GSHEETS, 'date'): BIType.date,
+        make_native_type(CONNECTION_TYPE_GSHEETS, 'datetime'): BIType.genericdatetime,
+        make_native_type(CONNECTION_TYPE_GSHEETS, 'boolean'): BIType.boolean,
+        # make_native_type(CONNECTION_TYPE_GSHEETS, 'unsupported'): BIType.unsupported,
     }
     user_to_native_map = dict([
         (bi_type, native_type) for native_type, bi_type in native_to_user_map.items()
     ] + [
-        (BIType.datetime, make_native_type(CT.gsheets, 'datetime')),
+        (BIType.datetime, make_native_type(CONNECTION_TYPE_GSHEETS, 'datetime')),
     ])
     casters = {
         **TypeTransformer.casters,

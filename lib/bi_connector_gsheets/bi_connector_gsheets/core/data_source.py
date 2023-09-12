@@ -9,13 +9,15 @@ from bi_constants.enums import CreateDSFrom, ConnectionType, JoinType
 from bi_core.connection_models import TableDefinition, TableIdent
 from bi_core.data_source.sql import BaseSQLDataSource
 
-from bi_connector_gsheets.core.constants import SOURCE_TYPE_GSHEETS
+from bi_connector_gsheets.core.constants import (
+    CONNECTION_TYPE_GSHEETS, SOURCE_TYPE_GSHEETS,
+)
 
 
 class GSheetsDataSource(BaseSQLDataSource):
     supported_join_types: ClassVar[frozenset[JoinType]] = frozenset()
 
-    conn_type = ConnectionType.gsheets
+    conn_type = CONNECTION_TYPE_GSHEETS
 
     @property
     def db_version(self) -> Optional[str]:

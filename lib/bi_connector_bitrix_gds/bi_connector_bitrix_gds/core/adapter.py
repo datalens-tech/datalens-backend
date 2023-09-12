@@ -31,7 +31,8 @@ from bi_core.connection_models import TableIdent, TableDefinition, SchemaIdent, 
 from bi_core.data_processing.cache.engine import RedisCacheLockWrapped
 from bi_core.exc import DatabaseQueryError
 from bi_app_tools.profiling_base import generic_profiler_async
-from bi_connector_bitrix_gds.core.constants import DEFAULT_DB
+
+from bi_connector_bitrix_gds.core.constants import CONNECTION_TYPE_BITRIX24, DEFAULT_DB
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import Label
@@ -57,7 +58,7 @@ def extract_select_column_name(column: Label) -> str:
 
 
 class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
-    conn_type: ClassVar[ConnectionType] = ConnectionType.bitrix24
+    conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_BITRIX24
     _target_dto: BitrixGDSConnTargetDTO = attr.ib()
     _redis_cli_acm: Optional[TClientACM] = attr.ib(init=False)
 
