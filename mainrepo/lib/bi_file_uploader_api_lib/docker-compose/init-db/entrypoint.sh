@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 BEACON_WS_ROOT=/beacon_ws_root/
 
 chmod +x /s3/docker-entrypoint-initdb.d/*
