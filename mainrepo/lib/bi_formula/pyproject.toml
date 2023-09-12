@@ -33,9 +33,9 @@ psycopg2-binary = ">=2.9.6"
 pyodbc = ">=4.0.35"
 python-dateutil = ">=2.8.2"
 sqlalchemy-metrika-api = {path = "../../../lib/sqlalchemy_metrika_api"}
-statinfra-clickhouse-sqlalchemy = {path = "../../lib/clickhouse-sqlalchemy"}
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
+yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
 yandex-bi-sqlalchemy-yq = {path = "../../../lib/bi_sqlalchemy_yq"}
 
 
