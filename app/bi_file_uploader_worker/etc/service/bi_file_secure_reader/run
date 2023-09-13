@@ -3,7 +3,7 @@
 set -x  # debug.
 set -eu
 
-if [ x"${RUN_FILE_SECURE_READER}" != x"1" ]; then
+if [ x"${RUN_FILE_SECURE_READER:-0}" != x"1" ]; then
     sleep 9000
     exit 0
 fi
