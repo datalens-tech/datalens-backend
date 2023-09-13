@@ -13,6 +13,12 @@ dl_repo:
       tags:
         - main_dependency_group
 
+    - type: ops_ya
+      root_path: ops
+      boilerplate_path: mainrepo/lib/bi_package_boilerplate
+      tags:
+        - main_dependency_group
+
     - type: app_ya
       root_path: app
       boilerplate_path: mainrepo/lib/bi_package_boilerplate

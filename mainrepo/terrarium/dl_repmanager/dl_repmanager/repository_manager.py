@@ -1,4 +1,5 @@
 import os
+import re
 
 from pathlib import Path
 from typing import Mapping, Optional, Sequence
@@ -142,6 +143,9 @@ class RepositoryManager:
     def rename_package(self, old_package_module_name: str, new_package_module_name: str) -> PackageInfo:
         old_package_info = self.package_index.get_package_info_from_module_name(old_package_module_name)
 
+        if new_package_module_name == old_package_module_name:
+            return old_package_info
+
         # Resolve all the new paths and names
         new_package_abs_path = old_package_info.abs_path.parent / new_package_module_name
         new_package_info = old_package_info.clone(
@@ -198,17 +202,23 @@ class RepositoryManager:
             self.fs_editor.move_path(old_path=old_tests_path, new_path=new_tests_path)
 
         # Replace all package name occurrences with the given name
+        mask_blacklist = (
+            re.compile(r'.*\.mo'),
+            re.compile(r'.*\.xlsx'),
+        )
         for boilerplate_mod_name, package_mod_name in zip(old_package_info.module_names, new_package_info.module_names):
             self.fs_editor.replace_text_in_dir(
                 old_text=boilerplate_mod_name,
                 new_text=package_mod_name,
                 path=new_pkg_dir,
+                mask_blacklist=mask_blacklist,
             )
 
         self.fs_editor.replace_text_in_dir(
             old_text=old_package_info.package_reg_name,
             new_text=new_package_info.package_reg_name,
             path=new_pkg_dir,
+            mask_blacklist=mask_blacklist,
         )
 
     def change_package_type(self, package_module_name: str, new_package_type: str) -> PackageInfo:

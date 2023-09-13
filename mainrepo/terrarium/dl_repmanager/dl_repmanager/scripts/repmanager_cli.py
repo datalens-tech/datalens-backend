@@ -228,9 +228,6 @@ class DlRepManagerTool:
 
     def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
         for package_info in self.package_index.list_package_infos(package_type=package_type):
-            if package_type.lower() != "__all__":
-                continue
-
             printable_values = dict(
                 package_type=package_info.package_type,
                 abs_path=package_info.abs_path,

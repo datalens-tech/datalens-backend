@@ -1,11 +1,12 @@
 import abc
 import io
 import os
+import re
 import shutil
 import subprocess
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, Generator, TextIO, Type, cast, final
+from typing import Callable, Collection, Generator, TextIO, Type, cast, final
 
 import attr
 
@@ -30,9 +31,10 @@ class FilesystemEditor(abc.ABC):
         with self.open(file_path, 'r+') as f:
             old_text = f.read()
             new_text = replace_callback(old_text)
-            f.seek(0)
-            f.truncate(0)
-            f.write(new_text)
+            if new_text != old_text:
+                f.seek(0)
+                f.truncate(0)
+                f.write(new_text)
 
     @final
     def replace_file_content(self, file_path: Path, replace_callback: Callable[[str], str]) -> None:
@@ -49,15 +51,28 @@ class FilesystemEditor(abc.ABC):
         self._validate_paths(file_path)
         self._replace_text_in_file(file_path=file_path, old_text=old_text, new_text=new_text)
 
-    def _replace_text_in_dir(self, old_text: str, new_text: str, path: Path) -> None:
+    def _replace_text_in_dir(
+            self, old_text: str, new_text: str, path: Path,
+            mask_blacklist: Collection[re.Pattern] = (),
+    ) -> None:
         for file_path in path.rglob("*/"):
             if file_path.is_file():
+                matches_blacklist = False
+                for mask in mask_blacklist:
+                    if mask.match(str(file_path)):
+                        matches_blacklist = True
+                if matches_blacklist:
+                    continue
+
                 self.replace_text_in_file(file_path, old_text=old_text, new_text=new_text)
 
     @final
-    def replace_text_in_dir(self, old_text: str, new_text: str, path: Path) -> None:
+    def replace_text_in_dir(
+            self, old_text: str, new_text: str, path: Path,
+            mask_blacklist: Collection[re.Pattern] = (),
+    ) -> None:
         self._validate_paths(path)
-        self._replace_text_in_dir(old_text=old_text, new_text=new_text, path=path)
+        self._replace_text_in_dir(old_text=old_text, new_text=new_text, path=path, mask_blacklist=mask_blacklist)
 
     @abc.abstractmethod
     def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
