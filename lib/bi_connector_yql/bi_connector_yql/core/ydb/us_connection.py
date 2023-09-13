@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 # TODO: remove
 @attr.s(frozen=True, hash=True)
 class YDBConnectOptions(ConnectOptions):
-    pass
+    is_cloud: bool = attr.ib(default=False)
 
 
 class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):

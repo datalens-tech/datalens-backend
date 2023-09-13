@@ -31,8 +31,10 @@ from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYan
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 
+# TODO: remove dependencies on connectors
 from bi_connector_chyt_internal.core.us_connection import BaseConnectionCHYTInternal
 from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 
 
 class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
@@ -151,6 +153,13 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
 
         # SR middlewares
 
+        def ydb_is_cloud_mutator(
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+        ) -> Optional[ConnectOptions]:
+            if isinstance(conn_opts, YDBConnectOptions):
+                return conn_opts.clone(is_cloud=True)
+            return None
+
         def ignore_managed_conn_opts_mutator(
                 conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
@@ -161,6 +170,7 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
         if self._settings.APP_TYPE in (AppType.CLOUD, AppType.CLOUD_EMBED, AppType.NEBIUS):
 
             conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
+            conn_opts_factory.add_mutator(ydb_is_cloud_mutator)
 
             sr_middleware_list = [
                 services_registry_middleware(
@@ -185,6 +195,7 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
 
             conn_opts_factory.add_mutator(public_timeout_conn_opts_mutator)
             conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
+            conn_opts_factory.add_mutator(ydb_is_cloud_mutator)
 
             sr_middleware_list = [
                 services_registry_middleware(

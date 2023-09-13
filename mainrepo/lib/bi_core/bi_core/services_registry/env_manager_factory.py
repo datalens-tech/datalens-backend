@@ -45,12 +45,6 @@ class CloudEnvManagerFactory(DefaultEnvManagerFactory):
             samples_ch_hosts=frozenset(self.samples_ch_hosts),
         )
 
-    @classmethod
-    def mutate_conn_opts(cls, conn_opts: ConnectOptions) -> ConnectOptions:
-        conn_opts = super().mutate_conn_opts(conn_opts)
-        conn_opts = conn_opts.clone(is_cloud=True)
-        return conn_opts
-
 
 # noinspection PyDataclass
 @attr.s

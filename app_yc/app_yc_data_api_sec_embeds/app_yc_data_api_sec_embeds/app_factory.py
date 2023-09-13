@@ -31,6 +31,8 @@ from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFa
 
 from app_yc_data_api_sec_embeds import app_version
 
+from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions  # TODO: remove dependency on connector
+
 
 class DataApiSecEmbedsSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
     def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
@@ -122,6 +124,13 @@ class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory[AsyncAppSettings], DataApiS
 
         # SR middlewares
 
+        def ydb_is_cloud_mutator(
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+        ) -> Optional[ConnectOptions]:
+            if isinstance(conn_opts, YDBConnectOptions):
+                return conn_opts.clone(is_cloud=True)
+            return None
+
         def ignore_managed_conn_opts_mutator(
                 conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
@@ -130,6 +139,7 @@ class DataApiSecEmbedsAppFactoryYC(DataApiAppFactory[AsyncAppSettings], DataApiS
             return None
 
         conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
+        conn_opts_factory.add_mutator(ydb_is_cloud_mutator)
 
         sr_middleware_list = [
             services_registry_middleware(
