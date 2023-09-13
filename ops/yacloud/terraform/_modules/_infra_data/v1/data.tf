@@ -26,5 +26,5 @@ locals {
     "${data.yandex_kubernetes_cluster.this.id}.${module.constants.env_data.bastion_endpoint_suffix}" :
     null
   )
-  k8s_address = module.constants.env_data.k8s_use_bastion ? "${local.bastion_address}" : "https://${local.preferrable_address}"
+  k8s_address = module.constants.env_data.k8s_use_bastion ? local.bastion_address : local.preferrable_address
 }
