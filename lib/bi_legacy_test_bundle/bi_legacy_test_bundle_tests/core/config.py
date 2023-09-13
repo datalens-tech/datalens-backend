@@ -11,7 +11,6 @@ so it should depend on whether an empty string is supported.
 from __future__ import annotations
 
 import os
-import sys
 from typing import Optional
 
 from bi_testing.containers import get_test_container_hostport as _get_test_container_hostport
@@ -47,6 +46,53 @@ class DockerCompose:
 
 DOCKER_COMPOSE = DockerCompose()
 
+CONNECTOR_WHITELIST = [
+    'testing',
+
+    'clickhouse',
+    'postgresql',
+    'mysql',
+    'greenplum',
+    'mssql',
+    'oracle',
+    'bigquery',
+    'snowflake',
+    'ydb',
+    'promql',
+    'chyt',
+    'chyt_internal',
+
+    'ch_frozen_bumpy_roads',
+    'ch_frozen_covid',
+    'ch_frozen_demo',
+    'ch_frozen_dtp',
+    'ch_frozen_gkh',
+    'ch_frozen_samples',
+    'ch_frozen_transparency',
+    'ch_frozen_weather',
+    'ch_frozen_horeca',
+
+    'file',
+    'gsheets_v2',
+    'yq',
+    'metrica_api',
+    'appmetrica_api',
+    'ch_billing_analytics',
+    'monitoring',
+    'solomon',
+    'usage_tracking',
+
+    'bitrix_gds',
+    'ch_ya_music_podcast_stats',
+    'moysklad',
+    'equeo',
+    'kontur_market',
+    'market_couriers',
+    'schoolbook',
+    'smb_heatmaps',
+    'ch_geo_filtered',
+]
+
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_http=get_test_container_hostport('us', fallback_port=50300).host,
@@ -54,6 +100,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport('pg-us', fallback_port=50309).host,
     port_us_pg_5432=get_test_container_hostport('pg-us', fallback_port=50309).port,
     us_master_token=DOCKER_COMPOSE.US_MASTER_TOKEN,
+    core_connector_whitelist=CONNECTOR_WHITELIST,
 )
 
 EXT_QUERY_EXECUTER_SECRET_KEY = '_tests_eqe_secret_key_'

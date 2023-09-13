@@ -4,7 +4,6 @@ from typing import Callable, Sequence, Optional
 
 import attr
 
-from bi_core.base_models import ConnMDBMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
 from bi_core.mdb_utils import MDBDomainManager
@@ -17,7 +16,7 @@ class ConnectionPostgreSQLBase(ClassicConnectionSQL):
     default_schema_name = 'public'
 
     @attr.s(kw_only=True)
-    class DataModel(ConnMDBMixin, ClassicConnectionSQL.DataModel):
+    class DataModel(ClassicConnectionSQL.DataModel):
         enforce_collate: PGEnforceCollateMode = attr.ib(default=PGEnforceCollateMode.auto)
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)

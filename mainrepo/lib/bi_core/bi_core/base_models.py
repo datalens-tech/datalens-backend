@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import typing
 from typing import Any, Optional
 
 import abc
@@ -49,7 +48,7 @@ class DefaultWhereClause:
 class ObligatoryFilter:
     id: str = attr.ib()
     field_guid: str = attr.ib()
-    default_filters: typing.List[DefaultWhereClause] = attr.ib()
+    default_filters: list[DefaultWhereClause] = attr.ib()
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     valid: bool = attr.ib(default=True)
 
@@ -125,16 +124,18 @@ class ConnectionDataModelBase(BaseAttrsDataModel):
 
 
 @attr.s
-class ConnCacheableMixin(ConnectionDataModelBase):
+class ConnCacheableDataModelMixin:
     cache_ttl_sec: Optional[int] = attr.ib(kw_only=True, default=None)  # Override for default cache TTL
 
 
 @attr.s
-class ConnSubselectMixin(ConnectionDataModelBase):
+class ConnSubselectDataModelMixin:
     raw_sql_level: RawSQLLevel = attr.ib(kw_only=True, default=RawSQLLevel.off)
 
 
 @attr.s
-class ConnMDBMixin(ConnectionDataModelBase):
+class ConnMDBDataModelMixin:
     mdb_cluster_id: Optional[str] = attr.ib(default=None)
     mdb_folder_id: Optional[str] = attr.ib(default=None)
+    is_verified_mdb_org: bool = attr.ib(default=False)
+    skip_mdb_org_check: bool = attr.ib(default=False)

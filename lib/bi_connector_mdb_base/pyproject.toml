@@ -1,0 +1,42 @@
+
+[tool.poetry]
+name = "bi-connector-mdb-base"
+version = "0.0.1"
+description = ""
+authors = ["Andrey Snytin <asnytin@yandex-team.ru>"]
+packages = [{include = "bi_connector_mdb_base"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+marshmallow = ">=3.19.0"
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[datalens_ci]
+skip_test = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from marshmallow import Schema, fields as ma_fields
+from marshmallow import fields as ma_fields
 
 from bi_constants.enums import RawSQLLevel
 
@@ -28,17 +28,12 @@ class ConnectionBaseDataStorageSchema(
     data_export_forbidden = ma_fields.Boolean(required=False, allow_none=False, load_default=False, dump_default=False)
 
 
-class CacheableConnectionDataSchemaMixin(Schema):
+class CacheableConnectionDataSchemaMixin:
     cache_ttl_sec = ma_fields.Integer(required=False, allow_none=True, load_default=None, dump_default=None)
 
 
-class SubselectConnectionDataSchemaMixin(Schema):
+class SubselectConnectionDataSchemaMixin:
     raw_sql_level = ma_fields.Enum(RawSQLLevel, dump_default=RawSQLLevel.off)
-
-
-class ConnectionMDBStorageDataSchemaMixin(Schema):
-    mdb_cluster_id = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
-    mdb_folder_id = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
 
 
 _SQL_CONN_DATA_TV = TypeVar('_SQL_CONN_DATA_TV', bound=ConnectionSQL.DataModel)

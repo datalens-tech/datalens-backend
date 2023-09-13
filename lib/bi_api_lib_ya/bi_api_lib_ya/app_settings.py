@@ -75,6 +75,11 @@ class BaseAppSettings(AppSettings):
         fallback_cfg_key="YC_TS_ENDPOINT",
         missing=None,
     )
+    YC_MDB_API_ENDPOINT: Optional[str] = s_attrib(  # type: ignore  # TODO: fix
+        "YC_MDB_API_ENDPOINT",
+        fallback_cfg_key="YC_MDB_API_ENDPOINT",
+        missing=None,
+    )
 
     BLACKBOX_NAME: Optional[str] = s_attrib("DL_BLACKBOX_NAME", fallback_cfg_key="BLACKBOX_NAME", missing=None)  # type: ignore  # TODO: fix
 

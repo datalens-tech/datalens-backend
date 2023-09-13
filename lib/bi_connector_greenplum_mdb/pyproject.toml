@@ -10,14 +10,20 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
 python = ">=3.10, <3.12"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 greenplum_mdb = "bi_connector_greenplum_mdb.bi.connector:GreenplumMDBBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+greenplum_mdb = "bi_connector_greenplum_mdb.core.connector:GreenplumMDBCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -43,7 +49,7 @@ root_dir = "bi_connector_greenplum_mdb_tests/"
 target_path = "unit"
 skip_compose = "true"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

@@ -205,6 +205,7 @@ bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}

@@ -10,7 +10,7 @@ from bi_core.connection_executors.common_base import ConnExecutorQuery
 from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
-from bi_core.base_models import ConnMDBMixin
+from bi_core.base_models import ConnMDBDataModelMixin
 from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
 
 
@@ -37,7 +37,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
     MAX_ALLOWED_MAX_EXECUTION_TIME = 280    # 290 sec - requests http timeout, 300 sec - uwsgi harakiri
 
     @attr.s(kw_only=True)
-    class DataModel(ConnMDBMixin, ClassicConnectionSQL.DataModel):
+    class DataModel(ConnMDBDataModelMixin, ClassicConnectionSQL.DataModel):
         secure: bool = attr.ib(default=False)
         endpoint: str = attr.ib(default='')
         cluster_name: Optional[str] = attr.ib(default=None)

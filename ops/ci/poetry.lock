@@ -771,6 +771,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
@@ -815,13 +816,39 @@ develop = false
 
 [package.dependencies]
 bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_greenplum_mdb"
+
+[[package]]
+name = "bi-connector-mdb-base"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_connector_mdb_base"
 
 [[package]]
 name = "bi-connector-mysql-mdb"
@@ -833,6 +860,7 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
@@ -852,9 +880,11 @@ files = []
 develop = false
 
 [package.dependencies]
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 
@@ -9662,4 +9692,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "722892ce809b54301dc2a9c669f895fe8c13074f876fd798d8b0df30c335f29f"
+content-hash = "80d09cbbffcf36c973d15a20be1bfb0646a9b93a67e454eae75eabdc9bc488c9"

@@ -6,7 +6,7 @@ import attr
 
 from bi_constants.api_constants import DLCookiesCommon
 
-from bi_core.base_models import ConnCacheableMixin
+from bi_core.base_models import ConnCacheableDataModelMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, SubselectMixin, ExecutorBasedMixin, DataSourceTemplate
 from bi_connector_solomon.core.dto import SolomonConnDTO
@@ -17,7 +17,7 @@ class SolomonConnection(SubselectMixin, ExecutorBasedMixin, ConnectionBase):
     allow_dashsql: ClassVar[bool] = True
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnectionBase.DataModel):
+    class DataModel(ConnCacheableDataModelMixin, ConnectionBase.DataModel):
         host: str = attr.ib()
 
     def get_conn_dto(self) -> SolomonConnDTO:

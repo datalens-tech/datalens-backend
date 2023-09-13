@@ -1,16 +1,12 @@
 from marshmallow import fields as ma_fields
 
-from bi_core.us_manager.storage_schemas.connection import (
-    ConnectionSQLDataStorageSchema,
-    ConnectionMDBStorageDataSchemaMixin,
-)
+from bi_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
 from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from bi_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
 
 
 class ConnectionPostgreSQLBaseDataStorageSchema(
-        ConnectionMDBStorageDataSchemaMixin,
         ConnectionSQLDataStorageSchema[ConnectionPostgreSQLBase.DataModel],
 ):
     enforce_collate = ma_fields.Enum(

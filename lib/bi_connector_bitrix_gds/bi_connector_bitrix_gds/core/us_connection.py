@@ -6,7 +6,7 @@ import attr
 
 from bi_utils.utils import DataKey
 
-from bi_core.base_models import ConnCacheableMixin
+from bi_core.base_models import ConnCacheableDataModelMixin
 from bi_core.connection_models.conn_options import ConnectOptions
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
@@ -27,7 +27,7 @@ class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):
     allow_cache: ClassVar[bool] = True
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnectionBase.DataModel):
+    class DataModel(ConnCacheableDataModelMixin, ConnectionBase.DataModel):
         portal: str = attr.ib()
         token: str = attr.ib(repr=secrepr)
 

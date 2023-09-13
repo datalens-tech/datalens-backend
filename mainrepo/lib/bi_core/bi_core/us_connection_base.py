@@ -27,8 +27,8 @@ from bi_core.base_models import (
     EntryLocation,
     WorkbookEntryLocation,
     ConnectionDataModelBase,
-    ConnCacheableMixin,
-    ConnSubselectMixin,
+    ConnCacheableDataModelMixin,
+    ConnSubselectDataModelMixin,
 )
 from bi_core.connection_models import DBIdent, SchemaIdent
 from bi_core.db import get_type_transformer, TypeTransformer
@@ -429,7 +429,7 @@ class ConnectionSQL(SubselectMixin, ExecutorBasedMixin, ConnectionBase):  # type
     default_schema_name: ClassVar[Optional[str]] = None
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnSubselectMixin, ConnectionBase.DataModel):
+    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionBase.DataModel):
         host: Optional[str] = attr.ib(default=None)
         port: Optional[int] = attr.ib(default=None)
         db_name: Optional[str] = attr.ib(default=None)

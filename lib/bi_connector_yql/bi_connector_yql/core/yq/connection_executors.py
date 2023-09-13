@@ -70,7 +70,7 @@ class YQAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[YQAdapter]):
 
         # folder_id -> cloud_id:
         # https://bb.yandex-team.ru/projects/CLOUD/repos/cloud-go/browse/private-api/yandex/cloud/priv/resourcemanager/v1/folder_service.proto#28
-        yc_fs_client = await yc_sr.get_yc_fs_client(bearer_token=user_sa_iam_token)
+        yc_fs_client = await yc_sr.get_yc_folder_service_client(bearer_token=user_sa_iam_token)
         if yc_fs_client is None:
             raise Exception("`yc_fs_client` is not available")
         with yc_fs_client:

@@ -6,7 +6,7 @@ import attr
 
 from bi_utils.utils import DataKey
 
-from bi_core.base_models import ConnMDBMixin
+from bi_core.base_models import ConnMDBDataModelMixin
 from bi_core.connection_models.conn_options import ConnectOptions
 from bi_connector_yql.core.ydb.dto import YDBConnDTO
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin
@@ -36,7 +36,7 @@ class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):
     source_type = SOURCE_TYPE_YDB_TABLE
 
     @attr.s(kw_only=True)
-    class DataModel(ConnMDBMixin, ClassicConnectionSQL.DataModel):
+    class DataModel(ConnMDBDataModelMixin, ClassicConnectionSQL.DataModel):
         token: Optional[str] = attr.ib(default=None, repr=secrepr)
         service_account_id: Optional[str] = attr.ib(default=None)
         folder_id: Optional[str] = attr.ib(default=None)

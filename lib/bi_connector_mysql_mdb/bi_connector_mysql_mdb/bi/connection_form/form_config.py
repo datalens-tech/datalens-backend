@@ -6,7 +6,7 @@ from bi_configs.connectors_settings import ConnectorSettingsBase, MysqlConnector
 
 from bi_api_commons.base_models import TenantDef
 
-import bi_api_connector.form_config.models.rows as C
+import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
 from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from bi_api_connector.form_config.models.api_schema import (
     FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
@@ -39,32 +39,32 @@ class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
                 db_type=CONNECTION_TYPE_MYSQL,
             )
             host_section = self._filter_nulls([
-                C.MDBFormFillRow(),
+                mdb_c.MDBFormFillRow(),
                 cloud_tree_selector_row,
                 mdb_cluster_row,
                 mdb_host_row,
-                rc.host_row(display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.manually}),
+                rc.host_row(display_conditions={mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually}),
             ])
             db_name_section = [
-                C.MDBDatabaseRow(
+                mdb_c.MDBDatabaseRow(
                     name=CommonFieldName.db_name,
                     db_type=CONNECTION_TYPE_MYSQL,
-                    display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud},
+                    display_conditions={mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.cloud},
                 ),
                 rc.db_name_row(
-                    display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.manually},
+                    display_conditions={mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually},
                 ),
             ]
             username_section = [
-                C.MDBUsernameRow(
+                mdb_c.MDBUsernameRow(
                     name=CommonFieldName.username,
                     db_type=CONNECTION_TYPE_MYSQL,
                     display_conditions={
-                        C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud,
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.cloud,
                     },
                 ),
                 rc.username_row(
-                    display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.manually}
+                    display_conditions={mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually}
                 )
             ]
         else:
@@ -85,8 +85,8 @@ class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
             ]))
             edit_api_schema.conditions.append(
                 FormFieldApiActionCondition(
-                    when=FormFieldSelector(name=C.MDBFormFillRow.Inner.mdb_fill_mode),
-                    equals=C.MDBFormFillRow.Value.cloud,
+                    when=FormFieldSelector(name=mdb_c.MDBFormFillRow.Inner.mdb_fill_mode),
+                    equals=mdb_c.MDBFormFillRow.Value.cloud,
                     then=self._filter_nulls([
                         FormFieldConditionalApiAction(
                             selector=FormFieldSelector(name=mdb_cluster_row.name),

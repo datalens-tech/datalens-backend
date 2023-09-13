@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
@@ -39,7 +40,7 @@ class MonitoringConnectionFormFactory(ConnectionFormFactory):
         return ConnectionForm(
             title=MonitoringConnectionInfoProvider.get_title(self._localizer),
             rows=[
-                C.CloudTreeSelectRow(name=CommonFieldName.folder_id),
+                mdb_components.CloudTreeSelectRow(name=CommonFieldName.folder_id),
                 C.ServiceAccountRow(name=CommonFieldName.service_account_id),
             ],
             api_schema=FormApiSchema(

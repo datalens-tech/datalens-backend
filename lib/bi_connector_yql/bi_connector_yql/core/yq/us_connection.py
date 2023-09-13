@@ -7,7 +7,7 @@ import attr
 from bi_configs.connectors_settings import YQConnectorSettings
 from bi_utils.utils import DataKey
 
-from bi_core.base_models import ConnCacheableMixin, ConnSubselectMixin
+from bi_core.base_models import ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
 from bi_core.connection_models.conn_options import ConnectOptions
 from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -42,7 +42,7 @@ class YQConnection(
     source_type = SOURCE_TYPE_YQ_TABLE
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnSubselectMixin, ConnectionBase.DataModel):
+    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionBase.DataModel):
         service_account_id: Optional[str] = attr.ib(default=None)
         folder_id: Optional[str] = attr.ib(default=None)
 

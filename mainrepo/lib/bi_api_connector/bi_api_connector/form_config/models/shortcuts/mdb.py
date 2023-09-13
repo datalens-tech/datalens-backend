@@ -1,30 +1,38 @@
 from typing import Optional
 
+from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 from bi_constants.enums import ConnectionType
 
-import bi_api_connector.form_config.models.rows as C
 from bi_api_connector.form_config.models.common import CommonFieldName
 
 
+# TODO: Legacy. Delete after all mdb connectors migration
 def get_db_host_section(
         is_org: bool,
         db_type: ConnectionType
-) -> tuple[Optional[C.CloudTreeSelectRow], C.MDBClusterRow, C.MDBHostRow]:
-    cloud_tree_selector_row = C.CloudTreeSelectRow(
+) -> tuple[
+        Optional[mdb_components.CloudTreeSelectRow],
+        mdb_components.MDBClusterRow,
+        mdb_components.MDBHostRow,
+]:
+    cloud_tree_selector_row = mdb_components.CloudTreeSelectRow(
         name=CommonFieldName.mdb_folder_id,
-        display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud},
+        display_conditions={
+            mdb_components.MDBFormFillRow.Inner.mdb_fill_mode: mdb_components.MDBFormFillRow.Value.cloud},
     ) if is_org else None
 
-    mdb_cluster_row = C.MDBClusterRow(
+    mdb_cluster_row = mdb_components.MDBClusterRow(
         name=CommonFieldName.mdb_cluster_id,
         db_type=db_type,
-        display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud},
+        display_conditions={
+            mdb_components.MDBFormFillRow.Inner.mdb_fill_mode: mdb_components.MDBFormFillRow.Value.cloud},
     )
 
-    mdb_host_row = C.MDBHostRow(
+    mdb_host_row = mdb_components.MDBHostRow(
         name=CommonFieldName.host,
         db_type=db_type,
-        display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud},
+        display_conditions={
+            mdb_components.MDBFormFillRow.Inner.mdb_fill_mode: mdb_components.MDBFormFillRow.Value.cloud},
     )
 
     return cloud_tree_selector_row, mdb_cluster_row, mdb_host_row

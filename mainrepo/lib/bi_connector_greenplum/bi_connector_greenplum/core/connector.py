@@ -13,10 +13,8 @@ from bi_connector_greenplum.core.constants import (
     BACKEND_TYPE_GREENPLUM, CONNECTION_TYPE_GREENPLUM,
     SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT,
 )
-from bi_connector_greenplum.core.dto import GreenplumConnDTO
 from bi_connector_greenplum.core.data_source import GreenplumTableDataSource, GreenplumSubselectDataSource
 from bi_connector_greenplum.core.data_source_migration import GreenPlumDataSourceMigrator
-from bi_connector_greenplum.core.settings import GreenplumSettingDefinition
 from bi_connector_greenplum.core.storage_schemas.connection import GreenplumConnectionDataStorageSchema
 from bi_connector_greenplum.core.us_connection import GreenplumConnection
 
@@ -30,7 +28,6 @@ class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncPostgresConnExecutor
     dialect_string = 'bi_postgresql'
     data_source_migrator_cls = GreenPlumDataSourceMigrator
-    settings_definition = GreenplumSettingDefinition
 
 
 class GreenplumTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):
@@ -53,5 +50,4 @@ class GreenplumCoreConnector(CoreConnector):
         GreenplumSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({PostgresAdapter, AsyncPostgresAdapter})
-    mdb_dto_classes = frozenset({GreenplumConnDTO})
     sa_types = SQLALCHEMY_POSTGRES_TYPES

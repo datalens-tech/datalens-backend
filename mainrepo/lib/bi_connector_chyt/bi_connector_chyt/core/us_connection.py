@@ -10,7 +10,7 @@ from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_constants.enums import CreateDSFrom
 from bi_utils.utils import DataKey
 
-from bi_core.base_models import ConnCacheableMixin, ConnSubselectMixin
+from bi_core.base_models import ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
 from bi_core.i18n.localizer import Translatable
@@ -45,7 +45,7 @@ class BaseConnectionCHYT(
     chyt_subselect_source_type: ClassVar[CreateDSFrom]
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnSubselectMixin, ConnectionBase.DataModel):
+    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionBase.DataModel):
         alias: str = attr.ib()
         max_execution_time: Optional[int] = attr.ib(default=None)
 

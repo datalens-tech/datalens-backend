@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from bi_connector_greenplum.core.us_connection import GreenplumConnection
+from bi_connector_mdb_base.bi.api_schema.connection_mixins import MDBDatabaseSchemaMixin
+from bi_connector_greenplum.bi.api_schema.connection import GreenplumConnectionSchema
+from bi_connector_greenplum_mdb.core.us_connection import GreenplumMDBConnection
 
-from bi_connector_postgresql_mdb.bi.api_schema.connection import PostgreSQLMDBConnectionSchema
 
-
-class GreenplumMDBConnectionSchema(PostgreSQLMDBConnectionSchema):
-    TARGET_CLS = GreenplumConnection  # type: ignore
+class GreenplumMDBConnectionSchema(MDBDatabaseSchemaMixin, GreenplumConnectionSchema):
+    TARGET_CLS = GreenplumMDBConnection  # type: ignore

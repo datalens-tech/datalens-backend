@@ -217,6 +217,7 @@ CLOUD_PRE_PROD_DATA_API_CASE = ConfigLoadingCase(
         ),
         YC_RM_CP_ENDPOINT='rm.private-api.cloud-preprod.yandex.net:4284',
         YC_IAM_TS_ENDPOINT='ts.private-api.cloud-preprod.yandex.net:4282',
+        YC_MDB_API_ENDPOINT='mdb-internal-api.private-api.cloud-preprod.yandex.net:443',
         BLACKBOX_NAME='Mimino',
         FORMULA_PARSER_TYPE=ParserType.antlr_py,
         FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.readable,

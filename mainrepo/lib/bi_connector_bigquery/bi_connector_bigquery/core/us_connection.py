@@ -6,7 +6,7 @@ import attr
 
 from bi_utils.utils import DataKey
 from bi_core.base_models import (
-    ConnectionDataModelBase, ConnCacheableMixin, ConnSubselectMixin
+    ConnectionDataModelBase, ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
 )
 from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -31,7 +31,7 @@ class ConnectionSQLBigQuery(ConnectionSQL):
     is_always_user_source: ClassVar[bool] = True
 
     @attr.s
-    class DataModel(ConnCacheableMixin, ConnSubselectMixin, ConnectionDataModelBase):
+    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionDataModelBase):
         credentials: str = attr.ib(kw_only=True)
         project_id: str = attr.ib(kw_only=True)
         data_export_forbidden: bool = attr.ib(default=False)

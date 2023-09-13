@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 from bi_api_connector.form_config.models.rows.base import FormRow
 
 from bi_constants.enums import RawSQLLevel
@@ -68,7 +69,7 @@ class YQConnectionFormFactory(ConnectionFormFactory):
 
         else:
             sa_section = [
-                C.CloudTreeSelectRow(name=CommonFieldName.folder_id),
+                mdb_components.CloudTreeSelectRow(name=CommonFieldName.folder_id),
                 C.ServiceAccountRow(name=CommonFieldName.service_account_id),
             ]
 

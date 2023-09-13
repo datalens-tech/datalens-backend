@@ -5,7 +5,7 @@ from typing import Callable, ClassVar, Optional
 import attr
 
 from bi_configs.connectors_settings import MonitoringConnectorSettings
-from bi_core.base_models import ConnCacheableMixin
+from bi_core.base_models import ConnCacheableDataModelMixin
 
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import (
@@ -29,7 +29,7 @@ class MonitoringConnection(
     settings_type = MonitoringConnectorSettings
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnectionBase.DataModel):
+    class DataModel(ConnCacheableDataModelMixin, ConnectionBase.DataModel):
         service_account_id: Optional[str] = attr.ib(default=None)
         folder_id: Optional[str] = attr.ib(default=None)
 

@@ -15,10 +15,15 @@ yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 postgresql_mdb = "bi_connector_postgresql_mdb.bi.connector:PostgreSQLMDBBiApiConnector"
+
+[tool.poetry.plugins."bi_core.connectors"]
+postgresql_mdb = "bi_connector_postgresql_mdb.core.connector:PostgreSQLMDBCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

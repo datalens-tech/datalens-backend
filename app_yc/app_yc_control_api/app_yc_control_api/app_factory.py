@@ -51,6 +51,7 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
             yc_as_endpoint=settings.YC_AUTH_SETTINGS.YC_AS_ENDPOINT if settings.YC_AUTH_SETTINGS else None,
             yc_api_endpoint_iam=settings.YC_AUTH_SETTINGS.YC_API_ENDPOINT_IAM if settings.YC_AUTH_SETTINGS else None,
             yc_ts_endpoint=settings.YC_IAM_TS_ENDPOINT,
+            yc_api_endpoint_mdb=settings.YC_MDB_API_ENDPOINT,
             sa_creds_retriever_factory=SACredsRetrieverFactory(
                 sa_creds_settings=sa_creds_settings,
                 ts_endpoint=settings.YC_IAM_TS_ENDPOINT

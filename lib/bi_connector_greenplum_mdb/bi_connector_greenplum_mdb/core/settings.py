@@ -7,6 +7,6 @@ def greenplum_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Con
     return dict(GREENPLUM=GreenplumConnectorSettings())
 
 
-class GreenplumSettingDefinition(ConnectorSettingsDefinition):
+class GreenplumMDBSettingDefinition(ConnectorSettingsDefinition):
     settings_class = GreenplumConnectorSettings
     fallback = greenplum_settings_fallback

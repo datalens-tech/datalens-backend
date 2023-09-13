@@ -7,6 +7,6 @@ def postgresql_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Co
     return dict(POSTGRES=PostgresConnectorSettings())
 
 
-class PostgreSQLSettingDefinition(ConnectorSettingsDefinition):
+class PostgreSQLMDBSettingDefinition(ConnectorSettingsDefinition):
     settings_class = PostgresConnectorSettings
     fallback = postgresql_settings_fallback

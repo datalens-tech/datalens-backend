@@ -95,7 +95,17 @@ class DataCloudInstallation(
         'bigquery',
         'snowflake',
     ]
-    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'chyt',
+        'mssql',
+        'file',
+        'promql',
+        'bigquery',
+        'snowflake',
+    ]
 
 
 class DataCloudExposedInstallation(IAMAwareInstallation, DataCloudInstallation):
@@ -136,7 +146,7 @@ class CommonInstallation(
 
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings]
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]]
-    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]]
 
     # Note: `PING_…` values are not currently used.
     # Intended for liveness+connectivity check, e.g. into juggler.
@@ -313,6 +323,27 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
         'yq',
         'solomon',
     ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'chyt_internal',
+        'clickhouse',
+        'postgresql',
+        'mysql',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'ydb',
+        'promql',
+        'bigquery',
+        'snowflake',
+
+        'file',
+        'gsheets',
+        'usage_tracking_ya_team',
+        'metrica_api',
+        'appmetrica_api',
+        'yq',
+        'solomon',
+    ]
 
 
 class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonInternalInstallation):
@@ -412,6 +443,27 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
         'yq',
         'solomon',
     ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'chyt_internal',
+        'clickhouse',
+        'postgresql',
+        'mysql',
+        'greenplum',
+        'mssql',
+        'oracle',
+        'ydb',
+        'promql',
+        'bigquery',
+        'snowflake',
+
+        'file',
+        'gsheets',
+        'usage_tracking_ya_team',
+        'metrica_api',
+        'appmetrica_api',
+        'yq',
+        'solomon',
+    ]
 
 
 class CommonExternalInstallation(
@@ -451,6 +503,7 @@ class CommonExternalInstallation(
     )
 
     ENABLE_REGULAR_S3_LC_RULES_CLEANUP: ClassVar[bool] = True
+    YC_MDB_API_ENDPOINT: ClassVar[str]
 
 
 class ExternalTestingInstallation(
@@ -524,9 +577,50 @@ class ExternalTestingInstallation(
         ],
     )
     BI_API_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
+        'ydb',
+        'chyt',
+        'greenplum_mdb',
+        'mssql',
+        'oracle',
+        'bigquery',
+        'snowflake',
+        'promql',
+
+        'ch_frozen_bumpy_roads',
+        'ch_frozen_covid',
+        'ch_frozen_demo',
+        'ch_frozen_dtp',
+        'ch_frozen_gkh',
+        'ch_frozen_samples',
+        'ch_frozen_transparency',
+        'ch_frozen_weather',
+        'ch_frozen_horeca',
+
+        'file',
+        'gsheets_v2',
+        'yq',
+        'metrica_api',
+        'appmetrica_api',
+        'ch_billing_analytics',
+        'monitoring',
+        'usage_tracking',
+
+        'bitrix_gds',
+        'ch_ya_music_podcast_stats',
+        'moysklad',
+        'equeo',
+        'kontur_market',
+        'market_couriers',
+        'schoolbook',
+        'smb_heatmaps',
+    ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
         'ydb',
         'chyt',
         'greenplum_mdb',
@@ -609,6 +703,8 @@ class ExternalTestingInstallation(
     YC_SS_ENDPOINT: ClassVar[str] = "ss.private-api.cloud-preprod.yandex.net:8655"
     YC_TS_ENDPOINT: ClassVar[str] = "ts.private-api.cloud-preprod.yandex.net:4282"
 
+    YC_MDB_API_ENDPOINT: ClassVar[str] = 'mdb-internal-api.private-api.cloud-preprod.yandex.net:443'
+
     CORS_ALLOWED_ORIGINS: ClassVar[Tuple[str, ...]] = ('*',)
 
     S3_ENDPOINT_URL: ClassVar[str] = 'https://storage.cloud-preprod.yandex.net'
@@ -684,6 +780,8 @@ class ExternalProductionInstallation(
     YC_AS_ENDPOINT: ClassVar[str] = "as.private-api.cloud.yandex.net:4286"
     YC_SS_ENDPOINT: ClassVar[str] = "ss.private-api.cloud.yandex.net:8655"
     YC_TS_ENDPOINT: ClassVar[str] = "ts.private-api.cloud.yandex.net:4282"
+
+    YC_MDB_API_ENDPOINT: ClassVar[str] = 'mdb-internal-api.private-api.cloud.yandex.net:443'
 
     CORS_ALLOWED_ORIGINS: ClassVar[Tuple[str, ...]] = (
         'https://datalens.yandex.ru',
@@ -793,6 +891,47 @@ class ExternalProductionInstallation(
         'schoolbook',
         'smb_heatmaps',
     ]
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'greenplum_mdb',
+        'ydb',
+        'chyt',
+        'mssql',
+        'oracle',
+        'bigquery',
+        'snowflake',
+        'promql',
+
+        'ch_frozen_bumpy_roads',
+        'ch_frozen_covid',
+        'ch_frozen_demo',
+        'ch_frozen_dtp',
+        'ch_frozen_gkh',
+        'ch_frozen_samples',
+        'ch_frozen_transparency',
+        'ch_frozen_weather',
+        'ch_frozen_horeca',
+
+        'file',
+        'gsheets_v2',
+        'yq',
+        'metrica_api',
+        'appmetrica_api',
+        'ch_billing_analytics',
+        'monitoring',
+        'usage_tracking',
+
+        'bitrix_gds',
+        'ch_ya_music_podcast_stats',
+        'moysklad',
+        'equeo',
+        'kontur_market',
+        'market_couriers',
+        'schoolbook',
+        'smb_heatmaps',
+    ]
 
 
 class NebiusInstallation(InstallationBase):
@@ -835,7 +974,18 @@ class IsraelInstallation(NebiusInstallation):
         'ch_frozen_demo',
         'monitoring',
     ]
-    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'chyt',
+        'mssql',
+        'bigquery',
+        'file',
+        'snowflake',
+        'ch_frozen_demo',
+        'monitoring',
+    ]
 
 
 class NemaxInstallation(NebiusInstallation):
@@ -867,7 +1017,18 @@ class NemaxInstallation(NebiusInstallation):
         'ch_frozen_demo',
         'monitoring',
     ]
-    CORE_CONNECTOR_WHITELIST: ClassVar[Optional[list[str]]] = None
+    CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
+        'clickhouse',
+        'postgresql_mdb',
+        'mysql',
+        'chyt',
+        'mssql',
+        'bigquery',
+        'file',
+        'snowflake',
+        'ch_frozen_demo',
+        'monitoring',
+    ]
 
 
 AllInstallations: TypeAlias = Union[CommonInstallation, NebiusInstallation, DataCloudInstallation]

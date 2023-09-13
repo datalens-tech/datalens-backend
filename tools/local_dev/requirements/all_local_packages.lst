@@ -27,6 +27,7 @@ lib/bi_connector_chyt_internal
 lib/bi_connector_clickhouse_mdb
 lib/bi_connector_greenplum_mdb
 lib/bi_connector_gsheets
+lib/bi_connector_mdb_base
 lib/bi_connector_metrica
 lib/bi_connector_monitoring
 lib/bi_connector_mssql

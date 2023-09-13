@@ -27,7 +27,7 @@ class PostgreSQLFieldName(FormFieldName):
 
 
 class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
-    def get_base_edit_api_schema(self) -> FormActionApiSchema:
+    def _get_base_edit_api_schema(self) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
@@ -44,7 +44,7 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
             ],
         )
 
-    def get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
+    def _get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 *edit_api_schema.items,
@@ -53,12 +53,26 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
             conditions=edit_api_schema.conditions.copy(),
         )
 
-    def get_base_form_config(
-            self, host_section: Sequence[FormRow],
+    def _get_base_check_api_schema(self) -> FormActionApiSchema:
+        return FormActionApiSchema(items=[
+            FormFieldApiSchema(name=CommonFieldName.host, required=True),
+            FormFieldApiSchema(name=CommonFieldName.port, required=True),
+            FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
+            FormFieldApiSchema(name=CommonFieldName.username, required=True),
+            FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+            FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+            FormFieldApiSchema(name=CommonFieldName.ssl_ca),
+            *self._get_top_level_check_api_schema_items(),
+        ])
+
+    def _get_base_form_config(
+            self,
+            host_section: Sequence[FormRow],
             username_section: Sequence[FormRow],
             db_name_section: Sequence[FormRow],
             create_api_schema: FormActionApiSchema,
             edit_api_schema: FormActionApiSchema,
+            check_api_schema: FormActionApiSchema,
             rc: RowConstructor,
     ) -> ConnectionForm:
         return ConnectionForm(
@@ -107,16 +121,7 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
-                check=FormActionApiSchema(items=[
-                    FormFieldApiSchema(name=CommonFieldName.host, required=True),
-                    FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                    FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
-                    FormFieldApiSchema(name=CommonFieldName.username, required=True),
-                    FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
-                    FormFieldApiSchema(name=CommonFieldName.ssl_enable),
-                    FormFieldApiSchema(name=CommonFieldName.ssl_ca),
-                    *self._get_top_level_check_api_schema_items(),
-                ]),
+                check=check_api_schema,
             )
         )
 
@@ -131,14 +136,16 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         username_section = [rc.username_row()]
         db_name_section = [rc.db_name_row()]
 
-        edit_api_schema = self.get_base_edit_api_schema()
-        create_api_schema = self.get_base_create_api_schema(edit_api_schema)
+        edit_api_schema = self._get_base_edit_api_schema()
+        create_api_schema = self._get_base_create_api_schema(edit_api_schema)
+        check_api_schema = self._get_base_check_api_schema()
 
-        return self.get_base_form_config(
+        return self._get_base_form_config(
             host_section=host_section,
             username_section=username_section,
             db_name_section=db_name_section,
             create_api_schema=create_api_schema,
             edit_api_schema=edit_api_schema,
+            check_api_schema=check_api_schema,
             rc=rc,
         )

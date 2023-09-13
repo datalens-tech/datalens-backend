@@ -16,6 +16,7 @@ yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 clickhouse_mdb = "bi_connector_clickhouse_mdb.bi.connector:ClickHouseMDBBiApiConnector"
@@ -44,7 +45,7 @@ root_dir = "bi_connector_clickhouse_mdb_tests/"
 target_path = "unit"
 skip_compose = "true"
 
-[tools.mypy]
+[tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

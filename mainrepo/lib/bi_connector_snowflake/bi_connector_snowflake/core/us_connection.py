@@ -17,8 +17,8 @@ from bi_connector_snowflake.core.constants import (
 from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 from bi_core.base_models import (
     ConnectionDataModelBase,
-    ConnCacheableMixin,
-    ConnSubselectMixin,
+    ConnCacheableDataModelMixin,
+    ConnSubselectDataModelMixin,
 )
 from bi_core.reporting.notifications import get_notification_record
 from bi_i18n.localizer_base import Localizer
@@ -38,7 +38,7 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
     is_always_user_source: ClassVar[bool] = True
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableMixin, ConnSubselectMixin, ConnectionDataModelBase):
+    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionDataModelBase):
         account_name: str = attr.ib()
         user_name: str = attr.ib()
         user_role: Optional[str] = attr.ib(default=None)

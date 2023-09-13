@@ -44,7 +44,7 @@ from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core.utils import FutureRef
-from bi_core.loader import load_bi_core
+from bi_core.loader import load_bi_core, CoreLibraryConfig
 from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
@@ -79,9 +79,9 @@ EXT_TEST_BLACKBOX_NAME = 'Test'
 
 
 @pytest.fixture(scope='session', autouse=True)
-def loaded_libraries() -> None:
+def loaded_libraries(core_test_config) -> None:
     load_bi_db_testing()
-    load_bi_core()
+    load_bi_core(CoreLibraryConfig(core_connector_ep_names=core_test_config.core_connector_whitelist))
 
 
 @pytest.fixture

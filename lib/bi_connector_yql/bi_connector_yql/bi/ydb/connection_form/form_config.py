@@ -4,6 +4,7 @@ from typing import Optional
 
 import attr
 
+from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 from bi_configs.connectors_settings import ConnectorSettingsBase, YDBConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
@@ -58,7 +59,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=YDBDatabaseRow.Inner.db_name, required=True),
             ]
             db_section_rows = [
-                C.CloudTreeSelectRow(name=CommonFieldName.folder_id),
+                mdb_components.CloudTreeSelectRow(name=CommonFieldName.folder_id),
                 C.ServiceAccountRow(name=CommonFieldName.service_account_id),
                 YDBDatabaseRow(name=CommonFieldName.mdb_cluster_id),
             ]

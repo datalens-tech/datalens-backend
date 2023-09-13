@@ -9,6 +9,7 @@ from bi_configs.connectors_settings import ConnectorSettingsBase, ClickHouseConn
 from bi_api_commons.base_models import TenantDef
 
 import bi_api_connector.form_config.models.rows as C
+import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
 from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from bi_api_connector.form_config.models.api_schema import (
     FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
@@ -41,11 +42,11 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
                 db_type=CONNECTION_TYPE_CLICKHOUSE,
             )
             host_section = self._filter_nulls([
-                C.MDBFormFillRow(),
+                mdb_c.MDBFormFillRow(),
                 cloud_tree_selector_row,
                 mdb_cluster_row,
                 mdb_host_row,
-                rc.host_row(display_conditions={C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.manually}),
+                rc.host_row(display_conditions={mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually}),
             ])
         else:
             host_section = [rc.host_row()]
@@ -55,16 +56,16 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
             sql_user_management_hidden_row = C.CustomizableRow(items=[
                 C.HiddenRowItem(
                     inner=True,
-                    name=C.MDBClusterRow.Inner.sql_user_management,
+                    name=mdb_c.MDBClusterRow.Inner.sql_user_management,
                     default_value=False,
                 ),
             ])
 
-            mdb_username_row = C.MDBUsernameRow(
+            mdb_username_row = mdb_c.MDBUsernameRow(
                 name=CommonFieldName.username,
                 db_type=CONNECTION_TYPE_CLICKHOUSE,
                 display_conditions={
-                    C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud,
+                    mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.cloud,
                     mdb_cluster_row.Inner.sql_user_management: False,
                 },
             )
@@ -72,13 +73,13 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
             manual_username_rows = [
                 rc.username_row(
                     display_conditions={
-                        C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud,
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.cloud,
                         mdb_cluster_row.Inner.sql_user_management: True,
                     },
                 ),
                 rc.username_row(
                     display_conditions={
-                        C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.manually,
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
                     },
                 ),
             ]
@@ -100,8 +101,8 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
             ]))
             edit_api_schema.conditions.append(
                 FormFieldApiActionCondition(
-                    when=FormFieldSelector(name=C.MDBFormFillRow.Inner.mdb_fill_mode),
-                    equals=C.MDBFormFillRow.Value.cloud,
+                    when=FormFieldSelector(name=mdb_c.MDBFormFillRow.Inner.mdb_fill_mode),
+                    equals=mdb_c.MDBFormFillRow.Value.cloud,
                     then=self._filter_nulls([
                         FormFieldConditionalApiAction(
                             selector=FormFieldSelector(name=mdb_cluster_row.name),
