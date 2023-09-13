@@ -2,7 +2,7 @@ import pytest
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
-from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE, SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE, SOURCE_TYPE_CH_TABLE
 
 from bi_api_lib_testing.connection_base import ConnectionTestBase
 from bi_api_lib_testing.dataset_base import DatasetTestBase

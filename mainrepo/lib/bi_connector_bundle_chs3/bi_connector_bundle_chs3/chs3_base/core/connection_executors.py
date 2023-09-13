@@ -1,8 +1,8 @@
 import attr
 
 from bi_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
-from bi_core.connectors.clickhouse_base.connection_executors import ClickHouseAsyncAdapterConnExecutor
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseAsyncAdapterConnExecutor
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from bi_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
 
 

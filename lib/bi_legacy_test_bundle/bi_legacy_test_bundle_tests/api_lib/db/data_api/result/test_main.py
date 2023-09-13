@@ -15,7 +15,7 @@ from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from bi_testing.utils import guids_from_titles
 
 from bi_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
-from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 from bi_legacy_test_bundle_tests.api_lib.utils import (
     get_result_schema, get_field_by_title, data_source_settings_from_table,

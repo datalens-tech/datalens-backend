@@ -12,14 +12,14 @@ from bi_constants.enums import BIType, IndexKind
 from bi_core import exc
 from bi_core.connection_executors import ConnExecutorQuery
 from bi_core.connection_models import ConnDTO, TableIdent
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from bi_core.db import SchemaInfo, IndexInfo
 from bi_core.db.native_type import (
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64WithTZNativeType,
 )
-from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet, ErrorTestSet
 
 

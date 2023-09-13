@@ -1,4 +1,4 @@
-from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter
+from bi_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
 
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2, SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_base.core.connector import (

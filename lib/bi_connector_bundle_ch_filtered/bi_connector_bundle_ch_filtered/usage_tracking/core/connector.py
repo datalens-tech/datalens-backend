@@ -5,14 +5,14 @@ from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
-from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_core.connectors.clickhouse_base.connection_executors import (
+from bi_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
 from bi_connector_bundle_ch_filtered.base.core.storage_schemas.connection import (
     ConnectionCHFilteredHardcodedDataBaseDataStorageSchema,
 )
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
     CONNECTION_TYPE_USAGE_TRACKING,

@@ -3,8 +3,8 @@ from typing import Any, Type
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
 
-from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter
-from bi_core.connectors.clickhouse_base.target_dto import ClickHouseConnTargetDTO
+from bi_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
+from bi_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
 
 from bi_core_testing.executors import ExecutorFactoryBase
 

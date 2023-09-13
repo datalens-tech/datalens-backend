@@ -2,7 +2,7 @@ from typing import Optional
 
 import attr
 
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 
 
 @attr.s(frozen=True)

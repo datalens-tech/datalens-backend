@@ -1,6 +1,6 @@
 import attr
 
-from bi_core.connectors.clickhouse_base.dto import ClickHouseBaseDTO
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseBaseDTO
 
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 

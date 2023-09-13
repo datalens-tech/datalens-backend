@@ -9,7 +9,7 @@ from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_lib_testing.data_api_base import DataApiTestBase
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
 )

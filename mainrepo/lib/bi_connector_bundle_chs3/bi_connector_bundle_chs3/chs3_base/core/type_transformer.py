@@ -8,7 +8,7 @@ from clickhouse_sqlalchemy import types as ch_types
 
 from bi_constants.enums import BIType, ConnectionType as CT
 
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 from bi_core.db.conversion_base import (
     make_int, TypeCaster, DateTypeCaster, DatetimeTypeCaster, DatetimeTZTypeCaster, GenericDatetimeTypeCaster,
     BooleanTypeCaster, make_native_type,

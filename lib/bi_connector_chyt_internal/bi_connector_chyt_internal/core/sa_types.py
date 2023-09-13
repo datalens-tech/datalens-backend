@@ -1,4 +1,4 @@
-from bi_core.connectors.clickhouse_base.sa_types import SQLALCHEMY_CLICKHOUSE_BASE_TYPES, _generate_complex_ch_types
+from bi_connector_clickhouse.core.clickhouse_base.sa_types import SQLALCHEMY_CLICKHOUSE_BASE_TYPES, _generate_complex_ch_types
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,

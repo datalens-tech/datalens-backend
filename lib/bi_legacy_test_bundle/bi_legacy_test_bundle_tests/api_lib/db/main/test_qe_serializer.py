@@ -4,7 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql.selectable import Select
 
-from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter, AsyncClickHouseAdapter
+from bi_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter, AsyncClickHouseAdapter
 from bi_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
 from bi_connector_postgresql.core.postgresql_base.async_adapters_postgres import AsyncPostgresAdapter
 
@@ -15,7 +15,7 @@ from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core_testing.executors import ExecutorFactoryBase
 
-from bi_connector_clickhouse.core.testing.exec_factory import ClickHouseExecutorFactory
+from bi_connector_clickhouse.core.clickhouse.testing.exec_factory import ClickHouseExecutorFactory
 from bi_connector_postgresql.core.postgresql.testing.exec_factory import PostgresExecutorFactory
 
 from bi_formula.definitions.common import within_group

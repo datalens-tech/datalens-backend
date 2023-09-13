@@ -11,8 +11,8 @@ from bi_constants.enums import (
 )
 
 from bi_core import exc
-from bi_core.connectors.clickhouse_base.ch_commons import create_column_sql
-from bi_core.connectors.clickhouse_base.data_source import ClickHouseDataSourceBase
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
+from bi_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 from bi_core.db import SchemaInfo
 from bi_core.utils import sa_plain_text
 

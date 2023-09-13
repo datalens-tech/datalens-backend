@@ -4,7 +4,7 @@ from bi_core.dataset_capabilities import DatasetCapabilities
 from bi_core_testing.connector import SOURCE_TYPE_TESTING
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
 )

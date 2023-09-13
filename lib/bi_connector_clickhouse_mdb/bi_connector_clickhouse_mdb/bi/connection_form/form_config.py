@@ -20,7 +20,7 @@ from bi_api_connector.form_config.models.common import CommonFieldName
 from bi_api_connector.form_config.models.rows.base import FormRow
 from bi_api_connector.form_config.models.shortcuts.mdb import get_db_host_section
 
-from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
 
 

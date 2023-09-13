@@ -8,7 +8,6 @@ import attr
 
 from bi_core import exc
 from bi_core.connection_models import ConnDTO, DefaultSQLDTO
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,8 +65,8 @@ class CloudConnectionSecurityManager(ConnectionSecurityManager):
             return True
 
         # Samples hosts
-        if isinstance(conn_dto, ClickHouseConnDTO) and \
-                all(host in self._samples_ch_hosts for host in conn_dto.multihosts):
+        # TODO FIX: dirty hack because we can't get a ClickHouseConnDTO here
+        if hasattr(conn_dto, 'multihosts') and all(host in self._samples_ch_hosts for host in conn_dto.multihosts):
             LOGGER.info('Clickhouse hosts %r are in sample host list', conn_dto.multihosts)
             return True
 

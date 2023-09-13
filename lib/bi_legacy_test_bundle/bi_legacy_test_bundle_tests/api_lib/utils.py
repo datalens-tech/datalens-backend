@@ -17,7 +17,7 @@ from bi_core_testing.dataset import get_created_from
 
 from bi_api_lib.enums import DatasetAction
 
-from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
 from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE

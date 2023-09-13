@@ -8,7 +8,7 @@ from clickhouse_sqlalchemy.quoting import Quoter
 
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
-from bi_core.connectors.clickhouse_base.ch_commons import create_column_sql
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
 from bi_core.db import SchemaColumn, get_type_transformer
 from bi_core.raw_data_streaming.stream import SimpleDataStream
 

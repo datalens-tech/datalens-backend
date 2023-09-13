@@ -21,11 +21,11 @@ def make_saved_file_connection(
     **kwargs,
 ) -> FileS3Connection:
     from bi_core.connection_executors import SyncWrapperForAsyncConnExecutor
-    from bi_core.connectors.clickhouse_base.connection_executors import ClickHouseSyncAdapterConnExecutor
+    from bi_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseSyncAdapterConnExecutor
     from bi_core.connection_executors import ExecutionMode
     from bi_core.connection_models import TableIdent
-    from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
-    from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
+    from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+    from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
     from bi_core.connections_security.base import InsecureConnectionSecurityManager
 
     conn_name = 'file conn %s' % uuid.uuid4()

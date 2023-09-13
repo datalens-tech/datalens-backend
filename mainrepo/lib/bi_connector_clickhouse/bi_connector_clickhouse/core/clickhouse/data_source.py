@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from bi_constants.enums import CreateDSFrom
 
-from bi_core.connectors.clickhouse_base.data_source import (
+from bi_connector_clickhouse.core.clickhouse_base.data_source import (
     CommonClickHouseSubselectDataSource, ActualClickHouseBaseMixin, ClickHouseDataSourceBase,
 )
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,

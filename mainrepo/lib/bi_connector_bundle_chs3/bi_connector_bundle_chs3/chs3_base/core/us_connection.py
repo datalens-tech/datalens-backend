@@ -15,12 +15,12 @@ from bi_configs.connectors_settings import FileS3ConnectorSettings
 from bi_core import exc
 from bi_core import connection_models
 from bi_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.us_connection_base import DataSourceTemplate, ConnectionHardcodedDataMixin, ConnectionBase
 from bi_core.base_models import ConnectionDataModelBase
 from bi_core.db.elements import SchemaColumn
 from bi_core.utils import parse_comma_separated_hosts
-from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
+from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 from bi_core.services_registry.file_uploader_client_factory import FileSourceDesc
 from bi_core.utils import make_user_auth_headers, make_user_auth_cookies
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase

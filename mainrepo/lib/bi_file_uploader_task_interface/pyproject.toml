@@ -16,6 +16,7 @@ python = ">=3.10, <3.12"
 bi-task-processor = {path = "../bi_task_processor"}
 yandex-bi-api-commons = {path = "../bi_api_commons"}
 yandex-bi-configs = {path = "../bi_configs"}
+yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
 # TODO FIX: Really depends. Realize how to break circular dependency
 # yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
 yandex-bi-core = {path = "../bi_core"}

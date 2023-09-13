@@ -16,7 +16,7 @@ from bi_constants.enums import (
 )
 from bi_core import exc
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_SUBSELECT,
 )

@@ -4,7 +4,7 @@ from typing import Type, Sequence, Optional, Iterator
 
 import attr
 
-from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
 
 from bi_external_api.converter.charts.chart_converter import BaseChartConverter
 from bi_external_api.converter.converter_ctx import ConverterContext

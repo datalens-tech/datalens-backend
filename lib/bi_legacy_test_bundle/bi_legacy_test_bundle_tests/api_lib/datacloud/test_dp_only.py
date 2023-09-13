@@ -3,7 +3,7 @@ import pytest
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_testing_ya.dlenv import DLEnv
 
-from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 
 @pytest.mark.asyncio

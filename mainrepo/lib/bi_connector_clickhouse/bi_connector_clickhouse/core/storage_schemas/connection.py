@@ -1,7 +1,0 @@
-from bi_core.connectors.clickhouse_base.storage_schemas.connection import ConnectionClickHouseBaseDataStorageSchema
-
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
-
-
-class ConnectionClickhouseDataStorageSchema(ConnectionClickHouseBaseDataStorageSchema[ConnectionClickhouse.DataModel]):
-    TARGET_CLS = ConnectionClickhouse.DataModel

@@ -18,11 +18,11 @@ from bi_core.utils import parse_comma_separated_hosts
 from bi_core.us_connection_base import ConnectionBase, ConnectionHardcodedDataMixin, HiddenDatabaseNameMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
-from bi_core.connectors.clickhouse_base.us_connection import ConnectionClickhouseBase
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 if TYPE_CHECKING:
-    from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
+    from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
     from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 LOGGER = logging.getLogger(__name__)

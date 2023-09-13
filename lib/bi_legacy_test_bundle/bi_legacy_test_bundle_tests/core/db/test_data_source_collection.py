@@ -10,7 +10,7 @@ from bi_core.data_source.collection import DataSourceCollection
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.data_source_spec.collection import DataSourceCollectionSpec
 
-from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 
 def test_resolve_role(saved_ch_connection, default_sync_usm):

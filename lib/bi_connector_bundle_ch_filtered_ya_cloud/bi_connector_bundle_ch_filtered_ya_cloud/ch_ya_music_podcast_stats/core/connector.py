@@ -3,11 +3,11 @@ from __future__ import annotations
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
-from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_core.connectors.clickhouse_base.connection_executors import (
+from bi_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 

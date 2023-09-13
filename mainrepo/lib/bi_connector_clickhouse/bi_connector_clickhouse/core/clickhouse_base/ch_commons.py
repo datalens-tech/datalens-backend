@@ -10,7 +10,7 @@ from sqlalchemy.sql import schema as sa_schema, ddl as sa_ddl
 
 from bi_core import exc
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_core.connectors.clickhouse_base.exc import ClickHouseSourceDoesNotExistError
+from bi_connector_clickhouse.core.clickhouse_base.exc import ClickHouseSourceDoesNotExistError
 from bi_core.db import SchemaColumn, make_sa_type
 
 if TYPE_CHECKING:

@@ -27,7 +27,7 @@ from bi_testing.utils import get_log_record, guids_from_titles
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
 )

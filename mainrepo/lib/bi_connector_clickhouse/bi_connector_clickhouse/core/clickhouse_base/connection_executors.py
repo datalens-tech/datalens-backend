@@ -5,10 +5,10 @@ from typing import Optional
 import attr
 
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter, AsyncClickHouseAdapter
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
-from bi_core.connectors.clickhouse_base.target_dto import ClickHouseConnTargetDTO
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter, AsyncClickHouseAdapter
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
+from bi_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 
 
 @attr.s(cmp=False, hash=False)

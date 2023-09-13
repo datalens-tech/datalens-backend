@@ -18,7 +18,7 @@ from bi_core.connection_models.common_models import SATextTableDefinition, Table
 from bi_core.data_source.sql import BaseSQLDataSource, TableSQLDataSourceMixin, require_table_name
 from bi_core.db import SchemaInfo, SchemaColumn
 from bi_core.db.native_type import ClickHouseNativeType
-from bi_core.connectors.clickhouse_base.data_source import CommonClickHouseSubselectDataSource, ClickHouseBaseMixin
+from bi_connector_clickhouse.core.clickhouse_base.data_source import CommonClickHouseSubselectDataSource, ClickHouseBaseMixin
 
 from bi_connector_chyt.core.constants import (
     CONNECTION_TYPE_CHYT,

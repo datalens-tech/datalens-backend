@@ -12,7 +12,7 @@ from bi_core.utils import secrepr
 from bi_core.us_connection_base import ConnectionBase
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
-from bi_core.connectors.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
+from bi_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
 from bi_connector_bundle_ch_filtered.base.core.us_connection import (
     CH_FILTERED_SETTINGS_TV, ConnectionCHFilteredHardcodedDataBase,
 )

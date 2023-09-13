@@ -7,7 +7,7 @@ from bi_constants.enums import BIType, ConnectionType as CT
 from bi_core.db.conversion_base import YTBooleanTypeCaster, make_native_type, TypeCaster
 from bi_core.db.native_type import GenericNativeType
 
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 

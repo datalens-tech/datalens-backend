@@ -1,4 +1,4 @@
-from bi_core.connectors.clickhouse_base.adapters import ClickHouseAdapter
+from bi_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
 
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
 from bi_connector_bundle_chs3.chs3_base.core.connector import (

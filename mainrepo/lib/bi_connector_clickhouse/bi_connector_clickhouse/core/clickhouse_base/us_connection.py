@@ -7,11 +7,12 @@ import attr
 
 from bi_core.connection_models import ConnectOptions
 from bi_core.connection_executors.common_base import ConnExecutorQuery
-from bi_core.connectors.clickhouse_base.conn_options import CHConnectOptions
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
 from bi_core.base_models import ConnMDBDataModelMixin
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
+
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 
 
 @attr.s

@@ -27,7 +27,7 @@ from bi_constants.enums import ConnectionType, IndexKind
 from bi_core import exc
 from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, ClassicSQLConnLineConstructor
 from bi_core.connectors.base.error_transformer import DBExcKWArgs
-from bi_core.connectors.clickhouse_base.ch_commons import (
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ClickHouseBaseUtils, ClickHouseUtils, get_ch_settings,
 )
 from bi_core.connection_executors.models.db_adapter_data import (
@@ -49,7 +49,7 @@ from bi_core.utils import make_url
 from bi_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
 
 if TYPE_CHECKING:
-    from bi_core.connectors.clickhouse_base.target_dto import (  # noqa: F401
+    from bi_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
         BaseClickHouseConnTargetDTO, ClickHouseConnTargetDTO,
     )
     from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI

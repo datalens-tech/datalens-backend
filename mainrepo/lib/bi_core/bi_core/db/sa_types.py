@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from typing import Callable, Dict, Optional
+from typing import Callable, Optional
 
 from sqlalchemy.types import TypeEngine
 
 from bi_core.db.native_type import GenericNativeType
-from bi_core.connectors.clickhouse_base.sa_types import SQLALCHEMY_CLICKHOUSE_TYPES
 
 
-SQLALCHEMY_TYPES: Dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] = {}
+SQLALCHEMY_TYPES: dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] = {}
 
 
 def make_sa_type(native_type: GenericNativeType, nullable: Optional[bool] = None) -> TypeEngine:
@@ -21,8 +20,5 @@ def make_sa_type(native_type: GenericNativeType, nullable: Optional[bool] = None
     return type_gen(native_type)
 
 
-def register_sa_types(sa_type_dict: Dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]]) -> None:
+def register_sa_types(sa_type_dict: dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]]) -> None:
     SQLALCHEMY_TYPES.update(sa_type_dict)
-
-
-register_sa_types(SQLALCHEMY_CLICKHOUSE_TYPES)

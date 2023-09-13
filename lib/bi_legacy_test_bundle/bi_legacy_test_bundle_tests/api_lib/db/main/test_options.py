@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_constants.enums import AggregationFunction, BIType, ConnectionType
+from bi_constants.enums import AggregationFunction, BIType
 
 from bi_api_client.dsmaker.primitives import Dataset
 
 from bi_api_lib.enums import WhereClauseOperation, BI_TYPE_AGGREGATIONS
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
 )

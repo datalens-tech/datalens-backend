@@ -1,6 +1,6 @@
 import attr
 
-from bi_core.connectors.clickhouse_base.target_dto import BaseClickHouseConnTargetDTO
+from bi_connector_clickhouse.core.clickhouse_base.target_dto import BaseClickHouseConnTargetDTO
 
 
 @attr.s(frozen=True)

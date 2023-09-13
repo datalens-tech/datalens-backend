@@ -13,7 +13,7 @@ from bi_connector_clickhouse.bi.connection_form.form_config import ClickHouseCon
 from bi_connector_clickhouse.bi.connection_info import ClickHouseConnectionInfoProvider
 from bi_connector_clickhouse.bi.i18n.localizer import CONFIGS
 from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
-from bi_connector_clickhouse.core.connector import (
+from bi_connector_clickhouse.core.clickhouse.connector import (
     ClickHouseCoreConnector,
     ClickHouseCoreConnectionDefinition,
     ClickHouseTableCoreSourceDefinition,

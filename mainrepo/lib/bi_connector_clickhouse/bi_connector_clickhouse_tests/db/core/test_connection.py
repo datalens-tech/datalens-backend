@@ -7,7 +7,7 @@ import bi_configs.utils as bi_configs_utils
 from bi_core.us_connection_base import DataSourceTemplate
 from bi_core_testing.testcases.connection import DefaultConnectionTestClass
 
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 
 from bi_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass, BaseSslClickHouseTestClass
 

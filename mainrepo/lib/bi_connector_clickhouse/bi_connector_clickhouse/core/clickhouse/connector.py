@@ -3,23 +3,23 @@ from bi_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefiniti
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
-from bi_core.connectors.clickhouse_base.connection_executors import (
+from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor
 )
-from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
 )
-from bi_connector_clickhouse.core.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
-from bi_connector_clickhouse.core.settings import ClickHouseSettingDefinition
-from bi_connector_clickhouse.core.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
-from bi_connector_clickhouse.core.data_source_migration import ClickHouseDataSourceMigrator
+from bi_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
+from bi_connector_clickhouse.core.clickhouse.settings import ClickHouseSettingDefinition
+from bi_connector_clickhouse.core.clickhouse.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.clickhouse.data_source_migration import ClickHouseDataSourceMigrator
 
 
 class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):

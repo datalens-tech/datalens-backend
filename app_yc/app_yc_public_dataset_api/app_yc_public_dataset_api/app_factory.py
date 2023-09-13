@@ -19,7 +19,7 @@ from bi_core.services_registry.inst_specific_sr import InstallationSpecificServi
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.us_connection_base import ExecutorBasedMixin
 
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse  # TODO: remove dependency on connector
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse  # TODO: remove dependency on connector
 from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions  # TODO: remove dependency on connector
 
 from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware

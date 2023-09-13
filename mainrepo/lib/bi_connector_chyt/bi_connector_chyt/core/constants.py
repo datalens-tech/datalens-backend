@@ -1,6 +1,6 @@
 from bi_constants.enums import ConnectionType, CreateDSFrom
 
-from bi_connector_clickhouse.core.constants import BACKEND_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import BACKEND_TYPE_CLICKHOUSE
 
 BACKEND_TYPE_CHYT = BACKEND_TYPE_CLICKHOUSE
 CONNECTION_TYPE_CHYT = ConnectionType.declare('chyt')

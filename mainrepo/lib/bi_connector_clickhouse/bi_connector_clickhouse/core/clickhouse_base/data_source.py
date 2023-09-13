@@ -8,8 +8,7 @@ from bi_constants.enums import JoinType, ConnectionType
 
 from bi_core.data_source.sql import BaseSQLDataSource, StandardSQLDataSource, SubselectDataSource
 
-from bi_core.connectors.clickhouse_base.query_compiler import ClickHouseQueryCompiler
-
+from bi_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 if TYPE_CHECKING:
     from bi_core.db import SchemaColumn, SchemaInfo  # noqa

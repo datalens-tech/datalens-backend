@@ -5,7 +5,7 @@ import abc
 import logging
 
 import sqlalchemy as sa
-from bi_core.connectors.clickhouse_base.data_source import (
+from bi_connector_clickhouse.core.clickhouse_base.data_source import (
     ActualClickHouseBaseMixin, ClickHouseDataSourceBase, CommonClickHouseSubselectDataSource,
 )
 

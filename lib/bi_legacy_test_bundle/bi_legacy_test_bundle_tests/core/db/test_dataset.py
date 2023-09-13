@@ -37,7 +37,7 @@ from bi_core.utils import attrs_evolve_to_subclass
 from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
 )

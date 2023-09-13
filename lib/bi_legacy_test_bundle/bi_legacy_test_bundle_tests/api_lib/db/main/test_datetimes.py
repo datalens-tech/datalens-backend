@@ -21,7 +21,7 @@ import pytest
 
 from bi_api_client.dsmaker.primitives import Dataset
 
-from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_SUBSELECT
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 
 

@@ -7,8 +7,8 @@ from aiohttp import ClientResponse
 
 from bi_core.connection_models import TableIdent, DBIdent
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_core.connectors.clickhouse_base.ch_commons import ClickHouseBaseUtils, get_ch_settings
-from bi_core.connectors.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import ClickHouseBaseUtils, get_ch_settings
+from bi_connector_clickhouse.core.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
 from bi_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
 
 

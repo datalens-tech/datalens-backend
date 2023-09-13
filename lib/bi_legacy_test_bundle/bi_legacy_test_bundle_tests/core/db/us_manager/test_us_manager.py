@@ -16,8 +16,8 @@ from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
 from bi_core_testing.connection import make_connection
 
-from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 
 
 def make_test_connection(usm: USManagerBase) -> ConnectionClickhouse:

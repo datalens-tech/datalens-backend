@@ -26,11 +26,11 @@ yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
-bi-connector-mysql = {path = "../../lib/bi_connector_mysql_mdb"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-compeng-pg = {path = "../../mainrepo/lib/bi_compeng_pg"}
 yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
-bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-maintenance = {path = "../bi_maintenance"}

@@ -17,6 +17,7 @@ python = ">=3.10, <3.12"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-connector-chyt = {path = "../../mainrepo/lib/bi_connector_chyt"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}

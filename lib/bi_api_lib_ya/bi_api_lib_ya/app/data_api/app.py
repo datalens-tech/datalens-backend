@@ -33,7 +33,7 @@ from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_m
 
 # TODO: remove dependencies on connectors
 from bi_connector_chyt_internal.core.us_connection import BaseConnectionCHYTInternal
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 
 

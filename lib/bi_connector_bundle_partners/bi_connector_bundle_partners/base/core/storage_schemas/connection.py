@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from bi_core.connectors.clickhouse_base.storage_schemas.connection import ConnectionClickHouseBaseDataStorageSchema
+from bi_connector_clickhouse.core.clickhouse_base.storage_schemas.connection import ConnectionClickHouseBaseDataStorageSchema
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 
 

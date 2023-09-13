@@ -4,7 +4,7 @@ from typing import Callable
 
 import pytest
 
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 
 from bi_core.us_entry import USEntry, USMigrationEntry
 from bi_core.us_manager.us_manager import USManagerBase

@@ -18,6 +18,7 @@ sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}

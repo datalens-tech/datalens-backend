@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.connectors.clickhouse_base.connection_executors import (
+from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
 

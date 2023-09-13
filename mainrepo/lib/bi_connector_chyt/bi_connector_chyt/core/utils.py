@@ -5,7 +5,7 @@ from typing import Optional, Type
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core import exc
 
-from bi_core.connectors.clickhouse_base.ch_commons import ClickHouseBaseUtils, ParsedErrorMsg
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import ClickHouseBaseUtils, ParsedErrorMsg
 
 
 LOGGER = logging.getLogger(__name__)

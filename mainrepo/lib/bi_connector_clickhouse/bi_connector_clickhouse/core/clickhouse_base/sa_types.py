@@ -15,7 +15,7 @@ from bi_core.db.native_type import (
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64NativeType, ClickHouseDateTime64WithTZNativeType,
 )
-from bi_core.connectors.clickhouse_base.type_transformer import CH_TYPES_INT, CH_TYPES_FLOAT, CH_TYPES_DATE
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import CH_TYPES_INT, CH_TYPES_FLOAT, CH_TYPES_DATE
 from bi_core.db.sa_types_base import make_native_type
 
 

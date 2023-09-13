@@ -3,11 +3,11 @@ from __future__ import annotations
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
-from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_core.connectors.clickhouse_base.connection_executors import (
+from bi_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
-from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants import (
     CONNECTION_TYPE_CH_GEO_FILTERED, SOURCE_TYPE_CH_GEO_FILTERED_TABLE,

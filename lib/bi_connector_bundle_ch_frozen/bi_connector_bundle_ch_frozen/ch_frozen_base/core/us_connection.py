@@ -8,7 +8,7 @@ from bi_core.us_connection_base import DataSourceTemplate
 from bi_configs.connectors_settings import CHFrozenConnectorSettings
 from bi_constants.enums import RawSQLLevel
 
-from bi_connector_clickhouse.core.constants import (
+from bi_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
 )

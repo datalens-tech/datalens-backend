@@ -4,7 +4,7 @@ import abc
 from typing import TYPE_CHECKING, ClassVar, Iterable
 
 from bi_core import exc
-from bi_core.connectors.clickhouse_base.data_source import ClickHouseDataSourceBase
+from bi_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 
 if TYPE_CHECKING:
     from bi_core.services_registry.top_level import ServicesRegistry
