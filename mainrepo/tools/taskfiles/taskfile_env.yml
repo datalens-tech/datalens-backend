@@ -29,3 +29,13 @@ tasks:
     #    sources:
     #      - requirements-localhost.txt
     silent: true
+
+  devenv:
+    dir: '/{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker-compose up --build
+
+  devenv-d:
+    dir: '/{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker-compose up --build -d

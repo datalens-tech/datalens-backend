@@ -1,0 +1,34 @@
+version: '3'
+
+vars:
+  USER_REL_PATH:
+    sh: python -c "import os,sys;print(os.path.relpath('{{.USER_WORKING_DIR}}'))"
+
+  ROOT_DIR:
+    sh: cd .. && pwd
+
+includes:
+  # Open-source tasks
+  cq:
+    taskfile: tools/taskfiles/taskfile_code_quality.yml
+    dir: tools
+  env:
+    taskfile: tools/taskfiles/taskfile_env.yml
+    dir: tools
+  gen:
+    taskfile: tools/taskfiles/taskfile_gen.yml
+    dir: tools
+
+  # Internal (ya) tasks
+  env-ya:
+    taskfile: ../tools/taskfiles/taskfile_env.yml
+    dir: ../tools
+  gen-ya:
+    taskfile: ../tools/taskfiles/taskfile_gen.yml
+    dir: ../tools
+  rep-ya:
+    taskfile: ../tools/taskfiles/taskfile_rep.yml
+    dir: ../tools
+  pub-ya:
+    taskfile: ../tools/taskfiles/taskfile_pub.yml
+    dir: ../tools

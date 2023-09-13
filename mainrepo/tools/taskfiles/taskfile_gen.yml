@@ -1,0 +1,11 @@
+version: '3'
+
+vars:
+  PACKAGE_NAME:
+    sh: basename {{.USER_WORKING_DIR}}
+
+tasks:
+  antlr:
+    dir: ../mainrepo/docker_build
+    cmds:
+      - ./run-project-bake gen_antlr --progress=plain

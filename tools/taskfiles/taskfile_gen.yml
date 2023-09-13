@@ -6,9 +6,7 @@ vars:
 
 tasks:
   antlr:
-    dir: ../mainrepo/docker_build
-    cmds:
-      - ./run-project-bake gen_antlr --progress=plain
+    deps: ['']
 
   i18n-po:
     deps:

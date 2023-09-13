@@ -8,21 +8,27 @@ vars:
     sh: pwd
 
 includes:
-  env:
-    taskfile: tools/common_taskfile_env.yml
-    dir: tools
-  gen:
-    taskfile: tools/common_taskfile_gen.yml
-    dir: tools
-  rep:
-    taskfile: tools/common_taskfile_rep.yml
-    dir: tools
-  pub:
-    taskfile: tools/common_taskfile_pub.yml
-    dir: tools
+  # Open-source tasks
   cq:
-    taskfile: mainrepo/tools/taskfile_code_quality.yml
+    taskfile: mainrepo/tools/taskfiles/taskfile_code_quality.yml
     dir: mainrepo/tools
-  main_env:
-    taskfile: mainrepo/tools/taskfile_env.yml
+  env:
+    taskfile: mainrepo/tools/taskfiles/taskfile_env.yml
     dir: mainrepo/tools
+  gen:
+    taskfile: mainrepo/tools/taskfiles/taskfile_gen.yml
+    dir: mainrepo/tools
+
+  # Internal (ya) tasks
+  env-ya:
+    taskfile: tools/taskfiles/taskfile_env.yml
+    dir: tools
+  gen-ya:
+    taskfile: tools/taskfiles/taskfile_gen.yml
+    dir: tools
+  rep-ya:
+    taskfile: tools/taskfiles/taskfile_rep.yml
+    dir: tools
+  pub-ya:
+    taskfile: tools/taskfiles/taskfile_pub.yml
+    dir: tools

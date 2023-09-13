@@ -1,5 +1,3 @@
-# todo. remove prefix after all common tasks are moved here
-
 version: '3'
 
 vars:
@@ -12,9 +10,13 @@ vars:
 
 includes:
   env:
-    taskfile: tools/taskfile_env.yml
+    taskfile: tools/taskfiles/taskfile_env.yml
     dir: tools
 
   cq:
-    taskfile: tools/taskfile_code_quality.yml
+    taskfile: tools/taskfiles/taskfile_code_quality.yml
+    dir: tools
+
+  gen:
+    taskfile: tools/taskfiles/taskfile_gen.yml
     dir: tools

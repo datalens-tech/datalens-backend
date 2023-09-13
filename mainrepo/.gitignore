@@ -14,3 +14,4 @@ __pycache__
 ci_artifacts
 .DS_Store
 artifacts
+Taskfile.yml

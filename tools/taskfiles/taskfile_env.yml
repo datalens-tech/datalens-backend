@@ -1,16 +1,6 @@
 version: '3'
 
 tasks:
-  devenv:
-    dir: '/{{.USER_WORKING_DIR}}'
-    cmds:
-      - docker-compose up --build
-
-  devenv-d:
-    dir: '/{{.USER_WORKING_DIR}}'
-    cmds:
-      - docker-compose up --build -d
-
   base-secrets-update:
     dir: local_dev
     sources: ["secrets/conf/defaults.conf", "secrets/conf/templates/base_secrets.env.j2"]
@@ -52,3 +42,7 @@ tasks:
       - docker volume rm -f local_dev_pi-venv
       - docker-compose build --pull pi
       - docker-compose run --rm pi
+
+  mainrepo-tasks:
+    cmds:
+      - cp taskfiles/boilerplate_taskfile_mainrepo.yml ../mainrepo/Taskfile.yml
