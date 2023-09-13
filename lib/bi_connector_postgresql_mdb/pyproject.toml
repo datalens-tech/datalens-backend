@@ -37,7 +37,11 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_postgresql_mdb_tests/"

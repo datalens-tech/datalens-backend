@@ -29,7 +29,10 @@ greenplum_mdb = "bi_connector_greenplum_mdb.core.connector:GreenplumMDBCoreConne
 pytest = ">=7.2.2"
 
 [tool.mypy]
-overrides = []
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -48,9 +51,3 @@ testpaths = []
 root_dir = "bi_connector_greenplum_mdb_tests/"
 target_path = "unit"
 skip_compose = "true"
-
-[tool.mypy]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
