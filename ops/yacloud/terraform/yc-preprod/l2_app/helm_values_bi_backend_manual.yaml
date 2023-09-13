@@ -38,9 +38,9 @@ dls_env: ext_testing
 
 scaling:
   dataset_api:
-    desired: 2
+    desired: 1
   dataset_data_api:
-    desired: 2
+    desired: 1
   public_dataset_api:
     desired: 1
   dataset_data_api_sec_embeds:
@@ -54,6 +54,8 @@ scaling:
   file_uploader_worker:
     desired: 1
   file_secure_reader:
+    desired: 1
+  rqe_dataset_api:
     desired: 1
 
 visible_connectors:

@@ -44,6 +44,8 @@ scaling:
     desired: 1
     max_surge: 1
     max_unavailable: 100
+  rqe_dataset_api:
+    desired: 6
 
 visible_connectors:
   - "bigquery"

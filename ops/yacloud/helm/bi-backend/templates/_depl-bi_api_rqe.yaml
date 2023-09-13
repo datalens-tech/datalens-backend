@@ -8,7 +8,7 @@ metadata:
   labels:
     app: rqe-dataset-api
 spec:
-  replicas: {{ add .Values.scaling.dataset_data_api.desired .Values.scaling.public_dataset_api.desired | default 1 }}
+  replicas: {{ add .Values.scaling.rqe_dataset_api.desired | default 1 }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.scaling.dataset_data_api.max_surge }}

@@ -40,6 +40,8 @@ scaling:
     desired: 3
   public_dataset_api:
     desired: 0
+  rqe_dataset_api:
+    desired: 6
 #  file_uploader_api:
 #    desired: 2
 #  file_uploader_worker:
