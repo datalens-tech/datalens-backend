@@ -60,7 +60,7 @@ class SaveSourceTask(BaseTaskMeta):
 
     name = TaskName('save_source')
 
-    tenant_id: str = attr.ib()  # project_id in DoubleCloud and folder_id/organization_id in all other envs
+    tenant_id: str = attr.ib()
     file_id: str = attr.ib()
     src_source_id: str = attr.ib()
     dst_source_id: str = attr.ib()
@@ -93,7 +93,7 @@ class CleanS3LifecycleRulesTask(BaseTaskMeta):
 class CleanupTenantFilePreviewsTask(BaseTaskMeta):
     name = TaskName('cleanup_previews')
 
-    tenant_id: str = attr.ib()  # project_id in DoubleCloud and folder_id/organization_id in all other envs
+    tenant_id: str = attr.ib()
 
 
 @attr.s
