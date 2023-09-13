@@ -420,16 +420,6 @@ class UStorageClientBase:
             json={'destination': destination},
         )
 
-    # TODO: delete after https://st.yandex-team.ru/CHARTS-1088
-    @classmethod
-    def _req_data_rename_entry(cls, entry_id: str, new_name: str):  # type: ignore  # TODO: fix
-        return cls.RequestData(
-            method='post',
-            relative_url='/entries/{}/rename'.format(entry_id),
-            params=None,
-            json={'name': new_name},
-        )
-
     @classmethod
     def _req_data_update_entry(  # type: ignore  # TODO: fix
             cls, entry_id: str, data=None, unversioned_data=None, meta=None, mode='publish',
@@ -681,9 +671,6 @@ class UStorageClient(UStorageClientBase):
 
     def move_entry(self, entry_id, destination):  # type: ignore  # TODO: fix
         return self._request(self._req_data_move_entry(entry_id, destination=destination))
-
-    def rename_entry(self, entry_id, new_name):  # type: ignore  # TODO: fix  # TODO: delete after https://st.yandex-team.ru/CHARTS-1088
-        return self._request(self._req_data_rename_entry(entry_id, new_name=new_name))
 
     def update_entry(  # type: ignore  # TODO: fix
         self, entry_id: str,

@@ -241,11 +241,6 @@ class SyncUSManager(USManagerBase):
         self._us_client.move_entry(entry.uuid, destination)
         self.reload_data(entry)  # maybe we have to update only entry_key
 
-    # TODO: delete after https://st.yandex-team.ru/CHARTS-1088
-    def rename(self, entry: USEntry, new_name: str) -> None:
-        self._us_client.rename_entry(entry.uuid, new_name)
-        self.reload_data(entry)
-
     def reload_data(self, entry: USEntry) -> None:
         assert entry.uuid is not None
         us_resp = self._us_client.get_entry(entry.uuid)

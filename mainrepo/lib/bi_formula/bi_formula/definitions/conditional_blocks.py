@@ -63,7 +63,8 @@ class CaseBlock(CondBlock):
 
         def _then_else_wrap(expr):
             if replace_nulls:
-                # for ClickHouse only, a workaround for https://st.yandex-team.ru/CLICKHOUSE-4376
+                # TODO: make sure it's not needed anymore and remove
+                # for ClickHouse only, a workaround for https://github.com/ClickHouse/ClickHouse/issues/7237
                 expr = cls._ifnull(expr, data_type=return_type.non_const_type)
             return expr
 

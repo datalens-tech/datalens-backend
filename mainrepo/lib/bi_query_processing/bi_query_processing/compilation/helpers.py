@@ -110,7 +110,6 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
                 node = formula_nodes.LiteralDate.make(dt_val.date())
             elif data_type in (DataType.DATETIME, DataType.CONST_DATETIME):
                 # NOTE: the value might have non-empty tzinfo.
-                # TODO: use LiteralDatetimeTZ for filtering DATETIME values. https://st.yandex-team.ru/BI-2384
                 node = formula_nodes.LiteralDatetime.make(_datetime_fromisoformat(val))
             elif data_type in (DataType.DATETIMETZ, DataType.CONST_DATETIMETZ):
                 val_dt = _datetime_fromisoformat(val)

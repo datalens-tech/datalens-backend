@@ -57,7 +57,7 @@ class ConnExecutorFactory(metaclass=abc.ABCMeta):
     def req_ctx_info(self) -> RequestContextInfo:
         pass
 
-    # TODO FIX: Move to ServiceRegistry https://st.yandex-team.ru/BI-2582
+    # TODO FIX: Move to ServiceRegistry
     @property
     @abc.abstractmethod
     def conn_security_manager(self) -> ConnectionSecurityManager:

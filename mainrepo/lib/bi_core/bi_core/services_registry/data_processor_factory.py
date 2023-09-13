@@ -73,11 +73,7 @@ class CompengDataProcessorFactory(BaseClosableDataProcessorFactory):
         processor = data_proc_service.get_data_processor()
 
         if allow_cache_usage:
-            # in arcadia we use ancient mypy https://st.yandex-team.ru/DTCC-1241
-            # this version contains a bug in atts + import order
-            # sometimes this mypy's version processes child class before parent
-            # and fails with "Unexpected keyword argument"
-            processor = CachedDatasetProcessor(  # type: ignore  # TODO: fix
+            processor = CachedDatasetProcessor(
                 service_registry=self.services_registry,
                 dataset=dataset,
                 main_processor=processor,

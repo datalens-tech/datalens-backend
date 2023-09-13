@@ -26,7 +26,7 @@ class ConnectionSecurityManager(metaclass=abc.ABCMeta):
         Must return False if connection is potentially unsafe and should be executed in isolated environment.
         """
 
-    # TODO FIX: https://st.yandex-team.ru/BI-2582 Determine if we need dedicated method
+    # TODO FIX: determine if we need dedicated method
     @abc.abstractmethod
     def is_internal_connection(self, conn_dto: ConnDTO) -> bool:
         """
@@ -87,8 +87,7 @@ class CloudConnectionSecurityManager(ConnectionSecurityManager):
 
         return False
 
-    # TODO FIX: https://st.yandex-team.ru/BI-2582
-    #  Generalize code with .is_safe_connection() after checking if logic is fully compatible
+    # TODO FIX: Generalize code with .is_safe_connection() after checking if logic is fully compatible
     def is_internal_connection(self, conn_dto: ConnDTO) -> bool:
         # TODO FIX: Move on top after moving MDB utils in dedicated module (right now will cause import loop)
         from bi_core.mdb_utils import MDBDomainManager

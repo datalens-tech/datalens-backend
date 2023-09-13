@@ -25,8 +25,6 @@ def stringify_or_null(value: Any) -> Optional[str]:
 def postprocess_array(value: Optional[Iterable[Any]]) -> Optional[Iterable[Optional[str]]]:
     if value is None:
         return None
-    # Thinking about arrays visualization in https://st.yandex-team.ru/YCDESIGN-1980
-    # return [stringify_or_null(item) for item in value]
     return json.dumps(value, ensure_ascii=False)  # Frontend fully supports non-ASCII JSON
 
 
