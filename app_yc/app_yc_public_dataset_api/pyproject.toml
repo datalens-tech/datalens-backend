@@ -45,6 +45,7 @@ yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgr
 yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 
 [build-system]
 requires = ["poetry-core"]

@@ -8392,6 +8392,7 @@ bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 blinker = ">=1.5"
 raven = ">=6.10.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
@@ -8534,6 +8535,7 @@ bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
@@ -8584,6 +8586,7 @@ bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
@@ -8938,6 +8941,7 @@ bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
