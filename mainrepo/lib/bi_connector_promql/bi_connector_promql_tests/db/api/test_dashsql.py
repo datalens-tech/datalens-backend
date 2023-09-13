@@ -6,7 +6,7 @@ from bi_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
 from bi_connector_promql_tests.db.api.base import PromQLConnectionTestBase
 
 
-class TestPostgresDashSQL(PromQLConnectionTestBase, DefaultDashSQLTestSuite):
+class TestPromQLDashSQL(PromQLConnectionTestBase, DefaultDashSQLTestSuite):
     @pytest.mark.asyncio
     async def test_basic_select(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str) -> None:
         resp = await self.get_dashsql_response(
