@@ -4,7 +4,7 @@ app:
 docker_images_info:
   bi_api:
     repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
-    tag: "0.1977.0"
+    tag: "0.2001.0"
   control_api:
     repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
   data_api:
@@ -55,6 +55,7 @@ visible_connectors:
   - "mysql"
   - "postgres"
   - "snowflake"
+  - "monitoring"
 
 connector_forms_env:
   - name: ENABLED_BACKEND_DRIVEN_FORMS

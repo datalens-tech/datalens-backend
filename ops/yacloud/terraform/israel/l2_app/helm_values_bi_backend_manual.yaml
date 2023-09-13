@@ -53,6 +53,7 @@ visible_connectors:
   - "mysql"
   - "postgres"
   - "snowflake"
+  - "monitoring"
 
 connector_forms_env:
   - name: ENABLED_BACKEND_DRIVEN_FORMS
