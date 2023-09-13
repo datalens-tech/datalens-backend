@@ -51,3 +51,8 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.i18n.domains]
+bi_api_lib_ya = [
+    {path = "bi_api_lib_ya"},
+]

@@ -4,6 +4,7 @@ import json
 from typing import Optional, Any, ClassVar
 
 import attr
+
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_configs.crypto_keys import CryptoKeysConfig

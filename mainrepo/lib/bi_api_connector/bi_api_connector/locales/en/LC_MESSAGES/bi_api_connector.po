@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-11 12:10+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-11 15:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,104 +17,83 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:31
 msgid "field_host"
 msgstr "Hostname"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:39
 msgid "field_port"
 msgstr "Port"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:50
 msgid "field_username"
 msgstr "Username"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:60
 msgid "field_password"
 msgstr "Password"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:73
 msgid "field_db-name"
 msgstr "Path to database"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:90
 msgid "value_raw-sql-level-off"
 msgstr "Forbid"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:96
 msgid "value_raw-sql-level-subselect"
 msgstr "Allow subselects in datasets"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:97
 msgid "value_raw-sql-level-subselect-note"
 msgstr "This option allows you to describe dataset sources using SQL queries"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:103
 msgid "value_raw-sql-level-dashsql"
 msgstr "Allow subselects in datasets and queries from charts"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:104
 msgid "value_raw-sql-level-dashsql-note"
-msgstr "This option allows you to describe dataset sources using SQL queries and create QL charts"
+msgstr ""
+"This option allows you to describe dataset sources using SQL queries and "
+"create QL charts"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:121
 msgid "label_allow-subselect-hint-2"
 msgstr ""
 "We do not recommend combining subqueries in datasets with RLS or "
 "restrictions on viewing tables."
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:122
 msgid "label_allow-subselect-hint-3"
 msgstr ""
 "SQL queries from charts enter the connection directly and do not take into "
 "account the RLS configured in the datasets."
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:126
 msgid "field_raw-sql-level"
 msgstr "Raw SQL level"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:144
 msgid "field_access-token"
 msgstr "Access token"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:159
 msgid "field_auto-create-dashboard"
 msgstr ""
 "Automatically create a dashboard, charts, and a dataset on the connection"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:170
 msgid "label_advanced-settings"
 msgstr "Advanced connection settings"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:182
 msgid "label_ssl-enabled"
 msgstr "TLS"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:190
 msgid "value_ssl-enabled-off"
 msgstr "Off"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:194
 msgid "value_ssl-enabled-on"
 msgstr "On"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:204
 msgid "label_ssl-ca"
 msgstr "CA Certificate"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:217
 msgid "label_data-export-forbidden"
 msgstr "Disable data export"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:219
 msgid "help_text_data-export-forbidden"
-msgstr "Disabling data export will hide the data export button in the charts, though you will still be able to extract data from charts and take screenshots."
+msgstr ""
+"Disabling data export will hide the data export button in the charts, though "
+"you will still be able to extract data from charts and take screenshots."
 
-
-#: bi_api_connector/form_config/models/shortcuts/rows.py:225
 msgid "value_data-export-forbidden-off"
 msgstr "Off"
 
-#: bi_api_connector/form_config/models/shortcuts/rows.py:229
 msgid "value_data-export-forbidden-on"
 msgstr "On"

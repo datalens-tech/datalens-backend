@@ -16,15 +16,18 @@ from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
+from bi_i18n.localizer_base import TranslationConfig
 
 from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
-from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
 
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFactory
+
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
+from bi_api_lib_ya.i18n.localizer import CONFIGS
 
 
 class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
@@ -115,3 +118,9 @@ class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
 
     def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
         return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlPlaneAppSettings) else None
+
+    @property
+    def _extra_translation_configs(self) -> set[TranslationConfig]:
+        configs = super()._extra_translation_configs
+        configs.update(CONFIGS)
+        return configs

@@ -14,7 +14,7 @@ import bi.app
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
-from bi_api_lib_testing.configuration import CONNECTOR_WHITELIST
+from bi_api_lib_testing_ya.configuration import CONNECTOR_WHITELIST
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig

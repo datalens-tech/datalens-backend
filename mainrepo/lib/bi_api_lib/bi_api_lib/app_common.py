@@ -14,7 +14,7 @@ from bi_constants.enums import ConnectionType
 from bi_constants.enums import RLSSubjectType
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_i18n.localizer_base import LocalizerLoader
+from bi_i18n.localizer_base import LocalizerLoader, TranslationConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.file_uploader_client_factory import FileUploaderSettings
 from bi_core.services_registry.inst_specific_sr import (
@@ -30,7 +30,7 @@ from bi_core.services_registry.top_level import ServicesRegistry
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import AppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.i18n.registry import LOCALIZATION_CONFIGS
+from bi_api_lib.i18n.registry import LOCALIZATION_CONFIGS, register_translation_configs
 from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from bi_api_lib.service_registry.sr_factory import DefaultBiApiSRFactory
 
@@ -108,6 +108,10 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
     def _get_connector_availability(self, settings: TSettings) -> Optional[ConnectorAvailabilityConfig]:
         raise NotImplementedError
 
+    @property
+    def _extra_translation_configs(self) -> set[TranslationConfig]:
+        return set()
+
     @final
     def get_sr_factory(
         self,
@@ -133,6 +137,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         if settings.BI_COMPENG_PG_ON:
             required_services.add(RequiredService.POSTGRES)
 
+        register_translation_configs(self._extra_translation_configs)
         localization_loader = LocalizerLoader(configs=LOCALIZATION_CONFIGS)
         localization_factory = localization_loader.load()
         localizer_fallback = localization_factory.get_for_locale(

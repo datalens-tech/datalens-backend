@@ -1,9 +1,9 @@
 import abc
 from typing import Optional
 
+from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
 from bi_configs.enums import RequiredService
 
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
@@ -15,12 +15,10 @@ from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFa
 
 from bi_api_lib_ya.app.control_api.app import LegacyControlApiAppFactory
 from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
 
 
-class PrivateTestingSRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
+class PrivateTestingSRFactoryBuilder(LegacySRFactoryBuilder, abc.ABC):
     def _get_required_services(self, settings: BaseAppSettings) -> set[RequiredService]:
         return {RequiredService.RQE_INT_SYNC, RequiredService.RQE_EXT_SYNC}
 
@@ -62,18 +60,6 @@ class PrivateTestingSRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC)
                 caches_ttl=settings.RQE_CACHES_TTL,
             )
         return None
-
-    def _get_default_cache_ttl_settings(self, settings: BaseAppSettings) -> Optional[CacheTTLConfig]:
-        if isinstance(settings, AsyncAppSettings) and settings.CACHES_TTL_SETTINGS is not None:
-            # FIXME: resolve typing mismatch for CacheTTLConfig
-            return CacheTTLConfig(
-                ttl_sec_direct=settings.CACHES_TTL_SETTINGS.OTHER,  # type: ignore  # TODO: fix
-                ttl_sec_materialized=settings.CACHES_TTL_SETTINGS.MATERIALIZED,  # type: ignore  # TODO: fix
-            )
-        return None
-
-    def _get_connector_availability(self, settings: BaseAppSettings) -> Optional[ConnectorAvailabilityConfig]:
-        return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlPlaneAppSettings) else None
 
 
 class TestingControlApiAppFactoryPrivate(LegacyControlApiAppFactory, PrivateTestingSRFactoryBuilder):

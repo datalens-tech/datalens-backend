@@ -27,6 +27,9 @@ from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
+from bi_i18n.localizer_base import TranslationConfig
+
+from app_yc_control_api.i18n.localizer import CONFIGS
 
 
 class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
@@ -72,6 +75,12 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
 
     def _get_connector_availability(self, settings: ControlPlaneAppSettings) -> Optional[ConnectorAvailabilityConfig]:
         return settings.CONNECTOR_AVAILABILITY
+
+    @property
+    def _extra_translation_configs(self) -> set[TranslationConfig]:
+        configs = super()._extra_translation_configs
+        configs.update(CONFIGS)
+        return configs
 
 
 class ControlApiAppFactoryYC(ControlApiAppFactory[ControlPlaneAppSettings], ControlApiSRFactoryBuilderYC):

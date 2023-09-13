@@ -24,6 +24,10 @@ from bi_configs.enums import EnvType, RedisMode
 from bi_constants.api_constants import DLHeadersCommon
 
 
+DOMAIN_BI_API_LIB_YA = 'bi_api_lib_ya'
+DOMAIN_YC_CONTROL_API = 'app_yc_control_api'
+
+
 class InstallationBase(LegacyDefaults):
     ENV_TYPE: ClassVar[EnvType]
 
@@ -267,7 +271,7 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
         sections=[
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-db'),
+                title_translatable=TranslatableSettings(text='section_title-db', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorContainerSettings(
                         alias='chyt_connectors',
@@ -290,7 +294,7 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
                 ],
             ),
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                title_translatable=TranslatableSettings(text='section_title-files_and_services', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorSettings(conn_type='file'),
                     ConnectorSettings(conn_type='gsheets'),
@@ -390,7 +394,7 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
         sections=[
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-db'),
+                title_translatable=TranslatableSettings(text='section_title-db', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorContainerSettings(
                         alias='chyt_connectors',
@@ -411,7 +415,7 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
                 ],
             ),
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                title_translatable=TranslatableSettings(text='section_title-files_and_services', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorSettings(conn_type='file'),
                     ConnectorSettings(conn_type='gsheets'),
@@ -524,7 +528,7 @@ class ExternalTestingInstallation(
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
         sections=[
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-db'),
+                title_translatable=TranslatableSettings(text='section_title-db', domain=DOMAIN_YC_CONTROL_API),
                 connectors=[
                     ConnectorSettings(conn_type='clickhouse'),
                     ConnectorSettings(conn_type='postgres'),
@@ -549,7 +553,7 @@ class ExternalTestingInstallation(
                 ],
             ),
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                title_translatable=TranslatableSettings(text='section_title-files_and_services', domain=DOMAIN_YC_CONTROL_API),
                 connectors=[
                     ConnectorSettings(conn_type='file'),
                     ConnectorSettings(conn_type='gsheets_v2'),
@@ -562,7 +566,7 @@ class ExternalTestingInstallation(
                 ],
             ),
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-partner'),
+                title_translatable=TranslatableSettings(text='section_title-partner', domain=DOMAIN_YC_CONTROL_API),
                 connectors=[
                     ConnectorSettings(conn_type='bitrix24'),
                     ConnectorSettings(conn_type='ch_ya_music_podcast_stats'),
@@ -798,7 +802,7 @@ class ExternalProductionInstallation(
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
         sections=[
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-db'),
+                title_translatable=TranslatableSettings(text='section_title-db', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorSettings(conn_type='clickhouse'),
                     ConnectorSettings(conn_type='postgres'),
@@ -823,7 +827,7 @@ class ExternalProductionInstallation(
                 ],
             ),
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-files_and_services'),
+                title_translatable=TranslatableSettings(text='section_title-files_and_services', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorSettings(conn_type='file'),
                     ConnectorSettings(conn_type='gsheets_v2'),
@@ -836,7 +840,7 @@ class ExternalProductionInstallation(
                 ],
             ),
             SectionSettings(
-                title_translatable=TranslatableSettings(text='section_title-partner'),
+                title_translatable=TranslatableSettings(text='section_title-partner', domain=DOMAIN_BI_API_LIB_YA),
                 connectors=[
                     ConnectorSettings(conn_type='bitrix24'),
                     ConnectorSettings(conn_type='ch_ya_music_podcast_stats'),
