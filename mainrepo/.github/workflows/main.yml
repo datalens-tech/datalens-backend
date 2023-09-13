@@ -60,9 +60,78 @@ jobs:
           export ROOT_DIR="$(realpath .)"
           /bin/bash ci/build_naive.sh
 
-  run_tests:
+  router:
+    runs-on: [self-hosted, linux, light]
+    needs: gh_build_image
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      affected: ${{ steps.get_affected.outputs.affected }}
+    steps:
+    - name: 'Cleanup build folder'
+      run: |
+        rm -rf ./* || true
+        rm -rf ./.??* || true
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - run: git config --global --add safe.directory .
+    - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+    - run: git fetch origin trunk
+    - run: |
+        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
+        echo "Changed files from git diff: $TARGET"
+    - name: Get packages affected by changes in the current commit
+      id: get_affected
+      run: |
+        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
+        echo "Changed files from git diff: $TARGET"
+        . /venv/bin/activate && detect_affected_packages \
+          --repo=/src \
+          --changes="$TARGET" \
+          --root_pkgs="lib,app,terrarium" \
+          --fallback_pkg="terrarium/bi_ci" | tee -a  >> "$GITHUB_OUTPUT"
+      env:
+        TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
+
+  pytest_split:
     runs-on: [ self-hosted, linux ]
-    needs: [ gh_build_image ]
+    needs: router
+    # if: ${{ github.event.inputs.run_mypy_only != 'true' }}
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      split_base: ${{ steps.get_split.outputs.split_base }}
+      split_fat: ${{ steps.get_split.outputs.split_fat }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - name: Run python script to split job for general and fat runners
+        id: get_split
+        run: |
+          . /venv/bin/activate && echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
+          export TEST_TARGETS="/tmp/dl_test_targets.json"
+          split_pytest_tasks /src | tee -a "$GITHUB_OUTPUT"
+
+  run_tests_base:
+    runs-on: [ self-hosted, linux, light ]
+    name: "🐍[pytest]${{ matrix.value }}"
+    needs: pytest_split
+    if: ${{ needs.pytest_split.outputs.split_base != '[]' }}
     permissions:
       packages: write
       contents: read
@@ -72,20 +141,57 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    strategy:
+      fail-fast: false
+      matrix:
+        value: ${{fromJson(needs.pytest_split.outputs.split_base)}}
     steps:
-      - run: ls -laht /src/
-      - run: |
-          . /venv/bin/activate
-          cd /src/lib/bi_api_commons/
-          pytest -v bi_api_commons_tests
+      - run: echo "Going to run tests for  ${{ matrix.value }}"
+      - run: mkdir /report
+      - run: echo "Running py tests for ${{ matrix.value }}"
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: "ghcr.io"
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
+      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      # We need to set custom compose project name to ensure "unique" container names in the host docker env
+      - name: run bash script with all logic for starting compose and running tests
+        run: bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+      - name: Stop compose if provided
+        # We could not put this into bash script, since job could be cancelled by user request
+        if: always()  # yes! always
+        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+      - uses: actions/upload-artifact@v3
+        if: "!cancelled()"
+        with:
+          name: "pytest_reports_${{ env.compose_prj }}"
+          path: /report/
+          retention-days: 1
 
-#  fake-router:
-#    runs-on: [self-hosted, linux]
-#    needs: gh_build_image
-#    container:
-#      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
-#      options: -v /var/run/docker.sock:/var/run/docker.sock
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-#    steps:
+  publish-result:
+    runs-on: [self-hosted, linux ]
+    needs: [ "run_tests_base" ] # , "run_tests_fat" ]
+    if: "!cancelled() && ${{ github.event.inputs.run_mypy_only != 'true' }}"
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+    container: docker:latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: ./report/
+      - run: ls -lah ./report
+      - name: Publish Test Results
+        uses: datalens-tech/publish-unit-test-result-action@55478522536e0c60b0a4ff0c2bb8ab110d7a0f33
+        with:
+          files: |
+            ./report/**/*.xml
+          event_name: ${{ github.event.workflow_run.event }}
+          report_individual_runs: "true"

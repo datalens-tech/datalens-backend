@@ -20,6 +20,8 @@ target "ci_with_src" {
     "base_ci", # Parent target
     {
       bake_ctx_dl_src_lib = "target:dl_src_lib",
+      bake_ctx_dl_src_terrarium  = "target:dl_src_terrarium"
+      bake_ctx_dl_src_ci = "target:dl_src_ci"
     }
   )
   args = {
@@ -29,6 +31,9 @@ target "ci_with_src" {
     "ARG BASE_IMG",
     "FROM $BASE_IMG",
     "COPY --from=bake_ctx_dl_src_lib / /src/",
+    "COPY --from=bake_ctx_dl_src_terrarium / /src/",
+    "COPY --from=bake_ctx_dl_src_ci / /src/",
+    "RUN . /venv/bin/activate && pip install -e /src/terrarium/bi_ci",
     "RUN . /venv/bin/activate && cd /src/metapkg/ && poetry install --no-root --without=dev --with=ci",
   ])
 }

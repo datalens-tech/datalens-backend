@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from bi_ci.get_compose_path import get_compose_path
 
 
@@ -21,6 +19,3 @@ def test_get_compose_path(resource_dir):
     result = get_compose_path(prj_root, f"{rel_path}:{section}")
     expected = str(resource_dir / "docker-compose.yml")
     assert result == expected
-
-
-

@@ -25,7 +25,7 @@ tasks:
       - "./ops/ci/.env"  # FIXME: Use single dotenv in /tools
     cmds:
       - source $HOST_VENV_ROOT/bin/activate &&
-        python -m dl_repmanager.scripts.scoped_metapkg_sync
+        scoped-metapkg-sync
         --orig-metapkg-path ./ops/ci
         --scoped-metapkg-path ./mainrepo/metapkg
         --remove-private-pypi

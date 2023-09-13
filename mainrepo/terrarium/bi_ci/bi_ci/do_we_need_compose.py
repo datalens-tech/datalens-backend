@@ -6,7 +6,6 @@ import tomlkit
 
 
 def do_we_need_compose(prj_root: Path, target: str) -> str:
-
     prj_root = prj_root.resolve()
     rel_path, section_name = target.split(":")
     mb_compose = prj_root / rel_path / "docker-compose.yml"

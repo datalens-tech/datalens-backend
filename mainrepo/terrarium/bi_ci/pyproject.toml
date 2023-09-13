@@ -54,6 +54,7 @@ run_tests = "bi_ci.run_tests:runner_cli"
 fix_ports_in_compose = "bi_ci.fix_ports_in_compose:cmd"
 do_we_need_compose = "bi_ci.do_we_need_compose:cmd"
 get_compose_path = "bi_ci.get_compose_path:cmd"
+split_pytest_tasks = "bi_ci.split_pytest_tasks:cmd"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

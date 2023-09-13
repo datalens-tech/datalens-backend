@@ -29,15 +29,14 @@ addopts = "-ra"
 testpaths = ["dl_repmanager_tests/unit"]
 timeout = 600
 
-
-
-
 [tool.poetry.scripts]
 dl-repo = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package = "dl_repmanager.scripts.package_meta_cli:main"
 # Legacy names
 dl-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package-meta = "dl_repmanager.scripts.package_meta_cli:main"
+# tmp
+scoped-metapkg-sync = "dl_repmanager.scripts.scoped_metapkg_sync:main"
 
 [tool.mypy]
 warn_unused_configs = true

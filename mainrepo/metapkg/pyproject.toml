@@ -109,9 +109,6 @@ select = [
 [tool.ruff.isort]
 split-on-trailing-comma = true
 
-
-
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"

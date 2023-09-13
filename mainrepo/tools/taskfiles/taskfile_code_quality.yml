@@ -29,6 +29,7 @@ vars:
 includes:
   env:
     taskfile: ./taskfile_env.yml
+    dir: ..
 
 tasks:
   common_deps:
@@ -48,7 +49,7 @@ tasks:
       - |
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}     
-        ruff {{.FIX_FLAG}}  {{.TARGET}}  {{.IGNORE_ERRORS}}
+        ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
@@ -99,6 +100,8 @@ tasks:
 #        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
+        pwd
+        echo $VENV_PATH
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         black -v --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
@@ -129,11 +132,6 @@ tasks:
     internal: true
     silent: true
     cmds:
-#      - task: toml_sort_run
-#        vars:
-#          TARGET: "{{.TARGET_TOML}}"
-#          APPLY_FIX: "{{.APPLY_FIX}}"
-#          STRICT: "{{.STRICT}}"
       - task: isort_run
         vars:
           TARGET: "{{.TARGET}}"

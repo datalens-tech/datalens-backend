@@ -1,21 +1,28 @@
 import argparse
-import json
-import os
 from collections import (
     defaultdict,
     deque,
 )
+import json
+import os
 from pathlib import Path
-from typing import (
-    Iterable,
-    Iterator,
-)
+from typing import Iterator
+
+import attr
 
 from .pkg_ref import PkgRef
 
 
+@attr.s
+class Config:
+    root_dir: Path = attr.ib()
+    roots: list[str] = attr.ib()
+    changed_paths: list[str] = attr.ib()
+
+
 def collect_affected_packages(
-    repo_root: Path, refs: list[PkgRef], paths: list[str]
+    refs: list[PkgRef],
+    paths: list[str],
 ) -> list[PkgRef]:
     # path relative to project root
     seen = set()
@@ -31,11 +38,10 @@ def collect_affected_packages(
     return [pkg_by_path[k] for k in seen]
 
 
-def gen_pkg_dirs(repo_path: Path) -> Iterator[Path]:
-    # todo: relay of dl_repmanager to walk sub projects
-    roots = ("lib", "app", "mainrepo/lib", "mainrepo/app", "mainrepo/terrarium")
-    for root in roots:
-        root_path = (Path(repo_path) / root).resolve()
+def gen_pkg_dirs(cfg: Config) -> Iterator[Path]:
+    # todo: maybe relay of dl_repmanager to walk sub projects
+    for root in cfg.roots:
+        root_path = (Path(cfg.root_dir) / root).resolve()
         if not root_path.exists():
             continue
         for item in root_path.iterdir():
@@ -56,9 +62,7 @@ def get_leafs(dependencies):
     for deps in dependencies.values():
         all_values.extend(deps)
     all_values = set(all_values)
-    leafs = set(all_values) - set(
-        [k for k in dependencies.keys() if len(dependencies[k]) > 0]
-    )
+    leafs = set(all_values) - set([k for k in dependencies.keys() if len(dependencies[k]) > 0])
     return leafs
 
 
@@ -100,16 +104,17 @@ def get_deep_affection_map(dependencies: dict[str, list[str]]) -> dict[str, set[
 
 
 def process(
-    repo_root: Path, affected: Iterable[str], get_all: bool = False
+    cfg: Config,
+    get_all: bool = False,
 ) -> list[PkgRef]:
-    affected = list(affected)
+    affected = list(cfg.changed_paths)
 
     depends_on = defaultdict(list)
     pkg_by_ref = {}
 
     all_refs = []
-    for item in gen_pkg_dirs(repo_root):
-        ref = PkgRef(root=repo_root, full_path=item)
+    for item in gen_pkg_dirs(cfg):
+        ref = PkgRef(root=cfg.root_dir, full_path=item)
         all_refs.append(ref)
         if ref.self_pkg_name is None:
             continue
@@ -124,7 +129,7 @@ def process(
         if len(affected) == 0:
             return all_refs
 
-        direct_affected = collect_affected_packages(repo_root, all_refs, affected)
+        direct_affected = collect_affected_packages(all_refs, affected)
         to_test = set()
 
         for pkg in direct_affected:
@@ -143,24 +148,33 @@ def main() -> None:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo")
+    parser.add_argument(
+        "--root_pkgs",
+        help="comma separated list of dirs to walk inside to find test targets",
+    )
+    parser.add_argument(
+        "--fallback_pkg",
+        help="relative path to pkg to always include in results",
+    )
     parser.add_argument("--changes")
-
     args = parser.parse_args()
-    repo_root = args.repo
-    paths = args.changes
+
+    cfg = Config(
+        root_dir=Path(args.repo),
+        roots=(args.root_pkgs or "").split(","),
+        changed_paths=args.changes.strip().split(" "),
+    )
 
     if override == "__ALL__":
-        to_check = process(repo_root, [], get_all=True)
+        cfg.changed_paths = []
+        to_check = process(cfg, get_all=True)
     else:
-        paths = paths.strip().split(" ")
-        to_check = process(
-            Path(repo_root), [p for p in paths if not p.startswith("ops/")]
-        )
+        to_check = process(cfg, False)
 
     to_check.append(
         PkgRef(
-            root=repo_root,
-            full_path=Path(repo_root) / "mainrepo" / "terrarium" / "bi_ci",
+            root=cfg.root_dir,
+            full_path=cfg.root_dir / args.fallback_pkg,
         )
     )
     result = set()

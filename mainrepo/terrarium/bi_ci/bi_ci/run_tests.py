@@ -1,8 +1,8 @@
-import uuid
 from functools import partial
-import subprocess
 from pathlib import Path
+import subprocess
 import sys
+import uuid
 
 import attr
 import clize
@@ -78,17 +78,15 @@ def run_pytest_one(t: Target) -> int:
     return process.returncode
 
 
-def runner(test_target: str):
+def runner(prj_root: Path, test_target: str) -> None:
     """
-    :param test_target: semicolon separated pair of package local path and target test section
+    st_target: semicolon separated pair of package local path and target test section
     e.g: "lib/bi_core:unit_aio_api_commons"
-
-    :return:
     """
     # todo: consider multiple targets for one pkg_root, maybe comma separated
 
     pkg_root_str, target_section = test_target.split(":")
-    pkg_root: Path = Path("/data") / pkg_root_str
+    pkg_root: Path = prj_root / pkg_root_str
 
     print("Datalens gh ci tests Runner welcomes you!")
     doc = read_pkg(pkg_root / "pyproject.toml")
