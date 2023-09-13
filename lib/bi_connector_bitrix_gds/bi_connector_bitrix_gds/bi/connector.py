@@ -46,5 +46,6 @@ class BitrixGDSBiApiConnector(BiApiConnector):
     )
     legacy_initial_planner_cls = BitrixGDSCompengExecutionPlanner
     is_forkable = False
+    is_compeng_executable = True
     filter_formula_compiler_cls = BitrixGDSFilterFormulaCompiler
     translation_configs = frozenset(CONFIGS)

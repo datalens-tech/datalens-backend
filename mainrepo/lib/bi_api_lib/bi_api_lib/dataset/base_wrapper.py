@@ -53,8 +53,7 @@ from bi_api_lib.query.registry import get_multi_query_mutator_factory, get_initi
 from bi_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 from bi_query_processing.translation.primitives import TranslatedMultiQueryBase
 
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect  # FIXME
-
+from bi_api_lib.query.registry import get_compeng_dialect, is_compeng_enabled
 from bi_api_lib.dataset.dialect import resolve_dialect_name
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
 
@@ -273,7 +272,7 @@ class DatasetBaseWrapper:
             avatar_alias_mapper=self._avatar_alias_mapper,
             collect_stats=not self._validation_mode,
             dialect=self.dialect,
-            compeng_dialect=PostgreSQLDialect.COMPENG,
+            compeng_dialect=get_compeng_dialect() if is_compeng_enabled() else None,
         )
 
     def resolve_role(self) -> DataSourceRole:

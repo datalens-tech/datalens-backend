@@ -19,7 +19,7 @@ from bi_connector_postgresql.bi.api_schema.connection import PostgreSQLConnectio
 from bi_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
 from bi_connector_postgresql.bi.connection_info import PostgreSQLConnectionInfoProvider
 from bi_connector_postgresql.bi.i18n.localizer import CONFIGS
-from bi_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
+from bi_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL, PostgreSQLDialect
 
 
 class PostgreSQLBiApiTableSourceDefinition(BiApiSourceDefinition):
@@ -50,3 +50,4 @@ class PostgreSQLBiApiConnector(BiApiConnector):
     )
     formula_dialect_name = DIALECT_NAME_POSTGRESQL
     translation_configs = frozenset(CONFIGS)
+    compeng_dialect = PostgreSQLDialect.COMPENG

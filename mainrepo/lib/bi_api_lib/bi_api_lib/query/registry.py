@@ -66,6 +66,21 @@ def register_is_forkable_source(backend_type: SourceBackendType, is_forkable: bo
         _IS_FORKABLE_BACKEND_TYPE[backend_type] = is_forkable
 
 
+_IS_COMPENG_EXECUTABLE_BACKEND_TYPE: dict[SourceBackendType, bool] = {}
+_IS_COMPENG_EXECUTABLE_DEFAULT = False
+
+
+def is_compeng_executable(backend_type: SourceBackendType) -> bool:
+    return _IS_COMPENG_EXECUTABLE_BACKEND_TYPE.get(backend_type, _IS_COMPENG_EXECUTABLE_DEFAULT)
+
+
+def register_is_compeng_executable(backend_type: SourceBackendType, is_compeng_executable: bool) -> None:
+    try:
+        assert _IS_COMPENG_EXECUTABLE_BACKEND_TYPE[backend_type] is is_compeng_executable
+    except KeyError:
+        _IS_COMPENG_EXECUTABLE_BACKEND_TYPE[backend_type] = is_compeng_executable
+
+
 _MQM_FACTORY_REGISTRY: dict[tuple[SourceBackendType, Optional[DialectCombo]], Type[MultiQueryMutatorFactoryBase]] = {}
 
 
@@ -95,3 +110,22 @@ def register_multi_query_mutator_factory_cls(
             assert _MQM_FACTORY_REGISTRY[key] is factory_cls
         else:
             _MQM_FACTORY_REGISTRY[key] = factory_cls
+
+
+_COMPENG_DIALECT: set[DialectCombo] = set()
+
+
+def get_compeng_dialect() -> DialectCombo:
+    assert len(_COMPENG_DIALECT) == 1, 'No compeng dialect has been found'
+    return next(iter(_COMPENG_DIALECT))
+
+
+def is_compeng_enabled() -> bool:
+    return bool(_COMPENG_DIALECT)
+
+
+def register_compeng_dialect(dialect: DialectCombo) -> None:
+    if not _COMPENG_DIALECT:
+        _COMPENG_DIALECT.add(dialect)
+    else:
+        assert next(iter(_COMPENG_DIALECT)) == dialect

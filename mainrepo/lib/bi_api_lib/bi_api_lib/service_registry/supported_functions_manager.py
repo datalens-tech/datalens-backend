@@ -18,7 +18,7 @@ from bi_api_lib.enums import FILTERS_BY_TYPE, BI_TYPE_AGGREGATIONS
 from bi_query_processing.compilation.formula_compiler import FormulaCompiler
 from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
 
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
+from bi_api_lib.query.registry import get_compeng_dialect, is_compeng_enabled
 
 
 _FUNCTION_TAG_TO_SCOPE_MAP: dict[str, Scope] = {
@@ -63,10 +63,15 @@ class SupportedFunctionsManager:
             dialect=dialect,
             scope=Scope.SUGGESTED,
         )
-        compeng_supp_funcs = self._get_supported_functions(
-            dialect=PostgreSQLDialect.COMPENG,
-            scope=Scope.SUGGESTED,
-        )
+
+        if is_compeng_enabled():
+            compeng_supp_funcs = self._get_supported_functions(
+                dialect=get_compeng_dialect(),
+                scope=Scope.SUGGESTED,
+            )
+        else:
+            compeng_supp_funcs = []
+
         supported_function_names = sorted({
             func[0] for func in chain.from_iterable((
                 native_supp_funcs, compeng_supp_funcs,

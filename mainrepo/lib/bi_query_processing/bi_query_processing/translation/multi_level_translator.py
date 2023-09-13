@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from typing import Callable
+from typing import Callable, Optional
 
 import attr
 
@@ -35,7 +35,7 @@ class MultiLevelQueryTranslator:
     _verbose_logging: bool = attr.ib(kw_only=True, default=False)  # noqa
     _avatar_alias_mapper: Callable[[str], str] = attr.ib(kw_only=True, default=lambda s: s)  # noqa
     _dialect: DialectCombo = attr.ib(kw_only=True)
-    _compeng_dialect: DialectCombo = attr.ib(kw_only=True)
+    _compeng_dialect: Optional[DialectCombo] = attr.ib(kw_only=True)
 
     # Attributes for source_db
     _collect_stats: bool = attr.ib(kw_only=True, default=False)
@@ -51,6 +51,7 @@ class MultiLevelQueryTranslator:
         )
 
     def make_compeng_flat_translator(self, columns: ColumnRegistry) -> FlatQueryTranslator:
+        assert self._compeng_dialect is not None
         return FlatQueryTranslator(
             columns=columns,
             inspect_env=self._inspect_env,

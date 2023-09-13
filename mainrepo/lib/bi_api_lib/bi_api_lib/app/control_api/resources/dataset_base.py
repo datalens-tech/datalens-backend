@@ -15,10 +15,9 @@ from bi_core.us_dataset import Dataset, DataSourceRole
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core.us_manager.local_cache import USEntryBuffer
+from bi_core.backend_types import get_backend_type
 
 from bi_formula.core.dialect import DialectCombo, StandardDialect, from_name_and_version
-
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
 from bi_api_lib.utils.rls import FieldRLSSerializer
 from bi_api_lib.dataset.utils import get_dataset_conn_types, allow_rls_for_dataset
@@ -26,6 +25,7 @@ from bi_api_lib.dataset.dialect import resolve_dialect_name
 from bi_api_lib.enums import BI_TYPE_AGGREGATIONS, CASTS_BY_TYPE
 from bi_api_lib.api_common.dataset_loader import DatasetApiLoader, DatasetUpdateInfo
 from bi_api_lib.app.control_api.resources.base import BIResource
+from bi_api_lib.query.registry import is_compeng_executable, get_compeng_dialect
 
 LOGGER = logging.getLogger(__name__)
 
@@ -186,12 +186,9 @@ class DatasetResource(BIResource):
         assert dialect is not None
         funcs_dialect = dialect
         conn_types = set(get_dataset_conn_types(dataset=dataset, us_entry_buffer=us_entry_buffer))
-        processed_in_compeng = {
-            ConnectionType.gsheets,
-            ConnectionType.bitrix24,
-        }
-        if len(conn_types) == 1 and list(conn_types)[0] in processed_in_compeng:
-            funcs_dialect = PostgreSQLDialect.COMPENG
+        is_compeng_executable_set = {is_compeng_executable(get_backend_type(conn_type)) for conn_type in conn_types}
+        if len(is_compeng_executable_set) == 1 and next(iter(is_compeng_executable_set)):
+            funcs_dialect = get_compeng_dialect()
 
         opt_data['data_types'] = dict(
             items=[

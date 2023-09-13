@@ -7,7 +7,7 @@ from bi_core.connectors.base.connector import (
 )
 from bi_i18n.localizer_base import TranslationConfig
 
-from bi_formula.core.dialect import DialectName
+from bi_formula.core.dialect import DialectName, DialectCombo
 
 from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler, MainFilterFormulaCompiler
 from bi_query_processing.legacy_pipeline.planning.planner import ExecutionPlanner, WindowToCompengExecutionPlanner
@@ -43,5 +43,7 @@ class BiApiConnector(abc.ABC):
     )
     legacy_initial_planner_cls: ClassVar[Type[ExecutionPlanner]] = WindowToCompengExecutionPlanner  # TODO: Remove with old LODs
     is_forkable: ClassVar[bool] = True
+    is_compeng_executable: ClassVar[bool] = False
     filter_formula_compiler_cls: ClassVar[Type[FilterFormulaCompiler]] = MainFilterFormulaCompiler
     translation_configs: ClassVar[frozenset[TranslationConfig]] = frozenset()
+    compeng_dialect: Optional[DialectCombo] = None

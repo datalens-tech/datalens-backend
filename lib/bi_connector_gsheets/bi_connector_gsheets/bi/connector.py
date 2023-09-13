@@ -47,5 +47,6 @@ class GSheetsBiApiConnector(BiApiConnector):
     default_multi_query_mutator_factory_cls = SimpleFieldSplitterMultiQueryMutatorFactory
     legacy_initial_planner_cls = GSheetsCompengExecutionPlanner
     is_forkable = False
+    is_compeng_executable = True
     filter_formula_compiler_cls = GSheetsFilterFormulaCompiler
     translation_configs = frozenset(CONFIGS)
