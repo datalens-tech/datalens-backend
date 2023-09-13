@@ -14,7 +14,6 @@ python = ">=3.10, <3.12"
 Flask = ">=2.0.3"
 blinker = ">=1.5"
 raven = ">=6.10.0"
-yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
 yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
 yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
 yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}

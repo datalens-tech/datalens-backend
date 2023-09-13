@@ -2126,7 +2126,6 @@ yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
 yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
@@ -2154,7 +2153,6 @@ yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
 yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
 yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
 yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-dls-client = {path = "../../../lib/bi_dls_client"}
 yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
 yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
