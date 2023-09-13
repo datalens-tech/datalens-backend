@@ -4,10 +4,9 @@ import re
 from contextlib import contextmanager
 from http import HTTPStatus
 
-from bi_constants.enums import CreateDSFrom
-
 from bi_core.united_storage_client import UStorageClientBase
 
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_TABLE
 
@@ -67,8 +66,8 @@ def test_ch_to_nonexistent_table(api_v1, clickhouse_db, mysql_db, static_connect
     ])
     assert ds_resp.status_code == HTTPStatus.OK
     ds = ds_resp.dataset
-    assert ds.sources[0].source_type == CreateDSFrom.CH_TABLE
-    assert ds.sources[1].source_type == CreateDSFrom.CH_TABLE
+    assert ds.sources[0].source_type == SOURCE_TYPE_CH_TABLE
+    assert ds.sources[1].source_type == SOURCE_TYPE_CH_TABLE
     assert len(ds.result_schema) == result_schema_len  # make sure the fields weren't deleted
 
     api_v1.save_dataset(dataset=ds)

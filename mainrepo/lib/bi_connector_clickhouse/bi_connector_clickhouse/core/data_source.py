@@ -1,17 +1,37 @@
 from __future__ import annotations
 
-import logging
+from bi_constants.enums import CreateDSFrom
 
 from bi_core.connectors.clickhouse_base.data_source import (
     CommonClickHouseSubselectDataSource, ActualClickHouseBaseMixin, ClickHouseDataSourceBase,
 )
 
-LOGGER = logging.getLogger(__name__)
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+    SOURCE_TYPE_CH_SUBSELECT,
+)
 
 
 class ClickHouseDataSource(ClickHouseDataSourceBase):
-    pass
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
+
+    @classmethod
+    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+        return source_type in {
+            SOURCE_TYPE_CH_TABLE,
+            SOURCE_TYPE_CH_SUBSELECT,
+        }
 
 
 class ClickHouseSubselectDataSource(ActualClickHouseBaseMixin, CommonClickHouseSubselectDataSource):  # type: ignore  # TODO: fix
     """ Clickhouse subselect """
+
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
+
+    @classmethod
+    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+        return source_type in {
+            SOURCE_TYPE_CH_TABLE,
+            SOURCE_TYPE_CH_SUBSELECT,
+        }

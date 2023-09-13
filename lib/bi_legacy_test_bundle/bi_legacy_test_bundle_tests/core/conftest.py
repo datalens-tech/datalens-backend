@@ -49,10 +49,10 @@ from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
-from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
 import bi_legacy_test_bundle_tests.core.config as tests_config_mod
 
@@ -298,9 +298,9 @@ def rqe_config_subprocess(sync_rqe_netloc_subprocess, async_rqe_netloc_subproces
 
 @pytest.fixture(scope='session')
 def clickhouse_db(db_dispenser) -> Db:
-    url, cluster = tests_config_mod.DB_CONFIGURATIONS[ConnectionType.clickhouse.name]
+    url, cluster = tests_config_mod.DB_CONFIGURATIONS[CONNECTION_TYPE_CLICKHOUSE.name]
     return db_dispenser.get_database(
-        db_config=make_db_config(url=url, conn_type=ConnectionType.clickhouse, cluster=cluster),
+        db_config=make_db_config(url=url, conn_type=CONNECTION_TYPE_CLICKHOUSE, cluster=cluster),
     )
 
 

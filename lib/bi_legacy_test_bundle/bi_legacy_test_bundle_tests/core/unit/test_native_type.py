@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import ConnectionType
-
 from bi_core.db.native_type import (
     GenericNativeType, CommonNativeType, LengthedNativeType,
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
@@ -11,6 +9,7 @@ from bi_core.db.native_type import (
 )
 from bi_core.db.native_type_schema import OneOfNativeTypeSchema
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
@@ -30,26 +29,26 @@ SAMPLE_NATIVE_TYPES = (
         nullable=False,
         length=121),
     ClickHouseNativeType(
-        conn_type=ConnectionType.clickhouse,
+        conn_type=CONNECTION_TYPE_CLICKHOUSE,
         name='uint64',
         nullable=True,
         lowcardinality=True),
     ClickHouseDateTimeWithTZNativeType(
-        conn_type=ConnectionType.clickhouse,
+        conn_type=CONNECTION_TYPE_CLICKHOUSE,
         name='datetimewithtz',
         nullable=False,
         lowcardinality=True,
         timezone_name='Europe/Moscow',
     ),
     ClickHouseDateTime64NativeType(
-        conn_type=ConnectionType.clickhouse,
+        conn_type=CONNECTION_TYPE_CLICKHOUSE,
         name='datetime64',
         nullable=False,
         lowcardinality=True,
         precision=3,
     ),
     ClickHouseDateTime64WithTZNativeType(
-        conn_type=ConnectionType.clickhouse,
+        conn_type=CONNECTION_TYPE_CLICKHOUSE,
         name='datetime64withtz',
         nullable=False,
         lowcardinality=True,

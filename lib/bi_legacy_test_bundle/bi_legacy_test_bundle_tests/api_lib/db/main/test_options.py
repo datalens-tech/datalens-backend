@@ -2,12 +2,16 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_constants.enums import AggregationFunction, BIType, ConnectionType, CreateDSFrom
+from bi_constants.enums import AggregationFunction, BIType, ConnectionType
 
 from bi_api_client.dsmaker.primitives import Dataset
 
 from bi_api_lib.enums import WhereClauseOperation, BI_TYPE_AGGREGATIONS
 
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+)
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
@@ -35,7 +39,7 @@ def test_basic(api_v1, ch_data_source_settings, ch_other_data_source_settings):
     assert len(options['join']['types']) == 4
     assert options['join']['operators'] == ['eq']
     assert (
-        {'source_type': CreateDSFrom.CH_TABLE.name}
+        {'source_type': SOURCE_TYPE_CH_TABLE.name}
         in options['sources']['compatible_types']
     )
     assert len(options['sources']['items']) == 2
@@ -125,5 +129,5 @@ def test_direct_connection_replacement_types(
     assert {
         CONNECTION_TYPE_POSTGRES.name,
         CONNECTION_TYPE_MSSQL.name,
-        ConnectionType.clickhouse.name,
+        CONNECTION_TYPE_CLICKHOUSE.name,
     }.issubset(repl_conn_types)

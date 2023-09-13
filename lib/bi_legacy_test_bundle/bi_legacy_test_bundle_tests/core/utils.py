@@ -10,7 +10,7 @@ from sqlalchemy.sql.elements import ColumnClause
 
 from bi_testing.utils import get_log_record
 
-from bi_constants.enums import BinaryJoinOperator, ConnectionType, CreateDSFrom, DataSourceRole, JoinType
+from bi_constants.enums import BinaryJoinOperator, ConnectionType, DataSourceRole, JoinType
 
 from bi_api_commons.reporting.profiler import PROFILING_LOG_NAME, QUERY_PROFILING_ENTRY
 from bi_core.base_models import DefaultConnectionRef
@@ -23,6 +23,10 @@ from bi_core.components.editor import DatasetComponentEditor
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
 from bi_core.services_registry.top_level import ServicesRegistry
 
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+)
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL, SOURCE_TYPE_MYSQL_TABLE
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE, SOURCE_TYPE_ORACLE_TABLE
@@ -35,7 +39,7 @@ if TYPE_CHECKING:
 
 
 SOURCE_TYPE_BY_CONN_TYPE = {
-    ConnectionType.clickhouse: CreateDSFrom.CH_TABLE,
+    CONNECTION_TYPE_CLICKHOUSE: SOURCE_TYPE_CH_TABLE,
     CONNECTION_TYPE_POSTGRES: SOURCE_TYPE_PG_TABLE,
     CONNECTION_TYPE_MYSQL: SOURCE_TYPE_MYSQL_TABLE,
     CONNECTION_TYPE_MSSQL: SOURCE_TYPE_MSSQL_TABLE,
@@ -97,7 +101,7 @@ def add_source(
     parameters = dict(table_name=table_name)
     if isinstance(connection, ClassicConnectionSQL):
         # clickhouse connections have no db_name, so that has to be specified in the dataset
-        if connection.conn_type == ConnectionType.clickhouse:
+        if connection.conn_type == CONNECTION_TYPE_CLICKHOUSE:
             parameters['db_name'] = db.name
         if connection.has_schema:
             parameters['schema_name'] = schema_name

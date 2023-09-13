@@ -1,9 +1,9 @@
 import pytest
 
-from bi_constants.enums import CreateDSFrom
-
 from bi_api_client.dsmaker.primitives import Dataset
 from bi_testing_ya.dlenv import DLEnv
+
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
 
 
 @pytest.mark.asyncio
@@ -20,7 +20,7 @@ def test_simple_dataset(dl_env, dc_rs_ds_api_set, dc_rs_connection_id_clickhouse
 
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=dc_rs_connection_id_clickhouse,
         parameters=dict(
             db_name='test_data',

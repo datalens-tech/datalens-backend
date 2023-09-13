@@ -8,7 +8,7 @@ from typing import List
 import pytest
 import sqlalchemy as sa
 
-from bi_constants.enums import BIType, DataSourceRole, ProcessorType, QueryType, ConnectionType
+from bi_constants.enums import BIType, DataSourceRole, ProcessorType, QueryType
 
 from bi_api_commons.reporting.models import QueryExecutionStartReportingRecord
 from bi_api_commons.reporting.profiler import PROFILING_LOG_NAME, DefaultReportingProfiler
@@ -22,6 +22,8 @@ from bi_core.query.expression import ExpressionCtx
 from bi_core.services_registry import ServicesRegistry
 from bi_core_testing.utils import SROptions
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 
 from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records
 
@@ -115,7 +117,7 @@ class TestCompengCache:
                 query_id=query_id,
                 query_type=QueryType.internal,
                 query='1',  # doesn't matter...
-                connection_type=ConnectionType.clickhouse,
+                connection_type=CONNECTION_TYPE_CLICKHOUSE,
                 dataset_id=dataset.uuid,
                 conn_reporting_data=dto.conn_reporting_data(),
             ))

@@ -9,11 +9,14 @@ from bi_core.data_source import StandardSQLDataSource
 from bi_core.data_source.sql import SubselectDataSource
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
+from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
+    SOURCE_TYPE_CH_FROZEN_SOURCE,
+    SOURCE_TYPE_CH_FROZEN_SUBSELECT,
+)
 from bi_connector_bundle_ch_filtered.base.core.data_source import (
     ClickHouseTemplatedSubselectDataSource,
     ClickHouseFilteredDataSourceBase,
 )
-from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import SOURCE_TYPE_CH_FROZEN_SOURCE
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -50,11 +53,18 @@ class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, Cli
         assert isinstance(self._spec, StandardSQLDataSourceSpec)
         return self._spec
 
+    @classmethod
+    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+        return source_type in {
+            SOURCE_TYPE_CH_FROZEN_SUBSELECT,
+            SOURCE_TYPE_CH_FROZEN_SOURCE,
+        }
+
 
 class ClickHouseFrozenSubselectDataSourceBase(SubselectDataSource):
     @classmethod
     def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
         return source_type in {
-            CreateDSFrom.CH_SUBSELECT,
+            SOURCE_TYPE_CH_FROZEN_SUBSELECT,
             SOURCE_TYPE_CH_FROZEN_SOURCE,
         }

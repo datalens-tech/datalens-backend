@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import ConnectionType
-
 from bi_core.us_connection import get_connection_class
 from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
@@ -18,6 +16,7 @@ from bi_core.connection_executors import ExecutionMode
 from bi_core.connections_security.base import InsecureConnectionSecurityManager
 from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
@@ -26,7 +25,7 @@ from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API
 
 
 def test_get_connection_class():
-    assert get_connection_class(ConnectionType.clickhouse) is ConnectionClickhouse
+    assert get_connection_class(CONNECTION_TYPE_CLICKHOUSE) is ConnectionClickhouse
     assert get_connection_class(CONNECTION_TYPE_POSTGRES) is ConnectionPostgreSQL
     assert get_connection_class(CONNECTION_TYPE_MYSQL) is ConnectionMySQL
     assert get_connection_class(CONNECTION_TYPE_ORACLE) is ConnectionSQLOracle

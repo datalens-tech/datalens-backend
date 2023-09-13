@@ -5,11 +5,10 @@ import uuid
 import pytest
 import shortuuid
 import sqlalchemy as sa
-import sqlalchemy.sql.sqltypes
 from sqlalchemy.sql.elements import ClauseElement
 
 from bi_constants.enums import (
-    BIType, BinaryJoinOperator, ConnectionType, CreateDSFrom, DataSourceCreatedVia, DataSourceRole, JoinType,
+    BIType, BinaryJoinOperator, DataSourceCreatedVia, DataSourceRole, JoinType,
     ManagedBy, SelectorType, WhereClauseOperation, IndexKind, OrderDirection,
 )
 from bi_utils.aio import await_sync, to_sync_iterable
@@ -38,6 +37,10 @@ from bi_core.utils import attrs_evolve_to_subclass
 from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
 
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+)
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
@@ -122,7 +125,7 @@ def _prepare_dataset_for_caching(
     dsrc = ds_wrapper.get_data_source_strict(source_id=source_id, role=DataSourceRole.origin)
     conn_executor = service_registry.get_conn_executor_factory().get_sync_conn_executor(conn=dsrc.connection)
     ds_wrapper.add_data_source(
-        source_id=source_id, role=DataSourceRole.sample, created_from=CreateDSFrom.CH_TABLE,
+        source_id=source_id, role=DataSourceRole.sample, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(table_name='some_sample_table'),
         raw_schema=dsrc.get_schema_info(conn_executor_factory=lambda: conn_executor).schema,
         connection_id=dsrc.connection.uuid,
@@ -638,7 +641,7 @@ def test_get_own_materialized_tables(default_sync_usm, clickhouse_table, saved_c
     ds_wrapper = EditableDatasetTestWrapper(dataset=dataset, us_manager=us_manager)
     source_id = dataset.get_single_data_source_id()
     ds_wrapper.add_data_source(
-        source_id=source_id, role=DataSourceRole.sample, created_from=CreateDSFrom.CH_TABLE,
+        source_id=source_id, role=DataSourceRole.sample, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(table_name='qwerty'))
     assert list(dataset.get_own_materialized_tables()) == ['qwerty']
     assert list(dataset.get_own_materialized_tables(source_id=source_id)) == ['qwerty']
@@ -663,7 +666,7 @@ def test_remove_data_source_collection(
     ds_wrapper.remove_data_source_collection(source_id=dataset.get_single_data_source_id())
     new_source_id = str(uuid.uuid4())
     ds_wrapper.add_data_source(
-        source_id=new_source_id, role=DataSourceRole.origin, created_from=CreateDSFrom.CH_TABLE,
+        source_id=new_source_id, role=DataSourceRole.origin, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(db_name=clickhouse_table.db.name, table_name=clickhouse_table.name),
         connection_id=saved_ch_connection.uuid,
     )
@@ -676,7 +679,7 @@ def test_remove_data_source(default_sync_usm, clickhouse_table, saved_ch_dataset
     ds_wrapper = EditableDatasetTestWrapper(dataset=dataset, us_manager=us_manager)
     source_id = dataset.get_single_data_source_id()
     ds_wrapper.add_data_source(
-        source_id=source_id, role=DataSourceRole.sample, created_from=CreateDSFrom.CH_TABLE,
+        source_id=source_id, role=DataSourceRole.sample, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(table_name='qwerty'))
     dsrc_coll = ds_wrapper.get_data_source_coll_strict(source_id=source_id)
     assert dsrc_coll.get_opt(role=DataSourceRole.sample) is not None
@@ -1342,15 +1345,15 @@ def test_find_data_source_configuration(
     )
 
     assert dataset.find_data_source_configuration(
-        connection_id=connection.uuid, created_from=CreateDSFrom.CH_TABLE,
+        connection_id=connection.uuid, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(table_name=db_table_1.name),
     ) == source_1_id
     assert dataset.find_data_source_configuration(
-        connection_id=connection.uuid, created_from=CreateDSFrom.CH_TABLE,
+        connection_id=connection.uuid, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(table_name=db_table_2.name),
     ) == source_2_id
     assert dataset.find_data_source_configuration(
-        connection_id=connection.uuid, created_from=CreateDSFrom.CH_TABLE,
+        connection_id=connection.uuid, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(table_name='fake_table'),
     ) is None
     assert dataset.find_data_source_configuration(
@@ -1368,7 +1371,7 @@ def test_create_result_schema_field(default_sync_usm, saved_ch_dataset, app_requ
         user_type=BIType.integer,
         nullable=True,
         native_type=ClickHouseNativeType.normalize_name_and_create(
-            conn_type=ConnectionType.clickhouse, name='int64'),
+            conn_type=CONNECTION_TYPE_CLICKHOUSE, name='int64'),
         source_id=dataset.get_single_data_source_id(),
     )
     field_data = dataset.create_result_schema_field(column=column)
@@ -1610,7 +1613,7 @@ def test_join_type(
             CONNECTION_TYPE_MYSQL: sa.func.IFNULL,
             CONNECTION_TYPE_POSTGRES: sa.func.COALESCE,
             CONNECTION_TYPE_MSSQL: sa.func.ISNULL,
-            ConnectionType.clickhouse: sa.func.ifNull,
+            CONNECTION_TYPE_CLICKHOUSE: sa.func.ifNull,
             CONNECTION_TYPE_ORACLE: sa.func.NVL,
         }[db.conn_type]
         if db.conn_type == CONNECTION_TYPE_MSSQL:
@@ -1666,7 +1669,7 @@ def test_join_type(
     assert i_1_values == table_1_col0
     assert i_2_values == [not_found] * 5 + expected_intersection
 
-    if db.conn_type in (ConnectionType.clickhouse, CONNECTION_TYPE_POSTGRES, CONNECTION_TYPE_MYSQL):
+    if db.conn_type in (CONNECTION_TYPE_CLICKHOUSE, CONNECTION_TYPE_POSTGRES, CONNECTION_TYPE_MYSQL):
         i_1_values, i_2_values = select_for_join_type(join_type=JoinType.right)
         assert i_1_values == expected_intersection + [not_found] * 5
         assert i_2_values == table_2_col0
@@ -1674,7 +1677,7 @@ def test_join_type(
         with pytest.raises(exc.DatasetConfigurationError):
             select_for_join_type(join_type=JoinType.right)
 
-    if db.conn_type in (ConnectionType.clickhouse, CONNECTION_TYPE_POSTGRES):
+    if db.conn_type in (CONNECTION_TYPE_CLICKHOUSE, CONNECTION_TYPE_POSTGRES):
         i_1_values, i_2_values = select_for_join_type(join_type=JoinType.full)
         assert i_1_values == table_1_col0 + [not_found] * 5
         assert i_2_values == [not_found] * 5 + table_2_col0
@@ -1718,14 +1721,14 @@ def test_resolve_role(
 
     # not materialized, sample for first source
     ds_wrapper.add_data_source(
-        source_id=info.source_ids[0], role=DataSourceRole.sample, created_from=CreateDSFrom.CH_TABLE,
+        source_id=info.source_ids[0], role=DataSourceRole.sample, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(db_name=table_1.db.name, table_name=table_1.name))
     assert ds_wrapper.resolve_source_role() == DataSourceRole.origin
     assert ds_wrapper.resolve_source_role(for_preview=True) == DataSourceRole.origin
 
     # not materialized, samples for both sources
     ds_wrapper.add_data_source(
-        source_id=info.source_ids[1], role=DataSourceRole.sample, created_from=CreateDSFrom.CH_TABLE,
+        source_id=info.source_ids[1], role=DataSourceRole.sample, created_from=SOURCE_TYPE_CH_TABLE,
         parameters=dict(db_name=table_2.db.name, table_name=table_2.name))
 
     assert ds_wrapper.resolve_source_role() == DataSourceRole.origin
@@ -1821,7 +1824,7 @@ def test_manage_obligatory_filters(default_sync_usm, saved_ch_dataset, app_reque
         user_type=BIType.integer,
         nullable=True,
         native_type=ClickHouseNativeType.normalize_name_and_create(
-            conn_type=ConnectionType.clickhouse, name='int64'),
+            conn_type=CONNECTION_TYPE_CLICKHOUSE, name='int64'),
         source_id=dataset.get_single_data_source_id(),
     )
     field_data = dataset.create_result_schema_field(column=column)
@@ -1936,7 +1939,7 @@ def test_data_source_with_idx(saved_dataset_no_dsrc, saved_connection, default_s
     source_id = shortuuid.uuid()
 
     parameters = dict(table_name='fake_table_name')
-    if conn.conn_type == ConnectionType.clickhouse:
+    if conn.conn_type == CONNECTION_TYPE_CLICKHOUSE:
         parameters['db_name'] = 'fake_db_name'
     if conn.has_schema:
         parameters['schema_name'] = 'fake_schema_name'

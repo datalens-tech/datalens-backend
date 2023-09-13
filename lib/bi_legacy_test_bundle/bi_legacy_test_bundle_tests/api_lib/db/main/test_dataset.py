@@ -16,7 +16,6 @@ from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTI
 from bi_constants.enums import (
     AggregationFunction,
     BIType,
-    CreateDSFrom,
     CalcMode,
 )
 
@@ -25,12 +24,13 @@ from bi_api_client.dsmaker.primitives import Dataset
 from bi_api_client.dsmaker.api.data_api import HttpDataApiResponse
 from bi_testing.utils import get_log_record, guids_from_titles
 
-from bi_core.exc import USObjectNotFoundException
-
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
-
+from bi_connector_clickhouse.core.constants import (
+    SOURCE_TYPE_CH_TABLE,
+    SOURCE_TYPE_CH_SUBSELECT,
+)
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_SUBSELECT
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
 from bi_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
@@ -50,7 +50,7 @@ def _get_index_for_type(dataset: Dataset, type: BIType) -> int:
 def test_get_preview_immediately(client, api_v1, data_api_v1, connection_id):
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',
@@ -93,7 +93,7 @@ def test_create_entity_with_existing_name(client, api_v1, connection_id):
 
     first_ds = Dataset(name=name)
     first_ds.sources['source_1'] = first_ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',
@@ -108,7 +108,7 @@ def test_create_entity_with_existing_name(client, api_v1, connection_id):
 
     second_ds = Dataset(name=name)
     second_ds.sources['source_1'] = second_ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',
@@ -439,7 +439,7 @@ def test_aggregation_on_formula(api_v1, data_api_v1, static_dataset_id):
 def test_create_dataset_with_null_date(client, api_v1, connection_id):
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',
@@ -459,7 +459,7 @@ def test_create_dataset_with_null_date(client, api_v1, connection_id):
 def test_create_dataset_with_uuid(client, api_v1, connection_id):
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',
@@ -481,7 +481,7 @@ def test_ch_subselect(request, client, api_v1, data_api_v1,  ch_subselectable_co
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         connection_id=conn_id,
-        source_type=CreateDSFrom.CH_SUBSELECT,
+        source_type=SOURCE_TYPE_CH_SUBSELECT,
         parameters=dict(
             subsql=r"""
                 select
@@ -541,7 +541,7 @@ def test_ch_disabled_subselect(request, client, api_v1, data_api_v1, static_conn
     # so an attempt to retrieve the schema will also fail.
     ds.sources['source_1'] = ds.source(
         connection_id=conn_id,
-        source_type=CreateDSFrom.CH_SUBSELECT,
+        source_type=SOURCE_TYPE_CH_SUBSELECT,
         parameters=dict(
             subsql="select arrayJoin(range(7)) as a, '2' as b",
         ))
@@ -739,7 +739,7 @@ def test_dataset_created_via(api_v1, connection_id, default_sync_usm_per_test):
     def _prepare_ch_ds():
         _ds = Dataset()
         _ds.sources['source_1'] = _ds.source(
-            source_type=CreateDSFrom.CH_TABLE,
+            source_type=SOURCE_TYPE_CH_TABLE,
             connection_id=connection_id,
             parameters=dict(
                 db_name='test_data',
@@ -866,7 +866,7 @@ def test_replace_connection_clickhouse_to_frozen_preconfigured_subselect_source(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         connection_id=old_connection_id,
-        source_type=CreateDSFrom.CH_SUBSELECT,
+        source_type=SOURCE_TYPE_CH_SUBSELECT,
         parameters=dict(
             subsql='select * from samples.SampleLite limit 10',
             title=frozen_settings.SUBSELECT_TEMPLATES[0]['title'],
@@ -943,7 +943,7 @@ def test_replace_connection_clickhouse_to_frozen_subselect_source(
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
         connection_id=old_connection_id,
-        source_type=CreateDSFrom.CH_SUBSELECT,
+        source_type=SOURCE_TYPE_CH_SUBSELECT,
         parameters=dict(
             subsql='select * from samples.SampleLite limit 10',
             title=frozen_settings.SUBSELECT_TEMPLATES[0]['title'],
@@ -1008,7 +1008,7 @@ def test_replace_connection_clickhouse_to_frozen_subselect_source(
 def test_create_dataset_ch_arrays(client, api_v1, connection_id):
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',

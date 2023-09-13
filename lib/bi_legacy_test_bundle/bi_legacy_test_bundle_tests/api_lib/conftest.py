@@ -21,14 +21,17 @@ from bi_api_commons.logging_config import add_log_context
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT, CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
-from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+)
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 
-from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, RawSQLLevel
+from bi_constants.enums import ConnectionType, DataSourceCreatedVia, RawSQLLevel
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
@@ -497,7 +500,7 @@ def client(app, loop):
 def _make_dataset(client, connection_id, request, source_type=None, created_via=None, db='test_data', table='sample_superstore'):
     source_id = str(uuid.uuid4())
     if source_type is None:
-        source_type = CreateDSFrom.CH_TABLE.name
+        source_type = SOURCE_TYPE_CH_TABLE.name
     body = {
         'updates': [
             {
@@ -815,7 +818,7 @@ DB_PARAMS = {
 
 # TODO: make into a fixture
 DB_CONFIGURATIONS = {
-    ConnectionType.clickhouse: tests_config_mod.DB_URLS['clickhouse'],
+    CONNECTION_TYPE_CLICKHOUSE: tests_config_mod.DB_URLS['clickhouse'],
     CONNECTION_TYPE_MSSQL: tests_config_mod.DB_URLS['mssql'],
     CONNECTION_TYPE_MYSQL: tests_config_mod.DB_URLS['mysql'],
     CONNECTION_TYPE_ORACLE: tests_config_mod.DB_URLS['oracle'],
@@ -908,18 +911,18 @@ def clickhouse_table_with_arrays(any_db):
 
 @pytest.fixture(scope='session')
 def clickhouse_db(request, initdb_ready, db_dispenser) -> Db:
-    return _db_for(conn_type=ConnectionType.clickhouse, db_dispenser=db_dispenser)
+    return _db_for(conn_type=CONNECTION_TYPE_CLICKHOUSE, db_dispenser=db_dispenser)
 
 
 @pytest.fixture(scope='session')
 def other_clickhouse_db(request, initdb_ready, db_dispenser) -> Db:
     url, cluster = tests_config_mod.DB_URLS['other_clickhouse']
     return db_dispenser.get_database(
-        db_config=make_db_config(url=url, conn_type=ConnectionType.clickhouse, cluster=cluster),
+        db_config=make_db_config(url=url, conn_type=CONNECTION_TYPE_CLICKHOUSE, cluster=cluster),
     )
 
 
-ARRAY_CONN_TYPES = {ConnectionType.clickhouse, CONNECTION_TYPE_POSTGRES}
+ARRAY_CONN_TYPES = {CONNECTION_TYPE_CLICKHOUSE, CONNECTION_TYPE_POSTGRES}
 
 
 @pytest.fixture(

@@ -2,18 +2,23 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import CreateDSFrom, ConnectionType
+from bi_constants.enums import ConnectionType
 
 from bi_api_client.dsmaker.primitives import Dataset
 
 from bi_api_lib_testing.data_api_base import DataApiTestBase
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+)
+
 from bi_legacy_test_bundle_tests.api_lib.config import BI_TEST_CONFIG, DB_PARAMS
 
 
 class DefaultBiApiTestBase(DataApiTestBase):
-    conn_type = ConnectionType.clickhouse
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
 
     @pytest.fixture(scope='class')
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
@@ -36,7 +41,7 @@ class DefaultBiApiTestBase(DataApiTestBase):
     @pytest.fixture(scope='session')
     def dataset_params(self) -> dict:
         return dict(
-            source_type=CreateDSFrom.CH_TABLE.name,
+            source_type=SOURCE_TYPE_CH_TABLE.name,
             parameters=dict(
                 db_name='test_data',
                 table_name='sample_superstore',

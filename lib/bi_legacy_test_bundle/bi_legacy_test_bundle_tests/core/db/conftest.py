@@ -11,11 +11,15 @@ import bi_legacy_test_bundle_tests.core.config as tests_config_mod
 from bi_configs.settings_submodels import S3Settings
 from bi_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
     DataSourceCreatedVia,
     RawSQLLevel,
 )
 from bi_core import exc
+
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_SUBSELECT,
+)
 from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
@@ -168,7 +172,7 @@ async def s3_native_from_ch_table(s3_client, s3_bucket, s3_settings, clickhouse_
 
 @pytest.fixture(scope='session')
 def clickhouse_db(request, bi_config, db_dispenser) -> Db:
-    return _db_for(ConnectionType.clickhouse, bi_config=bi_config, db_dispenser=db_dispenser)
+    return _db_for(CONNECTION_TYPE_CLICKHOUSE, bi_config=bi_config, db_dispenser=db_dispenser)
 
 
 @pytest.fixture(scope='session')
@@ -538,7 +542,7 @@ def saved_ch_subselect_dataset(default_sync_usm: SyncUSManager, saved_ch_subsele
     dataset = make_dataset(
         sync_usm=default_sync_usm,
         connection=conn,
-        created_from=CreateDSFrom.CH_SUBSELECT,
+        created_from=SOURCE_TYPE_CH_SUBSELECT,
         dsrc_params=dict(
             subsql=query,
         ),

@@ -7,7 +7,7 @@ import string
 from typing import Callable, List, Optional, Sequence
 import uuid
 
-from bi_constants.enums import BIType, CreateDSFrom
+from bi_constants.enums import BIType
 
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1, HttpDatasetApiResponse
 from bi_api_client.dsmaker.primitives import Dataset
@@ -17,6 +17,7 @@ from bi_core_testing.dataset import get_created_from
 
 from bi_api_lib.enums import DatasetAction
 
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
 from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
@@ -147,7 +148,7 @@ def data_source_settings_from_table(table: DbTable):
         'source_type': source_type,
         'parameters': {
             'table_name': table.name,
-            'db_name': table.db.name if source_type == CreateDSFrom.CH_TABLE else None,
+            'db_name': table.db.name if source_type == SOURCE_TYPE_CH_TABLE else None,
         },
     }
 

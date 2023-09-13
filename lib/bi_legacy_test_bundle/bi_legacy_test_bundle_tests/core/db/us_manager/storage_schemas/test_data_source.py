@@ -3,7 +3,7 @@ from __future__ import annotations
 import attr
 import pytest
 
-from bi_constants.enums import BIType, ConnectionType as CT, CreateDSFrom
+from bi_constants.enums import BIType, ConnectionType
 
 from bi_core.db import SchemaColumn
 from bi_core.db.native_type import GenericNativeType, CommonNativeType, ClickHouseNativeType
@@ -14,15 +14,19 @@ from bi_core.us_manager.storage_schemas.base import CtxKey
 from bi_core.us_manager.storage_schemas.data_source_spec import GenericDataSourceSpecStorageSchema
 from bi_core import data_source
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, StandardSchemaSQLDataSourceSpec
-from bi_connector_clickhouse.core.data_source import ClickHouseDataSource
 
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+)
+from bi_connector_clickhouse.core.data_source import ClickHouseDataSource
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 from bi_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource
 
 
 def common_col(
         name: str, ut: BIType, nt: str,
-        conn_type: CT, nt_cls=CommonNativeType,
+        conn_type: ConnectionType, nt_cls=CommonNativeType,
         **nt_kwargs) -> SchemaColumn:
     return SchemaColumn(
         name=name,
@@ -37,12 +41,12 @@ def common_col(
 
 def ch_col(
         name: str, ut: BIType, nt: str,
-        conn_type=CT.clickhouse, nt_cls=ClickHouseNativeType,
+        conn_type=CONNECTION_TYPE_CLICKHOUSE, nt_cls=ClickHouseNativeType,
         **nt_kwargs) -> SchemaColumn:
     return common_col(name=name, ut=ut, nt=nt, conn_type=conn_type, nt_cls=nt_cls, **nt_kwargs)
 
 
-def rs_for(ct: CT, *rs: SchemaColumn):
+def rs_for(ct: ConnectionType, *rs: SchemaColumn):
     # noinspection PyProtectedMember
     return [
         sc._replace(
@@ -55,13 +59,13 @@ _DS_FACTORY = {
     'ch_user_1': lambda usm: ClickHouseDataSource(
         us_entry_buffer=usm.get_entry_buffer(),
         spec=StandardSQLDataSourceSpec(
-            source_type=CreateDSFrom.CH_TABLE,
+            source_type=SOURCE_TYPE_CH_TABLE,
             connection_ref=DefaultConnectionRef(conn_id="12xl1k123"),
             db_version='1.1.2',
             db_name='some_db',
             table_name='some_user_table',
             data_dump_id=None,
-            raw_schema=rs_for(CT.clickhouse, ch_col('pk', BIType.integer, 'uint64')),
+            raw_schema=rs_for(CONNECTION_TYPE_CLICKHOUSE, ch_col('pk', BIType.integer, 'uint64')),
         ),
     ),
     'ch_postgres': lambda usm: PostgreSQLDataSource(

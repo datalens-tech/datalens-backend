@@ -210,7 +210,6 @@ class WhereClauseOperation(Enum):
 
 class CreateDSFrom(DynamicEnum):
     CH_TABLE = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
-    CH_SUBSELECT = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
 
     @classmethod
     def normalize(cls, value: CreateDSFrom | str | None) -> Optional[CreateDSFrom]:

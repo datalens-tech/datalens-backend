@@ -6,7 +6,7 @@ from typing import List, Optional
 
 import pytest
 
-from bi_constants.enums import WhereClauseOperation, CreateDSFrom
+from bi_constants.enums import WhereClauseOperation
 
 from bi_api_client.dsmaker.primitives import Dataset, ObligatoryFilter, WhereClause
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
@@ -15,6 +15,7 @@ from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from bi_testing.utils import guids_from_titles
 
 from bi_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
 
 from bi_legacy_test_bundle_tests.api_lib.utils import (
     get_result_schema, get_field_by_title, data_source_settings_from_table,
@@ -877,7 +878,7 @@ def test_greenplum_dataset_result(client, api_v1, data_api_v1, postgres_table, g
 def test_get_dataset_version_result_array_fields(client, api_v1, data_api_v1, connection_id):
     ds = Dataset()
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=connection_id,
         parameters=dict(
             db_name='test_data',

@@ -19,6 +19,7 @@ from bi_api_connector.form_config.models.common import CommonFieldName
 from bi_api_connector.form_config.models.rows.base import FormRow
 from bi_api_connector.form_config.models.shortcuts.mdb import get_db_host_section
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
 
 
@@ -37,7 +38,7 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
         if mdb_enabled:
             cloud_tree_selector_row, mdb_cluster_row, mdb_host_row = get_db_host_section(
                 is_org=self._is_current_tenant_with_org(tenant),
-                db_type=ConnectionType.clickhouse,
+                db_type=CONNECTION_TYPE_CLICKHOUSE,
             )
             host_section = self._filter_nulls([
                 C.MDBFormFillRow(),
@@ -61,7 +62,7 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
 
             mdb_username_row = C.MDBUsernameRow(
                 name=CommonFieldName.username,
-                db_type=ConnectionType.clickhouse,
+                db_type=CONNECTION_TYPE_CLICKHOUSE,
                 display_conditions={
                     C.MDBFormFillRow.Inner.mdb_fill_mode: C.MDBFormFillRow.Value.cloud,
                     mdb_cluster_row.Inner.sql_user_management: False,

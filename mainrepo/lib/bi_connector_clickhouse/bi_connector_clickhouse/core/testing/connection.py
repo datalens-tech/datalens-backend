@@ -5,6 +5,7 @@ from bi_constants.enums import ConnectionType, RawSQLLevel
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 
 
@@ -33,7 +34,7 @@ def make_clickhouse_saved_connection(
             ssl_ca=ssl_ca,
         ),
         ds_key=conn_name,
-        type_=ConnectionType.clickhouse.name,
+        type_=CONNECTION_TYPE_CLICKHOUSE.name,
         us_manager=sync_usm,
         **kwargs,
     )

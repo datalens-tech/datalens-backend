@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING, ClassVar
 import abc
 import logging
 
-from bi_constants.enums import JoinType, CreateDSFrom, ConnectionType
+from bi_constants.enums import JoinType, ConnectionType
+
+from bi_core.data_source.sql import BaseSQLDataSource, StandardSQLDataSource, SubselectDataSource
 
 from bi_core.connectors.clickhouse_base.query_compiler import ClickHouseQueryCompiler
-from bi_core.data_source.sql import BaseSQLDataSource, StandardSQLDataSource, SubselectDataSource
 
 
 if TYPE_CHECKING:
@@ -43,13 +44,6 @@ class ActualClickHouseBaseMixin(ClickHouseBaseMixin):
     """
 
     conn_type = ConnectionType.clickhouse
-
-    @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
-        return source_type in {
-            CreateDSFrom.CH_TABLE,
-            CreateDSFrom.CH_SUBSELECT,
-        }
 
 
 class ClickHouseDataSourceBase(ActualClickHouseBaseMixin, StandardSQLDataSource, metaclass=abc.ABCMeta):  # type: ignore  # TODO: fix

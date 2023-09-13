@@ -109,7 +109,7 @@ def data_source_settings_from_table(table: DbTable) -> dict:
         'source_type': source_type,
         'parameters': {
             'table_name': table.name,
-            'db_name': table.db.name if source_type == CreateDSFrom.CH_TABLE else None,
+            'db_name': table.db.name if source_type == CreateDSFrom.CH_TABLE else None,  # FIXME
         },
     }
 

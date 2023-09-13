@@ -1,5 +1,3 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom
-
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreSourceDefinition
 from bi_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefinitionBase
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
@@ -12,6 +10,11 @@ from bi_core.connectors.clickhouse_base.connector import ClickHouseCoreConnector
 from bi_core.connectors.clickhouse_base.dto import ClickHouseConnDTO
 from bi_core.connectors.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
+from bi_connector_clickhouse.core.constants import (
+    CONNECTION_TYPE_CLICKHOUSE,
+    SOURCE_TYPE_CH_TABLE,
+    SOURCE_TYPE_CH_SUBSELECT,
+)
 from bi_connector_clickhouse.core.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
 from bi_connector_clickhouse.core.settings import ClickHouseSettingDefinition
 from bi_connector_clickhouse.core.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
@@ -20,7 +23,7 @@ from bi_connector_clickhouse.core.data_source_migration import ClickHouseDataSou
 
 
 class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
-    conn_type = ConnectionType.clickhouse
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
     connection_cls = ConnectionClickhouse
     us_storage_schema_cls = ConnectionClickhouseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
@@ -32,14 +35,14 @@ class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
 
 
 class ClickHouseTableCoreSourceDefinition(CoreSourceDefinition):
-    source_type = CreateDSFrom.CH_TABLE
+    source_type = SOURCE_TYPE_CH_TABLE
     source_cls = ClickHouseDataSource
     source_spec_cls = StandardSQLDataSourceSpec
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema
 
 
 class ClickHouseSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
-    source_type = CreateDSFrom.CH_SUBSELECT
+    source_type = SOURCE_TYPE_CH_SUBSELECT
     source_cls = ClickHouseSubselectDataSource
 
 

@@ -4,7 +4,8 @@ from typing import Type, Sequence, Optional, Iterator
 
 import attr
 
-from bi_constants.enums import ConnectionType
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+
 from bi_external_api.converter.charts.chart_converter import BaseChartConverter
 from bi_external_api.converter.converter_ctx import ConverterContext
 from bi_external_api.converter.converter_exc_composer import ConversionErrHandlingContext
@@ -367,7 +368,7 @@ class WorkbookOpsFacade:
             conn_info = ext.EntryInfo(kind=ext.EntryKind.connection, name=conn_ref.name, id=bi_conn.id)
 
             _kind_to_model = {
-                ConnectionType.clickhouse: ext.ClickHouseConnection,
+                CONNECTION_TYPE_CLICKHOUSE: ext.ClickHouseConnection,
             }
 
             _type = _kind_to_model[bi_conn.type]

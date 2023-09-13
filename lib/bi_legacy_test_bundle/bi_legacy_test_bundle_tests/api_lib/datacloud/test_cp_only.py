@@ -4,9 +4,10 @@ import random
 import pytest
 import shortuuid
 
-from bi_constants.enums import CreateDSFrom
 from bi_testing_ya.dlenv import DLEnv
 from bi_api_client.dsmaker.primitives import Dataset
+
+from bi_connector_clickhouse.core.constants import SOURCE_TYPE_CH_TABLE
 
 
 @pytest.mark.parametrize("dl_env", [DLEnv.dc_testing], indirect=True)
@@ -111,7 +112,7 @@ def test_create_dataset(
         name=expected_ds_name,
     )
     ds.sources['source_1'] = ds.source(
-        source_type=CreateDSFrom.CH_TABLE,
+        source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=dc_rs_connection_id_clickhouse,
         parameters=dict(
             db_name='test_data',

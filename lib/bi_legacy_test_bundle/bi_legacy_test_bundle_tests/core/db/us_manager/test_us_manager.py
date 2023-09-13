@@ -5,10 +5,9 @@ from typing import Optional
 import pytest
 from aiohttp import ClientResponseError
 
-from bi_constants.enums import DataSourceRole, ConnectionType
+from bi_constants.enums import DataSourceRole
 
 from bi_core import exc
-from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
 from bi_core.data_source import DataSource
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
@@ -17,9 +16,12 @@ from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
 from bi_core_testing.connection import make_connection
 
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.us_connection import ConnectionClickhouse
+
 
 def make_test_connection(usm: USManagerBase) -> ConnectionClickhouse:
-    conn = make_connection(us_manager=usm, conn_type=ConnectionType.clickhouse)
+    conn = make_connection(us_manager=usm, conn_type=CONNECTION_TYPE_CLICKHOUSE)
     assert isinstance(conn, ConnectionClickhouse)
     return conn
 

@@ -7,7 +7,7 @@ import shortuuid
 import sqlalchemy as sa
 from clickhouse_sqlalchemy import types as ch_types
 
-from bi_constants.enums import BIType, ConnectionType, IndexKind
+from bi_constants.enums import BIType, IndexKind
 
 from bi_core import exc
 from bi_core.connection_executors import ConnExecutorQuery
@@ -19,13 +19,14 @@ from bi_core.db.native_type import (
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64WithTZNativeType,
 )
+from bi_connector_clickhouse.core.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet, ErrorTestSet
 
 
 class CHLikeBaseTestSet(BaseConnExecutorSet):
     inf_val = float('inf')
 
-    def _ch_cd(self, name, sa_type, bi_type, nt_name=None, nullable=True, nt=None, ct=ConnectionType.clickhouse):
+    def _ch_cd(self, name, sa_type, bi_type, nt_name=None, nullable=True, nt=None, ct=CONNECTION_TYPE_CLICKHOUSE):
         """ clickhouse-specific column definition test-case helper """
         if nt is None:
             assert nt_name
@@ -170,7 +171,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                 ch_types.LowCardinality(ch_types.Nullable(ch_types.String())),
                 BIType.string,
                 nt=ClickHouseNativeType(
-                    conn_type=ConnectionType.clickhouse,
+                    conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name='string',
                     nullable=True,
                     lowcardinality=True),
@@ -180,7 +181,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                 ch_types.LowCardinality(ch_types.String()),
                 BIType.string,
                 nt=ClickHouseNativeType(
-                    conn_type=ConnectionType.clickhouse,
+                    conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name='string',
                     nullable=False,
                     lowcardinality=True),
@@ -196,7 +197,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                 ch_types.DateTime(),
                 BIType.genericdatetime,
                 nt=ClickHouseDateTimeWithTZNativeType(
-                    conn_type=ConnectionType.clickhouse,
+                    conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name='datetimewithtz',
                     nullable=False,
                     lowcardinality=False,
@@ -209,7 +210,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                 ch_types.DateTimeWithTZ('Europe/Moscow'),
                 BIType.genericdatetime,
                 nt=ClickHouseDateTimeWithTZNativeType(
-                    conn_type=ConnectionType.clickhouse,
+                    conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name='datetimewithtz',
                     nullable=False,
                     lowcardinality=False,
@@ -222,7 +223,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                 ch_types.DateTime64(6),
                 BIType.genericdatetime,
                 nt=ClickHouseDateTime64WithTZNativeType(
-                    conn_type=ConnectionType.clickhouse,
+                    conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name='datetime64withtz',
                     nullable=False,
                     lowcardinality=False,
@@ -236,7 +237,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                 ch_types.DateTime64WithTZ(6, 'Europe/Moscow'),
                 BIType.genericdatetime,
                 nt=ClickHouseDateTime64WithTZNativeType(
-                    conn_type=ConnectionType.clickhouse,
+                    conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name='datetime64withtz',
                     nullable=False,
                     lowcardinality=False,
@@ -257,6 +258,6 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
             ),
             expected_schema_info=self.column_data_to_schema_info(
                 columns_data,
-                ConnectionType.clickhouse
+                CONNECTION_TYPE_CLICKHOUSE
             ),
         )
