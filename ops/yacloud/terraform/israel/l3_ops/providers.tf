@@ -50,3 +50,19 @@ provider "ytr" {
   juggler_token_type = "Bearer"
   juggler_token      = var.iam_token
 }
+
+data "yandex_client_config" "client" {}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.infra_data.k8s_endpoint
+    cluster_ca_certificate = module.infra_data.k8s_cluster.master[0].cluster_ca_certificate
+    token                  = data.yandex_client_config.client.iam_token
+  }
+}
+
+provider "kubernetes" {
+  host                   = module.infra_data.k8s_endpoint
+  cluster_ca_certificate = module.infra_data.k8s_cluster.master[0].cluster_ca_certificate
+  token                  = data.yandex_client_config.client.iam_token
+}

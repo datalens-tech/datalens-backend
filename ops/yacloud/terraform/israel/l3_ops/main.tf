@@ -114,3 +114,11 @@ module "main" {
   enable_cloud_logs = false
 }
 
+module "cloud_logging" {
+  source = "../../_modules/cloud_logging/v1"
+
+  folder_id          = module.constants.env_data.folder_id
+  k8s_cluster_id     = module.infra_data.k8s_cluster.id
+  cloud_api_endpoint = module.constants.env_data.cloud_api_endpoint
+}
+
