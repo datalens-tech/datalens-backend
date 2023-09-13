@@ -4,8 +4,6 @@ from bi_connector_gsheets.core.connector import (
     GSheetsCoreSourceDefinition, GSheetsCoreConnectionDefinition, GSheetsCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.connector import (
     BiApiSourceDefinition, BiApiConnectionDefinition, BiApiConnector,
 )
@@ -21,6 +19,7 @@ from bi_connector_gsheets.bi.connection_info import GSheetsConnectionInfoProvide
 from bi_connector_gsheets.bi.filter_compiler import GSheetsFilterFormulaCompiler
 from bi_connector_gsheets.bi.planner import GSheetsCompengExecutionPlanner
 from bi_connector_gsheets.bi.i18n.localizer import CONFIGS
+from bi_connector_gsheets.formula.constants import DIALECT_NAME_GSHEETS
 
 
 class GSheetsBiApiSourceDefinition(BiApiSourceDefinition):
@@ -38,7 +37,7 @@ class GSheetsBiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class GSheetsBiApiConnector(BiApiConnector):
     core_connector_cls = GSheetsCoreConnector
-    formula_dialect_name = DialectName.GSHEETS
+    formula_dialect_name = DIALECT_NAME_GSHEETS
     connection_definitions = (
         GSheetsBiApiConnectionDefinition,
     )

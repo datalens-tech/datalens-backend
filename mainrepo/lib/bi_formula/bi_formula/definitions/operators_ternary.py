@@ -38,7 +38,7 @@ class TernaryBetween(TernaryBetweenBase):
     name = 'between'
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda a, b, c: a.between(b, c)
         ),
     ]

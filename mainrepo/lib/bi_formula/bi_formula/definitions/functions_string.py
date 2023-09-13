@@ -81,7 +81,7 @@ _CONCAT_TYPES = {
 class ConcatMultiStrConst(ConcatMulti):
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda *args, _env: literal(''.join(arg.value for arg in args), d=_env.dialect)
         ),
     ]

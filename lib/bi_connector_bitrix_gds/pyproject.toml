@@ -22,6 +22,7 @@ yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
 yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
 yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
@@ -32,6 +33,9 @@ bitrix_gds = "bi_connector_bitrix_gds.bi.connector:BitrixGDSBiApiConnector"
 
 [tool.poetry.plugins."bi_core.connectors"]
 bitrix_gds = "bi_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+bitrix_gds = "bi_connector_bitrix_gds.formula.connector:BitrixGDSFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

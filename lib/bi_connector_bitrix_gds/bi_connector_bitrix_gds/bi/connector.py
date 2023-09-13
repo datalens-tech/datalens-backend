@@ -4,8 +4,6 @@ from bi_connector_bitrix_gds.core.connector import (
     BitrixGDSCoreSourceDefinition, BitrixGDSCoreConnectionDefinition, BitrixGDSCoreConnector,
 )
 
-from bi_formula.core.dialect import DialectName
-
 from bi_api_connector.connector import (
     BiApiSourceDefinition, BiApiConnectionDefinition, BiApiConnector,
 )
@@ -20,6 +18,7 @@ from bi_connector_bitrix_gds.bi.filter_compiler import BitrixGDSFilterFormulaCom
 from bi_connector_bitrix_gds.bi.i18n.localizer import CONFIGS
 from bi_connector_bitrix_gds.bi.multi_query import BitrixGDSMultiQueryMutatorFactory
 from bi_connector_bitrix_gds.bi.planner import BitrixGDSCompengExecutionPlanner
+from bi_connector_bitrix_gds.formula.constants import DIALECT_NAME_BITRIX
 
 
 class BitrixGDSBiApiSourceDefinition(BiApiSourceDefinition):
@@ -37,7 +36,7 @@ class BitrixGDSBiApiConnectionDefinition(BiApiConnectionDefinition):
 
 class BitrixGDSBiApiConnector(BiApiConnector):
     core_connector_cls = BitrixGDSCoreConnector
-    formula_dialect_name = DialectName.BITRIX
+    formula_dialect_name = DIALECT_NAME_BITRIX
     default_multi_query_mutator_factory_cls = BitrixGDSMultiQueryMutatorFactory
     connection_definitions = (
         BitrixGDSBiApiConnectionDefinition,

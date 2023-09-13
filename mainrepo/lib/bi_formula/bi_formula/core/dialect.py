@@ -24,8 +24,6 @@ class DialectName(DynamicEnum):
     DUMMY = AutoEnumValue()
     ANY = AutoEnumValue()
     SQLITE = AutoEnumValue()  # TODO: Remove
-    GSHEETS = AutoEnumValue()  # FIXME
-    BITRIX = AutoEnumValue()  # FIXME
 
 
 class DialectBit(NamedTuple):
@@ -188,16 +186,12 @@ class StandardDialect(DialectNamespace):
 
     # Others
     SQLITE = simple_combo(name=DialectName.SQLITE)
-    GSHEETS = simple_combo(name=DialectName.GSHEETS)
-    BITRIX = simple_combo(name=DialectName.BITRIX)
 
 
 dialect_defaults: dict[DialectName, DialectCombo] = {
     DialectName.UNKNOWN: StandardDialect.EMPTY,
     DialectName.DUMMY: StandardDialect.DUMMY,
     DialectName.SQLITE: StandardDialect.SQLITE,
-    DialectName.GSHEETS: StandardDialect.GSHEETS,
-    DialectName.BITRIX: StandardDialect.BITRIX,
 }
 
 

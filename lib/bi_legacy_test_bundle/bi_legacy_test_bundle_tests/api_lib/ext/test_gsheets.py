@@ -4,7 +4,6 @@ import json
 from contextlib import contextmanager
 from typing import Generator
 
-import attr
 import pytest
 
 from bi_api_client.dsmaker.primitives import Dataset
@@ -90,7 +89,7 @@ def test_gsheets_cache_ttl_sec_override(client, api_v1, default_sync_usm, gsheet
     assert resp_data['cache_ttl_sec'] == cache_ttl_override, resp_data
 
 
-def test_gsheets_conn_test(client, api_v1, default_sync_usm, gsheets_conn_params):
+def test_gsheets_conn_test(client, api_v1, default_sync_usm, gsheets_conn_params, tvm_info):
     conn_params = gsheets_conn_params
     resp = client.post(
         '/api/v1/connections/test_connection_params',

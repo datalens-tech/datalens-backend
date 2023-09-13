@@ -44,7 +44,7 @@ class FuncDateadd1Base(FuncDateaddBase):
 class FuncDateadd1(FuncDateadd1Base):
     variants = [
         VW(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda date: n.func.DATEADD(date, 'day', 1)
         ),
     ]
@@ -60,7 +60,7 @@ class FuncDateadd2Base(FuncDateaddBase):
 class FuncDateadd2Unit(FuncDateadd2Base):
     variants = [
         VW(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda date, unit: n.func.DATEADD(date, unit, 1)
         ),
     ]
@@ -72,7 +72,7 @@ class FuncDateadd2Unit(FuncDateadd2Base):
 class FuncDateadd2Number(FuncDateadd2Base):
     variants = [
         VW(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda date, number: n.func.DATEADD(date, "day", number)
         ),
     ]

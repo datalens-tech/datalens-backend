@@ -104,6 +104,7 @@ CONNECTOR_WHITELIST = [
     'ch_frozen_horeca',
 
     'file',
+    'gsheets',
     'gsheets_v2',
     'yq',
     'metrica_api',

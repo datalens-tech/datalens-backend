@@ -56,7 +56,7 @@ class FuncDate1FromNull(FuncDate1):
 
 class FuncDate1FromDatetime(FuncDate1):
     variants = [
-        VW(D.DUMMY | D.BITRIX, lambda expr: sa.cast(expr.expression, sa.Date())),
+        VW(D.DUMMY, lambda expr: sa.cast(expr.expression, sa.Date())),
     ]
     argument_types = [
         ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),
@@ -73,7 +73,7 @@ class FuncDate1FromDatetimeTZ(FuncDate1):
 class FuncDate1FromString(FuncDate1):
     variants = [
         # TODO: sqlite3: sa.func.date
-        V(D.DUMMY | D.BITRIX, lambda expr: sa.cast(expr, sa.Date())),
+        V(D.DUMMY, lambda expr: sa.cast(expr, sa.Date())),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -119,7 +119,7 @@ class FuncTypeGenericDatetime1FromNullImpl(FuncTypeGenericDatetime1Impl):
 class FuncTypeGenericDatetime1FromDatetimeImpl(FuncTypeGenericDatetime1Impl):
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda expr: expr
         )]
     argument_types = [
@@ -145,7 +145,7 @@ class FuncTypeGenericDatetime1FromNumberImpl(FuncTypeGenericDatetime1Impl):
 
 class FuncTypeGenericDatetime1FromStringImpl(FuncTypeGenericDatetime1Impl):
     variants = [
-        V(D.DUMMY | D.BITRIX, lambda expr: sa.cast(expr, sa.DateTime())),
+        V(D.DUMMY, lambda expr: sa.cast(expr, sa.DateTime())),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -216,7 +216,7 @@ class FuncDatetimeTZ(TypeConvFunction):
 
 
 class FuncDatetimeTZConst(SingleVariantTranslationBase, FuncDatetimeTZ):
-    dialects = D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX
+    dialects = D.DUMMY | D.SQLITE
     argument_types = [
         ArgTypeSequence([
             {DataType.CONST_DATETIME,

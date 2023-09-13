@@ -418,7 +418,7 @@ class BinaryEqNEqInternal(BinaryEqNEq):
 class BinaryEqImpl(MultiVariantTranslation):
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: left == right,
         ),
     ]
@@ -438,7 +438,7 @@ class BinaryEqualDenullified(BinaryEqNEqInternal):
     scopes = BinaryEqNEqInternal.scopes
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: sa.or_(left == right, sa.and_(left.is_(None), right.is_(None)))
         ),
     ]
@@ -450,7 +450,7 @@ class BinaryEqualDenullified(BinaryEqNEqInternal):
 class BinaryNEqImpl(MultiVariantTranslation):
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: left != right
         ),
     ]
@@ -485,7 +485,7 @@ class BinaryLessThan(BinaryOrderedComparison):
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: left < right
         )
     ]
@@ -496,7 +496,7 @@ class BinaryLessThanOrEqual(BinaryOrderedComparison):
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: left <= right
         ),
     ]
@@ -507,7 +507,7 @@ class BinaryGreaterThan(BinaryOrderedComparison):
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: left > right
         ),
     ]
@@ -519,7 +519,7 @@ class BinaryGreaterThanOrEqual(BinaryOrderedComparison):
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda left, right: left >= right
         ),
     ]

@@ -23,6 +23,7 @@ yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
 yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
 
 [tool.poetry.plugins]
@@ -31,6 +32,9 @@ gsheets = "bi_connector_gsheets.bi.connector:GSheetsBiApiConnector"
 
 [tool.poetry.plugins."bi_core.connectors"]
 gsheets = "bi_connector_gsheets.core.connector:GSheetsCoreConnector"
+
+[tool.poetry.plugins."bi_formula.connectors"]
+gsheets = "bi_connector_gsheets.formula.connector:GSheetsFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

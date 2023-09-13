@@ -81,7 +81,7 @@ class FuncInternalStrBase(Function):
     # Markup is already a string value, so nothing to do.
     variants = [
         V(
-            D.DUMMY | D.SQLITE | D.GSHEETS | D.BITRIX,
+            D.DUMMY | D.SQLITE,
             lambda value: value
         ),
     ]
