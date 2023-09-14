@@ -104,7 +104,7 @@ tasks:
         echo $VENV_PATH
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
-        black -v --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+        black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
