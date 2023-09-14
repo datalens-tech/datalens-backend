@@ -10,7 +10,10 @@ from bi_core.connectors.base.error_transformer import (
     ChainedDbErrorTransformer,
 )
 from bi_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
-from bi_connector_postgresql.core.postgresql_base.exc import PostgresSourceDoesNotExistError
+from bi_connector_postgresql.core.postgresql_base.exc import (
+    PgDoublePrecisionRoundError,
+    PostgresSourceDoesNotExistError,
+)
 
 sync_pg_db_error_transformer: DbErrorTransformer = ChainedDbErrorTransformer([
     Rule(
@@ -32,7 +35,7 @@ def make_async_pg_error_transformer() -> DbErrorTransformer:
         ((asyncpg_exc.DivisionByZeroError, None), exc.DivisionByZero),
         (
             (asyncpg_exc.UndefinedFunctionError, r'function round\(double precision'),
-            exc.PgDoublePrecisionRoundError,
+            PgDoublePrecisionRoundError,
         ),
         ((asyncpg_exc.UndefinedFunctionError, None), exc.UnknownFunction),
         ((OverflowError, 'value out of .* range'), exc.NumberOutOfRange),

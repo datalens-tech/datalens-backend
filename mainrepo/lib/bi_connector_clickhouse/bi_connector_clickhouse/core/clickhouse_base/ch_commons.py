@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional, Pattern, Type
+from typing import TYPE_CHECKING, ClassVar, Optional, Pattern, Type
 
 import attr
 from sqlalchemy.engine.default import DefaultDialect
@@ -10,7 +10,15 @@ from sqlalchemy.sql import schema as sa_schema, ddl as sa_ddl
 
 from bi_core import exc
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_connector_clickhouse.core.clickhouse_base.exc import ClickHouseSourceDoesNotExistError
+from bi_connector_clickhouse.core.clickhouse_base.exc import (
+    CannotInsertNullInOrdinaryColumn,
+    CHIncorrectData,
+    CHReadonlyUser,
+    ClickHouseSourceDoesNotExistError,
+    EstimatedExecutionTooLong,
+    InvalidSplitSeparator,
+    TooManyColumns,
+)
 from bi_core.db import SchemaColumn, make_sa_type
 
 if TYPE_CHECKING:
@@ -82,9 +90,9 @@ class ClickHouseBaseUtils:
 
     # ClickHouse error codes list: https://github.com/ClickHouse/ClickHouse/blob/master/src/Common/ErrorCodes.cpp
     # TODO: verify codes meaning and pick some other useful codes from CH list.
-    map_err_code_exc_cls: ClassVar[Dict[int, Type[exc.DatabaseQueryError]]] = {
+    map_err_code_exc_cls: ClassVar[dict[int, Type[exc.DatabaseQueryError]]] = {
         10: exc.ColumnDoesNotExist,
-        36: exc.InvalidSplitSeparator,
+        36: InvalidSplitSeparator,
         41: exc.CannotParseDateTime,
         43: exc.InvalidArgumentType,
         46: exc.UnknownFunction,
@@ -95,15 +103,15 @@ class ClickHouseBaseUtils:
         70: exc.UnexpectedInfOrNan,
         72: exc.CannotParseNumber,
         81: exc.DatabaseDoesNotExist,
-        117: exc.CHIncorrectData,
+        117: CHIncorrectData,
         153: exc.DivisionByZero,
         159: exc.SourceTimeout,
-        160: exc.EstimatedExecutionTooLong,
-        161: exc.TooManyColumns,
-        164: exc.CHReadonlyUser,
+        160: EstimatedExecutionTooLong,
+        161: TooManyColumns,
+        164: CHReadonlyUser,
         241: exc.DbMemoryLimitExceeded,
         277: exc.DBIndexNotUsed,
-        349: exc.CannotInsertNullInOrdinaryColumn,
+        349: CannotInsertNullInOrdinaryColumn,
         516: exc.DbAuthenticationFailed,
         1000: exc.NoSpaceLeft,
     }
@@ -132,7 +140,7 @@ class ClickHouseBaseUtils:
         )
 
     @classmethod
-    def parse_clique_message(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], Dict[str, str]]]:
+    def parse_clique_message(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
         for err_re, chyt_exc_cls in cls.expr_exc.items():
             match = re.search(err_re, err_msg)
             if match:
@@ -143,7 +151,7 @@ class ClickHouseBaseUtils:
     @classmethod
     def get_exc_class_by_parsed_message(
         cls, msg: ParsedErrorMsg
-    ) -> Optional[tuple[Type[exc.DatabaseQueryError], Dict[str, str]]]:
+    ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
         if msg.code in cls.map_err_code_exc_cls:
             return cls.map_err_code_exc_cls[msg.code], {}
         return None
@@ -151,7 +159,7 @@ class ClickHouseBaseUtils:
     @classmethod
     def get_exc_class(
         cls, err_msg: str
-    ) -> Optional[tuple[Type[exc.DatabaseQueryError], Dict[str, str]]]:
+    ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
         # ClickHouse exception (contains "Code:")
         parse_msg = cls.parse_message(err_msg)
         if parse_msg:
@@ -164,8 +172,8 @@ class ClickHouseBaseUtils:
         raise ValueError("Can not parse error message", err_msg)
 
     @classmethod
-    def get_context_headers(cls, rci: DBAdapterScopedRCI) -> Dict[str, str]:
-        headers: Dict[str, str] = {
+    def get_context_headers(cls, rci: DBAdapterScopedRCI) -> dict[str, str]:
+        headers: dict[str, str] = {
             # TODO: bi_constants / bi_configs.constants
             'user-agent': 'DataLens',
         }
@@ -197,7 +205,7 @@ def create_column_sql(
     sa_dialect: DefaultDialect,
     col: SchemaColumn,
     tt: TypeTransformer,
-    partition_fields: Optional[List[str]] = None,
+    partition_fields: Optional[list[str]] = None,
 ) -> str:
     native_type = tt.type_user_to_native(
         user_t=col.user_type, native_t=col.native_type)

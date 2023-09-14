@@ -33,3 +33,8 @@ class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):
             if message and (match := self.ERR_RE.match(message)):
                 if table := match.group("table"):
                     self.params["table_definition"] = table
+
+
+class CommitOrRollbackFailed(exc.DatabaseQueryError):
+    err_code = exc.DatabaseQueryError.err_code + ['COMMIT_OR_ROLLBACK_FAILED']
+    default_message = 'Failed to COMMIT or ROLLBACK'

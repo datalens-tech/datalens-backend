@@ -31,3 +31,11 @@ class PostgresSourceDoesNotExistError(exc.SourceDoesNotExist):
             if message and (match := self.ERR_RE.match(message)):
                 if table := match.group("table"):
                     self.params["table_definition"] = table
+
+
+class PgDoublePrecisionRoundError(exc.UnknownFunction):
+    err_code = exc.DatabaseQueryError.err_code + ['PG_DOUBLE_PRECISION_ROUND']
+    default_message = (
+        'ROUND with precision parameter is not supported for `double precision` data type '
+        'in PostgreSQL data source.'
+    )

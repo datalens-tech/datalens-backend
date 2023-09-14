@@ -24,10 +24,6 @@ class AIOHttpConnTimeoutError(Exception):
     """
 
 
-class UnsupportedOperation(Exception):
-    pass
-
-
 class UnsupportedNativeTypeError(Exception):
     pass
 
@@ -247,7 +243,7 @@ class USLockUnacquiredException(USReqException):
 
 
 class USPermissionCheckError(USReqException):
-    err_code = USReqException.err_code + ['DLS_ERR']
+    err_code = USReqException.err_code + ['PERMISSIONS_ERROR']
 
     @property
     def message(self) -> str:
@@ -355,11 +351,6 @@ class DatabaseQueryError(DLBaseException):
         return '{0.db_message} (DB query: {0.query})'.format(self)
 
 
-class CommitOrRollbackFailed(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['COMMIT_OR_ROLLBACK_FAILED']
-    default_message = 'Failed to COMMIT or ROLLBACK'
-
-
 class ResultRowCountLimitExceeded(DLBaseException):
     err_code = DLBaseException.err_code + ['ROW_COUNT_LIMIT']
     default_message = 'Received too many result data rows.'
@@ -405,7 +396,6 @@ class ColumnDoesNotExist(DatabaseQueryError):
 
 
 class InvalidQuery(DatabaseQueryError):
-    # Primarily for CH
     err_code = DatabaseQueryError.err_code + ['INVALID_QUERY']
     default_message = 'Invalid SQL query to the database.'
 
@@ -430,21 +420,6 @@ class SourceProtocolError(SourceResponseError):
     default_message = 'Data source failed to respond correctly (invalid HTTP or higher protocol response).'
 
 
-class EstimatedExecutionTooLong(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['EST_EXEC_TOO_LONG']
-    default_message = 'Estimated query execution time is too long. Maximum: 14400.'
-
-
-class TooManyColumns(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['TOO_MANY_COLUMNS']
-    default_message = 'Too many columns - limit exceeded.'
-
-
-class InvalidSplitSeparator(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['INVALID_SPLIT_SEPARATOR']
-    default_message = 'Invalid separator for splitting.'
-
-
 class InvalidArgumentType(DatabaseQueryError):
     err_code = DatabaseQueryError.err_code + ['INVALID_ARGUMENT_TYPE']
     default_message = 'Invalid argument type.'
@@ -453,14 +428,6 @@ class InvalidArgumentType(DatabaseQueryError):
 class UnknownFunction(DatabaseQueryError):
     err_code = DatabaseQueryError.err_code + ['INVALID_FUNCTION']
     default_message = 'Unknown function.'
-
-
-class PgDoublePrecisionRoundError(UnknownFunction):
-    err_code = DatabaseQueryError.err_code + ['PG_DOUBLE_PRECISION_ROUND']
-    default_message = (
-        'ROUND with precision parameter is not supported for `double precision` data type '
-        'in PostgreSQL data source.'
-    )
 
 
 class SourceConnectError(DatabaseQueryError):
@@ -532,19 +499,9 @@ class NoSpaceLeft(DatabaseQueryError):
     default_message = 'No space left on device.'
 
 
-class CannotInsertNullInOrdinaryColumn(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['CANNOT_INSERT_NULL_IN_ORDINARY_COLUMN']
-    default_message = 'Cannot convert NULL value to non-Nullable type.'
-
-
 class DivisionByZero(DatabaseQueryError):
     err_code = DatabaseQueryError.err_code + ['ZERO_DIVISION']
     default_message = 'Division by zero.'
-
-
-class SourceQuotaExceeded(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['SOURCE_QUOTA_EXCEEDED']
-    default_message = 'Source return error: user quota exceeded'
 
 
 class UserQueryAccessDenied(DatabaseQueryError):
@@ -552,24 +509,9 @@ class UserQueryAccessDenied(DatabaseQueryError):
     default_message = 'Query access denied to user'
 
 
-class CHQueryError(DatabaseQueryError):
-    err_code = DatabaseQueryError.err_code + ['CH']
-    default_message = 'CH Error'
-
-
 class WrongQueryParameterization(DatabaseQueryError):
     err_code = DatabaseQueryError.err_code + ['WRONG_QUERY_PARAMETERIZATION']
     default_message = "Wrong query parameterization. Parameter was not found"
-
-
-class CHIncorrectData(CHQueryError):
-    err_code = CHQueryError.err_code + ['INCORRECT_DATA']
-    default_message = 'Clickhouse could not parse the data in the specified source'
-
-
-class CHReadonlyUser(CHQueryError):
-    err_code = CHQueryError.err_code + ['READONLY_USER']
-    default_message = 'Clickhouse user should have parameter readonly set to 0 or 2'
 
 
 class CHYTQueryError(DatabaseQueryError):
@@ -691,15 +633,6 @@ class QueryConstructorError(Exception):
     pass
 
 
-class ExtQueryExecuterException(Exception):
-    def __init__(self, message: str, description: str):
-        self.message = message
-        self.description = description
-
-    def __str__(self) -> str:
-        return '{0.message} (Details: {0.description})'.format(self)
-
-
 class DBSessionError(Exception):
     pass
 
@@ -708,11 +641,6 @@ class EntryValidationError(Exception):
     def __init__(self, message: str, model_field: Optional[str] = None):
         self.message = message
         self.model_field = model_field
-
-
-# TODO FIX: fill details
-class UnauthenticatedError(DLBaseException):
-    pass
 
 
 class DataStreamValidationError(Exception):
@@ -790,10 +718,6 @@ class NotAvailableError(DLBaseException):
 
 class InvalidColumnError(DLBaseException):
     err_code = DLBaseException.err_code + ['INVALID_COLUMN']
-
-
-class BillingReqException(Exception):
-    """Not inherited from DLBaseException to avoid passing internal info to users"""
 
 
 class YCPermissionRequired(DLBaseException):

@@ -20,8 +20,7 @@ from bi_core.connection_models import DBIdent, SATextTableDefinition, SchemaIden
 from bi_core.db.native_type import CommonNativeType
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
-from bi_connector_mssql.core.exc import SyncMssqlSourceDoesNotExistError
-
+from bi_connector_mssql.core.exc import CommitOrRollbackFailed, SyncMssqlSourceDoesNotExistError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -204,7 +203,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         # [08001] Unable to connect to data source (0)
         '08001': exc.SourceConnectError,
         # [HY000] Could not perform COMMIT or ROLLBACK (0)
-        'HY000': exc.CommitOrRollbackFailed,
+        'HY000': CommitOrRollbackFailed,
     }
 
     EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)
