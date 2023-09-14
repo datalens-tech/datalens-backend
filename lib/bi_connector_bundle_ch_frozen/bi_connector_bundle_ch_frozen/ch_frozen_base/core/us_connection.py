@@ -5,13 +5,13 @@ from typing import ClassVar
 from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import DataSourceTemplate
 
-from bi_configs.connectors_settings import CHFrozenConnectorSettings
 from bi_constants.enums import RawSQLLevel
 
 from bi_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
 )
+from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT

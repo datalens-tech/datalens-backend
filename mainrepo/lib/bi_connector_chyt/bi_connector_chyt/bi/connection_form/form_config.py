@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import unique
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, CHYTConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_api_commons.base_models import TenantDef
 
 import bi_api_connector.form_config.models.rows as C
@@ -14,6 +14,7 @@ from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
 
 from bi_connector_chyt.bi.connection_info import CHYTConnectionInfoProvider
 from bi_connector_chyt.bi.i18n.localizer import Translatable
+from bi_connector_chyt.core.settings import CHYTConnectorSettings
 
 
 @unique

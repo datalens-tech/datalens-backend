@@ -12,7 +12,6 @@ from bi_configs.rqe import RQEConfig, RQEBaseURL
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader, load_connectors_settings_from_env_with_fallback
 from bi_configs.settings_submodels import YCAuthSettings
-from bi_configs.connectors_settings import CHFrozenSamplesConnectorSettings
 
 from bi_defaults.environments import (
     ExternalTestingInstallation,
@@ -21,7 +20,10 @@ from bi_defaults.environments import (
 )
 
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.constants import CONNECTION_TYPE_CH_FROZEN_SAMPLES
-from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ch_frozen_samples_settings_fallback
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import (
+    ch_frozen_samples_settings_fallback,
+    CHFrozenSamplesConnectorSettings,
+)
 
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_formula.parser.factory import ParserType

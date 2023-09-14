@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import ClassVar, Generic, TypeVar
 
-from bi_configs.connectors_settings import ServiceConnectorSettingsBase
-
 from bi_core.us_connection_base import ConnectionSQL
 
 from bi_testing.regulated_test import RegulatedTestParams
 from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+
+from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
 
 _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionSQL)
 

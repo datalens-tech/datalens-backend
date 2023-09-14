@@ -1,8 +1,21 @@
-from bi_configs.connectors_settings import (
-    ConnectorsConfigType, ConnectorSettingsBase, MetricaConnectorSettings, AppmetricaConnectorSettings,
-)
+import attr
+
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import s_attrib
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
+
+
+@attr.s(frozen=True)
+class MetricaConnectorSettings(ConnectorSettingsBase):
+    COUNTER_ALLOW_MANUAL_INPUT: bool = s_attrib("COUNTER_ALLOW_MANUAL_INPUT", missing=False)  # type: ignore
+    ALLOW_AUTO_DASH_CREATION: bool = s_attrib("ALLOW_AUTO_DASH_CREATION", missing=False)  # type: ignore
+
+
+@attr.s(frozen=True)
+class AppmetricaConnectorSettings(ConnectorSettingsBase):
+    COUNTER_ALLOW_MANUAL_INPUT: bool = s_attrib("COUNTER_ALLOW_MANUAL_INPUT", missing=False)  # type: ignore
+    ALLOW_AUTO_DASH_CREATION: bool = s_attrib("ALLOW_AUTO_DASH_CREATION", missing=False)  # type: ignore
 
 
 def metrica_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

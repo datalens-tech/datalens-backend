@@ -11,15 +11,13 @@ from flask import Flask, current_app
 import pytest
 
 from bi_api_commons.reporting import DefaultReportingRegistry
+from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_task_processor.processor import DummyTaskProcessorFactory
 from statcommons.logs import LOGMUTATORS
 
 from bi_constants.enums import ConnectionType, ProcessorType
 
 from bi_configs import env_var_definitions
-from bi_configs.connectors_settings import (
-    FileS3ConnectorSettings,
-)
 from bi_configs.rqe import RQEBaseURL, RQEConfig
 
 from bi_testing.utils import wait_for_initdb

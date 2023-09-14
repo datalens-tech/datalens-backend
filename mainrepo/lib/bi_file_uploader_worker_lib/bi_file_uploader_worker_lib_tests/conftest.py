@@ -12,6 +12,7 @@ import redis.asyncio
 import aiobotocore.client
 import botocore.client
 
+from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage
 from bi_core.loader import load_bi_core
 from bi_core.services_registry.top_level import DummyServiceRegistry
@@ -26,7 +27,6 @@ from bi_testing.containers import get_test_container_hostport
 
 from bi_configs.enums import RedisMode
 from bi_configs.settings_submodels import RedisSettings, S3Settings, GoogleAppSettings
-from bi_configs.connectors_settings import FileS3ConnectorSettings
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 
 from bi_task_processor.arq_wrapper import create_arq_redis_settings, create_redis_pool

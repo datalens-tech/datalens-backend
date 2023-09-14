@@ -5,8 +5,6 @@ from typing import Callable, Generic, Optional, TypeVar
 
 import attr
 
-from bi_configs.connectors_settings import CHFrozenConnectorSettings
-
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 from bi_core.us_connection_base import ConnectionBase, ConnectionHardcodedDataMixin
 from bi_core.utils import parse_comma_separated_hosts
@@ -16,6 +14,8 @@ from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from bi_connector_clickhouse.core.clickhouse_base.us_connection import (
     ConnectionClickhouseBase, SubselectParameter, SubselectTemplate,
 )
+
+from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 
 
 class ConnectionClickhouseFilteredBase(ConnectionClickhouseBase, metaclass=abc.ABCMeta):

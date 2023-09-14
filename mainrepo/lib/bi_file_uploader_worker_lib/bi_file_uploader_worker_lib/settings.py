@@ -3,10 +3,10 @@ from typing import Optional
 import attr
 
 from bi_configs.settings_loaders.meta_definition import s_attrib
-from bi_configs.connectors_settings import FileS3ConnectorSettings
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import GoogleAppSettings
 
+from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
 from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 

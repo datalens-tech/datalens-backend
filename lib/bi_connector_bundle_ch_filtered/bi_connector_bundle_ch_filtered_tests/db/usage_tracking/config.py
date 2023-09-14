@@ -1,8 +1,8 @@
-from bi_configs.connectors_settings import UsageTrackingConnectionSettings
-
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons_ya_cloud.models import TenantYCFolder, IAMAuthData
 from bi_testing.containers import get_test_container_hostport
+
+from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import UsageTrackingConnectionSettings
 
 SR_CONNECTION_TABLE_NAME = 'sample'
 SR_CONNECTION_SETTINGS = UsageTrackingConnectionSettings(

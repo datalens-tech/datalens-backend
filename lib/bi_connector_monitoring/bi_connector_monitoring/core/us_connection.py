@@ -4,7 +4,6 @@ from typing import Callable, ClassVar, Optional
 
 import attr
 
-from bi_configs.connectors_settings import MonitoringConnectorSettings
 from bi_core.base_models import ConnCacheableDataModelMixin
 
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -15,7 +14,9 @@ from bi_core.us_connection_base import (
     ConnectionHardcodedDataMixin,
     DataSourceTemplate,
 )
+
 from bi_connector_monitoring.core.dto import MonitoringConnDTO
+from bi_connector_monitoring.core.settings import MonitoringConnectorSettings
 
 
 class MonitoringConnection(

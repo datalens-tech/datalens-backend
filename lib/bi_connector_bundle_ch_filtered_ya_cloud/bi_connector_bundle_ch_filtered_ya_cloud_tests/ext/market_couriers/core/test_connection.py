@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import MarketCouriersConnectorSettings
-
+from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.settings import MarketCouriersConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.us_connection import (
     ConnectionClickhouseMarketCouriers,
 )

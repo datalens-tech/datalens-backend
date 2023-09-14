@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import MarketCouriersConnectorSettings
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants import (
     CONNECTION_TYPE_MARKET_COURIERS,
 )
+from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.settings import MarketCouriersConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.us_connection import (
     ConnectionClickhouseMarketCouriers,
 )

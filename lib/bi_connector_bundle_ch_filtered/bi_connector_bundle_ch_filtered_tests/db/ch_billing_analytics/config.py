@@ -1,4 +1,4 @@
-from bi_configs.connectors_settings import BillingConnectorSettings
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import BillingConnectorSettings
 from bi_testing.containers import get_test_container_hostport
 
 SR_CONNECTION_TABLE_NAME = 'sample'

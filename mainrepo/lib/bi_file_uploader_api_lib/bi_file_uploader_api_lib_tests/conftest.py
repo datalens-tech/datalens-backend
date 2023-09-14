@@ -20,7 +20,6 @@ from bi_api_commons.base_models import (
     TenantCommon,
 )
 from bi_api_commons.client.common import DLCommonAPIClient
-from bi_configs.connectors_settings import FileS3ConnectorSettings
 from bi_configs.crypto_keys import (
     CryptoKeysConfig,
     get_dummy_crypto_keys_config,
@@ -33,6 +32,7 @@ from bi_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
+from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_constants.api_constants import DLHeadersCommon
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.loader import load_bi_core

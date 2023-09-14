@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import MoySkladConnectorSettings
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_partners.moysklad.core.constants import CONNECTION_TYPE_MOYSKLAD
+from bi_connector_bundle_partners.moysklad.core.settings import MoySkladConnectorSettings
 from bi_connector_bundle_partners.moysklad.core.us_connection import MoySkladCHConnection
 from bi_connector_bundle_partners.moysklad.core.testing.connection import make_saved_moysklad_connection
 

@@ -1,9 +1,9 @@
 from typing import ClassVar
 
-from bi_configs.connectors_settings import PartnerKeys
-
 from bi_core_testing.configuration import DefaultCoreTestConfiguration
 from bi_testing.containers import get_test_container_hostport
+
+from bi_connector_bundle_partners.base.core.settings import PartnerKeys
 
 
 # Infra settings

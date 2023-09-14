@@ -12,14 +12,14 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 
-from bi_configs.connectors_settings import PartnerConnectorSettingsBase
-
 from bi_core.utils import parse_comma_separated_hosts
 from bi_core.us_connection_base import ConnectionBase, ConnectionHardcodedDataMixin, HiddenDatabaseNameMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
 from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
+
+from bi_connector_bundle_partners.base.core.settings import PartnerConnectorSettingsBase
 
 if TYPE_CHECKING:
     from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO

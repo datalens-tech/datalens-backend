@@ -6,7 +6,6 @@ import attr
 
 from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
 from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
-from bi_configs.connectors_settings import ConnectorSettingsBase, YDBConnectorSettings
 
 from bi_api_commons.base_models import TenantDef
 
@@ -19,6 +18,7 @@ from bi_api_connector.form_config.models.rows.base import FormRow, DisplayCondit
 from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
 
 from bi_connector_yql.bi.ydb.connection_info import YDBConnectionInfoProvider
+from bi_connector_yql.core.ydb.settings import YDBConnectorSettings
 
 
 class YDBOAuthApplication(OAuthApplication):

@@ -4,7 +4,7 @@ import abc
 from enum import unique
 from typing import Optional, ClassVar
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, MetricaConnectorSettings, AppmetricaConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -23,6 +23,7 @@ from bi_connector_metrica.bi.connection_form.rows import (
 )
 from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
 from bi_connector_metrica.bi.i18n.localizer import Translatable
+from bi_connector_metrica.core.settings import MetricaConnectorSettings, AppmetricaConnectorSettings
 
 
 class MetricaOAuthApplication(OAuthApplication):

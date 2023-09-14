@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import SMBHeatmapsConnectorSettings
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.constants import (
     CONNECTION_TYPE_SMB_HEATMAPS,
 )
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.settings import SMBHeatmapsConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.us_connection import (
     ConnectionClickhouseSMBHeatmaps,
 )

@@ -10,7 +10,6 @@ import xxhash
 from bi_core.component_errors import ComponentErrorRegistry
 
 from bi_constants.enums import DataSourceRole, FileProcessingStatus
-from bi_configs.connectors_settings import FileS3ConnectorSettings
 
 from bi_core import exc
 from bi_core import connection_models
@@ -24,6 +23,8 @@ from bi_connector_clickhouse.core.clickhouse_base.us_connection import Connectio
 from bi_core.services_registry.file_uploader_client_factory import FileSourceDesc
 from bi_core.utils import make_user_auth_headers, make_user_auth_cookies
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
+
+from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
 
 LOGGER = logging.getLogger(__name__)

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Generic, TypeVar
 
-from bi_configs.connectors_settings import ServiceConnectorSettingsBase
-
+from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 
 from bi_core.us_connection_base import DataSourceTemplate

@@ -1,5 +1,4 @@
-from bi_configs.connectors_settings import KonturMarketConnectorSettings
-
+from bi_connector_bundle_partners.kontur_market.core.settings import KonturMarketConnectorSettings
 from bi_connector_bundle_partners.kontur_market.core.us_connection import KonturMarketCHConnection
 from bi_connector_bundle_partners_tests.db.base.core.connection import PartnersConnectionTestClass
 from bi_connector_bundle_partners_tests.db.kontur_market.core.base import BaseKonturMarketTestClass

@@ -1,9 +1,26 @@
 from typing import ClassVar, Optional
 
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, CHYTConnectorSettings
+import attr
+
 from bi_configs.connectors_data import ConnectorsDataBase
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import s_attrib
+from bi_configs.utils import split_by_comma
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+@attr.s(frozen=True)
+class CHYTConnectorSettings(ConnectorSettingsBase):
+    """
+    PUBLIC_CLIQUES:     cliques which usage is discouraged due to their high load by other users
+    FORBIDDEN_CLIQUES:  cliques that cannot be used at all
+    DEFAULT_CLIQUE:     clique that is set by default in the connection form
+    """
+
+    PUBLIC_CLIQUES: tuple[str] = s_attrib("PUBLIC_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
+    FORBIDDEN_CLIQUES: tuple[str] = s_attrib("FORBIDDEN_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
+    DEFAULT_CLIQUE: Optional[str] = s_attrib("DEFAULT_CLIQUE", missing=None)  # type: ignore
 
 
 class ConnectorsDataCHYTBase(ConnectorsDataBase):

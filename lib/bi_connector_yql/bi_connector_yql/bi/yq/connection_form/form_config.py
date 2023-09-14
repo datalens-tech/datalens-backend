@@ -8,7 +8,7 @@ from bi_api_connector.form_config.models.rows.base import FormRow
 
 from bi_constants.enums import RawSQLLevel
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, YQConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -20,6 +20,7 @@ from bi_api_connector.form_config.models.common import CommonFieldName
 
 from bi_connector_yql.bi.yq.connection_info import YQConnectionInfoProvider
 from bi_connector_yql.bi.yql_base.i18n.localizer import Translatable
+from bi_connector_yql.core.yq.settings import YQConnectorSettings
 
 
 class YQConnectionFormFactory(ConnectionFormFactory):

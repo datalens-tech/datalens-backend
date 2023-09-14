@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from bi_configs.connectors_settings import UsageTrackingConnectionSettings
-
 from bi_core.us_connection_base import HiddenDatabaseNameMixin
 
 from bi_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
@@ -11,6 +9,7 @@ from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCH
 from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
     SOURCE_TYPE_CH_USAGE_TRACKING_TABLE,
 )
+from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import UsageTrackingConnectionSettings
 
 
 class UsageTrackingConnection(

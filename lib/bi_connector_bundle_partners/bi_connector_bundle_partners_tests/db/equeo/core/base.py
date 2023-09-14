@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import EqueoConnectorSettings
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_partners.equeo.core.constants import CONNECTION_TYPE_EQUEO
+from bi_connector_bundle_partners.equeo.core.settings import EqueoConnectorSettings
 from bi_connector_bundle_partners.equeo.core.us_connection import EqueoCHConnection
 from bi_connector_bundle_partners.equeo.core.testing.connection import make_saved_equeo_connection
 

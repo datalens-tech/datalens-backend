@@ -5,10 +5,10 @@ import shortuuid
 from bi_constants.enums import ConnectionType
 
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from bi_configs.connectors_settings import CHFrozenConnectorSettings
 
 from bi_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 
+from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_frozen_tests.db.api.base import CHFrozenConnectionTestBase
 
 

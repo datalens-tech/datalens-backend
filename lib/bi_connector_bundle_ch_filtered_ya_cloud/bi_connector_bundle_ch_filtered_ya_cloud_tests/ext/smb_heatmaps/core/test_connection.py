@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import SMBHeatmapsConnectorSettings
-
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.settings import SMBHeatmapsConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.us_connection import (
     ConnectionClickhouseSMBHeatmaps,
 )

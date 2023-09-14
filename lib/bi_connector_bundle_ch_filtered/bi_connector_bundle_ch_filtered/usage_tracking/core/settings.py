@@ -1,10 +1,19 @@
 from typing import ClassVar, Optional
 
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, UsageTrackingConnectionSettings
-from bi_configs.settings_loaders.meta_definition import required
+import attr
+
 from bi_configs.connectors_data import ConnectorsDataBase
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import required, s_attrib
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
+
+
+@attr.s(frozen=True)
+class UsageTrackingConnectionSettings(ServiceConnectorSettingsBase):
+    REQUIRED_IAM_ROLE: str = s_attrib("REQUIRED_IAM_ROLE", missing=None)  # type: ignore
 
 
 class ConnectorsDataUsageTrackingBase(ConnectorsDataBase):

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from bi_configs.connectors_settings import SchoolbookConnectorSettings
-
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.settings import SchoolbookConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.us_connection import (
     ConnectionClickhouseSchoolbook,
 )

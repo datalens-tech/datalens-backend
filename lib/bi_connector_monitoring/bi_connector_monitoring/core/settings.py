@@ -1,9 +1,18 @@
+import attr
+
 from typing import ClassVar, Optional
 
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, MonitoringConnectorSettings
 from bi_configs.connectors_data import ConnectorsDataBase
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import s_attrib
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+@attr.s(frozen=True)
+class MonitoringConnectorSettings(ConnectorSettingsBase):
+    HOST: str = s_attrib("HOST")  # type: ignore
+    URL_PATH: str = s_attrib("URL_PATH", missing="monitoring/v2")
 
 
 class ConnectorsDataMonitoringBase(ConnectorsDataBase):

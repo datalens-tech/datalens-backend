@@ -4,7 +4,6 @@ from typing import Callable, ClassVar, Optional
 
 import attr
 
-from bi_configs.connectors_settings import YQConnectorSettings
 from bi_utils.utils import DataKey
 
 from bi_core.base_models import ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
@@ -18,6 +17,7 @@ from bi_core.utils import secrepr
 
 from bi_connector_yql.core.yq.constants import SOURCE_TYPE_YQ_TABLE, SOURCE_TYPE_YQ_SUBSELECT
 from bi_connector_yql.core.yq.dto import YQConnDTO
+from bi_connector_yql.core.yq.settings import YQConnectorSettings
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin
 
 

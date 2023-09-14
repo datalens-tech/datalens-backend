@@ -6,7 +6,6 @@ from typing import Any, Callable, ClassVar, Optional
 import attr
 import marshmallow as ma
 
-from bi_configs.connectors_settings import CHYTConnectorSettings
 from bi_constants.enums import CreateDSFrom
 from bi_utils.utils import DataKey
 
@@ -28,6 +27,7 @@ from bi_connector_chyt.core.constants import (
 )
 from bi_connector_chyt.core.conn_options import CHYTConnectOptions
 from bi_connector_chyt.core.dto import CHYTDTO
+from bi_connector_chyt.core.settings import CHYTConnectorSettings
 
 
 class BaseConnectionCHYT(

@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from bi_configs.connectors_settings import SchoolbookConnectorSettings
-
+from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import ConnectionCHFilteredSubselectByPuidBase
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.constants import (
     SOURCE_TYPE_CH_SCHOOLBOOK_TABLE,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import ConnectionCHFilteredSubselectByPuidBase
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.settings import SchoolbookConnectorSettings
 
 
 class ConnectionClickhouseSchoolbook(

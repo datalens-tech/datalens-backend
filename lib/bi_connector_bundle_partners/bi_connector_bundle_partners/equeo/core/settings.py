@@ -1,12 +1,19 @@
 from typing import ClassVar, Optional
 
-from bi_configs.connectors_settings import (
-    ConnectorsConfigType, ConnectorSettingsBase, EqueoConnectorSettings, PartnerKeys,
-)
-from bi_configs.settings_loaders.meta_definition import required
+import attr
+
 from bi_configs.connectors_data import ConnectorsDataBase
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import required
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+from bi_connector_bundle_partners.base.core.settings import PartnerConnectorSettingsBase, PartnerKeys
+
+
+@attr.s(frozen=True)
+class EqueoConnectorSettings(PartnerConnectorSettingsBase):
+    """"""
 
 
 class ConnectorsDataEqueoBase(ConnectorsDataBase):

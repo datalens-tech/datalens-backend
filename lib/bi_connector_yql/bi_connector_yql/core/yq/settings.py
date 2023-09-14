@@ -1,9 +1,21 @@
+import attr
+
 from typing import ClassVar, Optional
 
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, YQConnectorSettings
 from bi_configs.connectors_data import ConnectorsDataBase
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import s_attrib
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+
+
+@attr.s(frozen=True)
+class YQConnectorSettings(ConnectorSettingsBase):
+    HOST: str = s_attrib("HOST")  # type: ignore
+    PORT: int = s_attrib("PORT")  # type: ignore
+    DB_NAME: str = s_attrib("DB")  # type: ignore
+
+    USE_MDB_CLUSTER_PICKER: bool = s_attrib("USE_MDB_CLUSTER_PICKER", missing=False)  # type: ignore
 
 
 class ConnectorsDataYQBase(ConnectorsDataBase):

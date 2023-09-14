@@ -1,5 +1,4 @@
-from bi_configs.connectors_settings import MoySkladConnectorSettings
-
+from bi_connector_bundle_partners.moysklad.core.settings import MoySkladConnectorSettings
 from bi_connector_bundle_partners.moysklad.core.us_connection import MoySkladCHConnection
 from bi_connector_bundle_partners_tests.db.base.core.connection import PartnersConnectionTestClass
 from bi_connector_bundle_partners_tests.db.moysklad.core.base import BaseMoySkladTestClass

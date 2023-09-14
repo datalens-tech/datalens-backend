@@ -4,34 +4,32 @@ from typing import Generator
 import pytest
 
 from bi_constants.enums import ConnectionType
-from bi_configs.connectors_settings import (
-    CHFrozenConnectorSettings,
-    CHFrozenBumpyRoadsConnectorSettings,
-    CHFrozenCovidConnectorSettings,
-    CHFrozenDemoConnectorSettings,
-    CHFrozenDTPConnectorSettings,
-    CHFrozenGKHConnectorSettings,
-    CHFrozenHorecaConnectorSettings,
-    CHFrozenSamplesConnectorSettings,
-    CHFrozenTransparencyConnectorSettings,
-    CHFrozenWeatherConnectorSettings,
-)
 
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
+from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.us_connection import ConnectionClickhouseFrozenBase
 from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.constants import CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS
+from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.settings import CHFrozenBumpyRoadsConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.constants import CONNECTION_TYPE_CH_FROZEN_COVID
+from bi_connector_bundle_ch_frozen.ch_frozen_covid.core.settings import CHFrozenCovidConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTION_TYPE_CH_FROZEN_DEMO
+from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.settings import CHFrozenDemoConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_dtp.core.constants import CONNECTION_TYPE_CH_FROZEN_DTP
+from bi_connector_bundle_ch_frozen.ch_frozen_dtp.core.settings import CHFrozenDTPConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_gkh.core.constants import CONNECTION_TYPE_CH_FROZEN_GKH
+from bi_connector_bundle_ch_frozen.ch_frozen_gkh.core.settings import CHFrozenGKHConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_horeca.core.constants import CONNECTION_TYPE_CH_FROZEN_HORECA
+from bi_connector_bundle_ch_frozen.ch_frozen_horeca.core.settings import CHFrozenHorecaConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.constants import CONNECTION_TYPE_CH_FROZEN_SAMPLES
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import CHFrozenSamplesConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.constants import CONNECTION_TYPE_CH_FROZEN_TRANSPARENCY
+from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.settings import CHFrozenTransparencyConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.constants import CONNECTION_TYPE_CH_FROZEN_WEATHER
+from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.settings import CHFrozenWeatherConnectorSettings
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.database import DbTable

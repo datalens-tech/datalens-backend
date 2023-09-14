@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bi_configs.connectors_settings import SchoolbookConnectorSettings
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.constants import CONNECTION_TYPE_SCHOOLBOOK_JOURNAL
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.settings import SchoolbookConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.us_connection import ConnectionClickhouseSchoolbook
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.testing.connection import (
     make_saved_schoolbook_journal_connection,
