@@ -19,9 +19,17 @@ spec:
         - name: integration-test-secrets
           mountPath: /src/ops/bi_integration_tests/bi_integration_tests_tests/secrets
           readOnly: true
+        - name: internal-cert
+          mountPath: /etc/ssl/certs
   volumes:
     - name: integration-test-secrets
       secret:
         secretName: integration-tests
         optional: false
+    - name: internal-cert
+      secret:
+        secretName: cert-bundle
+        items:
+          - key: cert
+            path: ca-certificates.crt
   restartPolicy: Never

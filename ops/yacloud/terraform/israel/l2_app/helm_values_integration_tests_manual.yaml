@@ -1,7 +1,7 @@
 docker_images_info:
   integration_tests:
-    repo: "cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-integration-tests"
-    tag: "0.11.0"
+    repo: "cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-integration-tests-tier-1"
+    tag: "0.20.0"
 
 integration_tests_tags: not requires_materialization
 workbook_mgmt_strategy: CREATE_AND_DELETE_AFTERWARDS

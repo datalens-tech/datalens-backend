@@ -15,7 +15,6 @@ variable "data" {
     s3_endpoint                 = string
     main_zone_idx               = number # TODO: get rid of me
     secret_ids                  = map(string)
-    internal_cert_name          = string
     ycp_profile                 = string
     ycp_environment             = string
     k8s_use_ext_v6              = bool
@@ -64,7 +63,6 @@ variable "data" {
       secret_ids = {
         kafka_passwords = "fc3fj14hndj3cao08nak"
       }
-      internal_cert_name = "YaCloud.crt"
       ycp_profile        = "yc-preprod"
       ycp_environment    = "preprod"
       k8s_use_ext_v6     = true
@@ -112,7 +110,6 @@ variable "data" {
       secret_ids = {
         kafka_passwords = "bcn78c2ahhevf6m4ephk"
       }
-      internal_cert_name = "NebiusIsrael.crt"
       ycp_profile        = "israel"
       ycp_environment    = "israel"
       k8s_use_ext_v6     = true
@@ -154,7 +151,6 @@ variable "data" {
       s3_endpoint        = "storage-internal.nemax.nebius.cloud"
       main_zone_idx      = 1
       secret_ids = {}
-      internal_cert_name = "NemaxInternalRootCA.crt"
       ycp_profile        = "nemax"
       ycp_environment    = "nemax"
       k8s_use_ext_v6     = true

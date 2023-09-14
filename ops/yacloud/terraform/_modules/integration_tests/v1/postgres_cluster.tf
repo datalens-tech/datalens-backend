@@ -9,8 +9,8 @@ locals {
 
 resource "yandex_mdb_postgresql_cluster" "integration_tests" {
   name        = "integration-tests-pg"
-  environment = "PRESTABLE"
-  network_id  = var.network_id
+  environment = "PRODUCTION"
+  network_id  = yandex_vpc_network.this.id
   folder_id   = var.db_clusters_folder_id
 
   labels = { mdb-auto-purge = "off" }
@@ -29,8 +29,8 @@ resource "yandex_mdb_postgresql_cluster" "integration_tests" {
   }
 
   host {
-    zone             = local.locations[0].zone
-    subnet_id        = local.locations[0].subnet_id
+    zone             = yandex_vpc_subnet.this.zone
+    subnet_id        = yandex_vpc_subnet.this.id
     assign_public_ip = true
   }
 }

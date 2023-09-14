@@ -189,8 +189,8 @@
   "cluster_name": "caches"
   "hosts":
   - "il1a-fqi2vq2uhy18uyhg.mdb.cloudil.com"
-  - "il1c-60p150i4bhyn6tok.mdb.cloudil.com"
   - "il1b-7fie4jw1lpr3p2wp.mdb.cloudil.com"
+  - "il1c-60p150i4bhyn6tok.mdb.cloudil.com"
   "mode": "sentinel"
   "port": 26379
   "tls_enabled": false
@@ -198,8 +198,8 @@
   "cluster_name": "misc"
   "hosts":
   - "il1a-25kguwf2gcfu84fd.mdb.cloudil.com"
-  - "il1c-rmde3oqsp3f2n2ux.mdb.cloudil.com"
   - "il1b-o4gwgk1i4zjp4qtw.mdb.cloudil.com"
+  - "il1c-rmde3oqsp3f2n2ux.mdb.cloudil.com"
   "mode": "sentinel"
   "port": 26379
   "tls_enabled": false

@@ -21,3 +21,11 @@ output "internal_cert" {
 output "internal_cert_path" {
   value = local.internal_cert_path
 }
+
+output "cert_bundle" {
+  value = data.local_file.cert_bundle.content
+}
+
+output "cert_bundle_path" {
+  value = local.cert_bundle_path
+}

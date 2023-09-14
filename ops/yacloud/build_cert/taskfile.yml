@@ -1,0 +1,17 @@
+version: '3'
+
+vars:
+  CONSTANTS_DIR: '{{ .TASKFILE_DIR }}/../terraform/_modules/_constants/v1'
+  INTERNAL_CERTS: '{{ .CONSTANTS_DIR }}/internal_certs'
+  CERT_BUNDLES: '{{ .CONSTANTS_DIR }}/cert_bundles'
+
+tasks:
+  cook_cert_bundle:
+    #  task cook_cert_bundle ENV_NAME=nemax
+    env:
+      INTERNAL_CERT_DIR: '{{ .INTERNAL_CERTS }}'
+      INTERNAL_CERT_NAME: '{{ .ENV_NAME }}.crt'
+      CERT_BUNDLE_DIR: '{{ .CERT_BUNDLES }}'
+      CERT_BUNDLE_NAME: '{{ .ENV_NAME }}.crt'
+    cmds:
+      - docker buildx bake -f bake.hcl bundle_cert
