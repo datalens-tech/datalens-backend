@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 import contextlib
+import time
 from typing import Any, Callable, ClassVar, Generator, List, NamedTuple, Optional, Sequence, Type
 
 import attr
@@ -25,7 +27,6 @@ from bi_core.db import SchemaColumn, SchemaInfo
 from bi_core.db.native_type import CommonNativeType, GenericNativeType, norm_native_type
 from bi_core.mdb_utils import MDBDomainManagerFactory
 from bi_core_testing.database import C, make_table
-from bi_testing.utils import await_for_log_record
 from bi_utils.aio import ContextVarExecutor, await_sync
 
 
@@ -87,7 +88,21 @@ class BaseConnExecutorSupport:
 
     @staticmethod
     async def wait_for_log_record(caplog, prefix, timeout, pause=0.3):
-        return await await_for_log_record(caplog=caplog, prefix=prefix, timeout=timeout, pause=pause)
+        start_time = time.monotonic()
+        last_record = 0
+        while True:
+            next_last_record = len(caplog.records)
+            records = [
+                record
+                for record in caplog.records[last_record:]
+                if record.message.startswith(prefix)]
+            last_record = next_last_record
+            if records:
+                assert len(records) == 1, f"Unexpected amount of matched records: {records}"
+                return records[0]
+            if time.monotonic() > start_time + timeout:
+                raise Exception("Timed out waiting for the expected record to appear")
+            await asyncio.sleep(pause)
 
     @pytest.fixture()
     def db(self):
