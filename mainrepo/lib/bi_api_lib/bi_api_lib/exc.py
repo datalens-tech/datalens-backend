@@ -48,7 +48,3 @@ class TooManyFieldsError(DLValidationError):
 class DLValidationFatal(_DLValidationResult):
     err_code = _DLValidationResult.err_code + ['FATAL']
     default_message = 'Validation encountered a fatal error.'
-
-
-class DashSQLError(DLBaseException):
-    err_code = DLBaseException.err_code + ['DASHSQL']

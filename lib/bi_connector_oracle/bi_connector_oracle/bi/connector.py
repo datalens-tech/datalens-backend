@@ -20,6 +20,7 @@ from bi_connector_oracle.bi.api_schema.connection import OracleConnectionSchema
 from bi_connector_oracle.bi.connection_form.form_config import OracleConnectionFormFactory
 from bi_connector_oracle.bi.connection_info import OracleConnectionInfoProvider
 from bi_connector_oracle.bi.i18n.localizer import CONFIGS
+from bi_connector_oracle.bi.dashsql import OracleDashSQLParamLiteralizer
 
 
 class OracleBiApiTableSourceDefinition(BiApiSourceDefinition):
@@ -50,3 +51,4 @@ class OracleBiApiConnector(BiApiConnector):
     )
     formula_dialect_name = DIALECT_NAME_ORACLE
     translation_configs = frozenset(CONFIGS)
+    dashsql_literalizer_cls = OracleDashSQLParamLiteralizer

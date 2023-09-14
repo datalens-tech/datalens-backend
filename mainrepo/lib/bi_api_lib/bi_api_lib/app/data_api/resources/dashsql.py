@@ -3,17 +3,15 @@ from __future__ import annotations
 import datetime
 import decimal
 import json
-import logging
 import math
 import uuid
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Callable, Optional, Type
 
-import sqlalchemy as sa
 from aiohttp import web
 
 import bi_api_lib.schemas.main
 from bi_api_lib.enums import USPermissionKind
-from bi_api_lib.exc import DashSQLError
+from bi_core.exc import DashSQLError
 from bi_query_processing.utils.datetime import parse_datetime
 from bi_api_lib.app.data_api.resources.base import BaseView, RequiredResourceDSAPI, requires
 from bi_api_lib.utils.base import need_permission_on_entry
@@ -23,42 +21,16 @@ from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from bi_core.data_processing.dashsql import BindParamInfo, DashSQLCachedSelector, DashSQLEvent, TRow
 from bi_core.exc import UnexpectedUSEntryType
 from bi_core.us_connection_base import ConnectionBase, ExecutorBasedMixin, SubselectMixin
-from bi_core.db import get_type_transformer
-from bi_core.db.sa_types import make_sa_type
+from bi_core.backend_types import get_backend_type
+from bi_api_connector.dashsql import TValueBase
+from bi_api_lib.dashsql.registry import get_dash_sql_param_literalizer
 
 if TYPE_CHECKING:
     from bi_core.data_processing.dashsql import DashSQLSelector, TResultEvents
     from bi_constants.types import TJSONLike
 
 
-TValueBase = Union[str, List[str], Tuple[str, ...]]
 TRowProcessor = Callable[[TRow], TRow]
-
-
-LOGGER = logging.getLogger(__name__)
-
-
-# TODO: use the shared logic with e.g. filter value compiler.
-BI_TYPE_TO_SA_TYPE: Dict[BIType, sa.sql.type_api.TypeEngine] = {
-    BIType.string: sa.TEXT(),
-    BIType.integer: sa.BIGINT(),
-    BIType.float: sa.FLOAT(),
-    BIType.date: sa.DATE(),
-    BIType.datetime: sa.DATETIME(),
-    BIType.boolean: sa.BOOLEAN(),
-    BIType.datetimetz: sa.DATETIME(timezone=True),
-    BIType.genericdatetime: sa.DATETIME(),
-}
-
-
-def get_value_sa_type(bi_type: BIType, conn_type: ConnectionType, value_base: TValueBase) -> sa.sql.type_api.TypeEngine:
-    tt = get_type_transformer(conn_type=conn_type)
-    native_type = tt.type_user_to_native(user_t=bi_type)
-    try:
-        sa_type = make_sa_type(native_type)
-    except KeyError:
-        sa_type = BI_TYPE_TO_SA_TYPE[bi_type]
-    return sa_type
 
 
 def parse_value(value: Optional[str], bi_type: BIType) -> Any:
@@ -91,10 +63,10 @@ def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindPar
         bi_type = BIType[type_name]
     except KeyError:
         raise DashSQLError(f"Unknown type name {type_name!r}")
-    try:
-        sa_type = get_value_sa_type(bi_type, conn_type=conn_type, value_base=value_base)
-    except (KeyError, ValueError):
-        raise DashSQLError(f"Unsupported type {type_name!r}")
+
+    backend_type = get_backend_type(conn_type=conn_type)
+    literalizer_cls = get_dash_sql_param_literalizer(backend_type=backend_type)
+    sa_type = literalizer_cls.get_sa_type(bi_type=bi_type, value_base=value_base)
 
     try:
         if isinstance(value_base, (list, tuple)):
@@ -180,11 +152,11 @@ class DashSQLView(BaseView):
         return value
 
     @classmethod
-    def _make_postprocess_row(cls, bi_type_names: Tuple[str, ...]) -> TRowProcessor:
+    def _make_postprocess_row(cls, bi_type_names: tuple[str, ...]) -> TRowProcessor:
         # Nothing type-specific at the moment
         funcs = tuple(cls._postprocess_any for _ in bi_type_names)
 
-        def _postprocess_row(row: TRow, funcs: Tuple[Callable, ...] = funcs) -> TRow:
+        def _postprocess_row(row: TRow, funcs: tuple[Callable, ...] = funcs) -> TRow:
             return tuple(func(value) for func, value in zip(funcs, row))
 
         return _postprocess_row

@@ -20,6 +20,8 @@ from bi_api_lib.query.registry import (
     register_compeng_dialect,
 )
 
+from bi_api_lib.dashsql.registry import register_dash_sql_param_literalizer_cls
+
 
 class BiApiConnectorRegistrator:
     @classmethod
@@ -44,21 +46,30 @@ class BiApiConnectorRegistrator:
 
     @classmethod
     def register_connector(cls, connector: Type[BiApiConnector]) -> None:
+        # backend_type-related stuff - TODO: Move to a separate entity
         backend_type = connector.core_connector_cls.backend_type
         register_dialect_name(backend_type=backend_type, dialect_name=connector.formula_dialect_name)
         register_multi_query_mutator_factory_cls(
             backend_type=backend_type, dialects=(None,),
             factory_cls=connector.default_multi_query_mutator_factory_cls,
         )
-        for source_def in connector.source_definitions:
-            cls.register_source_definition(source_def=source_def)
-        for conn_def in connector.connection_definitions:
-            cls.register_connection_definition(conn_def=conn_def)
         register_initial_planner_cls(backend_type=backend_type, planner_cls=connector.legacy_initial_planner_cls)
         register_is_forkable_source(backend_type=backend_type, is_forkable=connector.is_forkable)
         register_is_compeng_executable(backend_type=backend_type, is_compeng_executable=connector.is_compeng_executable)
         register_filter_formula_compiler_cls(
-            backend_type=backend_type, filter_compiler_cls=connector.filter_formula_compiler_cls)
+            backend_type=backend_type,
+            filter_compiler_cls=connector.filter_formula_compiler_cls,
+        )
+        register_dash_sql_param_literalizer_cls(
+            backend_type=backend_type,
+            literalizer_cls=connector.dashsql_literalizer_cls,
+        )
+
+        # everything else
+        for source_def in connector.source_definitions:
+            cls.register_source_definition(source_def=source_def)
+        for conn_def in connector.connection_definitions:
+            cls.register_connection_definition(conn_def=conn_def)
         register_translation_configs(connector.translation_configs)
         if connector.compeng_dialect is not None:
             register_compeng_dialect(connector.compeng_dialect)

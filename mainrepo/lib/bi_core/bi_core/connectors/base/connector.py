@@ -49,9 +49,11 @@ class CoreConnectionDefinition(abc.ABC):
 
 
 class CoreConnector(abc.ABC):
+    # backend_type-bound properties - TODO: move to a separate entity
     backend_type: ClassVar[SourceBackendType] = SourceBackendType.NONE
     compiler_cls: ClassVar[Type[QueryCompiler]] = QueryCompiler
     query_cls: ClassVar[Type[Query]] = Query
+    # others
     connection_definitions: ClassVar[tuple[Type[CoreConnectionDefinition], ...]] = ()
     source_definitions: ClassVar[tuple[Type[CoreSourceDefinition], ...]] = ()
     sa_types: ClassVar[Optional[dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]]]] = None

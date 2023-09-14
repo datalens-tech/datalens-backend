@@ -637,3 +637,7 @@ class DataSourceMigrationImpossible(DLBaseException):
 
 class RLSSubjectNotFound(DLBaseException):
     err_code = DLBaseException.err_code + ['RLS_SUBJECT_NOT_FOUND']
+
+
+class DashSQLError(DLBaseException):
+    err_code = DLBaseException.err_code + ['DASHSQL']
