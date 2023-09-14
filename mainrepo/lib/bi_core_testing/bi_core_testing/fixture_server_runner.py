@@ -149,12 +149,7 @@ class WSGIRunner:
     def run(self) -> None:
         if self._bind_port is None:
             self._bind_port = self.find_free_port()
-        try:
-            import pyuwsgi  # type: ignore  # TODO: fix  # arcadia  # noqa
-        except ImportError:
-            self._run_subproc()
-        else:
-            self._run_fork()
+        self._run_subproc()
         self.wait_for_up()
 
     def _make_uwsgi_params(self):  # type: ignore  # TODO: fix
@@ -184,12 +179,6 @@ class WSGIRunner:
             **os.environ,
         }
         self._proc = subprocess.Popen(cmd, env=env)
-
-    def _run_fork(self):  # type: ignore  # TODO: fix
-        # self._debug('Running ForkPopen')
-        # self._proc = ForkPopen(target=self._run_fork_child_code)
-        self._debug('Running ProcessPopenDuck')
-        self._proc = ProcessPopenDuck(target=self._run_fork_child_code)  # type: ignore  # TODO: fix
 
     def _run_fork_child_code(self):  # type: ignore  # TODO: fix
         self._debug('child: running uwsgi')

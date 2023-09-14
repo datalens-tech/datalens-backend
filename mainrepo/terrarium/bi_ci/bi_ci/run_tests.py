@@ -60,7 +60,7 @@ def run_pytest_one(t: Target) -> int:
         "-m",
         "pytest",
         "-v",
-        "--disable-warnings",  # todo: remove after migration from arc is finished
+        "--disable-warnings",
         f"--junitxml=/report/{report_name}",
     ]
     if t.target_path:

@@ -42,7 +42,7 @@ def _get_docker_compose_file_path(filename: Optional[str] = None) -> str | None:
 def get_test_container_hostport(
     service_key: str,
     original_port: Optional[int] = None,
-    fallback_port: Optional[int] = None,  # likely to become redundant after tier0 death
+    fallback_port: Optional[int] = None,  # likely redundant
     dc_filename: Optional[str] = None
 ) -> HostPort:
     # TODO: Turn this into a method of a class with dc_filename in self

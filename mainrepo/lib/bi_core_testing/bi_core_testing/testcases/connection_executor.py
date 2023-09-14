@@ -194,7 +194,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
 
     async def test_simple_select(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         query = ConnExecutorQuery(query=sa.select([sa.literal(1)]))
-        result = await anext(aiter((await async_connection_executor.execute(query)).result))  # type: ignore  # FIXME: old arcadian mypy
+        result = await anext(aiter((await async_connection_executor.execute(query)).result))
         assert len(result) == 1
         assert result[0] == (1,)
 

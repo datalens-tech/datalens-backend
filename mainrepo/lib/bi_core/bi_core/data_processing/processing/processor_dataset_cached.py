@@ -245,12 +245,8 @@ class CachedDatasetProcessor(SROperationProcessorAsyncBase):  # noqa
 
     _cache_processor: SingleStreamCacheOperationProcessor = attr.ib(init=False)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
-        # in arcadia we use ancient mypy https://st.yandex-team.ru/DTCC-1241
-        # this version contains a bug in atts + import order
-        # sometimes mypy processes child class before parent
-        # and fails with "Unexpected keyword argument"
-        self._cache_processor = SingleStreamCacheOperationProcessor(  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
+        self._cache_processor = SingleStreamCacheOperationProcessor(
             dataset=self._dataset,
             service_registry=self.service_registry,
             main_processor=self._main_processor,
