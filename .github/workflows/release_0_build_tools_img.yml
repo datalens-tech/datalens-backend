@@ -18,4 +18,4 @@ jobs:
         with:
           context: .github/release_scripts/builder_image
           push: true
-          tags: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/dl_releaser:${{ github.ref_name }}"
+          tags: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/dl_releaser:latest"
