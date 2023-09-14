@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 from bi_core.connectors.base.connector import (
@@ -63,7 +64,9 @@ class MetricaApiCoreConnector(CoreConnector):
         MetricaApiCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({MetricaAPIDefaultAdapter})
-    safe_dto_classes = frozenset({MetricaAPIConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({MetricaAPIConnDTO})),
+    })
 
 
 class AppMetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
@@ -95,4 +98,6 @@ class AppMetricaApiCoreConnector(CoreConnector):
         AppMetricaApiCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({AppMetricaAPIDefaultAdapter})
-    safe_dto_classes = frozenset({AppMetricaAPIConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({AppMetricaAPIConnDTO})),
+    })

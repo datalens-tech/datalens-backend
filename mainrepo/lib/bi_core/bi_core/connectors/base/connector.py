@@ -6,6 +6,7 @@ from typing import AbstractSet, Callable, ClassVar, Optional, Type, TYPE_CHECKIN
 from sqlalchemy.orm import Query
 
 from bi_constants.enums import SourceBackendType
+from bi_core.connections_security.base import ConnSecuritySettings
 from bi_core.connectors.base.query_compiler import QueryCompiler
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from bi_core.data_source.base import DataSource
@@ -24,7 +25,6 @@ if TYPE_CHECKING:
     from bi_core.connection_executors.common_base import ConnExecutorBase
     from bi_core.connection_executors.async_base import AsyncConnExecutorBase
     from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-    from bi_core.connection_models.dto_defs import ConnDTO
     from bi_core.reporting.notifications import BaseNotification
 
 
@@ -56,8 +56,7 @@ class CoreConnector(abc.ABC):
     source_definitions: ClassVar[tuple[Type[CoreSourceDefinition], ...]] = ()
     sa_types: ClassVar[Optional[dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]]]] = None
     rqe_adapter_classes: ClassVar[AbstractSet[Type[CommonBaseDirectAdapter]]] = frozenset()
-    safe_dto_classes: ClassVar[AbstractSet[Type[ConnDTO]]] = frozenset()
-    mdb_dto_classes: ClassVar[AbstractSet[Type[ConnDTO]]] = frozenset()
+    conn_security: ClassVar[AbstractSet[ConnSecuritySettings]] = frozenset()
     query_fail_exceptions: frozenset[Type[Exception]] = frozenset()
     notification_classes: ClassVar[tuple[Type[BaseNotification], ...]] = ()
 

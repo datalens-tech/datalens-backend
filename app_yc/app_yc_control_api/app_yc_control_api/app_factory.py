@@ -11,7 +11,6 @@ from bi_constants.enums import USAuthMode
 from bi_core.connection_models import ConnectOptions
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.us_connection_base import ExecutorBasedMixin
@@ -22,6 +21,7 @@ from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud

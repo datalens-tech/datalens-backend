@@ -1,5 +1,7 @@
 from ydb.sqlalchemy import register_dialect as yql_register_dialect
 
+from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
+from bi_core.connections_security.base import ConnSecuritySettings
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import (
     SubselectDataSourceSpecStorageSchema, SQLDataSourceSpecStorageSchema,
@@ -56,7 +58,9 @@ class YDBCoreConnector(CoreConnector):
         YDBCoreSubselectSourceDefinition,
     )
     rqe_adapter_classes = frozenset({YDBAdapter})
-    mdb_dto_classes = frozenset({YDBConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({YDBConnDTO})),
+    })
 
     @classmethod
     def registration_hook(cls) -> None:

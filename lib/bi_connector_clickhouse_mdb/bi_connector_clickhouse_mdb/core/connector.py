@@ -1,3 +1,5 @@
+from bi_core.connections_security.base import ConnSecuritySettings
+from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
 from bi_connector_clickhouse.core.clickhouse.connector import (
     ClickHouseCoreConnectionDefinition,
     ClickHouseTableCoreSourceDefinition,
@@ -33,4 +35,6 @@ class ClickHouseMDBCoreConnector(ClickHouseCoreConnector):
         ClickHouseMDBTableCoreSourceDefinition,
         ClickHouseMDBSubselectCoreSourceDefinition,
     )
-    mdb_dto_classes = frozenset({ClickHouseConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({ClickHouseConnDTO})),
+    })

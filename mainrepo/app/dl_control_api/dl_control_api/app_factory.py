@@ -14,9 +14,9 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
+from bi_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core_testing.app_test_workarounds import TestEnvManagerFactory
 
 
 class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
@@ -24,7 +24,7 @@ class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
         return set()
 
     def _get_env_manager_factory(self, settings: ControlApiAppSettings) -> EnvManagerFactory:
-        return TestEnvManagerFactory()
+        return InsecureEnvManagerFactory()
 
     def _get_inst_specific_sr_factory(
             self,

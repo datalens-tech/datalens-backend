@@ -24,6 +24,7 @@ yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
 yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."bi_api_lib.connectors"]

@@ -8,7 +8,7 @@ import pytest
 from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouseBase
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import IntranetEnvManagerFactory
+from bi_api_lib_ya.services_registry.env_manager_factory import IntranetEnvManagerFactory
 from bi_core.services_registry.sr_factories import DefaultSRFactory
 from bi_core.services_registry.typing import ConnectOptionsFactory
 from bi_core.united_storage_client import USAuthContextMaster

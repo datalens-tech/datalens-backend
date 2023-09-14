@@ -13,7 +13,6 @@ from bi_core.aio.middlewares.us_manager import us_manager_middleware, service_us
 from bi_core.connection_models import ConnectOptions
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
@@ -24,6 +23,7 @@ from bi_api_lib.app_common import SRFactoryBuilder
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService

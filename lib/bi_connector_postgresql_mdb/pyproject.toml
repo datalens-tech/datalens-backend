@@ -18,6 +18,7 @@ yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 postgresql_mdb = "bi_connector_postgresql_mdb.bi.connector:PostgreSQLMDBBiApiConnector"

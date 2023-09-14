@@ -7,11 +7,6 @@ from bi_configs.enums import RequiredService, AppType, RQE_SERVICES
 
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import (
-    IntranetEnvManagerFactory,
-    DataCloudEnvManagerFactory,
-    CloudEnvManagerFactory,
-)
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
@@ -28,6 +23,11 @@ from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFac
 
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
 from bi_api_lib_ya.i18n.localizer import CONFIGS
+from bi_api_lib_ya.services_registry.env_manager_factory import (
+    IntranetEnvManagerFactory,
+    CloudEnvManagerFactory,
+    DataCloudEnvManagerFactory,
+)
 
 
 class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):

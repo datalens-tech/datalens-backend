@@ -1,3 +1,5 @@
+from bi_core.connections_security.base import ConnSecuritySettings
+from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
 from bi_connector_mysql.core.connector import (
     MySQLCoreConnectionDefinition,
     MySQLTableCoreSourceDefinition,
@@ -33,4 +35,6 @@ class MySQLMDBCoreConnector(MySQLCoreConnector):
         MySQLMDBTableCoreSourceDefinition,
         MySQLMDBSubselectCoreSourceDefinition,
     )
-    mdb_dto_classes = frozenset({MySQLConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({MySQLConnDTO})),
+    })

@@ -1,3 +1,4 @@
+from bi_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition,
     CoreConnector,
@@ -44,4 +45,6 @@ class MonitoringCoreConnector(CoreConnector):
         MonitoringCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({AsyncMonitoringAdapter})
-    safe_dto_classes = frozenset({MonitoringConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({MonitoringConnDTO})),
+    })

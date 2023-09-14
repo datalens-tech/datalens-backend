@@ -1,3 +1,5 @@
+from bi_core.connections_security.base import ConnSecuritySettings
+from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
 from bi_connector_greenplum.core.connector import (
     GreenplumCoreConnectionDefinition,
     GreenplumCoreConnector,
@@ -33,4 +35,6 @@ class GreenplumMDBCoreConnector(GreenplumCoreConnector):
         GreenplumMDBTableCoreSourceDefinition,
         GreenplumMDBSubselectCoreSourceDefinition,
     )
-    mdb_dto_classes = frozenset({GreenplumConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({GreenplumConnDTO})),
+    })

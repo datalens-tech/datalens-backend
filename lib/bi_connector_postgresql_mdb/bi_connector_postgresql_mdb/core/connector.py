@@ -1,3 +1,5 @@
+from bi_core.connections_security.base import ConnSecuritySettings
+from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
 from bi_connector_postgresql.core.postgresql.connector import (
     PostgreSQLCoreConnectionDefinition,
     PostgreSQLCoreConnector,
@@ -33,4 +35,6 @@ class PostgreSQLMDBCoreConnector(PostgreSQLCoreConnector):
         PostgreSQLMDBTableCoreSourceDefinition,
         PostgreSQLMDBSubselectCoreSourceDefinition,
     )
-    mdb_dto_classes = frozenset({PostgresConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({PostgresConnDTO})),
+    })

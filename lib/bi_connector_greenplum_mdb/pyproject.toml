@@ -18,6 +18,7 @@ bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 greenplum_mdb = "bi_connector_greenplum_mdb.bi.connector:GreenplumMDBBiApiConnector"

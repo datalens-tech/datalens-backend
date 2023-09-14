@@ -18,6 +18,7 @@ bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 
 [tool.poetry.plugins."bi_api_lib.connectors"]
 mysql_mdb = "bi_connector_mysql_mdb.bi.connector:MySQLMDBBiApiConnector"

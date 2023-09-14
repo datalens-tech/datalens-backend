@@ -13,8 +13,7 @@ from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from bi_core.connections_security.base import InsecureConnectionSecurityManager, ConnectionSecurityManager
-from bi_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
+from bi_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from bi_core.services_registry.sr_factories import DefaultSRFactory
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.united_storage_client import USAuthContextMaster
@@ -29,11 +28,6 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-class InsecureEnvManagerFactory(DefaultEnvManagerFactory):
-    def make_security_manager(self, request_context_info: RequestContextInfo) -> ConnectionSecurityManager:
-        return InsecureConnectionSecurityManager()
 
 
 def create_sr_factory_from_env_vars(connectors_settings: FileUploaderConnectorsSettings) -> DefaultSRFactory:

@@ -3,6 +3,7 @@ from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
 )
+from bi_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
 
 from bi_connector_bundle_chs3.chs3_base.core.constants import BACKEND_TYPE_CHS3
 from bi_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
@@ -20,5 +21,7 @@ class BaseFileS3TableCoreSourceDefinition(CoreSourceDefinition):
 
 class BaseFileS3CoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_CHS3
-    safe_dto_classes = frozenset({BaseFileS3ConnDTO})
+    conn_security = frozenset({
+        ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({BaseFileS3ConnDTO}))
+    })
     query_cls = CHQuery

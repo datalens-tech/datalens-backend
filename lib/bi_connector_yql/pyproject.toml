@@ -28,6 +28,7 @@ yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
 yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
 yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 ydb = ">=2.10.1"
 
 [tool.poetry.plugins]

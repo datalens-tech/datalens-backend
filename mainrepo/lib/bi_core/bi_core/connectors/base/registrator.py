@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, TYPE_CHECKING
 
 from bi_core.connectors.base.connector import (
     CoreConnector, CoreSourceDefinition, CoreConnectionDefinition,
@@ -13,9 +13,6 @@ from bi_core.db.conversion_base import register_type_transformer_class
 from bi_core.services_registry.conn_executor_factory import (
     register_sync_conn_executor_class, register_async_conn_executor_class,
 )
-from bi_core.connections_security.base import (
-    register_safe_dto_type, register_mdb_dto_type,
-)
 from bi_core.connection_executors.adapters.common_base import register_dialect_string
 from bi_core.connection_executors.remote_query_executor.commons import register_adapter_class
 from bi_core.db_session_utils import register_sa_query_cls, register_query_fail_exceptions
@@ -23,6 +20,9 @@ from bi_core.reporting.notifications import register_notification
 from bi_core.backend_types import register_connection_backend_type
 from bi_core.connectors.settings.registry import register_connector_settings_class
 from bi_core.connectors.base.data_source_migration import register_data_source_migrator
+
+if TYPE_CHECKING:
+    from bi_core.connections_security.base import ConnSecuritySettings
 
 
 class CoreConnectorRegistrator:
@@ -76,10 +76,9 @@ class CoreConnectorRegistrator:
         for conn_def in connector.connection_definitions:
             cls.register_connection_definition(conn_def=conn_def, connector=connector)
         register_sa_types(connector.sa_types or {})
-        for dto_cls in connector.safe_dto_classes:
-            register_safe_dto_type(dto_cls=dto_cls)
-        for dto_cls in connector.mdb_dto_classes:
-            register_mdb_dto_type(dto_cls=dto_cls)
+        for conn_sec_settings in connector.conn_security:  # type: ConnSecuritySettings
+            dto_types = conn_sec_settings.dtos
+            conn_sec_settings.security_checker_cls.register_dto_types(dto_types)
         for adapter_cls in connector.rqe_adapter_classes:
             register_adapter_class(adapter_cls=adapter_cls)
         register_sa_query_cls(backend_type=connector.backend_type, query_cls=connector.query_cls)
