@@ -7,6 +7,6 @@ def mysql_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Connect
     return dict(MYSQL=MysqlConnectorSettings())
 
 
-class MySQLSettingDefinition(ConnectorSettingsDefinition):
+class MySQLMDBSettingDefinition(ConnectorSettingsDefinition):
     settings_class = MysqlConnectorSettings
     fallback = mysql_settings_fallback

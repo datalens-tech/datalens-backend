@@ -4,7 +4,6 @@ from typing import ClassVar
 
 import attr
 
-from bi_core.base_models import ConnMDBDataModelMixin
 from bi_i18n.localizer_base import Localizer
 from bi_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate
 
@@ -20,7 +19,7 @@ class ConnectionMySQL(ClassicConnectionSQL):
     is_always_user_source: ClassVar[bool] = True
 
     @attr.s(kw_only=True)
-    class DataModel(ConnMDBDataModelMixin, ClassicConnectionSQL.DataModel):
+    class DataModel(ClassicConnectionSQL.DataModel):
         pass
 
     def get_conn_dto(self) -> MySQLConnDTO:

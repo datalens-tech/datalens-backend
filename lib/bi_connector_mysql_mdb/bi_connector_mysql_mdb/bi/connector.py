@@ -1,6 +1,7 @@
 from bi_connector_mysql.bi.connector import MySQLBiApiConnectionDefinition, MySQLBiApiConnector
 from bi_connector_mysql_mdb.bi.api_schema.connection import MySQLMDBConnectionSchema
 from bi_connector_mysql_mdb.bi.connection_form.form_config import MySQLMDBConnectionFormFactory
+from bi_connector_mysql_mdb.core.connector import MySQLMDBCoreConnector
 
 
 class MySQLMDBBiApiConnectionDefinition(MySQLBiApiConnectionDefinition):
@@ -9,4 +10,5 @@ class MySQLMDBBiApiConnectionDefinition(MySQLBiApiConnectionDefinition):
 
 
 class MySQLMDBBiApiConnector(MySQLBiApiConnector):
+    core_connector_cls = MySQLMDBCoreConnector
     connection_definitions = (MySQLMDBBiApiConnectionDefinition,)

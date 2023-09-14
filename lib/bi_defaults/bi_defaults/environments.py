@@ -102,7 +102,7 @@ class DataCloudInstallation(
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'chyt',
         'mssql',
         'file',
@@ -624,7 +624,7 @@ class ExternalTestingInstallation(
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'ydb',
         'chyt',
         'greenplum_mdb',
@@ -898,7 +898,7 @@ class ExternalProductionInstallation(
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'greenplum_mdb',
         'ydb',
         'chyt',
@@ -981,7 +981,7 @@ class IsraelInstallation(NebiusInstallation):
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'chyt',
         'mssql',
         'bigquery',
@@ -1024,7 +1024,7 @@ class NemaxInstallation(NebiusInstallation):
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
         'clickhouse',
         'postgresql_mdb',
-        'mysql',
+        'mysql_mdb',
         'chyt',
         'mssql',
         'bigquery',

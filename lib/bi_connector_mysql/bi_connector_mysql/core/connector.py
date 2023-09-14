@@ -15,9 +15,7 @@ from bi_connector_mysql.core.us_connection import ConnectionMySQL
 from bi_connector_mysql.core.storage_schemas.connection import ConnectionMySQLDataStorageSchema
 from bi_connector_mysql.core.data_source import MySQLDataSource, MySQLSubselectDataSource
 from bi_connector_mysql.core.connection_executors import MySQLConnExecutor, AsyncMySQLConnExecutor
-from bi_connector_mysql.core.dto import MySQLConnDTO
 from bi_connector_mysql.core.sa_types import SQLALCHEMY_MYSQL_TYPES
-from bi_connector_mysql.core.settings import MySQLSettingDefinition
 from bi_connector_mysql.core.data_source_migration import MySQLDataSourceMigrator
 
 
@@ -29,7 +27,6 @@ class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = MySQLConnExecutor
     async_conn_executor_cls = AsyncMySQLConnExecutor
     dialect_string = 'bi_mysql'
-    settings_definition = MySQLSettingDefinition
     data_source_migrator_cls = MySQLDataSourceMigrator
 
 
@@ -53,5 +50,4 @@ class MySQLCoreConnector(CoreConnector):
         MySQLSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({MySQLAdapter, AsyncMySQLAdapter})
-    mdb_dto_classes = frozenset({MySQLConnDTO})
     sa_types = SQLALCHEMY_MYSQL_TYPES
