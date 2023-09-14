@@ -2,6 +2,11 @@ name: release_bump_version
 
 on:
   workflow_dispatch:
+    inputs:
+      auto_build_targets:
+        type: string
+        description: "Space separated. This targets will be added to build_advise.json to launch build."
+        default: "app_bi_api app_yc_control_api app_yc_data_api app_yc_data_api_sec_embeds app_yc_public_dataset_api app_bi_rqe_ext_async app_bi_rqe_ext_sync app_bi_rqe_int_sync app_bi_file_uploader app_yc_file_uploader_api app_bi_file_uploader_worker app_yc_file_uploader_worker"
 
 jobs:
   build:
@@ -35,6 +40,7 @@ jobs:
         env:
           GIT_CURRENT_BRANCH: "${{ github.ref_name }}"
           PR_URL_FILE_LOCATION: "./bump_version_pr_url.txt"
+          AUTO_BAKE_TARGETS_SPACE_SEPARATED: ${{ auto_build_targets }}
           GH_TOKEN: ${{ github.token }}
         run: bash .github/release_scripts/01_bump_version_create_pr.bash
       - name: "Approve PR"

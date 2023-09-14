@@ -5,6 +5,7 @@ set -eu
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 export PROJECT_ROOT=$(realpath "${HERE}/../..")
 
+AUTO_BAKE_TARGETS_SPACE_SEPARATED="${AUTO_BAKE_TARGETS_SPACE_SEPARATED}"
 GIT_CURRENT_BRANCH=${GIT_CURRENT_BRANCH}
 PR_URL_FILE_LOCATION=${PR_URL_FILE_LOCATION}
 GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY}
@@ -24,7 +25,7 @@ bump2version minor "${PROJECT_ROOT}/.bumpversion.cfg"
 NEW_VERSION=$(bump2version --list --allow-dirty --dry-run "${PROJECT_ROOT}/.bumpversion.cfg" | grep current_version | cut -f 2 -d =)
 COMMIT_MSG="releasing version ${NEW_VERSION}"
 
-echo "{}" >> "${PROJECT_ROOT}/build_advise.json"
+jq -R 'split(" ")' <<< "${AUTO_BAKE_TARGETS_SPACE_SEPARATED}" | jq '. | {bake_targets: .}' >> "${PROJECT_ROOT}/build_advise.json"
 
 git add "${PROJECT_ROOT}"
 git commit -m "${COMMIT_MSG}"
