@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Union, Type, Optional, Any
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
-from bi_app_tools.utils import register_sa_dialects
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_utils.aio import ContextVarExecutor
@@ -244,7 +243,6 @@ def async_qe_main() -> None:
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware('bi-rqe-async'),
     )
-    register_sa_dialects()
     load_bi_core()
     try:
         parser = argparse.ArgumentParser(description='Process some integers.')

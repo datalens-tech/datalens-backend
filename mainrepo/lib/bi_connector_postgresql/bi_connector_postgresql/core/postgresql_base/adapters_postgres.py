@@ -8,7 +8,6 @@ import attr
 import sqlalchemy as sa
 
 from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_core.connection_models.common_models import TableIdent
 from bi_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,

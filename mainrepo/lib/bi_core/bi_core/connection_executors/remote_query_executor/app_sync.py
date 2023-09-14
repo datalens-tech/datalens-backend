@@ -8,7 +8,6 @@ import attr
 import flask.views
 from werkzeug.exceptions import HTTPException, Forbidden
 
-from bi_app_tools.utils import register_sa_dialects
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
 
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
@@ -228,7 +227,6 @@ def create_sync_app(hmac_key: Optional[bytes] = None) -> flask.Flask:
     assert isinstance(hmac_key, bytes)
     # Can't check `hmc_key` for nonemptiness here because this happens on import.
 
-    register_sa_dialects()
     load_bi_core()
 
     app = flask.Flask(__name__)

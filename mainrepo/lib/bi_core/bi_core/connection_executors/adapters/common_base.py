@@ -13,7 +13,6 @@ from bi_core.backend_types import get_backend_type
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
-    from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
 
 _DIALECT_STRINGS: dict[ConnectionType, str] = {}  # Filled from connectors
