@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
     from bi_core.data_processing.cache.primitives import LocalKeyRepresentation
     from bi_core.data_processing.types import TValuesChunkStream
-    from bi_api_commons.reporting import ReportingRegistry
+    from bi_api_commons.reporting.registry import ReportingRegistry
     from bi_core.services_registry import ServicesRegistry
     from bi_core.us_dataset import Dataset
     from bi_core.us_manager.local_cache import USEntryBuffer

@@ -6,7 +6,7 @@ import attr
 
 from bi_constants.enums import QueryType, ConnectionType, NotificationLevel
 
-from bi_api_commons.reporting import ReportingRecord
+from bi_api_commons.reporting.records import ReportingRecord
 
 
 @attr.s(frozen=True, auto_attribs=True)

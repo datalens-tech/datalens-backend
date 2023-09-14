@@ -12,7 +12,7 @@ from bi_configs.enums import RequiredService
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.data_source.collection import DataSourceCollectionFactory
-from bi_api_commons.reporting import ReportingRegistry
+from bi_api_commons.reporting.registry import ReportingRegistry
 from bi_core.services_registry.cache_engine_factory import CacheEngineFactory, DefaultCacheEngineFactory
 from bi_core.services_registry.compute_executor import ComputeExecutorTPE
 from bi_core.services_registry.conn_executor_factory_base import ConnExecutorFactory

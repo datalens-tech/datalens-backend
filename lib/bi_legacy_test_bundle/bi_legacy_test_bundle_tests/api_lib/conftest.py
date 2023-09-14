@@ -73,7 +73,7 @@ from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1, SyncHttpDataApiV1_5, SyncHttpDataApiV2
 
 from bi_api_commons.base_models import RequestContextInfo, TenantCommon
-from bi_api_commons.reporting import DefaultReportingRegistry
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_api_commons_ya_cloud.models import TenantYCFolder
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_core.connections_security.base import InsecureConnectionSecurityManager

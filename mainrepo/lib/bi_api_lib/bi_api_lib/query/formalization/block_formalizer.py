@@ -10,7 +10,7 @@ from bi_constants.enums import FieldRole, FieldType, NotificationType
 
 from bi_core.us_dataset import Dataset
 from bi_core.reporting.notifications import get_notification_record
-from bi_api_commons.reporting import ReportingRegistry
+from bi_api_commons.reporting.registry import ReportingRegistry
 
 from bi_query_processing.enums import EmptyQueryMode, QueryType
 from bi_api_lib.query.formalization.raw_specs import (

@@ -14,12 +14,12 @@ from bi_constants.api_constants import DLHeadersCommon
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 from bi_api_commons import request_id_generator, make_uuid_from_parts, log_request_start
 from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.reporting import DefaultReportingRegistry
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from .commons import get_endpoint_code
 from bi_api_commons.aiohttp import aiohttp_wrappers
 from bi_api_commons.headers import HEADER_LOGGING_CONTEXT, HEADER_DEBUG_MODE_ENABLED, get_x_dl_context
 from bi_api_commons.logging import NON_TRANSITIVE_LOGGING_CTX_KEYS, log_request_end
-from ...reporting.profiler import DefaultReportingProfiler
+from bi_api_commons.reporting.profiler import DefaultReportingProfiler
 
 
 LOGGER = logging.getLogger(__name__)

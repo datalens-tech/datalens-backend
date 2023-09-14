@@ -24,7 +24,7 @@ from bi_api_commons.reporting.models import (
 from bi_api_commons.reporting.records import ReportingRecord
 
 if TYPE_CHECKING:
-    from bi_api_commons.reporting import ReportingRegistry
+    from bi_api_commons.reporting.registry import ReportingRegistry
 
 
 PROFILING_LOG_NAME = 'bi_core.profiling_db'

@@ -6,7 +6,7 @@ from typing import List, Tuple, Optional, Type, TypeVar
 import attr
 
 from bi_api_commons.base_models import RequestContextInfo
-from .records import ReportingRecord, RequestResultReportingRecord
+from bi_api_commons.reporting.records import ReportingRecord, RequestResultReportingRecord
 
 _RECORD_TV = TypeVar("_RECORD_TV", bound=ReportingRecord)
 

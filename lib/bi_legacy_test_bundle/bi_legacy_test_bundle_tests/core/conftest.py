@@ -10,7 +10,7 @@ import aiohttp.pytest_plugin
 from flask import Flask, current_app
 import pytest
 
-from bi_api_commons.reporting import DefaultReportingRegistry
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_task_processor.processor import DummyTaskProcessorFactory
 from statcommons.logs import LOGMUTATORS

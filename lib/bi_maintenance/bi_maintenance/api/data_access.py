@@ -19,7 +19,7 @@ import tabulate
 from bi_constants.enums import PivotRole
 
 from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.reporting import DefaultReportingRegistry, ReportingRegistry
+from bi_api_commons.reporting.registry import DefaultReportingRegistry, ReportingRegistry
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
 

@@ -15,7 +15,7 @@ from bi_constants.enums import ProcessorType
 
 from bi_configs.enums import RequiredService
 
-from bi_api_commons.reporting import ReportingRegistry
+from bi_api_commons.reporting.registry import ReportingRegistry
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from bi_core.services_registry.selector_factory import DefaultSelectorFactory
 from bi_core.services_registry.top_level import DefaultServicesRegistry, ServicesRegistry

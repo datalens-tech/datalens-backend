@@ -13,7 +13,8 @@ from bi_api_commons.aio.typing import AIOHTTPMethodMiddleware, AIOHTTPMiddleware
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons.exc import InvalidHeaderException
 from bi_api_commons.logging import RequestLoggingContextController
-from bi_api_commons.reporting import ReportingProfiler, ReportingRegistry
+from bi_api_commons.reporting.registry import ReportingRegistry
+from bi_api_commons.reporting.profiler import ReportingProfiler
 from bi_constants.api_constants import DLHeaders
 
 

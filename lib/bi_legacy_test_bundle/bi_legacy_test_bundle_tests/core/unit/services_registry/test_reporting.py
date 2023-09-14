@@ -13,7 +13,8 @@ from bi_api_commons.reporting.models import (
     QueryExecutionEndReportingRecord,
     QueryExecutionCacheInfoReportingRecord,
 )
-from bi_api_commons.reporting import DefaultReportingRegistry, RequestResultReportingRecord
+from bi_api_commons.reporting.records import RequestResultReportingRecord
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_api_commons.reporting.profiler import DefaultReportingProfiler
 from bi_api_commons_ya_cloud.models import TenantYCFolder
 

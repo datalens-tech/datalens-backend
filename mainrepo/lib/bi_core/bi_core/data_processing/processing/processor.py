@@ -15,7 +15,7 @@ from bi_core.data_processing.stream_base import AbstractStream, DataStreamAsync
 
 if TYPE_CHECKING:
     from bi_core.services_registry import ServicesRegistry  # noqa
-    from bi_api_commons.reporting import ReportingRegistry  # noqa
+    from bi_api_commons.reporting.registry import ReportingRegistry  # noqa
 
 
 LOGGER = logging.getLogger(__name__)

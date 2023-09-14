@@ -16,7 +16,7 @@ from bi_utils.aio import ContextVarExecutor
 from bi_db_testing.database.engine_wrapper import DbEngineConfig
 
 from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.reporting import DefaultReportingRegistry
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 
 from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory

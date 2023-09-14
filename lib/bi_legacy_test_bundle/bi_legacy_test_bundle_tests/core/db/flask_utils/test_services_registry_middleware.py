@@ -14,7 +14,7 @@ from bi_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
 from bi_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from bi_core.flask_utils.trust_auth import TrustAuthService
 from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
-from bi_api_commons.reporting import DefaultReportingRegistry
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_core.services_registry import DefaultServicesRegistry, ServicesRegistry
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from bi_core.services_registry.sr_factories import SRFactory

@@ -7,7 +7,7 @@ from bi_utils.utils import enum_not_none
 
 from bi_constants.enums import ManagedBy
 
-from bi_api_commons.reporting import ReportingRegistry
+from bi_api_commons.reporting.registry import ReportingRegistry
 from bi_api_commons.reporting.models import NotificationReportingRecord
 from bi_core.us_dataset import Dataset
 

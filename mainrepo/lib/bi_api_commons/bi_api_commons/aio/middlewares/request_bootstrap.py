@@ -20,7 +20,7 @@ from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHand
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 from bi_api_commons.logging import RequestLoggingContextController
-from bi_api_commons.reporting import RequestResultReportingRecord
+from bi_api_commons.reporting.records import RequestResultReportingRecord
 from bi_api_commons.exc import RequestTimeoutError
 
 
