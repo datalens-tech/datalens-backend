@@ -4,7 +4,8 @@ from typing import ClassVar
 
 import attr
 
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
+from bi_constants.api_constants import DLHeaders, DLCookies, DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
 from bi_api_commons.base_models import TenantDef, AuthData
 
@@ -56,7 +57,7 @@ class IAMAuthData(AuthData):
     iam_token: str = attr.ib(repr=False)
 
     def get_headers(self) -> dict[DLHeaders, str]:
-        return {DLHeadersCommon.IAM_TOKEN: self.iam_token}
+        return {DLHeadersYC.IAM_TOKEN: self.iam_token}
 
     def get_cookies(self) -> dict[DLCookies, str]:
         return {}

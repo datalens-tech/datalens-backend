@@ -8,7 +8,8 @@ import flask
 import requests
 from werkzeug.exceptions import Forbidden
 
-from bi_constants.api_constants import DLHeadersCommon, DLCookiesCommon
+from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_team.constants import DLCookiesYT
 from bi_api_commons.access_control_common import match_path_prefix, get_token_from_authorization_header, AuthTokenType
 from bi_api_commons.base_models import TenantCommon
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
@@ -41,8 +42,8 @@ def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
     assert rci, "Can not get any RCI for current request"
     req_id = rci.request_id
 
-    secret_session_id_cookie = flask.request.cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID.value, None)
-    secret_sessionid2_cookie = flask.request.cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID_2.value, None)
+    secret_session_id_cookie = flask.request.cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID.value, None)
+    secret_sessionid2_cookie = flask.request.cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID_2.value, None)
     secret_authorization_header_value = flask.request.headers.get(DLHeadersCommon.AUTHORIZATION_TOKEN.value)
 
     user_ip = (

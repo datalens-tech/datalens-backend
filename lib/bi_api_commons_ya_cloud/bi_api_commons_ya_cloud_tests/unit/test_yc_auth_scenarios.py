@@ -5,7 +5,8 @@ from typing import Dict, Any, ClassVar, Callable, Generator, Union
 import pytest
 import shortuuid
 
-from bi_constants.api_constants import DLHeadersCommon, YcTokenHeaderMode, DLHeaders
+from bi_constants.api_constants import DLHeaders, DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
 
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 
@@ -32,17 +33,17 @@ class Scenario_YCAuth_Base:  # noqa
         return actual_param
 
     @pytest.fixture()
-    def iam_token_header_key(self, yc_token_header_mode) -> DLHeadersCommon:
+    def iam_token_header_key(self, yc_token_header_mode) -> DLHeaders:
         return {
-            YcTokenHeaderMode.INTERNAL: DLHeadersCommon.IAM_TOKEN,
+            YcTokenHeaderMode.INTERNAL: DLHeadersYC.IAM_TOKEN,
             YcTokenHeaderMode.EXTERNAL: DLHeadersCommon.AUTHORIZATION_TOKEN,
-            YcTokenHeaderMode.UNIVERSAL: DLHeadersCommon.IAM_TOKEN,
+            YcTokenHeaderMode.UNIVERSAL: DLHeadersYC.IAM_TOKEN,
         }[yc_token_header_mode]
 
     @pytest.fixture()
-    def iam_token_header_value_encoder(self, iam_token_header_key: DLHeadersCommon) -> Callable[[str], str]:
+    def iam_token_header_value_encoder(self, iam_token_header_key: DLHeaders) -> Callable[[str], str]:
         return {
-            DLHeadersCommon.IAM_TOKEN: lambda s: s,
+            DLHeadersYC.IAM_TOKEN: lambda s: s,
             DLHeadersCommon.AUTHORIZATION_TOKEN: lambda s: f"Bearer {s}"
         }[iam_token_header_key]
 
@@ -50,7 +51,7 @@ class Scenario_YCAuth_Base:  # noqa
     def iam_token_header_kv_encoder(
             self,
             iam_token_header_key, iam_token_header_value_encoder
-    ) -> Callable[[str], Dict[DLHeadersCommon, str]]:
+    ) -> Callable[[str], Dict[DLHeaders, str]]:
         return lambda s: {iam_token_header_key: iam_token_header_value_encoder(s)}
 
     def get_resp_json(self, msg: Union[str, UserErrorMessages]) -> Dict[str, Any]:
@@ -72,7 +73,7 @@ class Scenario_YCAuth_Base:  # noqa
 
     @pytest.mark.parametrize("yc_token_header_mode,should_be_ignored_header", [
         (YcTokenHeaderMode.INTERNAL, DLHeadersCommon.AUTHORIZATION_TOKEN),
-        (YcTokenHeaderMode.EXTERNAL, DLHeadersCommon.IAM_TOKEN),
+        (YcTokenHeaderMode.EXTERNAL, DLHeadersYC.IAM_TOKEN),
         (YcTokenHeaderMode.UNIVERSAL, None,),
         (YcTokenHeaderMode.UNIVERSAL, None,),
     ], indirect=["yc_token_header_mode"])
@@ -89,17 +90,17 @@ class Scenario_YCAuth_Base:  # noqa
         assert resp.json == self.get_resp_json(UserErrorMessages.no_authentication_data_provided)
 
     @pytest.mark.parametrize("yc_token_header_mode,iam_token_header_name", [
-        (YcTokenHeaderMode.INTERNAL, DLHeadersCommon.IAM_TOKEN),
+        (YcTokenHeaderMode.INTERNAL, DLHeadersYC.IAM_TOKEN),
         (YcTokenHeaderMode.EXTERNAL, DLHeadersCommon.AUTHORIZATION_TOKEN),
         (YcTokenHeaderMode.UNIVERSAL, DLHeadersCommon.AUTHORIZATION_TOKEN,),
-        (YcTokenHeaderMode.UNIVERSAL, DLHeadersCommon.IAM_TOKEN,),
+        (YcTokenHeaderMode.UNIVERSAL, DLHeadersYC.IAM_TOKEN,),
     ], indirect=["yc_token_header_mode"])
     def test_invalid_iam_token(self, client, yc_token_header_mode, iam_token_header_name):
         """
         Check that for each YcTokenHeaderMode correct header will be picked as IAM token
         """
         iam_token_header_value = {
-            DLHeadersCommon.IAM_TOKEN: lambda s: s,
+            DLHeadersYC.IAM_TOKEN: lambda s: s,
             DLHeadersCommon.AUTHORIZATION_TOKEN: lambda s: f"Bearer {s}"
         }[iam_token_header_name]("dummy_iam_tokenn12312")
 
@@ -239,7 +240,7 @@ class Scenario_YCAuth_ModeYC(Scenario_YCAuth_Base):
     ):
         resp = client.get("/auth_ctx", headers=get_headers({
             **iam_token_header_kv_encoder(authorized_user.get_single_iam_token()),
-            DLHeadersCommon.FOLDER_ID: folder_id,
+            DLHeadersYC.FOLDER_ID: folder_id,
         }))
         assert resp.status_code == 200
         if 'folder_id' in resp.json:
@@ -263,7 +264,7 @@ class Scenario_YCAuth_ModeYC(Scenario_YCAuth_Base):
             iam_token_header_kv_encoder,
     ):
         tenant_headers = {
-            "folder_id": lambda: {DLHeadersCommon.FOLDER_ID: folder_id},
+            "folder_id": lambda: {DLHeadersYC.FOLDER_ID: folder_id},
             "tenant_id": lambda: {DLHeadersCommon.TENANT_ID: folder_id},
         }[tenant_header_mode]()
 
@@ -313,7 +314,7 @@ class Scenario_YCAuth_ModeYC(Scenario_YCAuth_Base):
     ):
         resp = client.get("/auth_ctx", headers=get_headers({
             **iam_token_header_kv_encoder(unauthorized_user.get_single_iam_token()),
-            DLHeadersCommon.FOLDER_ID: folder_id,
+            DLHeadersYC.FOLDER_ID: folder_id,
         }))
         assert resp.status_code == 403
         assert resp.json == self.get_resp_json(UserErrorMessages.user_unauthorized)
@@ -322,7 +323,7 @@ class Scenario_YCAuth_ModeYC(Scenario_YCAuth_Base):
 class Scenario_YCAuth_ModeYC_DenyCookieAuth(Scenario_YCAuth_ModeYC):
     def test_cookie_auth_fails(self, client, authorized_user, folder_id):
         client.set_cookie('', 'yc_session', authorized_user.get_single_yc_cookie())
-        resp = client.get("/auth_ctx", headers=get_headers({DLHeadersCommon.FOLDER_ID: folder_id}))
+        resp = client.get("/auth_ctx", headers=get_headers({DLHeadersYC.FOLDER_ID: folder_id}))
         assert resp.status_code == 401
         assert resp.json == self.get_resp_json(UserErrorMessages.no_authentication_data_provided)
 
@@ -332,7 +333,7 @@ class Scenario_YCAuth_ModeYC_AllowCookieAuth(Scenario_YCAuth_ModeYC):
         previous_iam_token = authorized_user.get_single_iam_token()
 
         client.set_cookie('', 'yc_session', authorized_user.get_single_yc_cookie())
-        resp = client.get("/auth_ctx", headers=get_headers({DLHeadersCommon.FOLDER_ID: folder_id}))
+        resp = client.get("/auth_ctx", headers=get_headers({DLHeadersYC.FOLDER_ID: folder_id}))
         assert resp.status_code == 200
         new_iam_token = resp.json["iam_token"]
         # Check that new IAM token was issued for user
@@ -348,7 +349,7 @@ class Scenario_YCAuth_ModeYC_AllowCookieAuth(Scenario_YCAuth_ModeYC):
         # Check that resolved IAM token is valid
         client.delete_cookie('', 'yc_session')
         ctx_resp_header = client.get("/auth_ctx", headers=get_headers({
-            DLHeadersCommon.FOLDER_ID: folder_id,
+            DLHeadersYC.FOLDER_ID: folder_id,
             **iam_token_header_kv_encoder(new_iam_token),
         }))
         assert ctx_resp_header.status_code == 200

@@ -15,6 +15,7 @@ import sentry_sdk
 from aiohttp import web, ClientSession, ClientConnectorError
 
 from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
 from bi_api_commons.logging_sentry import cleanup_common_secret_data
 from bi_core.flask_utils.sentry import configure_raven_for_flask
 from bi_testing_ya.api_wrappers import HTTPClientWrapper
@@ -354,7 +355,7 @@ def keys_to_lower(d: dict[str, str]) -> dict[str, str]:
 @pytest.mark.asyncio
 async def test_locals_cleanup_in_apps(sentry_client_web_app: SentryClientWebApp, sentry_mock: SentryMock) -> None:
     resp = await sentry_client_web_app.client.request(
-        "get", "the_ok_but_error_in_logs", headers={DLHeadersCommon.IAM_TOKEN.value: "iam6"}
+        "get", "the_ok_but_error_in_logs", headers={DLHeadersYC.IAM_TOKEN.value: "iam6"}
     )
     assert resp.status == 200
     evt = await sentry_mock.get_next_event()
@@ -367,7 +368,7 @@ async def test_locals_cleanup_in_apps(sentry_client_web_app: SentryClientWebApp,
     # Just raven logging client also applies headers sanitizer
     # Because currently in flask apps there are 2 clients: one for logging, another one for Flask itself
     if "request" in evt:
-        evt_iam_token = keys_to_lower(evt['request']['headers'])[DLHeadersCommon.IAM_TOKEN.value.lower()]
+        evt_iam_token = keys_to_lower(evt['request']['headers'])[DLHeadersYC.IAM_TOKEN.value.lower()]
         assert evt_iam_token == "<hidden>"
 
     all_frames = list(itertools.chain(*[exc['stacktrace']['frames'] for exc in evt['exception']['values']]))
@@ -382,7 +383,7 @@ async def test_locals_cleanup_in_apps(sentry_client_web_app: SentryClientWebApp,
 async def test_headers_cleanup(sentry_client_web_app: SentryClientWebApp, sentry_mock: SentryMock) -> None:
     req_headers = {
         "some-not-hardcodded-secret-token": "hide_me_please",
-        DLHeadersCommon.IAM_TOKEN.value: "hide_me",
+        DLHeadersYC.IAM_TOKEN.value: "hide_me",
         DLHeadersCommon.AUTHORIZATION_TOKEN.value: "NoNo",
         DLHeadersCommon.REQUEST_ID.value: "my_req_id",
     }
@@ -413,7 +414,7 @@ async def test_headers_cleanup(sentry_client_web_app: SentryClientWebApp, sentry
 
     assert keys_to_lower(relevant_event_headers) == keys_to_lower({
         "some-not-hardcodded-secret-token": "hid<hidden>ase",
-        DLHeadersCommon.IAM_TOKEN.value: "<hidden>",
+        DLHeadersYC.IAM_TOKEN.value: "<hidden>",
         DLHeadersCommon.AUTHORIZATION_TOKEN.value: "<hidden>",
         DLHeadersCommon.REQUEST_ID.value: "my_req_id",
     })

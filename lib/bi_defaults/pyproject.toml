@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 # connectors

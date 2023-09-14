@@ -22,6 +22,7 @@ from bi_configs.connector_availability import (
 )
 from bi_configs.enums import EnvType, RedisMode
 from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
 
 DOMAIN_BI_API_LIB_YA = 'bi_api_lib_ya'
@@ -66,8 +67,8 @@ class DataCloudInstallation(
     CORS_ALLOWED_HEADERS: ClassVar[tuple[str, ...]] = (
         DLHeadersCommon.CONTENT_TYPE,
         DLHeadersCommon.REQUEST_ID,
-        DLHeadersCommon.FOLDER_ID,
-        DLHeadersCommon.IAM_TOKEN,
+        DLHeadersYC.FOLDER_ID,
+        DLHeadersYC.IAM_TOKEN,
         DLHeadersCommon.TENANT_ID,
         DLHeadersCommon.PROJECT_ID,
         DLHeadersCommon.CSRF_TOKEN,
@@ -500,8 +501,8 @@ class CommonExternalInstallation(
     CORS_ALLOWED_HEADERS: ClassVar[tuple[str, ...]] = (
         DLHeadersCommon.CONTENT_TYPE,
         DLHeadersCommon.REQUEST_ID,
-        DLHeadersCommon.FOLDER_ID,
-        DLHeadersCommon.IAM_TOKEN,
+        DLHeadersYC.FOLDER_ID,
+        DLHeadersYC.IAM_TOKEN,
         DLHeadersCommon.TENANT_ID,
         DLHeadersCommon.CSRF_TOKEN,
     )

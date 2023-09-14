@@ -2,7 +2,7 @@ from typing import Sequence, Any
 
 import attr
 
-from bi_constants.api_constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud

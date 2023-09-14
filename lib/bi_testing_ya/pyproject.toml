@@ -18,6 +18,7 @@ opentracing = ">=2.4.0"
 pytest = ">=7.2.2"
 python = ">=3.10, <3.12"
 pyyaml = ">=5.3.1"
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-passport-vault-client = ">=1.5.2"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}

@@ -5,7 +5,7 @@ from typing import Optional
 
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.enums import AppType
-from bi_constants.api_constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_constants.enums import ConnectionType
 
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware

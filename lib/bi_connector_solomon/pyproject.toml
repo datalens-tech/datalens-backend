@@ -16,6 +16,7 @@ bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 tvmauth = ">=3.4.9"
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}

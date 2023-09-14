@@ -11,7 +11,8 @@ from bi_cloud_integration.exc import YCBadRequest, YCUnauthenticated, YCPermissi
 from bi_cloud_integration.model import IAMAccount, IAMUserAccount, IAMServiceAccount, IAMResource
 from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_ss_client import DLSSClient
-from bi_constants.api_constants import DLHeadersCommon, DLHeaders, YcTokenHeaderMode
+from bi_constants.api_constants import DLHeaders, DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
 from bi_api_commons.access_control_common import AuthFailureError
 from bi_api_commons.error_messages import UserErrorMessages
 from bi_api_commons.logging import RequestLoggingContextController
@@ -175,7 +176,7 @@ class YCAccessController(YCBaseController):
 
     def _get_iam_token_from_header(self) -> Optional[str]:
         def get_internal_yc_token() -> Optional[str]:
-            return self.get_request_header(DLHeadersCommon.IAM_TOKEN, required=False)
+            return self.get_request_header(DLHeadersYC.IAM_TOKEN, required=False)
 
         def get_external_yc_token() -> Optional[str]:
             secret_header_value = self.get_request_header(DLHeadersCommon.AUTHORIZATION_TOKEN, required=False)
@@ -248,7 +249,7 @@ class YCAccessController(YCBaseController):
         auth_mode = self._authorization_mode
 
         if isinstance(auth_mode, AuthorizationModeYandexCloud):
-            hdr_folder_id = self.get_request_header(DLHeadersCommon.FOLDER_ID, required=False)
+            hdr_folder_id = self.get_request_header(DLHeadersYC.FOLDER_ID, required=False)
             hdr_org_id = self.get_request_header(DLHeadersCommon.ORG_ID, required=False)
             hdr_dl_tenant_id = self.get_request_header(DLHeadersCommon.TENANT_ID, required=False)
 
@@ -486,7 +487,7 @@ class YCEmbedAccessController(YCBaseController):
             if project_id is not None:
                 return TenantDCProject(project_id=project_id)
         elif isinstance(auth_mode, AuthorizationModeYandexCloud):
-            hdr_folder_id = self.get_request_header(DLHeadersCommon.FOLDER_ID, required=False)
+            hdr_folder_id = self.get_request_header(DLHeadersYC.FOLDER_ID, required=False)
             hdr_org_id = self.get_request_header(DLHeadersCommon.ORG_ID, required=False)
             hdr_dl_tenant_id = self.get_request_header(DLHeadersCommon.TENANT_ID, required=False)
 

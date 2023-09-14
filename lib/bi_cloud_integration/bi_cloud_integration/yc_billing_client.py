@@ -8,7 +8,7 @@ import attr
 from aiohttp import ClientSession, hdrs
 from aiohttp.http import SERVER_SOFTWARE as AIOHTTP_SERVER_SOFTWARE
 
-from bi_constants import api_constants
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
 from bi_cloud_integration.exc import YCBillingAPIError
 from bi_cloud_integration.local_metadata import get_yc_service_token_local
 
@@ -21,17 +21,17 @@ LOGGER = logging.getLogger(__name__)
 
 
 def make_yc_user_auth_headers(request: Request) -> Dict[str, str]:
-    iam_token = request.headers.get(api_constants.DLHeadersCommon.IAM_TOKEN.value)
+    iam_token = request.headers.get(DLHeadersYC.IAM_TOKEN.value)
     if not iam_token:
         LOGGER.warning('iam_token not provided')
         return {}
-    return {api_constants.DLHeadersCommon.IAM_TOKEN.value: iam_token}
+    return {DLHeadersYC.IAM_TOKEN.value: iam_token}
 
 
 async def make_yc_service_auth_headers() -> Dict[str, str]:
     iam_token = await get_yc_service_token_local()
     assert iam_token
-    return {api_constants.DLHeadersCommon.IAM_TOKEN.value: iam_token}
+    return {DLHeadersYC.IAM_TOKEN.value: iam_token}
 
 
 @attr.s

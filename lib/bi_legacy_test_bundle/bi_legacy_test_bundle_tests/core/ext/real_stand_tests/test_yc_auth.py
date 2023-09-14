@@ -14,7 +14,8 @@ from aiohttp.typedefs import Handler
 
 from bi_api_commons.exc import InvalidHeaderException
 from bi_testing.utils import skip_outside_devhost
-from bi_constants.api_constants import YcTokenHeaderMode, DLHeadersCommon
+from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
 
 from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
@@ -98,10 +99,10 @@ def app_factory(aiohttp_client, bi_common_stand_access_service_endpoint) -> _App
 @skip_outside_devhost
 @pytest.mark.asyncio
 @pytest.mark.parametrize("hdr_mode,hdr_name,hdr_val_format", [
-    (YcTokenHeaderMode.UNIVERSAL, DLHeadersCommon.IAM_TOKEN.value, "{}"),
+    (YcTokenHeaderMode.UNIVERSAL, DLHeadersYC.IAM_TOKEN.value, "{}"),
     (YcTokenHeaderMode.UNIVERSAL, DLHeadersCommon.AUTHORIZATION_TOKEN.value, "Bearer {}"),
     (YcTokenHeaderMode.EXTERNAL, DLHeadersCommon.AUTHORIZATION_TOKEN.value, "Bearer {}"),
-    (YcTokenHeaderMode.INTERNAL, DLHeadersCommon.IAM_TOKEN.value, "{}"),
+    (YcTokenHeaderMode.INTERNAL, DLHeadersYC.IAM_TOKEN.value, "{}"),
 ])
 async def test_auth_ok_universal(
         bi_common_stand_folder_id,
@@ -117,7 +118,7 @@ async def test_auth_ok_universal(
         "/",
         headers={
             hdr_name: hdr_val_format.format(test_user_creds.token),
-            DLHeadersCommon.FOLDER_ID.value: folder_id,
+            DLHeadersYC.FOLDER_ID.value: folder_id,
         })
     async with resp_cm as resp:
         rd = await resp.json()
@@ -127,7 +128,7 @@ async def test_auth_ok_universal(
         "/",
         headers={
             hdr_name: hdr_val_format.format(shortuuid.uuid()),
-            DLHeadersCommon.FOLDER_ID.value: folder_id,
+            DLHeadersYC.FOLDER_ID.value: folder_id,
         })
     async with resp_cm as resp:
         rd = await resp.json()
@@ -138,7 +139,7 @@ async def test_auth_ok_universal(
 @pytest.mark.parametrize('yc_token_mode,hdr_name_in_msg', [
     (YcTokenHeaderMode.UNIVERSAL, DLHeadersCommon.AUTHORIZATION_TOKEN.value),
     (YcTokenHeaderMode.EXTERNAL, DLHeadersCommon.AUTHORIZATION_TOKEN.value),
-    (YcTokenHeaderMode.INTERNAL, DLHeadersCommon.IAM_TOKEN.value),
+    (YcTokenHeaderMode.INTERNAL, DLHeadersYC.IAM_TOKEN.value),
 ])
 async def test_missing_header_universal(app_factory: _AppFactory, yc_token_mode, hdr_name_in_msg):
     app = await app_factory(_AppConfig(yc_token_header_mode=yc_token_mode))

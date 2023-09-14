@@ -6,7 +6,7 @@ import flask
 import pytest
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
-from bi_constants.api_constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare

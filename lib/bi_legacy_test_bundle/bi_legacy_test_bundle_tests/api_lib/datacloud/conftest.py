@@ -11,7 +11,7 @@ import requests
 import shortuuid
 from botocore.client import BaseClient
 
-from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.enums import AppType, EnvType
@@ -156,7 +156,7 @@ def dc_rs_bi_api_client_factory(
             def get_default_headers(self) -> Dict[str, Optional[str]]:
                 return {
                     **super().get_default_headers(),
-                    DLHeadersCommon.IAM_TOKEN.value: dc_rc_user_account.token,
+                    DLHeadersYC.IAM_TOKEN.value: dc_rc_user_account.token,
                     "x-dc-projectid": dc_rs_project_id,
                 }
 
@@ -216,7 +216,7 @@ def dc_rs_data_api_v1(loop, dc_rs_project_id, dc_rc_user_account, dc_rs_dp_low_l
                 loop=loop,
                 aio_client=dc_rs_dp_low_level_client,
                 extra_headers={
-                    DLHeadersCommon.IAM_TOKEN.value: dc_rc_user_account.token,
+                    DLHeadersYC.IAM_TOKEN.value: dc_rc_user_account.token,
                     "x-dc-projectid": dc_rs_project_id,
                 }
             )
@@ -335,7 +335,7 @@ def dc_rs_workbook_id(dc_rs_project_id, dc_rs_us_base_url, dc_rc_user_account):
     url = f"{dc_rs_us_base_url.strip('/')}/v2/workbooks"
     headers = {
         "x-dc-projectid": dc_rs_project_id,
-        DLHeadersCommon.IAM_TOKEN.value: dc_rc_user_account.token,
+        DLHeadersYC.IAM_TOKEN.value: dc_rc_user_account.token,
     }
 
     wb_create_resp = requests.post(

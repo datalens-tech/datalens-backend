@@ -328,6 +328,7 @@ class UStorageClientBase:
                 response.request.method, response.request.relative_url,
                 mask_sensitive_fields_by_name_in_json_recursive(response.request.json),
                 response.content,
+                # TODO: BI-4918 move to local injection and reuse bi_api_commons_ya_cloud.constants.DLHeadersYC
                 response.request.get_header(DLHeadersCommon.FOLDER_ID.value),
                 response.request.get_header(DLHeadersCommon.ORG_ID.value),
                 response.get_header('X-Request-ID'),

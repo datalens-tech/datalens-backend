@@ -33,6 +33,7 @@ DEFAULT_RCI_PLAIN_HEADERS = (
 DEFAULT_RCI_SECRET_HEADERS = (
     'Authorization',
     'Cookie',
+    # TODO: BI-4918 move to local injection and reuse bi_api_commons_ya_cloud.constants.DLHeadersYC
     DLHeadersCommon.IAM_TOKEN.value,  # TODO add injection of extra secret headers to app factories
 )
 

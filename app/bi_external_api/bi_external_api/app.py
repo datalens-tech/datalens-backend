@@ -16,7 +16,7 @@ from bi_configs.enums import AppType
 from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
-from bi_constants.api_constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.aio.middlewares.tracing import TracingService

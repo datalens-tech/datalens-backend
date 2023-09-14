@@ -4,7 +4,7 @@ from typing import Callable, ClassVar, Optional
 
 import attr
 
-from bi_constants.api_constants import DLCookiesCommon
+from bi_api_commons_ya_team.constants import DLCookiesYT
 
 from bi_core.base_models import ConnCacheableDataModelMixin
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -27,8 +27,8 @@ class SolomonConnection(SubselectMixin, ExecutorBasedMixin, ConnectionBase):
         return SolomonConnDTO(
             conn_id=self.uuid,
             host=self.data.host,
-            cookie_session_id=_ctx_cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID),
-            cookie_sessionid2=_ctx_cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID_2),
+            cookie_session_id=_ctx_cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID),
+            cookie_sessionid2=_ctx_cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID_2),
             user_ip=self._context.client_ip,
             user_host=self._context.host,
         )

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Sequence
 
 import attr
 
-from bi_constants.api_constants import DLCookiesCommon
+from bi_api_commons_ya_team.constants import DLCookiesYT
 
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_solomon.core.adapter import AsyncSolomonAdapter
@@ -30,8 +30,8 @@ class SolomonAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[AsyncSolomon
             pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
             pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
             host=self._conn_dto.host,
-            cookie_session_id=_ctx_cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID),
-            cookie_sessionid2=_ctx_cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID_2),
+            cookie_session_id=_ctx_cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID),
+            cookie_sessionid2=_ctx_cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID_2),
             user_ip=self._req_ctx_info.client_ip,
             user_host=self._req_ctx_info.host,
         )]

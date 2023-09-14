@@ -4,7 +4,8 @@ from typing import Optional
 
 import attr
 
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies, DLCookiesCommon
+from bi_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
+from bi_api_commons_ya_team.constants import DLCookiesYT
 
 from bi_api_commons.base_models import AuthData
 
@@ -25,9 +26,9 @@ class YaTeamAuthData(AuthData):
         return {}
 
     def get_cookies(self) -> dict[DLCookies, str]:
-        cookies: dict[DLCookiesCommon, Optional[str]] = {
-            DLCookiesCommon.YA_TEAM_SESSION_ID: self.cookie_session_id,
-            DLCookiesCommon.YA_TEAM_SESSION_ID_2: self.cookie_sessionid2,
+        cookies: dict[DLCookiesYT, Optional[str]] = {
+            DLCookiesYT.YA_TEAM_SESSION_ID: self.cookie_session_id,
+            DLCookiesYT.YA_TEAM_SESSION_ID_2: self.cookie_sessionid2,
         }
         return {
             c_name: c_value

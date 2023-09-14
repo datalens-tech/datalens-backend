@@ -9,7 +9,8 @@ from aiohttp import web, hdrs
 from aiohttp.typedefs import Handler
 from typing import Optional
 
-from bi_constants.api_constants import DLHeadersCommon, DLCookiesCommon
+from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_team.constants import DLCookiesYT
 
 from bi_api_commons.aiohttp import aiohttp_wrappers
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
@@ -59,8 +60,8 @@ def blackbox_auth_middleware(
             assert req.remote is not None
             client_host = req.remote
 
-        secret_session_id_cookie = req.cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID.value)
-        secret_sessionid2_cookie = req.cookies.get(DLCookiesCommon.YA_TEAM_SESSION_ID_2.value)
+        secret_session_id_cookie = req.cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID.value)
+        secret_sessionid2_cookie = req.cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID_2.value)
         secret_authorization_header = app_request.get_single_header(DLHeadersCommon.AUTHORIZATION_TOKEN, required=False)
 
         try:

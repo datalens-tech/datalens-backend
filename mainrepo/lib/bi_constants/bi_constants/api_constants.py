@@ -22,14 +22,11 @@ class DLContextKey(str, enum.Enum):
 
 
 class DLHeadersCommon(DLHeaders):
-    IAM_TOKEN = "X-YaCloud-SubjectToken"
     AUTHORIZATION_TOKEN = "Authorization"
-    FOLDER_ID = "X-YaCloud-FolderId"
     REQUEST_ID = "X-Request-ID"
     PUBLIC_API_KEY = "X-DL-Back-Public-API-Token"
     FILE_UPLOADER_MASTER_TOKEN = "X-DL-File-Uploader-Master-Token"
     TENANT_ID = "X-DL-TenantId"  # Tenant in the UnitedStorage format.
-    ORG_ID = "X-YaCloud-OrgId"
     PROJECT_ID = "X-DC-ProjectId"
     FORWARDED_FOR = "X-Forwarded-For"
     CSRF_TOKEN = "X-CSRF-Token"
@@ -53,14 +50,11 @@ class DLHeadersCommon(DLHeaders):
 
     EMBED_TOKEN = "X-DL-Embed-Token"
 
+    # TODO: BI-4918 drop after all usages moved to bi_api_commons_ya_cloud.constants.DLHeadersYC
+    IAM_TOKEN = "X-YaCloud-SubjectToken"
+    FOLDER_ID = "X-YaCloud-FolderId"
+    ORG_ID = "X-YaCloud-OrgId"
+
 
 class DLCookiesCommon(DLCookies):
-    YA_TEAM_SESSION_ID = "Session_id"
-    YA_TEAM_SESSION_ID_2 = "sessionid2"
-    YC_SESSION = "yc_session"
-
-
-class YcTokenHeaderMode(enum.Enum):
-    INTERNAL = enum.auto()
-    EXTERNAL = enum.auto()
-    UNIVERSAL = enum.auto()  # TODO: delete me some day
+    ...

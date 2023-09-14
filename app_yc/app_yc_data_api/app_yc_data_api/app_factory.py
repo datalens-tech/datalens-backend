@@ -5,7 +5,7 @@ from typing import Optional
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.enums import RequiredService, RQE_SERVICES
-from bi_constants.api_constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_constants.enums import ConnectionType
 
 from bi_core.aio.middlewares.services_registry import services_registry_middleware

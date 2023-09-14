@@ -6,7 +6,7 @@ import pytest
 from aiohttp import web
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
-from bi_constants.api_constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap

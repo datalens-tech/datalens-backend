@@ -11,6 +11,7 @@ from aiohttp import MultipartWriter, ClientResponse
 from bi_api_commons.base_models import TenantDef
 from bi_api_commons.tracing import get_current_tracing_headers
 from bi_constants.api_constants import DLHeadersCommon
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
 from bi_configs.utils import get_root_certificates_path
 
 from bi_testing_ya.cloud_tokens import AccountCredentials
@@ -104,13 +105,13 @@ class APIClient:
         if tenant is not None:
             headers[DLHeadersCommon.TENANT_ID.value] = tenant.get_tenant_id()
         else:
-            headers[DLHeadersCommon.FOLDER_ID.value] = folder_id
+            headers[DLHeadersYC.FOLDER_ID.value] = folder_id
 
         if token is not None:
             if is_intranet_user:
                 headers[DLHeadersCommon.AUTHORIZATION_TOKEN.value] = f"OAuth {token}"
             else:
-                headers[DLHeadersCommon.IAM_TOKEN.value] = token
+                headers[DLHeadersYC.IAM_TOKEN.value] = token
 
         if public_api_key is not None:
             headers[DLHeadersCommon.PUBLIC_API_KEY.value] = public_api_key
