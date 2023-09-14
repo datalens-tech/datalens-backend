@@ -1,0 +1,21 @@
+name: release_build_tools_image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [ self-hosted, linux, ext_public ]
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .github/release_scripts/builder_image
+          push: true
+          tags: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/dl_releaser:${{ github.ref_name }}"
