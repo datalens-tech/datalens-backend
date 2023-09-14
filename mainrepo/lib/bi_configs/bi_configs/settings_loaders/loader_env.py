@@ -647,7 +647,7 @@ def load_settings_from_env_with_fallback(
 ) -> _SETTINGS_TV:
     effective_env = os.environ if env is None else env
 
-    if YamlFileConfigResolver.is_config_enabled(s_dict=env):
+    if YamlFileConfigResolver.is_config_enabled(s_dict=effective_env):
         default_fallback_cfg_resolver = YamlFileConfigResolver()
 
     if default_fallback_cfg_resolver is None:
