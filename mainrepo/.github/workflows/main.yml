@@ -88,11 +88,13 @@ jobs:
     - name: Get packages affected by changes in the current commit
       id: get_affected
       run: |
-        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
+        TARGET_DATA=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
         echo "Changed files from git diff: $TARGET"
-        . /venv/bin/activate && detect_affected_packages \
+        echo "$TARGET_DATA" > /tmp/targets.json
+        cat /tmp/targets.json
+        . /venv/bin/activate && detect-affected-packages \
           --repo=/src \
-          --changes="$TARGET" \
+          --changes_file="/tmp/targets.json \
           --root_pkgs="lib,app,terrarium" \
           --fallback_pkg="terrarium/bi_ci" | tee -a  >> "$GITHUB_OUTPUT"
       env:
@@ -124,8 +126,10 @@ jobs:
         id: get_split
         run: |
           . /venv/bin/activate && echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
-          export TEST_TARGETS="/tmp/dl_test_targets.json"
-          split_pytest_tasks /src | tee -a "$GITHUB_OUTPUT"
+          split-pytest-tasks /src /tmp/dl_test_targets.json 
+          split-pytest-tasks /src /tmp/dl_test_targets.json >> "$GITHUB_OUTPUT"
+
+
 
   run_tests_base:
     runs-on: [ self-hosted, linux, light ]

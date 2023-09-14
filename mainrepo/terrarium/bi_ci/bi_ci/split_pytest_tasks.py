@@ -1,7 +1,6 @@
 from collections import defaultdict
 from functools import partial
 import json
-import os
 from pathlib import Path
 
 import clize
@@ -27,16 +26,21 @@ def format_output(name: str, sections: list[tuple[str, str]]) -> str:
 
 
 def split_tests(
+    requested_mode: str,
     root_dir: Path,
+    test_targets_json_path: Path,
 ) -> None:
-    targets_file = os.environ.get("TEST_TARGETS")
-    raw = open(targets_file).read().strip().replace("'", '"')
+    # targets_file = os.environ.get("TEST_TARGETS")
+    raw = open(test_targets_json_path).read().strip().replace("'", '"')
     paths = json.loads(raw)
+
+    # print(paths)
     split_result: dict[str, list[tuple]] = defaultdict(list)
 
+    # ipdb.set_trace()
     for package_path in paths:
         path = root_dir / package_path.strip() / "pyproject.toml"
-
+        # print(path)
         if not path.is_file():
             continue
 
@@ -44,6 +48,7 @@ def split_tests(
             toml_data = parse(file.read())
 
         pytest_targets = toml_data.get("datalens", {}).get("pytest", {})
+
         if pytest_targets:
             for section in pytest_targets.keys():
                 spec = toml_data["datalens"]["pytest"][section]
@@ -56,8 +61,10 @@ def split_tests(
         else:
             split_result["base"].append((package_path, "__default__"))
 
-    for mode, result in sorted(split_result.items()):
-        print(format_output(f"split_{mode}", result), end=" ")
+    print(format_output(f"split_{requested_mode}", split_result[requested_mode]))
+    # note: I would expect following to be usable, but no idea how to make it with GHA :(
+    # for mode, result in sorted(split_result.items()):
+    #     print(format_output(f"split_{mode}", result), end=" ")
 
 
 cmd = partial(clize.run, split_tests)

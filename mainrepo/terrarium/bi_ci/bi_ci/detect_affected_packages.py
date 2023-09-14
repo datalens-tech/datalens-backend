@@ -156,13 +156,17 @@ def main() -> None:
         "--fallback_pkg",
         help="relative path to pkg to always include in results",
     )
-    parser.add_argument("--changes")
+    parser.add_argument("--changes_file")
     args = parser.parse_args()
+
+    with open(Path(args.changes_file)) as fh:
+        changed_paths = fh.read().strip().split(" ")
 
     cfg = Config(
         root_dir=Path(args.repo),
         roots=(args.root_pkgs or "").split(","),
-        changed_paths=args.changes.strip().split(" "),
+        # changed_paths=args.changes.strip().split(" "),
+        changed_paths=changed_paths,
     )
 
     if override == "__ALL__":
