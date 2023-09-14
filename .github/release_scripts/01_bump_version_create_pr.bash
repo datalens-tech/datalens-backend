@@ -24,6 +24,8 @@ bump2version minor "${PROJECT_ROOT}/.bumpversion.cfg"
 NEW_VERSION=$(bump2version --list --allow-dirty --dry-run "${PROJECT_ROOT}/.bumpversion.cfg" | grep current_version | cut -f 2 -d =)
 COMMIT_MSG="releasing version ${NEW_VERSION}"
 
+echo "{}" >> "${PROJECT_ROOT}/build_advise.json"
+
 git add "${PROJECT_ROOT}"
 git commit -m "${COMMIT_MSG}"
 git push --set-upstream origin "${NEW_BRANCH_NAME}"
