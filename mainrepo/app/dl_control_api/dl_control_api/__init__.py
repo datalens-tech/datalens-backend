@@ -1,5 +1,5 @@
 from __future__ import annotations
 
+import dl_version
 
-__version__ = "0.2001.0"
-app_version = f'bi_api:{__version__}'
+app_version = f"bi_api:{dl_version.__version__}"

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bi-file-secure-reader"
-version = "0.1.0"
+version = "0.0.0"
 description = ""
 authors = ["Sergey Borodin <seray@yandex-team.ru>"]
 packages = [{include = "bi_file_secure_reader"}]
@@ -10,6 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 gunicorn = ">=20.1.0"
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 bi-file-secure-reader-lib = {path = "../../mainrepo/lib/bi_file_secure_reader_lib"}
 
 [tool.poetry.group.tests.dependencies]

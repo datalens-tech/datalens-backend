@@ -1,5 +1,0 @@
-experiments: version
-version_files: {
-  "./dl_data_api/__init__.py": '__version__ = "([^"]+)"',
-  "./pyproject.toml": '\\nversion = "([^"]+)"',
-}

@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-api"
-version = "0.2001.0"
+version = "0.0.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>"]
 packages = [{include = "bi"}]
@@ -86,6 +86,7 @@ bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

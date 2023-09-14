@@ -1,3 +1,5 @@
 from __future__ import annotations
 
-__version__ = "0.144.0"
+import dl_version_ya
+
+__version__ = dl_version_ya.__version__

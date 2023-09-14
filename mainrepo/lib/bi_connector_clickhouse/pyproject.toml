@@ -11,7 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
+bi-connector-mdb-base = {path = "../../../lib/bi_connector_mdb_base"}
 python = ">=3.10, <3.12"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"

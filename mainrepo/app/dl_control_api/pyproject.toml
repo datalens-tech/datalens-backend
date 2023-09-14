@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "dl-control-api"
-version = "0.2001.0"
+version = "0.0.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "dl_control_api"}]
@@ -24,6 +24,7 @@ yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
 yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
 yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
 yandex-bi-utils = {path = "../../lib/bi_utils"}
+dl-version = {path = "../../lib/dl_version"}
 
 [build-system]
 requires = ["poetry-core"]

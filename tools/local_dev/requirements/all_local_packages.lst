@@ -56,6 +56,7 @@ lib/bi_testing_dc
 lib/bi_testing_nebius
 lib/bi_testing_ya
 lib/dc_public_api_proto_stubs
+lib/dl_version_ya
 lib/sqlalchemy_metrika_api
 lib/yc_apis_proto_stubs
 mainrepo/app/dl_control_api
@@ -104,6 +105,7 @@ mainrepo/lib/bi_testing
 mainrepo/lib/bi_us_client
 mainrepo/lib/bi_utils
 mainrepo/lib/clickhouse-sqlalchemy
+mainrepo/lib/dl_version
 mainrepo/lib/dynamic_enum
 mainrepo/lib/redis-cache-lock
 mainrepo/lib/statcommons

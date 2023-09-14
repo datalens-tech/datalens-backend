@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-import bi_external_api
+import dl_version_ya
 
 
 def init_sentry(secret_sentry_dsn: Optional[str]) -> None:
@@ -34,5 +34,5 @@ def init_sentry(secret_sentry_dsn: Optional[str]) -> None:
                 #  # Custom
                 AioHttpIntegration(),
             ],
-            release=bi_external_api.__version__,
+            release=dl_version_ya.__version__,
         )

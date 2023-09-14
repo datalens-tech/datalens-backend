@@ -211,6 +211,8 @@ bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+dl-version-ya = {path = "../../lib/dl_version_ya"}
+dl-version = {path = "../../mainrepo/lib/dl_version"}
 
 
 #

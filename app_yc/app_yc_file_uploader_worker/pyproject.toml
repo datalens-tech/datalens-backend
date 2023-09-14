@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "yandex-bi-file-uploader-worker-yc"
-version = "0.144.0"
+version = "0.0.0"
 description = ""
 authors = ["Andrey Snytin <asnytin@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "app_yc_file_uploader_worker"}]
@@ -11,6 +11,7 @@ readme = "README.md"
 python = ">=3.10, <3.12"
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}

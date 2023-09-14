@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-public-dataset-api-yc"
-version = "0.2001.0"
+version = "0.0.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
 packages = [{include = "app_yc_public_dataset_api"}]
@@ -46,6 +46,7 @@ yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 
 [build-system]
 requires = ["poetry-core"]

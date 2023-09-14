@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-rqe-int-sync"
-version = "0.2001.0"
+version = "0.0.0"
 description = ""
 authors = ["Sergei Borodin <seray@yandex-team.ru>"]
 packages = [{include = "bi_rqe_int_sync"}]
@@ -21,6 +21,7 @@ yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickh
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 
 [build-system]
 requires = ["poetry-core"]

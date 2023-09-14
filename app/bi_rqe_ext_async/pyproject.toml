@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "yandex-bi-rqe-ext-async"
-version = "0.2001.0"
+version = "0.0.0"
 description = ""
 authors = ["Sergei Borodin <seray@yandex-team.ru>"]
 packages = [{include = "bi_rqe_ext_async"}]
@@ -19,6 +19,7 @@ yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgr
 yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "bi-external-api"
-version = "0.80.0"
+version = "0.0.0"
 description = ""
 authors = ["Konstantin Chupin <kchupin@yandex-team.ru>"]
 packages = [
@@ -38,6 +38,7 @@ dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 uwsgi = ">=2.0.21"
+dl-version-ya = {path = "../../lib/dl_version_ya"}
 yandex-bi-api = {path = "../../app/bi_api"}
 yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
