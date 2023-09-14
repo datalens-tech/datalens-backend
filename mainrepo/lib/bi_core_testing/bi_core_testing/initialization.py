@@ -7,7 +7,7 @@ from bi_db_testing.loader import load_bi_db_testing
 from bi_core_testing.environment import prepare_united_storage_from_config
 from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from bi_core.logging_config import add_log_context_scoped
-from bi_core.loader import load_bi_core
+from bi_core.loader import load_bi_core, CoreLibraryConfig
 
 
 def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnvironmentConfigurationBase) -> None:
@@ -25,4 +25,4 @@ def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnviro
 
     # Initialize this and other libraries
     load_bi_db_testing()
-    load_bi_core()
+    load_bi_core(CoreLibraryConfig(core_connector_ep_names=core_test_config.core_connector_whitelist))
