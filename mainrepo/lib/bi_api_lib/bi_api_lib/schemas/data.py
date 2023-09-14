@@ -64,7 +64,6 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
         raw_query_spec_union = RawQuerySpecUnion(
             limit=data.get('limit'),
             group_by_policy=GroupByPolicy.if_measures,
-            require_obligatory_filters=False,  # Always disable for preview
             meta=RawQueryMetaInfo(
                 query_type=QueryType.preview,
                 row_count_hard_limit=data['row_count_hard_limit'],

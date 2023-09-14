@@ -135,7 +135,6 @@ class BlockFormalizer(abc.ABC):
             ignore_nonexistent_filters=raw_query_spec_union.ignore_nonexistent_filters,
             disable_rls=raw_query_spec_union.disable_rls,
             allow_measure_fields=raw_query_spec_union.allow_measure_fields,
-            require_obligatory_filters=raw_query_spec_union.require_obligatory_filters,
             empty_query_mode=empty_query_mode,
         )
 

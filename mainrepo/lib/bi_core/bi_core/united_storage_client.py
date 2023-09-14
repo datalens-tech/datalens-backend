@@ -757,7 +757,6 @@ class UStorageClient(UStorageClientBase):
             LOGGER.exception('Unable to release lock "%s"', lock)
 
     def get_entries_info_in_path(self, us_path: str) -> list[dict[str, Any]]:
-        # TODO FIX: BI-3005 Perform error handling & pagination
         resp = self._request(self._req_data_entries_in_path(
             us_path=us_path,
             page_size=100,

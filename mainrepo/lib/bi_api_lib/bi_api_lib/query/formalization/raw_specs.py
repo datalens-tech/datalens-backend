@@ -155,8 +155,6 @@ class RawQuerySpecUnion:
     group_by_policy: GroupByPolicy = attr.ib(kw_only=True, default=GroupByPolicy.force)
     disable_rls: bool = attr.ib(kw_only=True, default=False)
     ignore_nonexistent_filters: bool = attr.ib(kw_only=True, default=True)
-    # OF disabled everywhere: https://st.yandex-team.ru/BI-2483
-    require_obligatory_filters: bool = attr.ib(kw_only=True, default=False)
     allow_measure_fields: bool = attr.ib(kw_only=True, default=True)
     meta: RawQueryMetaInfo = attr.ib(kw_only=True, factory=RawQueryMetaInfo)
     # item lists

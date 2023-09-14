@@ -13,14 +13,9 @@ from bi_core.data_processing.selectors.utils import select_data_context
 from bi_core.data_processing.streaming import AsyncChunked, AsyncChunkedBase
 from bi_core.us_connection_base import ExecutorBasedMixin
 
-# TODO FIX: Find out why MyPy does not recognize attributes of DatasetDataSelectorAsyncBase without this import
-#  https://st.yandex-team.ru/BI-1572
 if TYPE_CHECKING:
     from bi_core.data_processing.selectors.base import BIQueryExecutionContext
-    # noinspection PyUnresolvedReferences
-    from bi_core.services_registry.top_level import ServicesRegistry  # noqa
     from bi_constants.types import TBIDataValue
-
 
 
 @attr.s

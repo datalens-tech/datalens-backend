@@ -61,14 +61,13 @@ def get_ch_settings(
         'insert_quorum': insert_quorum,
         'insert_quorum_timeout': insert_quorum_timeout,
 
-        # request clickhouse stat in response headers for BI-1775
+        # request clickhouse stat in response headers
         # otherwise clickhouse sends nulls in X-ClickHouse-Summary
-        'send_progress_in_http_headers': 0,  # temporary disabling for DLHELP-1730 investigation
+        'send_progress_in_http_headers': 0,
 
         # https://clickhouse.com/docs/en/operations/settings/formats#output_format_json_quote_denormals
         # Enables +nan, -nan, +inf, -inf outputs in JSON output format.
-        # Currently enabling only in sync wrapper (for materializer).
-        # After CHARTS-3488 should be enabled by default in all cases.
+        # After support from frontend should be enabled by default in all cases.
         'output_format_json_quote_denormals': output_format_json_quote_denormals,
     }
 

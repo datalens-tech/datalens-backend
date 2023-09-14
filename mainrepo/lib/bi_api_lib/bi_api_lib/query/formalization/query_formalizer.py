@@ -324,20 +324,6 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             # FIXME: Not really an InvalidFieldError... replace with some other exception
             raise bi_core.exc.InvalidFieldError('Order by dimension must be in select')
 
-    def _validate_obligatory_filters(self, filter_specs: List[FilterFieldSpec]) -> None:
-        filtered_fields = set()
-        for filter_spec in filter_specs:
-            try:
-                # To make sure it exists
-                self._dataset.result_schema.by_guid(filter_spec.field_id)
-            except bi_core.exc.FieldNotFound:
-                pass
-            else:
-                filtered_fields.add(filter_spec.field_id)
-        for oblig_filter in self._ds_accessor.get_obligatory_filter_list():
-            if oblig_filter.field_guid not in filtered_fields:
-                raise bi_query_processing.exc.ObligatoryFilterMissing(f'Obligatory filter missing for field "{oblig_filter.field_guid}"')
-
     def _ensure_not_measure(self, field: BIField) -> None:
         if field.type != FieldType.DIMENSION:
             raise bi_query_processing.exc.LogicError(
@@ -419,9 +405,6 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
 
         if not block_spec.disable_rls:
             filter_specs += self._make_rls_filter_specs(subject_type=RLSSubjectType.user)
-
-        if block_spec.require_obligatory_filters:
-            self._validate_obligatory_filters(filter_specs=filter_specs)
 
         return filter_specs
 

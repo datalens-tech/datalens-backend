@@ -29,7 +29,6 @@ class USEntryBuffer:
                         details=dict(scope='connection', entry_id=entry.reference.conn_id)
                     )
                 else:
-                    # TODO FIX: BI-2093: Do we need user-level exception for not existing mat CH conn?
                     raise ValueError(f"Referenced connection {entry.reference} cannot be loaded: {entry.error_kind}")
             else:
                 raise ValueError(f"Requested referenced US entry {entry_id} is broken: {entry}", entry)

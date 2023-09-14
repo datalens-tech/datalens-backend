@@ -53,7 +53,6 @@ class DBHostField(ma_fields.String):
 
         self._validate_host_str(user_host_str, allow_multi_host=allow_multi_host)
 
-        # TODO FIX: BI-870 return list of hosts when other parts will be ready
         return user_host_str
 
 

@@ -82,7 +82,7 @@ class CreateDatasetSchema(DatasetContentSchema):
     name = ma_fields.String()
     dir_path = ma_fields.String()
     workbook_id = ma_fields.String()
-    # TODO FIX: BI-2663 Ensure that not used and remove
+    # TODO FIX: Ensure that not used and remove
     preview = ma_fields.Boolean(load_default=False, required=False)
     created_via = ma_fields.Enum(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
 

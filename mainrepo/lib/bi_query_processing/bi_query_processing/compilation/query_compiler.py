@@ -151,7 +151,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
                 direction=order_by_spec.direction,
             )
             if ob_expr.formula_obj in already_used_ob_exprs:
-                # Deduplicate ORDER BY items (BI-2138)
+                # Deduplicate ORDER BY items
                 continue
             result.append(ob_expr)
             already_used_ob_exprs.add(ob_expr.formula_obj)

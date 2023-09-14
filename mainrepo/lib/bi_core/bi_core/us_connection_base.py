@@ -210,15 +210,11 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         else:
             resp.update({
                 'db_type': self.conn_type.value,
-                # TODO FIX: BI-870 Frontend need only sample_state & state for CSV connection
-                #  First step: expose meta only for CSV
-                #  Second step: move to required fields to connection level RO attribute
                 'meta': self.meta,
                 'created_at': self.created_at,
                 'updated_at': self.updated_at,
             })
 
-        # TODO FIX: BI-870 Experiment to check if front using legacy fields from our response
         if not isinstance(self.entry_key, WorkbookEntryLocation):
             resp.pop('name', None)
         resp.pop('is_favorite', None)

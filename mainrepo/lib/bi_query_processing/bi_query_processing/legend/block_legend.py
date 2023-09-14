@@ -50,8 +50,6 @@ class BlockSpec:
     row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
     disable_rls: bool = attr.ib(kw_only=True, default=False)
     ignore_nonexistent_filters: bool = attr.ib(kw_only=True, default=True)
-    # OF disabled everywhere: https://st.yandex-team.ru/BI-2483
-    require_obligatory_filters: bool = attr.ib(kw_only=True, default=False)
     allow_measure_fields: bool = attr.ib(kw_only=True, default=True)
     empty_query_mode: EmptyQueryMode = attr.ib(kw_only=True, default=EmptyQueryMode.error)
 

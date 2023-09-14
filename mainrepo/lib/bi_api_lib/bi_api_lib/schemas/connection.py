@@ -53,7 +53,6 @@ class ConnectionInfoSourceSchemaResponseSchema(BaseSchema):
 
 
 class GenericConnectionSchema(OneOfSchema):
-    # TODO FIX: BI-870 Replace with descriptor that will take in account installation type (from context)
     type_schemas: dict[str, Type[ConnectionSchema]] = {}
     supported_connections: ClassVar[set[Type[ConnectionBase]]] = set()
 
