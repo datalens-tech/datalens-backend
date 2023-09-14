@@ -29,11 +29,4 @@ tasks:
         --orig-metapkg-path ./ops/ci
         --scoped-metapkg-path ./mainrepo/metapkg
         --remove-private-pypi
-        ../lib/bi_package_boilerplate
-        ../lib/bi_api_commons
-        ../lib/dynamic_enum
-        ../lib/bi_api_commons
-        ../lib/bi_app_tools
-        ../lib/bi_configs
-        ../lib/bi_constants
-        ../lib/bi_utils
+        ../lib
