@@ -66,3 +66,8 @@ class TooManyColumns(exc.DatabaseQueryError):
 class InvalidSplitSeparator(exc.DatabaseQueryError):
     err_code = exc.DatabaseQueryError.err_code + ['INVALID_SPLIT_SEPARATOR']
     default_message = 'Invalid separator for splitting.'
+
+
+class CHRowTooLarge(exc.SourceProtocolError):
+    err_code = exc.SourceProtocolError.err_code + ['TOO_LARGE_ROW']
+    default_message = 'Data source failed to respond correctly (too large row).'

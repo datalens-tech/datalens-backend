@@ -30,6 +30,7 @@ from bi_core.connectors.base.error_transformer import DBExcKWArgs
 from bi_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ClickHouseBaseUtils, ClickHouseUtils, get_ch_settings,
 )
+from bi_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
 from bi_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     RawColumnInfo, RawIndexInfo, RawSchemaInfo,
@@ -457,7 +458,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                 try:
                     event, data = parser.next_event()
                 except parser.RowTooLarge:
-                    raise exc.CHRowTooLarge()
+                    raise CHRowTooLarge()
                 if event == parser.parts.NEED_DATA:
                     break
                 elif event == parser.parts.FINISHED:

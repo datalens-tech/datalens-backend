@@ -18,7 +18,8 @@ def exc_cls_to_code(exc_cls):
     )
     return '.'.join(
         (GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX)
-        + tuple(exc_cls_code))
+        + tuple(exc_cls_code)
+    )
 
 
 # Error codes referenced in the frontend code:
@@ -30,20 +31,6 @@ def exc_cls_to_code(exc_cls):
 STABILIZED_CODES = (
     (bi_core.exc.CannotParseDateTime, 'ERR.DS_API.DB.CANNOT_PARSE.DATETIME'),
     (bi_core.exc.CannotParseNumber, 'ERR.DS_API.DB.CANNOT_PARSE.NUMBER'),
-    (bi_core.exc.CHYTInvalidSortedJoin, 'ERR.DS_API.DB.CHYT.INVALID_SORTED_JOIN'),
-    (bi_core.exc.CHYTISJMoreThanOneTable, 'ERR.DS_API.DB.CHYT.INVALID_SORTED_JOIN.MORE_THAN_ONE_TABLE'),
-    (bi_core.exc.CHYTISJNotAKeyColumn, 'ERR.DS_API.DB.CHYT.INVALID_SORTED_JOIN.NOT_A_KEY_COLUMN'),
-    (bi_core.exc.CHYTISJNotKeyPrefixColumn, 'ERR.DS_API.DB.CHYT.INVALID_SORTED_JOIN.NOT_KEY_PREFIX_COLUMN'),
-    (bi_core.exc.CHYTMultipleDynamicTablesNotSupported, 'ERR.DS_API.DB.CHYT.MULTI_DYN_NOT_SUPPORTED'),
-    (bi_core.exc.CHYTQueryError, 'ERR.DS_API.DB.CHYT'),
-    (bi_core.exc.CHYTSubqueryWeightLimitExceeded, 'ERR.DS_API.DB.CHYT.SUBQ_WEIGHT_LIMIT_EXCEEDED'),
-    (bi_core.exc.CHYTTableAccessDenied, 'ERR.DS_API.DB.CHYT.TABLE_ACCESS_DENIED'),
-    (bi_core.exc.CHYTCliqueIsNotRunning, 'ERR.DS_API.DB.CHYT.CLIQUE.NOT_RUNNING'),
-    (bi_core.exc.CHYTCliqueIsSuspended, 'ERR.DS_API.DB.CHYT.CLIQUE.SUSPENDED'),
-    (bi_core.exc.CHYTCliqueNotExists, 'ERR.DS_API.DB.CHYT.CLIQUE.INVALID_SPECIFICATION'),
-    (bi_core.exc.CHYTCliqueAccessDenied, 'ERR.DS_API.DB.CHYT.CLIQUE.ACCESS_DENIED'),
-    (bi_core.exc.CHYTTableHasNoSchema, 'ERR.DS_API.DB.CHYT.TABLE_HAS_NO_SCHEMA'),
-    (bi_core.exc.CHYTAuthError, 'ERR.DS_API.DB.CHYT.AUTH_FAILED'),
     (bi_core.exc.ColumnDoesNotExist, 'ERR.DS_API.DB.COLUMN_DOES_NOT_EXIST'),
     (bi_core.exc.DatabaseQueryError, 'ERR.DS_API.DB'),
     (bi_core.exc.DatabaseUnavailable, 'ERR.DS_API.DATABASE_UNAVAILABLE'),
