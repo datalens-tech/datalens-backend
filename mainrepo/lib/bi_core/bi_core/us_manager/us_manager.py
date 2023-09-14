@@ -197,7 +197,7 @@ class USManagerBase:
             raise TypeError(err_msg) from e
 
         else:
-            raise TypeError(err_msg)
+            raise exc.UnexpectedUSEntryType()
 
     def get_sensitive_fields_key_info(self, entry: USEntry) -> Dict[str, CryptoKeyInfo]:
         if isinstance(entry, USMigrationEntry):

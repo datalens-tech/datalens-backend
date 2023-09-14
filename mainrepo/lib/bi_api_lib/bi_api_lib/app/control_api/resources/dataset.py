@@ -99,7 +99,7 @@ class DatasetItem(BIResource):
     def delete(self, dataset_id):  # type: ignore  # TODO: fix
         """Delete dataset"""
         us_manager = self.get_us_manager()
-        ds = us_manager.get_by_id(dataset_id, expected_type=Dataset)
+        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.admin)
 
         us_manager.delete(ds)
@@ -113,7 +113,7 @@ class DatasetItemFields(BIResource):
         200: ('Success', bi_api_lib.schemas.data.DatasetFieldsResponseSchema()),
     })
     def get(self, dataset_id):  # type: ignore  # TODO: fix
-        ds = self.get_us_manager().get_by_id(dataset_id, expected_type=Dataset)
+        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={})
         fields = [
             {
                 'title': f.title,
@@ -139,9 +139,8 @@ class DatasetCopy(DatasetResource):
     def post(self, dataset_id, body):  # type: ignore  # TODO: fix
         copy_us_key = body['new_key']
         us_manager = self.get_us_manager()
-        ds = us_manager.get_by_id(dataset_id, expected_type=Dataset)
+        ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         us_manager.load_dependencies(ds)
-
         orig_ds_loc = ds.entry_key
         copy_ds_loc: PathEntryLocation
 
@@ -170,8 +169,7 @@ class DatasetVersionItem(DatasetResource):
     def get(self, dataset_id, version):  # type: ignore  # TODO: fix
         """Get dataset version"""
         us_manager = self.get_us_manager()
-        ds = us_manager.get_by_id(dataset_id, expected_type=Dataset)
-
+        ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()  # FIXME
         # TODO FIX: BI-2718 determine desired behaviour in case of workbooks

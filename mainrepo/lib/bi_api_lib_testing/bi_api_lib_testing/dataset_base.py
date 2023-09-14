@@ -1,6 +1,10 @@
 import abc
 
 import pytest
+import shortuuid
+
+from bi_core.us_manager.us_manager_sync import SyncUSManager
+from bi_core.base_models import PathEntryLocation
 
 from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
@@ -47,3 +51,35 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
             dataset_params=dataset_params,
         )
         return ds
+
+    def test_invalid_dataset_id(
+            self, dataset_api: SyncHttpDatasetApiV1,
+            saved_connection_id: str,
+            dataset_params: dict,
+            conn_default_sync_us_manager: SyncUSManager
+    ) -> None:
+        usm = conn_default_sync_us_manager
+        us_client = usm._us_client
+        path = PathEntryLocation(shortuuid.uuid())
+        dash = us_client.create_entry(scope="dash", key=path)
+        dash_id = dash['entryId']
+        ds = self.make_basic_dataset(
+            dataset_api=dataset_api, connection_id=saved_connection_id,
+            dataset_params=dataset_params,
+        )
+        dataset_id = ds.id
+
+        resp = dataset_api.client.get(
+            '/api/v1/datasets/{}/versions/draft'.format(dataset_id)
+        )
+        assert resp.status_code == 200
+
+        resp = dataset_api.client.get(
+                '/api/v1/datasets/{}/versions/draft'.format(saved_connection_id)
+        )
+        assert resp.status_code == 404
+
+        resp = dataset_api.client.get(
+            '/api/v1/datasets/{}/versions/draft'.format(dash_id)
+        )
+        assert resp.status_code == 404

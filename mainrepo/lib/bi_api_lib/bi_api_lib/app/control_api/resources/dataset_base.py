@@ -10,7 +10,7 @@ from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
 from bi_core.data_source.base import DbInfo
 from bi_core.dataset_capabilities import DatasetCapabilities
-from bi_core.exc import ReferencedUSEntryNotFound
+from bi_core.exc import ReferencedUSEntryNotFound, USObjectNotFoundException, UnexpectedUSEntryType
 from bi_core.us_dataset import Dataset, DataSourceRole
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.services_registry.top_level import ServicesRegistry
@@ -49,7 +49,10 @@ class DatasetResource(BIResource):
     def get_dataset(cls, dataset_id: Optional[str], body: dict) -> Tuple[Dataset, DatasetUpdateInfo]:
         us_manager = cls.get_us_manager()
         if dataset_id:
-            dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset)
+            try:
+                dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset)
+            except UnexpectedUSEntryType:
+                raise USObjectNotFoundException("Dataset with id {} does not exist".format(dataset_id))
         else:
             dataset = Dataset.create_from_dict(
                 Dataset.DataModel(name=''),  # TODO: Remove name - it's not used, but is required
