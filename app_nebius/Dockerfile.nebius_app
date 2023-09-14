@@ -1,0 +1,34 @@
+#syntax=docker/dockerfile:1.4
+FROM bake_ctx_base_img
+
+ARG APP_NAME
+ENV APP_NAME=$APP_NAME
+
+# Libs & metapkg
+COPY --from=bake_ctx_src_lib / /src
+
+# Sources copy
+RUN mkdir -p /src/app
+
+COPY /pyproject.toml /src/app/pyproject.toml
+COPY /$APP_NAME /src/app/$APP_NAME
+COPY /gunicorn /src/app/gunicorn
+
+WORKDIR /src/app
+# Installation
+WORKDIR /src/ops/ci
+RUN poetry export --only nebius_$APP_NAME --without-hashes --format requirements.txt --output requirements.txt
+RUN pip install -r requirements.txt
+RUN echo cat requirements.txt; sleep 10;
+RUN pip install --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
+
+
+# Need to put nebius related certificates to the running container
+COPY --from=certs /NebiusILInternalRootCA.crt /usr/local/share/ca-certificates/
+COPY --from=certs /NemaxInternalRootCA.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
+EXPOSE 8080
+WORKDIR /src/app
+
+ENTRYPOINT ["gunicorn $APP_NAME.app:create_gunicorn_app --config '/src/gunicorn/gunicorn_config.py' "]

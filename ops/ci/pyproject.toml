@@ -126,6 +126,7 @@ yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
+service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-service-registry-ya-team = {path = "../../lib/bi_service_registry_ya_team"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
@@ -271,6 +272,12 @@ yandex-bi-file-uploader-worker-yc = {path = "../../app_yc/app_yc_file_uploader_w
 
 [tool.poetry.group.bi_integration_tests.dependencies]
 yandex-bi-integration-tests = {path = "../../ops/bi_integration_tests"}
+
+[tool.poetry.group.nebius_control_api.dependencies]
+control_api = {path = "../../app_nebius/control_api"}
+
+[tool.poetry.group.nebius_data_api.dependencies]
+data_api = {path = "../../app_nebius/data_api"}
 
 
 [tool.poetry.group.dev.dependencies]

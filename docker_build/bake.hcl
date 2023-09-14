@@ -352,3 +352,31 @@ target "msgfmt" {
   dockerfile = "./target_msgfmt/Dockerfile"
   output     = ["type=local,dest=."] # need to pass via --set flag
 }
+
+target "app_nebius_control_api" {
+  pull = false
+  args = {
+    APP_NAME = "control_api"
+  }
+  contexts = {
+    bake_ctx_base_img = "target:base_focal_db_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+    certs = "${PROJECT_ROOT}/ops/docker-base-images/bi_base_mess/certs"
+  }
+  context    = "${PROJECT_ROOT}/app_nebius/control_api"
+  dockerfile = "../Dockerfile.nebius_app"
+}
+
+target "app_nebius_data_api" {
+  pull = false
+  args = {
+    APP_NAME = "data_api"
+  }
+  contexts = {
+    bake_ctx_base_img = "target:base_focal_db_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+    certs = "${PROJECT_ROOT}/ops/docker-base-images/bi_base_mess/certs"
+  }
+  context    = "${PROJECT_ROOT}/app_nebius/data_api"
+  dockerfile = "../Dockerfile.nebius_app"
+}

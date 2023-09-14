@@ -1,0 +1,5 @@
+experiments: version
+version_files: {
+  "./control_api/__init__.py": '__version__ = "([^"]+)"',
+  "./pyproject.toml": '\\nversion = "([^"]+)"',
+}

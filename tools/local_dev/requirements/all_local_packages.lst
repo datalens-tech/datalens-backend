@@ -6,6 +6,8 @@ app/bi_file_uploader_worker
 app/bi_rqe_ext_async
 app/bi_rqe_ext_sync
 app/bi_rqe_int_sync
+app_nebius/control_api
+app_nebius/data_api
 app_yc/app_yc_control_api
 app_yc/app_yc_data_api
 app_yc/app_yc_data_api_sec_embeds
@@ -45,6 +47,7 @@ lib/bi_formula_ref_nebius
 lib/bi_formula_ref_ya
 lib/bi_legacy_test_bundle
 lib/bi_maintenance
+lib/bi_service_registry_nebius
 lib/bi_service_registry_ya_cloud
 lib/bi_service_registry_ya_team
 lib/bi_sqlalchemy_bitrix
