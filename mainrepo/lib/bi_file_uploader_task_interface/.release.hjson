@@ -1,5 +1,0 @@
-experiments: version
-version_files: {
-  "./bi_file_uploader_task_interface/__init__.py": '__version__ = "([^"]+)"',
-  "./pyproject.toml": '\\nversion = "([^"]+)"',
-}

@@ -1,5 +1,0 @@
-experiments: version
-version_files: {
-  "./bi_formula/version.py": '__version__ = "([^"]+)"',
-  "./pyproject.toml": '\\nversion = "([^"]+)"',
-}

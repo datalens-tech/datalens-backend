@@ -8,7 +8,3 @@ from .base import (
 __all__ = (
     "BIMSSQLDialect",
 )
-
-
-__version__ = "0.3"
-VERSION = tuple(int(part) for part in __version__.split("."))

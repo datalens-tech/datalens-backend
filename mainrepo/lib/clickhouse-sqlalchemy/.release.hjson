@@ -1,4 +1,0 @@
-experiments: version
-version_files: {
-  "clickhouse_sqlalchemy/__init__.py": "__version__ = '([^']+)'",
-}

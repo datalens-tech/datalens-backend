@@ -8,7 +8,3 @@ from .base import (
 __all__ = (
     'BIYQDialect',
 )
-
-
-__version__ = '0.1'
-VERSION = tuple(int(part) for part in __version__.split('.'))

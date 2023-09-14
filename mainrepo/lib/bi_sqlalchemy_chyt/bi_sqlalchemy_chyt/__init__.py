@@ -7,11 +7,6 @@ from .base import (
     BICHYTDialect,
 )
 
-
-__version__ = "0.7"
-VERSION = tuple(int(part) for part in __version__.split("."))
-
-
 __all__ = (
     "CHYTTableExpression",
     "CHYTTablesConcat",

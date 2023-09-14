@@ -142,7 +142,7 @@ class ResultCacheEntry:
 
     @staticmethod
     def bi_c_version_str() -> str:
-        return ".".join(str(c) for c in bi_core.version)
+        return "12.99.0"
 
     @property
     def is_error(self) -> bool:
