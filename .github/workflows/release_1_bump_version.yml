@@ -40,7 +40,7 @@ jobs:
         env:
           GIT_CURRENT_BRANCH: "${{ github.ref_name }}"
           PR_URL_FILE_LOCATION: "./bump_version_pr_url.txt"
-          AUTO_BAKE_TARGETS_SPACE_SEPARATED: ${{ auto_build_targets }}
+          AUTO_BAKE_TARGETS_SPACE_SEPARATED: ${{ github.event.inputs.auto_build_targets }}
           GH_TOKEN: ${{ github.token }}
         run: bash .github/release_scripts/01_bump_version_create_pr.bash
       - name: "Approve PR"
