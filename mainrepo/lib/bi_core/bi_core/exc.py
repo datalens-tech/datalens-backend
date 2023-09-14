@@ -746,7 +746,7 @@ class USPermissionRequired(USReqException):
         return f'No permission {self.permission} for entry {self.entry_id}'
 
 
-class LargeCHYTRowError(SourceProtocolError):
+class CHRowTooLarge(SourceProtocolError):
     err_code = SourceProtocolError.err_code + ['TOO_LARGE_ROW']
     default_message = 'Data source failed to respond correctly (too large row).'
 

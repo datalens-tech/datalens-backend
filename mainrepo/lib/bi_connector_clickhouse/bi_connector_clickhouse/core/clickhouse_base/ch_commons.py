@@ -116,14 +116,6 @@ class ClickHouseBaseUtils:
         1000: exc.NoSpaceLeft,
     }
 
-    expr_exc = {
-        r'User "(?P<user>[-0-9a-zA-Z]+)" has no access to clique (?P<clique>\*\S+)': exc.CHYTCliqueAccessDenied,
-        r'Clique (?P<clique>\*\S+) is not running': exc.CHYTCliqueIsNotRunning,
-        r'Clique (?P<clique>\*\S+) is suspended': exc.CHYTCliqueIsSuspended,
-        r'Invalid clique specification': exc.CHYTCliqueNotExists,
-        r'Authentication failed': exc.CHYTAuthError,
-    }
-
     @classmethod
     def parse_message(cls, err_msg: str) -> Optional[ParsedErrorMsg]:
         match = cls.ch_err_msg_re.match(err_msg)
@@ -140,15 +132,6 @@ class ClickHouseBaseUtils:
         )
 
     @classmethod
-    def parse_clique_message(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
-        for err_re, chyt_exc_cls in cls.expr_exc.items():
-            match = re.search(err_re, err_msg)
-            if match:
-                LOGGER.info('Recognized as CHYT error without code')
-                return chyt_exc_cls, match.groupdict()
-        return None
-
-    @classmethod
     def get_exc_class_by_parsed_message(
         cls, msg: ParsedErrorMsg
     ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
@@ -160,15 +143,9 @@ class ClickHouseBaseUtils:
     def get_exc_class(
         cls, err_msg: str
     ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
-        # ClickHouse exception (contains "Code:")
         parse_msg = cls.parse_message(err_msg)
         if parse_msg:
             return cls.get_exc_class_by_parsed_message(parse_msg)
-        # Clique exception
-        not_ch_exc = cls.parse_clique_message(err_msg)
-        if not_ch_exc:
-            return not_ch_exc
-        # Not CH/CHYT exception
         raise ValueError("Can not parse error message", err_msg)
 
     @classmethod

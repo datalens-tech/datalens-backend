@@ -457,7 +457,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                 try:
                     event, data = parser.next_event()
                 except parser.RowTooLarge:
-                    raise exc.LargeCHYTRowError()
+                    raise exc.CHRowTooLarge()
                 if event == parser.parts.NEED_DATA:
                     break
                 elif event == parser.parts.FINISHED:
