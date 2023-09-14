@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "dl-version-ya"
-version = "0.2001.0"
+version = "0.2002.0"
 description = ""
 authors = ["Package Author <bipackageauthor@yandex-team.ru>"]
 packages = [{include = "dl_version_ya"}]
