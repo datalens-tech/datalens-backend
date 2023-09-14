@@ -30,7 +30,6 @@ def split_tests(
     root_dir: Path,
     test_targets_json_path: Path,
 ) -> None:
-    # targets_file = os.environ.get("TEST_TARGETS")
     raw = open(test_targets_json_path).read().strip().replace("'", '"')
     paths = json.loads(raw)
 

@@ -94,7 +94,7 @@ jobs:
         cat /tmp/targets.json
         . /venv/bin/activate && detect-affected-packages \
           --repo=/src \
-          --changes_file="/tmp/targets.json \
+          --changes_file="/tmp/targets.json" \
           --root_pkgs="lib,app,terrarium" \
           --fallback_pkg="terrarium/bi_ci" | tee -a  >> "$GITHUB_OUTPUT"
       env:
@@ -126,10 +126,8 @@ jobs:
         id: get_split
         run: |
           . /venv/bin/activate && echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
-          split-pytest-tasks /src /tmp/dl_test_targets.json 
-          split-pytest-tasks /src /tmp/dl_test_targets.json >> "$GITHUB_OUTPUT"
-
-
+          split-pytest-tasks base /src /tmp/dl_test_targets.json | tee -a >> "$GITHUB_OUTPUT"
+          split-pytest-tasks fat /src /tmp/dl_test_targets.json | tee -a >> "$GITHUB_OUTPUT"
 
   run_tests_base:
     runs-on: [ self-hosted, linux, light ]
@@ -176,6 +174,36 @@ jobs:
           name: "pytest_reports_${{ env.compose_prj }}"
           path: /report/
           retention-days: 1
+
+  mypy:
+    runs-on: [ self-hosted, linux, light ]
+    needs: router
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    name: "🐲 mypy"
+    timeout-minutes: ${{ inputs.pytest_timeout_minutes && fromJSON(inputs.pytest_timeout_minutes ) || 10 }}
+    steps:
+      - name: "Cleanup folder"
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code, just to get access to .github/execute_mypy...
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
+      - name: run mypy
+        run: |
+          . /venv/bin/activate
+          execute-mypy-multi /src /tmp/dl_test_targets.json
+        env:
+          PYTHONUNBUFFERED: "1"
 
   publish-result:
     runs-on: [self-hosted, linux ]

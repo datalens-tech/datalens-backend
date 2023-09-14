@@ -17,10 +17,21 @@ requires = [
 [tool.black]
 line-length = 120
 target-version = ['py310']
+force-exclude= '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  mainrepo/lib/redis-cache-lock
+  | mainrepo/lib/clickhouse-sqlalchemy
+)/
+'''
 
 [tool.isort]
 line_length = 120
 profile = "black"
+skip_glob = [
+  "mainrepo/lib/redis-cache-lock/*",
+  "mainrepo/lib/clickhouse-sqlalchemy/*"
+]
 multi_line_output = 3
 force_grid_wrap = 2
 include_trailing_comma = true
@@ -43,14 +54,10 @@ known_connectors = [
 
 [tool.ruff]
 line-length = 120
+force-exclude = true
 select = [
   # Pyflakes
   "F",
-  # Pycodestyle
-  "E",
-  "W",
-  # isort
-  # "I"
   # Bugbear
   "B"
 ]
@@ -79,5 +86,7 @@ exclude = [
   "dist",
   "node_modules",
   "venv",
-  "tools_venv"
+  "tools_venv",
+  "mainrepo/lib/redis-cache-lock/**",
+  "mainrepo/lib/clickhouse-sqlalchemy/**"
 ]

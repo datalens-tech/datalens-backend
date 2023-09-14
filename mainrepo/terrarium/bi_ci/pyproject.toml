@@ -50,26 +50,17 @@ poetry = ">=1.5.0"
 
 [tool.poetry.scripts]
 detect-affected-packages = "bi_ci.detect_affected_packages:main"
-run_tests = "bi_ci.run_tests:runner_cli"
-fix_ports_in_compose = "bi_ci.fix_ports_in_compose:cmd"
-do_we_need_compose = "bi_ci.do_we_need_compose:cmd"
-get_compose_path = "bi_ci.get_compose_path:cmd"
+run-tests = "bi_ci.run_tests:runner_cli"
+fix-ports-in-compose = "bi_ci.fix_ports_in_compose:cmd"
+do-we-need-compose = "bi_ci.do_we_need_compose:cmd"
+get-compose-path = "bi_ci.get_compose_path:cmd"
 split-pytest-tasks = "bi_ci.split_pytest_tasks:cmd"
+execute-mypy-multi = "bi_ci.execute_mypy_multi:cmd"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"
 testpaths = ["bi_ci_tests"]
-
-[tool.ruff]
-line-length = 140
-select = [
-  # Pyflakes
-  "F",
-  # Pycodestyle
-  "E",
-  "W"
-]
 
 [tool.mypy]
 warn_unused_configs = true

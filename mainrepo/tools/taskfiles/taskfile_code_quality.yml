@@ -236,6 +236,14 @@ tasks:
           APPLY_FIX: "false"
           STRICT: "false"
 
+  check_dir_strict:
+    silent: true
+    cmds:
+      - task: _run_tool_on_cli_target_dir
+        vars:
+          APPLY_FIX: "false"
+          STRICT: "true"
+
   fix_dir:
     silent: true
     cmds:

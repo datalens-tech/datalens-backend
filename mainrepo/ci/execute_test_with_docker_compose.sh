@@ -16,16 +16,16 @@ echo "Running py tests for $TARGET_PATH"
 source /venv/bin/activate
 
 
-main_compose_file="$(get_compose_path '/src' $TARGET_PATH )"
+main_compose_file="$(get-compose-path '/src' $TARGET_PATH )"
 
-if [ "$(do_we_need_compose "/src" $TARGET_PATH)" == "1" ]; then
+if [ "$(do-we-need-compose "/src" $TARGET_PATH)" == "1" ]; then
 
     # Add network config to the compose file
     cat /src/ci/networks_addon.yml >> $main_compose_file
     cat $main_compose_file
 
     # Fix ports from used in local dev to native service ones
-    fix_ports_in_compose $main_compose_file "docker-compose.fixed.yml"
+    fix-ports-in-compose $main_compose_file "docker-compose.fixed.yml"
     cat "docker-compose.fixed.yml"
 
     docker compose -f "docker-compose.fixed.yml" build --pull
@@ -41,4 +41,4 @@ fi
 # done
 
 set +x
-TEST_CONTAINER_HOST=from_compose PYTHONUNBUFFERED=1 env "${@:4}" run_tests /src "$TARGET_PATH"
+TEST_CONTAINER_HOST=from_compose PYTHONUNBUFFERED=1 env "${@:4}" run-tests /src "$TARGET_PATH"

@@ -165,7 +165,6 @@ def main() -> None:
     cfg = Config(
         root_dir=Path(args.repo),
         roots=(args.root_pkgs or "").split(","),
-        # changed_paths=args.changes.strip().split(" "),
         changed_paths=changed_paths,
     )
 

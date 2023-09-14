@@ -1,13 +1,12 @@
+from functools import partial
 import json
+from pathlib import Path
 import subprocess
 import sys
-from pathlib import Path
 
+import clize
 import tomlkit
 from tomlkit.exceptions import NonExistentKey
-
-SRC_ROOT = Path("/data/")
-PYTHON = "/venv/bin/python"
 
 
 def get_mypy_targets(pkg_dir: Path) -> list[str]:
@@ -22,18 +21,14 @@ def get_mypy_targets(pkg_dir: Path) -> list[str]:
     return [pkg_dir.name]
 
 
-def main(targets: list[str]):
+def main(root: Path, targets_file: Path) -> None:
+    targets: list[str] = json.load(open(targets_file))
     failed_list: list[str] = []
     mypy_cache_dir = Path("/tmp/mypy_cache")
     mypy_cache_dir.mkdir(exist_ok=True)
     for target in targets:
-        pkg_dir = SRC_ROOT / target
-        run_args = [
-            PYTHON,
-            "-m",
-            "mypy",
-            f"--cache-dir={mypy_cache_dir}"
-        ]
+        pkg_dir = root / target
+        run_args = ["mypy", f"--cache-dir={mypy_cache_dir}"]
         targets = get_mypy_targets(pkg_dir)
         print(f"Cmd: {run_args}; cwd={pkg_dir}")
         if len(targets) > 0:
@@ -51,5 +46,7 @@ def main(targets: list[str]):
     sys.exit(0 if len(failed_list) == 0 else 1)
 
 
+cmd = partial(clize.run, main)
+
 if __name__ == "__main__":
-    main(json.load(open(sys.argv[1])))
+    cmd()

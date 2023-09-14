@@ -119,6 +119,7 @@ jobs:
           split-pytest-tasks fat /data /tmp/dl_test_targets.json | tee -a >>  "$GITHUB_OUTPUT"
           split-pytest-tasks ext_public /data /tmp/dl_test_targets.json | tee -a >>  "$GITHUB_OUTPUT"
           split-pytest-tasks ext_private /data /tmp/dl_test_targets.json | tee -a >>  "$GITHUB_OUTPUT"
+        # no idea how to export multiple outputs into GH env using a single cmd, hence this atrocity ^^
 
   pytest_base:
     runs-on: [self-hosted, linux, light]
@@ -132,7 +133,7 @@ jobs:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     name: "🐍[pytest]${{ matrix.value }}"
-    timeout-minutes: 60
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -146,14 +147,6 @@ jobs:
           registry: ${{ vars.DL_CI_CR_URI }}
           username: ${{ secrets.DL_CI_CR_USER }}
           password: ${{ secrets.DL_CI_CR_TOKEN }}
-      - name: 'Cleanup build folder'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-      - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
       - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
@@ -171,7 +164,7 @@ jobs:
           retention-days: 1
 
   pytest_fat:
-    # copy-paste, but simpliest solution for now given options provided by github ci
+    # copy-paste, but simplest solution for now given options provided by github ci
     runs-on: [self-hosted, linux, fat]
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_fat != '[]' }}
@@ -198,26 +191,16 @@ jobs:
           registry: ${{ vars.DL_CI_CR_URI }}
           username: ${{ secrets.DL_CI_CR_USER }}
           password: ${{ secrets.DL_CI_CR_TOKEN }}
-      - name: 'Cleanup build folder'
-        run: |
-          ls -la ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          ls -la ./
-      - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
       - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
-      # We need to set custom compose project name to ensure "unique" container names in the host docker env
+        # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - run: echo "TARGET_PATH=${{ matrix.value }}" "NET_NAME=${{ job.container.network }}" "COMPOSE_PROJECT_NAME=${{ env.compose_prj }}"
       - name: run bash script with all logic for starting compose and running tests
-        run: bash .github/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash .github/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
+        run: bash /data/ops/ci/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
       - uses: actions/upload-artifact@v3
         if: "!cancelled()"
         with:
@@ -226,7 +209,6 @@ jobs:
           retention-days: 1
 
   pytest_ext_public:
-    # copy-paste, but simpliest solution for now given options provided by github ci
     runs-on: [ self-hosted, linux, ext_public ]
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_ext_public != '[]' }}
@@ -253,31 +235,19 @@ jobs:
           registry: ${{ vars.DL_CI_CR_URI }}
           username: ${{ secrets.DL_CI_CR_USER }}
           password: ${{ secrets.DL_CI_CR_TOKEN }}
-      - name: 'Cleanup build folder'
-        run: |
-          ls -la ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          ls -la ./
-      - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
       - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
-      # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - run: echo "TARGET_PATH=${{ matrix.value }}" "NET_NAME=${{ job.container.network }}" "COMPOSE_PROJECT_NAME=${{ env.compose_prj }}"
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash .github/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+          bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
             GOOGLE_API_KEY="${{ secrets.EXT_GOOGLE_API_KEY }}" \
             BITRIX_TOKEN="${{ secrets.EXT_BITRIX_TOKEN }}" \
             BITRIX_PARTNERS_TOKEN="${{ secrets.EXT_BITRIX_PARTNERS_TOKEN }}" \
             BITRIX_DATALENS_TOKEN="${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}"
       - name: Stop compose if provided
-        # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash .github/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
+        run: bash /data/ops/ci/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
       - uses: actions/upload-artifact@v3
         if: "!cancelled()"
         with:
@@ -286,7 +256,6 @@ jobs:
           retention-days: 1
 
   pytest_ext_private:
-    # copy-paste, but simpliest solution for now given options provided by github ci
     runs-on: [ self-hosted, linux, ext_private ]
     needs: pytest_split
     #if: ${{ needs.pytest_split.outputs.split_ext_private != '[]' }}
@@ -314,27 +283,15 @@ jobs:
           registry: ${{ vars.DL_CI_CR_URI }}
           username: ${{ secrets.DL_CI_CR_USER }}
           password: ${{ secrets.DL_CI_CR_TOKEN }}
-      - name: 'Cleanup build folder'
-        run: |
-          ls -la ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          ls -la ./
-      - name: Checkout code, just to get access to .github/execute_tests...
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - run: echo compose_path="/data/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
       - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
-      # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - run: echo "TARGET_PATH=${{ matrix.value }}" "NET_NAME=${{ job.container.network }}" "COMPOSE_PROJECT_NAME=${{ env.compose_prj }}"
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash .github/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+          bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
       - name: Stop compose if provided
-        # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash .github/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
+        run: bash /data/ops/ci/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"
       - uses: actions/upload-artifact@v3
         if: "!cancelled()"
         with:
@@ -380,35 +337,37 @@ jobs:
     name: "🐲 mypy"
     timeout-minutes: ${{ inputs.pytest_timeout_minutes && fromJSON(inputs.pytest_timeout_minutes ) || 10 }}
     steps:
-      - name: 'Cleanup folder'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-      - name: Checkout code, just to get access to .github/execute_mypy...
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - run: echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
       - name: run mypy
         run: |
           . /venv/bin/activate
-          python .github/execute_mypy_multi.py /tmp/dl_test_targets.json
+          execute-mypy-multi /data /tmp/dl_test_targets.json
         env:
           PYTHONUNBUFFERED: "1"
 
-
-# todo:  uncomment when code is linted and being  re-formatted in pre-commit hooks
-#  codestyle_all:
-#    runs-on: [self-hosted, linux, light]
-#    needs: gh_build_image
-#    container:
-#      # until https://github.com/github/docs/issues/25520 is resolved, using vars
-#      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_code_quality:${{ github.sha }}"
-#      credentials:
-#        username: ${{ secrets.DL_CI_CR_USER }}
-#        password: ${{ secrets.DL_CI_CR_TOKEN }}
-#    steps:
-#    - run: cd /data && task ld:check_all
+  codestyle_all:
+    runs-on: [self-hosted, linux, light]
+    needs: gh_build_image
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_code_quality:${{ github.sha }}"
+      credentials:
+        username: ${{ secrets.DL_CI_CR_USER }}
+        password: ${{ secrets.DL_CI_CR_TOKEN }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: |
+          task cq:check_dir -- .
+          task cq:check_dir_strict -- .
+        env:
+          VENV_PATH: /venv
 
   codestyle_changed:
     runs-on: [ self-hosted, linux, light ]

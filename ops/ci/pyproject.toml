@@ -303,25 +303,6 @@ poetry = "==1.5.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.ruff]
-line-length = 140
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I"
-
-]
-
-[tool.ruff.isort]
-split-on-trailing-comma = true
-
-
-
-
 [[tool.poetry.source]]
 name = "ya"
 url = "https://pypi.yandex-team.ru/simple/"
