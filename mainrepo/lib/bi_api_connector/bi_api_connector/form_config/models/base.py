@@ -11,7 +11,6 @@ from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
-from bi_api_commons_ya_cloud.models import TenantYCOrganization
 
 from bi_api_connector.form_config.models.api_schema import FormApiSchema, FormFieldApiSchema
 from bi_api_connector.form_config.models.common import (
@@ -131,9 +130,6 @@ class ConnectionFormFactory:
     def __init__(self, mode: ConnectionFormMode, localizer: Localizer):
         self.mode = mode
         self._localizer = localizer
-
-    def _is_current_tenant_with_org(self, tenant: Optional[TenantDef]) -> bool:
-        return isinstance(tenant, TenantYCOrganization)
 
     def _filter_nulls(self, coll: list[Optional[Any]]) -> list[Any]:
         return [item for item in coll if item is not None]

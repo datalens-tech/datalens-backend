@@ -4,13 +4,11 @@ from marshmallow import fields as ma_fields
 
 from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 from bi_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
-from bi_connector_mdb_base.core.storage_schemas import ConnectionMDBStorageDataSchemaMixin
 
 _CH_CONN_DATA_TV = TypeVar('_CH_CONN_DATA_TV', bound=ConnectionClickhouseBase.DataModel)
 
 
 class ConnectionClickHouseBaseDataStorageSchema(
-        ConnectionMDBStorageDataSchemaMixin,
         ConnectionSQLDataStorageSchema[_CH_CONN_DATA_TV], Generic[_CH_CONN_DATA_TV],
 ):
     secure = ma_fields.Boolean(allow_none=False, required=False, load_default=False, dump_default=False)

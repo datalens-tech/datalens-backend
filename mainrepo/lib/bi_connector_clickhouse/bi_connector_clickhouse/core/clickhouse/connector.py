@@ -7,7 +7,6 @@ from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor
 )
 from bi_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 from bi_connector_clickhouse.core.clickhouse.constants import (
@@ -16,7 +15,6 @@ from bi_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
 )
 from bi_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
-from bi_connector_clickhouse.core.clickhouse.settings import ClickHouseSettingDefinition
 from bi_connector_clickhouse.core.clickhouse.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
 from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_clickhouse.core.clickhouse.data_source_migration import ClickHouseDataSourceMigrator
@@ -30,7 +28,6 @@ class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     dialect_string = 'bi_clickhouse'
-    settings_definition = ClickHouseSettingDefinition
     data_source_migrator_cls = ClickHouseDataSourceMigrator
 
 
@@ -54,4 +51,3 @@ class ClickHouseCoreConnector(ClickHouseCoreConnectorBase):
         ClickHouseTableCoreSourceDefinition,
         ClickHouseSubselectCoreSourceDefinition,
     )
-    mdb_dto_classes = frozenset({ClickHouseConnDTO})

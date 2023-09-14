@@ -7,6 +7,6 @@ def clickhouse_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Co
     return dict(CLICKHOUSE=ClickHouseConnectorSettings())
 
 
-class ClickHouseSettingDefinition(ConnectorSettingsDefinition):
+class ClickHouseMDBSettingDefinition(ConnectorSettingsDefinition):
     settings_class = ClickHouseConnectorSettings
     fallback = clickhouse_settings_fallback

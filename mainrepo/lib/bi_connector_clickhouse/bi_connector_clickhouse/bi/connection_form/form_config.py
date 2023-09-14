@@ -31,7 +31,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
         ]
 
-    def get_base_edit_api_schema(self) -> FormActionApiSchema:
+    def _get_base_edit_api_schema(self) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 *self.get_common_api_schema_items(),
@@ -40,7 +40,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             ],
         )
 
-    def get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
+    def _get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 *edit_api_schema.items,
@@ -49,7 +49,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             conditions=edit_api_schema.conditions.copy(),
         )
 
-    def get_base_check_api_schema(self) -> FormActionApiSchema:
+    def _get_base_check_api_schema(self) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 *self.get_common_api_schema_items(),
@@ -57,7 +57,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
-    def get_base_form_config(
+    def _get_base_form_config(
             self, host_section: Sequence[FormRow],
             username_section: Sequence[FormRow],
             create_api_schema: FormActionApiSchema,
@@ -99,11 +99,11 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         host_section: list[FormRow] = [rc.host_row()]
         username_section: list[FormRow] = [rc.username_row()]
 
-        edit_api_schema = self.get_base_edit_api_schema()
-        create_api_schema = self.get_base_create_api_schema(edit_api_schema)
-        check_api_schema = self.get_base_check_api_schema()
+        edit_api_schema = self._get_base_edit_api_schema()
+        create_api_schema = self._get_base_create_api_schema(edit_api_schema)
+        check_api_schema = self._get_base_check_api_schema()
 
-        return self.get_base_form_config(
+        return self._get_base_form_config(
             host_section=host_section,
             username_section=username_section,
             create_api_schema=create_api_schema,

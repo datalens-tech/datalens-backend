@@ -15,7 +15,6 @@ marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.12"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}

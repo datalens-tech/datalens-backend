@@ -6,7 +6,7 @@ import attr
 
 from bi_utils.utils import DataKey
 
-from bi_core.base_models import ConnMDBDataModelMixin
+from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
 from bi_core.connection_models.conn_options import ConnectOptions
 from bi_connector_yql.core.ydb.dto import YDBConnDTO
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin

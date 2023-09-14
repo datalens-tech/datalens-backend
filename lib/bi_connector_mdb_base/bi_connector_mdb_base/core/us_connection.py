@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from bi_core.us_manager.us_manager import USManagerBase
     from bi_core.services_registry.top_level import ServicesRegistry
     from bi_core.us_connection_base import ConnectionBase
-    from bi_core.base_models import ConnMDBDataModelMixin
+    from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
     from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
 
 

@@ -100,7 +100,7 @@ class DataCloudInstallation(
         'snowflake',
     ]
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'chyt',
@@ -622,7 +622,7 @@ class ExternalTestingInstallation(
         'smb_heatmaps',
     ]
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'ydb',
@@ -896,7 +896,7 @@ class ExternalProductionInstallation(
         'smb_heatmaps',
     ]
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'greenplum_mdb',
@@ -979,7 +979,7 @@ class IsraelInstallation(NebiusInstallation):
         'monitoring',
     ]
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'chyt',
@@ -1022,7 +1022,7 @@ class NemaxInstallation(NebiusInstallation):
         'monitoring',
     ]
     CORE_CONNECTOR_WHITELIST: ClassVar[list[str]] = [
-        'clickhouse',
+        'clickhouse_mdb',
         'postgresql_mdb',
         'mysql_mdb',
         'chyt',

@@ -11,7 +11,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-bi-connector-mdb-base = {path = "../../../lib/bi_connector_mdb_base"}
 python = ">=3.10, <3.12"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -24,7 +23,6 @@ yandex-bi-core-testing = {path = "../bi_core_testing"}
 yandex-bi-db-testing = {path = "../bi_db_testing"}
 yandex-bi-formula = {path = "../bi_formula"}
 yandex-bi-formula-ref = {path = "../bi_formula_ref"}
-yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 bi-i18n = {path = "../bi_i18n"}
 statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 

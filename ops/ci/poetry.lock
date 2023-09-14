@@ -862,7 +862,9 @@ develop = false
 [package.dependencies]
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 
@@ -7595,7 +7597,6 @@ dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}
 yandex-bi-core = {path = "../bi_core"}
@@ -8056,13 +8057,11 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-bi-connector-mdb-base = {path = "../../../lib/bi_connector_mdb_base"}
 bi-i18n = {path = "../bi_i18n"}
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-commons-ya-cloud = {path = "../../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-connector = {path = "../bi_api_connector"}
 yandex-bi-configs = {path = "../bi_configs"}
 yandex-bi-constants = {path = "../bi_constants"}
@@ -8204,7 +8203,6 @@ bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 mysqlclient = ">=1.4.6"
 sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
