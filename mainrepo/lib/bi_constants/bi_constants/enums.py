@@ -238,9 +238,8 @@ class DataSourceCollectionType(Enum):
     collection = 'collection'
 
 
-class DataSourceCreatedVia(Enum):
-    user = 'user'
-    yt_to_dl = 'yt_to_dl'
+class DataSourceCreatedVia(DynamicEnum):
+    user = AutoEnumValue()
 
 
 class RLSSubjectType(Enum):

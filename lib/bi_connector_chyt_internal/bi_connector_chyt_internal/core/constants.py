@@ -1,4 +1,4 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom, NotificationType
+from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, NotificationType
 
 from bi_connector_chyt.core.constants import BACKEND_TYPE_CHYT as BASE_BACKEND_TYPE_CHYT
 
@@ -22,3 +22,5 @@ SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST = CreateDSFrom.declare('CHYT_USER_AUTH_TAB
 SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE = CreateDSFrom.declare('CHYT_USER_AUTH_TABLE_RANGE')
 
 NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE = NotificationType.declare('using_public_clickhouse_clique')
+
+DATA_SOURCE_CREATE_VIA_YT_TO_DL = DataSourceCreatedVia.declare('yt_to_dl')

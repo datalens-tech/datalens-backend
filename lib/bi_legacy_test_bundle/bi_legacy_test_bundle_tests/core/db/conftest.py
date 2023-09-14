@@ -11,7 +11,6 @@ import bi_legacy_test_bundle_tests.core.config as tests_config_mod
 from bi_configs.settings_submodels import S3Settings
 from bi_constants.enums import (
     ConnectionType,
-    DataSourceCreatedVia,
     RawSQLLevel,
 )
 from bi_core import exc
@@ -24,6 +23,7 @@ from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceColl
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
 from bi_connector_bundle_chs3.file.core.testing.connection import make_saved_file_connection
+from bi_connector_chyt_internal.core.constants import DATA_SOURCE_CREATE_VIA_YT_TO_DL
 from bi_core_testing.connection import make_saved_connection
 from bi_core_testing.connector import CONNECTION_TYPE_TESTING
 from bi_core_testing.database import (
@@ -455,7 +455,8 @@ def yt_to_dl_dataset(default_sync_usm, db_table, saved_connection, app_context):
         sync_usm=default_sync_usm,
         db_table=db_table,
         connection=saved_connection,
-        created_via=DataSourceCreatedVia.yt_to_dl)
+        created_via=DATA_SOURCE_CREATE_VIA_YT_TO_DL
+    )
     default_sync_usm.save(dataset)
     yield dataset
     default_sync_usm.delete(dataset)

@@ -37,6 +37,7 @@ from bi_core.utils import attrs_evolve_to_subclass
 from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
 
+from bi_connector_chyt_internal.core.constants import DATA_SOURCE_CREATE_VIA_YT_TO_DL
 from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
@@ -1927,7 +1928,7 @@ def test_dataset_created_via(default_sync_usm, saved_dataset, yt_to_dl_dataset):
     yt_to_dl_dataset = us_manager.get_by_id(yt_to_dl_dataset.uuid, expected_type=Dataset)
 
     assert dataset.created_via == DataSourceCreatedVia.user
-    assert yt_to_dl_dataset.created_via == DataSourceCreatedVia.yt_to_dl
+    assert yt_to_dl_dataset.created_via == DATA_SOURCE_CREATE_VIA_YT_TO_DL
 
 
 def test_data_source_with_idx(saved_dataset_no_dsrc, saved_connection, default_sync_usm):

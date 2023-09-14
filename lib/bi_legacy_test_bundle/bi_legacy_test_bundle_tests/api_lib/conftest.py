@@ -23,7 +23,11 @@ from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSett
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_chyt.core.settings import CHYTConnectorSettings
-from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT, CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
+from bi_connector_chyt_internal.core.constants import (
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+    DATA_SOURCE_CREATE_VIA_YT_TO_DL,
+)
 from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
@@ -37,7 +41,7 @@ from bi_connector_yql.core.ydb.settings import YDBConnectorSettings
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.settings import YQConnectorSettings
 
-from bi_constants.enums import ConnectionType, DataSourceCreatedVia, RawSQLLevel
+from bi_constants.enums import ConnectionType, RawSQLLevel
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
 from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
@@ -577,7 +581,7 @@ def dynamic_ch_dataset_id(client, dynamic_ch_connection_id, request):
 
 @pytest.fixture(scope='function')
 def yt_to_dl_dataset_id(client, connection_id, request):
-    return _make_dataset(client, connection_id, request, created_via=DataSourceCreatedVia.yt_to_dl)
+    return _make_dataset(client, connection_id, request, created_via=DATA_SOURCE_CREATE_VIA_YT_TO_DL)
 
 
 @pytest.fixture(scope='function')

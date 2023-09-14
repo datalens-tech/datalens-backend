@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 from bi_constants.enums import DataSourceCreatedVia
 
 from bi_model_tools.schema.base import BaseSchema
+from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 from bi_api_lib.schemas.dataset_base import DatasetContentSchema
 
@@ -84,7 +85,7 @@ class CreateDatasetSchema(DatasetContentSchema):
     workbook_id = ma_fields.String()
     # TODO FIX: Ensure that not used and remove
     preview = ma_fields.Boolean(load_default=False, required=False)
-    created_via = ma_fields.Enum(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
+    created_via = DynamicEnumField(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
 
 
 class CreateDatasetResponseSchema(DatasetContentSchema):
