@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
 from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 from bi_api_connector.form_config.models.rows.base import FormRow
 
@@ -69,13 +70,13 @@ class YQConnectionFormFactory(ConnectionFormFactory):
 
         else:
             sa_section = [
-                mdb_components.CloudTreeSelectRow(name=CommonFieldName.folder_id),
-                C.ServiceAccountRow(name=CommonFieldName.service_account_id),
+                mdb_components.CloudTreeSelectRow(name=MDBFieldName.folder_id),
+                mdb_components.ServiceAccountRow(name=MDBFieldName.service_account_id),
             ]
 
             edit_api_schema = FormActionApiSchema(items=[
-                FormFieldApiSchema(name=CommonFieldName.folder_id, required=True),
-                FormFieldApiSchema(name=CommonFieldName.service_account_id, required=True),
+                FormFieldApiSchema(name=MDBFieldName.folder_id, required=True),
+                FormFieldApiSchema(name=MDBFieldName.service_account_id, required=True),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
             ])
@@ -86,8 +87,8 @@ class YQConnectionFormFactory(ConnectionFormFactory):
             ])
 
             check_api_schema = FormActionApiSchema(items=[
-                FormFieldApiSchema(name=CommonFieldName.folder_id, required=True),
-                FormFieldApiSchema(name=CommonFieldName.service_account_id, required=True),
+                FormFieldApiSchema(name=MDBFieldName.folder_id, required=True),
+                FormFieldApiSchema(name=MDBFieldName.service_account_id, required=True),
                 *self._get_top_level_check_api_schema_items(),
             ])
 

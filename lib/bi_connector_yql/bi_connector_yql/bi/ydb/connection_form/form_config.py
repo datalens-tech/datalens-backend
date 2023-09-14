@@ -4,6 +4,7 @@ from typing import Optional
 
 import attr
 
+from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
 from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 from bi_configs.connectors_settings import ConnectorSettingsBase, YDBConnectorSettings
 
@@ -59,16 +60,16 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=YDBDatabaseRow.Inner.db_name, required=True),
             ]
             db_section_rows = [
-                mdb_components.CloudTreeSelectRow(name=CommonFieldName.folder_id),
-                C.ServiceAccountRow(name=CommonFieldName.service_account_id),
-                YDBDatabaseRow(name=CommonFieldName.mdb_cluster_id),
+                mdb_components.CloudTreeSelectRow(name=MDBFieldName.folder_id),
+                mdb_components.ServiceAccountRow(name=MDBFieldName.service_account_id),
+                YDBDatabaseRow(name=MDBFieldName.mdb_cluster_id),
             ]
             common_api_schema_items.extend([
-                FormFieldApiSchema(name=CommonFieldName.service_account_id, required=True),
-                FormFieldApiSchema(name=CommonFieldName.mdb_cluster_id, required=True),
+                FormFieldApiSchema(name=MDBFieldName.service_account_id, required=True),
+                FormFieldApiSchema(name=MDBFieldName.mdb_cluster_id, required=True),
             ])
             edit_api_schema.items.append(
-                FormFieldApiSchema(name=CommonFieldName.folder_id, required=True)
+                FormFieldApiSchema(name=MDBFieldName.folder_id, required=True)
             )
         else:
             common_api_schema_items = [

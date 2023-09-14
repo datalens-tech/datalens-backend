@@ -54,3 +54,8 @@ class MDBDatabaseRow(MDBFieldRow):
 @attr.s(kw_only=True, frozen=True)
 class CloudTreeSelectRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledMixin):
     type = 'cloud_tree_select'
+
+
+@attr.s(kw_only=True, frozen=True)
+class ServiceAccountRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledMixin):
+    type = 'service_account'

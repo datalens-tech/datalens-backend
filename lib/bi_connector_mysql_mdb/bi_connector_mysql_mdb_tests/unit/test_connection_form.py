@@ -14,7 +14,7 @@ from bi_connector_mysql_mdb.bi.connection_form.form_config import MySQLMDBConnec
 from bi_connector_mysql.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_MYSQL_CONFIGS
 
 
-class TestMySQLConnectionForm(ConnectionFormTestBase):
+class TestMySQLMDBConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = MySQLMDBConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_MYSQL_CONFIGS
 

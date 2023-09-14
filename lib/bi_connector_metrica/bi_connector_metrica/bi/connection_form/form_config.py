@@ -15,7 +15,12 @@ from bi_api_connector.form_config.models.base import ConnectionFormFactory, Conn
 from bi_api_connector.form_config.models.common import CommonFieldName, FormFieldName, OAuthApplication
 from bi_api_connector.form_config.models.rows.base import FormRow
 
-from bi_connector_metrica.bi.connection_form.rows import CounterRow, MetricaCounterRowItem, AppMetricaCounterRowItem
+from bi_connector_metrica.bi.connection_form.rows import (
+    CounterRow,
+    MetricaCounterRowItem,
+    AppMetricaCounterRowItem,
+    AccuracyRow,
+)
 from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
 from bi_connector_metrica.bi.i18n.localizer import Translatable
 
@@ -68,7 +73,7 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
                 button_text=self._localizer.translate(Translatable('button_get-token')),
             ),
             self._counter_row(manual_input=self._allow_manual_counter_input(connector_settings)),
-            C.AccuracyRow(name=MetricaFieldName.accuracy),
+            AccuracyRow(name=MetricaFieldName.accuracy),
         ]
 
         edit_api_schema = FormActionApiSchema(items=[

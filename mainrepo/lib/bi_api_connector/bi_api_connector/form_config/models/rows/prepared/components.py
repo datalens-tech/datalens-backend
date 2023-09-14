@@ -40,13 +40,3 @@ class CollapseRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, InnerFiel
 
     text: str = attr.ib()
     component_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null('componentProps'))
-
-
-@attr.s(kw_only=True, frozen=True)
-class AccuracyRow(PreparedRow, FormFieldMixin, DisabledMixin):
-    type = 'metrica_accuracy'
-
-
-@attr.s(kw_only=True, frozen=True)
-class ServiceAccountRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledMixin):
-    type = 'service_account'

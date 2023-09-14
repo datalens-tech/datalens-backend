@@ -24,3 +24,8 @@ class MetricaCounterRowItem(CounterRow):
 @attr.s(kw_only=True, frozen=True)
 class AppMetricaCounterRowItem(CounterRow):
     type = 'appmetrica_counter'
+
+
+@attr.s(kw_only=True, frozen=True)
+class AccuracyRow(PreparedRow, FormFieldMixin, DisabledMixin):
+    type = 'metrica_accuracy'

@@ -14,7 +14,7 @@ from bi_connector_clickhouse.bi.i18n.localizer import CONFIGS as BI_API_LIB_CONF
 from bi_connector_clickhouse_mdb.bi.connection_form.form_config import ClickHouseMDBConnectionFormFactory
 
 
-class TestClickhouseConnectionForm(ConnectionFormTestBase):
+class TestClickhouseMDBConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = ClickHouseMDBConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_API_LIB_CONFIGS
 
