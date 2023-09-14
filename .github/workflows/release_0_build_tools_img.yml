@@ -6,8 +6,26 @@ on:
 jobs:
   build:
     runs-on: [ self-hosted, linux, ext_public ]
+    permissions:
+      packages: write
+      contents: read
+    # TODO FIX: Revise it before moving to mainrepo
+    container:
+      image: "${{ vars.DL_CI_CR_URI }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: "${{ secrets.DL_CI_CR_USER }}"
+        password: "${{ secrets.DL_CI_CR_TOKEN }}"
     steps:
-      - name: Login to GitHub Container Registry
+      - name: "Cleanup build folder"
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+      - name: "Git security workaround (ownership)"
+        run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - name: "Login to GitHub Container Registry"
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
