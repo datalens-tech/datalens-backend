@@ -28,7 +28,7 @@ on:
 
 jobs:
   gh_build_image:
-    runs-on: [ self-hosted, linux, ext_public ]
+    runs-on: [ self-hosted, linux, light ]
     container:
       image: "${{ vars.DL_CI_CR_URI }}/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -209,7 +209,8 @@ jobs:
           retention-days: 1
 
   pytest_ext_public:
-    runs-on: [ self-hosted, linux, ext_public ]
+    # todo: return ext_public
+    runs-on: [ self-hosted, linux, light ]
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_ext_public != '[]' }}
     container:
