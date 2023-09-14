@@ -31,3 +31,9 @@ dl_repo:
       boilerplate_path: mainrepo/lib/bi_package_boilerplate
       tags:
         - own_dependency_group
+
+    - type: app_nebius
+      root_path: app_nebius
+      boilerplate_path: mainrepo/lib/bi_package_boilerplate
+      tags:
+        - own_dependency_group
