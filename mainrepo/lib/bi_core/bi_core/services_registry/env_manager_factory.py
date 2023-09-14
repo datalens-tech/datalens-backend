@@ -5,9 +5,16 @@ from typing import TYPE_CHECKING
 import attr
 
 from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connections_security.base import ConnectionSecurityManager, InsecureConnectionSecurityManager
+from bi_core.connections_security.base import (
+    ConnectionSecurityManager,
+    InsecureConnectionSecurityManager,
+)
+from bi_core.mdb_utils import (
+    MDBDomainManager,
+    MDBDomainManagerFactory,
+    MDBDomainManagerSettings,
+)
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from bi_core.mdb_utils import MDBDomainManager, MDBDomainManagerSettings, MDBDomainManagerFactory
 
 if TYPE_CHECKING:
     from bi_core.connection_models import ConnectOptions

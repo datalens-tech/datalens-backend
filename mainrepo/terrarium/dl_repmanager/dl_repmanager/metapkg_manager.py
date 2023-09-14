@@ -1,7 +1,7 @@
 import itertools
 import os.path
-import subprocess
 from pathlib import Path
+import subprocess
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -10,8 +10,15 @@ import tomlkit
 from tomlkit import TOMLDocument
 from tomlkit.items import Key
 
-from dl_repmanager.primitives import ReqPackageSpec, PypiReqPackageSpec, LocalReqPackageSpec
-from dl_repmanager.toml_tools import TOMLReader, TOMLWriter
+from dl_repmanager.primitives import (
+    LocalReqPackageSpec,
+    PypiReqPackageSpec,
+    ReqPackageSpec,
+)
+from dl_repmanager.toml_tools import (
+    TOMLReader,
+    TOMLWriter,
+)
 
 
 @attr.s()
@@ -61,9 +68,7 @@ class MetaPackageManager:
         section[pkg_spec.package_name] = pkg_spec.to_toml_value()
 
     def list_poetry_groups(self) -> list[str]:
-        return list(
-            self._toml["tool"]["poetry"]["group"].keys()
-        )
+        return list(self._toml["tool"]["poetry"]["group"].keys())
 
     def remove_poetry_group(self, name: str) -> None:
         del self._toml["tool"]["poetry"]["group"][name]
@@ -132,19 +137,20 @@ class MetaPackageManager:
             dep = line.split(";")[0].strip()
             if "@" in dep:
                 pkg_name, pkg_url = dep.split("@")
-                ret.append(LocalReqPackageSpec(
-                    package_name=pkg_name.strip(),
-                    path=Path(os.path.relpath(
-                        urlparse(pkg_url.strip()).path,
-                        self.dir_path,
-                    ))
-                ))
+                ret.append(
+                    LocalReqPackageSpec(
+                        package_name=pkg_name.strip(),
+                        path=Path(
+                            os.path.relpath(
+                                urlparse(pkg_url.strip()).path,
+                                self.dir_path,
+                            )
+                        ),
+                    )
+                )
             else:
                 pkg_name = dep.split("==")[0]
-                ret.append(PypiReqPackageSpec(
-                    package_name=pkg_name,
-                    version=dep.removeprefix(pkg_name)
-                ))
+                ret.append(PypiReqPackageSpec(package_name=pkg_name, version=dep.removeprefix(pkg_name)))
         return ret
 
     def run_poetry_lock(self, suppress_stdout: bool = False) -> None:

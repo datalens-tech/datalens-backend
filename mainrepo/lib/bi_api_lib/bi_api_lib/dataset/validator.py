@@ -1,55 +1,105 @@
 from __future__ import annotations
 
-import logging
-import uuid
 from contextlib import contextmanager
-from typing import Collection, Generator, Optional, Sequence, TYPE_CHECKING
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    Generator,
+    Optional,
+    Sequence,
+)
+import uuid
 
 import attr
 
-import bi_core.exc as common_exc
-import bi_query_processing.exc
+from bi_api_lib import (
+    exc,
+    utils,
+)
 from bi_api_lib.dataset.base_wrapper import DatasetBaseWrapper
-from bi_api_lib.dataset.component_abstraction import DatasetComponentAbstraction, DatasetComponentRef
+from bi_api_lib.dataset.component_abstraction import (
+    DatasetComponentAbstraction,
+    DatasetComponentRef,
+)
 from bi_api_lib.dataset.utils import check_permissions_for_origin_sources
-from bi_api_lib.enums import FILTERS_BY_TYPE, DatasetAction, USPermissionKind
-from bi_query_processing.compilation.helpers import single_formula_comp_query_for_validation
+from bi_api_lib.enums import (
+    FILTERS_BY_TYPE,
+    DatasetAction,
+    USPermissionKind,
+)
 from bi_api_lib.query.formalization.block_formalizer import BlockFormalizer
-from bi_query_processing.legend.block_legend import BlockSpec
 from bi_api_lib.query.formalization.legend_formalizer import ValidationLegendFormalizer
 from bi_api_lib.query.formalization.raw_specs import RawQuerySpecUnion
 from bi_api_lib.request_model.data import (
-    Action, FieldAction, SourceActionBase, AvatarActionBase,
-    RelationActionBase, ReplaceConnectionAction, ObligatoryFilterActionBase,
-    ReplaceConnection, ObligatoryFilterBase,
-    AddUpdateObligatoryFilter, DeleteObligatoryFilter, UpdateField, DeleteField, AddField,
+    Action,
+    AddField,
+    AddUpdateObligatoryFilter,
+    AvatarActionBase,
+    DeleteField,
+    DeleteObligatoryFilter,
+    FieldAction,
+    ObligatoryFilterActionBase,
+    ObligatoryFilterBase,
+    RelationActionBase,
+    ReplaceConnection,
+    ReplaceConnectionAction,
+    SourceActionBase,
+    UpdateField,
 )
-from bi_api_lib import utils, exc
 from bi_app_tools.profiling_base import generic_profiler
 from bi_constants.enums import (
-    AggregationFunction, BinaryJoinOperator, CalcMode, ComponentType,
-    CreateDSFrom, DataSourceRole, ManagedBy, ComponentErrorLevel, TopLevelComponentId,
+    AggregationFunction,
+    BinaryJoinOperator,
+    CalcMode,
+    ComponentErrorLevel,
+    ComponentType,
     ConnectionType,
+    CreateDSFrom,
+    DataSourceRole,
+    ManagedBy,
+    TopLevelComponentId,
 )
-from bi_core.base_models import DefaultConnectionRef, DefaultWhereClause
+from bi_core.base_models import (
+    DefaultConnectionRef,
+    DefaultWhereClause,
+)
+from bi_core.connectors.base.data_source_migration import get_data_source_migrator
 from bi_core.constants import DatasetConstraints
 from bi_core.data_source.base import DataSource
-from bi_core.data_source.sql import BaseSQLDataSource
 from bi_core.data_source.collection import DataSourceCollectionBase
-from bi_core.db import SchemaColumn, SchemaInfo
-from bi_core.fields import (
-    BIField, DirectCalculationSpec, FormulaCalculationSpec, create_calc_spec_from, del_calc_spec_kwargs_from,
+from bi_core.data_source.sql import BaseSQLDataSource
+from bi_core.data_source.type_mapping import get_data_source_class
+from bi_core.db import (
+    SchemaColumn,
+    SchemaInfo,
 )
-from bi_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect, SourceAvatar
+import bi_core.exc as common_exc
+from bi_core.fields import (
+    BIField,
+    DirectCalculationSpec,
+    FormulaCalculationSpec,
+    create_calc_spec_from,
+    del_calc_spec_kwargs_from,
+)
+from bi_core.multisource import (
+    AvatarRelation,
+    BinaryCondition,
+    ConditionPartDirect,
+    SourceAvatar,
+)
 from bi_core.us_connection_base import ConnectionBase
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
 from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.connectors.base.data_source_migration import get_data_source_migrator
-from bi_core.data_source.type_mapping import get_data_source_class
-
 from bi_formula.core import exc as formula_exc
-from bi_formula.core.message_ctx import FormulaErrorCtx, MessageLevel
+from bi_formula.core.message_ctx import (
+    FormulaErrorCtx,
+    MessageLevel,
+)
+from bi_query_processing.compilation.helpers import single_formula_comp_query_for_validation
+import bi_query_processing.exc
+from bi_query_processing.legend.block_legend import BlockSpec
 from bi_utils.utils import enum_not_none
 
 if TYPE_CHECKING:
@@ -110,8 +160,7 @@ class DatasetValidator(DatasetBaseWrapper):
         self._is_data_api = is_data_api
         self._is_bleeding_edge_user = is_bleeding_edge_user
 
-        self._ds_ca = DatasetComponentAbstraction(
-            dataset=self._ds, us_entry_buffer=self._us_manager.get_entry_buffer())
+        self._ds_ca = DatasetComponentAbstraction(dataset=self._ds, us_entry_buffer=self._us_manager.get_entry_buffer())
         self._remapped_source_ids: dict[str, str] = {}
         self._affected_components: set[DatasetComponentRef] = set()
 
@@ -120,7 +169,8 @@ class DatasetValidator(DatasetBaseWrapper):
         raw_query_spec_union = RawQuerySpecUnion()
         legend = ValidationLegendFormalizer(dataset=self._ds).make_legend(raw_query_spec_union=raw_query_spec_union)
         block_legend = BlockFormalizer(dataset=self._ds).make_block_legend(
-            raw_query_spec_union=raw_query_spec_union, legend=legend)
+            raw_query_spec_union=raw_query_spec_union, legend=legend
+        )
         block_spec = block_legend.blocks[0]
         super()._reload_formalized_specs(block_spec=block_spec)
 
@@ -130,8 +180,7 @@ class DatasetValidator(DatasetBaseWrapper):
         if isinstance(us_manager, SyncUSManager):
             return us_manager
         raise TypeError(
-            f"Unsupported type of USManager ({type(us_manager).__qualname__}). "
-            f"Only SyncUSManager supported."
+            f"Unsupported type of USManager ({type(us_manager).__qualname__}). " f"Only SyncUSManager supported."
         )
 
     @generic_profiler("validator-apply-action-batch")
@@ -143,39 +192,39 @@ class DatasetValidator(DatasetBaseWrapper):
                     item_data=action_patch,
                 )
         except common_exc.DatasetConfigurationError as err:
-            LOGGER.info('Error occurred during applying action: %r', err)
-            raise exc.DLValidationFatal(f'Invalid action: {err}')
+            LOGGER.info("Error occurred during applying action: %r", err)
+            raise exc.DLValidationFatal(f"Invalid action: {err}")
 
         self._check_for_orphaned_component_errors()
 
-    def apply_action(
-            self, item_data: Action,
-            by: Optional[ManagedBy] = ManagedBy.user
-    ) -> None:
+    def apply_action(self, item_data: Action, by: Optional[ManagedBy] = ManagedBy.user) -> None:
         """Apply update to the dataset configuration"""
 
         action = DatasetAction.remap_legacy(item_data.action)
         if self._is_data_api and action not in DatasetAction.get_actions_whitelist_for_data_api():
-            raise exc.DatasetActionNotAllowedError(f'Action {action.value} is not allowed.')
+            raise exc.DatasetActionNotAllowedError(f"Action {action.value} is not allowed.")
 
         extra = dict(
             dataset_action_name=action.name,
             dataset_action_data=item_data,
         )
-        LOGGER.info(f'Going to apply action {action.name}', extra=extra)
+        LOGGER.info(f"Going to apply action {action.name}", extra=extra)
 
         # TODO: ManagedBy не передаётся ни в одной схеме. Зачем тут эта проверка?
         if by is not None and (item_data.managed_by or ManagedBy.user) != by:
-            raise exc.DLValidationFatal(f'Item cannot be managed by {by.name}')
+            raise exc.DLValidationFatal(f"Item cannot be managed by {by.name}")
 
         if isinstance(item_data, FieldAction):
-            self.apply_field_action(action=action, field_data=item_data.field,
-                                    order_index=item_data.order_index or 0, by=by)
+            self.apply_field_action(
+                action=action, field_data=item_data.field, order_index=item_data.order_index or 0, by=by
+            )
         elif isinstance(item_data, SourceActionBase):
             self.apply_source_action(action=action, source_data=item_data.source, by=by)
         elif isinstance(item_data, AvatarActionBase):
             self.apply_source_avatar_action(
-                action=action, source_avatar_data=item_data.source_avatar, by=by,
+                action=action,
+                source_avatar_data=item_data.source_avatar,
+                by=by,
                 disable_fields_update=item_data.disable_fields_update,
             )
         elif isinstance(item_data, RelationActionBase):
@@ -196,11 +245,14 @@ class DatasetValidator(DatasetBaseWrapper):
                 missing_components.append(component_ref)
         if missing_components:
             LOGGER.warning(
-                'Nonexistent components are referenced in error registry',
-                extra={'dataset_id': self._ds.uuid, 'components': [
-                    {'type': component_ref.component_type, 'id': component_ref.component_id}
-                    for component_ref in missing_components
-                ]}
+                "Nonexistent components are referenced in error registry",
+                extra={
+                    "dataset_id": self._ds.uuid,
+                    "components": [
+                        {"type": component_ref.component_type, "id": component_ref.component_id}
+                        for component_ref in missing_components
+                    ],
+                },
             )
 
     def validate_result_schema_length(self, field_cnt_diff: int = 0) -> None:
@@ -208,10 +260,7 @@ class DatasetValidator(DatasetBaseWrapper):
             return
 
         # only one limit related record in error registry + remove potentially invalid errors
-        self._ds.error_registry.remove_errors(
-            id=self._ds.result_schema.id,
-            code=exc.TooManyFieldsError.err_code
-        )
+        self._ds.error_registry.remove_errors(id=self._ds.result_schema.id, code=exc.TooManyFieldsError.err_code)
 
         new_result_schema_len = len(self._ds.result_schema) + field_cnt_diff
         if new_result_schema_len > DatasetConstraints.FIELD_COUNT_LIMIT_HARD and field_cnt_diff > 0:
@@ -220,7 +269,7 @@ class DatasetValidator(DatasetBaseWrapper):
             self._ds.error_registry.add_error(
                 id=self._ds.result_schema.id,
                 type=ComponentType.result_schema,
-                message='Too many fields in the result schema',
+                message="Too many fields in the result schema",
                 code=exc.TooManyFieldsError.err_code,
             )
 
@@ -243,7 +292,8 @@ class DatasetValidator(DatasetBaseWrapper):
             formula_info = self.formula_compiler.compile_field_formula(field=field, collect_errors=True)
             assert self._column_reg is not None
             formula_comp_query = single_formula_comp_query_for_validation(
-                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg)
+                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg
+            )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
             errors += multi_translator.collect_errors(compiled_multi_query=formula_comp_multi_query)  # type: ignore  # TODO: fix
@@ -260,7 +310,8 @@ class DatasetValidator(DatasetBaseWrapper):
             formula_info = self.formula_compiler.compile_relation_formula(relation=relation, collect_errors=True)
             assert self._column_reg is not None
             formula_comp_query = single_formula_comp_query_for_validation(
-                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg)
+                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg
+            )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
             errors = multi_translator.collect_errors(compiled_multi_query=formula_comp_multi_query)
@@ -275,9 +326,8 @@ class DatasetValidator(DatasetBaseWrapper):
             source_id=self._ds_accessor.get_avatar_strict(avatar_id=relation.right_avatar_id).source_id
         )
 
-        if (
-                not left_coll.supports_join_type(relation.join_type)
-                or not right_coll.supports_join_type(relation.join_type)
+        if not left_coll.supports_join_type(relation.join_type) or not right_coll.supports_join_type(
+            relation.join_type
         ):
             errors.append(
                 FormulaErrorCtx(
@@ -295,11 +345,13 @@ class DatasetValidator(DatasetBaseWrapper):
             formula_info = self.formula_compiler.compile_text_formula(formula=formula, collect_errors=True)
             assert self._column_reg is not None
             formula_comp_query = single_formula_comp_query_for_validation(
-                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg)
+                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg
+            )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
             errors += multi_translator.collect_errors(  # type: ignore  # TODO: fix
-                compiled_multi_query=formula_comp_multi_query, feature_errors=feature_errors)
+                compiled_multi_query=formula_comp_multi_query, feature_errors=feature_errors
+            )
         except formula_exc.FormulaError:
             pass
         return errors
@@ -309,9 +361,7 @@ class DatasetValidator(DatasetBaseWrapper):
         if updated_field.calc_mode == CalcMode.direct:
             if updated_field.avatar_id is None:
                 root_avatar = self._ds_accessor.get_root_avatar_strict()
-                updated_field = updated_field.clone(
-                    avatar_id=root_avatar.id
-                )
+                updated_field = updated_field.clone(avatar_id=root_avatar.id)
             col = self._get_raw_schema_column(field=updated_field)
             if col is not None:
                 updated_field = updated_field.clone(
@@ -326,13 +376,15 @@ class DatasetValidator(DatasetBaseWrapper):
         elif updated_field.calc_mode == CalcMode.formula:
             if updated_field.formula:
                 updated_field = updated_field.clone(
-                    guid_formula=BIField.rename_in_formula(formula=updated_field.formula,
-                                                           key_map=self._ds.result_schema.titles_to_guids)
+                    guid_formula=BIField.rename_in_formula(
+                        formula=updated_field.formula, key_map=self._ds.result_schema.titles_to_guids
+                    )
                 )
             elif updated_field.guid_formula:
                 updated_field = updated_field.clone(
-                    formula=BIField.rename_in_formula(formula=updated_field.guid_formula,
-                                                      key_map=self._ds.result_schema.guids_to_titles)
+                    formula=BIField.rename_in_formula(
+                        formula=updated_field.guid_formula, key_map=self._ds.result_schema.guids_to_titles
+                    )
                 )
 
         return updated_field
@@ -353,33 +405,26 @@ class DatasetValidator(DatasetBaseWrapper):
         # Auto-manage cast
         if field_is_new and updated_field.cast is None:
             LOGGER.info(
-                f'Automatically initializing cast in {field.title} '
-                f'as {enum_not_none(updated_field.initial_data_type).name}'
+                f"Automatically initializing cast in {field.title} "
+                f"as {enum_not_none(updated_field.initial_data_type).name}"
             )
-            updated_field = updated_field.clone(
-                cast=updated_field.initial_data_type
-            )
-        elif (
-                not field_is_new
-                and updated_field.initial_data_type != field.initial_data_type
-        ):
+            updated_field = updated_field.clone(cast=updated_field.initial_data_type)
+        elif not field_is_new and updated_field.initial_data_type != field.initial_data_type:
             # autofix data type if derived type has changed
             if updated_field.cast != updated_field.initial_data_type:
                 LOGGER.info(
-                    f'Automatically setting cast in {field.title} '
-                    f'to {enum_not_none(updated_field.initial_data_type).name}'
+                    f"Automatically setting cast in {field.title} "
+                    f"to {enum_not_none(updated_field.initial_data_type).name}"
                 )
-                updated_field = updated_field.clone(
-                    cast=updated_field.initial_data_type
-                )
+                updated_field = updated_field.clone(cast=updated_field.initial_data_type)
                 # the change of cast might result in new data_type
                 updated_field = self._get_autoupdated_field(updated_field)
 
         # Auto-manage has_auto_aggregation
         if (
-                explicitly_updated
-                and updated_field.has_auto_aggregation
-                and updated_field.aggregation != AggregationFunction.none
+            explicitly_updated
+            and updated_field.has_auto_aggregation
+            and updated_field.aggregation != AggregationFunction.none
         ):
             # Field is autoaggregated and also has an explicit aggregation.
             # We can drop the additional aggregation if this is the field
@@ -391,8 +436,10 @@ class DatasetValidator(DatasetBaseWrapper):
         return updated_field
 
     def _update_dependent_fields(
-            self, old_field: Optional[BIField], new_field: Optional[BIField],
-            visited_guids: frozenset[str],
+        self,
+        old_field: Optional[BIField],
+        new_field: Optional[BIField],
+        visited_guids: frozenset[str],
     ) -> None:
         """Automatically update all fields dependent on the given one"""
         dep_field_ids = set()
@@ -408,9 +455,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 for i, dep_field in enumerate(dep_fields):
                     assert isinstance(dep_field.calc_spec, FormulaCalculationSpec)
                     dep_fields[i] = dep_field.clone(
-                        formula=BIField.rename_in_formula(
-                            dep_field.formula, key_map={old_field.title: new_field.title}
-                        )
+                        formula=BIField.rename_in_formula(dep_field.formula, key_map={old_field.title: new_field.title})
                     )
             if new_field.guid != old_field.guid:
                 for i, dep_field in enumerate(dep_fields):
@@ -424,18 +469,20 @@ class DatasetValidator(DatasetBaseWrapper):
         # Update the fields
         for dep_field in dep_fields:
             self._update_field(
-                old_field=self.get_field_by_id(dep_field.guid), new_field=dep_field,
-                recursive=True, visited_guids=visited_guids,
+                old_field=self.get_field_by_id(dep_field.guid),
+                new_field=dep_field,
+                recursive=True,
+                visited_guids=visited_guids,
             )
 
     def _update_field(
-            self,
-            old_field: Optional[BIField],
-            new_field: Optional[BIField],
-            order_index: Optional[int] = None,
-            recursive: bool = False,
-            visited_guids: frozenset[str] = frozenset(),
-            explicitly_updated: bool = False,
+        self,
+        old_field: Optional[BIField],
+        new_field: Optional[BIField],
+        order_index: Optional[int] = None,
+        recursive: bool = False,
+        visited_guids: frozenset[str] = frozenset(),
+        explicitly_updated: bool = False,
     ) -> None:
         """Update/delete/add field and apply autofixes."""
 
@@ -495,24 +542,27 @@ class DatasetValidator(DatasetBaseWrapper):
                             #  This kind of ruins the idempotency of this method
                             id=oblig_filter.id,
                             type=ComponentType.obligatory_filter,
-                            message=f'Filtration type {default_filter.operation.name} '
-                            f'is not allowed for field type {enum_not_none(new_field.cast).name}',
-                            code=common_exc.DatasetConfigurationError.err_code,     # TODO: add specific err_code
+                            message=f"Filtration type {default_filter.operation.name} "
+                            f"is not allowed for field type {enum_not_none(new_field.cast).name}",
+                            code=common_exc.DatasetConfigurationError.err_code,  # TODO: add specific err_code
                             details=dict(
                                 filter_type=default_filter.operation.name,
                                 field_type=enum_not_none(new_field.cast).name,
                             ),
                         )
                         of_component_ref = DatasetComponentRef(
-                            component_type=ComponentType.obligatory_filter, component_id=oblig_filter.id)
+                            component_type=ComponentType.obligatory_filter, component_id=oblig_filter.id
+                        )
                         self.add_affected_component(of_component_ref)
 
         if new_field is not None:
             for error in self._get_field_errors(field=new_field):
                 self._ds.error_registry.add_error(
-                    id=field_id, type=ComponentType.field,
-                    message=error.message, code=error.code,
-                    details={'token': error.token, 'row': error.coords[0], 'column': error.coords[1]},
+                    id=field_id,
+                    type=ComponentType.field,
+                    message=error.message,
+                    code=error.code,
+                    details={"token": error.token, "row": error.coords[0], "column": error.coords[1]},
                 )
         self.add_affected_component(component_ref)
         old_title = old_field.title if old_field is not None else None
@@ -525,18 +575,16 @@ class DatasetValidator(DatasetBaseWrapper):
             field_dep_mgr.clear_field_direct_references(dep_field_id=field_id)  # type: ignore  # TODO: fix
         else:
             field_dep_mgr.set_field_direct_references(
-                dep_field_id=field_id,
-                ref_field_ids=self.formula_compiler.get_referenced_fields(new_field)
+                dep_field_id=field_id, ref_field_ids=self.formula_compiler.get_referenced_fields(new_field)
             )
 
     def _get_unpatched_field_ids(self) -> list[str]:
         """Return fields that required patching of properties (e.g. cast, initial_data_type, etc.)"""
-        return [f.guid for f in self._ds.result_schema if (
-            f.type is None
-            or f.initial_data_type is None
-            or f.cast is None
-            or f.data_type is None
-        )]
+        return [
+            f.guid
+            for f in self._ds.result_schema
+            if (f.type is None or f.initial_data_type is None or f.cast is None or f.data_type is None)
+        ]
 
     def update_unpatched_fields(self) -> None:
         """Patch all fields that require patching (non-recursive)"""
@@ -547,40 +595,44 @@ class DatasetValidator(DatasetBaseWrapper):
     def _get_raw_schema_column(self, field: BIField) -> Optional[SchemaColumn]:
         avatar_id = field.avatar_id
         if avatar_id is None:
-            LOGGER.error('Empty avatar_id for field %s, cannot check auto aggregation', field.guid)
+            LOGGER.error("Empty avatar_id for field %s, cannot check auto aggregation", field.guid)
             return None
         avatar = self._ds_accessor.get_avatar_opt(avatar_id=avatar_id)
         if avatar is None:
-            LOGGER.warning('Avatar not found for id %s from field %s, cannot check auto aggregation',
-                           avatar_id, field.guid)
+            LOGGER.warning(
+                "Avatar not found for id %s from field %s, cannot check auto aggregation", avatar_id, field.guid
+            )
             return None
         dsrc_coll = self._get_data_source_coll_strict(source_id=avatar.source_id)
         raw_schema = dsrc_coll.get_cached_raw_schema()
         try:
             return [c for c in raw_schema if c.name == field.source][0]  # type: ignore  # TODO: fix
         except IndexError:
-            LOGGER.warning('No field with source %s found in raw_schema', field.source)
+            LOGGER.warning("No field with source %s found in raw_schema", field.source)
             return None
 
     @generic_profiler("validator-apply-field-action")
     def apply_field_action(
-            self, action: DatasetAction, field_data: UpdateField, order_index: Optional[int] = None,
-            by: Optional[ManagedBy] = ManagedBy.user,
+        self,
+        action: DatasetAction,
+        field_data: UpdateField,
+        order_index: Optional[int] = None,
+        by: Optional[ManagedBy] = ManagedBy.user,
     ) -> None:
         """Apply update to the result schema configuration"""
 
         field_data_dict = field_data.as_dict()
         field_data_dict = {k: v for k, v in field_data_dict.items() if v is not None}
-        field_id = field_data_dict.pop('guid', None) or self._id_generator.make_field_id(field_data_dict.get('title'))
-        new_field_id = field_data_dict.pop('new_id', None)
+        field_id = field_data_dict.pop("guid", None) or self._id_generator.make_field_id(field_data_dict.get("title"))
+        new_field_id = field_data_dict.pop("new_id", None)
         order_index = order_index or 0  # added to the beginning by default for usability reasons
         component_ref = DatasetComponentRef(component_type=ComponentType.field, component_id=field_id)
-        strict = field_data_dict.pop('strict', False)
+        strict = field_data_dict.pop("strict", False)
 
         update_field_id = new_field_id is not None and action == DatasetAction.update_field
         if update_field_id:
             if not self._id_validator.is_valid(new_field_id):
-                raise exc.DLValidationFatal('Field ID must be [a-z0-9_\\-]{1,36}')
+                raise exc.DLValidationFatal("Field ID must be [a-z0-9_\\-]{1,36}")
             new_component_ref = DatasetComponentRef(component_type=ComponentType.field, component_id=new_field_id)
             self.perform_component_id_validation(component_ref=new_component_ref)
             # non strict option is used only for old charts. not needed for id update
@@ -594,23 +646,23 @@ class DatasetValidator(DatasetBaseWrapper):
             self.validate_result_schema_length(field_cnt_diff=1)
 
         if action in (DatasetAction.add_field, DatasetAction.update_field):
-            if 'formula' in field_data_dict and 'guid_formula' not in field_data_dict:
-                field_data_dict['guid_formula'] = ''
-            elif 'guid_formula' in field_data_dict and 'formula' not in field_data_dict:
-                field_data_dict['formula'] = ''
+            if "formula" in field_data_dict and "guid_formula" not in field_data_dict:
+                field_data_dict["guid_formula"] = ""
+            elif "guid_formula" in field_data_dict and "formula" not in field_data_dict:
+                field_data_dict["formula"] = ""
 
         if action in (DatasetAction.update_field, DatasetAction.delete_field):
             try:
                 old_field = self.get_field_by_id(field_id)
             except common_exc.FieldNotFound:
-                err_msg = f'Field with ID {field_id} doesn\'t exist'
+                err_msg = f"Field with ID {field_id} doesn't exist"
                 LOGGER.error(err_msg)
                 if strict:
                     raise exc.DLValidationFatal(err_msg)
                 return
 
             self._ds_ca.validate_component_can_be_managed(component_ref=component_ref, by=by)
-            LOGGER.info(f'Field {field_id} old data', extra=old_field._asdict())
+            LOGGER.info(f"Field {field_id} old data", extra=old_field._asdict())
 
         if action == DatasetAction.add_field or update_field_id:
             checked_field_id = field_id if not update_field_id else new_field_id
@@ -619,7 +671,7 @@ class DatasetValidator(DatasetBaseWrapper):
             except common_exc.FieldNotFound:
                 pass
             else:
-                err_msg = 'Field with ID {} already exists'.format(checked_field_id)
+                err_msg = "Field with ID {} already exists".format(checked_field_id)
                 LOGGER.error(err_msg)
                 if strict:
                     raise exc.DLValidationFatal(err_msg)
@@ -663,45 +715,47 @@ class DatasetValidator(DatasetBaseWrapper):
         elif action == DatasetAction.add_field:
             # add new field
             # TODO: use create_result_schema_field from dataset instead
-            field_data_dict['hidden'] = field_data_dict.get('hidden', False)
-            field_data_dict['aggregation'] = field_data_dict.get('aggregation', AggregationFunction.none)
-            if 'calc_spec' not in field_data_dict:
-                default_calc_mode = CalcMode.formula if field_data_dict.get('formula') else CalcMode.direct
-                field_data_dict['calc_mode'] = field_data_dict.get('calc_mode', default_calc_mode)
-                field_data_dict['calc_spec'] = field_data_dict.get('calc_spec', create_calc_spec_from(field_data_dict))
+            field_data_dict["hidden"] = field_data_dict.get("hidden", False)
+            field_data_dict["aggregation"] = field_data_dict.get("aggregation", AggregationFunction.none)
+            if "calc_spec" not in field_data_dict:
+                default_calc_mode = CalcMode.formula if field_data_dict.get("formula") else CalcMode.direct
+                field_data_dict["calc_mode"] = field_data_dict.get("calc_mode", default_calc_mode)
+                field_data_dict["calc_spec"] = field_data_dict.get("calc_spec", create_calc_spec_from(field_data_dict))
             field_data_dict = del_calc_spec_kwargs_from(field_data_dict)
 
             if (
-                    isinstance(field_data_dict['calc_spec'], DirectCalculationSpec)
-                    and not field_data_dict['calc_spec'].avatar_id
+                isinstance(field_data_dict["calc_spec"], DirectCalculationSpec)
+                and not field_data_dict["calc_spec"].avatar_id
             ):
                 # TODO: remove this after old charts are somehow updated
                 root_avatar = self._ds_accessor.get_root_avatar_strict()
-                field_data_dict['calc_spec'] = field_data_dict['calc_spec'].clone(avatar_id=root_avatar.id)
+                field_data_dict["calc_spec"] = field_data_dict["calc_spec"].clone(avatar_id=root_avatar.id)
 
             new_field = BIField.make(guid=field_id, **field_data_dict)
 
         elif action == DatasetAction.clone_field:
             # clone existing field under a new title
-            from_field_id = field_data_dict['from_guid']
+            from_field_id = field_data_dict["from_guid"]
             from_field = self.get_field_by_id(from_field_id)
             if by != ManagedBy.user:
-                raise common_exc.DatasetConfigurationError('Non-user-managed fields cannot be cloned')
+                raise common_exc.DatasetConfigurationError("Non-user-managed fields cannot be cloned")
 
-            cast = field_data_dict.get('cast')
+            cast = field_data_dict.get("cast")
             cast = cast if cast is not None else from_field.cast
-            aggregation = field_data_dict.get('aggregation')
+            aggregation = field_data_dict.get("aggregation")
             aggregation = aggregation if aggregation is not None else from_field.aggregation
 
             # It has the same type as the original field if both have aggregations or both don't
             same_type_as_original = (
-                from_field.aggregation != AggregationFunction.none and aggregation != AggregationFunction.none
-                or from_field.aggregation == AggregationFunction.none and aggregation == AggregationFunction.none
+                from_field.aggregation != AggregationFunction.none
+                and aggregation != AggregationFunction.none
+                or from_field.aggregation == AggregationFunction.none
+                and aggregation == AggregationFunction.none
             )
 
             add_field_data = dict(
                 guid=field_id,
-                title=field_data_dict['title'],
+                title=field_data_dict["title"],
                 type=from_field.type if same_type_as_original else None,
                 aggregation=aggregation,
                 cast=cast,
@@ -724,11 +778,15 @@ class DatasetValidator(DatasetBaseWrapper):
             # Check if field obligatory filter is set up
             if self._ds_accessor.get_obligatory_filter_opt(field_guid=field_id) is not None:
                 raise common_exc.DatasetConfigurationError(
-                    f'Obligatory filter present for field "{field_id}". It should be deleted first.')
+                    f'Obligatory filter present for field "{field_id}". It should be deleted first.'
+                )
 
         self._update_field(
-            old_field=old_field, new_field=new_field, order_index=order_index,
-            recursive=True, explicitly_updated=True,
+            old_field=old_field,
+            new_field=new_field,
+            order_index=order_index,
+            recursive=True,
+            explicitly_updated=True,
         )
 
         # errors can be cleared or fixed by now, so revalidate the result schema length
@@ -736,12 +794,12 @@ class DatasetValidator(DatasetBaseWrapper):
             self.validate_result_schema_length()
 
     def _update_direct_fields_for_updated_raw_schema(
-            self,
-            old_raw_schema: Sequence[SchemaColumn],
-            new_raw_schema: Optional[Sequence[SchemaColumn]],
-            avatar_ids: list[str],
-            do_delete_fields: bool = False,
-            force_update_fields: bool = False,
+        self,
+        old_raw_schema: Sequence[SchemaColumn],
+        new_raw_schema: Optional[Sequence[SchemaColumn]],
+        avatar_ids: list[str],
+        do_delete_fields: bool = False,
+        force_update_fields: bool = False,
     ) -> None:
         old_title_by_name = {col.name: col.title for col in (old_raw_schema or ())}
         new_name_by_title = {col.title: col.name for col in (new_raw_schema or ())}
@@ -791,9 +849,7 @@ class DatasetValidator(DatasetBaseWrapper):
                         f'with "{new_name_by_title[original_title]}" in field {old_field.guid}'
                     )
                     # match by title
-                    new_field = new_field.clone(
-                        source=new_name_by_title[original_title]
-                    )
+                    new_field = new_field.clone(source=new_name_by_title[original_title])
 
             else:
                 # Column is no longer present
@@ -847,17 +903,14 @@ class DatasetValidator(DatasetBaseWrapper):
         """
         for component_ref in self._affected_components:
             self._ds_ca.update_component_validity(
-                component_ref=component_ref,
-                valid=not self._ds.error_registry.get_pack(id=component_ref.component_id)
+                component_ref=component_ref, valid=not self._ds.error_registry.get_pack(id=component_ref.component_id)
             )
         if clear:
             self._affected_components.clear()
 
     def perform_component_id_validation(self, component_ref: DatasetComponentRef) -> None:
         if component_ref.component_id in (toplevel_id.value for toplevel_id in TopLevelComponentId):
-            raise exc.DLValidationFatal(
-                f'Cannot use a reserved ID - {component_ref.component_id}'
-            )
+            raise exc.DLValidationFatal(f"Cannot use a reserved ID - {component_ref.component_id}")
 
         # TODO validate component id itself: length, allowed symbols, etc.
 
@@ -876,10 +929,7 @@ class DatasetValidator(DatasetBaseWrapper):
         #             )
 
     def perform_component_title_validation(
-            self,
-            component_ref: DatasetComponentRef,
-            old_title: Optional[str] = None,
-            new_title: Optional[str] = None
+        self, component_ref: DatasetComponentRef, old_title: Optional[str] = None, new_title: Optional[str] = None
     ) -> None:
         """
         Validate title change for the given component.
@@ -900,10 +950,9 @@ class DatasetValidator(DatasetBaseWrapper):
             ComponentType.field: common_exc.FieldTitleConflict,
         }[component_ref.component_type]
 
-        for other_component in self._ds_ca.iter_dataset_components_by_type(
-                component_type=component_ref.component_type):
+        for other_component in self._ds_ca.iter_dataset_components_by_type(component_type=component_ref.component_type):
             if not isinstance(other_component, (DataSourceCollectionBase, SourceAvatar, BIField)):
-                raise TypeError(f'Component type {type(other_component)} is not supported here')
+                raise TypeError(f"Component type {type(other_component)} is not supported here")
 
             other_component_id = other_component.guid if isinstance(other_component, BIField) else other_component.id
             if other_component_id == component_ref.component_id:
@@ -932,7 +981,7 @@ class DatasetValidator(DatasetBaseWrapper):
                         type=component_ref.component_type,
                         message=exc_cls.default_message,
                         code=exc_cls.err_code,
-                        details={'title': new_title, 'other_id': other_component_id}
+                        details={"title": new_title, "other_id": other_component_id},
                     )
             else:
                 # old conflict, now resolved, so remove error
@@ -941,9 +990,9 @@ class DatasetValidator(DatasetBaseWrapper):
             self.add_affected_component(other_component_ref)
 
     def _are_schemas_identical(
-            self,
-            old_raw_schema: Optional[Sequence[SchemaColumn]],
-            new_raw_schema: Optional[Sequence[SchemaColumn]],
+        self,
+        old_raw_schema: Optional[Sequence[SchemaColumn]],
+        new_raw_schema: Optional[Sequence[SchemaColumn]],
     ) -> bool:
         if old_raw_schema is None and new_raw_schema is None:
             return True
@@ -957,8 +1006,10 @@ class DatasetValidator(DatasetBaseWrapper):
         return new_raw_schema == old_raw_schema
 
     def refresh_data_source(
-            self, source_id: str, old_raw_schema: Optional[Sequence[SchemaColumn]],
-            force_update_fields: bool = False,
+        self,
+        source_id: str,
+        old_raw_schema: Optional[Sequence[SchemaColumn]],
+        force_update_fields: bool = False,
     ) -> None:
         """
         Patch data source with parameters from the database.
@@ -972,10 +1023,13 @@ class DatasetValidator(DatasetBaseWrapper):
             try:
                 yield
             except common_exc.DLBaseException as err:
-                LOGGER.exception(f'Failed to check source {source_id}. Assuming it doesn\'t exist')
+                LOGGER.exception(f"Failed to check source {source_id}. Assuming it doesn't exist")
                 self._ds.error_registry.add_error(
-                    id=source_id, type=ComponentType.data_source,
-                    message=err.message, code=err.err_code, details=err.details,
+                    id=source_id,
+                    type=ComponentType.data_source,
+                    message=err.message,
+                    code=err.err_code,
+                    details=err.details,
                 )
 
         dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
@@ -997,7 +1051,7 @@ class DatasetValidator(DatasetBaseWrapper):
             db_version = None
             if exists:
                 db_version = origin_dsrc.get_db_info(conn_executor_factory=conn_executor_factory_func).version
-                LOGGER.info(f'Got version {db_version} for data source {source_id}')
+                LOGGER.info(f"Got version {db_version} for data source {source_id}")
             return db_version
 
         @generic_profiler("validator-get-schema")
@@ -1007,7 +1061,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     schema_info = origin_dsrc.get_schema_info(conn_executor_factory=conn_executor_factory_func)
                     # TODO FIX: BI-2355 Ensure that dsrc.get_schema_info() do not suppress exceptions and remove
                     if not schema_info.schema:  # TODO: remove when get_schema starts raising errors
-                        raise common_exc.DLBaseException(message='Failed to load table schema')
+                        raise common_exc.DLBaseException(message="Failed to load table schema")
                     return schema_info
                 else:
                     params = dict()
@@ -1016,26 +1070,28 @@ class DatasetValidator(DatasetBaseWrapper):
                         params["table_definition"] = str(table_def)
 
                     raise common_exc.SourceDoesNotExist(
-                        db_message='',
-                        query='',
+                        db_message="",
+                        query="",
                         params=params,
                     )
             return None
 
         exists = get_source_exists()
-        LOGGER.info(f'Data source {source_id} exists: {exists}')
+        LOGGER.info(f"Data source {source_id} exists: {exists}")
 
         new_raw_schema_info = get_schema_info(exists=exists)
 
         new_raw_schema = new_raw_schema_info.schema if new_raw_schema_info is not None else []
         new_idx_info_set = new_raw_schema_info.indexes if new_raw_schema_info is not None else None
 
-        LOGGER.info(f'Got raw_schema with {len(new_raw_schema)} columns for data source {source_id}')
+        LOGGER.info(f"Got raw_schema with {len(new_raw_schema)} columns for data source {source_id}")
 
         db_version = get_db_version(exists=exists)
         self._ds_editor.update_data_source(
-            source_id=source_id, role=DataSourceRole.origin,
-            raw_schema=new_raw_schema, db_version=db_version,
+            source_id=source_id,
+            role=DataSourceRole.origin,
+            raw_schema=new_raw_schema,
+            db_version=db_version,
             index_info_set=new_idx_info_set,
         )
 
@@ -1061,15 +1117,15 @@ class DatasetValidator(DatasetBaseWrapper):
         """
 
         existing_id = self._ds.find_data_source_configuration(
-            connection_id=source_data.get('connection_id'),
-            created_from=source_data['source_type'],
-            parameters=source_data.get('parameters'),
+            connection_id=source_data.get("connection_id"),
+            created_from=source_data["source_type"],
+            parameters=source_data.get("parameters"),
             # Currently ignoring: `title`
         )
         if existing_id:
             # such source already exists, don't add its copy to the dataset
             # remap all following actions to use the existing source's ID
-            LOGGER.info('Such a source already exists, so remapping ID %s to %s', source_id, existing_id)
+            LOGGER.info("Such a source already exists, so remapping ID %s to %s", source_id, existing_id)
             self._remapped_source_ids[source_id] = existing_id
             return True
 
@@ -1077,19 +1133,22 @@ class DatasetValidator(DatasetBaseWrapper):
 
     @generic_profiler("validator-apply-source-action")
     def apply_source_action(
-            self, action: DatasetAction, source_data: dict, by: Optional[ManagedBy] = ManagedBy.user,
-            ignore_source_ids: Optional[Collection[str]] = None,
+        self,
+        action: DatasetAction,
+        source_data: dict,
+        by: Optional[ManagedBy] = ManagedBy.user,
+        ignore_source_ids: Optional[Collection[str]] = None,
     ) -> None:
         """Apply update to the data source configuration"""
 
         source_data = source_data.copy()
-        source_id = source_data.pop('id') or str(uuid.uuid4())
+        source_id = source_data.pop("id") or str(uuid.uuid4())
         component_ref = DatasetComponentRef(component_type=ComponentType.data_source, component_id=source_id)
         old_title: Optional[str] = None
         new_title: Optional[str] = None
 
         if source_id in self._remapped_source_ids:
-            LOGGER.warning('Source %s has not been added, so action %s will be ignored', source_id, action.name)
+            LOGGER.warning("Source %s has not been added, so action %s will be ignored", source_id, action.name)
             return
 
         if action == DatasetAction.add_source:
@@ -1098,9 +1157,9 @@ class DatasetValidator(DatasetBaseWrapper):
             self.perform_component_id_validation(component_ref)
 
         def add_source(title: str) -> None:
-            connection_id = source_data.get('connection_id')
+            connection_id = source_data.get("connection_id")
             if connection_id is None:
-                raise exc.DLValidationFatal('source connection_id cannot be None')
+                raise exc.DLValidationFatal("source connection_id cannot be None")
 
             connection_ref = DefaultConnectionRef(conn_id=connection_id)
             self._sync_us_manager.ensure_entry_preloaded(connection_ref)
@@ -1108,13 +1167,14 @@ class DatasetValidator(DatasetBaseWrapper):
                 source_id=source_id,
                 role=DataSourceRole.origin,
                 connection_id=connection_id,
-                created_from=source_data['source_type'],
+                created_from=source_data["source_type"],
                 title=title,
-                parameters=source_data['parameters'],
+                parameters=source_data["parameters"],
             )
 
             check_permissions_for_origin_sources(
-                dataset=self._ds, source_ids=[source_id],
+                dataset=self._ds,
+                source_ids=[source_id],
                 permission_kind=USPermissionKind.read,
                 us_entry_buffer=self._us_manager.get_entry_buffer(),
             )
@@ -1127,11 +1187,11 @@ class DatasetValidator(DatasetBaseWrapper):
         if action in (DatasetAction.update_source, DatasetAction.add_source):
             existing_source_id = source_id if action == DatasetAction.update_source else None
             if not self._capabilities.source_can_be_added(
-                    connection_id=source_data.get('connection_id'),
-                    created_from=source_data['source_type'],
-                    ignore_source_ids=ignore_source_ids or [existing_source_id],  # type: ignore  # TODO: fix
+                connection_id=source_data.get("connection_id"),
+                created_from=source_data["source_type"],
+                ignore_source_ids=ignore_source_ids or [existing_source_id],  # type: ignore  # TODO: fix
             ):
-                raise exc.DLValidationFatal('Source cannot be added to dataset')
+                raise exc.DLValidationFatal("Source cannot be added to dataset")
 
         # we have verified that the action is valid, so we can proceed to modifying the dataset
 
@@ -1139,30 +1199,30 @@ class DatasetValidator(DatasetBaseWrapper):
         self._ds.error_registry.remove_errors(id=source_id)
 
         if action == DatasetAction.add_source:
-            add_source(title=source_data.get('title') or None)  # type: ignore  # TODO: fix
+            add_source(title=source_data.get("title") or None)  # type: ignore  # TODO: fix
             self.refresh_data_source(source_id=source_id, old_raw_schema=None)
-            new_title = source_data['title']
+            new_title = source_data["title"]
             self.add_affected_component(component_ref)
 
         elif action == DatasetAction.update_source:
             self.add_affected_component(component_ref)
-            parameters = source_data.get('parameters') or {}
+            parameters = source_data.get("parameters") or {}
 
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
             origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             old_raw_schema = origin_dsrc.saved_raw_schema
-            new_title = source_data.get('title') or dsrc_coll.title
+            new_title = source_data.get("title") or dsrc_coll.title
             self._ds_editor.update_data_source(
                 source_id=source_id,
-                created_from=source_data.get('source_type'),
+                created_from=source_data.get("source_type"),
                 role=DataSourceRole.origin,
-                connection_id=source_data.get('connection_id'),
-                **parameters
+                connection_id=source_data.get("connection_id"),
+                **parameters,
             )
             if new_title != old_title:
                 self._ds_editor.update_data_source_collection(source_id=source_id, title=new_title)
 
-            if (set(source_data) - {'title', 'id', 'source_type', 'parameters'}) or parameters:
+            if (set(source_data) - {"title", "id", "source_type", "parameters"}) or parameters:
                 # something besides the title was updated
                 self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)  # type: ignore  # TODO: fix
 
@@ -1176,10 +1236,11 @@ class DatasetValidator(DatasetBaseWrapper):
             new_title = dsrc_coll.title
             assert origin_dsrc is not None
             self.refresh_data_source(
-                source_id=source_id, old_raw_schema=origin_dsrc.saved_raw_schema,
+                source_id=source_id,
+                old_raw_schema=origin_dsrc.saved_raw_schema,
                 # Just in case some of the fields were erroneously marked as invalid,
                 # force-update them if `force_update_fields` is true
-                force_update_fields=source_data.get('force_update_fields', False),
+                force_update_fields=source_data.get("force_update_fields", False),
             )
             self.add_affected_component(component_ref)
 
@@ -1188,14 +1249,17 @@ class DatasetValidator(DatasetBaseWrapper):
 
     @generic_profiler("validator-apply-avatar-action")
     def apply_source_avatar_action(
-            self, action: DatasetAction, source_avatar_data: dict, by: Optional[ManagedBy] = ManagedBy.user,
-            disable_fields_update: bool = False,
+        self,
+        action: DatasetAction,
+        source_avatar_data: dict,
+        by: Optional[ManagedBy] = ManagedBy.user,
+        disable_fields_update: bool = False,
     ) -> None:
         """Apply update to the data source configuration"""
 
         source_avatar_data = source_avatar_data.copy()
-        avatar_id = source_avatar_data.pop('id')
-        source_id = source_avatar_data.get('source_id')
+        avatar_id = source_avatar_data.pop("id")
+        source_id = source_avatar_data.get("source_id")
         component_ref = DatasetComponentRef(component_type=ComponentType.source_avatar, component_id=avatar_id)
         old_avatar: Optional[SourceAvatar] = None
         old_raw_schema = None
@@ -1220,7 +1284,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         if action == DatasetAction.add_source_avatar:
             self.perform_component_id_validation(component_ref)
-            new_title = source_avatar_data['title']
+            new_title = source_avatar_data["title"]
             self._ds_editor.add_avatar(
                 avatar_id=avatar_id,
                 source_id=source_id,
@@ -1232,7 +1296,7 @@ class DatasetValidator(DatasetBaseWrapper):
             update_fields = True
 
         if action == DatasetAction.update_source_avatar:
-            new_title = source_avatar_data.get('title') or old_avatar.title  # type: ignore  # TODO: fix
+            new_title = source_avatar_data.get("title") or old_avatar.title  # type: ignore  # TODO: fix
             if new_title != old_title:
                 self._ds_editor.update_avatar(avatar_id=avatar_id, title=new_title)
             if source_id is not None and source_id != old_avatar.source_id:  # type: ignore  # TODO: fix
@@ -1270,7 +1334,9 @@ class DatasetValidator(DatasetBaseWrapper):
         self.load_exbuilders()
 
     def _try_generate_conditions_from_columns(
-            self, left_avatar_id: str, right_avatar_id: str,
+        self,
+        left_avatar_id: str,
+        right_avatar_id: str,
     ) -> list[BinaryCondition]:
         """Automatically generate condition for first pair of matching field names"""
 
@@ -1285,12 +1351,12 @@ class DatasetValidator(DatasetBaseWrapper):
 
         if not left_columns or not right_columns:
             if right_columns and not left_columns:
-                which = 'left'
+                which = "left"
             elif left_columns and not right_columns:
-                which = 'right'
+                which = "right"
             else:
-                which = 'both'
-            LOGGER.warning(f'Can\'t generate condition: schema for {which} is missing')
+                which = "both"
+            LOGGER.warning(f"Can't generate condition: schema for {which} is missing")
             return []
 
         left_by_name = {col.name: col for col in left_columns}
@@ -1307,22 +1373,24 @@ class DatasetValidator(DatasetBaseWrapper):
                 column_match = (left_by_name[left_col], right_by_lower_name[left_col.lower()])
                 break
         if column_match:
-            return [BinaryCondition(
-                left_part=ConditionPartDirect(source=column_match[0].name),
-                right_part=ConditionPartDirect(source=column_match[1].name),
-                operator=BinaryJoinOperator.eq,
-            )]
+            return [
+                BinaryCondition(
+                    left_part=ConditionPartDirect(source=column_match[0].name),
+                    right_part=ConditionPartDirect(source=column_match[1].name),
+                    operator=BinaryJoinOperator.eq,
+                )
+            ]
         else:
             return []
 
     @generic_profiler("validator-apply-relation-action")
     def apply_avatar_relation_action(
-            self, action: DatasetAction, avatar_relation_data: dict, by: Optional[ManagedBy] = ManagedBy.user
+        self, action: DatasetAction, avatar_relation_data: dict, by: Optional[ManagedBy] = ManagedBy.user
     ) -> None:
         """Apply update to the data source configuration"""
 
         avatar_relation_data = avatar_relation_data.copy()
-        relation_id = avatar_relation_data.pop('id')
+        relation_id = avatar_relation_data.pop("id")
         component_ref = DatasetComponentRef(component_type=ComponentType.avatar_relation, component_id=relation_id)
 
         if by is not None and action in (DatasetAction.update_avatar_relation, DatasetAction.delete_avatar_relation):
@@ -1333,25 +1401,26 @@ class DatasetValidator(DatasetBaseWrapper):
 
         if action == DatasetAction.add_avatar_relation:
             self.perform_component_id_validation(component_ref)
-            conditions = avatar_relation_data.get('conditions')
-            left_avatar_id = avatar_relation_data['left_avatar_id']
-            right_avatar_id = avatar_relation_data['right_avatar_id']
+            conditions = avatar_relation_data.get("conditions")
+            left_avatar_id = avatar_relation_data["left_avatar_id"]
+            right_avatar_id = avatar_relation_data["right_avatar_id"]
             if not conditions:
                 conditions = self._try_generate_conditions_from_columns(
-                    left_avatar_id=left_avatar_id, right_avatar_id=right_avatar_id)
+                    left_avatar_id=left_avatar_id, right_avatar_id=right_avatar_id
+                )
             self._ds_editor.add_avatar_relation(
                 relation_id=relation_id,
                 left_avatar_id=left_avatar_id,
                 right_avatar_id=right_avatar_id,
                 conditions=conditions,
-                join_type=avatar_relation_data.get('join_type'),
+                join_type=avatar_relation_data.get("join_type"),
             )
 
         if action == DatasetAction.update_avatar_relation:
             self._ds_editor.update_avatar_relation(
                 relation_id=relation_id,
-                conditions=avatar_relation_data.get('conditions'),
-                join_type=avatar_relation_data.get('join_type'),
+                conditions=avatar_relation_data.get("conditions"),
+                join_type=avatar_relation_data.get("join_type"),
             )
 
         if action == DatasetAction.delete_avatar_relation:
@@ -1363,20 +1432,22 @@ class DatasetValidator(DatasetBaseWrapper):
             )
             for error in errors:
                 self._ds.error_registry.add_error(
-                    id=relation_id, type=ComponentType.avatar_relation,
-                    message=error.message, code=error.code, details={},
+                    id=relation_id,
+                    type=ComponentType.avatar_relation,
+                    message=error.message,
+                    code=error.code,
+                    details={},
                 )
             self.add_affected_component(component_ref)
 
         self.load_exbuilders()
 
     def _migrate_source_parameters(
-            self,
-            old_connection: Optional[ConnectionBase],
-            new_connection: ConnectionBase,
-            dsrc: DataSource,
+        self,
+        old_connection: Optional[ConnectionBase],
+        new_connection: ConnectionBase,
+        dsrc: DataSource,
     ) -> tuple[dict, CreateDSFrom]:
-
         old_conn_type: ConnectionType
         if old_connection is not None:
             old_conn_type = old_connection.conn_type
@@ -1401,7 +1472,8 @@ class DatasetValidator(DatasetBaseWrapper):
 
         new_dsrc_cls = get_data_source_class(new_dsrc_spec.source_type)
         new_dsrc_dummy = new_dsrc_cls(
-            id='', spec=new_dsrc_spec,
+            id="",
+            spec=new_dsrc_spec,
             us_entry_buffer=self._us_manager.get_entry_buffer(),
         )
         new_dsrc_parameters = new_dsrc_dummy.get_parameters()
@@ -1409,7 +1481,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
     @generic_profiler("validator-apply-connection-action")
     def apply_connection_action(
-            self, action: DatasetAction, connection_data: ReplaceConnection, by: Optional[ManagedBy] = ManagedBy.user
+        self, action: DatasetAction, connection_data: ReplaceConnection, by: Optional[ManagedBy] = ManagedBy.user
     ) -> None:
         assert action == DatasetAction.replace_connection
         old_connection: Optional[ConnectionBase]
@@ -1432,7 +1504,7 @@ class DatasetValidator(DatasetBaseWrapper):
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             connection_ref = dsrc.connection_ref
             if not isinstance(connection_ref, DefaultConnectionRef):
-                raise TypeError(f'Unexpected connection_ref type: {type(connection_ref)}')
+                raise TypeError(f"Unexpected connection_ref type: {type(connection_ref)}")
             if connection_ref.conn_id == connection_data.id:
                 parameters, new_source_type = self._migrate_source_parameters(
                     old_connection=old_connection,
@@ -1441,26 +1513,32 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
 
                 # migrate parameters for new source type
-                updates.append(dict(
-                    id=dsrc_coll.id,
-                    connection_id=connection_data.new_id,
-                    source_type=new_source_type,
-                    parameters=parameters,
-                ))
+                updates.append(
+                    dict(
+                        id=dsrc_coll.id,
+                        connection_id=connection_data.new_id,
+                        source_type=new_source_type,
+                        parameters=parameters,
+                    )
+                )
                 ignore_source_ids.append(dsrc_coll.id)
 
-        LOGGER.info(f'Found {len(updates)} sources to update')
+        LOGGER.info(f"Found {len(updates)} sources to update")
         for dsrc_data in updates:
-            LOGGER.info(f'Going to update source {dsrc_data["id"]} as {dsrc_data["source_type"].name} '
-                        f'for connection {connection_data.new_id}')
+            LOGGER.info(
+                f'Going to update source {dsrc_data["id"]} as {dsrc_data["source_type"].name} '
+                f"for connection {connection_data.new_id}"
+            )
             self.apply_source_action(
-                action=DatasetAction.update_source, source_data=dsrc_data, by=by,
+                action=DatasetAction.update_source,
+                source_data=dsrc_data,
+                by=by,
                 ignore_source_ids=ignore_source_ids,
             )
 
     @generic_profiler("validator-apply-obligatory-filter-action")
     def apply_obligatory_filter_action(
-            self, action: DatasetAction, filter_data: ObligatoryFilterBase, by: Optional[ManagedBy] = ManagedBy.user
+        self, action: DatasetAction, filter_data: ObligatoryFilterBase, by: Optional[ManagedBy] = ManagedBy.user
     ) -> None:
         assert isinstance(filter_data, ObligatoryFilterBase)
         component_ref = DatasetComponentRef(component_type=ComponentType.obligatory_filter, component_id=filter_data.id)
@@ -1482,8 +1560,9 @@ class DatasetValidator(DatasetBaseWrapper):
                 clause = DefaultWhereClause(operation=default_filter.operation, values=default_filter.values)
                 if clause.operation not in allowed_filter_types:
                     raise common_exc.DatasetConfigurationError(
-                        f'Filtration type {clause.operation.name} is not allowed '
-                        f'for field type {enum_not_none(field.cast).name}')
+                        f"Filtration type {clause.operation.name} is not allowed "
+                        f"for field type {enum_not_none(field.cast).name}"
+                    )
                 default_where_clauses.append(clause)
 
             if action == DatasetAction.add_obligatory_filter:
@@ -1510,7 +1589,7 @@ class DatasetValidator(DatasetBaseWrapper):
     @generic_profiler("validator-get-single-formula-errors")
     def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> list[ErrorInfo]:
         if not self._has_sources:
-            errors = [FormulaErrorCtx(message='No data sources have been defined', level=MessageLevel.ERROR)]
+            errors = [FormulaErrorCtx(message="No data sources have been defined", level=MessageLevel.ERROR)]
 
         else:
             formula_errors = self._get_formula_errors(formula, feature_errors=feature_errors)
@@ -1521,7 +1600,8 @@ class DatasetValidator(DatasetBaseWrapper):
 
             errors = [
                 FormulaErrorInfo(  # type: ignore  # TODO: fix
-                    code=err.code, message=err.message,
+                    code=err.code,
+                    message=err.message,
                     level=comp_err_level_from_formula_err_level(err.level),
                     row=err.coords[0],
                     column=err.coords[1],
@@ -1540,9 +1620,11 @@ class DatasetValidator(DatasetBaseWrapper):
                 self._sync_us_manager.ensure_entry_preloaded(dsrc.connection_ref)
             except common_exc.ReferencedUSEntryNotFound:
                 self._ds.error_registry.add_error(
-                    id=dsrc_coll.id, type=ComponentType.data_source,
-                    message=f'Connection for {dsrc_coll.title} not found',
-                    code=common_exc.ReferencedUSEntryNotFound.err_code, details={},
+                    id=dsrc_coll.id,
+                    type=ComponentType.data_source,
+                    message=f"Connection for {dsrc_coll.title} not found",
+                    code=common_exc.ReferencedUSEntryNotFound.err_code,
+                    details={},
                 )
 
     def _find_phantom_error_refs(self) -> list[DatasetComponentRef]:
@@ -1565,8 +1647,8 @@ class DatasetValidator(DatasetBaseWrapper):
         phantom_error_refs = self._find_phantom_error_refs()
         if phantom_error_refs:
             LOGGER.warning(
-                f'Detected phantom errors during dataset validation: {phantom_error_refs},'
-                ' removing from component errors'
+                f"Detected phantom errors during dataset validation: {phantom_error_refs},"
+                " removing from component errors"
             )
 
         self._remove_phantom_errors_for_refs(phantom_error_refs)

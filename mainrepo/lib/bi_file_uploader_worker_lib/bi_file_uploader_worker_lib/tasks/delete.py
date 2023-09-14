@@ -3,13 +3,19 @@ import logging
 import attr
 from botocore.exceptions import ClientError
 
-from bi_task_processor.task import BaseExecutorTask, TaskResult, Success, Retry
-import bi_file_uploader_task_interface.tasks as task_interface
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext
-
-from bi_file_uploader_lib.redis_model.base import RedisModelNotFound, RedisModelManager
+from bi_file_uploader_lib.redis_model.base import (
+    RedisModelManager,
+    RedisModelNotFound,
+)
 from bi_file_uploader_lib.redis_model.models import DataSourcePreview
-
+from bi_file_uploader_task_interface.context import FileUploaderTaskContext
+import bi_file_uploader_task_interface.tasks as task_interface
+from bi_task_processor.task import (
+    BaseExecutorTask,
+    Retry,
+    Success,
+    TaskResult,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -22,10 +28,10 @@ class DeleteFileTask(BaseExecutorTask[task_interface.DeleteFileTask, FileUploade
         try:
             s3_filename = self.meta.s3_filename
             preview_id = self.meta.preview_id
-            LOGGER.info(f'DeleteFileTask. Filename: {s3_filename}')
+            LOGGER.info(f"DeleteFileTask. Filename: {s3_filename}")
 
             if preview_id is None:
-                LOGGER.info(f'Unable to delete preview for file {s3_filename} since {preview_id=}')
+                LOGGER.info(f"Unable to delete preview for file {s3_filename} since {preview_id=}")
             else:
                 rmm = RedisModelManager(
                     redis=self._ctx.redis_service.get_redis(),
@@ -34,18 +40,18 @@ class DeleteFileTask(BaseExecutorTask[task_interface.DeleteFileTask, FileUploade
                 try:
                     preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
                     await preview.delete()
-                    LOGGER.info(f'Successfully deleted preview id={preview_id} for file {s3_filename}')
+                    LOGGER.info(f"Successfully deleted preview id={preview_id} for file {s3_filename}")
                 except RedisModelNotFound:
-                    LOGGER.info(f'Preview id={preview_id} not found for file {s3_filename}')
+                    LOGGER.info(f"Preview id={preview_id} not found for file {s3_filename}")
 
             s3_service = self._ctx.s3_service
             s3_client = s3_service.get_client()
             try:
                 await s3_client.delete_object(Bucket=s3_service.persistent_bucket_name, Key=s3_filename)
-                LOGGER.info(f'Successfully deleted file {s3_filename} from the persistent bucket')
+                LOGGER.info(f"Successfully deleted file {s3_filename} from the persistent bucket")
             except ClientError as ex:
-                if ex.response['ResponseMetadata']['HTTPStatusCode'] == 404:
-                    LOGGER.info(f'File {s3_filename} was not found in the persistent bucket.')
+                if ex.response["ResponseMetadata"]["HTTPStatusCode"] == 404:
+                    LOGGER.info(f"File {s3_filename} was not found in the persistent bucket.")
                 else:
                     raise
 

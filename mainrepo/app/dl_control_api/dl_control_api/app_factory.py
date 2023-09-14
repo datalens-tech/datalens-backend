@@ -4,14 +4,21 @@ from typing import Optional
 
 import flask
 
+from bi_api_lib.app.control_api.app import (
+    ControlApiAppFactory,
+    EnvSetupResult,
+)
+from bi_api_lib.app_common import (
+    SRFactoryBuilder,
+    StandaloneServiceRegistryFactory,
+)
+from bi_api_lib.app_settings import (
+    ControlApiAppSettings,
+    ControlApiAppTestingsSettings,
+)
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.enums import RequiredService
 from bi_constants.enums import USAuthMode
-
-from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
-from bi_api_lib.app_common import SRFactoryBuilder, StandaloneServiceRegistryFactory
-from bi_api_lib.app_settings import ControlApiAppTestingsSettings, ControlApiAppSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
@@ -27,8 +34,8 @@ class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
         return InsecureEnvManagerFactory()
 
     def _get_inst_specific_sr_factory(
-            self,
-            settings: ControlApiAppSettings,
+        self,
+        settings: ControlApiAppSettings,
     ) -> StandaloneServiceRegistryFactory:
         return StandaloneServiceRegistryFactory()
 
@@ -50,16 +57,17 @@ class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
 
 class ControlApiAppFactoryOS(ControlApiAppFactory[ControlApiAppSettings], ControlApiSRFactoryBuilderOS):
     def set_up_environment(
-            self,
-            app: flask.Flask,
-            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        self,
+        app: flask.Flask,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
         from bi_core.flask_utils.trust_auth import TrustAuthService
+
         TrustAuthService(
-            fake_user_id='_user_id_',
-            fake_user_name='_user_name_',
-            fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant
+            fake_user_id="_user_id_",
+            fake_user_name="_user_name_",
+            fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
         ).set_up(app)
 
         us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override

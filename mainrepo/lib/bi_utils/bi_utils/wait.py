@@ -1,23 +1,29 @@
 import asyncio
 import logging
 import time
-from typing import Any, Awaitable, Callable, Optional, Tuple, Union
-
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Optional,
+    Tuple,
+    Union,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 class TimeLimitExceeded(Exception):
-    """ Accompanying exception for `wait_for` and `await_for` """
+    """Accompanying exception for `wait_for` and `await_for`"""
 
 
 def wait_for(
-        name: str,
-        condition: Callable[[], Union[bool, Tuple[bool, str]]],
-        timeout: float = 300.0,
-        interval: float = 1.0,
-        log_func: Optional[Callable[[str], None]] = None,
-        require: bool = True,
+    name: str,
+    condition: Callable[[], Union[bool, Tuple[bool, str]]],
+    timeout: float = 300.0,
+    interval: float = 1.0,
+    log_func: Optional[Callable[[str], None]] = None,
+    require: bool = True,
 ) -> Tuple[bool, str]:
     """
     `condition` should either return `is_done` or `(is_done, status)`.
@@ -32,7 +38,7 @@ def wait_for(
         cond_result = condition()
         if isinstance(cond_result, bool):
             cond_ok = cond_result
-            status = ''
+            status = ""
         else:
             cond_ok, status = cond_result
 
@@ -56,12 +62,12 @@ def wait_for(
 
 
 async def await_for(
-        name: str,
-        condition: Callable[[], Awaitable[Union[bool, Tuple[bool, Any]]]],
-        timeout: float = 300.0,
-        interval: float = 1.0,
-        log_func: Optional[Callable[[str], None]] = None,
-        require: bool = True,
+    name: str,
+    condition: Callable[[], Awaitable[Union[bool, Tuple[bool, Any]]]],
+    timeout: float = 300.0,
+    interval: float = 1.0,
+    log_func: Optional[Callable[[str], None]] = None,
+    require: bool = True,
 ) -> Tuple[bool, str]:
     """
     `condition` should either return `is_done` or `(is_done, status)`.
@@ -76,7 +82,7 @@ async def await_for(
         cond_result = await condition()
         if isinstance(cond_result, bool):
             cond_ok = cond_result
-            status = ''
+            status = ""
         else:
             cond_ok, status = cond_result
 

@@ -1,22 +1,30 @@
 from __future__ import annotations
 
-import logging
 import asyncio
-from typing import Optional, Any, Type, Union, ClassVar
+import logging
 from types import TracebackType
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Type,
+    Union,
+)
 
 import aiohttp
 import attr
 import marshmallow as ma
 
+from bi_api_commons.aiohttp.aiohttp_client import (
+    BIAioHTTPClient,
+    TCookies,
+    THeaders,
+)
 from bi_constants.api_constants import DLHeadersCommon
 from bi_constants.enums import BIType
-from bi_utils.aio import await_sync
-
-from bi_api_commons.aiohttp.aiohttp_client import BIAioHTTPClient, THeaders, TCookies
 from bi_core.db.elements import SchemaColumn
 from bi_core.db.native_type_schema import OneOfNativeTypeSchema
-
+from bi_utils.aio import await_sync
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,7 +67,7 @@ class RawSchemaColumnSchema(ma.Schema):
     native_type = ma.fields.Nested(OneOfNativeTypeSchema, allow_none=True)
 
     user_type = ma.fields.Enum(BIType)
-    description = ma.fields.String(dump_default='', allow_none=True)
+    description = ma.fields.String(dump_default="", allow_none=True)
     has_auto_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True)
     nullable = ma.fields.Boolean(dump_default=None, allow_none=True)
@@ -67,14 +75,14 @@ class RawSchemaColumnSchema(ma.Schema):
     @ma.post_load
     def make_column(self, data: dict, **kwargs: Any) -> SchemaColumn:
         return SchemaColumn(
-            name=data['name'],
-            title=data['title'],
-            user_type=data['user_type'],
-            native_type=data['native_type'],
-            description=data.get('description', ''),
-            has_auto_aggregation=data.get('has_auto_aggregation', False),
-            lock_aggregation=data.get('lock_aggregation', False),
-            nullable=data['nullable'],
+            name=data["name"],
+            title=data["title"],
+            user_type=data["user_type"],
+            native_type=data["native_type"],
+            description=data.get("description", ""),
+            has_auto_aggregation=data.get("has_auto_aggregation", False),
+            lock_aggregation=data.get("lock_aggregation", False),
+            nullable=data["nullable"],
         )
 
 
@@ -93,8 +101,8 @@ class SourceInternalParamsResultSchema(SourceInternalParamsRequestSchema):
     @ma.post_load
     def to_object(self, data: dict, **kwargs: Any) -> SourceInternalParams:
         return SourceInternalParams(
-            preview_id=data['preview_id'],
-            raw_schema=data['raw_schema'],
+            preview_id=data["preview_id"],
+            raw_schema=data["raw_schema"],
         )
 
 
@@ -104,7 +112,7 @@ class CleanupApiSchema(ma.Schema):
 
 class UpdateConnectionDataRequestSchema(ma.Schema):
     class UpdateConnectionDataSourceSchema(ma.Schema):
-        id = ma.fields.String(attribute='source_id')
+        id = ma.fields.String(attribute="source_id")
         title = ma.fields.String()
         spreadsheet_id = ma.fields.String()
         sheet_id = ma.fields.Integer()
@@ -120,14 +128,14 @@ class UpdateConnectionDataRequestSchema(ma.Schema):
 @attr.s
 class FileUploaderClient(BIAioHTTPClient):
     async def get_preview(self, src: FileSourceDesc) -> SourcePreview:
-        path = f'api/v2/files/{src.file_id}/sources/{src.source_id}/preview'
+        path = f"api/v2/files/{src.file_id}/sources/{src.source_id}/preview"
         json_data = SourcePreviewApiSchema().dump(src)
         try:
-            async with self.request('post', path=path, json_data=json_data, read_timeout_sec=5) as resp:
+            async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5) as resp:
                 resp_data = await resp.json()
-                return SourcePreview(source_id=src.source_id, preview=resp_data['preview'])
+                return SourcePreview(source_id=src.source_id, preview=resp_data["preview"])
         except aiohttp.ClientError:
-            LOGGER.exception(f'Failed to get preview for file {src.file_id} source {src.source_id}')
+            LOGGER.exception(f"Failed to get preview for file {src.file_id} source {src.source_id}")
             return SourcePreview(source_id=src.source_id, preview=[])
 
     async def get_preview_batch(self, file_sources: list[FileSourceDesc]) -> list[SourcePreview]:
@@ -138,15 +146,15 @@ class FileUploaderClient(BIAioHTTPClient):
         return await_sync(self.get_preview_batch(file_sources))
 
     async def get_internal_params(self, src: FileSourceDesc) -> SourceInternalParams:
-        path = f'api/v2/files/{src.file_id}/sources/{src.source_id}/internal_params'
+        path = f"api/v2/files/{src.file_id}/sources/{src.source_id}/internal_params"
         json_data = SourceInternalParamsRequestSchema().dump(src)
         try:
-            async with self.request('post', path=path, json_data=json_data, read_timeout_sec=15) as resp:
+            async with self.request("post", path=path, json_data=json_data, read_timeout_sec=15) as resp:
                 resp_data = await resp.json()
                 internal_params = SourceInternalParamsResultSchema().load(resp_data)
                 return internal_params
         except aiohttp.ClientError:
-            LOGGER.exception(f'Failed to get raw_schema for file {src.file_id} source {src.source_id}')
+            LOGGER.exception(f"Failed to get raw_schema for file {src.file_id} source {src.source_id}")
             raise
 
     async def get_internal_params_batch(self, file_sources: list[FileSourceDesc]) -> list[SourceInternalParams]:
@@ -154,38 +162,40 @@ class FileUploaderClient(BIAioHTTPClient):
         return internal_params  # type: ignore
 
     async def cleanup_tenant(self, tenant_id: str) -> None:
-        path = 'api/v2/cleanup'
+        path = "api/v2/cleanup"
         json_data = CleanupApiSchema().dump(dict(tenant_id=tenant_id))
         try:
-            async with self.request('post', path=path, json_data=json_data, read_timeout_sec=5):
-                LOGGER.info(f'Scheduled cleanup for tenant id {tenant_id}')
+            async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5):
+                LOGGER.info(f"Scheduled cleanup for tenant id {tenant_id}")
         except aiohttp.ClientError:
-            LOGGER.exception(f'Failed to call cleanup for tenant id {tenant_id}')
+            LOGGER.exception(f"Failed to call cleanup for tenant id {tenant_id}")
             raise
 
     def cleanup_tenant_sync(self, tenant_id: str) -> None:
         await_sync(self.cleanup_tenant(tenant_id))
 
     async def update_connection_data_internal(
-            self,
-            conn_id: str,
-            sources: list[GSheetsFileSourceDesc],
-            authorized: bool,
-            tenant_id: Optional[str],
+        self,
+        conn_id: str,
+        sources: list[GSheetsFileSourceDesc],
+        authorized: bool,
+        tenant_id: Optional[str],
     ) -> None:
-        path = '/api/v2/update_connection_data_internal'
-        json_data = UpdateConnectionDataRequestSchema().dump(dict(
-            connection_id=conn_id,
-            save=True,
-            sources=sources,
-            authorized=authorized,
-            tenant_id=tenant_id,
-        ))
+        path = "/api/v2/update_connection_data_internal"
+        json_data = UpdateConnectionDataRequestSchema().dump(
+            dict(
+                connection_id=conn_id,
+                save=True,
+                sources=sources,
+                authorized=authorized,
+                tenant_id=tenant_id,
+            )
+        )
         try:
-            async with self.request('post', path=path, json_data=json_data, read_timeout_sec=5):
-                LOGGER.info(f'Scheduled update for connection id {conn_id}')
+            async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5):
+                LOGGER.info(f"Scheduled update for connection id {conn_id}")
         except aiohttp.ClientError:
-            LOGGER.exception(f'Failed to call update for connection id {conn_id}')
+            LOGGER.exception(f"Failed to call update for connection id {conn_id}")
             raise
 
     def close_sync(self) -> None:
@@ -195,10 +205,7 @@ class FileUploaderClient(BIAioHTTPClient):
         return self
 
     def __exit__(
-        self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType]
+        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
     ) -> None:
         self.close_sync()
 
@@ -213,13 +220,15 @@ class FileUploaderSettings:
 class FileUploaderClientFactory:
     _file_uploader_settings: FileUploaderSettings = attr.ib()
 
-    _file_uploader_client_cls: ClassVar[Type[FileUploaderClient]] = FileUploaderClient    # tests mockup point
+    _file_uploader_client_cls: ClassVar[Type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
 
     def get_client(self, headers: Optional[THeaders] = None, cookies: Optional[TCookies] = None) -> FileUploaderClient:
         full_headers = headers.copy() if headers is not None else {}
-        full_headers.update({
-            DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN.value: self._file_uploader_settings.master_token,
-        })
+        full_headers.update(
+            {
+                DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN.value: self._file_uploader_settings.master_token,
+            }
+        )
         client_cls = self._file_uploader_client_cls
         return client_cls(
             base_url=self._file_uploader_settings.base_url,

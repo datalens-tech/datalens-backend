@@ -1,10 +1,17 @@
 from __future__ import annotations
 
-from typing import Any, Mapping, Optional
+from typing import (
+    Any,
+    Mapping,
+    Optional,
+)
 
 from marshmallow.fields import Field
 
-from bi_core.base_models import DefaultConnectionRef, ConnectionRef
+from bi_core.base_models import (
+    ConnectionRef,
+    DefaultConnectionRef,
+)
 
 
 class ConnectionRefField(Field):
@@ -16,8 +23,7 @@ class ConnectionRefField(Field):
         return None
 
     def _deserialize(
-            self, value: Optional[str], attr: Optional[str], data: Optional[Mapping[str, Any]],
-            **kwargs: Any
+        self, value: Optional[str], attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any
     ) -> ConnectionRef:
         """
         Wraps connection ID with ConnRef object

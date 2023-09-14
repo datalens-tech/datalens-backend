@@ -1,19 +1,18 @@
 from bi_formula_testing.testcases.functions_type_conversion import (
-    DefaultStrTypeFunctionFormulaConnectorTestSuite,
-    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
-    DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
+    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
-)
-from bi_connector_bigquery_tests.ext.formula.base import (
-    BigQueryTestBase,
+    DefaultIntTypeFunctionFormulaConnectorTestSuite,
+    DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
 
+from bi_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
 
 # STR
+
 
 class TestStrTypeFunctionBigQuery(BigQueryTestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     skip_custom_tz = True
@@ -21,11 +20,13 @@ class TestStrTypeFunctionBigQuery(BigQueryTestBase, DefaultStrTypeFunctionFormul
 
 # FLOAT
 
+
 class TestFloatTypeFunctionBigQuery(BigQueryTestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # BOOL
+
 
 class TestBoolTypeFunctionBigQuery(BigQueryTestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -33,11 +34,13 @@ class TestBoolTypeFunctionBigQuery(BigQueryTestBase, DefaultBoolTypeFunctionForm
 
 # INT
 
+
 class TestIntTypeFunctionBigQuery(BigQueryTestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # DATE
+
 
 class TestDateTypeFunctionBigQuery(BigQueryTestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -45,23 +48,29 @@ class TestDateTypeFunctionBigQuery(BigQueryTestBase, DefaultDateTypeFunctionForm
 
 # GENERICDATETIME (& DATETIME)
 
+
 class TestGenericDatetimeTypeFunctionBigQuery(
-        BigQueryTestBase, DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
+    BigQueryTestBase,
+    DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 # GEOPOINT
 
+
 class TestGeopointTypeFunctionBigQuery(
-        BigQueryTestBase, DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
+    BigQueryTestBase,
+    DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 # GEOPOLYGON
 
+
 class TestGeopolygonTypeFunctionBigQuery(
-        BigQueryTestBase, DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
+    BigQueryTestBase,
+    DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

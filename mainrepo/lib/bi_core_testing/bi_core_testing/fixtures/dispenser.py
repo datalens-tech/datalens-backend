@@ -2,8 +2,12 @@ import pkgutil
 
 import attr
 
-from bi_core_testing.database import DbConfig, Db, DbTable
 from bi_core_testing.csv_table_dumper import CsvTableDumper
+from bi_core_testing.database import (
+    Db,
+    DbConfig,
+    DbTable,
+)
 from bi_core_testing.fixtures.primitives import FixtureTableSpec
 
 
@@ -19,8 +23,7 @@ class DbCsvTableDispenser:
     def _make_new_csv_table(self, db: Db, spec: FixtureTableSpec) -> DbTable:
         dumper = CsvTableDumper(db=db)
         db_table = dumper.make_table_from_csv(
-            raw_csv_data=self._get_raw_csv_data(spec.csv_name),
-            table_schema=spec.table_schema
+            raw_csv_data=self._get_raw_csv_data(spec.csv_name), table_schema=spec.table_schema
         )
         if db.config not in self._tables:
             self._tables[db.config] = {}

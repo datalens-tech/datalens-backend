@@ -1,22 +1,28 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Optional,
+)
 
 import attr
-
-from bi_i18n.localizer_base import LocalizerFactory, Localizer
-from bi_core.services_registry.sr_factories import DefaultSRFactory
-from bi_core.services_registry.top_level import ServicesRegistry
-from bi_core.components.ids import FieldIdGeneratorType
-from bi_core.utils import FutureRef
-from bi_formula.parser.factory import ParserType
 
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from bi_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from bi_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
 from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
-
+from bi_core.components.ids import FieldIdGeneratorType
+from bi_core.services_registry.sr_factories import DefaultSRFactory
+from bi_core.services_registry.top_level import ServicesRegistry
+from bi_core.utils import FutureRef
+from bi_formula.parser.factory import ParserType
+from bi_i18n.localizer_base import (
+    Localizer,
+    LocalizerFactory,
+)
 
 if TYPE_CHECKING:
     from bi_api_commons.base_models import RequestContextInfo
@@ -33,7 +39,9 @@ class DefaultBiApiSRFactory(DefaultSRFactory[DefaultBiApiServiceRegistry]):
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(default=None)
 
     def additional_sr_constructor_kwargs(
-            self, request_context_info: RequestContextInfo, sr_ref: FutureRef[ServicesRegistry],
+        self,
+        request_context_info: RequestContextInfo,
+        sr_ref: FutureRef[ServicesRegistry],
     ) -> Dict[str, Any]:
         return dict(
             default_formula_parser_type=self._default_formula_parser_type,

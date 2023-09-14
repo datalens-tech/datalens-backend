@@ -6,7 +6,8 @@ from bi_core.us_connection_base import DataSourceTemplate
 from bi_i18n.localizer_base import Localizer
 
 from bi_connector_postgresql.core.postgresql.constants import (
-    SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT,
+    SOURCE_TYPE_PG_SUBSELECT,
+    SOURCE_TYPE_PG_TABLE,
 )
 from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 from bi_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
@@ -41,7 +42,7 @@ class ConnectionPostgreSQL(ConnectionPostgreSQLBase):
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return self._make_subselect_templates(
             source_type=SOURCE_TYPE_PG_SUBSELECT,
-            field_doc_key='PG_SUBSELECT/subsql',
+            field_doc_key="PG_SUBSELECT/subsql",
             localizer=localizer,
         )
 

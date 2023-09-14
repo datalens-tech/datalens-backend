@@ -2,27 +2,43 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from typing import (
+    TYPE_CHECKING,
+    Generator,
+    List,
+    Optional,
+    Set,
+)
 import weakref
-from typing import Generator, List, Optional, Set, TYPE_CHECKING
 
 import attr
 
-from bi_utils.aio import ContextVarExecutor
-
-from bi_api_commons.aio.async_wrapper_for_sync_generator import EndOfStream, Job
+from bi_api_commons.aio.async_wrapper_for_sync_generator import (
+    EndOfStream,
+    Job,
+)
 from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import (
-    AsyncDBAdapter, AsyncRawExecutionResult,
+    AsyncDBAdapter,
+    AsyncRawExecutionResult,
 )
 from bi_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery, ExecutionStep, ExecutionStepCursorInfo, ExecutionStepDataChunk, RawSchemaInfo
+    DBAdapterQuery,
+    ExecutionStep,
+    ExecutionStepCursorInfo,
+    ExecutionStepDataChunk,
+    RawSchemaInfo,
 )
+from bi_utils.aio import ContextVarExecutor
 
 if TYPE_CHECKING:
-    from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent, TableDefinition, TableIdent,
-    )
     from bi_constants.types import TBIChunksGen
+    from bi_core.connection_models.common_models import (
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -38,6 +54,7 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
     @attr.s(cmp=False, hash=False)
     class AdapterExecuteJob(Job[ExecutionStep]):  # noqa
         """Class to be instantiated on connection executor"""
+
         _adapter: SyncDirectDBAdapter = attr.ib(kw_only=True)
         _query: DBAdapterQuery = attr.ib(kw_only=True)
 
@@ -96,8 +113,10 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         return await self._loop.run_in_executor(
-            self._tpe, self._sync_adapter.get_table_info,
-            table_def, fetch_idx_info,
+            self._tpe,
+            self._sync_adapter.get_table_info,
+            table_def,
+            fetch_idx_info,
         )
 
     async def is_table_exists(self, table_ident: TableIdent) -> bool:

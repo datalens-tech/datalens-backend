@@ -1,15 +1,16 @@
-from bi_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
 from bi_formula_testing.testcases.functions_type_conversion import (
-    DefaultStrTypeFunctionFormulaConnectorTestSuite,
-    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
-    DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
+    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
+    DefaultIntTypeFunctionFormulaConnectorTestSuite,
+    DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
 
+from bi_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
 
 # STR
+
 
 class TestStrTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -17,11 +18,13 @@ class TestStrTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultStrTypeFunctionForm
 
 # FLOAT
 
+
 class TestFloatTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # BOOL
+
 
 class TestBoolTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -29,11 +32,13 @@ class TestBoolTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultBoolTypeFunctionFo
 
 # INT
 
+
 class TestIntTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # DATE
+
 
 class TestDateTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -41,7 +46,9 @@ class TestDateTypeFunctionSnowFlake(SnowFlakeTestBase, DefaultDateTypeFunctionFo
 
 # GENERICDATETIME (& DATETIME)
 
+
 class TestGenericDatetimeTypeFunctionSnowFlake(
-        SnowFlakeTestBase, DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
+    SnowFlakeTestBase,
+    DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

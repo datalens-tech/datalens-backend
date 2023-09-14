@@ -1,12 +1,20 @@
 import contextlib
 import logging
-from typing import Callable, ClassVar, Generator, Type, Optional
+from typing import (
+    Callable,
+    ClassVar,
+    Generator,
+    Optional,
+    Type,
+)
 
 from sqlalchemy import exc as sa_exc
 
+from bi_core.connectors.base.error_transformer import (
+    DbErrorTransformer,
+    DBExcKWArgs,
+)
 import bi_core.exc as exc
-from bi_core.connectors.base.error_transformer import DBExcKWArgs, DbErrorTransformer
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,21 +26,18 @@ class ErrorHandlerMixin:
     # TODO FIX: Try to implement overrides in more functional style
     @classmethod
     def make_exc(
-        cls,
-        wrapper_exc: Exception,
-        orig_exc: Optional[Exception],
-        debug_compiled_query: Optional[str]
+        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         raise NotImplementedError()
 
     # TODO CONSIDER: Pass DBAdapterQuery to be able to add some context logging
     @contextlib.contextmanager
     def handle_execution_error(
-            self,
-            debug_compiled_query: Optional[str],
-            # This function will be called after converting DatabaseQueryError
-            # or in case if DatabaseQueryError will be caught by this handler
-            exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None
+        self,
+        debug_compiled_query: Optional[str],
+        # This function will be called after converting DatabaseQueryError
+        # or in case if DatabaseQueryError will be caught by this handler
+        exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None,
     ) -> Generator[None, None, None]:
         exc_clses_to_catch: tuple[Type[Exception], ...] = (
             sa_exc.DatabaseError,
@@ -45,6 +50,7 @@ class ErrorHandlerMixin:
                     exc_post_processor(exc_to_post_process)
                 except Exception:  # noqa
                     LOGGER.exception("Error during postprocessing DatabaseQueryError exception")
+
         try:
             yield
 
@@ -55,12 +61,10 @@ class ErrorHandlerMixin:
         except exc_clses_to_catch as err:
             LOGGER.info("Got DB exception in DBA.handle_execution_error()", exc_info=True)
 
-            orig_exc = getattr(err, 'orig', None)
+            orig_exc = getattr(err, "orig", None)
 
             exc_cls, exc_kwargs = self.make_exc(
-                wrapper_exc=err,
-                orig_exc=orig_exc,
-                debug_compiled_query=debug_compiled_query
+                wrapper_exc=err, orig_exc=orig_exc, debug_compiled_query=debug_compiled_query
             )
             try:
                 raise exc_cls(**exc_kwargs) from err
@@ -82,14 +86,11 @@ class ETBasedExceptionMaker(ErrorHandlerMixin):
 
     @classmethod
     def make_exc(
-        cls,
-        wrapper_exc: Exception,
-        orig_exc: Optional[Exception],
-        debug_compiled_query: Optional[str]
+        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-
         trans_exc_cls, kw = cls._error_transformer.make_bi_error_parameters(
-            wrapper_exc=wrapper_exc, debug_compiled_query=debug_compiled_query,
+            wrapper_exc=wrapper_exc,
+            debug_compiled_query=debug_compiled_query,
         )
 
         return trans_exc_cls, kw

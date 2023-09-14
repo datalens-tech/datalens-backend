@@ -1,9 +1,12 @@
 from typing import Type
 
-from bi_formula_ref.plugins.base.plugin import FormulaRefPlugin
 from bi_formula_ref.config import register_config_version
 from bi_formula_ref.i18n.registry import register_translation_configs
-from bi_formula_ref.texts import register_any_dialects, register_human_dialects
+from bi_formula_ref.plugins.base.plugin import FormulaRefPlugin
+from bi_formula_ref.texts import (
+    register_any_dialects,
+    register_human_dialects,
+)
 
 
 class FormulaRefPluginRegistrator:

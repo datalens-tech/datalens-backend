@@ -1,7 +1,9 @@
-from .dynamic_enum import AutoEnumValue, DynamicEnum
-
+from .dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 
 __all__ = (
-    'AutoEnumValue',
-    'DynamicEnum',
+    "AutoEnumValue",
+    "DynamicEnum",
 )

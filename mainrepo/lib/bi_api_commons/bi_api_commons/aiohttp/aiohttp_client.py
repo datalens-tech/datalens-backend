@@ -1,12 +1,22 @@
 from __future__ import annotations
 
+from abc import (
+    ABC,
+    abstractmethod,
+)
 import asyncio
+from contextlib import asynccontextmanager
 import logging
 import ssl
-from abc import ABC, abstractmethod
-from contextlib import asynccontextmanager
-from typing import Optional, Any, Callable, Awaitable, Type, AsyncGenerator
 from types import TracebackType
+from typing import (
+    Any,
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    Optional,
+    Type,
+)
 
 import aiohttp
 import aiohttp.web
@@ -25,16 +35,14 @@ TParams = dict[str, str]
 class BaseRetrier(ABC):
     @abstractmethod
     async def retry_request(
-        self, req_func: Callable[..., Awaitable[aiohttp.ClientResponse]],
-        method: str, *args: Any, **kwargs: Any
+        self, req_func: Callable[..., Awaitable[aiohttp.ClientResponse]], method: str, *args: Any, **kwargs: Any
     ) -> aiohttp.ClientResponse:
         """make some retry magic"""
 
 
 class NoRetriesRetrier(BaseRetrier):
     async def retry_request(
-        self, req_func: Callable[..., Awaitable[aiohttp.ClientResponse]],
-        method: str, *args: Any, **kwargs: Any
+        self, req_func: Callable[..., Awaitable[aiohttp.ClientResponse]], method: str, *args: Any, **kwargs: Any
     ) -> aiohttp.ClientResponse:
         return await req_func(method, *args, **kwargs)
 
@@ -43,21 +51,20 @@ class NoRetriesRetrier(BaseRetrier):
 class PredefinedIntervalsRetrier(BaseRetrier):
     retry_intervals: tuple[float, ...] = attr.ib(default=(0.5, 1.0, 2.0))
     retry_codes: set[int] = attr.ib(default={408, 429, 500, 502, 503, 504})
-    retry_methods: set[str] = attr.ib(default={'GET'})
-    retry_exception_classes: tuple[Type[Exception]] = attr.ib(default=(aiohttp.ClientError, ))
+    retry_methods: set[str] = attr.ib(default={"GET"})
+    retry_exception_classes: tuple[Type[Exception]] = attr.ib(default=(aiohttp.ClientError,))
 
     @retry_methods.validator
     def check_all_chars_upper(self, attribute: str, value: set[str]) -> None:
         for method in value:
-            if not all('A' <= char <= 'Z' for char in method):
-                raise ValueError('method names should be in uppercase')
+            if not all("A" <= char <= "Z" for char in method):
+                raise ValueError("method names should be in uppercase")
 
     def should_retry_exc(self, exc: Exception) -> bool:
         return any(isinstance(exc, retry_exc_cls) for retry_exc_cls in self.retry_exception_classes)
 
     async def retry_request(
-        self, req_func: Callable[..., Awaitable[aiohttp.ClientResponse]],
-        method: str, *args: Any, **kwargs: Any
+        self, req_func: Callable[..., Awaitable[aiohttp.ClientResponse]], method: str, *args: Any, **kwargs: Any
     ) -> aiohttp.ClientResponse:
         if method.upper() not in self.retry_methods:
             return await req_func(method, *args, **kwargs)
@@ -82,7 +89,7 @@ class PredefinedIntervalsRetrier(BaseRetrier):
 
             await asyncio.sleep(ret_interval)
 
-        raise Exception('You should not be here')
+        raise Exception("You should not be here")
 
 
 def default_ssl_context() -> ssl.SSLContext:
@@ -110,9 +117,7 @@ class BIAioHTTPClient:
 
     def make_default_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
-            cookies=self.cookies,
-            headers=self.headers,
-            connector=aiohttp.TCPConnector(ssl_context=self.ssl_context)
+            cookies=self.cookies, headers=self.headers, connector=aiohttp.TCPConnector(ssl_context=self.ssl_context)
         )
 
     @property
@@ -131,15 +136,12 @@ class BIAioHTTPClient:
         return self
 
     async def __aexit__(
-        self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType]
+        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
     ) -> None:
         await self.close()
 
     def url(self, path: str) -> str:
-        return '/'.join(map(lambda s: s.strip('/'), (self.base_url, path)))
+        return "/".join(map(lambda s: s.strip("/"), (self.base_url, path)))
 
     @asynccontextmanager
     async def request(self, method: str, *args: Any, **kwargs: Any) -> AsyncGenerator[aiohttp.ClientResponse, None]:
@@ -150,12 +152,17 @@ class BIAioHTTPClient:
         response.close()
 
     async def _request(
-        self, method: str, path: str = '', params: Optional[TParams] = None,
-        data: Optional[Any] = None, json_data: Optional[Any] = None,
-        headers: Optional[THeaders] = None, cookies: Optional[TCookies] = None,
-        conn_timeout_sec: Optional[float] = None, read_timeout_sec: Optional[float] = None
+        self,
+        method: str,
+        path: str = "",
+        params: Optional[TParams] = None,
+        data: Optional[Any] = None,
+        json_data: Optional[Any] = None,
+        headers: Optional[THeaders] = None,
+        cookies: Optional[TCookies] = None,
+        conn_timeout_sec: Optional[float] = None,
+        read_timeout_sec: Optional[float] = None,
     ) -> Optional[Any]:
-
         timeout = aiohttp.ClientTimeout(
             sock_connect=conn_timeout_sec or self.conn_timeout_sec,
             sock_read=read_timeout_sec or self.read_timeout_sec,

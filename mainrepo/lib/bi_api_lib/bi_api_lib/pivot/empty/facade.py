@@ -4,8 +4,8 @@ import attr
 
 from bi_api_lib.pivot.base.facade import TableDataFacade
 from bi_api_lib.pivot.empty.data_frame import EmptyPivotDataFrame
-from bi_api_lib.pivot.empty.sorter import EmptyPivotSorter
 from bi_api_lib.pivot.empty.paginator import EmptyPivotPaginator
+from bi_api_lib.pivot.empty.sorter import EmptyPivotSorter
 
 
 @attr.s
@@ -15,7 +15,8 @@ class EmptyDataFrameFacade(TableDataFacade):
 
     def _make_sorter(self) -> EmptyPivotSorter:
         return EmptyPivotSorter(
-            legend=self._legend, pivot_legend=self._pivot_legend,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
             pivot_dframe=self._pivot_dframe,
         )
 

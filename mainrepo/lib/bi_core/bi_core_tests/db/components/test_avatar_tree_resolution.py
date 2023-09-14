@@ -1,5 +1,4 @@
 from bi_core.components.dependencies.factory import ComponentDependencyManagerFactory
-
 from bi_core_tests.db.base import DefaultCoreTestClass
 
 
@@ -23,14 +22,19 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
         avatar_3_proxy = dsrc_3_proxy.add_avatar()
 
         relation_1_2_proxy = avatar_1_proxy.add_relation_simple_eq(
-            right=avatar_2_proxy, left_col_name='int_value', right_col_name='int_value')
+            right=avatar_2_proxy, left_col_name="int_value", right_col_name="int_value"
+        )
         relation_2_3_proxy = avatar_2_proxy.add_relation_simple_eq(
-            right=avatar_3_proxy, left_col_name='int_value', right_col_name='int_value')
+            right=avatar_3_proxy, left_col_name="int_value", right_col_name="int_value"
+        )
 
         dep_mgr_factory = ComponentDependencyManagerFactory(dataset=dataset)
         tree_resolver = dep_mgr_factory.get_avatar_tree_resolver()
         root_avatar, required_avatar_ids, required_relation_ids = tree_resolver.expand_required_avatar_ids(
-            required_avatar_ids={avatar_1_proxy.avatar_id, avatar_3_proxy.avatar_id},  # leave a gap in place of avatar_2_id
+            required_avatar_ids={
+                avatar_1_proxy.avatar_id,
+                avatar_3_proxy.avatar_id,
+            },  # leave a gap in place of avatar_2_id
         )
 
         assert root_avatar == avatar_1_proxy.avatar_id

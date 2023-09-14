@@ -1,14 +1,19 @@
 from typing import Any
 
-from marshmallow import fields as ma_fields, EXCLUDE
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import (
-    BIType, FieldRole, FieldType, FieldVisibility, LegendItemType, OrderDirection, RangeType,
+    BIType,
+    FieldRole,
+    FieldType,
+    FieldVisibility,
+    LegendItemType,
+    OrderDirection,
+    RangeType,
 )
-
 from bi_model_tools.schema.base import BaseSchema
-
 from bi_query_processing.legend.field_legend import RoleSpec
 
 
@@ -22,7 +27,7 @@ class RoleSpecSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'role'
+    type_field = "role"
 
     class RoleSpecSchemaVariant(BaseSchema):
         role = ma_fields.Enum(FieldRole)
@@ -81,4 +86,4 @@ class LegendItemSchema(BaseSchema):
 
 
 class LegendSchema(BaseSchema):
-    fields_ = ma_fields.Nested(LegendItemSchema, data_key='fields', many=True, attribute='items')
+    fields_ = ma_fields.Nested(LegendItemSchema, data_key="fields", many=True, attribute="items")

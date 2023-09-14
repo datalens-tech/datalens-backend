@@ -5,48 +5,67 @@ import asyncio
 import functools
 import logging
 from typing import (
-    TYPE_CHECKING, Any, Callable, ClassVar, Dict, Generic, List, Optional, Sequence, Type, TypeVar,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
 )
 
 import attr
 from typing_extensions import final
 
-from bi_constants.enums import BIType
-from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-
-from bi_utils.aio import ContextVarExecutor
-from bi_utils.utils import maybe_postmortem
-
-from bi_core import exc
 from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connection_models.common_models import TableDefinition
+from bi_constants.enums import BIType
+from bi_core import exc
 from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import (
-    AsyncDBAdapter, AsyncDirectDBAdapter, AsyncRawExecutionResult,
+    AsyncDBAdapter,
+    AsyncDirectDBAdapter,
+    AsyncRawExecutionResult,
 )
 from bi_core.connection_executors.adapters.async_adapters_remote import RemoteAsyncAdapter
 from bi_core.connection_executors.adapters.async_adapters_sync_wrapper import AsyncWrapperForSyncAdapter
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.async_base import AsyncExecutionResult, AsyncConnExecutorBase
-from bi_core.connection_executors.common_base import ExecutionMode, ConnExecutorQuery
+from bi_core.connection_executors.async_base import (
+    AsyncConnExecutorBase,
+    AsyncExecutionResult,
+)
+from bi_core.connection_executors.common_base import (
+    ConnExecutorQuery,
+    ExecutionMode,
+)
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from bi_core.connection_models.common_models import TableDefinition
 from bi_core.db import SchemaInfo
+from bi_utils.aio import ContextVarExecutor
+from bi_utils.utils import maybe_postmortem
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
-    from bi_core.connection_models.common_models import DBIdent, SchemaIdent, TableIdent
     from bi_constants.types import TBIChunksGen
+    from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
+    from bi_core.connection_models.common_models import (
+        DBIdent,
+        SchemaIdent,
+        TableIdent,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
 
-_DBA_TV = TypeVar('_DBA_TV', bound=CommonBaseDirectAdapter)
+_DBA_TV = TypeVar("_DBA_TV", bound=CommonBaseDirectAdapter)
 
 
 def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
     @functools.wraps(func)
     async def method_wrapper(self: DefaultSqlAlchemyConnExecutor, *args, **kwargs):  # type: ignore  # TODO: fix
-
         # Not sure do we have to reset index on every call
         # self._dba_attempt_index = 0
 
@@ -54,7 +73,7 @@ def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
             try:
                 return await func(self, *args, **kwargs)
             except (exc.SourceConnectError, exc.DatabaseOperationalError) as ex:
-                LOGGER.info('Retriable exception caught: %s', type(ex), exc_info=True)
+                LOGGER.info("Retriable exception caught: %s", type(ex), exc_info=True)
 
                 if self._conn_hosts_pool:
                     self._host_fail_callback(self._conn_hosts_pool[self._dba_attempt_index])
@@ -63,7 +82,7 @@ def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
                 if self._dba_attempt_index >= len(self._async_dba_pool):  # type: ignore  # TODO: fix
                     raise
             except Exception as ex:
-                LOGGER.info('Non-retriable dba exception %s: %s', type(ex), ex, exc_info=True)
+                LOGGER.info("Non-retriable dba exception %s: %s", type(ex), ex, exc_info=True)
                 raise
 
     return method_wrapper
@@ -100,6 +119,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
 
     Why do we need it: to keep initialization creation of DBA in one place for sync and async environments.
     """
+
     TARGET_ADAPTER_CLS: ClassVar[Type[_DBA_TV]]
 
     # Constructor attributes
@@ -177,7 +197,8 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
                         target_dto=target_conn_dto,
                         req_ctx_info=DBAdapterScopedRCI.from_full_rci(req_ctx_info),
                         default_chunk_size=self.default_chunk_size,
-                    ) for target_conn_dto in target_conn_dto_pool
+                    )
+                    for target_conn_dto in target_conn_dto_pool
                 ]
             else:
                 raise TypeError(f"Can not create DBA TARGET_ADAPTER_CLS={self.TARGET_ADAPTER_CLS}")
@@ -192,7 +213,8 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
                     req_ctx_info=DBAdapterScopedRCI.from_full_rci(req_ctx_info),
                     dba_cls=self.TARGET_ADAPTER_CLS,
                     conn_options=self._conn_options,
-                ) for target_conn_dto in target_conn_dto_pool
+                )
+                for target_conn_dto in target_conn_dto_pool
             ]
 
         else:
@@ -216,7 +238,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         return await self._target_dba.execute(query)
 
     def _autodetect_user_types(self, raw_cursor_info: dict) -> Optional[List[BIType]]:
-        db_types = raw_cursor_info.get('db_types')
+        db_types = raw_cursor_info.get("db_types")
         if not db_types:
             return None
         tt = self.type_transformer

@@ -1,6 +1,7 @@
 from typing import Optional
 
 import attr
+
 from bi_api_commons.base_models import RequestContextInfo
 
 

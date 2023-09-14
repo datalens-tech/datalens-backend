@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import abc
 
-from bi_query_processing.compilation.specs import QuerySpec
 from bi_query_processing.compilation.primitives import CompiledQuery
+from bi_query_processing.compilation.specs import QuerySpec
 
 
 class RawQueryCompilerBase(abc.ABC):

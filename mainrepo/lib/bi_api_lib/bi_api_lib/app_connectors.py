@@ -1,20 +1,22 @@
-from typing import Collection, Optional, Type
+from typing import (
+    Collection,
+    Optional,
+    Type,
+)
 
 import attr
 
-from bi_utils.entrypoints import EntrypointClassManager
-
 from bi_api_connector.connector import BiApiConnector
-
 import bi_api_lib as package
 from bi_api_lib.connector_registrator import CONN_REG_BI_API
+from bi_utils.entrypoints import EntrypointClassManager
 
 
 def _register_connector(connector_cls: Type[BiApiConnector]) -> None:
     CONN_REG_BI_API.register_connector(connector_cls)
 
 
-_CONNECTOR_EP_GROUP = f'{package.__name__}.connectors'
+_CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 
 @attr.s

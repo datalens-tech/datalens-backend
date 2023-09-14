@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Optional, ClassVar
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import attr
 import sqlalchemy as sa
@@ -13,7 +17,7 @@ class DBIdent:
     db_name: Optional[str]
 
     def __str__(self) -> str:
-        return self.db_name or ''
+        return self.db_name or ""
 
 
 @attr.s(frozen=True, auto_attribs=True)

@@ -1,16 +1,25 @@
 from __future__ import annotations
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Optional,
+)
 
 import attr
 
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.inspect.expression import infer_data_type
-from bi_formula.parser.factory import get_parser, ParserType
-
-from bi_formula_ref.examples.data_table import DataColumn
+from bi_formula.parser.factory import (
+    ParserType,
+    get_parser,
+)
 from bi_formula_ref.examples.config import ExampleConfig
-from bi_formula_ref.examples.query import RawQueryContext, FormulaContext
+from bi_formula_ref.examples.data_table import DataColumn
+from bi_formula_ref.examples.query import (
+    FormulaContext,
+    RawQueryContext,
+)
 
 if TYPE_CHECKING:
     from bi_formula.parser.base import FormulaParser
@@ -34,7 +43,7 @@ class QueryGenerator:
         columns = [DataColumn(name=name, data_type=data_type) for name, data_type in example.source.columns]
 
         all_formulas = {alias: formula for formula, alias in example.formula_fields}
-        all_formulas.update({col.name: f'[{col.name}]' for col in columns})
+        all_formulas.update({col.name: f"[{col.name}]" for col in columns})
 
         col_data_types = {col.name: col.data_type for col in columns}
 
@@ -45,15 +54,21 @@ class QueryGenerator:
         for ctx in select:
             alias = ctx.alias
             assert alias is not None
-            result_columns.append(DataColumn(
-                name=alias,
-                data_type=infer_data_type(
-                    node=ctx.formula, field_types=col_data_types, env=inspect_env,
-                ),
-            ))
+            result_columns.append(
+                DataColumn(
+                    name=alias,
+                    data_type=infer_data_type(
+                        node=ctx.formula,
+                        field_types=col_data_types,
+                        env=inspect_env,
+                    ),
+                )
+            )
 
         query_ctx = RawQueryContext(
             result_columns=result_columns,
-            select=select, group_by=group_by, order_by=order_by,
+            select=select,
+            group_by=group_by,
+            order_by=order_by,
         )
         return query_ctx

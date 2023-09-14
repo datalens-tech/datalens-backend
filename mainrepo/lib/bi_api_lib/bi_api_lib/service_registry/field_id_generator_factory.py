@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import attr
 
-from bi_core.us_dataset import Dataset
 from bi_core.components.ids import (
-    FIELD_ID_GENERATOR_MAP,
     DEFAULT_FIELD_ID_GENERATOR_TYPE,
+    FIELD_ID_GENERATOR_MAP,
     FieldIdGenerator,
     FieldIdGeneratorType,
 )
+from bi_core.us_dataset import Dataset
 
 
 @attr.s

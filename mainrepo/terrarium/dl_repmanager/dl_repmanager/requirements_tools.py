@@ -3,7 +3,6 @@ from pathlib import Path
 
 import attr
 
-
 log = logging.getLogger(__name__)
 
 

@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-from .base import (
-    BIMSSQLDialect,
-)
+from .base import BIMSSQLDialect
 
-
-__all__ = (
-    "BIMSSQLDialect",
-)
+__all__ = ("BIMSSQLDialect",)

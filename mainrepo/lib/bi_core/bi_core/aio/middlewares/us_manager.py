@@ -3,37 +3,38 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-from typing import AsyncGenerator, Optional
+from typing import (
+    AsyncGenerator,
+    Optional,
+)
 
-import attr
 from aiohttp import web
 from aiohttp.typedefs import Handler
+import attr
 
+from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from bi_api_commons.aiohttp import aiohttp_wrappers
+from bi_api_commons.tenant_resolver import TenantResolver
 from bi_configs.crypto_keys import CryptoKeysConfig
-
+from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
+from bi_core.services_registry.top_level import DummyServiceRegistry
 from bi_utils.aio import shield_wait_for_complete
 
-from bi_core.services_registry.top_level import DummyServiceRegistry
-from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
-from bi_api_commons.aiohttp import aiohttp_wrappers
-from bi_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_api_commons.tenant_resolver import TenantResolver
 from ... import exc
 from ...us_manager.factory import USMFactory
 from ...us_manager.us_manager_async import AsyncUSManager
-
 
 LOGGER = logging.getLogger(__name__)
 
 
 def public_usm_workaround_middleware(
-        us_base_url: str,
-        us_public_token: str,
-        crypto_keys_config: CryptoKeysConfig,
-        dataset_id_match_info_code: str,
-        conn_id_match_info_code: str,
-        us_master_token: Optional[str],
-        tenant_resolver: TenantResolver,
+    us_base_url: str,
+    us_public_token: str,
+    crypto_keys_config: CryptoKeysConfig,
+    dataset_id_match_info_code: str,
+    conn_id_match_info_code: str,
+    us_master_token: Optional[str],
+    tenant_resolver: TenantResolver,
 ) -> AIOHTTPMiddleware:
     """
     This is workaround for the following public API issues:
@@ -64,8 +65,7 @@ def public_usm_workaround_middleware(
     @web.middleware
     @DLRequestDataCore.use_dl_request
     async def actual_public_usm_workaround_middleware(
-        dl_request: DLRequestDataCore,
-        handler: Handler
+        dl_request: DLRequestDataCore, handler: Handler
     ) -> web.StreamResponse:
         if aiohttp_wrappers.RequiredResourceCommon.US_MANAGER not in dl_request.required_resources:
             return await handler(dl_request.request)
@@ -122,9 +122,9 @@ async def _usm_close_cm(usm: AsyncUSManager, label: str) -> AsyncGenerator[None,
 
 
 def us_manager_middleware(
-        us_base_url: str,
-        crypto_keys_config: CryptoKeysConfig,
-        embed: bool = False,
+    us_base_url: str,
+    crypto_keys_config: CryptoKeysConfig,
+    embed: bool = False,
 ) -> AIOHTTPMiddleware:
     usm_factory = USMFactory(
         us_base_url=us_base_url,
@@ -133,10 +133,7 @@ def us_manager_middleware(
 
     @web.middleware
     @DLRequestDataCore.use_dl_request
-    async def actual_us_manager_middleware(
-        dl_request: DLRequestDataCore,
-        handler: Handler
-    ) -> web.StreamResponse:
+    async def actual_us_manager_middleware(dl_request: DLRequestDataCore, handler: Handler) -> web.StreamResponse:
         if aiohttp_wrappers.RequiredResourceCommon.US_MANAGER not in dl_request.required_resources:
             return await handler(dl_request.request)
 
@@ -151,7 +148,7 @@ def us_manager_middleware(
                 services_registry=dl_request.services_registry,
             )
 
-        async with _usm_close_cm(usm, label='user'):
+        async with _usm_close_cm(usm, label="user"):
             dl_request.us_manager = usm
             return await handler(dl_request.request)
 
@@ -159,9 +156,9 @@ def us_manager_middleware(
 
 
 def public_us_manager_middleware(
-        us_base_url: str,
-        us_public_token: str,
-        crypto_keys_config: CryptoKeysConfig,
+    us_base_url: str,
+    us_public_token: str,
+    crypto_keys_config: CryptoKeysConfig,
 ) -> AIOHTTPMiddleware:
     """
     Middleware to create public US manager. Works with committed RCI.
@@ -177,8 +174,7 @@ def public_us_manager_middleware(
     @web.middleware
     @DLRequestDataCore.use_dl_request
     async def actual_public_us_manager_middleware(
-        dl_request: DLRequestDataCore,
-        handler: Handler
+        dl_request: DLRequestDataCore, handler: Handler
     ) -> web.StreamResponse:
         if aiohttp_wrappers.RequiredResourceCommon.US_MANAGER not in dl_request.required_resources:
             return await handler(dl_request.request)
@@ -187,7 +183,7 @@ def public_us_manager_middleware(
             rci=dl_request.rci,
             services_registry=dl_request.services_registry,
         )
-        async with _usm_close_cm(usm, label='public'):
+        async with _usm_close_cm(usm, label="public"):
             dl_request.us_manager = usm
             return await handler(dl_request.request)
 
@@ -195,10 +191,10 @@ def public_us_manager_middleware(
 
 
 def service_us_manager_middleware(
-        us_base_url: str,
-        us_master_token: str,
-        crypto_keys_config: CryptoKeysConfig,
-        as_user_usm: bool = False,
+    us_base_url: str,
+    us_master_token: str,
+    crypto_keys_config: CryptoKeysConfig,
+    as_user_usm: bool = False,
 ) -> AIOHTTPMiddleware:
     usm_factory = USMFactory(
         us_base_url=us_base_url,
@@ -209,11 +205,11 @@ def service_us_manager_middleware(
     @web.middleware
     @DLRequestDataCore.use_dl_request
     async def actual_service_us_manager_middleware(
-        dl_request: DLRequestDataCore,
-        handler: Handler
+        dl_request: DLRequestDataCore, handler: Handler
     ) -> web.StreamResponse:
         target_resource = (
-            aiohttp_wrappers.RequiredResourceCommon.US_MANAGER if as_user_usm
+            aiohttp_wrappers.RequiredResourceCommon.US_MANAGER
+            if as_user_usm
             else aiohttp_wrappers.RequiredResourceCommon.SERVICE_US_MANAGER
         )
 
@@ -225,7 +221,7 @@ def service_us_manager_middleware(
             services_registry=dl_request.services_registry,
         )
 
-        async with _usm_close_cm(usm, label='service'):
+        async with _usm_close_cm(usm, label="service"):
             if not as_user_usm:
                 dl_request.service_us_manager = usm
             else:

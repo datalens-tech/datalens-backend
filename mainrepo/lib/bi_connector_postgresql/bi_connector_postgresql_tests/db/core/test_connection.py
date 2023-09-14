@@ -1,37 +1,40 @@
 import asyncio
-import pytest
 import os
 from typing import TypeVar
 
+import pytest
+
 import bi_configs.utils as bi_configs_utils
-
-from bi_core.us_connection_base import DataSourceTemplate, ConnectionSQL
 from bi_core.services_registry.top_level import ServicesRegistry
-
-from bi_testing.regulated_test import RegulatedTestParams
+from bi_core.us_connection_base import (
+    ConnectionSQL,
+    DataSourceTemplate,
+)
 from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+from bi_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from bi_connector_postgresql_tests.db.core.base import (
+    BasePostgreSQLTestClass,
+    BaseSslPostgreSQLTestClass,
+)
 
-from bi_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass, BaseSslPostgreSQLTestClass
-
-
-_CONN_TV = TypeVar('_CONN_TV', bound=ConnectionSQL)
+_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
 
 
 class TestPostgreSQLConnection(
-        BasePostgreSQLTestClass,
-        DefaultConnectionTestClass[ConnectionPostgreSQL],
+    BasePostgreSQLTestClass,
+    DefaultConnectionTestClass[ConnectionPostgreSQL],
 ):
     do_check_data_export_flag = True
 
     def check_saved_connection(self, conn: ConnectionPostgreSQL, params: dict) -> None:
         assert conn.uuid is not None
-        assert conn.data.db_name == params['db_name']
-        assert conn.data.host == params['host']
-        assert conn.data.port == params['port']
-        assert conn.data.username == params['username']
-        assert conn.data.password == params['password']
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.host == params["host"]
+        assert conn.data.port == params["port"]
+        assert conn.data.username == params["username"]
+        assert conn.data.password == params["password"]
         assert conn.data.ssl_enable is False
         assert conn.data.ssl_ca is None
 
@@ -39,13 +42,11 @@ class TestPostgreSQLConnection(
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
-            if dsrc_tmpl.parameters.get('schema_name') is not None:
-                assert dsrc_tmpl.group == [dsrc_tmpl.parameters['schema_name']]
+            if dsrc_tmpl.parameters.get("schema_name") is not None:
+                assert dsrc_tmpl.group == [dsrc_tmpl.parameters["schema_name"]]
 
     def test_get_data_source_templates_pg_partitioned(
-            self,
-            saved_connection, pg_partitioned_table_name,
-            conn_default_service_registry
+        self, saved_connection, pg_partitioned_table_name, conn_default_service_registry
     ):
         connection = saved_connection
         service_registry = conn_default_service_registry
@@ -61,8 +62,8 @@ class TestPostgreSQLConnection(
 # TODO: turn on in https://st.yandex-team.ru/BI-4701
 @pytest.mark.skip
 class TestSslPostgreSQLConnection(
-        BaseSslPostgreSQLTestClass,
-        DefaultConnectionTestClass[ConnectionPostgreSQL],
+    BaseSslPostgreSQLTestClass,
+    DefaultConnectionTestClass[ConnectionPostgreSQL],
 ):
     def check_ssl_directory_is_empty(self) -> None:
         assert not os.listdir(bi_configs_utils.get_temp_root_certificates_folder_path())
@@ -76,13 +77,13 @@ class TestSslPostgreSQLConnection(
 
     def check_saved_connection(self, conn: ConnectionPostgreSQL, params: dict) -> None:
         assert conn.uuid is not None
-        assert conn.data.db_name == params['db_name']
-        assert conn.data.host == params['host']
-        assert conn.data.port == params['port']
-        assert conn.data.username == params['username']
-        assert conn.data.password == params['password']
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.host == params["host"]
+        assert conn.data.port == params["port"]
+        assert conn.data.username == params["username"]
+        assert conn.data.password == params["password"]
         assert conn.data.ssl_enable is True
-        assert conn.data.ssl_ca is params['ssl_ca']
+        assert conn.data.ssl_ca is params["ssl_ca"]
 
     def check_data_source_templates(self, conn: ConnectionPostgreSQL, dsrc_templates: list[DataSourceTemplate]) -> None:
         assert dsrc_templates
@@ -99,17 +100,19 @@ class TestSslPostgreSQLConnection(
 class TestSslAsyncPostgreSQLConnection(TestSslPostgreSQLConnection):
     test_params = RegulatedTestParams(
         mark_tests_skipped={
-            DefaultConnectionTestClass.test_connection_get_data_source_templates: '',  # TODO: FIXME
+            DefaultConnectionTestClass.test_connection_get_data_source_templates: "",  # TODO: FIXME
         },
     )
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_exec_factory_async_env(self) -> bool:
         return True
 
     @pytest.mark.asyncio
     async def test_connection_test(
-            self, saved_connection: ConnectionPostgreSQL, conn_default_service_registry: ServicesRegistry,
+        self,
+        saved_connection: ConnectionPostgreSQL,
+        conn_default_service_registry: ServicesRegistry,
     ) -> None:
         # FIXME: standardize this test
         conn = saved_connection
@@ -122,7 +125,9 @@ class TestSslAsyncPostgreSQLConnection(TestSslPostgreSQLConnection):
 
     @pytest.mark.asyncio
     async def test_multiple_connection_test(
-            self, saved_connection: ConnectionPostgreSQL, conn_default_service_registry: ServicesRegistry,
+        self,
+        saved_connection: ConnectionPostgreSQL,
+        conn_default_service_registry: ServicesRegistry,
     ) -> None:
         # FIXME: standardize this test
         conn = saved_connection

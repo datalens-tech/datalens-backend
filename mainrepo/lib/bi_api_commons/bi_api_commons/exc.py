@@ -1,9 +1,13 @@
-from typing import Any, Optional, TypeVar, Generic
+from typing import (
+    Any,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
 from bi_constants.exc import DLBaseException
-
 
 _EXC_DATA_TV = TypeVar("_EXC_DATA_TV")
 
@@ -14,7 +18,7 @@ def format_response_body(obj: Any) -> str:
 
     if isinstance(obj, str):
         if len(obj) > str_limit:
-            return repr(obj[:str_limit - len(tail_placeholder)] + tail_placeholder)
+            return repr(obj[: str_limit - len(tail_placeholder)] + tail_placeholder)
         else:
             return repr(obj)
     else:
@@ -73,5 +77,5 @@ class FlaskRCINotSet(Exception):
 
 
 class RequestTimeoutError(DLBaseException):
-    err_code = DLBaseException.err_code + ['REQUEST_TIMEOUT']
-    default_message = 'Backend app request timeout exceeded'
+    err_code = DLBaseException.err_code + ["REQUEST_TIMEOUT"]
+    default_message = "Backend app request timeout exceeded"

@@ -1,25 +1,33 @@
 from __future__ import annotations
 
-from typing import Optional, Callable, Any
+from typing import (
+    Any,
+    Callable,
+    Optional,
+)
 
 import attr
+from snowflake import sqlalchemy as ssa
+from snowflake.connector import connect as sf_connect
 import sqlalchemy as sa
 from sqlalchemy.engine import Engine
 from sqlalchemy.sql.type_api import TypeEngine
 
-from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
-from bi_connector_snowflake.core.error_transformer import snowflake_error_transformer
-from bi_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 from bi_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from bi_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     RawSchemaInfo,
 )
-from bi_core.connection_models.common_models import DBIdent, SATextTableDefinition
+from bi_core.connection_models.common_models import (
+    DBIdent,
+    SATextTableDefinition,
+)
 from bi_core.db.native_type import SATypeSpec
-from snowflake import sqlalchemy as ssa
-from snowflake.connector import connect as sf_connect
+
+from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
+from bi_connector_snowflake.core.error_transformer import snowflake_error_transformer
+from bi_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 
 
 def construct_creator_func(target_dto: SnowFlakeConnTargetDTO) -> Callable:

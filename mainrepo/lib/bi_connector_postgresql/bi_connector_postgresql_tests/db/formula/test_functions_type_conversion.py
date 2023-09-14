@@ -7,35 +7,41 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 
 import bi_formula.core.exc as exc
+from bi_formula_testing.evaluator import DbEvaluator
 from bi_formula_testing.testcases.functions_type_conversion import (
-    DefaultStrTypeFunctionFormulaConnectorTestSuite,
-    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
-    DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
+    DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
+    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
-    DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
+    DefaultIntTypeFunctionFormulaConnectorTestSuite,
+    DefaultStrTypeFunctionFormulaConnectorTestSuite,
     DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 )
-from bi_formula_testing.evaluator import DbEvaluator
-from bi_formula_testing.util import to_str, dt_strip, as_tz
-from bi_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
+from bi_formula_testing.util import (
+    as_tz,
+    dt_strip,
+    to_str,
 )
 
+from bi_connector_postgresql_tests.db.formula.base import (
+    PostgreSQL_9_3TestBase,
+    PostgreSQL_9_4TestBase,
+)
 
 # STR
 
+
 class StrTypeFunctionPostgreSQLTestSuite(DefaultStrTypeFunctionFormulaConnectorTestSuite):
-    zero_float_to_str_value = '0.0'
+    zero_float_to_str_value = "0.0"
     skip_custom_tz = True
 
     def test_str_from_array(self, dbe: DbEvaluator, data_table) -> None:
-        assert to_str(dbe.eval('STR([arr_int_value])', from_=data_table)) == '{0,23,456,NULL}'
-        assert to_str(dbe.eval('STR([arr_float_value])', from_=data_table)) == '{0,45,0.123,NULL}'
-        assert to_str(dbe.eval('STR([arr_str_value])', from_=data_table)) == '{"","",cde,NULL}'
+        assert to_str(dbe.eval("STR([arr_int_value])", from_=data_table)) == "{0,23,456,NULL}"
+        assert to_str(dbe.eval("STR([arr_float_value])", from_=data_table)) == "{0,45,0.123,NULL}"
+        assert to_str(dbe.eval("STR([arr_str_value])", from_=data_table)) == '{"","",cde,NULL}'
 
 
 class TestStrTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, StrTypeFunctionPostgreSQLTestSuite):
@@ -48,6 +54,7 @@ class TestStrTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, StrTypeFunctionP
 
 # FLOAT
 
+
 class TestFloatTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
@@ -57,6 +64,7 @@ class TestFloatTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultFloatTy
 
 
 # BOOL
+
 
 class TestBoolTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -68,6 +76,7 @@ class TestBoolTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultBoolType
 
 # INT
 
+
 class TestIntTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
@@ -77,6 +86,7 @@ class TestIntTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultIntTypeFu
 
 
 # DATE
+
 
 class TestDateTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -88,12 +98,13 @@ class TestDateTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultDateType
 
 # GENERICDATETIME (& DATETIME)
 
+
 class GenericDatetimeTypeFunctionPostgreSQLTestSuite(
-        DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
+    DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
-    @pytest.mark.parametrize('func_name', ('GENERICDATETIME',))
+    @pytest.mark.parametrize("func_name", ("GENERICDATETIME",))
     def test_genericdatetime2_pg(self, dbe: DbEvaluator, func_name: str) -> None:
-        mos_tz = 'Europe/Moscow'
+        mos_tz = "Europe/Moscow"
         dt_naive = datetime.datetime(2019, 1, 3, 2, 4, 5)
         dt_naive_iso_str = dt_naive.isoformat()
         dt_as_mos = as_tz(dt_naive, tzinfo=pytz.timezone(mos_tz))
@@ -115,65 +126,70 @@ class GenericDatetimeTypeFunctionPostgreSQLTestSuite(
         assert dt_strip(dbe.eval(f"{func_name}(#{dt_naive_iso_str}#, '{mos_tz}')")) == dt_as_mos_to_utc_stripped
 
         # Double-wrap (from string)
-        assert dt_strip(dbe.eval(
-            f"{func_name}({func_name}('{dt_naive_iso_str}', '{mos_tz}'), '{mos_tz}')"
-        )) == dt_naive
+        assert dt_strip(dbe.eval(f"{func_name}({func_name}('{dt_naive_iso_str}', '{mos_tz}'), '{mos_tz}')")) == dt_naive
 
 
 class TestGenericDatetimeTypeFunctionPostgreSQL_9_3(
-        PostgreSQL_9_3TestBase, GenericDatetimeTypeFunctionPostgreSQLTestSuite,
+    PostgreSQL_9_3TestBase,
+    GenericDatetimeTypeFunctionPostgreSQLTestSuite,
 ):
     pass
 
 
 class TestGenericDatetimeTypeFunctionPostgreSQL_9_4(
-        PostgreSQL_9_4TestBase, GenericDatetimeTypeFunctionPostgreSQLTestSuite,
+    PostgreSQL_9_4TestBase,
+    GenericDatetimeTypeFunctionPostgreSQLTestSuite,
 ):
     pass
 
 
 # GEOPOINT
 
+
 class TestGeopointTypeFunctionPostgreSQL_9_3(
-        PostgreSQL_9_3TestBase, DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
+    PostgreSQL_9_3TestBase,
+    DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 class TestGeopointTypeFunctionPostgreSQL_9_4(
-        PostgreSQL_9_4TestBase, DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
+    PostgreSQL_9_4TestBase,
+    DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 # GEOPOLYGON
 
+
 class TestGeopolygonTypeFunctionPostgreSQL_9_3(
-        PostgreSQL_9_3TestBase, DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
+    PostgreSQL_9_3TestBase,
+    DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 class TestGeopolygonTypeFunctionPostgreSQL_9_4(
-        PostgreSQL_9_4TestBase, DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
+    PostgreSQL_9_4TestBase,
+    DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 # DB_CAST
 
+
 class DbCastTypeFunctionPostgreSQLTestSuite(
-        DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
+    DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
 ):
     def test_db_cast_postgresql(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        value = dbe.eval('[int_value]', from_=data_table)
+        value = dbe.eval("[int_value]", from_=data_table)
         assert dbe.eval('DB_CAST(FLOAT([int_value]), "double precision")', from_=data_table) == pytest.approx(
-            float(value))
+            float(value)
+        )
         assert dbe.eval('DB_CAST(FLOAT([int_value]), "numeric", 5, 0)', from_=data_table) == value
-        assert dbe.eval(
-            'ROUND(DB_CAST(FLOAT([int_value]), "numeric", 5, 0), 0)',
-            from_=data_table
-        ) == value
+        assert dbe.eval('ROUND(DB_CAST(FLOAT([int_value]), "numeric", 5, 0), 0)', from_=data_table) == value
         with pytest.raises(sa_exc.DatabaseError):
             dbe.eval('ROUND(DB_CAST(FLOAT([int_value]), "double precision"), 0)', from_=data_table)
 
@@ -188,49 +204,58 @@ class DbCastTypeFunctionPostgreSQLTestSuite(
 
     def test_db_cast_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         array_int = [0, 1, -2, None]
-        array_int_string = ','.join('NULL' if item is None else str(item) for item in array_int)
+        array_int_string = ",".join("NULL" if item is None else str(item) for item in array_int)
         assert dbe.eval(f'DB_CAST(ARRAY({array_int_string}), "smallint[]")', from_=data_table) == array_int
         assert dbe.eval(f'DB_CAST(ARRAY({array_int_string}), "integer[]")', from_=data_table) == array_int
         assert dbe.eval(f'DB_CAST(ARRAY({array_int_string}), "bigint[]")', from_=data_table) == array_int
         assert dbe.eval('DB_CAST([arr_int_value], "bigint[]")', from_=data_table) == [0, 23, 456, None]
 
-        array_float = [0., 1., -2., None]
-        array_float_string = ','.join('NULL' if item is None else str(item) for item in array_float)
+        array_float = [0.0, 1.0, -2.0, None]
+        array_float_string = ",".join("NULL" if item is None else str(item) for item in array_float)
         assert dbe.eval(f'DB_CAST(ARRAY({array_float_string}), "double precision[]")', from_=data_table) == array_float
         assert dbe.eval(f'DB_CAST(ARRAY({array_float_string}), "real[]")', from_=data_table) == array_float
         assert dbe.eval(f'DB_CAST(ARRAY({array_float_string}), "numeric[]", 5, 0)', from_=data_table) == array_float
-        assert dbe.eval('DB_CAST([arr_float_value], "numeric[]", 5, 0)', from_=data_table) \
-               == [Decimal('0'), Decimal('45'), Decimal('0'), None]
+        assert dbe.eval('DB_CAST([arr_float_value], "numeric[]", 5, 0)', from_=data_table) == [
+            Decimal("0"),
+            Decimal("45"),
+            Decimal("0"),
+            None,
+        ]
 
-        array_str = ['', 'a', 'NULL', None]
-        array_str_string = ','.join('NULL' if item is None else f"'{item}'" for item in array_str)
+        array_str = ["", "a", "NULL", None]
+        array_str_string = ",".join("NULL" if item is None else f"'{item}'" for item in array_str)
         assert dbe.eval(f'DB_CAST(ARRAY({array_str_string}), "text[]")', from_=data_table) == array_str
         assert dbe.eval(f'DB_CAST(ARRAY({array_str_string}), "character varying[]")', from_=data_table) == array_str
         assert dbe.eval(f'DB_CAST(ARRAY({array_str_string}), "varchar[]")', from_=data_table) == array_str
-        assert dbe.eval('DB_CAST([arr_str_value], "varchar[]")', from_=data_table) == ['', '', 'cde', None]
+        assert dbe.eval('DB_CAST([arr_str_value], "varchar[]")', from_=data_table) == ["", "", "cde", None]
 
 
 class TestDbCastTypeFunctionPostgreSQL_9_3(
-        PostgreSQL_9_3TestBase, DbCastTypeFunctionPostgreSQLTestSuite,
+    PostgreSQL_9_3TestBase,
+    DbCastTypeFunctionPostgreSQLTestSuite,
 ):
     pass
 
 
 class TestDbCastTypeFunctionPostgreSQL_9_4(
-        PostgreSQL_9_4TestBase, DbCastTypeFunctionPostgreSQLTestSuite,
+    PostgreSQL_9_4TestBase,
+    DbCastTypeFunctionPostgreSQLTestSuite,
 ):
     pass
 
 
 # TREE
 
+
 class TestTreeTypeFunctionPostgreSQL_9_3(
-        PostgreSQL_9_3TestBase, DefaultTreeTypeFunctionFormulaConnectorTestSuite,
+    PostgreSQL_9_3TestBase,
+    DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 class TestTreeTypeFunctionPostgreSQL_9_4(
-        PostgreSQL_9_4TestBase, DefaultTreeTypeFunctionFormulaConnectorTestSuite,
+    PostgreSQL_9_4TestBase,
+    DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

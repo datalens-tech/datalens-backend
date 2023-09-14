@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import logging
+from typing import (
+    ClassVar,
+    Optional,
+)
 
-import attr
-from typing import ClassVar, Optional
-
+from aiohttp import web
 import arq
 from arq.connections import RedisSettings as ArqRedisSettings
-from aiohttp import web
+import attr
 
 from bi_task_processor.arq_wrapper import create_redis_pool
-
 
 LOGGER = logging.getLogger(__name__)
 

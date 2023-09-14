@@ -1,32 +1,41 @@
 from __future__ import annotations
 
 import datetime
-from typing import Iterable, List, Optional, Tuple, Type
+from typing import (
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Type,
+)
 
 import antlr4
-from antlr4.tree.Tree import TerminalNodeImpl
 from antlr4.Token import Token
-from bi_formula.parser.base import resolve_function_capabilities
+from antlr4.tree.Tree import TerminalNodeImpl
 
 import bi_formula.core.exc as exc
 import bi_formula.core.nodes as nodes
-from bi_formula.core.position import Position, PositionConverter
+from bi_formula.core.position import (
+    Position,
+    PositionConverter,
+)
+from bi_formula.parser.base import resolve_function_capabilities
 from bi_formula.utils.datetime import make_datetime_value
 
 try:
-    from bi_formula.parser.antlr.gen.DataLensVisitor import DataLensVisitor
     from bi_formula.parser.antlr.gen.DataLensParser import DataLensParser
+    from bi_formula.parser.antlr.gen.DataLensVisitor import DataLensVisitor
 except ImportError:
     raise exc.ParserNotFoundError()
 
 
-EMPTY_FORMULA_ERROR = 'Empty formula is invalid'
+EMPTY_FORMULA_ERROR = "Empty formula is invalid"
 
-COMPARISON_OP_RAW_NAMES = ('=', '!=', '<>', '>', '>=', '<', '<=')
+COMPARISON_OP_RAW_NAMES = ("=", "!=", "<>", ">", ">=", "<", "<=")
 
 
 class CustomDataLensVisitor(DataLensVisitor):
-    _BOOL = {'true': True, 'false': False}
+    _BOOL = {"true": True, "false": False}
 
     def __init__(self, text: str):
         self._text = text
@@ -37,7 +46,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         last_ctx = ctxes[-1]
         return nodes.NodeMeta(
             position=self._make_position(*ctxes),
-            original_text=self._text[first_ctx.start.start:last_ctx.stop.stop+1],  # type: ignore  # TODO: fix
+            original_text=self._text[first_ctx.start.start : last_ctx.stop.stop + 1],  # type: ignore  # TODO: fix
         )
 
     def _make_position(self, *ctxes: antlr4.ParserRuleContext) -> Optional[Position]:  # type: ignore  # TODO: fix
@@ -45,13 +54,14 @@ class CustomDataLensVisitor(DataLensVisitor):
         last_ctx = ctxes[-1]
         return self._pos_conv.merge_positions(
             start_position=self._pos_conv.idx_to_position(first_ctx.start.start),  # type: ignore  # TODO: fix
-            end_position=self._pos_conv.idx_to_position(last_ctx.stop.stop+1),  # type: ignore  # TODO: fix
+            end_position=self._pos_conv.idx_to_position(last_ctx.stop.stop + 1),  # type: ignore  # TODO: fix
         )
 
     def _separate_children(
-            self, ctx: antlr4.ParserRuleContext,  # type: ignore
-            exclude: Iterable[str] = (),
-            lower_str: bool = False,
+        self,
+        ctx: antlr4.ParserRuleContext,  # type: ignore
+        exclude: Iterable[str] = (),
+        lower_str: bool = False,
     ) -> Tuple[List[str], List[nodes.FormulaItem]]:
         str_children = []
         node_children = []
@@ -75,18 +85,19 @@ class CustomDataLensVisitor(DataLensVisitor):
 
     def visitStringLiteral(self, ctx: DataLensParser.StringLiteralContext):
         s = str(ctx.children[0])[1:-1]  # strip off the quotes
-        s = s.replace('\\\'', '\'').replace('\\\"', '\"')
-        s = s.replace('\\n', '\n').replace('\\r', '\r').replace('\\t', '\t')
-        s = s.replace('\\\\', '\\')
+        s = s.replace("\\'", "'").replace('\\"', '"')
+        s = s.replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t")
+        s = s.replace("\\\\", "\\")
         return nodes.LiteralString.make(value=s, meta=self._make_node_meta(ctx))
 
     def visitDateLiteral(self, ctx: DataLensParser.DateLiteralContext):
         date_str = str(ctx.children[1])
         try:
-            value = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+            value = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
             raise exc.ParseDateValueError(
-                f'Invalid date value: {date_str}', token=date_str, position=self._make_position(ctx))
+                f"Invalid date value: {date_str}", token=date_str, position=self._make_position(ctx)
+            )
         return nodes.LiteralDate.make(value=value, meta=self._make_node_meta(ctx))
 
     def visitDatetimeLiteral(self, ctx: DataLensParser.DatetimeLiteralContext):
@@ -96,17 +107,19 @@ class CustomDataLensVisitor(DataLensVisitor):
             assert value is not None
         except ValueError:
             raise exc.ParseDatetimeValueError(
-                f'Invalid datetime value: {date_str}', token=date_str, position=self._make_position(ctx))
+                f"Invalid datetime value: {date_str}", token=date_str, position=self._make_position(ctx)
+            )
         node_cls = nodes.LiteralGenericDatetime
         return node_cls.make(value=value, meta=self._make_node_meta(ctx))
 
     def visitGenericDateLiteral(self, ctx: DataLensParser.GenericDateLiteralContext):
         date_str = str(ctx.children[1])
         try:
-            value = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+            value = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
             raise exc.ParseDateValueError(
-                f'Invalid date value: {date_str}', token=date_str, position=self._make_position(ctx))
+                f"Invalid date value: {date_str}", token=date_str, position=self._make_position(ctx)
+            )
         return nodes.LiteralDate.make(value=value, meta=self._make_node_meta(ctx))
 
     def visitGenericDatetimeLiteral(self, ctx: DataLensParser.GenericDatetimeLiteralContext):
@@ -116,7 +129,8 @@ class CustomDataLensVisitor(DataLensVisitor):
             assert value is not None
         except ValueError:
             raise exc.ParseDatetimeValueError(
-                f'Invalid datetime value: {date_str}', token=date_str, position=self._make_position(ctx))
+                f"Invalid datetime value: {date_str}", token=date_str, position=self._make_position(ctx)
+            )
         node_cls = nodes.LiteralGenericDatetime
         return node_cls.make(value=value, meta=self._make_node_meta(ctx))
 
@@ -135,12 +149,12 @@ class CustomDataLensVisitor(DataLensVisitor):
 
         if str_children:
             direction = str_children[0].lower()
-            if direction == 'asc':
+            if direction == "asc":
                 expr = nodes.OrderAscending.make(expr=expr, meta=self._make_node_meta(ctx))
-            elif direction == 'desc':
+            elif direction == "desc":
                 expr = nodes.OrderDescending.make(expr=expr, meta=self._make_node_meta(ctx))
             else:
-                raise ValueError('Unexpected value for ordering item')
+                raise ValueError("Unexpected value for ordering item")
 
         return expr
 
@@ -153,9 +167,9 @@ class CustomDataLensVisitor(DataLensVisitor):
         kind = str_nodes[0].lower()
 
         lod_cls: Type[nodes.LodSpecifier] = {
-            'fixed': nodes.FixedLodSpecifier,
-            'include': nodes.IncludeLodSpecifier,
-            'exclude': nodes.ExcludeLodSpecifier,
+            "fixed": nodes.FixedLodSpecifier,
+            "include": nodes.IncludeLodSpecifier,
+            "exclude": nodes.ExcludeLodSpecifier,
         }[kind]
 
         return lod_cls.make(dim_list=node_children, meta=self._make_node_meta(ctx))
@@ -164,12 +178,12 @@ class CustomDataLensVisitor(DataLensVisitor):
         str_nodes, node_children = self._separate_children(ctx)
         kind = str_nodes[0].lower()
 
-        if kind == 'total':
+        if kind == "total":
             return nodes.WindowGroupingTotal(meta=self._make_node_meta(ctx))
 
         grouping_cls = {
-            'among': nodes.WindowGroupingAmong,
-            'within': nodes.WindowGroupingWithin,
+            "among": nodes.WindowGroupingAmong,
+            "within": nodes.WindowGroupingWithin,
         }[kind]
 
         return grouping_cls.make(dim_list=node_children, meta=self._make_node_meta(ctx))
@@ -197,38 +211,48 @@ class CustomDataLensVisitor(DataLensVisitor):
         lod = next((arg for arg in node_children if isinstance(arg, nodes.LodSpecifier)), None)
 
         args = [
-            arg for arg in node_children
+            arg
+            for arg in node_children
             if not isinstance(
-                arg, (
-                    str, nodes.WindowGrouping, nodes.Ordering,
-                    nodes.BeforeFilterBy, nodes.IgnoreDimensions,
+                arg,
+                (
+                    str,
+                    nodes.WindowGrouping,
+                    nodes.Ordering,
+                    nodes.BeforeFilterBy,
+                    nodes.IgnoreDimensions,
                     nodes.LodSpecifier,
-                )
+                ),
             )
         ]
 
         function_capabilities = resolve_function_capabilities(
-            name=name, grouping=grouping,
-            lod=lod, ordering=ordering,
+            name=name,
+            grouping=grouping,
+            lod=lod,
+            ordering=ordering,
             before_filter_by=before_filter_by,
             ignore_dimensions=ignore_dimensions,
         )
 
         if function_capabilities.is_window:
             return nodes.WindowFuncCall.make(
-                name=name, args=args,
-                grouping=grouping, ordering=ordering,
+                name=name,
+                args=args,
+                grouping=grouping,
+                ordering=ordering,
                 ignore_dimensions=ignore_dimensions,
                 before_filter_by=before_filter_by,
-                meta=self._make_node_meta(ctx)
+                meta=self._make_node_meta(ctx),
             )
 
         return nodes.FuncCall.make(
-            name=name, args=args,
+            name=name,
+            args=args,
             lod=lod,
             ignore_dimensions=ignore_dimensions,
             before_filter_by=before_filter_by,
-            meta=self._make_node_meta(ctx)
+            meta=self._make_node_meta(ctx),
         )
 
     def visitElsePart(self, ctx: DataLensParser.ElsePartContext):
@@ -253,14 +277,15 @@ class CustomDataLensVisitor(DataLensVisitor):
         assert len(ctx.children) >= 2
 
         has_explicit_else = not isinstance(
-            ctx.children[-2], (DataLensParser.IfPartContext, DataLensParser.ElseifPartContext))
+            ctx.children[-2], (DataLensParser.IfPartContext, DataLensParser.ElseifPartContext)
+        )
 
         if has_explicit_else:
             else_expr = self.visit(ctx.children[-2])
-            if_list = [self.visit(ch)for ch in ctx.children[0:-2]]
+            if_list = [self.visit(ch) for ch in ctx.children[0:-2]]
         else:
             else_expr = nodes.Null()
-            if_list = [self.visit(ch)for ch in ctx.children[0:-1]]
+            if_list = [self.visit(ch) for ch in ctx.children[0:-1]]
 
         assert all(isinstance(item, nodes.IfPart) for item in if_list)
         return nodes.IfBlock.make(
@@ -288,10 +313,10 @@ class CustomDataLensVisitor(DataLensVisitor):
 
         if has_explicit_else:
             else_expr = self.visit(ctx.children[-2])
-            when_list = [self.visit(ch)for ch in ctx.children[2:-2]]
+            when_list = [self.visit(ch) for ch in ctx.children[2:-2]]
         else:
             else_expr = nodes.Null()
-            when_list = [self.visit(ch)for ch in ctx.children[2:-1]]
+            when_list = [self.visit(ch) for ch in ctx.children[2:-1]]
 
         assert all(isinstance(item, nodes.WhenPart) for item in when_list)
 
@@ -310,20 +335,20 @@ class CustomDataLensVisitor(DataLensVisitor):
 
     def visitUnaryPrefix(self, ctx: DataLensParser.UnaryPrefixContext):
         str_children, node_children = self._separate_children(ctx, lower_str=True)
-        op_name = ''.join(str_children)
+        op_name = "".join(str_children)
         expr = node_children[0]
 
-        if op_name == '-' and isinstance(expr, (nodes.LiteralInteger, nodes.LiteralFloat)):
+        if op_name == "-" and isinstance(expr, (nodes.LiteralInteger, nodes.LiteralFloat)):
             # negative number
             return expr.__class__.make(value=-expr.value, meta=self._make_node_meta(ctx))
 
-        if op_name == '-':
-            op_name = 'neg'  # to tell apart from minus
+        if op_name == "-":
+            op_name = "neg"  # to tell apart from minus
         return nodes.Unary.make(name=op_name, expr=expr, meta=self._make_node_meta(ctx))
 
     def visitBinaryExpr(self, ctx: DataLensParser.BinaryExprContext):
         str_children, node_children = self._separate_children(ctx)
-        op_name = ''.join(str_children).lower()
+        op_name = "".join(str_children).lower()
         return nodes.Binary.make(
             name=op_name,
             left=node_children[0],
@@ -335,9 +360,9 @@ class CustomDataLensVisitor(DataLensVisitor):
         return self.visitBinaryExpr(ctx)
 
     def visitInExpr(self, ctx: DataLensParser.InExprContext):
-        str_children, node_children = self._separate_children(ctx, exclude=',()')
+        str_children, node_children = self._separate_children(ctx, exclude=",()")
         raw_exlist_nodes = [child for child in ctx.children if not isinstance(child, TerminalNodeImpl)][1:]
-        op_name = ''.join(str_children).lower()
+        op_name = "".join(str_children).lower()
         child_meta: Optional[nodes.NodeMeta] = None
         if raw_exlist_nodes:
             child_meta = self._make_node_meta(*raw_exlist_nodes)
@@ -359,7 +384,7 @@ class CustomDataLensVisitor(DataLensVisitor):
             )
 
         def _flatten_and_visit_cmp_ctx(
-                _ctx: antlr4.ParserRuleContext  # type: ignore
+            _ctx: antlr4.ParserRuleContext,  # type: ignore
         ) -> List[antlr4.ParserRuleContext]:  # type: ignore
             if is_cmp(_ctx):
                 return [
@@ -374,8 +399,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         if len(args) > 3:  # is a chain of more than one operator
             left, *middle_list, last_op, right = args
             middle_list = [
-                [middle_list[i], middle_list[i+1]]
-                for i in range(0, len(middle_list), 2)
+                [middle_list[i], middle_list[i + 1]] for i in range(0, len(middle_list), 2)
             ]  # repartition list into <operator, operand> pairs
             parts = middle_list + [(last_op, right)]
         elif len(args) == 3:
@@ -389,36 +413,40 @@ class CustomDataLensVisitor(DataLensVisitor):
         latest_pair = None
         latest_left = left
         for op_name, right in parts:  # type: ignore  # TODO: fix
-            if op_name == '=':  # type: ignore  # TODO: fix
-                op_name = '=='
-            if op_name == '<>':
-                op_name = '!='
+            if op_name == "=":  # type: ignore  # TODO: fix
+                op_name = "=="
+            if op_name == "<>":
+                op_name = "!="
             new_pair = nodes.Binary.make(
-                name=op_name, left=latest_left, right=right,
+                name=op_name,
+                left=latest_left,
+                right=right,
                 meta=self._make_node_meta(ctx),
             )
             if latest_pair is not None:
                 new_pair = nodes.Binary.make(
-                    name='and', left=latest_pair, right=new_pair,
+                    name="and",
+                    left=latest_pair,
+                    right=new_pair,
                     meta=self._make_node_meta(ctx),
                 )
             latest_left = right
             latest_pair = new_pair
 
-        assert latest_pair is not None, 'At least two operands are required in comparison chain'
+        assert latest_pair is not None, "At least two operands are required in comparison chain"
         return latest_pair
 
     def visitUnaryPostfix(self, ctx: DataLensParser.UnaryPostfixContext):
         str_children, node_children = self._separate_children(ctx, lower_str=True)
-        op_name = ''.join([ch for ch in str_children if ch != 'not'])
+        op_name = "".join([ch for ch in str_children if ch != "not"])
         expr = nodes.Unary.make(name=op_name, expr=node_children[0], meta=self._make_node_meta(ctx))
-        if 'not' in str_children:
-            expr = nodes.Unary.make(name='not', expr=expr, meta=self._make_node_meta(ctx))
+        if "not" in str_children:
+            expr = nodes.Unary.make(name="not", expr=expr, meta=self._make_node_meta(ctx))
         return expr
 
     def visitBetweenExpr(self, ctx: DataLensParser.BetweenExprContext):
-        str_children, node_children = self._separate_children(ctx, lower_str=True, exclude=('and',))
-        op_name = ''.join(str_children)
+        str_children, node_children = self._separate_children(ctx, lower_str=True, exclude=("and",))
+        op_name = "".join(str_children)
         return nodes.Ternary.make(
             name=op_name,
             first=node_children[0],
@@ -429,8 +457,9 @@ class CustomDataLensVisitor(DataLensVisitor):
 
     def visitParse(self, ctx: DataLensParser.ParseContext):
         if (
-                len(ctx.children) > 0 and isinstance(ctx.children[0], TerminalNodeImpl)
-                and ctx.children[0].symbol.type == Token.EOF
+            len(ctx.children) > 0
+            and isinstance(ctx.children[0], TerminalNodeImpl)
+            and ctx.children[0].symbol.type == Token.EOF
         ):
             raise exc.ParseEmptyFormulaError(EMPTY_FORMULA_ERROR)
         return nodes.Formula.make(expr=self.visit(ctx.children[0]), meta=self._make_node_meta(ctx))

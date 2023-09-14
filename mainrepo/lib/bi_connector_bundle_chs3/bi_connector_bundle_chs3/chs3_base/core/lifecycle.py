@@ -1,17 +1,21 @@
 import logging
-from typing import Optional, Iterable
+from typing import (
+    Iterable,
+    Optional,
+)
 
 import attr
 
-from bi_utils.aio import await_sync
-
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-
+from bi_file_uploader_task_interface.tasks import (
+    DeleteFileTask,
+    SaveSourceTask,
+)
 from bi_task_processor.processor import TaskProcessor
-from bi_file_uploader_task_interface.tasks import DeleteFileTask, SaveSourceTask
+from bi_utils.aio import await_sync
 
+from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,15 +25,17 @@ class FileConnTaskScheduler:
     _task_processor: TaskProcessor = attr.ib(kw_only=True)
     _rci: RequestContextInfo = attr.ib(kw_only=True)
 
-    def schedule_sources_delete(self, conn: BaseFileS3Connection, source_to_del: Optional[Iterable[str]] = None) -> None:
-        """ Removes all _saved_sources if `sources_to_del` is not specified """
+    def schedule_sources_delete(
+        self, conn: BaseFileS3Connection, source_to_del: Optional[Iterable[str]] = None
+    ) -> None:
+        """Removes all _saved_sources if `sources_to_del` is not specified"""
 
         if source_to_del is None:
             source_to_del = (src.id for src in conn._saved_sources or [])
         for src_id in source_to_del:
             source = conn.get_saved_source_by_id(src_id)
             if source.s3_filename is None:
-                LOGGER.warning(f'Cannot schedule file deletion for source_id {source.id} - s3_filename not set')
+                LOGGER.warning(f"Cannot schedule file deletion for source_id {source.id} - s3_filename not set")
                 continue
             task = DeleteFileTask(
                 s3_filename=source.s3_filename,
@@ -37,8 +43,8 @@ class FileConnTaskScheduler:
             )
             task_instance = await_sync(self._task_processor.schedule(task))
             LOGGER.info(
-                f'Scheduled task DeleteFileTask for source_id {source.id}, filename {source.s3_filename}. '
-                f'instance_id: {task_instance.instance_id}'
+                f"Scheduled task DeleteFileTask for source_id {source.id}, filename {source.s3_filename}. "
+                f"instance_id: {task_instance.instance_id}"
             )
 
     def schedule_sources_update(self, conn: BaseFileS3Connection) -> None:
@@ -47,8 +53,7 @@ class FileConnTaskScheduler:
         sources_to_add = current_sources - saved_sources
         sources_to_del = saved_sources - current_sources
         sources_to_replace = {
-            upd_src['old_source_id']: upd_src['new_source_id']
-            for upd_src in conn.data.replace_sources
+            upd_src["old_source_id"]: upd_src["new_source_id"] for upd_src in conn.data.replace_sources
         }
         assert self._rci.tenant is not None
 
@@ -64,7 +69,7 @@ class FileConnTaskScheduler:
             )
             task_instance = await_sync(self._task_processor.schedule(task))
             LOGGER.info(
-                f'Scheduled task SaveSourceTask for source_id {source.id}. instance_id: {task_instance.instance_id}'
+                f"Scheduled task SaveSourceTask for source_id {source.id}. instance_id: {task_instance.instance_id}"
             )
         self.schedule_sources_delete(conn, sources_to_del)
 

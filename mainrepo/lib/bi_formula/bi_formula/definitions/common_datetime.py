@@ -2,11 +2,18 @@ from __future__ import annotations
 
 import datetime
 import functools
-from typing import TYPE_CHECKING, Any, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Tuple,
+)
 
 import sqlalchemy as sa
 
-from bi_formula.core import exc, nodes
+from bi_formula.core import (
+    exc,
+    nodes,
+)
 from bi_formula.core.datatype import DataType
 from bi_formula.definitions.literals import un_literal
 from bi_formula.shortcuts import n
@@ -18,26 +25,30 @@ if TYPE_CHECKING:
 DAY_SEC = 3600 * 24
 DAY_USEC = DAY_SEC * 1_000_000  # microseconds
 
-EPOCH_START_S = '1970-01-01'
+EPOCH_START_S = "1970-01-01"
 EPOCH_START_D = datetime.date(1970, 1, 1)
 EPOCH_START_DOW = 4  # it was a Thursday
 
-SUPPORTED_INTERVAL_TYPES = ('second', 'minute', 'hour', 'day', 'week', 'month', 'quarter', 'year')
+SUPPORTED_INTERVAL_TYPES = ("second", "minute", "hour", "day", "week", "month", "quarter", "year")
 
 
 def normalize_and_validate_datetime_interval_type(type_name: str) -> str:
     type_name = type_name.lower()
     if type_name not in SUPPORTED_INTERVAL_TYPES:
-        raise exc.TranslationError('Invalid interval type: \'{}\''.format(type_name))
+        raise exc.TranslationError("Invalid interval type: '{}'".format(type_name))
     return type_name
 
 
 YQL_INTERVAL_FUNCS = {
-    'second': 'IntervalFromSeconds', 'minute': 'IntervalFromMinutes',
-    'hour': 'IntervalFromHours', 'day': 'IntervalFromDays',
+    "second": "IntervalFromSeconds",
+    "minute": "IntervalFromMinutes",
+    "hour": "IntervalFromHours",
+    "day": "IntervalFromDays",
 }
 YQL_SHIFT_FUNCS = {
-    'month': 'ShiftMonths', 'quarter': 'ShiftQuarters', 'year': 'ShiftYears',
+    "month": "ShiftMonths",
+    "quarter": "ShiftQuarters",
+    "year": "ShiftYears",
 }
 
 
@@ -50,8 +61,8 @@ def _date_datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool
         # so ensure it is such.
         mult_expr = sa.func.coalesce(mult_expr, 0)
 
-    if type_name == 'week':
-        type_name = 'day'
+    if type_name == "week":
+        type_name = "day"
         mult_expr = mult_expr * 7
 
     func_name = YQL_INTERVAL_FUNCS.get(type_name)
@@ -79,14 +90,17 @@ def datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> C
 
 def datetime_interval_ch(type_name: str, mult: int) -> ClauseElement:
     type_name = normalize_and_validate_datetime_interval_type(type_name)
-    func_name = 'toInterval{}'.format(type_name.capitalize())
+    func_name = "toInterval{}".format(type_name.capitalize())
     return getattr(sa.func, func_name)(mult)
 
 
 def datetime_interval(
-        type_name: str, mult: int, caps: bool = True,
-        literal_mult: bool = False, literal_type: bool = False,
-        ch_func: bool = False
+    type_name: str,
+    mult: int,
+    caps: bool = True,
+    literal_mult: bool = False,
+    literal_type: bool = False,
+    ch_func: bool = False,
 ) -> ClauseElement:
     if ch_func:
         return datetime_interval_ch(type_name, mult)
@@ -95,11 +109,11 @@ def datetime_interval(
 
     if literal_mult:
         if literal_type:
-            sql = 'INTERVAL \'{} {}\''.format(mult, type_name)
+            sql = "INTERVAL '{} {}'".format(mult, type_name)
         else:
-            sql = 'INTERVAL \'{}\' {}'.format(mult, type_name)
+            sql = "INTERVAL '{}' {}".format(mult, type_name)
     else:
-        sql = 'INTERVAL {} {}'.format(mult, type_name)
+        sql = "INTERVAL {} {}".format(mult, type_name)
 
     if caps:
         sql = sql.upper()
@@ -110,8 +124,8 @@ def datetime_interval(
 
 
 def ensure_naive_datetime(datetime_ctx):
-    """ Convert DATETIMETZ values to DATETIME values; leave the other values as-is """
-    if isinstance(datetime_ctx, nodes.FuncCall) and datetime_ctx.name.lower() == 'datetimetz_to_naive':
+    """Convert DATETIMETZ values to DATETIME values; leave the other values as-is"""
+    if isinstance(datetime_ctx, nodes.FuncCall) and datetime_ctx.name.lower() == "datetimetz_to_naive":
         # double-ensure
         return datetime_ctx
     if datetime_ctx.data_type == DataType.DATETIMETZ:
@@ -120,7 +134,7 @@ def ensure_naive_datetime(datetime_ctx):
 
 
 def ensure_naive_first_arg(func):
-    """ Make sure the first `func` argument is a naive DATETIME if it was a DATETIMETZ """
+    """Make sure the first `func` argument is a naive DATETIME if it was a DATETIMETZ"""
     # TODO: this should have probably been an autocast-by-function (same with str->markup)
 
     @functools.wraps(func)
@@ -131,7 +145,7 @@ def ensure_naive_first_arg(func):
     return _ensured_naive_first_arg
 
 
-UTC_CH_TZ_ARGS = ('UTC',)  # TODO later: make empty (backwards-incompatible change)
+UTC_CH_TZ_ARGS = ("UTC",)  # TODO later: make empty (backwards-incompatible change)
 
 
 def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:
@@ -154,19 +168,21 @@ def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:
             else UTC_CH_TZ_ARGS
         ),
         # output-case TZ args
-        (
-            ()
-            if date_ctx.data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME)
-            else ('UTC',)
-        ),
+        (() if date_ctx.data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME) else ("UTC",)),
     )
 
 
 def ch_date_with_tz(date_ctx) -> Tuple[ClauseElement, ...]:
-    """ Primarily intended for functions that return a non-datetime, such as toSecond() """
+    """Primarily intended for functions that return a non-datetime, such as toSecond()"""
     date_expr = date_ctx.expression
     data_type = date_ctx.data_type
-    if data_type in (DataType.NULL, DataType.DATE, DataType.CONST_DATE, DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME):
+    if data_type in (
+        DataType.NULL,
+        DataType.DATE,
+        DataType.CONST_DATE,
+        DataType.GENERICDATETIME,
+        DataType.CONST_GENERICDATETIME,
+    ):
         return (date_expr,)
 
     tz_args, _ = make_ch_tz_args(date_ctx)

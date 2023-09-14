@@ -2,33 +2,52 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+)
 
 from aiohttp import web
 
-from bi_constants.enums import FieldType, FieldRole, BIType
-
-from bi_app_tools.profiling_base import generic_profiler_async
-
-from bi_utils.utils import exc_catch_awrap
-
-import bi_api_lib.schemas.data
-import bi_api_lib.schemas.main
-
-from bi_query_processing.enums import QueryType, EmptyQueryMode, GroupByPolicy
-from bi_api_lib.app.data_api.resources.base import RequiredResourceDSAPI, requires
+from bi_api_lib.app.data_api.resources.base import (
+    RequiredResourceDSAPI,
+    requires,
+)
 from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 from bi_api_lib.query.formalization.raw_specs import RawQuerySpecUnion
-from bi_query_processing.legend.field_legend import (
-    Legend, LegendItem, PlaceholderObjSpec, FieldObjSpec,
-    TemplateRoleSpec, RoleSpec,
+import bi_api_lib.schemas.data
+import bi_api_lib.schemas.main
+from bi_app_tools.profiling_base import generic_profiler_async
+from bi_constants.enums import (
+    BIType,
+    FieldRole,
+    FieldType,
+)
+from bi_query_processing.enums import (
+    EmptyQueryMode,
+    GroupByPolicy,
+    QueryType,
 )
 from bi_query_processing.legend.block_legend import BlockSpec
-from bi_query_processing.postprocessing.primitives import PostprocessedRow
+from bi_query_processing.legend.field_legend import (
+    FieldObjSpec,
+    Legend,
+    LegendItem,
+    PlaceholderObjSpec,
+    RoleSpec,
+    TemplateRoleSpec,
+)
 from bi_query_processing.merging.primitives import MergedQueryDataStream
+from bi_query_processing.postprocessing.primitives import PostprocessedRow
+from bi_utils.utils import exc_catch_awrap
 
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
+
     from bi_api_lib.request_model.data import DataRequestModel
 
 
@@ -36,9 +55,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class DatasetResultView(DatasetDataBaseView, abc.ABC):
-    endpoint_code = 'DatasetVersionResult'
+    endpoint_code = "DatasetVersionResult"
     # TODO FIX: Move to constants
-    profiler_prefix = 'result'
+    profiler_prefix = "result"
 
     # TODO FIX: Move request deserialization logic to schema
     # TODO FIX: Move response serialization logic to schema
@@ -72,8 +91,10 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
             )
 
         response_json = self.make_response(
-            req_model=req_model, merged_stream=merged_stream,
-            totals=totals, totals_query=totals_query,
+            req_model=req_model,
+            merged_stream=merged_stream,
+            totals=totals,
+            totals_query=totals_query,
         )
         return web.json_response(response_json)
 
@@ -83,13 +104,19 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
 
     @abc.abstractmethod
     def make_response(
-            self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
-            totals_query: Optional[str], totals: Optional[PostprocessedRow],
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
+        totals_query: Optional[str],
+        totals: Optional[PostprocessedRow],
     ) -> Dict[str, Any]:
         raise NotImplementedError()
 
     async def _make_totals(
-            self, *, raw_query_spec_union: RawQuerySpecUnion, legend: Legend,
+        self,
+        *,
+        raw_query_spec_union: RawQuerySpecUnion,
+        legend: Legend,
     ) -> Tuple[Optional[str], Optional[PostprocessedRow]]:
         block_id = 0
         assert all(item.block_id is None or item.block_id == block_id for item in legend.items)
@@ -106,9 +133,7 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
                 )
             else:
                 assert isinstance(item.obj, FieldObjSpec)
-                updated_item = item.clone(
-                    role_spec=RoleSpec(role=FieldRole.total)
-                )
+                updated_item = item.clone(role_spec=RoleSpec(role=FieldRole.total))
             updated_items.append(updated_item)
 
         # Add filters
@@ -117,7 +142,8 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
         legend_for_block = Legend(items=updated_items)
 
         block_spec = BlockSpec(  # Fake block spec just for use in the  postprocessing interface
-            block_id=block_id, parent_block_id=None,
+            block_id=block_id,
+            parent_block_id=None,
             legend_item_ids=[item.legend_item_id for item in streamable_items],
             legend=legend_for_block,
             query_type=QueryType.totals,
@@ -153,12 +179,17 @@ class DatasetResultViewV1(DatasetResultView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str], totals: Optional[PostprocessedRow],
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
+        totals_query: Optional[str],
+        totals: Optional[PostprocessedRow],
     ) -> Dict[str, Any]:
         return self._make_response_v1(
-            req_model=req_model, merged_stream=merged_stream,
-            totals_query=totals_query, totals=totals,
+            req_model=req_model,
+            merged_stream=merged_stream,
+            totals_query=totals_query,
+            totals=totals,
         )
 
 
@@ -174,12 +205,17 @@ class DatasetResultViewV1_5(DatasetResultView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str], totals: Optional[PostprocessedRow],
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
+        totals_query: Optional[str],
+        totals: Optional[PostprocessedRow],
     ) -> Dict[str, Any]:
         return self._make_response_v1(
-            req_model=req_model, merged_stream=merged_stream,
-            totals_query=totals_query, totals=totals,
+            req_model=req_model,
+            merged_stream=merged_stream,
+            totals_query=totals_query,
+            totals=totals,
         )
 
 
@@ -194,7 +230,10 @@ class DatasetResultViewV2(DatasetResultView):
         return req_model
 
     def make_response(
-            self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
-            totals_query: Optional[str], totals: Optional[PostprocessedRow],
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
+        totals_query: Optional[str],
+        totals: Optional[PostprocessedRow],
     ) -> Dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

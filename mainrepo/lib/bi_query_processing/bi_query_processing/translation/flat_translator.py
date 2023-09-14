@@ -1,32 +1,50 @@
 from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import (
+    Callable,
+    Optional,
+)
 
 import attr
 
-import bi_formula.core.exc as formula_exc
-import bi_query_processing.exc
+from bi_core.db.elements import SchemaColumn
+from bi_core.query.expression import (
+    ExpressionCtx,
+    JoinOnExpressionCtx,
+    OrderByExpressionCtx,
+)
+from bi_core.utils import (
+    attrs_evolve_to_subclass,
+    attrs_evolve_to_superclass,
+)
 from bi_formula.core.dialect import DialectCombo
+import bi_formula.core.exc as formula_exc
 from bi_formula.definitions.flags import ContextFlag
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.inspect.expression import is_aggregate_expression
-from bi_formula.translation.env import TranslationEnvironment, TranslationStats
-from bi_formula.translation.translator import translate
-
-from bi_core.query.expression import ExpressionCtx, OrderByExpressionCtx, JoinOnExpressionCtx
-from bi_core.utils import attrs_evolve_to_subclass, attrs_evolve_to_superclass
-from bi_core.db.elements import SchemaColumn
-
-from bi_query_processing.column_registry import ColumnRegistry
-from bi_query_processing.compilation.type_mapping import FORMULA_TO_BI_TYPES, DEFAULT_DATA_TYPE
-from bi_query_processing.compilation.primitives import (
-    CompiledFormulaInfo, CompiledOrderByFormulaInfo,
-    CompiledJoinOnFormulaInfo, CompiledQuery,
+from bi_formula.translation.env import (
+    TranslationEnvironment,
+    TranslationStats,
 )
+from bi_formula.translation.translator import translate
+from bi_query_processing.column_registry import ColumnRegistry
+from bi_query_processing.compilation.primitives import (
+    CompiledFormulaInfo,
+    CompiledJoinOnFormulaInfo,
+    CompiledOrderByFormulaInfo,
+    CompiledQuery,
+)
+from bi_query_processing.compilation.type_mapping import (
+    DEFAULT_DATA_TYPE,
+    FORMULA_TO_BI_TYPES,
+)
+import bi_query_processing.exc
 from bi_query_processing.translation.primitives import (
+    DetailedType,
     ExpressionCtxExt,
-    TranslatedQueryMetaInfo, DetailedType,
-    TranslatedFlatQuery, TranslatedJoinedFromObject,
+    TranslatedFlatQuery,
+    TranslatedJoinedFromObject,
+    TranslatedQueryMetaInfo,
 )
 
 
@@ -50,16 +68,16 @@ class FlatQueryTranslator:
             required_scopes=self._function_scopes,
             field_types=self._columns.get_column_formula_types(),
             field_names=self._columns.get_multipart_column_names(  # type: ignore  # TODO: fix
-                avatar_alias_mapper=self._avatar_alias_mapper),
+                avatar_alias_mapper=self._avatar_alias_mapper
+            ),
         )
 
     def translate_formula(
-            self,
-            comp_formula: CompiledFormulaInfo,
-            collect_errors: bool = False,
-            as_condition: bool = False,
+        self,
+        comp_formula: CompiledFormulaInfo,
+        collect_errors: bool = False,
+        as_condition: bool = False,
     ) -> ExpressionCtxExt:
-
         context_flags = 0
         if as_condition:  # For MSSQL & ORACLE
             context_flags = ContextFlag.REQ_CONDITION
@@ -89,9 +107,9 @@ class FlatQueryTranslator:
         )
 
     def translate_order_by_formula(
-            self,
-            comp_formula: CompiledOrderByFormulaInfo,
-            collect_errors: bool = False,
+        self,
+        comp_formula: CompiledOrderByFormulaInfo,
+        collect_errors: bool = False,
     ) -> OrderByExpressionCtx:
         assert isinstance(comp_formula, CompiledOrderByFormulaInfo)
         translated_formula = self.translate_formula(comp_formula=comp_formula, collect_errors=collect_errors)
@@ -102,13 +120,14 @@ class FlatQueryTranslator:
         )
 
     def translate_join_on_formula(
-            self,
-            comp_formula: CompiledJoinOnFormulaInfo,
-            collect_errors: bool = False,
+        self,
+        comp_formula: CompiledJoinOnFormulaInfo,
+        collect_errors: bool = False,
     ) -> JoinOnExpressionCtx:
         assert isinstance(comp_formula, CompiledJoinOnFormulaInfo)
         translated_formula = self.translate_formula(
-            comp_formula=comp_formula, collect_errors=collect_errors,
+            comp_formula=comp_formula,
+            collect_errors=collect_errors,
             as_condition=True,
         )
         return attrs_evolve_to_subclass(
@@ -120,9 +139,8 @@ class FlatQueryTranslator:
         )
 
     def _get_detailed_types(
-            self, compiled_flat_query: CompiledQuery, translated_select: list[ExpressionCtxExt]
+        self, compiled_flat_query: CompiledQuery, translated_select: list[ExpressionCtxExt]
     ) -> Optional[list[Optional[DetailedType]]]:
-
         field_order = compiled_flat_query.meta.field_order
         if field_order is None:
             return None
@@ -147,7 +165,9 @@ class FlatQueryTranslator:
         return result
 
     def _generate_colummn_list_for_query(
-            self, query_id: str, translated_select: list[ExpressionCtxExt],
+        self,
+        query_id: str,
+        translated_select: list[ExpressionCtxExt],
     ) -> list[SchemaColumn]:
         """
         Generate list of columns that can be used when selecting from this query
@@ -170,11 +190,10 @@ class FlatQueryTranslator:
         return column_list
 
     def translate_flat_query(
-            self,
-            compiled_flat_query: CompiledQuery,
-            collect_errors: bool = False,
+        self,
+        compiled_flat_query: CompiledQuery,
+        collect_errors: bool = False,
     ) -> TranslatedFlatQuery:
-
         where: list[CompiledFormulaInfo] = []
         having: list[CompiledFormulaInfo] = []
         for formula in compiled_flat_query.filters:
@@ -184,12 +203,12 @@ class FlatQueryTranslator:
                 where.append(formula)
 
         translated_select = [
-            self.translate_formula(formula, collect_errors=collect_errors)
-            for formula in compiled_flat_query.select
+            self.translate_formula(formula, collect_errors=collect_errors) for formula in compiled_flat_query.select
         ]
 
         column_list = self._generate_colummn_list_for_query(
-            query_id=compiled_flat_query.id, translated_select=translated_select,
+            query_id=compiled_flat_query.id,
+            translated_select=translated_select,
         )
 
         translated_meta = TranslatedQueryMetaInfo.from_comp_meta(
@@ -215,12 +234,10 @@ class FlatQueryTranslator:
                 for formula in compiled_flat_query.order_by
             ],
             where=[
-                self.translate_formula(formula, collect_errors=collect_errors, as_condition=True)
-                for formula in where
+                self.translate_formula(formula, collect_errors=collect_errors, as_condition=True) for formula in where
             ],
             having=[
-                self.translate_formula(formula, collect_errors=collect_errors, as_condition=True)
-                for formula in having
+                self.translate_formula(formula, collect_errors=collect_errors, as_condition=True) for formula in having
             ],
             join_on=[
                 self.translate_join_on_formula(formula, collect_errors=collect_errors)

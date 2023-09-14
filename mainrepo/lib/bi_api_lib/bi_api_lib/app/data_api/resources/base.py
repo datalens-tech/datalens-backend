@@ -8,10 +8,11 @@ import inspect
 import itertools
 import typing
 
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResource
-
+from bi_api_commons.aiohttp.aiohttp_wrappers import (
+    DLRequestView,
+    RequiredResource,
+)
 from bi_api_lib.aio import aiohttp_wrappers
-
 
 _METHOD_REQ_RESOURCES_ATTR_NAME = "__dl_required_resources__"
 
@@ -31,10 +32,9 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
         if hasattr(cls, method_name):
             method = getattr(cls, method_name)
             if hasattr(method, _METHOD_REQ_RESOURCES_ATTR_NAME):
-                return frozenset(itertools.chain(
-                    cls._COMMON_REQUIRED_RESOURCES,
-                    getattr(method, _METHOD_REQ_RESOURCES_ATTR_NAME)
-                ))
+                return frozenset(
+                    itertools.chain(cls._COMMON_REQUIRED_RESOURCES, getattr(method, _METHOD_REQ_RESOURCES_ATTR_NAME))
+                )
             else:
                 return cls._COMMON_REQUIRED_RESOURCES
 

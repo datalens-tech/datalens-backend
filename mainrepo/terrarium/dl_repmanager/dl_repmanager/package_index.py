@@ -4,11 +4,15 @@ from typing import Optional
 import attr
 from frozendict import frozendict
 
+from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 from dl_repmanager.primitives import (
-    PackageInfo, RequirementList, ReqPackageSpec, PypiReqPackageSpec, LocalReqPackageSpec,
+    LocalReqPackageSpec,
+    PackageInfo,
+    PypiReqPackageSpec,
+    ReqPackageSpec,
+    RequirementList,
 )
 from dl_repmanager.repository_env import RepoEnvironment
-from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 
 
 @attr.s
@@ -52,22 +56,21 @@ class PackageIndexBuilder:
     load_requirements: bool = attr.ib(kw_only=True, default=True)
 
     def _req_spec_from_dict(self, item_as_dict: dict) -> ReqPackageSpec:
-        if 'path' in item_as_dict:
-            return LocalReqPackageSpec(package_name=item_as_dict['name'], path=item_as_dict['path'])
-        return PypiReqPackageSpec(package_name=item_as_dict['name'], version=item_as_dict['version'])
+        if "path" in item_as_dict:
+            return LocalReqPackageSpec(package_name=item_as_dict["name"], path=item_as_dict["path"])
+        return PypiReqPackageSpec(package_name=item_as_dict["name"], version=item_as_dict["version"])
 
     def _load_package_info_from_package_dir(
-            self, abs_package_dir_path: Path, default_package_type: str
+        self, abs_package_dir_path: Path, default_package_type: str
     ) -> Optional[PackageInfo]:
-
-        toml_path = abs_package_dir_path / 'pyproject.toml'
+        toml_path = abs_package_dir_path / "pyproject.toml"
 
         if not toml_path.exists():
             return None
 
         req_list_names = [
-            'tool.poetry.dependencies',
-            'tool.poetry.group.tests.dependencies',
+            "tool.poetry.dependencies",
+            "tool.poetry.group.tests.dependencies",
         ]
         requirement_lists: dict[str, RequirementList] = {}
         package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.repository_env.get_fs_editor())
@@ -89,7 +92,7 @@ class PackageIndexBuilder:
         for test_dir in abs_package_dir_path.iterdir():  # TODO: read info about tests from pyproject.toml
             if not test_dir.is_dir():
                 continue
-            if 'tests' not in test_dir.name or test_dir.name in module_names:
+            if "tests" not in test_dir.name or test_dir.name in module_names:
                 continue  # it is not a test dir
             test_dirs.append(test_dir.name)
 
@@ -116,7 +119,8 @@ class PackageIndexBuilder:
                     continue
 
                 package_info = self._load_package_info_from_package_dir(
-                    package_dir, default_package_type=package_type,
+                    package_dir,
+                    default_package_type=package_type,
                 )
                 if package_info is None:
                     continue

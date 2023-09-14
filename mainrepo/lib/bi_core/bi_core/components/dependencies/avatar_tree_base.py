@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 import abc
-from typing import Collection, Dict, Optional, Set, Tuple
+from typing import (
+    Collection,
+    Dict,
+    Optional,
+    Set,
+    Tuple,
+)
 
-from bi_core.components.ids import AvatarId, RelationId
+from bi_core.components.ids import (
+    AvatarId,
+    RelationId,
+)
 
 
 class AvatarTreeResolverBase(abc.ABC):
-
     @abc.abstractmethod
     def rank_avatars(self) -> Dict[AvatarId, int]:
         """
@@ -24,7 +32,7 @@ class AvatarTreeResolverBase(abc.ABC):
 
     @abc.abstractmethod
     def expand_required_avatar_ids(
-            self, required_avatar_ids: Collection[str]
+        self, required_avatar_ids: Collection[str]
     ) -> Tuple[Optional[AvatarId], Set[AvatarId], Set[RelationId]]:
         """
         Complement required avatars wit ones that are required to apply JOINs of the given avatars

@@ -4,11 +4,11 @@ from typing import Type
 
 import attr
 
+from bi_compeng_pg.compeng_aiopg.pool_aiopg import AiopgPoolWrapper
+from bi_compeng_pg.compeng_aiopg.processor_aiopg import AiopgOperationProcessor
 from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgService
 from bi_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
-from bi_compeng_pg.compeng_aiopg.pool_aiopg import AiopgPoolWrapper
 from bi_core.data_processing.processing.processor import OperationProcessorAsyncBase
-from bi_compeng_pg.compeng_aiopg.processor_aiopg import AiopgOperationProcessor
 
 
 @attr.s

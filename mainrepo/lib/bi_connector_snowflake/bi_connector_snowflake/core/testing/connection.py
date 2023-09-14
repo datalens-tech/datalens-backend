@@ -1,12 +1,12 @@
-import uuid
 from datetime import datetime
 from typing import Optional
+import uuid
 
+from bi_constants.enums import RawSQLLevel
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
-from bi_constants.enums import RawSQLLevel
 
 
 def make_snowflake_saved_connection(

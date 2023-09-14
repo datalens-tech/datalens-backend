@@ -1,22 +1,34 @@
 from __future__ import annotations
 
 import abc
-import json
-import logging
-import uuid
 from datetime import timedelta
 from functools import reduce
-from typing import ClassVar, Optional, Union, AsyncIterator, Any, Type, Callable, Awaitable, TypeVar
+import json
+import logging
+from typing import (
+    Any,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    ClassVar,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
+import uuid
 
-import redis.asyncio
 import attr
 import marshmallow as ma
+import redis.asyncio
 
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_utils.utils import DataKey, AddressableData
-from bi_core.us_manager.crypto.main import CryptoController
 from bi_api_commons.base_models import RequestContextInfo
-
+from bi_configs.crypto_keys import CryptoKeysConfig
+from bi_core.us_manager.crypto.main import CryptoController
+from bi_utils.utils import (
+    AddressableData,
+    DataKey,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,13 +50,13 @@ class SecretContainingMixin:
         return set()
 
 
-TRedisModel = TypeVar('TRedisModel', bound='RedisModel')
+TRedisModel = TypeVar("TRedisModel", bound="RedisModel")
 
 
 @attr.s(init=True, kw_only=True)
 class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
     KEY_PREFIX: ClassVar[str]
-    DEFAULT_TTL: ClassVar[Optional[int]] = None   # in seconds
+    DEFAULT_TTL: ClassVar[Optional[int]] = None  # in seconds
     _manager: Optional[RedisModelManager] = attr.ib(default=None)
 
     id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
@@ -52,7 +64,7 @@ class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
     @classmethod
     def _generate_key_by_id(cls, obj_id: str) -> str:
         assert cls.KEY_PREFIX
-        return '/'.join((cls.KEY_PREFIX, obj_id))
+        return "/".join((cls.KEY_PREFIX, obj_id))
 
     def generate_key(self) -> str:
         return self._generate_key_by_id(self.id)
@@ -73,7 +85,7 @@ class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
 
 @attr.s(init=True, kw_only=True)
 class RedisModelUserIdAuth(RedisModel, metaclass=abc.ABCMeta):
-    system_user_id: ClassVar[str] = 'system'
+    system_user_id: ClassVar[str] = "system"
 
     user_id: Optional[str] = attr.ib(default=None)
 
@@ -95,7 +107,7 @@ class RedisModelUserIdAuth(RedisModel, metaclass=abc.ABCMeta):
 
 def _check_obj_auth(obj: RedisModelUserIdAuth) -> None:
     if obj.user_id == obj.system_user_id:
-        LOGGER.info('Attempt to get and object owned by system with authorization')
+        LOGGER.info("Attempt to get and object owned by system with authorization")
         raise RedisModelAccessDenied()
 
     manager = obj._manager  # noqa
@@ -103,10 +115,10 @@ def _check_obj_auth(obj: RedisModelUserIdAuth) -> None:
     current_user_id = manager.rci.user_id
 
     if current_user_id is None:
-        LOGGER.info('Current user_id not set. Unable to check authorization,')
+        LOGGER.info("Current user_id not set. Unable to check authorization,")
         raise RedisModelAccessDenied()
     if obj.user_id != current_user_id:
-        LOGGER.info(f'Current user_id and loaded object user_id don\'t match: {obj.user_id} != {current_user_id}')
+        LOGGER.info(f"Current user_id and loaded object user_id don't match: {obj.user_id} != {current_user_id}")
         raise RedisModelAccessDenied()
 
 
@@ -119,7 +131,7 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 
     @classmethod
     def _generate_key_by_id(cls, obj_id: str) -> str:
-        return '/'.join((cls.KEY_PREFIX, obj_id))
+        return "/".join((cls.KEY_PREFIX, obj_id))
 
     @property
     def key(self) -> str:
@@ -132,7 +144,7 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 
     async def _sscan_iter_str(self) -> AsyncIterator:
         async for value in self._redis.sscan_iter(name=self.key):
-            yield value.decode('utf-8')
+            yield value.decode("utf-8")
 
     def sscan_iter(self) -> AsyncIterator:
         """
@@ -154,7 +166,7 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 
     async def sunion_by_id(self, *ids: str) -> None:
         if not ids:
-            raise ValueError('ids can\'t be empty')
+            raise ValueError("ids can't be empty")
         keys = [self._generate_key_by_id(_id) for _id in ids]
         cmd = self._redis.sunionstore(self.key, keys)
         assert isinstance(cmd, Awaitable)
@@ -165,10 +177,13 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 class RedisModelManager:
     _redis: redis.asyncio.Redis = attr.ib()
     _crypto_keys_config: CryptoKeysConfig = attr.ib()
-    _crypto_controller: CryptoController = attr.ib(init=False, default=attr.Factory(
-        lambda self: CryptoController(self._crypto_keys_config),
-        takes_self=True,
-    ))
+    _crypto_controller: CryptoController = attr.ib(
+        init=False,
+        default=attr.Factory(
+            lambda self: CryptoController(self._crypto_keys_config),
+            takes_self=True,
+        ),
+    )
     rci: Optional[RequestContextInfo] = attr.ib(default=None)
 
     def _set_obj_attr(self, obj: RedisModel, key: DataKey, value: Any) -> None:
@@ -211,11 +226,11 @@ class RedisModelManager:
     async def get(self, key: str, target_cls: Type[RedisModel], post_load: Optional[Callable] = None) -> RedisModel:
         json_data = await self._redis.get(key)
         if json_data is None:
-            LOGGER.info(f'RedisModel object not found: {key}')
+            LOGGER.info(f"RedisModel object not found: {key}")
             raise RedisModelNotFound()
 
         obj = self._deserialize_object(json_data, target_cls)
-        obj._manager = self    # type: ignore
+        obj._manager = self  # type: ignore
 
         if post_load is not None:
             post_load(obj)

@@ -1,6 +1,9 @@
 import attr
 
-from bi_configs.crypto_keys import CryptoKeysConfig, get_single_key_crypto_keys_config
+from bi_configs.crypto_keys import (
+    CryptoKeysConfig,
+    get_single_key_crypto_keys_config,
+)
 
 
 @attr.s(kw_only=True)

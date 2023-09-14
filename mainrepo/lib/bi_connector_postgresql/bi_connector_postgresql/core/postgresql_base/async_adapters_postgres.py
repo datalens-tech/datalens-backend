@@ -1,59 +1,78 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
+from contextlib import asynccontextmanager
+from datetime import datetime
 import logging
 import typing
-import contextlib
-from typing import Any, AsyncIterator, Callable, ClassVar, Iterable, Optional, Type, TypeVar, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncIterator,
+    Callable,
+    ClassVar,
+    Iterable,
+    Optional,
+    Type,
+    TypeVar,
+)
+from urllib.parse import quote_plus
 
-import attr
 import asyncpg
 import asyncpg.exceptions
-
+import attr
 from dateutil import parser as dateutil_parser
-from datetime import datetime
-
 import sqlalchemy as sa
+
+from bi_app_tools.profiling_base import generic_profiler_async
+from bi_constants.types import (
+    TBIChunksGen,
+    TBIDataRow,
+)
+from bi_core import exc
+from bi_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
+from bi_core.connection_executors.adapters.async_adapters_base import (
+    AsyncCache,
+    AsyncDirectDBAdapter,
+    AsyncRawExecutionResult,
+)
+from bi_core.connection_executors.adapters.mixins import (
+    SATypeTransformer,
+    WithAsyncGetDBVersion,
+    WithDatabaseNameOverride,
+)
+from bi_core.connection_executors.adapters.sa_utils import make_debug_query
+from bi_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    ExecutionStep,
+    ExecutionStepCursorInfo,
+    ExecutionStepDataChunk,
+    RawSchemaInfo,
+)
+from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from bi_core.connection_models import (
+    DBIdent,
+    TableDefinition,
+)
+from bi_core.connection_models.common_models import TableIdent
+from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
+from bi_sqlalchemy_postgres import AsyncBIPGDialect
+from bi_sqlalchemy_postgres.asyncpg import DBAPIMock
 
 from bi_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,
     PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
     BasePostgresAdapter,
 )
-from bi_app_tools.profiling_base import generic_profiler_async
-
-from bi_constants.types import TBIChunksGen, TBIDataRow
-from bi_core import exc
-from bi_sqlalchemy_postgres.asyncpg import DBAPIMock
-
-from contextlib import asynccontextmanager
-from urllib.parse import quote_plus
-from bi_sqlalchemy_postgres import AsyncBIPGDialect
-
-from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_core.connection_executors.adapters.async_adapters_base import (
-    AsyncCache, AsyncDirectDBAdapter, AsyncRawExecutionResult,
-)
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
-from bi_core.connection_executors.adapters.mixins import (
-    SATypeTransformer, WithAsyncGetDBVersion, WithDatabaseNameOverride,
-)
-from bi_core.connection_executors.adapters.sa_utils import make_debug_query
-from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
-from bi_connector_postgresql.core.postgresql_base.utils import compile_pg_query
-from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-from bi_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery, RawSchemaInfo, ExecutionStep,
-    ExecutionStepCursorInfo, ExecutionStepDataChunk,
-)
-from bi_core.connection_models import TableDefinition, DBIdent
-from bi_core.connection_models.common_models import TableIdent
 from bi_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
+from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
+from bi_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 
 if TYPE_CHECKING:
     from bi_core.connection_models.common_models import SchemaIdent
 
-_DBA_ASYNC_POSTGRES_TV = TypeVar("_DBA_ASYNC_POSTGRES_TV", bound='AsyncPostgresAdapter')
+_DBA_ASYNC_POSTGRES_TV = TypeVar("_DBA_ASYNC_POSTGRES_TV", bound="AsyncPostgresAdapter")
 
 LOGGER = logging.getLogger(__name__)
 
@@ -84,10 +103,14 @@ WHERE n.nspname = :schema AND c.relkind IN 'v', 'm'
 # right now we have to implement some logic in our code
 @attr.s(cmp=False, kw_only=True)
 class AsyncPostgresAdapter(
-        WithAsyncGetDBVersion, WithDatabaseNameOverride, AsyncDirectDBAdapter, BasePostgresAdapter,
-        SATypeTransformer, ETBasedExceptionMaker,
+    WithAsyncGetDBVersion,
+    WithDatabaseNameOverride,
+    AsyncDirectDBAdapter,
+    BasePostgresAdapter,
+    SATypeTransformer,
+    ETBasedExceptionMaker,
 ):
-    dsn_template: ClassVar[str] = '{dialect}://{user}:{passwd}@{host}:{port}/{db_name}'
+    dsn_template: ClassVar[str] = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
     _default_chunk_size: int = attr.ib()
     _target_dto: PostgresConnTargetDTO = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
@@ -121,11 +144,11 @@ class AsyncPostgresAdapter(
 
     def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] = None) -> str:
         params = params or {}
-        params['sslrootcert'] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
+        params["sslrootcert"] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
         return AsyncPGConnLineConstructor(
             dsn_template=self.dsn_template,
             target_dto=self._target_dto,
-            dialect_name='postgres',
+            dialect_name="postgres",
         ).make_conn_line(db_name=db_name, params=params)
 
     def get_default_db_name(self) -> Optional[str]:
@@ -135,7 +158,7 @@ class AsyncPostgresAdapter(
         try:
             d = dateutil_parser.parse(s, ignoretz=ignoretz)
         except (dateutil_parser.ParserError, OverflowError) as e:
-            LOGGER.info(f'Can\'t parse date {s} by {ignoretz}')
+            LOGGER.info(f"Can't parse date {s} by {ignoretz}")
             # its impossible to get extra info about the position in stream
             # because it's a callback for asyncpg
             raise exc.DataStreamValidationError(value=s) from e
@@ -158,50 +181,44 @@ class AsyncPostgresAdapter(
                 # and this magic is incompatible with magic in sqlalchemy-psycopg2
                 # so lets disable it
                 await connection.set_type_codec(
-                    'numeric',
+                    "numeric",
                     encoder=str,
                     decoder=lambda x: x,
-                    schema='pg_catalog',
-                    format='text',
+                    schema="pg_catalog",
+                    format="text",
                 )
                 # we set date-like values to params as strings
                 # but asyncpg expects python-objects
                 await connection.set_type_codec(
-                    'date',
+                    "date",
                     encoder=str,
                     decoder=lambda x: self._convert_date(x, ignoretz=True).date(),
-                    schema='pg_catalog',
-                    format='text',
+                    schema="pg_catalog",
+                    format="text",
                 )
                 await connection.set_type_codec(
-                    'timestamp',
+                    "timestamp",
                     encoder=str,
                     decoder=lambda x: self._convert_date(x, ignoretz=True),
-                    schema='pg_catalog',
-                    format='text',
+                    schema="pg_catalog",
+                    format="text",
                 )
                 await connection.set_type_codec(
-                    'timestamptz',
+                    "timestamptz",
                     encoder=str,
                     decoder=lambda x: self._convert_date(x, ignoretz=False),
-                    schema='pg_catalog',
-                    format='text',
+                    schema="pg_catalog",
+                    format="text",
                 )
             yield connection
 
     async def test(self) -> None:
-        await self.execute(DBAdapterQuery('select 1'))
+        await self.execute(DBAdapterQuery("select 1"))
 
     def _make_cursor_info(self, query_attrs: Iterable[asyncpg.Attribute]) -> dict:
         return dict(
-            names=[
-                str(a.name)
-                for a in query_attrs
-            ],
-            driver_types=[
-                self._cursor_type_to_str(a.type.oid)
-                for a in query_attrs
-            ],
+            names=[str(a.name) for a in query_attrs],
+            driver_types=[self._cursor_type_to_str(a.type.oid) for a in query_attrs],
             db_types=[
                 self._cursor_column_to_native_type(
                     (
@@ -221,20 +238,13 @@ class AsyncPostgresAdapter(
                 for a in query_attrs
             ],
             # dashsql convenience:
-            postgresql_typnames=[
-                OID_KNOWLEDGE.get(a.type.oid)
-                for a in query_attrs
-            ],
+            postgresql_typnames=[OID_KNOWLEDGE.get(a.type.oid) for a in query_attrs],
         )
 
     def _get_row_converters(
-            self, query_attrs: Iterable[asyncpg.Attribute]
+        self, query_attrs: Iterable[asyncpg.Attribute]
     ) -> tuple[Optional[Callable[[Any], Any]], ...]:
-        return tuple(
-            self._convert_bytea if a.type.oid == 17  # `bytea`
-            else None
-            for a in query_attrs
-        )
+        return tuple(self._convert_bytea if a.type.oid == 17 else None for a in query_attrs)  # `bytea`
 
     @contextlib.contextmanager
     def execution_context(self) -> typing.Generator[None, None, None]:
@@ -253,11 +263,7 @@ class AsyncPostgresAdapter(
             row_converters = self._get_row_converters(query_attrs=query_attrs)
             row = tuple(raw_rec.values())
             return tuple(
-                (
-                    col_converter(val)
-                    if col_converter is not None and val is not None
-                    else val
-                )
+                (col_converter(val) if col_converter is not None and val is not None else val)
                 for val, col_converter in zip(row, row_converters)
             )
 
@@ -282,15 +288,12 @@ class AsyncPostgresAdapter(
                         if not result:
                             is_enough = True
                         else:
-                            chunk = tuple(
-                                make_record(record, prepared_query.get_attributes())
-                                for record in result
-                            )
+                            chunk = tuple(make_record(record, prepared_query.get_attributes()) for record in result)
                             yield ExecutionStepDataChunk(chunk=chunk)
 
     @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        LOGGER.info('Run by async postgres adapter')
+        LOGGER.info("Run by async postgres adapter")
 
         async def _process_chunk(steps: AsyncIterator[ExecutionStep]) -> TBIChunksGen:
             async for step in steps:
@@ -386,38 +389,42 @@ class AsyncPostgresAdapter(
     # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/base.py#L3589
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
         if table_ident.schema_name is None:
-            result = await self.execute(DBAdapterQuery(
-                sa.text(
-                    "select relname from pg_class c join pg_namespace n on "
-                    "n.oid=c.relnamespace where "
-                    "pg_catalog.pg_table_is_visible(c.oid) "
-                    "and relname=:name"
-                ).bindparams(
-                    sa.bindparam(
-                        "name",
-                        table_ident.table_name,
-                        type_=sa.types.Unicode,
+            result = await self.execute(
+                DBAdapterQuery(
+                    sa.text(
+                        "select relname from pg_class c join pg_namespace n on "
+                        "n.oid=c.relnamespace where "
+                        "pg_catalog.pg_table_is_visible(c.oid) "
+                        "and relname=:name"
+                    ).bindparams(
+                        sa.bindparam(
+                            "name",
+                            table_ident.table_name,
+                            type_=sa.types.Unicode,
+                        )
                     )
                 )
-            ))
+            )
         else:
-            result = await self.execute(DBAdapterQuery(
-                sa.text(
-                    "select relname from pg_class c join pg_namespace n on "
-                    "n.oid=c.relnamespace where n.nspname=:schema and "
-                    "relname=:name"
-                ).bindparams(
-                    sa.bindparam(
-                        "name",
-                        table_ident.table_name,
-                        type_=sa.types.Unicode,
-                    ),
-                    sa.bindparam(
-                        "schema",
-                        table_ident.schema_name,
-                        type_=sa.types.Unicode,
-                    ),
-                ))
+            result = await self.execute(
+                DBAdapterQuery(
+                    sa.text(
+                        "select relname from pg_class c join pg_namespace n on "
+                        "n.oid=c.relnamespace where n.nspname=:schema and "
+                        "relname=:name"
+                    ).bindparams(
+                        sa.bindparam(
+                            "name",
+                            table_ident.table_name,
+                            type_=sa.types.Unicode,
+                        ),
+                        sa.bindparam(
+                            "schema",
+                            table_ident.schema_name,
+                            type_=sa.types.Unicode,
+                        ),
+                    )
+                )
             )
         async for _ in result.get_all_rows():
             return True
@@ -443,7 +450,7 @@ class AsyncPostgresAdapter(
 class AsyncPGConnLineConstructor(ClassicSQLConnLineConstructor[PostgresConnTargetDTO]):
     def _get_dsn_query_params(self) -> dict:
         return {
-            'sslmode': 'require' if self._target_dto.ssl_enable else 'prefer',
+            "sslmode": "require" if self._target_dto.ssl_enable else "prefer",
         }
 
     def _get_dsn_params(
@@ -458,5 +465,5 @@ class AsyncPGConnLineConstructor(ClassicSQLConnLineConstructor[PostgresConnTarge
             passwd=quote_plus(self._target_dto.password) if standard_auth else None,
             host=quote_plus(self._target_dto.host),
             port=quote_plus(str(self._target_dto.port)),
-            db_name=db_name or quote_plus(self._target_dto.db_name or '', safe=''.join(safe_db_symbols)),
+            db_name=db_name or quote_plus(self._target_dto.db_name or "", safe="".join(safe_db_symbols)),
         )

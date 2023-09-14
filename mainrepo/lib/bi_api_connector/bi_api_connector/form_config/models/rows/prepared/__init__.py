@@ -1,12 +1,11 @@
 from .components import (
-    OAuthTokenRow,
     CacheTTLRow,
     CollapseRow,
+    OAuthTokenRow,
 )
 
-
 __all__ = (
-    'OAuthTokenRow',
-    'CacheTTLRow',
-    'CollapseRow',
+    "OAuthTokenRow",
+    "CacheTTLRow",
+    "CollapseRow",
 )

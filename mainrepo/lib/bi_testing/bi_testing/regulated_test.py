@@ -1,13 +1,20 @@
 from __future__ import annotations
 
-import inspect
 from functools import wraps
-from typing import Any, Callable, ClassVar, Mapping, Optional, overload
+import inspect
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Mapping,
+    Optional,
+    overload,
+)
 
 import attr
 import pytest
 
-_FUNC_META_ATTR = '_regulated_test_function_meta'
+_FUNC_META_ATTR = "_regulated_test_function_meta"
 
 
 @attr.s(frozen=True)
@@ -28,19 +35,17 @@ class RegulatedTestParams:
 
 
 def _is_test_func(func: Callable) -> bool:
-    return callable(func) and func.__name__.startswith('test_')
+    return callable(func) and func.__name__.startswith("test_")
 
 
 def _is_test_func_for_features_with_reason(
-        func: Callable, features: Mapping[Feature, Optional[str]],
+    func: Callable,
+    features: Mapping[Feature, Optional[str]],
 ) -> tuple[bool, str]:
     func_meta = getattr(func, _FUNC_META_ATTR, RegulatedTestFunctionMeta())
     found_features = func_meta.features & frozenset(features)
-    reasons = sorted(
-        (features[feature] or '')
-        for feature in found_features if features[feature]
-    )
-    reason = '; '.join(reasons)
+    reasons = sorted((features[feature] or "") for feature in found_features if features[feature])
+    reason = "; ".join(reasons)
     return bool(found_features), reason
 
 
@@ -55,7 +60,7 @@ def _mark_skipped(func: Callable, reason: Optional[str]) -> Callable:
     assert _is_test_func(func)
 
     @wraps(func)
-    @pytest.mark.skip(reason=reason or '')
+    @pytest.mark.skip(reason=reason or "")
     def func_replacement(*args: Any, **kwargs: Any) -> None:
         pass
 
@@ -64,13 +69,13 @@ def _mark_skipped(func: Callable, reason: Optional[str]) -> Callable:
 
 def _mark_failed(func: Callable, reason: Optional[str]) -> Callable:
     assert _is_test_func(func)
-    func_replacement = pytest.mark.xfail(reason=reason or '', strict=True)(func)
+    func_replacement = pytest.mark.xfail(reason=reason or "", strict=True)(func)
     return func_replacement
 
 
 def _mark_functions(
-        funcs: Mapping[Callable, Optional[str]],
-        marker: Callable[[Callable, Optional[str]], Callable],
+    funcs: Mapping[Callable, Optional[str]],
+    marker: Callable[[Callable, Optional[str]], Callable],
 ) -> Mapping[str, Callable]:
     result: dict[str, Callable] = {}
     for func, reason in funcs.items():
@@ -80,19 +85,14 @@ def _mark_functions(
 
 
 def _resolve_test_funcs(bases: tuple[Any, ...]) -> Mapping[str, Callable]:
-    return {
-        name: func
-        for base in bases
-        for name, func in inspect.getmembers(base)
-        if _is_test_func(func)
-    }
+    return {name: func for base in bases for name, func in inspect.getmembers(base) if _is_test_func(func)}
 
 
 def _patch_attrs_for_regulated_test_class(
-        bases: tuple[Any, ...], new_attrs: Optional[Mapping],
-        test_params: RegulatedTestParams,
+    bases: tuple[Any, ...],
+    new_attrs: Optional[Mapping],
+    test_params: RegulatedTestParams,
 ) -> dict[str, Any]:
-
     new_attrs = dict(new_attrs or {})
     test_funcs = _resolve_test_funcs(bases=bases)
 
@@ -102,7 +102,7 @@ def _patch_attrs_for_regulated_test_class(
 
     # Find and decorate test functions for skipped features
     mark_tests_skipped_for_features: dict[Callable, str] = {}
-    for name, func in test_funcs.items():
+    for _name, func in test_funcs.items():
         tests_feature, reason = _is_test_func_for_features_with_reason(func, test_params.mark_features_skipped or {})
         if tests_feature:
             mark_tests_skipped_for_features[func] = reason
@@ -112,16 +112,20 @@ def _patch_attrs_for_regulated_test_class(
 
 
 def _make_regulated_test_class(
-        mcs: type, name: str, bases: tuple[Any, ...],
-        test_params: RegulatedTestParams,
-        attrs: Optional[Mapping] = None,
+    mcs: type,
+    name: str,
+    bases: tuple[Any, ...],
+    test_params: RegulatedTestParams,
+    attrs: Optional[Mapping] = None,
 ) -> type:
     # Mark all test functions as such
     attrs = attrs or {}
     assert attrs is not None
     attrs = dict(attrs, **{name: _mark_as_test_func(func) for name, func in attrs.items() if _is_test_func(func)})
     attrs = _patch_attrs_for_regulated_test_class(
-        bases=bases, new_attrs=attrs, test_params=test_params,
+        bases=bases,
+        new_attrs=attrs,
+        test_params=test_params,
     )
 
     new_cls = type.__new__(mcs, name, bases, attrs)  # type: ignore
@@ -130,13 +134,18 @@ def _make_regulated_test_class(
 
 def _wrap_as_regulated_test_case(test_cls: type, *, test_params: RegulatedTestParams) -> type:
     return _make_regulated_test_class(
-        mcs=type(test_cls), name=test_cls.__name__, bases=(test_cls,), test_params=test_params,
+        mcs=type(test_cls),
+        name=test_cls.__name__,
+        bases=(test_cls,),
+        test_params=test_params,
     )
 
 
 def _patch_as_regulated_test_case(test_cls: type, *, test_params: RegulatedTestParams) -> type:
     attrs = _patch_attrs_for_regulated_test_class(
-        bases=(test_cls,), new_attrs={}, test_params=test_params,
+        bases=(test_cls,),
+        new_attrs={},
+        test_params=test_params,
     )
     for name, value in attrs.items():
         setattr(test_cls, name, value)
@@ -149,7 +158,8 @@ def for_features(*args: Feature) -> Callable[[Callable], Callable]:
     def decorator(func: Callable) -> Callable:
         if not hasattr(func, _FUNC_META_ATTR):
             setattr(
-                func, _FUNC_META_ATTR,
+                func,
+                _FUNC_META_ATTR,
                 RegulatedTestFunctionMeta(
                     features=frozenset(args),
                 ),
@@ -164,6 +174,7 @@ class RegulatedTestCase:
     Regulated test case version that patches its own subclasses
     after their creation - in `__init_subclass__`.
     """
+
     test_params: ClassVar[RegulatedTestParams] = RegulatedTestParams()
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
@@ -198,7 +209,7 @@ def regulated_test_case(*args: Any, **kwargs: Any) -> Any:
 
     def decorator(test_cls: type) -> type:
         assert len(kwargs) <= 1
-        test_params = kwargs['test_params']
+        test_params = kwargs["test_params"]
         return _patch_as_regulated_test_case(test_cls, test_params=test_params)
 
     return decorator

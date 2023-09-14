@@ -12,10 +12,10 @@ if TYPE_CHECKING:
 
 @attr.s
 class InstallationSpecificServiceRegistry(metaclass=abc.ABCMeta):
-    _service_registry_ref: FutureRef['ServicesRegistry'] = attr.ib()
+    _service_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
 
     @property
-    def service_registry(self) -> 'ServicesRegistry':
+    def service_registry(self) -> "ServicesRegistry":
         return self._service_registry_ref.ref
 
     @abc.abstractmethod
@@ -25,5 +25,5 @@ class InstallationSpecificServiceRegistry(metaclass=abc.ABCMeta):
 
 class InstallationSpecificServiceRegistryFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_inst_specific_sr(self, sr_ref: FutureRef['ServicesRegistry']) -> InstallationSpecificServiceRegistry:
+    def get_inst_specific_sr(self, sr_ref: FutureRef["ServicesRegistry"]) -> InstallationSpecificServiceRegistry:
         raise NotImplementedError()

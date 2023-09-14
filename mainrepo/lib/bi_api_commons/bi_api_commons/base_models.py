@@ -1,12 +1,25 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, Union, Type, Any, TypeVar
+from typing import (
+    Any,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import attr
-from multidict import CIMultiDict, CIMultiDictProxy
+from multidict import (
+    CIMultiDict,
+    CIMultiDictProxy,
+)
 
-from bi_constants.api_constants import DLHeaders, DLCookies, DLHeadersCommon
+from bi_constants.api_constants import (
+    DLCookies,
+    DLHeaders,
+    DLHeadersCommon,
+)
 
 
 class TenantDef(metaclass=abc.ABCMeta):
@@ -72,7 +85,7 @@ class RequestContextInfo:
 
     @property
     def host(self) -> Optional[str]:
-        return self.plain_headers.get('Host')
+        return self.plain_headers.get("Host")
 
     @property
     def locale(self) -> Optional[str]:
@@ -94,17 +107,17 @@ class RequestContextInfo:
 
     @classmethod
     def create(
-            cls: Type[_REQUEST_CONTEXT_INFO_TV],
-            request_id: Optional[str],
-            tenant: Optional[TenantDef],
-            user_id: Optional[str],
-            user_name: Optional[str],
-            x_dl_debug_mode: Optional[bool],
-            endpoint_code: Optional[str],
-            x_dl_context: Optional[dict],
-            plain_headers: Union[CIMultiDict, dict, None],
-            secret_headers: Union[CIMultiDict, dict, None],
-            auth_data: Optional[AuthData] = None,
+        cls: Type[_REQUEST_CONTEXT_INFO_TV],
+        request_id: Optional[str],
+        tenant: Optional[TenantDef],
+        user_id: Optional[str],
+        user_name: Optional[str],
+        x_dl_debug_mode: Optional[bool],
+        endpoint_code: Optional[str],
+        x_dl_context: Optional[dict],
+        plain_headers: Union[CIMultiDict, dict, None],
+        secret_headers: Union[CIMultiDict, dict, None],
+        auth_data: Optional[AuthData] = None,
     ) -> _REQUEST_CONTEXT_INFO_TV:
         return cls(
             request_id=request_id,
@@ -123,7 +136,7 @@ class RequestContextInfo:
         return attr.evolve(self, **kwargs)
 
 
-_REQUEST_CONTEXT_INFO_TV = TypeVar('_REQUEST_CONTEXT_INFO_TV', bound='RequestContextInfo')
+_REQUEST_CONTEXT_INFO_TV = TypeVar("_REQUEST_CONTEXT_INFO_TV", bound="RequestContextInfo")
 
 
 @attr.s(frozen=True)

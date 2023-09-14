@@ -1,11 +1,16 @@
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import (
+    Optional,
+    TypeVar,
+)
 
 import attr
 
 from bi_core.data_source_spec.sql import (
-    SQLDataSourceSpecBase, SubselectDataSourceSpec, TableSQLDataSourceSpec,
+    SQLDataSourceSpecBase,
+    SubselectDataSourceSpec,
+    TableSQLDataSourceSpec,
 )
 
 
@@ -27,7 +32,7 @@ class CHYTTableListDataSourceSpec(CHYTDataSourceSpecMixin, SQLDataSourceSpecBase
     table_names: Optional[str] = attr.ib(kw_only=True, default=None)
 
 
-_VAL_TV = TypeVar('_VAL_TV')
+_VAL_TV = TypeVar("_VAL_TV")
 
 
 def _zero_to_none(value: _VAL_TV) -> Optional[_VAL_TV]:  # type: ignore

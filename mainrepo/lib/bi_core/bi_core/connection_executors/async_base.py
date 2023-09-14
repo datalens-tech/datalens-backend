@@ -5,23 +5,36 @@ import asyncio
 import functools
 import logging
 from typing import (
-    TYPE_CHECKING, Any, AsyncIterable, Awaitable, Callable, List, Optional, Sequence, TypeVar,
+    TYPE_CHECKING,
+    Any,
+    AsyncIterable,
+    Awaitable,
+    Callable,
+    List,
+    Optional,
+    Sequence,
+    TypeVar,
 )
 
 import attr
 from typing_extensions import final
 
-from bi_core.connection_executors.common_base import ConnExecutorBase, ConnExecutorQuery
+from bi_core.connection_executors.common_base import (
+    ConnExecutorBase,
+    ConnExecutorQuery,
+)
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_core.db import SchemaInfo
 
 if TYPE_CHECKING:
     from bi_constants.enums import BIType
-
-    from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent, TableDefinition, TableIdent,
-    )
     from bi_constants.types import TBIDataTable
+    from bi_core.connection_models.common_models import (
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -47,12 +60,12 @@ class AsyncExecutionResult:
         return result
 
 
-_RET_TV = TypeVar('_RET_TV')
+_RET_TV = TypeVar("_RET_TV")
 
 
 def init_required(wrapped: Callable[..., Awaitable[_RET_TV]]) -> Callable[..., Awaitable[_RET_TV]]:
     @functools.wraps(wrapped)
-    async def wrapper(self: 'AsyncConnExecutorBase', *args: Any, **kwargs: Any) -> _RET_TV:
+    async def wrapper(self: "AsyncConnExecutorBase", *args: Any, **kwargs: Any) -> _RET_TV:
         if not self._is_initialized:
             await self.initialize()
 

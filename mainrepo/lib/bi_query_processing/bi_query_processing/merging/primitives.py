@@ -1,6 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Iterable, List, NamedTuple, Optional, Sequence
+from typing import (
+    Any,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+)
 
 import attr
 
@@ -26,6 +33,7 @@ class MergedQueryMetaInfo:
 
 class MergedQueryDataRow(NamedTuple):
     """This class should be as simple and as small as possible, so use NamedTuple instead of attrs"""
+
     data: PostprocessedRow
     legend_item_ids: Sequence[int]
 

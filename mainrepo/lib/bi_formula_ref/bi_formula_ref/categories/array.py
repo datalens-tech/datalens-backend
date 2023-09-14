@@ -1,8 +1,7 @@
 from bi_formula_ref.registry.base import FunctionDocCategory
 
-
 CATEGORY_ARRAY = FunctionDocCategory(
-    name='array',
-    description='',
-    keywords='',
+    name="array",
+    description="",
+    keywords="",
 )

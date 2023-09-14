@@ -2,14 +2,24 @@ import csv
 import datetime
 import io
 import random
-from typing import Any, Callable, ClassVar, Optional, Sequence
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 import shortuuid
 
 from bi_constants.enums import BIType
-
-from bi_core_testing.database import Db, DbTable, C, make_table
+from bi_core_testing.database import (
+    C,
+    Db,
+    DbTable,
+    make_table,
+)
 
 
 def _int_or_none(v: Optional[str]) -> Optional[int]:
@@ -44,29 +54,22 @@ class CsvTableDumper:
         return self._PY_CONVERTERS_BY_BITYPE[user_type](value)
 
     def _convert_row(self, row: Sequence[Optional[str]], type_schema: Sequence[BIType]) -> list[Any]:
-        return [
-            self._convert_value(v, t)
-            for v, t in zip(row, type_schema)
-        ]
+        return [self._convert_value(v, t) for v, t in zip(row, type_schema)]
 
     def _load_table_data(self, raw_csv_data: str, type_schema: Sequence[BIType]) -> list[list[Any]]:
         reader = csv.reader(io.StringIO(raw_csv_data))
-        return [
-            self._convert_row(row=row, type_schema=type_schema)
-            for row in reader
-        ]
+        return [self._convert_row(row=row, type_schema=type_schema) for row in reader]
 
     def make_table_from_csv(
-            self,
-            raw_csv_data: str,
-            table_schema: Sequence[tuple[str, BIType]],
-            table_name_prefix: Optional[str] = None,
+        self,
+        raw_csv_data: str,
+        table_schema: Sequence[tuple[str, BIType]],
+        table_name_prefix: Optional[str] = None,
     ) -> DbTable:
-
-        table_name_prefix = table_name_prefix or 'table_'
-        if not table_name_prefix.endswith('_'):
-            table_name_prefix = f'{table_name_prefix}_'
-        table_name = f'{table_name_prefix}{shortuuid.uuid()}'
+        table_name_prefix = table_name_prefix or "table_"
+        if not table_name_prefix.endswith("_"):
+            table_name_prefix = f"{table_name_prefix}_"
+        table_name = f"{table_name_prefix}{shortuuid.uuid()}"
 
         type_schema = [user_type for col_name, user_type in table_schema]
         data = self._load_table_data(raw_csv_data=raw_csv_data, type_schema=type_schema)

@@ -9,7 +9,6 @@ else:
 
 
 class DataLensVisitor(ParseTreeVisitor):
-
     # Visit a parse tree produced by DataLensParser#integerLiteral.
     def visitIntegerLiteral(self, ctx: DataLensParser.IntegerLiteralContext):
         return self.visitChildren(ctx)

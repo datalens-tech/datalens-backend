@@ -1,19 +1,28 @@
 from __future__ import annotations
 
 import asyncio
+from concurrent.futures.thread import ThreadPoolExecutor
 import inspect
 import logging
 import random
 import threading
 import time
-from concurrent.futures.thread import ThreadPoolExecutor
-from typing import Generator, Any, Callable, Union
+from typing import (
+    Any,
+    Callable,
+    Generator,
+    Union,
+)
 
 import attr
 import pytest
 
-from bi_api_commons.aio.async_wrapper_for_sync_generator import Job, JobState, EndOfStream, InitializationFailed
-
+from bi_api_commons.aio.async_wrapper_for_sync_generator import (
+    EndOfStream,
+    InitializationFailed,
+    Job,
+    JobState,
+)
 
 pytestmark = pytest.mark.asyncio  # TODO: should work through conftest?
 
@@ -91,7 +100,7 @@ async def test_error_in_start_generator(wrapper_factory, caplog):
     job = wrapper_factory(test_generator())
     await job.run()
 
-    with pytest.raises(ValueError, match=r'^Error in generator$'):
+    with pytest.raises(ValueError, match=r"^Error in generator$"):
         await job.get_next()
 
     assert job.state == JobState.closed
@@ -145,9 +154,7 @@ async def test_start_confirmation_timeout(caplog):
         return
 
     try:
-        asyncio.ensure_future(
-            asyncio.get_running_loop().run_in_executor(local_worker_tpe, garbage)
-        )
+        asyncio.ensure_future(asyncio.get_running_loop().run_in_executor(local_worker_tpe, garbage))
         await asyncio.wait_for(garbage_started.wait(), timeout=1)
 
         job = LocalJob(

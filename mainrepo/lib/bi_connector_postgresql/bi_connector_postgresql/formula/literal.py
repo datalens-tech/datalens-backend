@@ -1,14 +1,22 @@
-from typing import Any, Union, Type
+from typing import (
+    Any,
+    Type,
+    Union,
+)
 
 import attr
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 from sqlalchemy.sql.sqltypes import Integer
 
+from bi_formula.connectors.base.literal import (
+    Literal,
+    Literalizer,
+    TypeDefiningCast,
+)
 from bi_formula.core.dialect import DialectCombo
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
-from bi_formula.connectors.base.literal import Literal, Literalizer, TypeDefiningCast
 
+from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 PG_SMALLINT_MIN = -32768
 PG_SMALLINT_MAX = 32767

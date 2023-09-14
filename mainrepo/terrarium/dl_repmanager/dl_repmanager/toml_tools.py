@@ -2,14 +2,20 @@ from __future__ import annotations
 
 import contextlib
 from pathlib import Path
-from typing import Any, Generator, Iterable
+from typing import (
+    Any,
+    Generator,
+    Iterable,
+)
 
 import attr
 import tomlkit
-from tomlkit.toml_document import TOMLDocument
-from tomlkit.items import Item as TOMLItem, AbstractTable
-from tomlkit.container import Container as TOMLContainer, OutOfOrderTableProxy
+from tomlkit.container import Container as TOMLContainer
+from tomlkit.container import OutOfOrderTableProxy
 from tomlkit.exceptions import NonExistentKey
+from tomlkit.items import AbstractTable
+from tomlkit.items import Item as TOMLItem
+from tomlkit.toml_document import TOMLDocument
 
 from dl_repmanager.fs_editor import FilesystemEditor
 
@@ -21,7 +27,7 @@ class TOMLReaderBase:
     def get_section(self, key: str, strict: bool = True) -> dict:
         section: dict = self._toml
         item: TOMLContainer | TOMLItem | OutOfOrderTableProxy
-        for part in key.split('.'):
+        for part in key.split("."):
             try:
                 item = section[part]
             except KeyError:
@@ -60,7 +66,7 @@ class TOMLWriter(TOMLReaderBase):
     def add_section(self, key: str) -> AbstractTable:
         section: dict = self._toml
         item: TOMLItem | TOMLContainer | OutOfOrderTableProxy
-        for part in key.split('.'):
+        for part in key.split("."):
             try:
                 item = section[part]
             except KeyError:
@@ -75,7 +81,7 @@ class TOMLWriter(TOMLReaderBase):
 
     def delete_section(self, key: str) -> None:
         section: dict = self._toml
-        parts = key.split('.')
+        parts = key.split(".")
         for part in parts[:-1]:
             try:
                 item = section[part]
@@ -103,12 +109,12 @@ class TOMLIOFactory:
 
     @contextlib.contextmanager
     def toml_reader(self, file_path: Path) -> Generator[TOMLReader, None, None]:
-        with self.fs_editor.open(file_path, mode='r') as f:
+        with self.fs_editor.open(file_path, mode="r") as f:
             yield TOMLReader(toml=tomlkit.load(f))
 
     @contextlib.contextmanager
     def toml_writer(self, file_path: Path) -> Generator[TOMLWriter, None, None]:
-        with self.fs_editor.open(file_path, mode='r+') as f:
+        with self.fs_editor.open(file_path, mode="r+") as f:
             toml = tomlkit.load(f)
             yield TOMLWriter(toml=toml)
             f.seek(0)

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, Optional
+from typing import (
+    Dict,
+    Optional,
+)
 
 import attr
 
-import bi_formula.core.exc as exc
 from bi_formula.collections import NodeValueMap
+import bi_formula.core.exc as exc
 
 
 @attr.s

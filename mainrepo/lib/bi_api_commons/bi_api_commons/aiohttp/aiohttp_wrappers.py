@@ -4,17 +4,32 @@ import enum
 import functools
 import inspect
 import json
-from typing import Any, Awaitable, Callable, FrozenSet, Optional, TypeVar, Union, overload, Generic, Type, Literal
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    FrozenSet,
+    Generic,
+    Literal,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
-from bi_api_commons.aio.typing import AIOHTTPMethodMiddleware, AIOHTTPMiddleware
+from bi_api_commons.aio.typing import (
+    AIOHTTPMethodMiddleware,
+    AIOHTTPMiddleware,
+)
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons.exc import InvalidHeaderException
 from bi_api_commons.logging import RequestLoggingContextController
-from bi_api_commons.reporting.registry import ReportingRegistry
 from bi_api_commons.reporting.profiler import ReportingProfiler
+from bi_api_commons.reporting.registry import ReportingRegistry
 from bi_constants.api_constants import DLHeaders
 
 
@@ -38,14 +53,14 @@ class DLRequestBase:
     __slots__ = ("request",)
     request: web.Request
 
-    KEY_DL_REQUEST = 'dl_request'
-    KEY_RCI_TEMP = 'bi_request_context_info_temp'
-    KEY_RCI = 'bi_request_context_info'
-    KEY_LOG_CTX_CONTROLLER = 'bi_log_ctx_controller'
-    KEY_REPORTING_REGISTRY = 'reporting_registry'
-    KEY_REPORTING_PROFILER = 'reporting_profiler'
+    KEY_DL_REQUEST = "dl_request"
+    KEY_RCI_TEMP = "bi_request_context_info_temp"
+    KEY_RCI = "bi_request_context_info"
+    KEY_LOG_CTX_CONTROLLER = "bi_log_ctx_controller"
+    KEY_REPORTING_REGISTRY = "reporting_registry"
+    KEY_REPORTING_PROFILER = "reporting_profiler"
 
-    HANDLER_ATTR_NAME_REQUIRED_RESOURCES = 'REQUIRED_RESOURCES'
+    HANDLER_ATTR_NAME_REQUIRED_RESOURCES = "REQUIRED_RESOURCES"
     NO_RESOURCES = frozenset()  # type: ignore  # TODO: fix
 
     # flag that forces `.url` to use `https` scheme
@@ -68,17 +83,17 @@ class DLRequestBase:
 
     def _set_attr_once(self, name, value) -> None:
         if name in self.request:
-            raise ValueError(f'Request key \'{name}\' already set')
+            raise ValueError(f"Request key '{name}' already set")
         self.request[name] = value
 
     @property
     def url(self) -> str:
-        if self.enforce_https_on_self_url and self.request.scheme == 'http':
+        if self.enforce_https_on_self_url and self.request.scheme == "http":
             # 'correct' but possibly problematic: `return self.request.clone(scheme='https').url`
             result = str(self.request.url)
-            pfx = 'http://'
+            pfx = "http://"
             if result.startswith(pfx):
-                return 'https://' + result[len(pfx):]
+                return "https://" + result[len(pfx) :]
         return self.request.url  # type: ignore  # TODO: fix
 
     # TODO FIX: Check that is not used and remove
@@ -185,8 +200,7 @@ class DLRequestBase:
     def get_single_header(self, header: Union[DLHeaders, str], required: Literal[True]) -> str:
         pass
 
-    def get_single_header(  # type: ignore  # TODO: fix  # noqa
-            self, header, required=False):
+    def get_single_header(self, header, required=False):  # type: ignore  # TODO: fix  # noqa
         header_name = header.value if isinstance(header, DLHeaders) else header
         header_value_list = self.request.headers.getall(header_name, ())
 
@@ -220,12 +234,11 @@ class DLRequestBase:
 
         return self.NO_RESOURCES
 
-    _SELF_TYPE = TypeVar('_SELF_TYPE', bound='DLRequestBase')
+    _SELF_TYPE = TypeVar("_SELF_TYPE", bound="DLRequestBase")
 
     @classmethod
     def use_dl_request(
-            cls: Type[_SELF_TYPE],
-            coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
+        cls: Type[_SELF_TYPE], coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
     ) -> AIOHTTPMiddleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
@@ -245,8 +258,7 @@ class DLRequestBase:
 
     @classmethod
     def use_dl_request_on_method(
-            cls,
-            coro: Callable[[Any, _SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
+        cls, coro: Callable[[Any, _SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
     ) -> AIOHTTPMethodMiddleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")

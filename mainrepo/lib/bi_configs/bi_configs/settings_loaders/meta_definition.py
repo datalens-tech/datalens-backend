@@ -1,6 +1,14 @@
 from __future__ import annotations
 
-from typing import ClassVar, Any, Optional, Callable, TypeVar, Type, cast
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+    Type,
+    TypeVar,
+    cast,
+)
 
 import attr
 
@@ -13,7 +21,7 @@ class ReservedKeys:
 
 @attr.s(frozen=True)
 class SMeta:
-    attrs_meta_key: ClassVar[str] = 's_meta'
+    attrs_meta_key: ClassVar[str] = "s_meta"
 
     name: Optional[str] = attr.ib()
     fallback_cfg_key: Optional[str] = attr.ib(default=None)
@@ -24,8 +32,9 @@ class SMeta:
     is_app_cfg_type: bool = attr.ib(default=False)
 
     def __attrs_post_init__(self):
-        assert not (self.fallback_cfg_key is not None and self.fallback_factory is not None), \
-            "fallback_factory and fallback_cfg_key can not be defined together"
+        assert not (
+            self.fallback_cfg_key is not None and self.fallback_factory is not None
+        ), "fallback_factory and fallback_cfg_key can not be defined together"
 
     def to_dict(self):
         return {self.attrs_meta_key: self}
@@ -36,17 +45,17 @@ class SMeta:
 
 
 def s_attrib(
-        key_name: Optional[str],
-        type_class: object = None,
-        fallback_cfg_key: Optional[str] = None,
-        fallback_factory: Optional[FallbackFactory] = None,
-        env_var_converter: Optional[Callable[[str], Any]] = None,
-        json_converter: Optional[Callable[[Any], Any]] = None,
-        missing: Any = attr.NOTHING,
-        missing_factory: Any = None,
-        sensitive: bool = False,
-        enabled_key_name: Optional[str] = None,
-        is_app_cfg_type: bool = False,
+    key_name: Optional[str],
+    type_class: object = None,
+    fallback_cfg_key: Optional[str] = None,
+    fallback_factory: Optional[FallbackFactory] = None,
+    env_var_converter: Optional[Callable[[str], Any]] = None,
+    json_converter: Optional[Callable[[Any], Any]] = None,
+    missing: Any = attr.NOTHING,
+    missing_factory: Any = None,
+    sensitive: bool = False,
+    enabled_key_name: Optional[str] = None,
+    is_app_cfg_type: bool = False,
 ) -> attr.Attribute:
     if is_app_cfg_type:
         assert fallback_cfg_key is None

@@ -2,12 +2,15 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as pg_types
 
 from bi_constants.enums import BIType
-
-from bi_core.db.conversion_base import TypeTransformer, UTCDatetimeTypeCaster, UTCTimezoneDatetimeTypeCaster, make_native_type
+from bi_core.db.conversion_base import (
+    TypeTransformer,
+    UTCDatetimeTypeCaster,
+    UTCTimezoneDatetimeTypeCaster,
+    make_native_type,
+)
+from bi_sqlalchemy_postgres.base import CITEXT
 
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-
-from bi_sqlalchemy_postgres.base import CITEXT
 
 PG_TYPES_INT = frozenset((pg_types.SMALLINT, pg_types.INTEGER, pg_types.BIGINT))
 PG_TYPES_FLOAT = frozenset((pg_types.REAL, pg_types.DOUBLE_PRECISION, pg_types.NUMERIC))

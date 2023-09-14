@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from bi_formula.core.datatype import DataType as DT
-from bi_formula.definitions.type_strategy import Fixed, FromArgs
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
+)
 
 
 def test_strategy_fixed():

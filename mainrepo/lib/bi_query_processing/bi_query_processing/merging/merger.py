@@ -1,12 +1,21 @@
-from typing import List, Optional
+from typing import (
+    List,
+    Optional,
+)
 
 from bi_query_processing.legend.block_legend import RootBlockPlacement
-from bi_query_processing.postprocessing.primitives import PostprocessedQueryUnion, PostprocessedQueryBlock
-from bi_query_processing.merging.primitives import (
-    MergedQueryDataRow, MergedQueryDataStream, MergedQueryMetaInfo,
-    MergedQueryDataRowIterable, MergedQueryBlockMetaInfo,
-)
 from bi_query_processing.merging.binary_merger import make_binary_merger
+from bi_query_processing.merging.primitives import (
+    MergedQueryBlockMetaInfo,
+    MergedQueryDataRow,
+    MergedQueryDataRowIterable,
+    MergedQueryDataStream,
+    MergedQueryMetaInfo,
+)
+from bi_query_processing.postprocessing.primitives import (
+    PostprocessedQueryBlock,
+    PostprocessedQueryUnion,
+)
 
 
 class DataStreamMerger:
@@ -26,10 +35,9 @@ class DataStreamMerger:
             legend_item_ids = postprocessed_query_union.blocks[0].legend_item_ids
 
         # Find the root block/stream
-        root_block = next(iter(
-            block for block in postprocessed_query_union.blocks
-            if isinstance(block.placement, RootBlockPlacement)
-        ))
+        root_block = next(
+            iter(block for block in postprocessed_query_union.blocks if isinstance(block.placement, RootBlockPlacement))
+        )
         data_stream: MergedQueryDataRowIterable = self.normalize_stream(root_block)
 
         merged_target_connection_ids: set[str] = set()

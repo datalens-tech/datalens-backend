@@ -1,25 +1,38 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import List, Union
+from typing import (
+    List,
+    Union,
+)
 
 import attr
 from marshmallow import fields as ma_fields
 
-from bi_constants.enums import JoinConditionType
-
-from bi_api_client.dsmaker.primitives import (
-    Action, ApiProxyObject, UpdateAction,
-    Dataset, DataSource, SourceAvatar, AvatarRelation, ResultField,
-    JoinPart, DirectJoinPart, FormulaJoinPart, ResultFieldJoinPart,
-    ObligatoryFilter, Container,
-)
 from bi_api_client.dsmaker.api.schemas.base import DefaultSchema
 from bi_api_client.dsmaker.api.schemas.dataset import (
-    ObligatoryFilterSchema, WhereClauseSchema,
     DatasetContentInternalSchema,
+    ObligatoryFilterSchema,
     ParameterValueConstraintSchema,
+    WhereClauseSchema,
 )
+from bi_api_client.dsmaker.primitives import (
+    Action,
+    ApiProxyObject,
+    AvatarRelation,
+    Container,
+    Dataset,
+    DataSource,
+    DirectJoinPart,
+    FormulaJoinPart,
+    JoinPart,
+    ObligatoryFilter,
+    ResultField,
+    ResultFieldJoinPart,
+    SourceAvatar,
+    UpdateAction,
+)
+from bi_constants.enums import JoinConditionType
 
 
 class ObligatoryFilterUpdateSchema(DefaultSchema[ObligatoryFilter]):
@@ -46,7 +59,7 @@ class BaseApiV1SerializationAdapter:
 
     @singledispatchmethod
     def _dump_item(self, item: ApiProxyObject, action: Action) -> dict:
-        raise TypeError(f'Unknown item type: {type(item)}')
+        raise TypeError(f"Unknown item type: {type(item)}")
 
     @_dump_item.register(DataSource)
     def dump_data_source(self, item: DataSource, action: Action) -> dict:
@@ -70,11 +83,13 @@ class BaseApiV1SerializationAdapter:
                         lock_aggregation=col.lock_aggregation,
                     )
                     for col in item.raw_schema
-                ] if item.raw_schema is not None else None,
+                ]
+                if item.raw_schema is not None
+                else None,
                 index_info_set=None if item.index_info_set is None else list(item.index_info_set),
                 parameters=item.parameters,
                 managed_by=item.managed_by.name,
-                valid=item.valid
+                valid=item.valid,
             )
 
     @_dump_item.register(SourceAvatar)
@@ -95,14 +110,15 @@ class BaseApiV1SerializationAdapter:
         if action == Action.delete:
             return dict(id=item.id)
         else:
+
             def dump_condition_part(part: JoinPart) -> dict:
                 data = dict(calc_mode=part.calc_mode.name)
                 if isinstance(part, DirectJoinPart):
-                    data['source'] = part.source
+                    data["source"] = part.source
                 elif isinstance(part, FormulaJoinPart):
-                    data['formula'] = part.formula
+                    data["formula"] = part.formula
                 elif isinstance(part, ResultFieldJoinPart):
-                    data['field_id'] = part.field_id
+                    data["field_id"] = part.field_id
                 return data
 
             return dict(
@@ -115,7 +131,8 @@ class BaseApiV1SerializationAdapter:
                         left=dump_condition_part(condition.left_part),
                         right=dump_condition_part(condition.right_part),
                         operator=condition.operator.name,
-                    ) for condition in item.conditions
+                    )
+                    for condition in item.conditions
                 ],
                 join_type=item.join_type.name,
                 managed_by=item.managed_by.name,
@@ -145,7 +162,9 @@ class BaseApiV1SerializationAdapter:
                 avatar_id=item.avatar_id,
                 managed_by=item.managed_by.name,
                 default_value=item.default_value.value if item.default_value is not None else None,
-                value_constraint=ParameterValueConstraintSchema().dump(item.value_constraint) if item.value_constraint is not None else None,
+                value_constraint=ParameterValueConstraintSchema().dump(item.value_constraint)
+                if item.value_constraint is not None
+                else None,
             )
         else:
             return dict(guid=item.id)
@@ -161,24 +180,18 @@ class BaseApiV1SerializationAdapter:
 
     def _strip_implicit_updates_from_dataset(self, dataset: Dataset) -> Dataset:
         return dataset.clone(
-            sources=Container({
-                name: item for name, item in dataset.sources.items() if item.created_
-            }),
-            source_avatars=Container({
-                name: item for name, item in dataset.source_avatars.items() if item.created_
-            }),
-            avatar_relations=Container({
-                name: item for name, item in dataset.avatar_relations.items() if item.created_
-            }),
-            result_schema=Container({
-                name: item for name, item in dataset.result_schema.items() if item.created_
-            }),
+            sources=Container({name: item for name, item in dataset.sources.items() if item.created_}),
+            source_avatars=Container({name: item for name, item in dataset.source_avatars.items() if item.created_}),
+            avatar_relations=Container(
+                {name: item for name, item in dataset.avatar_relations.items() if item.created_}
+            ),
+            result_schema=Container({name: item for name, item in dataset.result_schema.items() if item.created_}),
         )
 
     def dump_dataset(self, item: Dataset) -> dict:
         stripped_dataset = self._strip_implicit_updates_from_dataset(dataset=item)
         dataset_data = DatasetContentInternalSchema().dump(stripped_dataset)
-        return {'dataset': dataset_data}
+        return {"dataset": dataset_data}
 
     def generate_implicit_updates(self, dataset: Dataset) -> List[UpdateAction]:
         updates = []
@@ -203,11 +216,11 @@ class BaseApiV1SerializationAdapter:
     @staticmethod
     def _get_action_postfix(item: ApiProxyObject) -> str:
         return {
-            DataSource: 'source',
-            SourceAvatar: 'source_avatar',
-            AvatarRelation: 'avatar_relation',
-            ResultField: 'field',
-            ObligatoryFilter: 'obligatory_filter',
+            DataSource: "source",
+            SourceAvatar: "source_avatar",
+            AvatarRelation: "avatar_relation",
+            ResultField: "field",
+            ObligatoryFilter: "obligatory_filter",
         }[type(item)]
 
     def dump_updates(self, updates: List[Union[UpdateAction, dict]] = None) -> List[dict]:
@@ -216,16 +229,15 @@ class BaseApiV1SerializationAdapter:
             if isinstance(update, UpdateAction):
                 action_postfix = self._get_action_postfix(update.item)
                 update.item.prepare()
-                item_data = dict(
-                    self.dump_item(update.item, action=update.action),
-                    **(update.custom_data or {})
-                )
+                item_data = dict(self.dump_item(update.item, action=update.action), **(update.custom_data or {}))
                 item_data = {k: v for k, v in item_data.items() if v is not None}
-                result.append({
-                    'action': '{}_{}'.format(update.action.name, action_postfix),
-                    'order_index': update.order_index,
-                    action_postfix: item_data,
-                })
+                result.append(
+                    {
+                        "action": "{}_{}".format(update.action.name, action_postfix),
+                        "order_index": update.order_index,
+                        action_postfix: item_data,
+                    }
+                )
             elif isinstance(update, dict):
                 # as raw dict; pass it on directly
                 result.append(update)

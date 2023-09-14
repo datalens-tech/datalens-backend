@@ -3,8 +3,8 @@ from snowflake.sqlalchemy.snowdialect import SnowflakeDialect as SASnowflakeDial
 from bi_formula.connectors.base.connector import FormulaConnector
 
 from bi_connector_snowflake.formula.constants import SnowFlakeDialect as SnowFlakeDialectNS
-from bi_connector_snowflake.formula.literal import SnowFlakeLiteralizer
 from bi_connector_snowflake.formula.definitions.all import DEFINITIONS
+from bi_connector_snowflake.formula.literal import SnowFlakeLiteralizer
 
 
 class SnowFlakeFormulaConnector(FormulaConnector):

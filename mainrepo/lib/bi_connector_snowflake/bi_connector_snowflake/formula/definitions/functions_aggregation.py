@@ -1,20 +1,14 @@
 import sqlalchemy as sa
-from bi_formula.definitions.literals import un_literal
-
-from bi_formula.definitions.common import quantile_value
-
-from bi_formula.core.datatype import DataType
-
-from bi_formula.definitions.args import ArgTypeSequence
 from sqlalchemy import within_group
 
+from bi_formula.core.datatype import DataType
+from bi_formula.definitions.args import ArgTypeSequence
+from bi_formula.definitions.base import TranslationVariant
+from bi_formula.definitions.common import quantile_value
 import bi_formula.definitions.functions_aggregation as base
-from bi_formula.definitions.base import (
-    TranslationVariant,
-)
+from bi_formula.definitions.literals import un_literal
 
 from bi_connector_snowflake.formula.constants import SnowFlakeDialect as D
-
 
 V = TranslationVariant.make
 
@@ -88,7 +82,6 @@ DEFINITIONS_AGG = [
             V(D.SNOWFLAKE, sa.func.ANY_VALUE),
         ]
     ),
-
     # avg
     base.AggAvgFromNumber.for_dialect(D.SNOWFLAKE),
     # base.AggAvgFromDate.for_dialect(D.SNOWFLAKE),
@@ -106,14 +99,11 @@ DEFINITIONS_AGG = [
     ),
     base.AggAvgFromDatetime.for_dialect(D.SNOWFLAKE),
     base.AggAvgFromDatetimeTZ.for_dialect(D.SNOWFLAKE),
-
     # avg_if
     base.AggAvgIf.for_dialect(D.SNOWFLAKE),
-
     # count
     base.AggCount0.for_dialect(D.SNOWFLAKE),
     base.AggCount1.for_dialect(D.SNOWFLAKE),
-
     # count_if
     base.AggCountIf(
         variants=[
@@ -123,54 +113,44 @@ DEFINITIONS_AGG = [
             )
         ]
     ),
-
     # countd
     base.AggCountd.for_dialect(D.SNOWFLAKE),
-
     # countd_approx
     base.AggCountdApprox(
         variants=[
             V(D.SNOWFLAKE, sa.func.APPROX_COUNT_DISTINCT),
         ]
     ),
-
     # countd_if
     base.AggCountdIf.for_dialect(D.SNOWFLAKE),
-
     # max
     base.AggMax.for_dialect(D.SNOWFLAKE),
-
     # median
     AggMedianIntSF.for_dialect(D.SNOWFLAKE),
     AggMedianFloatSF.for_dialect(D.SNOWFLAKE),
     AggMedianDateSF.for_dialect(D.SNOWFLAKE),
     AggMedianDateTimeSF.for_dialect(D.SNOWFLAKE),
-
     # quantile
     base.AggQuantile(
         variants=[
-            V(D.SNOWFLAKE, lambda expr, quant: within_group(sa.func.percentile_disc(quantile_value(un_literal(quant))), expr)),
+            V(
+                D.SNOWFLAKE,
+                lambda expr, quant: within_group(sa.func.percentile_disc(quantile_value(un_literal(quant))), expr),
+            ),
         ]
     ),
-
     # min
     base.AggMin.for_dialect(D.SNOWFLAKE),
-
     # stdev
     base.AggStdev.for_dialect(D.SNOWFLAKE),
-
     # stdevp
     base.AggStdevp.for_dialect(D.SNOWFLAKE),
-
     # sum
     base.AggSum.for_dialect(D.SNOWFLAKE),
-
     # sum_if
     base.AggSumIf.for_dialect(D.SNOWFLAKE),
-
     # var
     base.AggVar.for_dialect(D.SNOWFLAKE),
-
     # varp
     base.AggVarp.for_dialect(D.SNOWFLAKE),
 ]

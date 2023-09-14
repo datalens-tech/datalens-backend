@@ -2,11 +2,17 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Any, List, Optional, Type, TypeVar, Generic
+from typing import (
+    Any,
+    Generic,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 from bi_core.db.elements import SchemaColumn
 from bi_core.raw_data_streaming.stream import DataStreamBase
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,12 +46,12 @@ class DataSink:
         if exc_type is None:
             self.finalize()
         else:
-            LOGGER.exception('Exception occurred in DataSink')
+            LOGGER.exception("Exception occurred in DataSink")
         self.cleanup()
         self.close()
 
 
-_DATA_STREAM_TV = TypeVar('_DATA_STREAM_TV')
+_DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV")
 
 
 class DataSinkAsync(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):

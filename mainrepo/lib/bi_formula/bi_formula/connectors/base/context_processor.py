@@ -5,21 +5,26 @@ import abc
 from sqlalchemy.sql.elements import ClauseElement
 
 from bi_formula.core.datatype import DataType
-from bi_formula.definitions.flags import ContextFlag, ContextFlags
+from bi_formula.definitions.flags import (
+    ContextFlag,
+    ContextFlags,
+)
 
 
 class ContextPostprocessor(abc.ABC):
     def get_warnings(self, data_type: DataType, flags: ContextFlags) -> list[str]:
         result: list[str] = []
         if flags & ContextFlag.DEPRECATED:
-            result.append('Usage of deprecated function')
+            result.append("Usage of deprecated function")
 
         return result
 
     def postprocess_expression(
-            self, data_type: DataType, expression: ClauseElement, flags: ContextFlags,
+        self,
+        data_type: DataType,
+        expression: ClauseElement,
+        flags: ContextFlags,
     ) -> tuple[ClauseElement, ContextFlags]:
-
         return expression, flags
 
 
@@ -33,9 +38,11 @@ class BooleanlessContextPostprocessor(ContextPostprocessor):
         raise NotImplementedError
 
     def postprocess_expression(
-            self, data_type: DataType, expression: ClauseElement, flags: ContextFlags,
+        self,
+        data_type: DataType,
+        expression: ClauseElement,
+        flags: ContextFlags,
     ) -> tuple[ClauseElement, ContextFlags]:
-
         if flags & ContextFlag.IS_CONDITION and not flags & ContextFlag.REQ_CONDITION:
             # expression is a boolean condition, which cannot be used as a value
             expression = self.debooleanize_expression(data_type=data_type, expression=expression)

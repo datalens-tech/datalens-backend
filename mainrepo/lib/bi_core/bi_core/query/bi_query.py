@@ -1,19 +1,26 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import List, Optional, Sequence, Set, Union
-
-from sqlalchemy.sql.elements import TextClause
-from sqlalchemy.sql.selectable import FromClause, Select
-
-import attr
-
-from bi_constants.enums import BIType
-
-from bi_core.query.expression import (
-    ExpressionCtx, OrderByExpressionCtx,
+from typing import (
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Union,
 )
 
+import attr
+from sqlalchemy.sql.elements import TextClause
+from sqlalchemy.sql.selectable import (
+    FromClause,
+    Select,
+)
+
+from bi_constants.enums import BIType
+from bi_core.query.expression import (
+    ExpressionCtx,
+    OrderByExpressionCtx,
+)
 
 SqlSourceType = Union[FromClause, TextClause]
 
@@ -32,17 +39,23 @@ class BIQuery:
     def get_required_avatar_ids(self) -> Set[str]:
         """Collect source avatar references from all expressions in the query."""
 
-        return set(chain.from_iterable(
-            [ctx.avatar_ids
-             for expr_list in (
-                 self.select_expressions,
-                 self.group_by_expressions,
-                 self.order_by_expressions,
-                 self.dimension_filters,
-                 self.measure_filters,
-             ) if expr_list
-             for ctx in expr_list if isinstance(ctx, ExpressionCtx) and ctx.avatar_ids]
-        ))
+        return set(
+            chain.from_iterable(
+                [
+                    ctx.avatar_ids
+                    for expr_list in (
+                        self.select_expressions,
+                        self.group_by_expressions,
+                        self.order_by_expressions,
+                        self.dimension_filters,
+                        self.measure_filters,
+                    )
+                    if expr_list
+                    for ctx in expr_list
+                    if isinstance(ctx, ExpressionCtx) and ctx.avatar_ids
+                ]
+            )
+        )
 
 
 @attr.s

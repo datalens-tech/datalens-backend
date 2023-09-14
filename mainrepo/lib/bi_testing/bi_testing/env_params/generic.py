@@ -19,11 +19,11 @@ class GenericEnvParamGetter(EnvParamGetter):
         return value
 
     def initialize(self, config: dict) -> None:
-        param_config = config['params']
+        param_config = config["params"]
         for key, key_config in param_config.items():
-            self._key_mapping[key] = (key_config['getter'], key_config['key'])
+            self._key_mapping[key] = (key_config["getter"], key_config["key"])
 
-        self._loader.initialize(config.get('getters', []), requirement_getter=self)
+        self._loader.initialize(config.get("getters", []), requirement_getter=self)
 
     @classmethod
     def from_yaml_file(cls, path: str) -> GenericEnvParamGetter:

@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+from typing import (
+    Collection,
+    Iterator,
+    Optional,
+)
+
 import attr
-from typing import Collection, Iterator, Optional
 
 from bi_core.fields import BIField
 
@@ -16,7 +21,7 @@ class FieldRegistry:
 
     def get(self, id: Optional[str] = None, title: Optional[str] = None) -> BIField:
         if id is not None and title is not None:
-            raise ValueError('Cannot specify both id and title')
+            raise ValueError("Cannot specify both id and title")
 
         if id is not None:
             return self._fields_by_id[id]
@@ -24,7 +29,7 @@ class FieldRegistry:
         if title is not None:
             return self._fields_by_title[title]
 
-        raise ValueError('Either id or title is required')
+        raise ValueError("Either id or title is required")
 
     def add(self, field: BIField) -> None:
         self._field_list.append(field)

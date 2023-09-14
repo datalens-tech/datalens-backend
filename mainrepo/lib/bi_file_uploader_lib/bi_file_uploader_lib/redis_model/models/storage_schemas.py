@@ -1,25 +1,39 @@
 import csv
-from typing import Any, Type
+from typing import (
+    Any,
+    Type,
+)
 
-from marshmallow import fields, post_load, EXCLUDE
+from marshmallow import (
+    EXCLUDE,
+    fields,
+    post_load,
+)
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import FileProcessingStatus
 from bi_core.us_manager.storage_schemas.base_types import SchemaColumnStorageSchema
-
-from bi_file_uploader_lib.enums import ErrorLevel, FileType, CSVEncoding, RenameTenantStatus
-from bi_file_uploader_lib.redis_model.base import BaseSchema, BaseModelSchema
+from bi_file_uploader_lib.enums import (
+    CSVEncoding,
+    ErrorLevel,
+    FileType,
+    RenameTenantStatus,
+)
+from bi_file_uploader_lib.redis_model.base import (
+    BaseModelSchema,
+    BaseSchema,
+)
 from bi_file_uploader_lib.redis_model.models import (
+    CSVFileSettings,
+    CSVFileSourceSettings,
     DataFile,
     DataSource,
     DataSourcePreview,
-    FileProcessingError,
-    CSVFileSettings,
-    CSVFileSourceSettings,
-    GSheetsFileSourceSettings,
-    GSheetsUserSourceProperties,
-    GSheetsUserSourceDataSourceProperties,
     ExcelFileSourceSettings,
+    FileProcessingError,
+    GSheetsFileSourceSettings,
+    GSheetsUserSourceDataSourceProperties,
+    GSheetsUserSourceProperties,
     RenameTenantStatusModel,
 )
 
@@ -59,7 +73,7 @@ class FileTypeOneOfSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'file_type'
+    type_field = "file_type"
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:
         return getattr(obj, self.type_field).name

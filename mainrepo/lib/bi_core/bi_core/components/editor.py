@@ -1,33 +1,60 @@
 from __future__ import annotations
 
-import logging
 from collections import defaultdict
-from typing import Any, FrozenSet, Iterable, Optional, TYPE_CHECKING
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    FrozenSet,
+    Iterable,
+    Optional,
+)
 
 import attr
 
 from bi_constants.enums import (
-    JoinType, ManagedBy, DataSourceRole, CreateDSFrom, DataSourceCreatedVia,
+    CreateDSFrom,
+    DataSourceCreatedVia,
+    DataSourceRole,
+    JoinType,
+    ManagedBy,
 )
-
-import bi_core.exc as exc
-from bi_core.multisource import AvatarRelation, SourceAvatar, BinaryCondition
+from bi_core.base_models import (
+    DefaultConnectionRef,
+    DefaultWhereClause,
+    ObligatoryFilter,
+    connection_ref_from_id,
+)
 from bi_core.components.accessor import DatasetComponentAccessor
-from bi_core.base_models import ObligatoryFilter, DefaultWhereClause, DefaultConnectionRef, connection_ref_from_id
+from bi_core.connectors.base.data_source_migration import get_data_source_migrator
+from bi_core.data_source.type_mapping import get_data_source_class
+from bi_core.data_source_merge_tools import (
+    make_spec_from_dict,
+    update_spec_from_dict,
+)
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionSpecBase, DataSourceCollectionSpec,
+    DataSourceCollectionSpec,
+    DataSourceCollectionSpecBase,
 )
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.data_source_merge_tools import update_spec_from_dict
-from bi_core.db.elements import IndexInfo, SchemaColumn
-from bi_core.data_source.type_mapping import get_data_source_class
-from bi_core.data_source_merge_tools import make_spec_from_dict
-from bi_core.fields import ResultSchema, BIField
-from bi_core.connectors.base.data_source_migration import get_data_source_migrator
+from bi_core.db.elements import (
+    IndexInfo,
+    SchemaColumn,
+)
+import bi_core.exc as exc
+from bi_core.fields import (
+    BIField,
+    ResultSchema,
+)
+from bi_core.multisource import (
+    AvatarRelation,
+    BinaryCondition,
+    SourceAvatar,
+)
 
 if TYPE_CHECKING:
-    from bi_core.us_dataset import Dataset
     from bi_core.us_connection_base import ConnectionBase
+    from bi_core.us_dataset import Dataset
 
 
 LOGGER = logging.getLogger(__name__)
@@ -46,22 +73,26 @@ class DatasetComponentEditor:
         self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)  # It checks for existence
 
     def add_data_source_collection(
-            self, *,
-            source_id: str,
-            title: Optional[str],
-            managed_by: ManagedBy = ManagedBy.user,
-            valid: bool = True,
+        self,
+        *,
+        source_id: str,
+        title: Optional[str],
+        managed_by: ManagedBy = ManagedBy.user,
+        valid: bool = True,
     ) -> DataSourceCollectionSpecBase:
         """Add a new data source collection configuration entry. Return its ID"""
 
         dsrc_coll_spec = DataSourceCollectionSpec(
-            id=source_id, title=title, managed_by=managed_by, valid=valid,
+            id=source_id,
+            title=title,
+            managed_by=managed_by,
+            valid=valid,
         )
         self._dataset.data.source_collections.append(dsrc_coll_spec)
         return dsrc_coll_spec
 
     def update_data_source_collection(
-            self, source_id: str, title: Optional[str] = None, valid: Optional[bool] = None
+        self, source_id: str, title: Optional[str] = None, valid: Optional[bool] = None
     ) -> None:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
 
@@ -82,36 +113,40 @@ class DatasetComponentEditor:
             bound_avatars = self._ds_accessor.get_avatar_list(source_id=source_id)
             if bound_avatars:
                 raise exc.DatasetConfigurationError(
-                    'Can\'t delete source because it is bound by avatars: {}'.format([ava.id for ava in bound_avatars])
+                    "Can't delete source because it is bound by avatars: {}".format([ava.id for ava in bound_avatars])
                 )
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
         assert dsrc_coll_spec is not None
         self._dataset.data.source_collections.remove(dsrc_coll_spec)
 
     def add_data_source(
-            self, *,
-            source_id: str,
-            role: DataSourceRole = DataSourceRole.origin,
-            created_from: CreateDSFrom,
-            connection_id: Optional[str] = None,
-            title: Optional[str] = None,
-            raw_schema: Optional[list[SchemaColumn]] = None,
-            index_info_set: Optional[FrozenSet[IndexInfo]] = None,
-            managed_by: Optional[ManagedBy] = None,
-            parameters: Optional[dict[str, Any]] = None,
+        self,
+        *,
+        source_id: str,
+        role: DataSourceRole = DataSourceRole.origin,
+        created_from: CreateDSFrom,
+        connection_id: Optional[str] = None,
+        title: Optional[str] = None,
+        raw_schema: Optional[list[SchemaColumn]] = None,
+        index_info_set: Optional[FrozenSet[IndexInfo]] = None,
+        managed_by: Optional[ManagedBy] = None,
+        parameters: Optional[dict[str, Any]] = None,
     ) -> None:
         """Add a new data source to the dataset"""
 
         if not created_from:
-            raise ValueError('created_from is required')
+            raise ValueError("created_from is required")
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
         if dsrc_coll_spec is None:
             managed_by = managed_by or ManagedBy.user
             assert managed_by is not None
             if role != DataSourceRole.origin:
-                raise exc.DatasetConfigurationError(f'No data source collection for ID {source_id}')
+                raise exc.DatasetConfigurationError(f"No data source collection for ID {source_id}")
             dsrc_coll_spec = self.add_data_source_collection(
-                source_id=source_id, managed_by=managed_by, title=title, valid=True,
+                source_id=source_id,
+                managed_by=managed_by,
+                title=title,
+                valid=True,
             )
 
         assert isinstance(dsrc_coll_spec, DataSourceCollectionSpec)
@@ -121,23 +156,23 @@ class DatasetComponentEditor:
 
         connection_ref = connection_ref_from_id(connection_id=connection_id)
         parameters = parameters or {}
-        parameters['connection_ref'] = connection_ref
-        parameters['raw_schema'] = raw_schema
-        parameters['index_info_set'] = index_info_set
+        parameters["connection_ref"] = connection_ref
+        parameters["raw_schema"] = raw_schema
+        parameters["index_info_set"] = index_info_set
 
         dsrc_spec = make_spec_from_dict(source_type=created_from, data=parameters)
 
         dsrc_coll_spec.set_for_role(role, dsrc_spec)
 
     def update_data_source(
-            self,
-            source_id: str,
-            role: Optional[DataSourceRole] = None,
-            connection_id: Optional[str] = None,
-            created_from: Optional[CreateDSFrom] = None,
-            raw_schema: Optional[list] = None,
-            index_info_set: Optional[FrozenSet[IndexInfo]] = None,
-            **parameters: Any,
+        self,
+        source_id: str,
+        role: Optional[DataSourceRole] = None,
+        connection_id: Optional[str] = None,
+        created_from: Optional[CreateDSFrom] = None,
+        raw_schema: Optional[list] = None,
+        index_info_set: Optional[FrozenSet[IndexInfo]] = None,
+        **parameters: Any,
     ) -> None:
         """Update data source config data"""
         if role is None:
@@ -150,19 +185,17 @@ class DatasetComponentEditor:
         assert dsrc_spec is not None
 
         if connection_id is not None:
-            parameters['connection_ref'] = DefaultConnectionRef(conn_id=connection_id)
+            parameters["connection_ref"] = DefaultConnectionRef(conn_id=connection_id)
         if raw_schema is not None:
-            parameters['raw_schema'] = raw_schema
+            parameters["raw_schema"] = raw_schema
         # If index info was not provided during update we should clear it
-        parameters['index_info_set'] = index_info_set
+        parameters["index_info_set"] = index_info_set
 
         new_source_type = created_from if created_from is not None else dsrc_spec.source_type
         dsrc_spec = update_spec_from_dict(source_type=new_source_type, data=parameters, old_spec=dsrc_spec)
         dsrc_coll_spec.set_for_role(role=role, value=dsrc_spec)
 
-    def remove_data_source(
-            self, source_id: str, role: DataSourceRole, delete_mat_table: bool = True
-    ) -> None:
+    def remove_data_source(self, source_id: str, role: DataSourceRole, delete_mat_table: bool = True) -> None:
         """Remove data source configuration from collection"""
 
         if role == DataSourceRole.origin:
@@ -171,7 +204,7 @@ class DatasetComponentEditor:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
 
             if dsrc_coll_spec.managed_by != ManagedBy.user:
-                LOGGER.info(f'dsrc_coll_spec.managed_by = {dsrc_coll_spec.managed_by}. Skipping datasource deletion.')
+                LOGGER.info(f"dsrc_coll_spec.managed_by = {dsrc_coll_spec.managed_by}. Skipping datasource deletion.")
                 return
 
             # We can delete only sources from non-ref collections
@@ -195,11 +228,15 @@ class DatasetComponentEditor:
             if not relations_by_right[avatar.id]:
                 return avatar.id
 
-        raise RuntimeError('No avatars left to elect from')
+        raise RuntimeError("No avatars left to elect from")
 
     def add_avatar(
-            self, avatar_id: str, source_id: str, title: str,
-        managed_by: Optional[ManagedBy] = None, valid: bool = True,
+        self,
+        avatar_id: str,
+        source_id: str,
+        title: str,
+        managed_by: Optional[ManagedBy] = None,
+        valid: bool = True,
     ) -> None:
         is_root = not self._dataset.data.source_avatars  # first avatar is always root
         self.ensure_data_source_exists(source_id)
@@ -215,9 +252,11 @@ class DatasetComponentEditor:
         )
 
     def update_avatar(
-            self,
-            avatar_id: str, source_id: Optional[str] = None,
-            title: Optional[str] = None, valid: Optional[bool] = None,
+        self,
+        avatar_id: str,
+        source_id: Optional[str] = None,
+        title: Optional[str] = None,
+        valid: Optional[bool] = None,
     ) -> None:
         avatar = self._ds_accessor.get_avatar_opt(avatar_id=avatar_id)
         if avatar is not None:
@@ -230,13 +269,12 @@ class DatasetComponentEditor:
                 avatar.valid = valid
 
     def remove_avatar(self, avatar_id: str) -> None:
-        bound_relations = (
-            self._ds_accessor.get_avatar_relation_list(left_avatar_id=avatar_id)
-            + self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
-        )
+        bound_relations = self._ds_accessor.get_avatar_relation_list(
+            left_avatar_id=avatar_id
+        ) + self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
         if bound_relations:
             raise exc.DatasetConfigurationError(
-                'Can\'t delete avatar because it is bound by relations: {}'.format([rel.id for rel in bound_relations])
+                "Can't delete avatar because it is bound by relations: {}".format([rel.id for rel in bound_relations])
             )
 
         avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
@@ -263,7 +301,7 @@ class DatasetComponentEditor:
                     break
 
                 if len(left_relations) != 1:
-                    raise exc.DatasetConfigurationError('Can\'t have more than one left relation')
+                    raise exc.DatasetConfigurationError("Can't have more than one left relation")
 
                 relations_to_reverse.append(left_relations[0].id)
                 current_avatar_id = left_relations[0].left_avatar_id
@@ -275,18 +313,18 @@ class DatasetComponentEditor:
         self._ds_accessor.get_avatar_strict(avatar_id)  # It checks for existence
 
     def add_avatar_relation(
-            self,
-            relation_id: str,
-            left_avatar_id: str,
-            right_avatar_id: str,
-            conditions: list[BinaryCondition],
-            join_type: Optional[JoinType] = None,
-            managed_by: Optional[ManagedBy] = None,
-            valid: bool = True
+        self,
+        relation_id: str,
+        left_avatar_id: str,
+        right_avatar_id: str,
+        conditions: list[BinaryCondition],
+        join_type: Optional[JoinType] = None,
+        managed_by: Optional[ManagedBy] = None,
+        valid: bool = True,
     ) -> None:
         # validate
         if self._ds_accessor.get_avatar_relation_list(right_avatar_id=right_avatar_id):
-            raise exc.DatasetConfigurationError('Avatar {} already has a left relation'.format(right_avatar_id))
+            raise exc.DatasetConfigurationError("Avatar {} already has a left relation".format(right_avatar_id))
         for avatar_id in (left_avatar_id, right_avatar_id):
             if avatar_id:  # isn't it always true?
                 self.ensure_avatar_exists(avatar_id=avatar_id)
@@ -308,10 +346,11 @@ class DatasetComponentEditor:
         )
 
     def update_avatar_relation(
-            self, relation_id: str,
-            conditions: Optional[list[BinaryCondition]] = None,
-            join_type: Optional[JoinType] = None,
-            valid: Optional[bool] = None,
+        self,
+        relation_id: str,
+        conditions: Optional[list[BinaryCondition]] = None,
+        join_type: Optional[JoinType] = None,
+        valid: Optional[bool] = None,
     ) -> None:
         # left/right avatar IDs cannot be changed. Delete/create new relation to do that
         relation = self._ds_accessor.get_avatar_relation_opt(relation_id=relation_id)
@@ -326,7 +365,7 @@ class DatasetComponentEditor:
     def reverse_relation(self, relation_id: str) -> None:
         """Swap left and right parts of the relation. This might be needed if root avatar is reset"""
         # TODO
-        raise RuntimeError('Relation rebuilding is not supported')
+        raise RuntimeError("Relation rebuilding is not supported")
 
     def remove_avatar_relation(self, relation_id: str) -> None:
         found_ind: Optional[int] = None
@@ -337,12 +376,12 @@ class DatasetComponentEditor:
             del self._dataset.data.avatar_relations[found_ind]
 
     def add_obligatory_filter(
-            self,
-            obfilter_id: str,
-            field_guid: str,
-            default_filters: list[DefaultWhereClause],
-            managed_by: Optional[ManagedBy] = None,
-            valid: bool = True,
+        self,
+        obfilter_id: str,
+        field_guid: str,
+        default_filters: list[DefaultWhereClause],
+        managed_by: Optional[ManagedBy] = None,
+        valid: bool = True,
     ) -> None:
         for filter_object in self._dataset.data.obligatory_filters:
             if filter_object.field_guid == field_guid:
@@ -358,10 +397,10 @@ class DatasetComponentEditor:
         self._dataset.data.obligatory_filters.append(filter_object)
 
     def update_obligatory_filter(
-            self,
-            obfilter_id: str,
-            default_filters: Optional[list[DefaultWhereClause]] = None,
-            valid: Optional[bool] = None,
+        self,
+        obfilter_id: str,
+        default_filters: Optional[list[DefaultWhereClause]] = None,
+        valid: Optional[bool] = None,
     ) -> None:
         for filter_object in self._dataset.data.obligatory_filters:
             if filter_object.id == obfilter_id:
@@ -389,7 +428,7 @@ class DatasetComponentEditor:
         self._dataset.data.revision_id = revision_id
 
     def set_created_via(self, created_via: DataSourceCreatedVia) -> None:
-        self._dataset.meta['created_via'] = created_via.name
+        self._dataset.meta["created_via"] = created_via.name
 
     def replace_connection(self, old_connection: ConnectionBase, new_connection: ConnectionBase) -> None:
         old_migrator = get_data_source_migrator(old_connection.conn_type)
@@ -405,5 +444,6 @@ class DatasetComponentEditor:
             new_connection_ref = new_connection.conn_ref
             assert new_connection_ref is not None
             new_source_spec = new_migrator.import_migration_dtos(
-                migration_dtos=migration_dtos, connection_ref=new_connection_ref)
+                migration_dtos=migration_dtos, connection_ref=new_connection_ref
+            )
             old_source_coll_spec.set_for_role(role=role, value=new_source_spec)

@@ -4,7 +4,8 @@ import abc
 from typing import Optional
 
 from bi_query_processing.compilation.primitives import (
-    CompiledQuery, CompiledMultiQueryBase,
+    CompiledMultiQueryBase,
+    CompiledQuery,
 )
 from bi_query_processing.multi_query.tools import CompiledMultiQueryPatch
 from bi_query_processing.utils.name_gen import PrefixedIdGen
@@ -13,8 +14,10 @@ from bi_query_processing.utils.name_gen import PrefixedIdGen
 class MultiQuerySplitterBase(abc.ABC):
     @abc.abstractmethod
     def split_query(
-            self,
-            query: CompiledQuery, requirement_subtree: CompiledMultiQueryBase,
-            query_id_gen: PrefixedIdGen, expr_id_gen: PrefixedIdGen,
+        self,
+        query: CompiledQuery,
+        requirement_subtree: CompiledMultiQueryBase,
+        query_id_gen: PrefixedIdGen,
+        expr_id_gen: PrefixedIdGen,
     ) -> Optional[CompiledMultiQueryPatch]:
         raise NotImplementedError

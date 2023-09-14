@@ -4,10 +4,12 @@ import logging
 
 from aiohttp import web
 
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-
+from bi_api_commons.aio.middlewares.error_handling_outer import (
+    AIOHTTPErrorHandler,
+    ErrorData,
+    ErrorLevel,
+)
 from bi_core.connection_executors.qe_serializer import ActionSerializer
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -22,10 +24,10 @@ class RQEErrorHandler(AIOHTTPErrorHandler):
                 level=ErrorLevel.info,
             )
         else:
-            LOGGER.exception('RQE-async handler error: %r', err)
+            LOGGER.exception("RQE-async handler error: %r", err)
             return ErrorData(
                 500,
-                http_reason='Internal server error',
+                http_reason="Internal server error",
                 response_body=ActionSerializer().serialize_exc(err),
                 level=ErrorLevel.error,
             )

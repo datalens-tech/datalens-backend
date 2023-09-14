@@ -1,28 +1,39 @@
 from __future__ import annotations
 
-from typing import ClassVar, Dict, Optional, Type
+from typing import (
+    ClassVar,
+    Dict,
+    Optional,
+    Type,
+)
 
 import attr
 
 from bi_constants.enums import DataSourceRole
-
-from bi_core.data_processing.processing.operation import BaseOp, DownloadOp, CalcOp, JoinOp
 from bi_core.data_processing.processing.context import OpExecutionContext
 from bi_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from bi_core.data_processing.processing.db_base.op_executors import (
-    OpExecutorAsync, DownloadOpExecutorAsync, CalcOpExecutorAsync, JoinOpExecutorAsync
+    CalcOpExecutorAsync,
+    DownloadOpExecutorAsync,
+    JoinOpExecutorAsync,
+    OpExecutorAsync,
 )
-from bi_core.data_processing.processing.source_db.selector_exec_adapter import SourceDbExecAdapter
-from bi_core.data_processing.stream_base import AbstractStream
+from bi_core.data_processing.processing.operation import (
+    BaseOp,
+    CalcOp,
+    DownloadOp,
+    JoinOp,
+)
 from bi_core.data_processing.processing.processor import OperationProcessorAsyncBase
+from bi_core.data_processing.processing.source_db.selector_exec_adapter import SourceDbExecAdapter
 from bi_core.data_processing.selectors.base import DataSelectorAsyncBase
+from bi_core.data_processing.stream_base import AbstractStream
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.local_cache import USEntryBuffer
 
 
 @attr.s
 class SourceDbOperationProcessor(OperationProcessorAsyncBase):
-
     _role: DataSourceRole = attr.ib(kw_only=True)
     _dataset: Dataset = attr.ib(kw_only=True)
     _selector: DataSelectorAsyncBase = attr.ib(kw_only=True)

@@ -1,31 +1,48 @@
 from __future__ import annotations
 
 import abc
-from typing import AbstractSet, Callable, ClassVar, Optional, Type, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    AbstractSet,
+    Callable,
+    ClassVar,
+    Optional,
+    Type,
+)
 
 from sqlalchemy.orm import Query
 
 from bi_constants.enums import SourceBackendType
 from bi_core.connections_security.base import ConnSecuritySettings
+from bi_core.connectors.base.data_source_migration import (
+    DataSourceMigrator,
+    DefaultDataSourceMigrator,
+)
+from bi_core.connectors.base.lifecycle import (
+    ConnectionLifecycleManager,
+    DefaultConnectionLifecycleManager,
+)
 from bi_core.connectors.base.query_compiler import QueryCompiler
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from bi_core.data_source.base import DataSource
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
-from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager, DefaultConnectionLifecycleManager
-from bi_core.connectors.base.data_source_migration import DataSourceMigrator, DefaultDataSourceMigrator
 
 if TYPE_CHECKING:
     from marshmallow import Schema
     from sqlalchemy.types import TypeEngine
-    from bi_constants.enums import ConnectionType, CreateDSFrom
-    from bi_core.us_connection_base import ConnectionBase
-    from bi_core.db.native_type import GenericNativeType
-    from bi_core.db.conversion_base import TypeTransformer
-    from bi_core.connection_executors.common_base import ConnExecutorBase
-    from bi_core.connection_executors.async_base import AsyncConnExecutorBase
+
+    from bi_constants.enums import (
+        ConnectionType,
+        CreateDSFrom,
+    )
     from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+    from bi_core.connection_executors.async_base import AsyncConnExecutorBase
+    from bi_core.connection_executors.common_base import ConnExecutorBase
+    from bi_core.db.conversion_base import TypeTransformer
+    from bi_core.db.native_type import GenericNativeType
     from bi_core.reporting.notifications import BaseNotification
+    from bi_core.us_connection_base import ConnectionBase
 
 
 class CoreSourceDefinition(abc.ABC):

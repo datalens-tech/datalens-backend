@@ -1,28 +1,37 @@
 from functools import reduce
+from itertools import chain
 from operator import ior
 
 import attr
-from itertools import chain
 
-from bi_constants.enums import WhereClauseOperation, BIType, AggregationFunction
-
-from bi_utils.func_tools import method_lru
-
-import bi_formula.core.nodes as formula_nodes
+from bi_api_lib.enums import (
+    BI_TYPE_AGGREGATIONS,
+    FILTERS_BY_TYPE,
+)
+from bi_api_lib.query.registry import (
+    get_compeng_dialect,
+    is_compeng_enabled,
+)
+from bi_constants.enums import (
+    AggregationFunction,
+    BIType,
+    WhereClauseOperation,
+)
 from bi_formula.core.dialect import DialectCombo
-from bi_formula.definitions.registry import OperationRegistry, OPERATION_REGISTRY, FuncKey
+import bi_formula.core.nodes as formula_nodes
+from bi_formula.definitions.registry import (
+    OPERATION_REGISTRY,
+    FuncKey,
+    OperationRegistry,
+)
 from bi_formula.definitions.scope import Scope
 from bi_formula.inspect.expression import iter_operation_calls
-
-from bi_api_lib.enums import FILTERS_BY_TYPE, BI_TYPE_AGGREGATIONS
-from bi_query_processing.compilation.formula_compiler import FormulaCompiler
 from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
-
-from bi_api_lib.query.registry import get_compeng_dialect, is_compeng_enabled
-
+from bi_query_processing.compilation.formula_compiler import FormulaCompiler
+from bi_utils.func_tools import method_lru
 
 _FUNCTION_TAG_TO_SCOPE_MAP: dict[str, Scope] = {
-    'stable': Scope.STABLE,
+    "stable": Scope.STABLE,
 }
 
 
@@ -32,13 +41,15 @@ class SupportedFunctionsManager:
     Service-helper.
     Translate env type to formula's format and provide some wrappers for get_supported_functions.
     """
+
     _supported_tags: tuple[str] = attr.ib()
     _operation_registry: OperationRegistry = attr.ib(default=OPERATION_REGISTRY)
 
     @method_lru(maxsize=1000)
     def get_supported_filters(self, dialect: DialectCombo, user_type: BIType) -> list[WhereClauseOperation]:
         return [
-            op for op in self._get_supported_filters_for_dialect(dialect=dialect)
+            op
+            for op in self._get_supported_filters_for_dialect(dialect=dialect)
             if op in FILTERS_BY_TYPE.get(user_type, [])
         ]
 
@@ -53,7 +64,8 @@ class SupportedFunctionsManager:
         )
 
         return [
-            ag_type for ag_type in BI_TYPE_AGGREGATIONS[user_type]
+            ag_type
+            for ag_type in BI_TYPE_AGGREGATIONS[user_type]
             # TODO: make _agg_functions public?
             if FormulaCompiler._agg_functions.get(ag_type, ag_type.name) in supported_func_names
         ]
@@ -72,11 +84,17 @@ class SupportedFunctionsManager:
         else:
             compeng_supp_funcs = []
 
-        supported_function_names = sorted({
-            func[0] for func in chain.from_iterable((
-                native_supp_funcs, compeng_supp_funcs,
-            ))
-        })
+        supported_function_names = sorted(
+            {
+                func[0]
+                for func in chain.from_iterable(
+                    (
+                        native_supp_funcs,
+                        compeng_supp_funcs,
+                    )
+                )
+            }
+        )
         return supported_function_names
 
     @property

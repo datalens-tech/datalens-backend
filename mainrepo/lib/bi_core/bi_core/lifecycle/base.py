@@ -1,18 +1,24 @@
 from __future__ import annotations
 
 import abc
-from typing import ClassVar, Generic, Type, TypeVar, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Generic,
+    Type,
+    TypeVar,
+)
 
 import attr
 
 from bi_core.us_entry import USEntry
 
 if TYPE_CHECKING:
-    from bi_core.us_manager.us_manager import USManagerBase
     from bi_core.services_registry.top_level import ServicesRegistry
+    from bi_core.us_manager.us_manager import USManagerBase
 
 
-_US_ENTRY_TV = TypeVar('_US_ENTRY_TV', bound=USEntry)
+_US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 
 @attr.s

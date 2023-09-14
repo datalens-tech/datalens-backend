@@ -1,8 +1,8 @@
 import clickhouse_sqlalchemy.types as ch_types
 from sqlalchemy.types import TypeEngine
 
-from bi_formula.core.datatype import DataType
 from bi_formula.connectors.base.type_constructor import DefaultSATypeConstructor
+from bi_formula.core.datatype import DataType
 
 
 class ClickHouseTypeConstructor(DefaultSATypeConstructor):
@@ -10,7 +10,11 @@ class ClickHouseTypeConstructor(DefaultSATypeConstructor):
         type_map: dict[DataType, TypeEngine] = {
             **{
                 str_type: ch_types.Nullable(ch_types.String)
-                for str_type in (DataType.STRING, DataType.GEOPOINT, DataType.GEOPOLYGON,)
+                for str_type in (
+                    DataType.STRING,
+                    DataType.GEOPOINT,
+                    DataType.GEOPOLYGON,
+                )
             },
             DataType.INTEGER: ch_types.Nullable(ch_types.Int64),
             DataType.FLOAT: ch_types.Nullable(ch_types.Float64),

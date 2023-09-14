@@ -1,8 +1,7 @@
-import bi_formula.definitions.operators_unary as base
 from bi_formula.definitions.base import TranslationVariant
+import bi_formula.definitions.operators_unary as base
 
 from bi_connector_snowflake.formula.constants import SnowFlakeDialect as D
-
 
 V = TranslationVariant.make
 
@@ -17,7 +16,6 @@ DEFINITIONS_UNARY = [
             V(D.SNOWFLAKE, lambda x: x == False),  # noqa: E712
         ]
     ),
-
     # istrue
     base.UnaryIsTrueStringGeo.for_dialect(D.SNOWFLAKE),
     base.UnaryIsTrueNumbers.for_dialect(D.SNOWFLAKE),
@@ -27,10 +25,8 @@ DEFINITIONS_UNARY = [
             V(D.SNOWFLAKE, lambda x: x == True),  # noqa: E712
         ]
     ),
-
     # neg
     base.UnaryNegate.for_dialect(D.SNOWFLAKE),
-
     # not
     base.UnaryNotBool.for_dialect(D.SNOWFLAKE),
     base.UnaryNotNumbers.for_dialect(D.SNOWFLAKE),

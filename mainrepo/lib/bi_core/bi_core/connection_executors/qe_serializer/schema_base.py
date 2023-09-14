@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 import abc
-from typing import Dict, Any
+from typing import (
+    Any,
+    Dict,
+)
 
-from marshmallow import Schema, post_load
+from marshmallow import (
+    Schema,
+    post_load,
+)
 
 
 class BaseQEAPISchema(Schema):

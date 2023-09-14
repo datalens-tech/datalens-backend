@@ -1,16 +1,21 @@
 import abc
 import asyncio
-from typing import List, Dict
 from collections import defaultdict
+from typing import (
+    Dict,
+    List,
+)
 
 import attr
 
-from bi_task_processor.task import TaskInstance, InstanceID
+from bi_task_processor.task import (
+    InstanceID,
+    TaskInstance,
+)
 
 
 # i will change it later
 class BaseTaskStateImpl(metaclass=abc.ABCMeta):
-
     @abc.abstractmethod
     def set_state(self, task: TaskInstance, state: str):
         pass
@@ -46,22 +51,22 @@ class TaskState:
     _impl: BaseTaskStateImpl = attr.ib()
 
     def set_scheduled(self, task: TaskInstance):
-        self._impl.set_state(task, 'scheduled')
+        self._impl.set_state(task, "scheduled")
 
     def set_started(self, task: TaskInstance):
-        self._impl.set_state(task, 'started')
+        self._impl.set_state(task, "started")
 
     def set_failed(self, task: TaskInstance):
-        self._impl.set_state(task, 'failed')
+        self._impl.set_state(task, "failed")
 
     def set_retry(self, task: TaskInstance):
-        self._impl.set_state(task, 'retry')
+        self._impl.set_state(task, "retry")
 
     def set_aborted(self, task: TaskInstance):
-        self._impl.set_state(task, 'aborted')
+        self._impl.set_state(task, "aborted")
 
     def set_success(self, task: TaskInstance):
-        self._impl.set_state(task, 'success')
+        self._impl.set_state(task, "success")
 
     def get_state(self, task: TaskInstance) -> List:
         return self._impl.get_state(task)
@@ -78,8 +83,8 @@ async def wait_task(task: TaskInstance, state: TaskState, timeout: int = 10, int
     while spent_time < timeout:
         current_state = state.get_state(task)
         # Has the task reached the final state?
-        if {'success', 'failed'} & set(state.get_state(task)):
+        if {"success", "failed"} & set(state.get_state(task)):
             return current_state
         await asyncio.sleep(interval)
         spent_time += interval
-    raise RuntimeError('Task was not complete in time')
+    raise RuntimeError("Task was not complete in time")

@@ -4,7 +4,10 @@ from typing import List
 
 import pytest
 
-from bi_formula.core import nodes, exc
+from bi_formula.core import (
+    exc,
+    nodes,
+)
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.shortcuts import n
 from bi_formula.validation.aggregation import AggregationChecker
@@ -14,31 +17,33 @@ from bi_formula.validation.validator import validate
 
 def get_dims() -> List[nodes.FormulaItem]:
     return [
-        nodes.Field.make('Dim Field'),
-        nodes.FuncCall.make(name='+', args=[
-            nodes.Field.make('Other Field'),
-            nodes.FuncCall.make(name='dim_func', args=[
-                nodes.Field.make('Third Field'),
-            ]),
-        ]),
+        nodes.Field.make("Dim Field"),
+        nodes.FuncCall.make(
+            name="+",
+            args=[
+                nodes.Field.make("Other Field"),
+                nodes.FuncCall.make(
+                    name="dim_func",
+                    args=[
+                        nodes.Field.make("Third Field"),
+                    ],
+                ),
+            ],
+        ),
     ]
 
 
 def validate_aggregations(
-        node: nodes.FormulaItem, env: ValidationEnvironment,
-        dimensions: List[nodes.FormulaItem],
-        collect_errors: bool = False,
+    node: nodes.FormulaItem,
+    env: ValidationEnvironment,
+    dimensions: List[nodes.FormulaItem],
+    collect_errors: bool = False,
 ) -> None:
     validate(
-        node, env=env,
-        checkers=[
-            AggregationChecker(
-                valid_env=env,
-                inspect_env=InspectionEnvironment(),
-                global_dimensions=dimensions
-            )
-        ],
-        collect_errors=collect_errors
+        node,
+        env=env,
+        checkers=[AggregationChecker(valid_env=env, inspect_env=InspectionEnvironment(), global_dimensions=dimensions)],
+        collect_errors=collect_errors,
     )
 
 
@@ -48,91 +53,194 @@ def test_no_errors():
     env = ValidationEnvironment()
 
     # not aggregated
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='+', args=[
-            dim2, nodes.LiteralFloat.make(1.1),
-        ]),
-    ), env=env, dimensions=dims)
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="+",
+                args=[
+                    dim2,
+                    nodes.LiteralFloat.make(1.1),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
 
     # aggregated
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.Field.make('Some Field')
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.LiteralString.make('qwerty')
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.ParenthesizedExpr.make(
-                nodes.LiteralString.make('qwerty'),
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(name="sum", args=[nodes.Field.make("Some Field")]),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(name="sum", args=[nodes.LiteralString.make("qwerty")]),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="sum",
+                args=[
+                    nodes.ParenthesizedExpr.make(
+                        nodes.LiteralString.make("qwerty"),
+                    ),
+                ],
             ),
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.FuncCall.make(name='+', args=[
-                nodes.Field.make('Barley Field'),
-                nodes.Field.make('Other Field'),
-            ]),
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.FuncCall.make(name='+', args=[
-                dim1,
-                nodes.Field.make('Other Field'),
-            ]),
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.FuncCall.make(name='+', args=[
-                dim1, dim2,
-            ]),
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='sum', args=[
-            nodes.FuncCall.make(name='+', args=[
-                dim2, nodes.LiteralFloat.make(1.1),
-            ]),
-        ]),
-    ), env=env, dimensions=dims)
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="sum",
+                args=[
+                    nodes.FuncCall.make(
+                        name="+",
+                        args=[
+                            nodes.Field.make("Barley Field"),
+                            nodes.Field.make("Other Field"),
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="sum",
+                args=[
+                    nodes.FuncCall.make(
+                        name="+",
+                        args=[
+                            dim1,
+                            nodes.Field.make("Other Field"),
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="sum",
+                args=[
+                    nodes.FuncCall.make(
+                        name="+",
+                        args=[
+                            dim1,
+                            dim2,
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="sum",
+                args=[
+                    nodes.FuncCall.make(
+                        name="+",
+                        args=[
+                            dim2,
+                            nodes.LiteralFloat.make(1.1),
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
 
     # nested aggregated
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='func', args=[
-            nodes.FuncCall.make(name='sum', args=[
-                nodes.FuncCall.make(name='+', args=[
-                    dim2, nodes.LiteralFloat.make(1.1),
-                ]),
-            ]),
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='func', args=[
-            nodes.FuncCall.make(name='sum', args=[
-                nodes.FuncCall.make(name='+', args=[
-                    dim2, nodes.LiteralFloat.make(1.1),
-                ]),
-            ]),
-            dim2,
-        ]),
-    ), env=env, dimensions=dims)
-    validate_aggregations(node=nodes.Formula(
-        nodes.FuncCall.make(name='func', args=[
-            nodes.LiteralBoolean.make(True),
-            nodes.FuncCall.make(name='sum', args=[
-                nodes.FuncCall.make(name='+', args=[
-                    dim2, nodes.LiteralFloat.make(1.1),
-                ]),
-            ]),
-        ]),
-    ), env=env, dimensions=dims)
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="func",
+                args=[
+                    nodes.FuncCall.make(
+                        name="sum",
+                        args=[
+                            nodes.FuncCall.make(
+                                name="+",
+                                args=[
+                                    dim2,
+                                    nodes.LiteralFloat.make(1.1),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="func",
+                args=[
+                    nodes.FuncCall.make(
+                        name="sum",
+                        args=[
+                            nodes.FuncCall.make(
+                                name="+",
+                                args=[
+                                    dim2,
+                                    nodes.LiteralFloat.make(1.1),
+                                ],
+                            ),
+                        ],
+                    ),
+                    dim2,
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.FuncCall.make(
+                name="func",
+                args=[
+                    nodes.LiteralBoolean.make(True),
+                    nodes.FuncCall.make(
+                        name="sum",
+                        args=[
+                            nodes.FuncCall.make(
+                                name="+",
+                                args=[
+                                    dim2,
+                                    nodes.LiteralFloat.make(1.1),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        env=env,
+        dimensions=dims,
+    )
 
 
 def test_double_aggregation():
@@ -140,16 +248,29 @@ def test_double_aggregation():
     env = ValidationEnvironment()
 
     with pytest.raises(exc.ValidationError) as exc_info:
-        validate_aggregations(nodes.Formula(
-            nodes.FuncCall.make(name='+', args=[
-                nodes.LiteralInteger.make(8),
-                nodes.FuncCall.make(name='sum', args=[
-                    nodes.FuncCall.make(name='avg', args=[
-                        nodes.Field.make('Barley Field'),
-                    ]),
-                ]),
-            ]),
-        ), env=env, dimensions=dims)
+        validate_aggregations(
+            nodes.Formula(
+                nodes.FuncCall.make(
+                    name="+",
+                    args=[
+                        nodes.LiteralInteger.make(8),
+                        nodes.FuncCall.make(
+                            name="sum",
+                            args=[
+                                nodes.FuncCall.make(
+                                    name="avg",
+                                    args=[
+                                        nodes.Field.make("Barley Field"),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ),
+            env=env,
+            dimensions=dims,
+        )
     assert exc_info.value.errors[0].code == exc.DoubleAggregationError.default_code
 
 
@@ -158,19 +279,30 @@ def test_window_sum_is_not_aggregation():
     dims = get_dims()
     env = ValidationEnvironment()
 
-    validate_aggregations(nodes.Formula(
-        nodes.FuncCall.make(name='+', args=[
-            nodes.LiteralInteger.make(8),
-            nodes.WindowFuncCall.make(
-                name='sum', args=[
-                    nodes.FuncCall.make(name='avg', args=[
-                        nodes.Field.make('Barley Field'),
-                    ]),
+    validate_aggregations(
+        nodes.Formula(
+            nodes.FuncCall.make(
+                name="+",
+                args=[
+                    nodes.LiteralInteger.make(8),
+                    nodes.WindowFuncCall.make(
+                        name="sum",
+                        args=[
+                            nodes.FuncCall.make(
+                                name="avg",
+                                args=[
+                                    nodes.Field.make("Barley Field"),
+                                ],
+                            ),
+                        ],
+                        grouping=nodes.WindowGroupingTotal(),
+                    ),
                 ],
-                grouping=nodes.WindowGroupingTotal(),
             ),
-        ]),
-    ), env=env, dimensions=dims)
+        ),
+        env=env,
+        dimensions=dims,
+    )
     assert True  # exception was not raised from the previous statement
 
 
@@ -180,28 +312,36 @@ def test_inconsistent_aggregation():
     env = ValidationEnvironment()
 
     with pytest.raises(exc.ValidationError) as exc_info:
-        validate_aggregations(node=nodes.Formula(
-            nodes.FuncCall.make(name='+', args=[
-                nodes.FuncCall.make(name='sum', args=[
-                    nodes.Field.make('Some Field')
-                ]),
-                nodes.Field.make('Rye Field')
-            ]),
-        ), env=env, dimensions=dims)
+        validate_aggregations(
+            node=nodes.Formula(
+                nodes.FuncCall.make(
+                    name="+",
+                    args=[
+                        nodes.FuncCall.make(name="sum", args=[nodes.Field.make("Some Field")]),
+                        nodes.Field.make("Rye Field"),
+                    ],
+                ),
+            ),
+            env=env,
+            dimensions=dims,
+        )
     assert exc_info.value.errors[0].code == exc.InconsistentAggregationError.default_code
 
     with pytest.raises(exc.ValidationError) as exc_info:
-        validate_aggregations(node=nodes.Formula(
-            nodes.FuncCall.make(name='+', args=[
-                nodes.FuncCall.make(name='sum', args=[
-                    nodes.Field.make('Some Field')
-                ]),
-                nodes.FuncCall.make(name='some_func', args=[
-                    nodes.Field.make('Rye Field')
-                ]),
-                dim1,
-            ]),
-        ), env=env, dimensions=dims)
+        validate_aggregations(
+            node=nodes.Formula(
+                nodes.FuncCall.make(
+                    name="+",
+                    args=[
+                        nodes.FuncCall.make(name="sum", args=[nodes.Field.make("Some Field")]),
+                        nodes.FuncCall.make(name="some_func", args=[nodes.Field.make("Rye Field")]),
+                        dim1,
+                    ],
+                ),
+            ),
+            env=env,
+            dimensions=dims,
+        )
     assert exc_info.value.errors[0].code == exc.InconsistentAggregationError.default_code
 
 
@@ -213,17 +353,19 @@ def test_window_func_of_agg_with_dimensions():
     dims = get_dims()
     env = ValidationEnvironment()
 
-    validate_aggregations(node=nodes.Formula(
-        nodes.WindowFuncCall.make(
-            name='rank',
-            args=[
-                nodes.FuncCall.make(name='sum', args=[nodes.Field.make('Some Field')]),
-            ],
-            grouping=nodes.WindowGroupingWithin.make(dim_list=[
-                *dims
-            ])
+    validate_aggregations(
+        node=nodes.Formula(
+            nodes.WindowFuncCall.make(
+                name="rank",
+                args=[
+                    nodes.FuncCall.make(name="sum", args=[nodes.Field.make("Some Field")]),
+                ],
+                grouping=nodes.WindowGroupingWithin.make(dim_list=[*dims]),
+            ),
         ),
-    ), env=env, dimensions=dims)
+        env=env,
+        dimensions=dims,
+    )
     assert True  # exception was not raised from the previous statement
 
 
@@ -236,15 +378,17 @@ def test_multiple_errors():
             validate_aggregations(
                 n.formula(
                     n.func.DO_SOMETHING(
-                        n.func.SUM(n.func.AVG(n.field('Electromagnetic Field'))),  # 1. double aggregation
-                        n.func.MAX(n.func.MIN(n.field('Field of Gold'))),  # 2. double aggregation
+                        n.func.SUM(n.func.AVG(n.field("Electromagnetic Field"))),  # 1. double aggregation
+                        n.func.MAX(n.func.MIN(n.field("Field of Gold"))),  # 2. double aggregation
                         # repeat an expr that was already checked
-                        n.func.SUM(n.func.AVG(n.field('Electromagnetic Field'))),  # 3. double aggregation (from cache)
-                        n.func.MIN(n.field('Field of Gold')),
-                        n.field('Field of Gold'),  # 4. inconsistent aggregation
+                        n.func.SUM(n.func.AVG(n.field("Electromagnetic Field"))),  # 3. double aggregation (from cache)
+                        n.func.MIN(n.field("Field of Gold")),
+                        n.field("Field of Gold"),  # 4. inconsistent aggregation
                     ),
                 ),
-                env=env, collect_errors=True, dimensions=dims,
+                env=env,
+                collect_errors=True,
+                dimensions=dims,
             )
 
         assert len(exc_info.value.errors) == 4  # see above

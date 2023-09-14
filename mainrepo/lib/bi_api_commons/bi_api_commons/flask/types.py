@@ -1,4 +1,11 @@
-from typing import Callable, Tuple, List, Any, Dict, Iterable
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Tuple,
+)
 
 WSGIEnviron = Dict[str, Any]
 WSGIStartResponse = Callable[[str, List[Tuple[str, str]], Any], Any]

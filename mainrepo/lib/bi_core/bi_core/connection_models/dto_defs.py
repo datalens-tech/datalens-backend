@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from typing import ClassVar, Optional, List
+from typing import (
+    ClassVar,
+    List,
+    Optional,
+)
 
 import attr
 
@@ -29,11 +33,7 @@ class DefaultSQLDTO(ConnDTO):  # noqa
     password: str = attr.ib(repr=False, kw_only=True)
 
     def get_all_hosts(self) -> List[str]:
-        return (
-            list(self.multihosts) if self.multihosts
-            else [self.host] if self.host
-            else []
-        )
+        return list(self.multihosts) if self.multihosts else [self.host] if self.host else []
 
     def conn_reporting_data(self) -> dict:
         return super().conn_reporting_data() | dict(

@@ -1,15 +1,21 @@
-from typing import Iterable, Type
+from typing import (
+    Iterable,
+    Type,
+)
 
 from bi_formula.connectors.base.connector import FormulaConnector
-from bi_formula.core.dialect import register_default_dialect, register_basic_dialects, register_dialect_namespace
+from bi_formula.connectors.base.type_constructor import register_type_constructor
+from bi_formula.core.dialect import (
+    register_basic_dialects,
+    register_default_dialect,
+    register_dialect_namespace,
+)
 from bi_formula.definitions.base import NodeTranslation
-from bi_formula.definitions.registry import OPERATION_REGISTRY
 from bi_formula.definitions.literals import register_literalizer
+from bi_formula.definitions.registry import OPERATION_REGISTRY
 from bi_formula.translation.columns import register_column_renderer_cls
 from bi_formula.translation.context_processing import register_context_processor
 from bi_formula.translation.sa_dialects import register_sa_dialect
-from bi_formula.connectors.base.type_constructor import register_type_constructor
-
 
 _REGISTERED: set[Type[FormulaConnector]] = set()
 

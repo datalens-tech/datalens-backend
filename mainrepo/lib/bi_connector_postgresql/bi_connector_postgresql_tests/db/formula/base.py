@@ -1,11 +1,8 @@
 import pytest
 
-from bi_formula_testing.testcases.base import (
-    FormulaConnectorTestBase
-)
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
-
 from bi_connector_postgresql_tests.db.config import DB_URLS
 
 
@@ -13,7 +10,7 @@ class PostgreSQLTestBase(FormulaConnectorTestBase):
     supports_arrays = True
     supports_uuid = True
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return DB_URLS[self.dialect]
 

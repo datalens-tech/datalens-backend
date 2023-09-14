@@ -7,19 +7,30 @@ from __future__ import annotations
 import contextlib
 import functools
 import logging
-from typing import Any, Dict, Sequence, Tuple, List, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Sequence,
+    Tuple,
+)
 
 import attr
 import flask
 import opentracing
 import opentracing.tags
 
-from bi_api_commons.logging_tracing import OpenTracingLoggingContextController
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.flask.middlewares.wsgi_middleware import FlaskWSGIMiddleware
+from bi_api_commons.logging_tracing import OpenTracingLoggingContextController
 
 if TYPE_CHECKING:
-    from bi_api_commons.flask.types import WSGIEnviron, WSGIStartResponse, WSGIReturn
+    from bi_api_commons.flask.types import (
+        WSGIEnviron,
+        WSGIReturn,
+        WSGIStartResponse,
+    )
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,9 +43,9 @@ class TracingMiddleware(FlaskWSGIMiddleware):
 
     @staticmethod
     def normalize_headers(wsgi_environ: Dict[str, str]) -> Dict[str, str]:
-        prefix = 'HTTP_'
+        prefix = "HTTP_"
         headers = {
-            key[len(prefix):].replace('_', '-').lower(): val
+            key[len(prefix) :].replace("_", "-").lower(): val
             for (key, val) in wsgi_environ.items()
             if key.startswith(prefix)
         }
@@ -47,20 +58,18 @@ class TracingMiddleware(FlaskWSGIMiddleware):
         return True
 
     def wsgi_app(self, environ: WSGIEnviron, start_response: WSGIStartResponse) -> WSGIReturn:  # type: ignore
-        http_path = environ['PATH_INFO']
-        http_method = environ['REQUEST_METHOD']
+        http_path = environ["PATH_INFO"]
+        http_method = environ["REQUEST_METHOD"]
         tracer = opentracing.global_tracer()
 
         span_context = tracer.extract(opentracing.Format.HTTP_HEADERS, self.normalize_headers(environ))
-        default_operation_name = 'inbound_request'
+        default_operation_name = "inbound_request"
 
         effective_start_response: WSGIStartResponse = start_response
 
         with contextlib.ExitStack() as cm_stack:
             if self.should_create_root_span(http_path=http_path):
-                scope = cm_stack.enter_context(
-                    tracer.start_active_span(default_operation_name, child_of=span_context)
-                )
+                scope = cm_stack.enter_context(tracer.start_active_span(default_operation_name, child_of=span_context))
                 scope.span.set_tag(opentracing.tags.SPAN_KIND, opentracing.tags.SPAN_KIND_RPC_SERVER)
                 scope.span.set_tag(opentracing.tags.HTTP_URL, http_path)
                 scope.span.set_tag(opentracing.tags.HTTP_METHOD, http_method)
@@ -94,6 +103,4 @@ class TracingContextMiddleware:
 
         if tracer.active_span is not None:
             composite_ctrl = RequestLoggingContextControllerMiddleWare.get_for_request()
-            composite_ctrl.add_sub_controller(
-                OpenTracingLoggingContextController(tracer.active_span)
-            )
+            composite_ctrl.add_sub_controller(OpenTracingLoggingContextController(tracer.active_span))

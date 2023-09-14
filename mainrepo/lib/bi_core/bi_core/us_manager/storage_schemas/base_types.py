@@ -2,18 +2,24 @@ from __future__ import annotations
 
 from typing import Any
 
-from marshmallow import Schema, fields, post_load
+from marshmallow import (
+    Schema,
+    fields,
+    post_load,
+)
 
-from bi_constants.enums import BIType, ConnectionType
-
-from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
-
-from bi_core.db.native_type import GenericNativeType
+from bi_constants.enums import (
+    BIType,
+    ConnectionType,
+)
 from bi_core.db.elements import SchemaColumn
+from bi_core.db.native_type import GenericNativeType
+from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 class NativeTypeSchema(Schema):
-    """ (currently used for uploads / ProviderConnection) """
+    """(currently used for uploads / ProviderConnection)"""
+
     conn_type = DynamicEnumField(ConnectionType, by_value=True)
     name = fields.String()
 
@@ -23,7 +29,8 @@ class NativeTypeSchema(Schema):
 
 
 class SchemaColumnStorageSchema(Schema):
-    """ (currently used for uploads / ProviderConnection) """
+    """(currently used for uploads / ProviderConnection)"""
+
     name = fields.String(allow_none=False)
     title = fields.String(allow_none=True)
     user_type = fields.Enum(BIType, by_value=False)

@@ -5,8 +5,10 @@ from bi_core.us_manager.storage_schemas.data_source_spec_base import (
     SubselectSQLDataSourceSpecStorageSchemaMixin,
     TableSQLDataSourceSpecStorageSchemaMixin,
 )
+
 from bi_connector_bigquery.core.data_source_spec import (
-    BigQueryTableDataSourceSpec, BigQuerySubselectDataSourceSpec,
+    BigQuerySubselectDataSourceSpec,
+    BigQueryTableDataSourceSpec,
 )
 
 
@@ -15,15 +17,15 @@ class DatasetSQLDataSourceSpecStorageSchemaMixin(BaseSQLDataSourceSpecStorageSch
 
 
 class BigQueryTableDataSourceSpecStorageSchema(
-        TableSQLDataSourceSpecStorageSchemaMixin,
-        DatasetSQLDataSourceSpecStorageSchemaMixin,
-        BaseSQLDataSourceSpecStorageSchema,
+    TableSQLDataSourceSpecStorageSchemaMixin,
+    DatasetSQLDataSourceSpecStorageSchemaMixin,
+    BaseSQLDataSourceSpecStorageSchema,
 ):
     TARGET_CLS = BigQueryTableDataSourceSpec  # type: ignore
 
 
 class BigQuerySubselectDataSourceSpecStorageSchema(
-        SubselectSQLDataSourceSpecStorageSchemaMixin,
-        BaseSQLDataSourceSpecStorageSchema,
+    SubselectSQLDataSourceSpecStorageSchemaMixin,
+    BaseSQLDataSourceSpecStorageSchema,
 ):
     TARGET_CLS = BigQuerySubselectDataSourceSpec  # type: ignore

@@ -1,25 +1,43 @@
 from __future__ import annotations
 
 import abc
-from typing import AbstractSet, Any, ClassVar, Generator, Iterable, List, Optional, Sequence, Set, Tuple, TypeVar
+from typing import (
+    AbstractSet,
+    Any,
+    ClassVar,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    TypeVar,
+)
 
 import attr
 
-from bi_constants.enums import OrderDirection, JoinType
-
+from bi_constants.enums import (
+    JoinType,
+    OrderDirection,
+)
 import bi_formula.core.nodes as formula_nodes
-
-from bi_query_processing.enums import ExecutionLevel, QueryPart
 from bi_query_processing.compilation.query_meta import QueryMetaInfo
+from bi_query_processing.enums import (
+    ExecutionLevel,
+    QueryPart,
+)
 
-
-_COMPILED_FLA_TV = TypeVar('_COMPILED_FLA_TV', bound='CompiledFormulaInfo')
+_COMPILED_FLA_TV = TypeVar("_COMPILED_FLA_TV", bound="CompiledFormulaInfo")
 
 
 @attr.s(slots=True, frozen=True)
 class CompiledFormulaInfo:
     show_names: ClassVar[Tuple[str, ...]] = (
-        'formula_obj', 'alias', 'avatar_ids', 'original_field_id',
+        "formula_obj",
+        "alias",
+        "avatar_ids",
+        "original_field_id",
     )
 
     formula_obj: formula_nodes.Formula = attr.ib()
@@ -38,32 +56,29 @@ class CompiledFormulaInfo:
         return self.formula_obj.complexity
 
     def pretty(
-            self,
-            indent: str = '  ',
-            initial_indent: str = '',
-            do_leading_indent: bool = False,
+        self,
+        indent: str = "  ",
+        initial_indent: str = "",
+        do_leading_indent: bool = False,
     ) -> str:
-
         content_item_strs: List[str] = []
-        item_indent = f'{initial_indent}{indent}'
+        item_indent = f"{initial_indent}{indent}"
         for item_name in self.show_names:
             item = getattr(self, item_name)
             if isinstance(item, formula_nodes.Formula):
                 item_str = item.pretty(
-                    indent=indent, initial_indent=item_indent,
+                    indent=indent,
+                    initial_indent=item_indent,
                     do_leading_indent=False,
                 )
             else:
                 item_str = str(item)
 
-            content_item_strs.append(f'{item_name}={item_str}')
+            content_item_strs.append(f"{item_name}={item_str}")
 
-        content_str = ''.join([
-            f'{item_indent}{item_str},\n'
-            for item_str in content_item_strs
-        ])
-        text = '{lead_idt}{cls}(\n{cont}\n{ini_idt})'.format(
-            lead_idt=initial_indent if do_leading_indent else '',
+        content_str = "".join([f"{item_indent}{item_str},\n" for item_str in content_item_strs])
+        text = "{lead_idt}{cls}(\n{cont}\n{ini_idt})".format(
+            lead_idt=initial_indent if do_leading_indent else "",
             cls=self.__class__.__name__,
             cont=content_str,
             ini_idt=initial_indent,
@@ -76,9 +91,7 @@ class CompiledFormulaInfo:
 
 @attr.s(slots=True, frozen=True)
 class CompiledOrderByFormulaInfo(CompiledFormulaInfo):  # noqa
-    show_names = CompiledFormulaInfo.show_names + (
-        'direction',
-    )
+    show_names = CompiledFormulaInfo.show_names + ("direction",)
 
     direction: OrderDirection = attr.ib(kw_only=True)
 
@@ -86,7 +99,9 @@ class CompiledOrderByFormulaInfo(CompiledFormulaInfo):  # noqa
 @attr.s(slots=True, frozen=True)
 class CompiledJoinOnFormulaInfo(CompiledFormulaInfo):  # noqa
     show_names = CompiledFormulaInfo.show_names + (
-        'left_id', 'right_id', 'join_type',
+        "left_id",
+        "right_id",
+        "join_type",
     )
 
     left_id: str = attr.ib(kw_only=True)  # is root for feature-managed relations
@@ -94,7 +109,7 @@ class CompiledJoinOnFormulaInfo(CompiledFormulaInfo):  # noqa
     join_type: JoinType = attr.ib(kw_only=True)
 
 
-_FROM_OBJ_TV = TypeVar('_FROM_OBJ_TV', bound='FromObject')
+_FROM_OBJ_TV = TypeVar("_FROM_OBJ_TV", bound="FromObject")
 
 
 @attr.s(frozen=True)
@@ -130,15 +145,20 @@ class JoinedFromObject:
 
 # Use double letter as the base query ID to avoid collisions
 # with column aliases that use single letters
-BASE_QUERY_ID = 'qq'
+BASE_QUERY_ID = "qq"
 
 
 @attr.s(slots=True, frozen=True)
 class CompiledQuery:
     show_names = (
-        'id',
-        'select', 'group_by', 'filters', 'order_by', 'join_on',
-        'limit', 'offset',
+        "id",
+        "select",
+        "group_by",
+        "filters",
+        "order_by",
+        "join_on",
+        "limit",
+        "offset",
     )
 
     id: str = attr.ib(kw_only=True)
@@ -161,42 +181,39 @@ class CompiledQuery:
         return not self.select
 
     def pretty(
-            self,
-            indent: str = '  ',
-            initial_indent: str = '',
-            do_leading_indent: bool = False,
+        self,
+        indent: str = "  ",
+        initial_indent: str = "",
+        do_leading_indent: bool = False,
     ) -> str:
-
         content_item_strs: List[str] = []
-        item_indent = f'{initial_indent}{indent}'
-        subitem_indent = f'{item_indent}{indent}'
+        item_indent = f"{initial_indent}{indent}"
+        subitem_indent = f"{item_indent}{indent}"
         for item_name in self.show_names:
             item = getattr(self, item_name)
             if isinstance(item, list):
                 if len(item) == 0:
-                    item_str = '[]'
+                    item_str = "[]"
                 else:
-                    item_str = '[\n'
+                    item_str = "[\n"
                     for subitem in item:
                         assert isinstance(subitem, CompiledFormulaInfo)
                         subitem_str = subitem.pretty(
-                            indent=indent, initial_indent=subitem_indent,
+                            indent=indent,
+                            initial_indent=subitem_indent,
                             do_leading_indent=True,
                         )
-                        item_str += f'{subitem_str},\n'
+                        item_str += f"{subitem_str},\n"
 
-                    item_str += f'{item_indent}]'
+                    item_str += f"{item_indent}]"
             else:
                 item_str = str(item)
 
-            content_item_strs.append(f'{item_name}={item_str}')
+            content_item_strs.append(f"{item_name}={item_str}")
 
-        content_str = ''.join([
-            f'{item_indent}{item_str},\n'
-            for item_str in content_item_strs
-        ])
-        text = '{lead_idt}{cls}(\n{cont}\n{ini_idt})'.format(
-            lead_idt=initial_indent if do_leading_indent else '',
+        content_str = "".join([f"{item_indent}{item_str},\n" for item_str in content_item_strs])
+        text = "{lead_idt}{cls}(\n{cont}\n{ini_idt})".format(
+            lead_idt=initial_indent if do_leading_indent else "",
             cls=self.__class__.__name__,
             cont=content_str,
             ini_idt=initial_indent,
@@ -239,7 +256,7 @@ class SubqueryFromObject(FromObject):
     query_id: str = attr.ib(kw_only=True)
 
 
-_MULTI_QUERY_TV = TypeVar('_MULTI_QUERY_TV', bound='CompiledMultiQueryBase')
+_MULTI_QUERY_TV = TypeVar("_MULTI_QUERY_TV", bound="CompiledMultiQueryBase")
 
 
 @attr.s(frozen=True)
@@ -305,11 +322,7 @@ class CompiledMultiQuery(CompiledMultiQueryBase):
 
     @_unreferenced_ids.default
     def _make_unreferenced_ids(self) -> list[str]:
-        referenced_ids = {
-            from_obj.id
-            for query in self.queries
-            for from_obj in query.joined_from.froms
-        }
+        referenced_ids = {from_obj.id for query in self.queries for from_obj in query.joined_from.froms}
         query_ids = {query.id for query in self.queries}
         return sorted(query_ids - referenced_ids)
 

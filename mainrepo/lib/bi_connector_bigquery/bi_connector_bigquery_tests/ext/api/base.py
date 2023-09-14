@@ -1,13 +1,14 @@
 import pytest
 
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-
-from bi_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY, SOURCE_TYPE_BIGQUERY_TABLE
-
 from bi_api_lib_testing.connection_base import ConnectionTestBase
-from bi_api_lib_testing.dataset_base import DatasetTestBase
 from bi_api_lib_testing.data_api_base import StandardizedDataApiTestBase
+from bi_api_lib_testing.dataset_base import DatasetTestBase
 
+from bi_connector_bigquery.core.constants import (
+    CONNECTION_TYPE_BIGQUERY,
+    SOURCE_TYPE_BIGQUERY_TABLE,
+)
 from bi_connector_bigquery_tests.ext.config import BI_TEST_CONFIG
 from bi_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
 
@@ -16,11 +17,11 @@ class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_BIGQUERY
     bi_compeng_pg_on = False
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
         return BI_TEST_CONFIG
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def connection_params(self, bq_secrets) -> dict:
         return dict(
             project_id=bq_secrets.get_project_id(),
@@ -29,7 +30,7 @@ class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
 
 
 class BigQueryDatasetTestBase(BigQueryConnectionTestBase, DatasetTestBase):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
         return dict(
             source_type=SOURCE_TYPE_BIGQUERY_TABLE.name,

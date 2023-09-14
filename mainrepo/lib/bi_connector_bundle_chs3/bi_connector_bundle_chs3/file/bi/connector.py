@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from bi_connector_bundle_chs3.chs3_base.bi.connector import (
-    BaseFileS3TableBiApiSourceDefinition,
     BaseFileS3BiApiConnectionDefinition,
     BaseFileS3BiApiConnector,
+    BaseFileS3TableBiApiSourceDefinition,
 )
 from bi_connector_bundle_chs3.file.bi.api_schema.connection import FileS3ConnectionSchema
 from bi_connector_bundle_chs3.file.bi.connection_info import FileS3ConnectionInfoProvider
 from bi_connector_bundle_chs3.file.core.connector import (
-    FileS3TableCoreSourceDefinition,
     FileS3CoreConnectionDefinition,
     FileS3CoreConnector,
+    FileS3TableCoreSourceDefinition,
 )
 
 
@@ -26,9 +26,5 @@ class FileS3BiApiConnectionDefinition(BaseFileS3BiApiConnectionDefinition):
 
 class FileS3BiApiConnector(BaseFileS3BiApiConnector):
     core_connector_cls = FileS3CoreConnector
-    connection_definitions = (
-        FileS3BiApiConnectionDefinition,
-    )
-    source_definitions = (
-        FileS3TableBiApiSourceDefinition,
-    )
+    connection_definitions = (FileS3BiApiConnectionDefinition,)
+    source_definitions = (FileS3TableBiApiSourceDefinition,)

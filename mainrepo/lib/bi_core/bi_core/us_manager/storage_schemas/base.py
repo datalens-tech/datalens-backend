@@ -1,10 +1,23 @@
 from __future__ import annotations
 
 import enum
-from typing import Any, Dict, Type, TYPE_CHECKING, Generic, TypeVar, ClassVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Dict,
+    Generic,
+    Type,
+    TypeVar,
+)
 
 from cryptography.fernet import Fernet
-from marshmallow import Schema, pre_load, post_load, post_dump
+from marshmallow import (
+    Schema,
+    post_dump,
+    post_load,
+    pre_load,
+)
 
 if TYPE_CHECKING:
     from bi_core.us_manager.us_manager import USManagerBase  # noqa
@@ -12,13 +25,14 @@ if TYPE_CHECKING:
 
 class CtxKey(enum.Enum):
     """Schema context keys"""
+
     fernet = enum.auto()
     us_manager = enum.auto()
     dsc_id = enum.auto()
     ds_conn_type = enum.auto()
 
 
-_TARGET_TV = TypeVar('_TARGET_TV')
+_TARGET_TV = TypeVar("_TARGET_TV")
 
 
 class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
@@ -33,7 +47,7 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
         return self.context[CtxKey.fernet]
 
     @property
-    def usm(self) -> 'USManagerBase':
+    def usm(self) -> "USManagerBase":
         return self.context[CtxKey.us_manager]
 
     # Lifecycle

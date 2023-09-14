@@ -1,14 +1,20 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TypeVar
+from typing import (
+    Any,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
-from bi_constants.enums import PivotRole, OrderDirection
 from bi_api_lib.pivot.primitives import PivotMeasureSorting
+from bi_constants.enums import (
+    OrderDirection,
+    PivotRole,
+)
 
-
-_PIVOT_ROLE_SPEC_TV = TypeVar('_PIVOT_ROLE_SPEC_TV', bound='RawPivotRoleSpec')
+_PIVOT_ROLE_SPEC_TV = TypeVar("_PIVOT_ROLE_SPEC_TV", bound="RawPivotRoleSpec")
 
 
 @attr.s(frozen=True)
@@ -27,7 +33,7 @@ class RawDimensionPivotRoleSpec(RawPivotRoleSpec):
 @attr.s(frozen=True)
 class RawAnnotationPivotRoleSpec(RawPivotRoleSpec):
     target_legend_item_ids: Optional[list[int]] = attr.ib(kw_only=True, default=None)
-    annotation_type: str = attr.ib(kw_only=True, default='')
+    annotation_type: str = attr.ib(kw_only=True, default="")
 
 
 @attr.s(frozen=True)

@@ -1,25 +1,46 @@
 from __future__ import annotations
 
-from base64 import b64decode, b64encode
-from typing import Any, Dict, List, Tuple, Sequence, Optional
-
+from base64 import (
+    b64decode,
+    b64encode,
+)
 import json
-import sqlalchemy as sa
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
+
 from marshmallow import fields
 from marshmallow_oneofschema import OneOfSchema
 from multidict import CIMultiDict
-from sqlalchemy import MetaData, Table, Column
-from sqlalchemy.ext.serializer import (
-    dumps as sa_dumps,
+import sqlalchemy as sa
+from sqlalchemy import (
+    Column,
+    MetaData,
+    Table,
 )
+from sqlalchemy.ext.serializer import dumps as sa_dumps
 from sqlalchemy.ext.serializer import loads
 
-from bi_core.enums import QueryExecutorMode
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
-from bi_core.connection_models import TableIdent, DBIdent, SchemaIdent, SATextTableDefinition, TableDefinition
-from bi_core.serialization import RedisDatalensDataJSONEncoder, RedisDatalensDataJSONDecoder
+from bi_core.connection_models import (
+    DBIdent,
+    SATextTableDefinition,
+    SchemaIdent,
+    TableDefinition,
+    TableIdent,
+)
+from bi_core.enums import QueryExecutorMode
+from bi_core.serialization import (
+    RedisDatalensDataJSONDecoder,
+    RedisDatalensDataJSONEncoder,
+)
 from bi_utils.utils import get_type_full_name
 
 
@@ -41,18 +62,18 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
     db_name = fields.String(allow_none=True)
     disable_streaming = fields.Boolean()
     connector_specific_params = fields.Method(
-        allow_none=True, dump_default=None, serialize='dump_conn_params', deserialize='load_conn_params'
+        allow_none=True, dump_default=None, serialize="dump_conn_params", deserialize="load_conn_params"
     )
     is_dashsql_query = fields.Boolean()
 
     def to_object(self, data: Dict) -> DBAdapterQuery:
         return DBAdapterQuery(
-            query=data['query'],
-            chunk_size=data['chunk_size'],
-            db_name=data['db_name'],
-            disable_streaming=data['disable_streaming'],
-            connector_specific_params=data['connector_specific_params'],
-            is_dashsql_query=data['is_dashsql_query'],
+            query=data["query"],
+            chunk_size=data["chunk_size"],
+            db_name=data["db_name"],
+            disable_streaming=data["disable_streaming"],
+            connector_specific_params=data["connector_specific_params"],
+            is_dashsql_query=data["is_dashsql_query"],
         )
 
     def dump_conn_params(self, dba_query: DBAdapterQuery) -> Optional[dict]:
@@ -71,8 +92,8 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
 
 # noinspection PyMethodMayBeStatic
 class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
-    query = fields.Method(serialize='dump_query', deserialize='load_query')  # type: ignore  # TODO: fix
-    tables = fields.Method(serialize='dump_tables', deserialize='load_tables')
+    query = fields.Method(serialize="dump_query", deserialize="load_query")  # type: ignore  # TODO: fix
+    tables = fields.Method(serialize="dump_tables", deserialize="load_tables")
 
     def dump_query(self, dba_query: DBAdapterQuery) -> str:
         query = dba_query.query
@@ -88,7 +109,7 @@ class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
         if isinstance(query, str):
             raise ValueError("DBAdapterQuerySQLASchema should be used only for plain-text queries serialization.")
 
-        for table in getattr(query, 'froms', []):
+        for table in getattr(query, "froms", []):
             if isinstance(table, sa.Table):
                 tables_dict[table.name] = [c.name for c in table.c]
 
@@ -104,14 +125,14 @@ class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
 
     def to_object(self, data: Dict[str, Any]) -> DBAdapterQuery:
         patched_data = dict(data)
-        metadata = patched_data.pop('tables')
-        dumped_sa_query = patched_data.pop('query')
-        patched_data['query'] = loads(b64decode(dumped_sa_query), metadata=metadata)
+        metadata = patched_data.pop("tables")
+        dumped_sa_query = patched_data.pop("query")
+        patched_data["query"] = loads(b64decode(dumped_sa_query), metadata=metadata)
         return super().to_object(patched_data)
 
 
 class GenericDBAQuerySchema(OneOfSchema):
-    type_field = 'mode'
+    type_field = "mode"
     type_schemas = {
         t.name: s
         for t, s in {
@@ -130,10 +151,7 @@ class GenericDBAQuerySchema(OneOfSchema):
 # TODO FIX: Validation
 class CIMultiDictField(fields.Field):
     def _serialize(self, value: CIMultiDict, attr: Any, obj: Any, **kwargs: Any) -> Tuple[Tuple[str, str], ...]:
-        return tuple(
-            (item[0], item[1])
-            for item in value.items()
-        )
+        return tuple((item[0], item[1]) for item in value.items())
 
     def _deserialize(self, value: Sequence[Tuple[str, str]], attr: Any, data: Any, **kwargs: Any) -> CIMultiDict:
         return CIMultiDict(value)
@@ -147,10 +165,10 @@ class DBAdapterScopedRCISchema(BaseQEAPISchema):
 
     def to_object(self, data: Dict[str, Any]) -> DBAdapterScopedRCI:
         return DBAdapterScopedRCI(
-            request_id=data['request_id'],
-            user_name=data['user_name'],
-            x_dl_debug_mode=data['x_dl_debug_mode'],
-            client_ip=data['client_ip'],
+            request_id=data["request_id"],
+            user_name=data["user_name"],
+            x_dl_debug_mode=data["x_dl_debug_mode"],
+            client_ip=data["client_ip"],
         )
 
 
@@ -186,7 +204,7 @@ class SATextTableDefinitionSchema(BaseQEAPISchema):
 
 
 class TableDefinitionSchema(OneOfSchema):
-    type_field = 'mode'
+    type_field = "mode"
     supported_types = {
         TableIdent: TableIdentSchema,
         SATextTableDefinition: SATextTableDefinitionSchema,

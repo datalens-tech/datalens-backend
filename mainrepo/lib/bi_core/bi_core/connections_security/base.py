@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Type, ClassVar, AbstractSet
+from typing import (
+    AbstractSet,
+    ClassVar,
+    Type,
+)
 
 import attr
 
 from bi_core.connection_models import ConnDTO
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,7 +52,7 @@ class ConnectionSafetyChecker(metaclass=abc.ABCMeta):
 
 @attr.s(kw_only=True)
 class InsecureConnectionSafetyChecker(ConnectionSafetyChecker):
-    """ Always safe """
+    """Always safe"""
 
     _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
 
@@ -59,20 +62,20 @@ class InsecureConnectionSafetyChecker(ConnectionSafetyChecker):
 
 @attr.s(kw_only=True)
 class NonUserInputConnectionSafetyChecker(ConnectionSafetyChecker):
-    """ Hosts are not entered by user """
+    """Hosts are not entered by user"""
 
     _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
 
     def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
         if type(conn_dto) in self._DTO_TYPES:
-            LOGGER.info('%r in safe DTO types', type(conn_dto))
+            LOGGER.info("%r in safe DTO types", type(conn_dto))
             return True
         return False
 
 
 @attr.s(kw_only=True)
 class SamplesConnectionSafetyChecker(ConnectionSafetyChecker):
-    """ Samples hosts """
+    """Samples hosts"""
 
     _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
 
@@ -80,8 +83,8 @@ class SamplesConnectionSafetyChecker(ConnectionSafetyChecker):
 
     def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
         # TODO FIX: dirty hack because we can't get a ClickHouseConnDTO here
-        if hasattr(conn_dto, 'multihosts') and all(host in self._samples_hosts for host in conn_dto.multihosts):
-            LOGGER.info('Clickhouse hosts %r are in sample host list', conn_dto.multihosts)
+        if hasattr(conn_dto, "multihosts") and all(host in self._samples_hosts for host in conn_dto.multihosts):
+            LOGGER.info("Clickhouse hosts %r are in sample host list", conn_dto.multihosts)
             return True
         return False
 

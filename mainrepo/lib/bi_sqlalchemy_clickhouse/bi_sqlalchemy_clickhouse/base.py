@@ -1,17 +1,20 @@
 from __future__ import annotations
 
+from clickhouse_sqlalchemy.drivers.http.base import ClickHouseDialect_http as UPSTREAM
 import sqlalchemy as sa
 from sqlalchemy import exc
 from sqlalchemy.sql import elements
-from sqlalchemy.sql.compiler import COLLECT_CARTESIAN_PRODUCTS, WARN_LINTING, FromLinter
-
-from clickhouse_sqlalchemy.drivers.http.base import ClickHouseDialect_http as UPSTREAM
+from sqlalchemy.sql.compiler import (
+    COLLECT_CARTESIAN_PRODUCTS,
+    WARN_LINTING,
+    FromLinter,
+)
 
 from bi_sqlalchemy_common.base import CompilerPrettyMixin
 
 
 class BIClickHouseTypeCompiler(UPSTREAM.type_compiler):
-    """ ... """
+    """..."""
 
     # # Not currently viable.
     # def visit_datetime(self, type_, **kw):
@@ -20,7 +23,7 @@ class BIClickHouseTypeCompiler(UPSTREAM.type_compiler):
 
 
 class BIClickHouseCompilerBasic(UPSTREAM.statement_compiler):
-    """ ... """
+    """..."""
 
 
 class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compiler, CompilerPrettyMixin):
@@ -28,43 +31,41 @@ class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compile
     A bunch of copypaste from the `ClickHouseCompiler` but building query text
     through `self._pretty`
     """
+
     def visit_join(self, join, asfrom=False, **kwargs):
         # need to make a variable to prevent leaks in some debuggers
-        join_type = getattr(join, 'type', None)
+        join_type = getattr(join, "type", None)
         if join_type is None:
             if join.isouter:
-                join_type = 'LEFT OUTER'
+                join_type = "LEFT OUTER"
             else:
-                join_type = 'INNER'
+                join_type = "INNER"
         elif join_type is not None:
             join_type = join_type.upper()
-            if join.isouter and 'INNER' in join_type:
-                raise exc.CompileError(
-                    "can't compile join with specified "
-                    "INNER type and isouter=True"
-                )
+            if join.isouter and "INNER" in join_type:
+                raise exc.CompileError("can't compile join with specified " "INNER type and isouter=True")
             # isouter=False by default, disable that checking
             # elif not join.isouter and 'OUTER' in join.type:
             #     raise exc.CompileError(
             #         "can't compile join with specified "
             #         "OUTER type and isouter=False"
             #     )
-        if join.full and 'FULL' not in join_type:
-            join_type = 'FULL ' + join_type
+        if join.full and "FULL" not in join_type:
+            join_type = "FULL " + join_type
 
-        if getattr(join, 'strictness', None):
-            join_type = join.strictness.upper() + ' ' + join_type
+        if getattr(join, "strictness", None):
+            join_type = join.strictness.upper() + " " + join_type
 
-        if getattr(join, 'distribution', None):
-            join_type = join.distribution.upper() + ' ' + join_type
+        if getattr(join, "distribution", None):
+            join_type = join.distribution.upper() + " " + join_type
 
         onclause = join.onclause
         return self._pretty.join_sql_join(
             left=join.left._compiler_dispatch(self, asfrom=asfrom, **kwargs),
-            join_type=(join_type + ' JOIN').upper() if join_type else '',
+            join_type=(join_type + " JOIN").upper() if join_type else "",
             right=join.right._compiler_dispatch(self, asfrom=asfrom, **kwargs),
             onclause=onclause._compiler_dispatch(self, **kwargs),
-            ontext='USING' if isinstance(onclause, elements.Tuple) else 'ON',
+            ontext="USING" if isinstance(onclause, elements.Tuple) else "ON",
         )
 
     def _compose_select_body(
@@ -95,49 +96,33 @@ class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compile
             if select._hints:
                 from_sql = self._pretty.join_group(
                     [
-                        f._compiler_dispatch(
-                            self,
-                            asfrom=True,
-                            fromhints=byfrom,
-                            from_linter=from_linter,
-                            **kwargs
-                        )
+                        f._compiler_dispatch(self, asfrom=True, fromhints=byfrom, from_linter=from_linter, **kwargs)
                         for f in froms
                     ]
                 )
             else:
                 from_sql = self._pretty.join_group(
-                    [
-                        f._compiler_dispatch(
-                            self,
-                            asfrom=True,
-                            from_linter=from_linter,
-                            **kwargs
-                        )
-                        for f in froms
-                    ]
+                    [f._compiler_dispatch(self, asfrom=True, from_linter=from_linter, **kwargs) for f in froms]
                 )
             text_pieces.append(self._pretty.join_block("FROM", from_sql, block_indent=False))
         else:
             text_pieces.append(self.default_from())
 
-        if getattr(select, '_array_join', None) is not None:
+        if getattr(select, "_array_join", None) is not None:
             text_pieces.append(select._array_join._compiler_dispatch(self, **kwargs))
 
-        sample_clause = getattr(select, '_sample_clause', None)
+        sample_clause = getattr(select, "_sample_clause", None)
 
         if sample_clause is not None:
             text_pieces.append(self.sample_clause(select, **kwargs))
 
-        final_clause = getattr(select, '_final_clause', None)
+        final_clause = getattr(select, "_final_clause", None)
 
         if final_clause is not None:
             text_pieces.append(self.final_clause())
 
         if select._where_criteria:
-            t = self._generate_delimited_and_list(
-                select._where_criteria, from_linter=from_linter, **kwargs
-            )
+            t = self._generate_delimited_and_list(select._where_criteria, from_linter=from_linter, **kwargs)
             if t:
                 text_pieces.append(self._pretty.join_block("WHERE", t))
 
@@ -176,7 +161,6 @@ class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compile
 
 
 class BIClickHouseDialectBasic(UPSTREAM):
-
     type_compiler = BIClickHouseTypeCompiler
     statement_compiler = BIClickHouseCompilerBasic
 

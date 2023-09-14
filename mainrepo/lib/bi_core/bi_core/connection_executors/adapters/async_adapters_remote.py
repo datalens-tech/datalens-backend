@@ -5,23 +5,42 @@ import json
 import logging
 import pickle
 from typing import (
-    TYPE_CHECKING, Any, AsyncGenerator, List, Optional, Sequence, Tuple, Type, TypeVar,
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
 )
 
 import aiohttp
-import attr
-from aiohttp import TCPConnector, ClientTimeout
+from aiohttp import (
+    ClientTimeout,
+    TCPConnector,
+)
 from aiohttp.client_exceptions import ServerTimeoutError
+import attr
 
-from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_core.enums import RQEEventType
+from bi_api_commons.headers import (
+    HEADER_LOGGING_CONTEXT,
+    INTERNAL_HEADER_PROFILING_STACK,
+)
+from bi_api_commons.tracing import get_current_tracing_headers
+from bi_app_tools import log
+from bi_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler_async,
+)
+from bi_core import exc as common_exc
 from bi_core import utils
-from bi_api_commons.headers import HEADER_LOGGING_CONTEXT, INTERNAL_HEADER_PROFILING_STACK
 from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import (
     AsyncDBAdapter,
+    AsyncDirectDBAdapter,
     AsyncRawExecutionResult,
-    AsyncDirectDBAdapter
 )
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from bi_core.connection_executors.models.common import RemoteQueryExecutorData
@@ -29,24 +48,28 @@ from bi_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
 )
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
+from bi_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    RawSchemaInfo,
+)
 from bi_core.connection_executors.models.exc import QueryExecutorException
+from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core.connection_executors.qe_serializer import (
     ActionSerializer,
     ResponseTypes,
-    dba_actions as dba_actions,
 )
+from bi_core.connection_executors.qe_serializer import dba_actions as dba_actions
 from bi_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from bi_core.connection_models.conn_options import ConnectOptions
-from bi_app_tools import log
-from bi_app_tools.profiling_base import generic_profiler_async, GenericProfiler
-from bi_api_commons.tracing import get_current_tracing_headers
-from bi_core import exc as common_exc
+from bi_core.enums import RQEEventType
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
     from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent, TableDefinition, TableIdent,
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
     )
 
 
@@ -67,7 +90,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
     _serializer: ActionSerializer = attr.ib(init=False, factory=ActionSerializer)
     _use_sync_rqe: bool = attr.ib(init=False, default=None)
 
-    DEFAULT_REL_PATH = '/execute_action'
+    DEFAULT_REL_PATH = "/execute_action"
 
     def __attrs_post_init__(self) -> None:
         if self._force_async_rqe:
@@ -85,24 +108,18 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             # uWSGI at this moment fails on second request with keepalive=True
             connector=TCPConnector(force_close=True),
             timeout=ClientTimeout(
-                total=(
-                    5 * 60 if (override := self._conn_options.rqe_total_timeout) is None
-                    else override
-                ),
+                total=(5 * 60 if (override := self._conn_options.rqe_total_timeout) is None else override),
                 connect=5,
-                sock_read=(
-                    600 if (override := self._conn_options.rqe_sock_read_timeout) is None
-                    else override
-                ),
+                sock_read=(600 if (override := self._conn_options.rqe_sock_read_timeout) is None else override),
                 sock_connect=5,
-            )
+            ),
         )
 
     # TODO FIX: Handle exceptions
     async def _make_request(
-            self,
-            req_obj: dba_actions.RemoteDBAdapterAction,
-            rel_path: Optional[str] = None,
+        self,
+        req_obj: dba_actions.RemoteDBAdapterAction,
+        rel_path: Optional[str] = None,
     ) -> aiohttp.ClientResponse:
         if rel_path is None:
             rel_path = self.DEFAULT_REL_PATH
@@ -111,9 +128,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         serialized_context = json.dumps(logging_context)
 
         qe = self._rqe_data
-        body_bytes = json.dumps(
-            self._serializer.serialize_action(req_obj)
-        ).encode()
+        body_bytes = json.dumps(self._serializer.serialize_action(req_obj)).encode()
         signature = get_hmac_hex_digest(body_bytes, qe.hmac_key)
 
         tracing_headers = get_current_tracing_headers()
@@ -156,14 +171,15 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             # we want to distinguish between RQE and source timeouts; unfortunately,
             # aiohttp doesn't provide separate ConnectionTimeout and RequestTimeout
             # exceptions like requests does, so we should check it manually
-            if str(err).startswith('Connection timeout'):
+            if str(err).startswith("Connection timeout"):
                 raise
 
             query = (
-                req_obj.db_adapter_query.debug_compiled_query if isinstance(req_obj, dba_actions.ActionExecuteQuery)
-                else ''
+                req_obj.db_adapter_query.debug_compiled_query
+                if isinstance(req_obj, dba_actions.ActionExecuteQuery)
+                else ""
             )
-            raise common_exc.SourceTimeout(db_message='Source timed out', query=query) from err
+            raise common_exc.SourceTimeout(db_message="Source timed out", query=query) from err
         return resp
 
     @staticmethod
@@ -186,9 +202,9 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raise QueryExecutorException("Unexpected error JSON schema") from exc_deserialization_exc
 
     async def _make_request_parse_response(
-            self,
-            req_obj: dba_actions.NonStreamAction[_RESP_TV],
-            rel_path: Optional[str] = None,
+        self,
+        req_obj: dba_actions.NonStreamAction[_RESP_TV],
+        rel_path: Optional[str] = None,
     ) -> _RESP_TV:
         resp = await self._make_request(
             rel_path=rel_path,
@@ -226,13 +242,15 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raise exc
 
         async def event_gen() -> AsyncGenerator[Tuple[str, Any], None]:
-            buf = b''
+            buf = b""
 
             while True:
                 try:
                     raw_chunk, end_of_chunk = await resp.content.readchunk()
                 except asyncio.CancelledError as err:
-                    raise common_exc.SourceTimeout(db_message='Source timed out', query=query.debug_compiled_query) from err
+                    raise common_exc.SourceTimeout(
+                        db_message="Source timed out", query=query.debug_compiled_query
+                    ) from err
                 buf += raw_chunk
 
                 # This isn't a very correct way, but it's hard to use pickle in async differently.
@@ -242,7 +260,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                     except Exception as err:
                         raise QueryExecutorException("QE parse: failed to unpickle") from err
 
-                    buf = b''
+                    buf = b""
                     if not isinstance(parsed_event, tuple):
                         raise QueryExecutorException(f"QE parse: unexpected event type: {type(parsed_event)}")
                     if len(parsed_event) != 2:
@@ -257,7 +275,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
                     yield event_type, event_data  # type: ignore  # TODO: fix
 
-                if raw_chunk == b'' and not end_of_chunk:
+                if raw_chunk == b"" and not end_of_chunk:
                     return
 
         events = event_gen()

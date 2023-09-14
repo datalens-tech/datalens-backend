@@ -1,19 +1,30 @@
 from __future__ import annotations
 
-from typing import Dict, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+)
 
 import attr
 
 from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.definitions.scope import Scope
-
+from bi_formula_ref.examples.config import (
+    ExampleConfig,
+    ExampleSource,
+)
 from bi_formula_ref.examples.data_table import DataTable
-from bi_formula_ref.examples.config import ExampleConfig, ExampleSource
+from bi_formula_ref.examples.dumper import (
+    DataDumper,
+    get_dumper,
+)
 from bi_formula_ref.examples.query_gen import QueryGenerator
-from bi_formula_ref.examples.dumper import DataDumper, get_dumper
 from bi_formula_ref.examples.result_storage import WritableDataStorage
 from bi_formula_ref.examples.sa_compiler import SaQueryCompiler
-from bi_formula_ref.examples.utils import make_key_for_example, make_data_table_from_example
+from bi_formula_ref.examples.utils import (
+    make_data_table_from_example,
+    make_key_for_example,
+)
 
 if TYPE_CHECKING:
     from bi_formula.core.dialect import DialectCombo
@@ -50,7 +61,8 @@ class DataPreparer:
     def _get_sa_compiler(self, dialect: DialectCombo) -> SaQueryCompiler:
         if dialect not in self._sa_compiler_by_dialect:
             self._sa_compiler_by_dialect[dialect] = SaQueryCompiler(
-                dialect=dialect, function_scopes=self._function_scopes,
+                dialect=dialect,
+                function_scopes=self._function_scopes,
             )
         return self._sa_compiler_by_dialect[dialect]
 

@@ -9,13 +9,12 @@ from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAd
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_core.reporting.notifications import get_notification_record
 
-from bi_connector_snowflake.core.constants import NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 from bi_connector_snowflake.auth import SFAuthProvider
 from bi_connector_snowflake.core.adapters import SnowFlakeDefaultAdapter
+from bi_connector_snowflake.core.constants import NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 from bi_connector_snowflake.core.exc import SnowflakeRefreshTokenInvalid
 from bi_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
-
 
 LOGGER = logging.getLogger(__name__)
 

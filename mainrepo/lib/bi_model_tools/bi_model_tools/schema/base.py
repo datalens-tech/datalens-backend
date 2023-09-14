@@ -1,9 +1,20 @@
 from __future__ import annotations
 
-from typing import ClassVar, Generic, Type, TypeVar, Any, Dict
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Generic,
+    Type,
+    TypeVar,
+)
 
 import attr
-from marshmallow import EXCLUDE, post_load, Schema
+from marshmallow import (
+    EXCLUDE,
+    Schema,
+    post_load,
+)
 
 
 class BaseSchema(Schema):
@@ -11,7 +22,7 @@ class BaseSchema(Schema):
         unknown = EXCLUDE
 
 
-_TARGET_OBJECT_TV = TypeVar('_TARGET_OBJECT_TV')
+_TARGET_OBJECT_TV = TypeVar("_TARGET_OBJECT_TV")
 
 
 class DefaultSchema(BaseSchema, Generic[_TARGET_OBJECT_TV]):

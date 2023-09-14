@@ -6,19 +6,37 @@ This is independent from the specific pivot table implementations.
 from __future__ import annotations
 
 import abc
-from enum import Enum, auto, unique
+from enum import (
+    Enum,
+    auto,
+    unique,
+)
 from math import isnan
-from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Optional,
+    Union,
+)
 
 import attr
 
-from bi_constants.enums import PivotRole, BIType, FieldRole, OrderDirection
-
-from bi_api_lib.pivot.primitives import DataCellVector, MeasureNameValue
+from bi_api_lib.pivot.primitives import (
+    DataCellVector,
+    MeasureNameValue,
+)
+from bi_constants.enums import (
+    BIType,
+    FieldRole,
+    OrderDirection,
+    PivotRole,
+)
 
 if TYPE_CHECKING:
-    from bi_query_processing.legend.field_legend import Legend
     from bi_api_lib.query.formalization.pivot_legend import PivotLegend
+    from bi_query_processing.legend.field_legend import Legend
 
 
 @unique
@@ -39,15 +57,15 @@ class OrderableNullValueBase(abc.ABC):
     instead of ``None`` when sorting something.
     """
 
-    __slots__ = ('weight', )
+    __slots__ = ("weight",)
 
     weight: int
 
     def __init__(self, weight: int = 0):
-        super().__setattr__('weight', weight)
+        super().__setattr__("weight", weight)
 
     def __setattr__(self, key: str, value: Any) -> None:
-        raise AttributeError(f'{type(self).__name__} is immutable')
+        raise AttributeError(f"{type(self).__name__} is immutable")
 
     def __hash__(self) -> int:
         return 0
@@ -142,11 +160,8 @@ class BaseSortValueNormalizer(SortValueNormalizer):
 
     @_value_converter.default
     def _make_value_converter(self) -> Optional[Callable[[Any], Any]]:
-        data_types = {
-            self._legend.get_item(legend_item_id).data_type
-            for legend_item_id in self._legend_item_ids
-        }
-        assert len(data_types) == 1, 'Only single data type is supported within a pivot dimension'
+        data_types = {self._legend.get_item(legend_item_id).data_type for legend_item_id in self._legend_item_ids}
+        assert len(data_types) == 1, "Only single data type is supported within a pivot dimension"
         data_type = next(iter(data_types))
         # Normalize numbers for correct sorting
         if data_type is BIType.integer:
@@ -210,9 +225,7 @@ class MeasureNameSortValueNormalizer(SortValueNormalizer):
     def _make_measure_name_order_values(self) -> Dict[MeasureNameValue, int]:
         return {
             MeasureNameValue(value=item.title, measure_piid=item.pivot_item_id): order_value
-            for order_value, item in enumerate(
-                self._pivot_legend.list_for_role(role=PivotRole.pivot_measure)
-            )
+            for order_value, item in enumerate(self._pivot_legend.list_for_role(role=PivotRole.pivot_measure))
         }
 
     def normalize_vector_value(self, vector: Union[DataCellVector, float]) -> Any:
@@ -243,13 +256,17 @@ class DimensionSortValueStrategy(SortValueStrategy):
         measure_name_pivot_item_ids = self._pivot_legend.get_measure_name_pivot_item_ids()
         if pivot_item_id in measure_name_pivot_item_ids:
             return MeasureNameSortValueNormalizer(
-                legend=self._legend, pivot_legend=self._pivot_legend,
-                pivot_item_id=pivot_item_id, direction=direction,
+                legend=self._legend,
+                pivot_legend=self._pivot_legend,
+                pivot_item_id=pivot_item_id,
+                direction=direction,
             )
 
         return DimensionSortValueNormalizer(
-            legend=self._legend, pivot_legend=self._pivot_legend,
-            pivot_item_id=pivot_item_id, direction=direction,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
+            pivot_item_id=pivot_item_id,
+            direction=direction,
         )
 
 
@@ -257,6 +274,8 @@ class DimensionSortValueStrategy(SortValueStrategy):
 class MeasureSortStrategy(SortValueStrategy):
     def get_normalizer(self, pivot_item_id: int, direction: OrderDirection) -> SortValueNormalizer:
         return MeasureSortValueNormalizer(
-            legend=self._legend, pivot_legend=self._pivot_legend,
-            pivot_item_id=pivot_item_id, direction=direction,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
+            pivot_item_id=pivot_item_id,
+            direction=direction,
         )

@@ -1,41 +1,57 @@
 from __future__ import annotations
 
-from typing import ClassVar, Optional, Type, TYPE_CHECKING
-
+from datetime import datetime
 import logging
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Optional,
+    Type,
+)
+from urllib.parse import (
+    quote_plus,
+    urljoin,
+)
 
-import attr
-import sqlalchemy as sa
 from aiohttp.client import ClientResponse
 from aiohttp.helpers import BasicAuth
 from aiohttp.web import HTTPBadRequest
-from datetime import datetime
-from urllib.parse import urljoin, quote_plus
+import attr
+import sqlalchemy as sa
 
+from bi_app_tools.profiling_base import generic_profiler_async
 from bi_constants.enums import ConnectionType
-
+from bi_core.connection_executors.adapters.adapters_base_sa_classic import (
+    BaseClassicAdapter,
+    ClassicSQLConnLineConstructor,
+)
 from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, \
-    ClassicSQLConnLineConstructor
 from bi_core.db.native_type import GenericNativeType
 from bi_core.exc import DatabaseQueryError
-from bi_app_tools.profiling_base import generic_profiler_async
 from bi_core.utils import make_url
 
 from bi_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 
-
 if TYPE_CHECKING:
-    from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
-    from bi_connector_promql.core.target_dto import PromQLConnTargetDTO
-    from bi_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
     from bi_constants.types import TBIChunksGen
+    from bi_core.connection_executors.models.db_adapter_data import (
+        DBAdapterQuery,
+        RawSchemaInfo,
+    )
+    from bi_core.connection_models import (
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
+    )
+
+    from bi_connector_promql.core.target_dto import PromQLConnTargetDTO
 
 LOGGER = logging.getLogger(__name__)
 
 
-class PromQLConnLineConstructor(ClassicSQLConnLineConstructor['PromQLConnTargetDTO']):
+class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetDTO"]):
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
@@ -48,29 +64,29 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor['PromQLConnTargetD
             passwd=quote_plus(self._target_dto.password) if self._target_dto.password is not None else None,
             host=quote_plus(self._target_dto.host),
             port=quote_plus(str(self._target_dto.port)),
-            db_name=db_name or quote_plus(self._target_dto.db_name or '', safe=''.join(safe_db_symbols)),
+            db_name=db_name or quote_plus(self._target_dto.db_name or "", safe="".join(safe_db_symbols)),
         )
 
     def _get_dsn_query_params(self) -> dict:
         return {
-            'protocol': self._target_dto.protocol,
+            "protocol": self._target_dto.protocol,
         }
 
 
 @attr.s
-class PromQLAdapter(BaseClassicAdapter['PromQLConnTargetDTO']):
+class PromQLAdapter(BaseClassicAdapter["PromQLConnTargetDTO"]):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_PROMQL
     conn_line_constructor_type: ClassVar[Type[PromQLConnLineConstructor]] = PromQLConnLineConstructor
 
     _type_code_to_sa = {
         None: sa.TEXT,  # fallback
-        'float64': sa.FLOAT,
-        'string': sa.TEXT,
-        'unix_timestamp': sa.DATETIME,
+        "float64": sa.FLOAT,
+        "string": sa.TEXT,
+        "unix_timestamp": sa.DATETIME,
     }
 
     def _test(self) -> None:
-        engine = self.get_db_engine(db_name='')
+        engine = self.get_db_engine(db_name="")
         connection = engine.raw_connection()
         try:
             connection.cli.test_connection()
@@ -98,12 +114,12 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             return BasicAuth(
                 login=self._target_dto.username,
                 password=self._target_dto.password,
-                encoding='utf-8',
+                encoding="utf-8",
             )
         return None
 
     async def _run_query(self, dba_query: DBAdapterQuery) -> ClientResponse:
-        req_params = {'from', 'to', 'step'}
+        req_params = {"from", "to", "step"}
         conn_params = dba_query.connector_specific_params
         if conn_params is None or not req_params <= set(conn_params):
             db_exc = self.make_exc(
@@ -113,20 +129,20 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             )
             raise db_exc
 
-        for param in ('from', 'to'):
+        for param in ("from", "to"):
             conn_param = conn_params[param]
             if isinstance(conn_param, datetime):
                 conn_params[param] = int(conn_param.timestamp())
 
         query_text = self.compile_query_for_execution(dba_query.query)
         resp = await self._session.post(
-            url=urljoin(self._url, 'api/v1/query_range'),
+            url=urljoin(self._url, "api/v1/query_range"),
             data={
-                'query': query_text,
-                'start': conn_params['from'],
-                'end': conn_params['to'],
-                'step': conn_params['step'],
-            }
+                "query": query_text,
+                "start": conn_params["from"],
+                "end": conn_params["to"],
+                "step": conn_params["step"],
+            },
         )
         return resp
 
@@ -134,20 +150,18 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
     def _parse_response_body_data(data: dict) -> dict:
         rows = []
         schema: list[tuple[str, str]] = []
-        for chunk in data['result']:
-            chunk_schema = [
-                ('timestamp', 'unix_timestamp'), ('value', 'float64')
-            ] + [
-                (label, 'string') for label in chunk['metric']
+        for chunk in data["result"]:
+            chunk_schema = [("timestamp", "unix_timestamp"), ("value", "float64")] + [
+                (label, "string") for label in chunk["metric"]
             ]
 
             if not schema:
                 schema = chunk_schema
             elif set(schema) != set(chunk_schema):
-                raise ValueError('Different schemas are not supported')
+                raise ValueError("Different schemas are not supported")
 
-            label_values = [value for _, value in chunk['metric'].items()]
-            for (ts, v) in chunk['values']:
+            label_values = [value for _, value in chunk["metric"].items()]
+            for ts, v in chunk["values"]:
                 row = [datetime.fromtimestamp(ts), float(v)] + label_values
                 rows.append(row)
 
@@ -156,11 +170,11 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
     async def _parse_response_body(self, resp: ClientResponse, dba_query: DBAdapterQuery) -> dict:
         data = await resp.json()
         try:
-            return self._parse_response_body_data(data['data'])
+            return self._parse_response_body_data(data["data"])
         except ValueError as err:
             raise DatabaseQueryError(
-                message=f'Unexpected API response body: {err.args[0]}',
-                db_message=data['data']['result'][:100],
+                message=f"Unexpected API response body: {err.args[0]}",
+                db_message=data["data"]["result"][:100],
                 query=dba_query.debug_compiled_query,
             )
 
@@ -180,12 +194,12 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
     @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
     async def execute(self, dba_query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        with self.wrap_execute_excs(query=dba_query, stage='request'):
+        with self.wrap_execute_excs(query=dba_query, stage="request"):
             resp = await self._run_query(dba_query)
 
         if resp.status != 200:
             body = await resp.text()
-            body_piece = body[:100] + ('…' if len(body) > 100 else '')  # TODO: depends on db ownership
+            body_piece = body[:100] + ("…" if len(body) > 100 else "")  # TODO: depends on db ownership
             db_exc = self.make_exc(
                 status_code=resp.status,
                 err_body=body_piece,
@@ -198,7 +212,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
         async def chunk_gen(
             chunk_size: int = dba_query.chunk_size or self._default_chunk_size,
         ) -> TBIChunksGen:
-            data = rd['rows']
+            data = rd["rows"]
             while data:
                 chunk = data[:chunk_size]
                 data = data[chunk_size:]
@@ -206,13 +220,10 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
         return AsyncRawExecutionResult(
             raw_cursor_info=dict(
-                schema=rd['schema'],
-                names=[name for name, _ in rd['schema']],
-                driver_types=[driver_type for _, driver_type in rd['schema']],
-                db_types=[
-                    self._promql_type_name_to_native_type(driver_type)
-                    for _, driver_type in rd['schema']
-                ],
+                schema=rd["schema"],
+                names=[name for name, _ in rd["schema"]],
+                driver_types=[driver_type for _, driver_type in rd["schema"]],
+                db_types=[self._promql_type_name_to_native_type(driver_type) for _, driver_type in rd["schema"]],
             ),
             raw_chunk_generator=chunk_gen(),
         )
@@ -225,7 +236,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
     async def test(self) -> None:
         await self._session.get(
-            url=urljoin(self._url, '-/ready'),
+            url=urljoin(self._url, "-/ready"),
         )
 
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:

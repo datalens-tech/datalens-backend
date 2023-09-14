@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from marshmallow import fields as ma_fields, EXCLUDE
-from marshmallow_oneofschema import OneOfSchema
 from typing import Any
 
-from bi_model_tools.schema.base import DefaultSchema
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
+from marshmallow_oneofschema import OneOfSchema
 
 from bi_api_lib.schemas.values import ValueSchema
 from bi_constants.enums import ParameterValueConstraintType
-from bi_core.fields import ParameterValueConstraint, RangeParameterValueConstraint, SetParameterValueConstraint
+from bi_core.fields import (
+    ParameterValueConstraint,
+    RangeParameterValueConstraint,
+    SetParameterValueConstraint,
+)
+from bi_model_tools.schema.base import DefaultSchema
 
 
 class ParameterValueConstraintSchema(OneOfSchema):
@@ -16,7 +21,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'type'
+    type_field = "type"
 
     class BaseParameterValueConstraintSchema(DefaultSchema):
         type = ma_fields.Enum(ParameterValueConstraintType)

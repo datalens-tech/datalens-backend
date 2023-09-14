@@ -2,11 +2,10 @@ from typing import Type
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+from bi_core_testing.executors import ExecutorFactoryBase
 
 from bi_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
 from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-
-from bi_core_testing.executors import ExecutorFactoryBase
 
 
 class PostgresExecutorFactory(ExecutorFactoryBase):

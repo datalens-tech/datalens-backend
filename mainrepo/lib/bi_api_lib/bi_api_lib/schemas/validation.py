@@ -2,14 +2,11 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 
-from bi_constants.enums import ComponentErrorLevel
-
-from bi_core.marshmallow import ErrorCodeField
-
-from bi_model_tools.schema.base import BaseSchema
-
 from bi_api_lib.schemas.action import ActionSchema
 from bi_api_lib.schemas.dataset_base import DatasetContentSchema
+from bi_constants.enums import ComponentErrorLevel
+from bi_core.marshmallow import ErrorCodeField
+from bi_model_tools.schema.base import BaseSchema
 
 
 class DatasetValidationSchema(DatasetContentSchema):
@@ -45,7 +42,7 @@ class FieldValidationSchema(DatasetContentSchema):
     class FieldFormulaSchema(BaseSchema):
         title = ma_fields.String(required=True)
         guid = ma_fields.String()
-        formula = ma_fields.String(load_default='')
+        formula = ma_fields.String(load_default="")
 
     field = ma_fields.Nested(FieldFormulaSchema)
 

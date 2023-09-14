@@ -1,11 +1,20 @@
 from __future__ import annotations
 
+from datetime import (
+    date,
+    datetime,
+)
+from typing import (
+    ClassVar,
+    Generic,
+    List,
+    TypeVar,
+    Union,
+)
+
 import attr
-from datetime import date, datetime
-from typing import ClassVar, Generic, List, TypeVar, Union
 
 from bi_constants.enums import BIType
-
 
 _INNER_TYPE = TypeVar("_INNER_TYPE")
 

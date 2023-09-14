@@ -4,19 +4,29 @@ import http
 import inspect
 import itertools
 import logging
-from typing import Any, Dict, ClassVar, FrozenSet, Tuple, Optional, Type
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    FrozenSet,
+    Optional,
+    Tuple,
+    Type,
+)
 
 import attr
+from marshmallow import Schema
 from marshmallow import ValidationError as MValidationError
-
-from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
+from marshmallow import fields
 
 from bi_api_commons.exc import RequestTimeoutError
-from bi_formula.core import exc as formula_exc
-from bi_core import exc as common_exc
-from marshmallow import Schema, fields
-
 from bi_api_lib import exc
+from bi_constants.exc import (
+    DEFAULT_ERR_CODE_API_PREFIX,
+    GLOBAL_ERR_PREFIX,
+)
+from bi_core import exc as common_exc
+from bi_formula.core import exc as formula_exc
 import bi_query_processing.exc
 
 LOGGER = logging.getLogger(__name__)
@@ -93,6 +103,7 @@ class BIError:
     Class that represents errors occurred during BI requests handling.
      Is used for metrics collection and forming API error responses.
     """
+
     http_code: Optional[int]
     application_code_stack: Tuple[str, ...]
 
@@ -100,12 +111,11 @@ class BIError:
     details: Dict
     debug: Dict
 
-    DEFAULT_ERROR_MESSAGE = 'Internal Server Error'
+    DEFAULT_ERROR_MESSAGE = "Internal Server Error"
 
     @staticmethod
     def get_default_error_code(
-            err: Exception,
-            exc_code_mapping: Optional[Dict[Type[Exception], int]] = None
+        err: Exception, exc_code_mapping: Optional[Dict[Type[Exception], int]] = None
     ) -> Optional[int]:
         """
         :param err: Exception to map to HTTP status code
@@ -124,11 +134,11 @@ class BIError:
 
     @classmethod
     def from_exception(
-            cls,
-            ex: Exception,
-            default_message: Optional[str] = None,
-            exc_code_mapping: Optional[Dict[Type[Exception], int]] = None
-    ) -> 'BIError':
+        cls,
+        ex: Exception,
+        default_message: Optional[str] = None,
+        exc_code_mapping: Optional[Dict[Type[Exception], int]] = None,
+    ) -> "BIError":
         """
         Creates BIError from exception
         :param ex: Exception to create BIError from
@@ -154,7 +164,7 @@ class BIError:
         elif isinstance(ex, formula_exc.FormulaError):
             if not isinstance(ex, bi_query_processing.exc.FormulaHandlingError):
                 # FIXME: Temporary measure. Later we'll switch to catching this error instead of FormulaError
-                LOGGER.exception('Caught a non-wrapped FormulaError')
+                LOGGER.exception("Caught a non-wrapped FormulaError")
 
             if len(ex.errors) == 1:
                 # There is only one error, the pass the code directly
@@ -181,7 +191,7 @@ class BIError:
 
 
 class RegularAPIErrorSchema(Schema):
-    code = fields.Method(serialize='serialize_error_code')
+    code = fields.Method(serialize="serialize_error_code")
     message = fields.String()
 
     details = fields.Dict()  # In future will be replaced with schemas for each exception
@@ -189,24 +199,29 @@ class RegularAPIErrorSchema(Schema):
 
     def get_api_prefix(self) -> str:
         # TODO CONSIDER: Warning in case of no api_prefix in context
-        return self.context.get('api_prefix') or DEFAULT_ERR_CODE_API_PREFIX
+        return self.context.get("api_prefix") or DEFAULT_ERR_CODE_API_PREFIX
 
     def serialize_error_code(self, data: BIError) -> str:
-        return ".".join(itertools.chain(
-            (GLOBAL_ERR_PREFIX, self.get_api_prefix(),),
-            data.application_code_stack,
-        ))
+        return ".".join(
+            itertools.chain(
+                (
+                    GLOBAL_ERR_PREFIX,
+                    self.get_api_prefix(),
+                ),
+                data.application_code_stack,
+            )
+        )
 
 
 class PublicAPIErrorSchema(RegularAPIErrorSchema):
     class Meta(RegularAPIErrorSchema.Meta):
-        PUBLIC_FORWARDED_ERROR_CODES: ClassVar[FrozenSet[Tuple[str, ...]]] = frozenset((
-            tuple(common_exc.MaterializationNotFinished.err_code),
-        ))
+        PUBLIC_FORWARDED_ERROR_CODES: ClassVar[FrozenSet[Tuple[str, ...]]] = frozenset(
+            (tuple(common_exc.MaterializationNotFinished.err_code),)
+        )
         PUBLIC_DEFAULT_MESSAGE = "Something went wrong"
         PUBLIC_DEFAULT_ERR_CODE = "ERR.UNKNOWN"
 
-    message = fields.Method(serialize='serialize_message')  # type: ignore  # TODO: fix
+    message = fields.Method(serialize="serialize_message")  # type: ignore  # TODO: fix
 
     debug = fields.Constant({})  # type: ignore  # TODO: fix
     details = fields.Constant({})  # type: ignore  # TODO: fix

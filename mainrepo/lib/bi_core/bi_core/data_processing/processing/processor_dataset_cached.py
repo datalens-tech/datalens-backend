@@ -2,25 +2,38 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import TYPE_CHECKING, Collection, List, Optional
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    List,
+    Optional,
+)
 
 import attr
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql.base import PGDialect
 
 from bi_api_commons.reporting.models import DataProcessingCacheInfoReportingRecord
-
+from bi_core.connectors.base.query_compiler import QueryCompiler
 from bi_core.data_processing.cache.primitives import LocalKeyRepresentation
-from bi_core.data_processing.cache.processing_helper import CacheProcessingHelper, CacheSituation
+from bi_core.data_processing.cache.processing_helper import (
+    CacheProcessingHelper,
+    CacheSituation,
+)
 from bi_core.data_processing.cache.utils import CacheOptionsBuilderDataProcessor
 from bi_core.data_processing.processing.operation import (
-    BaseOp, CalcOp, MultiSourceOp, SingleSourceOp,
+    BaseOp,
+    CalcOp,
+    MultiSourceOp,
+    SingleSourceOp,
 )
 from bi_core.data_processing.processing.processor import SROperationProcessorAsyncBase
 from bi_core.data_processing.stream_base import (
-    CacheVirtualStream, DataRequestMetaInfo, DataStreamAsync, DataStreamBase,
+    CacheVirtualStream,
+    DataRequestMetaInfo,
+    DataStreamAsync,
+    DataStreamBase,
 )
-from bi_core.connectors.base.query_compiler import QueryCompiler
 
 if TYPE_CHECKING:
     from bi_core.data_processing.processing.context import OpExecutionContext
@@ -51,9 +64,7 @@ class SingleStreamCacheOperationProcessor(SROperationProcessorAsyncBase):
 
     @_cache_options_builder.default  # noqa
     def _cache_options_builder_default(self) -> CacheOptionsBuilderDataProcessor:
-        return CacheOptionsBuilderDataProcessor(
-            default_ttl_config=self._service_registry.default_cache_ttl_config
-        )
+        return CacheOptionsBuilderDataProcessor(default_ttl_config=self._service_registry.default_cache_ttl_config)
 
     def __attrs_post_init__(self):  # type: ignore  # TODO: fix
         # cache_engine_factory = self.service_registry.get_cache_engine_factory()
@@ -84,23 +95,23 @@ class SingleStreamCacheOperationProcessor(SROperationProcessorAsyncBase):
                     break
                 base_key = base_key.multi_extend(*stream.data_key.key_parts)
         else:
-            raise TypeError(f'Invalid operation type {type(op)}')
+            raise TypeError(f"Invalid operation type {type(op)}")
 
         if base_key is None:
             return None
 
-        data_key = base_key.extend(part_type='operation', part_content=op.__class__.__name__)  # type: ignore  # TODO: fix
+        data_key = base_key.extend(part_type="operation", part_content=op.__class__.__name__)  # type: ignore  # TODO: fix
         if isinstance(op, CalcOp):
             data_key = data_key.extend(
-                part_type='query',
+                part_type="query",
                 part_content=CacheOptionsBuilderDataProcessor.get_query_str_for_cache(
                     query=self._query_compiler.compile_select(
                         bi_query=op.bi_query,
                         # The real table name doesn't really matter here
-                        sql_source=sa.table('table'),
+                        sql_source=sa.table("table"),
                     ),
                     dialect=self._query_compiler.dialect,
-                )
+                ),
             )
 
         return data_key
@@ -118,28 +129,21 @@ class SingleStreamCacheOperationProcessor(SROperationProcessorAsyncBase):
             names = source_stream.names
             stream_meta = source_stream.meta
         elif isinstance(op, MultiSourceOp):
-            source_streams = [
-                ctx.get_stream(source_stream_id)
-                for source_stream_id in sorted(op.source_stream_ids)
-            ]
+            source_streams = [ctx.get_stream(source_stream_id) for source_stream_id in sorted(op.source_stream_ids)]
             names = []  # not used
             user_types = []  # not used
             stream_meta = DataRequestMetaInfo(
                 query_id=None,  # FIXME
                 query=None,
                 is_materialized=all(
-                    stream.meta.is_materialized
-                    for stream in source_streams
-                    if isinstance(stream, DataStreamBase)
+                    stream.meta.is_materialized for stream in source_streams if isinstance(stream, DataStreamBase)
                 ),
                 data_source_list=[
-                    dsrc
-                    for s in source_streams if isinstance(s, DataStreamBase)
-                    for dsrc in s.meta.data_source_list
-                ]
+                    dsrc for s in source_streams if isinstance(s, DataStreamBase) for dsrc in s.meta.data_source_list
+                ],
             )
         else:
-            raise TypeError(f'Invalid operation type {type(op)}')
+            raise TypeError(f"Invalid operation type {type(op)}")
 
         data_key = self._make_op_data_key(op=op, ctx=ctx)
 
@@ -160,9 +164,9 @@ class SingleStreamCacheOperationProcessor(SROperationProcessorAsyncBase):
         self._reporting_registry.save_reporting_record(report=report)
 
     async def execute_operations(
-            self,
-            ctx: OpExecutionContext,
-            output_stream_ids: Collection[str],
+        self,
+        ctx: OpExecutionContext,
+        output_stream_ids: Collection[str],
     ) -> List[DataStreamAsync]:
         """
         Turn all virtual output streams into real data-containing ones
@@ -179,14 +183,11 @@ class SingleStreamCacheOperationProcessor(SROperationProcessorAsyncBase):
         # TODO: refactor to use an explicit self-method call instead of super()
         output_streams = await super().execute_operations(ctx=ctx, output_stream_ids=output_stream_ids)
         assert len(output_streams) == 1
-        virtual_stream, = output_streams
+        (virtual_stream,) = output_streams
         assert isinstance(virtual_stream, CacheVirtualStream)
         # Resolve TTL info and save BIQueryCacheOptions object
         cache_options_builder = self._cache_options_builder
-        cache_options = cache_options_builder.get_cache_options_for_stream(
-            virtual_stream,
-            self._dataset
-        )
+        cache_options = cache_options_builder.get_cache_options_for_stream(virtual_stream, self._dataset)
 
         ds_id = self._dataset.uuid
         cache_helper = CacheProcessingHelper(
@@ -200,7 +201,7 @@ class SingleStreamCacheOperationProcessor(SROperationProcessorAsyncBase):
                 output_stream_ids=output_stream_ids,
             )
             assert len(streams) == 1
-            stream, = streams
+            (stream,) = streams
             return stream.data
 
         cache_full_hit = None
@@ -256,12 +257,12 @@ class CachedDatasetProcessor(SROperationProcessorAsyncBase):  # noqa
         return await self._main_processor.ping()  # TODO: also ping cache engine?
 
     async def execute_operations(
-            self, ctx: OpExecutionContext,
-            output_stream_ids: Collection[str],
+        self,
+        ctx: OpExecutionContext,
+        output_stream_ids: Collection[str],
     ) -> List[DataStreamAsync]:
-
         if len(output_stream_ids) != 1:
-            LOGGER.warning('Cannot currently use cache for multiple (%d) output streams', len(output_stream_ids))
+            LOGGER.warning("Cannot currently use cache for multiple (%d) output streams", len(output_stream_ids))
             return await self._main_processor.execute_operations(
                 ctx=ctx,
                 output_stream_ids=output_stream_ids,

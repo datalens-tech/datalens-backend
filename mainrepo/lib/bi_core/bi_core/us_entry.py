@@ -3,14 +3,24 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, ClassVar, Type, TypeVar, Union, Optional, Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
-from bi_utils.utils import DotDict
+from bi_api_commons.base_models import RequestContextInfo
 from bi_core.base_models import (
     BaseAttrsDataModel,
-    EntryLocation, PathEntryLocation, WorkbookEntryLocation,
+    EntryLocation,
+    PathEntryLocation,
+    WorkbookEntryLocation,
 )
-from bi_api_commons.base_models import RequestContextInfo
+from bi_utils.utils import DotDict
 
 if TYPE_CHECKING:
     from bi_core.us_manager.us_manager import USManagerBase
@@ -19,7 +29,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-_USENTRY_TV = TypeVar('_USENTRY_TV', bound='USEntry')
+_USENTRY_TV = TypeVar("_USENTRY_TV", bound="USEntry")
 
 
 class USEntry:
@@ -50,14 +60,14 @@ class USEntry:
 
     @classmethod
     def create_from_dict(
-            cls: Type[_USENTRY_TV],
-            data_dict: Union[dict, BaseAttrsDataModel],
-            ds_key: Union[EntryLocation, str, None] = None,
-            type_: Optional[str] = None,
-            meta: Any = None,
-            *,
-            us_manager: SyncUSManager,
-            **kwargs: Any,
+        cls: Type[_USENTRY_TV],
+        data_dict: Union[dict, BaseAttrsDataModel],
+        ds_key: Union[EntryLocation, str, None] = None,
+        type_: Optional[str] = None,
+        meta: Any = None,
+        *,
+        us_manager: SyncUSManager,
+        **kwargs: Any,
     ) -> _USENTRY_TV:
         from bi_core.us_manager.us_manager import USManagerBase
 
@@ -65,12 +75,13 @@ class USEntry:
             raise TypeError(f"us_manager must be USManagerBase, not {type(us_manager)}")
 
         if not (
-                # dict
-                isinstance(data_dict, dict) and cls.DataModel is None
-                # otherwise types must match
-                or type(data_dict) is cls.DataModel
+            # dict
+            isinstance(data_dict, dict)
+            and cls.DataModel is None
+            # otherwise types must match
+            or type(data_dict) is cls.DataModel
         ):
-            raise TypeError(f'Invalid object type for data_dict: {type(data_dict)}')
+            raise TypeError(f"Invalid object type for data_dict: {type(data_dict)}")
 
         effective_entry_key: Optional[EntryLocation]
 
@@ -89,17 +100,28 @@ class USEntry:
             type_=type_,
             meta=meta,
             us_manager=us_manager,
-            **kwargs
+            **kwargs,
         )
         return obj
 
-    def __init__(self, uuid: Optional[str] = None, data: Optional[dict] = None, entry_key: Optional[EntryLocation] = None,
-                 type_: Optional[str] = None,
-                 meta: Optional[dict] = None, is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
-                 permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
-                 permissions: Optional[dict[str, bool]] = None, links: Optional[dict] = None, hidden: bool = False,
-                 data_strict: bool = True,
-                 *, us_manager: USManagerBase):
+    def __init__(
+        self,
+        uuid: Optional[str] = None,
+        data: Optional[dict] = None,
+        entry_key: Optional[EntryLocation] = None,
+        type_: Optional[str] = None,
+        meta: Optional[dict] = None,
+        is_locked: Optional[bool] = None,
+        is_favorite: Optional[bool] = None,
+        permissions_mode: Optional[str] = None,
+        initial_permissions: Optional[str] = None,
+        permissions: Optional[dict[str, bool]] = None,
+        links: Optional[dict] = None,
+        hidden: bool = False,
+        data_strict: bool = True,
+        *,
+        us_manager: USManagerBase,
+    ):
         if entry_key is not None:
             assert isinstance(entry_key, EntryLocation), f"Unexpected type of entry key: {type(entry_key)}"
 
@@ -129,9 +151,7 @@ class USEntry:
     def on_updated(self):  # type: ignore  # TODO: fix
         """Post-update actions go here"""
 
-    def _load_data(
-            self, data: dict, strict: bool = True
-    ) -> Union[BaseAttrsDataModel, DotDict]:
+    def _load_data(self, data: dict, strict: bool = True) -> Union[BaseAttrsDataModel, DotDict]:
         from bi_core.us_manager.us_manager import USManagerBase
 
         if self.DataModel is None:
@@ -192,17 +212,12 @@ class USEntry:
             data = {k: v for k, v in data_dict.items()}
         else:
             data = {
-                'type': self.type_,
-                'created_by': self.created_by,
-                'created_at': self.created_at,
-                'is_locked': self.is_locked,
+                "type": self.type_,
+                "created_by": self.created_by,
+                "created_at": self.created_at,
+                "is_locked": self.is_locked,
             }
-        ret = {
-            'id': self.uuid,
-            'key': self.location_short_string,
-            'is_favorite': self.is_favorite,
-            **data
-        }
+        ret = {"id": self.uuid, "key": self.location_short_string, "is_favorite": self.is_favorite, **data}
         if isinstance(self.entry_key, WorkbookEntryLocation):
             ret.update(
                 workbook_id=self.entry_key.workbook_id,
@@ -214,19 +229,19 @@ class USEntry:
 
     @property
     def created_by(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get('createdBy') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+        return self._us_resp.get("createdBy") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
 
     @property
     def created_at(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get('createdAt') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+        return self._us_resp.get("createdAt") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
 
     @property
     def updated_at(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get('updatedAt') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+        return self._us_resp.get("updatedAt") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
 
     @property
     def revision_id(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get('revId') if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+        return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
 
     @property
     def raw_tenant_id(self) -> Optional[str]:
@@ -255,17 +270,32 @@ class USEntry:
 
 class USMigrationEntry(USEntry):
     def __init__(
-            self, uuid: Optional[str] = None, data: Optional[dict] = None, entry_key: Optional[EntryLocation] = None,
-            type_: Optional[str] = None, meta: Optional[dict] = None,
-            is_locked: Optional[bool] = None, is_favorite: Optional[bool] = None,
-            permissions_mode: Optional[str] = None, initial_permissions: Optional[str] = None,
-            permissions: Optional[dict] = None,
-            links: Optional[dict] = None, hidden: bool = False, data_strict: bool = True, *, us_manager: USManagerBase,
-            unversioned_data: Optional[dict[str, Any]]
+        self,
+        uuid: Optional[str] = None,
+        data: Optional[dict] = None,
+        entry_key: Optional[EntryLocation] = None,
+        type_: Optional[str] = None,
+        meta: Optional[dict] = None,
+        is_locked: Optional[bool] = None,
+        is_favorite: Optional[bool] = None,
+        permissions_mode: Optional[str] = None,
+        initial_permissions: Optional[str] = None,
+        permissions: Optional[dict] = None,
+        links: Optional[dict] = None,
+        hidden: bool = False,
+        data_strict: bool = True,
+        *,
+        us_manager: USManagerBase,
+        unversioned_data: Optional[dict[str, Any]],
     ):
         super().__init__(
-            uuid=uuid, data=data, entry_key=entry_key,
-            type_=type_, meta=meta, is_locked=is_locked, is_favorite=is_favorite,
+            uuid=uuid,
+            data=data,
+            entry_key=entry_key,
+            type_=type_,
+            meta=meta,
+            is_locked=is_locked,
+            is_favorite=is_favorite,
             permissions_mode=permissions_mode,
             initial_permissions=initial_permissions,
             permissions=permissions,

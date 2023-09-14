@@ -41,12 +41,20 @@ See tests for more specifics.
 
 from __future__ import annotations
 
-from typing import Any, Callable, ClassVar, Generator, Optional, Sequence, Type, TypeVar
 from types import MappingProxyType
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Generator,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
-
-_ANY_TV = TypeVar('_ANY_TV')
-_DYNAMIC_ENUM_TV = TypeVar('_DYNAMIC_ENUM_TV', bound='DynamicEnum')
+_ANY_TV = TypeVar("_ANY_TV")
+_DYNAMIC_ENUM_TV = TypeVar("_DYNAMIC_ENUM_TV", bound="DynamicEnum")
 
 
 class AutoEnumValue:
@@ -55,7 +63,7 @@ class AutoEnumValue:
     within the class itself `Enum`-style.
     """
 
-    __slots__ = ('__name',)
+    __slots__ = ("__name",)
 
     __name: Optional[str]
 
@@ -68,7 +76,7 @@ class AutoEnumValue:
 
     def __get__(self, instance: Optional[DynamicEnum], owner: Type[_DYNAMIC_ENUM_TV]) -> _DYNAMIC_ENUM_TV:
         if self.__name is None:  # has not been set yet
-            raise RuntimeError('Property is not bound to any class')
+            raise RuntimeError("Property is not bound to any class")
 
         assert self.__name is not None
         return owner(self.__name)
@@ -82,10 +90,10 @@ def _get_value_from_dyn_enum_args(args: Sequence[Any], kwargs: dict[str, Any]) -
 
     if args:
         value = args[0]
-    elif 'value' in kwargs:
-        value = kwargs['value']
+    elif "value" in kwargs:
+        value = kwargs["value"]
     else:
-        raise TypeError('name argument not received')
+        raise TypeError("name argument not received")
 
     return value
 
@@ -104,18 +112,17 @@ class DynamicEnumMetaclass(type):
 
     def __new__(mcs, name: str, bases: Any, attrs: Any) -> DynamicEnumMetaclass:
         if len(bases) > 1:
-            raise TypeError('Cannot have multiple bases for subclasses')
+            raise TypeError("Cannot have multiple bases for subclasses")
 
         # Enforce slots
-        slots = attrs.get('__slots__')
+        slots = attrs.get("__slots__")
         if not bases:
             # This must be the base class
-            assert slots == ('__value',)
+            assert slots == ("__value",)
         elif slots is not None:
             if slots != ():
                 raise TypeError(
-                    f'Custom instance attributes are not supported for class {name}. '
-                    f'Got slots: {slots}'
+                    f"Custom instance attributes are not supported for class {name}. " f"Got slots: {slots}"
                 )
         else:
             # A subclass. Enforce slots without any additional instance attributes
@@ -150,7 +157,7 @@ class DynamicEnumMetaclass(type):
 
 
 class DynamicEnum(metaclass=DynamicEnumMetaclass):
-    __slots__ = ('__value',)
+    __slots__ = ("__value",)
     __value: str
 
     __declared_values: ClassVar[dict[Type[DynamicEnum], set[str]]] = {}
@@ -162,7 +169,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         """
 
         if not cls.__subclassable:
-            raise TypeError(f'Cannot subclass {cls.__name__}')
+            raise TypeError(f"Cannot subclass {cls.__name__}")
 
         # All subclasses of DynamicEnum are not subclassable
         cls.__subclassable = False
@@ -178,21 +185,21 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         """
 
         if cls is DynamicEnum:
-            raise TypeError('Cannot instantiate DynamicEnum base class')
+            raise TypeError("Cannot instantiate DynamicEnum base class")
 
         value = _get_value_from_dyn_enum_args(args, kwargs)
 
         if not cls.is_declared(value):
-            raise ValueError(f'Cannot instantiate {cls.__name__} with undeclared value {value!r}')
+            raise ValueError(f"Cannot instantiate {cls.__name__} with undeclared value {value!r}")
 
         return super().__new__(cls)
 
     def __init__(self, value: str):
         if type(value) is not str:
-            raise TypeError(f'Invalid value type {type(value)}')
+            raise TypeError(f"Invalid value type {type(value)}")
 
-        value_attr_mangled_name = f'_{DynamicEnum.__name__}__value'  # See "name mangling in python"
-        super().__setattr__(value_attr_mangled_name,  value)  # Because direct usage of __setattr__ is forbidden
+        value_attr_mangled_name = f"_{DynamicEnum.__name__}__value"  # See "name mangling in python"
+        super().__setattr__(value_attr_mangled_name, value)  # Because direct usage of __setattr__ is forbidden
 
     @classmethod
     def is_declared(cls, value: str) -> bool:
@@ -214,7 +221,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         if value not in cls_declared_values:
             cls_declared_values.add(value)
         else:
-            raise ValueError(f'{cls.__name__} value {value!r} has already been declared')
+            raise ValueError(f"{cls.__name__} value {value!r} has already been declared")
 
         return cls(value)
 
@@ -227,7 +234,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         return self.__value
 
     def __setattr__(self, key: str, value: Any) -> None:
-        raise AttributeError(f'{self.__class__.__name__} is immutable')
+        raise AttributeError(f"{self.__class__.__name__} is immutable")
 
     def __eq__(self, other: Any) -> bool:
         if type(other) != type(self):
@@ -241,7 +248,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         return repr(self)
 
     def __repr__(self) -> str:
-        return f'{type(self).__name__}({self.__value!r})'
+        return f"{type(self).__name__}({self.__value!r})"
 
     def __reduce__(self: _DYNAMIC_ENUM_TV) -> tuple[Callable[[], _DYNAMIC_ENUM_TV], tuple[str]]:
         return self.__class__, (self.__value,)

@@ -6,9 +6,11 @@ from bi_formula.core.dialect import DialectCombo
 from bi_formula.definitions.scope import Scope
 from bi_formula.translation.env import TranslationEnvironment
 from bi_formula.translation.translator import SqlAlchemyTranslator
-
 from bi_formula_ref.examples.query import (
-    RawQueryContext, CompiledQueryContext, FormulaContext, TableReference,
+    CompiledQueryContext,
+    FormulaContext,
+    RawQueryContext,
+    TableReference,
 )
 
 
@@ -29,9 +31,7 @@ class SaQueryCompiler:
         )
         return translator
 
-    def compile_formula(
-            self, formula_ctx: FormulaContext, translator: SqlAlchemyTranslator
-    ) -> ClauseElement:
+    def compile_formula(self, formula_ctx: FormulaContext, translator: SqlAlchemyTranslator) -> ClauseElement:
         ctx = translator.translate(formula=formula_ctx.formula)
         expr = ctx.expression
         assert expr is not None

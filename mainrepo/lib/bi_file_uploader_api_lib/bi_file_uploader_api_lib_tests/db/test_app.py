@@ -1,10 +1,10 @@
 import pytest
+
 from bi_api_commons.client.common import Req
 from bi_constants.api_constants import (
     DLHeaders,
     DLHeadersCommon,
 )
-
 from bi_file_uploader_api_lib_tests.req_builder import ReqBuilder
 
 

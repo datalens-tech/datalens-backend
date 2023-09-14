@@ -5,19 +5,20 @@ from typing import Any
 import marshmallow as ma
 
 from bi_constants.enums import FileProcessingStatus
-
+from bi_file_uploader_api_lib.schemas.base import BaseRequestSchema
+from bi_file_uploader_api_lib.schemas.errors import (
+    ErrorInfoSchema,
+    FileProcessingErrorApiSchema,
+)
 from bi_file_uploader_lib import exc
 from bi_file_uploader_lib.enums import FileType
 
-from bi_file_uploader_api_lib.schemas.base import BaseRequestSchema
-from bi_file_uploader_api_lib.schemas.errors import ErrorInfoSchema, FileProcessingErrorApiSchema
-
 
 def validate_authorized(data: dict) -> None:
-    if data['authorized'] and data['refresh_token'] is None and data['connection_id'] is None:
+    if data["authorized"] and data["refresh_token"] is None and data["connection_id"] is None:
         raise ma.ValidationError(
-            'Either refresh_token or connection_id must be provided when authorized is true',
-            'authorized',
+            "Either refresh_token or connection_id must be provided when authorized is true",
+            "authorized",
         )
 
 
@@ -43,7 +44,7 @@ class FileStatusRequestSchema(BaseRequestSchema):
 
 
 class FileStatusResultSchema(ma.Schema):
-    file_id = ma.fields.String(attribute='id')
+    file_id = ma.fields.String(attribute="id")
     status = ma.fields.Enum(enum=FileProcessingStatus)
     errors = ma.fields.Nested(ErrorInfoSchema, many=True)
     error = ma.fields.Nested(FileProcessingErrorApiSchema, allow_none=True)
@@ -55,14 +56,14 @@ class FileSourcesRequestSchema(BaseRequestSchema):
 
 
 class SourceShortInfoSchema(ma.Schema):
-    source_id = ma.fields.String(attribute='id')
+    source_id = ma.fields.String(attribute="id")
     title = ma.fields.String()
     is_applicable = ma.fields.Boolean()
     error = ma.fields.Nested(FileProcessingErrorApiSchema, allow_none=True)
 
 
 class FileSourcesResultSchema(ma.Schema):
-    file_id = ma.fields.String(attribute='id')
+    file_id = ma.fields.String(attribute="id")
     errors = ma.fields.Nested(ErrorInfoSchema, many=True)
     sources = ma.fields.Nested(SourceShortInfoSchema, many=True)
 
@@ -87,25 +88,29 @@ class UpdateConnectionDataRequestSchema(BaseRequestSchema):
         validate_authorized(data)
 
         incomplete_sources: list[dict[str, str]] = []
-        for src in data['sources']:
-            if src['spreadsheet_id'] is None or src['sheet_id'] is None or src['first_line_is_header'] is None:
-                incomplete_sources.append(dict(
-                    source_id=src['id'],
-                    title=src['title'],
-                ))
+        for src in data["sources"]:
+            if src["spreadsheet_id"] is None or src["sheet_id"] is None or src["first_line_is_header"] is None:
+                incomplete_sources.append(
+                    dict(
+                        source_id=src["id"],
+                        title=src["title"],
+                    )
+                )
 
         if incomplete_sources:
-            raise exc.CannotUpdateDataError(details=dict(
-                incomplete_sources=incomplete_sources,
-            ))
+            raise exc.CannotUpdateDataError(
+                details=dict(
+                    incomplete_sources=incomplete_sources,
+                )
+            )
 
 
 class UpdateConnectionDataResultSchema(ma.Schema):
     class FileSourcesSchema(ma.Schema):
         class SingleFileSourceSchema(ma.Schema):
-            source_id = ma.fields.String(attribute='id')
+            source_id = ma.fields.String(attribute="id")
 
-        file_id = ma.fields.String(attribute='id')
+        file_id = ma.fields.String(attribute="id")
         sources = ma.fields.Nested(SingleFileSourceSchema, many=True)
 
     files = ma.fields.Nested(FileSourcesSchema, many=True)

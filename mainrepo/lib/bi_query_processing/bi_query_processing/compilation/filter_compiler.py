@@ -3,31 +3,45 @@ from __future__ import annotations
 import datetime
 import logging
 import os
-from typing import Any, Callable, ClassVar, Dict, Optional, TypeVar
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
-import bi_query_processing.exc
 from bi_constants.enums import WhereClauseOperation
-
 from bi_core.fields import BIField
-
-import bi_formula.core.nodes as formula_nodes
 from bi_formula.core.datatype import DataType
+import bi_formula.core.nodes as formula_nodes
 from bi_formula.shortcuts import n
-
-from bi_query_processing.compilation.formula_compiler import FormulaCompiler, FORMULA_TO_BI_TYPES
-from bi_query_processing.compilation.helpers import make_literal_node, ARRAY_TYPES, TREE_TYPES
+from bi_query_processing.compilation.formula_compiler import (
+    FORMULA_TO_BI_TYPES,
+    FormulaCompiler,
+)
+from bi_query_processing.compilation.helpers import (
+    ARRAY_TYPES,
+    TREE_TYPES,
+    make_literal_node,
+)
 from bi_query_processing.compilation.primitives import CompiledFormulaInfo
-from bi_query_processing.compilation.specs import FilterFieldSpec, FilterSourceColumnSpec
+from bi_query_processing.compilation.specs import (
+    FilterFieldSpec,
+    FilterSourceColumnSpec,
+)
+import bi_query_processing.exc
 from bi_query_processing.utils.datetime import parse_datetime
 
 LOGGER = logging.getLogger(__name__)
 
-USE_DATE_TO_DATETIME_CONV = os.environ.get('USE_DATE_TO_DATETIME_CONV', '1') == '1'
+USE_DATE_TO_DATETIME_CONV = os.environ.get("USE_DATE_TO_DATETIME_CONV", "1") == "1"
 
 
-_FILTER_PARAMS_TV = TypeVar('_FILTER_PARAMS_TV', bound='FilterParams')
+_FILTER_PARAMS_TV = TypeVar("_FILTER_PARAMS_TV", bound="FilterParams")
 
 CONTAINMENT_OPS = {
     WhereClauseOperation.STARTSWITH,
@@ -61,6 +75,7 @@ class FilterParams:
     Single-field filter state,
     primarily for mangling in subclasses.
     """
+
     field: BIField
     operation: WhereClauseOperation
     filter_args: list = None  # type: ignore  # TODO: fix
@@ -69,7 +84,7 @@ class FilterParams:
     arg_cast_type: DataType = None  # type: ignore  # TODO: fix
 
     def clone(self: _FILTER_PARAMS_TV, **updates: Any) -> _FILTER_PARAMS_TV:
-        """ Convenience method so that callers don't need to know about `attr` """
+        """Convenience method so that callers don't need to know about `attr`"""
         return attr.evolve(self, **updates)
 
 
@@ -81,16 +96,14 @@ class FilterFormulaCompiler:
     FILTER_OPERATIONS: ClassVar[Dict[WhereClauseOperation, FilterDefinition]] = {
         # unary (arg_cnt = 0)
         WhereClauseOperation.ISNULL: FilterDefinition(arg_cnt=0, callable=n.func.ISNULL),
-        WhereClauseOperation.ISNOTNULL: FilterDefinition(
-            arg_cnt=0, callable=lambda f, *args: n.not_(n.func.ISNULL(f))
-        ),
+        WhereClauseOperation.ISNOTNULL: FilterDefinition(arg_cnt=0, callable=lambda f, *args: n.not_(n.func.ISNULL(f))),
         # binary (arg_cnt = 1)
-        WhereClauseOperation.EQ: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary('==', f, val)),
-        WhereClauseOperation.NE: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary('!=', f, val)),
-        WhereClauseOperation.GT: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary('>', f, val)),
-        WhereClauseOperation.GTE: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary('>=', f, val)),
-        WhereClauseOperation.LT: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary('<', f, val)),
-        WhereClauseOperation.LTE: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary('<=', f, val)),
+        WhereClauseOperation.EQ: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary("==", f, val)),
+        WhereClauseOperation.NE: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary("!=", f, val)),
+        WhereClauseOperation.GT: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary(">", f, val)),
+        WhereClauseOperation.GTE: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary(">=", f, val)),
+        WhereClauseOperation.LT: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary("<", f, val)),
+        WhereClauseOperation.LTE: FilterDefinition(arg_cnt=1, callable=lambda f, val: n.binary("<=", f, val)),
         WhereClauseOperation.STARTSWITH: FilterDefinition(arg_cnt=1, callable=n.func.STARTSWITH),
         WhereClauseOperation.ISTARTSWITH: FilterDefinition(arg_cnt=1, callable=n.func.ISTARTSWITH),
         WhereClauseOperation.ENDSWITH: FilterDefinition(arg_cnt=1, callable=n.func.ENDSWITH),
@@ -98,31 +111,38 @@ class FilterFormulaCompiler:
         WhereClauseOperation.CONTAINS: FilterDefinition(arg_cnt=1, callable=n.func.CONTAINS),
         WhereClauseOperation.ICONTAINS: FilterDefinition(arg_cnt=1, callable=n.func.ICONTAINS),
         WhereClauseOperation.NOTCONTAINS: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.not_(n.func.CONTAINS(f, val))),
+            arg_cnt=1, callable=lambda f, val: n.not_(n.func.CONTAINS(f, val))
+        ),
         WhereClauseOperation.NOTICONTAINS: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.not_(n.func.ICONTAINS(f, val))),
+            arg_cnt=1, callable=lambda f, val: n.not_(n.func.ICONTAINS(f, val))
+        ),
         WhereClauseOperation.LENEQ: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.binary('==', n.func.LEN(f), val)),
+            arg_cnt=1, callable=lambda f, val: n.binary("==", n.func.LEN(f), val)
+        ),
         WhereClauseOperation.LENNE: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.binary('!=', n.func.LEN(f), val)),
+            arg_cnt=1, callable=lambda f, val: n.binary("!=", n.func.LEN(f), val)
+        ),
         WhereClauseOperation.LENGT: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.binary('>', n.func.LEN(f), val)),
+            arg_cnt=1, callable=lambda f, val: n.binary(">", n.func.LEN(f), val)
+        ),
         WhereClauseOperation.LENGTE: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.binary('>=', n.func.LEN(f), val)),
+            arg_cnt=1, callable=lambda f, val: n.binary(">=", n.func.LEN(f), val)
+        ),
         WhereClauseOperation.LENLT: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.binary('<', n.func.LEN(f), val)),
+            arg_cnt=1, callable=lambda f, val: n.binary("<", n.func.LEN(f), val)
+        ),
         WhereClauseOperation.LENLTE: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.binary('<=', n.func.LEN(f), val)),
+            arg_cnt=1, callable=lambda f, val: n.binary("<=", n.func.LEN(f), val)
+        ),
         # binary with list (arg_cnt = None)
         # None for arg_cnt means that all args are converted to a list,
         # which is used as a single argument for binary operation
-        WhereClauseOperation.IN: FilterDefinition(
-            arg_cnt=None, callable=lambda f, val: n.binary('in', f, val)),
-        WhereClauseOperation.NIN: FilterDefinition(
-            arg_cnt=None, callable=lambda f, val: n.binary('notin', f, val)),
+        WhereClauseOperation.IN: FilterDefinition(arg_cnt=None, callable=lambda f, val: n.binary("in", f, val)),
+        WhereClauseOperation.NIN: FilterDefinition(arg_cnt=None, callable=lambda f, val: n.binary("notin", f, val)),
         # ternary (arg_cnt = 2)
         WhereClauseOperation.BETWEEN: FilterDefinition(
-            arg_cnt=2, callable=lambda f, second, third: n.ternary('between', f, second, third)),
+            arg_cnt=2, callable=lambda f, second, third: n.ternary("between", f, second, third)
+        ),
     }
 
     def _custom_filter_cast(self, filter_params: FilterParams) -> FilterParams:
@@ -133,17 +153,22 @@ class FilterFormulaCompiler:
         return filter_params
 
     def compile_abstract_field_filter_formula(
-            self, field: BIField, operation: WhereClauseOperation, filter_args: Optional[list] = None,
-            original_field_id: Optional[str] = None, anonymous: bool = False,
+        self,
+        field: BIField,
+        operation: WhereClauseOperation,
+        filter_args: Optional[list] = None,
+        original_field_id: Optional[str] = None,
+        anonymous: bool = False,
     ) -> CompiledFormulaInfo:
         field_formula_obj = self._formula_compiler.compile_field_formula(field, collect_errors=False).formula_obj
 
         data_type = self._formula_compiler.get_field_final_formula_data_type(field=field)
         assert data_type is not None
-        LOGGER.info(f'Filtered field {field.title!r} has data type {data_type.name} and is a {field.type.name}')
+        LOGGER.info(f"Filtered field {field.title!r} has data type {data_type.name} and is a {field.type.name}")
 
         filter_params = FilterParams(
-            field=field, operation=operation,
+            field=field,
+            operation=operation,
             filter_args=filter_args,  # type: ignore  # TODO: fix
             data_type=data_type,
             # defaults:
@@ -151,15 +176,16 @@ class FilterFormulaCompiler:
             arg_cast_type=data_type,
         )
         mangled_filter_params = self._custom_filter_cast(filter_params)
-        assert mangled_filter_params.field == field, 'not meant to be changed for now'
+        assert mangled_filter_params.field == field, "not meant to be changed for now"
         operation = mangled_filter_params.operation
         filter_args = mangled_filter_params.filter_args
-        assert mangled_filter_params.data_type == data_type, 'not meant to be changed for now'
+        assert mangled_filter_params.data_type == data_type, "not meant to be changed for now"
         field_cast_type = mangled_filter_params.field_cast_type
         arg_cast_type = mangled_filter_params.arg_cast_type
 
-        LOGGER.info(f'Will cast field {field.title!r} to {field_cast_type.name} '
-                    f'and {filter_args!r} to {arg_cast_type.name}')
+        LOGGER.info(
+            f"Will cast field {field.title!r} to {field_cast_type.name} " f"and {filter_args!r} to {arg_cast_type.name}"
+        )
         if field_cast_type != data_type:
             field_formula_obj = self._formula_compiler.apply_cast_to_formula(
                 formula_obj=field_formula_obj,
@@ -169,7 +195,7 @@ class FilterFormulaCompiler:
 
         def _remove_timezone(arg: Any) -> Any:
             if isinstance(arg, str):
-                return arg.removesuffix('Z')
+                return arg.removesuffix("Z")
             if isinstance(arg, datetime.datetime):
                 return arg.replace(tzinfo=None)
             return arg
@@ -184,7 +210,9 @@ class FilterFormulaCompiler:
             try:
                 arg_lit_node = make_literal_node(val=arg, data_type=arg_cast_type)
             except bi_query_processing.exc.InvalidLiteralError as e:
-                raise bi_query_processing.exc.FilterValueError(f'Invalid filter value {arg!r} for type {arg_cast_type.name}') from e
+                raise bi_query_processing.exc.FilterValueError(
+                    f"Invalid filter value {arg!r} for type {arg_cast_type.name}"
+                ) from e
             args_nodes.append(arg_lit_node)
 
         # Translate the whole expression
@@ -203,9 +231,7 @@ class FilterFormulaCompiler:
             args = args_nodes[:add_arg_cnt]  # type: ignore  # TODO: fix
 
         # 3. Create formula object
-        formula_obj = formula_nodes.Formula.make(
-            expr=expr_callable(field_formula_obj.expr, *args)
-        )
+        formula_obj = formula_nodes.Formula.make(expr=expr_callable(field_formula_obj.expr, *args))
 
         original_field_id = original_field_id or field.guid
         if anonymous:
@@ -220,8 +246,9 @@ class FilterFormulaCompiler:
         return formula_info
 
     def compile_filter_formula(
-            self, filter_spec: FilterFieldSpec,
-            original_field_id: Optional[str] = None,
+        self,
+        filter_spec: FilterFieldSpec,
+        original_field_id: Optional[str] = None,
     ) -> CompiledFormulaInfo:
         """
         Prepare a filter expression for given ``field_id`` using given filter ``operation``.
@@ -234,13 +261,17 @@ class FilterFormulaCompiler:
         """
         field = self._formula_compiler._fields.get(id=filter_spec.field_id)  # FIXME: access to protected member
         return self.compile_abstract_field_filter_formula(
-            field=field, operation=filter_spec.operation, filter_args=filter_spec.values,
-            original_field_id=original_field_id, anonymous=filter_spec.anonymous,
+            field=field,
+            operation=filter_spec.operation,
+            filter_args=filter_spec.values,
+            original_field_id=original_field_id,
+            anonymous=filter_spec.anonymous,
         )
 
     def compile_source_column_filter_formula(
-            self, source_column_filter_spec: FilterSourceColumnSpec,
-            original_field_id: Optional[str] = None,
+        self,
+        source_column_filter_spec: FilterSourceColumnSpec,
+        original_field_id: Optional[str] = None,
     ) -> CompiledFormulaInfo:
         """
         Prepare a formula based on a source column filter spec
@@ -258,7 +289,6 @@ class FilterFormulaCompiler:
 
 
 class MainFilterFormulaCompiler(FilterFormulaCompiler):
-
     def _mangle_date_filter(self, filter_params: FilterParams) -> FilterParams:
         """
         Generally, date filters receive datetime arguments like '2017-01-01T00:00:00';
@@ -290,8 +320,8 @@ class MainFilterFormulaCompiler(FilterFormulaCompiler):
             # '2017-01-01T00:00:00' and '2017-01-01T00:00:00+03:00' are treated the
             # same for date (and naive-datetime) filtering.
             is_midnight = [
-                arg.hour == 0 and arg.minute == 0 and arg.second == 0 and arg.microsecond == 0
-                for arg in parsed_args]
+                arg.hour == 0 and arg.minute == 0 and arg.second == 0 and arg.microsecond == 0 for arg in parsed_args
+            ]
 
         filter_as_date = False
 

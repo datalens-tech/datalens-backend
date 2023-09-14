@@ -2,14 +2,16 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
-from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.core.datatype import DataType
-from bi_formula.definitions.scope import Scope
+from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.definitions.args import ArgTypeSequence
+from bi_formula.definitions.base import (
+    MultiVariantTranslation,
+    TranslationVariant,
+)
 from bi_formula.definitions.flags import ContextFlag
+from bi_formula.definitions.scope import Scope
 from bi_formula.definitions.type_strategy import Fixed
-from bi_formula.definitions.base import MultiVariantTranslation, TranslationVariant
-
 
 V = TranslationVariant.make
 
@@ -20,7 +22,7 @@ class Ternary(MultiVariantTranslation):
 
 
 class TernaryBetweenBase(Ternary):
-    arg_names = ['value', 'low', 'high']
+    arg_names = ["value", "low", "high"]
     argument_types = [
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.DATE, DataType.DATE, DataType.DATE]),
@@ -35,30 +37,23 @@ class TernaryBetweenBase(Ternary):
 
 
 class TernaryBetween(TernaryBetweenBase):
-    name = 'between'
+    name = "between"
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda a, b, c: a.between(b, c)
-        ),
+        V(D.DUMMY | D.SQLITE, lambda a, b, c: a.between(b, c)),
     ]
 
 
 class TernaryNotBetween(TernaryBetweenBase):
-    name = 'notbetween'
+    name = "notbetween"
     scopes = TernaryBetweenBase.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda a, b, c: sa.not_(a.between(b, c))
-        ),
+        V(D.DUMMY | D.SQLITE, lambda a, b, c: sa.not_(a.between(b, c))),
     ]
 
 
 DEFINITIONS_TERNARY = [
     # between
     TernaryBetween,
-
     # notbetween
     TernaryNotBetween,
 ]

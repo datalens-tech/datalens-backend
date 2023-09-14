@@ -1,7 +1,7 @@
 import abc
 
-import pytest
 from aiohttp.test_utils import TestClient
+import pytest
 
 from bi_api_lib_testing.dashsql_base import DashSQLTestBase
 
@@ -12,7 +12,7 @@ class DefaultDashSQLTestSuite(DashSQLTestBase, metaclass=abc.ABCMeta):
         resp = await self.get_dashsql_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,
             conn_id=saved_connection_id,
-            query='select 1, 2, 3',
+            query="select 1, 2, 3",
         )
         data = await resp.json()
-        assert data[1]['data'] == [1, 2, 3]
+        assert data[1]["data"] == [1, 2, 3]

@@ -1,42 +1,82 @@
 from __future__ import annotations
 
-import json
 from enum import Enum
-from typing import Any, ClassVar, Dict, List
+import json
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    List,
+)
 
-from marshmallow import fields as ma_fields, EXCLUDE, pre_load, pre_dump
+from marshmallow import (
+    pre_dump,
+    pre_load,
+)
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import (
-    BIType, QueryItemRefType, FieldRole, FieldType, FieldVisibility, OrderDirection,
-    WhereClauseOperation, QueryBlockPlacementType, RangeType, CalcMode, NotificationLevel,
-)
-
-from bi_model_tools.schema.base import BaseSchema, DefaultSchema
-
-from bi_core.constants import DataAPILimits
-
-from bi_query_processing.enums import QueryType, GroupByPolicy
-
-from bi_api_lib.query.formalization.raw_specs import (
-    IdFieldRef, TitleFieldRef, IdOrTitleFieldRef,
-    MeasureNameRef, DimensionNameRef, PlaceholderRef,
-    RawRoleSpec, RawTemplateRoleSpec, RawRowRoleSpec,
-    RawOrderByRoleSpec, RawRangeRoleSpec, RawTreeRoleSpec,
-    RawSelectFieldSpec, RawGroupByFieldSpec,
-    RawOrderByFieldSpec, RawFilterFieldSpec,
-    RawParameterValueSpec, RawQuerySpecUnion, RawQueryMetaInfo,
-    RawRootBlockPlacement, RawAfterBlockPlacement,
-    RawDimensionValueSpec, RawBlockSpec, RawResultSpec,
-)
 from bi_api_lib.query.formalization.raw_pivot_specs import RawPivotSpec
-from bi_query_processing.legend.block_legend import BlockPlacement
-from bi_api_lib.request_model.data import DataRequestModel, ResultDataRequestModel, PivotDataRequestModel
+from bi_api_lib.query.formalization.raw_specs import (
+    DimensionNameRef,
+    IdFieldRef,
+    IdOrTitleFieldRef,
+    MeasureNameRef,
+    PlaceholderRef,
+    RawAfterBlockPlacement,
+    RawBlockSpec,
+    RawDimensionValueSpec,
+    RawFilterFieldSpec,
+    RawGroupByFieldSpec,
+    RawOrderByFieldSpec,
+    RawOrderByRoleSpec,
+    RawParameterValueSpec,
+    RawQueryMetaInfo,
+    RawQuerySpecUnion,
+    RawRangeRoleSpec,
+    RawResultSpec,
+    RawRoleSpec,
+    RawRootBlockPlacement,
+    RawRowRoleSpec,
+    RawSelectFieldSpec,
+    RawTemplateRoleSpec,
+    RawTreeRoleSpec,
+    TitleFieldRef,
+)
+from bi_api_lib.request_model.data import (
+    DataRequestModel,
+    PivotDataRequestModel,
+    ResultDataRequestModel,
+)
 from bi_api_lib.schemas.action import ActionSchema
-from bi_api_lib.schemas.filter import WhereSchema
 from bi_api_lib.schemas.dataset_base import DatasetContentSchema
+from bi_api_lib.schemas.filter import WhereSchema
 from bi_api_lib.schemas.legend import LegendItemSchema
 from bi_api_lib.schemas.pivot import RequestPivotSpecSchema
+from bi_constants.enums import (
+    BIType,
+    CalcMode,
+    FieldRole,
+    FieldType,
+    FieldVisibility,
+    NotificationLevel,
+    OrderDirection,
+    QueryBlockPlacementType,
+    QueryItemRefType,
+    RangeType,
+    WhereClauseOperation,
+)
+from bi_core.constants import DataAPILimits
+from bi_model_tools.schema.base import (
+    BaseSchema,
+    DefaultSchema,
+)
+from bi_query_processing.enums import (
+    GroupByPolicy,
+    QueryType,
+)
+from bi_query_processing.legend.block_legend import BlockPlacement
 
 
 class DatasetDataRequestBaseSchema(DefaultSchema[DataRequestModel]):
@@ -62,11 +102,11 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
 
     def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
-            limit=data.get('limit'),
+            limit=data.get("limit"),
             group_by_policy=GroupByPolicy.if_measures,
             meta=RawQueryMetaInfo(
                 query_type=QueryType.preview,
-                row_count_hard_limit=data['row_count_hard_limit'],
+                row_count_hard_limit=data["row_count_hard_limit"],
             ),
         )
         return raw_query_spec_union
@@ -74,8 +114,8 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
-            dataset=data.get('dataset'),
-            updates=data['updates'],
+            dataset=data.get("dataset"),
+            updates=data["updates"],
         )
 
 
@@ -89,7 +129,7 @@ class FieldsResponseFieldSchema(BaseSchema):
 
 
 class DatasetFieldsResponseSchema(BaseSchema):
-    fields_ = ma_fields.Nested(FieldsResponseFieldSchema, attribute='fields', data_key='fields', many=True)
+    fields_ = ma_fields.Nested(FieldsResponseFieldSchema, attribute="fields", data_key="fields", many=True)
 
 
 class YqlDataSchema(BaseSchema):
@@ -99,8 +139,8 @@ class YqlDataSchema(BaseSchema):
 
 class OrderBySchema(DefaultSchema[RawOrderByFieldSpec]):
     class ApiOrderingDirection(Enum):
-        DESC = 'desc'
-        ASC = 'asc'
+        DESC = "desc"
+        ASC = "asc"
 
     TARGET_CLS = RawOrderByFieldSpec
 
@@ -108,11 +148,11 @@ class OrderBySchema(DefaultSchema[RawOrderByFieldSpec]):
     direction = ma_fields.Enum(ApiOrderingDirection, required=True)
 
     def to_object(self, data: dict) -> RawOrderByFieldSpec:
-        data['direction'] = {
+        data["direction"] = {
             self.ApiOrderingDirection.ASC: OrderDirection.asc,
             self.ApiOrderingDirection.DESC: OrderDirection.desc,
-        }[data['direction']]
-        data['ref'] = IdOrTitleFieldRef(id_or_title=data.pop('column'))
+        }[data["direction"]]
+        data["ref"] = IdOrTitleFieldRef(id_or_title=data.pop("column"))
         return self.get_target_cls()(**data)
 
 
@@ -133,28 +173,22 @@ class DatasetVersionResultRequestSchema(DatasetDataRequestBaseSchema):
 
     def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
-            select_specs=[
-                RawSelectFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field))
-                for field in data['columns']
-            ],
+            select_specs=[RawSelectFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field)) for field in data["columns"]],
             group_by_specs=[
-                RawGroupByFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field))
-                for field in data['group_by']
+                RawGroupByFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field)) for field in data["group_by"]
             ],
             filter_specs=[
-                RawFilterFieldSpec(
-                    ref=filter_spec.ref, operation=filter_spec.operation, values=filter_spec.values
-                )
-                for filter_spec in data['where']
+                RawFilterFieldSpec(ref=filter_spec.ref, operation=filter_spec.operation, values=filter_spec.values)
+                for filter_spec in data["where"]
             ],
-            order_by_specs=data['order_by'],
-            limit=data['limit'],
-            offset=data['offset'],
-            group_by_policy=GroupByPolicy.disable if data.get('disable_group_by') else GroupByPolicy.force,
-            ignore_nonexistent_filters=data['ignore_nonexistent_filters'],
+            order_by_specs=data["order_by"],
+            limit=data["limit"],
+            offset=data["offset"],
+            group_by_policy=GroupByPolicy.disable if data.get("disable_group_by") else GroupByPolicy.force,
+            ignore_nonexistent_filters=data["ignore_nonexistent_filters"],
             meta=RawQueryMetaInfo(
                 query_type=QueryType.result,
-                row_count_hard_limit=data['row_count_hard_limit'],
+                row_count_hard_limit=data["row_count_hard_limit"],
             ),
         )
         return raw_query_spec_union
@@ -162,10 +196,10 @@ class DatasetVersionResultRequestSchema(DatasetDataRequestBaseSchema):
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data['updates'],
-            with_totals=data['with_totals'],
-            add_fields_data=data['add_fields_data'],
-            dataset_revision_id=data.get('revision_id'),
+            updates=data["updates"],
+            with_totals=data["with_totals"],
+            add_fields_data=data["add_fields_data"],
+            dataset_revision_id=data.get("revision_id"),
         )
 
 
@@ -182,7 +216,9 @@ class DatasetVersionResultResponseSchema(BaseSchema):
         totals = ma_fields.List(ma_fields.String())
 
         data_export_forbidden = ma_fields.Boolean(required=False)
-        fields_ = ma_fields.Nested(FieldsResponseFieldSchema, attribute='fields', data_key='fields', many=True, required=False)
+        fields_ = ma_fields.Nested(
+            FieldsResponseFieldSchema, attribute="fields", data_key="fields", many=True, required=False
+        )
 
     result = ma_fields.Nested(Result)
 
@@ -200,23 +236,21 @@ class DatasetVersionValuesBasePostSchema(DatasetDataRequestBaseSchema):
 
     def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
-            select_specs=self._make_select_specs(field_id=data['field_guid']),
+            select_specs=self._make_select_specs(field_id=data["field_guid"]),
             order_by_specs=[],
             filter_specs=[
-                RawFilterFieldSpec(
-                    ref=filter_spec.ref, operation=filter_spec.operation, values=filter_spec.values
-                )
-                for filter_spec in data['where']
+                RawFilterFieldSpec(ref=filter_spec.ref, operation=filter_spec.operation, values=filter_spec.values)
+                for filter_spec in data["where"]
             ],
-            limit=data.get('limit'),
-            offset=data.get('offset'),
+            limit=data.get("limit"),
+            offset=data.get("offset"),
             group_by_policy=GroupByPolicy.disable,
-            disable_rls=data.get('disable_rls', False),
-            ignore_nonexistent_filters=data.get('ignore_nonexistent_filters', False),
+            disable_rls=data.get("disable_rls", False),
+            ignore_nonexistent_filters=data.get("ignore_nonexistent_filters", False),
             allow_measure_fields=False,  # Cannot get distincts or ranges for measures
             meta=RawQueryMetaInfo(
                 query_type=self.QUERY_TYPE,
-            )
+            ),
         )
         return raw_query_spec_union
 
@@ -233,18 +267,13 @@ class DatasetVersionValuesDistinctPostSchema(DatasetVersionValuesBasePostSchema)
     def _make_select_specs(self, field_id: str) -> List[RawSelectFieldSpec]:
         # Right now DISTINCT is handled at query level,
         # so the expressions are compiled in the regular manner
-        return [
-            RawSelectFieldSpec(
-                ref=IdFieldRef(id=field_id),
-                role_spec=RawRoleSpec(role=FieldRole.distinct)
-            )
-        ]
+        return [RawSelectFieldSpec(ref=IdFieldRef(id=field_id), role_spec=RawRoleSpec(role=FieldRole.distinct))]
 
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data['updates'],
-            dataset_revision_id=data.get('revision_id'),
+            updates=data["updates"],
+            dataset_revision_id=data.get("revision_id"),
         )
 
 
@@ -270,8 +299,8 @@ class DatasetVersionValuesRangePostSchema(DatasetVersionValuesBasePostSchema):
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data['updates'],
-            dataset_revision_id=data.get('revision_id'),
+            updates=data["updates"],
+            dataset_revision_id=data.get("revision_id"),
         )
 
 
@@ -308,7 +337,7 @@ class ItemRefSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = True
-    type_field = 'type'
+    type_field = "type"
 
     type_schemas: Dict[str, Any] = {
         QueryItemRefType.id.name: IdRefSchema,
@@ -331,7 +360,7 @@ class RoleSpecSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'role'
+    type_field = "role"
 
     class RoleSpecSchemaVariant(DefaultSchema[RawRoleSpec]):
         TARGET_CLS = RawRoleSpec
@@ -374,7 +403,7 @@ class RoleSpecSchema(OneOfSchema):
 
         @pre_dump
         def dump_prefix(self, data: dict, *args: Any, **kwargs: Any) -> dict:
-            data['prefix'] = json.dumps(data['prefix'])
+            data["prefix"] = json.dumps(data["prefix"])
             return data
 
     type_schemas = {
@@ -393,18 +422,18 @@ class RoleSpecSchema(OneOfSchema):
 class _FlattenRefMixin(BaseSchema):
     @pre_load(pass_many=False)
     def nest_ref_obj(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
-        if 'ref' not in data:
-            ref_type = QueryItemRefType[data['ref_type']]
-            ref_data: Dict[str, Any] = {'type': data['ref_type']}
+        if "ref" not in data:
+            ref_type = QueryItemRefType[data["ref_type"]]
+            ref_data: Dict[str, Any] = {"type": data["ref_type"]}
             if ref_type == QueryItemRefType.id:
-                ref_data['id'] = data.get('id')
+                ref_data["id"] = data.get("id")
             elif ref_type == QueryItemRefType.title:
-                ref_data['title'] = data.get('title')
+                ref_data["title"] = data.get("title")
             elif ref_type == QueryItemRefType.measure_name:
                 pass
             elif ref_type == QueryItemRefType.placeholder:
                 pass
-            data['ref'] = ref_data
+            data["ref"] = ref_data
         return data
 
 
@@ -453,7 +482,7 @@ class BlockPlacementSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = True
-    type_field = 'type'
+    type_field = "type"
 
     type_schemas = {
         QueryBlockPlacementType.root.name: RootBlockPlacementSchema,
@@ -490,7 +519,10 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
     # Query spec
     sel_fields = ma_fields.Nested(
         QueryFieldsItemSchema,
-        data_key='fields', attribute='fields', many=True, required=True,
+        data_key="fields",
+        attribute="fields",
+        many=True,
+        required=True,
     )
     order_by = ma_fields.Nested(QueryOrderByItemSchema, many=True, load_default=[])
     filters = ma_fields.Nested(QueryFiltersItemSchema, many=True, load_default=[])
@@ -509,32 +541,32 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
     parameter_values = ma_fields.Nested(ParameterValueSchema, many=True, load_default=[])
 
     def _make_select_specs(self, data: Dict[str, Any]) -> List[RawSelectFieldSpec]:
-        return data['fields']
+        return data["fields"]
 
     def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
             select_specs=self._make_select_specs(data),
-            order_by_specs=data.get('order_by', []),
-            filter_specs=data.get('filters', []),
-            parameter_value_specs=data.get('parameter_values', []),
-            block_specs=data.get('blocks', []),
-            limit=data.get('limit'),
-            offset=data.get('offset'),
-            group_by_policy=GroupByPolicy.disable if data.get('disable_group_by') else GroupByPolicy.force,
-            ignore_nonexistent_filters=data['ignore_nonexistent_filters'],
+            order_by_specs=data.get("order_by", []),
+            filter_specs=data.get("filters", []),
+            parameter_value_specs=data.get("parameter_values", []),
+            block_specs=data.get("blocks", []),
+            limit=data.get("limit"),
+            offset=data.get("offset"),
+            group_by_policy=GroupByPolicy.disable if data.get("disable_group_by") else GroupByPolicy.force,
+            ignore_nonexistent_filters=data["ignore_nonexistent_filters"],
             meta=RawQueryMetaInfo(
                 query_type=self.QUERY_TYPE,
-                row_count_hard_limit=data['row_count_hard_limit'],
-            )
+                row_count_hard_limit=data["row_count_hard_limit"],
+            ),
         )
         return raw_query_spec_union
 
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data.get('updates', []),
-            autofill_legend=data['autofill_legend'],
-            dataset_revision_id=data.get('revision_id'),
+            updates=data.get("updates", []),
+            autofill_legend=data["autofill_legend"],
+            dataset_revision_id=data.get("revision_id"),
         )
 
 
@@ -548,11 +580,11 @@ class ResultDataRequestV1_5Schema(NewDatasetDataRequestBaseSchema):
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data.get('updates', []),
-            autofill_legend=data['autofill_legend'],
-            add_fields_data=data['add_fields_data'],
-            with_totals=data['with_totals'],
-            dataset_revision_id=data.get('revision_id'),
+            updates=data.get("updates", []),
+            autofill_legend=data["autofill_legend"],
+            add_fields_data=data["add_fields_data"],
+            with_totals=data["with_totals"],
+            dataset_revision_id=data.get("revision_id"),
         )
 
 
@@ -571,9 +603,9 @@ class ResultDataRequestV2Schema(NewDatasetDataRequestBaseSchema):
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> ResultDataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data.get('updates', []),
-            result=data.get('result'),
-            autofill_legend=data['autofill_legend'],
+            updates=data.get("updates", []),
+            result=data.get("result"),
+            autofill_legend=data["autofill_legend"],
         )
 
 
@@ -593,15 +625,17 @@ class PivotDataRequestBaseSchema(NewDatasetDataRequestBaseSchema):
     TARGET_CLS = PivotDataRequestModel
     QUERY_TYPE = QueryType.pivot
 
-    row_count_hard_limit = ma_fields.Integer(load_default=DataAPILimits.PIVOT_API_DEFAULT_ROW_COUNT_HARD_LIMIT)  # Override default
+    row_count_hard_limit = ma_fields.Integer(
+        load_default=DataAPILimits.PIVOT_API_DEFAULT_ROW_COUNT_HARD_LIMIT
+    )  # Override default
     pivot = ma_fields.Nested(RequestPivotSpecSchema(), allow_none=False, load_default=lambda: RawPivotSpec())
 
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
-            updates=data.get('updates', []),
-            pivot=data['pivot'],
-            autofill_legend=data['autofill_legend'],
+            updates=data.get("updates", []),
+            pivot=data["pivot"],
+            autofill_legend=data["autofill_legend"],
         )
 
 
@@ -622,7 +656,7 @@ class NotificationSchema(BaseSchema):
 
 
 class DataApiV2ResponseSchema(BaseSchema):
-    fields_ = ma_fields.Nested(LegendItemSchema, attribute='fields',  data_key='fields', many=True, allow_none=False)
+    fields_ = ma_fields.Nested(LegendItemSchema, attribute="fields", data_key="fields", many=True, allow_none=False)
     result_data = ma_fields.Nested(V2DataStreamResponseSchema, many=True, allow_none=False)
     data_export_forbidden = ma_fields.Boolean(allow_none=False)
     blocks = ma_fields.Nested(ResponseBlockInfoSchema, many=True)

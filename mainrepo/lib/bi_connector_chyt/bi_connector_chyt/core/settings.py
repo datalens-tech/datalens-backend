@@ -1,13 +1,21 @@
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from bi_configs.connectors_data import ConnectorsDataBase
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.utils import split_by_comma
-
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from bi_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
+)
 
 
 @attr.s(frozen=True)
@@ -30,12 +38,14 @@ class ConnectorsDataCHYTBase(ConnectorsDataBase):
 
     @classmethod
     def connector_name(cls) -> str:
-        return 'CHYT'
+        return "CHYT"
 
 
 def chyt_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='CHYT', connector_data_class=ConnectorsDataCHYTBase,
+        full_cfg,
+        object_like_config_key="CHYT",
+        connector_data_class=ConnectorsDataCHYTBase,
     )
     if cfg is None:
         return {}

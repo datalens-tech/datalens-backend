@@ -1,34 +1,42 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
+from typing import (
+    Any,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import attr
 
-import bi_query_processing.exc
 from bi_constants.types import TBIDataValue
 from bi_core.utils import attrs_evolve_to_subclass
-
-from bi_query_processing.legend.field_legend import Legend
-from bi_query_processing.legend.block_legend import BlockSpec
+import bi_query_processing.exc
 from bi_query_processing.execution.primitives import ExecutedQueryMetaInfo
-
+from bi_query_processing.legend.block_legend import BlockSpec
+from bi_query_processing.legend.field_legend import Legend
 
 PostprocessedValue = Union[TBIDataValue, dict]
 PostprocessedRow = Tuple[PostprocessedValue, ...]
 PostprocessedData = Tuple[PostprocessedRow, ...]
 
 
-_META_TV = TypeVar('_META_TV', bound='ExecutedQueryMetaInfo')
+_META_TV = TypeVar("_META_TV", bound="ExecutedQueryMetaInfo")
 
 
 @attr.s
 class PostprocessedQueryMetaInfo(ExecutedQueryMetaInfo):
     @classmethod
     def from_exec_meta(
-            cls: Type[_META_TV], exec_meta: ExecutedQueryMetaInfo,
+        cls: Type[_META_TV],
+        exec_meta: ExecutedQueryMetaInfo,
     ) -> _META_TV:
         return attrs_evolve_to_subclass(
-            cls=cls, inst=exec_meta,
+            cls=cls,
+            inst=exec_meta,
         )
 
 
@@ -48,7 +56,8 @@ class PostprocessedQueryBlock(BlockSpec):
     @classmethod
     def from_block_spec(cls, block_spec: BlockSpec, postprocessed_query: PostprocessedQuery) -> PostprocessedQueryBlock:
         return attrs_evolve_to_subclass(
-            cls=cls, inst=block_spec,
+            cls=cls,
+            inst=block_spec,
             postprocessed_query=postprocessed_query,
         )
 

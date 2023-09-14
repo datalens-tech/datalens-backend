@@ -1,4 +1,9 @@
-from typing import Dict, List, NamedTuple, Sequence
+from typing import (
+    Dict,
+    List,
+    NamedTuple,
+    Sequence,
+)
 
 import attr
 

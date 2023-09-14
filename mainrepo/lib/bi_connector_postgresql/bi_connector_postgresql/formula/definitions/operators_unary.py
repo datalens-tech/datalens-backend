@@ -1,6 +1,6 @@
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
 import bi_formula.definitions.operators_unary as base
 
+from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 DEFINITIONS_UNARY = [
     # isfalse
@@ -8,16 +8,13 @@ DEFINITIONS_UNARY = [
     base.UnaryIsFalseNumbers.for_dialect(D.POSTGRESQL),
     base.UnaryIsFalseDateTime.for_dialect(D.POSTGRESQL),
     base.UnaryIsFalseBoolean.for_dialect(D.POSTGRESQL),
-
     # istrue
     base.UnaryIsTrueStringGeo.for_dialect(D.POSTGRESQL),
     base.UnaryIsTrueNumbers.for_dialect(D.POSTGRESQL),
     base.UnaryIsTrueDateTime.for_dialect(D.POSTGRESQL),
     base.UnaryIsTrueBoolean.for_dialect(D.POSTGRESQL),
-
     # neg
     base.UnaryNegate.for_dialect(D.POSTGRESQL),
-
     # not
     base.UnaryNotBool.for_dialect(D.POSTGRESQL),
     base.UnaryNotNumbers.for_dialect(D.POSTGRESQL),

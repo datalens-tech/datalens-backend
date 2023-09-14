@@ -1,18 +1,34 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Any, ClassVar, Generator, Optional, Sequence, Type
+from typing import (
+    Any,
+    ClassVar,
+    Generator,
+    Optional,
+    Sequence,
+    Type,
+)
 import urllib.parse
 
 import attr
+from frozendict import frozendict
 import shortuuid
 import sqlalchemy as sa
-import sqlalchemy.exc as sa_exc
-from sqlalchemy.engine.base import Engine, Connection
+from sqlalchemy.engine.base import (
+    Connection,
+    Engine,
+)
 from sqlalchemy.engine.default import DefaultDialect
-from sqlalchemy.engine.url import URL, make_url
-from sqlalchemy.pool import Pool, NullPool
-from frozendict import frozendict
+from sqlalchemy.engine.url import (
+    URL,
+    make_url,
+)
+import sqlalchemy.exc as sa_exc
+from sqlalchemy.pool import (
+    NullPool,
+    Pool,
+)
 
 from bi_utils.wait import wait_for
 
@@ -50,9 +66,11 @@ class EngineWrapperBase:
         connect_params = self._db_connect_params()
         if isinstance(url, str):
             if not url.startswith(self.URL_PREFIX):
-                raise ValueError(f"Unexpected URL prefix for {type(self)}: expected prefix {self.URL_PREFIX!r} in {url!r}")
+                raise ValueError(
+                    f"Unexpected URL prefix for {type(self)}: expected prefix {self.URL_PREFIX!r} in {url!r}"
+                )
             if connect_params:
-                url = f'{url}?{urllib.parse.urlencode(connect_params)}'
+                url = f"{url}?{urllib.parse.urlencode(connect_params)}"
         else:
             assert isinstance(url, URL)
             if not url.drivername.startswith(self.URL_PREFIX):
@@ -61,7 +79,8 @@ class EngineWrapperBase:
                 url.query.update(connect_params)
 
         self._engine = sa.create_engine(
-            url, poolclass=self.POOL_CLS,
+            url,
+            poolclass=self.POOL_CLS,
             **self._config.engine_params,
         ).execution_options(compiled_cache=None)
 
@@ -110,12 +129,12 @@ class EngineWrapperBase:
         return self.has_table(table_name=table.name, schema=table.schema)
 
     def create_schema(self, schema_name: str) -> None:
-        self.execute(f'CREATE SCHEMA {self.quote(schema_name)}')
+        self.execute(f"CREATE SCHEMA {self.quote(schema_name)}")
 
     def wait_for_table(self, table: sa.Table) -> None:
         if self.TABLE_AVAILABILITY_TIMEOUT:
             wait_for(
-                name=f'Table {table.name}',
+                name=f"Table {table.name}",
                 condition=lambda: self.table_available(table),
                 timeout=self.TABLE_AVAILABILITY_TIMEOUT,
             )
@@ -124,11 +143,13 @@ class EngineWrapperBase:
         table.drop(bind=self.engine, checkfirst=True)
 
     def table_from_columns(
-            self, columns: Sequence[sa.Column], *,
-            schema: Optional[str] = None,
-            table_name: Optional[str] = None,
+        self,
+        columns: Sequence[sa.Column],
+        *,
+        schema: Optional[str] = None,
+        table_name: Optional[str] = None,
     ) -> sa.Table:
-        table_name = table_name or f'test_table_{shortuuid.uuid()[:10]}'
+        table_name = table_name or f"test_table_{shortuuid.uuid()[:10]}"
         table = sa.Table(table_name, sa.MetaData(), *columns, schema=schema)
         return table
 
@@ -148,9 +169,9 @@ class EngineWrapperBase:
         )
 
     def get_conn_hosts(self) -> tuple[str, ...]:
-        host = self.get_conn_credentials(full=True).get('host')
+        host = self.get_conn_credentials(full=True).get("host")
         if host:
-            return tuple(h.strip() for h in host.split(','))
+            return tuple(h.strip() for h in host.split(","))
         else:
             return ()
 

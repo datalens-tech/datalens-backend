@@ -1,10 +1,18 @@
 from __future__ import annotations
 
-from typing import ClassVar, Any, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from bi_api_connector.form_config.models.common import SerializableConfig, skip_if_null, InnerFieldName
+from bi_api_connector.form_config.models.common import (
+    InnerFieldName,
+    SerializableConfig,
+    skip_if_null,
+)
 from bi_api_connector.form_config.models.rows.base import FormRow
 
 

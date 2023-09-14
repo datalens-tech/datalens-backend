@@ -1,6 +1,14 @@
 import abc
 import re
-from typing import Any, ClassVar, Iterable, Type, TypedDict, Optional, Callable
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Iterable,
+    Optional,
+    Type,
+    TypedDict,
+)
 
 import attr
 from sqlalchemy import exc as sa_exc
@@ -20,9 +28,9 @@ class DbErrorTransformer(abc.ABC):
     _DEFAULT_EXC_CLS: ClassVar[Type[exc.DatabaseQueryError]] = exc.DatabaseQueryError
 
     def make_bi_error_parameters(
-            self,
-            wrapper_exc: Exception,
-            debug_compiled_query: Optional[str] = None,
+        self,
+        wrapper_exc: Exception,
+        debug_compiled_query: Optional[str] = None,
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         kw: DBExcKWArgs = DBExcKWArgs(
             db_message=str(wrapper_exc),
@@ -34,13 +42,14 @@ class DbErrorTransformer(abc.ABC):
         return self._DEFAULT_EXC_CLS, kw
 
     def make_bi_error(
-            self,
-            wrapper_exc: Exception,
-            orig_exc: Optional[Exception] = None,
-            debug_compiled_query: Optional[str] = None,
+        self,
+        wrapper_exc: Exception,
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
     ) -> exc.DatabaseQueryError:
         trans_exc_cls, kw = self.make_bi_error_parameters(
-            wrapper_exc=wrapper_exc, debug_compiled_query=debug_compiled_query,
+            wrapper_exc=wrapper_exc,
+            debug_compiled_query=debug_compiled_query,
         )
         return trans_exc_cls(**kw)
 
@@ -58,12 +67,13 @@ class ErrorTransformerRule(abc.ABC):
 
     `then_raise` - is a BI-domain exception that will be raised if `when` condition is matched
     """
+
     when: ExcMatchCondition = attr.ib()
     then_raise: Type[exc.DatabaseQueryError] = attr.ib()
 
     def get_bi_error_class(
-            self,
-            wrapper_exc: Exception,
+        self,
+        wrapper_exc: Exception,
     ) -> Optional[Type[exc.DatabaseQueryError]]:
         if self.when(wrapper_exc):
             return self.then_raise
@@ -71,38 +81,25 @@ class ErrorTransformerRule(abc.ABC):
             return None
 
 
-def wrapper_exc_is(
-        wrapper_exc_cls: Type[Exception]
-) -> ExcMatchCondition:
-    def _(
-            wrapper_exc: Exception
-    ) -> bool:
+def wrapper_exc_is(wrapper_exc_cls: Type[Exception]) -> ExcMatchCondition:
+    def _(wrapper_exc: Exception) -> bool:
         return isinstance(wrapper_exc, wrapper_exc_cls)
 
     return _
 
 
-def orig_exc_is(
-        orig_exc_cls: Type[Exception]
-) -> ExcMatchCondition:
-    def _(
-            wrapper_exc: Exception
-    ) -> bool:
-        orig_exc = getattr(wrapper_exc, 'orig', None)
+def orig_exc_is(orig_exc_cls: Type[Exception]) -> ExcMatchCondition:
+    def _(wrapper_exc: Exception) -> bool:
+        orig_exc = getattr(wrapper_exc, "orig", None)
         return isinstance(orig_exc, orig_exc_cls)
 
     return _
 
 
-def wrapper_exc_is_and_matches_re(
-        wrapper_exc_cls: Type[Exception],
-        err_regex_str: str
-) -> ExcMatchCondition:
+def wrapper_exc_is_and_matches_re(wrapper_exc_cls: Type[Exception], err_regex_str: str) -> ExcMatchCondition:
     pattern = re.compile(err_regex_str)
 
-    def _(
-            wrapper_exc: Exception
-    ) -> bool:
+    def _(wrapper_exc: Exception) -> bool:
         return isinstance(wrapper_exc, wrapper_exc_cls) and pattern.search(str(wrapper_exc)) is not None
 
     return _
@@ -122,48 +119,44 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
 
     `fallback_exc` - is a BI-domain exception that will be raised if none of the rule conditions were matched
     """
+
     rule_chain: Iterable[ErrorTransformerRule] = attr.ib()
     fallback_exc: Type[exc.DatabaseQueryError] = attr.ib(default=exc.DatabaseQueryError)
 
     def make_bi_error(
-            self,
-            wrapper_exc: Exception,
-            orig_exc: Optional[Exception] = None,
-            debug_compiled_query: Optional[str] = None,
+        self,
+        wrapper_exc: Exception,
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
     ) -> DatabaseQueryError:
         transformed_exc_cls: Type[DatabaseQueryError] = self._get_bi_error_cls(wrapper_exc)
         kw: DBExcKWArgs = self._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
         return transformed_exc_cls(**kw)
 
     def make_bi_error_parameters(
-            self,
-            wrapper_exc: Exception,
-            debug_compiled_query: Optional[str] = None,
+        self,
+        wrapper_exc: Exception,
+        debug_compiled_query: Optional[str] = None,
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         transformed_exc_cls: Type[DatabaseQueryError] = self._get_bi_error_cls(wrapper_exc)
-        orig_exc = getattr(wrapper_exc, 'orig', None)
+        orig_exc = getattr(wrapper_exc, "orig", None)
         kw: DBExcKWArgs = self._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
 
         return transformed_exc_cls, kw
 
     def _get_bi_error_cls(
-            self,
-            wrapper_exc: Exception,
+        self,
+        wrapper_exc: Exception,
     ) -> Type[exc.DatabaseQueryError]:
-        transformed_exc_class_generator = (
-            t.get_bi_error_class(wrapper_exc) for t in
-            self.rule_chain
-        )
+        transformed_exc_class_generator = (t.get_bi_error_class(wrapper_exc) for t in self.rule_chain)
         return next(
             (exc_cls for exc_cls in transformed_exc_class_generator if exc_cls is not None),
-            DbErrorTransformer._DEFAULT_EXC_CLS
+            DbErrorTransformer._DEFAULT_EXC_CLS,
         )
 
     @staticmethod
     def _get_error_kw(
-            debug_compiled_query: Optional[str],
-            orig_exc: Optional[Exception],
-            wrapper_exc: Exception
+        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
     ) -> DBExcKWArgs:
         return dict(
             db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
@@ -176,26 +169,21 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
 default_error_transformer_rules = (
     ErrorTransformerRule(
         when=orig_exc_is(sa_exc.NoSuchTableError),  # FIXME: not an exc.DatabaseQueryError
-        then_raise=exc.SourceDoesNotExist
+        then_raise=exc.SourceDoesNotExist,
     ),
-    ErrorTransformerRule(
-        when=wrapper_exc_is(sa_exc.OperationalError),
-        then_raise=exc.DatabaseOperationalError
-    )
+    ErrorTransformerRule(when=wrapper_exc_is(sa_exc.OperationalError), then_raise=exc.DatabaseOperationalError),
 )
 
 
-def make_default_transformer_with_custom_rules(
-        *custom_rules: ErrorTransformerRule
-) -> ChainedDbErrorTransformer:
+def make_default_transformer_with_custom_rules(*custom_rules: ErrorTransformerRule) -> ChainedDbErrorTransformer:
     return ChainedDbErrorTransformer(custom_rules + default_error_transformer_rules)
 
 
 def make_rule_from_descr(
-        descr: tuple[
-            tuple[Type[Exception], Optional[str]],
-            Type[exc.DatabaseQueryError],
-        ]
+    descr: tuple[
+        tuple[Type[Exception], Optional[str]],
+        Type[exc.DatabaseQueryError],
+    ]
 ) -> ErrorTransformerRule:
     (wrapper_exc, re_pattern), then_raise = descr
     if re_pattern is None:

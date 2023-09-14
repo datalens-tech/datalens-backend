@@ -2,17 +2,29 @@ from __future__ import annotations
 
 import abc
 import logging
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Optional,
+    Tuple,
+)
 
 from sqlalchemy.sql.type_api import TypeEngine
-from typing import Any, Callable, ClassVar, Dict, Optional, Tuple
 
 from bi_constants.enums import ConnectionType
 from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
 from bi_core.connection_executors.adapters.sa_utils import get_db_version_query
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, ExecutionStepCursorInfo
+from bi_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    ExecutionStepCursorInfo,
+)
 from bi_core.connection_models import DBIdent
-from bi_core.db.native_type import SATypeSpec, CommonNativeType
-
+from bi_core.db.native_type import (
+    CommonNativeType,
+    SATypeSpec,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,12 +65,14 @@ class SATypeTransformer(SAColumnTypeNormalizer):
         # Oracle. But that might change.
         return True
 
-    def _cursor_column_to_native_type(self, cursor_col: Tuple[Any, ...], require: bool = True) -> Optional[CommonNativeType]:
+    def _cursor_column_to_native_type(
+        self, cursor_col: Tuple[Any, ...], require: bool = True
+    ) -> Optional[CommonNativeType]:
         sa_type = self._cursor_column_to_sa(cursor_col, require=require)
         if sa_type is None:
             if not require:
                 return None
-            raise ValueError(f'Unknown/unsupported type_code for {self}, column info {cursor_col}', self, cursor_col)
+            raise ValueError(f"Unknown/unsupported type_code for {self}, column info {cursor_col}", self, cursor_col)
 
         nullable = self._cursor_column_to_nullable(cursor_col)
         if nullable is None:
@@ -99,17 +113,10 @@ class WithMinimalCursorInfo(WithCursorInfo, SATypeTransformer):
         """
         return dict(
             super()._make_cursor_info(cursor, db_session),
-            names=[
-                str(cursor_col[0])
-                for cursor_col in cursor.description
-            ],
-            driver_types=[
-                self._cursor_type_to_str(cursor_col[1])
-                for cursor_col in cursor.description
-            ],
+            names=[str(cursor_col[0]) for cursor_col in cursor.description],
+            driver_types=[self._cursor_type_to_str(cursor_col[1]) for cursor_col in cursor.description],
             db_types=[
-                self._cursor_column_to_native_type(cursor_col, require=False)
-                for cursor_col in cursor.description
+                self._cursor_column_to_native_type(cursor_col, require=False) for cursor_col in cursor.description
             ],
         )
 
@@ -132,9 +139,7 @@ class WithDatabaseNameOverride:
     def _get_db_name_for_query(default: Optional[str], from_query: Optional[str], warn_override: bool) -> str:
         if default is not None and from_query is not None:
             if default != from_query and warn_override:
-                LOGGER.warning(
-                    f"Divergence in DB names: default='{default}' from_query='{from_query}'"
-                )
+                LOGGER.warning(f"Divergence in DB names: default='{default}' from_query='{from_query}'")
             return from_query
         elif default is not None:
             return default

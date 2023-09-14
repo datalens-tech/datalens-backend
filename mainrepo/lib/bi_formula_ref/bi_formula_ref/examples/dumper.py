@@ -1,21 +1,29 @@
-import uuid
 from contextlib import contextmanager
-from typing import Any, Generator
+from typing import (
+    Any,
+    Generator,
+)
+import uuid
 
 import attr
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from bi_formula.core.datatype import DataType
 from bi_formula.connectors.base.type_constructor import get_type_constructor
+from bi_formula.core.datatype import DataType
+from bi_formula_ref.examples.data_table import (
+    DataColumn,
+    DataTable,
+)
+from bi_formula_ref.examples.query import (
+    CompiledQueryContext,
+    TableReference,
+)
 from bi_formula_testing.database import Db
-
-from bi_formula_ref.examples.data_table import DataTable, DataColumn
-from bi_formula_ref.examples.query import CompiledQueryContext, TableReference
 
 
 def _make_name() -> str:
-    return f't_{uuid.uuid4().hex[:10]}'
+    return f"t_{uuid.uuid4().hex[:10]}"
 
 
 @attr.s
@@ -27,10 +35,7 @@ class DataDumper:
         return type_constructor.get_sa_type(data_type)
 
     def generate_sa_table(self, table_ref: TableReference) -> sa.Table:
-        sa_columns = [
-            sa.Column(name=col.name, type_=self.get_sa_type(col.data_type))
-            for col in table_ref.columns
-        ]
+        sa_columns = [sa.Column(name=col.name, type_=self.get_sa_type(col.data_type)) for col in table_ref.columns]
         sa_table = self._db._engine_wrapper.table_from_columns(columns=sa_columns, table_name=table_ref.name)  # noqa
         return sa_table
 
@@ -42,10 +47,7 @@ class DataDumper:
         return table_ref
 
     def dump_data(self, table_ref: TableReference, table: DataTable) -> None:
-        data_as_dicts = [
-            {col.name: value for col, value in zip(table.columns, row)}
-            for row in table.rows
-        ]
+        data_as_dicts = [{col.name: value for col, value in zip(table.columns, row)} for row in table.rows]
         sa_table = self.generate_sa_table(table_ref)
         self._db.insert_into_table(sa_table, data_as_dicts)
 
@@ -74,10 +76,7 @@ class DataDumper:
             return val
 
         rows = [
-            [
-                convert(val, col)
-                for val, col in zip(row, query_ctx.result_columns)
-            ]
+            [convert(val, col) for val, col in zip(row, query_ctx.result_columns)]
             for row in self._db.execute(query_ctx.sa_query).fetchall()
         ]
         result_data_table = DataTable(columns=list(query_ctx.result_columns), rows=rows)

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 from bi_core.data_source.sql import PseudoSQLDataSource
 
@@ -15,4 +18,4 @@ class PromQLDataSource(PseudoSQLDataSource):
 
     @property
     def db_name(self) -> Optional[str]:
-        return ''
+        return ""

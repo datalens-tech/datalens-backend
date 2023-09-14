@@ -1,28 +1,38 @@
 from __future__ import annotations
 
-import logging
 from collections import defaultdict
-from typing import Generator, Iterable, List, Optional, Tuple
-
-from bi_constants.enums import ConnectionType, DataSourceRole
-
-from bi_core.us_dataset import Dataset
-from bi_core.components.accessor import DatasetComponentAccessor
-from bi_core.components.editor import DatasetComponentEditor
-from bi_core.us_manager.local_cache import USEntryBuffer
-from bi_core.us_manager.us_manager import USManagerBase
-from bi_core.data_source.collection import DataSourceCollectionBase, DataSourceCollectionFactory
-
-from bi_api_lib.enums import USPermissionKind
+import logging
+from typing import (
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+)
 
 from bi_api_lib import utils as bi_utils
+from bi_api_lib.enums import USPermissionKind
+from bi_constants.enums import (
+    ConnectionType,
+    DataSourceRole,
+)
+from bi_core.components.accessor import DatasetComponentAccessor
+from bi_core.components.editor import DatasetComponentEditor
+from bi_core.data_source.collection import (
+    DataSourceCollectionBase,
+    DataSourceCollectionFactory,
+)
+from bi_core.us_dataset import Dataset
+from bi_core.us_manager.local_cache import USEntryBuffer
+from bi_core.us_manager.us_manager import USManagerBase
 
 LOGGER = logging.getLogger(__name__)
 
 
 def _iter_data_source_collections(
-        dataset: Dataset, us_entry_buffer: USEntryBuffer,
-        source_ids: Optional[Iterable[str]] = None,
+    dataset: Dataset,
+    us_entry_buffer: USEntryBuffer,
+    source_ids: Optional[Iterable[str]] = None,
 ) -> Generator[DataSourceCollectionBase, None, None]:
     ds_accessor = DatasetComponentAccessor(dataset=dataset)
 
@@ -38,13 +48,16 @@ def _iter_data_source_collections(
 
 
 def check_permissions_for_origin_sources(
-        dataset: Dataset, source_ids: Iterable[str],
-        permission_kind: USPermissionKind,
-        us_entry_buffer: USEntryBuffer,
+    dataset: Dataset,
+    source_ids: Iterable[str],
+    permission_kind: USPermissionKind,
+    us_entry_buffer: USEntryBuffer,
 ) -> None:
     """Check whether data source has read rights or not."""
     for dsrc_coll in _iter_data_source_collections(
-            dataset=dataset, us_entry_buffer=us_entry_buffer, source_ids=source_ids,
+        dataset=dataset,
+        us_entry_buffer=us_entry_buffer,
+        source_ids=source_ids,
     ):
         data_source = dsrc_coll.get_opt(role=DataSourceRole.origin)
         if data_source is not None:
@@ -53,24 +66,27 @@ def check_permissions_for_origin_sources(
 
 def log_dataset_field_stats(dataset: Dataset) -> None:
     stats = defaultdict(int)
-    stats['total'] = len(dataset.result_schema)
+    stats["total"] = len(dataset.result_schema)
     for field in dataset.result_schema:
         # We expect no name collisions here
         stats[field.calc_mode.name] += 1
         stats[field.type.name.lower()] += 1
-    LOGGER.info('Dataset field stats', extra=dict(dataset_field_stats=dict(stats)))
+    LOGGER.info("Dataset field stats", extra=dict(dataset_field_stats=dict(stats)))
 
 
 def allow_rls_for_dataset(dataset: Dataset) -> bool:
     return (
-        dataset.permissions is None or  # dataset is not "real" (saved to US), used for validation
-        dataset.permissions['edit']  # dataset is US-bound and should have the required permissions
+        dataset.permissions is None
+        or dataset.permissions[  # dataset is not "real" (saved to US), used for validation
+            "edit"
+        ]  # dataset is US-bound and should have the required permissions
     )
 
 
 def get_dataset_conn_types(
-        dataset: Dataset, us_entry_buffer: USEntryBuffer,
-        roles: Tuple[DataSourceRole] = (DataSourceRole.origin,),
+    dataset: Dataset,
+    us_entry_buffer: USEntryBuffer,
+    roles: Tuple[DataSourceRole] = (DataSourceRole.origin,),
 ) -> List[ConnectionType]:
     colls = list(_iter_data_source_collections(dataset=dataset, us_entry_buffer=us_entry_buffer))
     if not colls:
@@ -92,7 +108,9 @@ def invalidate_sample_sources(dataset: Dataset, source_ids: List[str], us_manage
     """
     ds_editor = DatasetComponentEditor(dataset=dataset)
     for dsrc_coll in _iter_data_source_collections(
-            dataset=dataset, us_entry_buffer=us_manager.get_entry_buffer(), source_ids=source_ids,
+        dataset=dataset,
+        us_entry_buffer=us_manager.get_entry_buffer(),
+        source_ids=source_ids,
     ):
         source_id = dsrc_coll.id
         if dsrc_coll.exists(DataSourceRole.sample):

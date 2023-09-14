@@ -1,21 +1,19 @@
+from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_constants.enums import BIType
-
 from bi_core_testing.configuration import DefaultCoreTestConfiguration
 from bi_testing.containers import get_test_container_hostport
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-
 
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
-    host_us_http=get_test_container_hostport('us', fallback_port=51700).host,
-    port_us_http=get_test_container_hostport('us', fallback_port=51700).port,
-    host_us_pg=get_test_container_hostport('pg-us', fallback_port=51709).host,
-    port_us_pg_5432=get_test_container_hostport('pg-us', fallback_port=51709).port,
-    us_master_token='AC1ofiek8coB',
+    host_us_http=get_test_container_hostport("us", fallback_port=51700).host,
+    port_us_http=get_test_container_hostport("us", fallback_port=51700).port,
+    host_us_pg=get_test_container_hostport("pg-us", fallback_port=51709).host,
+    port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=51709).port,
+    us_master_token="AC1ofiek8coB",
 )
 
 # Connector settings
-DB_DSN = 'snowflake://does@not/matter'
+DB_DSN = "snowflake://does@not/matter"
 # todo: maybe support also certificates and store them in sec storage, to avoid refresh token updates
 
 SAMPLE_TABLE_SIMPLIFIED_SCHEMA = [
@@ -44,8 +42,8 @@ SAMPLE_TABLE_SIMPLIFIED_SCHEMA = [
 
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=['snowflake'],
-    core_connector_whitelist=['snowflake'],
+    bi_api_connector_whitelist=["snowflake"],
+    core_connector_whitelist=["snowflake"],
     core_test_config=CORE_TEST_CONFIG,
-    ext_query_executer_secret_key='_some_test_secret_key_',
+    ext_query_executer_secret_key="_some_test_secret_key_",
 )

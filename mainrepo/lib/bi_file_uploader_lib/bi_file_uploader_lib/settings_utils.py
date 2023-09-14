@@ -1,8 +1,11 @@
-from bi_constants.enums import RedisInstanceKind
 from bi_configs.enums import RedisMode
-from bi_core.aio.web_app_services.redis import RedisBaseService, SingleHostSimpleRedisService, RedisSentinelService
+from bi_constants.enums import RedisInstanceKind
+from bi_core.aio.web_app_services.redis import (
+    RedisBaseService,
+    RedisSentinelService,
+    SingleHostSimpleRedisService,
+)
 from bi_core.utils import make_url
-
 from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 
 
@@ -32,5 +35,5 @@ def init_redis_service(settings: FileUploaderBaseSettings) -> RedisBaseService:
             ssl=settings.REDIS_APP.SSL,
         )
     else:
-        raise ValueError(f'Unknown redis mode {settings.REDIS_APP.MODE}')
+        raise ValueError(f"Unknown redis mode {settings.REDIS_APP.MODE}")
     return redis_service

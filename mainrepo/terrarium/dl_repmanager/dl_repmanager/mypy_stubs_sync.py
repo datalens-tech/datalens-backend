@@ -4,10 +4,15 @@ from pathlib import Path
 import attr
 
 from dl_repmanager.exceptions import MypyStubsOutOfSyncError
-from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaWriter
+from dl_repmanager.package_meta_reader import (
+    PackageMetaReader,
+    PackageMetaWriter,
+)
 from dl_repmanager.pypi_tools import get_package_info_by_version
-from dl_repmanager.requirements_tools import PipRequirementsIO, PipRequirement
-
+from dl_repmanager.requirements_tools import (
+    PipRequirement,
+    PipRequirementsIO,
+)
 
 log = logging.getLogger(__name__)
 
@@ -123,8 +128,8 @@ def stubs_sync(
         if result:
             types_name, types_version = result
             if (
-                types_name not in annotations_requirements or
-                annotations_requirements.get(types_name).cleaned_version != types_version
+                types_name not in annotations_requirements
+                or annotations_requirements.get(types_name).cleaned_version != types_version
             ):
                 annotations_to_add[types_name] = PipRequirement(name=name, raw_version=types_version)
         else:
@@ -135,8 +140,7 @@ def stubs_sync(
 
             if annotations_requirements.get(mb_name) and name not in ignore_pkg_set:
                 log.warning(
-                    f"{name} and types package {mb_name} listed in requirements."
-                    f" Pypi does not have such packages"
+                    f"{name} and types package {mb_name} listed in requirements." f" Pypi does not have such packages"
                 )
 
     if len(packages_to_ignore) + len(annotations_to_add) > 0:
@@ -149,7 +153,7 @@ def stubs_sync(
             log.info("Fixes done")
         else:
             raise MypyStubsOutOfSyncError(
-                "At least some package missing stub packages, version is outdated or" 
+                "At least some package missing stub packages, version is outdated or"
                 " ignore mark should be added to the pyproject toml"
             )
     else:

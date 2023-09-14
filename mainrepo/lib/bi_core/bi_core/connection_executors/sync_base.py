@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import TYPE_CHECKING, List, Iterable, Sequence, Optional
+from typing import (
+    TYPE_CHECKING,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
 
@@ -12,7 +18,10 @@ from bi_core.db import SchemaInfo
 
 if TYPE_CHECKING:
     from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent, TableDefinition, TableIdent,
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
     )
     from bi_core.connection_models.dto_defs import ConnDTO
 

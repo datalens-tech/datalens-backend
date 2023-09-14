@@ -9,15 +9,25 @@ import attr
 import flask
 from flask import request
 
-from bi_constants.api_constants import DLHeadersCommon
-
-from bi_api_commons import make_uuid_from_parts, request_id_generator, log_request_start
+from bi_api_commons import (
+    log_request_start,
+    make_uuid_from_parts,
+    request_id_generator,
+)
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
-from bi_api_commons.headers import HEADER_LOGGING_CONTEXT, HEADER_DEBUG_MODE_ENABLED, get_x_dl_context
-from bi_api_commons.logging import log_request_end_extended, NON_TRANSITIVE_LOGGING_CTX_KEYS
+from bi_api_commons.headers import (
+    HEADER_DEBUG_MODE_ENABLED,
+    HEADER_LOGGING_CONTEXT,
+    get_x_dl_context,
+)
+from bi_api_commons.logging import (
+    NON_TRANSITIVE_LOGGING_CTX_KEYS,
+    log_request_end_extended,
+)
 from bi_app_tools.log.context import put_to_context
+from bi_constants.api_constants import DLHeadersCommon
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,8 +54,8 @@ class RequestIDService:
             current_req_id = incoming_req_id or request_id_generator(self._request_id_app_prefix)
 
         req_log_ctx_ctrl = RequestLoggingContextControllerMiddleWare.get_for_request()
-        req_log_ctx_ctrl.put_to_context('request_id', current_req_id)
-        req_log_ctx_ctrl.put_to_context('parent_request_id', incoming_req_id)
+        req_log_ctx_ctrl.put_to_context("request_id", current_req_id)
+        req_log_ctx_ctrl.put_to_context("parent_request_id", incoming_req_id)
 
         # Updating logging context with outer values
         logging_ctx_header = request.headers.get(self._logging_ctx_header_name)
@@ -63,7 +73,9 @@ class RequestIDService:
 
         log_request_start(
             logger=LOGGER,
-            method=request.method, full_path=request.full_path, headers=request.headers.items(),
+            method=request.method,
+            full_path=request.full_path,
+            headers=request.headers.items(),
         )
 
         # Initially setup RCI for request
@@ -72,7 +84,7 @@ class RequestIDService:
                 request_id=current_req_id,
                 x_dl_debug_mode=bool(int(request.headers.get(HEADER_DEBUG_MODE_ENABLED, "0"))),
                 endpoint_code=None,
-                x_dl_context=get_x_dl_context(request.headers.get(DLHeadersCommon.DL_CONTEXT, '{}')),
+                x_dl_context=get_x_dl_context(request.headers.get(DLHeadersCommon.DL_CONTEXT, "{}")),
                 # This props will be filled in commit_rci middleware
                 plain_headers=None,
                 secret_headers=None,
@@ -85,8 +97,9 @@ class RequestIDService:
         )
 
     def set_up(self, app: flask.Flask) -> None:
-        assert RequestLoggingContextControllerMiddleWare.is_initialized_for_app(app), \
-            "RequestLoggingContextControllerMiddleWare should be setup before request_id"
+        assert RequestLoggingContextControllerMiddleWare.is_initialized_for_app(
+            app
+        ), "RequestLoggingContextControllerMiddleWare should be setup before request_id"
         app.before_request(self._before_request)
         app.after_request(_set_request_id_response_header)
         app.after_request(_post_log_request_id)
@@ -95,7 +108,7 @@ class RequestIDService:
 def _post_log_request_id(response: flask.Response) -> flask.Response:
     if response:
         response_timing = None
-        request_start_time = getattr(flask.g, 'request_start_time', None)
+        request_start_time = getattr(flask.g, "request_start_time", None)
         if request_start_time is not None:
             response_timing = time.monotonic() - request_start_time
 
@@ -108,15 +121,12 @@ def _post_log_request_id(response: flask.Response) -> flask.Response:
 
         log_request_end_extended(
             logger=LOGGER,
-
             request_method=request.method,
             request_path=request.full_path,
             request_headers=dict(request.headers),
-
             response_status=response.status_code,
             response_headers=dict(response.headers),
             response_timing=response_timing,
-
             user_id=user_id,
             username=user_name,
         )
@@ -128,5 +138,5 @@ def _set_request_id_response_header(response: flask.Response) -> flask.Response:
     if response:
         rci = ReqCtxInfoMiddleware.get_last_resort_rci()
         if rci is not None and rci.request_id is not None:
-            response.headers.set('x-request-id', rci.request_id)
+            response.headers.set("x-request-id", rci.request_id)
     return response

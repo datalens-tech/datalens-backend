@@ -2,18 +2,20 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 
 from bi_formula.core.datatype import DataType
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from bi_formula.definitions.args import ArgTypeSequence
-import bi_formula.definitions.functions_type as base
 from bi_formula.definitions.base import (
-    TranslationVariant, TranslationVariantWrapped,
-    SingleVariantTranslationBase, Function,
+    Function,
+    SingleVariantTranslationBase,
+    TranslationVariant,
+    TranslationVariantWrapped,
 )
-from bi_formula.definitions.scope import Scope
 from bi_formula.definitions.common_datetime import ensure_naive_first_arg
-from bi_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
+import bi_formula.definitions.functions_type as base
+from bi_formula.definitions.scope import Scope
 from bi_formula.shortcuts import n
 
+from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
+from bi_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
@@ -22,16 +24,12 @@ VW = TranslationVariantWrapped.make
 class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncTypeGenericDatetime2Impl):
     dialects = D.POSTGRESQL
     argument_types = [
-        ArgTypeSequence([
-            {
-                DataType.DATETIME,
-                DataType.GENERICDATETIME,
-                DataType.INTEGER,
-                DataType.FLOAT,
-                DataType.STRING
-            },
-            DataType.CONST_STRING
-        ]),
+        ArgTypeSequence(
+            [
+                {DataType.DATETIME, DataType.GENERICDATETIME, DataType.INTEGER, DataType.FLOAT, DataType.STRING},
+                DataType.CONST_STRING,
+            ]
+        ),
     ]
 
     @classmethod
@@ -68,7 +66,12 @@ class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncType
         value_type = value_ctx.data_type
         tz = tz_ctx.expression
 
-        if value_type in (DataType.DATETIME, DataType.CONST_DATETIME, DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME):
+        if value_type in (
+            DataType.DATETIME,
+            DataType.CONST_DATETIME,
+            DataType.GENERICDATETIME,
+            DataType.CONST_GENERICDATETIME,
+        ):
             pass  # value = value
         elif value_type in (DataType.INTEGER, DataType.CONST_INTEGER, DataType.FLOAT, DataType.CONST_FLOAT):
             value = sa.func.to_timestamp(value)
@@ -83,15 +86,20 @@ class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncType
 class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     dialects = D.POSTGRESQL
     argument_types = [
-        ArgTypeSequence([
-            {DataType.DATETIME,
-             DataType.GENERICDATETIME,
-             DataType.DATETIMETZ,
-             # Not even tried: `DataType.DATE`.
-             DataType.INTEGER,
-             DataType.FLOAT,
-             DataType.STRING},
-            DataType.CONST_STRING]),
+        ArgTypeSequence(
+            [
+                {
+                    DataType.DATETIME,
+                    DataType.GENERICDATETIME,
+                    DataType.DATETIMETZ,
+                    # Not even tried: `DataType.DATE`.
+                    DataType.INTEGER,
+                    DataType.FLOAT,
+                    DataType.STRING,
+                },
+                DataType.CONST_STRING,
+            ]
+        ),
     ]
 
     @classmethod
@@ -128,11 +136,11 @@ class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
 
 
 class FuncDatetime2PG(FuncTypeGenericDatetime2PGImpl):
-    name = 'datetime'
+    name = "datetime"
 
 
 class FuncGenericDatetime2PG(FuncTypeGenericDatetime2PGImpl):
-    name = 'genericdatetime'
+    name = "genericdatetime"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
@@ -156,52 +164,62 @@ class FuncDbCastPostgreSQLBase(base.FuncDbCastBase):
     WHITELISTS = {
         pg_dialect: {
             DataType.INTEGER: [
-                base.WhitelistTypeSpec(name='smallint', sa_type=sa_postgresql.SMALLINT),
-                base.WhitelistTypeSpec(name='integer', sa_type=sa_postgresql.INTEGER),
-                base.WhitelistTypeSpec(name='bigint', sa_type=sa_postgresql.BIGINT),
+                base.WhitelistTypeSpec(name="smallint", sa_type=sa_postgresql.SMALLINT),
+                base.WhitelistTypeSpec(name="integer", sa_type=sa_postgresql.INTEGER),
+                base.WhitelistTypeSpec(name="bigint", sa_type=sa_postgresql.BIGINT),
             ],
             DataType.FLOAT: [
-                base.WhitelistTypeSpec(name='double precision', sa_type=sa_postgresql.DOUBLE_PRECISION),
-                base.WhitelistTypeSpec(name='real', sa_type=sa_postgresql.REAL),
+                base.WhitelistTypeSpec(name="double precision", sa_type=sa_postgresql.DOUBLE_PRECISION),
+                base.WhitelistTypeSpec(name="real", sa_type=sa_postgresql.REAL),
                 base.WhitelistTypeSpec(
-                    name='numeric', sa_type=sa_postgresql.NUMERIC, arg_types=base.DECIMAL_CAST_ARG_T),
+                    name="numeric", sa_type=sa_postgresql.NUMERIC, arg_types=base.DECIMAL_CAST_ARG_T
+                ),
             ],
             DataType.STRING: [
-                base.WhitelistTypeSpec(name='text', sa_type=sa_postgresql.TEXT),
-                base.WhitelistTypeSpec(name='character', sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
+                base.WhitelistTypeSpec(name="text", sa_type=sa_postgresql.TEXT),
+                base.WhitelistTypeSpec(name="character", sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
                 base.WhitelistTypeSpec(
-                    name='character varying', sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T),
+                    name="character varying", sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T
+                ),
                 # Here we'll make an exception and allow the usage of type aliases
                 # just because in this case they are probably much more widely used
                 # then the proper type names:
-                base.WhitelistTypeSpec(name='char', sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
-                base.WhitelistTypeSpec(name='varchar', sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T),
+                base.WhitelistTypeSpec(name="char", sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
+                base.WhitelistTypeSpec(name="varchar", sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T),
             ],
             DataType.ARRAY_STR: [
-                base.WhitelistTypeSpec(name='text[]', sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.TEXT),
+                base.WhitelistTypeSpec(name="text[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.TEXT),
                 base.WhitelistTypeSpec(
-                    name='character varying[]', sa_type=sa_postgresql.ARRAY,
-                    nested_sa_type=sa_postgresql.VARCHAR),
+                    name="character varying[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR
+                ),
                 base.WhitelistTypeSpec(
-                    name='varchar[]', sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR),
+                    name="varchar[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR
+                ),
             ],
             DataType.ARRAY_INT: [
                 base.WhitelistTypeSpec(
-                    name='smallint[]', sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.SMALLINT),
+                    name="smallint[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.SMALLINT
+                ),
                 base.WhitelistTypeSpec(
-                    name='integer[]', sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.INTEGER),
+                    name="integer[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.INTEGER
+                ),
                 base.WhitelistTypeSpec(
-                    name='bigint[]', sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.BIGINT),
+                    name="bigint[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.BIGINT
+                ),
             ],
             DataType.ARRAY_FLOAT: [
                 base.WhitelistTypeSpec(
-                    name='double precision[]', sa_type=sa_postgresql.ARRAY,
-                    nested_sa_type=sa_postgresql.DOUBLE_PRECISION),
+                    name="double precision[]",
+                    sa_type=sa_postgresql.ARRAY,
+                    nested_sa_type=sa_postgresql.DOUBLE_PRECISION,
+                ),
+                base.WhitelistTypeSpec(name="real[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.REAL),
                 base.WhitelistTypeSpec(
-                    name='real[]', sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.REAL),
-                base.WhitelistTypeSpec(
-                    name='numeric[]', sa_type=sa_postgresql.ARRAY,
-                    nested_sa_type=sa_postgresql.NUMERIC, arg_types=base.DECIMAL_CAST_ARG_T),
+                    name="numeric[]",
+                    sa_type=sa_postgresql.ARRAY,
+                    nested_sa_type=sa_postgresql.NUMERIC,
+                    arg_types=base.DECIMAL_CAST_ARG_T,
+                ),
             ],
         }
         for pg_dialect in (D.COMPENG, D.NON_COMPENG_POSTGRESQL)
@@ -227,144 +245,188 @@ DEFINITIONS_TYPE = [
     base.FuncBoolFromBool.for_dialect(D.POSTGRESQL),
     base.FuncBoolFromStrGeo.for_dialect(D.POSTGRESQL),
     base.FuncBoolFromDateDatetime.for_dialect(D.POSTGRESQL),
-
     # date
     base.FuncDate1FromNull.for_dialect(D.POSTGRESQL),
     base.FuncDate1FromDatetime.for_dialect(D.POSTGRESQL),
-    base.FuncDate1FromDatetimeTZ(variants=[
-        VW(D.POSTGRESQL, ensure_naive_first_arg(n.func.DATE)),
-    ]),
+    base.FuncDate1FromDatetimeTZ(
+        variants=[
+            VW(D.POSTGRESQL, ensure_naive_first_arg(n.func.DATE)),
+        ]
+    ),
     base.FuncDate1FromString.for_dialect(D.POSTGRESQL),
-    base.FuncDate1FromNumber(variants=[
-        V(D.POSTGRESQL, lambda expr: sa.cast(sa.func.TO_TIMESTAMP(expr), sa.Date())),
-    ]),
-
+    base.FuncDate1FromNumber(
+        variants=[
+            V(D.POSTGRESQL, lambda expr: sa.cast(sa.func.TO_TIMESTAMP(expr), sa.Date())),
+        ]
+    ),
     # datetime
     base.FuncDatetime1FromNull.for_dialect(D.POSTGRESQL),
     base.FuncDatetime1FromDatetime.for_dialect(D.POSTGRESQL),
     base.FuncDatetime1FromDate.for_dialect(D.POSTGRESQL),
-    base.FuncDatetime1FromNumber(variants=[
-        V(D.POSTGRESQL, lambda expr: sa.func.TO_TIMESTAMP(expr)),
-    ]),
+    base.FuncDatetime1FromNumber(
+        variants=[
+            V(D.POSTGRESQL, lambda expr: sa.func.TO_TIMESTAMP(expr)),
+        ]
+    ),
     base.FuncDatetime1FromString.for_dialect(D.POSTGRESQL),
     FuncDatetime2PG(),
-
     # datetimetz
     base.FuncDatetimeTZConst.for_dialect(D.POSTGRESQL),
     FuncDatetimeTZPG(),
-
     # datetimetz_to_naive
     FuncDatetimeTZToNaivePG(),
-
     # db_cast
     FuncDbCastPostgreSQL2(),
     FuncDbCastPostgreSQL3(),
     FuncDbCastPostgreSQL4(),
-
     # float
-    base.FuncFloatNumber(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
-    ]),
-    base.FuncFloatString(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
-    ]),
-    base.FuncFloatFromBool(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.cast(value, sa.INTEGER), sa_postgresql.DOUBLE_PRECISION)),
-    ]),
-    base.FuncFloatFromDate(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa_postgresql.DOUBLE_PRECISION)),
-    ]),
-    base.FuncFloatFromDatetime(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa_postgresql.DOUBLE_PRECISION)),
-    ]),
-    base.FuncFloatFromGenericDatetime(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa_postgresql.DOUBLE_PRECISION)),
-    ]),
-
+    base.FuncFloatNumber(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
+        ]
+    ),
+    base.FuncFloatString(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
+        ]
+    ),
+    base.FuncFloatFromBool(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.cast(value, sa.INTEGER), sa_postgresql.DOUBLE_PRECISION)),
+        ]
+    ),
+    base.FuncFloatFromDate(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa_postgresql.DOUBLE_PRECISION)),
+        ]
+    ),
+    base.FuncFloatFromDatetime(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa_postgresql.DOUBLE_PRECISION)),
+        ]
+    ),
+    base.FuncFloatFromGenericDatetime(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa_postgresql.DOUBLE_PRECISION)),
+        ]
+    ),
     # genericdatetime
     base.FuncGenericDatetime1FromNull.for_dialect(D.POSTGRESQL),
     base.FuncGenericDatetime1FromDatetime.for_dialect(D.POSTGRESQL),
     base.FuncGenericDatetime1FromDate.for_dialect(D.POSTGRESQL),
-    base.FuncGenericDatetime1FromNumber(variants=[
-        V(D.POSTGRESQL, lambda expr: sa.func.TO_TIMESTAMP(expr)),
-    ]),
+    base.FuncGenericDatetime1FromNumber(
+        variants=[
+            V(D.POSTGRESQL, lambda expr: sa.func.TO_TIMESTAMP(expr)),
+        ]
+    ),
     base.FuncGenericDatetime1FromString.for_dialect(D.POSTGRESQL),
     FuncGenericDatetime2PG(),
-
     # geopoint
     base.FuncGeopointFromStr.for_dialect(D.POSTGRESQL),
     base.FuncGeopointFromCoords.for_dialect(D.POSTGRESQL),
-
     # geopolygon
     base.FuncGeopolygon.for_dialect(D.POSTGRESQL),
-
     # int
-    base.FuncIntFromNull(variants=[
-        V(D.POSTGRESQL, lambda _: sa.cast(sa.null(), sa.BIGINT())),
-    ]),
+    base.FuncIntFromNull(
+        variants=[
+            V(D.POSTGRESQL, lambda _: sa.cast(sa.null(), sa.BIGINT())),
+        ]
+    ),
     base.FuncIntFromInt.for_dialect(D.POSTGRESQL),
-    base.FuncIntFromFloat(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.FLOOR(value), sa.BIGINT)),
-    ]),
-    base.FuncIntFromBool(variants=[
-        # Direct cast bool->bigint is not supported; yet, casting to bigint for type consistency.
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.cast(value, sa.INTEGER), sa.BIGINT)),
-    ]),
-    base.FuncIntFromStr(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(value, sa.BIGINT)),
-    ]),
-    base.FuncIntFromDate(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa.BIGINT)),
-    ]),
-    base.FuncIntFromDatetime(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa.BIGINT)),
-    ]),
-    base.FuncIntFromGenericDatetime(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa.BIGINT)),
-    ]),
-    base.FuncIntFromDatetimeTZ(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract('epoch', value), sa.BIGINT)),
-    ]),
-
+    base.FuncIntFromFloat(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.FLOOR(value), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromBool(
+        variants=[
+            # Direct cast bool->bigint is not supported; yet, casting to bigint for type consistency.
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.cast(value, sa.INTEGER), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromStr(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(value, sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromDate(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromDatetime(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromGenericDatetime(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromDatetimeTZ(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.func.extract("epoch", value), sa.BIGINT)),
+        ]
+    ),
     # str
-    base.FuncStrFromNull(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(sa.null(), sa.String())),
-    ]),
-    base.FuncStrFromUnsupported(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(value, sa.TEXT)),  # supports more than `to_char`
-    ]),
-    base.FuncStrFromInteger(variants=[
-        V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, PG_INT_64_TO_CHAR_FMT)),
-    ]),
-    base.FuncStrFromFloat(variants=[
-        V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, 'FM999999999990.0999999999')),
-    ]),
-    base.FuncStrFromBool(variants=[
-        V(D.POSTGRESQL, lambda value: sa.case(
-            whens=[(value.is_(None), sa.null()), (value, 'True')],
-            else_='False'
-        )),
-    ]),
+    base.FuncStrFromNull(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(sa.null(), sa.String())),
+        ]
+    ),
+    base.FuncStrFromUnsupported(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(value, sa.TEXT)),  # supports more than `to_char`
+        ]
+    ),
+    base.FuncStrFromInteger(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, PG_INT_64_TO_CHAR_FMT)),
+        ]
+    ),
+    base.FuncStrFromFloat(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, "FM999999999990.0999999999")),
+        ]
+    ),
+    base.FuncStrFromBool(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda value: sa.case(whens=[(value.is_(None), sa.null()), (value, "True")], else_="False"),
+            ),
+        ]
+    ),
     base.FuncStrFromStrGeo.for_dialect(D.POSTGRESQL),
-    base.FuncStrFromDate(variants=[
-        V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, 'YYYY-MM-DD')),
-    ]),
-    base.FuncStrFromDatetime(variants=[
-        V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, 'YYYY-MM-DD HH24:MI:SS')),
-    ]),
-    base.FuncStrFromDatetimeTZ(variants=[
-        # There might be better options; but for now, just str() the naive version.
-        # Particularly relevant because in PG and CH the aware value is actually in UTC
-        VW(D.POSTGRESQL, ensure_naive_first_arg(n.func.STR)),
-    ]),
+    base.FuncStrFromDate(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, "YYYY-MM-DD")),
+        ]
+    ),
+    base.FuncStrFromDatetime(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.func.TO_CHAR(value, "YYYY-MM-DD HH24:MI:SS")),
+        ]
+    ),
+    base.FuncStrFromDatetimeTZ(
+        variants=[
+            # There might be better options; but for now, just str() the naive version.
+            # Particularly relevant because in PG and CH the aware value is actually in UTC
+            VW(D.POSTGRESQL, ensure_naive_first_arg(n.func.STR)),
+        ]
+    ),
     base.FuncStrFromString.for_dialect(D.POSTGRESQL),
-    base.FuncStrFromUUID(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(value, sa.TEXT)),
-    ]),
-    base.FuncStrFromArray(variants=[
-        V(D.POSTGRESQL, lambda value: sa.cast(value, sa.TEXT)),
-    ]),
-
+    base.FuncStrFromUUID(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(value, sa.TEXT)),
+        ]
+    ),
+    base.FuncStrFromArray(
+        variants=[
+            V(D.POSTGRESQL, lambda value: sa.cast(value, sa.TEXT)),
+        ]
+    ),
     # tree
     base.FuncTreeStr.for_dialect(D.POSTGRESQL),
 ]

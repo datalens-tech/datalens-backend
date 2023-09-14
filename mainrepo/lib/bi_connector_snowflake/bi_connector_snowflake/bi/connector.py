@@ -1,24 +1,23 @@
-from bi_connector_snowflake.core.connector import (
-    SnowFlakeCoreConnector,
-    SnowFlakeCoreConnectionDefinition,
-    SnowFlakeCoreTableSourceDefinition,
-)
-
 from bi_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
+    BiApiSourceDefinition,
 )
 
-from bi_connector_snowflake.formula.constants import DIALECT_NAME_SNOWFLAKE
+from bi_connector_snowflake.bi.api_schema.connection import SnowFlakeConnectionSchema
 from bi_connector_snowflake.bi.api_schema.source import (  # type: ignore
     SnowFlakeTableDataSourceSchema,
     SnowFlakeTableDataSourceTemplateSchema,
 )
-from bi_connector_snowflake.bi.api_schema.connection import SnowFlakeConnectionSchema
 from bi_connector_snowflake.bi.connection_form.form_config import SnowFlakeConnectionFormFactory
 from bi_connector_snowflake.bi.connection_info import SnowflakeConnectionInfoProvider
 from bi_connector_snowflake.bi.i18n.localizer import CONFIGS
+from bi_connector_snowflake.core.connector import (
+    SnowFlakeCoreConnectionDefinition,
+    SnowFlakeCoreConnector,
+    SnowFlakeCoreTableSourceDefinition,
+)
+from bi_connector_snowflake.formula.constants import DIALECT_NAME_SNOWFLAKE
 
 
 class SnowFlakeBiApiTableSourceDefinition(BiApiSourceDefinition):

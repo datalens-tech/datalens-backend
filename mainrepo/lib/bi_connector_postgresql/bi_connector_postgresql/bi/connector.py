@@ -1,25 +1,29 @@
-from bi_connector_postgresql.core.postgresql.connector import (
-    PostgreSQLCoreConnector,
-    PostgreSQLCoreConnectionDefinition,
-    PostgreSQLTableCoreSourceDefinition,
-    PostgreSQLSubselectCoreSourceDefinition,
+from bi_api_connector.api_schema.source_base import (
+    SchematizedSQLDataSourceSchema,
+    SchematizedSQLDataSourceTemplateSchema,
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
 )
-
 from bi_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
-)
-from bi_api_connector.api_schema.source_base import (
-    SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
-    SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
+    BiApiSourceDefinition,
 )
 
 from bi_connector_postgresql.bi.api_schema.connection import PostgreSQLConnectionSchema
 from bi_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
 from bi_connector_postgresql.bi.connection_info import PostgreSQLConnectionInfoProvider
 from bi_connector_postgresql.bi.i18n.localizer import CONFIGS
-from bi_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL, PostgreSQLDialect
+from bi_connector_postgresql.core.postgresql.connector import (
+    PostgreSQLCoreConnectionDefinition,
+    PostgreSQLCoreConnector,
+    PostgreSQLSubselectCoreSourceDefinition,
+    PostgreSQLTableCoreSourceDefinition,
+)
+from bi_connector_postgresql.formula.constants import (
+    DIALECT_NAME_POSTGRESQL,
+    PostgreSQLDialect,
+)
 
 
 class PostgreSQLBiApiTableSourceDefinition(BiApiSourceDefinition):

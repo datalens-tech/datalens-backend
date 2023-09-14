@@ -1,29 +1,47 @@
 import abc
 import os
-from typing import Generic, Optional, TypeVar
+from typing import (
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
-from bi_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
-from bi_utils.aio import ContextVarExecutor
+from bi_api_commons.tenant_resolver import (
+    CommonTenantResolver,
+    TenantResolver,
+)
 from bi_core.aio.web_app_services.gsheets import GSheetsSettings
 from bi_core.aio.web_app_services.s3 import S3Service
 from bi_core.loader import load_bi_core
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext, SecureReaderSettings
-from bi_file_uploader_task_interface.tasks import CleanS3LifecycleRulesTask
-from bi_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings, make_cron_task, CronSchedule
-from bi_task_processor.context import BaseContextFabric
-from bi_task_processor.executor import ExecutorFabric
-from bi_task_processor.state import TaskState, DummyStateImpl
-from bi_task_processor.worker import ArqWorker, WorkerSettings
-
 from bi_file_uploader_lib.settings_utils import init_redis_service
-
+from bi_file_uploader_task_interface.context import (
+    FileUploaderTaskContext,
+    SecureReaderSettings,
+)
+from bi_file_uploader_task_interface.tasks import CleanS3LifecycleRulesTask
 from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from bi_file_uploader_worker_lib.tasks import REGISTRY
+from bi_task_processor.arq_wrapper import (
+    CronSchedule,
+    create_arq_redis_settings,
+    create_redis_pool,
+    make_cron_task,
+)
+from bi_task_processor.context import BaseContextFabric
+from bi_task_processor.executor import ExecutorFabric
+from bi_task_processor.state import (
+    DummyStateImpl,
+    TaskState,
+)
+from bi_task_processor.worker import (
+    ArqWorker,
+    WorkerSettings,
+)
+from bi_utils.aio import ContextVarExecutor
 
-
-_TSettings = TypeVar('_TSettings', bound=FileUploaderWorkerSettings)
+_TSettings = TypeVar("_TSettings", bound=FileUploaderWorkerSettings)
 
 
 @attr.s
@@ -84,10 +102,12 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
             state = TaskState(DummyStateImpl())
         cron_tasks = []
         if self._settings.ENABLE_REGULAR_S3_LC_RULES_CLEANUP:
-            cron_tasks.append(make_cron_task(
-                CleanS3LifecycleRulesTask(),
-                schedule=CronSchedule(hour={23}, minute={0}, second={0}),
-            ))
+            cron_tasks.append(
+                make_cron_task(
+                    CleanS3LifecycleRulesTask(),
+                    schedule=CronSchedule(hour={23}, minute={0}, second={0}),
+                )
+            )
         worker = ArqWorker(
             redis_settings=create_arq_redis_settings(self._settings.REDIS_ARQ),
             executor_fab=ExecutorFabric(

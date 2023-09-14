@@ -1,42 +1,59 @@
 from __future__ import annotations
 
 import abc
-from typing import Callable, List, Sequence, Set, TypeVar
+from typing import (
+    Callable,
+    List,
+    Sequence,
+    Set,
+    TypeVar,
+)
 
 import attr
 
 from bi_core.components.ids import FieldId
-
-import bi_formula.core.nodes as formula_nodes
-import bi_formula.core.exc as formula_exc
+from bi_formula.collections import NodeSet
 from bi_formula.core.dialect import DialectCombo
-from bi_formula.mutation.mutation import FormulaMutation, apply_mutations
-from bi_formula.mutation.bfb import NormalizeBeforeFilterByMutation
-from bi_formula.mutation.tagging import FunctionLevelTagMutation
-from bi_formula.mutation.window import WindowFunctionToQueryForkMutation
-from bi_formula.mutation.lod import (
-    ExtAggregationToQueryForkMutation, DoubleAggregationCollapsingMutation,
-)
-from bi_formula.mutation.lookup import LookupFunctionToQueryForkMutation
-from bi_formula.mutation.general import (
-    OptimizeConstComparisonMutation, OptimizeConstAndOrMutation, OptimizeUnaryBoolFunctions,
-    OptimizeConstFuncMutation,
-)
+import bi_formula.core.exc as formula_exc
+import bi_formula.core.nodes as formula_nodes
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.inspect.expression import (
-    contains_extended_aggregations, contains_lookup_functions,
-    get_toplevel_dimension_set, is_window_expression,
+    contains_extended_aggregations,
+    contains_lookup_functions,
+    get_toplevel_dimension_set,
+    is_window_expression,
 )
-from bi_formula.validation.validator import validate
+from bi_formula.mutation.bfb import NormalizeBeforeFilterByMutation
+from bi_formula.mutation.general import (
+    OptimizeConstAndOrMutation,
+    OptimizeConstComparisonMutation,
+    OptimizeConstFuncMutation,
+    OptimizeUnaryBoolFunctions,
+)
+from bi_formula.mutation.lod import (
+    DoubleAggregationCollapsingMutation,
+    ExtAggregationToQueryForkMutation,
+)
+from bi_formula.mutation.lookup import LookupFunctionToQueryForkMutation
+from bi_formula.mutation.mutation import (
+    FormulaMutation,
+    apply_mutations,
+)
+from bi_formula.mutation.tagging import FunctionLevelTagMutation
+from bi_formula.mutation.window import WindowFunctionToQueryForkMutation
 from bi_formula.validation.aggregation import AggregationChecker
 from bi_formula.validation.env import ValidationEnvironment
-from bi_formula.collections import NodeSet
+from bi_formula.validation.validator import validate
+from bi_query_processing.compilation.primitives import (
+    CompiledFormulaInfo,
+    CompiledQuery,
+)
+from bi_query_processing.enums import (
+    QueryPart,
+    QueryType,
+)
 
-from bi_query_processing.enums import QueryType, QueryPart
-from bi_query_processing.compilation.primitives import CompiledQuery, CompiledFormulaInfo
-
-
-_COMPILED_FLA_TV = TypeVar('_COMPILED_FLA_TV', bound=CompiledFormulaInfo)
+_COMPILED_FLA_TV = TypeVar("_COMPILED_FLA_TV", bound=CompiledFormulaInfo)
 
 
 def get_toplevel_dimension_set_for_query(compiled_query: CompiledQuery) -> NodeSet:
@@ -59,7 +76,9 @@ class AtomicQueryMutatorBase(abc.ABC):
 class AtomicQueryFormulaListMutatorBase(AtomicQueryMutatorBase):
     @abc.abstractmethod
     def mutate_formula_list(
-            self, formula_list: List[_COMPILED_FLA_TV], query_part: QueryPart,
+        self,
+        formula_list: List[_COMPILED_FLA_TV],
+        query_part: QueryPart,
     ) -> List[_COMPILED_FLA_TV]:
         raise NotImplementedError
 
@@ -80,8 +99,11 @@ class AtomicQueryFormulaListMutatorBase(AtomicQueryMutatorBase):
 
         if changed:
             compiled_query = compiled_query.clone(
-                select=new_select, group_by=new_group_by, filters=new_filters,
-                order_by=new_order_by, join_on=new_join_on,
+                select=new_select,
+                group_by=new_group_by,
+                filters=new_filters,
+                order_by=new_order_by,
+                join_on=new_join_on,
             )
 
         return compiled_query
@@ -93,9 +115,10 @@ class AtomicQueryFormulaMutatorBase(AtomicQueryFormulaListMutatorBase):
         raise NotImplementedError
 
     def mutate_formula_list(
-            self, formula_list: List[_COMPILED_FLA_TV], query_part: QueryPart,
+        self,
+        formula_list: List[_COMPILED_FLA_TV],
+        query_part: QueryPart,
     ) -> List[_COMPILED_FLA_TV]:
-
         new_formula_list: List[_COMPILED_FLA_TV] = []
         changed = False
         for formula in formula_list:
@@ -124,12 +147,12 @@ class IgnoreFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
         return False
 
     def mutate_formula_list(
-            self, formula_list: List[_COMPILED_FLA_TV], query_part: QueryPart,
+        self,
+        formula_list: List[_COMPILED_FLA_TV],
+        query_part: QueryPart,
     ) -> List[_COMPILED_FLA_TV]:
-
         new_formula_list = [
-            formula for formula in formula_list
-            if not self.should_ignore_formula(formula, query_part=query_part)
+            formula for formula in formula_list if not self.should_ignore_formula(formula, query_part=query_part)
         ]
         if len(new_formula_list) == len(formula_list):
             return formula_list
@@ -159,34 +182,30 @@ class NullifyFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
         )
 
     def mutate_formula_list(
-            self, formula_list: List[_COMPILED_FLA_TV], query_part: QueryPart,
+        self,
+        formula_list: List[_COMPILED_FLA_TV],
+        query_part: QueryPart,
     ) -> List[_COMPILED_FLA_TV]:
-
         new_formula_list = [
-            self.nullify_formula(formula)
-            if self.should_nullify_formula(formula, query_part=query_part)
-            else formula
+            self.nullify_formula(formula) if self.should_nullify_formula(formula, query_part=query_part) else formula
             for formula in formula_list
         ]
         return new_formula_list
 
 
 def contains_inconsistent_aggregations(
-        node: formula_nodes.FormulaItem,
-        dimensions: list[formula_nodes.FormulaItem],
-        env: ValidationEnvironment,
+    node: formula_nodes.FormulaItem,
+    dimensions: list[formula_nodes.FormulaItem],
+    env: ValidationEnvironment,
 ) -> bool:
     try:
         validate(
-            node, env=env,
+            node,
+            env=env,
             checkers=[
-                AggregationChecker(
-                    valid_env=env,
-                    inspect_env=InspectionEnvironment(),
-                    global_dimensions=dimensions
-                )
+                AggregationChecker(valid_env=env, inspect_env=InspectionEnvironment(), global_dimensions=dimensions)
             ],
-            collect_errors=False
+            collect_errors=False,
         )
     except formula_exc.ValidationError:
         return True
@@ -241,13 +260,15 @@ class OptimizingQueryMutator(QueryMutator):
         # Apply "preliminary" mutation
         # (must be applied before we scan for nested aggregations)
         if not self._disable_optimizations:
-            mutator: AtomicQueryMutatorBase = DefaultAtomicQueryMutator(mutations=[
-                DoubleAggregationCollapsingMutation(),
-                OptimizeConstComparisonMutation(),
-                OptimizeConstAndOrMutation(),
-                OptimizeUnaryBoolFunctions(self._dialect),
-                OptimizeConstFuncMutation(),
-            ])
+            mutator: AtomicQueryMutatorBase = DefaultAtomicQueryMutator(
+                mutations=[
+                    DoubleAggregationCollapsingMutation(),
+                    OptimizeConstComparisonMutation(),
+                    OptimizeConstAndOrMutation(),
+                    OptimizeUnaryBoolFunctions(self._dialect),
+                    OptimizeConstFuncMutation(),
+                ]
+            )
             compiled_query = mutator.mutate_query(compiled_query)
 
         filter_mutator = IgnoreFormulaAtomicQueryMutator(ignore_formula_checks=[formula_is_true])
@@ -262,12 +283,12 @@ class OptimizingQueryMutator(QueryMutator):
         if compiled_query.meta.query_type == QueryType.totals:
             validation_env = ValidationEnvironment()
             inspect_env = InspectionEnvironment()
-            dimensions = [
-                formula.formula_obj.expr for formula in compiled_query.group_by
-            ]
+            dimensions = [formula.formula_obj.expr for formula in compiled_query.group_by]
             has_incaggs = any(
                 contains_inconsistent_aggregations(
-                    node=formula.formula_obj, dimensions=dimensions, env=validation_env,
+                    node=formula.formula_obj,
+                    dimensions=dimensions,
+                    env=validation_env,
                 )
                 for formula in compiled_query.all_formulas
             )
@@ -282,7 +303,9 @@ class OptimizingQueryMutator(QueryMutator):
                         lambda f, qpart: contains_lookup_functions(f),
                         lambda f, qpart: contains_extended_aggregations(f, include_double_agg=True),
                         lambda f, qpart: contains_inconsistent_aggregations(
-                            f, dimensions=dimensions, env=validation_env,
+                            f,
+                            dimensions=dimensions,
+                            env=validation_env,
                         ),
                         lambda f, qpart: is_window_expression(f, env=inspect_env),
                     ]
@@ -315,8 +338,7 @@ class ExtendedAggregationQueryMutator(QueryMutator):
         )
 
         has_lookups = any(
-            contains_lookup_functions(node=formula.formula_obj)
-            for formula in compiled_query.all_formulas
+            contains_lookup_functions(node=formula.formula_obj) for formula in compiled_query.all_formulas
         )
 
         will_mutate_winfuncs = False
@@ -332,45 +354,53 @@ class ExtendedAggregationQueryMutator(QueryMutator):
 
         if has_lookups:
             fork_mutators += [
-                DefaultAtomicQueryMutator(mutations=[
-                    LookupFunctionToQueryForkMutation(
-                        global_dimensions=global_dimensions,
-                        allow_empty_dimensions=self._allow_empty_dimensions_for_forks,
-                    ),
-                ]),
+                DefaultAtomicQueryMutator(
+                    mutations=[
+                        LookupFunctionToQueryForkMutation(
+                            global_dimensions=global_dimensions,
+                            allow_empty_dimensions=self._allow_empty_dimensions_for_forks,
+                        ),
+                    ]
+                ),
             ]
 
         if has_extaggs or will_mutate_winfuncs:
             # Window functions also require aggregations to be wrapped in QF
             # so that they can be split-off to sub-queries separate from the ones with the WF
             fork_mutators += [
-                DefaultAtomicQueryMutator(mutations=[
-                    ExtAggregationToQueryForkMutation(global_dimensions=global_dimensions),
-                ]),
+                DefaultAtomicQueryMutator(
+                    mutations=[
+                        ExtAggregationToQueryForkMutation(global_dimensions=global_dimensions),
+                    ]
+                ),
             ]
 
         if will_mutate_winfuncs:
             fork_mutators += [
-                DefaultAtomicQueryMutator(mutations=[
-                    WindowFunctionToQueryForkMutation(global_dimensions=global_dimensions),
-                ]),
+                DefaultAtomicQueryMutator(
+                    mutations=[
+                        WindowFunctionToQueryForkMutation(global_dimensions=global_dimensions),
+                    ]
+                ),
             ]
 
         atomic_mutators: list[AtomicQueryMutatorBase]
         if not self._new_subquery_mode:
             atomic_mutators = [
                 # BFB clause preparation
-                DefaultAtomicQueryMutator(mutations=[
-                    NormalizeBeforeFilterByMutation(available_filter_field_ids=filter_ids),
-                ]),
-
+                DefaultAtomicQueryMutator(
+                    mutations=[
+                        NormalizeBeforeFilterByMutation(available_filter_field_ids=filter_ids),
+                    ]
+                ),
                 # Fork mutations
                 *fork_mutators,
-
                 # Tagging must be done strictly after the previous mutations have been applied to all nodes,
-                DefaultAtomicQueryMutator(mutations=[
-                    FunctionLevelTagMutation(),
-                ]),
+                DefaultAtomicQueryMutator(
+                    mutations=[
+                        FunctionLevelTagMutation(),
+                    ]
+                ),
             ]
         else:
             atomic_mutators = fork_mutators
@@ -385,7 +415,7 @@ class ExtendedAggregationQueryMutator(QueryMutator):
             if (dim_set_from_group_by | dim_set_from_top_lods) != dim_set_from_group_by:
                 # LODs contain some dimensions that are not in `group_by`
                 raise formula_exc.LodInvalidTopLevelDimensionsError(
-                    'Invalid top-level LOD dimension found in expression'
+                    "Invalid top-level LOD dimension found in expression"
                 )
 
         if has_extaggs and not self._new_subquery_mode:

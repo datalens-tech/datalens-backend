@@ -1,18 +1,30 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
-from bi_constants.enums import AggregationFunction, CalcMode, BIType, ManagedBy, FieldType
-
+from bi_api_lib.enums import DatasetAction
+from bi_api_lib.query.formalization.raw_pivot_specs import RawPivotSpec
+from bi_api_lib.query.formalization.raw_specs import (
+    RawFilterFieldSpec,
+    RawQuerySpecUnion,
+    RawResultSpec,
+)
+from bi_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    FieldType,
+    ManagedBy,
+)
 from bi_core.fields import CalculationSpec
 from bi_core.values import BIValue
-
-from bi_api_lib.enums import DatasetAction
-from bi_api_lib.query.formalization.raw_specs import (
-    RawQuerySpecUnion, RawFilterFieldSpec, RawResultSpec,
-)
-from bi_api_lib.query.formalization.raw_pivot_specs import RawPivotSpec
 
 
 @attr.s(frozen=True, kw_only=True)
@@ -161,7 +173,7 @@ class AvatarActionBase(Action):
     disable_fields_update: bool
 
 
-_DRM_TV = TypeVar('_DRM_TV', bound='DataRequestModel')
+_DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
 
 
 @attr.s()

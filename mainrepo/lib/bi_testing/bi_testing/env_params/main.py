@@ -1,7 +1,10 @@
 import os
 
 import attr
-from dotenv import find_dotenv, dotenv_values
+from dotenv import (
+    dotenv_values,
+    find_dotenv,
+)
 
 from bi_testing.env_params.getter import EnvParamGetter
 
@@ -20,7 +23,7 @@ class OsEnvParamGetter(EnvParamGetter):
     _env_from_file: dict = attr.ib(init=False, factory=dict)
 
     def initialize(self, config: dict) -> None:
-        env_file = os.environ.get('DL_TESTS_ENV_FILE') or find_dotenv(filename='.env')
+        env_file = os.environ.get("DL_TESTS_ENV_FILE") or find_dotenv(filename=".env")
         self._env_from_file = dotenv_values(env_file)
 
     def get_str_value(self, key: str) -> str:

@@ -1,6 +1,6 @@
 from bi_core.exc import (
-    SourceAccessInvalidToken,
     DatabaseUnavailable,
+    SourceAccessInvalidToken,
     UserQueryAccessDenied,
 )
 

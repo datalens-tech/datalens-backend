@@ -11,17 +11,21 @@ import json
 import random
 import re
 import string
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    Tuple,
+)
 import uuid
-from typing import Any, Callable, Tuple, Iterable
-
 
 CHAR_CLASSES = {
-    'H': set(string.hexdigits.upper()),
-    'h': set(string.hexdigits.lower()),
-    '-': {'-'},
+    "H": set(string.hexdigits.upper()),
+    "h": set(string.hexdigits.lower()),
+    "-": {"-"},
 }
 # '-'.join('h' * x for x in (8, 4, 4, 4, 12))
-UUID_LOWER = 'hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh'
+UUID_LOWER = "hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"
 UUID_UPPER = UUID_LOWER.upper()
 UUID_LOWER_CLASSES = tuple(CHAR_CLASSES[char] for char in UUID_LOWER)
 UUID_UPPER_CLASSES = tuple(CHAR_CLASSES[char] for char in UUID_UPPER)
@@ -55,9 +59,9 @@ def cut_uuid(value: str) -> Tuple[str, str]:
 
 
 def string_to_uuid(
-        data: str,
-        min_random_bytes: int = 3,
-        visual_separate: str = 'ff',
+    data: str,
+    min_random_bytes: int = 3,
+    visual_separate: str = "ff",
 ) -> str:
     """
     Make an UUID string out of any string,
@@ -85,23 +89,23 @@ def string_to_uuid(
         char_budget -= len(visual_separate)
 
     def make_random_hex(chars: int) -> str:
-        return '%0{}x'.format(chars) % (random.getrandbits(chars * 4),)
+        return "%0{}x".format(chars) % (random.getrandbits(chars * 4),)
 
     random_hex_chars = int(min_random_bytes * 2)
     random_hex_tail = make_random_hex(random_hex_chars)
     hex_pieces[5] = random_hex_tail
     char_budget -= len(random_hex_tail)
-    assert char_budget >= 0, 'should not ask for too many random bytes'
+    assert char_budget >= 0, "should not ask for too many random bytes"
 
     if char_budget > 0:
-        data_uuid_hex = data_uuid_like.replace('-', '')
+        data_uuid_hex = data_uuid_like.replace("-", "")
         data_uuid_hex = data_uuid_hex[:char_budget]
         hex_pieces[0] = data_uuid_hex
         char_budget -= len(data_uuid_hex)
 
     if char_budget > 0:
         max_bytechars = int(char_budget / 2 + 1)
-        data_etcetera_hex = ''.join('%02x' % (ord(char),)[:2] for char in data_etcetera[:max_bytechars])
+        data_etcetera_hex = "".join("%02x" % (ord(char),)[:2] for char in data_etcetera[:max_bytechars])
         data_etcetera_hex = data_etcetera_hex[:char_budget]
         hex_pieces[2] = data_etcetera_hex
         char_budget -= len(data_etcetera_hex)
@@ -113,7 +117,7 @@ def string_to_uuid(
 
     assert char_budget == 0, dict(char_budget=char_budget, hex_pieces=hex_pieces)
     assert sum(len(piece) for piece in hex_pieces.values()) == uuid_chars
-    result_hex = ''.join(hex_pieces.get(idx, '') for idx in range(6))
+    result_hex = "".join(hex_pieces.get(idx, "") for idx in range(6))
     return str(uuid.UUID(hex=result_hex))
 
 
@@ -123,13 +127,13 @@ THasher = Callable[[bytes], Any]
 
 
 def clear_hash(
-        value: str,
-        lowercase: bool = True,
-        allowed_chars_re: str = 'A-Za-z0-9_',
-        hash_prefix: str = 'cs',
-        base_len: int = 12,
-        hash_len: int = 12,
-        hasher: THasher = hashlib.sha256,
+    value: str,
+    lowercase: bool = True,
+    allowed_chars_re: str = "A-Za-z0-9_",
+    hash_prefix: str = "cs",
+    base_len: int = 12,
+    hash_len: int = 12,
+    hasher: THasher = hashlib.sha256,
 ) -> str:
     """
     Hash a value, leaving a sanitized part of it for debuggability.
@@ -137,17 +141,14 @@ def clear_hash(
     >>> clear_hash('<a href="javascript:alert(2)">фыва</a>')
     'a_href_javas__cst2let6ipy3jh'
     """
-    hashed = hasher(value.encode('utf-8')).digest()
-    hashed = base64.b32encode(hashed).decode('ascii').lower().rstrip('=')
+    hashed = hasher(value.encode("utf-8")).digest()
+    hashed = base64.b32encode(hashed).decode("ascii").lower().rstrip("=")
     hashed = hashed[:hash_len]
 
-    cleaned = re.sub(
-        r'[^{}]+'.format(allowed_chars_re),
-        '_',
-        value)
-    cleaned = cleaned.strip('_')
+    cleaned = re.sub(r"[^{}]+".format(allowed_chars_re), "_", value)
+    cleaned = cleaned.strip("_")
     cleaned = cleaned[:base_len]
-    return f'{cleaned}__{hash_prefix}{hashed}'
+    return f"{cleaned}__{hash_prefix}{hashed}"
 
 
 def make_jsonable(value: Any, default: Callable[[Any], Any] = repr) -> Any:
@@ -158,7 +159,7 @@ def make_jsonable(value: Any, default: Callable[[Any], Any] = repr) -> Any:
     return json.loads(json.dumps(value, default=default))
 
 
-def param_bool(value: Any, false_values: Iterable[str] = ('false', '0', 'no'), default: bool = False) -> bool:
+def param_bool(value: Any, false_values: Iterable[str] = ("false", "0", "no"), default: bool = False) -> bool:
     """
     Header value to a boolean value.
 

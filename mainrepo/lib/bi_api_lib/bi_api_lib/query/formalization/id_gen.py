@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import itertools
-from typing import Generator, Set
+from typing import (
+    Generator,
+    Set,
+)
 
 import attr
 

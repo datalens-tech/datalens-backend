@@ -1,8 +1,14 @@
-from typing import Collection, Optional
+from typing import (
+    Collection,
+    Optional,
+)
 
 import attr
 
-from bi_core.core_connectors import load_all_connectors, register_all_connectors
+from bi_core.core_connectors import (
+    load_all_connectors,
+    register_all_connectors,
+)
 from bi_core.core_data_processors import register_all_data_processor_plugins
 
 
@@ -13,7 +19,7 @@ class CoreLibraryConfig:
 
 
 def preload_bi_core() -> None:
-    """ Loads all entrypoint connectors without registering them """
+    """Loads all entrypoint connectors without registering them"""
 
     load_all_connectors()
 

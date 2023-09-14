@@ -1,15 +1,28 @@
 from __future__ import annotations
 
-from typing import Any, Type
+from typing import (
+    Any,
+    Type,
+)
 
 import marshmallow as ma
-from marshmallow import fields, Schema, RAISE, post_load
+from marshmallow import (
+    RAISE,
+    Schema,
+    fields,
+    post_load,
+)
 
-from bi_constants.enums import BIType, FileProcessingStatus
-
-from bi_model_tools.schema.base import BaseSchema
 from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from bi_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
+)
+from bi_constants.enums import (
+    BIType,
+    FileProcessingStatus,
+)
+from bi_model_tools.schema.base import BaseSchema
 
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 

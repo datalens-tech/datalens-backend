@@ -1,35 +1,50 @@
 from __future__ import annotations
 
-from itertools import chain, count as it_count
-from typing import Optional, TypeVar
+from itertools import chain
+from itertools import count as it_count
+from typing import (
+    Optional,
+    TypeVar,
+)
 
 import attr
 
 from bi_constants.enums import OrderDirection
-
-from bi_core.components.ids import FieldId, RelationId
 from bi_core.components.accessor import DatasetComponentAccessor
+from bi_core.components.ids import (
+    FieldId,
+    RelationId,
+)
 from bi_core.us_dataset import Dataset
 from bi_core.utils import attrs_evolve_to_subclass
-
-import bi_formula.core.nodes as formula_nodes
-from bi_formula.collections import NodeValueMap, NodeSet
-
-from bi_query_processing.enums import SelectValueType, ExecutionLevel
-from bi_query_processing.column_registry import ColumnRegistry
-from bi_query_processing.compilation.formula_compiler import FormulaCompiler
-from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
-from bi_query_processing.compilation.specs import QuerySpec, SelectWrapperSpec
-from bi_query_processing.compilation.primitives import (
-    CompiledFormulaInfo, CompiledOrderByFormulaInfo, CompiledJoinOnFormulaInfo,
-    CompiledQuery, BASE_QUERY_ID,
+from bi_formula.collections import (
+    NodeSet,
+    NodeValueMap,
 )
+import bi_formula.core.nodes as formula_nodes
+from bi_query_processing.column_registry import ColumnRegistry
 from bi_query_processing.compilation.base import RawQueryCompilerBase
-from bi_query_processing.compilation.wrapper_applicator import ExpressionWrapperApplicator
+from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
+from bi_query_processing.compilation.formula_compiler import FormulaCompiler
 from bi_query_processing.compilation.helpers import make_joined_from_for_avatars
+from bi_query_processing.compilation.primitives import (
+    BASE_QUERY_ID,
+    CompiledFormulaInfo,
+    CompiledJoinOnFormulaInfo,
+    CompiledOrderByFormulaInfo,
+    CompiledQuery,
+)
+from bi_query_processing.compilation.specs import (
+    QuerySpec,
+    SelectWrapperSpec,
+)
+from bi_query_processing.compilation.wrapper_applicator import ExpressionWrapperApplicator
+from bi_query_processing.enums import (
+    ExecutionLevel,
+    SelectValueType,
+)
 
-
-_COMPILED_FORMULA_INFO_TV = TypeVar('_COMPILED_FORMULA_INFO_TV', bound=CompiledFormulaInfo)
+_COMPILED_FORMULA_INFO_TV = TypeVar("_COMPILED_FORMULA_INFO_TV", bound=CompiledFormulaInfo)
 
 
 @attr.s
@@ -50,7 +65,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
 
     def _get_expression_alias(self, expr: formula_nodes.Formula, force: bool = False) -> str:
         if force or expr not in self._alias_node_mapping:
-            self._alias_node_mapping.add(node=expr, value=f'res_{next(self._alias_cnt)}')
+            self._alias_node_mapping.add(node=expr, value=f"res_{next(self._alias_cnt)}")
         alias = self._alias_node_mapping.get(node=expr)
         assert alias is not None
         return alias
@@ -61,9 +76,10 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
         return formula
 
     def _replace_wrapped_formula(
-            self, formula: CompiledFormulaInfo,
-            expr: formula_nodes.FormulaItem,
-            override_alias: Optional[str] = None,
+        self,
+        formula: CompiledFormulaInfo,
+        expr: formula_nodes.FormulaItem,
+        override_alias: Optional[str] = None,
     ) -> CompiledFormulaInfo:
         alias_kwarg = dict(alias=override_alias) if override_alias else {}
         return formula.clone(
@@ -73,14 +89,15 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
 
     def _get_override_alias(self, select_wrapper: SelectWrapperSpec) -> Optional[str]:
         if select_wrapper.type == SelectValueType.min:
-            return 'min_value'
+            return "min_value"
         elif select_wrapper.type == SelectValueType.max:
-            return 'max_value'
+            return "max_value"
         return None
 
     def _make_compiled_formula(
-            self, field_id: FieldId,
-            select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),
+        self,
+        field_id: FieldId,
+        select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),
     ) -> CompiledFormulaInfo:
         formula: CompiledFormulaInfo
         # All of these types require the actual field object
@@ -97,12 +114,15 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
         return formula
 
     def _make_compiled_order_by_formula(
-            self, field_id: FieldId, direction: OrderDirection,
-            select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),
+        self,
+        field_id: FieldId,
+        direction: OrderDirection,
+        select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),
     ) -> CompiledOrderByFormulaInfo:
         formula = self._make_compiled_formula(field_id=field_id, select_wrapper=select_wrapper)
         formula = attrs_evolve_to_subclass(
-            cls=CompiledOrderByFormulaInfo, inst=formula,
+            cls=CompiledOrderByFormulaInfo,
+            inst=formula,
             direction=direction,
         )
         return formula
@@ -123,7 +143,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
             )
             alias = formula.not_none_alias
             if alias in used_aliases:
-                alias = f'{alias}_cp{next(copy_counter)}'
+                alias = f"{alias}_cp{next(copy_counter)}"
                 formula = formula.clone(alias=alias)
 
             assert alias not in used_aliases
@@ -159,9 +179,11 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
 
     def _make_join_on(self, query_spec: QuerySpec) -> list[CompiledJoinOnFormulaInfo]:
         return [
-            self._update_alias(self._make_compiled_join_on_formula(
-                relation_id=relation_spec.relation_id,
-            ))
+            self._update_alias(
+                self._make_compiled_join_on_formula(
+                    relation_id=relation_spec.relation_id,
+                )
+            )
             for relation_spec in query_spec.relation_specs
         ]
 
@@ -170,8 +192,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
 
         # Source filters
         for scf_spec in query_spec.source_column_filter_specs:
-            formula = self._filter_compiler.compile_source_column_filter_formula(
-                source_column_filter_spec=scf_spec)
+            formula = self._filter_compiler.compile_source_column_filter_formula(source_column_filter_spec=scf_spec)
             formula = self._update_alias(formula)
             result.append(formula)
 
@@ -190,11 +211,13 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
         filters = self._make_filters(query_spec)
         join_on = self._make_join_on(query_spec)
 
-        used_avatar_ids = set(chain.from_iterable(
-            formula.avatar_ids
-            for expr_list in (select, group_by, order_by, filters, join_on)
-            for formula in expr_list  # type: ignore  # TODO: fix
-        ))
+        used_avatar_ids = set(
+            chain.from_iterable(
+                formula.avatar_ids
+                for expr_list in (select, group_by, order_by, filters, join_on)
+                for formula in expr_list  # type: ignore  # TODO: fix
+            )
+        )
 
         joined_from = make_joined_from_for_avatars(
             used_avatar_ids=used_avatar_ids,

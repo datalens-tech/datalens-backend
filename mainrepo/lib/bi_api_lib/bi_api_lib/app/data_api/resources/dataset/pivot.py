@@ -4,35 +4,42 @@ import logging
 from typing import TYPE_CHECKING
 
 from aiohttp import web
-from bi_app_tools.profiling_base import generic_profiler_async, GenericProfiler
-from bi_utils.utils import exc_catch_awrap
-import bi_api_lib.schemas.data
-import bi_api_lib.schemas.main
 
 from bi_api_lib.api_common.data_serialization import PivotDataRequestResponseSerializer
-from bi_api_lib.app.data_api.resources.base import RequiredResourceDSAPI, requires
+from bi_api_lib.app.data_api.resources.base import (
+    RequiredResourceDSAPI,
+    requires,
+)
 from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
-from bi_query_processing.merging.primitives import MergedQueryDataStream
+from bi_api_lib.pivot.pandas.transformer import PdPivotTransformer
 from bi_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
 from bi_api_lib.query.formalization.pivot_legend import PivotLegend
-from bi_api_lib.pivot.pandas.transformer import PdPivotTransformer
 from bi_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
+import bi_api_lib.schemas.data
+import bi_api_lib.schemas.main
+from bi_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler_async,
+)
+from bi_query_processing.merging.primitives import MergedQueryDataStream
+from bi_utils.utils import exc_catch_awrap
 
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
-    from bi_api_lib.request_model.data import PivotDataRequestModel
-    from bi_api_lib.query.formalization.raw_pivot_specs import PivotPaginationSpec
-    from bi_query_processing.legend.field_legend import Legend
+
     from bi_api_lib.pivot.table import PivotTable
+    from bi_api_lib.query.formalization.raw_pivot_specs import PivotPaginationSpec
+    from bi_api_lib.request_model.data import PivotDataRequestModel
+    from bi_query_processing.legend.field_legend import Legend
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class DatasetPivotView(DatasetDataBaseView):
-    endpoint_code = 'DatasetVersionPivot'
+    endpoint_code = "DatasetVersionPivot"
     # TODO FIX: Move to constants
-    profiler_prefix = 'pivot'
+    profiler_prefix = "pivot"
 
     # TODO FIX: Move request deserialization logic to schema
     # TODO FIX: Move response serialization logic to schema
@@ -77,8 +84,11 @@ class DatasetPivotView(DatasetDataBaseView):
         return web.json_response(response_json)
 
     async def pivot_data(
-            self, merged_stream: MergedQueryDataStream, legend: Legend, pagination: PivotPaginationSpec,
-            pivot_legend: PivotLegend,
+        self,
+        merged_stream: MergedQueryDataStream,
+        legend: Legend,
+        pagination: PivotPaginationSpec,
+        pivot_legend: PivotLegend,
     ) -> PivotTable:
         """
         Async wrapper for CPU-intensive pivot table creation
@@ -87,36 +97,42 @@ class DatasetPivotView(DatasetDataBaseView):
         return await executor.execute(
             lambda: self._pivot_data_sync(
                 merged_stream=merged_stream,
-                legend=legend, pagination=pagination,
+                legend=legend,
+                pagination=pagination,
                 pivot_legend=pivot_legend,
             )
         )
 
     def _pivot_data_sync(
-            self, merged_stream: MergedQueryDataStream, legend: Legend, pagination: PivotPaginationSpec,
-            pivot_legend: PivotLegend,
+        self,
+        merged_stream: MergedQueryDataStream,
+        legend: Legend,
+        pagination: PivotPaginationSpec,
+        pivot_legend: PivotLegend,
     ) -> PivotTable:
-        pivot_op_name = 'pivot'
+        pivot_op_name = "pivot"
         # Create pivot table
-        with GenericProfiler(f'{self.profiler_prefix}-{pivot_op_name}-transform-full'):
+        with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-transform-full"):
             legend_data = bi_api_lib.schemas.legend.LegendSchema().dump(legend)
-            LOGGER.info('Pivot legend', extra=dict(legend=legend_data))
+            LOGGER.info("Pivot legend", extra=dict(legend=legend_data))
             transformer = PdPivotTransformer(legend=legend, pivot_legend=pivot_legend)
-            with GenericProfiler(f'{self.profiler_prefix}-{pivot_op_name}-transform'):
+            with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-transform"):
                 pivot_table = transformer.pivot(rows=merged_stream.rows)
 
             # Sort the table
-            with GenericProfiler(f'{self.profiler_prefix}-{pivot_op_name}-sort'):
+            with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-sort"):
                 pivot_table.facade.sort()
             col_cnt, row_cnt = pivot_table.get_column_count(), pivot_table.get_row_count()
             LOGGER.info(
-                'Pivot table has %s columns and %s rows', col_cnt, row_cnt,
+                "Pivot table has %s columns and %s rows",
+                col_cnt,
+                row_cnt,
                 extra=dict(pivot_table_size=dict(columns=col_cnt, rows=row_cnt)),
             )
 
             # Paginate
             if pagination.non_default:
-                with GenericProfiler(f'{self.profiler_prefix}-{pivot_op_name}-paginate'):
+                with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-paginate"):
                     pivot_table.facade.paginate(
                         limit_rows=pagination.limit_rows,
                         offset_rows=pagination.offset_rows,
@@ -125,7 +141,11 @@ class DatasetPivotView(DatasetDataBaseView):
         return pivot_table
 
     def make_pivot_response(self, merged_stream: MergedQueryDataStream, pivot_table: PivotTable) -> dict:
-        reporting_registry = self.dl_request.services_registry.get_reporting_registry() if self.allow_notifications else None
+        reporting_registry = (
+            self.dl_request.services_registry.get_reporting_registry() if self.allow_notifications else None
+        )
         return PivotDataRequestResponseSerializer.make_pivot_response(
-            merged_stream=merged_stream, pivot_table=pivot_table, reporting_registry=reporting_registry,
+            merged_stream=merged_stream,
+            pivot_table=pivot_table,
+            reporting_registry=reporting_registry,
         )

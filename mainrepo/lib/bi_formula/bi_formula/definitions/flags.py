@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from enum import IntEnum, unique
-
+from enum import (
+    IntEnum,
+    unique,
+)
 
 ContextFlags = int  # bitwise combination of ContextFlag values
 

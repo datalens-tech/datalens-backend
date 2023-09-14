@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 class PromQLError(Exception):
-    """ ... """
+    """..."""
 
 
 class Warning(PromQLError):

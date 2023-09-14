@@ -2,33 +2,41 @@ from __future__ import annotations
 
 from itertools import count as it_count
 from typing import (
-    AbstractSet, Dict, Iterable, Iterator, List,
-    Optional, Sequence, Tuple, TypeVar,
+    AbstractSet,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
 )
 
 import attr
 
 from bi_core.components.ids import AvatarId
-
 import bi_formula.core.nodes as formula_nodes
 from bi_formula.inspect.expression import used_fields
-
 from bi_query_processing.compilation.primitives import (
-    CompiledFormulaInfo, CompiledJoinOnFormulaInfo, CompiledQuery,
-    JoinedFromObject, FromColumn, FromObject, SubqueryFromObject,
+    CompiledFormulaInfo,
+    CompiledJoinOnFormulaInfo,
+    CompiledQuery,
+    FromColumn,
+    FromObject,
+    JoinedFromObject,
+    SubqueryFromObject,
 )
 from bi_query_processing.legacy_pipeline.separation.primitives import (
-    CompiledLevel, CompiledMultiLevelQuery, MultiQueryIndex,
+    CompiledLevel,
+    CompiledMultiLevelQuery,
+    MultiQueryIndex,
 )
 from bi_query_processing.multi_query.tools import remap_formula_obj_fields
 
 
 def get_formula_list_used_avatar_ids(formulas: Iterable[CompiledFormulaInfo]) -> AbstractSet[AvatarId]:
-    return {
-        avatar_id
-        for formula in formulas
-        for avatar_id in formula.avatar_ids
-    }
+    return {avatar_id for formula in formulas for avatar_id in formula.avatar_ids}
 
 
 def get_query_level_used_fields(compiled_level: CompiledLevel) -> AbstractSet[str]:
@@ -49,21 +57,21 @@ class AliasRemapper:
     def remap(self, old_alias: Optional[str]) -> str:
         assert old_alias is not None
         if old_alias not in self.mapping:
-            self.mapping[old_alias] = f'{self.base}_{next(self._alias_cnt)}'
+            self.mapping[old_alias] = f"{self.base}_{next(self._alias_cnt)}"
         return self.mapping[old_alias]
 
     def __call__(self, old_alias: Optional[str]) -> str:
         return self.remap(old_alias)
 
 
-_COMPILED_FORMULA_TV = TypeVar('_COMPILED_FORMULA_TV', bound=CompiledFormulaInfo)
+_COMPILED_FORMULA_TV = TypeVar("_COMPILED_FORMULA_TV", bound=CompiledFormulaInfo)
 
 
 def remap_compiled_formula_fields(
-        compiled_formula: _COMPILED_FORMULA_TV,
-        alias: Optional[str],
-        field_name_map: Dict[str, str],
-        avatar_map: Dict[AvatarId, AvatarId],
+    compiled_formula: _COMPILED_FORMULA_TV,
+    alias: Optional[str],
+    field_name_map: Dict[str, str],
+    avatar_map: Dict[AvatarId, AvatarId],
 ) -> _COMPILED_FORMULA_TV:
     formula_obj = compiled_formula.formula_obj
     if field_name_map:
@@ -72,8 +80,8 @@ def remap_compiled_formula_fields(
 
     update_kwargs = dict(formula_obj=formula_obj, alias=alias, avatar_ids=avatar_ids)
     if isinstance(compiled_formula, CompiledJoinOnFormulaInfo):
-        update_kwargs['left_id'] = avatar_map.get(compiled_formula.left_id, compiled_formula.left_id)
-        update_kwargs['right_id'] = avatar_map.get(compiled_formula.right_id, compiled_formula.right_id)
+        update_kwargs["left_id"] = avatar_map.get(compiled_formula.left_id, compiled_formula.left_id)
+        update_kwargs["right_id"] = avatar_map.get(compiled_formula.right_id, compiled_formula.right_id)
 
     compiled_formula = compiled_formula.clone(**update_kwargs)
 
@@ -81,55 +89,64 @@ def remap_compiled_formula_fields(
 
 
 def remap_compiled_formula_list(
-        compiled_formula_list: List[_COMPILED_FORMULA_TV],
-        alias_remapper: AliasRemapper,
-        field_name_map: Dict[str, str],
-        avatar_map: Dict[AvatarId, AvatarId],
+    compiled_formula_list: List[_COMPILED_FORMULA_TV],
+    alias_remapper: AliasRemapper,
+    field_name_map: Dict[str, str],
+    avatar_map: Dict[AvatarId, AvatarId],
 ) -> List[_COMPILED_FORMULA_TV]:
     return [
         remap_compiled_formula_fields(
             formula,
             alias=(
-                alias_remapper(formula.alias) if not isinstance(formula, CompiledJoinOnFormulaInfo)
+                alias_remapper(formula.alias)
+                if not isinstance(formula, CompiledJoinOnFormulaInfo)
                 else None  # because join_on formulas are the only ones that don't have aliases
             ),
             field_name_map=field_name_map,
-            avatar_map=avatar_map
-        ) for formula in compiled_formula_list
+            avatar_map=avatar_map,
+        )
+        for formula in compiled_formula_list
     ]
 
 
 def copy_and_remap_query(
-        compiled_query: CompiledQuery,
-        id: AvatarId,
-        field_name_map: Dict[str, str],
-        avatar_map: Dict[AvatarId, AvatarId],
+    compiled_query: CompiledQuery,
+    id: AvatarId,
+    field_name_map: Dict[str, str],
+    avatar_map: Dict[AvatarId, AvatarId],
 ) -> Tuple[CompiledQuery, Dict[str, str]]:
     alias_remapper = AliasRemapper(base=id)
     select = remap_compiled_formula_list(
-        compiled_query.select, alias_remapper=alias_remapper,
-        field_name_map=field_name_map, avatar_map=avatar_map,
+        compiled_query.select,
+        alias_remapper=alias_remapper,
+        field_name_map=field_name_map,
+        avatar_map=avatar_map,
     )
     group_by = remap_compiled_formula_list(
-        compiled_query.group_by, alias_remapper=alias_remapper,
-        field_name_map=field_name_map, avatar_map=avatar_map,
+        compiled_query.group_by,
+        alias_remapper=alias_remapper,
+        field_name_map=field_name_map,
+        avatar_map=avatar_map,
     )
     order_by = remap_compiled_formula_list(
-        compiled_query.order_by, alias_remapper=alias_remapper,
-        field_name_map=field_name_map, avatar_map=avatar_map,
+        compiled_query.order_by,
+        alias_remapper=alias_remapper,
+        field_name_map=field_name_map,
+        avatar_map=avatar_map,
     )
     filters = remap_compiled_formula_list(
-        compiled_query.filters, alias_remapper=alias_remapper,
-        field_name_map=field_name_map, avatar_map=avatar_map,
+        compiled_query.filters,
+        alias_remapper=alias_remapper,
+        field_name_map=field_name_map,
+        avatar_map=avatar_map,
     )
     join_on = remap_compiled_formula_list(
-        compiled_query.join_on, alias_remapper=alias_remapper,
-        field_name_map=field_name_map, avatar_map=avatar_map,
+        compiled_query.join_on,
+        alias_remapper=alias_remapper,
+        field_name_map=field_name_map,
+        avatar_map=avatar_map,
     )
-    used_avatar_ids = {
-        avatar_map.get(from_id, from_id)
-        for from_id in compiled_query.joined_from.iter_ids()
-    }
+    used_avatar_ids = {avatar_map.get(from_id, from_id) for from_id in compiled_query.joined_from.iter_ids()}
     original_root_from_id = compiled_query.joined_from.root_from_id
     new_root_from_id: Optional[str] = None
     if original_root_from_id is not None:
@@ -146,7 +163,7 @@ def copy_and_remap_query(
         if new_from_id == old_from_id:
             new_from_obj = old_from_obj
         else:
-            assert isinstance(old_from_obj, SubqueryFromObject), 'Avatar froms should not be re-mapped'
+            assert isinstance(old_from_obj, SubqueryFromObject), "Avatar froms should not be re-mapped"
 
             remapped_columns: list[FromColumn] = []
             for col in old_from_obj.columns:
@@ -167,8 +184,11 @@ def copy_and_remap_query(
     joined_from = JoinedFromObject(root_from_id=new_root_from_id, froms=froms)
     query_copy = compiled_query.clone(
         id=id,
-        select=select, group_by=group_by,
-        order_by=order_by, filters=filters, join_on=join_on,
+        select=select,
+        group_by=group_by,
+        order_by=order_by,
+        filters=filters,
+        join_on=join_on,
         joined_from=joined_from,
     )
     return query_copy, alias_remapper.mapping
@@ -204,7 +224,7 @@ class CompiledMultiLevelQueryIncrementalPatch:
 
     @property
     def top_level_query(self) -> CompiledQuery:
-        assert len(self.level_patches[-1]) == 1, 'There must be exactly 1 top-level query in the patch'
+        assert len(self.level_patches[-1]) == 1, "There must be exactly 1 top-level query in the patch"
         return self.level_patches[-1][0]
 
     @property
@@ -221,8 +241,8 @@ class CompiledMultiLevelQueryIncrementalPatch:
 
 
 def apply_multi_query_incremental_patches(
-        compiled_multi_query: CompiledMultiLevelQuery,
-        patches: Sequence[CompiledMultiLevelQueryIncrementalPatch],
+    compiled_multi_query: CompiledMultiLevelQuery,
+    patches: Sequence[CompiledMultiLevelQueryIncrementalPatch],
 ) -> CompiledMultiLevelQuery:
     """
     Apply incremental patches, i.e. add new sub-queries to multi-query.
@@ -231,7 +251,7 @@ def apply_multi_query_incremental_patches(
     if all(patch.empty for patch in patches):
         return compiled_multi_query
 
-    assert len({patch.level_count for patch in patches}) == 1, 'All patches must have the same number of levels'
+    assert len({patch.level_count for patch in patches}) == 1, "All patches must have the same number of levels"
     patch_level_count = patches[0].level_count
 
     bottom_levels = compiled_multi_query.levels[:patch_level_count]
@@ -239,15 +259,11 @@ def apply_multi_query_incremental_patches(
 
     # For each level add all queries for every patch to the original level
     for level_idx, original_level in enumerate(bottom_levels):
-        combined_level_patch = [
-            query
-            for patch in patches
-            for query in patch.level_patches[level_idx]
-        ]
+        combined_level_patch = [query for patch in patches for query in patch.level_patches[level_idx]]
         ids_from_patch = {q.id for q in combined_level_patch}
         ids_from_original = {q.id for q in original_level.queries}
         if ids_from_patch & ids_from_original:
-            raise RuntimeError('Patch contains queries with ids already used in multi-query')
+            raise RuntimeError("Patch contains queries with ids already used in multi-query")
         bottom_levels[level_idx] = original_level.clone(queries=original_level.queries + combined_level_patch)
 
     patched_multi_query = compiled_multi_query.clone(levels=bottom_levels + unchanged_top_levels)
@@ -261,8 +277,8 @@ class CompiledMultiLevelQueryReplacementPatch:
 
 
 def apply_multi_query_replacement_patches(
-        compiled_multi_query: CompiledMultiLevelQuery,
-        patches: Sequence[CompiledMultiLevelQueryReplacementPatch],
+    compiled_multi_query: CompiledMultiLevelQuery,
+    patches: Sequence[CompiledMultiLevelQueryReplacementPatch],
 ) -> CompiledMultiLevelQuery:
     """
     Apply patches replacing certain sub-queries at given indices
@@ -270,10 +286,7 @@ def apply_multi_query_replacement_patches(
     """
 
     # Remove patches that don't change anything
-    patches = [
-        patch for patch in patches
-        if compiled_multi_query[patch.subquery_idx] is not patch.new_subquery
-    ]
+    patches = [patch for patch in patches if compiled_multi_query[patch.subquery_idx] is not patch.new_subquery]
     if not patches:  # Nothing to do -> lazily return original multi-query
         return compiled_multi_query
 
@@ -284,7 +297,8 @@ def apply_multi_query_replacement_patches(
         if level_idx in level_indices:
             # We have some replacements to be made for this level
             new_subquery_by_idx = {
-                patch.subquery_idx.query_idx: patch.new_subquery for patch in patches
+                patch.subquery_idx.query_idx: patch.new_subquery
+                for patch in patches
                 if patch.subquery_idx.level_idx == level_idx
             }
             # Patch level queries
@@ -311,7 +325,9 @@ def add_dummy_select_column(compiled_flat_query: CompiledQuery, alias: str) -> C
 
     dummy_formula = CompiledFormulaInfo(
         formula_obj=formula_nodes.Formula.make(formula_nodes.LiteralInteger.make(1)),
-        alias=alias, avatar_ids=set(), original_field_id=None,
+        alias=alias,
+        avatar_ids=set(),
+        original_field_id=None,
     )
     return compiled_flat_query.clone(
         select=[*compiled_flat_query.select, dummy_formula],

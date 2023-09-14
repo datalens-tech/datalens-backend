@@ -1,8 +1,11 @@
 from typing import Type
 
-from bi_formula.core.dialect import DialectCombo, StandardDialect as D
-from bi_formula.connectors.base.column import ColumnRenderer, DefaultColumnRenderer
-
+from bi_formula.connectors.base.column import (
+    ColumnRenderer,
+    DefaultColumnRenderer,
+)
+from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.dialect import StandardDialect as D
 
 _COLUMN_RENDERER_TYPES: dict[DialectCombo, Type[ColumnRenderer]] = {
     D.DUMMY: DefaultColumnRenderer,
@@ -11,13 +14,12 @@ _COLUMN_RENDERER_TYPES: dict[DialectCombo, Type[ColumnRenderer]] = {
 
 def get_column_renderer(dialect: DialectCombo, field_names: dict[str, tuple[str, ...]]) -> ColumnRenderer:
     sorted_dialect_items = sorted(
-        _COLUMN_RENDERER_TYPES.items(),
-        key=lambda el: el[0].ambiguity
+        _COLUMN_RENDERER_TYPES.items(), key=lambda el: el[0].ambiguity
     )  # Most specific dialects go first, the most ambiguous ones go last
     for d, context_processor in sorted_dialect_items:
         if d & dialect == dialect:
             return context_processor(dialect=dialect, field_names=field_names)
-    raise ValueError(f'Couldn\'t find a column renderer for dialect {dialect}')
+    raise ValueError(f"Couldn't find a column renderer for dialect {dialect}")
 
 
 def register_column_renderer_cls(dialect: DialectCombo, column_renderer_cls: Type[ColumnRenderer]) -> None:

@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
-import bi_formula.core.exc as exc
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import StandardDialect as D
+import bi_formula.core.exc as exc
 from bi_formula.definitions.args import ArgTypeSequence
 from bi_formula.definitions.base import (
-    Function, TranslationVariant, TranslationVariantWrapped,
+    Function,
+    TranslationVariant,
+    TranslationVariantWrapped,
 )
 from bi_formula.definitions.common_datetime import (
     ensure_naive_first_arg,
@@ -16,9 +18,12 @@ from bi_formula.definitions.common_datetime import (
 from bi_formula.definitions.flags import ContextFlag
 from bi_formula.definitions.literals import un_literal
 from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.type_strategy import Fixed, FromArgs, ParamsFromArgs
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
+    ParamsFromArgs,
+)
 from bi_formula.shortcuts import n
-
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
@@ -31,8 +36,8 @@ class DateFunction(Function):
 
 
 class FuncDateaddBase(DateFunction):
-    name = 'dateadd'
-    arg_names = ['datetime', 'unit', 'number']
+    name = "dateadd"
+    arg_names = ["datetime", "unit", "number"]
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
@@ -43,10 +48,7 @@ class FuncDateadd1Base(FuncDateaddBase):
 
 class FuncDateadd1(FuncDateadd1Base):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda date: n.func.DATEADD(date, 'day', 1)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda date: n.func.DATEADD(date, "day", 1)),
     ]
     argument_types = [
         ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}]),
@@ -59,10 +61,7 @@ class FuncDateadd2Base(FuncDateaddBase):
 
 class FuncDateadd2Unit(FuncDateadd2Base):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda date, unit: n.func.DATEADD(date, unit, 1)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda date, unit: n.func.DATEADD(date, unit, 1)),
     ]
     argument_types = [
         ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}, DataType.CONST_STRING]),
@@ -71,10 +70,7 @@ class FuncDateadd2Unit(FuncDateadd2Base):
 
 class FuncDateadd2Number(FuncDateadd2Base):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda date, number: n.func.DATEADD(date, "day", number)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda date, number: n.func.DATEADD(date, "day", number)),
     ]
     argument_types = [
         ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}, DataType.CONST_INTEGER]),
@@ -87,9 +83,8 @@ class FuncDateadd3Base(FuncDateaddBase):
 
 class FuncDateadd3Legacy(FuncDateadd3Base):
     """Legacy version of the function with `date` as the last argument"""
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda what, num, date: n.func.DATEADD(date, what, num))
-    ]
+
+    variants = [VW(D.DUMMY | D.SQLITE, lambda what, num, date: n.func.DATEADD(date, what, num))]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.INTEGER, DataType.DATE]),
         ArgTypeSequence([DataType.STRING, DataType.INTEGER, DataType.DATETIME]),
@@ -136,13 +131,14 @@ class FuncDateadd3DatetimeTZNonConstNum(FuncDateadd3Base):
 
 
 class FuncDatepart(DateFunction):
-    name = 'datepart'
-    arg_names = ['datetime', 'unit', 'firstday']
+    name = "datepart"
+    arg_names = ["datetime", "unit", "firstday"]
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncDatepart2Legacy(FuncDatepart):
     """Legacy version of the function with `date` as the last argument"""
+
     arg_cnt = 2
     variants = [
         VW(D.DUMMY | D.SQLITE, lambda what, date: n.func.DATEPART(date, what)),
@@ -158,39 +154,41 @@ class FuncDatepart2Legacy(FuncDatepart):
 class FuncDatepart2(FuncDatepart):
     arg_cnt = 2
     variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date, part: n.func.DATEPART(date, part, 'mon')),
+        VW(D.DUMMY | D.SQLITE, lambda date, part: n.func.DATEPART(date, part, "mon")),
     ]
     argument_types = [
-        ArgTypeSequence([
-            {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
-            DataType.STRING,
-        ]),
+        ArgTypeSequence(
+            [
+                {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
+                DataType.STRING,
+            ]
+        ),
     ]
 
 
 @ensure_naive_first_arg
 def _datepart_const_impl(date_ctx, part_ctx, firstday_ctx):
-    """ `DATEPART` for `(date|datetime, str, str)` """
+    """`DATEPART` for `(date|datetime, str, str)`"""
     part: str = un_literal(part_ctx.expression)
 
-    if part == 'second':
+    if part == "second":
         return n.func.SECOND(date_ctx)
-    if part == 'minute':
+    if part == "minute":
         return n.func.MINUTE(date_ctx)
-    if part == 'hour':
+    if part == "hour":
         return n.func.HOUR(date_ctx)
-    if part == 'day':
+    if part == "day":
         return n.func.DAY(date_ctx)
-    if part == 'month':
+    if part == "month":
         return n.func.MONTH(date_ctx)
-    if part == 'quarter':
+    if part == "quarter":
         return n.func.QUARTER(date_ctx)
-    if part == 'year':
+    if part == "year":
         return n.func.YEAR(date_ctx)
-    if part in ('dow', 'dayofweek'):
+    if part in ("dow", "dayofweek"):
         firstday: str = un_literal(firstday_ctx.expression)
         return n.func.DAYOFWEEK(date_ctx, firstday)
-    if part == 'week':
+    if part == "week":
         return n.func.WEEK(date_ctx)
 
     # TODO?: raise an exception to user?
@@ -203,29 +201,36 @@ class FuncDatepart3Const(FuncDatepart):
         VW(D.DUMMY | D.SQLITE, _datepart_const_impl),
     ]
     argument_types = [
-        ArgTypeSequence([
-            {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
-            DataType.CONST_STRING,
-            DataType.CONST_STRING]),
+        ArgTypeSequence(
+            [
+                {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
+                DataType.CONST_STRING,
+                DataType.CONST_STRING,
+            ]
+        ),
     ]
 
 
 @ensure_naive_first_arg
 def _datepart_nonconst_impl(date_ctx, part_ctx, firstday_ctx):
     firstday: str = un_literal(firstday_ctx.expression)
-    return n.case(part_ctx).whens(
-        n.when('second').then(n.func.SECOND(date_ctx)),
-        n.when('minute').then(n.func.MINUTE(date_ctx)),
-        n.when('hour').then(n.func.HOUR(date_ctx)),
-        n.when('day').then(n.func.DAY(date_ctx)),
-        n.when('month').then(n.func.MONTH(date_ctx)),
-        n.when('quarter').then(n.func.QUARTER(date_ctx)),
-        n.when('year').then(n.func.YEAR(date_ctx)),
-        n.when('dow').then(n.func.DAYOFWEEK(date_ctx, firstday)),
-        n.when('dayofweek').then(n.func.DAYOFWEEK(date_ctx, firstday)),
-        n.when('week').then(n.func.WEEK(date_ctx)),
-        n.when('second').then(n.func.SECOND(date_ctx)),
-    ).else_(None)
+    return (
+        n.case(part_ctx)
+        .whens(
+            n.when("second").then(n.func.SECOND(date_ctx)),
+            n.when("minute").then(n.func.MINUTE(date_ctx)),
+            n.when("hour").then(n.func.HOUR(date_ctx)),
+            n.when("day").then(n.func.DAY(date_ctx)),
+            n.when("month").then(n.func.MONTH(date_ctx)),
+            n.when("quarter").then(n.func.QUARTER(date_ctx)),
+            n.when("year").then(n.func.YEAR(date_ctx)),
+            n.when("dow").then(n.func.DAYOFWEEK(date_ctx, firstday)),
+            n.when("dayofweek").then(n.func.DAYOFWEEK(date_ctx, firstday)),
+            n.when("week").then(n.func.WEEK(date_ctx)),
+            n.when("second").then(n.func.SECOND(date_ctx)),
+        )
+        .else_(None)
+    )
 
 
 class FuncDatepart3NonConst(FuncDatepart):
@@ -234,10 +239,13 @@ class FuncDatepart3NonConst(FuncDatepart):
         VW(D.DUMMY | D.SQLITE, _datepart_nonconst_impl),
     ]
     argument_types = [
-        ArgTypeSequence([
-            {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
-            DataType.STRING,
-            DataType.CONST_STRING]),
+        ArgTypeSequence(
+            [
+                {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
+                DataType.STRING,
+                DataType.CONST_STRING,
+            ]
+        ),
     ]
 
 
@@ -246,8 +254,8 @@ def norm_datetrunc_unit(unit):
 
 
 class FuncDatetrunc(DateFunction):
-    name = 'datetrunc'
-    arg_names = ['datetime', 'unit', 'number']
+    name = "datetrunc"
+    arg_names = ["datetime", "unit", "number"]
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
@@ -284,24 +292,25 @@ class FuncDatetrunc3Date(FuncDatetrunc3):
 
 class FuncDatetrunc3Datetime(FuncDatetrunc3):
     argument_types = [
-        ArgTypeSequence([
-            {DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
-            DataType.CONST_STRING,
-            DataType.CONST_INTEGER]),
+        ArgTypeSequence(
+            [
+                {DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
+                DataType.CONST_STRING,
+                DataType.CONST_INTEGER,
+            ]
+        ),
     ]
 
 
 class SpecificDatepartFunc(DateFunction):
     arg_cnt = 1
-    _zero_variants = [
-        V(D.DUMMY | D.SQLITE, lambda x: sa.literal(0))
-    ]
+    _zero_variants = [V(D.DUMMY | D.SQLITE, lambda x: sa.literal(0))]
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncSecond(SpecificDatepartFunc):
-    name = 'second'
-    arg_names = ['datetime']
+    name = "second"
+    arg_names = ["datetime"]
 
 
 class FuncSecondDate(FuncSecond):
@@ -323,8 +332,8 @@ class FuncSecondDatetimeTZ(FuncSecondDatetime):
 
 
 class FuncMinute(SpecificDatepartFunc):
-    name = 'minute'
-    arg_names = ['datetime']
+    name = "minute"
+    arg_names = ["datetime"]
 
 
 class FuncMinuteDate(FuncMinute):
@@ -346,8 +355,8 @@ class FuncMinuteDatetimeTZ(FuncMinuteDatetime):
 
 
 class FuncHour(SpecificDatepartFunc):
-    name = 'hour'
-    arg_names = ['datetime']
+    name = "hour"
+    arg_names = ["datetime"]
 
 
 class FuncHourDate(FuncHour):
@@ -369,9 +378,9 @@ class FuncHourDatetimeTZ(FuncHourDatetime):
 
 
 class FuncDay(SpecificDatepartFunc):
-    name = 'day'
+    name = "day"
     arg_cnt = 1
-    arg_names = ['datetime']
+    arg_names = ["datetime"]
     argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
     return_type = Fixed(DataType.INTEGER)
 
@@ -382,8 +391,8 @@ class FuncDayDatetimeTZ(FuncDay):
 
 
 class FuncMonth(SpecificDatepartFunc):
-    name = 'month'
-    arg_names = ['datetime']
+    name = "month"
+    arg_names = ["datetime"]
     arg_cnt = 1
     argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
     return_type = Fixed(DataType.INTEGER)
@@ -395,8 +404,8 @@ class FuncMonthDatetimeTZ(FuncMonth):
 
 
 class FuncQuarter(SpecificDatepartFunc):
-    name = 'quarter'
-    arg_names = ['datetime']
+    name = "quarter"
+    arg_names = ["datetime"]
     arg_cnt = 1
     argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
     return_type = Fixed(DataType.INTEGER)
@@ -408,8 +417,8 @@ class FuncQuarterDatetimeTZ(FuncQuarter):
 
 
 class FuncYear(SpecificDatepartFunc):
-    name = 'year'
-    arg_names = ['datetime']
+    name = "year"
+    arg_names = ["datetime"]
     arg_cnt = 1
     argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
     return_type = Fixed(DataType.INTEGER)
@@ -421,18 +430,25 @@ class FuncYearDatetimeTZ(FuncYear):
 
 
 class FuncDayofweek(SpecificDatepartFunc):
-    name = 'dayofweek'
-    arg_names = ['datetime', 'firstday']
+    name = "dayofweek"
+    arg_names = ["datetime", "firstday"]
     return_type = Fixed(DataType.INTEGER)
 
     _fd_map = {
-        'mon': 1, 'monday': 1,
-        'tue': 2, 'tuesday': 2,
-        'wed': 3, 'wednesday': 3,
-        'thu': 4, 'thursday': 4,
-        'fri': 5, 'friday': 5,
-        'sat': 6, 'saturday': 6,
-        'sun': 7, 'sunday': 7,
+        "mon": 1,
+        "monday": 1,
+        "tue": 2,
+        "tuesday": 2,
+        "wed": 3,
+        "wednesday": 3,
+        "thu": 4,
+        "thursday": 4,
+        "fri": 5,
+        "friday": 5,
+        "sat": 6,
+        "saturday": 6,
+        "sun": 7,
+        "sunday": 7,
     }
 
     @classmethod
@@ -441,7 +457,7 @@ class FuncDayofweek(SpecificDatepartFunc):
         try:
             return cls._fd_map[un_literal(firstday).lower()]
         except KeyError:
-            raise exc.TranslationError('Unknown time unit')
+            raise exc.TranslationError("Unknown time unit")
 
 
 norm_fd = FuncDayofweek._norm_fd
@@ -450,7 +466,7 @@ norm_fd = FuncDayofweek._norm_fd
 class FuncDayofweek1(FuncDayofweek):
     arg_cnt = 1
     variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date: n.func.DAYOFWEEK(date.expression, 'mon')),
+        VW(D.DUMMY | D.SQLITE, lambda date: n.func.DAYOFWEEK(date.expression, "mon")),
     ]
     argument_types = [
         ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ}]),
@@ -470,9 +486,7 @@ def dow_firstday_shift(base_1_dow, firstday_expr):
 class FuncDayofweek2(FuncDayofweek):
     arg_cnt = 2
     argument_types = [
-        ArgTypeSequence([
-            {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME},
-            DataType.CONST_STRING]),
+        ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}, DataType.CONST_STRING]),
     ]
 
 
@@ -484,7 +498,7 @@ class FuncDayofweek2TZ(FuncDayofweek):
 
 
 class FuncWeek(SpecificDatepartFunc):
-    name = 'week'
+    name = "week"
     arg_cnt = 1
     argument_types = [
         ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),
@@ -502,16 +516,16 @@ class FuncTypeGenericDatetimeNowImpl(DateFunction):
 
 
 class FuncNow(FuncTypeGenericDatetimeNowImpl):
-    name = 'now'
+    name = "now"
 
 
 class FuncGenericNow(FuncTypeGenericDatetimeNowImpl):
-    name = 'genericnow'
+    name = "genericnow"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncToday(DateFunction):
-    name = 'today'
+    name = "today"
     arg_cnt = 0
     return_type = Fixed(DataType.DATE)
 
@@ -531,65 +545,51 @@ DEFINITIONS_DATETIME = [
     FuncDateadd3DatetimeNonConstNum,
     FuncDateadd3GenericDatetimeNonConstNum,
     FuncDateadd3DatetimeTZNonConstNum,
-
     # datepart
     FuncDatepart2Legacy,
     FuncDatepart2,
     FuncDatepart3Const,
     FuncDatepart3NonConst,
-
     # datetrunc
     FuncDatetrunc2Date,
     FuncDatetrunc2Datetime,
     FuncDatetrunc2DatetimeTZ,
     FuncDatetrunc3Date,
     FuncDatetrunc3Datetime,
-
     # day
     FuncDay,
     FuncDayDatetimeTZ,
-
     # dayofweek
     FuncDayofweek1,
     FuncDayofweek2,
     FuncDayofweek2TZ,
-
     # genericnow
     FuncGenericNow,
-
     # hour
     FuncHourDate,
     FuncHourDatetime,
     FuncHourDatetimeTZ,
-
     # minute
     FuncMinuteDate,
     FuncMinuteDatetime,
     FuncMinuteDatetimeTZ,
-
     # month
     FuncMonth,
     FuncMonthDatetimeTZ,
-
     # now
     FuncNow,
-
     # quarter
     FuncQuarter,
     FuncQuarterDatetimeTZ,
-
     # second
     FuncSecondDate,
     FuncSecondDatetime,
     FuncSecondDatetimeTZ,
-
     # today
     FuncToday,
-
     # week
     FuncWeek,
     FuncWeekTZ,
-
     # year
     FuncYear,
     FuncYearDatetimeTZ,

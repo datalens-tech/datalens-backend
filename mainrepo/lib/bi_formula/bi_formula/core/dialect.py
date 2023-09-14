@@ -3,13 +3,21 @@
 from __future__ import annotations
 
 import inspect
+from itertools import chain
 import logging
 import re
-from itertools import chain
-from typing import Any, Generator, NamedTuple, Optional, Type
+from typing import (
+    Any,
+    Generator,
+    NamedTuple,
+    Optional,
+    Type,
+)
 
-from dynamic_enum import DynamicEnum, AutoEnumValue
-
+from dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -65,7 +73,7 @@ class DialectCombo(NamedTuple):
 
     @property
     def common_name_and_version(self) -> str:
-        return f'{self.common_name.name}_{"_".join((str(part) for part in self.common_version))}'.strip('_')
+        return f'{self.common_name.name}_{"_".join((str(part) for part in self.common_version))}'.strip("_")
 
     def __sub__(self, other: Any) -> DialectCombo:
         if isinstance(other, DialectBit):
@@ -107,10 +115,7 @@ class DialectCombo(NamedTuple):
         return bool(self.bits)
 
     def to_list(self, with_self: bool = False) -> list[DialectCombo]:
-        result = [
-            DialectCombo(bits=frozenset((bit,)))
-            for bit in self.bits
-        ]
+        result = [DialectCombo(bits=frozenset((bit,))) for bit in self.bits]
         result.sort(key=lambda dialect: (dialect.single_bit.name.value, dialect.single_bit.version))
         if with_self and not self.deterministic:
             result.append(self)
@@ -152,30 +157,28 @@ class DialectNamespace:
     @classmethod
     def and_above(cls, dialect: DialectCombo) -> DialectCombo:
         if not dialect.deterministic:
-            raise ValueError('Only deterministic dialects are allowed')
+            raise ValueError("Only deterministic dialects are allowed")
         bit = dialect.single_bit
-        return DialectCombo(bits=frozenset(
-            item.single_bit
-            for item in cls.all_basic_iter()
-            if (
-                item.single_bit.name == bit.name
-                and item.single_bit.version >= bit.version
+        return DialectCombo(
+            bits=frozenset(
+                item.single_bit
+                for item in cls.all_basic_iter()
+                if (item.single_bit.name == bit.name and item.single_bit.version >= bit.version)
             )
-        ))
+        )
 
     @classmethod
     def and_below(cls, dialect: DialectCombo) -> DialectCombo:
         if not dialect.deterministic:
-            raise ValueError('Only deterministic dialects are allowed')
+            raise ValueError("Only deterministic dialects are allowed")
         bit = dialect.single_bit
-        return DialectCombo(bits=frozenset(
-            item.single_bit
-            for item in cls.all_basic_iter()
-            if (
-                item.single_bit.name == bit.name
-                and () < item.single_bit.version <= bit.version
+        return DialectCombo(
+            bits=frozenset(
+                item.single_bit
+                for item in cls.all_basic_iter()
+                if (item.single_bit.name == bit.name and () < item.single_bit.version <= bit.version)
             )
-        ))
+        )
 
 
 class StandardDialect(DialectNamespace):
@@ -203,49 +206,55 @@ def register_default_dialect(dialect_name: DialectName, dialect_combo: DialectCo
 
 
 def from_name_and_version(
-        dialect_name: DialectName, dialect_version: Optional[str],
+    dialect_name: DialectName,
+    dialect_version: Optional[str],
 ) -> DialectCombo:
     """Return ``DialectCombo`` instance corresponding to the version string (``SELECT VERSION()``)"""
 
     parsed_version: Optional[VersionType]
     if dialect_version:
-        version_match = re.search(r'(?P<version>\d+(\.\d+)+)', dialect_version)
+        version_match = re.search(r"(?P<version>\d+(\.\d+)+)", dialect_version)
         if version_match is None:
             parsed_version = None
         else:
-            raw_version = version_match.group('version')
-            parsed_version = tuple(int(part) for part in raw_version.split('.'))
+            raw_version = version_match.group("version")
+            parsed_version = tuple(int(part) for part in raw_version.split("."))
     else:
         parsed_version = None
 
-    LOGGER.info(f'Parsed dialect version {dialect_version} as {parsed_version}')
+    LOGGER.info(f"Parsed dialect version {dialect_version} as {parsed_version}")
 
     if parsed_version is None and dialect_name in dialect_defaults:
-        LOGGER.info(f'Falling back to {dialect_defaults[dialect_name]}')
+        LOGGER.info(f"Falling back to {dialect_defaults[dialect_name]}")
         return dialect_defaults[dialect_name]
 
-    matches_by_name = sorted(chain.from_iterable(
-        [item.to_list() for item in _ALL_BASIC_DIALECTS
-         if item.deterministic and item.single_bit.name == dialect_name],
-    ), key=lambda item: item.single_bit.version)
+    matches_by_name = sorted(
+        chain.from_iterable(
+            [
+                item.to_list()
+                for item in _ALL_BASIC_DIALECTS
+                if item.deterministic and item.single_bit.name == dialect_name
+            ],
+        ),
+        key=lambda item: item.single_bit.version,
+    )
     matches_by_version = [
-        item for item in matches_by_name
-        if parsed_version is None or item.single_bit.version <= parsed_version
+        item for item in matches_by_name if parsed_version is None or item.single_bit.version <= parsed_version
     ]
     if matches_by_version:
         # perfect match. Return the latest dialect version possible
         matched_dialect = matches_by_version[-1]
-        LOGGER.info(f'Matched dialect found: {matched_dialect.single_bit}')
+        LOGGER.info(f"Matched dialect found: {matched_dialect.single_bit}")
         return matched_dialect
 
     LOGGER.warning('Failed to get dialect for DB "%s" and version "%s"', dialect_name.name, dialect_version)
     if matches_by_name:
         # no matching dialect found. Fall back to the earliest supported for this DB type
-        LOGGER.warning('Falling back to `%s`', matches_by_name[0].single_bit.name.name)
+        LOGGER.warning("Falling back to `%s`", matches_by_name[0].single_bit.name.name)
         return matches_by_name[0]
 
     # nothing. Just nothing
-    raise ValueError('Invalid dialect parameters')
+    raise ValueError("Invalid dialect parameters")
 
 
 _ALL_BASIC_DIALECTS: set[DialectCombo] = {

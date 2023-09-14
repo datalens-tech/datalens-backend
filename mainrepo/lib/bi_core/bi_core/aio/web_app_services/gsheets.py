@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import enum
 import logging
-from typing import ClassVar, Optional, Union
+from typing import (
+    ClassVar,
+    Optional,
+    Union,
+)
 
-import attr
 from aiohttp import web
-
+import attr
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,22 +20,22 @@ class NumberFormatType(str, enum.Enum):
     https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellFormat
     """
 
-    NUMBER_FORMAT_TYPE_UNSPECIFIED = 'NUMBER_FORMAT_TYPE_UNSPECIFIED'
-    TEXT = 'TEXT'
+    NUMBER_FORMAT_TYPE_UNSPECIFIED = "NUMBER_FORMAT_TYPE_UNSPECIFIED"
+    TEXT = "TEXT"
 
-    NUMBER = 'NUMBER'
-    PERCENT = 'PERCENT'
-    CURRENCY = 'CURRENCY'
-    SCIENTIFIC = 'SCIENTIFIC'
+    NUMBER = "NUMBER"
+    PERCENT = "PERCENT"
+    CURRENCY = "CURRENCY"
+    SCIENTIFIC = "SCIENTIFIC"
 
-    DATE = 'DATE'
-    TIME = 'TIME'
-    DATE_TIME = 'DATE_TIME'
+    DATE = "DATE"
+    TIME = "TIME"
+    DATE_TIME = "DATE_TIME"
 
     # not google types
-    INTEGER = 'INTEGER'
-    FLOAT = 'FLOAT'
-    BOOLEAN = 'BOOLEAN'
+    INTEGER = "INTEGER"
+    FLOAT = "FLOAT"
+    BOOLEAN = "BOOLEAN"
 
 
 @attr.s(auto_attribs=True)
@@ -52,7 +55,7 @@ class Range:
     row_to: int
 
     def __str__(self) -> str:
-        return '{sheet_title}!R{row_from}C{col_from}:R{row_to}C{col_to}'.format(**self.__dict__)
+        return "{sheet_title}!R{row_from}C{col_from}:R{row_to}C{col_to}".format(**self.__dict__)
 
 
 @attr.s(auto_attribs=True)
@@ -104,7 +107,7 @@ class Spreadsheet:
 
 @attr.s
 class GSheetsSettings:
-    APP_KEY: ClassVar[str] = 'GSHEETS_OAUTH2'
+    APP_KEY: ClassVar[str] = "GSHEETS_OAUTH2"
 
     api_key: str = attr.ib(repr=False)
     client_id: str = attr.ib(repr=False)

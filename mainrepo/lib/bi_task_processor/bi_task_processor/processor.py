@@ -2,18 +2,34 @@ import abc
 import logging
 from typing import Optional
 
-from bi_task_processor.context import BaseContext, BaseContextFabric
-
 import arq
 import attr
 
+from bi_task_processor.arq_wrapper import (
+    ArqRedis,
+    ArqRedisSettings,
+    create_redis_pool,
+)
+from bi_task_processor.context import (
+    BaseContext,
+    BaseContextFabric,
+)
+from bi_task_processor.executor import (
+    Executor,
+    TaskInstance,
+)
+from bi_task_processor.state import (
+    BITaskStateImpl,
+    DummyStateImpl,
+    TaskState,
+)
+from bi_task_processor.task import (
+    BaseTaskMeta,
+    InstanceID,
+    Retry,
+    TaskRegistry,
+)
 from bi_utils.aio import await_sync
-
-from bi_task_processor.arq_wrapper import ArqRedisSettings, ArqRedis, create_redis_pool
-from bi_task_processor.task import BaseTaskMeta, InstanceID, Retry, TaskRegistry
-from bi_task_processor.state import TaskState, DummyStateImpl, BITaskStateImpl
-from bi_task_processor.executor import Executor, TaskInstance
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,13 +51,13 @@ class ARQProcessorImpl(BaseTaskProcessorImpl):
 
     async def schedule(self, task: TaskInstance) -> None:
         await self.pool.enqueue_job(
-            'arq_base_task',
+            "arq_base_task",
             dict(
                 {
-                    'name': task.name,
-                    'instance_id': task.instance_id,
-                    'request_id': task.request_id,
-                    'task_params': task.params,
+                    "name": task.name,
+                    "instance_id": task.instance_id,
+                    "request_id": task.request_id,
+                    "task_params": task.params,
                 },
             ),
         )
@@ -75,7 +91,7 @@ class TaskProcessor:
             request_id=self._request_id,
         )
         LOGGER.info(
-            'Schedule task %s with params %s as instance_id %s',
+            "Schedule task %s with params %s as instance_id %s",
             task.name,
             task.get_params(),
             task_instance.instance_id.to_str(),
@@ -153,7 +169,7 @@ class LocalTaskProcessorFactory(TaskProcessorFactory):
         impl = LocalProcessorImpl(executor)
         processor = TaskProcessor(impl=impl, state=task_state, request_id=request_id)
 
-        LOGGER.info('Local TP is ready')
+        LOGGER.info("Local TP is ready")
         return processor
 
     def cleanup(self) -> None:

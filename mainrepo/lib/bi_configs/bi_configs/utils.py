@@ -1,17 +1,21 @@
 import os
+from typing import (
+    Callable,
+    Container,
+    TypeVar,
+)
 
-from typing import TypeVar, Container, Callable
-
+from bi_configs.enums import (
+    AppType,
+    EnvType,
+)
 from bi_constants.enums import ConnectionType
-
-from bi_configs.enums import AppType, EnvType
-
 
 ROOT_CERTIFICATES_FILENAME = "/etc/ssl/certs/ca-certificates.crt"
 TEMP_ROOT_CERTIFICATES_FOLDER_PATH = "/tmp/ssl/certs/"
 
 
-_T = TypeVar('_T')
+_T = TypeVar("_T")
 
 
 def validate_one_of(valid_values: Container[_T]) -> Callable[[_T], _T]:

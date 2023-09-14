@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Set, Type
+from typing import (
+    Set,
+    Type,
+)
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 

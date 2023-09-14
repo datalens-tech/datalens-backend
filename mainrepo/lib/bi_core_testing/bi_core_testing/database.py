@@ -3,24 +3,39 @@ from __future__ import annotations
 import datetime
 import math
 import random
-import uuid
 from typing import (
-    TYPE_CHECKING, Any, Callable, NamedTuple,
-    Optional, Sequence,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    NamedTuple,
+    Optional,
+    Sequence,
 )
+import uuid
 
 import attr
 import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
-from bi_constants.enums import BIType, ConnectionType
-
-from bi_db_testing.database.base import DbBase, DbTableBase, DbConfig
-from bi_db_testing.database.dispenser import DbDispenserBase, ReInitableDbDispenser
+from bi_constants.enums import (
+    BIType,
+    ConnectionType,
+)
+from bi_core.db import (
+    get_type_transformer,
+    make_sa_type,
+)
+from bi_db_testing.database.base import (
+    DbBase,
+    DbConfig,
+    DbTableBase,
+)
+from bi_db_testing.database.dispenser import (
+    DbDispenserBase,
+    ReInitableDbDispenser,
+)
 from bi_db_testing.database.engine_wrapper import get_engine_wrapper_cls_for_url
-
-from bi_core.db import make_sa_type, get_type_transformer
 
 if TYPE_CHECKING:
     from bi_core.db.conversion_base import TypeTransformer
@@ -33,16 +48,17 @@ class CoreDbConfig(DbConfig):
 
 @attr.s
 class Db(DbBase[CoreDbConfig]):
-    """ An executable interface """
+    """An executable interface"""
 
     @property
     def conn_type(self) -> ConnectionType:
         return self.config.conn_type
 
     def eval(
-            self, expr: sa.sql.ClauseElement,
-            from_: Optional[sa.sql.ClauseElement] = None,
-            user_t: Optional[BIType] = None,
+        self,
+        expr: sa.sql.ClauseElement,
+        from_: Optional[sa.sql.ClauseElement] = None,
+        user_t: Optional[BIType] = None,
     ) -> Any:
         value = self.base_eval(expr, from_=from_)
         if user_t is not None:
@@ -51,14 +67,13 @@ class Db(DbBase[CoreDbConfig]):
 
 
 def make_db_config(
-        conn_type: ConnectionType,
-        url: str,
-        cluster: Optional[str] = None,
+    conn_type: ConnectionType,
+    url: str,
+    cluster: Optional[str] = None,
 ) -> CoreDbConfig:
-
     engine_config_kwargs: dict[str, Any] = {}
     if conn_type == ConnectionType.clickhouse:
-        engine_config_kwargs['cluster'] = cluster
+        engine_config_kwargs["cluster"] = cluster
     db_eng_config_cls = get_engine_wrapper_cls_for_url(url).CONFIG_CLS
     db_eng_config = db_eng_config_cls(url=url, **engine_config_kwargs)
 
@@ -76,9 +91,9 @@ def make_db_from_config(db_config: CoreDbConfig) -> Db:
 
 
 def make_db(
-        conn_type: ConnectionType,
-        url: str,
-        cluster: Optional[str] = None,
+    conn_type: ConnectionType,
+    url: str,
+    cluster: Optional[str] = None,
 ) -> Db:
     # FIXME: Switch to accepting a fully ready config here
     db_config = make_db_config(conn_type=conn_type, url=url, cluster=cluster)
@@ -144,39 +159,39 @@ class C:
         return make_sa_type(native_type, nullable=self.nullable)
 
     @classmethod
-    def array_data_getter(cls, data_container) -> 'C.ArrayDataGetter':  # type: ignore  # TODO: fix
+    def array_data_getter(cls, data_container) -> "C.ArrayDataGetter":  # type: ignore  # TODO: fix
         return cls.ArrayDataGetter(data_container)
 
     @classmethod
-    def int_value(cls, name: str = 'int_value'):  # type: ignore  # TODO: fix
+    def int_value(cls, name: str = "int_value"):  # type: ignore  # TODO: fix
         return cls(name, BIType.integer)
 
     @classmethod
-    def datetime_value(cls, name: str = 'datetime_value'):  # type: ignore  # TODO: fix
+    def datetime_value(cls, name: str = "datetime_value"):  # type: ignore  # TODO: fix
         return cls(name, BIType.datetime)
 
     @classmethod
     def full_house(cls) -> list[C]:
         return [
-            cls('string_value', BIType.string, nullable=False),
-            cls('n_string_value', BIType.string, nullable=True),
-            cls('int_value', BIType.integer, nullable=False),
-            cls('n_int_value', BIType.integer, nullable=True),
-            cls('float_value', BIType.float),
-            cls('datetime_value', BIType.genericdatetime, nullable=False),
-            cls('n_datetime_value', BIType.genericdatetime, nullable=True),
-            cls('date_value', BIType.date),
-            cls('boolean_value', BIType.boolean),
-            cls('uuid_value', BIType.uuid),
+            cls("string_value", BIType.string, nullable=False),
+            cls("n_string_value", BIType.string, nullable=True),
+            cls("int_value", BIType.integer, nullable=False),
+            cls("n_int_value", BIType.integer, nullable=True),
+            cls("float_value", BIType.float),
+            cls("datetime_value", BIType.genericdatetime, nullable=False),
+            cls("n_datetime_value", BIType.genericdatetime, nullable=True),
+            cls("date_value", BIType.date),
+            cls("boolean_value", BIType.boolean),
+            cls("uuid_value", BIType.uuid),
             # Not included: arrays, geopoint, geopolygon, markup (not db-types, generally).
         ]
 
     @classmethod
     def array_columns(cls):  # type: ignore  # TODO: fix
         return [
-            cls('array_int_value', BIType.array_int),
-            cls('array_str_value', BIType.array_str),
-            cls('array_float_value', BIType.array_float),
+            cls("array_int_value", BIType.array_int),
+            cls("array_str_value", BIType.array_str),
+            cls("array_float_value", BIType.array_float),
         ]
 
 
@@ -184,23 +199,17 @@ TEST_SEED = random.getrandbits(128)
 
 
 def make_sample_data(
-        columns: list[C] = None,
-        rows: int = 10,
-        seed: int = TEST_SEED,
-        start_value: int = 0
+    columns: list[C] = None, rows: int = 10, seed: int = TEST_SEED, start_value: int = 0
 ) -> list[dict[str, Any]]:
     rnd = random.Random(seed)
 
     # 2017-01-01 .. 2020-04-17
     ts_uts = rnd.randrange(1483228800000000, 1587137765807968)
-    ts = (
-        datetime.datetime(1970, 1, 1) +
-        datetime.timedelta(seconds=ts_uts / 1000000))
+    ts = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=ts_uts / 1000000)
     if columns is None:
         columns = C.full_house()
     result = [
-        {col.name: col.vg(rn=idx, ts=ts, rnd=rnd)  # type: ignore  # TODO: fix
-         for col in columns}
+        {col.name: col.vg(rn=idx, ts=ts, rnd=rnd) for col in columns}  # type: ignore  # TODO: fix
         for idx in range(start_value, start_value + rows)
     ]
     return result
@@ -208,18 +217,19 @@ def make_sample_data(
 
 # TODO FIX: Implement option to provide data via arguments
 def make_table(
-        db: Db, schema: Optional[str] = None, rows: int = 10, start_value: int = 0,
-        columns: Optional[list[C]] = None, name: Optional[str] = None,
-        data: Optional[list[dict[str, Any]]] = None,
-        create_in_db: bool = True,
+    db: Db,
+    schema: Optional[str] = None,
+    rows: int = 10,
+    start_value: int = 0,
+    columns: Optional[list[C]] = None,
+    name: Optional[str] = None,
+    data: Optional[list[dict[str, Any]]] = None,
+    create_in_db: bool = True,
 ) -> DbTable:
     columns = columns or C.full_house()
     tt = get_type_transformer(db.conn_type)
     table = db.table_from_columns(
-        [
-            sa.Column(name=col.name, type_=col.get_sa_type(tt))
-            for col in columns
-        ],
+        [sa.Column(name=col.name, type_=col.get_sa_type(tt)) for col in columns],
         schema=schema,
         table_name=name,
     )
@@ -228,7 +238,7 @@ def make_table(
     if data is None:
         data = make_sample_data(columns=columns, rows=rows, start_value=start_value)
         data_reproduce = make_sample_data(columns=columns, rows=rows, start_value=start_value)
-        assert data == data_reproduce, 'should be reproducible'
+        assert data == data_reproduce, "should be reproducible"
 
     if create_in_db:
         db.create_table(table)
@@ -238,15 +248,17 @@ def make_table(
 
 
 def make_pg_table_with_enums(  # TODO: move to pg connector package
-        db: Db, schema: Optional[str] = None, name: Optional[str] = None,
+    db: Db,
+    schema: Optional[str] = None,
+    name: Optional[str] = None,
 ) -> DbTable:
     table = db.table_from_columns(
         [
             sa.Column(name=name, type_=type_)
             for name, type_ in [
-                ('col1', sa.Enum('var1', 'var2', name=str(uuid.uuid4()))),
-                ('col2', sa.TEXT),
-                ('col3', sa.INTEGER),
+                ("col1", sa.Enum("var1", "var2", name=str(uuid.uuid4()))),
+                ("col2", sa.TEXT),
+                ("col3", sa.INTEGER),
             ]
         ],
         schema=schema,
@@ -256,17 +268,21 @@ def make_pg_table_with_enums(  # TODO: move to pg connector package
     db_table = DbTable(db=db, table=table, schema=schema)  # type: ignore  # TODO: fix
     db_table.insert(
         [
-            {'col1': 'var1', 'col2': 'str1', 'col3': 1},
-            {'col1': 'var1', 'col2': 'str2', 'col3': 2},
-            {'col1': 'var2', 'col2': 'str3', 'col3': 3},
+            {"col1": "var1", "col2": "str1", "col3": 1},
+            {"col1": "var1", "col2": "str2", "col3": 2},
+            {"col1": "var2", "col2": "str3", "col3": 3},
         ]
     )
     return db_table
 
 
 def make_table_with_arrays(
-    db: Db, schema: Optional[str] = None, rows: int = 10, start_value: int = 0,
-    columns: Optional[list[C]] = None, name: Optional[str] = None,
+    db: Db,
+    schema: Optional[str] = None,
+    rows: int = 10,
+    start_value: int = 0,
+    columns: Optional[list[C]] = None,
+    name: Optional[str] = None,
     data: Optional[list[dict[str, Any]]] = None,
 ) -> DbTable:
     if columns is None:
@@ -275,7 +291,7 @@ def make_table_with_arrays(
 
 
 def make_schema(db: Db, schema_name: Optional[str] = None) -> str:
-    schema_name = schema_name or f'sch_{shortuuid.uuid()}'
+    schema_name = schema_name or f"sch_{shortuuid.uuid()}"
     assert schema_name is not None
     db.create_schema(schema_name=schema_name)
     return schema_name
@@ -298,16 +314,13 @@ class DbView(NamedTuple):
 
 
 def make_view(db: Db, query: str, schema: str = None, name: str = None) -> DbView:
-    name = name or 'test_view_{}'.format(uuid.uuid4().hex[:10])
+    name = name or "test_view_{}".format(uuid.uuid4().hex[:10])
     db.create_view(query=query, schema=schema, name=name)
     return DbView(db=db, schema=schema, name=name, query=query)  # type: ignore  # TODO: fix
 
 
 def make_view_from_table(db_table: DbTable, name: str = None, schema: str = None) -> DbView:
-    return make_view(
-        db=db_table.db, query=db_table.select_all_query,
-        schema=schema or db_table.schema, name=name
-    )
+    return make_view(db=db_table.db, query=db_table.select_all_query, schema=schema or db_table.schema, name=name)
 
 
 class MultiTables(NamedTuple):
@@ -318,24 +331,30 @@ class MultiTables(NamedTuple):
 
 def make_multiple_db_tables(db):  # type: ignore  # TODO: fix
     """Basic table for all db types"""
-    string_kwargs = {} if db.conn_type == ConnectionType.clickhouse else {'length': 255}
+    string_kwargs = {} if db.conn_type == ConnectionType.clickhouse else {"length": 255}
     sa_tables = [
-        db.table_from_columns([  # users
-            sa.Column(name='id', type_=sa.Integer()),
-            sa.Column(name='name', type_=sa.String(**string_kwargs)),
-        ]),
-        db.table_from_columns([  # posts
-            sa.Column(name='id', type_=sa.Integer()),
-            sa.Column(name='author_id', type_=sa.Integer()),
-            sa.Column(name='text', type_=sa.String(**string_kwargs)),
-        ]),
-        db.table_from_columns([  # comments
-            sa.Column(name='id', type_=sa.Integer()),
-            sa.Column(name='post_id', type_=sa.Integer()),
-            sa.Column(name='from_id', type_=sa.Integer()),
-            sa.Column(name='to_id', type_=sa.Integer()),
-            sa.Column(name='text', type_=sa.String(**string_kwargs)),
-        ]),
+        db.table_from_columns(
+            [  # users
+                sa.Column(name="id", type_=sa.Integer()),
+                sa.Column(name="name", type_=sa.String(**string_kwargs)),
+            ]
+        ),
+        db.table_from_columns(
+            [  # posts
+                sa.Column(name="id", type_=sa.Integer()),
+                sa.Column(name="author_id", type_=sa.Integer()),
+                sa.Column(name="text", type_=sa.String(**string_kwargs)),
+            ]
+        ),
+        db.table_from_columns(
+            [  # comments
+                sa.Column(name="id", type_=sa.Integer()),
+                sa.Column(name="post_id", type_=sa.Integer()),
+                sa.Column(name="from_id", type_=sa.Integer()),
+                sa.Column(name="to_id", type_=sa.Integer()),
+                sa.Column(name="text", type_=sa.String(**string_kwargs)),
+            ]
+        ),
     ]
 
     def create(table):  # type: ignore  # TODO: fix
@@ -343,23 +362,29 @@ def make_multiple_db_tables(db):  # type: ignore  # TODO: fix
         return DbTable(db=db, table=table)
 
     tables = MultiTables(*[create(t) for t in sa_tables])
-    tables.users.insert([
-        {'id': 1, 'name': 'Clark Kent'},
-        {'id': 2, 'name': 'Gaius Marius'},
-        {'id': 3, 'name': 'Charlie Chaplin'},
-        {'id': 4, 'name': 'Rosalind Franklin'},
-    ])
-    tables.posts.insert([
-        {'id': 1, 'author_id': 2, 'text': 'Let it be'},
-        {'id': 2, 'author_id': 4, 'text': 'Help'},
-    ])
-    tables.comments.insert([
-        {'id': 1, 'post_id': 1, 'from_id': 1, 'to_id': 2, 'text': 'first'},
-        {'id': 2, 'post_id': 1, 'from_id': 2, 'to_id': 1, 'text': 'second'},
-        {'id': 3, 'post_id': 1, 'from_id': 3, 'to_id': 2, 'text': 'third'},
-        {'id': 4, 'post_id': 2, 'from_id': 3, 'to_id': 4, 'text': 'first'},
-        {'id': 5, 'post_id': 2, 'from_id': 4, 'to_id': 3, 'text': 'second'},
-        {'id': 6, 'post_id': 2, 'from_id': 1, 'to_id': 4, 'text': 'third'},
-    ])
+    tables.users.insert(
+        [
+            {"id": 1, "name": "Clark Kent"},
+            {"id": 2, "name": "Gaius Marius"},
+            {"id": 3, "name": "Charlie Chaplin"},
+            {"id": 4, "name": "Rosalind Franklin"},
+        ]
+    )
+    tables.posts.insert(
+        [
+            {"id": 1, "author_id": 2, "text": "Let it be"},
+            {"id": 2, "author_id": 4, "text": "Help"},
+        ]
+    )
+    tables.comments.insert(
+        [
+            {"id": 1, "post_id": 1, "from_id": 1, "to_id": 2, "text": "first"},
+            {"id": 2, "post_id": 1, "from_id": 2, "to_id": 1, "text": "second"},
+            {"id": 3, "post_id": 1, "from_id": 3, "to_id": 2, "text": "third"},
+            {"id": 4, "post_id": 2, "from_id": 3, "to_id": 4, "text": "first"},
+            {"id": 5, "post_id": 2, "from_id": 4, "to_id": 3, "text": "second"},
+            {"id": 6, "post_id": 2, "from_id": 1, "to_id": 4, "text": "third"},
+        ]
+    )
 
     return tables

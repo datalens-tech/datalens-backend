@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional, FrozenSet, Any
+from typing import (
+    Any,
+    FrozenSet,
+    Optional,
+)
 
 import attr
 
@@ -47,9 +51,9 @@ class IndexedSQLDataSourceSpec(SQLDataSourceSpecBase):
 
 @attr.s
 class StandardSQLDataSourceSpec(
-        DbSQLDataSourceSpec,
-        TableSQLDataSourceSpec,
-        IndexedSQLDataSourceSpec,
+    DbSQLDataSourceSpec,
+    TableSQLDataSourceSpec,
+    IndexedSQLDataSourceSpec,
 ):
     pass
 
@@ -61,7 +65,7 @@ class SchemaSQLDataSourceSpec(SQLDataSourceSpecBase):
 
 @attr.s
 class StandardSchemaSQLDataSourceSpec(
-        StandardSQLDataSourceSpec,
-        SchemaSQLDataSourceSpec,
+    StandardSQLDataSourceSpec,
+    SchemaSQLDataSourceSpec,
 ):
     pass

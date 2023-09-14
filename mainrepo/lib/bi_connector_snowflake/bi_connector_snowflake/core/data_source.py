@@ -1,23 +1,37 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Optional, Type, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Optional,
+    Type,
+)
 
 from bi_constants.enums import CreateDSFrom
-from bi_core.connection_models import TableDefinition, TableIdent
+from bi_core.connection_models import (
+    TableDefinition,
+    TableIdent,
+)
 from bi_core.data_source.sql import (
     BaseSQLDataSource,
     SQLDataSource,
+    SubselectDataSource,
     TableSQLDataSourceMixin,
-    require_table_name, SubselectDataSource,
+    require_table_name,
 )
 from bi_core.db import SchemaInfo
 from bi_core.utils import sa_plain_text
 
 from bi_connector_snowflake.core.constants import (
     CONNECTION_TYPE_SNOWFLAKE,
-    SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
 )
-from bi_connector_snowflake.core.data_source_spec import SnowFlakeTableDataSourceSpec, SnowFlakeSubselectDataSourceSpec
+from bi_connector_snowflake.core.data_source_spec import (
+    SnowFlakeSubselectDataSourceSpec,
+    SnowFlakeTableDataSourceSpec,
+)
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 
 if TYPE_CHECKING:
@@ -71,7 +85,8 @@ class SnowFlakeTableDataSource(SnowFlakeDataSourceMixin, TableSQLDataSourceMixin
         )
 
     def get_schema_info(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> SchemaInfo:
         return super(SnowFlakeTableDataSource, self).get_schema_info(conn_executor_factory=conn_executor_factory)
 

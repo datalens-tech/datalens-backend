@@ -1,22 +1,19 @@
 from bi_formula.core.datatype import DataType
-
+from bi_formula_ref.categories.string import CATEGORY_STRING
+from bi_formula_ref.localization import get_gettext
 from bi_formula_ref.registry.base import FunctionDocRegistryItem
 from bi_formula_ref.registry.example import SimpleExample
 from bi_formula_ref.registry.impl_selector import ArgAwareImplementationSelector
 from bi_formula_ref.registry.naming import CategoryPostfixNamingProvider
 from bi_formula_ref.registry.note import Note
-from bi_formula_ref.categories.string import CATEGORY_STRING
-from bi_formula_ref.localization import get_gettext
 
 _ = get_gettext()
 
 
 FUNCTION_ASCII = FunctionDocRegistryItem(
-    name='ascii',
+    name="ascii",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the numeric representation of the first character of the string."
-    ),
+    description=_("Returns the numeric representation of the first character of the string."),
     examples=[
         SimpleExample('ASCII("N") = 78'),
         SimpleExample('ASCII("¹") = 185'),  # \u00b9 = \xb9 = 185;  utf-8 \xc2\xb9, i.e. 194 185
@@ -26,22 +23,19 @@ FUNCTION_ASCII = FunctionDocRegistryItem(
 )
 
 FUNCTION_CHAR = FunctionDocRegistryItem(
-    name='char',
+    name="char",
     category=CATEGORY_STRING,
-    description=_(
-        "Converts the numeric representation of an ASCII character to a value."
-    ),
+    description=_("Converts the numeric representation of an ASCII character to a value."),
     examples=[
         SimpleExample('CHAR(78) = "N"'),
     ],
 )
 
 FUNCTION_CONCAT = FunctionDocRegistryItem(
-    name='concat',
+    name="concat",
     category=CATEGORY_STRING,
     description=_(
-        "Merges any number of strings. When non-string types are used, they're "
-        "converted to strings and then merged."
+        "Merges any number of strings. When non-string types are used, they're " "converted to strings and then merged."
     ),
     examples=[
         SimpleExample('CONCAT("Date of birth ", #2019-01-23#) = "Date of birth 2019-01-23"'),
@@ -50,19 +44,26 @@ FUNCTION_CONCAT = FunctionDocRegistryItem(
 )
 
 FUNCTION_CONTAINS = FunctionDocRegistryItem(
-    name='contains',
+    name="contains",
     category=CATEGORY_STRING,
     impl_selector=ArgAwareImplementationSelector(
         exp_arg_types={
-            0: {DataType.BOOLEAN, DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.FLOAT, DataType.GEOPOINT,
-                DataType.GEOPOLYGON, DataType.INTEGER, DataType.STRING, DataType.UUID},
+            0: {
+                DataType.BOOLEAN,
+                DataType.DATE,
+                DataType.DATETIME,
+                DataType.GENERICDATETIME,
+                DataType.FLOAT,
+                DataType.GEOPOINT,
+                DataType.GEOPOLYGON,
+                DataType.INTEGER,
+                DataType.STRING,
+                DataType.UUID,
+            },
         },
     ),
     naming_provider=CategoryPostfixNamingProvider(),
-    description=_(
-        "Returns `TRUE` if {arg:0} contains {arg:1}. For case-insensitive searches, "
-        "see {ref:ICONTAINS}."
-    ),
+    description=_("Returns `TRUE` if {arg:0} contains {arg:1}. For case-insensitive searches, " "see {ref:ICONTAINS}."),
     examples=[
         SimpleExample('CONTAINS("RU0891923", "RU") = TRUE'),
         SimpleExample('CONTAINS("Lorem ipsum", "abc") = FALSE'),
@@ -70,12 +71,9 @@ FUNCTION_CONTAINS = FunctionDocRegistryItem(
 )
 
 FUNCTION_ICONTAINS = FunctionDocRegistryItem(
-    name='icontains',
+    name="icontains",
     category=CATEGORY_STRING,
-    description=_(
-        "Case-insensitive version of {ref:string/CONTAINS}. Returns `TRUE` if {arg:0} "
-        "contains {arg:1}."
-    ),
+    description=_("Case-insensitive version of {ref:string/CONTAINS}. Returns `TRUE` if {arg:0} " "contains {arg:1}."),
     examples=[
         SimpleExample('ICONTAINS("RU0891923", "ru") = TRUE'),
         SimpleExample('ICONTAINS("Lorem ipsum", "abc") = FALSE'),
@@ -83,12 +81,9 @@ FUNCTION_ICONTAINS = FunctionDocRegistryItem(
 )
 
 FUNCTION_ENDSWITH = FunctionDocRegistryItem(
-    name='endswith',
+    name="endswith",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns `TRUE` if {arg:0} ends in {arg:1}. For case-insensitive searches, "
-        "see {ref:IENDSWITH}."
-    ),
+    description=_("Returns `TRUE` if {arg:0} ends in {arg:1}. For case-insensitive searches, " "see {ref:IENDSWITH}."),
     examples=[
         SimpleExample('ENDSWITH("Petrov Ivan", "Ivan") = TRUE'),
         SimpleExample('ENDSWITH("Lorem ipsum", "sum") = TRUE'),
@@ -97,12 +92,9 @@ FUNCTION_ENDSWITH = FunctionDocRegistryItem(
 )
 
 FUNCTION_IENDSWITH = FunctionDocRegistryItem(
-    name='iendswith',
+    name="iendswith",
     category=CATEGORY_STRING,
-    description=_(
-        "Case-insensitive version of {ref:ENDSWITH}. Returns `TRUE` if {arg:0} ends "
-        "in {arg:1}."
-    ),
+    description=_("Case-insensitive version of {ref:ENDSWITH}. Returns `TRUE` if {arg:0} ends " "in {arg:1}."),
     examples=[
         SimpleExample('IENDSWITH("PETROV IVAN", "Ivan") = TRUE'),
         SimpleExample('IENDSWITH("Lorem ipsum", "SUM") = TRUE'),
@@ -111,18 +103,27 @@ FUNCTION_IENDSWITH = FunctionDocRegistryItem(
 )
 
 FUNCTION_STARTSWITH = FunctionDocRegistryItem(
-    name='startswith',
+    name="startswith",
     category=CATEGORY_STRING,
     impl_selector=ArgAwareImplementationSelector(
         exp_arg_types={
-            0: {DataType.BOOLEAN, DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.FLOAT, DataType.GEOPOINT,
-                DataType.GEOPOLYGON, DataType.INTEGER, DataType.STRING, DataType.UUID},
+            0: {
+                DataType.BOOLEAN,
+                DataType.DATE,
+                DataType.DATETIME,
+                DataType.GENERICDATETIME,
+                DataType.FLOAT,
+                DataType.GEOPOINT,
+                DataType.GEOPOLYGON,
+                DataType.INTEGER,
+                DataType.STRING,
+                DataType.UUID,
+            },
         },
     ),
     naming_provider=CategoryPostfixNamingProvider(),
     description=_(
-        "Returns `TRUE` if {arg:0} starts with {arg:1}. For case-insensitive "
-        "searches, see {ref:ISTARTSWITH}."
+        "Returns `TRUE` if {arg:0} starts with {arg:1}. For case-insensitive " "searches, see {ref:ISTARTSWITH}."
     ),
     examples=[
         SimpleExample('STARTSWITH("Petrov Ivan", "Petrov") = TRUE'),
@@ -132,11 +133,10 @@ FUNCTION_STARTSWITH = FunctionDocRegistryItem(
 )
 
 FUNCTION_ISTARTSWITH = FunctionDocRegistryItem(
-    name='istartswith',
+    name="istartswith",
     category=CATEGORY_STRING,
     description=_(
-        "Case-insensitive version of {ref:string/STARTSWITH}. Returns `TRUE`  if {arg:0} "
-        "starts with {arg:1}."
+        "Case-insensitive version of {ref:string/STARTSWITH}. Returns `TRUE`  if {arg:0} " "starts with {arg:1}."
     ),
     examples=[
         SimpleExample('ISTARTSWITH("petrov ivan", "Petrov") = TRUE'),
@@ -146,7 +146,7 @@ FUNCTION_ISTARTSWITH = FunctionDocRegistryItem(
 )
 
 FUNCTION_FIND = FunctionDocRegistryItem(
-    name='find',
+    name="find",
     category=CATEGORY_STRING,
     description=_(
         "Returns the index of the position of the first character of the substring "
@@ -163,7 +163,7 @@ FUNCTION_FIND = FunctionDocRegistryItem(
 )
 
 FUNCTION_LEFT = FunctionDocRegistryItem(
-    name='left',
+    name="left",
     category=CATEGORY_STRING,
     description=_(
         "Returns a string that contains the number of characters specified in {arg:1} "
@@ -175,7 +175,7 @@ FUNCTION_LEFT = FunctionDocRegistryItem(
 )
 
 FUNCTION_RIGHT = FunctionDocRegistryItem(
-    name='right',
+    name="right",
     category=CATEGORY_STRING,
     description=_(
         "Returns a string that contains the number of characters specified in {arg:1} "
@@ -187,22 +187,18 @@ FUNCTION_RIGHT = FunctionDocRegistryItem(
 )
 
 FUNCTION_LEN = FunctionDocRegistryItem(
-    name='len',
+    name="len",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the number of characters in the string or items in array {arg:0}."
-    ),
+    description=_("Returns the number of characters in the string or items in array {arg:0}."),
     examples=[
         SimpleExample('LEN("Computer") = 8'),
     ],
 )
 
 FUNCTION_LOWER = FunctionDocRegistryItem(
-    name='lower',
+    name="lower",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the string {arg:0} in lowercase."
-    ),
+    description=_("Returns the string {arg:0} in lowercase."),
     examples=[
         SimpleExample('LOWER("Lorem ipsum") = "lorem ipsum"'),
         SimpleExample('LOWER("Карл у Клары") = "карл у клары"'),
@@ -210,11 +206,9 @@ FUNCTION_LOWER = FunctionDocRegistryItem(
 )
 
 FUNCTION_UPPER = FunctionDocRegistryItem(
-    name='upper',
+    name="upper",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the string {arg:0} in uppercase."
-    ),
+    description=_("Returns the string {arg:0} in uppercase."),
     examples=[
         SimpleExample('UPPER("Lorem ipsum") = "LOREM IPSUM"'),
         SimpleExample('UPPER("Карл у Клары") = "КАРЛ У КЛАРЫ"'),
@@ -222,41 +216,34 @@ FUNCTION_UPPER = FunctionDocRegistryItem(
 )
 
 FUNCTION_LTRIM = FunctionDocRegistryItem(
-    name='ltrim',
+    name="ltrim",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the string {arg:0} without spaces at the beginning of the string."
-    ),
+    description=_("Returns the string {arg:0} without spaces at the beginning of the string."),
     examples=[
         SimpleExample('LTRIM(" Computer") = "Computer"'),
     ],
 )
 
 FUNCTION_RTRIM = FunctionDocRegistryItem(
-    name='rtrim',
+    name="rtrim",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the string {arg:0} without spaces at the end of the string."
-    ),
+    description=_("Returns the string {arg:0} without spaces at the end of the string."),
     examples=[
         SimpleExample('RTRIM("Computer ") = "Computer"'),
     ],
 )
 
 FUNCTION_TRIM = FunctionDocRegistryItem(
-    name='trim',
+    name="trim",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the string {arg:0} without spaces at the beginning or end of the "
-        "string."
-    ),
+    description=_("Returns the string {arg:0} without spaces at the beginning or end of the " "string."),
     examples=[
         SimpleExample('TRIM(" Computer ") = "Computer"'),
     ],
 )
 
 FUNCTION_SUBSTR = FunctionDocRegistryItem(
-    name='substr',
+    name="substr",
     category=CATEGORY_STRING,
     description=_(
         "Returns the substring {arg:0} starting from the index {arg:1}.\n"
@@ -270,18 +257,13 @@ FUNCTION_SUBSTR = FunctionDocRegistryItem(
 )
 
 _REGEXP_NOTES = [
-    Note(_(
-        "See the documentation of the data source to clarify the regular expression syntax."
-    )),
+    Note(_("See the documentation of the data source to clarify the regular expression syntax.")),
 ]
 
 FUNCTION_REGEXP_EXTRACT = FunctionDocRegistryItem(
-    name='regexp_extract',
+    name="regexp_extract",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns the substring {arg:0} that matches the regular expression pattern "
-        "{arg:1}."
-    ),
+    description=_("Returns the substring {arg:0} that matches the regular expression pattern " "{arg:1}."),
     notes=_REGEXP_NOTES,
     examples=[
         SimpleExample('REGEXP_EXTRACT("RU 912873", "[A-Z]+\\s+(\\d+)") = "912873"'),
@@ -289,7 +271,7 @@ FUNCTION_REGEXP_EXTRACT = FunctionDocRegistryItem(
 )
 
 FUNCTION_REGEXP_EXTRACT_NTH = FunctionDocRegistryItem(
-    name='regexp_extract_nth',
+    name="regexp_extract_nth",
     category=CATEGORY_STRING,
     description=_(
         "Returns a substring {arg:0} that matches the regular expression pattern "
@@ -302,11 +284,10 @@ FUNCTION_REGEXP_EXTRACT_NTH = FunctionDocRegistryItem(
 )
 
 FUNCTION_REGEXP_MATCH = FunctionDocRegistryItem(
-    name='regexp_match',
+    name="regexp_match",
     category=CATEGORY_STRING,
     description=_(
-        "Returns 'TRUE' if the string {arg:0} has a substring that matches the "
-        "regular expression pattern {arg:1}."
+        "Returns 'TRUE' if the string {arg:0} has a substring that matches the " "regular expression pattern {arg:1}."
     ),
     notes=_REGEXP_NOTES,
     examples=[
@@ -315,7 +296,7 @@ FUNCTION_REGEXP_MATCH = FunctionDocRegistryItem(
 )
 
 FUNCTION_REGEXP_REPLACE = FunctionDocRegistryItem(
-    name='regexp_replace',
+    name="regexp_replace",
     category=CATEGORY_STRING,
     description=_(
         "Searches for a substring in the string {arg:0} using the regular expression "
@@ -330,7 +311,7 @@ FUNCTION_REGEXP_REPLACE = FunctionDocRegistryItem(
 )
 
 FUNCTION_REPLACE = FunctionDocRegistryItem(
-    name='replace',
+    name="replace",
     category=CATEGORY_STRING,
     impl_selector=ArgAwareImplementationSelector(
         exp_arg_types={
@@ -350,18 +331,16 @@ FUNCTION_REPLACE = FunctionDocRegistryItem(
 )
 
 FUNCTION_SPACE = FunctionDocRegistryItem(
-    name='space',
+    name="space",
     category=CATEGORY_STRING,
-    description=_(
-        "Returns a string with the specified number of spaces."
-    ),
+    description=_("Returns a string with the specified number of spaces."),
     examples=[
         SimpleExample('SPACE(5) = "     "'),
     ],
 )
 
 FUNCTION_SPLIT = FunctionDocRegistryItem(
-    name='split',
+    name="split",
     category=CATEGORY_STRING,
     description=_(
         "Returns a substring from {arg:0} using the {arg:1} delimiter character to "
@@ -376,11 +355,9 @@ FUNCTION_SPLIT = FunctionDocRegistryItem(
 )
 
 FUNCTION_UTF8 = FunctionDocRegistryItem(
-    name='utf8',
+    name="utf8",
     category=CATEGORY_STRING,
-    description=_(
-        "Converts the {arg:0} string encoding to `UTF8`."
-    ),
+    description=_("Converts the {arg:0} string encoding to `UTF8`."),
     examples=[
         SimpleExample('UTF8([Name], "CP-1251")'),
     ],

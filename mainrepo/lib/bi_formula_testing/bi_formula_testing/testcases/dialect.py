@@ -1,8 +1,15 @@
 from __future__ import annotations
 
-from typing import ClassVar, Sequence
+from typing import (
+    ClassVar,
+    Sequence,
+)
 
-from bi_formula.core.dialect import DialectName, DialectCombo, from_name_and_version
+from bi_formula.core.dialect import (
+    DialectCombo,
+    DialectName,
+    from_name_and_version,
+)
 
 
 class DefaultDialectFormulaConnectorTestSuite:

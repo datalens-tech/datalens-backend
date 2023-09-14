@@ -2,7 +2,15 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import TYPE_CHECKING, Generator, Iterable, List, Optional, Sequence, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    TypeVar,
+)
 
 import attr
 from typing_extensions import final
@@ -15,7 +23,12 @@ from bi_core.connection_executors.models.db_adapter_data import (
     ExecutionStepDataChunk,
     RawSchemaInfo,
 )
-from bi_core.connection_models import TableIdent, SchemaIdent, DBIdent, TableDefinition
+from bi_core.connection_models import (
+    DBIdent,
+    SchemaIdent,
+    TableDefinition,
+    TableIdent,
+)
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
@@ -42,7 +55,7 @@ class DBAdapterQueryResult:
         return result
 
 
-_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound='ConnTargetDTO')
+_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="ConnTargetDTO")
 
 
 class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc.ABCMeta):

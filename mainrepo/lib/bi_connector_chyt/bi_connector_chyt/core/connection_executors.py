@@ -6,12 +6,21 @@ import logging
 import attr
 
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from bi_connector_chyt.core.adapters import BaseCHYTAdapter, CHYTAdapter
+
+from bi_connector_chyt.core.adapters import (
+    BaseCHYTAdapter,
+    CHYTAdapter,
+)
 from bi_connector_chyt.core.async_adapters import AsyncCHYTAdapter
 from bi_connector_chyt.core.conn_options import CHYTConnectOptions
-from bi_connector_chyt.core.dto import CHYTDTO, BaseCHYTDTO
-from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO, CHYTConnTargetDTO
-
+from bi_connector_chyt.core.dto import (
+    CHYTDTO,
+    BaseCHYTDTO,
+)
+from bi_connector_chyt.core.target_dto import (
+    BaseCHYTConnTargetDTO,
+    CHYTConnTargetDTO,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,13 +50,12 @@ class CHYTAdapterConnExecutor(BaseCHYTAdapterConnExecutor):
             pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
             host=self._conn_dto.host,
             port=self._conn_dto.port,
-            username='default',
+            username="default",
             password=self._conn_dto.token,
             db_name=self._conn_dto.clique_alias,
             cluster_name=None,
-            endpoint='query',
+            endpoint="query",
             protocol=self._conn_dto.protocol,
-
             max_execution_time=self._conn_options.max_execution_time,
             total_timeout=self._conn_options.total_timeout,
             connect_timeout=self._conn_options.connect_timeout,

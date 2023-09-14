@@ -1,12 +1,21 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import (
+    Any,
+    Dict,
+)
 
-from marshmallow import fields, pre_dump
+from marshmallow import (
+    fields,
+    pre_dump,
+)
 
 from bi_constants.enums import IndexKind
-
-from bi_core.connection_executors.models.db_adapter_data import RawColumnInfo, RawSchemaInfo, RawIndexInfo
+from bi_core.connection_executors.models.db_adapter_data import (
+    RawColumnInfo,
+    RawIndexInfo,
+    RawSchemaInfo,
+)
 from bi_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
 from bi_core.db.native_type_schema import OneOfNativeTypeSchemaBase
 
@@ -28,7 +37,7 @@ class IndexInfoSchema(BaseQEAPISchema):
     unique = fields.Boolean()
 
     def to_object(self, data: Dict[str, Any]) -> RawIndexInfo:
-        columns = tuple(data.pop('columns'))
+        columns = tuple(data.pop("columns"))
         return RawIndexInfo(columns=columns, **data)
 
 
@@ -45,7 +54,7 @@ class PrimitivesResponseSchema(BaseQEAPISchema):
 
     @pre_dump(pass_many=False)
     def wrap(self, data: Any, **__: Any) -> Dict:
-        return {'value': data}
+        return {"value": data}
 
     def to_object(self, data: Dict[str, Any]) -> Any:
-        return data['value']
+        return data["value"]

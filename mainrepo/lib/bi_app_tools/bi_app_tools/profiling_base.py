@@ -1,21 +1,31 @@
 from __future__ import annotations
 
+from contextvars import ContextVar
 import functools
 import inspect
 import itertools as it
 import logging
 import time
 import traceback
-from contextvars import ContextVar
 from typing import (
-    Any, Awaitable, Callable, Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union, cast,
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
 )
 
 import attr
 import opentracing
 
 from bi_utils.utils import get_type_full_name
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -37,6 +47,7 @@ class ProfileResult:
            some_code
         timing = prof_result.exec_time_sec
     """
+
     exec_time_sec: Optional[float] = attr.ib(default=None)
     log_data: Optional[TLogData] = attr.ib(default=None)
     exc_info: Optional[TExcInfo] = attr.ib(default=None)
@@ -44,10 +55,10 @@ class ProfileResult:
 
 
 class GenericProfiler:
-    EVENT_CODE = 'profiling_result'
+    EVENT_CODE = "profiling_result"
 
-    CTX_OUTER_STAGES: ContextVar[Tuple[str, ...]] = ContextVar('CTX_OUTER_STAGES')
-    CTX_LOCAL_PROFILER_STACK: ContextVar[List[GenericProfiler]] = ContextVar('CTX_LOCAL_PROFILER_STACK')
+    CTX_OUTER_STAGES: ContextVar[Tuple[str, ...]] = ContextVar("CTX_OUTER_STAGES")
+    CTX_LOCAL_PROFILER_STACK: ContextVar[List[GenericProfiler]] = ContextVar("CTX_LOCAL_PROFILER_STACK")
     USE_CTX_VARS = True
 
     @classmethod
@@ -99,10 +110,7 @@ class GenericProfiler:
 
     @classmethod
     def get_current_stages_stack(cls) -> Tuple[str, ...]:
-        return tuple(it.chain(
-            cls.get_outer_stages(),
-            (p.stage for p in cls.get_profilers_stack())
-        ))
+        return tuple(it.chain(cls.get_outer_stages(), (p.stage for p in cls.get_profilers_stack())))
 
     @classmethod
     def get_current_stages_stack_str(cls) -> str:
@@ -117,10 +125,10 @@ class GenericProfiler:
         return tuple(stage_stack_str.split("/"))
 
     def __init__(
-            self,
-            stage: str,
-            extra_data: Optional[dict] = None,
-            logger: Optional[logging.Logger] = None,
+        self,
+        stage: str,
+        extra_data: Optional[dict] = None,
+        logger: Optional[logging.Logger] = None,
     ):
         self.logger = LOGGER if logger is None else logger  # type: logging.Logger
         self.stage = stage
@@ -160,7 +168,7 @@ class GenericProfiler:
                 assert self._ot_span_context is not None
                 span = self._ot_span_context.span
                 span.set_tag(opentracing.span.tags.ERROR, True)
-                span.set_tag('bi.exc_type', get_type_full_name(exc_type))
+                span.set_tag("bi.exc_type", get_type_full_name(exc_type))
 
             log_data = self._save_profiling_log(exc_type, exc_info=exc_info)
             self._update_profile_result(log_data=log_data, exc_info=exc_info)
@@ -172,7 +180,7 @@ class GenericProfiler:
             try:
                 self.get_profilers_stack().pop()
             except IndexError:
-                LOGGER.warning('Attempt to restore empty profiling stack on %s', self.stage)
+                LOGGER.warning("Attempt to restore empty profiling stack on %s", self.stage)
 
     def pre_profile(self) -> None:
         pass
@@ -210,12 +218,9 @@ class GenericProfiler:
             if isinstance(exc_info, tuple) and len(exc_info) == 3:
                 log_exc_info = exc_info
             else:
-                LOGGER.error('Invalid exc_info passed to _save_profiling_log: %r', exc_info)
+                LOGGER.error("Invalid exc_info passed to _save_profiling_log: %r", exc_info)
 
-        self.logger.info(
-            "Profiling results: %s in %.4fs", self.stage, time_diff,
-            extra=extra,
-            exc_info=log_exc_info)
+        self.logger.info("Profiling results: %s in %.4fs", self.stage, time_diff, extra=extra, exc_info=log_exc_info)
 
         return extra
 
@@ -228,19 +233,19 @@ class GenericProfiler:
             res.exc_value = exc_info[1]
         if log_data is not None:
             res.log_data = log_data
-            res.exec_time_sec = log_data['exec_time_sec']
+            res.exec_time_sec = log_data["exec_time_sec"]
 
 
-_GP_FUNC_RET_TV = TypeVar('_GP_FUNC_RET_TV')
+_GP_FUNC_RET_TV = TypeVar("_GP_FUNC_RET_TV")
 _GP_FUNC_T = Callable[..., _GP_FUNC_RET_TV]
 
 
 def generic_profiler(
-        stage: str, extra_data: dict = None, logger: logging.Logger = None,
+    stage: str,
+    extra_data: dict = None,
+    logger: logging.Logger = None,
 ) -> Callable[[_GP_FUNC_T], _GP_FUNC_T]:
-
     def generic_profiler_wrap(func: _GP_FUNC_T) -> _GP_FUNC_T:
-
         if inspect.iscoroutinefunction(func):
             raise ValueError("This decorator shouldn't be used on coroutines; use `generic_profiler_async` instead")
 
@@ -254,14 +259,14 @@ def generic_profiler(
     return generic_profiler_wrap
 
 
-_GPA_CORO_RET_TV = TypeVar('_GPA_CORO_RET_TV')
-_GPA_CORO_TV = TypeVar('_GPA_CORO_TV', bound=Callable[..., Awaitable[_GPA_CORO_RET_TV]])
+_GPA_CORO_RET_TV = TypeVar("_GPA_CORO_RET_TV")
+_GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_RET_TV]])
 
 
-def generic_profiler_async(stage: str, extra_data: dict = None, logger: logging.Logger = None) -> Callable[[_GPA_CORO_TV], _GPA_CORO_TV]:
-
+def generic_profiler_async(
+    stage: str, extra_data: dict = None, logger: logging.Logger = None
+) -> Callable[[_GPA_CORO_TV], _GPA_CORO_TV]:
     def generic_profiler_wrap_async(coro: _GPA_CORO_TV) -> _GPA_CORO_TV:
-
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine; use `generic_profiler` instead")
 

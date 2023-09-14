@@ -1,13 +1,22 @@
-from typing import ClassVar, Optional, Type
+from typing import (
+    ClassVar,
+    Optional,
+    Type,
+)
 
 import attr
 
 from bi_constants.enums import CreateDSFrom
-
-from bi_core.data_source_spec.base import DataSourceSpec
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
 from bi_core.connectors.base.data_source_migration import (
-    DataSourceMigrationInterface, SpecBasedSourceMigrator, MigrationSpec, MigrationKeyMappingItem,
+    DataSourceMigrationInterface,
+    MigrationKeyMappingItem,
+    MigrationSpec,
+    SpecBasedSourceMigrator,
+)
+from bi_core.data_source_spec.base import DataSourceSpec
+from bi_core.data_source_spec.sql import (
+    StandardSQLDataSourceSpec,
+    SubselectDataSourceSpec,
 )
 
 
@@ -38,18 +47,22 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
     default_schema_name: ClassVar[Optional[str]] = None
 
     def _resolve_schema_name_for_export(
-            self, source_spec: DataSourceSpec, attr_name: str,
+        self,
+        source_spec: DataSourceSpec,
+        attr_name: str,
     ) -> Optional[str]:
-        assert attr_name == 'schema_name'
+        assert attr_name == "schema_name"
         schema_name: Optional[str] = getattr(source_spec, attr_name, None)
         if schema_name == self.default_schema_name:
             schema_name = None
         return schema_name
 
     def _resolve_schema_name_for_import(
-            self, migration_dto: DataSourceMigrationInterface, attr_name: str,
+        self,
+        migration_dto: DataSourceMigrationInterface,
+        attr_name: str,
     ) -> Optional[str]:
-        assert attr_name == 'schema_name'
+        assert attr_name == "schema_name"
         schema_name: Optional[str] = getattr(migration_dto, attr_name, None)
         if schema_name == self.default_schema_name:
             schema_name = None
@@ -66,11 +79,12 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                     dsrc_spec_cls=self.table_dsrc_spec_cls,
                     migration_mapping_items=(
                         MigrationKeyMappingItem(
-                            migration_dto_key='schema_name', source_spec_key='schema_name',
+                            migration_dto_key="schema_name",
+                            source_spec_key="schema_name",
                             custom_export_resolver=self._resolve_schema_name_for_export,
                             custom_import_resolver=self._resolve_schema_name_for_import,
                         ),
-                        MigrationKeyMappingItem(migration_dto_key='table_name', source_spec_key='table_name'),
+                        MigrationKeyMappingItem(migration_dto_key="table_name", source_spec_key="table_name"),
                     ),
                 )
             )
@@ -82,13 +96,14 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                         dto_cls=SQLTableWDbDSMI,
                         dsrc_spec_cls=self.table_dsrc_spec_cls,
                         migration_mapping_items=(
-                            MigrationKeyMappingItem(migration_dto_key='db_name', source_spec_key='db_name'),
+                            MigrationKeyMappingItem(migration_dto_key="db_name", source_spec_key="db_name"),
                             MigrationKeyMappingItem(
-                                migration_dto_key='schema_name', source_spec_key='schema_name',
+                                migration_dto_key="schema_name",
+                                source_spec_key="schema_name",
                                 custom_export_resolver=self._resolve_schema_name_for_export,
                                 custom_import_resolver=self._resolve_schema_name_for_import,
                             ),
-                            MigrationKeyMappingItem(migration_dto_key='table_name', source_spec_key='table_name'),
+                            MigrationKeyMappingItem(migration_dto_key="table_name", source_spec_key="table_name"),
                         ),
                     )
                 )
@@ -101,7 +116,7 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                     dto_cls=SQLSubselectDSMI,
                     dsrc_spec_cls=self.subselect_dsrc_spec_cls,
                     migration_mapping_items=(
-                        MigrationKeyMappingItem(migration_dto_key='subsql', source_spec_key='subsql'),
+                        MigrationKeyMappingItem(migration_dto_key="subsql", source_spec_key="subsql"),
                     ),
                 )
             )

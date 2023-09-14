@@ -3,18 +3,35 @@ from __future__ import annotations
 import abc
 import asyncio
 import logging
-from typing import TYPE_CHECKING, AsyncIterable, Awaitable, Callable, Generic, Optional, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    AsyncIterable,
+    Awaitable,
+    Callable,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
+from bi_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    RawSchemaInfo,
+)
 
 if TYPE_CHECKING:
-    from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent, TableDefinition, TableIdent,
+    from bi_constants.types import (
+        TBIChunksGen,
+        TBIDataRow,
     )
-    from bi_constants.types import TBIChunksGen, TBIDataRow
+    from bi_core.connection_models.common_models import (
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -31,7 +48,7 @@ class AsyncRawExecutionResult:
                 yield row
 
 
-_CACHE_TV = TypeVar('_CACHE_TV')
+_CACHE_TV = TypeVar("_CACHE_TV")
 
 
 @attr.s
@@ -52,11 +69,10 @@ class AsyncCache(Generic[_CACHE_TV]):
         self._cache.clear()
 
 
-_DBA_TV = TypeVar('_DBA_TV', bound='AsyncDBAdapter')
+_DBA_TV = TypeVar("_DBA_TV", bound="AsyncDBAdapter")
 
 
 class AsyncDBAdapter(metaclass=abc.ABCMeta):
-
     @abc.abstractmethod
     async def test(self) -> None:
         pass

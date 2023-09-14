@@ -1,27 +1,52 @@
 from __future__ import annotations
 
 import logging
+from typing import (
+    Any,
+    Dict,
+)
 
-from marshmallow import fields as ma_fields, EXCLUDE
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
-from typing import Any, Dict
 
-from bi_constants.enums import AggregationFunction, BIType, CalcMode
-
-from bi_model_tools.schema.base import BaseSchema, DefaultValidateSchema
-
+from bi_api_connector.api_schema.source import DataSourceSchema
+from bi_api_connector.api_schema.source_base import (
+    AvatarRelationSchema,
+    SourceAvatarSchema,
+)
 from bi_api_lib.enums import DatasetAction
 from bi_api_lib.request_model.data import (
-    FieldAction, UpdateField, AddField, CloneField, SourceActionBase,
-    RelationActionBase, ReplaceConnection, ReplaceConnectionAction,
-    AddUpdateSourceAction, AddUpdateObligatoryFilterAction,
-    DeleteObligatoryFilterAction, DeleteObligatoryFilter, AvatarActionBase, DeleteField,
+    AddField,
+    AddUpdateObligatoryFilterAction,
+    AddUpdateSourceAction,
+    AvatarActionBase,
+    CloneField,
+    DeleteField,
+    DeleteObligatoryFilter,
+    DeleteObligatoryFilterAction,
+    FieldAction,
+    RelationActionBase,
+    ReplaceConnection,
+    ReplaceConnectionAction,
+    SourceActionBase,
+    UpdateField,
 )
 from bi_api_lib.schemas.filter import ObligatoryFilterSchema
 from bi_api_lib.schemas.parameters import ParameterValueConstraintSchema
-from bi_api_connector.api_schema.source import DataSourceSchema
-from bi_api_connector.api_schema.source_base import AvatarRelationSchema, SourceAvatarSchema
-from bi_api_lib.schemas.values import ValueSchema, WithNestedValueSchema
+from bi_api_lib.schemas.values import (
+    ValueSchema,
+    WithNestedValueSchema,
+)
+from bi_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+)
+from bi_model_tools.schema.base import (
+    BaseSchema,
+    DefaultValidateSchema,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,7 +68,7 @@ class UpdateFieldActionSchema(FieldActionBaseSchema, DefaultValidateSchema[Field
     TARGET_CLS = FieldAction
 
     class UpdateFieldBaseSchema(WithNestedValueSchema, FieldActionBaseSchema.FieldBaseSchema):
-        TYPE_FIELD_NAME = 'cast'
+        TYPE_FIELD_NAME = "cast"
         source = ma_fields.String()
         calc_mode = ma_fields.Enum(CalcMode)
         hidden = ma_fields.Boolean()
@@ -179,15 +204,21 @@ class ObligatoryFilterActionBaseSchema(ActionBaseSchema):
     obligatory_filter = ma_fields.Nested(ObligatoryFilterBaseSchema, required=True)
 
 
-class AddUpdateObligatoryFilterActionSchema(ObligatoryFilterActionBaseSchema, DefaultValidateSchema[AddUpdateObligatoryFilterAction]):
+class AddUpdateObligatoryFilterActionSchema(
+    ObligatoryFilterActionBaseSchema, DefaultValidateSchema[AddUpdateObligatoryFilterAction]
+):
     TARGET_CLS = AddUpdateObligatoryFilterAction
     obligatory_filter = ma_fields.Nested(ObligatoryFilterSchema, required=True)
 
 
-class DeleteObligatoryFilterActionSchema(ObligatoryFilterActionBaseSchema, DefaultValidateSchema[DeleteObligatoryFilterAction]):
+class DeleteObligatoryFilterActionSchema(
+    ObligatoryFilterActionBaseSchema, DefaultValidateSchema[DeleteObligatoryFilterAction]
+):
     TARGET_CLS = DeleteObligatoryFilterAction
 
-    class DeleteObligatoryFilterSchema(ObligatoryFilterActionBaseSchema.ObligatoryFilterBaseSchema, DefaultValidateSchema[DeleteObligatoryFilter]):
+    class DeleteObligatoryFilterSchema(
+        ObligatoryFilterActionBaseSchema.ObligatoryFilterBaseSchema, DefaultValidateSchema[DeleteObligatoryFilter]
+    ):
         TARGET_CLS = DeleteObligatoryFilter
         id = ma_fields.String(allow_none=False, required=True)
 
@@ -199,7 +230,7 @@ class ActionSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'action'
+    type_field = "action"
     type_schemas = {
         # legacy  TODO: remove
         DatasetAction.add.name: AddFieldActionSchema,

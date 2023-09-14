@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import (
+    List,
+    Optional,
+)
 
 from bi_core.db.elements import SchemaColumn
 
-
-SAMPLE_ID_COLUMN_NAME = '__dl_sample_id'  # TODO: Move somewhere else - it has to do with sampling, not schemas
+SAMPLE_ID_COLUMN_NAME = "__dl_sample_id"  # TODO: Move somewhere else - it has to do with sampling, not schemas
 
 
 def are_raw_schemas_same(first: Optional[List[SchemaColumn]], second: Optional[List[SchemaColumn]]) -> bool:
@@ -17,7 +19,7 @@ def are_raw_schemas_same(first: Optional[List[SchemaColumn]], second: Optional[L
         data_1, data_2 = col_1._asdict(), col_2._asdict()
         # FIXME:
         # API doesn't have the full NativeType definition yet, so we can't compare them directly
-        exclude_from_comparison = ('native_type', 'source_id')
+        exclude_from_comparison = ("native_type", "source_id")
         for col_data in (data_1, data_2):
             for attr in exclude_from_comparison:
                 col_data.pop(attr)
@@ -27,10 +29,12 @@ def are_raw_schemas_same(first: Optional[List[SchemaColumn]], second: Optional[L
             # main attrs are different
             data_1 != data_2
             # or exactly one of the two native types is None
-            or not ntypes_arent_none and col_1.native_type != col_2.native_type
+            or not ntypes_arent_none
+            and col_1.native_type != col_2.native_type
             # or native types have different names (only for different db (conn) types)
             or (
-                ntypes_arent_none and col_1.native_type.conn_type == col_2.native_type.conn_type
+                ntypes_arent_none
+                and col_1.native_type.conn_type == col_2.native_type.conn_type
                 and col_1.native_type.name != col_2.native_type.name
             )
         ):

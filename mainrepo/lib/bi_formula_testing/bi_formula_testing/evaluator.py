@@ -4,7 +4,13 @@ import copy
 import datetime
 import re
 import time
-from typing import Collection, Optional, Sequence, Type, Union
+from typing import (
+    Collection,
+    Optional,
+    Sequence,
+    Type,
+    Union,
+)
 
 import attr
 import sqlalchemy as sa
@@ -13,39 +19,47 @@ from sqlalchemy.sql.elements import ClauseElement
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo
 from bi_formula.core.nodes import Formula
-from bi_formula.definitions.scope import Scope
 from bi_formula.definitions.flags import ContextFlag
+from bi_formula.definitions.scope import Scope
 import bi_formula.inspect.expression
 from bi_formula.mutation.mutation import apply_mutations
-from bi_formula.mutation.window import DefaultWindowOrderingMutation, AmongToWithinGroupingMutation
-from bi_formula.parser.factory import get_parser, ParserType
+from bi_formula.mutation.window import (
+    AmongToWithinGroupingMutation,
+    DefaultWindowOrderingMutation,
+)
+from bi_formula.parser.factory import (
+    ParserType,
+    get_parser,
+)
 from bi_formula.translation.ext_nodes import CompiledExpression
-from bi_formula.translation.translator import translate, TranslationCtx
+from bi_formula.translation.translator import (
+    TranslationCtx,
+    translate,
+)
 from bi_formula_testing.database import Db
 from bi_formula_testing.forced_literal import forced_literal_use  # noqa
 
-
 FIELD_TYPES = {
     # for the above table
-    'id': DataType.INTEGER,
-    'int_value': DataType.INTEGER,
-    'date_value': DataType.DATE,
-    'datetime_value': DataType.DATETIME,
-    'str_value': DataType.STRING,
-    'str_null_value': DataType.STRING,
-    'arr_int_value': DataType.ARRAY_INT,
-    'arr_float_value': DataType.ARRAY_FLOAT,
-    'arr_str_value': DataType.ARRAY_STR,
+    "id": DataType.INTEGER,
+    "int_value": DataType.INTEGER,
+    "date_value": DataType.DATE,
+    "datetime_value": DataType.DATETIME,
+    "str_value": DataType.STRING,
+    "str_null_value": DataType.STRING,
+    "arr_int_value": DataType.ARRAY_INT,
+    "arr_float_value": DataType.ARRAY_FLOAT,
+    "arr_str_value": DataType.ARRAY_STR,
     # for NULL data
-    'int_null': DataType.INTEGER,
-    'float_null': DataType.FLOAT,
-    'bool_null': DataType.BOOLEAN,
-    'str_null': DataType.STRING,
-    'date_null': DataType.DATE,
-    'datetime_null': DataType.DATETIME,
-    'geopoint_null': DataType.GEOPOINT,
-    'geopolygon_null': DataType.GEOPOLYGON,
-    'uuid_null': DataType.UUID,
+    "int_null": DataType.INTEGER,
+    "float_null": DataType.FLOAT,
+    "bool_null": DataType.BOOLEAN,
+    "str_null": DataType.STRING,
+    "date_null": DataType.DATE,
+    "datetime_null": DataType.DATETIME,
+    "geopoint_null": DataType.GEOPOINT,
+    "geopolygon_null": DataType.GEOPOLYGON,
+    "uuid_null": DataType.UUID,
 }
 
 
@@ -61,15 +75,15 @@ class DbEvaluator:
         return self.db.dialect
 
     def translate_formula(
-            self,
-            formula: str | Formula,
-            context_flags: Optional[int] = None,
-            other_fields: Optional[dict] = None,
-            collect_errors: Optional[bool] = None,
-            field_types: Optional[Sequence[DataType]] = None,
-            group_by: Optional[list[str | Formula]] = None,
-            order_by: Optional[list[str | Formula]] = None,
-            required_scopes: int = Scope.EXPLICIT_USAGE,
+        self,
+        formula: str | Formula,
+        context_flags: Optional[int] = None,
+        other_fields: Optional[dict] = None,
+        collect_errors: Optional[bool] = None,
+        field_types: Optional[Sequence[DataType]] = None,
+        group_by: Optional[list[str | Formula]] = None,
+        order_by: Optional[list[str | Formula]] = None,
+        required_scopes: int = Scope.EXPLICIT_USAGE,
     ) -> TranslationCtx:
         other_fields = other_fields or {}
         parser = get_parser(ParserType.antlr_py)
@@ -83,7 +97,7 @@ class DbEvaluator:
                 if field_node.name in other_fields:
                     formula = formula.replace_at_index(
                         index=field_node_idx,
-                        expr=CompiledExpression.make(self.translate_formula((other_fields[field_node.name])))
+                        expr=CompiledExpression.make(self.translate_formula((other_fields[field_node.name]))),
                     )
 
             # mutate
@@ -97,8 +111,11 @@ class DbEvaluator:
 
             # translate
             formula = translate(  # type: ignore
-                formula=formula, dialect=self.dialect, field_types=field_types,  # type: ignore
-                context_flags=context_flags, collect_errors=collect_errors,
+                formula=formula,
+                dialect=self.dialect,
+                field_types=field_types,  # type: ignore
+                context_flags=context_flags,
+                collect_errors=collect_errors,
                 required_scopes=required_scopes,
             )
         if not isinstance(formula, TranslationCtx):
@@ -109,28 +126,30 @@ class DbEvaluator:
     @staticmethod
     def print_as_example(formula: Union[str, Formula], result) -> None:
         if isinstance(result, datetime.date):
-            result_str = '#{}#'.format(str(result))
+            result_str = "#{}#".format(str(result))
         elif isinstance(result, bool):
             result_str = str(result).upper()
         else:
             result_str = repr(result)
-        print('{},'.format(repr('{} = {}'.format(formula, result_str))))
+        print("{},".format(repr("{} = {}".format(formula, result_str))))
 
     def eval(
-            self,
-            formula: Union[str, Formula],
-            from_: Optional[ClauseElement] = None,
-            where: str | Formula | None = None,
-            many: bool = False,
-            other_fields: Optional[dict] = None,
-            order_by: Optional[list[str | Formula]] = None,
-            group_by: Optional[list[str | Formula]] = None,
-            first: bool = False,
-            required_scopes: int = Scope.EXPLICIT_USAGE,
+        self,
+        formula: Union[str, Formula],
+        from_: Optional[ClauseElement] = None,
+        where: str | Formula | None = None,
+        many: bool = False,
+        other_fields: Optional[dict] = None,
+        order_by: Optional[list[str | Formula]] = None,
+        group_by: Optional[list[str | Formula]] = None,
+        first: bool = False,
+        required_scopes: int = Scope.EXPLICIT_USAGE,
     ):
         select_ctx = self.translate_formula(
-            formula, other_fields=other_fields,
-            order_by=order_by, group_by=group_by,
+            formula,
+            other_fields=other_fields,
+            order_by=order_by,
+            group_by=group_by,
             required_scopes=required_scopes,
         )
 
@@ -144,18 +163,17 @@ class DbEvaluator:
         if from_ is not None:
             query = query.select_from(from_)
         if order_by is not None:
-            query = query.order_by(*[
-                self.translate_formula(expr, required_scopes=required_scopes).expression
-                for expr in order_by
-            ])
+            query = query.order_by(
+                *[self.translate_formula(expr, required_scopes=required_scopes).expression for expr in order_by]
+            )
         if group_by:
-            query = query.group_by(*[
-                self.translate_formula(expr, required_scopes=required_scopes).expression
-                for expr in group_by
-            ])
+            query = query.group_by(
+                *[self.translate_formula(expr, required_scopes=required_scopes).expression for expr in group_by]
+            )
         if where is not None:
             where_ctx = self.translate_formula(
-                where, context_flags=ContextFlag.REQ_CONDITION,
+                where,
+                context_flags=ContextFlag.REQ_CONDITION,
                 required_scopes=required_scopes,
             )
             query = query.where(where_ctx.expression)
@@ -163,7 +181,7 @@ class DbEvaluator:
             query = query.limit(1)
 
         try:
-            print('QUERY:', self.db.expr_as_str(query))
+            print("QUERY:", self.db.expr_as_str(query))
             for attempt in range(self.attempts):
                 try:
                     if many:
@@ -173,7 +191,7 @@ class DbEvaluator:
                         return result
                 except Exception as exc:
                     exc_str = str(exc)
-                    if attempt < self.attempts-1 and (
+                    if attempt < self.attempts - 1 and (
                         any(
                             isinstance(exc, match_exc) and match_patt.search(exc_str)
                             for match_exc, match_patt in self.retry_on_exceptions
@@ -184,5 +202,5 @@ class DbEvaluator:
                     raise
 
         except Exception:
-            print('QUERY:', self.db.expr_as_str(query))
+            print("QUERY:", self.db.expr_as_str(query))
             raise

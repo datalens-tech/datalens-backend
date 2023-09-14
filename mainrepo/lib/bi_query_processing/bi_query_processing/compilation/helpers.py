@@ -3,33 +3,38 @@ from __future__ import annotations
 import datetime
 import json
 import logging
-from typing import Any, Collection, Optional
-
-from bi_core.components.accessor import DatasetComponentAccessor
-
-import bi_formula.core.nodes as formula_nodes
-import bi_formula.shortcuts
-from bi_formula.core.datatype import DataType
-
-import bi_query_processing.exc
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.column_registry import ColumnRegistry
-from bi_query_processing.compilation.primitives import (
-    CompiledQuery, CompiledFormulaInfo, FromObject,
-    AvatarFromObject, FromColumn, JoinedFromObject, BASE_QUERY_ID
+from typing import (
+    Any,
+    Collection,
+    Optional,
 )
 
+from bi_core.components.accessor import DatasetComponentAccessor
+from bi_formula.core.datatype import DataType
+import bi_formula.core.nodes as formula_nodes
+import bi_formula.shortcuts
+from bi_query_processing.column_registry import ColumnRegistry
+from bi_query_processing.compilation.primitives import (
+    BASE_QUERY_ID,
+    AvatarFromObject,
+    CompiledFormulaInfo,
+    CompiledQuery,
+    FromColumn,
+    FromObject,
+    JoinedFromObject,
+)
+from bi_query_processing.enums import ExecutionLevel
+import bi_query_processing.exc
 
 LOGGER = logging.getLogger(__name__)
 
 
 def make_joined_from_for_avatars(
-        used_avatar_ids: Collection[str],
-        ds_accessor: DatasetComponentAccessor,
-        column_reg: ColumnRegistry,
-        root_avatar_id: Optional[str] = None,
+    used_avatar_ids: Collection[str],
+    ds_accessor: DatasetComponentAccessor,
+    column_reg: ColumnRegistry,
+    root_avatar_id: Optional[str] = None,
 ) -> JoinedFromObject:
-
     sorted_avatar_ids = sorted(used_avatar_ids)
     if root_avatar_id is None and sorted_avatar_ids:
         root_avatar_id = sorted_avatar_ids[0]
@@ -37,7 +42,7 @@ def make_joined_from_for_avatars(
     froms: list[FromObject] = []
     added_avatar_ids: set[str] = set()
     for avatar_id in sorted_avatar_ids:
-        assert avatar_id not in added_avatar_ids, f'Avatars should not be duplicated, but got {avatar_id} twice'
+        assert avatar_id not in added_avatar_ids, f"Avatars should not be duplicated, but got {avatar_id} twice"
         avatar = ds_accessor.get_avatar_strict(avatar_id=avatar_id)
         columns = tuple(
             FromColumn(id=column.id, name=column.column.name)
@@ -45,7 +50,9 @@ def make_joined_from_for_avatars(
         )
         froms.append(
             AvatarFromObject(
-                id=avatar_id, alias=avatar_id, avatar_id=avatar_id,
+                id=avatar_id,
+                alias=avatar_id,
+                avatar_id=avatar_id,
                 source_id=avatar.source_id,
                 columns=columns,
             )
@@ -56,9 +63,9 @@ def make_joined_from_for_avatars(
 
 
 def single_formula_comp_query_for_validation(
-        formula: CompiledFormulaInfo,
-        ds_accessor: DatasetComponentAccessor,
-        column_reg: ColumnRegistry,
+    formula: CompiledFormulaInfo,
+    ds_accessor: DatasetComponentAccessor,
+    column_reg: ColumnRegistry,
 ) -> CompiledQuery:
     return CompiledQuery(
         id=BASE_QUERY_ID,
@@ -73,24 +80,29 @@ def single_formula_comp_query_for_validation(
             ds_accessor=ds_accessor,
             column_reg=column_reg,
         ),
-        limit=None, offset=None,
+        limit=None,
+        offset=None,
     )
 
 
 def _datetime_fromisoformat(val: str) -> datetime.datetime:
-    val = val.replace(' ', 'T')
-    if val.endswith('Z'):
-        val = val[:-1] + '+00:00'
+    val = val.replace(" ", "T")
+    if val.endswith("Z"):
+        val = val[:-1] + "+00:00"
     return datetime.datetime.fromisoformat(val)
 
 
 ARRAY_TYPES = (
-    DataType.ARRAY_STR, DataType.CONST_ARRAY_STR,
-    DataType.ARRAY_INT, DataType.CONST_ARRAY_INT,
-    DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT,
+    DataType.ARRAY_STR,
+    DataType.CONST_ARRAY_STR,
+    DataType.ARRAY_INT,
+    DataType.CONST_ARRAY_INT,
+    DataType.ARRAY_FLOAT,
+    DataType.CONST_ARRAY_FLOAT,
 )
 TREE_TYPES = (
-    DataType.TREE_STR, DataType.CONST_TREE_STR,
+    DataType.TREE_STR,
+    DataType.CONST_TREE_STR,
 )
 
 
@@ -106,7 +118,7 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
             if data_type in (DataType.DATE, DataType.CONST_DATE):
                 dt_val = _datetime_fromisoformat(val).replace(tzinfo=None)
                 if dt_val.hour or dt_val.minute or dt_val.second or dt_val.microsecond:
-                    LOGGER.warning('Truncating datetime with nonzero time to date: %s', val)
+                    LOGGER.warning("Truncating datetime with nonzero time to date: %s", val)
                 node = formula_nodes.LiteralDate.make(dt_val.date())
             elif data_type in (DataType.DATETIME, DataType.CONST_DATETIME):
                 # NOTE: the value might have non-empty tzinfo.
@@ -124,9 +136,9 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
             elif data_type in (DataType.FLOAT, DataType.CONST_FLOAT):
                 node = formula_nodes.LiteralFloat.make(float(val))
             elif data_type in (DataType.BOOLEAN, DataType.CONST_BOOLEAN):
-                bool_val = {'true': True, 'false': False}.get(val.lower())
+                bool_val = {"true": True, "false": False}.get(val.lower())
                 if bool_val is None:
-                    raise ValueError('Invalid value for bool')
+                    raise ValueError("Invalid value for bool")
                 node = formula_nodes.LiteralBoolean.make(bool_val)
             elif data_type in (DataType.STRING, DataType.CONST_STRING):
                 node = formula_nodes.LiteralString.make(val)
@@ -140,14 +152,14 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
                 try:
                     val = json.loads(val)
                 except json.decoder.JSONDecodeError:
-                    raise ValueError('Invalid value for array')
+                    raise ValueError("Invalid value for array")
             # No known use-cases: DataType.MARKUP
             else:
-                raise ValueError('Unexpected data_type value')
+                raise ValueError("Unexpected data_type value")
 
         if data_type in ARRAY_TYPES or data_type in TREE_TYPES:
             if not isinstance(val, list):
-                raise ValueError('Got non-list for array')
+                raise ValueError("Got non-list for array")
             if data_type in (DataType.ARRAY_STR, DataType.CONST_ARRAY_STR):
                 node = formula_nodes.LiteralArrayString.make(val)
             elif data_type in (DataType.ARRAY_INT, DataType.CONST_ARRAY_INT):
@@ -161,7 +173,7 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
             node = bi_formula.shortcuts.n.lit(val)  # guess literal type
 
     except (ValueError, TypeError):
-        raise bi_query_processing.exc.InvalidLiteralError(f'Invalid literal value {val!r} for type {data_type.name}')
+        raise bi_query_processing.exc.InvalidLiteralError(f"Invalid literal value {val!r} for type {data_type.name}")
 
     assert node is not None
     return node

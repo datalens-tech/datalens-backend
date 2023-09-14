@@ -2,44 +2,68 @@ from __future__ import annotations
 
 import abc
 import json
-from typing import ClassVar, List, Optional, Set
+from typing import (
+    ClassVar,
+    List,
+    Optional,
+    Set,
+)
 
 import attr
 
-import bi_query_processing.exc
-from bi_utils.utils import enum_not_none
-
-from bi_constants.enums import (
-    FieldRole, ManagedBy,
-    WhereClauseOperation, CalcMode, BIType, FieldType,
+from bi_api_lib.query.formalization.field_resolver import FieldResolver
+from bi_api_lib.query.formalization.id_gen import IdGenerator
+from bi_api_lib.query.formalization.raw_specs import (
+    MeasureNameRef,
+    PlaceholderRef,
+    RawFieldSpec,
+    RawFilterFieldSpec,
+    RawGroupByFieldSpec,
+    RawOrderByFieldSpec,
+    RawParameterValueSpec,
+    RawQuerySpecUnion,
+    RawRangeRoleSpec,
+    RawRowRoleSpec,
+    RawSelectFieldSpec,
+    RawTemplateRoleSpec,
+    RawTreeRoleSpec,
 )
-
+from bi_constants.enums import (
+    BIType,
+    CalcMode,
+    FieldRole,
+    FieldType,
+    ManagedBy,
+    WhereClauseOperation,
+)
 import bi_core.exc as core_exc
 from bi_core.fields import BIField
 from bi_core.us_dataset import Dataset
-
-from bi_api_lib.query.formalization.raw_specs import (
-    RawQuerySpecUnion, RawFieldSpec,
-    RawSelectFieldSpec, RawOrderByFieldSpec,
-    RawFilterFieldSpec, RawParameterValueSpec,
-    RawGroupByFieldSpec, RawTemplateRoleSpec,
-    RawRangeRoleSpec, RawTreeRoleSpec, RawRowRoleSpec,
-    MeasureNameRef, PlaceholderRef,
-)
-from bi_api_lib.query.formalization.field_resolver import FieldResolver
+import bi_query_processing.exc
 from bi_query_processing.legend.field_legend import (
-    Legend, LegendItem,
-    FieldObjSpec, MeasureNameObjSpec, DimensionNameObjSpec, PlaceholderObjSpec,
-    RoleSpec, TemplateRoleSpec, RangeRoleSpec, RowRoleSpec,
-    OrderByRoleSpec, FilterRoleSpec, ParameterRoleSpec, TreeRoleSpec,
     SELECTABLE_ROLES,
+    DimensionNameObjSpec,
+    FieldObjSpec,
+    FilterRoleSpec,
+    Legend,
+    LegendItem,
+    MeasureNameObjSpec,
+    OrderByRoleSpec,
+    ParameterRoleSpec,
+    PlaceholderObjSpec,
+    RangeRoleSpec,
+    RoleSpec,
+    RowRoleSpec,
+    TemplateRoleSpec,
+    TreeRoleSpec,
 )
-from bi_api_lib.query.formalization.id_gen import IdGenerator
+from bi_utils.utils import enum_not_none
 
-
-DATA_TYPES_SUPPORTING_TREE = frozenset({
-    BIType.tree_str,
-})
+DATA_TYPES_SUPPORTING_TREE = frozenset(
+    {
+        BIType.tree_str,
+    }
+)
 
 
 @attr.s
@@ -57,14 +81,16 @@ class LegendFormalizer(abc.ABC):
     def validate_legend_item(self, item: LegendItem) -> None:
         """Redefine this to impose restrictions on legend items"""
         if item.role_spec.role not in self.SUPPORTS_ROLES:
-            raise bi_query_processing.exc.UnsopportedRoleInLegend(f'Legend role {item.role_spec.role.name} is not supported')
+            raise bi_query_processing.exc.UnsopportedRoleInLegend(
+                f"Legend role {item.role_spec.role.name} is not supported"
+            )
 
         if not self.SUPPORTS_MEASURE_NAME and isinstance(item.obj, MeasureNameObjSpec):
             raise bi_query_processing.exc.MeasureNameUnsupported()
 
         if item.role_spec.role == FieldRole.tree:
             if item.data_type not in DATA_TYPES_SUPPORTING_TREE:
-                raise bi_query_processing.exc.RoleDataTypeMismatch('Unsupported data type for tree role')
+                raise bi_query_processing.exc.RoleDataTypeMismatch("Unsupported data type for tree role")
 
     def validate_legend(self, legend: Legend) -> None:
         for item in legend:
@@ -74,8 +100,10 @@ class LegendFormalizer(abc.ABC):
         return self._dataset.result_schema.by_guid(field_id)
 
     def _resolve_item_spec(
-            self, legend_item_id: int, item_spec: RawFieldSpec,
-            ignore_nonexistent_filters: bool,
+        self,
+        legend_item_id: int,
+        item_spec: RawFieldSpec,
+        ignore_nonexistent_filters: bool,
     ) -> Optional[LegendItem]:
         # Make role spec
         role_spec: RoleSpec
@@ -95,7 +123,7 @@ class LegendFormalizer(abc.ABC):
                     if not isinstance(prefix, list):
                         raise ValueError(prefix)
                 except ValueError:
-                    raise bi_query_processing.exc.GenericInvalidRequestError('Invalid value for tree prefix')
+                    raise bi_query_processing.exc.GenericInvalidRequestError("Invalid value for tree prefix")
                 role_spec = TreeRoleSpec(
                     role=raw_role_spec.role,
                     level=raw_role_spec.level,
@@ -151,7 +179,8 @@ class LegendFormalizer(abc.ABC):
                 raise
             field = self._get_field(field_id)
             legend_item = LegendItem(
-                legend_item_id=legend_item_id, block_id=item_spec.block_id,
+                legend_item_id=legend_item_id,
+                block_id=item_spec.block_id,
                 obj=FieldObjSpec(id=field_id, title=field.title),
                 role_spec=role_spec,
                 data_type=enum_not_none(field.data_type),
@@ -162,12 +191,11 @@ class LegendFormalizer(abc.ABC):
 
     def _validate_explicit_legend_item_ids(self, raw_query_spec_union: RawQuerySpecUnion) -> Set[int]:
         explicit_ids = [
-            spec.legend_item_id for spec in raw_query_spec_union.iter_item_specs()
-            if spec.legend_item_id is not None
+            spec.legend_item_id for spec in raw_query_spec_union.iter_item_specs() if spec.legend_item_id is not None
         ]
         unique_explicit_ids = set(explicit_ids)
         if len(explicit_ids) != len(unique_explicit_ids):
-            raise bi_query_processing.exc.NonUniqueLegendIdsError('Got non-unique legend item IDs')
+            raise bi_query_processing.exc.NonUniqueLegendIdsError("Got non-unique legend item IDs")
         return unique_explicit_ids
 
     def _generate_info_items(self, legend: Legend, id_gen: IdGenerator) -> None:
@@ -179,12 +207,15 @@ class LegendFormalizer(abc.ABC):
         for field in self._dataset.result_schema:
             if field.guid in found_field_ids:
                 continue
-            legend.add_item(LegendItem(
-                legend_item_id=id_gen.generate_id(),
-                obj=FieldObjSpec(id=field.guid, title=field.title),
-                data_type=field.data_type, field_type=field.type,
-                role_spec=RoleSpec(role=FieldRole.info),
-            ))
+            legend.add_item(
+                LegendItem(
+                    legend_item_id=id_gen.generate_id(),
+                    obj=FieldObjSpec(id=field.guid, title=field.title),
+                    data_type=field.data_type,
+                    field_type=field.type,
+                    role_spec=RoleSpec(role=FieldRole.info),
+                )
+            )
 
     def _generate_tree_filter_items(self, legend: Legend, id_gen: IdGenerator) -> None:
         """
@@ -198,21 +229,26 @@ class LegendFormalizer(abc.ABC):
 
             # Generate filters for the tree field itself
             filter_role_specs: List[FilterRoleSpec] = []
-            filter_role_specs.append(FilterRoleSpec(
-                role=FieldRole.filter,
-                operation=WhereClauseOperation.LENGTE,
-                values=[tree_spec.level],
-            ))
-            if len(tree_spec.prefix) > 0:
-                filter_role_specs.append(FilterRoleSpec(
+            filter_role_specs.append(
+                FilterRoleSpec(
                     role=FieldRole.filter,
-                    operation=WhereClauseOperation.STARTSWITH,
-                    values=[tree_spec.prefix],
-                ))
+                    operation=WhereClauseOperation.LENGTE,
+                    values=[tree_spec.level],
+                )
+            )
+            if len(tree_spec.prefix) > 0:
+                filter_role_specs.append(
+                    FilterRoleSpec(
+                        role=FieldRole.filter,
+                        operation=WhereClauseOperation.STARTSWITH,
+                        values=[tree_spec.prefix],
+                    )
+                )
             for filter_role_spec in filter_role_specs:
                 filter_item = LegendItem(
                     obj=item.obj,
-                    data_type=item.data_type, field_type=item.field_type,
+                    data_type=item.data_type,
+                    field_type=item.field_type,
                     role_spec=filter_role_spec,
                     legend_item_id=id_gen.generate_id(),
                     block_id=item.block_id,
@@ -232,7 +268,8 @@ class LegendFormalizer(abc.ABC):
                 )
                 filter_item = LegendItem(
                     obj=locked_dim_item.obj,
-                    data_type=locked_dim_item.data_type, field_type=locked_dim_item.field_type,
+                    data_type=locked_dim_item.data_type,
+                    field_type=locked_dim_item.field_type,
                     role_spec=filter_role_spec,
                     legend_item_id=id_gen.generate_id(),
                     block_id=item.block_id,
@@ -258,8 +295,7 @@ class LegendFormalizer(abc.ABC):
 
             item = self._resolve_item_spec(
                 legend_item_id=(
-                    item_spec.legend_item_id if item_spec.legend_item_id is not None
-                    else id_gen.generate_id()
+                    item_spec.legend_item_id if item_spec.legend_item_id is not None else id_gen.generate_id()
                 ),
                 item_spec=item_spec,
                 ignore_nonexistent_filters=raw_query_spec_union.ignore_nonexistent_filters,
@@ -353,7 +389,7 @@ class DistinctLegendFormalizer(LegendFormalizer):
     def validate_legend(self, legend: Legend) -> None:
         super().validate_legend(legend=legend)
         if len(legend.list_for_role(FieldRole.distinct)) != 1:
-            raise bi_query_processing.exc.LegendError('Legend must have one item')
+            raise bi_query_processing.exc.LegendError("Legend must have one item")
 
 
 @attr.s
@@ -373,7 +409,7 @@ class RangeLegendFormalizer(LegendFormalizer):
     def validate_legend(self, legend: Legend) -> None:
         super().validate_legend(legend=legend)
         if len(legend.list_for_role(FieldRole.range)) > 2:
-            raise bi_query_processing.exc.LegendError('Legend must have one or two range items')
+            raise bi_query_processing.exc.LegendError("Legend must have one or two range items")
 
 
 @attr.s
@@ -396,26 +432,30 @@ class PivotLegendFormalizer(LegendFormalizer):
         # Always add `Measure Name` to the legend for pivot tables if it is not already there
         mname_legend_item_ids = legend.get_measure_name_legend_item_ids()
         if not mname_legend_item_ids:
-            legend.add_item(LegendItem(
-                legend_item_id=id_gen.generate_id(),
-                obj=MeasureNameObjSpec(),
-                # using `row` here would corrupt the expected structure, so use `info`
-                role_spec=RoleSpec(role=FieldRole.info),
-                data_type=BIType.string,
-                field_type=FieldType.DIMENSION,
-            ))
+            legend.add_item(
+                LegendItem(
+                    legend_item_id=id_gen.generate_id(),
+                    obj=MeasureNameObjSpec(),
+                    # using `row` here would corrupt the expected structure, so use `info`
+                    role_spec=RoleSpec(role=FieldRole.info),
+                    data_type=BIType.string,
+                    field_type=FieldType.DIMENSION,
+                )
+            )
 
         # Same goes for `Dimension Name`
         dname_legend_item_ids = legend.get_dimension_name_legend_item_ids()
         if not dname_legend_item_ids:
-            legend.add_item(LegendItem(
-                legend_item_id=id_gen.generate_id(),
-                obj=DimensionNameObjSpec(),
-                # using `row` here would corrupt the expected structure, so use `info`
-                role_spec=RoleSpec(role=FieldRole.info),
-                data_type=BIType.string,
-                field_type=FieldType.DIMENSION,
-            ))
+            legend.add_item(
+                LegendItem(
+                    legend_item_id=id_gen.generate_id(),
+                    obj=DimensionNameObjSpec(),
+                    # using `row` here would corrupt the expected structure, so use `info`
+                    role_spec=RoleSpec(role=FieldRole.info),
+                    data_type=BIType.string,
+                    field_type=FieldType.DIMENSION,
+                )
+            )
 
 
 @attr.s

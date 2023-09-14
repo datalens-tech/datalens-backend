@@ -20,4 +20,4 @@ class SimpleMapper1DComparator(Mapper1DComparator):
             right_item = right_dict.get(key)
             left_cell = left_item.cell if left_item is not None else None
             right_cell = right_item.cell if right_item is not None else None
-            assert left_cell == right_cell, f'Value mismatch for key {key}: {left_cell} vs. {right_cell}'
+            assert left_cell == right_cell, f"Value mismatch for key {key}: {left_cell} vs. {right_cell}"

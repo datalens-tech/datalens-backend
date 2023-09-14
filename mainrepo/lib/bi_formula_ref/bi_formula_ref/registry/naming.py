@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import attr
 
@@ -15,7 +18,7 @@ if TYPE_CHECKING:
 def translate(text: Optional[str], locale: str) -> str:
     # Note: for `text=None` returns an empty string `''`
     gtext = get_localizer(locale).translate
-    return gtext(text) if text else ''
+    return gtext(text) if text else ""
 
 
 class NamingProviderBase(abc.ABC):
@@ -71,4 +74,4 @@ class CategoryPostfixNamingProvider(CustomNamingProvider):
     def get_title(self, item: _registry_base.FunctionDocRegistryItem, locale: str) -> str:
         if self._title is not None:
             return translate(self._title, locale=locale)
-        return f'{item.name.upper()} ({translate(FUNCTION_CATEGORY_TAG[item.category_name], locale=locale)})'
+        return f"{item.name.upper()} ({translate(FUNCTION_CATEGORY_TAG[item.category_name], locale=locale)})"

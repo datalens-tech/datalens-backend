@@ -3,13 +3,12 @@ import abc
 import attr
 
 from bi_core.fields import ResultSchema
-
 from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.multi_query.splitters.query_fork import QueryForkQuerySplitter
-from bi_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
 from bi_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
 from bi_query_processing.multi_query.mutators.splitter_based import SplitterMultiQueryMutator
 from bi_query_processing.multi_query.mutators.winfunc_compeng import DefaultCompengMultiQueryMutator
+from bi_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
+from bi_query_processing.multi_query.splitters.query_fork import QueryForkQuerySplitter
 
 
 @attr.s

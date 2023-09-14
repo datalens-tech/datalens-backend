@@ -1,6 +1,9 @@
 from typing import ClassVar
 
-from bi_core.connectors.base.query_compiler import QueryCompiler, SectionAliasMode
+from bi_core.connectors.base.query_compiler import (
+    QueryCompiler,
+    SectionAliasMode,
+)
 
 
 class BigQueryQueryCompiler(QueryCompiler):

@@ -21,10 +21,10 @@ def web_app(loop, aiohttp_client):
 
 @pytest.fixture(scope="session")
 def excel_data():
-    filename = 'data.xlsx'
+    filename = "data.xlsx"
 
     dirname = os.path.dirname(os.path.abspath(__file__))
     path = os.path.join(dirname, filename)
 
-    with open(path, 'rb') as fd:
+    with open(path, "rb") as fd:
         return fd.read()

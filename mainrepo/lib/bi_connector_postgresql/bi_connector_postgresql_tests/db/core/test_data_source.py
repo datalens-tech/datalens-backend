@@ -1,16 +1,28 @@
 import pytest
 
-from bi_constants.enums import BIType, RawSQLLevel
-
-from bi_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec, SubselectDataSourceSpec
-
-from bi_core_testing.testcases.data_source import DefaultDataSourceTestClass, DataSourceTestByViewClass
+from bi_constants.enums import (
+    BIType,
+    RawSQLLevel,
+)
+from bi_core.data_source_spec.sql import (
+    StandardSchemaSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+)
 from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from bi_core_testing.testcases.data_source import (
+    DataSourceTestByViewClass,
+    DefaultDataSourceTestClass,
+)
 
-from bi_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource, PostgreSQLSubselectDataSource
+from bi_connector_postgresql.core.postgresql.constants import (
+    SOURCE_TYPE_PG_SUBSELECT,
+    SOURCE_TYPE_PG_TABLE,
+)
+from bi_connector_postgresql.core.postgresql.data_source import (
+    PostgreSQLDataSource,
+    PostgreSQLSubselectDataSource,
+)
 from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
-
 from bi_connector_postgresql_tests.db.config import SUBSELECT_QUERY_FULL
 from bi_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 
@@ -25,7 +37,7 @@ class TestPostgreSQLTableDataSource(
 ):
     DSRC_CLS = PostgreSQLDataSource
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:
         dsrc_spec = StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_PG_TABLE,
@@ -40,18 +52,18 @@ class TestPostgreSQLTableDataSource(
 
 
 class TestPostgreSQLSubselectDataSource(
-        BasePostgreSQLTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionPostgreSQL,
-            SubselectDataSourceSpec,
-            PostgreSQLSubselectDataSource,
-        ],
+    BasePostgreSQLTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionPostgreSQL,
+        SubselectDataSourceSpec,
+        PostgreSQLSubselectDataSource,
+    ],
 ):
     DSRC_CLS = PostgreSQLSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_PG_SUBSELECT,
@@ -64,18 +76,18 @@ class TestPostgreSQLSubselectDataSource(
 
 
 class TestPostgreSQLSubselectByView(
-        BasePostgreSQLTestClass,
-        DataSourceTestByViewClass[
-            ConnectionPostgreSQL,
-            SubselectDataSourceSpec,
-            PostgreSQLSubselectDataSource,
-        ],
+    BasePostgreSQLTestClass,
+    DataSourceTestByViewClass[
+        ConnectionPostgreSQL,
+        SubselectDataSourceSpec,
+        PostgreSQLSubselectDataSource,
+    ],
 ):
     DSRC_CLS = PostgreSQLSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_PG_SUBSELECT,

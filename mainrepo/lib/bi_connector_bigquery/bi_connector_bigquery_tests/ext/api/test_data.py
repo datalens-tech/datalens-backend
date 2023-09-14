@@ -1,8 +1,8 @@
 from bi_api_lib_testing.connector.data_api_suites import (
-    DefaultConnectorDataResultTestSuite,
+    DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataRangeTestSuite,
-    DefaultConnectorDataDistinctTestSuite,
+    DefaultConnectorDataResultTestSuite,
 )
 
 from bi_connector_bigquery_tests.ext.api.base import BigQueryDataApiTestBase

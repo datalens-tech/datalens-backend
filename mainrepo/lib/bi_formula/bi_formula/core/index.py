@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Tuple, NamedTuple
+from typing import (
+    Any,
+    NamedTuple,
+    Optional,
+    Tuple,
+)
 
 
 class NodeHierarchyIndex(NamedTuple):
@@ -15,7 +20,7 @@ class NodeHierarchyIndex(NamedTuple):
 
     def __add__(self, other: Any) -> NodeHierarchyIndex:
         if isinstance(other, int):
-            return NodeHierarchyIndex(indices=self.indices + (other, ))
+            return NodeHierarchyIndex(indices=self.indices + (other,))
         if isinstance(other, NodeHierarchyIndex):
             return NodeHierarchyIndex(indices=self.indices + other.indices)
         if isinstance(other, (tuple, list)):
@@ -33,4 +38,4 @@ class NodeHierarchyIndex(NamedTuple):
         return NodeHierarchyIndex(indices=self.indices[:-1]), self.indices[-1]
 
     def startswith(self, other: NodeHierarchyIndex) -> bool:
-        return self.indices[:len(other.indices)] == other.indices
+        return self.indices[: len(other.indices)] == other.indices

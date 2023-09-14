@@ -8,7 +8,7 @@ from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 
 # TODO FIX: Generalize with sync version
 class DatasetFieldsView(DatasetDataBaseView):
-    endpoint_code = 'DatasetFieldsGet'
+    endpoint_code = "DatasetFieldsGet"
 
     @DatasetDataBaseView.with_resolved_entities
     async def get(self) -> web.Response:

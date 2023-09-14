@@ -4,9 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
 from bi_constants.enums import BIType
-
 from bi_core.exc import DashSQLError
-
 
 TValueBase = str | list[str] | tuple[str, ...]
 

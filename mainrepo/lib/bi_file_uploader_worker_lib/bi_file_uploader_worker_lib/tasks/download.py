@@ -1,45 +1,59 @@
 from __future__ import annotations
 
 import asyncio
+from collections import defaultdict
 import itertools
 import logging
-from collections import defaultdict
-from typing import Optional, AsyncIterator, Iterable
+from typing import (
+    AsyncIterator,
+    Iterable,
+    Optional,
+)
 
 import aiogoogle
 import attr
 
-from bi_constants.enums import FileProcessingStatus, BIType
-from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from bi_core.aio.web_app_services.gsheets import Range, Sheet
+from bi_constants.enums import (
+    BIType,
+    FileProcessingStatus,
+)
+from bi_core.aio.web_app_services.gsheets import (
+    Range,
+    Sheet,
+)
 from bi_core.db import SchemaColumn
 from bi_core.raw_data_streaming.stream import SimpleUntypedAsyncDataStream
 from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_task_processor.task import BaseExecutorTask, TaskResult, Success, Fail, Retry
-import bi_file_uploader_task_interface.tasks as task_interface
-from bi_file_uploader_task_interface.tasks import TaskExecutionMode
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext
-
 from bi_file_uploader_lib import exc
 from bi_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileAsyncDataSink
 from bi_file_uploader_lib.gsheets_client import (
-    google_api_error_to_file_uploader_exception,
-    GSheetsOAuth2,
     GSheetsClient,
+    GSheetsOAuth2,
+    google_api_error_to_file_uploader_exception,
 )
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
 from bi_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
-    GSheetsFileSourceSettings,
-    GSheetsUserSourceProperties,
-    GSheetsUserSourceDataSourceProperties,
     FileProcessingError,
+    GSheetsFileSourceSettings,
+    GSheetsUserSourceDataSourceProperties,
+    GSheetsUserSourceProperties,
 )
-
+from bi_file_uploader_task_interface.context import FileUploaderTaskContext
+import bi_file_uploader_task_interface.tasks as task_interface
+from bi_file_uploader_task_interface.tasks import TaskExecutionMode
 from bi_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
 from bi_file_uploader_worker_lib.utils.parsing_utils import guess_header_and_schema_gsheet
+from bi_task_processor.task import (
+    BaseExecutorTask,
+    Fail,
+    Retry,
+    Success,
+    TaskResult,
+)
 
+from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,9 +63,9 @@ class NoToken(Exception):
 
 
 async def _get_gsheets_auth(
-        dfile_token: Optional[str],
-        conn_id: Optional[str],
-        usm: AsyncUSManager,
+    dfile_token: Optional[str],
+    conn_id: Optional[str],
+    usm: AsyncUSManager,
 ) -> Optional[GSheetsOAuth2]:
     if dfile_token is not None:  # if there is a token in dfile, then use it
         refresh_token = dfile_token
@@ -67,11 +81,11 @@ async def _get_gsheets_auth(
 
 
 async def _values_data_iter(
-        sheets_client: GSheetsClient,
-        spreadsheet_id: str,
-        sheet_sample: Sheet,
-        user_types: list[BIType | str],
-        raw_schema_body: list[SchemaColumn],
+    sheets_client: GSheetsClient,
+    spreadsheet_id: str,
+    sheet_sample: Sheet,
+    user_types: list[BIType | str],
+    raw_schema_body: list[SchemaColumn],
 ) -> AsyncIterator[list]:
     """
     Trying to convert values to the originally guessed schema
@@ -114,14 +128,14 @@ async def _values_data_iter(
             adjust_rows_coeff = acceptable_resp_size_bytes / resp_size
             sheet_sample.batch_size_rows = int(sheet_sample.batch_size_rows * adjust_rows_coeff)
             LOGGER.info(
-                f'Got a response with size {resp_size}, which is too large, going to adjust'
-                f' batch size rows from {prev_batch_size_rows}'
-                f' to {sheet_sample.batch_size_rows}'
+                f"Got a response with size {resp_size}, which is too large, going to adjust"
+                f" batch size rows from {prev_batch_size_rows}"
+                f" to {sheet_sample.batch_size_rows}"
             )
 
         for idx, (col, new_user_type) in enumerate(zip(raw_schema_body, new_user_types)):
             # fall back to string
-            if new_user_type == 'time':
+            if new_user_type == "time":
                 new_user_type = BIType.string
             if new_user_type != col.user_type and new_user_type == BIType.string:
                 raw_schema_body[idx] = raw_schema_body[idx].clone(user_type=new_user_type)
@@ -130,10 +144,7 @@ async def _values_data_iter(
             yield row
 
         current_range.row_from = current_range.row_to + 1
-        current_range.row_to = min(
-            current_range.row_to + sheet_sample.batch_size_rows,
-            sheet_sample.row_count
-        )
+        current_range.row_to = min(current_range.row_to + sheet_sample.batch_size_rows, sheet_sample.row_count)
         if current_range.row_from > sheet_sample.row_count:
             if body_rows_total == 0:
                 raise exc.TooFewRowsError()
@@ -142,7 +153,7 @@ async def _values_data_iter(
 
 @attr.s
 class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, FileUploaderTaskContext]):
-    """ Loads a spreadsheet into s3, building raw_schema based solely on gsheet cell types, schedules ParseFileTask """
+    """Loads a spreadsheet into s3, building raw_schema based solely on gsheet cell types, schedules ParseFileTask"""
 
     cls_meta = task_interface.DownloadGSheetTask
 
@@ -154,7 +165,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
         redis = self._ctx.redis_service.get_redis()
         connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
         try:
-            LOGGER.info(f'DownloadGSheetTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}')
+            LOGGER.info(f"DownloadGSheetTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}")
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
             assert dfile is not None
@@ -172,7 +183,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                     dfile_token = dfile.user_source_properties.refresh_token
                     auth = await _get_gsheets_auth(dfile_token, self.meta.connection_id, usm)
                 except NoToken:
-                    LOGGER.error('Authorized call but no token found in either DataFile or connection, failing task')
+                    LOGGER.error("Authorized call but no token found in either DataFile or connection, failing task")
                     return Fail()
 
             async with GSheetsClient(self._ctx.gsheets_settings, self._ctx.tpe, auth) as sheets_client:
@@ -209,13 +220,15 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                     sheet_properties = GSheetsUserSourceDataSourceProperties(sheet_id=sheet_sample.id)
 
                     if self.meta.exec_mode == TaskExecutionMode.BASIC:
-                        source_title = spreadsheet_sample.title + ' – ' + sheet_sample.title
-                        sheet_data_sources = [DataSource(
-                            title=source_title,
-                            raw_schema=raw_schema,
-                            status=source_status,
-                            error=None,
-                        )]
+                        source_title = spreadsheet_sample.title + " – " + sheet_sample.title
+                        sheet_data_sources = [
+                            DataSource(
+                                title=source_title,
+                                raw_schema=raw_schema,
+                                status=source_status,
+                                error=None,
+                            )
+                        ]
                         dfile.sources.extend(sheet_data_sources)
                     else:
                         if sheet_sample.id not in sources_to_update_by_sheet_id:
@@ -231,8 +244,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                     else:
                         try:
                             has_header, raw_schema, raw_schema_header, raw_schema_body = await loop.run_in_executor(
-                                self._ctx.tpe,
-                                guess_header_and_schema_gsheet, sheet_sample
+                                self._ctx.tpe, guess_header_and_schema_gsheet, sheet_sample
                             )
                         except exc.DLFileUploaderBaseError as e:
                             for src in sheet_data_sources:
@@ -252,7 +264,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                             orig_user_types: list[BIType | str] = []
                             for idx, col in enumerate(raw_schema_body):
                                 if col.user_type == BIType.string and sheet_sample.col_is_time(idx, has_header):
-                                    orig_user_types.append('time')
+                                    orig_user_types.append("time")
                                 else:
                                     orig_user_types.append(col.user_type)
 
@@ -296,7 +308,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
 
             await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
             await dfile.save()
-            LOGGER.info('DataFile object saved.')
+            LOGGER.info("DataFile object saved.")
 
             if self.meta.schedule_parsing:
                 parse_file_task = task_interface.ParseFileTask(
@@ -306,9 +318,9 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                     exec_mode=self.meta.exec_mode,
                 )
                 await task_processor.schedule(parse_file_task)
-                LOGGER.info(f'Scheduled ParseFileTask for file_id {dfile.id}')
+                LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
             else:
-                LOGGER.info(f'Skipping ParseFileTask for file_id {dfile.id} because {self.meta.schedule_parsing=}')
+                LOGGER.info(f"Skipping ParseFileTask for file_id {dfile.id} because {self.meta.schedule_parsing=}")
         except Exception as ex:
             LOGGER.exception(ex)
             if dfile is None:

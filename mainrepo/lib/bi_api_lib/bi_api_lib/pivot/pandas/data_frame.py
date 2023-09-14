@@ -1,13 +1,19 @@
 from __future__ import annotations
 
-from typing import Generator, Optional
+from typing import (
+    Generator,
+    Optional,
+)
 
 import attr
 import pandas as pd
 
-from bi_api_lib.pivot.primitives import DataCellVector
 from bi_api_lib.pivot.base.data_frame import PivotDataFrame
-from bi_api_lib.pivot.primitives import MeasureValues, PivotHeader
+from bi_api_lib.pivot.primitives import (
+    DataCellVector,
+    MeasureValues,
+    PivotHeader,
+)
 
 
 @attr.s
@@ -43,8 +49,7 @@ class PdPivotDataFrame(PivotDataFrame):
         headers = self.iter_row_headers()
         for row in self._pd_df.itertuples(index=False):
             values: tuple[Optional[DataCellVector], ...] = tuple(
-                (cell if isinstance(cell, DataCellVector) else None)
-                for cell in row
+                (cell if isinstance(cell, DataCellVector) else None) for cell in row
             )
             yield next(headers), values
 
@@ -77,8 +82,7 @@ class PdSeriesPivotDataFrameBase(PivotDataFrame):
 
     def _get_values(self) -> MeasureValues:
         values: tuple[Optional[DataCellVector], ...] = tuple(
-            (value if isinstance(value, DataCellVector) else None)
-            for value in self._pd_series.values
+            (value if isinstance(value, DataCellVector) else None) for value in self._pd_series.values
         )
         return values
 

@@ -2,30 +2,36 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import TYPE_CHECKING, Type
-
-from bi_constants.enums import DataSourceRole, ProcessorType, SelectorType, CalcMode
+from typing import (
+    TYPE_CHECKING,
+    Type,
+)
 
 from bi_api_commons.base_models import RequestContextInfo
-
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager import USManagerBase
+from bi_api_lib.dataset.base_wrapper import DatasetBaseWrapper
+from bi_api_lib.query.formalization.query_formalizer import (
+    DataQuerySpecFormalizer,
+    TotalsSpecFormalizer,
+    ValueDistinctSpecFormalizer,
+    ValueRangeSpecFormalizer,
+)
+from bi_api_lib.query.registry import get_filter_formula_compiler_cls
+from bi_constants.enums import (
+    CalcMode,
+    DataSourceRole,
+    ProcessorType,
+    SelectorType,
+)
 from bi_core.fields import BIField
 from bi_core.us_connection_base import ClassicConnectionSQL
-
+from bi_core.us_dataset import Dataset
+from bi_core.us_manager.us_manager import USManagerBase
 from bi_query_processing.enums import QueryType
-from bi_query_processing.legend.block_legend import BlockSpec
-from bi_query_processing.execution.primitives import ExecutedQuery
 from bi_query_processing.execution.exec_info import QueryExecutionInfo
-from bi_query_processing.execution.executor_base import QueryExecutorBase
 from bi_query_processing.execution.executor import QueryExecutor
-
-from bi_api_lib.dataset.base_wrapper import DatasetBaseWrapper
-from bi_api_lib.query.registry import get_filter_formula_compiler_cls
-from bi_api_lib.query.formalization.query_formalizer import (
-    DataQuerySpecFormalizer, ValueRangeSpecFormalizer,
-    ValueDistinctSpecFormalizer, TotalsSpecFormalizer,
-)
+from bi_query_processing.execution.executor_base import QueryExecutorBase
+from bi_query_processing.execution.primitives import ExecutedQuery
+from bi_query_processing.legend.block_legend import BlockSpec
 
 if TYPE_CHECKING:
     from bi_constants.types import TBIDataValue
@@ -128,20 +134,18 @@ class DatasetView(DatasetBaseWrapper):
     _verbose_logging = True
 
     def __init__(
-            self,
-            ds: Dataset, *,
-            us_manager: USManagerBase,
-            block_spec: BlockSpec,
-            rci: RequestContextInfo,
+        self,
+        ds: Dataset,
+        *,
+        us_manager: USManagerBase,
+        block_spec: BlockSpec,
+        rci: RequestContextInfo,
     ):
         self._rci = rci
         self._query_type = block_spec.query_type  # FIXME: Remove
         self._compeng_semaphore = asyncio.Semaphore()
         super().__init__(
-            ds=ds,
-            block_spec=block_spec,
-            us_manager=us_manager,
-            debug_mode=self._rci.x_dl_debug_mode or False
+            ds=ds, block_spec=block_spec, us_manager=us_manager, debug_mode=self._rci.x_dl_debug_mode or False
         )
 
     def make_formalizer(self, query_type: QueryType) -> DataQuerySpecFormalizer:
@@ -189,10 +193,11 @@ class DatasetView(DatasetBaseWrapper):
         return self._capabilities.resolve_source_role(for_preview=self.is_preview)
 
     def build_exec_info(self) -> QueryExecutionInfo:
-        LOGGER.info(f'Select field IDs: {[spec.field_id for spec in self.query_spec.select_specs]}')
+        LOGGER.info(f"Select field IDs: {[spec.field_id for spec in self.query_spec.select_specs]}")
 
-        assert self._formula_compiler is not None and self.inspect_env is not None, \
-            "perhaps the sources were not reloaded properly"
+        assert (
+            self._formula_compiler is not None and self.inspect_env is not None
+        ), "perhaps the sources were not reloaded properly"
 
         translated_multi_query = self.compile_and_translate_query(query_spec=self.query_spec)
 
@@ -213,13 +218,11 @@ class DatasetView(DatasetBaseWrapper):
         )
 
     def fast_get_expression_value_range(self) -> tuple[BIField, TBIDataValue, TBIDataValue]:
-        """ Try to get fast (cached or pre-defined) range from data source"""
+        """Try to get fast (cached or pre-defined) range from data source"""
 
-        assert len(self.query_spec.select_specs) == 2, (
-            'Fast value range is supported only for single field (MIN+MAX)'
-        )
+        assert len(self.query_spec.select_specs) == 2, "Fast value range is supported only for single field (MIN+MAX)"
         select_field_ids = {item_spec.field_id for item_spec in self.query_spec.select_specs}
-        assert len(select_field_ids) == 1, 'Got more than one field ID for range'
+        assert len(select_field_ids) == 1, "Got more than one field ID for range"
         field_id = next(iter(select_field_ids))
         field = self._ds.result_schema.by_guid(field_id)
         if field.calc_mode != CalcMode.direct:
@@ -241,9 +244,9 @@ class DatasetView(DatasetBaseWrapper):
         return field, min_value, max_value
 
     async def get_data_async(
-            self,
-            exec_info: QueryExecutionInfo,
-            allow_cache_usage: bool = True,
+        self,
+        exec_info: QueryExecutionInfo,
+        allow_cache_usage: bool = True,
     ) -> ExecutedQuery:
         executor = self.make_query_executor(
             allow_cache_usage=allow_cache_usage,

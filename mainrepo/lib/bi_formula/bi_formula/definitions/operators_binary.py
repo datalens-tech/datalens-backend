@@ -6,24 +6,34 @@ from typing import TYPE_CHECKING
 import sqlalchemy as sa
 
 from bi_formula.core import exc
-from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.core.datatype import DataType
-from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.args import ArgFlagSequence, ArgTypeSequence, ArgTypeMatcher
-from bi_formula.definitions.literals import literal, un_literal
-from bi_formula.definitions.flags import ContextFlag
-from bi_formula.definitions.type_strategy import Fixed, FromArgs
+from bi_formula.core.dialect import StandardDialect as D
+from bi_formula.definitions.args import (
+    ArgFlagSequence,
+    ArgTypeMatcher,
+    ArgTypeSequence,
+)
 from bi_formula.definitions.base import (
+    ArgTransformer,
     MultiVariantTranslation,
     TranslationVariant,
     TranslationVariantWrapped,
-    ArgTransformer,
+)
+from bi_formula.definitions.flags import ContextFlag
+from bi_formula.definitions.literals import (
+    literal,
+    un_literal,
+)
+from bi_formula.definitions.scope import Scope
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
 )
 from bi_formula.shortcuts import n
 
 if TYPE_CHECKING:
-    from bi_formula.translation.env import TranslationEnvironment
     from bi_formula.translation.context import TranslationCtx
+    from bi_formula.translation.env import TranslationEnvironment
 
 
 V = TranslationVariant.make
@@ -37,15 +47,13 @@ def as_bigint(value):
 class Binary(MultiVariantTranslation):
     arg_cnt = 2
     is_function = False
-    arg_names = ['left', 'right']
+    arg_names = ["left", "right"]
 
 
 class BinaryPower(Binary):
-    name = '^'
-    arg_names = ['base', 'power']
-    variants = [
-        VW(D.DUMMY, lambda base, power: n.func.POWER(base, power))
-    ]
+    name = "^"
+    arg_names = ["base", "power"]
+    variants = [VW(D.DUMMY, lambda base, power: n.func.POWER(base, power))]
     argument_types = [
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
     ]
@@ -53,16 +61,13 @@ class BinaryPower(Binary):
 
 
 class BinaryMult(Binary):
-    name = '*'
-    arg_names = ['value_1', 'value_2']
+    name = "*"
+    arg_names = ["value_1", "value_2"]
 
 
 class BinaryMultNumbers(BinaryMult):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: left * right
-        ),
+        V(D.DUMMY | D.SQLITE, lambda left, right: left * right),
     ]
     argument_types = [
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
@@ -72,10 +77,7 @@ class BinaryMultNumbers(BinaryMult):
 
 class BinaryMultStringConst(BinaryMult):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda text, size: literal(un_literal(text) * un_literal(size))
-        ),
+        V(D.DUMMY | D.SQLITE, lambda text, size: literal(un_literal(text) * un_literal(size))),
     ]
     argument_types = [
         ArgTypeSequence([DataType.CONST_STRING, DataType.CONST_INTEGER]),
@@ -87,8 +89,7 @@ class BinaryMultStringConst(BinaryMult):
 class BinaryMultStringNonConst(BinaryMult):
     class BinaryMultStringNonConstArgTransformer(ArgTransformer):
         def transform_args(
-            self, env: TranslationEnvironment,
-            args: list[TranslationCtx], arg_types: list[DataType]
+            self, env: TranslationEnvironment, args: list[TranslationCtx], arg_types: list[DataType]
         ) -> list[TranslationCtx]:
             """Reorder args so that str is always first and number of repeats is second"""
             if arg_types[0] not in (DataType.CONST_STRING, DataType.STRING):
@@ -104,9 +105,9 @@ class BinaryMultStringNonConst(BinaryMult):
 
 
 class BinaryDiv(Binary):
-    name = '/'
+    name = "/"
     return_type = Fixed(DataType.FLOAT)
-    arg_names = ['number_1', 'number_2']
+    arg_names = ["number_1", "number_2"]
 
 
 class BinaryDivInt(BinaryDiv):
@@ -128,8 +129,8 @@ class BinaryDivFloat(BinaryDiv):
 
 
 class BinaryMod(Binary):
-    name = '%'
-    arg_names = ['number_1', 'number_2']
+    name = "%"
+    arg_names = ["number_1", "number_2"]
 
 
 class BinaryModInteger(BinaryMod):
@@ -153,8 +154,8 @@ class BinaryModFloat(BinaryMod):
 
 
 class BinaryPlus(Binary):
-    name = '+'
-    arg_names = ['value_1', 'value_2']
+    name = "+"
+    arg_names = ["value_1", "value_2"]
 
 
 class BinaryPlusNumbers(BinaryPlus):
@@ -181,8 +182,7 @@ class BinaryPlusStrings(BinaryPlus):
 class BinaryPlusDateInt(BinaryPlus):
     class BinaryPlusDateIntArgTransformer(ArgTransformer):
         def transform_args(
-                self, env: TranslationEnvironment,
-                args: list[TranslationCtx], arg_types: list[DataType]
+            self, env: TranslationEnvironment, args: list[TranslationCtx], arg_types: list[DataType]
         ) -> list[TranslationCtx]:
             """Reorder args so that date is always first and number of days is second"""
             if arg_types[0] not in (DataType.CONST_DATE, DataType.DATE):
@@ -209,8 +209,7 @@ class BinaryPlusArray(BinaryPlus):
 class BinaryPlusDateFloat(BinaryPlus):
     class BinaryPlusDateFloatArgTransformer(ArgTransformer):
         def transform_args(
-                self, env: TranslationEnvironment,
-                args: list[TranslationCtx], arg_types: list[DataType]
+            self, env: TranslationEnvironment, args: list[TranslationCtx], arg_types: list[DataType]
         ) -> list[TranslationCtx]:
             """Reorder args so that date is always first and number of days is second"""
             if arg_types[0] not in (DataType.CONST_DATE, DataType.DATE):
@@ -228,8 +227,7 @@ class BinaryPlusDateFloat(BinaryPlus):
 class BinaryPlusDatetimeNumber(BinaryPlus):
     class BinaryPlusDatetimeNumberArgTransformer(ArgTransformer):
         def transform_args(
-                self, env: TranslationEnvironment,
-                args: list[TranslationCtx], arg_types: list[DataType]
+            self, env: TranslationEnvironment, args: list[TranslationCtx], arg_types: list[DataType]
         ) -> list[TranslationCtx]:
             """Reorder args so that date is always first and number of days is second"""
             if arg_types[0] not in (DataType.CONST_DATETIME, DataType.DATETIME):
@@ -247,8 +245,7 @@ class BinaryPlusDatetimeNumber(BinaryPlus):
 class BinaryPlusGenericDatetimeNumber(BinaryPlus):
     class BinaryPlusGenericDatetimeNumberArgTransformer(ArgTransformer):
         def transform_args(
-                self, env: TranslationEnvironment,
-                args: list[TranslationCtx], arg_types: list[DataType]
+            self, env: TranslationEnvironment, args: list[TranslationCtx], arg_types: list[DataType]
         ) -> list[TranslationCtx]:
             """Reorder args so that date is always first and number of days is second"""
             if arg_types[0] not in (DataType.CONST_GENERICDATETIME, DataType.GENERICDATETIME):
@@ -264,8 +261,8 @@ class BinaryPlusGenericDatetimeNumber(BinaryPlus):
 
 
 class BinaryMinus(Binary):
-    name = '-'
-    arg_names = ['value_1', 'value_2']
+    name = "-"
+    arg_names = ["value_1", "value_2"]
 
 
 class BinaryMinusNumbers(BinaryMinus):
@@ -346,18 +343,18 @@ class BinaryComparison(Binary):
 
 
 class BinaryLike(BinaryComparison):
-    name = 'like'
+    name = "like"
     variants = [
         V(D.DUMMY | D.SQLITE, lambda x, y: x.like(y)),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
     ]
-    arg_names = ['string_1', 'string_2']
+    arg_names = ["string_1", "string_2"]
 
 
 class BinaryNotLike(BinaryComparison):
-    name = 'notlike'
+    name = "notlike"
     scopes = BinaryComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
         V(D.DUMMY | D.SQLITE, lambda x, y: x.notlike(y)),
@@ -365,17 +362,16 @@ class BinaryNotLike(BinaryComparison):
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
     ]
-    arg_names = ['string_1', 'string_2']
+    arg_names = ["string_1", "string_2"]
 
 
 class BinaryEqNEqOrderedBase(BinaryComparison):
     class BinaryEqNEqOrderedBaseArgTransformer(ArgTransformer):
         def transform_args(
-            self, env: TranslationEnvironment,
-            args: list[TranslationCtx], arg_types: list[DataType]
+            self, env: TranslationEnvironment, args: list[TranslationCtx], arg_types: list[DataType]
         ) -> list[TranslationCtx]:
             if DataType.NULL in arg_types:
-                raise exc.TranslationError('Invalid comparison with NULL (use `<expr> IS [NOT] NULL`)')
+                raise exc.TranslationError("Invalid comparison with NULL (use `<expr> IS [NOT] NULL`)")
             return args
 
     arg_transformer = BinaryEqNEqOrderedBaseArgTransformer()
@@ -425,22 +421,19 @@ class BinaryEqImpl(MultiVariantTranslation):
 
 
 class BinaryEqual(BinaryEqImpl, BinaryEqNEq):
-    name = '=='
-    arg_names = ['value_1', 'value_2']
+    name = "=="
+    arg_names = ["value_1", "value_2"]
 
 
 class BinaryEqualInternal(BinaryEqImpl, BinaryEqNEqInternal):
-    name = '_=='
+    name = "_=="
 
 
 class BinaryEqualDenullified(BinaryEqNEqInternal):
-    name = '_dneq'
+    name = "_dneq"
     scopes = BinaryEqNEqInternal.scopes
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: sa.or_(left == right, sa.and_(left.is_(None), right.is_(None)))
-        ),
+        V(D.DUMMY | D.SQLITE, lambda left, right: sa.or_(left == right, sa.and_(left.is_(None), right.is_(None)))),
     ]
     argument_types = BinaryEqNEqInternal.argument_types + [
         ArgTypeSequence([DataType.MARKUP, DataType.MARKUP]),
@@ -449,20 +442,17 @@ class BinaryEqualDenullified(BinaryEqNEqInternal):
 
 class BinaryNEqImpl(MultiVariantTranslation):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: left != right
-        ),
+        V(D.DUMMY | D.SQLITE, lambda left, right: left != right),
     ]
 
 
 class BinaryNotEqual(BinaryNEqImpl, BinaryEqNEq):
-    name = '!='
+    name = "!="
     scopes = BinaryEqNEq.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class BinaryNotEqualInternal(BinaryNEqImpl, BinaryEqNEqInternal):
-    name = '_!='
+    name = "_!="
 
 
 class BinaryOrderedComparison(BinaryEqNEqOrderedBase):
@@ -481,54 +471,40 @@ class BinaryOrderedComparison(BinaryEqNEqOrderedBase):
 
 
 class BinaryLessThan(BinaryOrderedComparison):
-    name = '<'
+    name = "<"
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
-    variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: left < right
-        )
-    ]
+    variants = [V(D.DUMMY | D.SQLITE, lambda left, right: left < right)]
 
 
 class BinaryLessThanOrEqual(BinaryOrderedComparison):
-    name = '<='
+    name = "<="
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: left <= right
-        ),
+        V(D.DUMMY | D.SQLITE, lambda left, right: left <= right),
     ]
 
 
 class BinaryGreaterThan(BinaryOrderedComparison):
-    name = '>'
+    name = ">"
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: left > right
-        ),
+        V(D.DUMMY | D.SQLITE, lambda left, right: left > right),
     ]
     return_type = Fixed(DataType.BOOLEAN)
 
 
 class BinaryGreaterThanOrEqual(BinaryOrderedComparison):
-    name = '>='
+    name = ">="
     scopes = BinaryOrderedComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda left, right: left >= right
-        ),
+        V(D.DUMMY | D.SQLITE, lambda left, right: left >= right),
     ]
     return_type = Fixed(DataType.BOOLEAN)
 
 
 class BinaryAnd(Binary):  # FIXME: support other types
-    name = 'and'
-    arg_names = ['value_1', 'value_2']
+    name = "and"
+    arg_names = ["value_1", "value_2"]
     argument_types = [
         ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
     ]
@@ -541,8 +517,8 @@ class BinaryAnd(Binary):  # FIXME: support other types
 
 
 class BinaryOr(Binary):  # FIXME: support other types
-    name = 'or'
-    arg_names = ['value_1', 'value_2']
+    name = "or"
+    arg_names = ["value_1", "value_2"]
     argument_types = [
         ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
     ]
@@ -554,11 +530,7 @@ class BinaryOr(Binary):  # FIXME: support other types
     return_flags = ContextFlag.IS_CONDITION
 
 
-def _in_fix_null(
-        left,
-        right,
-        stringify_values
-):
+def _in_fix_null(left, right, stringify_values):
     new_left, new_right = _prepare_in_args(left, right, stringify_values)
     if len(new_right) == len(right):
         return new_left.in_(new_right)
@@ -573,8 +545,8 @@ def _in_fix_null(
 
 
 class BinaryIn(Binary):
-    name = 'in'
-    arg_names = ['item', 'list']
+    name = "in"
+    arg_names = ["item", "list"]
     variants = [
         V(
             D.DUMMY | D.SQLITE,
@@ -586,11 +558,7 @@ class BinaryIn(Binary):
     return_flags = ContextFlag.IS_CONDITION
 
 
-def _not_in_fix_null(
-        left,
-        right,
-        stringify_values
-):
+def _not_in_fix_null(left, right, stringify_values):
     new_left, new_right = _prepare_in_args(left, right, stringify_values)
     if len(new_right) == len(right):
         return sa.or_(
@@ -607,11 +575,7 @@ def _not_in_fix_null(
     return new_left.isnot(None)
 
 
-def _prepare_in_args(
-        left,
-        right,
-        stringify_values: bool
-):
+def _prepare_in_args(left, right, stringify_values: bool):
     right_nulls_filtered = [x for x in right if not isinstance(x, sa.sql.elements.Null)]
     if not stringify_values:
         return left, right_nulls_filtered
@@ -620,9 +584,9 @@ def _prepare_in_args(
 
 
 class BinaryNotIn(Binary):
-    name = 'notin'
+    name = "notin"
     scopes = Binary.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
-    arg_names = ['item', 'list']
+    arg_names = ["item", "list"]
     variants = [
         V(
             D.DUMMY | D.SQLITE,
@@ -637,16 +601,13 @@ class BinaryNotIn(Binary):
 DEFINITIONS_BINARY = [
     # !=
     BinaryNotEqual,
-
     # %
     BinaryModInteger,
     BinaryModFloat,
-
     # *
     BinaryMultNumbers,
     BinaryMultStringConst,
     BinaryMultStringNonConst,
-
     # +
     BinaryPlusNumbers,
     BinaryPlusStrings,
@@ -655,7 +616,6 @@ DEFINITIONS_BINARY = [
     BinaryPlusDateFloat,
     BinaryPlusDatetimeNumber,
     BinaryPlusGenericDatetimeNumber,
-
     # -
     BinaryMinusNumbers,
     BinaryMinusDateInt,
@@ -665,53 +625,37 @@ DEFINITIONS_BINARY = [
     BinaryMinusDates,
     BinaryMinusDatetimes,
     BinaryMinusGenericDatetimes,
-
     # /
     BinaryDivInt,
     BinaryDivFloat,
-
     # <
     BinaryLessThan,
-
     # <=
     BinaryLessThanOrEqual,
-
     # ==
     BinaryEqual,
-
     # >
     BinaryGreaterThan,
-
     # >=
     BinaryGreaterThanOrEqual,
-
     # ^
     BinaryPower,
-
     # _!=
     BinaryNotEqualInternal,
-
     # _==
     BinaryEqualInternal,
-
     # _dneq
     BinaryEqualDenullified,
-
     # and
     BinaryAnd,
-
     # in
     BinaryIn,
-
     # like
     BinaryLike,
-
     # notin
     BinaryNotIn,
-
     # notlike
     BinaryNotLike,
-
     # or
     BinaryOr,
 ]

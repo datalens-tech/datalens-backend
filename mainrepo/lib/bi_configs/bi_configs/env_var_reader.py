@@ -1,18 +1,27 @@
 from __future__ import annotations
 
 import os
-from typing import TypeVar, Callable, overload, Optional, NamedTuple, Union, Generic, Literal
+from typing import (
+    Callable,
+    Generic,
+    Literal,
+    NamedTuple,
+    Optional,
+    TypeVar,
+    Union,
+    overload,
+)
 
-_RET_TV = TypeVar('_RET_TV')
-_FACTORY_RET_TV = TypeVar('_FACTORY_RET_TV')
+_RET_TV = TypeVar("_RET_TV")
+_FACTORY_RET_TV = TypeVar("_FACTORY_RET_TV")
 
 
 class SecretStr(str):
     def __repr__(self) -> str:
-        return 'sec_str<***>'
+        return "sec_str<***>"
 
     def __str__(self) -> str:
-        return 'sec_str<***>'
+        return "sec_str<***>"
 
 
 class Required(NamedTuple):
@@ -42,7 +51,9 @@ def get_from_env(env_key: str, converter: Callable[[str], _RET_TV], default: Req
 
 
 @overload  # noqa
-def get_from_env(env_key: str, converter: Callable[[str], _RET_TV], default: Union[_RET_TV, Factory[_RET_TV]]) -> _RET_TV:
+def get_from_env(
+    env_key: str, converter: Callable[[str], _RET_TV], default: Union[_RET_TV, Factory[_RET_TV]]
+) -> _RET_TV:
     pass
 
 
@@ -52,9 +63,9 @@ def get_from_env(env_key: str, converter: Callable[[str], _RET_TV]) -> _RET_TV:
 
 
 def get_from_env(  # noqa
-        env_key: str,
-        converter: Callable[[str], _RET_TV],
-        default: Union[_RET_TV, Factory[_RET_TV], Required, None] = Required(),
+    env_key: str,
+    converter: Callable[[str], _RET_TV],
+    default: Union[_RET_TV, Factory[_RET_TV], Required, None] = Required(),
 ) -> Optional[_RET_TV]:
     if env_key in os.environ:
         try:

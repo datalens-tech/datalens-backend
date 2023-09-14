@@ -1,154 +1,148 @@
 from bi_formula.core.datatype import DataType
-
-from bi_formula_ref.examples.config import ExampleConfig, ExampleSource
-from bi_formula_ref.registry.base import FunctionDocRegistryItem
-from bi_formula_ref.registry.example import SimpleExample, DataExample
 from bi_formula_ref.categories.aggregation import CATEGORY_AGGREGATION
+from bi_formula_ref.examples.config import (
+    ExampleConfig,
+    ExampleSource,
+)
 from bi_formula_ref.localization import get_gettext
-
+from bi_formula_ref.registry.base import FunctionDocRegistryItem
+from bi_formula_ref.registry.example import (
+    DataExample,
+    SimpleExample,
+)
 
 _ = get_gettext()
 
 _SOURCE_INT_FLOAT_1 = ExampleSource(
     columns=[
-        ('City', DataType.STRING),
-        ('Category', DataType.STRING),
-        ('Orders', DataType.INTEGER),
-        ('Profit', DataType.FLOAT),
+        ("City", DataType.STRING),
+        ("Category", DataType.STRING),
+        ("Orders", DataType.INTEGER),
+        ("Profit", DataType.FLOAT),
     ],
     data=[
-        ['London', 'Office Supplies', 8, 120.10],
-        ['London', 'Furniture', 1, 750.0],
-        ['Moscow', 'Furniture', 2, 1250.50],
-        ['Moscow', 'Office Supplies', 4, 85.34],
-        ['San Francisco', 'Office Supplies', 23, 723.0],
-        ['Detroit', 'Furniture', 5, 6205.87],
-    ]
+        ["London", "Office Supplies", 8, 120.10],
+        ["London", "Furniture", 1, 750.0],
+        ["Moscow", "Furniture", 2, 1250.50],
+        ["Moscow", "Office Supplies", 4, 85.34],
+        ["San Francisco", "Office Supplies", 23, 723.0],
+        ["Detroit", "Furniture", 5, 6205.87],
+    ],
 )
 
 
 FUNCTION_SUM = FunctionDocRegistryItem(
-    name='sum',
+    name="sum",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        'Returns the sum of all expression values. Applicable to numeric data types only.'
-    ),
+    description=_("Returns the sum of all expression values. Applicable to numeric data types only."),
     examples=[
         DataExample(
             example_config=ExampleConfig(
                 source=_SOURCE_INT_FLOAT_1,
-                group_by=['[City]'], order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[
-                    ('City', '[City]'), ('Sum 1', 'SUM([Orders])'), ('Sum 2', 'SUM([Profit])')],
+                formula_fields=[("City", "[City]"), ("Sum 1", "SUM([Orders])"), ("Sum 2", "SUM([Profit])")],
             ),
         ),
     ],
 )
 
 FUNCTION_SUM_IF = FunctionDocRegistryItem(
-    name='sum_if',
+    name="sum_if",
     category=CATEGORY_AGGREGATION,
     description=_(
-        'Returns the sum of all the expression values that meet the {arg:1} condition. '
-        'Applicable to numeric data types only.'
+        "Returns the sum of all the expression values that meet the {arg:1} condition. "
+        "Applicable to numeric data types only."
     ),
     examples=[
-        SimpleExample('SUM_IF([Profit], [Profit] > 15)'),
+        SimpleExample("SUM_IF([Profit], [Profit] > 15)"),
     ],
 )
 
 FUNCTION_AVG = FunctionDocRegistryItem(
-    name='avg',
+    name="avg",
     category=CATEGORY_AGGREGATION,
     description=_(
-        'Returns the average of all values. Applicable to numeric data types as well as {type:DATE|DATETIME}.'
+        "Returns the average of all values. Applicable to numeric data types as well as {type:DATE|DATETIME}."
     ),
     examples=[
-        SimpleExample('AVG([Profit])'),
+        SimpleExample("AVG([Profit])"),
     ],
 )
 
 FUNCTION_AVG_IF = FunctionDocRegistryItem(
-    name='avg_if',
+    name="avg_if",
     category=CATEGORY_AGGREGATION,
     description=_(
-        'Returns the average of all values that meet the {arg:1} condition. '
-        'If the values don\'t exist, it returns `NULL`. Applicable to numeric data types only.'
+        "Returns the average of all values that meet the {arg:1} condition. "
+        "If the values don't exist, it returns `NULL`. Applicable to numeric data types only."
     ),
     examples=[
-        SimpleExample('AVG_IF([Profit], [Profit] > 5)'),
+        SimpleExample("AVG_IF([Profit], [Profit] > 5)"),
     ],
 )
 
 FUNCTION_MAX = FunctionDocRegistryItem(
-    name='max',
+    name="max",
     category=CATEGORY_AGGREGATION,
     description=_(
-        'Returns the maximum value.\n\n'
-        'If {arg:0}:\n'
-        '- number — Returns the largest number.\n'
-        '- date — Returns the latest date.\n'
-        '- string — Returns the last value in the alphabetic order.\n'
+        "Returns the maximum value.\n\n"
+        "If {arg:0}:\n"
+        "- number — Returns the largest number.\n"
+        "- date — Returns the latest date.\n"
+        "- string — Returns the last value in the alphabetic order.\n"
     ),
     examples=[
-        SimpleExample('MAX([Profit])'),
+        SimpleExample("MAX([Profit])"),
     ],
 )
 
 FUNCTION_MIN = FunctionDocRegistryItem(
-    name='min',
+    name="min",
     category=CATEGORY_AGGREGATION,
     description=_(
-        'Returns the minimum value.\n\n'
-        'If {arg:0}:\n'
-        '- number — Returns the smallest number.\n'
-        '- date — Returns the earliest date.\n'
-        '- string — Returns the first value in the alphabetic order.\n'
+        "Returns the minimum value.\n\n"
+        "If {arg:0}:\n"
+        "- number — Returns the smallest number.\n"
+        "- date — Returns the earliest date.\n"
+        "- string — Returns the first value in the alphabetic order.\n"
     ),
     examples=[
-        SimpleExample('MIN([Profit])'),
+        SimpleExample("MIN([Profit])"),
     ],
 )
 
 FUNCTION_COUNT = FunctionDocRegistryItem(
-    name='count',
+    name="count",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        'Returns the number of items in the group.'
-    ),
+    description=_("Returns the number of items in the group."),
     examples=[
-        SimpleExample('COUNT()'),
-        SimpleExample('COUNT([OrderID])'),
+        SimpleExample("COUNT()"),
+        SimpleExample("COUNT([OrderID])"),
     ],
 )
 
 FUNCTION_COUNT_IF = FunctionDocRegistryItem(
-    name='count_if',
+    name="count_if",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        'Returns the number of items in the group meeting the {arg:0} condition.'
-    ),
+    description=_("Returns the number of items in the group meeting the {arg:0} condition."),
     examples=[
-        SimpleExample('COUNT_IF([Profit] > 5)'),
+        SimpleExample("COUNT_IF([Profit] > 5)"),
     ],
 )
 
 FUNCTION_COUNTD = FunctionDocRegistryItem(
-    name='countd',
+    name="countd",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        "Returns the number of unique values in the group.\n"
-        "\n"
-        "See also {ref:COUNTD_APPROX}."
-    ),
+    description=_("Returns the number of unique values in the group.\n" "\n" "See also {ref:COUNTD_APPROX}."),
     examples=[
-        SimpleExample('COUNTD([ClientID])'),
+        SimpleExample("COUNTD([ClientID])"),
     ],
 )
 
 FUNCTION_COUNTD_IF = FunctionDocRegistryItem(
-    name='countd_if',
+    name="countd_if",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns the number of unique values in the group that meet the {arg:1} "
@@ -157,101 +151,88 @@ FUNCTION_COUNTD_IF = FunctionDocRegistryItem(
         "See also {ref:COUNTD_APPROX}."
     ),
     examples=[
-        SimpleExample('COUNTD_IF([ClientID], [Profit] > 5)'),
+        SimpleExample("COUNTD_IF([ClientID], [Profit] > 5)"),
     ],
 )
 
 FUNCTION_COUNTD_APPROX = FunctionDocRegistryItem(
-    name='countd_approx',
+    name="countd_approx",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns the approximate number of unique values in the group. Faster than "
         "{ref:COUNTD}, but doesn't guarantee accuracy."
     ),
     examples=[
-        SimpleExample('COUNTD_APPROX([ClienID])'),
+        SimpleExample("COUNTD_APPROX([ClienID])"),
     ],
 )
 
 FUNCTION_STDEV = FunctionDocRegistryItem(
-    name='stdev',
+    name="stdev",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns the statistical standard deviation of all values in the expression "
         "based on a selection from the population."
     ),
     examples=[
-        SimpleExample('STDEV([Profit])'),
+        SimpleExample("STDEV([Profit])"),
     ],
 )
 
 FUNCTION_STDEVP = FunctionDocRegistryItem(
-    name='stdevp',
+    name="stdevp",
     category=CATEGORY_AGGREGATION,
     description=_(
-        "Returns the statistical standard deviation of all values in the expression "
-        "based on the biased population."
+        "Returns the statistical standard deviation of all values in the expression " "based on the biased population."
     ),
     examples=[
-        SimpleExample('STDEVP([Profit])'),
+        SimpleExample("STDEVP([Profit])"),
     ],
 )
 
 FUNCTION_VAR = FunctionDocRegistryItem(
-    name='var',
+    name="var",
     category=CATEGORY_AGGREGATION,
     description=_(
-        "Returns the statistical variance of all values in an expression based on a "
-        "selection from the population."
+        "Returns the statistical variance of all values in an expression based on a " "selection from the population."
     ),
     examples=[
-        SimpleExample('VAR([Profit])'),
+        SimpleExample("VAR([Profit])"),
     ],
 )
 
 FUNCTION_VARP = FunctionDocRegistryItem(
-    name='varp',
+    name="varp",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        "Returns the statistical variance of all values in an expression across the "
-        "entire population."
-    ),
+    description=_("Returns the statistical variance of all values in an expression across the " "entire population."),
     examples=[
-        SimpleExample('VARP([Profit])'),
+        SimpleExample("VARP([Profit])"),
     ],
 )
 
 FUNCTION_QUANTILE = FunctionDocRegistryItem(
-    name='quantile',
+    name="quantile",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        "Returns the precise {arg:1}-level quantile ({arg:1} should be in range "
-        "from 0 to 1)."
-    ),
+    description=_("Returns the precise {arg:1}-level quantile ({arg:1} should be in range " "from 0 to 1)."),
 )
 
 FUNCTION_QUANTILE_APPROX = FunctionDocRegistryItem(
-    name='quantile_approx',
+    name="quantile_approx",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        "Returns the approximate {arg:1}-level quantile ({arg:1} should be in range from "
-        "0 to 1)."
-    ),
+    description=_("Returns the approximate {arg:1}-level quantile ({arg:1} should be in range from " "0 to 1)."),
 )
 
 FUNCTION_MEDIAN = FunctionDocRegistryItem(
-    name='median',
+    name="median",
     category=CATEGORY_AGGREGATION,
-    description=_(
-        'Returns the median value.'
-    ),
+    description=_("Returns the median value."),
     examples=[
-        SimpleExample('MEDIAN([Profit])'),
+        SimpleExample("MEDIAN([Profit])"),
     ],
 )
 
 FUNCTION_ANY = FunctionDocRegistryItem(
-    name='any',
+    name="any",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns one of the values of {arg:0} from the group. This is a "
@@ -259,12 +240,12 @@ FUNCTION_ANY = FunctionDocRegistryItem(
         "multiple queries."
     ),
     examples=[
-        SimpleExample('ANY([Profit])'),
+        SimpleExample("ANY([Profit])"),
     ],
 )
 
 FUNCTION_ARG_MIN = FunctionDocRegistryItem(
-    name='arg_min',
+    name="arg_min",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns {arg:0} for the minimum value of {arg:1} in the group. If multiple "
@@ -272,12 +253,12 @@ FUNCTION_ARG_MIN = FunctionDocRegistryItem(
         "encountered is returned. This makes the function non-deterministic."
     ),
     examples=[
-        SimpleExample('ARG_MIN([Sales], [Profit])'),
+        SimpleExample("ARG_MIN([Sales], [Profit])"),
     ],
 )
 
 FUNCTION_ARG_MAX = FunctionDocRegistryItem(
-    name='arg_max',
+    name="arg_max",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns {arg:0} for the maximum value of {arg:1} in the group. If multiple "
@@ -285,12 +266,12 @@ FUNCTION_ARG_MAX = FunctionDocRegistryItem(
         "encountered is returned. This makes the function non-deterministic."
     ),
     examples=[
-        SimpleExample('ARG_MAX([Sales], [Profit])'),
+        SimpleExample("ARG_MAX([Sales], [Profit])"),
     ],
 )
 
 FUNCTION_ALL_CONCAT = FunctionDocRegistryItem(
-    name='all_concat',
+    name="all_concat",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns a string that contains all unique values of {arg:0} delimited by {arg:1} "
@@ -303,7 +284,7 @@ FUNCTION_ALL_CONCAT = FunctionDocRegistryItem(
 )
 
 FUNCTION_TOP_CONCAT = FunctionDocRegistryItem(
-    name='top_concat',
+    name="top_concat",
     category=CATEGORY_AGGREGATION,
     description=_(
         "Returns a string that contains top {arg:1} unique values of {arg:0} delimited by {arg:2} "

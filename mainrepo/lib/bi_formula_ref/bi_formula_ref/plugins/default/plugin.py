@@ -1,4 +1,7 @@
-from bi_formula_ref.config import ConfigVersion, DOC_GEN_CONFIG_DEFAULT
+from bi_formula_ref.config import (
+    DOC_GEN_CONFIG_DEFAULT,
+    ConfigVersion,
+)
 from bi_formula_ref.plugins.base.plugin import FormulaRefPlugin
 from bi_formula_ref.plugins.default.i18n import CONFIGS
 

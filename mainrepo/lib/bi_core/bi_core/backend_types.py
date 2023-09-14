@@ -1,5 +1,7 @@
-from bi_constants.enums import ConnectionType, SourceBackendType
-
+from bi_constants.enums import (
+    ConnectionType,
+    SourceBackendType,
+)
 
 _CONNECTION_BACKEND_TYPES: dict[ConnectionType, SourceBackendType] = {}
 

@@ -1,14 +1,23 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Tuple, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import attr
 from sqlalchemy import sql as sasql
 
 if TYPE_CHECKING:
     from bi_constants.enums import IndexKind
-    from bi_core.db.native_type import GenericNativeType
     from bi_constants.types import TJSONExt
+    from bi_core.db.native_type import GenericNativeType
 
 
 class ExecutionStep:
@@ -28,7 +37,7 @@ class ExecutionStepDataChunk(ExecutionStep):
     chunk: Sequence[Sequence] = attr.ib()
 
 
-_DB_ADAPTER_QUERY_TV = TypeVar('_DB_ADAPTER_QUERY_TV', bound='DBAdapterQuery')
+_DB_ADAPTER_QUERY_TV = TypeVar("_DB_ADAPTER_QUERY_TV", bound="DBAdapterQuery")
 
 
 @attr.s(frozen=True)
@@ -62,7 +71,7 @@ class RawColumnInfo:
     name: str
     title: Optional[str]
     nullable: bool
-    native_type: 'GenericNativeType'
+    native_type: "GenericNativeType"
 
 
 @attr.s(frozen=True, slots=True, auto_attribs=True)

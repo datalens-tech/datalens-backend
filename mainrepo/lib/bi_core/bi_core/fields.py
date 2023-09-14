@@ -4,18 +4,33 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, ClassVar, Collection, Dict, List, NamedTuple, Optional, Type, TypeVar, Union
+from typing import (
+    Any,
+    ClassVar,
+    Collection,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import attr
 
 from bi_constants.enums import (
-    AggregationFunction, BIType, CalcMode, FieldType, ManagedBy,
-    ParameterValueConstraintType, TopLevelComponentId)
-
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    FieldType,
+    ManagedBy,
+    ParameterValueConstraintType,
+    TopLevelComponentId,
+)
 from bi_core.components.ids import FieldId
 from bi_core.exc import FieldNotFound
 from bi_core.values import BIValue
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -55,7 +70,7 @@ class SetParameterValueConstraint(ParameterValueConstraint):
         return any([v.value == value for v in self.values])
 
 
-_CALC_SPEC_TV = TypeVar('_CALC_SPEC_TV', bound='CalculationSpec')
+_CALC_SPEC_TV = TypeVar("_CALC_SPEC_TV", bound="CalculationSpec")
 
 
 @attr.s(frozen=True)
@@ -86,7 +101,7 @@ class DirectCalculationSpec(CalculationSpec):
     # Name of the table column this field refers to
     # (name attribute of a raw_Schema column).
     # Use empty string (`''`) for non-direct fields.
-    source: str = attr.ib(kw_only=True, default='')
+    source: str = attr.ib(kw_only=True, default="")
 
 
 @attr.s(frozen=True)
@@ -100,14 +115,14 @@ class FormulaCalculationSpec(CalculationSpec):
     # The formula itself. Parsed and handled mostly by the bi_formula package.
     # In this formula other fields are referred to exclusively by title,
     # Use empty string (`''`) for non-formula fields.
-    formula: str = attr.ib(kw_only=True, default='')
+    formula: str = attr.ib(kw_only=True, default="")
 
     # In this formula other fields are referred to exclusively by guid,
     # Use empty string (`''`) for non-formula fields.
-    guid_formula: str = attr.ib(kw_only=True, default='')
+    guid_formula: str = attr.ib(kw_only=True, default="")
 
     def depends_on(self, field: BIField) -> bool:
-        return f'[{field.title}]' in self.formula or f'[{field.guid}]' in self.guid_formula
+        return f"[{field.title}]" in self.formula or f"[{field.guid}]" in self.guid_formula
 
 
 @attr.s(frozen=True)
@@ -141,14 +156,16 @@ def filter_calc_spec_kwargs(mode: str, kwargs: Dict[str, Any]) -> Dict[str, Any]
 
 
 def create_calc_spec_from(kwargs: Dict[str, Any]) -> CalculationSpec:
-    mode = kwargs['calc_mode']
+    mode = kwargs["calc_mode"]
     spec_cls = _CALCULATION_SPECS_BY_MODE[mode.name]
     return spec_cls(**filter_calc_spec_kwargs(mode.name, kwargs))
 
 
-def del_calc_spec_kwargs_from(kwargs: Dict[str, Any], spec_cls: Optional[Type[CalculationSpec]] = None) -> Dict[str, Any]:
+def del_calc_spec_kwargs_from(
+    kwargs: Dict[str, Any], spec_cls: Optional[Type[CalculationSpec]] = None
+) -> Dict[str, Any]:
     spec_classes = _CALCULATION_SPECS_BY_MODE.values() if spec_cls is None else [spec_cls]
-    keys = [f.name for s in spec_classes for f in attr.fields(s)] + ['calc_mode']
+    keys = [f.name for s in spec_classes for f in attr.fields(s)] + ["calc_mode"]
     return {key: value for key, value in kwargs.items() if key not in keys}
 
 
@@ -223,29 +240,29 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
 
     @classmethod
     def make(
-            cls,
-            guid: FieldId,
-            title: Optional[str],
-            calc_spec: CalculationSpec,
-            aggregation: Union[AggregationFunction, str, None] = None,
-            type: Union[FieldType, str, None] = None,
-            hidden: bool = False,
-            description: str = '',
-            cast: Union[BIType, str, None] = None,
-            initial_data_type: Union[BIType, str, None] = None,
-            data_type: Union[BIType, str, None] = None,
-            valid: Optional[bool] = None,
-            has_auto_aggregation: bool = False,
-            lock_aggregation: bool = False,
-            managed_by: Optional[ManagedBy] = None,
+        cls,
+        guid: FieldId,
+        title: Optional[str],
+        calc_spec: CalculationSpec,
+        aggregation: Union[AggregationFunction, str, None] = None,
+        type: Union[FieldType, str, None] = None,
+        hidden: bool = False,
+        description: str = "",
+        cast: Union[BIType, str, None] = None,
+        initial_data_type: Union[BIType, str, None] = None,
+        data_type: Union[BIType, str, None] = None,
+        valid: Optional[bool] = None,
+        has_auto_aggregation: bool = False,
+        lock_aggregation: bool = False,
+        managed_by: Optional[ManagedBy] = None,
     ) -> BIField:
         """
         Normalize attributes and create a BIField object.
         """
 
         if isinstance(calc_spec, DirectCalculationSpec):
-            title = title or calc_spec.source or ''
-            calc_spec = calc_spec.clone(source=calc_spec.source or title or '')
+            title = title or calc_spec.source or ""
+            calc_spec = calc_spec.clone(source=calc_spec.source or title or "")
         assert title is not None
 
         aggregation = AggregationFunction.normalize(aggregation)
@@ -265,11 +282,19 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         managed_by = ManagedBy.normalize(managed_by) or ManagedBy.user
 
         return cls(
-            title=title, guid=guid, aggregation=aggregation,
-            hidden=hidden, description=description, type=type,
-            cast=cast, initial_data_type=initial_data_type, data_type=data_type,
-            valid=valid, has_auto_aggregation=has_auto_aggregation,
-            lock_aggregation=lock_aggregation, managed_by=managed_by,
+            title=title,
+            guid=guid,
+            aggregation=aggregation,
+            hidden=hidden,
+            description=description,
+            type=type,
+            cast=cast,
+            initial_data_type=initial_data_type,
+            data_type=data_type,
+            valid=valid,
+            has_auto_aggregation=has_auto_aggregation,
+            lock_aggregation=lock_aggregation,
+            managed_by=managed_by,
             calc_spec=calc_spec,
         )
 
@@ -312,17 +337,19 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         return (
             self.has_auto_aggregation
             # TODO: Remove this second condition after dataset migration #11 is applied
-            or self.type == FieldType.MEASURE and self.aggregation == AggregationFunction.none
+            or self.type == FieldType.MEASURE
+            and self.aggregation == AggregationFunction.none
         )
 
     @property
     def aggregation_locked(self) -> bool:
         return (
             # TODO: Remove the first condition after aggregation handling is enabled for formula fields in bi-api
-            self.calc_mode == CalcMode.formula or
-            self.calc_mode == CalcMode.parameter or
-            self.has_auto_aggregation or
-            self.lock_aggregation)
+            self.calc_mode == CalcMode.formula
+            or self.calc_mode == CalcMode.parameter
+            or self.has_auto_aggregation
+            or self.lock_aggregation
+        )
 
     @staticmethod
     def rename_in_formula(formula: str, key_map: Dict[str, str]) -> str:
@@ -332,10 +359,10 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
             try:
                 value = key_map[key]
             except KeyError:
-                LOGGER.warning('Unknown field: %s', key)
+                LOGGER.warning("Unknown field: %s", key)
                 continue
 
-            formula = formula.replace('[{}]'.format(key), '[{}]'.format(value))
+            formula = formula.replace("[{}]".format(key), "[{}]".format(value))
 
         return formula
 
@@ -343,9 +370,9 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         return self.calc_spec.depends_on(field)
 
     def clone(self, **kwargs: Any) -> BIField:
-        if 'calc_spec' not in kwargs:
+        if "calc_spec" not in kwargs:
             new_calc_spec = None
-            mode = kwargs.get('calc_mode', self.calc_mode)
+            mode = kwargs.get("calc_mode", self.calc_mode)
             if mode != self.calc_mode:
                 new_calc_spec = create_calc_spec_from(kwargs)
             else:
@@ -354,12 +381,12 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
                     new_calc_spec = self.calc_spec.clone(**calc_spec_kwargs)
             kwargs = del_calc_spec_kwargs_from(kwargs)
             if new_calc_spec is not None:
-                kwargs['calc_spec'] = new_calc_spec
+                kwargs["calc_spec"] = new_calc_spec
 
         return self._replace(**kwargs)
 
 
-FIELD_RE = re.compile(r'\[([^]]*)\]')
+FIELD_RE = re.compile(r"\[([^]]*)\]")
 
 
 @attr.s
@@ -395,7 +422,7 @@ class ResultSchema:
         try:
             return self._guid_cache[guid]
         except KeyError:
-            raise FieldNotFound(f'Unknown field {guid}')
+            raise FieldNotFound(f"Unknown field {guid}")
 
     def by_title(self, title: str) -> BIField:
         """Find field by title"""
@@ -404,7 +431,7 @@ class ResultSchema:
         try:
             return self._title_cache[title]
         except KeyError:
-            raise FieldNotFound(f'Unknown field {title}')
+            raise FieldNotFound(f"Unknown field {title}")
 
     @property
     def titles_to_guids(self) -> Dict[str, FieldId]:

@@ -1,4 +1,7 @@
-from typing import List, Optional
+from typing import (
+    List,
+    Optional,
+)
 
 import attr
 
@@ -64,18 +67,18 @@ class CategoryMacro(DoubleArgMacro):
 
 
 SINGLE_ARG_MACROS = {
-    'table': TableMacro,
-    'text': TextMacro,
-    'arg': ArgMacro,
-    'argn': ArgNMacro,
-    'macro': ExtMacroMacro,
+    "table": TableMacro,
+    "text": TextMacro,
+    "arg": ArgMacro,
+    "argn": ArgNMacro,
+    "macro": ExtMacroMacro,
 }
 DOUBLE_ARG_MACROS = {
-    'ref': RefMacro,
-    'link': LinkMacro,
-    'category': CategoryMacro,
+    "ref": RefMacro,
+    "link": LinkMacro,
+    "category": CategoryMacro,
 }
 LIST_MACROS = {
-    'dialects': DialectsMacro,
-    'type': TypeMacro,
+    "dialects": DialectsMacro,
+    "type": TypeMacro,
 }

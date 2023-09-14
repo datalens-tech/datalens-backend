@@ -2,9 +2,11 @@ from __future__ import absolute_import
 
 import itertools
 import logging
-
-from typing import NamedTuple, Optional, Tuple
-
+from typing import (
+    NamedTuple,
+    Optional,
+    Tuple,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -30,9 +32,10 @@ class Cursor:
         self._rows_prefetched = None
 
     def execute(self, query, parameters=None):
-        self.logger.debug('execute promql: %s', query)
+        self.logger.debug("execute promql: %s", query)
         chunks = self.connection.cli.query_range(
-            query, parameters,
+            query,
+            parameters,
         )
         self.description = ()
         rows = self._rows_iterable(chunks)
@@ -56,17 +59,12 @@ class Cursor:
         for chunk in chunks_iterable:
             schema, rows = chunk
             if description is None and rows:
-                description = tuple(
-                    DescriptionColumn(name, type_name)
-                    for name, type_name in schema
-                )
+                description = tuple(DescriptionColumn(name, type_name) for name, type_name in schema)
                 self.description = description
             if nmd is None:
                 assert description is not None
                 colnames = tuple(col[0] for col in description)
-                nmd = lambda row, colnames=colnames: tuple(
-                    row[colname] for colname in colnames
-                )
+                nmd = lambda row, colnames=colnames: tuple(row[colname] for colname in colnames)
             for row in rows:
                 yield nmd(row)
 

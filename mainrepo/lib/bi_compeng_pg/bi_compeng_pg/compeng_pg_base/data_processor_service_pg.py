@@ -3,14 +3,25 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Generic, ClassVar, Optional, Type, TypeVar
+from typing import (
+    ClassVar,
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 
-from bi_core.aio.web_app_services.data_processing.data_processor import DataProcessorService, DataProcessorConfig
 from bi_compeng_pg.compeng_pg_base.pool_base import (
+    DEFAULT_OPERATION_TIMEOUT,
+    DEFAULT_POOL_MAX_SIZE,
+    DEFAULT_POOL_MIN_SIZE,
     BasePgPoolWrapper,
-    DEFAULT_POOL_MIN_SIZE, DEFAULT_POOL_MAX_SIZE, DEFAULT_OPERATION_TIMEOUT,
+)
+from bi_core.aio.web_app_services.data_processing.data_processor import (
+    DataProcessorConfig,
+    DataProcessorService,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -22,12 +33,12 @@ class CompEngPgConfig(DataProcessorConfig):
 
 
 _POOL_TV = TypeVar("_POOL_TV", bound=BasePgPoolWrapper)
-_COMPENG_PR_SRV_TV = TypeVar("_COMPENG_PR_SRV_TV", bound='CompEngPgService')
+_COMPENG_PR_SRV_TV = TypeVar("_COMPENG_PR_SRV_TV", bound="CompEngPgService")
 
 
 @attr.s
 class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.ABCMeta):
-    APP_KEY: ClassVar[str] = 'compeng_service'
+    APP_KEY: ClassVar[str] = "compeng_service"
 
     _pg_url: str = attr.ib()  # DSN
     _pool_min_size: int = attr.ib(default=DEFAULT_POOL_MIN_SIZE)
@@ -61,7 +72,7 @@ class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.AB
             await self._deinit_pool()
 
     async def _deinit_pool(self) -> None:
-        """ ... """
+        """..."""
         LOGGER.info("Tear down compeng pg pool %r...", self)
         await self._pool.disconnect()  # type: ignore  # TODO: fix
         self._pool = None

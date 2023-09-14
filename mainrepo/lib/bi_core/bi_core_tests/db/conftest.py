@@ -1,11 +1,7 @@
 from bi_core_testing.initialization import initialize_core_test
-
 from bi_core_tests.db.config import CORE_TEST_CONFIG
 
-
-pytest_plugins = (
-    'aiohttp.pytest_plugin',  # and it, in turn, includes 'pytest_asyncio.plugin'
-)
+pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 
 def pytest_configure(config):  # noqa

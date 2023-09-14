@@ -1,6 +1,13 @@
-from typing import Generator, Iterable, Iterator
+from typing import (
+    Generator,
+    Iterable,
+    Iterator,
+)
 
-from bi_query_processing.merging.primitives import MergedQueryDataStream, MergedQueryDataRow
+from bi_query_processing.merging.primitives import (
+    MergedQueryDataRow,
+    MergedQueryDataStream,
+)
 
 
 class QueryPostPaginator:
@@ -9,7 +16,9 @@ class QueryPostPaginator:
     """
 
     def _skip_to_offset(
-            self, row_it: Iterator[MergedQueryDataRow], offset: int,
+        self,
+        row_it: Iterator[MergedQueryDataRow],
+        offset: int,
     ) -> None:
         if offset <= 0:
             return
@@ -21,7 +30,7 @@ class QueryPostPaginator:
             pass
 
     def _iter_until_limit(
-            self, row_it: Iterator[MergedQueryDataRow], limit: int
+        self, row_it: Iterator[MergedQueryDataRow], limit: int
     ) -> Generator[MergedQueryDataRow, None, None]:
         try:
             while limit > 0:

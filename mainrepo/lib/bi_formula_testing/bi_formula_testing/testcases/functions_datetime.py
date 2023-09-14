@@ -1,16 +1,23 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any, ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 import pytest
 import pytz
 import sqlalchemy.exc as sa_exc
 
 from bi_formula.core.exc import TranslationError
-from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 from bi_formula_testing.evaluator import DbEvaluator
-from bi_formula_testing.util import approx_datetime, now, dt_strip
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
+from bi_formula_testing.util import (
+    approx_datetime,
+    dt_strip,
+    now,
+)
 
 
 def int_value(value: Any) -> int:
@@ -27,16 +34,17 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
     supports_datetrunc_3: ClassVar[bool] = False
     supports_datetimetz: ClassVar[bool] = False
 
-    @pytest.mark.parametrize('func_name', ('NOW', 'GENERICNOW'))
+    @pytest.mark.parametrize("func_name", ("NOW", "GENERICNOW"))
     def test_now(self, dbe: DbEvaluator, func_name: str) -> None:
-        assert dt_strip(dbe.eval(f'{func_name}()')) == approx_datetime(
+        assert dt_strip(dbe.eval(f"{func_name}()")) == approx_datetime(
             now().replace(tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).replace(tzinfo=None)
         )
 
     def test_today(self, dbe: DbEvaluator) -> None:
-        assert dbe.eval('TODAY()') == (
-            now().replace(tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).replace(tzinfo=None)
-        ).date()
+        assert (
+            dbe.eval("TODAY()")
+            == (now().replace(tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).replace(tzinfo=None)).date()
+        )
 
     def test_datetime_dateadd_with_uneven_month_lengths(self, dbe: DbEvaluator) -> None:
         if not self.supports_addition_to_feb_29:
@@ -51,19 +59,13 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
             assert dbe.eval('DATEADD(#2021-01-30#, "month", 1)') == datetime.date(2021, 2, 28)
             assert dbe.eval('DATEADD(#2021-03-30#, "month", -1)') == datetime.date(2021, 2, 28)
 
-    @pytest.mark.parametrize(
-        'lit',
-        (
-            pytest.param('##', id='generic'),
-            pytest.param('#', id='regular')
-        )
-    )
+    @pytest.mark.parametrize("lit", (pytest.param("##", id="generic"), pytest.param("#", id="regular")))
     def test_datetime_dateadd(self, dbe: DbEvaluator, lit: str) -> None:
         def _dt_lit(s: str) -> str:
-            return f'{lit}{s}{lit}'
+            return f"{lit}{s}{lit}"
 
         # 1 arg
-        assert dbe.eval('DATEADD(#2018-01-12#)') == datetime.date(2018, 1, 13)
+        assert dbe.eval("DATEADD(#2018-01-12#)") == datetime.date(2018, 1, 13)
 
         # 2 args (unit)
         assert dbe.eval('DATEADD(#2018-01-12#, "day")') == datetime.date(2018, 1, 13)
@@ -71,89 +73,83 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEADD(#2018-01-12#, "year")') == datetime.date(2019, 1, 12)
 
         # 2 args (number)
-        assert dbe.eval('DATEADD(#2018-01-12#, 6)') == datetime.date(2018, 1, 18)
+        assert dbe.eval("DATEADD(#2018-01-12#, 6)") == datetime.date(2018, 1, 18)
 
         # 3 args
         assert dbe.eval('DATEADD(#2018-01-12#, "day", 6)') == datetime.date(2018, 1, 18)
         assert dbe.eval('DATEADD(#2018-01-12#, "month", 6)') == datetime.date(2018, 7, 12)
         assert dbe.eval('DATEADD(#2018-01-12#, "year", 6)') == datetime.date(2024, 1, 12)
-        assert dt_strip(dbe.eval(
-            f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "second", 6)'
-        )) == datetime.datetime(2018, 1, 12, 1, 2, 9)
-        assert dt_strip(dbe.eval(
-            f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "minute", 6)'
-        )) == datetime.datetime(2018, 1, 12, 1, 8, 3)
-        assert dt_strip(dbe.eval(
-            f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "hour", 6)'
-        )) == datetime.datetime(2018, 1, 12, 7, 2, 3)
-        assert dt_strip(dbe.eval(
-            f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "day", 6)'
-        )) == datetime.datetime(2018, 1, 18, 1, 2, 3)
-        assert dt_strip(dbe.eval(
-            f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "month", 6)'
-        )) == datetime.datetime(2018, 7, 12, 1, 2, 3)
-        assert dt_strip(dbe.eval(
-            f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "year", 6)'
-        )) == datetime.datetime(2024, 1, 12, 1, 2, 3)
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "second", 6)')) == datetime.datetime(
+            2018, 1, 12, 1, 2, 9
+        )
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "minute", 6)')) == datetime.datetime(
+            2018, 1, 12, 1, 8, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "hour", 6)')) == datetime.datetime(
+            2018, 1, 12, 7, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "day", 6)')) == datetime.datetime(
+            2018, 1, 18, 1, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "month", 6)')) == datetime.datetime(
+            2018, 7, 12, 1, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "year", 6)')) == datetime.datetime(
+            2024, 1, 12, 1, 2, 3
+        )
         if self.supports_dateadd_non_const_unit_num:
             # non-const number
             assert dbe.eval('DATEADD(#2018-01-12#, "day", INT("6"))') == datetime.date(2018, 1, 18)
             assert dbe.eval('DATEADD(#2018-01-12#, "month", INT("6"))') == datetime.date(2018, 7, 12)
             assert dbe.eval('DATEADD(#2018-01-12#, "year", INT("6"))') == datetime.date(2024, 1, 12)
-            assert dt_strip(dbe.eval(
-                f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "second", INT("6"))'
-            )) == datetime.datetime(2018, 1, 12, 1, 2, 9)
-            assert dt_strip(dbe.eval(
-                f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "minute", INT("6"))'
-            )) == datetime.datetime(2018, 1, 12, 1, 8, 3)
-            assert dt_strip(dbe.eval(
-                f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "hour", INT("6"))'
-            )) == datetime.datetime(2018, 1, 12, 7, 2, 3)
-            assert dt_strip(dbe.eval(
-                f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "day", INT("6"))'
-            )) == datetime.datetime(2018, 1, 18, 1, 2, 3)
-            assert dt_strip(dbe.eval(
-                f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "month", INT("6"))'
-            )) == datetime.datetime(2018, 7, 12, 1, 2, 3)
-            assert dt_strip(dbe.eval(
-                f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "year", INT("6"))'
-            )) == datetime.datetime(2024, 1, 12, 1, 2, 3)
+            assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "second", INT("6"))')
+            ) == datetime.datetime(2018, 1, 12, 1, 2, 9)
+            assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "minute", INT("6"))')
+            ) == datetime.datetime(2018, 1, 12, 1, 8, 3)
+            assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "hour", INT("6"))')
+            ) == datetime.datetime(2018, 1, 12, 7, 2, 3)
+            assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "day", INT("6"))')
+            ) == datetime.datetime(2018, 1, 18, 1, 2, 3)
+            assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "month", INT("6"))')
+            ) == datetime.datetime(2018, 7, 12, 1, 2, 3)
+            assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "year", INT("6"))')
+            ) == datetime.datetime(2024, 1, 12, 1, 2, 3)
 
-    @pytest.mark.parametrize(
-        'lit',
-        (
-            pytest.param('##', id='generic'),
-            pytest.param('#', id='regular')
-        )
-    )
+    @pytest.mark.parametrize("lit", (pytest.param("##", id="generic"), pytest.param("#", id="regular")))
     def test_datetime_dateadd_deprecated(self, dbe: DbEvaluator, lit: str) -> None:
         if not self.supports_deprecated_dateadd:
             pytest.skip()
 
         def _dt_lit(s: str) -> str:
-            return f'{lit}{s}{lit}'
+            return f"{lit}{s}{lit}"
 
         assert dbe.eval('DATEADD("day", 6, #2018-01-12#)') == datetime.date(2018, 1, 18)
         assert dbe.eval('DATEADD("month", 6, #2018-01-12#)') == datetime.date(2018, 7, 12)
         assert dbe.eval('DATEADD("year", 6, #2018-01-12#)') == datetime.date(2024, 1, 12)
-        assert dt_strip(
-            dbe.eval(f'DATEADD("second", 6, {_dt_lit("2018-01-12 01:02:03")})')
-        ) == datetime.datetime(2018, 1, 12, 1, 2, 9)
-        assert dt_strip(
-            dbe.eval(f'DATEADD("minute", 6, {_dt_lit("2018-01-12 01:02:03")})')
-        ) == datetime.datetime(2018, 1, 12, 1, 8, 3)
-        assert dt_strip(
-            dbe.eval(f'DATEADD("hour", 6, {_dt_lit("2018-01-12 01:02:03")})')
-        ) == datetime.datetime(2018, 1, 12, 7, 2, 3)
-        assert dt_strip(
-            dbe.eval(f'DATEADD("day", 6, {_dt_lit("2018-01-12 01:02:03")})')
-        ) == datetime.datetime(2018, 1, 18, 1, 2, 3)
-        assert dt_strip(
-            dbe.eval(f'DATEADD("month", 6, {_dt_lit("2018-01-12 01:02:03")})')
-        ) == datetime.datetime(2018, 7, 12, 1, 2, 3)
-        assert dt_strip(
-            dbe.eval(f'DATEADD("year", 6, {_dt_lit("2018-01-12 01:02:03")})')
-        ) == datetime.datetime(2024, 1, 12, 1, 2, 3)
+        assert dt_strip(dbe.eval(f'DATEADD("second", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2018, 1, 12, 1, 2, 9
+        )
+        assert dt_strip(dbe.eval(f'DATEADD("minute", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2018, 1, 12, 1, 8, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD("hour", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2018, 1, 12, 7, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD("day", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2018, 1, 18, 1, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD("month", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2018, 7, 12, 1, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD("year", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2024, 1, 12, 1, 2, 3
+        )
 
     def test_datepart_2_const(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         # const version
@@ -261,24 +257,24 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEPART(__LIT__("week"), #1971-01-14 01:02:03#)') == 2
 
     def test_specific_date_part_functions(self, dbe: DbEvaluator) -> None:
-        assert int_value(dbe.eval('SECOND(#2018-01-12#)')) == 0
-        assert int_value(dbe.eval('MINUTE(#2018-01-12#)')) == 0
-        assert int_value(dbe.eval('HOUR(#2018-01-12#)')) == 0
-        assert int_value(dbe.eval('DAY(#2018-01-12#)')) == 12
-        assert int_value(dbe.eval('MONTH(#2018-01-12#)')) == 1
-        assert int_value(dbe.eval('QUARTER(#2018-01-12#)')) == 1
-        assert int_value(dbe.eval('YEAR(#2018-01-12#)')) == 2018
-        assert int_value(dbe.eval('DAYOFWEEK(#1971-01-14#)')) == 4
-        assert int_value(dbe.eval('WEEK(#1971-01-14#)')) == 2
-        assert int_value(dbe.eval('SECOND(#2018-01-12 01:02:03#)')) == 3
-        assert int_value(dbe.eval('MINUTE(#2018-01-12 01:02:03#)')) == 2
-        assert int_value(dbe.eval('HOUR(#2018-01-12 01:02:03#)')) == 1
-        assert int_value(dbe.eval('DAY(#2018-01-12 01:02:03#)')) == 12
-        assert int_value(dbe.eval('MONTH(#2018-01-12 01:02:03#)')) == 1
-        assert int_value(dbe.eval('QUARTER(#2018-01-12 01:02:03#)')) == 1
-        assert int_value(dbe.eval('YEAR(#2018-01-12 01:02:03#)')) == 2018
-        assert int_value(dbe.eval('DAYOFWEEK(#1971-01-14 01:02:03#)')) == 4
-        assert int_value(dbe.eval('WEEK(#1971-01-14 01:02:03#)')) == 2
+        assert int_value(dbe.eval("SECOND(#2018-01-12#)")) == 0
+        assert int_value(dbe.eval("MINUTE(#2018-01-12#)")) == 0
+        assert int_value(dbe.eval("HOUR(#2018-01-12#)")) == 0
+        assert int_value(dbe.eval("DAY(#2018-01-12#)")) == 12
+        assert int_value(dbe.eval("MONTH(#2018-01-12#)")) == 1
+        assert int_value(dbe.eval("QUARTER(#2018-01-12#)")) == 1
+        assert int_value(dbe.eval("YEAR(#2018-01-12#)")) == 2018
+        assert int_value(dbe.eval("DAYOFWEEK(#1971-01-14#)")) == 4
+        assert int_value(dbe.eval("WEEK(#1971-01-14#)")) == 2
+        assert int_value(dbe.eval("SECOND(#2018-01-12 01:02:03#)")) == 3
+        assert int_value(dbe.eval("MINUTE(#2018-01-12 01:02:03#)")) == 2
+        assert int_value(dbe.eval("HOUR(#2018-01-12 01:02:03#)")) == 1
+        assert int_value(dbe.eval("DAY(#2018-01-12 01:02:03#)")) == 12
+        assert int_value(dbe.eval("MONTH(#2018-01-12 01:02:03#)")) == 1
+        assert int_value(dbe.eval("QUARTER(#2018-01-12 01:02:03#)")) == 1
+        assert int_value(dbe.eval("YEAR(#2018-01-12 01:02:03#)")) == 2018
+        assert int_value(dbe.eval("DAYOFWEEK(#1971-01-14 01:02:03#)")) == 4
+        assert int_value(dbe.eval("WEEK(#1971-01-14 01:02:03#)")) == 2
 
         assert int_value(dbe.eval('DAYOFWEEK(#1971-01-14#, "wed")')) == 2
         assert int_value(dbe.eval('DAYOFWEEK(#1971-01-14#, "wednesday")')) == 2
@@ -310,38 +306,38 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATETRUNC(#2018-07-12#, "year")') == datetime.date(2018, 1, 1)
         with pytest.raises(TranslationError):
             dbe.eval('DATETRUNC(#2018-07-12#, "unexpected")')
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "second")')) == datetime.datetime(2018, 7, 12, 11, 7, 13)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "second")')) == datetime.datetime(2018, 1, 2, 3, 4, 5)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "minute")')) == datetime.datetime(2018, 7, 12, 11, 7, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "minute")')) == datetime.datetime(2018, 1, 2, 3, 4, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "hour")')) == datetime.datetime(2018, 7, 12, 11, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "hour")')) == datetime.datetime(2018, 1, 2, 3, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2022-10-01 15:21:40#, "hour")')) == datetime.datetime(2022, 10, 1, 15, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2022-09-19 15:21:40#, "hour")')) == datetime.datetime(2022, 9, 19, 15, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "day")')) == datetime.datetime(2018, 7, 12, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "day")')) == datetime.datetime(2018, 1, 2, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "week")')) == datetime.datetime(2018, 7, 9, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "week")')) == datetime.datetime(2018, 1, 1, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "month")')) == datetime.datetime(2018, 7, 1, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "month")')) == datetime.datetime(2018, 1, 1, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "quarter")')) == datetime.datetime(2018, 7, 1, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "year")')) == datetime.datetime(2018, 1, 1, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "second")')) == datetime.datetime(
+            2018, 7, 12, 11, 7, 13
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "second")')) == datetime.datetime(
+            2018, 1, 2, 3, 4, 5
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "minute")')) == datetime.datetime(
+            2018, 7, 12, 11, 7, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "minute")')) == datetime.datetime(
+            2018, 1, 2, 3, 4, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "hour")')) == datetime.datetime(
+            2018, 7, 12, 11, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "hour")')) == datetime.datetime(2018, 1, 2, 3, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2022-10-01 15:21:40#, "hour")')) == datetime.datetime(
+            2022, 10, 1, 15, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2022-09-19 15:21:40#, "hour")')) == datetime.datetime(
+            2022, 9, 19, 15, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "day")')) == datetime.datetime(2018, 7, 12, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "day")')) == datetime.datetime(2018, 1, 2, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "week")')) == datetime.datetime(2018, 7, 9, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "week")')) == datetime.datetime(2018, 1, 1, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "month")')) == datetime.datetime(2018, 7, 1, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-01-02 03:04:05#, "month")')) == datetime.datetime(2018, 1, 1, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "quarter")')) == datetime.datetime(
+            2018, 7, 1, 0, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "year")')) == datetime.datetime(2018, 1, 1, 0, 0, 0)
         with pytest.raises(TranslationError):
             dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "unexpected")')
 
@@ -359,27 +355,34 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATETRUNC(#2018-07-12#, "year", 5)') == datetime.date(2015, 1, 1)
         with pytest.raises(TranslationError):
             dbe.eval('DATETRUNC(#2018-07-12#, "unexpected", 5)')
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "second", 5)')) == datetime.datetime(2018, 7, 12, 11, 7, 10)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "minute", 5)')) == datetime.datetime(2018, 7, 12, 11, 5, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "second", 5)')) == datetime.datetime(
+            2018, 7, 12, 11, 7, 10
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "minute", 5)')) == datetime.datetime(
+            2018, 7, 12, 11, 5, 0
+        )
         # assert dt_strip(  # FIXME: CLICKHOUSE-4441
         #     dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "hour", 5)')) == datetime.datetime(2018, 7, 12, 10, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "day", 5)')) == datetime.datetime(2018, 7, 8, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "week", 5)')) == datetime.datetime(2018, 7, 2, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "month", 4)')) == datetime.datetime(2018, 5, 1, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "quarter", 2)')) == datetime.datetime(2018, 7, 1, 0, 0, 0)
-        assert dt_strip(
-            dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "year", 5)')) == datetime.datetime(2015, 1, 1, 0, 0, 0)
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "day", 5)')) == datetime.datetime(
+            2018, 7, 8, 0, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "week", 5)')) == datetime.datetime(
+            2018, 7, 2, 0, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "month", 4)')) == datetime.datetime(
+            2018, 5, 1, 0, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "quarter", 2)')) == datetime.datetime(
+            2018, 7, 1, 0, 0, 0
+        )
+        assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "year", 5)')) == datetime.datetime(
+            2015, 1, 1, 0, 0, 0
+        )
         with pytest.raises(TranslationError):
             dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "unexpected", 5)')
 
     @pytest.mark.parametrize(
-        'value_expr',
+        "value_expr",
         (
             "__LIT__('2019-01-01T00:01:02')",
             "'2019-01-01T00:01:02'",
@@ -390,7 +393,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         if not self.supports_datetimetz:
             pytest.skip()
 
-        tz = 'America/New_York'
+        tz = "America/New_York"
         expr = f"DATETIMETZ({value_expr}, '{tz}')"
         resp = dbe.eval(expr)
 
@@ -401,15 +404,15 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         expected = datetime.datetime(2019, 1, 1, 5, 1, 2)
         assert resp.astimezone(datetime.timezone.utc).replace(tzinfo=None) == expected
 
-    @pytest.fixture(params=['const', 'lit'])
+    @pytest.fixture(params=["const", "lit"])
     def dttz_expr(self, request: Any, dbe: DbEvaluator, forced_literal_use: Any) -> str:
         if not self.supports_datetimetz:
             pytest.skip()
 
-        value_iso = '2019-01-01T00:01:02'
-        tz = 'America/New_York'
+        value_iso = "2019-01-01T00:01:02"
+        tz = "America/New_York"
         expr = f"'{value_iso}'"
-        if request.param == 'lit':
+        if request.param == "lit":
             expr = f"__LIT__({expr})"
         expr = f"DATETIMETZ({expr}, '{tz}')"
         return expr

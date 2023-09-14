@@ -7,10 +7,10 @@ from bi_testing.env_params.getter import EnvParamGetter
 
 
 class SnowFlakeSecretReaderBase(abc.ABC):
-    KEY_CONFIG: ClassVar[str] = 'SNOWFLAKE_CONFIG'
-    KEY_CLIENT_SECRET: ClassVar[str] = 'SNOWFLAKE_CLIENT_SECRET'
-    KEY_REFRESH_TOKEN_EXPIRED: ClassVar[str] = 'SNOWFLAKE_REFRESH_TOKEN_EXPIRED'
-    KEY_REFRESH_TOKEN_X: ClassVar[str] = 'SNOWFLAKE_REFRESH_TOKEN_X'
+    KEY_CONFIG: ClassVar[str] = "SNOWFLAKE_CONFIG"
+    KEY_CLIENT_SECRET: ClassVar[str] = "SNOWFLAKE_CLIENT_SECRET"
+    KEY_REFRESH_TOKEN_EXPIRED: ClassVar[str] = "SNOWFLAKE_REFRESH_TOKEN_EXPIRED"
+    KEY_REFRESH_TOKEN_X: ClassVar[str] = "SNOWFLAKE_REFRESH_TOKEN_X"
 
     @property
     @abc.abstractmethod
@@ -18,31 +18,31 @@ class SnowFlakeSecretReaderBase(abc.ABC):
         raise NotImplementedError
 
     def get_account_name(self) -> str:
-        return self.project_config['account_name']
+        return self.project_config["account_name"]
 
     def get_user_name(self) -> str:
-        return self.project_config['user_name']
+        return self.project_config["user_name"]
 
     def get_user_role(self) -> str:
-        return self.project_config['user_role']
+        return self.project_config["user_role"]
 
     def get_login_name(self) -> str:
-        return self.project_config['login_name']
+        return self.project_config["login_name"]
 
     def get_database(self) -> str:
-        return self.project_config['database']
+        return self.project_config["database"]
 
     def get_schema(self) -> str:
-        return self.project_config['schema']
+        return self.project_config["schema"]
 
     def get_table_name(self) -> str:
-        return self.project_config['table_name']
+        return self.project_config["table_name"]
 
     def get_warehouse(self) -> str:
-        return self.project_config['warehouse']
+        return self.project_config["warehouse"]
 
     def get_client_id(self) -> str:
-        return self.project_config['client_id']
+        return self.project_config["client_id"]
 
     @abc.abstractmethod
     def get_client_secret(self) -> str:

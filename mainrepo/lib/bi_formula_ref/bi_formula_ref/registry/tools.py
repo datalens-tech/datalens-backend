@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import List
 
-from bi_formula_ref.registry.base import FunctionDocRegistryItem
-from bi_formula_ref.registry.registry import FUNC_REFERENCE_REGISTRY
 from bi_formula_ref.functions.aggregation import FUNCTIONS_AGGREGATION
 from bi_formula_ref.functions.array import FUNCTIONS_ARRAY
 from bi_formula_ref.functions.date import FUNCTIONS_DATE
@@ -15,7 +13,8 @@ from bi_formula_ref.functions.string import FUNCTIONS_STRING
 from bi_formula_ref.functions.time_series import FUNCTIONS_TIME_SERIES
 from bi_formula_ref.functions.type_conversion import FUNCTIONS_TYPE_CONVERSION
 from bi_formula_ref.functions.window import FUNCTIONS_WINDOW
-
+from bi_formula_ref.registry.base import FunctionDocRegistryItem
+from bi_formula_ref.registry.registry import FUNC_REFERENCE_REGISTRY
 
 EXPLICITLY_DEFINED_FUNCTIONS: List[FunctionDocRegistryItem] = [
     *FUNCTIONS_AGGREGATION,

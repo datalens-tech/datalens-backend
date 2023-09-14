@@ -1,17 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, Type
+from typing import (
+    Any,
+    Type,
+)
 
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import CreateDSFrom
-
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
 
 
 class GenericDataSourceSpecStorageSchema(OneOfSchema):
-    type_field = 'created_from'
+    type_field = "created_from"
     type_field_remove = False
     type_schemas: dict[str, Type[DataSourceSpecStorageSchema]] = {}
 

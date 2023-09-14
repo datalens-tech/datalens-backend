@@ -1,4 +1,3 @@
-from bi_formula_ref.registry.base import FunctionDocCategory
 from bi_formula_ref.categories.aggregation import CATEGORY_AGGREGATION
 from bi_formula_ref.categories.array import CATEGORY_ARRAY
 from bi_formula_ref.categories.date import CATEGORY_DATE
@@ -10,7 +9,7 @@ from bi_formula_ref.categories.string import CATEGORY_STRING
 from bi_formula_ref.categories.time_series import CATEGORY_TIME_SERIES
 from bi_formula_ref.categories.type_conversion import CATEGORY_TYPE_CONVERSION
 from bi_formula_ref.categories.window import CATEGORY_WINDOW
-
+from bi_formula_ref.registry.base import FunctionDocCategory
 
 CATEGORIES = {
     category.name: category
@@ -26,6 +25,6 @@ CATEGORIES = {
         CATEGORY_TIME_SERIES,
         CATEGORY_TYPE_CONVERSION,
         CATEGORY_WINDOW,
-        FunctionDocCategory(name='__internal', description='', keywords='')
+        FunctionDocCategory(name="__internal", description="", keywords=""),
     )
 }

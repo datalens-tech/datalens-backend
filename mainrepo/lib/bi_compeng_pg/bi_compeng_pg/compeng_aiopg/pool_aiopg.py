@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import Optional, Type
+from typing import (
+    Optional,
+    Type,
+)
 
-import attr
 import aiopg.sa
+import attr
 
 from bi_compeng_pg.compeng_pg_base.pool_base import (
+    DEFAULT_OPERATION_TIMEOUT,
+    DEFAULT_POOL_MAX_SIZE,
+    DEFAULT_POOL_MIN_SIZE,
     BasePgPoolWrapper,
-    DEFAULT_POOL_MIN_SIZE, DEFAULT_POOL_MAX_SIZE, DEFAULT_OPERATION_TIMEOUT,
 )
 
 
@@ -17,12 +22,12 @@ class AiopgPoolWrapper(BasePgPoolWrapper):
 
     @classmethod
     async def connect(
-        cls: Type['AiopgPoolWrapper'],
+        cls: Type["AiopgPoolWrapper"],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size
         operation_timeout: float = DEFAULT_OPERATION_TIMEOUT,  # SQL operation timeout
-    ) -> 'AiopgPoolWrapper':
+    ) -> "AiopgPoolWrapper":
         pool = await aiopg.sa.create_engine(
             url,
             minsize=pool_min_size,
@@ -34,7 +39,7 @@ class AiopgPoolWrapper(BasePgPoolWrapper):
     @property
     def pool(self) -> aiopg.sa.Engine:
         if self._pool is None:
-            raise RuntimeError('Aiopg pool is closed')
+            raise RuntimeError("Aiopg pool is closed")
         return self._pool
 
     async def disconnect(self) -> None:

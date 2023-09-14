@@ -1,27 +1,55 @@
-from typing import Any, TypeVar
+from typing import (
+    Any,
+    TypeVar,
+)
 
-from marshmallow import fields as ma_fields, EXCLUDE
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import (
-    BIType, QueryItemRefType, FieldRole, LegendItemType, FieldType, FieldVisibility, PivotRole,
-    QueryBlockPlacementType, OrderDirection, RangeType, WhereClauseOperation, NotificationLevel,
-    PivotHeaderRole,
+from bi_api_client.dsmaker.api.schemas.base import (
+    BaseSchema,
+    DefaultSchema,
 )
-
 from bi_api_client.dsmaker.primitives import (
-    RoleSpec, RowRoleSpec, TemplateRoleSpec,
-    OrderByRoleSpec, RangeRoleSpec, TreeRoleSpec,
-    LegendItem, RequestLegendItemRef,
-    PivotRoleSpec, DimensionPivotRoleSpec, AnnotationPivotRoleSpec,
-    PivotItem, PivotPagination, BlockPlacement, PivotMeasureRoleSpec,
-    PivotHeaderRoleSpec, PivotHeaderValue, PivotMeasureSortingSettings,
-    PivotMeasureSorting, PivotHeaderInfo,
+    AnnotationPivotRoleSpec,
+    BlockPlacement,
+    DimensionPivotRoleSpec,
+    LegendItem,
+    OrderByRoleSpec,
+    PivotHeaderInfo,
+    PivotHeaderRoleSpec,
+    PivotHeaderValue,
+    PivotItem,
+    PivotMeasureRoleSpec,
+    PivotMeasureSorting,
+    PivotMeasureSortingSettings,
+    PivotPagination,
+    PivotRoleSpec,
+    RangeRoleSpec,
+    RequestLegendItemRef,
+    RoleSpec,
+    RowRoleSpec,
+    TemplateRoleSpec,
+    TreeRoleSpec,
 )
-from bi_api_client.dsmaker.api.schemas.base import BaseSchema, DefaultSchema
+from bi_constants.enums import (
+    BIType,
+    FieldRole,
+    FieldType,
+    FieldVisibility,
+    LegendItemType,
+    NotificationLevel,
+    OrderDirection,
+    PivotHeaderRole,
+    PivotRole,
+    QueryBlockPlacementType,
+    QueryItemRefType,
+    RangeType,
+    WhereClauseOperation,
+)
 
-
-_ROLE_SPEC_TV = TypeVar('_ROLE_SPEC_TV', bound=RoleSpec)
+_ROLE_SPEC_TV = TypeVar("_ROLE_SPEC_TV", bound=RoleSpec)
 
 
 class DimensionValueSpecSchema(BaseSchema):
@@ -34,7 +62,7 @@ class RoleSpecSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'role'
+    type_field = "role"
 
     class RoleSpecSchemaVariantBase(DefaultSchema[_ROLE_SPEC_TV]):
         role = ma_fields.Enum(FieldRole)
@@ -67,8 +95,8 @@ class RoleSpecSchema(OneOfSchema):
         TARGET_CLS = TreeRoleSpec
 
         level = ma_fields.Integer()
-        prefix_req = ma_fields.String(dump_only=True, attribute='prefix', data_key='prefix')  # sent as a string
-        prefix_resp = ma_fields.Raw(load_only=True, attribute='prefix', data_key='prefix')  # but returned as an array
+        prefix_req = ma_fields.String(dump_only=True, attribute="prefix", data_key="prefix")  # sent as a string
+        prefix_resp = ma_fields.Raw(load_only=True, attribute="prefix", data_key="prefix")  # but returned as an array
         dimension_values = ma_fields.Nested(DimensionValueSpecSchema, many=True, allow_none=True)
         visibility = ma_fields.Enum(FieldVisibility)
 
@@ -111,7 +139,7 @@ class ItemRefSchema(OneOfSchema):
         pass
 
     type_field_remove = False
-    type_field = 'type'
+    type_field = "type"
 
     type_schemas = {
         QueryItemRefType.id.name: IdRefSchema,
@@ -196,7 +224,7 @@ class PivotRoleSpecSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'role'
+    type_field = "role"
 
     class PivotRoleSpecSchemaVariant(DefaultSchema[PivotRoleSpec]):
         TARGET_CLS = PivotRoleSpec
@@ -335,7 +363,7 @@ class BlockPlacementSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = True
-    type_field = 'type'
+    type_field = "type"
 
     type_schemas = {
         QueryBlockPlacementType.root.name: RootBlockPlacementSchema,
@@ -358,7 +386,7 @@ class BaseDataApiV2ResponseSchema(BaseSchema):
     Base class for Data API v2 responses.
     """
 
-    sel_fields = ma_fields.Nested(LegendItemSchema, data_key='fields', attribute='fields', many=True)
+    sel_fields = ma_fields.Nested(LegendItemSchema, data_key="fields", attribute="fields", many=True)
     blocks = ma_fields.Raw()
     notifications = ma_fields.Nested(NotificationSchema, many=True)
 
@@ -368,6 +396,7 @@ class ResultResponseSchema(BaseDataApiV2ResponseSchema):
     Generic v2 response.
     Mainly for the /result endpoint.
     """
+
     result_data = ma_fields.Raw()
 
 
@@ -375,5 +404,6 @@ class PivotResponseSchema(BaseDataApiV2ResponseSchema):
     """
     /pivot-specific schema
     """
+
     pivot_data = ma_fields.Nested(PivotDataResponseSchema)
     pivot = ma_fields.Nested(PivotSpecSchema)

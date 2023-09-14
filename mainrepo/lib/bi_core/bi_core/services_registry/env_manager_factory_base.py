@@ -8,7 +8,10 @@ from bi_core.connections_security.base import ConnectionSecurityManager
 
 if TYPE_CHECKING:
     from bi_core.connection_models import ConnectOptions
-    from bi_core.mdb_utils import MDBDomainManager, MDBDomainManagerSettings
+    from bi_core.mdb_utils import (
+        MDBDomainManager,
+        MDBDomainManagerSettings,
+    )
 
 
 class EnvManagerFactory(metaclass=abc.ABCMeta):

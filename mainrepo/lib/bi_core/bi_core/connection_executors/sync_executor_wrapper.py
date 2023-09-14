@@ -3,8 +3,16 @@ from __future__ import annotations
 import asyncio
 import functools
 from typing import (
-    TYPE_CHECKING, Any, Awaitable, Callable, Type,
-    Generator, List, Optional, TypeVar, overload,
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+    Generator,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    overload,
 )
 
 import attr
@@ -12,29 +20,39 @@ from typing_extensions import Literal
 
 from bi_api_commons.base_models import RequestContextInfo
 from bi_core.connection_executors import ConnExecutorQuery
-from bi_core.connection_executors.adapters.adapters_base import (
-    SyncDirectDBAdapter,
+from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
+from bi_core.connection_executors.async_base import (
+    AsyncConnExecutorBase,
+    AsyncExecutionResult,
 )
-from bi_core.connection_executors.async_base import AsyncConnExecutorBase, AsyncExecutionResult
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from bi_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo, ExecutionStepDataChunk
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase, SyncExecutionResult
+from bi_core.connection_executors.models.db_adapter_data import (
+    ExecutionStepCursorInfo,
+    ExecutionStepDataChunk,
+)
+from bi_core.connection_executors.sync_base import (
+    SyncConnExecutorBase,
+    SyncExecutionResult,
+)
 from bi_core.db import SchemaInfo
 
 if TYPE_CHECKING:
+    from bi_constants.types import TBIDataTable
     from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent, TableDefinition, TableIdent,
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
     )
     from bi_core.connection_models.dto_defs import ConnDTO
-    from bi_constants.types import TBIDataTable
 
 
-_RET_TV = TypeVar('_RET_TV')
+_RET_TV = TypeVar("_RET_TV")
 
 
 def init_required(wrapped: Callable[..., _RET_TV]) -> Callable[..., _RET_TV]:
     @functools.wraps(wrapped)
-    def wrapper(self: 'SyncWrapperForAsyncConnExecutor', *args: Any, **kwargs: Any) -> _RET_TV:
+    def wrapper(self: "SyncWrapperForAsyncConnExecutor", *args: Any, **kwargs: Any) -> _RET_TV:
         if not self.is_initialized:
             self.initialize()
         return wrapped(self, *args, **kwargs)
@@ -82,8 +100,7 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
     def _extract_sync_sa_adapter(self, raise_on_not_exists: Literal[True]) -> SyncDirectDBAdapter:
         pass
 
-    def _extract_sync_sa_adapter(  # noqa
-            self, raise_on_not_exists: bool = False) -> Optional[SyncDirectDBAdapter]:
+    def _extract_sync_sa_adapter(self, raise_on_not_exists: bool = False) -> Optional[SyncDirectDBAdapter]:  # noqa
         actual_executor = self._async_conn_executor
         if not actual_executor.is_initialized:
             self.initialize()
@@ -112,21 +129,14 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
         def data_generator() -> Generator[TBIDataTable, None, None]:
             for msg in generator:
                 if not isinstance(msg, ExecutionStepDataChunk):
-                    raise ValueError(
-                        f"Unexpected message instead of ExecutionStepDataChunk from SA adapter : {msg}"
-                    )
+                    raise ValueError(f"Unexpected message instead of ExecutionStepDataChunk from SA adapter : {msg}")
                 # TODO CONSIDER: May be convert to user types in SAAdapter
                 yield [self._async_conn_executor.cast_row_to_output(row, query.user_types) for row in msg.chunk]
 
-        return SyncExecutionResult(
-            cursor_info=cursor_msg.cursor_info,
-            result=data_generator()
-        )
+        return SyncExecutionResult(cursor_info=cursor_msg.cursor_info, result=data_generator())
 
     def _execute_in_loop(self, query: ConnExecutorQuery) -> SyncExecutionResult:
-        async_result: AsyncExecutionResult = self._await_sync(
-            self._async_conn_executor.execute(query)
-        )
+        async_result: AsyncExecutionResult = self._await_sync(self._async_conn_executor.execute(query))
 
         def data_generator() -> Generator[TBIDataTable, None, None]:
             chunk_iter = async_result.result.__aiter__()
@@ -136,10 +146,7 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
                 except StopAsyncIteration:
                     return
 
-        return SyncExecutionResult(
-            cursor_info=async_result.cursor_info,
-            result=data_generator()
-        )
+        return SyncExecutionResult(cursor_info=async_result.cursor_info, result=data_generator())
 
     @init_required
     def execute(self, query: ConnExecutorQuery) -> SyncExecutionResult:

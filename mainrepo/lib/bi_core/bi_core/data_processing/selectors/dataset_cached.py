@@ -2,18 +2,21 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import attr
 
-from bi_constants.enums import DataSourceRole
-
 from bi_api_commons.reporting.models import QueryExecutionCacheInfoReportingRecord
-from bi_core.data_processing.cache.processing_helper import CacheProcessingHelper, CacheSituation
-from bi_core.data_processing.selectors.base import BIQueryExecutionContext
-from bi_core.data_processing.selectors.dataset_cache_base import (
-    DatasetCacheCommonDataSelectorAsyncBase,
+from bi_constants.enums import DataSourceRole
+from bi_core.data_processing.cache.processing_helper import (
+    CacheProcessingHelper,
+    CacheSituation,
 )
+from bi_core.data_processing.selectors.base import BIQueryExecutionContext
+from bi_core.data_processing.selectors.dataset_cache_base import DatasetCacheCommonDataSelectorAsyncBase
 from bi_core.data_processing.selectors.db import DatasetDbDataSelectorAsync
 
 if TYPE_CHECKING:
@@ -51,17 +54,14 @@ class CachedDatasetDataSelectorAsync(DatasetCacheCommonDataSelectorAsyncBase):
             )
 
     async def execute_query_context(
-            self,
-            role: DataSourceRole,
-            query_execution_ctx: BIQueryExecutionContext,
-            row_count_hard_limit: Optional[int] = None,
+        self,
+        role: DataSourceRole,
+        query_execution_ctx: BIQueryExecutionContext,
+        row_count_hard_limit: Optional[int] = None,
     ) -> Optional[TValuesChunkStream]:
-
         async def _request_db() -> Optional[TValuesChunkStream]:
             result_iter = await self._db_selector.execute_query_context(
-                role=role,
-                query_execution_ctx=query_execution_ctx,
-                row_count_hard_limit=row_count_hard_limit
+                role=role, query_execution_ctx=query_execution_ctx, row_count_hard_limit=row_count_hard_limit
             )
 
             if result_iter is None:

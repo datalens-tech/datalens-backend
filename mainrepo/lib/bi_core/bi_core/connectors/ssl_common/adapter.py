@@ -1,7 +1,7 @@
 import contextlib
 import logging
-import typing
 import os
+import typing
 import uuid
 
 import attr
@@ -36,7 +36,7 @@ class BaseSSLCertAdapter:
         crt_path = self.get_ssl_cert_path(ssl_ca=ssl_ca)
 
         if self.__context_counter == 0:
-            with open(crt_path, 'x', encoding="utf-8") as f:
+            with open(crt_path, "x", encoding="utf-8") as f:
                 logging.debug(f"Writing root CA to {crt_path}")
                 f.write(ssl_ca)
         self.__context_counter += 1

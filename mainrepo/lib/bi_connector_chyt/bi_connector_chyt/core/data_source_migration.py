@@ -1,22 +1,31 @@
-from typing import ClassVar, Optional, Type
+from typing import (
+    ClassVar,
+    Optional,
+    Type,
+)
 
 import attr
 
 from bi_constants.enums import CreateDSFrom
-
-from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.connectors.base.data_source_migration import (
-    DataSourceMigrationInterface, MigrationSpec, MigrationKeyMappingItem,
+    DataSourceMigrationInterface,
+    MigrationKeyMappingItem,
+    MigrationSpec,
 )
 from bi_core.connectors.sql_base.data_source_migration import DefaultSQLDataSourceMigrator
+from bi_core.data_source_spec.base import DataSourceSpec
 
-from bi_connector_chyt.core.data_source_spec import (
-    CHYTTableDataSourceSpec, CHYTSubselectDataSourceSpec,
-    CHYTTableListDataSourceSpec, CHYTTableRangeDataSourceSpec
-)
 from bi_connector_chyt.core.constants import (
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE, SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST, SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+)
+from bi_connector_chyt.core.data_source_spec import (
+    CHYTSubselectDataSourceSpec,
+    CHYTTableDataSourceSpec,
+    CHYTTableListDataSourceSpec,
+    CHYTTableRangeDataSourceSpec,
 )
 
 
@@ -50,7 +59,7 @@ class BaseCHYTDataSourceMigrator(DefaultSQLDataSourceMigrator):
                     dto_cls=CHYTTableListDSMI,
                     dsrc_spec_cls=self.table_list_dsrc_spec_cls,
                     migration_mapping_items=(
-                        MigrationKeyMappingItem(migration_dto_key='table_names', source_spec_key='table_names'),
+                        MigrationKeyMappingItem(migration_dto_key="table_names", source_spec_key="table_names"),
                     ),
                 )
             )
@@ -63,9 +72,9 @@ class BaseCHYTDataSourceMigrator(DefaultSQLDataSourceMigrator):
                     dto_cls=CHYTTableRangeDSMI,
                     dsrc_spec_cls=self.table_range_dsrc_spec_cls,
                     migration_mapping_items=(
-                        MigrationKeyMappingItem(migration_dto_key='directory_path', source_spec_key='directory_path'),
-                        MigrationKeyMappingItem(migration_dto_key='range_from', source_spec_key='range_from'),
-                        MigrationKeyMappingItem(migration_dto_key='range_to', source_spec_key='range_to'),
+                        MigrationKeyMappingItem(migration_dto_key="directory_path", source_spec_key="directory_path"),
+                        MigrationKeyMappingItem(migration_dto_key="range_from", source_spec_key="range_from"),
+                        MigrationKeyMappingItem(migration_dto_key="range_to", source_spec_key="range_to"),
                     ),
                 )
             )

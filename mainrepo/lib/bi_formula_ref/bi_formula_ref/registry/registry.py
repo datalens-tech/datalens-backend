@@ -1,11 +1,17 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, NamedTuple, Tuple
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    NamedTuple,
+    Tuple,
+)
 
 import attr
 
-from bi_formula_ref.registry.env import GenerationEnvironment
 from bi_formula_ref.registry.base import FunctionDocRegistryItem
+from bi_formula_ref.registry.env import GenerationEnvironment
 
 
 class RefFunctionKey(NamedTuple):
@@ -38,7 +44,7 @@ class FunctionReferenceRegistry:
 
     def limit(self, env: GenerationEnvironment) -> FunctionReferenceRegistry:
         limited_reg = FunctionReferenceRegistry()
-        for key, item in self.items():
+        for _key, item in self.items():
             if item.is_supported(env=env):
                 limited_reg.add_item(item)
 

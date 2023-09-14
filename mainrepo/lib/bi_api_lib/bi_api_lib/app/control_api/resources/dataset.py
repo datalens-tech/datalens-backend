@@ -1,87 +1,107 @@
 from __future__ import annotations
 
-import logging
-import uuid
 from http import HTTPStatus
-from typing import Any, Dict, Sequence
+import logging
+from typing import (
+    Any,
+    Dict,
+    Sequence,
+)
+import uuid
 
-import bi_query_processing.exc
 from bi_api_commons.flask.middlewares.logging_context import put_to_request_context
-from bi_constants.enums import ManagedBy
-from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX, CODE_OK
-from bi_api_lib import utils, exc
-
-import bi_api_lib.schemas.data
-import bi_api_lib.schemas.dataset_base
-import bi_api_lib.schemas.validation
+from bi_api_connector.api_schema.top_level import resolve_entry_loc_from_api_req_body
+from bi_api_lib import (
+    exc,
+    utils,
+)
 from bi_api_lib.api_decorators import schematic_request
-from bi_api_lib.const import DEFAULT_DATASET_LOCK_WAIT_TIMEOUT
-from bi_api_lib.dataset.utils import log_dataset_field_stats, invalidate_sample_sources, check_permissions_for_origin_sources
-from bi_api_lib.enums import USPermissionKind
 from bi_api_lib.app.control_api.resources import API
 from bi_api_lib.app.control_api.resources.base import BIResource
 from bi_api_lib.app.control_api.resources.dataset_base import DatasetResource
-from bi_api_connector.api_schema.top_level import resolve_entry_loc_from_api_req_body
-
-from bi_core.base_models import EntryLocation, PathEntryLocation, WorkbookEntryLocation
+from bi_api_lib.const import DEFAULT_DATASET_LOCK_WAIT_TIMEOUT
+from bi_api_lib.dataset.utils import (
+    check_permissions_for_origin_sources,
+    invalidate_sample_sources,
+    log_dataset_field_stats,
+)
+from bi_api_lib.enums import USPermissionKind
+import bi_api_lib.schemas.data
+import bi_api_lib.schemas.dataset_base
+import bi_api_lib.schemas.validation
+from bi_constants.enums import ManagedBy
+from bi_constants.exc import (
+    CODE_OK,
+    DEFAULT_ERR_CODE_API_PREFIX,
+    GLOBAL_ERR_PREFIX,
+)
+from bi_core.base_models import (
+    EntryLocation,
+    PathEntryLocation,
+    WorkbookEntryLocation,
+)
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.components.editor import DatasetComponentEditor
 from bi_core.constants import DatasetConstraints
 from bi_core.us_dataset import Dataset
 from bi_core.utils import generate_revision_id
+import bi_query_processing.exc
 
 LOGGER = logging.getLogger(__name__)
 
-ns = API.namespace('Datasets', path='/datasets')
+ns = API.namespace("Datasets", path="/datasets")
 
-VALIDATION_OK_MESSAGE = 'Validation was successful'
+VALIDATION_OK_MESSAGE = "Validation was successful"
 
 
 def _make_api_err_code(raw_code: Sequence[str]) -> str:
-    return '.'.join((
-        GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX,
-        *raw_code,
-    ))
+    return ".".join(
+        (
+            GLOBAL_ERR_PREFIX,
+            DEFAULT_ERR_CODE_API_PREFIX,
+            *raw_code,
+        )
+    )
 
 
-@ns.route('/')
+@ns.route("/")
 class DatasetCollection(DatasetResource):
     @classmethod
     def generate_dataset_location(cls, body: dict) -> EntryLocation:
-        name = body.get('name', 'Dataset {}'.format(str(uuid.uuid4())))
+        name = body.get("name", "Dataset {}".format(str(uuid.uuid4())))
         return resolve_entry_loc_from_api_req_body(
             name=name,
-            workbook_id=body.get('workbook_id'),
-            dir_path=body.get('dir_path', 'datasets'),
+            workbook_id=body.get("workbook_id"),
+            dir_path=body.get("dir_path", "datasets"),
         )
 
     @put_to_request_context(endpoint_code="DatasetCreate")
     @schematic_request(
-        ns=ns, body=bi_api_lib.schemas.main.CreateDatasetSchema(),
+        ns=ns,
+        body=bi_api_lib.schemas.main.CreateDatasetSchema(),
         responses={
-            200: ('Success', bi_api_lib.schemas.main.CreateDatasetResponseSchema()),
+            200: ("Success", bi_api_lib.schemas.main.CreateDatasetResponseSchema()),
         },
     )
     def post(self, body):  # type: ignore  # TODO: fix
         """Create dataset"""
         us_manager = self.get_us_manager()
         dataset = Dataset.create_from_dict(
-            Dataset.DataModel(name=''),  # TODO: Remove name - it's not used, but is required
+            Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
             ds_key=self.generate_dataset_location(body),
             us_manager=us_manager,
         )
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
-        if 'created_via' in body:
-            ds_editor.set_created_via(created_via=body['created_via'])
+        if "created_via" in body:
+            ds_editor.set_created_via(created_via=body["created_via"])
 
-        result_schema = body['dataset'].get('result_schema', [])
+        result_schema = body["dataset"].get("result_schema", [])
         if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
             raise bi_query_processing.exc.DatasetTooManyFieldsFatal()
 
         loader = self.create_dataset_api_loader()
-        loader.populate_dataset_from_body(
-            dataset=dataset, body=body['dataset'], us_manager=us_manager)
+        loader.populate_dataset_from_body(dataset=dataset, body=body["dataset"], us_manager=us_manager)
 
         us_manager.save(dataset)
 
@@ -90,12 +110,15 @@ class DatasetCollection(DatasetResource):
         return self.make_dataset_response_data(dataset=dataset, us_entry_buffer=us_manager.get_entry_buffer())
 
 
-@ns.route('/<string:dataset_id>')
+@ns.route("/<string:dataset_id>")
 class DatasetItem(BIResource):
-    @schematic_request(ns=ns, responses={
-        200: ('Success', None),  # type: ignore  # TODO: fix
-        404: ('Not found', None)  # type: ignore  # TODO: fix
-    })
+    @schematic_request(
+        ns=ns,
+        responses={
+            200: ("Success", None),  # type: ignore  # TODO: fix
+            404: ("Not found", None),  # type: ignore  # TODO: fix
+        },
+    )
     def delete(self, dataset_id):  # type: ignore  # TODO: fix
         """Delete dataset"""
         us_manager = self.get_us_manager()
@@ -105,39 +128,46 @@ class DatasetItem(BIResource):
         us_manager.delete(ds)
 
 
-@ns.route('/<dataset_id>/fields')
+@ns.route("/<dataset_id>/fields")
 class DatasetItemFields(BIResource):
     # TODO FIX: Move serialization logic to schema
     # TODO WARNING: Keep synced with async version
-    @schematic_request(ns=ns, responses={
-        200: ('Success', bi_api_lib.schemas.data.DatasetFieldsResponseSchema()),
-    })
+    @schematic_request(
+        ns=ns,
+        responses={
+            200: ("Success", bi_api_lib.schemas.data.DatasetFieldsResponseSchema()),
+        },
+    )
     def get(self, dataset_id):  # type: ignore  # TODO: fix
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={})
         fields = [
             {
-                'title': f.title,
-                'guid': f.guid,
-                'data_type': f.data_type,
-                'hidden': f.hidden,
-                'type': f.type,
-                'calc_mode': f.calc_mode,
+                "title": f.title,
+                "guid": f.guid,
+                "data_type": f.data_type,
+                "hidden": f.hidden,
+                "type": f.type,
+                "calc_mode": f.calc_mode,
             }
             for f in ds.result_schema
             if f.managed_by == ManagedBy.user
         ]
-        return {'fields': fields}
+        return {"fields": fields}
 
 
-@ns.route('/<dataset_id>/copy')
+@ns.route("/<dataset_id>/copy")
 class DatasetCopy(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetCopy")
-    @schematic_request(ns=ns, body=bi_api_lib.schemas.main.DatasetCopyRequestSchema(), responses={
-        200: ('Success', bi_api_lib.schemas.main.DatasetCopyResponseSchema()),
-        400: ('Failed', bi_api_lib.schemas.main.BadRequestResponseSchema()),
-    })
+    @schematic_request(
+        ns=ns,
+        body=bi_api_lib.schemas.main.DatasetCopyRequestSchema(),
+        responses={
+            200: ("Success", bi_api_lib.schemas.main.DatasetCopyResponseSchema()),
+            400: ("Failed", bi_api_lib.schemas.main.BadRequestResponseSchema()),
+        },
+    )
     def post(self, dataset_id, body):  # type: ignore  # TODO: fix
-        copy_us_key = body['new_key']
+        copy_us_key = body["new_key"]
         us_manager = self.get_us_manager()
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         us_manager.load_dependencies(ds)
@@ -159,13 +189,16 @@ class DatasetCopy(DatasetResource):
         return self.make_dataset_response_data(dataset=ds_copy, us_entry_buffer=us_manager.get_entry_buffer())
 
 
-@ns.route('/<dataset_id>/versions/<version>')
+@ns.route("/<dataset_id>/versions/<version>")
 class DatasetVersionItem(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetGet")
-    @schematic_request(ns=ns, responses={
-        200: ('Success', bi_api_lib.schemas.main.GetDatasetVersionResponseSchema()),
-        400: ('Failed', bi_api_lib.schemas.main.BadRequestResponseSchema()),
-    })
+    @schematic_request(
+        ns=ns,
+        responses={
+            200: ("Success", bi_api_lib.schemas.main.GetDatasetVersionResponseSchema()),
+            400: ("Failed", bi_api_lib.schemas.main.BadRequestResponseSchema()),
+        },
+    )
     def get(self, dataset_id, version):  # type: ignore  # TODO: fix
         """Get dataset version"""
         us_manager = self.get_us_manager()
@@ -173,32 +206,37 @@ class DatasetVersionItem(DatasetResource):
         utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()  # FIXME
         # TODO FIX: BI-2718 determine desired behaviour in case of workbooks
-        ds_dict['key'] = ds.raw_us_key
+        ds_dict["key"] = ds.raw_us_key
 
         dl_loc = ds.entry_key
         if isinstance(dl_loc, WorkbookEntryLocation):
-            ds_dict['workbook_id'] = dl_loc.workbook_id
+            ds_dict["workbook_id"] = dl_loc.workbook_id
 
-        ds_dict['is_favorite'] = ds.is_favorite
+        ds_dict["is_favorite"] = ds.is_favorite
 
         us_manager.load_dependencies(ds)
         ds_dict.update(self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer()))
         return ds_dict
 
     @put_to_request_context(endpoint_code="DatasetUpdate")
-    @schematic_request(ns=ns, body=bi_api_lib.schemas.main.DatasetUpdateSchema(), responses={
-        200: ('Success', bi_api_lib.schemas.dataset_base.DatasetContentSchema()),
-        400: ('Failed', bi_api_lib.schemas.main.BadRequestResponseSchema()),
-    })
+    @schematic_request(
+        ns=ns,
+        body=bi_api_lib.schemas.main.DatasetUpdateSchema(),
+        responses={
+            200: ("Success", bi_api_lib.schemas.dataset_base.DatasetContentSchema()),
+            400: ("Failed", bi_api_lib.schemas.main.BadRequestResponseSchema()),
+        },
+    )
     def put(self, dataset_id: str, version: str, body: Dict[str, Any]) -> dict:
         """Update dataset version"""
         us_manager = self.get_us_manager()
         with us_manager.get_locked_entry_cm(
-                Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT) as ds:  # type: Dataset
+            Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT
+        ) as ds:  # type: Dataset
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
             us_manager.load_dependencies(ds)
 
-            result_schema = body['dataset'].get('result_schema', [])
+            result_schema = body["dataset"].get("result_schema", [])
             if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
                 raise bi_query_processing.exc.DatasetTooManyFieldsFatal()
 
@@ -206,18 +244,19 @@ class DatasetVersionItem(DatasetResource):
 
             old_sources = ds_accessor.get_data_source_id_list()
             loader = self.create_dataset_api_loader()
-            update_info = loader.populate_dataset_from_body(
-                dataset=ds, body=body['dataset'], us_manager=us_manager)
+            update_info = loader.populate_dataset_from_body(dataset=ds, body=body["dataset"], us_manager=us_manager)
             new_sources = update_info.added_own_source_ids + update_info.updated_own_source_ids
             invalidate_sample_sources(
-                dataset=ds, source_ids=new_sources,
+                dataset=ds,
+                source_ids=new_sources,
                 us_manager=us_manager,
             )
 
             # checks that all dataset sources have read rights
             sources_to_check = set(new_sources) - set(old_sources)
             check_permissions_for_origin_sources(
-                dataset=ds, source_ids=sources_to_check,
+                dataset=ds,
+                source_ids=sources_to_check,
                 permission_kind=USPermissionKind.read,
                 us_entry_buffer=us_manager.get_entry_buffer(),
             )
@@ -229,14 +268,17 @@ class DatasetVersionItem(DatasetResource):
             return self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer())
 
 
-@ns.route('/validators/dataset')
-@ns.route('/<dataset_id>/versions/<version>/validators/schema')
+@ns.route("/validators/dataset")
+@ns.route("/<dataset_id>/versions/<version>/validators/schema")
 class DatasetVersionValidator(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetValidate")
     @schematic_request(
-        ns=ns, body=bi_api_lib.schemas.validation.DatasetValidationSchema(),
-        responses={200: ('Success', bi_api_lib.schemas.validation.DatasetValidationResponseSchema()),
-                   400: ('Failed', bi_api_lib.schemas.validation.DatasetValidationResponseSchema())}
+        ns=ns,
+        body=bi_api_lib.schemas.validation.DatasetValidationSchema(),
+        responses={
+            200: ("Success", bi_api_lib.schemas.validation.DatasetValidationResponseSchema()),
+            400: ("Failed", bi_api_lib.schemas.validation.DatasetValidationResponseSchema()),
+        },
     )
     def post(self, dataset_id: str = None, version: str = None, body: dict = None):  # type: ignore  # TODO: fix
         """Validate dataset version schema"""
@@ -248,7 +290,7 @@ class DatasetVersionValidator(DatasetResource):
 
         # apply updates
         try:
-            ds_validator.apply_batch(action_batch=body.get('updates', ()))  # type: ignore  # TODO: fix
+            ds_validator.apply_batch(action_batch=body.get("updates", ()))  # type: ignore  # TODO: fix
         except exc.DLValidationFatal as err:
             any_errors = True
             code = _make_api_err_code(exc.DLValidationFatal.err_code)
@@ -264,11 +306,13 @@ class DatasetVersionValidator(DatasetResource):
             message = exc.DLValidationError.default_message if any_errors else VALIDATION_OK_MESSAGE
             data.update(self.make_dataset_response_data(dataset=dataset, us_entry_buffer=us_manager.get_entry_buffer()))
 
-        data.update({
-            'code': code,
-            'message': message,
-            'dataset_errors': [],  # TODO: Remove
-        })
+        data.update(
+            {
+                "code": code,
+                "message": message,
+                "dataset_errors": [],  # TODO: Remove
+            }
+        )
         status = HTTPStatus.OK if not any_errors else HTTPStatus.BAD_REQUEST
 
         log_dataset_field_stats(dataset=dataset)
@@ -276,14 +320,17 @@ class DatasetVersionValidator(DatasetResource):
         return data, status
 
 
-@ns.route('/validators/field')
-@ns.route('/<dataset_id>/versions/<version>/validators/field')
+@ns.route("/validators/field")
+@ns.route("/<dataset_id>/versions/<version>/validators/field")
 class DatasetVersionFieldValidator(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetFieldValidate")
     @schematic_request(
-        ns=ns, body=bi_api_lib.schemas.validation.FieldValidationSchema(),
-        responses={200: ('Success', bi_api_lib.schemas.validation.FieldValidationResponseSchema()),
-                   400: ('Failed', bi_api_lib.schemas.validation.FieldValidationResponseSchema())}
+        ns=ns,
+        body=bi_api_lib.schemas.validation.FieldValidationSchema(),
+        responses={
+            200: ("Success", bi_api_lib.schemas.validation.FieldValidationResponseSchema()),
+            400: ("Failed", bi_api_lib.schemas.validation.FieldValidationResponseSchema()),
+        },
     )
     def post(self, *, dataset_id: str = None, version: str = None, body):  # type: ignore  # TODO: fix
         """Validate formula field of dataset version"""
@@ -291,19 +338,23 @@ class DatasetVersionFieldValidator(DatasetResource):
         dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
-        formula = body['field']['formula']
+        formula = body["field"]["formula"]
         # TODO full validation (with aggregation check for this field), not just formula
         field_errors = ds_validator.get_single_formula_errors(formula)
         code = _make_api_err_code(exc.DLValidationError.err_code) if field_errors else CODE_OK
         message = exc.DLValidationError.default_message if field_errors else VALIDATION_OK_MESSAGE
         error_data = {
-            'field_errors': [{
-                'title': body['field'].get('title'),
-                'guid': body['field'].get('guid'),
-                'errors': field_errors,
-            }] if field_errors else [],
-            'code': code,
-            'message': message,
+            "field_errors": [
+                {
+                    "title": body["field"].get("title"),
+                    "guid": body["field"].get("guid"),
+                    "errors": field_errors,
+                }
+            ]
+            if field_errors
+            else [],
+            "code": code,
+            "message": message,
         }
         status = HTTPStatus.OK if not field_errors else HTTPStatus.BAD_REQUEST
         return error_data, status

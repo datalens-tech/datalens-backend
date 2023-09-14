@@ -5,10 +5,10 @@ import attr
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import GoogleAppSettings
+from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 
 from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
-from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 
 
 @attr.s(frozen=True)
@@ -26,7 +26,9 @@ class FileUploaderConnectorsSettings(SettingsBase):
 @attr.s(frozen=True)
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore
-        "DL_SENTRY_DSN", fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER", missing=None,
+        "DL_SENTRY_DSN",
+        fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER",
+        missing=None,
     )
 
     US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore

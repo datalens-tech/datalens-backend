@@ -1,24 +1,47 @@
 from __future__ import annotations
 
 import abc
-from enum import Enum, auto, unique
+from enum import (
+    Enum,
+    auto,
+    unique,
+)
 from itertools import count
-from typing import cast, ClassVar, Generator, Optional, Sequence, TYPE_CHECKING, Union
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Generator,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
 
 import pandas as pd
 
-from bi_constants.enums import PivotRole, PivotHeaderRole, OrderDirection
-
-import bi_query_processing.exc as exc
-from bi_api_lib.query.formalization.pivot_legend import PivotDimensionRoleSpec, PivotMeasureRoleSpec
-from bi_api_lib.pivot.pandas.data_frame import (
-    PdPivotDataFrame, PdHSeriesPivotDataFrame, PdVSeriesPivotDataFrame,
-)
 from bi_api_lib.pivot.base.sorter import PivotSorter
+from bi_api_lib.pivot.pandas.data_frame import (
+    PdHSeriesPivotDataFrame,
+    PdPivotDataFrame,
+    PdVSeriesPivotDataFrame,
+)
 from bi_api_lib.pivot.primitives import DataCellVector
+from bi_api_lib.query.formalization.pivot_legend import (
+    PivotDimensionRoleSpec,
+    PivotMeasureRoleSpec,
+)
+from bi_constants.enums import (
+    OrderDirection,
+    PivotHeaderRole,
+    PivotRole,
+)
+import bi_query_processing.exc as exc
 
 if TYPE_CHECKING:
-    from bi_api_lib.pivot.primitives import PivotHeader, PivotMeasureSortingSettings
+    from bi_api_lib.pivot.primitives import (
+        PivotHeader,
+        PivotMeasureSortingSettings,
+    )
 
 
 @unique
@@ -109,13 +132,11 @@ class PdPivotSorterBase(PivotSorter):
             dim_idx = dimension_idx()
             direction = directions[dim_idx]
             normalizer = self._dimension_sort_strategy.get_normalizer(
-                pivot_item_id=pivot_item_id, direction=direction,
+                pivot_item_id=pivot_item_id,
+                direction=direction,
             )
 
-            return pd.Index([
-                normalizer.normalize_vector_value(vector)
-                for vector in idx
-            ])
+            return pd.Index([normalizer.normalize_vector_value(vector) for vector in idx])
 
         self._get_pd_obj().sort_index(
             axis=self._get_pd_axis(axis),

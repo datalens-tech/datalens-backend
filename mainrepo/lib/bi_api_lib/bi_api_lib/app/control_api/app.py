@@ -1,38 +1,47 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, TYPE_CHECKING, Generic, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 import attr
 import flask
 from flask import Flask
 from flask_marshmallow import Marshmallow
+from statcommons.unistat.flask import (
+    register_metrics,
+    register_unistat_hax,
+)
 
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.flask.middlewares.request_id import RequestIDService
-
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_constants.enums import USAuthMode, ConnectionType
-
+from bi_api_lib.app.control_api.resources import init_apis
+from bi_api_lib.app_common import SRFactoryBuilder
+from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
 )
-
+from bi_configs.connectors_settings import ConnectorSettingsBase
+from bi_constants.enums import (
+    ConnectionType,
+    USAuthMode,
+)
 from bi_core import profiling_middleware
 from bi_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
 from bi_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
-from bi_core.flask_utils.tracing import TracingMiddleware, TracingContextMiddleware
+from bi_core.flask_utils.tracing import (
+    TracingContextMiddleware,
+    TracingMiddleware,
+)
 from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from bi_core.ping import register_ping_handler_hax
-
-from statcommons.unistat.flask import register_unistat_hax, register_metrics
-
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.control_api.resources import init_apis
 
 if TYPE_CHECKING:
     from bi_core.connection_models import ConnectOptions
@@ -53,9 +62,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
     @abc.abstractmethod
     def set_up_environment(
-            self,
-            app: flask.Flask,
-            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        self,
+        app: flask.Flask,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         raise NotImplementedError()
 
@@ -67,7 +76,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         conn_opts_mutators_factory = ConnOptionsMutatorsFactory()
 
         def enable_index_fetching_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+            conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
             return conn_opts.clone(fetch_table_indexes=True)
 
@@ -77,18 +86,18 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         return conn_opts_mutators_factory
 
     def create_app(
-            self,
-            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
-            close_loop_after_request: bool = True,
+        self,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        close_loop_after_request: bool = True,
     ) -> flask.Flask:
         app = Flask(__name__)
 
         TracingMiddleware(
             url_prefix_exclude=(
-                '/ping',
-                '/unistat',
-                '/metrics',
+                "/ping",
+                "/unistat",
+                "/metrics",
             ),
         ).wrap_flask_app(app)
         ContextVarMiddleware().wrap_flask_app(app)
@@ -100,7 +109,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
         # To avoid error messages replacement by flask_restx
         app.config["ERROR_404_HELP"] = False
-        app.config["SWAGGER_UI_DOC_EXPANSION"] = 'list'
+        app.config["SWAGGER_UI_DOC_EXPANSION"] = "list"
 
         RequestLoggingContextControllerMiddleWare().set_up(app)
         TracingContextMiddleware().set_up(app)
@@ -122,7 +131,8 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         conn_opts_mutators_factory = self._get_conn_opts_mutators_factory()
 
         sr_factory = self.get_sr_factory(
-            settings=self._settings, conn_opts_factory=conn_opts_mutators_factory,
+            settings=self._settings,
+            conn_opts_factory=conn_opts_mutators_factory,
             connectors_settings=connectors_settings,
         )
 
@@ -137,7 +147,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             us_auth_mode=env_setup_result.us_auth_mode,
         ).set_up(app)
 
-        getattr(app, 'logger')
+        app.logger
 
         ma = Marshmallow()
         ma.init_app(app)

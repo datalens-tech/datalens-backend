@@ -1,27 +1,48 @@
 from __future__ import annotations
 
-import logging
 from functools import wraps
-from typing import Awaitable, Callable, List
+import logging
+from typing import (
+    Awaitable,
+    Callable,
+    List,
+)
 
 import attr
 import sqlalchemy as sa
-from sqlalchemy.sql.selectable import Alias, Select, Subquery
+from sqlalchemy.sql.selectable import (
+    Alias,
+    Select,
+    Subquery,
+)
 
-from bi_core.data_processing.stream_base import (
-    AbstractStream, DataStreamAsync, DataRequestMetaInfo, DataSourceVS, JointDataSourceVS
-)
 from bi_core.data_processing.prepared_components.primitives import (
-    PreparedFromInfo, PreparedMultiFromInfo, PreparedSingleFromInfo,
-)
-from bi_core.data_processing.processing.operation import (
-    BaseOp, DownloadOp, CalcOp, SingleSourceOp, MultiSourceOp, JoinOp
+    PreparedFromInfo,
+    PreparedMultiFromInfo,
+    PreparedSingleFromInfo,
 )
 from bi_core.data_processing.processing.context import OpExecutionContext
 from bi_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
+from bi_core.data_processing.processing.operation import (
+    BaseOp,
+    CalcOp,
+    DownloadOp,
+    JoinOp,
+    MultiSourceOp,
+    SingleSourceOp,
+)
 from bi_core.data_processing.source_builder import SqlSourceBuilder
-from bi_core.utils import compile_query_for_debug, make_id
-
+from bi_core.data_processing.stream_base import (
+    AbstractStream,
+    DataRequestMetaInfo,
+    DataSourceVS,
+    DataStreamAsync,
+    JointDataSourceVS,
+)
+from bi_core.utils import (
+    compile_query_for_debug,
+    make_id,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,7 +57,7 @@ class OpExecutorAsync:
 
 
 def log_op(
-        func: Callable[[OpExecutorAsync, BaseOp], Awaitable[AbstractStream]]
+    func: Callable[[OpExecutorAsync, BaseOp], Awaitable[AbstractStream]]
 ) -> Callable[[OpExecutorAsync, BaseOp], Awaitable[AbstractStream]]:
     """Log operation calls"""
 
@@ -45,9 +66,9 @@ def log_op(
         assert isinstance(op, (SingleSourceOp, MultiSourceOp))
         stream_ids = [op.source_stream_id] if isinstance(op, SingleSourceOp) else op.source_stream_ids
         LOGGER.info(
-            f'Running {type(op).__name__} '
-            f'with source streams {stream_ids} '
-            f'and destination stream {op.dest_stream_id}'
+            f"Running {type(op).__name__} "
+            f"with source streams {stream_ids} "
+            f"and destination stream {op.dest_stream_id}"
         )
         return await func(self, op)
 
@@ -77,10 +98,10 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
             # TODO: Confirm that it is ok or adapt Subquery feature for our code.
             query = query.original
 
-        assert isinstance(query, Select), f'Got type {type(query).__name__} for query, expected Select'
+        assert isinstance(query, Select), f"Got type {type(query).__name__} for query, expected Select"
 
         query_debug_str = compile_query_for_debug(query=query, dialect=query_compiler.dialect)
-        LOGGER.info(f'Going to database with SQL query:\n{query_debug_str}')
+        LOGGER.info(f"Going to database with SQL query:\n{query_debug_str}")
 
         joint_dsrc_info = PreparedMultiFromInfo(
             sql_source=query,
@@ -95,7 +116,8 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
 
         query_id = make_id()
         data = await self.db_ex_adapter.fetch_data_from_select(
-            query=query, user_types=source_stream.user_types,
+            query=query,
+            user_types=source_stream.user_types,
             joint_dsrc_info=joint_dsrc_info,
             query_id=query_id,
         )
@@ -104,9 +126,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
             data = data.limit(op.row_count_hard_limit)
 
         data_key = self.db_ex_adapter.get_data_key(
-            query=query, user_types=source_stream.user_types,
-            joint_dsrc_info=joint_dsrc_info,
-            query_id=query_id
+            query=query, user_types=source_stream.user_types, joint_dsrc_info=joint_dsrc_info, query_id=query_id
         )
 
         pass_db_query_to_user = joint_dsrc_info.pass_db_query_to_user
@@ -146,7 +166,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         elif isinstance(source_stream, JointDataSourceVS):
             from_info = source_stream.joint_dsrc_info
         else:
-            raise TypeError(f'Type {type(source_stream).__name__} is not supported as a source for CalcOp')
+            raise TypeError(f"Type {type(source_stream).__name__} is not supported as a source for CalcOp")
 
         query_compiler = from_info.query_compiler
         query = query_compiler.compile_select(
@@ -155,7 +175,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         )
         query_debug_str = compile_query_for_debug(query=query, dialect=query_compiler.dialect)
 
-        LOGGER.info(f'Generated lazy query: {query_debug_str}')
+        LOGGER.info(f"Generated lazy query: {query_debug_str}")
 
         names = []
         user_types = []
@@ -210,8 +230,5 @@ class JoinOpExecutorAsync(OpExecutorAsync):
             use_empty_source=op.use_empty_source,
         )
         return JointDataSourceVS(
-            id=op.dest_stream_id,
-            names=[],  # not used
-            user_types=[],  # not used
-            joint_dsrc_info=joint_dsrc_info
+            id=op.dest_stream_id, names=[], user_types=[], joint_dsrc_info=joint_dsrc_info  # not used  # not used
         )

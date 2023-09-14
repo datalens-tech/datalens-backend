@@ -1,29 +1,25 @@
 from __future__ import annotations
 
-from typing import Optional
 from contextlib import AsyncExitStack
+from typing import Optional
 
 import asyncpg
 import attr
 
-from bi_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProcessor
 from bi_compeng_pg.compeng_asyncpg.exec_adapter_asyncpg import AsyncpgExecAdapter
 from bi_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
+from bi_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProcessor
 
 
 @attr.s
 class AsyncpgOperationProcessor(
-        PostgreSQLOperationProcessor[
-            AsyncpgExecAdapter,
-            AsyncpgPoolWrapper,
-            asyncpg.pool.PoolConnectionProxy
-        ]
+    PostgreSQLOperationProcessor[AsyncpgExecAdapter, AsyncpgPoolWrapper, asyncpg.pool.PoolConnectionProxy]
 ):
     _cmstack: Optional[AsyncExitStack] = attr.ib(init=False, default=None)
     _timeout = 1.5
 
     async def start(self) -> None:
-        assert self._cmstack is None, 'should not double-enter'
+        assert self._cmstack is None, "should not double-enter"
         cmstack = AsyncExitStack()
         self._cmstack = cmstack
         pg_conn = await cmstack.enter_async_context(self._pg_pool.pool.acquire(timeout=self._timeout))

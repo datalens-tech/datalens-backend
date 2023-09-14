@@ -1,22 +1,29 @@
 from __future__ import annotations
 
-from typing import Dict, Generic, Iterable, Optional, Set, TypeVar
+from typing import (
+    Dict,
+    Generic,
+    Iterable,
+    Optional,
+    Set,
+    TypeVar,
+)
 
 import attr
 
-import bi_formula.core.nodes as nodes
 import bi_formula.core.exc as exc
 from bi_formula.core.extract import NodeExtract
+import bi_formula.core.nodes as nodes
 
 
 def validate_node_is_extractable(node: nodes.FormulaItem) -> nodes.NodeExtract:
     if node.extract is None:
-        raise exc.CacheError('Node has no extract')
+        raise exc.CacheError("Node has no extract")
     return node.extract
 
 
 class NodeSet:
-    __slots__ = ('_data_set',)
+    __slots__ = ("_data_set",)
 
     def __init__(self, nodes: Iterable[nodes.FormulaItem] = ()):
         self._data_set: Set[NodeExtract] = set()
@@ -58,7 +65,7 @@ class NodeSet:
         return len(self._data_set)
 
 
-_MAP_VALUE_TV = TypeVar('_MAP_VALUE_TV')
+_MAP_VALUE_TV = TypeVar("_MAP_VALUE_TV")
 
 
 @attr.s

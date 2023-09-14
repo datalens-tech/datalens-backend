@@ -1,13 +1,19 @@
 from __future__ import annotations
 
-import logging
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Generator, Sequence
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Generator,
+    Sequence,
+)
 
 import sqlalchemy as sa
 
-from bi_constants.enums import DataSourceRole, QueryType
-
+from bi_constants.enums import (
+    DataSourceRole,
+    QueryType,
+)
 import bi_core.exc as exc
 from bi_core.query.bi_query import BIQuery
 from bi_core.query.expression import ExpressionCtx
@@ -39,15 +45,15 @@ def get_value_range_query(expression: ExpressionCtx, dimension_filters: Sequence
         select_expressions=[
             ExpressionCtx(
                 expression=sa.func.min(expression.expression),
-                alias='min_val',
+                alias="min_val",
                 user_type=expression.user_type,
-                avatar_ids=expression.avatar_ids
+                avatar_ids=expression.avatar_ids,
             ),
             ExpressionCtx(
                 expression=sa.func.max(expression.expression),
-                alias='max_val',
+                alias="max_val",
                 user_type=expression.user_type,
-                avatar_ids=expression.avatar_ids
+                avatar_ids=expression.avatar_ids,
             ),
         ],
         dimension_filters=dimension_filters,

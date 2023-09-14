@@ -2,13 +2,11 @@ from typing import Type
 
 import attr
 
-from bi_utils.entrypoints import EntrypointClassManager
-
 import bi_core as package
 from bi_core.connectors.base.connector import CoreConnector
+from bi_utils.entrypoints import EntrypointClassManager
 
-
-_CONNECTOR_EP_GROUP = f'{package.__name__}.connectors'
+_CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 
 @attr.s

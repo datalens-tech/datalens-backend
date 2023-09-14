@@ -1,28 +1,30 @@
 from __future__ import annotations
 
-import os
-import sys
-import signal
 import logging
+import multiprocessing
+import os
+import signal
 import socket
 import subprocess
-import multiprocessing
+import sys
 import time
-from typing import TypeVar, Optional, Dict
+from typing import (
+    Dict,
+    Optional,
+    TypeVar,
+)
 
 import attr
 import requests
-
 from statcommons.log_config import deconfigure_logging
-
 
 LOGGER = logging.getLogger()
 
-_RUNNER_TV = TypeVar('_RUNNER_TV')
+_RUNNER_TV = TypeVar("_RUNNER_TV")
 
 
 class ForkPopenHack(subprocess.Popen):
-    """ Execute `func` in a forked process """
+    """Execute `func` in a forked process"""
 
     def __init__(self, target, **kwargs):  # type: ignore  # TODO: fix
         self._target = target
@@ -50,7 +52,7 @@ class ForkPopenHack(subprocess.Popen):
 
 
 class ProcessPopenDuck(multiprocessing.Process):
-    """ `multiprocessing.Process` with some duck-compatibility with `subprocess.Popen` """
+    """`multiprocessing.Process` with some duck-compatibility with `subprocess.Popen`"""
 
     _retcode = 0
 
@@ -85,9 +87,9 @@ class WSGIRunner:
     _proc: subprocess.Popen = attr.ib(init=False, default=None)
 
     def _debug(self, message, *args):  # type: ignore  # TODO: fix
-        sys.stderr.write('{} @ {}: '.format(self.__class__.__name__, os.getpid()))
+        sys.stderr.write("{} @ {}: ".format(self.__class__.__name__, os.getpid()))
         sys.stderr.write(message % args)
-        sys.stderr.write('\n')
+        sys.stderr.write("\n")
         sys.stderr.flush()
 
     @property
@@ -101,13 +103,13 @@ class WSGIRunner:
         raise ValueError("Bind port was not provided and was not generated yet")
 
     def find_free_port(self) -> int:
-        LOGGER.debug('Finding an available port...')
+        LOGGER.debug("Finding an available port...")
         # Binding on random port
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind((self._bind_addr, 0))
         port = s.getsockname()[1]
         s.close()
-        LOGGER.debug('Found port %s', port)
+        LOGGER.debug("Found port %s", port)
         # And hope that nobody bind on it until Flask will bind
         return port
 
@@ -138,10 +140,8 @@ class WSGIRunner:
             if now > max_time:
                 raise Exception(
                     f"Timed out waiting for WSGI to come up at {url}",
-                    dict(
-                        last_error=last_error,
-                        last_resp=resp,
-                        last_resp_text=resp.text if resp is not None else None))
+                    dict(last_error=last_error, last_resp=resp, last_resp_text=resp.text if resp is not None else None),
+                )
             sleep_time = next_attempt_time - now
             if sleep_time > 0.001:
                 time.sleep(sleep_time)
@@ -154,26 +154,31 @@ class WSGIRunner:
 
     def _make_uwsgi_params(self):  # type: ignore  # TODO: fix
         return (
-            '--die-on-term',
-            '--master',
-            '--module', self._module,
-            '--callable', self._callable,
-
-            '--http', f'{self._bind_addr}:{self._bind_port}',
-            '--http-timeout', '600',
-            '--socket-timeout', '600',
+            "--die-on-term",
+            "--master",
+            "--module",
+            self._module,
+            "--callable",
+            self._callable,
+            "--http",
+            f"{self._bind_addr}:{self._bind_port}",
+            "--http-timeout",
+            "600",
+            "--socket-timeout",
+            "600",
             # TODO FIX: Figure out why server does not starts within 15 seconds with this settings
             # '--harakiri', '300',
             # '--harakiri-verbose', 'true',
-
             # '--workers', '16',
             # '--threads', '10',
-            '--workers', '3',
-            '--threads', '3',
+            "--workers",
+            "3",
+            "--threads",
+            "3",
         )
 
     def _run_subproc(self):  # type: ignore  # TODO: fix
-        cmd = ['uwsgi'] + list(self._make_uwsgi_params())
+        cmd = ["uwsgi"] + list(self._make_uwsgi_params())
         env = {
             **(self._env or {}),
             **os.environ,
@@ -181,17 +186,18 @@ class WSGIRunner:
         self._proc = subprocess.Popen(cmd, env=env)
 
     def _run_fork_child_code(self):  # type: ignore  # TODO: fix
-        self._debug('child: running uwsgi')
+        self._debug("child: running uwsgi")
         os.environ.update(self._env)  # type: ignore  # TODO: fix
         import pyuwsgi  # noqa
+
         cmd = [sys.argv[0]] + list(self._make_uwsgi_params())
         sys.argv = cmd
-        self._debug('child: cmd: %r', cmd)
+        self._debug("child: cmd: %r", cmd)
         deconfigure_logging()  # so that postfork configure_logging doesn't fail
         try:
             pyuwsgi.run()
         finally:
-            self._debug('child: uwsgi done.')
+            self._debug("child: uwsgi done.")
 
     def shutdown(self):  # type: ignore  # TODO: fix
         try:

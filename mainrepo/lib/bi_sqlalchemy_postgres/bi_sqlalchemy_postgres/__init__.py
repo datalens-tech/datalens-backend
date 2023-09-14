@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .base import BIPGDialect
 from .asyncpg import AsyncBIPGDialect
+from .base import BIPGDialect
 
 __all__ = (
-    'BIPGDialect',
-    'AsyncBIPGDialect',
+    "BIPGDialect",
+    "AsyncBIPGDialect",
 )

@@ -3,10 +3,14 @@ from __future__ import annotations
 from typing import Type
 
 from bi_constants.enums import ConnectionType
-
-from bi_core.us_connection_base import ConnectionBase, UnknownConnection
-from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager, DefaultConnectionLifecycleManager
-
+from bi_core.connectors.base.lifecycle import (
+    ConnectionLifecycleManager,
+    DefaultConnectionLifecycleManager,
+)
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    UnknownConnection,
+)
 
 CONNECTION_TYPES: dict[ConnectionType, Type[ConnectionBase]] = {
     ConnectionType.unknown: UnknownConnection,
@@ -27,10 +31,10 @@ def get_lifecycle_manager_cls(conn_type: ConnectionType) -> Type[ConnectionLifec
 
 
 def register_connection_class(
-        new_conn_cls: Type[ConnectionBase],
-        conn_type: ConnectionType,
-        lifecycle_manager_cls: Type[ConnectionLifecycleManager] = DefaultConnectionLifecycleManager,
-        allow_ct_override: bool = False,
+    new_conn_cls: Type[ConnectionBase],
+    conn_type: ConnectionType,
+    lifecycle_manager_cls: Type[ConnectionLifecycleManager] = DefaultConnectionLifecycleManager,
+    allow_ct_override: bool = False,
 ) -> None:
     if conn_type is None:
         raise ValueError(f"Connection type for {new_conn_cls} is None")

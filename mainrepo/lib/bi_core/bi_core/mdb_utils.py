@@ -1,12 +1,11 @@
-import os
 import json
 import logging
+import os
 
-import attr
 import aiodns
+import attr
 
 from bi_configs.utils import split_by_comma
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,10 +23,10 @@ class MDBDomainManager:
     settings: MDBDomainManagerSettings = attr.ib()
 
     @classmethod
-    def from_env(cls) -> 'MDBDomainManager':  # gotta be deleted someday
-        mdb_domains = split_by_comma(os.environ.get('MDB_DOMAINS', ''))
-        mdb_cname_domains = split_by_comma(os.environ.get('MDB_CNAME_DOMAINS', ''))
-        renaming_map = json.loads(os.environ.get('MDB_MANAGED_NETWORK_REMAP', '{}'))
+    def from_env(cls) -> "MDBDomainManager":  # gotta be deleted someday
+        mdb_domains = split_by_comma(os.environ.get("MDB_DOMAINS", ""))
+        mdb_cname_domains = split_by_comma(os.environ.get("MDB_CNAME_DOMAINS", ""))
+        renaming_map = json.loads(os.environ.get("MDB_MANAGED_NETWORK_REMAP", "{}"))
 
         return cls(
             MDBDomainManagerSettings(
@@ -57,7 +56,7 @@ class MDBDomainManager:
             if host.endswith(domain):
                 return host.replace(domain, self.settings.renaming_map[domain])
 
-        raise ValueError(f'Incorrect host: {host}')
+        raise ValueError(f"Incorrect host: {host}")
 
     async def normalize_mdb_host(self, original_host: str) -> str:
         working_host = original_host
@@ -66,7 +65,7 @@ class MDBDomainManager:
         if self.host_is_mdb_cname(working_host):
             LOGGER.info("Host looks like MDB CNAME for master: %s", working_host)
             resolver = aiodns.DNSResolver()
-            resp = await resolver.query(original_host, 'CNAME')
+            resp = await resolver.query(original_host, "CNAME")
             working_host = resp.cname
             LOGGER.info("Host transformed: %s", working_host)
 

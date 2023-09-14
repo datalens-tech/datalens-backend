@@ -4,13 +4,16 @@ Extended formula nodes
 
 from __future__ import annotations
 
-from typing import Hashable, Optional
+from typing import (
+    Hashable,
+    Optional,
+)
 
 from sqlalchemy.sql import ClauseElement
 
 from bi_formula.core import nodes
-from bi_formula.translation.context import TranslationCtx
 from bi_formula.core.extract import NodeExtract
+from bi_formula.translation.context import TranslationCtx
 
 
 class CompiledExpression(nodes.BaseLiteral):
@@ -18,8 +21,10 @@ class CompiledExpression(nodes.BaseLiteral):
 
     @classmethod
     def make(
-            cls, value: ClauseElement | TranslationCtx, *,
-            meta: Optional[nodes.NodeMeta] = None,
+        cls,
+        value: ClauseElement | TranslationCtx,
+        *,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> CompiledExpression:
         return super().make(value=value, meta=meta)
 

@@ -1,16 +1,21 @@
 from __future__ import annotations
 
-import json
 from asyncio import AbstractEventLoop
-from typing import Any, Optional
+import json
+from typing import (
+    Any,
+    Optional,
+)
 
-import attr
 import aiohttp.test_utils
+import attr
 from werkzeug.test import Client as WClient
 
+from bi_api_client.dsmaker.api.http_sync_base import (
+    ClientResponse,
+    SyncHttpClientBase,
+)
 from bi_utils.aio import await_sync
-
-from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase, ClientResponse
 
 
 @attr.s
@@ -41,28 +46,36 @@ class TestClientConverterAiohttpToFlask:
             self._cookies.pop(key, None)
 
     def post(self, url: str, **kwargs: Any) -> Resp:
-        return self.open(url, method='post', **kwargs)
+        return self.open(url, method="post", **kwargs)
 
     def get(self, url: str, **kwargs: Any) -> Resp:
-        return self.open(url, method='get', **kwargs)
+        return self.open(url, method="get", **kwargs)
 
     def open(
-            self,
-            url: str, *,
-            method: str,
-            data: Optional[str] = None,
-            content_type: Optional[str] = None,
-            headers: Optional[dict] = None,
+        self,
+        url: str,
+        *,
+        method: str,
+        data: Optional[str] = None,
+        content_type: Optional[str] = None,
+        headers: Optional[dict] = None,
     ) -> Resp:
         headers = dict(headers) if headers else {}
         if self._extra_headers:
             headers.update(self._extra_headers)
 
         if content_type is not None:
-            headers['Content-Type'] = content_type
-        resp = await_sync(self._aio_client.request(
-            method, url, data=data, headers=headers, cookies=self._cookies,
-        ), loop=self._loop)
+            headers["Content-Type"] = content_type
+        resp = await_sync(
+            self._aio_client.request(
+                method,
+                url,
+                data=data,
+                headers=headers,
+                cookies=self._cookies,
+            ),
+            loop=self._loop,
+        )
         resp_data = await_sync(resp.read())
 
         js: Optional[dict] = None
@@ -83,15 +96,20 @@ class WrappedAioSyncApiClient(SyncHttpClientBase):
         assert isinstance(self._int_wrapped_client, TestClientConverterAiohttpToFlask)
 
     def open(
-            self, url: str, method: str,
-            headers: dict, data: Optional[str] = None,
-            content_type: Optional[str] = None,
+        self,
+        url: str,
+        method: str,
+        headers: dict,
+        data: Optional[str] = None,
+        content_type: Optional[str] = None,
     ) -> ClientResponse:
-
         method = method.lower()
         int_response = self._int_wrapped_client.open(
-            url=url, method=method, headers=headers,
-            data=data, content_type=content_type,
+            url=url,
+            method=method,
+            headers=headers,
+            data=data,
+            content_type=content_type,
         )
         return ClientResponse(
             status_code=int_response.status_code,
@@ -108,15 +126,20 @@ class FlaskSyncApiClient(SyncHttpClientBase):
         assert isinstance(self._int_wclient, WClient)
 
     def open(
-            self, url: str, method: str,
-            headers: dict, data: Optional[str] = None,
-            content_type: Optional[str] = None,
+        self,
+        url: str,
+        method: str,
+        headers: dict,
+        data: Optional[str] = None,
+        content_type: Optional[str] = None,
     ) -> ClientResponse:
-
         method = method.lower()
         int_response = self._int_wclient.open(
-            url, method=method, headers=headers,
-            data=data, content_type=content_type,
+            url,
+            method=method,
+            headers=headers,
+            data=data,
+            content_type=content_type,
         )
         return ClientResponse(
             status_code=int_response.status_code,

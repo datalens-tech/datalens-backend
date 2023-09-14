@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 from collections import ChainMap
-from typing import Any, Iterable, MutableMapping, TypeVar
+from typing import (
+    Any,
+    Iterable,
+    MutableMapping,
+    TypeVar,
+)
 
 import attr
 
 from bi_i18n.localizer_base import Translatable
 
-
-_RES_TV = TypeVar('_RES_TV', bound='AliasedResource')
+_RES_TV = TypeVar("_RES_TV", bound="AliasedResource")
 
 
 @attr.s(frozen=True)

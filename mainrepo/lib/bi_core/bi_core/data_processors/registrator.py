@@ -1,7 +1,7 @@
 from typing import Type
 
-from bi_core.data_processors.base.plugin import DataProcessorPlugin
 from bi_core.aio.web_app_services.data_processing.factory import register_data_processor_service_class
+from bi_core.data_processors.base.plugin import DataProcessorPlugin
 
 
 class DataProcessorPluginRegistrator:

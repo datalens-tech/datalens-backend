@@ -2,9 +2,11 @@ from typing import Type
 
 from marshmallow import Schema
 
-from bi_core.us_connection_base import ConnectionBase, UnknownConnection
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    UnknownConnection,
+)
 from bi_core.us_manager.storage_schemas.connection import ConnectionBaseDataStorageSchema
-
 
 MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA = {}
 

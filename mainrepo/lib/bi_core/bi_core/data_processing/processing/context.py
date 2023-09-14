@@ -1,9 +1,23 @@
 from __future__ import annotations
 
-from typing import Any, Collection, Dict, Optional, Set, Tuple
+from typing import (
+    Any,
+    Collection,
+    Dict,
+    Optional,
+    Set,
+    Tuple,
+)
 
-from bi_core.data_processing.processing.operation import BaseOp, MultiSourceOp, SingleSourceOp
-from bi_core.data_processing.stream_base import AbstractStream, DataStreamAsync
+from bi_core.data_processing.processing.operation import (
+    BaseOp,
+    MultiSourceOp,
+    SingleSourceOp,
+)
+from bi_core.data_processing.stream_base import (
+    AbstractStream,
+    DataStreamAsync,
+)
 
 
 class OpExecutionContext:
@@ -30,10 +44,7 @@ class OpExecutionContext:
 
     @property
     def data_streams(self) -> Collection[DataStreamAsync]:
-        return [
-            stream for stream in self._streams.values()
-            if isinstance(stream, DataStreamAsync)
-        ]
+        return [stream for stream in self._streams.values() if isinstance(stream, DataStreamAsync)]
 
     @property
     def processing_id(self) -> str:

@@ -6,34 +6,49 @@ import enum
 import logging
 import random
 from typing import (
-    TYPE_CHECKING, Any, Callable, ClassVar, Dict, FrozenSet,
-    Generator, List, Optional, Sequence, TypeVar, Union,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    FrozenSet,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
 )
 
 import attr
 from sqlalchemy import sql as sasql
 
+from bi_api_commons.base_models import RequestContextInfo
 from bi_constants.enums import BIType
 from bi_constants.exc import DLBaseException
-
-from bi_utils.sanitize import make_jsonable
-
-from bi_api_commons.base_models import RequestContextInfo
+from bi_constants.types import TBIDataValue
 from bi_core.connection_executors.models.common import RemoteQueryExecutorData
 from bi_core.connection_executors.models.db_adapter_data import RawSchemaInfo
-from bi_core.connection_models import ConnDTO, ConnectOptions
+from bi_core.connection_models import (
+    ConnDTO,
+    ConnectOptions,
+)
 from bi_core.db import (
-    TypeTransformer, get_type_transformer, SchemaInfo, SAMPLE_ID_COLUMN_NAME,
-    SchemaColumn, IndexInfo,
+    SAMPLE_ID_COLUMN_NAME,
+    IndexInfo,
+    SchemaColumn,
+    SchemaInfo,
+    TypeTransformer,
+    get_type_transformer,
 )
 from bi_core.exc import UnsupportedNativeTypeError
-from bi_constants.types import TBIDataValue
+from bi_utils.sanitize import make_jsonable
 
 if TYPE_CHECKING:
-    from bi_core.services_registry.top_level import ServicesRegistry
+    from bi_constants.types import TJSONExt
     from bi_core.connections_security.base import ConnectionSecurityManager  # noqa
     from bi_core.mdb_utils import MDBDomainManager
-    from bi_constants.types import TJSONExt
+    from bi_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -41,6 +56,7 @@ LOGGER = logging.getLogger(__name__)
 
 class ExecutionMode(enum.Enum):
     """Will be turned into something like (is_safe: bool, is_async: bool, via_qe: bool)"""
+
     DIRECT = enum.auto()
     RQE = enum.auto()
 
@@ -60,7 +76,7 @@ class ConnExecutorQuery:
     is_dashsql_query: bool = attr.ib(default=False)
 
 
-_CONN_EXEC_TV = TypeVar('_CONN_EXEC_TV', bound='ConnExecutorBase')
+_CONN_EXEC_TV = TypeVar("_CONN_EXEC_TV", bound="ConnExecutorBase")
 
 
 @attr.s(cmp=False, hash=False)
@@ -74,10 +90,12 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
     _host_fail_callback: Callable = attr.ib()
     _req_ctx_info: Optional[RequestContextInfo] = attr.ib()
     _exec_mode: ExecutionMode = attr.ib()
-    _sec_mgr: 'ConnectionSecurityManager' = attr.ib()
-    _mdb_mgr: 'MDBDomainManager' = attr.ib()
+    _sec_mgr: "ConnectionSecurityManager" = attr.ib()
+    _mdb_mgr: "MDBDomainManager" = attr.ib()
     _remote_qe_data: Optional[RemoteQueryExecutorData] = attr.ib()
-    _services_registry: Optional[ServicesRegistry] = attr.ib(kw_only=True, default=None)  # Do not use. To be deprecated. Somehow.
+    _services_registry: Optional[ServicesRegistry] = attr.ib(
+        kw_only=True, default=None
+    )  # Do not use. To be deprecated. Somehow.
     _is_initialized: bool = attr.ib(init=False, default=False)
 
     @_exec_mode.validator
@@ -114,14 +132,13 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
         if len(user_types) != len(row):
             raise ValueError(f"Length of user_types {len(user_types)} != length of row {len(row)}")
         return tuple(
-            self.type_transformer.cast_for_output(val, user_t=user_type)
-            for val, user_type in zip(row, user_types)
+            self.type_transformer.cast_for_output(val, user_t=user_type) for val, user_type in zip(row, user_types)
         )
 
     def create_schema_info_from_raw_schema_info(
-            self,
-            raw_schema_info: RawSchemaInfo,
-            require_all: bool = False,
+        self,
+        raw_schema_info: RawSchemaInfo,
+        require_all: bool = False,
     ) -> SchemaInfo:
         schema = []
         type_transformer = self.type_transformer
@@ -131,12 +148,11 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
                 continue
 
             try:
-                user_type = type_transformer.type_native_to_user(
-                    native_t=raw_column_info.native_type)
+                user_type = type_transformer.type_native_to_user(native_t=raw_column_info.native_type)
             except UnsupportedNativeTypeError:
                 if require_all:
                     raise
-                LOGGER.warning('Unable to detect type of field: %s', raw_column_info)
+                LOGGER.warning("Unable to detect type of field: %s", raw_column_info)
                 user_type = BIType.unsupported
 
             schema_col = SchemaColumn(
@@ -159,7 +175,10 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
                 for raw_idx_info in raw_schema_info.indexes
             )
 
-        return SchemaInfo(schema=schema, indexes=index_info_set,)
+        return SchemaInfo(
+            schema=schema,
+            indexes=index_info_set,
+        )
 
     @contextlib.contextmanager
     def _postprocess_db_excs(self) -> Generator[None, None, None]:
@@ -167,7 +186,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
             yield
         except DLBaseException as exc:
             if self._conn_options.pass_db_messages_to_user:
-                for key in ('query', 'db_message'):
+                for key in ("query", "db_message"):
                     value = exc.debug_info.get(key)
                     if exc.details.get(key) is None and value is not None:
                         exc.details[key] = value

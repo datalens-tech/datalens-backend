@@ -6,14 +6,15 @@ from dl_repmanager.metapkg_scoped_sync import sync_scoped_metapkg
 
 
 def make_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog='DL Package Meta CLI')
-    parser.add_argument('--orig-metapkg-path', required=True)
-    parser.add_argument('--scoped-metapkg-path', required=True)
-    parser.add_argument('--lib-no-prune', action='append', default=[])
-    parser.add_argument('--remove-private-pypi', action='store_true', default=False)
-    parser.add_argument('--use-target-lock', action='store_true', default=False)
+    parser = argparse.ArgumentParser(prog="DL Package Meta CLI")
+    parser.add_argument("--orig-metapkg-path", required=True)
+    parser.add_argument("--scoped-metapkg-path", required=True)
+    parser.add_argument("--lib-no-prune", action="append", default=[])
+    parser.add_argument("--remove-private-pypi", action="store_true", default=False)
+    parser.add_argument("--use-target-lock", action="store_true", default=False)
     parser.add_argument(
-        'lib_paths_to_include', nargs='+',
+        "lib_paths_to_include",
+        nargs="+",
         help="Path of libraries to include relative to scoped metapkg",
     )
 
@@ -36,5 +37,5 @@ def main() -> None:
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

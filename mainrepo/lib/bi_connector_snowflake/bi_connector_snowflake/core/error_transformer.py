@@ -1,12 +1,13 @@
 import sqlalchemy
 
-from bi_connector_snowflake.core.exc import SnowflakeAccessTokenError
 from bi_core.connectors.base.error_transformer import (
     ChainedDbErrorTransformer,
     DbErrorTransformer,
-    ErrorTransformerRule as Rule,
-    ExcMatchCondition,
 )
+from bi_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
+from bi_core.connectors.base.error_transformer import ExcMatchCondition
+
+from bi_connector_snowflake.core.exc import SnowflakeAccessTokenError
 
 
 def is_access_token_error() -> ExcMatchCondition:

@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Any, List
+from typing import (
+    Any,
+    List,
+)
+
 import attr
 
 from bi_api_lib.request_model.data import FieldAction
@@ -33,13 +37,10 @@ class UpdateDatasetMutationKey(MutationKey):
             raise MutationKeySerializationError()
         serialized.sort(key=lambda x: json.dumps(x, indent=None, sort_keys=True, cls=RedisDatalensDataJSONEncoder))
         dumped = json.dumps(
-            dict(
-                ds_rev=dataset_revision_id,
-                mutation=serialized
-            ),
+            dict(ds_rev=dataset_revision_id, mutation=serialized),
             sort_keys=True,
             indent=None,
-            separators=(',', ':'),
+            separators=(",", ":"),
             cls=RedisDatalensDataJSONEncoder,
         )
         hashed = hashlib.sha256(dumped.encode()).hexdigest()

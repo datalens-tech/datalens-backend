@@ -1,21 +1,32 @@
 from __future__ import annotations
 
-from typing import List, NamedTuple, Optional, Sequence, TYPE_CHECKING, Union
+from typing import (
+    TYPE_CHECKING,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Union,
+)
 
 from bi_formula.definitions.type_strategy import (
-    TypeStrategy, Fixed, FromArgs, DynamicIndexStrategy,
-)
-
-from bi_formula_ref.texts import (
-    FROM_ARGS, DEPENDS_ON_ARGS, COMMON_TYPE_NOTE,
+    DynamicIndexStrategy,
+    Fixed,
+    FromArgs,
+    TypeStrategy,
 )
 from bi_formula_ref.registry.text import ParameterizedText
+from bi_formula_ref.texts import (
+    COMMON_TYPE_NOTE,
+    DEPENDS_ON_ARGS,
+    FROM_ARGS,
+)
 
 if TYPE_CHECKING:
-    from bi_formula_ref.registry.env import GenerationEnvironment
     from bi_formula.core.datatype import DataType
-    import bi_formula_ref.registry.base as _registry_base
     from bi_formula_ref.registry.arg_base import FuncArg
+    import bi_formula_ref.registry.base as _registry_base
+    from bi_formula_ref.registry.env import GenerationEnvironment
 
 
 class TypeInfo(NamedTuple):
@@ -30,7 +41,9 @@ def type_macro(*types: DataType) -> str:
 class TypeStrategyInspector:
     @classmethod
     def _extract_common_type_args(
-            cls, ret_type_strat: TypeStrategy, args: List[FuncArg],
+        cls,
+        ret_type_strat: TypeStrategy,
+        args: List[FuncArg],
     ) -> List[FuncArg]:
         ct_args = []
         if isinstance(ret_type_strat, FromArgs):
@@ -47,17 +60,22 @@ class TypeStrategyInspector:
 
     @classmethod
     def _extract_common_type_args_str(
-            cls, ret_type_strat: TypeStrategy, inf_args: bool, args: List[FuncArg],
+        cls,
+        ret_type_strat: TypeStrategy,
+        inf_args: bool,
+        args: List[FuncArg],
     ) -> str:
         ct_args = cls._extract_common_type_args(ret_type_strat, args)
-        arg_str = ', '.join('`{}`'.format(a.name) for a in ct_args)
+        arg_str = ", ".join("`{}`".format(a.name) for a in ct_args)
         if inf_args is None:
-            arg_str += ', ...'
+            arg_str += ", ..."
         return arg_str
 
     @classmethod
     def get_return_type_and_arg_type_note(
-            cls, item: _registry_base.FunctionDocRegistryItem, env: GenerationEnvironment,
+        cls,
+        item: _registry_base.FunctionDocRegistryItem,
+        env: GenerationEnvironment,
     ) -> TypeInfo:
         """
         Return string representing the return type
@@ -69,7 +87,7 @@ class TypeStrategyInspector:
         strategies = list({id(defn.return_type): defn.return_type for defn in def_list}.values())
         inf_args = any(defn.arg_cnt is None for defn in def_list)
         note = None
-        ret_type_str: ParameterizedText = ParameterizedText(text='')
+        ret_type_str: ParameterizedText = ParameterizedText(text="")
 
         # deduplicate const and non-const types
         fixed_types = set()
@@ -89,14 +107,9 @@ class TypeStrategyInspector:
             if isinstance(ret_type_strat, Fixed):
                 ret_type_str = ParameterizedText(text=type_macro(ret_type_strat.type.non_const_type))
             elif isinstance(ret_type_strat, FromArgs):
-                common_type_args_str = cls._extract_common_type_args_str(
-                    ret_type_strat, inf_args, args
-                )
-                ret_type_str = ParameterizedText(
-                    text=FROM_ARGS,
-                    params=dict(args=common_type_args_str)
-                )
-                if ',' in common_type_args_str:  # FromArgs strategy is used for more than 1 argument
+                common_type_args_str = cls._extract_common_type_args_str(ret_type_strat, inf_args, args)
+                ret_type_str = ParameterizedText(text=FROM_ARGS, params=dict(args=common_type_args_str))
+                if "," in common_type_args_str:  # FromArgs strategy is used for more than 1 argument
                     # a note about args that they must have the same type
                     note = ParameterizedText(text=COMMON_TYPE_NOTE, params=dict(args=common_type_args_str))
 

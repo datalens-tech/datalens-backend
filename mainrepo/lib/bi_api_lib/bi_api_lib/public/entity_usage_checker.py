@@ -5,16 +5,15 @@ import typing
 
 import attr
 
-from bi_constants.enums import DataSourceRole
-
-from bi_core import us_dataset
-from bi_core.us_connection_base import ConnectionBase
 from bi_api_commons.base_models import RequestContextInfo
-from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.exc import EntityUsageNotAllowed
+from bi_constants.enums import DataSourceRole
+from bi_core import us_dataset
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.data_source.collection import DataSourceCollectionFactory
 from bi_core.dataset_capabilities import DatasetCapabilities
+from bi_core.exc import EntityUsageNotAllowed
+from bi_core.services_registry.entity_checker import EntityUsageChecker
+from bi_core.us_connection_base import ConnectionBase
 
 if typing.TYPE_CHECKING:
     from bi_core.us_manager.us_manager import USManagerBase
@@ -26,8 +25,10 @@ LOGGER = logging.getLogger(__name__)
 @attr.s
 class PublicEnvEntityUsageChecker(EntityUsageChecker):
     def ensure_dataset_can_be_used(
-            self, rci: RequestContextInfo, dataset: us_dataset.Dataset,
-            us_manager: USManagerBase,
+        self,
+        rci: RequestContextInfo,
+        dataset: us_dataset.Dataset,
+        us_manager: USManagerBase,
     ) -> None:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=us_manager.get_entry_buffer())

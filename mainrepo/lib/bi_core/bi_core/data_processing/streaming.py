@@ -2,18 +2,28 @@ from __future__ import annotations
 
 import logging
 from typing import (
-    Any, AsyncGenerator, AsyncIterable, Awaitable, Callable,
-    Generic, Iterable, List, Optional, Sequence, Type, TypeVar,
+    Any,
+    AsyncGenerator,
+    AsyncIterable,
+    Awaitable,
+    Callable,
+    Generic,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
 )
 
 import attr
-import bi_core.exc as exc
 
+import bi_core.exc as exc
 
 LOGGER = logging.getLogger(__name__)
 
 
-_ENTRY_TV = TypeVar('_ENTRY_TV')
+_ENTRY_TV = TypeVar("_ENTRY_TV")
 # Alias for readability
 TChunk = Sequence  # `Sequence[_ENTRY_TV]`  # Chunk of "rows" (which might be anything)
 
@@ -45,12 +55,13 @@ class AsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
 
     @classmethod
     def from_chunked_iterable(
-            cls,
-            sync_chunked_data: Iterable[TChunk[_ENTRY_TV]],
+        cls,
+        sync_chunked_data: Iterable[TChunk[_ENTRY_TV]],
     ) -> AsyncChunked[_ENTRY_TV]:
         async def async_chunk_gen() -> AsyncGenerator[TChunk[_ENTRY_TV], None]:
             for chunk in sync_chunked_data:
                 yield chunk
+
         return cls(chunked_data=async_chunk_gen())
 
     @property
@@ -86,7 +97,7 @@ class AsyncChunkedLimited(AsyncChunkedBase[_ENTRY_TV]):
                     raise self.limit_exc_to_raise()
                 yield item
 
-            LOGGER.info(f'Received {cnt} data rows.')
+            LOGGER.info(f"Received {cnt} data rows.")
 
         return async_item_gen()
 
@@ -103,7 +114,7 @@ class AsyncChunkedLimited(AsyncChunkedBase[_ENTRY_TV]):
                     raise exc.ResultRowCountLimitExceeded()
                 yield chunk
 
-            LOGGER.info(f'Received {cnt} data rows.')
+            LOGGER.info(f"Received {cnt} data rows.")
 
         return async_chunk_gen()
 
@@ -128,11 +139,11 @@ class LazyAsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
                     yield item
             finally:
                 await self._finalizer()
+
         return item_gen()
 
     @property
     def chunks(self) -> AsyncIterable[TChunk[_ENTRY_TV]]:
-
         async def chunk_gen() -> AsyncGenerator[TChunk[_ENTRY_TV], None]:
             if self._chunked is None:
                 self._chunked = await self._initializer()  # type: ignore  # TODO: fix
@@ -145,12 +156,12 @@ class LazyAsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
         return chunk_gen()
 
 
-_CBO_ITEM_TV = TypeVar('_CBO_ITEM_TV')
+_CBO_ITEM_TV = TypeVar("_CBO_ITEM_TV")
 
 
 async def chunkify_by_one(
-        items: AsyncIterable[_CBO_ITEM_TV],
+    items: AsyncIterable[_CBO_ITEM_TV],
 ) -> AsyncIterable[Sequence[_CBO_ITEM_TV]]:
-    """ Helper to wrap an iterable into a chunked iterable with one item per chunk """
+    """Helper to wrap an iterable into a chunked iterable with one item per chunk"""
     async for item in items:
         yield (item,)

@@ -3,7 +3,10 @@ from typing import Optional
 import attr
 import sqlalchemy as sa
 
-from bi_db_testing.database.engine_wrapper import DbEngineConfig, EngineWrapperBase
+from bi_db_testing.database.engine_wrapper import (
+    DbEngineConfig,
+    EngineWrapperBase,
+)
 
 
 @attr.s(frozen=True)
@@ -13,7 +16,7 @@ class SnowFlakeDbEngineConfig(DbEngineConfig):
 
 class SnowFlakeEngineWrapper(EngineWrapperBase):
     CONFIG_CLS = SnowFlakeDbEngineConfig
-    URL_PREFIX = 'snowflake'
+    URL_PREFIX = "snowflake"
 
     @property
     def config(self) -> SnowFlakeDbEngineConfig:
@@ -22,7 +25,7 @@ class SnowFlakeEngineWrapper(EngineWrapperBase):
 
     @property
     def name(self) -> str:
-        name = self.execute('SELECT CURRENT_DATABASE()').scalar()
+        name = self.execute("SELECT CURRENT_DATABASE()").scalar()
         assert isinstance(name, str)
         return name
 

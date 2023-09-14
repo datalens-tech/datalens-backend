@@ -2,7 +2,6 @@ from typing import Optional
 
 from bi_constants.enums import ConnectionType
 
-
 CONNECTOR_ALIAS_BY_TYPE: dict[ConnectionType, Optional[str]] = {}
 
 

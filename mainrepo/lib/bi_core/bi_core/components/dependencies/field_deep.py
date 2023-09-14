@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from typing import AbstractSet, Set
+from typing import (
+    AbstractSet,
+    Set,
+)
 
 import attr
 
-from bi_core.components.ids import FieldId
-from bi_core.components.dependencies.field_shallow_base import FieldShallowInterDependencyManagerBase
 from bi_core.components.dependencies.field_deep_base import FieldDeepInterDependencyManagerBase
+from bi_core.components.dependencies.field_shallow_base import FieldShallowInterDependencyManagerBase
+from bi_core.components.ids import FieldId
 
 
 @attr.s

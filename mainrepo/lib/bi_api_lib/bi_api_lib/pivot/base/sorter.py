@@ -4,13 +4,17 @@ import abc
 from typing import TYPE_CHECKING
 
 import attr
-from bi_api_lib.pivot.sort_strategy import DimensionSortValueStrategy, MeasureSortStrategy
+
+from bi_api_lib.pivot.sort_strategy import (
+    DimensionSortValueStrategy,
+    MeasureSortStrategy,
+)
 
 if TYPE_CHECKING:
-    from bi_query_processing.legend.field_legend import Legend
-    from bi_api_lib.query.formalization.pivot_legend import PivotLegend
     from bi_api_lib.pivot.base.data_frame import PivotDataFrame
     from bi_api_lib.pivot.sort_strategy import SortValueStrategy
+    from bi_api_lib.query.formalization.pivot_legend import PivotLegend
+    from bi_query_processing.legend.field_legend import Legend
 
 
 @attr.s

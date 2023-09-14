@@ -1,33 +1,53 @@
 from __future__ import annotations
 
 import abc
-from typing import List, Optional, Tuple, TypeVar
+from typing import (
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+)
 
 import attr
 
-import bi_query_processing.exc
-from bi_constants.enums import FieldRole, FieldType, NotificationType
-
-from bi_core.us_dataset import Dataset
-from bi_core.reporting.notifications import get_notification_record
 from bi_api_commons.reporting.registry import ReportingRegistry
-
-from bi_query_processing.enums import EmptyQueryMode, QueryType
-from bi_api_lib.query.formalization.raw_specs import (
-    RawQuerySpecUnion, RawBlockSpec, RawRootBlockPlacement, RawAfterBlockPlacement,
-)
 from bi_api_lib.query.formalization.field_resolver import FieldResolver
-from bi_query_processing.legend.field_legend import TreeRoleSpec
-from bi_query_processing.legend.block_legend import (
-    BlockLegend, BlockLegendMeta,
-    BlockPlacement, RootBlockPlacement, AfterBlockPlacement, DispersedAfterBlockPlacement,
-    BlockSpec, DimensionValueSpec, DimensionSpec,
-)
-from bi_query_processing.legend.field_legend import Legend
 from bi_api_lib.query.formalization.id_gen import IdGenerator
+from bi_api_lib.query.formalization.raw_specs import (
+    RawAfterBlockPlacement,
+    RawBlockSpec,
+    RawQuerySpecUnion,
+    RawRootBlockPlacement,
+)
+from bi_constants.enums import (
+    FieldRole,
+    FieldType,
+    NotificationType,
+)
+from bi_core.reporting.notifications import get_notification_record
+from bi_core.us_dataset import Dataset
+from bi_query_processing.enums import (
+    EmptyQueryMode,
+    QueryType,
+)
+import bi_query_processing.exc
+from bi_query_processing.legend.block_legend import (
+    AfterBlockPlacement,
+    BlockLegend,
+    BlockLegendMeta,
+    BlockPlacement,
+    BlockSpec,
+    DimensionSpec,
+    DimensionValueSpec,
+    DispersedAfterBlockPlacement,
+    RootBlockPlacement,
+)
+from bi_query_processing.legend.field_legend import (
+    Legend,
+    TreeRoleSpec,
+)
 
-
-_VAL_TV = TypeVar('_VAL_TV')
+_VAL_TV = TypeVar("_VAL_TV")
 
 
 def ifnull(value: _VAL_TV, null_value: _VAL_TV) -> _VAL_TV:
@@ -47,9 +67,7 @@ class BlockFormalizer(abc.ABC):
 
     def _gen_legend_and_ids_for_block(self, legend: Legend, block_id: int) -> Tuple[Legend, List[int]]:
         legend_for_block = legend.limit_to_block(block_id=block_id)
-        legend_item_ids = [
-            item.legend_item_id for item in legend_for_block.list_streamable_items()
-        ]
+        legend_item_ids = [item.legend_item_id for item in legend_for_block.list_streamable_items()]
         return legend_for_block, legend_item_ids
 
     def _resolve_block_placement_from_raw_spec(self, raw_block_spec: RawBlockSpec) -> BlockPlacement:
@@ -69,19 +87,18 @@ class BlockFormalizer(abc.ABC):
                 ]
             placement = AfterBlockPlacement(dimension_values=dimension_values)
         else:
-            raise TypeError(f'Unsupported placement type: {type(raw_block_spec.placement).__name__}')
+            raise TypeError(f"Unsupported placement type: {type(raw_block_spec.placement).__name__}")
 
         return placement
 
     def _generate_default_block_spec(
-            self,
-            block_id: int,
-            legend: Legend,
-            raw_query_spec_union: RawQuerySpecUnion,
-            raw_block_spec: Optional[RawBlockSpec] = None,
-            main_block: Optional[BlockSpec] = None,
+        self,
+        block_id: int,
+        legend: Legend,
+        raw_query_spec_union: RawQuerySpecUnion,
+        raw_block_spec: Optional[RawBlockSpec] = None,
+        main_block: Optional[BlockSpec] = None,
     ) -> BlockSpec:
-
         legend_for_block, legend_item_ids = self._gen_legend_and_ids_for_block(legend=legend, block_id=block_id)
 
         streamable_items = legend_for_block.list_streamable_items()
@@ -117,7 +134,8 @@ class BlockFormalizer(abc.ABC):
             offset = None
             row_count_hard_limit = raw_query_spec_union.meta.row_count_hard_limit
             placement = self._resolve_block_placement_from_legend(
-                legend_for_block, main_block=main_block,
+                legend_for_block,
+                main_block=main_block,
                 query_type=raw_query_spec_union.meta.query_type,
             )
 
@@ -139,9 +157,10 @@ class BlockFormalizer(abc.ABC):
         )
 
     def _resolve_block_placement_from_legend(
-            self, legend_for_block: Legend,
-            main_block: Optional[BlockSpec],
-            query_type: QueryType,
+        self,
+        legend_for_block: Legend,
+        main_block: Optional[BlockSpec],
+        query_type: QueryType,
     ) -> BlockPlacement:
         streamable_items = legend_for_block.list_streamable_items()
         if streamable_items and all(item.role_spec.role == FieldRole.template for item in streamable_items):
@@ -154,7 +173,9 @@ class BlockFormalizer(abc.ABC):
         tree_items = legend_for_block.list_for_role(FieldRole.tree)
 
         if tree_items and total_items:
-            raise bi_query_processing.exc.BlockItemCompatibilityError('Got tree and totals in one block. They are incompatible')
+            raise bi_query_processing.exc.BlockItemCompatibilityError(
+                "Got tree and totals in one block. They are incompatible"
+            )
 
         if total_items and query_type == QueryType.result:
             assert main_block is not None
@@ -163,8 +184,8 @@ class BlockFormalizer(abc.ABC):
             # There must be the same number of items as in  the main block
             if len(streamable_items) != len(main_legend_item_ids):
                 raise bi_query_processing.exc.UnevenBlockColumnCountError(
-                    'Blocks have different column counts. '
-                    f'Main block: {len(main_legend_item_ids)}, secondary: {len(streamable_items)}'
+                    "Blocks have different column counts. "
+                    f"Main block: {len(main_legend_item_ids)}, secondary: {len(streamable_items)}"
                 )
             parent_dim_specs: list[DimensionSpec] = []
             child_dim_specs: list[DimensionSpec] = []
@@ -185,7 +206,9 @@ class BlockFormalizer(abc.ABC):
 
         if tree_items:
             if len(tree_items) > 1:
-                raise bi_query_processing.exc.MultipleTreeError('Multiple trees detected in block. This is not supported')
+                raise bi_query_processing.exc.MultipleTreeError(
+                    "Multiple trees detected in block. This is not supported"
+                )
             # This is a tree block
             tree_item = tree_items[0]
             tree_spec = tree_item.role_spec
@@ -210,20 +233,17 @@ class BlockFormalizer(abc.ABC):
         if len(block_legend.blocks) > 1:
             first_block, *other_blocks = block_legend.blocks
             if (  # FIXME: separate `QueryType` into `DataRequestType` and `BlockType`
-                    # Regular main block
-                    first_block.query_type in {QueryType.result, QueryType.pivot}
-                    # and all others are (sub)totals
-                    and all(block.query_type == QueryType.totals for block in other_blocks)
+                # Regular main block
+                first_block.query_type in {QueryType.result, QueryType.pivot}
+                # and all others are (sub)totals
+                and all(block.query_type == QueryType.totals for block in other_blocks)
             ):
                 filter_items = first_block.legend.list_for_role(FieldRole.filter)
                 if any(item.field_type == FieldType.MEASURE for item in filter_items):
                     # And if there are MEASURE filters
                     # (which, for now, we can't support in totals correctly),
                     # then remove totals - that is all blocks except for `first_block`
-                    non_total_blocks = [
-                        block for block in block_legend.blocks
-                        if block.query_type != QueryType.totals
-                    ]
+                    non_total_blocks = [block for block in block_legend.blocks if block.query_type != QueryType.totals]
                     block_legend = block_legend.clone(blocks=non_total_blocks)
                     if self._reporting_registry is not None:
                         self._reporting_registry.save_reporting_record(
@@ -246,7 +266,8 @@ class BlockFormalizer(abc.ABC):
         for raw_block_spec in raw_query_spec_union.block_specs:
             block_spec = self._generate_default_block_spec(
                 block_id=raw_block_spec.block_id,
-                raw_block_spec=raw_block_spec, legend=legend,
+                raw_block_spec=raw_block_spec,
+                legend=legend,
                 raw_query_spec_union=raw_query_spec_union,
                 main_block=blocks[0] if blocks else None,
             )
@@ -256,7 +277,8 @@ class BlockFormalizer(abc.ABC):
         orphaned_ids = used_ids - {block_spec.block_id for block_spec in blocks}
         for block_id in sorted(orphaned_ids):
             block_spec = self._generate_default_block_spec(
-                block_id=block_id, legend=legend,
+                block_id=block_id,
+                legend=legend,
                 raw_query_spec_union=raw_query_spec_union,
                 main_block=blocks[0] if blocks else None,
             )

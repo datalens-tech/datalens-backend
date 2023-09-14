@@ -8,25 +8,29 @@ from bi_core.us_connection_base import DataSourceTemplate
 from bi_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-
-from bi_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass, BaseSslClickHouseTestClass
+from bi_connector_clickhouse_tests.db.core.base import (
+    BaseClickHouseTestClass,
+    BaseSslClickHouseTestClass,
+)
 
 
 class TestClickHouseConnection(
-        BaseClickHouseTestClass,
-        DefaultConnectionTestClass[ConnectionClickhouse],
+    BaseClickHouseTestClass,
+    DefaultConnectionTestClass[ConnectionClickhouse],
 ):
     do_check_data_export_flag = True
 
     def check_saved_connection(self, conn: ConnectionClickhouse, params: dict) -> None:
         assert conn.uuid is not None
-        assert conn.data.db_name == params['db_name']
-        assert conn.data.username == params['username']
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.username == params["username"]
         assert conn.data.secure is False
         assert conn.data.ssl_ca is None
 
     def check_data_source_templates(
-            self, conn: ConnectionClickhouse, dsrc_templates: list[DataSourceTemplate],
+        self,
+        conn: ConnectionClickhouse,
+        dsrc_templates: list[DataSourceTemplate],
     ) -> None:
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
@@ -35,7 +39,7 @@ class TestClickHouseConnection(
 
         # Make sure
         tmpl_db_names = {dsrc_tmpl.group[0] for dsrc_tmpl in dsrc_templates}
-        assert 'system' not in tmpl_db_names
+        assert "system" not in tmpl_db_names
 
 
 # TODO: turn on in https://st.yandex-team.ru/BI-4738
@@ -49,10 +53,10 @@ class TestSslClickHouseConnection(
 
     def check_saved_connection(self, conn: ConnectionClickhouse, params: dict) -> None:
         assert conn.uuid is not None
-        assert conn.data.db_name == params['db_name']
-        assert conn.data.username == params['username']
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.username == params["username"]
         assert conn.data.secure is True
-        assert conn.data.ssl_ca is params['ssl_ca']
+        assert conn.data.ssl_ca is params["ssl_ca"]
 
     def check_data_source_templates(self, conn: ConnectionClickhouse, dsrc_templates: list[DataSourceTemplate]) -> None:
         assert dsrc_templates
@@ -63,7 +67,7 @@ class TestSslClickHouseConnection(
 # TODO: turn on in https://st.yandex-team.ru/BI-4738
 @pytest.mark.skip
 class TestSslAsyncPostgreSQLConnection(TestSslClickHouseConnection):
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_exec_factory_async_env(self) -> bool:
         return True
 

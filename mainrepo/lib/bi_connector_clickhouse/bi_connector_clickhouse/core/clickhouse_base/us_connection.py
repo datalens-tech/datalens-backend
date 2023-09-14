@@ -1,14 +1,21 @@
 from __future__ import annotations
 
-from typing import Callable, Optional, Any
 from enum import Enum
+from typing import (
+    Any,
+    Callable,
+    Optional,
+)
 
 import attr
 
-from bi_core.connection_models import ConnectOptions
 from bi_core.connection_executors.common_base import ConnExecutorQuery
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
+from bi_core.connection_models import ConnectOptions
+from bi_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+)
 
 from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
@@ -21,8 +28,8 @@ class SubselectTemplate:
 
 
 class SubselectParameterType(Enum):  # TODO: maybe redundant?
-    single_value = 'single_value'
-    list_of_values = 'list_of_values'
+    single_value = "single_value"
+    list_of_values = "list_of_values"
 
 
 @attr.s
@@ -33,13 +40,12 @@ class SubselectParameter:
 
 
 class ConnectionClickhouseBase(ClassicConnectionSQL):
-
-    MAX_ALLOWED_MAX_EXECUTION_TIME = 280    # 290 sec - requests http timeout, 300 sec - uwsgi harakiri
+    MAX_ALLOWED_MAX_EXECUTION_TIME = 280  # 290 sec - requests http timeout, 300 sec - uwsgi harakiri
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
         secure: bool = attr.ib(default=False)
-        endpoint: str = attr.ib(default='')
+        endpoint: str = attr.ib(default="")
         cluster_name: Optional[str] = attr.ib(default=None)
         max_execution_time: Optional[int] = attr.ib(default=None)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
@@ -47,7 +53,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
     def get_conn_dto(self) -> ClickHouseConnDTO:
         return ClickHouseConnDTO(
             conn_id=self.uuid,
-            protocol='https' if self.data.secure else 'http',
+            protocol="https" if self.data.secure else "http",
             host=self.data.host,
             multihosts=self.parse_multihosts(),  # type: ignore  # TODO: fix
             port=self.data.port,
@@ -62,9 +68,9 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
 
     @staticmethod
     def get_effective_conn_options(
-            base_conn_opts: ConnectOptions,
-            user_max_execution_time: Optional[int],
-            max_allowed_max_execution_time: int,
+        base_conn_opts: ConnectOptions,
+        user_max_execution_time: Optional[int],
+        max_allowed_max_execution_time: int,
     ) -> CHConnectOptions:
         if user_max_execution_time is None:
             max_execution_time = None
@@ -93,16 +99,17 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
         )
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         ch_system_dbs = (
-            'system',
-            'mdb_system',
-            '_system',
-            'information_schema',
+            "system",
+            "mdb_system",
+            "_system",
+            "information_schema",
         )
         conn_executor = conn_executor_factory(self)
-        query = ConnExecutorQuery(query='SELECT `database`, `name` from `system`.`tables`', db_name='system')
+        query = ConnExecutorQuery(query="SELECT `database`, `name` from `system`.`tables`", db_name="system")
         return [
             dict(db_name=db_name, table_name=table_name)
             for db_name, table_name in conn_executor.execute(query=query).get_all()

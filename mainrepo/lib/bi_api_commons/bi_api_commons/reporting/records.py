@@ -1,8 +1,12 @@
-from typing import TypeVar, Any, Optional
+from typing import (
+    Any,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
-_RR_TV = TypeVar('_RR_TV', bound='ReportingRecord')
+_RR_TV = TypeVar("_RR_TV", bound="ReportingRecord")
 
 
 @attr.s(frozen=True, auto_attribs=True)

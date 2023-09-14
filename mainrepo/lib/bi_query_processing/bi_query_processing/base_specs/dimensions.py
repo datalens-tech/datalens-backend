@@ -6,7 +6,6 @@ import attr
 
 from bi_constants.types import TBIDataValue
 
-
 CellValue = Union[TBIDataValue, dict]
 
 

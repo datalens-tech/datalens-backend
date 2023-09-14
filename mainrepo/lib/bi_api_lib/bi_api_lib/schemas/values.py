@@ -1,19 +1,46 @@
 from __future__ import annotations
 
-from marshmallow import fields as ma_fields, Schema, EXCLUDE, post_dump, pre_load
-from typing import Any, ClassVar, Dict, Mapping, cast
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Mapping,
+    cast,
+)
 
-from bi_model_tools.schema.base import DefaultSchema
+from marshmallow import (
+    EXCLUDE,
+    Schema,
+)
+from marshmallow import (
+    post_dump,
+    pre_load,
+)
+from marshmallow import fields as ma_fields
 
 from bi_constants.enums import BIType
 from bi_core.values import (
-    BIValue, StringValue, IntegerValue, FloatValue, DateValue, DateTimeValue, DateTimeTZValue, GenericDateTimeValue,
-    BooleanValue, GeoPointValue, GeoPolygonValue, UuidValue, MarkupValue, ArrayStrValue, ArrayIntValue, ArrayFloatValue,
+    ArrayFloatValue,
+    ArrayIntValue,
+    ArrayStrValue,
+    BIValue,
+    BooleanValue,
+    DateTimeTZValue,
+    DateTimeValue,
+    DateValue,
+    FloatValue,
+    GenericDateTimeValue,
+    GeoPointValue,
+    GeoPolygonValue,
+    IntegerValue,
+    MarkupValue,
+    StringValue,
+    UuidValue,
 )
+from bi_model_tools.schema.base import DefaultSchema
 from bi_utils.schemas import OneOfSchemaWithDumpLoadHooks
 
-
-VALUE_TYPE_CONTEXT_KEY = 'bi_value_type'
+VALUE_TYPE_CONTEXT_KEY = "bi_value_type"
 
 
 class WithNestedValueSchema:
@@ -37,12 +64,12 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
 
     @pre_load(pass_many=False)
     def wrap_value_with_type(self, data: Any, **_: Any) -> Dict[str, Any]:
-        type = getattr(self, 'context', {}).get(VALUE_TYPE_CONTEXT_KEY)
-        return {'type': type, 'value': data}
+        type = getattr(self, "context", {}).get(VALUE_TYPE_CONTEXT_KEY)
+        return {"type": type, "value": data}
 
     @post_dump(pass_many=False)
     def extract_value(self, data: Dict[str, Any], **_: Any) -> Any:
-        return data['value']
+        return data["value"]
 
     class BaseValueSchema(DefaultSchema):
         type = ma_fields.Enum(BIType)

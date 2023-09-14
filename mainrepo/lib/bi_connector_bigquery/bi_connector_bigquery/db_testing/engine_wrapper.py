@@ -1,9 +1,15 @@
-from typing import Optional, Sequence
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 import sqlalchemy as sa
 
-from bi_db_testing.database.engine_wrapper import DbEngineConfig, EngineWrapperBase
+from bi_db_testing.database.engine_wrapper import (
+    DbEngineConfig,
+    EngineWrapperBase,
+)
 
 
 @attr.s(frozen=True)
@@ -12,7 +18,7 @@ class BigQueryDbEngineConfig(DbEngineConfig):
 
 
 class BigQueryEngineWrapper(EngineWrapperBase):
-    URL_PREFIX = 'bigquery'
+    URL_PREFIX = "bigquery"
     TABLE_AVAILABILITY_TIMEOUT = 30.0
 
     @property
@@ -27,9 +33,11 @@ class BigQueryEngineWrapper(EngineWrapperBase):
         return creds
 
     def table_from_columns(
-            self, columns: Sequence[sa.Column], *,
-            schema: Optional[str] = None,
-            table_name: Optional[str] = None,
+        self,
+        columns: Sequence[sa.Column],
+        *,
+        schema: Optional[str] = None,
+        table_name: Optional[str] = None,
     ) -> sa.Table:
         table = super().table_from_columns(
             columns=columns,

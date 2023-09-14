@@ -5,12 +5,14 @@ from typing import (
 )
 
 import aiohttp
+
 from bi_api_commons.client.common import Req
-from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from bi_constants.api_constants import (
     DLHeaders,
     DLHeadersCommon,
 )
+
+from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 
 class ReqBuilder:
@@ -29,7 +31,10 @@ class ReqBuilder:
         return Req(
             method="post",
             url="/api/v2/files",
-            extra_headers={DLHeadersCommon.CONTENT_TYPE: "multipart/form-data; boundary=111111111111", DLHeadersCommon.ORIGIN: cls.ORIGIN},
+            extra_headers={
+                DLHeadersCommon.CONTENT_TYPE: "multipart/form-data; boundary=111111111111",
+                DLHeadersCommon.ORIGIN: cls.ORIGIN,
+            },
             data=upload_req_data,
         )
 

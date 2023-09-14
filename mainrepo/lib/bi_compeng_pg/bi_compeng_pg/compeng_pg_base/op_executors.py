@@ -2,25 +2,33 @@ from __future__ import annotations
 
 import attr
 import shortuuid
-
 import sqlalchemy as sa
 
-from bi_constants.enums import JoinType
-
-from bi_core.data_processing.prepared_components.primitives import PreparedSingleFromInfo
-from bi_core.data_processing.stream_base import DataStreamAsync, DataSourceVS
-from bi_core.data_processing.processing.operation import BaseOp, UploadOp
-from bi_core.data_processing.processing.db_base.op_executors import OpExecutorAsync, log_op
 from bi_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
+from bi_constants.enums import JoinType
 from bi_core.connectors.base.query_compiler import QueryCompiler
+from bi_core.data_processing.prepared_components.primitives import PreparedSingleFromInfo
+from bi_core.data_processing.processing.db_base.op_executors import (
+    OpExecutorAsync,
+    log_op,
+)
+from bi_core.data_processing.processing.operation import (
+    BaseOp,
+    UploadOp,
+)
+from bi_core.data_processing.stream_base import (
+    DataSourceVS,
+    DataStreamAsync,
+)
 
-
-COMPENG_SUPPORTED_JOIN_TYPES = frozenset({
-    JoinType.inner,
-    JoinType.left,
-    JoinType.right,
-    JoinType.full,
-})
+COMPENG_SUPPORTED_JOIN_TYPES = frozenset(
+    {
+        JoinType.inner,
+        JoinType.left,
+        JoinType.right,
+        JoinType.full,
+    }
+)
 
 
 @attr.s
@@ -43,12 +51,15 @@ class UploadOpExecutorAsync(PgOpExecutorAsync):
 
         table_name = shortuuid.uuid()
         await self.pgex_adapter.create_table(
-            table_name=table_name, names=source_stream.names,
+            table_name=table_name,
+            names=source_stream.names,
             user_types=source_stream.user_types,
         )
         await self.pgex_adapter.insert_data_into_table(
-            table_name=table_name, names=source_stream.names,
-            user_types=source_stream.user_types, data=source_stream.data,
+            table_name=table_name,
+            names=source_stream.names,
+            user_types=source_stream.user_types,
+            data=source_stream.data,
         )
 
         alias = op.alias

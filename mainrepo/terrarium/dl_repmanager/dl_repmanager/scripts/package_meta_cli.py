@@ -2,39 +2,50 @@ from __future__ import annotations
 
 import argparse
 import logging
-import sys
 from pathlib import Path
+import sys
 
 import attr
 
+from dl_repmanager.exceptions import (
+    InconsistentStateError,
+    PackageMetaCliError,
+)
 from dl_repmanager.fs_editor import DefaultFilesystemEditor
-from dl_repmanager.repository_env import DEFAULT_CONFIG_FILE_NAME, discover_config
-from dl_repmanager.exceptions import PackageMetaCliError, InconsistentStateError
-from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaWriter, PackageMetaIOFactory
 from dl_repmanager.logging import setup_basic_logging
-
-from dl_repmanager.mypy_stubs_sync import stubs_sync, RequirementsPathProvider
-
+from dl_repmanager.mypy_stubs_sync import (
+    RequirementsPathProvider,
+    stubs_sync,
+)
+from dl_repmanager.package_meta_reader import (
+    PackageMetaIOFactory,
+    PackageMetaReader,
+    PackageMetaWriter,
+)
+from dl_repmanager.repository_env import (
+    DEFAULT_CONFIG_FILE_NAME,
+    discover_config,
+)
 
 log = logging.getLogger(__name__)
 
 
 def make_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog='DL Package Meta CLI')
-    parser.add_argument('--package-path')
+    parser = argparse.ArgumentParser(prog="DL Package Meta CLI")
+    parser.add_argument("--package-path")
 
-    subparsers = parser.add_subparsers(title='command', dest='command')
+    subparsers = parser.add_subparsers(title="command", dest="command")
 
-    subparsers.add_parser('list-i18n-domains', help='List i18n domains and scan paths')
-    subparsers.add_parser('list-external-dependencies', help='List external dependencies')
+    subparsers.add_parser("list-i18n-domains", help="List i18n domains and scan paths")
+    subparsers.add_parser("list-external-dependencies", help="List external dependencies")
 
     sync_mypy_stubs = argparse.ArgumentParser(add_help=False)
-    sync_mypy_stubs.add_argument("--dry-run", action='store_true')
+    sync_mypy_stubs.add_argument("--dry-run", action="store_true")
     sync_mypy_stubs.add_argument("--config", default=DEFAULT_CONFIG_FILE_NAME)
     subparsers.add_parser(
-        'sync-mypy-stubs',
+        "sync-mypy-stubs",
         parents=[sync_mypy_stubs],
-        help='Update or add types-* packages to third party dependencies',
+        help="Update or add types-* packages to third party dependencies",
     )
     return parser
 
@@ -58,7 +69,7 @@ class DlPackageMetaTool:
 
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
-        toml_path = Path(args.package_path) / 'pyproject.toml'
+        toml_path = Path(args.package_path) / "pyproject.toml"
         fs_editor = DefaultFilesystemEditor(base_path=toml_path.parent)
         package_meta_io_factory = PackageMetaIOFactory(fs_editor=fs_editor)
         with (
@@ -68,12 +79,12 @@ class DlPackageMetaTool:
             tool = cls(meta_reader=meta_reader, meta_writer=meta_writer)
 
             match args.command:
-                case 'list-i18n-domains':
+                case "list-i18n-domains":
                     tool.list_i18n_domains()
-                case 'sync-mypy-stubs':
+                case "sync-mypy-stubs":
                     tool.sync_mypy_stubs(Path(args.package_path), args.dry_run, args.config)
                 case _:
-                    raise RuntimeError(f'Got unknown command: {args.command}')
+                    raise RuntimeError(f"Got unknown command: {args.command}")
 
 
 def main() -> None:
@@ -89,5 +100,5 @@ def main() -> None:
         sys.exit(10)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

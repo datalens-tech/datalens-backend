@@ -3,33 +3,58 @@ from __future__ import annotations
 import abc
 import collections
 import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Optional,
+)
 import urllib.parse
-from typing import Any, Callable, Optional, TYPE_CHECKING
 
 import attr
 import sqlalchemy as sa
 
-from bi_sqlalchemy_chyt import CHYTTablesConcat, CHYTTablesRange, CHYTTableSubselect
-
-from bi_constants.enums import BIType, CreateDSFrom
-
+from bi_constants.enums import (
+    BIType,
+    CreateDSFrom,
+)
 from bi_core import exc
-from bi_core.connection_models.common_models import SATextTableDefinition, TableDefinition, TableIdent
-from bi_core.data_source.sql import BaseSQLDataSource, TableSQLDataSourceMixin, require_table_name
-from bi_core.db import SchemaInfo, SchemaColumn
+from bi_core.connection_models.common_models import (
+    SATextTableDefinition,
+    TableDefinition,
+    TableIdent,
+)
+from bi_core.data_source.sql import (
+    BaseSQLDataSource,
+    TableSQLDataSourceMixin,
+    require_table_name,
+)
+from bi_core.db import (
+    SchemaColumn,
+    SchemaInfo,
+)
 from bi_core.db.native_type import ClickHouseNativeType
-from bi_connector_clickhouse.core.clickhouse_base.data_source import CommonClickHouseSubselectDataSource, ClickHouseBaseMixin
+from bi_sqlalchemy_chyt import (
+    CHYTTablesConcat,
+    CHYTTablesRange,
+    CHYTTableSubselect,
+)
 
 from bi_connector_chyt.core.constants import (
     CONNECTION_TYPE_CHYT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
     SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
     SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
     SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
 )
 from bi_connector_chyt.core.data_source_spec import (
-    CHYTTableDataSourceSpec, CHYTTableRangeDataSourceSpec,
+    CHYTTableDataSourceSpec,
     CHYTTableListDataSourceSpec,
+    CHYTTableRangeDataSourceSpec,
+)
+from bi_connector_clickhouse.core.clickhouse_base.data_source import (
+    ClickHouseBaseMixin,
+    CommonClickHouseSubselectDataSource,
 )
 
 if TYPE_CHECKING:
@@ -52,11 +77,11 @@ class CHYTDataSourceBaseMixin(ClickHouseBaseMixin):
         '//a / b/c '
         """
         raw_value = value.lstrip()
-        if raw_value.startswith('//'):
-            return raw_value.rstrip('/')
+        if raw_value.startswith("//"):
+            return raw_value.rstrip("/")
         parsed_url = urllib.parse.urlparse(raw_value)
         parsed_query = urllib.parse.parse_qs(parsed_url.query)
-        res = parsed_query.get('path', [None])[0]  # type: ignore
+        res = parsed_query.get("path", [None])[0]  # type: ignore
         if res:
             return res  # No extra normalization
         raise exc.TableNameInvalidError("Invalid CHYT table path")
@@ -70,7 +95,7 @@ class BaseCHYTTableDataSource(CHYTDataSourceBaseMixin, TableSQLDataSourceMixin, 
 
     @property
     def default_title(self) -> str:
-        return self.spec.table_name.split('/')[-1]  # type: ignore  # TODO: fix
+        return self.spec.table_name.split("/")[-1]  # type: ignore  # TODO: fix
 
     @require_table_name
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
@@ -88,7 +113,7 @@ class BaseCHYTTableDataSource(CHYTDataSourceBaseMixin, TableSQLDataSourceMixin, 
 
 
 class BaseCHYTSpecialDataSource(CHYTDataSourceBaseMixin, BaseSQLDataSource, abc.ABC):
-    """ A common base class for CHYT custom sources (like table funcs or subselects) """
+    """A common base class for CHYT custom sources (like table funcs or subselects)"""
 
     @property
     def default_title(self) -> str:
@@ -102,27 +127,29 @@ class BaseCHYTSpecialDataSource(CHYTDataSourceBaseMixin, BaseSQLDataSource, abc.
 
 
 class BaseCHYTTableFuncDataSource(BaseCHYTSpecialDataSource, abc.ABC):
-    """ A common base class for CHYT Table-Function-based data source (concat / concat range). """
+    """A common base class for CHYT Table-Function-based data source (concat / concat range)."""
 
     def get_schema_info(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> SchemaInfo:
         assert self.conn_type is not None
         schema_info = super().get_schema_info(conn_executor_factory=conn_executor_factory)
         return schema_info.clone(
-            schema=tuple([
-                *schema_info.schema,
-                *[
-                    SchemaColumn(
-                        name=key,
-                        title=key,
-                        user_type=BIType.string,
-                        native_type=ClickHouseNativeType.normalize_name_and_create(
-                            conn_type=self.conn_type,
-                            name='string'
-                        ),
-                        nullable=False,
-                    ) for key in ('$table_path', '$table_name', '$table_index')
+            schema=tuple(
+                [
+                    *schema_info.schema,
+                    *[
+                        SchemaColumn(
+                            name=key,
+                            title=key,
+                            user_type=BIType.string,
+                            native_type=ClickHouseNativeType.normalize_name_and_create(
+                                conn_type=self.conn_type, name="string"
+                            ),
+                            nullable=False,
+                        )
+                        for key in ("$table_path", "$table_name", "$table_index")
+                    ],
                 ]
-            ])
+            )
         )
 
 
@@ -143,8 +170,8 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
             raise exc.TableNameInvalidError("Table list is empty")
         if len(table_paths) != len(set(table_paths)):
             duplicates = [item for item, cnt in collections.Counter(table_paths).items() if cnt > 1]
-            assert duplicates, ('should match the pre-check', table_paths)
-            duplicates_s = '\n'.join(duplicates)
+            assert duplicates, ("should match the pre-check", table_paths)
+            duplicates_s = "\n".join(duplicates)
             raise exc.TableNameInvalidError(f"Table list contains duplicates:\n{duplicates_s}")
         return table_paths
 
@@ -163,7 +190,7 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
     @property
     def default_title(self) -> str:
         assert self.spec.table_names is not None
-        return self.normalize_tables_paths(self.spec.table_names)[0].split('/')[-1]
+        return self.normalize_tables_paths(self.spec.table_names)[0].split("/")[-1]
 
 
 def _value_or_none(value: Optional[str]) -> Optional[str]:
@@ -197,8 +224,8 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
         return dict(
             super().get_parameters(),
             directory_path=self.directory_path,
-            range_from=self.range_from or '',
-            range_to=self.range_to or '',
+            range_from=self.range_from or "",
+            range_to=self.range_to or "",
         )
 
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
@@ -206,17 +233,12 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
             raise exc.TableNameNotConfiguredError
         path = self.directory_path
         path = self.normalize_path(path)
-        return CHYTTablesRange(
-            directory=path,
-            start=self.range_from,
-            end=self.range_to,
-            alias=alias
-        )
+        return CHYTTablesRange(directory=path, start=self.range_from, end=self.range_to, alias=alias)
 
     @property
     def default_title(self) -> str:
         assert self.directory_path is not None
-        return self.normalize_path(self.directory_path).split('/')[-1]
+        return self.normalize_path(self.directory_path).split("/")[-1]
 
 
 # Expected MRO:
@@ -242,7 +264,7 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
 
     @property
     def default_title(self) -> str:
-        return '(select ...)'
+        return "(select ...)"
 
 
 class CHYTTokenAuthDataSourceMixin:

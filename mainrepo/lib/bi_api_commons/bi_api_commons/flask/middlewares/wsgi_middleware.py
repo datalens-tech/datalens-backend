@@ -8,13 +8,22 @@ Usage example:
 from __future__ import annotations
 
 import abc
-from typing import ClassVar, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Optional,
+)
 
 import attr
 import flask
 
 if TYPE_CHECKING:
-    from bi_api_commons.flask.types import WSGIEnviron, WSGIStartResponse, WSGICallable, WSGIReturn
+    from bi_api_commons.flask.types import (
+        WSGICallable,
+        WSGIEnviron,
+        WSGIReturn,
+        WSGIStartResponse,
+    )
 
 
 @attr.s

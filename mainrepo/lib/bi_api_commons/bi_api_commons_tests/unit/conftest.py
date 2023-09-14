@@ -3,13 +3,11 @@ import asyncio
 import aiohttp.pytest_plugin
 import aiohttp.test_utils
 import pytest
-
 from statcommons.logs import LOGMUTATORS
+
 from bi_api_commons.logging_config import add_log_context
 
-pytest_plugins = (
-    'aiohttp.pytest_plugin',
-)
+pytest_plugins = ("aiohttp.pytest_plugin",)
 
 try:
     del aiohttp.pytest_plugin.loop
@@ -19,7 +17,7 @@ except AttributeError:
 
 def pytest_configure(config):  # noqa
     LOGMUTATORS.apply(require=False)
-    LOGMUTATORS.add_mutator('log_context', add_log_context)
+    LOGMUTATORS.add_mutator("log_context", add_log_context)
 
 
 @pytest.fixture

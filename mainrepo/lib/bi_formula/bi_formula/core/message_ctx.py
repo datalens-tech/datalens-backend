@@ -1,15 +1,23 @@
 from __future__ import annotations
 
-from enum import Enum, unique
-from typing import NamedTuple, Optional, Sequence, Tuple
+from enum import (
+    Enum,
+    unique,
+)
+from typing import (
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 from bi_formula.core.position import Position
 
 
 @unique
 class MessageLevel(Enum):
-    ERROR = 'error'
-    WARNING = 'warning'
+    ERROR = "error"
+    WARNING = "warning"
 
 
 class FormulaErrorCtx(NamedTuple):
@@ -36,4 +44,4 @@ class FormulaErrorCtx(NamedTuple):
     def is_sub_error(self, code: Sequence[str]) -> bool:
         if len(self.code) < len(code):
             return False
-        return tuple(code) == self.code[:len(code)]
+        return tuple(code) == self.code[: len(code)]

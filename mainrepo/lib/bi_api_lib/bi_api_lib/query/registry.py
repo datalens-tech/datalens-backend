@@ -116,7 +116,7 @@ _COMPENG_DIALECT: set[DialectCombo] = set()
 
 
 def get_compeng_dialect() -> DialectCombo:
-    assert len(_COMPENG_DIALECT) == 1, 'No compeng dialect has been found'
+    assert len(_COMPENG_DIALECT) == 1, "No compeng dialect has been found"
     return next(iter(_COMPENG_DIALECT))
 
 

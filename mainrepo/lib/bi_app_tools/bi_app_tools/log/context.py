@@ -1,9 +1,10 @@
 # coding: utf-8
 from __future__ import annotations
 
+from collections import defaultdict
 import contextvars
 import sys
-from collections import defaultdict
+
 import six
 
 _LOG_CONTEXT = contextvars.ContextVar("_LOG_CONTEXT", default=None)

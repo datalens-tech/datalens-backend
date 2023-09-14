@@ -5,13 +5,19 @@ import pandas as pd
 
 from bi_api_lib.pivot.base.facade import TableDataFacade
 from bi_api_lib.pivot.pandas.data_frame import (
-    PdPivotDataFrame, PdHSeriesPivotDataFrame, PdVSeriesPivotDataFrame,
-)
-from bi_api_lib.pivot.pandas.sorter import (
-    PdPivotSorter, PdHSeriesPivotSorter, PdVSeriesPivotSorter,
+    PdHSeriesPivotDataFrame,
+    PdPivotDataFrame,
+    PdVSeriesPivotDataFrame,
 )
 from bi_api_lib.pivot.pandas.paginator import (
-    PdPivotPaginator, PdHSeriesPivotPaginator, PdVSeriesPivotPaginator,
+    PdHSeriesPivotPaginator,
+    PdPivotPaginator,
+    PdVSeriesPivotPaginator,
+)
+from bi_api_lib.pivot.pandas.sorter import (
+    PdHSeriesPivotSorter,
+    PdPivotSorter,
+    PdVSeriesPivotSorter,
 )
 
 
@@ -24,7 +30,8 @@ class PdDataFrameFacade(TableDataFacade):
 
     def _make_sorter(self) -> PdPivotSorter:
         return PdPivotSorter(
-            legend=self._legend, pivot_legend=self._pivot_legend,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
             pivot_dframe=self._pivot_dframe,
         )
 
@@ -43,7 +50,8 @@ class PdHSeriesDataFrameFacade(PdSeriesDataFrameFacadeBase):
 
     def _make_sorter(self) -> PdHSeriesPivotSorter:
         return PdHSeriesPivotSorter(
-            legend=self._legend, pivot_legend=self._pivot_legend,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
             pivot_dframe=self._pivot_dframe,
         )
 
@@ -58,7 +66,8 @@ class PdVSeriesDataFrameFacade(PdSeriesDataFrameFacadeBase):
 
     def _make_sorter(self) -> PdVSeriesPivotSorter:
         return PdVSeriesPivotSorter(
-            legend=self._legend, pivot_legend=self._pivot_legend,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
             pivot_dframe=self._pivot_dframe,
         )
 

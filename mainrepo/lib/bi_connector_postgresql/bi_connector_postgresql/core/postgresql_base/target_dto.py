@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from typing import Type, TypeVar, TYPE_CHECKING, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 
@@ -12,7 +17,7 @@ if TYPE_CHECKING:
     from bi_constants.types import TJSONLike
 
 
-_CT_DTO_TV = TypeVar("_CT_DTO_TV", bound='PostgresConnTargetDTO')
+_CT_DTO_TV = TypeVar("_CT_DTO_TV", bound="PostgresConnTargetDTO")
 
 
 @attr.s(frozen=True)
@@ -24,14 +29,16 @@ class PostgresConnTargetDTO(BaseSQLConnTargetDTO):
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
         return {
             **super().to_jsonable_dict(),
-            'enforce_collate': self.enforce_collate.name,
-            'ssl_enable': self.ssl_enable,
-            'ssl_ca': self.ssl_ca,
+            "enforce_collate": self.enforce_collate.name,
+            "ssl_enable": self.ssl_enable,
+            "ssl_ca": self.ssl_ca,
         }
 
     @classmethod
     def _from_jsonable_dict(cls: Type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
-        return cls(**{  # type: ignore  # TODO: fix
-            **data,
-            'enforce_collate': PGEnforceCollateMode[data['enforce_collate']],
-        })
+        return cls(
+            **{  # type: ignore  # TODO: fix
+                **data,
+                "enforce_collate": PGEnforceCollateMode[data["enforce_collate"]],
+            }
+        )

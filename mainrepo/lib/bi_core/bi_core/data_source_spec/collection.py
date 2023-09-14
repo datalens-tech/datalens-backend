@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import abc
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from bi_constants.enums import DataSourceCollectionType, ManagedBy, DataSourceRole
-
+from bi_constants.enums import (
+    DataSourceCollectionType,
+    DataSourceRole,
+    ManagedBy,
+)
 from bi_core.base_models import DefaultConnectionRef
 from bi_core.data_source_spec.base import DataSourceSpec
 
@@ -17,7 +23,7 @@ class DataSourceCollectionSpecBase(abc.ABC):
 
     id: str = attr.ib(kw_only=True)
     title: Optional[str] = attr.ib(kw_only=True, default=None)
-    managed_by:  ManagedBy = attr.ib(kw_only=True, default=None)
+    managed_by: ManagedBy = attr.ib(kw_only=True, default=None)
     valid: bool = attr.ib(kw_only=True, default=True)
 
     def __attrs_post_init__(self) -> None:

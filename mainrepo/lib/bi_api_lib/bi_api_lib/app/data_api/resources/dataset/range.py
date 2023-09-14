@@ -1,37 +1,48 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, ClassVar, Collection, Dict, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Collection,
+    Dict,
+    Optional,
+)
 
 from aiohttp import web
 
-from bi_utils.utils import enum_not_none
-
-from bi_app_tools.profiling_base import generic_profiler_async
-
+from bi_api_lib.app.data_api.resources.base import (
+    RequiredResourceDSAPI,
+    requires,
+)
+from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
+from bi_api_lib.dataset.view import DatasetView
 import bi_api_lib.schemas.data
 import bi_api_lib.schemas.main
-
-from bi_api_lib.app.data_api.resources.base import RequiredResourceDSAPI, requires
-from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
-from bi_query_processing.translation.primitives import DetailedType
-from bi_query_processing.execution.primitives import ExecutedQueryMetaInfo, ExecutedQuery
-from bi_api_lib.dataset.view import DatasetView
+from bi_app_tools.profiling_base import generic_profiler_async
+from bi_query_processing.execution.primitives import (
+    ExecutedQuery,
+    ExecutedQueryMetaInfo,
+)
 from bi_query_processing.legend.block_legend import BlockSpec
-from bi_query_processing.postprocessing.primitives import PostprocessedQuery
-from bi_query_processing.postprocessing.postprocessor import DataPostprocessor
 from bi_query_processing.merging.primitives import MergedQueryDataStream
+from bi_query_processing.postprocessing.postprocessor import DataPostprocessor
+from bi_query_processing.postprocessing.primitives import PostprocessedQuery
+from bi_query_processing.translation.primitives import DetailedType
+from bi_utils.utils import enum_not_none
 
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
+
     from bi_api_lib.request_model.data import DataRequestModel
 
 
 # TODO FIX: Generalize with sync version
 class DatasetRangeView(DatasetDataBaseView, abc.ABC):
-    endpoint_code = 'DatasetVersionValuesRange'
+    endpoint_code = "DatasetVersionValuesRange"
     # TODO FIX: Move to constants
-    profiler_prefix = 'range'
+    profiler_prefix = "range"
     transpose_data: ClassVar[bool]
 
     # TODO FIX: Move request deserialization logic to schema
@@ -66,17 +77,18 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
 
     @abc.abstractmethod
     def make_response(
-            self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         raise NotImplementedError()
 
     async def execute_query(
-            self,
-            block_spec: BlockSpec,
-            possible_data_lengths: Optional[Collection] = None,
-            profiling_postfix: str = '',
+        self,
+        block_spec: BlockSpec,
+        possible_data_lengths: Optional[Collection] = None,
+        profiling_postfix: str = "",
     ) -> PostprocessedQuery:
-
         us_manager = self.dl_request.us_manager
 
         ds_view = DatasetView(
@@ -104,10 +116,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
                     for _ in range(2)
                 ],
             )
-            executed_query = ExecutedQuery(
-                rows=[[min_value, max_value]],
-                meta=meta_for_range
-            )
+            executed_query = ExecutedQuery(rows=[[min_value, max_value]], meta=meta_for_range)
             postprocessor = DataPostprocessor(profiler_prefix=self.profiler_prefix)
             postprocessed_query = postprocessor.get_postprocessed_data(
                 executed_query=executed_query,
@@ -157,7 +166,9 @@ class DatasetRangeViewV1(DatasetRangeView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
@@ -175,7 +186,9 @@ class DatasetRangeViewV1_5(DatasetRangeView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
@@ -193,6 +206,8 @@ class DatasetRangeViewV2(DatasetRangeView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

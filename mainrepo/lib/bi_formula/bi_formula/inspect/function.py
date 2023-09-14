@@ -4,9 +4,13 @@ from functools import lru_cache
 from typing import Sequence
 
 from bi_formula.core.datatype import DataType
-from bi_formula.core.dialect import DialectCombo, StandardDialect as D
+from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.dialect import StandardDialect as D
+from bi_formula.definitions.registry import (
+    OPERATION_REGISTRY,
+    FuncKey,
+)
 from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.registry import OPERATION_REGISTRY, FuncKey
 from bi_formula.inspect.registry.registry import LOWLEVEL_OP_REGISTRY
 
 
@@ -89,14 +93,15 @@ def get_return_type(name: str, arg_types: Sequence[DataType], is_window: bool = 
     """Return the data type of the function result if it is called with the given argument types"""
     # FIXME: Switch to LOWLEVEL_OP_REGISTRY
     func_definition = OPERATION_REGISTRY.get_definition(
-        name=name, arg_types=arg_types, is_window=is_window, for_any_dialect=True)
+        name=name, arg_types=arg_types, is_window=is_window, for_any_dialect=True
+    )
     return func_definition.get_return_type(arg_types=list(arg_types))
 
 
 def get_supported_functions(
-        require_dialects: DialectCombo = D.EMPTY,
-        only_functions: bool = True,
-        function_scopes: int = Scope.EXPLICIT_USAGE,
+    require_dialects: DialectCombo = D.EMPTY,
+    only_functions: bool = True,
+    function_scopes: int = Scope.EXPLICIT_USAGE,
 ) -> list[FuncKey]:
     # FIXME: Switch to LOWLEVEL_OP_REGISTRY
     return OPERATION_REGISTRY.get_supported_functions(

@@ -5,23 +5,31 @@ Generate structures used for creating documentation
 from __future__ import annotations
 
 from typing import (
-    Callable, Collection, Iterable, List,
-    Optional, Sequence, Set, Tuple,
+    Callable,
+    Collection,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
 )
 
 import attr
 
 from bi_formula.core.dialect import DialectCombo
-
-from bi_formula_ref.registry.arg_base import FuncArg
-from bi_formula_ref.registry.text import ParameterizedText
-from bi_formula_ref.registry.note import NoteLevel, ParameterizedNote, NoteType
-from bi_formula_ref.registry.base import FunctionDocCategory
-from bi_formula_ref.registry.aliased_res import AliasedResourceRegistry
-from bi_formula_ref.registry.example_base import ExampleBase
-from bi_formula_ref.registry.signature_base import FunctionSignatureCollection
 from bi_formula_ref.audience import Audience
-
+from bi_formula_ref.registry.aliased_res import AliasedResourceRegistry
+from bi_formula_ref.registry.arg_base import FuncArg
+from bi_formula_ref.registry.base import FunctionDocCategory
+from bi_formula_ref.registry.example_base import ExampleBase
+from bi_formula_ref.registry.note import (
+    NoteLevel,
+    NoteType,
+    ParameterizedNote,
+)
+from bi_formula_ref.registry.signature_base import FunctionSignatureCollection
+from bi_formula_ref.registry.text import ParameterizedText
 
 TOP_NOTE_LEVELS: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]] = [
     (NoteType.REGULAR, NoteLevel.alert),
@@ -104,15 +112,15 @@ class RawFunc:
         return self._dialects
 
     def _filter_notes(
-            self, notes: Iterable[ParameterizedNote],
-            levels: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]],
+        self,
+        notes: Iterable[ParameterizedNote],
+        levels: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]],
     ) -> List[ParameterizedNote]:
         result: List[ParameterizedNote] = []
         for note in notes or ():
             for note_type_mask, note_level_mask in levels:
-                if (
-                        (note_type_mask is None or note.type == note_type_mask)
-                        and (note_level_mask is None or note.level == note_level_mask)
+                if (note_type_mask is None or note.type == note_type_mask) and (
+                    note_level_mask is None or note.level == note_level_mask
                 ):
                     result.append(note)
                     break
@@ -160,7 +168,7 @@ class RawMultiAudienceFunc:
     def from_aud_dict(cls, aud_dict: dict[Audience, RawFunc]) -> RawMultiAudienceFunc:
         names: set[str] = set()
         internal_names: set[str] = set()
-        for audience, raw_func in aud_dict.items():
+        for _audience, raw_func in aud_dict.items():
             names.add(raw_func.name)
             internal_names.add(raw_func.internal_name)
 

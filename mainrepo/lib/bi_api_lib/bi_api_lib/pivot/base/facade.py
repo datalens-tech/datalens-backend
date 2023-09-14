@@ -1,24 +1,35 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, Generator, Optional, TYPE_CHECKING, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
+from bi_api_lib.pivot.primitives import (
+    DataCell,
+    DataCellVector,
+)
 from bi_constants.enums import PivotRole
 
-from bi_api_lib.pivot.primitives import DataCell, DataCellVector
-
 if TYPE_CHECKING:
-    from bi_query_processing.legend.field_legend import Legend
-    from bi_api_lib.query.formalization.pivot_legend import PivotLegend
-    from bi_api_lib.pivot.base.sorter import PivotSorter
     from bi_api_lib.pivot.base.data_frame import PivotDataFrame
     from bi_api_lib.pivot.base.paginator import PivotPaginator
-    from bi_api_lib.pivot.primitives import MeasureValues, PivotHeader
+    from bi_api_lib.pivot.base.sorter import PivotSorter
+    from bi_api_lib.pivot.primitives import (
+        MeasureValues,
+        PivotHeader,
+    )
+    from bi_api_lib.query.formalization.pivot_legend import PivotLegend
+    from bi_query_processing.legend.field_legend import Legend
 
 
-_FACADE_TV = TypeVar('_FACADE_TV', bound='TableDataFacade')
+_FACADE_TV = TypeVar("_FACADE_TV", bound="TableDataFacade")
 
 
 @attr.s
@@ -58,13 +69,15 @@ class TableDataFacade(abc.ABC):
         dname_legend_item_id = next(iter(self._legend.get_dimension_name_legend_item_ids()))
         dname_pivot_item_id = next(iter(self._pivot_legend.get_dimension_name_pivot_item_ids()))
         for row_dim_item in self._pivot_legend.list_for_role(PivotRole.pivot_row):
-            yield DataCellVector(cells=(
-                DataCell(
-                    value=row_dim_item.title,
-                    legend_item_id=dname_legend_item_id,
-                    pivot_item_id=dname_pivot_item_id,
-                ),
-            ))
+            yield DataCellVector(
+                cells=(
+                    DataCell(
+                        value=row_dim_item.title,
+                        legend_item_id=dname_legend_item_id,
+                        pivot_item_id=dname_pivot_item_id,
+                    ),
+                )
+            )
 
     def iter_rows(self) -> Generator[tuple[PivotHeader, MeasureValues], None, None]:
         return self._pivot_dframe.iter_rows()
@@ -84,6 +97,7 @@ class TableDataFacade(abc.ABC):
     def paginate(self, offset_rows: Optional[int], limit_rows: Optional[int]) -> None:
         self._pivot_dframe = self._paginator.paginate(
             pivot_dframe=self._pivot_dframe,
-            offset_rows=offset_rows, limit_rows=limit_rows,
+            offset_rows=offset_rows,
+            limit_rows=limit_rows,
         )
         self._sorter = self._make_sorter()

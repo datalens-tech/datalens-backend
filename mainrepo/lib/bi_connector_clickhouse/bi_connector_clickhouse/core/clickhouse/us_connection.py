@@ -5,11 +5,11 @@ from typing import ClassVar
 from bi_core.us_connection_base import DataSourceTemplate
 from bi_i18n.localizer_base import Localizer
 
-from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 from bi_connector_clickhouse.core.clickhouse.constants import (
-    SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
+    SOURCE_TYPE_CH_TABLE,
 )
+from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 
 class ConnectionClickhouse(ConnectionClickhouseBase):

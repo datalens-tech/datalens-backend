@@ -1,27 +1,47 @@
 from __future__ import annotations
 
 import abc
+from contextlib import contextmanager
+from json.decoder import JSONDecodeError
 import logging
 import re
 import time
-from contextlib import contextmanager
-from json.decoder import JSONDecodeError
-from typing import Any, ClassVar, NamedTuple, Optional, Type, cast, Union, Iterable, Generator
+from typing import (
+    Any,
+    ClassVar,
+    Generator,
+    Iterable,
+    NamedTuple,
+    Optional,
+    Type,
+    Union,
+    cast,
+)
 
 import attr
 import requests
 from requests.exceptions import HTTPError
 
-from bi_constants.api_constants import DLHeadersCommon, DLCookies, DLHeaders
-
-import bi_core.exc as exc
-from bi_api_commons.utils import stringify_dl_headers, stringify_dl_cookies
-from bi_core.enums import USApiType
+from bi_api_commons.base_models import (
+    AuthData,
+    TenantCommon,
+    TenantDef,
+)
 from bi_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
-from bi_core.base_models import EntryLocation
-from bi_api_commons.base_models import TenantDef, AuthData, TenantCommon
-from bi_core.utils import get_retriable_requests_session
 from bi_api_commons.tracing import get_current_tracing_headers
+from bi_api_commons.utils import (
+    stringify_dl_cookies,
+    stringify_dl_headers,
+)
+from bi_constants.api_constants import (
+    DLCookies,
+    DLHeaders,
+    DLHeadersCommon,
+)
+from bi_core.base_models import EntryLocation
+from bi_core.enums import USApiType
+import bi_core.exc as exc
+from bi_core.utils import get_retriable_requests_session
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +55,7 @@ class USAuthContextBase:
     DEFAULT_US_PREFIX: ClassVar[USApiType] = USApiType.v1
     IS_TENANT_ID_MUTABLE: ClassVar[bool] = False
 
-    dl_component: str = attr.ib(default='backend', kw_only=True)
+    dl_component: str = attr.ib(default="backend", kw_only=True)
 
     def is_tenant_id_mutable(self) -> bool:
         return self.IS_TENANT_ID_MUTABLE
@@ -84,11 +104,7 @@ class USAuthContextRegular(USAuthContextBase):
         return {
             **(self.tenant.get_outbound_tenancy_headers() if include_tenancy else {}),
             **self.auth_data.get_headers(),
-            **{
-                name: val
-                for name, val in flags.items()
-                if val is not None
-            }
+            **{name: val for name, val in flags.items() if val is not None},
         }
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
@@ -126,9 +142,7 @@ class USAuthContextMaster(USAuthContextBase):
         return self.DEFAULT_TENANT
 
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
-        return {
-            DLHeadersCommon.US_MASTER_TOKEN: self.us_master_token
-        }
+        return {DLHeadersCommon.US_MASTER_TOKEN: self.us_master_token}
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
         return {}
@@ -161,7 +175,7 @@ class USAuthContextEmbed(USAuthContextBase):
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
         return {
             **(self.tenant.get_outbound_tenancy_headers() if include_tenancy else {}),
-            **self.auth_data.get_headers()
+            **self.auth_data.get_headers(),
         }
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
@@ -191,7 +205,6 @@ class UStorageClientBase:
             pass
 
     class ResponseAdapter(metaclass=abc.ABCMeta):
-
         @property
         @abc.abstractmethod
         def status_code(self) -> int:
@@ -213,7 +226,7 @@ class UStorageClientBase:
 
         @property
         @abc.abstractmethod
-        def request(self) -> 'UStorageClientBase.RequestAdapter':
+        def request(self) -> "UStorageClientBase.RequestAdapter":
             pass
 
         @abc.abstractmethod
@@ -234,21 +247,24 @@ class UStorageClientBase:
         (530, None, exc.USPermissionCheckError),
     ]
 
-    RequestData = NamedTuple('RequestData', [
-        ('method', str),
-        ('relative_url', str),
-        ('params', Optional[dict[str, str]]),
-        ('json', Optional[dict]),
-    ])
+    RequestData = NamedTuple(
+        "RequestData",
+        [
+            ("method", str),
+            ("relative_url", str),
+            ("params", Optional[dict[str, str]]),
+            ("json", Optional[dict]),
+        ],
+    )
 
     def __init__(
-            self,
-            host: str,
-            auth_ctx: USAuthContextBase,
-            prefix: Optional[str] = None,
-            timeout: int = 30,
-            context_request_id: Optional[str] = None,
-            context_forwarded_for: Optional[str] = None
+        self,
+        host: str,
+        auth_ctx: USAuthContextBase,
+        prefix: Optional[str] = None,
+        timeout: int = 30,
+        context_request_id: Optional[str] = None,
+        context_forwarded_for: Optional[str] = None,
     ):
         self.host = host
         self.prefix = auth_ctx.get_default_prefix() if prefix is None else prefix
@@ -269,7 +285,7 @@ class UStorageClientBase:
         self._extra_headers = {}  # type: ignore  # TODO: fix
 
         if context_request_id is not None:
-            self._default_headers['X-Request-Id'] = context_request_id
+            self._default_headers["X-Request-Id"] = context_request_id
 
         self._ensure_extra_headers()
 
@@ -306,39 +322,46 @@ class UStorageClientBase:
         return stringify_dl_cookies(ctx.get_outbound_cookies())
 
     def _get_full_url(self, relative_url: str) -> str:
-        return '/'.join(map(lambda s: s.strip('/'), (self.host, self.prefix, relative_url)))
+        return "/".join(map(lambda s: s.strip("/"), (self.host, self.prefix, relative_url)))
 
     @staticmethod
     def _log_request_start(request_data: RequestData):  # type: ignore  # TODO: fix
         LOGGER.info(
-            'Asking UnitedStorage: method: %s, url: %s, params:(%s)',
-            request_data.method, request_data.relative_url, request_data.params or {},
+            "Asking UnitedStorage: method: %s, url: %s, params:(%s)",
+            request_data.method,
+            request_data.relative_url,
+            request_data.params or {},
         )
 
     @classmethod
     def _get_us_json_from_response(cls, response: ResponseAdapter):  # type: ignore  # TODO: fix
         LOGGER.info(
-            'Got %s from UnitedStorage (%s %s), content length: %s, request-id: %s, elapsed: %s',
-            response.status_code, response.request.method, response.request.relative_url,
-            len(response.content), response.get_header('X-Request-ID'), response.elapsed_seconds
+            "Got %s from UnitedStorage (%s %s), content length: %s, request-id: %s, elapsed: %s",
+            response.status_code,
+            response.request.method,
+            response.request.relative_url,
+            len(response.content),
+            response.get_header("X-Request-ID"),
+            response.elapsed_seconds,
         )
         if response.status_code >= 400:
             LOGGER.info(
-                'US error response on %s %s (%s): %s, folder_id: %s, org_id: %s, req_id: %s',
-                response.request.method, response.request.relative_url,
+                "US error response on %s %s (%s): %s, folder_id: %s, org_id: %s, req_id: %s",
+                response.request.method,
+                response.request.relative_url,
                 mask_sensitive_fields_by_name_in_json_recursive(response.request.json),
                 response.content,
                 # TODO: BI-4918 move to local injection and reuse bi_api_commons_ya_cloud.constants.DLHeadersYC
                 response.request.get_header(DLHeadersCommon.FOLDER_ID.value),
                 response.request.get_header(DLHeadersCommon.ORG_ID.value),
-                response.get_header('X-Request-ID'),
+                response.get_header("X-Request-ID"),
             )
         try:
             response.raise_for_status()
         except USClientHTTPExceptionWrapper as http_err_ex_wrapper:
             http_err_ex = cast(Optional[Exception], http_err_ex_wrapper.__cause__)
 
-            message: Optional[str] = response.json().get('message')
+            message: Optional[str] = response.json().get("message")
             for status_code, error_regex, exc_cls in cls.ERROR_MAP:
                 if response.status_code == status_code:
                     if error_regex is None or message is not None and error_regex.match(message):
@@ -349,12 +372,12 @@ class UStorageClientBase:
         try:
             return response.json()
         except JSONDecodeError as ex:
-            LOGGER.info('Got http status %s with invalid json %s from US', response.status_code, response.content)
+            LOGGER.info("Got http status %s with invalid json %s from US", response.status_code, response.content)
             raise exc.USInvalidResponse from ex
 
     def _raise_for_disabled_interactions(self):  # type: ignore  # TODO: fix
         if self._disabled:
-            raise exc.USInteractionDisabled('Interaction with US is forbidden')
+            raise exc.USInteractionDisabled("Interaction with US is forbidden")
 
     @contextmanager
     def interaction_disabled(self):  # type: ignore  # TODO: fix
@@ -369,30 +392,37 @@ class UStorageClientBase:
     # Requests definitions
     @classmethod
     def _req_data_create_entry(  # type: ignore  # TODO: fix
-            cls, key: EntryLocation, scope: str,
-            meta=None, data=None, type_=None, hidden=None, links=None, unversioned_data=None, **kwargs
+        cls,
+        key: EntryLocation,
+        scope: str,
+        meta=None,
+        data=None,
+        type_=None,
+        hidden=None,
+        links=None,
+        unversioned_data=None,
+        **kwargs,
     ) -> RequestData:
-
         meta = meta or {}
         data = data or {}
         unversioned_data = unversioned_data or {}
-        type_ = type_ or ''
+        type_ = type_ or ""
         links = links or {}
 
         return cls.RequestData(
-            method='post',
-            relative_url='/entries',
+            method="post",
+            relative_url="/entries",
             params=None,
             json={
-                'scope': scope,
+                "scope": scope,
                 **key.to_us_req_api_params(),
-                'meta': meta,
-                'data': data,
-                'unversionedData': unversioned_data,
-                'type': type_,
-                'recursion': True,
-                'hidden': hidden,
-                'links': links,
+                "meta": meta,
+                "data": data,
+                "unversionedData": unversioned_data,
+                "type": type_,
+                "recursion": True,
+                "hidden": hidden,
+                "links": links,
                 **kwargs,
             },
         )
@@ -401,13 +431,13 @@ class UStorageClientBase:
     def _req_data_get_entry(cls, entry_id, params=None, include_permissions=True, include_links=True):  # type: ignore  # TODO: fix
         params = params or {}
         if include_permissions:
-            params['includePermissionsInfo'] = 1
+            params["includePermissionsInfo"] = 1
         if include_links:
-            params['includeLinks'] = 1
+            params["includeLinks"] = 1
 
         return cls.RequestData(
             method="get",
-            relative_url='/entries/{}'.format(entry_id),
+            relative_url="/entries/{}".format(entry_id),
             params=params,
             json=None,
         )
@@ -415,35 +445,43 @@ class UStorageClientBase:
     @classmethod
     def _req_data_move_entry(cls, entry_id: str, destination: str):  # type: ignore  # TODO: fix
         return cls.RequestData(
-            method='post',
-            relative_url='/entries/{}/move'.format(entry_id),
+            method="post",
+            relative_url="/entries/{}/move".format(entry_id),
             params=None,
-            json={'destination': destination},
+            json={"destination": destination},
         )
 
     @classmethod
     def _req_data_update_entry(  # type: ignore  # TODO: fix
-            cls, entry_id: str, data=None, unversioned_data=None, meta=None, mode='publish',
-            lock=None, hidden=None, links=None):
+        cls,
+        entry_id: str,
+        data=None,
+        unversioned_data=None,
+        meta=None,
+        mode="publish",
+        lock=None,
+        hidden=None,
+        links=None,
+    ):
         data = data or {}
         unversioned_data = unversioned_data or {}
         meta = meta or {}
         links = links or {}
 
         json_data = {
-            'data': data,
-            'unversionedData': unversioned_data,
-            'meta': meta,
-            'mode': mode,
-            'links': links,
+            "data": data,
+            "unversionedData": unversioned_data,
+            "meta": meta,
+            "mode": mode,
+            "links": links,
         }
         if hidden is not None:
             json_data.update(hidden=hidden)
         if lock is not None:
             json_data.update(lockToken=lock)
         return cls.RequestData(
-            method='post',
-            relative_url='/entries/{}'.format(entry_id),
+            method="post",
+            relative_url="/entries/{}".format(entry_id),
             params=None,
             json=json_data,
         )
@@ -452,46 +490,41 @@ class UStorageClientBase:
     def _req_data_delete_entry(cls, entry_id, lock=None):  # type: ignore  # TODO: fix
         params = None
         if lock is not None:
-            params = {'lockToken': lock}
-        return cls.RequestData(
-            method='delete',
-            relative_url='/entries/{}'.format(entry_id),
-            params=params,
-            json=None
-        )
+            params = {"lockToken": lock}
+        return cls.RequestData(method="delete", relative_url="/entries/{}".format(entry_id), params=params, json=None)
 
     @classmethod
     def _req_data_iter_entries(  # type: ignore  # TODO: fix
-            cls,
-            scope: str,
-            entry_type: Optional[str] = None,
-            meta: Optional[dict] = None,
-            all_tenants: bool = False,
-            include_data: bool = False,
-            ids: Optional[Iterable[str]] = None,
-            page: int = 0,
-            creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        cls,
+        scope: str,
+        entry_type: Optional[str] = None,
+        meta: Optional[dict] = None,
+        all_tenants: bool = False,
+        include_data: bool = False,
+        ids: Optional[Iterable[str]] = None,
+        page: int = 0,
+        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
     ) -> RequestData:
         req_params = dict(scope=scope, includeData=int(include_data))
         if entry_type:
             req_params.update(type=entry_type)
         meta = meta or {}
         if meta:
-            req_params.update({'meta[{}]'.format(k): v for k, v in meta.items()})
+            req_params.update({"meta[{}]".format(k): v for k, v in meta.items()})
         if creation_time:
-            req_params.update({'creationTime[{}]'.format(k): v for k, v in creation_time.items()})
+            req_params.update({"creationTime[{}]".format(k): v for k, v in creation_time.items()})
         if ids:
-            req_params['ids'] = ids
+            req_params["ids"] = ids
 
         if all_tenants:
             assert include_data is False  # not supported for this endpoint
-            endpoint = '/interTenant/entries'
+            endpoint = "/interTenant/entries"
         else:
-            endpoint = '/entries'
+            endpoint = "/entries"
 
         params: dict[Any, Any] = dict(page=page, **req_params)
         return cls.RequestData(
-            method='get',
+            method="get",
             relative_url=endpoint,
             params=params,
             json=None,
@@ -499,10 +532,10 @@ class UStorageClientBase:
 
     @classmethod
     def _req_data_acquire_lock(
-            cls,
-            entry_id: str,
-            duration: Optional[int] = None,
-            force: Optional[bool] = None,
+        cls,
+        entry_id: str,
+        duration: Optional[int] = None,
+        force: Optional[bool] = None,
     ) -> RequestData:
         """
         :param duration: in seconds. Default = 300 (5min)
@@ -514,15 +547,12 @@ class UStorageClientBase:
         if force is not None:
             params.update(force=force)
 
-        return cls.RequestData(method='post', relative_url='/locks/{}'.format(entry_id), params=None, json=params)
+        return cls.RequestData(method="post", relative_url="/locks/{}".format(entry_id), params=None, json=params)
 
     @classmethod
     def _req_data_release_lock(cls, entry_id, lock):  # type: ignore  # TODO: fix
         return cls.RequestData(
-            method='delete',
-            relative_url='/locks/{}'.format(entry_id),
-            params={'lockToken': lock},
-            json=None
+            method="delete", relative_url="/locks/{}".format(entry_id), params={"lockToken": lock}, json=None
         )
 
     @classmethod
@@ -562,7 +592,7 @@ class UStorageClient(UStorageClientBase):
             return self._request_data.json  # type: ignore  # TODO: fix
 
     class ResponseAdapter(UStorageClientBase.ResponseAdapter):
-        def __init__(self, response: requests.Response, request_data: 'UStorageClient.RequestData'):
+        def __init__(self, response: requests.Response, request_data: "UStorageClient.RequestData"):
             self.resp = response
             self._req_adapter = UStorageClient.RequestAdapter(response.request, request_data)  # type: ignore  # TODO: fix
 
@@ -582,7 +612,7 @@ class UStorageClient(UStorageClientBase):
             return self.resp.content
 
         @property
-        def request(self) -> 'UStorageClientBase.RequestAdapter':
+        def request(self) -> "UStorageClientBase.RequestAdapter":
             return self._req_adapter
 
         def raise_for_status(self) -> None:
@@ -595,13 +625,13 @@ class UStorageClient(UStorageClientBase):
             return self.resp.json()
 
     def __init__(
-            self,
-            host: str,
-            auth_ctx: USAuthContextBase,
-            prefix: Optional[str] = None,
-            timeout: int = 30,
-            context_request_id: Optional[str] = None,
-            context_forwarded_for: Optional[str] = None,
+        self,
+        host: str,
+        auth_ctx: USAuthContextBase,
+        prefix: Optional[str] = None,
+        timeout: int = 30,
+        context_request_id: Optional[str] = None,
+        context_forwarded_for: Optional[str] = None,
     ):
         super().__init__(
             host=host,
@@ -639,23 +669,34 @@ class UStorageClient(UStorageClientBase):
                 **self._extra_headers,
                 **tracing_headers,
             },
-            **request_kwargs  # type: ignore  # TODO: fix
+            **request_kwargs,  # type: ignore  # TODO: fix
         )
 
         response_adapter = self.ResponseAdapter(response, request_data)
         return self._get_us_json_from_response(response_adapter)
 
     def create_entry(
-        self, key: EntryLocation, scope: str,
+        self,
+        key: EntryLocation,
+        scope: str,
         meta: Optional[dict[str, str]] = None,
-        data: Optional[dict[str, Any]] = None, unversioned_data: Optional[dict[str, Any]] = None,
-        type_: Optional[str] = None, hidden: Optional[bool] = None, links: Optional[dict[str, Any]] = None,
+        data: Optional[dict[str, Any]] = None,
+        unversioned_data: Optional[dict[str, Any]] = None,
+        type_: Optional[str] = None,
+        hidden: Optional[bool] = None,
+        links: Optional[dict[str, Any]] = None,
         **kwargs: Any,
     ) -> dict[str, Any]:
         rq_data = self._req_data_create_entry(
-            key=key, scope=scope,
-            meta=meta, data=data, unversioned_data=unversioned_data,
-            type_=type_, hidden=hidden, links=links, **kwargs
+            key=key,
+            scope=scope,
+            meta=meta,
+            data=data,
+            unversioned_data=unversioned_data,
+            type_=type_,
+            hidden=hidden,
+            links=links,
+            **kwargs,
         )
         return self._request(rq_data)
 
@@ -666,34 +707,48 @@ class UStorageClient(UStorageClientBase):
         include_permissions: bool = True,
         include_links: bool = True,
     ) -> dict[str, Any]:
-        return self._request(self._req_data_get_entry(
-            entry_id, params=params, include_permissions=include_permissions, include_links=include_links
-        ))
+        return self._request(
+            self._req_data_get_entry(
+                entry_id, params=params, include_permissions=include_permissions, include_links=include_links
+            )
+        )
 
     def move_entry(self, entry_id, destination):  # type: ignore  # TODO: fix
         return self._request(self._req_data_move_entry(entry_id, destination=destination))
 
     def update_entry(  # type: ignore  # TODO: fix
-        self, entry_id: str,
-        data: Optional[dict[str, Any]] = None, unversioned_data: Optional[dict[str, Any]] = None,
+        self,
+        entry_id: str,
+        data: Optional[dict[str, Any]] = None,
+        unversioned_data: Optional[dict[str, Any]] = None,
         meta: Optional[dict[str, str]] = None,
-        mode: str = 'save', lock: Optional[str] = None,
-        hidden: Optional[bool] = None, links: Optional[dict[str, Any]] = None,
+        mode: str = "save",
+        lock: Optional[str] = None,
+        hidden: Optional[bool] = None,
+        links: Optional[dict[str, Any]] = None,
     ):
-        return self._request(self._req_data_update_entry(
-            entry_id, data=data, unversioned_data=unversioned_data, meta=meta,
-            mode=mode, lock=lock, hidden=hidden, links=links,
-        ))
+        return self._request(
+            self._req_data_update_entry(
+                entry_id,
+                data=data,
+                unversioned_data=unversioned_data,
+                meta=meta,
+                mode=mode,
+                lock=lock,
+                hidden=hidden,
+                links=links,
+            )
+        )
 
     def entries_iterator(
-            self,
-            scope: str,
-            entry_type: Optional[str] = None,
-            meta: Optional[dict] = None,
-            all_tenants: bool = False,
-            include_data: bool = False,
-            ids: Optional[Iterable[str]] = None,
-            creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        self,
+        scope: str,
+        entry_type: Optional[str] = None,
+        meta: Optional[dict] = None,
+        all_tenants: bool = False,
+        include_data: bool = False,
+        ids: Optional[Iterable[str]] = None,
+        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
     ) -> Generator[dict, None, None]:
         """
         :param scope:
@@ -707,21 +762,28 @@ class UStorageClient(UStorageClientBase):
         """
         page = 0
         while True:
-            resp = self._request(self._req_data_iter_entries(
-                scope,
-                entry_type=entry_type, meta=meta, all_tenants=all_tenants,
-                include_data=include_data, ids=ids, page=page, creation_time=creation_time
-            ))
-            if resp.get('entries'):
-                page_entries = resp['entries']
+            resp = self._request(
+                self._req_data_iter_entries(
+                    scope,
+                    entry_type=entry_type,
+                    meta=meta,
+                    all_tenants=all_tenants,
+                    include_data=include_data,
+                    ids=ids,
+                    page=page,
+                    creation_time=creation_time,
+                )
+            )
+            if resp.get("entries"):
+                page_entries = resp["entries"]
             else:
                 break
 
             for entr in page_entries:
                 yield entr
 
-            if resp.get('nextPageToken'):
-                page = resp['nextPageToken']
+            if resp.get("nextPageToken"):
+                page = resp["nextPageToken"]
             else:
                 break
 
@@ -741,7 +803,7 @@ class UStorageClient(UStorageClientBase):
         while True:
             try:
                 resp = self._request(req_data)
-                lock = resp['lockToken']
+                lock = resp["lockToken"]
                 LOGGER.info('Acquired lock "%s" for object "%s"', lock, entry_id)
                 return lock
             except exc.USLockUnacquiredException:
@@ -757,9 +819,11 @@ class UStorageClient(UStorageClientBase):
             LOGGER.exception('Unable to release lock "%s"', lock)
 
     def get_entries_info_in_path(self, us_path: str) -> list[dict[str, Any]]:
-        resp = self._request(self._req_data_entries_in_path(
-            us_path=us_path,
-            page_size=100,
-            page_idx=0,
-        ))
-        return resp['entries']
+        resp = self._request(
+            self._req_data_entries_in_path(
+                us_path=us_path,
+                page_size=100,
+                page_idx=0,
+            )
+        )
+        return resp["entries"]

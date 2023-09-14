@@ -7,8 +7,8 @@ from bi_testing.env_params.getter import EnvParamGetter
 
 
 class BigQuerySecretReaderBase(abc.ABC):
-    KEY_CONFIG: ClassVar[str] = 'BIGQUERY_CONFIG'
-    KEY_CREDS: ClassVar[str] = 'BIGQUERY_CREDS'
+    KEY_CONFIG: ClassVar[str] = "BIGQUERY_CONFIG"
+    KEY_CREDS: ClassVar[str] = "BIGQUERY_CREDS"
 
     @property
     @abc.abstractmethod
@@ -20,13 +20,13 @@ class BigQuerySecretReaderBase(abc.ABC):
         raise NotImplementedError
 
     def get_project_id(self) -> str:
-        return self.project_config['project_id']
+        return self.project_config["project_id"]
 
     def get_dataset_name(self) -> str:
-        return self.project_config['dataset_name']
+        return self.project_config["dataset_name"]
 
     def get_table_name(self) -> str:
-        return self.project_config['table_name']
+        return self.project_config["table_name"]
 
 
 @attr.s

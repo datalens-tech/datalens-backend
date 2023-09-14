@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from marshmallow import fields
 
-from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-
 from bi_connector_bundle_chs3.chs3_base.bi.api_schema.source import BaseFileSourceSchema
+from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 
 class GSheetsFileSourceSchema(BaseFileSourceSchema):

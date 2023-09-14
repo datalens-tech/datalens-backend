@@ -2,21 +2,30 @@ from __future__ import annotations
 
 import datetime
 from decimal import Decimal
-from typing import Any, Callable, Optional, Sequence, Tuple, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import attr
 import jinja2
 import tabulate
 
 from bi_formula_ref.examples.data_table import rename_columns
-from bi_formula_ref.examples.utils import make_data_table_from_example, make_key_for_example
 from bi_formula_ref.examples.result_storage import ReadableDataStorage
+from bi_formula_ref.examples.utils import (
+    make_data_table_from_example,
+    make_key_for_example,
+)
 from bi_formula_ref.i18n.registry import get_localizer
 
-
 if TYPE_CHECKING:
-    from bi_formula_ref.examples.data_table import DataTable
     from bi_formula_ref.examples.config import ExampleConfig
+    from bi_formula_ref.examples.data_table import DataTable
 
 
 @attr.s(frozen=True)
@@ -45,7 +54,7 @@ class ExampleRenderer:
 
     def _format_value(self, value: Any, example: ExampleConfig) -> str:
         if value is None:
-            return 'NULL'
+            return "NULL"
         if isinstance(value, (float, Decimal)):
             return example.float_format.format(value)
         if isinstance(value, (datetime.datetime, datetime.date)):
@@ -53,14 +62,13 @@ class ExampleRenderer:
         return repr(value)
 
     def _md_escape(self, text: str) -> str:
-        return text.replace('*', '&ast;')
+        return text.replace("*", "&ast;")
 
     def _render_table(self, table: DataTable, example: ExampleConfig) -> str:
         return tabulate.tabulate(
-            [[f'`{self._format_value(cell, example=example)}`' for cell in row] for row in table.rows],
-            headers=[
-                f'**{self._md_escape(col.name)}**' for col in table.columns
-            ], tablefmt="pipe"
+            [[f"`{self._format_value(cell, example=example)}`" for cell in row] for row in table.rows],
+            headers=[f"**{self._md_escape(col.name)}**" for col in table.columns],
+            tablefmt="pipe",
         )
 
     def render_example(self, example: ExampleConfig, result_table: DataTable, under_cut: bool) -> str:

@@ -1,23 +1,28 @@
 from __future__ import annotations
 
 import json
-from typing import Optional, Any, ClassVar
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
+from bi_api_commons.base_models import TenantDef
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.enums import RedisMode
 from bi_configs.environments import is_setting_applicable
 from bi_configs.rqe import RQEConfig
-from bi_configs.settings_loaders.meta_definition import s_attrib, required
+from bi_configs.settings_loaders.meta_definition import (
+    required,
+    s_attrib,
+)
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.settings_submodels import RedisSettings
 from bi_configs.utils import split_by_comma
 from bi_constants.enums import USAuthMode
-
-from bi_api_commons.base_models import TenantDef
 from bi_core.components.ids import FieldIdGeneratorType
 from bi_formula.parser.factory import ParserType
 
@@ -80,15 +85,15 @@ class AppSettings:
                 SSL=cfg.REDIS_RQE_CACHES_SSL,
                 DB=cfg.REDIS_RQE_CACHES_DB,
                 PASSWORD=required(str),
-            ) if is_setting_applicable(cfg, 'REDIS_RQE_CACHES_DB') else None
+            )
+            if is_setting_applicable(cfg, "REDIS_RQE_CACHES_DB")
+            else None
         ),
         missing=None,
     )
 
     SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore
-        "SAMPLES_CH_HOST",
-        env_var_converter=split_by_comma,
-        missing_factory=list
+        "SAMPLES_CH_HOST", env_var_converter=split_by_comma, missing_factory=list
     )
 
     BI_COMPENG_PG_ON: bool = s_attrib("BI_COMPENG_PG_ON", missing=True)  # type: ignore
@@ -102,17 +107,17 @@ class AppSettings:
     FORMULA_SUPPORTED_FUNC_TAGS: tuple[str] = s_attrib(
         "FORMULA_SUPPORTED_FUNC_TAGS",
         env_var_converter=split_by_comma,
-        missing=('stable',),
+        missing=("stable",),
     )
 
     BI_API_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore
-        'BI_API_CONNECTOR_WHITELIST',
+        "BI_API_CONNECTOR_WHITELIST",
         env_var_converter=lambda s: list(split_by_comma(s)),
         fallback_cfg_key="BI_API_CONNECTOR_WHITELIST",
         missing=None,
     )
     CORE_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore
-        'CORE_CONNECTOR_WHITELIST',
+        "CORE_CONNECTOR_WHITELIST",
         env_var_converter=lambda s: list(split_by_comma(s)),
         fallback_cfg_key="CORE_CONNECTOR_WHITELIST",
         missing=None,
@@ -127,13 +132,17 @@ class AppSettings:
     REDIS_ARQ: Optional[RedisSettings] = None
 
     FILE_UPLOADER_BASE_URL: Optional[str] = s_attrib(  # type: ignore
-        "FILE_UPLOADER_BASE_URL", fallback_cfg_key="DATALENS_API_LB_UPLOADS_BASE_URL", missing=None,
+        "FILE_UPLOADER_BASE_URL",
+        fallback_cfg_key="DATALENS_API_LB_UPLOADS_BASE_URL",
+        missing=None,
     )
     FILE_UPLOADER_MASTER_TOKEN: Optional[str] = s_attrib(  # type: ignore
-        "FILE_UPLOADER_MASTER_TOKEN", sensitive=True, missing=None,
+        "FILE_UPLOADER_MASTER_TOKEN",
+        sensitive=True,
+        missing=None,
     )
 
-    DEFAULT_LOCALE: Optional[str] = 'en'
+    DEFAULT_LOCALE: Optional[str] = "en"
 
 
 @attr.s(frozen=True)
@@ -157,12 +166,14 @@ class ControlApiAppSettings(AppSettings):
                 SSL=cfg.REDIS_PERSISTENT_SSL,
                 DB=cfg.REDIS_FILE_UPLOADER_TASKS_DB,
                 PASSWORD=required(str),
-            ) if is_setting_applicable(cfg, 'REDIS_PERSISTENT_CLUSTER_NAME') else None
+            )
+            if is_setting_applicable(cfg, "REDIS_PERSISTENT_CLUSTER_NAME")
+            else None
         ),
         missing=None,
     )
 
-    app_prefix: ClassVar[str] = 'a'
+    app_prefix: ClassVar[str] = "a"
 
 
 @attr.s(frozen=True)
@@ -182,7 +193,9 @@ class DataApiAppSettings(AppSettings):
                 SSL=cfg.REDIS_CACHES_SSL,
                 DB=cfg.REDIS_CACHES_DB,
                 PASSWORD=required(str),
-            ) if is_setting_applicable(cfg, 'REDIS_CACHES_DB') else None
+            )
+            if is_setting_applicable(cfg, "REDIS_CACHES_DB")
+            else None
         ),
         missing=None,
     )
@@ -200,7 +213,9 @@ class DataApiAppSettings(AppSettings):
                 SSL=cfg.REDIS_CACHES_SSL,
                 DB=cfg.REDIS_MUTATIONS_CACHES_DB,
                 PASSWORD=required(str),
-            ) if is_setting_applicable(cfg, 'REDIS_MUTATIONS_CACHES_DB') else None
+            )
+            if is_setting_applicable(cfg, "REDIS_MUTATIONS_CACHES_DB")
+            else None
         ),
         missing=None,
     )
@@ -217,13 +232,13 @@ class DataApiAppSettings(AppSettings):
 
     @property
     def app_name(self) -> str:
-        return 'bi_data_api'
+        return "bi_data_api"
 
     @property
     def jaeger_service_name(self) -> str:
-        return 'bi-data-api'
+        return "bi-data-api"
 
-    app_prefix: ClassVar[str] = 'y'
+    app_prefix: ClassVar[str] = "y"
 
 
 @attr.s(frozen=True, kw_only=True)

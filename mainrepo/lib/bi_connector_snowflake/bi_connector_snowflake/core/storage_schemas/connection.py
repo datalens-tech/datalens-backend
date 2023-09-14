@@ -1,13 +1,14 @@
 from marshmallow import fields as ma_fields
 from marshmallow.validate import Regexp
 
-from bi_connector_snowflake.core.constants import ACCOUNT_NAME_RE
-from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from bi_core.us_manager.storage_schemas.connection import (
     BaseConnectionDataStorageSchema,
     CacheableConnectionDataSchemaMixin,
     SubselectConnectionDataSchemaMixin,
 )
+
+from bi_connector_snowflake.core.constants import ACCOUNT_NAME_RE
+from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 
 
 class SnowFlakeConnectionDataStorageSchema(
@@ -17,11 +18,7 @@ class SnowFlakeConnectionDataStorageSchema(
 ):
     TARGET_CLS = ConnectionSQLSnowFlake.DataModel
 
-    account_name = ma_fields.String(
-        allow_none=False,
-        required=True,
-        validate=Regexp(regex=ACCOUNT_NAME_RE)
-    )
+    account_name = ma_fields.String(allow_none=False, required=True, validate=Regexp(regex=ACCOUNT_NAME_RE))
     user_name = ma_fields.String(allow_none=False, required=True)
     user_role = ma_fields.String(allow_none=True, required=False)
     client_id = ma_fields.String(allow_none=False, required=True)

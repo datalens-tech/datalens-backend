@@ -1,18 +1,20 @@
 import abc
 import logging
-from typing import TypeVar, Generic, Type
+from typing import (
+    Generic,
+    Type,
+    TypeVar,
+)
 
-import attr
 from aiohttp import web
+import attr
 
 from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from bi_api_commons.aio.middlewares.cors import cors_middleware
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
-
 from bi_constants.api_constants import DLHeadersCommon
-
 from bi_core.aio.metrics_view import MetricsView
 from bi_core.aio.middlewares.csrf import CSRFMiddleware
 from bi_core.aio.middlewares.master_key import master_key_middleware
@@ -20,19 +22,18 @@ from bi_core.aio.middlewares.tracing import TracingService
 from bi_core.aio.ping_view import PingView
 from bi_core.aio.web_app_services.s3 import S3Service
 from bi_core.loader import load_bi_core
-from bi_task_processor.arq_wrapper import create_arq_redis_settings
-
-from bi_file_uploader_lib.settings_utils import init_redis_service
-
 from bi_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from bi_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from bi_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
 from bi_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
-from bi_file_uploader_api_lib.views import files as files_views, sources as sources_views, misc as misc_views
+from bi_file_uploader_api_lib.views import files as files_views
+from bi_file_uploader_api_lib.views import misc as misc_views
+from bi_file_uploader_api_lib.views import sources as sources_views
+from bi_file_uploader_lib.settings_utils import init_redis_service
+from bi_task_processor.arq_wrapper import create_arq_redis_settings
 
-
-_TSettings = TypeVar('_TSettings', bound=FileUploaderAPISettings)
+_TSettings = TypeVar("_TSettings", bound=FileUploaderAPISettings)
 
 
 @attr.s(kw_only=True)
@@ -48,12 +49,12 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
     def set_up_sentry(self, secret_sentry_dsn: str, release: str) -> None:
         import sentry_sdk
         from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+        from sentry_sdk.integrations.argv import ArgvIntegration
         from sentry_sdk.integrations.atexit import AtexitIntegration
         from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-        from sentry_sdk.integrations.stdlib import StdlibIntegration
-        from sentry_sdk.integrations.modules import ModulesIntegration
-        from sentry_sdk.integrations.argv import ArgvIntegration
         from sentry_sdk.integrations.logging import LoggingIntegration
+        from sentry_sdk.integrations.modules import ModulesIntegration
+        from sentry_sdk.integrations.stdlib import StdlibIntegration
         from sentry_sdk.integrations.threading import ThreadingIntegration
 
         from bi_api_commons.logging_sentry import cleanup_common_secret_data
@@ -147,25 +148,37 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
 
         CryptoService(crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG).bind_to_app(app)
 
-        app.router.add_route('get', '/api/v2/ping', PingView)
-        app.router.add_route('get', '/api/v2/metrics', MetricsView)
+        app.router.add_route("get", "/api/v2/ping", PingView)
+        app.router.add_route("get", "/api/v2/metrics", MetricsView)
 
-        app.router.add_route('post', '/api/v2/files', files_views.FilesView)
-        app.router.add_route('post', '/api/v2/links', files_views.LinksView)
-        app.router.add_route('post', '/api/v2/update_connection_data', files_views.UpdateConnectionDataView)
-        app.router.add_route('post', '/api/v2/update_connection_data_internal', files_views.InternalUpdateConnectionDataView)
-        app.router.add_route('get', '/api/v2/files/{file_id}/status', files_views.FileStatusView)
-        app.router.add_route('get', '/api/v2/files/{file_id}/sources', files_views.FileSourcesView)
+        app.router.add_route("post", "/api/v2/files", files_views.FilesView)
+        app.router.add_route("post", "/api/v2/links", files_views.LinksView)
+        app.router.add_route("post", "/api/v2/update_connection_data", files_views.UpdateConnectionDataView)
+        app.router.add_route(
+            "post", "/api/v2/update_connection_data_internal", files_views.InternalUpdateConnectionDataView
+        )
+        app.router.add_route("get", "/api/v2/files/{file_id}/status", files_views.FileStatusView)
+        app.router.add_route("get", "/api/v2/files/{file_id}/sources", files_views.FileSourcesView)
 
-        app.router.add_route('get', '/api/v2/files/{file_id}/sources/{source_id}/status', sources_views.SourceStatusView)
-        app.router.add_route('post', '/api/v2/files/{file_id}/sources/{source_id}', sources_views.SourceInfoView)
-        app.router.add_route('post', '/api/v2/files/{file_id}/sources/{source_id}/preview', sources_views.SourcePreviewView)
-        app.router.add_route('post', '/api/v2/files/{file_id}/sources/{source_id}/internal_params', sources_views.SourceInternalParamsView)
-        app.router.add_route('post', '/api/v2/files/{file_id}/sources/{source_id}/apply_settings', sources_views.SourceApplySettingsView)
+        app.router.add_route(
+            "get", "/api/v2/files/{file_id}/sources/{source_id}/status", sources_views.SourceStatusView
+        )
+        app.router.add_route("post", "/api/v2/files/{file_id}/sources/{source_id}", sources_views.SourceInfoView)
+        app.router.add_route(
+            "post", "/api/v2/files/{file_id}/sources/{source_id}/preview", sources_views.SourcePreviewView
+        )
+        app.router.add_route(
+            "post",
+            "/api/v2/files/{file_id}/sources/{source_id}/internal_params",
+            sources_views.SourceInternalParamsView,
+        )
+        app.router.add_route(
+            "post", "/api/v2/files/{file_id}/sources/{source_id}/apply_settings", sources_views.SourceApplySettingsView
+        )
 
-        app.router.add_route('post', '/api/v2/cleanup', misc_views.CleanupTenantView)
-        app.router.add_route('post', '/api/v2/rename_tenant_files', misc_views.RenameTenantFilesView)
+        app.router.add_route("post", "/api/v2/cleanup", misc_views.CleanupTenantView)
+        app.router.add_route("post", "/api/v2/rename_tenant_files", misc_views.RenameTenantFilesView)
 
-        app['ALLOW_XLSX'] = self._settings.ALLOW_XLSX
+        app["ALLOW_XLSX"] = self._settings.ALLOW_XLSX
 
         return app

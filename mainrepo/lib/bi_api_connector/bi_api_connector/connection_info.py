@@ -1,6 +1,13 @@
-from typing import Optional, ClassVar, final
+from typing import (
+    ClassVar,
+    Optional,
+    final,
+)
 
-from bi_i18n.localizer_base import Translatable, Localizer
+from bi_i18n.localizer_base import (
+    Localizer,
+    Translatable,
+)
 
 
 class ConnectionInfoProvider:

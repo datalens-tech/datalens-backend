@@ -2,28 +2,36 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Any, Dict, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+)
 
 from aiohttp import web
-from bi_app_tools.profiling_base import generic_profiler_async
+
+from bi_api_lib.app.data_api.resources.base import (
+    RequiredResourceDSAPI,
+    requires,
+)
+from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 import bi_api_lib.schemas.data
 import bi_api_lib.schemas.main
-
-from bi_api_lib.app.data_api.resources.base import RequiredResourceDSAPI, requires
-from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
+from bi_app_tools.profiling_base import generic_profiler_async
 from bi_query_processing.merging.primitives import MergedQueryDataStream
 
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
+
     from bi_api_lib.request_model.data import DataRequestModel
 
 LOGGER = logging.getLogger(__name__)
 
 
 class DatasetDistinctView(DatasetDataBaseView, abc.ABC):
-    endpoint_code = 'DatasetVersionValuesDistinct'
+    endpoint_code = "DatasetVersionValuesDistinct"
     # TODO FIX: Move to constants
-    profiler_prefix = 'distinct'
+    profiler_prefix = "distinct"
 
     # TODO FIX: Move request deserialization logic to schema
     # TODO FIX: Move response serialization logic to schema
@@ -57,7 +65,9 @@ class DatasetDistinctView(DatasetDataBaseView, abc.ABC):
 
     @abc.abstractmethod
     def make_response(
-            self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         raise NotImplementedError()
 
@@ -73,7 +83,9 @@ class DatasetDistinctViewV1(DatasetDistinctView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
@@ -89,7 +101,9 @@ class DatasetDistinctViewV1_5(DatasetDistinctView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
@@ -105,6 +119,8 @@ class DatasetDistinctViewV2(DatasetDistinctView):
         return req_model
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

@@ -1,17 +1,25 @@
 import os
-import re
-
 from pathlib import Path
-from typing import Mapping, Optional, Sequence
+import re
+from typing import (
+    Mapping,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from dl_repmanager.primitives import PackageInfo, RequirementList, ReqPackageSpec, LocalReqPackageSpec
-from dl_repmanager.repository_env import RepoEnvironment
-from dl_repmanager.repository_navigator import RepositoryNavigator
 from dl_repmanager.fs_editor import FilesystemEditor
 from dl_repmanager.package_index import PackageIndex
 from dl_repmanager.package_reference import PackageReference
+from dl_repmanager.primitives import (
+    LocalReqPackageSpec,
+    PackageInfo,
+    ReqPackageSpec,
+    RequirementList,
+)
+from dl_repmanager.repository_env import RepoEnvironment
+from dl_repmanager.repository_navigator import RepositoryNavigator
 
 
 @attr.s
@@ -25,12 +33,12 @@ class PackageGenerator:
 
     @staticmethod
     def generate_new_package_reg_name(package_name: str) -> str:
-        internal_name = package_name.replace('_', '-')
+        internal_name = package_name.replace("_", "-")
         return internal_name
 
     @staticmethod
     def generate_default_test_dir_name(package_name: str) -> str:
-        return f'{package_name}_tests'
+        return f"{package_name}_tests"
 
     def get_boilerplate_package_info(self, package_type: str) -> PackageInfo:
         return self.package_index.get_package_info_from_path(
@@ -38,9 +46,11 @@ class PackageGenerator:
         )
 
     def generate_package_info_from_boilerplate(
-            self, boilerplate_info: PackageInfo, package_type: str, package_module_name: str,
+        self,
+        boilerplate_info: PackageInfo,
+        package_type: str,
+        package_module_name: str,
     ) -> PackageInfo:
-
         package_test_dirs: list[str] = []
         for boilerplate_test_dir in boilerplate_info.test_dirs:
             package_test_dir = boilerplate_test_dir.replace(  # FIXME: define in templates
@@ -53,7 +63,8 @@ class PackageGenerator:
             package_reg_name=self.generate_new_package_reg_name(package_module_name),
             module_names=(package_module_name,),  # FIXME: define in template
             abs_path=self._generate_new_package_abs_path(
-                package_module_name=package_module_name, package_type=package_type,
+                package_module_name=package_module_name,
+                package_type=package_type,
             ),
             test_dirs=tuple(package_test_dirs),
         )
@@ -86,22 +97,20 @@ class RepositoryManager:
 
     def _register_package(self, package_info: PackageInfo) -> None:
         for mng_plugin in self.repository_env.get_plugins_for_package_type(
-                package_type=package_info.package_type,
-                package_index=self.package_index
+            package_type=package_info.package_type, package_index=self.package_index
         ):
             mng_plugin.register_package(package_info=package_info)
 
     def _unregister_package(self, package_info: PackageInfo) -> None:
         for mng_plugin in self.repository_env.get_plugins_for_package_type(
-                package_type=package_info.package_type,
-                package_index=self.package_index
+            package_type=package_info.package_type, package_index=self.package_index
         ):
             mng_plugin.register_package(package_info=package_info)
 
     def _re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
         for mng_plugin in self.repository_env.get_plugins_for_package_type(
-                package_type=new_package_info.package_type,
-                package_index=self.package_index,
+            package_type=new_package_info.package_type,
+            package_index=self.package_index,
         ):
             mng_plugin.re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
 
@@ -203,8 +212,8 @@ class RepositoryManager:
 
         # Replace all package name occurrences with the given name
         mask_blacklist = (
-            re.compile(r'.*\.mo'),
-            re.compile(r'.*\.xlsx'),
+            re.compile(r".*\.mo"),
+            re.compile(r".*\.xlsx"),
         )
         for boilerplate_mod_name, package_mod_name in zip(old_package_info.module_names, new_package_info.module_names):
             self.fs_editor.replace_text_in_dir(
@@ -222,7 +231,6 @@ class RepositoryManager:
         )
 
     def change_package_type(self, package_module_name: str, new_package_type: str) -> PackageInfo:
-
         old_package_info = self.package_index.get_package_info_from_module_name(package_module_name)
 
         root_pkg_dir = self.repository_env.get_root_package_dir(package_type=new_package_type)
@@ -239,8 +247,11 @@ class RepositoryManager:
         return new_package_info
 
     def rename_module(
-            self, old_import_name: str, new_import_name: str,
-            fix_imports: bool, move_files: bool,
+        self,
+        old_import_name: str,
+        new_import_name: str,
+        fix_imports: bool,
+        move_files: bool,
     ) -> None:
         """Move code from one package to another or within one package"""
 
@@ -272,15 +283,17 @@ class RepositoryManager:
         return package_info.requirement_lists
 
     def compare_imports_and_requirements(
-            self, package_module_name: str, ignore_prefix: Optional[str] = None,
-            tests: bool = False,
+        self,
+        package_module_name: str,
+        ignore_prefix: Optional[str] = None,
+        tests: bool = False,
     ) -> tuple[list[ReqPackageSpec], list[ReqPackageSpec]]:
         # TODO: Add support for namespace packages (e.g. google-api-core, google-auth)
 
         def _normalize_name(name: str) -> str:
             name = name.lower()
             if ignore_prefix is not None and name.startswith(ignore_prefix):
-                name = name[len(ignore_prefix):]
+                name = name[len(ignore_prefix) :]
             return name
 
         package_info = self.package_index.get_package_info_from_module_name(
@@ -303,29 +316,30 @@ class RepositoryManager:
         if tests:
             main_pkg_import_req_specs = _get_imports(package_info.module_names)
             import_req_specs = {
-                key: spec for key, spec in import_req_specs.items()
-                if key not in main_pkg_import_req_specs
+                key: spec for key, spec in import_req_specs.items() if key not in main_pkg_import_req_specs
             }
 
         req_section_name: str
         if tests:
-            req_section_name = 'tool.poetry.group.tests.dependencies'
+            req_section_name = "tool.poetry.group.tests.dependencies"
         else:
-            req_section_name = 'tool.poetry.dependencies'
+            req_section_name = "tool.poetry.dependencies"
 
         actual_req_specs: dict[str, ReqPackageSpec] = {
             _normalize_name(req_spec.package_name): req_spec
             for req_spec in package_info.requirement_lists.get(req_section_name, RequirementList()).req_specs
         }
         actual_req_specs = {
-            req_name: req_spec for req_name, req_spec in actual_req_specs.items()
+            req_name: req_spec
+            for req_name, req_spec in actual_req_specs.items()
             if req_name not in package_info.implicit_deps
         }
         # TODO: Check that implicit deps are all listed in either the main or the test section
 
         special_excludes = {
             # Always ignore these imports/requirements
-            'python', '',
+            "python",
+            "",
             _normalize_name(package_info.package_reg_name),
         }
 

@@ -2,14 +2,26 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import TYPE_CHECKING, ClassVar, Optional, Pattern, Type
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Optional,
+    Pattern,
+    Type,
+)
 
 import attr
 from sqlalchemy.engine.default import DefaultDialect
-from sqlalchemy.sql import schema as sa_schema, ddl as sa_ddl
+from sqlalchemy.sql import ddl as sa_ddl
+from sqlalchemy.sql import schema as sa_schema
 
 from bi_core import exc
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from bi_core.db import (
+    SchemaColumn,
+    make_sa_type,
+)
+
 from bi_connector_clickhouse.core.clickhouse_base.exc import (
     CannotInsertNullInOrdinaryColumn,
     CHIncorrectData,
@@ -19,7 +31,6 @@ from bi_connector_clickhouse.core.clickhouse_base.exc import (
     InvalidSplitSeparator,
     TooManyColumns,
 )
-from bi_core.db import SchemaColumn, make_sa_type
 
 if TYPE_CHECKING:
     from bi_core.db.conversion_base import TypeTransformer
@@ -38,42 +49,34 @@ def get_ch_settings(
         # https://clickhouse.com/docs/en/operations/settings/settings#settings-join_use_nulls
         # 1 — JOIN behaves the same way as in standard SQL.
         # The type of the corresponding field is converted to Nullable, and empty cells are filled with NULL.
-        'join_use_nulls': 1,
-
+        "join_use_nulls": 1,
         # Limits the time to wait for a response from the servers in the cluster.
         # If a ddl request has not been performed on all hosts, a response will contain
         # a timeout error and a request will be executed in an async mode.
-        'distributed_ddl_task_timeout': 280,
-
+        "distributed_ddl_task_timeout": 280,
         # https://clickhouse.com/docs/en/operations/settings/query-complexity#max-execution-time
         # Maximum query execution time in seconds.
         # By default, specify a large value to ensure there are no
         # forever-running queries (which is also known to break old-version CH
         # hosts at around 100_000 second long queries).
         # Note that in CH the value is rounded down to integer, and 0 seems to mean 'no limit'.
-        'max_execution_time': max_execution_time if max_execution_time is None else 3600 * 4,
-
-        'readonly': read_only_level,
-
+        "max_execution_time": max_execution_time if max_execution_time is None else 3600 * 4,
+        "readonly": read_only_level,
         # https://clickhouse.com/docs/en/operations/settings/settings#settings-insert_quorum
         # INSERT succeeds only when ClickHouse manages to correctly write data to the insert_quorum
         # of replicas during the insert_quorum_timeout
-        'insert_quorum': insert_quorum,
-        'insert_quorum_timeout': insert_quorum_timeout,
-
+        "insert_quorum": insert_quorum,
+        "insert_quorum_timeout": insert_quorum_timeout,
         # request clickhouse stat in response headers
         # otherwise clickhouse sends nulls in X-ClickHouse-Summary
-        'send_progress_in_http_headers': 0,
-
+        "send_progress_in_http_headers": 0,
         # https://clickhouse.com/docs/en/operations/settings/formats#output_format_json_quote_denormals
         # Enables +nan, -nan, +inf, -inf outputs in JSON output format.
         # After support from frontend should be enabled by default in all cases.
-        'output_format_json_quote_denormals': output_format_json_quote_denormals,
+        "output_format_json_quote_denormals": output_format_json_quote_denormals,
     }
 
-    return {
-        k: v for k, v in settings.items() if v is not None
-    }
+    return {k: v for k, v in settings.items() if v is not None}
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -85,7 +88,7 @@ class ParsedErrorMsg:
 class ClickHouseBaseUtils:
     add_real_user_header: ClassVar[bool] = False
 
-    ch_err_msg_re: ClassVar[Pattern] = re.compile(r'^(std::exception\.\s+)?Code:\s+(?P<code>\d+)')
+    ch_err_msg_re: ClassVar[Pattern] = re.compile(r"^(std::exception\.\s+)?Code:\s+(?P<code>\d+)")
 
     # ClickHouse error codes list: https://github.com/ClickHouse/ClickHouse/blob/master/src/Common/ErrorCodes.cpp
     # TODO: verify codes meaning and pick some other useful codes from CH list.
@@ -122,8 +125,8 @@ class ClickHouseBaseUtils:
         if match is None:
             return None
 
-        code = int(match.group('code'))
-        LOGGER.info('Got CH error code %s', code)
+        code = int(match.group("code"))
+        LOGGER.info("Got CH error code %s", code)
 
         return ParsedErrorMsg(
             code=code,
@@ -139,9 +142,7 @@ class ClickHouseBaseUtils:
         return None
 
     @classmethod
-    def get_exc_class(
-        cls, err_msg: str
-    ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
+    def get_exc_class(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
         parse_msg = cls.parse_message(err_msg)
         if parse_msg:
             return cls.get_exc_class_by_parsed_message(parse_msg)
@@ -151,17 +152,17 @@ class ClickHouseBaseUtils:
     def get_context_headers(cls, rci: DBAdapterScopedRCI) -> dict[str, str]:
         headers: dict[str, str] = {
             # TODO: bi_constants / bi_configs.constants
-            'user-agent': 'DataLens',
+            "user-agent": "DataLens",
         }
 
         if rci.user_name and cls.add_real_user_header:
-            headers['X-DataLens-Real-User'] = rci.user_name
+            headers["X-DataLens-Real-User"] = rci.user_name
 
         if rci.request_id:
-            headers['x-request-id'] = rci.request_id
+            headers["x-request-id"] = rci.request_id
 
         if rci.client_ip:
-            headers['X-Forwarded-For-Y'] = rci.client_ip
+            headers["X-Forwarded-For-Y"] = rci.client_ip
 
         return headers
 
@@ -183,8 +184,7 @@ def create_column_sql(
     tt: TypeTransformer,
     partition_fields: Optional[list[str]] = None,
 ) -> str:
-    native_type = tt.type_user_to_native(
-        user_t=col.user_type, native_t=col.native_type)
+    native_type = tt.type_user_to_native(user_t=col.user_type, native_t=col.native_type)
 
     if partition_fields and col.name in partition_fields:
         # Partition column cannot be nullable. Enforcing it in here.
@@ -204,8 +204,8 @@ def create_column_sql(
 
 
 def ensure_db_message(exc_cls, kw):  # type: ignore  # TODO: fix
-    db_message = kw.get('db_message')
-    details = kw.get('details')
-    if db_message and details is not None and not details.get('db_message'):
+    db_message = kw.get("db_message")
+    details = kw.get("details")
+    if db_message and details is not None and not details.get("db_message"):
         details.update(db_message=db_message)
     return exc_cls, kw

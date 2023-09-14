@@ -1,16 +1,29 @@
 from __future__ import annotations
 
-from typing import Any, Collection, Optional, Type
+from typing import (
+    Any,
+    Collection,
+    Optional,
+    Type,
+)
 
-from bi_formula.core.dialect import get_all_basic_dialects, DialectCombo
-from bi_formula.definitions.flags import ContextFlag
+from bi_formula.core.dialect import (
+    DialectCombo,
+    get_all_basic_dialects,
+)
 from bi_formula.definitions.base import MultiVariantTranslation
-
+from bi_formula.definitions.flags import ContextFlag
 from bi_formula_ref.audience import Audience
-from bi_formula_ref.primitives import RawFunc, RawMultiAudienceFunc
+from bi_formula_ref.primitives import (
+    RawFunc,
+    RawMultiAudienceFunc,
+)
 from bi_formula_ref.registry.base import FunctionDocRegistryItem
 from bi_formula_ref.registry.env import GenerationEnvironment
-from bi_formula_ref.registry.registry import RefFunctionKey, FUNC_REFERENCE_REGISTRY
+from bi_formula_ref.registry.registry import (
+    FUNC_REFERENCE_REGISTRY,
+    RefFunctionKey,
+)
 from bi_formula_ref.registry.tools import populate_registry_from_definitions
 
 
@@ -76,8 +89,8 @@ def _all_same(items: Collection[Any]) -> bool:
 
 
 def load_func_reference_from_registry(
-        scopes_by_audience: dict[Audience, int],
-        supported_dialects: frozenset[DialectCombo],
+    scopes_by_audience: dict[Audience, int],
+    supported_dialects: frozenset[DialectCombo],
 ) -> FuncReference:
     populate_registry_from_definitions()
 
@@ -90,7 +103,7 @@ def load_func_reference_from_registry(
     }
 
     func_ref = FuncReference()
-    for key, item in FUNC_REFERENCE_REGISTRY.items():
+    for _key, item in FUNC_REFERENCE_REGISTRY.items():
         aud_func_dict: dict[Audience, RawFunc] = {}
         for audience, env in env_by_audience.items():
             if item.is_supported(env=env):
@@ -102,9 +115,7 @@ def load_func_reference_from_registry(
         if len(all_raw_func_versions) > 1 and _all_same(all_raw_func_versions):
             # Funcs for all audiences are the same, so consolidate them
             # under a single default audience
-            aud_func_dict = {
-                Audience(name='', default=True): all_raw_func_versions[0]
-            }
+            aud_func_dict = {Audience(name="", default=True): all_raw_func_versions[0]}
         # Else keep the dict as-is
         multi_aud_func = RawMultiAudienceFunc.from_aud_dict(aud_func_dict)
         func_ref.add_func(multi_aud_func)

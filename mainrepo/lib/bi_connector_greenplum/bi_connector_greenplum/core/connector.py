@@ -1,22 +1,33 @@
-from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
-from bi_core.connectors.sql_base.connector import (
-    SQLTableCoreSourceDefinitionBase,
-    SQLSubselectCoreSourceDefinitionBase,
+from bi_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
 )
-from bi_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
-from bi_connector_postgresql.core.postgresql_base.async_adapters_postgres import AsyncPostgresAdapter
-from bi_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor, AsyncPostgresConnExecutor
-from bi_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
-from bi_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
+from bi_core.connectors.sql_base.connector import (
+    SQLSubselectCoreSourceDefinitionBase,
+    SQLTableCoreSourceDefinitionBase,
+)
 
 from bi_connector_greenplum.core.constants import (
-    BACKEND_TYPE_GREENPLUM, CONNECTION_TYPE_GREENPLUM,
-    SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT,
+    BACKEND_TYPE_GREENPLUM,
+    CONNECTION_TYPE_GREENPLUM,
+    SOURCE_TYPE_GP_SUBSELECT,
+    SOURCE_TYPE_GP_TABLE,
 )
-from bi_connector_greenplum.core.data_source import GreenplumTableDataSource, GreenplumSubselectDataSource
+from bi_connector_greenplum.core.data_source import (
+    GreenplumSubselectDataSource,
+    GreenplumTableDataSource,
+)
 from bi_connector_greenplum.core.data_source_migration import GreenPlumDataSourceMigrator
 from bi_connector_greenplum.core.storage_schemas.connection import GreenplumConnectionDataStorageSchema
 from bi_connector_greenplum.core.us_connection import GreenplumConnection
+from bi_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
+from bi_connector_postgresql.core.postgresql_base.async_adapters_postgres import AsyncPostgresAdapter
+from bi_connector_postgresql.core.postgresql_base.connection_executors import (
+    AsyncPostgresConnExecutor,
+    PostgresConnExecutor,
+)
+from bi_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
+from bi_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 
 
 class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
@@ -26,7 +37,7 @@ class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = PostgreSQLTypeTransformer
     sync_conn_executor_cls = PostgresConnExecutor
     async_conn_executor_cls = AsyncPostgresConnExecutor
-    dialect_string = 'bi_postgresql'
+    dialect_string = "bi_postgresql"
     data_source_migrator_cls = GreenPlumDataSourceMigrator
 
 
@@ -42,9 +53,7 @@ class GreenplumSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBas
 
 class GreenplumCoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_GREENPLUM
-    connection_definitions = (
-        GreenplumCoreConnectionDefinition,
-    )
+    connection_definitions = (GreenplumCoreConnectionDefinition,)
     source_definitions = (
         GreenplumTableCoreSourceDefinition,
         GreenplumSubselectCoreSourceDefinition,

@@ -1,7 +1,10 @@
 import abc
 from typing import Optional
 
-from bi_api_commons.base_models import TenantDef, TenantCommon
+from bi_api_commons.base_models import (
+    TenantCommon,
+    TenantDef,
+)
 
 
 class TenantResolver(metaclass=abc.ABCMeta):

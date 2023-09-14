@@ -5,7 +5,6 @@ from typing import Optional
 import attr
 
 from bi_api_commons.base_models import RequestContextInfo
-
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 
 

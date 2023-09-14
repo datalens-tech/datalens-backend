@@ -1,18 +1,19 @@
 from importlib import metadata
-from typing import Collection, Optional, Type
+from typing import (
+    Collection,
+    Optional,
+    Type,
+)
 
 import bi_formula as package
 from bi_formula.connectors.base.connector import FormulaConnector
 from bi_formula.connectors.registration import CONN_REG_FORMULA
 
-
-_CONNECTOR_EP_GROUP = f'{package.__name__}.connectors'
+_CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 
 def _get_all_ep_connectors() -> dict[str, Type[FormulaConnector]]:
-    entrypoints = list(metadata.entry_points().select(  # type: ignore
-        group=_CONNECTOR_EP_GROUP
-    ))
+    entrypoints = list(metadata.entry_points().select(group=_CONNECTOR_EP_GROUP))  # type: ignore
     return {ep.name: ep.load() for ep in entrypoints}
 
 

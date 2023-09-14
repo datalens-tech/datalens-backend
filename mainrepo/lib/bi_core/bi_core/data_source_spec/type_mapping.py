@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import Type
 
 from bi_constants.enums import CreateDSFrom
-
 from bi_core.data_source_spec.base import DataSourceSpec
-
 
 _DSRC_SPEC_CLASSES: dict[CreateDSFrom, Type[DataSourceSpec]] = {}
 

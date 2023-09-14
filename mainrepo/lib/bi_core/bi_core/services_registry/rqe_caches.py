@@ -1,6 +1,7 @@
 from typing import Optional
 
 import attr
+
 from bi_configs.settings_submodels import RedisSettings
 
 

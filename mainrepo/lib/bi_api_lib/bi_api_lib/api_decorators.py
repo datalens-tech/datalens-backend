@@ -2,25 +2,32 @@
 
 from __future__ import annotations
 
+from functools import wraps
 import json
 import logging
 import sys
-from functools import wraps
-from typing import Callable, Optional
+from typing import (
+    Callable,
+    Optional,
+)
 
 import flask
-from flask import request, current_app as capp
+from flask import current_app as capp
+from flask import request
 from flask_restx import Namespace
-from marshmallow import Schema, ValidationError as MValidationError
+from marshmallow import Schema
+from marshmallow import ValidationError as MValidationError
 from werkzeug.exceptions import HTTPException
 
 from bi_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
-from bi_utils.utils import maybe_postmortem
 from bi_api_lib import utils
-
-from bi_api_lib.error_handling import BIError, RegularAPIErrorSchema, status
+from bi_api_lib.error_handling import (
+    BIError,
+    RegularAPIErrorSchema,
+    status,
+)
 from bi_api_lib.schemas.main import get_api_model
-
+from bi_utils.utils import maybe_postmortem
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,18 +48,18 @@ def abort_request(code, message=None, response_data: Optional[dict] = None) -> N
         flask.abort(code)
     except HTTPException as e:
         if message:
-            response_data['message'] = str(message)
+            response_data["message"] = str(message)
         if response_data:
             e.data = response_data  # type: ignore  # TODO: fix
         raise
 
 
 def schematic_request(  # type: ignore  # TODO: fix
-        ns: Namespace,
-        body: Optional[Schema] = None,
-        query: Optional[Schema] = None,
-        responses: Optional[dict[int, tuple[str, Schema]]] = None,
-        dump: bool = True
+    ns: Namespace,
+    body: Optional[Schema] = None,
+    query: Optional[Schema] = None,
+    responses: Optional[dict[int, tuple[str, Schema]]] = None,
+    dump: bool = True,
 ):
     """
     Decorator for REST API handlers.
@@ -64,8 +71,10 @@ def schematic_request(  # type: ignore  # TODO: fix
     Translates exception classes into HTTP status codes
     """
     responses = responses or {}
-    api_model_responses = {code: (desc, get_api_model(model, ns) if model is not None else None)
-                           for code, (desc, model) in responses.items()}
+    api_model_responses = {
+        code: (desc, get_api_model(model, ns) if model is not None else None)
+        for code, (desc, model) in responses.items()
+    }
     body_schema = body
     query_schema = query
 
@@ -82,10 +91,10 @@ def schematic_request(  # type: ignore  # TODO: fix
                 dbg_body_data = mask_sensitive_fields_by_name_in_json_recursive(body)
                 dbg_body = json.dumps(dbg_body_data)
                 url = request.url
-                pfx = 'http://'
+                pfx = "http://"
                 if url.startswith(pfx):
-                    url = 'https://' + url[len(pfx):]
-                LOGGER.info('Body (piece) for %s: %s...', url, dbg_body[:1000])
+                    url = "https://" + url[len(pfx) :]
+                LOGGER.info("Body (piece) for %s: %s...", url, dbg_body[:1000])
                 extra = dict(
                     request_path=request.full_path,
                     # Tricky point:
@@ -98,24 +107,21 @@ def schematic_request(  # type: ignore  # TODO: fix
                     # YSON.
                     request_body=dbg_body,
                 )
-                LOGGER.debug(
-                    'Body for %s: %s...',
-                    url, dbg_body[:100],
-                    extra=extra)
+                LOGGER.debug("Body for %s: %s...", url, dbg_body[:100], extra=extra)
                 del dbg_body_data
                 del dbg_body
 
             if query_schema is not None:
                 try:
-                    kwargs['query'] = query_schema.load(request.args)
+                    kwargs["query"] = query_schema.load(request.args)
                 except MValidationError as err:
                     abort_request(status.BAD_REQUEST, err.messages)
 
             if body_schema is not None:
                 try:
-                    kwargs['body'] = body_schema.load(body)
+                    kwargs["body"] = body_schema.load(body)
                 except MValidationError as err:
-                    LOGGER.exception('Validation errors')
+                    LOGGER.exception("Validation errors")
                     abort_request(status.BAD_REQUEST, err.messages)
 
             try:
@@ -135,7 +141,7 @@ def schematic_request(  # type: ignore  # TODO: fix
             except Exception as err:
                 ei = sys.exc_info()
 
-                exc_api_prefix = capp.config.get('ERR_CODE_API_PREFIX')
+                exc_api_prefix = capp.config.get("ERR_CODE_API_PREFIX")
                 error_schema = RegularAPIErrorSchema(context=dict(api_prefix=exc_api_prefix))
 
                 # TODO FIX: Make fallback for exceptions during creating error response
@@ -145,7 +151,7 @@ def schematic_request(  # type: ignore  # TODO: fix
 
                 if error_code is None:
                     error_code = status.INTERNAL_SERVER_ERROR
-                    LOGGER.exception('Caught an exception in request handler')
+                    LOGGER.exception("Caught an exception in request handler")
                     maybe_postmortem(ei=ei)
                 else:
                     LOGGER.info("Regular exception fired", exc_info=True)
@@ -159,6 +165,7 @@ def schematic_request(  # type: ignore  # TODO: fix
             wrapper = ns.doc(body=get_api_model(body_schema, ns), responses=api_model_responses)(wrapper)
 
         return wrapper
+
     return decorator
 
 

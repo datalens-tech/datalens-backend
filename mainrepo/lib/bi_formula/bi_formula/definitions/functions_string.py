@@ -2,20 +2,22 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
-from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.core.datatype import DataType
-from bi_formula.shortcuts import n
-from bi_formula.definitions.args import ArgTypeForAll, ArgTypeSequence
-from bi_formula.definitions.flags import ContextFlag
-from bi_formula.definitions.type_strategy import Fixed
+from bi_formula.core.dialect import StandardDialect as D
+from bi_formula.definitions.args import (
+    ArgTypeForAll,
+    ArgTypeSequence,
+)
 from bi_formula.definitions.base import (
+    Function,
     TranslationVariant,
     TranslationVariantWrapped,
-    Function,
 )
 from bi_formula.definitions.common import make_binary_chain
+from bi_formula.definitions.flags import ContextFlag
 from bi_formula.definitions.literals import literal
-
+from bi_formula.definitions.type_strategy import Fixed
+from bi_formula.shortcuts import n
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
@@ -26,8 +28,8 @@ class StringFunction(Function):
 
 
 class FuncAscii(StringFunction):
-    name = 'ascii'
-    arg_names = ['string']
+    name = "ascii"
+    arg_names = ["string"]
     arg_cnt = 1
     variants = [
         V(D.DUMMY, sa.func.ASCII),
@@ -39,8 +41,8 @@ class FuncAscii(StringFunction):
 
 
 class FuncChar(StringFunction):
-    name = 'char'
-    arg_names = ['string']
+    name = "char"
+    arg_names = ["string"]
     arg_cnt = 1
     variants = [
         V(D.DUMMY, sa.func.CHAR),
@@ -52,7 +54,7 @@ class FuncChar(StringFunction):
 
 
 class ConcatBase(StringFunction):
-    name = 'concat'
+    name = "concat"
     return_type = Fixed(DataType.STRING)
 
 
@@ -80,10 +82,7 @@ _CONCAT_TYPES = {
 
 class ConcatMultiStrConst(ConcatMulti):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda *args, _env: literal(''.join(arg.value for arg in args), d=_env.dialect)
-        ),
+        V(D.DUMMY | D.SQLITE, lambda *args, _env: literal("".join(arg.value for arg in args), d=_env.dialect)),
     ]
     argument_types = [
         ArgTypeForAll(DataType.CONST_STRING),
@@ -103,6 +102,7 @@ class Concat1(ConcatBase):
 
 class ConcatMultiStr(ConcatMulti):
     """Simplified version that can only concatenate strings"""
+
     # TODO: join adjacent const strings, remove single-argument concat.
     variants = [
         V(D.DUMMY, lambda *args: sa.func.CONCAT(*args)),
@@ -114,13 +114,14 @@ class ConcatMultiStr(ConcatMulti):
 
 class ConcatMultiAny(ConcatMulti):
     """Concatenation of any-type arguments"""
+
     variants = [
         VW(
             D.DUMMY | D.SQLITE,
             lambda *args: make_binary_chain(
                 # convert all to string and then concatenate
                 (lambda x, y: n.func.CONCAT(n.func.STR(x), n.func.STR(y))),
-                *args
+                *args,
             ),
         ),
     ]
@@ -130,22 +131,22 @@ class ConcatMultiAny(ConcatMulti):
 
 
 class FuncContains(StringFunction):
-    name = 'contains'
-    arg_names = ['string', 'substring']
+    name = "contains"
+    arg_names = ["string", "substring"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
 
 
-def quote_like(value, escape='\\', chars=('%', '_')):
+def quote_like(value, escape="\\", chars=("%", "_")):
     for char in (escape,) + tuple(chars):
         value = value.replace(char, escape + char)
     return value
 
 
 def quote_like_metrica(value):
-    value = value.replace('\\', r'\\')
-    value = value.replace('*', r'\*')
+    value = value.replace("\\", r"\\")
+    value = value.replace("*", r"\*")
     return value
 
 
@@ -165,10 +166,7 @@ NON_STR_CONTAINMENT_TYPES = {
 
 class FuncContainsConst(FuncContains):
     variants = [
-        V(D.DUMMY,
-          lambda x, y: x.like(
-              '%{}%'.format(quote_like(y.value)),
-              escape='\\')),
+        V(D.DUMMY, lambda x, y: x.like("%{}%".format(quote_like(y.value)), escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -191,8 +189,8 @@ class FuncContainsNonString(FuncContains):
 
 
 class FuncIContains(StringFunction):
-    name = 'icontains'
-    arg_names = ['string', 'substring']
+    name = "icontains"
+    arg_names = ["string", "substring"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -200,12 +198,15 @@ class FuncIContains(StringFunction):
 
 class FuncIContainsConst(FuncIContains):
     variants = [
-        V(D.DUMMY,
-          lambda x, y: x.ilike(
-              # WARNING: even with a proper collation, the python's
-              # `val.lower()` might not exactly match postgresql's `lower(val)`
-              '%{}%'.format(quote_like(y.value.lower())),
-              escape='\\')),
+        V(
+            D.DUMMY,
+            lambda x, y: x.ilike(
+                # WARNING: even with a proper collation, the python's
+                # `val.lower()` might not exactly match postgresql's `lower(val)`
+                "%{}%".format(quote_like(y.value.lower())),
+                escape="\\",
+            ),
+        ),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -227,10 +228,7 @@ class FuncIContainsNonConst(FuncIContains):
 
 class FuncIContainsNonString(FuncIContains):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda x, y: n.func.ICONTAINS(n.func.STR(x), y)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda x, y: n.func.ICONTAINS(n.func.STR(x), y)),
     ]
     argument_types = [
         ArgTypeSequence([NON_STR_CONTAINMENT_TYPES, DataType.STRING]),
@@ -238,8 +236,8 @@ class FuncIContainsNonString(FuncIContains):
 
 
 class FuncEndswith(StringFunction):
-    name = 'endswith'
-    arg_names = ['string', 'substring']
+    name = "endswith"
+    arg_names = ["string", "substring"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -247,10 +245,7 @@ class FuncEndswith(StringFunction):
 
 class FuncEndswithConst(FuncEndswith):
     variants = [
-        V(D.DUMMY,
-          lambda x, y: x.like(
-              '%{}'.format(quote_like(y.value)),
-              escape='\\')),
+        V(D.DUMMY, lambda x, y: x.like("%{}".format(quote_like(y.value)), escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -265,10 +260,7 @@ class FuncEndswithNonConst(FuncEndswith):
 
 class FuncEndswithNonString(FuncEndswith):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda x, y: n.func.ENDSWITH(n.func.STR(x), y)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda x, y: n.func.ENDSWITH(n.func.STR(x), y)),
     ]
     argument_types = [
         ArgTypeSequence([NON_STR_CONTAINMENT_TYPES, DataType.STRING]),
@@ -276,8 +268,8 @@ class FuncEndswithNonString(FuncEndswith):
 
 
 class FuncIEndswith(StringFunction):
-    name = 'iendswith'
-    arg_names = ['string', 'substring']
+    name = "iendswith"
+    arg_names = ["string", "substring"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -285,10 +277,7 @@ class FuncIEndswith(StringFunction):
 
 class FuncIEndswithConst(FuncIEndswith):
     variants = [
-        V(D.DUMMY,
-          lambda x, y: x.ilike(
-              '%{}'.format(quote_like(y.value.lower())),
-              escape='\\')),
+        V(D.DUMMY, lambda x, y: x.ilike("%{}".format(quote_like(y.value.lower())), escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -309,10 +298,7 @@ class FuncIEndswithNonConst(FuncIEndswith):
 
 class FuncIEndswithNonString(FuncIEndswith):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda x, y: n.func.IENDSWITH(n.func.STR(x), y)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda x, y: n.func.IENDSWITH(n.func.STR(x), y)),
     ]
     argument_types = [
         ArgTypeSequence([NON_STR_CONTAINMENT_TYPES, DataType.STRING]),
@@ -320,8 +306,8 @@ class FuncIEndswithNonString(FuncIEndswith):
 
 
 class FuncStartswith(StringFunction):
-    name = 'startswith'
-    arg_names = ['string', 'substring']
+    name = "startswith"
+    arg_names = ["string", "substring"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -329,10 +315,7 @@ class FuncStartswith(StringFunction):
 
 class FuncStartswithConst(FuncStartswith):
     variants = [
-        V(D.DUMMY,
-          lambda x, y: x.like(
-              '{}%'.format(quote_like(y.value)),
-              escape='\\')),
+        V(D.DUMMY, lambda x, y: x.like("{}%".format(quote_like(y.value)), escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -355,8 +338,8 @@ class FuncStartswithNonString(FuncStartswith):
 
 
 class FuncIStartswith(StringFunction):
-    name = 'istartswith'
-    arg_names = ['string', 'substring']
+    name = "istartswith"
+    arg_names = ["string", "substring"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -364,10 +347,7 @@ class FuncIStartswith(StringFunction):
 
 class FuncIStartswithConst(FuncIStartswith):
     variants = [
-        V(D.DUMMY,
-          lambda x, y: x.ilike(
-              '{}%'.format(quote_like(y.value.lower())),
-              escape='\\')),
+        V(D.DUMMY, lambda x, y: x.ilike("{}%".format(quote_like(y.value.lower())), escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -388,10 +368,7 @@ class FuncIStartswithNonConst(FuncIStartswith):
 
 class FuncIStartswithNonString(FuncIStartswith):
     variants = [
-        VW(
-            D.DUMMY | D.SQLITE,
-            lambda x, y: n.func.ISTARTSWITH(n.func.STR(x), y)
-        ),
+        VW(D.DUMMY | D.SQLITE, lambda x, y: n.func.ISTARTSWITH(n.func.STR(x), y)),
     ]
     argument_types = [
         ArgTypeSequence([NON_STR_CONTAINMENT_TYPES, DataType.STRING]),
@@ -399,8 +376,8 @@ class FuncIStartswithNonString(FuncIStartswith):
 
 
 class FuncFind(StringFunction):
-    name = 'find'
-    arg_names = ['string', 'substring', 'start_index']
+    name = "find"
+    arg_names = ["string", "substring", "start_index"]
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -419,9 +396,9 @@ class FuncFind3(FuncFind):
 
 
 class FuncLeft(StringFunction):
-    name = 'left'
+    name = "left"
     arg_cnt = 2
-    arg_names = ['string', 'number']
+    arg_names = ["string", "number"]
     variants = [
         V(D.DUMMY, sa.func.LEFT),
     ]
@@ -432,9 +409,9 @@ class FuncLeft(StringFunction):
 
 
 class FuncRight(StringFunction):
-    name = 'right'
+    name = "right"
     arg_cnt = 2
-    arg_names = ['string', 'number']
+    arg_names = ["string", "number"]
     variants = [
         V(D.DUMMY, sa.func.RIGHT),
     ]
@@ -445,8 +422,8 @@ class FuncRight(StringFunction):
 
 
 class FuncLen(StringFunction):
-    name = 'len'
-    arg_names = ['value']
+    name = "len"
+    arg_names = ["value"]
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
 
@@ -458,17 +435,14 @@ class FuncLenString(FuncLen):
 
 
 class FuncLower(StringFunction):
-    name = 'lower'
-    arg_names = ['string']
+    name = "lower"
+    arg_names = ["string"]
     arg_cnt = 1
 
 
 class FuncLowerConst(FuncLower):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda s, _env: literal(s.value.lower(), d=_env.dialect)
-        ),
+        V(D.DUMMY | D.SQLITE, lambda s, _env: literal(s.value.lower(), d=_env.dialect)),
     ]
     argument_types = [
         ArgTypeSequence([DataType.CONST_STRING]),
@@ -487,17 +461,14 @@ class FuncLowerNonConst(FuncLower):
 
 
 class FuncUpper(StringFunction):
-    name = 'upper'
-    arg_names = ['string']
+    name = "upper"
+    arg_names = ["string"]
     arg_cnt = 1
 
 
 class FuncUpperConst(FuncUpper):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda s, _env: literal(s.value.upper(), d=_env.dialect)
-        ),
+        V(D.DUMMY | D.SQLITE, lambda s, _env: literal(s.value.upper(), d=_env.dialect)),
     ]
     argument_types = [
         ArgTypeSequence([DataType.CONST_STRING]),
@@ -516,8 +487,8 @@ class FuncUpperNonConst(FuncUpper):
 
 
 class FuncLtrim(StringFunction):
-    name = 'ltrim'
-    arg_names = ['string']
+    name = "ltrim"
+    arg_names = ["string"]
     arg_cnt = 1
     variants = [
         V(D.DUMMY, sa.func.LTRIM),
@@ -529,8 +500,8 @@ class FuncLtrim(StringFunction):
 
 
 class FuncRtrim(StringFunction):
-    name = 'rtrim'
-    arg_names = ['string']
+    name = "rtrim"
+    arg_names = ["string"]
     arg_cnt = 1
     variants = [
         V(D.DUMMY, sa.func.RTRIM),
@@ -542,8 +513,8 @@ class FuncRtrim(StringFunction):
 
 
 class FuncTrim(StringFunction):
-    name = 'trim'
-    arg_names = ['string']
+    name = "trim"
+    arg_names = ["string"]
     arg_cnt = 1
     variants = [
         V(D.DUMMY, sa.func.TRIM),
@@ -555,8 +526,8 @@ class FuncTrim(StringFunction):
 
 
 class FuncSubstr(StringFunction):
-    name = 'substr'
-    arg_names = ['string', 'from_index', 'length']
+    name = "substr"
+    arg_names = ["string", "from_index", "length"]
 
 
 class FuncSubstr2(FuncSubstr):
@@ -582,9 +553,9 @@ class FuncSubstr3(FuncSubstr):
 
 
 class FuncRegexpExtract(StringFunction):
-    name = 'regexp_extract'
+    name = "regexp_extract"
     arg_cnt = 2
-    arg_names = ['string', 'pattern']
+    arg_names = ["string", "pattern"]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
     ]
@@ -593,10 +564,11 @@ class FuncRegexpExtract(StringFunction):
 
 # In MS SQL Server regular expressions can only be used in user-defined functions
 
+
 class FuncRegexpExtractNth(StringFunction):
-    name = 'regexp_extract_nth'
+    name = "regexp_extract_nth"
     arg_cnt = 3
-    arg_names = ['string', 'pattern', 'match_index']
+    arg_names = ["string", "pattern", "match_index"]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING, DataType.INTEGER]),
     ]
@@ -604,9 +576,9 @@ class FuncRegexpExtractNth(StringFunction):
 
 
 class FuncRegexpMatch(StringFunction):
-    name = 'regexp_match'
+    name = "regexp_match"
     arg_cnt = 2
-    arg_names = ['string', 'pattern']
+    arg_names = ["string", "pattern"]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
     ]
@@ -615,9 +587,9 @@ class FuncRegexpMatch(StringFunction):
 
 
 class FuncRegexpReplace(StringFunction):
-    name = 'regexp_replace'
+    name = "regexp_replace"
     arg_cnt = 3
-    arg_names = ['string', 'pattern', 'replace_with']
+    arg_names = ["string", "pattern", "replace_with"]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.STRING, DataType.STRING]),
     ]
@@ -625,9 +597,9 @@ class FuncRegexpReplace(StringFunction):
 
 
 class FuncReplace(StringFunction):
-    name = 'replace'
+    name = "replace"
     arg_cnt = 3
-    arg_names = ['string', 'substring', 'replace_with']
+    arg_names = ["string", "substring", "replace_with"]
     variants = [
         V(D.DUMMY, sa.func.REPLACE),
     ]
@@ -638,17 +610,14 @@ class FuncReplace(StringFunction):
 
 
 class FuncSpace(StringFunction):
-    name = 'space'
+    name = "space"
     arg_cnt = 1
     return_type = Fixed(DataType.STRING)
 
 
 class FuncSpaceConst(FuncSpace):
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda size, _env: literal(' ' * size.value, d=_env.dialect)
-        ),
+        V(D.DUMMY | D.SQLITE, lambda size, _env: literal(" " * size.value, d=_env.dialect)),
     ]
     argument_types = [
         ArgTypeSequence([DataType.CONST_INTEGER]),
@@ -666,8 +635,8 @@ class FuncSpaceNonConst(FuncSpace):
 
 
 class FuncSplit(StringFunction):
-    name = 'split'
-    arg_names = ['orig_string', 'delimiter', 'part_index']
+    name = "split"
+    arg_names = ["orig_string", "delimiter", "part_index"]
 
 
 class FuncSplit1(FuncSplit):
@@ -695,9 +664,9 @@ class FuncSplit3(FuncSplit):
 
 
 class FuncUtf8(StringFunction):
-    name = 'utf8'
+    name = "utf8"
     arg_cnt = 2
-    arg_names = ['string', 'old_encoding']
+    arg_names = ["string", "old_encoding"]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
     ]
@@ -707,104 +676,78 @@ class FuncUtf8(StringFunction):
 DEFINITIONS_STRING = [
     # ascii
     FuncAscii,
-
     # char
     FuncChar,
-
     # concat
     Concat1,
     ConcatMultiStrConst,
     ConcatMultiStr,
     ConcatMultiAny,
-
     # contains
     FuncContainsConst,
     FuncContainsNonConst,
     FuncContainsNonString,
-
     # endswith
     FuncEndswithConst,
     FuncEndswithNonConst,
     FuncEndswithNonString,
-
     # find
     FuncFind2,
     FuncFind3,
-
     # icontains
     FuncIContainsConst,
     FuncIContainsNonConst,
     FuncIContainsNonString,
-
     # iendswith
     FuncIEndswithConst,
     FuncIEndswithNonConst,
     FuncIEndswithNonString,
-
     # istartswith
     FuncIStartswithConst,
     FuncIStartswithNonConst,
     FuncIStartswithNonString,
-
     # left
     FuncLeft,
-
     # len
     FuncLenString,
-
     # lower
     FuncLowerConst,
     FuncLowerNonConst,
-
     # ltrim
     FuncLtrim,
-
     # regexp_extract
     FuncRegexpExtract,
-
     # regexp_extract_nth
     FuncRegexpExtractNth,
-
     # regexp_match
     FuncRegexpMatch,
-
     # regexp_replace
     FuncRegexpReplace,
-
     # replace
     FuncReplace,
-
     # right
     FuncRight,
-
     # rtrim
     FuncRtrim,
-
     # space
     FuncSpaceConst,
     FuncSpaceNonConst,
-
     # split
     FuncSplit1,
     FuncSplit2,
     FuncSplit3,
-
     # startswith
     FuncStartswithConst,
     FuncStartswithNonConst,
     FuncStartswithNonString,
-
     # substr
     FuncSubstr2,
     FuncSubstr3,
-
     # trim
     FuncTrim,
-
     # upper
     FuncUpperConst,
     FuncUpperNonConst,
-
     # utf8
     FuncUtf8,
 ]

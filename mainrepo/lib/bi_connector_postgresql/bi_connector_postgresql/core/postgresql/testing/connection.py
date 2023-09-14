@@ -1,8 +1,10 @@
+from typing import (
+    Any,
+    Optional,
+)
 import uuid
-from typing import Any, Optional
 
 from bi_constants.enums import RawSQLLevel
-
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
@@ -21,7 +23,7 @@ def make_postgresql_saved_connection(
     ssl_ca: Optional[str] = None,
     **kwargs: Any,
 ) -> ConnectionPostgreSQL:
-    conn_name = 'postgres test conn {}'.format(uuid.uuid4())
+    conn_name = "postgres test conn {}".format(uuid.uuid4())
     conn = ConnectionPostgreSQL.create_from_dict(
         data_dict=ConnectionPostgreSQL.DataModel(
             db_name=db_name,

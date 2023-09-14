@@ -3,17 +3,17 @@ from __future__ import annotations
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
-from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from bi_core.services_registry.sr_factories import SRFactory
 from bi_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
 
 
 def services_registry_middleware(
-        services_registry_factory: SRFactory,
-        use_query_cache: bool = True,
-        use_mutation_cache: bool = False,
-        mutation_cache_default_ttl: float = 60,
+    services_registry_factory: SRFactory,
+    use_query_cache: bool = True,
+    use_mutation_cache: bool = False,
+    mutation_cache_default_ttl: float = 60,
 ) -> AIOHTTPMiddleware:
     """
 
@@ -23,11 +23,11 @@ def services_registry_middleware(
         attempt to call `services_registry.get_caches_redis_client()` will cause an exception.
     :return: Configured middleware that creates service registry for each request.
     """
+
     @web.middleware
     @DLRequestDataCore.use_dl_request
     async def actual_services_registry_middleware(
-        dl_request: DLRequestDataCore,
-        handler: Handler
+        dl_request: DLRequestDataCore, handler: Handler
     ) -> web.StreamResponse:
         mutations_cache_factory, mutations_redis_client_factory = (
             (DefaultUSEntryMutationCacheFactory(default_ttl=mutation_cache_default_ttl), dl_request.get_mutations_redis)

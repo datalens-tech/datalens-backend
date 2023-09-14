@@ -6,9 +6,9 @@ from typing import Dict
 
 import attr
 
-from bi_core.components.ids import RelationId
 from bi_core.components.dependencies.factory import ComponentDependencyManagerFactory
 from bi_core.components.dependencies.relation_avatar_legacy import LegacyRelationAvatarDependencyManager
+from bi_core.components.ids import RelationId
 from bi_core.query.expression import ExpressionCtx
 
 

@@ -1,22 +1,37 @@
-import logging
 from collections import defaultdict
-from typing import Dict, Iterable, List, Optional, Sequence, TYPE_CHECKING, Union
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Union,
+)
 
 import attr
 import pandas as pd
 
-import bi_query_processing.exc
-from bi_constants.enums import PivotRole
-
-from bi_api_lib.pivot.primitives import DataCell, DataCellVector
-from bi_api_lib.pivot.table import PivotTable
-from bi_api_lib.pivot.stream_modifiers import DataCellConverter, MeasureDataTransposer
-from bi_query_processing.merging.primitives import MergedQueryDataRow
 from bi_api_lib.pivot.base.transformer import PivotTransformer
 from bi_api_lib.pivot.empty.facade import EmptyDataFrameFacade
 from bi_api_lib.pivot.pandas.facade import (
-    PdDataFrameFacade, PdHSeriesDataFrameFacade, PdVSeriesDataFrameFacade,
+    PdDataFrameFacade,
+    PdHSeriesDataFrameFacade,
+    PdVSeriesDataFrameFacade,
 )
+from bi_api_lib.pivot.primitives import (
+    DataCell,
+    DataCellVector,
+)
+from bi_api_lib.pivot.stream_modifiers import (
+    DataCellConverter,
+    MeasureDataTransposer,
+)
+from bi_api_lib.pivot.table import PivotTable
+from bi_constants.enums import PivotRole
+import bi_query_processing.exc
+from bi_query_processing.merging.primitives import MergedQueryDataRow
 
 if TYPE_CHECKING:
     from bi_api_lib.pivot.base.facade import TableDataFacade
@@ -33,8 +48,10 @@ class PdPivotTransformer(PivotTransformer):
     def pivot(self, rows: Iterable[MergedQueryDataRow]) -> PivotTable:
         # Prepare data stream
         raw_dcell_stream: Iterable[Sequence[DataCell]] = DataCellConverter(
-            rows=rows, cell_packer=self._cell_packer,
-            legend=self._legend, pivot_legend=self._pivot_legend,
+            rows=rows,
+            cell_packer=self._cell_packer,
+            legend=self._legend,
+            pivot_legend=self._pivot_legend,
         )
         # Transpose measures (turn multiple measure fields into a single pseudo-field).
         transp_stream: Iterable[TransposedDataRow] = MeasureDataTransposer(
@@ -57,8 +74,7 @@ class PdPivotTransformer(PivotTransformer):
         data_lengths = {len(values) for values in data.values()}
         if len(data_lengths) > 1:
             raise bi_query_processing.exc.PivotUnevenDataColumnsError(
-                'Expected all data columns to contain the same number of values. '
-                f'Got: {sorted(data_lengths)}'
+                "Expected all data columns to contain the same number of values. " f"Got: {sorted(data_lengths)}"
             )
 
         raw_pd_df = pd.DataFrame(data)
@@ -75,7 +91,7 @@ class PdPivotTransformer(PivotTransformer):
             try:
                 return raw_pd_df.pivot(columns=columns, index=index)
             except ValueError as err:
-                if str(err).startswith('Index contains duplicate entries'):
+                if str(err).startswith("Index contains duplicate entries"):
                     raise bi_query_processing.exc.PivotDuplicateDimensionValue() from err
 
                 raise
@@ -88,7 +104,7 @@ class PdPivotTransformer(PivotTransformer):
             assert isinstance(pd_pivot_res, pd.DataFrame)
             pd_df = pd_pivot_res
             # Drop the fake dimension `fake_measure_liid_str` from the column index:
-            pd_df = pd_df.set_axis(axis='columns', labels=pd_df.columns.droplevel(0), copy=False)
+            pd_df = pd_df.set_axis(axis="columns", labels=pd_df.columns.droplevel(0), copy=False)
             facade = PdDataFrameFacade(
                 pd_df=pd_df,
                 legend=self._legend,
@@ -123,9 +139,9 @@ class PdPivotTransformer(PivotTransformer):
             )
 
         else:
-            raise TypeError('Invalid pivot configuration')
+            raise TypeError("Invalid pivot configuration")
 
-        LOGGER.info(f'Using {type(facade)} for pivot table')
+        LOGGER.info(f"Using {type(facade)} for pivot table")
 
         table = PivotTable(
             facade=facade,

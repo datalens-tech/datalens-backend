@@ -1,6 +1,9 @@
 from bi_core.connectors.sql_base.data_source_migration import DefaultSQLDataSourceMigrator
 
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
+from bi_connector_clickhouse.core.clickhouse.constants import (
+    SOURCE_TYPE_CH_SUBSELECT,
+    SOURCE_TYPE_CH_TABLE,
+)
 
 
 class ClickHouseDataSourceMigrator(DefaultSQLDataSourceMigrator):

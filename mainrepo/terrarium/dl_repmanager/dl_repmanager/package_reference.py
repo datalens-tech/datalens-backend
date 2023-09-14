@@ -2,9 +2,13 @@ from importlib.metadata import packages_distributions
 
 import attr
 
-from dl_repmanager.primitives import ReqPackageSpec, LocalReqPackageSpec, PypiReqPackageSpec
-from dl_repmanager.repository_env import RepoEnvironment
 from dl_repmanager.package_index import PackageIndex
+from dl_repmanager.primitives import (
+    LocalReqPackageSpec,
+    PypiReqPackageSpec,
+    ReqPackageSpec,
+)
+from dl_repmanager.repository_env import RepoEnvironment
 
 
 @attr.s

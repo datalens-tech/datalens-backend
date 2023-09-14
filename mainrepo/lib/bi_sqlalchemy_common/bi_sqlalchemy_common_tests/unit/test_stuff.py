@@ -4,14 +4,14 @@ from bi_sqlalchemy_common.base import CompilerPrettyMixin
 
 
 def test_inherit():
-    """ Ensure mid-point inheritance works """
+    """Ensure mid-point inheritance works"""
     from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2 as UPSTREAM
 
     class CustomPGCompiler(UPSTREAM.statement_compiler):
-        """ Local customizations """
+        """Local customizations"""
 
     class ActualCustomPGCompiler(CustomPGCompiler, CompilerPrettyMixin):
-        """ Local customization on top of pretty-formatting """
+        """Local customization on top of pretty-formatting"""
 
         def limit_clause(self, *args, **kwargs):
             """

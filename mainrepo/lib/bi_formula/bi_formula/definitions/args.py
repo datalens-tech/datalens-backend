@@ -1,9 +1,18 @@
 from __future__ import annotations
 
-from typing import AbstractSet, Optional, Sequence, Set, Union
+from typing import (
+    AbstractSet,
+    Optional,
+    Sequence,
+    Set,
+    Union,
+)
 
 from bi_formula.core.datatype import DataType
-from bi_formula.definitions.flags import ContextFlag, ContextFlags
+from bi_formula.definitions.flags import (
+    ContextFlag,
+    ContextFlags,
+)
 
 
 class ArgTypeMatcher:
@@ -17,7 +26,7 @@ class ArgTypeMatcher:
 
 
 class ArgTypeSequence(ArgTypeMatcher):
-    __slots__ = ('_exp_arg_types', )
+    __slots__ = ("_exp_arg_types",)
 
     def __init__(self, arg_types: Sequence[Union[DataType, AbstractSet[DataType]]]):
         self._exp_arg_types = arg_types
@@ -30,8 +39,7 @@ class ArgTypeSequence(ArgTypeMatcher):
                     return False
             else:  # set, frozenset
                 if not any(
-                        real_arg_type.casts_to(expected_arg_sub_type)
-                        for expected_arg_sub_type in expected_arg_type
+                    real_arg_type.casts_to(expected_arg_sub_type) for expected_arg_sub_type in expected_arg_type
                 ):
                     return False
         return True
@@ -45,27 +53,25 @@ class ArgTypeSequence(ArgTypeMatcher):
 
 
 class ArgTypeForAll(ArgTypeMatcher):
-    __slots__ = ('_exp_arg_types', '_require_type_match')
+    __slots__ = ("_exp_arg_types", "_require_type_match")
 
     def __init__(
         self,
         expected_types: Union[DataType, AbstractSet[DataType]],
-        require_type_match: Optional[Union[DataType, AbstractSet[DataType]]] = None
+        require_type_match: Optional[Union[DataType, AbstractSet[DataType]]] = None,
     ):
         self._exp_arg_types = {expected_types} if isinstance(expected_types, DataType) else expected_types
-        self._require_type_match = {require_type_match} if isinstance(require_type_match, DataType) else require_type_match
+        self._require_type_match = (
+            {require_type_match} if isinstance(require_type_match, DataType) else require_type_match
+        )
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
         if self._require_type_match is not None and not any(
-            real_arg_type in self._require_type_match
-            for real_arg_type in arg_types
+            real_arg_type in self._require_type_match for real_arg_type in arg_types
         ):
             return False
         for real_arg_type in arg_types:
-            if not any(
-                    real_arg_type.casts_to(expected_arg_sub_type)
-                    for expected_arg_sub_type in self._exp_arg_types
-            ):
+            if not any(real_arg_type.casts_to(expected_arg_sub_type) for expected_arg_sub_type in self._exp_arg_types):
                 return False
         return True
 
@@ -83,7 +89,7 @@ class ArgFlagDispenser:
 
 
 class ArgFlagSequence(ArgFlagDispenser):
-    __slots__ = ('_arg_flags', )
+    __slots__ = ("_arg_flags",)
 
     def __init__(self, arg_flags: Sequence[Optional[ContextFlags]]):
         self._arg_flags = arg_flags

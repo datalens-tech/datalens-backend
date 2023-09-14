@@ -4,21 +4,24 @@ import pytest
 
 from bi_configs.enums import RedisMode
 from bi_configs.settings_submodels import RedisSettings
-from bi_task_processor.worker import HealthChecker, WorkerSettings
+from bi_task_processor.worker import (
+    HealthChecker,
+    WorkerSettings,
+)
 
 
 def _get_broken_redis_settings():
     return RedisSettings(
         MODE=RedisMode.single_host,
-        CLUSTER_NAME='',
-        HOSTS=('127.0.0.1',),
+        CLUSTER_NAME="",
+        HOSTS=("127.0.0.1",),
         PORT=1010,
         DB=10,
     )
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('worker_settings', [WorkerSettings(health_check_suffix='bla')], indirect=True)
+@pytest.mark.parametrize("worker_settings", [WorkerSettings(health_check_suffix="bla")], indirect=True)
 async def test_health_check_success(task_processor_arq_worker, worker_settings):
     # lets wait for the first task pool iteration
     # i really dont know how i can do it better
@@ -30,7 +33,7 @@ async def test_health_check_success(task_processor_arq_worker, worker_settings):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ('redis_settings', 'worker_settings'),
+    ("redis_settings", "worker_settings"),
     [
         (_get_broken_redis_settings(), WorkerSettings(health_check_suffix="notbla")),
     ],

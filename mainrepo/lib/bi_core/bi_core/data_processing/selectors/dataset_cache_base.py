@@ -7,15 +7,13 @@ from typing import Optional
 import attr
 
 from bi_constants.enums import DataSourceRole
-
-from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 from bi_core.data_processing.cache.exc import CachePreparationFailed
 from bi_core.data_processing.cache.primitives import LocalKeyRepresentation
+from bi_core.data_processing.cache.utils import SelectorCacheOptionsBuilder
+from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 from bi_core.data_processing.selectors.base import BIQueryExecutionContext
 from bi_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
-from bi_core.data_processing.cache.utils import SelectorCacheOptionsBuilder
 from bi_core.query.bi_query import QueryAndResultInfo
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +27,7 @@ class DatasetCacheCommonDataSelectorAsyncBase(DatasetDataSelectorAsyncBase, meta
 
     If cache usage is allowed in class, it will build cache options during building query execution context.
     """
+
     _allow_cache_usage: bool = attr.ib(default=True, kw_only=True)
     _is_bleeding_edge_user: bool = attr.ib(default=False)
     _cache_options_builder: SelectorCacheOptionsBuilder = attr.ib(kw_only=True)
@@ -48,11 +47,12 @@ class DatasetCacheCommonDataSelectorAsyncBase(DatasetDataSelectorAsyncBase, meta
         return super().get_data_key(query_execution_ctx=query_execution_ctx)
 
     def build_query_execution_ctx(  # type: ignore  # TODO: fix
-            self, *,
-            query_id: str,
-            query_res_info: QueryAndResultInfo,
-            role: DataSourceRole,
-            joint_dsrc_info: PreparedMultiFromInfo,
+        self,
+        *,
+        query_id: str,
+        query_res_info: QueryAndResultInfo,
+        role: DataSourceRole,
+        joint_dsrc_info: PreparedMultiFromInfo,
     ) -> BIQueryExecutionContext:
         q_exec_ctx: BIQueryExecutionContext = super().build_query_execution_ctx(
             query_id=query_id,
@@ -75,7 +75,7 @@ class DatasetCacheCommonDataSelectorAsyncBase(DatasetDataSelectorAsyncBase, meta
                     cache_options=cache_options,
                 )
             except CachePreparationFailed:
-                LOGGER.exception('Cache preparation failed')
+                LOGGER.exception("Cache preparation failed")
                 # Do not fail the request though (very likely it will still fail)
 
         return q_exec_ctx

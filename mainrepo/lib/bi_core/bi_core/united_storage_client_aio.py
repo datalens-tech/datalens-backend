@@ -5,27 +5,45 @@ import json
 import logging
 import ssl
 import time
-from typing import AsyncGenerator, Optional, NoReturn, Iterable, Union
+from typing import (
+    AsyncGenerator,
+    Iterable,
+    NoReturn,
+    Optional,
+    Union,
+)
 
 import aiohttp
 
+from bi_api_commons.aiohttp.aiohttp_client import (
+    BIAioHTTPClient,
+    PredefinedIntervalsRetrier,
+)
+from bi_api_commons.tracing import get_current_tracing_headers
 from bi_configs.utils import get_root_certificates_path
 from bi_core.base_models import EntryLocation
-from bi_core.exc import USLockUnacquiredException, USReqException
-from bi_core.united_storage_client import UStorageClientBase, USClientHTTPExceptionWrapper, USAuthContextBase
-from bi_api_commons.tracing import get_current_tracing_headers
-from bi_api_commons.aiohttp.aiohttp_client import BIAioHTTPClient, PredefinedIntervalsRetrier
+from bi_core.exc import (
+    USLockUnacquiredException,
+    USReqException,
+)
+from bi_core.united_storage_client import (
+    USAuthContextBase,
+    USClientHTTPExceptionWrapper,
+    UStorageClientBase,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 class UStorageClientAIO(UStorageClientBase):
     class ResponseAdapter(UStorageClientBase.ResponseAdapter):
-        def __init__(self,
-                     response: aiohttp.ClientResponse, content: bytes,
-                     request_data: UStorageClientBase.RequestData,
-                     elapsed_seconds: float
-                     ):
+        def __init__(
+            self,
+            response: aiohttp.ClientResponse,
+            content: bytes,
+            request_data: UStorageClientBase.RequestData,
+            elapsed_seconds: float,
+        ):
             self._response = response
             self._content = content
             self._request_data = request_data
@@ -50,7 +68,7 @@ class UStorageClientAIO(UStorageClientBase):
             return self._content
 
         @property
-        def request(self) -> 'UStorageClientBase.RequestAdapter':
+        def request(self) -> "UStorageClientBase.RequestAdapter":
             return self._request_adapter
 
         def raise_for_status(self) -> None:
@@ -63,7 +81,7 @@ class UStorageClientAIO(UStorageClientBase):
 
         def json(self) -> dict:
             if self._parsed_json_data is None:
-                self._parsed_json_data = json.loads(self._content.decode('utf-8'))
+                self._parsed_json_data = json.loads(self._content.decode("utf-8"))
             return self._parsed_json_data  # type: ignore  # TODO: fix
 
     class RequestAdapter(UStorageClientBase.RequestAdapter):
@@ -90,13 +108,13 @@ class UStorageClientAIO(UStorageClientBase):
     DEFAULT_SSL_CONTEXT = ssl.create_default_context(cafile=get_root_certificates_path())
 
     def __init__(
-            self,
-            host: str,
-            prefix: Optional[str],
-            auth_ctx: USAuthContextBase,
-            context_request_id: Optional[str] = None,
-            context_forwarded_for: Optional[str] = None,
-            timeout: int = 30
+        self,
+        host: str,
+        prefix: Optional[str],
+        auth_ctx: USAuthContextBase,
+        context_request_id: Optional[str] = None,
+        context_forwarded_for: Optional[str] = None,
+        timeout: int = 30,
     ):
         super().__init__(
             host=host,
@@ -125,17 +143,16 @@ class UStorageClientAIO(UStorageClientBase):
         start = time.monotonic()
 
         async with BIAioHTTPClient(
-            base_url='/'.join([self.host, self.prefix]),
+            base_url="/".join([self.host, self.prefix]),
             session=self._session,
             retrier=PredefinedIntervalsRetrier(
                 retry_intervals=self._retry_intervals,
                 retry_codes=self._retry_codes,
-                retry_methods={'GET', 'POST', 'PUT', 'DELETE'}  # TODO: really retry all of them?..
+                retry_methods={"GET", "POST", "PUT", "DELETE"},  # TODO: really retry all of them?..
             ),
             raise_for_status=False,
             close_session_on_exit=False,
         ) as bi_http_client:
-
             async with bi_http_client.request(
                 method=request_data.method,
                 path=request_data.relative_url,
@@ -164,63 +181,88 @@ class UStorageClientAIO(UStorageClientBase):
         return await self._request(self._req_data_get_entry(entry_id=entry_id))
 
     async def create_entry(  # type: ignore  # TODO: fix
-            self, key: EntryLocation, scope: str,
-            meta=None, data=None, unversioned_data=None,
-            type_=None, hidden=None, links=None, **kwargs
+        self,
+        key: EntryLocation,
+        scope: str,
+        meta=None,
+        data=None,
+        unversioned_data=None,
+        type_=None,
+        hidden=None,
+        links=None,
+        **kwargs,
     ):
         rq_data = self._req_data_create_entry(
-            key=key, scope=scope,
-            meta=meta, data=data, unversioned_data=unversioned_data,
-            type_=type_, hidden=hidden, links=links, **kwargs
+            key=key,
+            scope=scope,
+            meta=meta,
+            data=data,
+            unversioned_data=unversioned_data,
+            type_=type_,
+            hidden=hidden,
+            links=links,
+            **kwargs,
         )
         return await self._request(rq_data)
 
     async def update_entry(  # type: ignore  # TODO: fix
-            self, entry_id, data=None, unversioned_data=None,
-            meta=None, mode='publish', lock=None, hidden=None, links=None
+        self, entry_id, data=None, unversioned_data=None, meta=None, mode="publish", lock=None, hidden=None, links=None
     ):
-        return await self._request(self._req_data_update_entry(
-            entry_id, data=data, unversioned_data=unversioned_data, meta=meta,
-            mode=mode, lock=lock, hidden=hidden, links=links,
-        ))
+        return await self._request(
+            self._req_data_update_entry(
+                entry_id,
+                data=data,
+                unversioned_data=unversioned_data,
+                meta=meta,
+                mode=mode,
+                lock=lock,
+                hidden=hidden,
+                links=links,
+            )
+        )
 
     async def delete_entry(self, entry_id, lock=None) -> NoReturn:  # type: ignore  # TODO: fix
         await self._request(self._req_data_delete_entry(entry_id, lock=lock))
 
     async def entries_iterator(
-            self,
-            scope: str,
-            entry_type: Optional[str] = None,
-            meta: Optional[dict] = None,
-            all_tenants: bool = False,
-            include_data: bool = False,
-            ids: Optional[Iterable[str]] = None,
-            creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        self,
+        scope: str,
+        entry_type: Optional[str] = None,
+        meta: Optional[dict] = None,
+        all_tenants: bool = False,
+        include_data: bool = False,
+        ids: Optional[Iterable[str]] = None,
+        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
     ) -> AsyncGenerator[dict, None]:
         page = 0
         while True:
-            resp = await self._request(self._req_data_iter_entries(
-                scope,
-                entry_type=entry_type, meta=meta, all_tenants=all_tenants,
-                page=page, include_data=include_data,
-                ids=ids, creation_time=creation_time,
-            ))
-            if resp.get('entries'):
-                page_entries = resp['entries']
+            resp = await self._request(
+                self._req_data_iter_entries(
+                    scope,
+                    entry_type=entry_type,
+                    meta=meta,
+                    all_tenants=all_tenants,
+                    page=page,
+                    include_data=include_data,
+                    ids=ids,
+                    creation_time=creation_time,
+                )
+            )
+            if resp.get("entries"):
+                page_entries = resp["entries"]
             else:
                 break
 
             for entr in page_entries:
                 yield entr
 
-            if resp.get('nextPageToken'):
-                page = resp['nextPageToken']
+            if resp.get("nextPageToken"):
+                page = resp["nextPageToken"]
             else:
                 break
 
     async def list_all_entries(
-            self, scope: str, entry_type: Optional[str] = None,
-            meta: Optional[dict] = None, all_tenants: bool = False
+        self, scope: str, entry_type: Optional[str] = None, meta: Optional[dict] = None, all_tenants: bool = False
     ) -> list:
         ret = []
         async for e in self.entries_iterator(scope, entry_type, meta, all_tenants, include_data=False):
@@ -229,11 +271,11 @@ class UStorageClientAIO(UStorageClientBase):
         return ret
 
     async def acquire_lock(
-            self,
-            entry_id: str,
-            duration: Optional[int] = None,
-            wait_timeout: Optional[int] = None,
-            force: Optional[bool] = None,
+        self,
+        entry_id: str,
+        duration: Optional[int] = None,
+        wait_timeout: Optional[int] = None,
+        force: Optional[bool] = None,
     ) -> str:
         """
         :param entry_id: US entry ID to lock
@@ -247,7 +289,7 @@ class UStorageClientAIO(UStorageClientBase):
         while True:
             try:
                 resp = await self._request(req_data)
-                lock = resp['lockToken']
+                lock = resp["lockToken"]
                 LOGGER.info('Acquired lock "%s" for object "%s"', lock, entry_id)
                 return lock
             except USLockUnacquiredException:

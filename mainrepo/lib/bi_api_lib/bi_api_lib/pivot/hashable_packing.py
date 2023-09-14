@@ -1,6 +1,11 @@
 import abc
 import json
-from typing import Any, Hashable, NamedTuple, get_args
+from typing import (
+    Any,
+    Hashable,
+    NamedTuple,
+    get_args,
+)
 
 from bi_query_processing.postprocessing.primitives import PostprocessedValue
 
@@ -62,7 +67,7 @@ class HashableWrapper:
     so using just a plain slotted object.
     """
 
-    __slots__ = ('value', 'hashable')
+    __slots__ = ("value", "hashable")
 
     def __init__(self, value: Any, hashable: Hashable):
         self.value = value

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, Optional, Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+)
 
 if TYPE_CHECKING:
     from bi_api_commons.base_models import RequestContextInfo
@@ -25,8 +29,10 @@ class EntityUsageNotAllowed(Exception):
 class EntityUsageChecker(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def ensure_dataset_can_be_used(
-            self, rci: RequestContextInfo, dataset: Dataset,
-            us_manager: USManagerBase,
+        self,
+        rci: RequestContextInfo,
+        dataset: Dataset,
+        us_manager: USManagerBase,
     ) -> None:
         pass
 

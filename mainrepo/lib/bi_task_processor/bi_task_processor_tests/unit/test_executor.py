@@ -4,34 +4,33 @@ import pytest
 
 from bi_task_processor.executor import Executor
 from bi_task_processor.task import (
-    TaskInstance,
-    InstanceID,
-    Success,
     Fail,
-    Retry,
+    InstanceID,
     LoggerFields,
+    Retry,
+    Success,
+    TaskInstance,
 )
 from bi_task_processor_tests.utils import (
-    SomeTaskInterface,
-    RetryTaskInterface,
+    BROKEN_MARK,
+    REGISTRY,
     BrokenTaskInterface,
     LocalContextFab,
-    REGISTRY,
-    BROKEN_MARK,
+    RetryTaskInterface,
+    SomeTaskInterface,
 )
 
-
 LOGGER = logging.getLogger(__name__)
-DEFAULT_REQ_ID = 'reqid-123'
+DEFAULT_REQ_ID = "reqid-123"
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ('task_meta', 'result'),
+    ("task_meta", "result"),
     [
-        (SomeTaskInterface(foo='as'), Success()),
-        (RetryTaskInterface(foobar='asd'), Retry(delay=1, backoff=1, attempts=2)),
-        (BrokenTaskInterface(bar='as'), Fail()),
+        (SomeTaskInterface(foo="as"), Success()),
+        (RetryTaskInterface(foobar="asd"), Retry(delay=1, backoff=1, attempts=2)),
+        (BrokenTaskInterface(bar="as"), Fail()),
     ],
 )
 async def test_run_task(task_state, task_meta, result):
@@ -62,7 +61,7 @@ async def test_run_task_logs(task_state, caplog):
         registry=REGISTRY,
         state=task_state,
     )
-    task_meta = BrokenTaskInterface(bar='21')
+    task_meta = BrokenTaskInterface(bar="21")
     task = TaskInstance(
         instance_id=InstanceID.make(),
         name=task_meta.name,

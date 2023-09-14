@@ -1,18 +1,29 @@
 from __future__ import annotations
 
 import abc
-from typing import ClassVar, Dict, List, Sequence, Optional, Tuple, Type
+from typing import (
+    ClassVar,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+)
 
 import attr
 
-import bi_formula.core.exc as exc
-import bi_formula.core.nodes as nodes
-import bi_formula.core.aux_nodes as aux_nodes
-import bi_formula.core.fork_nodes as fork_nodes
-from bi_formula.mutation.mutation import FormulaMutation
-from bi_formula.mutation.dim_resolution import DimensionResolvingMutationBase
 from bi_formula.collections import NodeSet
-from bi_formula.inspect.expression import is_aggregate_expression, used_fields
+import bi_formula.core.aux_nodes as aux_nodes
+import bi_formula.core.exc as exc
+import bi_formula.core.fork_nodes as fork_nodes
+import bi_formula.core.nodes as nodes
+from bi_formula.inspect.expression import (
+    is_aggregate_expression,
+    used_fields,
+)
+from bi_formula.mutation.dim_resolution import DimensionResolvingMutationBase
+from bi_formula.mutation.mutation import FormulaMutation
 
 
 class LookupFunctionMutatorBase(abc.ABC):
@@ -22,21 +33,24 @@ class LookupFunctionMutatorBase(abc.ABC):
     @classmethod
     @abc.abstractmethod
     def get_result_expression(
-            cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> nodes.FormulaItem:
         raise NotImplementedError
 
     @classmethod
     @abc.abstractmethod
     def get_lookup_dimension(
-            cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> nodes.FormulaItem:
         raise NotImplementedError
 
     @classmethod
     @abc.abstractmethod
     def get_lookup_conditions(
-        cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> List[fork_nodes.JoinConditionBase]:
         raise NotImplementedError
 
@@ -52,32 +66,35 @@ def register_lookup_mutator(mutator_cls: Type[LookupFunctionMutatorBase]) -> Typ
 class DateLookupFunctionMutatorBase(LookupFunctionMutatorBase):
     @classmethod
     def get_result_expression(
-            cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> nodes.FormulaItem:
         return func_args[0]
 
     @classmethod
     def get_lookup_dimension(
-            cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> nodes.FormulaItem:
         return func_args[1]
 
 
-_MONTH_BASED_UNITS = frozenset(('month', 'year', 'quarter'))
+_MONTH_BASED_UNITS = frozenset(("month", "year", "quarter"))
 
 
 @register_lookup_mutator
 class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
-    name = 'ago'
+    name = "ago"
     supported_arg_counts = (2, 3, 4)
 
     @classmethod
     def get_lookup_conditions(
-            cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> List[fork_nodes.JoinConditionBase]:
         lookup_dimension = cls.get_lookup_dimension(func_args)
         fork_join_expr = nodes.FuncCall.make(
-            name='dateadd',
+            name="dateadd",
             args=[lookup_dimension, *func_args[2:]],
         )
         main_lookup_condition = fork_nodes.BinaryJoinCondition.make(expr=lookup_dimension, fork_expr=fork_join_expr)
@@ -87,7 +104,7 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
         # An additional condition is needed for cases when the unit is month-based
         # to avoid date duplication for months with different lengths
         if len(func_args) > 2:  # default unit is "day", so we're not interested
-            unit_name = 'day'
+            unit_name = "day"
             try:
                 string_arg: nodes.LiteralString = [
                     arg for arg in func_args[2:] if isinstance(arg, nodes.LiteralString)
@@ -98,8 +115,8 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
 
             if unit_name in _MONTH_BASED_UNITS:
                 day_eq_condition = fork_nodes.BinaryJoinCondition.make(
-                    expr=nodes.FuncCall.make('day', args=[lookup_dimension]),
-                    fork_expr=nodes.FuncCall.make('day', args=[lookup_dimension]),
+                    expr=nodes.FuncCall.make("day", args=[lookup_dimension]),
+                    fork_expr=nodes.FuncCall.make("day", args=[lookup_dimension]),
                 )
                 conditions.append(day_eq_condition)
 
@@ -108,12 +125,13 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
 
 @register_lookup_mutator
 class AtDateLookupFunctionMutator(DateLookupFunctionMutatorBase):
-    name = 'at_date'
+    name = "at_date"
     supported_arg_counts = (3,)
 
     @classmethod
     def get_lookup_conditions(
-            cls, func_args: Sequence[nodes.FormulaItem],
+        cls,
+        func_args: Sequence[nodes.FormulaItem],
     ) -> List[fork_nodes.JoinConditionBase]:
         lookup_dimension = cls.get_lookup_dimension(func_args)
         lookup_condition = fork_nodes.BinaryJoinCondition.make(expr=func_args[2], fork_expr=lookup_dimension)
@@ -128,8 +146,8 @@ def _get_arg_error_node(node: nodes.FuncCall) -> Optional[aux_nodes.ErrorNode]:
         return aux_nodes.ErrorNode.make(
             err_code=exc.LookupFunctionArgNumberError.default_code,
             message=(
-                f'Invalid number of arguments for function {func_name.upper()}: '
-                f'{len(node.args)}. Either 2, 3 or 4 are needed.'
+                f"Invalid number of arguments for function {func_name.upper()}: "
+                f"{len(node.args)}. Either 2, 3 or 4 are needed."
             ),
             meta=node.meta,
         )
@@ -146,13 +164,11 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
 
     _allow_empty_dimensions: bool = attr.ib(kw_only=True)
 
-    def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
-    ) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.FuncCall) and node.name in LOOKUP_MUTATOR_REGISTRY
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
         func_name = old.name
@@ -169,7 +185,7 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
         if not is_aggregate_expression(node=result_expr, env=self._inspect_env):
             return aux_nodes.ErrorNode.make(
                 err_code=exc.LookupFunctionWOAggregationError.default_code,
-                message=f'Result expression of function {func_name.upper()} is not aggregated.',
+                message=f"Result expression of function {func_name.upper()} is not aggregated.",
                 meta=old.meta,
             )
 
@@ -182,13 +198,13 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
         if is_aggregate_expression(node=lookup_dimension, env=self._inspect_env):
             return aux_nodes.ErrorNode.make(
                 err_code=exc.LookupFunctionAggregatedDimensionError.default_code,
-                message=f'The lookup dimension of function {func_name.upper()} is an aggregation.',
+                message=f"The lookup dimension of function {func_name.upper()} is an aggregation.",
                 meta=old.meta,
             )
         if lookup_dimension in ignore_dimensions_set:
             return aux_nodes.ErrorNode.make(
                 err_code=exc.LookupFunctionIgnoredLookupDimensionError.default_code,
-                message=f'Cannot ignore lookup dimension of function {func_name.upper()}',
+                message=f"Cannot ignore lookup dimension of function {func_name.upper()}",
                 meta=old.meta,
             )
 
@@ -198,7 +214,7 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
         if not lookup_condition_used_fields:
             return aux_nodes.ErrorNode.make(
                 err_code=exc.LookupFunctionConstantLookupDimensionError.default_code,
-                message=f'Cannot use a constant expression as lookup dimension of function {func_name.upper()}',
+                message=f"Cannot use a constant expression as lookup dimension of function {func_name.upper()}",
                 meta=old.meta,
             )
 
@@ -229,8 +245,8 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
             return aux_nodes.ErrorNode.make(
                 err_code=exc.LookupFunctionUnselectedDimensionError.default_code,
                 message=(
-                    f'Invalid dimension for function {func_name.upper()}. '
-                    'It must be explicitly used in the data request as a dimension.'
+                    f"Invalid dimension for function {func_name.upper()}. "
+                    "It must be explicitly used in the data request as a dimension."
                 ),
                 meta=old.meta,
             )
@@ -256,13 +272,11 @@ class LookupDefaultBfbMutation(FormulaMutation):
     to the `BEFORE FILTER BY` clause.
     """
 
-    def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
-    ) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.FuncCall) and node.name in LOOKUP_MUTATOR_REGISTRY
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
         func_name = old.name
@@ -275,10 +289,7 @@ class LookupDefaultBfbMutation(FormulaMutation):
         mutator = LOOKUP_MUTATOR_REGISTRY[func_name]
         lookup_dimension = mutator.get_lookup_dimension(old.args)
 
-        if (
-                isinstance(lookup_dimension, nodes.Field)
-                and lookup_dimension.name not in old.before_filter_by.field_names
-        ):
+        if isinstance(lookup_dimension, nodes.Field) and lookup_dimension.name not in old.before_filter_by.field_names:
             # Lookup dimension is not yet present in BFB, so add it.
             new_before_filter_by = nodes.BeforeFilterBy.make(
                 field_names=old.before_filter_by.field_names | {lookup_dimension.name}

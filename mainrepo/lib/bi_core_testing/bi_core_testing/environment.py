@@ -7,16 +7,17 @@ from typing import Optional
 
 import requests
 
+from bi_core.logging_config import setup_jaeger_client
 from bi_core_testing.configuration import UnitedStorageConfiguration
 from bi_db_testing.loader import load_bi_db_testing
 from bi_utils.wait import wait_for
-from bi_core.logging_config import setup_jaeger_client
 
 LOGGER = logging.getLogger(__name__)
 
 
 def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
     import psycopg2
+
     start_time = time.monotonic()
     max_time = start_time + timeout
     while True:
@@ -24,7 +25,7 @@ def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
         try:
             conn = psycopg2.connect(dsn)
             cur = conn.cursor()
-            cur.execute('select 1./2')
+            cur.execute("select 1./2")
             res = cur.fetchall()
         except Exception as exc:
             now = time.monotonic()
@@ -44,6 +45,7 @@ def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
 
 def restart_container(container_name: str) -> None:
     import docker
+
     docker_cli = docker.from_env(timeout=300)
     container = docker_cli.containers.list(filters=dict(name=container_name), all=True)[0]
     container.restart()
@@ -51,50 +53,56 @@ def restart_container(container_name: str) -> None:
 
 def restart_container_by_label(label: str, compose_project: str) -> None:
     import docker
+
     docker_cli = docker.from_env(timeout=300)
-    container = docker_cli.containers.list(filters=dict(label=[
-        f"datalens.ci.service={label}",
-        f"com.docker.compose.project={compose_project}",
-    ]), all=True)[0]
+    container = docker_cli.containers.list(
+        filters=dict(
+            label=[
+                f"datalens.ci.service={label}",
+                f"com.docker.compose.project={compose_project}",
+            ]
+        ),
+        all=True,
+    )[0]
     container.restart()
 
 
 def prepare_united_storage(
-        *,
-        us_host: str,
-        us_master_token: str,
-        folder_id: str = 'common',
-        us_pg_dsn: Optional[str] = None,
-        force: bool = False,
+    *,
+    us_host: str,
+    us_master_token: str,
+    folder_id: str = "common",
+    us_pg_dsn: Optional[str] = None,
+    force: bool = False,
 ) -> None:
     if not force and not os.environ.get("CLEAR_US_DATABASE", ""):
-        LOGGER.debug('prepare_united_storage: CLEAR_US_DATABASE env is disabled, skipping.')
+        LOGGER.debug("prepare_united_storage: CLEAR_US_DATABASE env is disabled, skipping.")
         return
 
     if us_pg_dsn is not None:
-        LOGGER.debug('prepare_united_storage: wait for pg-us to be up...')
+        LOGGER.debug("prepare_united_storage: wait for pg-us to be up...")
         _wait_for_pg(us_pg_dsn)
 
     headers = {
-        'X-US-Master-Token': us_master_token,
-        'X-YaCloud-FolderId': folder_id,
+        "X-US-Master-Token": us_master_token,
+        "X-YaCloud-FolderId": folder_id,
     }
 
     def _wait_for_us() -> tuple[bool, str]:
         try:
             with requests.Session() as reqr:
-                resp = reqr.get(f'{us_host}/ping-db', headers=headers)
+                resp = reqr.get(f"{us_host}/ping-db", headers=headers)
                 resp.raise_for_status()
-                return True, ''
+                return True, ""
         except Exception as e:
             return False, str(e)
 
     max_wait_time = 160.0
     wait_pause = 0.5
-    LOGGER.debug(f'prepare_united_storage: waiting for up to {max_wait_time}s for US to respond with ok...')
-    wait_for('US startup', condition=_wait_for_us, timeout=max_wait_time, interval=wait_pause)
+    LOGGER.debug(f"prepare_united_storage: waiting for up to {max_wait_time}s for US to respond with ok...")
+    wait_for("US startup", condition=_wait_for_us, timeout=max_wait_time, interval=wait_pause)
 
-    LOGGER.debug('prepare_united_storage: done.')
+    LOGGER.debug("prepare_united_storage: done.")
 
 
 def prepare_united_storage_from_config(us_config: UnitedStorageConfiguration) -> None:
@@ -107,9 +115,9 @@ def prepare_united_storage_from_config(us_config: UnitedStorageConfiguration) ->
 
 
 def common_pytest_configure(
-        use_jaeger_tracer: bool = False, tracing_service_name: str = 'tests',
+    use_jaeger_tracer: bool = False,
+    tracing_service_name: str = "tests",
 ) -> None:
-
     load_bi_db_testing()
 
     if use_jaeger_tracer:

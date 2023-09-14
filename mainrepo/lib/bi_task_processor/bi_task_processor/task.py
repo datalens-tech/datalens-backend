@@ -1,18 +1,25 @@
 import abc
-import enum
-import uuid
 from collections.abc import Iterable
-from typing import Dict, NewType, Generic, TypeVar, ClassVar, Type, Optional
+import enum
+from typing import (
+    ClassVar,
+    Dict,
+    Generic,
+    NewType,
+    Optional,
+    Type,
+    TypeVar,
+)
+import uuid
 
 import attr
 
 from bi_task_processor.context import BaseContext
 
+TaskName = NewType("TaskName", str)
 
-TaskName = NewType('TaskName', str)
 
-
-_BASE_ID_TYPE = TypeVar('_BASE_ID_TYPE', bound='BaseID')
+_BASE_ID_TYPE = TypeVar("_BASE_ID_TYPE", bound="BaseID")
 
 
 @attr.s(frozen=True)
@@ -59,15 +66,15 @@ class BaseTaskMeta(metaclass=abc.ABCMeta):
     def get_params(self, with_name=False) -> Dict:
         if with_name:
             return dict(
-                {'name': self.name},
+                {"name": self.name},
                 **attr.asdict(self),
             )
         return attr.asdict(self)
 
     def make_id(self):
         params = sorted(attr.asdict(self).items())
-        serialized_params = '||'.join(f'{k}|{v}' for k, v in params)
-        return f'{self.name}||{serialized_params}'
+        serialized_params = "||".join(f"{k}|{v}" for k, v in params)
+        return f"{self.name}||{serialized_params}"
 
     # it's temporary solution
     # i'm gonna use datalens/backend/app/bi_external_api/bi_external_api/attrs_model_mapper
@@ -78,15 +85,15 @@ class BaseTaskMeta(metaclass=abc.ABCMeta):
         attr_schema = attr.fields(cls)
         return [
             {
-                'name': field.name,
-                'type': field.type.__name__,
+                "name": field.name,
+                "type": field.type.__name__,
             }
             for field in attr_schema
         ]
 
 
-_BASE_TASK_META_TV = TypeVar('_BASE_TASK_META_TV', bound=BaseTaskMeta)
-_BASE_TASK_CONTEXT_TV = TypeVar('_BASE_TASK_CONTEXT_TV', bound=BaseContext)
+_BASE_TASK_META_TV = TypeVar("_BASE_TASK_META_TV", bound=BaseTaskMeta)
+_BASE_TASK_CONTEXT_TV = TypeVar("_BASE_TASK_CONTEXT_TV", bound=BaseContext)
 
 
 @attr.s(frozen=True, eq=True)
@@ -121,13 +128,13 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
 
     @classmethod
     def from_params(
-            cls,
-            instance_id: InstanceID,
-            run_id: RunID,
-            ctx: _BASE_TASK_CONTEXT_TV,
-            params: Dict,
-            request_id: Optional[str] = None,
-    ) -> 'BaseExecutorTask':
+        cls,
+        instance_id: InstanceID,
+        run_id: RunID,
+        ctx: _BASE_TASK_CONTEXT_TV,
+        params: Dict,
+        request_id: Optional[str] = None,
+    ) -> "BaseExecutorTask":
         return cls(
             meta=cls.cls_meta(**params),
             ctx=ctx,
@@ -150,14 +157,11 @@ class TaskRegistry:
     _tasks: Dict[TaskName, BaseExecutorTask] = attr.ib()
 
     @classmethod
-    def create(cls, tasks: Iterable[Type[BaseExecutorTask]]) -> 'TaskRegistry':
+    def create(cls, tasks: Iterable[Type[BaseExecutorTask]]) -> "TaskRegistry":
         assert sorted(
             [t.name() for t in tasks],
-        ) == sorted(list(set([t.name() for t in tasks]))), 'Some tasks has the same name'
-        return cls(tasks={
-            task.name(): task
-            for task in tasks
-        })
+        ) == sorted(list(set([t.name() for t in tasks]))), "Some tasks has the same name"
+        return cls(tasks={task.name(): task for task in tasks})
 
     def get_task(self, name: TaskName) -> BaseExecutorTask:
         return self._tasks[name]
@@ -166,10 +170,7 @@ class TaskRegistry:
         return self.get_task(name).cls_meta
 
     def filter_task_meta(self, name: TaskName) -> Iterable[Type[BaseTaskMeta]]:
-        return [
-            task.cls_meta for task in self._tasks.values()
-            if not name or name == task.name()
-        ]
+        return [task.cls_meta for task in self._tasks.values() if not name or name == task.name()]
 
 
 class LoggerFields(enum.Enum):

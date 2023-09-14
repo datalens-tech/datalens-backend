@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Optional, Type
+from typing import (
+    Optional,
+    Type,
+)
 
-import attr
 import asyncpg
+import attr
 
 from bi_compeng_pg.compeng_pg_base.pool_base import (
+    DEFAULT_OPERATION_TIMEOUT,
+    DEFAULT_POOL_MAX_SIZE,
+    DEFAULT_POOL_MIN_SIZE,
     BasePgPoolWrapper,
-    DEFAULT_POOL_MIN_SIZE, DEFAULT_POOL_MAX_SIZE, DEFAULT_OPERATION_TIMEOUT,
 )
 
 
@@ -18,12 +23,12 @@ class AsyncpgPoolWrapper(BasePgPoolWrapper):
 
     @classmethod
     async def connect(
-        cls: Type['AsyncpgPoolWrapper'],
+        cls: Type["AsyncpgPoolWrapper"],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size
         operation_timeout: float = DEFAULT_OPERATION_TIMEOUT,  # SQL operation timeout
-    ) -> 'AsyncpgPoolWrapper':
+    ) -> "AsyncpgPoolWrapper":
         pool = await asyncpg.create_pool(
             url,
             min_size=pool_min_size,
@@ -38,7 +43,7 @@ class AsyncpgPoolWrapper(BasePgPoolWrapper):
     @property
     def pool(self) -> asyncpg.pool.Pool:
         if self._pool is None:
-            raise RuntimeError('Asyncpg pool is closed')
+            raise RuntimeError("Asyncpg pool is closed")
         return self._pool
 
     async def disconnect(self) -> None:

@@ -1,11 +1,10 @@
 from bi_formula_ref.localization import get_gettext
 from bi_formula_ref.registry.base import FunctionDocCategory
 
-
 _ = get_gettext()
 
 CATEGORY_MARKUP = FunctionDocCategory(
-    name='markup',
+    name="markup",
     description=_(
         "Markup functions are used for creating marked up text (hypertext) from "
         "string values and/or other marked up text.\n"
@@ -20,5 +19,5 @@ CATEGORY_MARKUP = FunctionDocCategory(
         "1. Markup functions can be used within logic functions. Example: "
         "`IF(STARTSWITH([value], 'n'), BOLD([value]), MARKUP([value]))`.\n"
     ),
-    keywords='',
+    keywords="",
 )

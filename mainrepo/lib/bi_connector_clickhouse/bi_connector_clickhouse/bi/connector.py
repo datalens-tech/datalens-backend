@@ -1,24 +1,26 @@
+from bi_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
+)
 from bi_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
-)
-
-from bi_api_connector.api_schema.source_base import (
-    SQLDataSourceSchema, SQLDataSourceTemplateSchema, SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
+    BiApiSourceDefinition,
 )
 
 from bi_connector_clickhouse.bi.api_schema.connection import ClickHouseConnectionSchema
 from bi_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
 from bi_connector_clickhouse.bi.connection_info import ClickHouseConnectionInfoProvider
 from bi_connector_clickhouse.bi.i18n.localizer import CONFIGS
-from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse.connector import (
-    ClickHouseCoreConnector,
     ClickHouseCoreConnectionDefinition,
-    ClickHouseTableCoreSourceDefinition,
+    ClickHouseCoreConnector,
     ClickHouseSubselectCoreSourceDefinition,
+    ClickHouseTableCoreSourceDefinition,
 )
+from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 
 class ClickHouseBiApiTableSourceDefinition(BiApiSourceDefinition):

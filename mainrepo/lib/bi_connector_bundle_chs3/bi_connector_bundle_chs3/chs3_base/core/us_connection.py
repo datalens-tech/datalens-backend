@@ -1,31 +1,45 @@
 from __future__ import annotations
 
-import logging
 from collections import defaultdict
-from typing import Any, Callable, ClassVar, Optional
+import logging
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 import xxhash
 
-from bi_core.component_errors import ComponentErrorRegistry
-
-from bi_constants.enums import DataSourceRole, FileProcessingStatus
-
-from bi_core import exc
-from bi_core import connection_models
-from bi_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
-from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from bi_core.us_connection_base import DataSourceTemplate, ConnectionHardcodedDataMixin, ConnectionBase
+from bi_constants.enums import (
+    DataSourceRole,
+    FileProcessingStatus,
+)
+from bi_core import (
+    connection_models,
+    exc,
+)
 from bi_core.base_models import ConnectionDataModelBase
-from bi_core.db.elements import SchemaColumn
-from bi_core.utils import parse_comma_separated_hosts
-from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
-from bi_core.services_registry.file_uploader_client_factory import FileSourceDesc
-from bi_core.utils import make_user_auth_headers, make_user_auth_cookies
+from bi_core.component_errors import ComponentErrorRegistry
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
+from bi_core.db.elements import SchemaColumn
+from bi_core.services_registry.file_uploader_client_factory import FileSourceDesc
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    ConnectionHardcodedDataMixin,
+    DataSourceTemplate,
+)
+from bi_core.utils import (
+    make_user_auth_cookies,
+    make_user_auth_headers,
+    parse_comma_separated_hosts,
+)
 
+from bi_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
-
+from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from bi_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,7 +50,11 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
     settings_type = FileS3ConnectorSettings
 
     editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
-        'file_id', 'title', 's3_filename', 'status', 'preview_id',
+        "file_id",
+        "title",
+        "s3_filename",
+        "status",
+        "preview_id",
     )
 
     @attr.s(kw_only=True)
@@ -50,9 +68,15 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         raw_schema: Optional[list[SchemaColumn]] = attr.ib(factory=list[SchemaColumn])
 
         def str_for_hash(self) -> str:
-            return ','.join([
-                self.id, self.file_id, self.title, str(self.s3_filename), self.status.name,
-            ])
+            return ",".join(
+                [
+                    self.id,
+                    self.file_id,
+                    self.title,
+                    str(self.s3_filename),
+                    self.status.name,
+                ]
+            )
 
         def get_desc(self) -> FileSourceDesc:
             raise NotImplementedError()
@@ -66,7 +90,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
 
         def str_for_hash(self) -> str:
-            return '|'.join(src.str_for_hash() for src in self.sources)
+            return "|".join(src.str_for_hash() for src in self.sources)
 
     data: DataModel
 
@@ -93,14 +117,12 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         cs = self._connector_settings
         conn_dto = BaseFileS3ConnDTO(
             conn_id=self.uuid,
-
             s3_endpoint=cs.S3_ENDPOINT,
             access_key_id=cs.ACCESS_KEY_ID,
             secret_access_key=cs.SECRET_ACCESS_KEY,
             bucket=cs.BUCKET,
             replace_secret=self.get_replace_secret(),
-
-            protocol='https' if cs.SECURE else 'http',
+            protocol="https" if cs.SECURE else "http",
             host=cs.HOST,
             multihosts=parse_comma_separated_hosts(cs.HOST),  # type: ignore
             port=cs.PORT,
@@ -121,7 +143,8 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         return 600
 
     def get_data_source_templates(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         assert self.source_type is not None
         return [
@@ -131,15 +154,16 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
                 source_type=self.source_type,
                 connection_id=self.uuid,  # type: ignore
                 parameters={
-                    'origin_source_id': source.id,
+                    "origin_source_id": source.id,
                 },
-            ) for source in self.data.sources
+            )
+            for source in self.data.sources
         ]
 
     def get_file_source_by_id(self, id: Optional[str]) -> FileDataSource:
         file_source = next(iter(src for src in self.data.sources if src.id == id), None)
         if file_source is None:
-            raise exc.SourceDoesNotExist(f'DataSource id={id} not found in connection id={self.uuid}')
+            raise exc.SourceDoesNotExist(f"DataSource id={id} not found in connection id={self.uuid}")
         return file_source
 
     def remove_source_by_id(self, id: str) -> None:
@@ -147,7 +171,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         if idx is not None:
             del self.data.sources[idx]
         else:
-            LOGGER.warning(f'DataSource id={id} not found in connection id={self.uuid} when trying to remove it')
+            LOGGER.warning(f"DataSource id={id} not found in connection id={self.uuid} when trying to remove it")
 
     def _remove_saved_source_by_id(self, id: str) -> None:
         assert self._saved_sources is not None
@@ -155,24 +179,26 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         if idx is not None:
             del self._saved_sources[idx]
         else:
-            LOGGER.warning(f'DataSource id={id} not found in connection id={self.uuid} saved sources when trying to remove it')
+            LOGGER.warning(
+                f"DataSource id={id} not found in connection id={self.uuid} saved sources when trying to remove it"
+            )
 
     def get_saved_source_by_id(self, id: Optional[str]) -> FileDataSource:
         file_source = next(iter(src for src in self._saved_sources or [] if src.id == id), None)
         if file_source is None:
-            raise exc.SourceDoesNotExist(f'DataSource id={id} not found in saved sources of connection id={self.uuid}')
+            raise exc.SourceDoesNotExist(f"DataSource id={id} not found in saved sources of connection id={self.uuid}")
         return file_source
 
     def update_data_source(
-            self,
-            id: str,
-            role: Optional[DataSourceRole] = None,
-            raw_schema: Optional[list] = None,
-            remove_raw_schema: bool = False,
-            **parameters: Any,
+        self,
+        id: str,
+        role: Optional[DataSourceRole] = None,
+        raw_schema: Optional[list] = None,
+        remove_raw_schema: bool = False,
+        **parameters: Any,
     ) -> None:
         if role != DataSourceRole.origin:
-            raise ValueError(f'Unsupported role for {self.__class__.__name__} datasource.')
+            raise ValueError(f"Unsupported role for {self.__class__.__name__} datasource.")
 
         source = self.get_file_source_by_id(id)
 
@@ -183,16 +209,16 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             if (param_value := parameters.pop(param_name, sentinel)) is not sentinel
         }
         if parameters:
-            raise ValueError(f'Unknown update_data_source parameter: {parameters}')
+            raise ValueError(f"Unknown update_data_source parameter: {parameters}")
 
-        LOGGER.info(f'Updating data source {id} with role {role}. Parameters: {filtered_parameters}')
+        LOGGER.info(f"Updating data source {id} with role {role}. Parameters: {filtered_parameters}")
 
         if raw_schema is not None:
             source.raw_schema = raw_schema
-            LOGGER.info('Updated data source raw_schema')
+            LOGGER.info("Updated data source raw_schema")
         if remove_raw_schema:
             source.raw_schema = None
-            LOGGER.info('Removed data source raw_schema')
+            LOGGER.info("Removed data source raw_schema")
 
         for param_name, value in filtered_parameters.items():
             setattr(source, param_name, value)
@@ -200,8 +226,8 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
     def replace_sources(self) -> None:
         assert self._saved_sources is not None
         for upd_source in self.data.replace_sources:
-            old_src = self.get_saved_source_by_id(upd_source['old_source_id'])
-            new_src = self.get_file_source_by_id(upd_source['new_source_id'])
+            old_src = self.get_saved_source_by_id(upd_source["old_source_id"])
+            new_src = self.get_file_source_by_id(upd_source["new_source_id"])
             new_src.id, old_src.id = old_src.id, new_src.id
 
     def restore_source_params_from_orig(self, src_id: str, original_version: BaseFileS3Connection) -> None:
@@ -216,16 +242,16 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
 
     def validate(self) -> None:
         try:
-            pass    # TODO
+            pass  # TODO
         except exc.EntryValidationError as err:
             raise err
 
     _saved_sources: Optional[list[FileDataSource]] = None
 
     async def validate_new_data(
-            self,
-            changes: Optional[dict] = None,
-            original_version: Optional[ConnectionBase] = None,
+        self,
+        changes: Optional[dict] = None,
+        original_version: Optional[ConnectionBase] = None,
     ) -> None:
         assert isinstance(original_version, (type(self), type(None)))
         if original_version is None:
@@ -237,7 +263,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             sources_to_update = set()
         else:
             # save source if we receive file_id regardless of whether it was saved or not
-            sources_to_update = set(src.id for src in changes['data']['sources'] if src.file_id is not None)
+            sources_to_update = set(src.id for src in changes["data"]["sources"] if src.file_id is not None)
 
         current_sources = set(src.id for src in self.data.sources)
         sources_to_add = (current_sources - saved_sources) | sources_to_update
@@ -249,11 +275,11 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         err_details = defaultdict(list)
         for src in self.data.sources:
             if src.file_id is None and src.id not in saved_sources:
-                err_details['not_configured_not_saved'].append(src.id)
+                err_details["not_configured_not_saved"].append(src.id)
 
         for replace_src in self.data.replace_sources:
-            if replace_src['old_source_id'] not in saved_sources:
-                err_details['replaced_not_saved'].append(replace_src['old_source_id'])
+            if replace_src["old_source_id"] not in saved_sources:
+                err_details["replaced_not_saved"].append(replace_src["old_source_id"])
 
         if err_details:
             raise exc.DataSourcesInconsistent(details=err_details)

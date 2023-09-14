@@ -4,6 +4,4 @@ from bi_connector_snowflake.db_testing.engine_wrapper import SnowFlakeEngineWrap
 
 
 class SnowFlakeDbTestingConnector(DbTestingConnector):
-    engine_wrapper_classes = (
-        SnowFlakeEngineWrapper,
-    )
+    engine_wrapper_classes = (SnowFlakeEngineWrapper,)

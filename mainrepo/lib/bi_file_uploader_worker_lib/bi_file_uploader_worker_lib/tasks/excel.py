@@ -1,42 +1,51 @@
+import asyncio
 import logging
-from typing import Optional, Iterator
+import ssl
+from typing import (
+    Iterator,
+    Optional,
+)
+import urllib.parse
 
 import aiohttp
 import attr
-import asyncio
-import ssl
-import urllib.parse
-
-from bi_core.db import SchemaColumn
 
 from bi_constants.enums import FileProcessingStatus
+from bi_core.db import SchemaColumn
 from bi_core.raw_data_streaming.stream import SimpleUntypedDataStream
-
-from bi_task_processor.task import BaseExecutorTask, TaskResult, Success, Fail, Retry
-import bi_file_uploader_task_interface.tasks as task_interface
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext
-
 from bi_file_uploader_lib import exc
 from bi_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileDataSink
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
-from bi_file_uploader_lib.redis_model.models import DataFile, DataSource, FileProcessingError, ExcelFileSourceSettings
-
+from bi_file_uploader_lib.redis_model.models import (
+    DataFile,
+    DataSource,
+    ExcelFileSourceSettings,
+    FileProcessingError,
+)
+from bi_file_uploader_task_interface.context import FileUploaderTaskContext
+import bi_file_uploader_task_interface.tasks as task_interface
 from bi_file_uploader_worker_lib.utils.parsing_utils import guess_header_and_schema_excel
-
+from bi_task_processor.task import (
+    BaseExecutorTask,
+    Fail,
+    Retry,
+    Success,
+    TaskResult,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
 class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUploaderTaskContext]):
-    """ Loads a xlsx file from s3, runs secure-reader, schedules ParseFileTask """
+    """Loads a xlsx file from s3, runs secure-reader, schedules ParseFileTask"""
 
     cls_meta = task_interface.ProcessExcelTask
 
     async def run(self) -> TaskResult:
         dfile: Optional[DataFile] = None
         try:
-            LOGGER.info(f'ProcessExcelTask. File: {self.meta.file_id}')
+            LOGGER.info(f"ProcessExcelTask. File: {self.meta.file_id}")
             loop = asyncio.get_running_loop()
 
             redis = self._ctx.redis_service.get_redis()
@@ -52,7 +61,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 Bucket=s3.tmp_bucket_name,
                 Key=dfile.s3_key,
             )
-            file_obj = await s3_resp['Body'].read()
+            file_obj = await s3_resp["Body"].read()
 
             conn: aiohttp.BaseConnector
             if self._ctx.secure_reader_settings.endpoint is not None:
@@ -64,28 +73,28 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 conn = aiohttp.TCPConnector(ssl=ssl_context)
             else:
                 socket_path = self._ctx.secure_reader_settings.socket
-                secure_reader_endpoint = f'http+unix://{urllib.parse.quote_plus(socket_path)}'
+                secure_reader_endpoint = f"http+unix://{urllib.parse.quote_plus(socket_path)}"
                 conn = aiohttp.UnixConnector(path=socket_path)
 
             async with aiohttp.ClientSession(connector=conn, loop=loop) as session:
                 with aiohttp.MultipartWriter() as mpwriter:
                     part = mpwriter.append(file_obj)
-                    part.set_content_disposition('form-data', name='file')
+                    part.set_content_disposition("form-data", name="file")
                     async with session.post(
-                        url=f'{secure_reader_endpoint}/reader/excel',
+                        url=f"{secure_reader_endpoint}/reader/excel",
                         data=mpwriter,
                     ) as resp:
                         file_data = await resp.json()
 
             for spreadsheet in file_data:
-                sheetname = spreadsheet['sheetname']
-                sheetdata = spreadsheet['data']
+                sheetname = spreadsheet["sheetname"]
+                sheetdata = spreadsheet["data"]
                 source_status = FileProcessingStatus.in_progress
                 has_header: Optional[bool] = None
                 raw_schema: list[SchemaColumn] = []
                 raw_schema_header: list[SchemaColumn] = []
                 raw_schema_body: list[SchemaColumn] = []
-                source_title = f'{dfile.filename} – {sheetname}'
+                source_title = f"{dfile.filename} – {sheetname}"
                 sheet_data_source = DataSource(
                     title=source_title,
                     raw_schema=raw_schema,
@@ -98,14 +107,17 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                     sheet_data_source.error = FileProcessingError.from_exception(exc.EmptyDocument())
                     sheet_data_source.status = FileProcessingStatus.failed
                 else:
-                    has_header, raw_schema, raw_schema_header, raw_schema_body = guess_header_and_schema_excel(sheetdata)
+                    has_header, raw_schema, raw_schema_header, raw_schema_body = guess_header_and_schema_excel(
+                        sheetdata
+                    )
                 sheet_settings = None
 
                 if sheet_data_source.is_applicable:
+
                     def data_iter() -> Iterator[list]:
                         row_iter = iter(sheetdata)
                         for row in row_iter:
-                            values = [cell['value'] for cell in row]
+                            values = [cell["value"] for cell in row]
                             yield values
 
                     data_stream = SimpleUntypedDataStream(
@@ -130,12 +142,12 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 sheet_data_source.file_source_settings = sheet_settings
 
             await dfile.save()
-            LOGGER.info('DataFile object saved.')
+            LOGGER.info("DataFile object saved.")
 
             task_processor = self._ctx.make_task_processor(self._request_id)
             parse_file_task = task_interface.ParseFileTask(file_id=dfile.id)
             await task_processor.schedule(parse_file_task)
-            LOGGER.info(f'Scheduled ParseFileTask for file_id {dfile.id}')
+            LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
 
         except Exception as ex:
             LOGGER.exception(ex)

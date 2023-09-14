@@ -21,10 +21,12 @@ LOGGER = logging.getLogger(__name__)
 class USManagerFlaskMiddleware:
     us_base_url: str = attr.ib()
     us_auth_mode: USAuthMode = attr.ib(
-        validator=attr.validators.in_((
-            USAuthMode.regular,
-            USAuthMode.master,
-        ))
+        validator=attr.validators.in_(
+            (
+                USAuthMode.regular,
+                USAuthMode.master,
+            )
+        )
     )
     crypto_keys_config: CryptoKeysConfig = attr.ib(repr=False)
     us_master_token: Optional[str] = attr.ib(default=None, repr=False)
@@ -44,9 +46,10 @@ class USManagerFlaskMiddleware:
         bi_context = ReqCtxInfoMiddleware.get_request_context_info()
         services_registry = (
             ServicesRegistryMiddleware.get_request_services_registry()
-            if ServicesRegistryMiddleware.enabled_for_request() else None
+            if ServicesRegistryMiddleware.enabled_for_request()
+            else None
         )
-        assert services_registry is not None, 'Service registry must be enabled!'
+        assert services_registry is not None, "Service registry must be enabled!"
 
         if bi_context.user_id is None:
             LOGGER.info("User US manager will not be created due to no user info in RCI")

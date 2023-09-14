@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import Union
 
-import bi_formula.core.nodes as nodes
 from bi_formula.core.datatype import DataType
-
+import bi_formula.core.nodes as nodes
 
 _TYPE_BY_CLS = {
     nodes.LiteralBoolean: DataType.CONST_BOOLEAN,

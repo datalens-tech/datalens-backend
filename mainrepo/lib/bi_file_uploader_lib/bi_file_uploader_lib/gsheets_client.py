@@ -1,33 +1,55 @@
 from __future__ import annotations
 
 import asyncio
+from asyncio import AbstractEventLoop
 import datetime
 import logging
 import random
-import time
-from asyncio import AbstractEventLoop
 from ssl import SSLContext
-from typing import Any, Type, Optional, Union, ClassVar, Tuple
+import time
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+)
 
+from aiogoogle import (
+    Aiogoogle,
+    GoogleAPI,
+    HTTPError,
+)
+from aiogoogle.auth import (
+    ApiKey,
+    UserCreds,
+)
+from aiogoogle.auth.creds import ClientCreds
 import aiogoogle.excs
 import aiogoogle.models
-
-import attr
-from aiogoogle import HTTPError, Aiogoogle, GoogleAPI
-from aiogoogle.auth import ApiKey, UserCreds
-from aiogoogle.auth.creds import ClientCreds
 from aiogoogle.models import Response
 from aiogoogle.sessions.aiohttp_session import AiohttpSession
-from aiohttp import Fingerprint, ClientResponse, ClientTimeout
+from aiohttp import (
+    ClientResponse,
+    ClientTimeout,
+    Fingerprint,
+)
 from aiohttp.typedefs import StrOrURL
+import attr
 from yarl import URL
 
 from bi_constants.enums import BIType
-from bi_utils.aio import ContextVarExecutor
-from bi_core.aio.web_app_services.gsheets import GSheetsSettings, Cell, NumberFormatType, Spreadsheet, Sheet, Range
-
+from bi_core.aio.web_app_services.gsheets import (
+    Cell,
+    GSheetsSettings,
+    NumberFormatType,
+    Range,
+    Sheet,
+    Spreadsheet,
+)
 from bi_file_uploader_lib import exc as file_upl_exc
-
+from bi_utils.aio import ContextVarExecutor
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,18 +61,18 @@ GSHEETS_EPOCH = datetime.datetime(
     month=12,
     day=30,
 )
-URL_SAFE_CHARS = ''  # we want to encode all symbols with no exceptions
+URL_SAFE_CHARS = ""  # we want to encode all symbols with no exceptions
 
 
 def google_api_error_to_file_uploader_exception(err: HTTPError) -> file_upl_exc.DLFileUploaderBaseError:
     if not isinstance(err.res, Response):
-        LOGGER.warning(f'Unknown aiogoogle http error: {err}')
+        LOGGER.warning(f"Unknown aiogoogle http error: {err}")
         return file_upl_exc.DLFileUploaderBaseError(orig=err)
 
-    orig_error_obj: dict[str, Any] = err.res.json.get('error', {})
+    orig_error_obj: dict[str, Any] = err.res.json.get("error", {})
     if isinstance(orig_error_obj, dict):
-        orig_status_code = orig_error_obj.get('code', -1)
-        orig_reason = orig_error_obj.get('status')
+        orig_status_code = orig_error_obj.get("code", -1)
+        orig_reason = orig_error_obj.get("status")
     else:
         orig_status_code = err.res.status_code
         orig_reason = None
@@ -60,12 +82,12 @@ def google_api_error_to_file_uploader_exception(err: HTTPError) -> file_upl_exc.
         err_cls = file_upl_exc.PermissionDenied
     elif orig_status_code == 404:
         err_cls = file_upl_exc.DocumentNotFound
-    elif orig_status_code == 400 and orig_reason == 'FAILED_PRECONDITION':
+    elif orig_status_code == 400 and orig_reason == "FAILED_PRECONDITION":
         err_cls = file_upl_exc.UnsupportedDocument
     elif orig_status_code >= 500:
         err_cls = file_upl_exc.RemoteServerError
     else:
-        LOGGER.warning(f'Unknown aiogoogle http error: {err}')
+        LOGGER.warning(f"Unknown aiogoogle http error: {err}")
         err_cls = file_upl_exc.DLFileUploaderBaseError
 
     return err_cls(
@@ -73,7 +95,7 @@ def google_api_error_to_file_uploader_exception(err: HTTPError) -> file_upl_exc.
         debug_info=err.res.json,
         details=dict(
             orig_error=orig_error_obj,
-        )
+        ),
     )
 
 
@@ -85,12 +107,12 @@ class GSheetsOAuth2:
 
 class AiohttpGSheetsSession(AiohttpSession):
     def __init__(
-            self,
-            *args: Any,
-            proxy: Optional[StrOrURL] = None,
-            proxy_headers: Optional[dict[str, str]] = None,
-            ssl: Optional[Union[SSLContext, bool, Fingerprint]] = True,
-            **kwargs: Any
+        self,
+        *args: Any,
+        proxy: Optional[StrOrURL] = None,
+        proxy_headers: Optional[dict[str, str]] = None,
+        ssl: Optional[Union[SSLContext, bool, Fingerprint]] = True,
+        **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.proxy = proxy
@@ -105,14 +127,14 @@ class AiohttpGSheetsSession(AiohttpSession):
         **kwargs: Any,
     ) -> ClientResponse:
         url = URL(str_or_url)
-        headers = kwargs.pop('headers', {})
-        if 'key' in url.query:
+        headers = kwargs.pop("headers", {})
+        if "key" in url.query:
             query_params = {**url.query}
-            key = query_params.pop('key')
+            key = query_params.pop("key")
             url = url.with_query(query_params)
-            headers['X-goog-api-key'] = key
+            headers["X-goog-api-key"] = key
 
-        LOGGER.info(f'Sending request: {method} {url}')
+        LOGGER.info(f"Sending request: {method} {url}")
         start_t = time.monotonic()
         resp = await super()._request(
             method,
@@ -122,22 +144,22 @@ class AiohttpGSheetsSession(AiohttpSession):
             proxy_headers=self.proxy_headers,
             ssl=self.ssl,
             headers=headers,
-            **kwargs
+            **kwargs,
         )
         elapsed = time.monotonic() - start_t
         resp_text = await resp.read()
         self.last_response_size_bytes = len(resp_text)
         LOGGER.info(
-            f'Received response: {method} {url},'
-            f' status_code: {resp.status},'
-            f' elapsed: {elapsed:.6f} s,'
-            f' payload_size: {self.last_response_size_bytes} bytes'
+            f"Received response: {method} {url},"
+            f" status_code: {resp.status},"
+            f" elapsed: {elapsed:.6f} s,"
+            f" payload_size: {self.last_response_size_bytes} bytes"
         )
         return resp
 
 
 def make_type(value: Any, user_type: BIType | str) -> Any:
-    if value is None or value == '':
+    if value is None or value == "":
         return None
     if user_type == BIType.integer:
         if isinstance(value, str):  # overflow
@@ -152,20 +174,20 @@ def make_type(value: Any, user_type: BIType | str) -> Any:
     if user_type in (BIType.date, BIType.genericdatetime, BIType.datetime, BIType.datetimetz):
         actual_dt = GSHEETS_EPOCH + datetime.timedelta(days=value)
         if user_type == BIType.date:
-            dt_str = actual_dt.strftime('%Y-%m-%d')
+            dt_str = actual_dt.strftime("%Y-%m-%d")
         else:
-            dt_str = actual_dt.strftime('%Y-%m-%d %H:%M:%S')
-        year, *rest = dt_str.split('-')
-        return f'{year:>04}-' + '-'.join(rest)  # years <1000 are not padded properly in strftime
-    if user_type == 'time':
+            dt_str = actual_dt.strftime("%Y-%m-%d %H:%M:%S")
+        year, *rest = dt_str.split("-")
+        return f"{year:>04}-" + "-".join(rest)  # years <1000 are not padded properly in strftime
+    if user_type == "time":
         time_value = datetime.timedelta(days=value)
         hours, remainder = divmod(time_value.total_seconds(), 3600)
         minutes, seconds = divmod(remainder, 60)
-        return f'{int(hours):02}:{int(minutes):02}:{int(seconds):02}'
+        return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
     if user_type == BIType.string:
         return str(value)
 
-    raise ValueError(f'Type {user_type} is not supported here')
+    raise ValueError(f"Type {user_type} is not supported here")
 
 
 @attr.s
@@ -186,27 +208,25 @@ class GSheetsClient:
             session_factory=lambda: AiohttpGSheetsSession(
                 timeout=self.session_timeout,
                 headers={
-                    'user-agent': 'DataLens',
-                    'Accept': 'application/json',
+                    "user-agent": "DataLens",
+                    "Accept": "application/json",
                 },
             ),
             api_key=ApiKey(self.settings.api_key),
             client_creds=ClientCreds(
                 client_id=self.settings.client_id,
                 client_secret=self.settings.client_secret,
-            )
+            ),
         )
         await self._aiogoogle.__aenter__()
         return self
 
     async def __aexit__(self, *args: Any) -> None:
-        assert self._aiogoogle, 'Aiogoogle is not initialized for the client'
+        assert self._aiogoogle, "Aiogoogle is not initialized for the client"
         await self._aiogoogle.__aexit__(*args)
 
     def _process_values(
-            self,
-            raw_values: list[list[Any]],
-            user_types: list[BIType | str]
+        self, raw_values: list[list[Any]], user_types: list[BIType | str]
     ) -> Tuple[list[list[Any]], list[BIType | str]]:
         """
         Tries to convert values to passed BITypes and falls back to string when fails to do so
@@ -220,7 +240,7 @@ class GSheetsClient:
             if width_diff > 0:
                 row.extend([None] * width_diff)
             else:
-                row = row[:len(user_types)]
+                row = row[: len(user_types)]
             for col_idx, (value, user_type) in enumerate(zip(row, user_types)):
                 try:
                     raw_values[row_idx][col_idx] = make_type(value, user_type)
@@ -232,33 +252,39 @@ class GSheetsClient:
         return raw_values, new_user_types
 
     def _get_cell_data(self, value: dict[str, Any]) -> Cell:
-        top_level_value_keys = ('userEnteredValue', 'effectiveValue', 'formattedValue')
+        top_level_value_keys = ("userEnteredValue", "effectiveValue", "formattedValue")
         if not value or not any(value_key in value for value_key in top_level_value_keys):
             return Cell(
                 value=None,
                 number_format_type=NumberFormatType.NUMBER_FORMAT_TYPE_UNSPECIFIED,
                 empty=True,
             )
-        number_format = NumberFormatType(value.get('effectiveFormat', {}).get(
-            'numberFormat',
-            {'type': NumberFormatType.NUMBER_FORMAT_TYPE_UNSPECIFIED}
-        )['type'])
+        number_format = NumberFormatType(
+            value.get("effectiveFormat", {}).get(
+                "numberFormat", {"type": NumberFormatType.NUMBER_FORMAT_TYPE_UNSPECIFIED}
+            )["type"]
+        )
 
-        extended_value_key = 'formattedValue' if number_format in (
-            NumberFormatType.TIME,
-            NumberFormatType.NUMBER_FORMAT_TYPE_UNSPECIFIED,
-            NumberFormatType.TEXT,
-        ) else 'effectiveValue'
-        if 'effectiveValue' in value and 'boolValue' in value['effectiveValue']:
+        extended_value_key = (
+            "formattedValue"
+            if number_format
+            in (
+                NumberFormatType.TIME,
+                NumberFormatType.NUMBER_FORMAT_TYPE_UNSPECIFIED,
+                NumberFormatType.TEXT,
+            )
+            else "effectiveValue"
+        )
+        if "effectiveValue" in value and "boolValue" in value["effectiveValue"]:
             # bool values may be marked with any number format
-            extended_value = value['effectiveValue']
+            extended_value = value["effectiveValue"]
         else:
             extended_value = value.get(extended_value_key, None)
 
         if isinstance(extended_value, dict):  # formattedValue is a string
             value_key = list(extended_value.keys())[0]
             actual_value = extended_value[value_key]
-            if value_key == 'boolValue':
+            if value_key == "boolValue":
                 number_format = NumberFormatType.BOOLEAN
         else:
             actual_value = extended_value
@@ -296,9 +322,9 @@ class GSheetsClient:
                 try:
                     actual_dt = GSHEETS_EPOCH + datetime.timedelta(days=gsheets_internal_value)
                     if number_format == NumberFormatType.DATE:
-                        actual_value = actual_dt.strftime('%Y-%m-%d')
+                        actual_value = actual_dt.strftime("%Y-%m-%d")
                     elif number_format == NumberFormatType.DATE_TIME:
-                        actual_value = actual_dt.strftime('%Y-%m-%d %H:%M:%S')
+                        actual_value = actual_dt.strftime("%Y-%m-%d %H:%M:%S")
                 except OverflowError:
                     actual_value = None
             else:
@@ -312,14 +338,14 @@ class GSheetsClient:
     def _get_sheet_data(self, sheet: dict[str, Any], num_rows: Optional[int] = None) -> list[list[Cell]]:
         data: list[list[Cell]] = []
         rows_read = 0
-        for rowdata in sheet['data'][0].get('rowData', []):
+        for rowdata in sheet["data"][0].get("rowData", []):
             if num_rows is not None and rows_read >= num_rows:
                 break
-            processed_rowdata = [self._get_cell_data(value) for value in rowdata.get('values', [])]
+            processed_rowdata = [self._get_cell_data(value) for value in rowdata.get("values", [])]
             actual_data_ends_at = len(processed_rowdata) - 1
             while actual_data_ends_at > 0 and processed_rowdata[actual_data_ends_at].empty:
                 actual_data_ends_at -= 1
-            processed_rowdata = processed_rowdata[:actual_data_ends_at + 1]
+            processed_rowdata = processed_rowdata[: actual_data_ends_at + 1]
             data.append(processed_rowdata)
             rows_read += 1
         if data:
@@ -334,26 +360,26 @@ class GSheetsClient:
 
     async def _require_init(self) -> None:
         if self._aiogoogle is None:
-            raise ValueError('Aiogoogle is not set up for the client. It must be used as an async context manager.')
+            raise ValueError("Aiogoogle is not set up for the client. It must be used as an async context manager.")
         if self._sheets_api is None:
-            self._sheets_api = await self._aiogoogle.discover('sheets', 'v4')
+            self._sheets_api = await self._aiogoogle.discover("sheets", "v4")
 
     def _is_retryable_status(self, status_code: int) -> bool:
         return status_code in (408, 429) or status_code >= 500
 
     def _raise_retryable(self, err: aiogoogle.excs.HTTPError) -> None:
-        """ Makes an exception based on the passed error response and raises """
+        """Makes an exception based on the passed error response and raises"""
 
         err_resp_json: dict[str, Any] = err.res.json or {}
-        details: list[dict] = err_resp_json['error'].get('details', [])
+        details: list[dict] = err_resp_json["error"].get("details", [])
 
         if err.res.status_code == 429:
-            err_info: dict[str, Any] = next((item for item in details if item['reason'] == 'RATE_LIMIT_EXCEEDED'), {})
+            err_info: dict[str, Any] = next((item for item in details if item["reason"] == "RATE_LIMIT_EXCEEDED"), {})
             quota_err_cls = {
-                'ReadRequestsPerMinutePerProject': file_upl_exc.QuotaExceededReadRequestsPerMinutePerProject,
-                'ReadRequestsPerMinutePerUser': file_upl_exc.QuotaExceededReadRequestsPerMinutePerUser,
+                "ReadRequestsPerMinutePerProject": file_upl_exc.QuotaExceededReadRequestsPerMinutePerProject,
+                "ReadRequestsPerMinutePerUser": file_upl_exc.QuotaExceededReadRequestsPerMinutePerUser,
             }.get(
-                err_info.get('metadata', {}).get('quota_limit'),
+                err_info.get("metadata", {}).get("quota_limit"),
                 file_upl_exc.QuotaExceeded,
             )
             raise quota_err_cls(debug_info=err_resp_json)
@@ -377,7 +403,9 @@ class GSheetsClient:
                     # Aiogoogle saves user creds on refresh and reuses them
                     # But if we pass incomplete creds smth will go wrong, so it is better not to interfere
                     if self._aiogoogle.user_creds is None:
-                        user_creds = UserCreds(access_token=self.auth.access_token, refresh_token=self.auth.refresh_token)
+                        user_creds = UserCreds(
+                            access_token=self.auth.access_token, refresh_token=self.auth.refresh_token
+                        )
                     else:
                         user_creds = None
                     resp_json = await self._aiogoogle.as_user(request, user_creds=user_creds)  # type: ignore
@@ -389,11 +417,11 @@ class GSheetsClient:
                     LOGGER.error(err)
                     if current_backoff_sum > deadline:
                         self._raise_retryable(err)
-                    backoff_seconds = min(2 ** current_try + random.uniform(0, 1), maximum_backoff)
+                    backoff_seconds = min(2**current_try + random.uniform(0, 1), maximum_backoff)
                     current_backoff_sum += backoff_seconds
                     LOGGER.info(
-                        f'Got status {err.res.status_code} on try {current_try},'
-                        f' going to back off for {backoff_seconds:.3f} seconds'
+                        f"Got status {err.res.status_code} on try {current_try},"
+                        f" going to back off for {backoff_seconds:.3f} seconds"
                     )
                     current_try += 1
                     await asyncio.sleep(backoff_seconds)
@@ -415,8 +443,8 @@ class GSheetsClient:
             includeGridData=include_data,
         )
         if range is not None:
-            req_params['ranges'] = range
-            req_params['path_params_safe_chars'] = {'ranges': URL_SAFE_CHARS}
+            req_params["ranges"] = range
+            req_params["path_params_safe_chars"] = {"ranges": URL_SAFE_CHARS}
 
         return await self._make_request(self._sheets_api.spreadsheets.get(**req_params))
 
@@ -427,19 +455,19 @@ class GSheetsClient:
         req_params = dict(
             spreadsheetId=spreadsheet_id,
             range=range,
-            dateTimeRenderOption='SERIAL_NUMBER',
-            majorDimension='ROWS',
-            valueRenderOption='UNFORMATTED_VALUE',
-            path_params_safe_chars={'range': URL_SAFE_CHARS},
+            dateTimeRenderOption="SERIAL_NUMBER",
+            majorDimension="ROWS",
+            valueRenderOption="UNFORMATTED_VALUE",
+            path_params_safe_chars={"range": URL_SAFE_CHARS},
         )
 
         return await self._make_request(self._sheets_api.spreadsheets.values.get(**req_params))
 
     async def get_spreadsheet(
-            self,
-            spreadsheet_id: str,
-            include_data: bool = True,
-            num_rows: Optional[int] = None,
+        self,
+        spreadsheet_id: str,
+        include_data: bool = True,
+        num_rows: Optional[int] = None,
     ) -> Spreadsheet:
         """
         :param spreadsheet_id: ID of the spreadsheet to get, e.g. 1rnUFa7AiSKD5O80IKCvMy2cSZvLU1kRw9dxbtZbDMWc
@@ -451,25 +479,27 @@ class GSheetsClient:
         resp_json = await self._request_spreadsheet(spreadsheet_id=spreadsheet_id, include_data=include_data)
 
         sheets = []
-        for sheet in resp_json.get('sheets', []):
-            sheet_properties = sheet['properties']
+        for sheet in resp_json.get("sheets", []):
+            sheet_properties = sheet["properties"]
             data: Optional[list[list[Cell]]]
             if include_data:
                 data = await self._loop.run_in_executor(self._tpe, self._get_sheet_data, sheet, num_rows)
             else:
                 data = None
-            sheets.append(Sheet(
-                id=sheet_properties['sheetId'],
-                index=sheet_properties['index'],
-                title=sheet_properties['title'],
-                row_count=sheet_properties['gridProperties']['rowCount'],
-                column_count=sheet_properties['gridProperties']['columnCount'],
-                data=data,
-            ))
+            sheets.append(
+                Sheet(
+                    id=sheet_properties["sheetId"],
+                    index=sheet_properties["index"],
+                    title=sheet_properties["title"],
+                    row_count=sheet_properties["gridProperties"]["rowCount"],
+                    column_count=sheet_properties["gridProperties"]["columnCount"],
+                    data=data,
+                )
+            )
         return Spreadsheet(
-            id=resp_json['spreadsheetId'],
-            url=resp_json['spreadsheetUrl'],
-            title=resp_json['properties']['title'],
+            id=resp_json["spreadsheetId"],
+            url=resp_json["spreadsheetUrl"],
+            title=resp_json["properties"]["title"],
             sheets=sheets,
         )
 
@@ -483,20 +513,22 @@ class GSheetsClient:
         resp_json = await self._request_spreadsheet(spreadsheet_id=spreadsheet_id, include_data=False)
 
         sheets = []
-        for sheet in resp_json.get('sheets', []):
-            sheet_properties = sheet['properties']
-            sheets.append(Sheet(
-                id=sheet_properties['sheetId'],
-                index=sheet_properties['index'],
-                title=sheet_properties['title'],
-                row_count=sheet_properties['gridProperties']['rowCount'],
-                column_count=sheet_properties['gridProperties']['columnCount'],
-                data=None,
-            ))
+        for sheet in resp_json.get("sheets", []):
+            sheet_properties = sheet["properties"]
+            sheets.append(
+                Sheet(
+                    id=sheet_properties["sheetId"],
+                    index=sheet_properties["index"],
+                    title=sheet_properties["title"],
+                    row_count=sheet_properties["gridProperties"]["rowCount"],
+                    column_count=sheet_properties["gridProperties"]["columnCount"],
+                    data=None,
+                )
+            )
         spreadsheet_meta = Spreadsheet(
-            id=resp_json['spreadsheetId'],
-            url=resp_json['spreadsheetUrl'],
-            title=resp_json['properties']['title'],
+            id=resp_json["spreadsheetId"],
+            url=resp_json["spreadsheetUrl"],
+            title=resp_json["properties"]["title"],
             sheets=sheets,
         )
 
@@ -524,31 +556,30 @@ class GSheetsClient:
     async def get_single_range(self, spreadsheet_id: str, range: Range) -> Sheet:
         resp_json = await self._request_spreadsheet(spreadsheet_id=spreadsheet_id, include_data=True, range=str(range))
 
-        sheet_json = resp_json['sheets'][0]
-        sheet_properties = sheet_json['properties']
+        sheet_json = resp_json["sheets"][0]
+        sheet_properties = sheet_json["properties"]
         sheet_data = await self._loop.run_in_executor(self._tpe, self._get_sheet_data, sheet_json)
         sheet = Sheet(
-            id=sheet_properties['sheetId'],
-            index=sheet_properties['index'],
-            title=sheet_properties['title'],
-            row_count=sheet_properties['gridProperties']['rowCount'],
-            column_count=sheet_properties['gridProperties']['columnCount'],
+            id=sheet_properties["sheetId"],
+            index=sheet_properties["index"],
+            title=sheet_properties["title"],
+            row_count=sheet_properties["gridProperties"]["rowCount"],
+            column_count=sheet_properties["gridProperties"]["columnCount"],
             data=sheet_data,
         )
         return sheet
 
     async def get_single_values_range(
-            self,
-            spreadsheet_id: str,
-            range: Range,
-            user_types: list[BIType | str]
+        self, spreadsheet_id: str, range: Range, user_types: list[BIType | str]
     ) -> Tuple[list[list[Any]], list[BIType | str]]:
         resp_json = await self._request_values(spreadsheet_id=spreadsheet_id, range=str(range))
 
-        raw_values = resp_json.get('values', [])
+        raw_values = resp_json.get("values", [])
         values, updated_user_types = await self._loop.run_in_executor(
             self._tpe,
-            self._process_values, raw_values, user_types,
+            self._process_values,
+            raw_values,
+            user_types,
         )
 
         return values, updated_user_types

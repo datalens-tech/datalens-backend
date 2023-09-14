@@ -5,17 +5,22 @@ import logging
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
-from bi_constants.api_constants import DLHeadersCommon, DLHeaders
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase, RequiredResourceCommon
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
-
+from bi_api_commons.aiohttp.aiohttp_wrappers import (
+    DLRequestBase,
+    RequiredResourceCommon,
+)
+from bi_constants.api_constants import (
+    DLHeaders,
+    DLHeadersCommon,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 def master_key_middleware(
-        master_key: str,
-        header: DLHeaders = DLHeadersCommon.API_KEY,
+    master_key: str,
+    header: DLHeaders = DLHeadersCommon.API_KEY,
 ) -> AIOHTTPMiddleware:
     @web.middleware
     @DLRequestBase.use_dl_request

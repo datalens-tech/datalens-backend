@@ -3,51 +3,71 @@ from __future__ import annotations
 import abc
 import functools
 import logging.config
-from typing import Generic, TypeVar
+from typing import (
+    Generic,
+    TypeVar,
+)
 
 from aiohttp import web
 import attr
-
-from bi_constants.enums import ConnectionType, ProcessorType, RedisInstanceKind
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.enums import RedisMode
-
-from bi_core.aio.middlewares.tracing import TracingService
-from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
-from bi_core.aio.web_app_services.redis import RedisSentinelService, SingleHostSimpleRedisService
-from bi_core.aio.web_app_services.server_header import ServerHeader
-from bi_core.utils import make_url
-from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 
 from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
-
-from bi_api_lib.aio.aiohttp_wrappers import AppWrapper, DSAPIRequest
+from bi_api_lib.aio.aiohttp_wrappers import (
+    AppWrapper,
+    DSAPIRequest,
+)
 from bi_api_lib.aio.middlewares.error_handling_outer import DatasetAPIErrorHandler
 from bi_api_lib.aio.middlewares.json_body_middleware import json_body_middleware
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_settings import DataApiAppSettings
 from bi_api_lib.app.data_api.resources.dashsql import DashSQLView
 from bi_api_lib.app.data_api.resources.dataset.distinct import (
-    DatasetDistinctViewV1, DatasetDistinctViewV1_5, DatasetDistinctViewV2,
+    DatasetDistinctViewV1,
+    DatasetDistinctViewV1_5,
+    DatasetDistinctViewV2,
 )
 from bi_api_lib.app.data_api.resources.dataset.fields import DatasetFieldsView
 from bi_api_lib.app.data_api.resources.dataset.pivot import DatasetPivotView
 from bi_api_lib.app.data_api.resources.dataset.preview import (
-    DatasetPreviewViewV1, DatasetPreviewViewV1_5, DatasetPreviewViewV2,
+    DatasetPreviewViewV1,
+    DatasetPreviewViewV1_5,
+    DatasetPreviewViewV2,
 )
 from bi_api_lib.app.data_api.resources.dataset.range import (
-    DatasetRangeViewV1, DatasetRangeViewV1_5, DatasetRangeViewV2,
+    DatasetRangeViewV1,
+    DatasetRangeViewV1_5,
+    DatasetRangeViewV2,
 )
 from bi_api_lib.app.data_api.resources.dataset.result import (
-    DatasetResultViewV1, DatasetResultViewV1_5, DatasetResultViewV2,
+    DatasetResultViewV1,
+    DatasetResultViewV1_5,
+    DatasetResultViewV2,
 )
 from bi_api_lib.app.data_api.resources.metrics import DSDataApiMetricsView
-from bi_api_lib.app.data_api.resources.ping import PingView, PingReadyView
+from bi_api_lib.app.data_api.resources.ping import (
+    PingReadyView,
+    PingView,
+)
 from bi_api_lib.app.data_api.resources.unistat import UnistatView
-
+from bi_api_lib.app_common import SRFactoryBuilder
+from bi_api_lib.app_settings import DataApiAppSettings
+from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
+from bi_configs.connectors_settings import ConnectorSettingsBase
+from bi_configs.enums import RedisMode
+from bi_constants.enums import (
+    ConnectionType,
+    ProcessorType,
+    RedisInstanceKind,
+)
+from bi_core.aio.middlewares.tracing import TracingService
+from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
+from bi_core.aio.web_app_services.redis import (
+    RedisSentinelService,
+    SingleHostSimpleRedisService,
+)
+from bi_core.aio.web_app_services.server_header import ServerHeader
+from bi_core.utils import make_url
 
 LOGGER = logging.getLogger(__name__)
 
@@ -71,7 +91,7 @@ async def add_connection_close(request: web.Request, response: web.StreamRespons
     single-request-per-connection (telling the client to close the
     connection after the first request).
     """
-    response.headers.add('Connection', 'close')
+    response.headers.add("Connection", "close")
 
 
 @attr.s(frozen=True)
@@ -94,8 +114,8 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
 
     @abc.abstractmethod
     def set_up_environment(
-            self,
-            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        self,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
         raise NotImplementedError()
 
@@ -109,51 +129,63 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         return True
 
     def set_up_routes(self, app: web.Application) -> None:
-        app.router.add_route('get', '/ping', PingView)
-        app.router.add_route('get', '/ping_ready', PingReadyView)
-        app.router.add_route('get', '/unistat/', UnistatView)
-        app.router.add_route('get', '/metrics', DSDataApiMetricsView)
+        app.router.add_route("get", "/ping", PingView)
+        app.router.add_route("get", "/ping_ready", PingReadyView)
+        app.router.add_route("get", "/unistat/", UnistatView)
+        app.router.add_route("get", "/metrics", DSDataApiMetricsView)
 
         # TODO: at some point the non-'/data/' routes should probably be removed.
-        app.router.add_route('post', '/api/v1/connections/{conn_id}/dashsql', DashSQLView)  # FIXME: Remove
-        app.router.add_route('post', '/api/data/v1/connections/{conn_id}/dashsql', DashSQLView)
-        app.router.add_route('post', '/api/v1/datasets/{ds_id}/versions/draft/result', DatasetResultViewV1)  # FIXME: Remove
-        app.router.add_route('post', '/api/data/v1/datasets/{ds_id}/versions/draft/result', DatasetResultViewV1)
-        app.router.add_route('post', '/api/data/v1.5/datasets/{ds_id}/result', DatasetResultViewV1_5)
-        app.router.add_route('post', '/api/data/v2/datasets/{ds_id}/result', DatasetResultViewV2)
-        app.router.add_route('post', '/api/v1/datasets/{ds_id}/versions/draft/values/distinct', DatasetDistinctViewV1)  # FIXME: Remove
-        app.router.add_route('post', '/api/data/v1/datasets/{ds_id}/versions/draft/values/distinct', DatasetDistinctViewV1)
-        app.router.add_route('post', '/api/data/v1.5/datasets/{ds_id}/values/distinct', DatasetDistinctViewV1_5)
-        app.router.add_route('post', '/api/data/v2/datasets/{ds_id}/values/distinct', DatasetDistinctViewV2)
-        app.router.add_route('post', '/api/v1/datasets/{ds_id}/versions/draft/values/range', DatasetRangeViewV1)  # FIXME: Remove
-        app.router.add_route('post', '/api/data/v1/datasets/{ds_id}/versions/draft/values/range', DatasetRangeViewV1)
-        app.router.add_route('post', '/api/data/v1.5/datasets/{ds_id}/values/range', DatasetRangeViewV1_5)
-        app.router.add_route('post', '/api/data/v2/datasets/{ds_id}/values/range', DatasetRangeViewV2)
-        app.router.add_route('post', '/api/data/v1/datasets/{ds_id}/versions/draft/pivot', DatasetPivotView)  # FIXME: Remove
-        app.router.add_route('post', '/api/data/v2/datasets/{ds_id}/pivot', DatasetPivotView)
-        app.router.add_route('get', '/api/v1/datasets/{ds_id}/fields', DatasetFieldsView)  # FIXME: Remove
-        app.router.add_route('get', '/api/data/v1/datasets/{ds_id}/fields', DatasetFieldsView)
-        app.router.add_route('get', '/api/data/v2/datasets/{ds_id}/fields', DatasetFieldsView)
+        app.router.add_route("post", "/api/v1/connections/{conn_id}/dashsql", DashSQLView)  # FIXME: Remove
+        app.router.add_route("post", "/api/data/v1/connections/{conn_id}/dashsql", DashSQLView)
+        app.router.add_route(
+            "post", "/api/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1
+        )  # FIXME: Remove
+        app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1)
+        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/result", DatasetResultViewV1_5)
+        app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/result", DatasetResultViewV2)
+        app.router.add_route(
+            "post", "/api/v1/datasets/{ds_id}/versions/draft/values/distinct", DatasetDistinctViewV1
+        )  # FIXME: Remove
+        app.router.add_route(
+            "post", "/api/data/v1/datasets/{ds_id}/versions/draft/values/distinct", DatasetDistinctViewV1
+        )
+        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/values/distinct", DatasetDistinctViewV1_5)
+        app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/values/distinct", DatasetDistinctViewV2)
+        app.router.add_route(
+            "post", "/api/v1/datasets/{ds_id}/versions/draft/values/range", DatasetRangeViewV1
+        )  # FIXME: Remove
+        app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/values/range", DatasetRangeViewV1)
+        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/values/range", DatasetRangeViewV1_5)
+        app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/values/range", DatasetRangeViewV2)
+        app.router.add_route(
+            "post", "/api/data/v1/datasets/{ds_id}/versions/draft/pivot", DatasetPivotView
+        )  # FIXME: Remove
+        app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/pivot", DatasetPivotView)
+        app.router.add_route("get", "/api/v1/datasets/{ds_id}/fields", DatasetFieldsView)  # FIXME: Remove
+        app.router.add_route("get", "/api/data/v1/datasets/{ds_id}/fields", DatasetFieldsView)
+        app.router.add_route("get", "/api/data/v2/datasets/{ds_id}/fields", DatasetFieldsView)
 
         if not self._is_public:
-            app.router.add_route('post', '/api/v1/datasets/data/preview', DatasetPreviewViewV1)  # FIXME: Remove
-            app.router.add_route('post', '/api/data/v1/datasets/data/preview', DatasetPreviewViewV1)
-            app.router.add_route('post', '/api/v1/datasets/{ds_id}/versions/draft/preview', DatasetPreviewViewV1)  # FIXME: Remove
-            app.router.add_route('post', '/api/data/v1/datasets/{ds_id}/versions/draft/preview', DatasetPreviewViewV1)
-            app.router.add_route('post', '/api/data/v1.5/datasets/data/preview', DatasetPreviewViewV1_5)
-            app.router.add_route('post', '/api/data/v1.5/datasets/{ds_id}/preview', DatasetPreviewViewV1_5)
-            app.router.add_route('post', '/api/data/v2/datasets/data/preview', DatasetPreviewViewV2)
-            app.router.add_route('post', '/api/data/v2/datasets/{ds_id}/preview', DatasetPreviewViewV2)
+            app.router.add_route("post", "/api/v1/datasets/data/preview", DatasetPreviewViewV1)  # FIXME: Remove
+            app.router.add_route("post", "/api/data/v1/datasets/data/preview", DatasetPreviewViewV1)
+            app.router.add_route(
+                "post", "/api/v1/datasets/{ds_id}/versions/draft/preview", DatasetPreviewViewV1
+            )  # FIXME: Remove
+            app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/preview", DatasetPreviewViewV1)
+            app.router.add_route("post", "/api/data/v1.5/datasets/data/preview", DatasetPreviewViewV1_5)
+            app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/preview", DatasetPreviewViewV1_5)
+            app.router.add_route("post", "/api/data/v2/datasets/data/preview", DatasetPreviewViewV2)
+            app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/preview", DatasetPreviewViewV2)
 
     def set_up_sentry(self) -> None:
         import sentry_sdk
         from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+        from sentry_sdk.integrations.argv import ArgvIntegration
         from sentry_sdk.integrations.atexit import AtexitIntegration
         from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-        from sentry_sdk.integrations.stdlib import StdlibIntegration
-        from sentry_sdk.integrations.modules import ModulesIntegration
-        from sentry_sdk.integrations.argv import ArgvIntegration
         from sentry_sdk.integrations.logging import LoggingIntegration
+        from sentry_sdk.integrations.modules import ModulesIntegration
+        from sentry_sdk.integrations.stdlib import StdlibIntegration
         from sentry_sdk.integrations.threading import ThreadingIntegration
 
         from bi_api_commons.logging_sentry import cleanup_common_secret_data
@@ -179,8 +211,8 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         )
 
     def create_app(
-            self,
-            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        self,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
         if self._settings.SENTRY_ENABLED:
             self.set_up_sentry()
@@ -260,7 +292,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 app.on_startup.append(_log_exc(redis_server_sentinel.init_hook))
                 app.on_cleanup.append(_log_exc(redis_server_sentinel.tear_down_hook))
             else:
-                raise ValueError(f'Unknown redis mode {self._settings.CACHES_REDIS.MODE}')
+                raise ValueError(f"Unknown redis mode {self._settings.CACHES_REDIS.MODE}")
 
         if self._settings.MUTATIONS_CACHES_ON and self._settings.MUTATIONS_REDIS:
             if self._settings.MUTATIONS_REDIS.MODE == RedisMode.single_host:
@@ -278,14 +310,16 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 app.on_startup.append(_log_exc(mutations_redis_server_single_host.init_hook))
                 app.on_cleanup.append(_log_exc(mutations_redis_server_single_host.tear_down_hook))
             else:
-                mutations_redis_server_sentinel: SingleHostSimpleRedisService | RedisSentinelService = RedisSentinelService(
-                    instance_kind=RedisInstanceKind.mutations,
-                    namespace=self._settings.MUTATIONS_REDIS.CLUSTER_NAME,
-                    sentinel_hosts=self._settings.MUTATIONS_REDIS.HOSTS,
-                    sentinel_port=self._settings.MUTATIONS_REDIS.PORT,
-                    db=self._settings.MUTATIONS_REDIS.DB,
-                    password=self._settings.MUTATIONS_REDIS.PASSWORD,
-                    ssl=self._settings.MUTATIONS_REDIS.SSL,
+                mutations_redis_server_sentinel: SingleHostSimpleRedisService | RedisSentinelService = (
+                    RedisSentinelService(
+                        instance_kind=RedisInstanceKind.mutations,
+                        namespace=self._settings.MUTATIONS_REDIS.CLUSTER_NAME,
+                        sentinel_hosts=self._settings.MUTATIONS_REDIS.HOSTS,
+                        sentinel_port=self._settings.MUTATIONS_REDIS.PORT,
+                        db=self._settings.MUTATIONS_REDIS.DB,
+                        password=self._settings.MUTATIONS_REDIS.PASSWORD,
+                        ssl=self._settings.MUTATIONS_REDIS.SSL,
+                    )
                 )
                 app.on_startup.append(_log_exc(mutations_redis_server_sentinel.init_hook))
                 app.on_cleanup.append(_log_exc(mutations_redis_server_sentinel.tear_down_hook))
@@ -302,7 +336,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
 
         # TODO: don't use it again!
         # special hack for gettings bleeding edge users in dashsql
-        app['BLEEDING_EDGE_USERS'] = self._settings.BLEEDING_EDGE_USERS
+        app["BLEEDING_EDGE_USERS"] = self._settings.BLEEDING_EDGE_USERS
 
         self.set_up_routes(app=app)
 

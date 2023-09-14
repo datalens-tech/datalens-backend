@@ -12,7 +12,6 @@ from sqlalchemy.engine import Dialect
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_core.connection_models import DBIdent
 
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -35,45 +34,46 @@ def compile_query_for_debug(query: sasql.Select, dialect: Dialect) -> str:
             compiled = query.compile(dialect=dialect)
             return make_debug_query(str(query), compiled.params)
     except Exception:
-        return '-'
+        return "-"
 
 
 def make_debug_query(query: str, params: Union[list, dict]) -> str:
-    return f'{query} {params!r}'
+    return f"{query} {params!r}"
 
 
 class CursorLogger:
-
     @staticmethod
     def before_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):  # type: ignore
         tracer = opentracing.global_tracer()
         # Scope was not created due to decoupled span closing procedure
         #  which may cause broken parent-child relationships in case when `after_cursor_execute_handler()`
         #  will not be called
-        span = tracer.start_span('sa-cursor-execute')
+        span = tracer.start_span("sa-cursor-execute")
 
         engine_url = context.engine.url
-        span.log_kv(dict(
-            sa_dialect=engine_url.drivername,
-        ))
+        span.log_kv(
+            dict(
+                sa_dialect=engine_url.drivername,
+            )
+        )
 
-        conn.info.setdefault('query_start_time', []).append(time.monotonic())
-        conn.info.setdefault('ot_span_scope_stack', []).append(span)
+        conn.info.setdefault("query_start_time", []).append(time.monotonic())
+        conn.info.setdefault("ot_span_scope_stack", []).append(span)
 
     @staticmethod
     def after_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):  # type: ignore
         engine_url = context.engine.url
-        query_start_time = conn.info['query_start_time'].pop(-1)
+        query_start_time = conn.info["query_start_time"].pop(-1)
 
-        span: opentracing.Span = conn.info['ot_span_scope_stack'].pop()
+        span: opentracing.Span = conn.info["ot_span_scope_stack"].pop()
         span.finish()
 
         execution_time_seconds = time.monotonic() - query_start_time
 
         extra = dict(
-            event_code='db_exec',
+            event_code="db_exec",
             username=engine_url.username,
-            query_id=str(getattr(cursor, '_query_id', None)),
+            query_id=str(getattr(cursor, "_query_id", None)),
             # missing: folder_id
             execution_time=int(round(execution_time_seconds * 1000)),
             database=engine_url.database,
@@ -84,4 +84,4 @@ class CursorLogger:
             # missing: dataset_id
             # missing: connection_id
         )
-        LOGGER.info('Cursor executed', extra=extra)
+        LOGGER.info("Cursor executed", extra=extra)

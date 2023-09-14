@@ -22,8 +22,8 @@ class DataCellTuple:
 
 
 class DataItemTag(Enum):
-    total = 'total'
-    annotation = 'annotation'
+    total = "total"
+    annotation = "annotation"
 
 
 @attr.s(frozen=True)

@@ -1,33 +1,52 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Collection, Generator, Optional
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    Generator,
+    Optional,
+)
 
 import attr
 
 from bi_constants.enums import (
-    AggregationFunction, BIType, CreateDSFrom,
-    DataSourceRole, DataSourceCreatedVia, FieldType, ManagedBy,
+    AggregationFunction,
+    BIType,
+    CreateDSFrom,
+    DataSourceCreatedVia,
+    DataSourceRole,
+    FieldType,
+    ManagedBy,
 )
-
 from bi_core import multisource
-from bi_core.base_models import ObligatoryFilter, connection_ref_from_id
+from bi_core.base_models import (
+    ObligatoryFilter,
+    connection_ref_from_id,
+)
 from bi_core.component_errors import ComponentErrorRegistry
+from bi_core.components.dependencies.primitives import FieldInterDependencyInfo
 from bi_core.components.ids import (
-    FIELD_ID_GENERATOR_MAP,
     DEFAULT_FIELD_ID_GENERATOR_TYPE,
+    FIELD_ID_GENERATOR_MAP,
     resolve_id_collisions,
 )
-from bi_core.components.dependencies.primitives import FieldInterDependencyInfo
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionSpec, DataSourceCollectionSpecBase,
+    DataSourceCollectionSpec,
+    DataSourceCollectionSpecBase,
 )
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.db import SchemaColumn
-from bi_core.fields import DirectCalculationSpec, ResultSchema
+from bi_core.fields import (
+    DirectCalculationSpec,
+    ResultSchema,
+)
 from bi_core.rls import RLS
-from bi_core.us_entry import BaseAttrsDataModel, USEntry
+from bi_core.us_entry import (
+    BaseAttrsDataModel,
+    USEntry,
+)
 
 if TYPE_CHECKING:
     from bi_core.components.ids import FieldIdGenerator
@@ -37,8 +56,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Dataset(USEntry):
-    dir_name = ''  # type: ignore  # TODO: fix
-    scope = 'dataset'  # type: ignore  # TODO: fix
+    dir_name = ""  # type: ignore  # TODO: fix
+    scope = "dataset"  # type: ignore  # TODO: fix
 
     @attr.s
     class DataModel(BaseAttrsDataModel):
@@ -77,7 +96,7 @@ class Dataset(USEntry):
             return dsrc_coll_spec.id
 
     def get_own_materialized_tables(self, source_id: Optional[str] = None) -> Generator[str, None, None]:
-        for dsrc_coll_spec in (self.data.source_collections or ()):
+        for dsrc_coll_spec in self.data.source_collections or ():
             if not dsrc_coll_spec or source_id and dsrc_coll_spec.id != source_id:
                 continue
             if not isinstance(dsrc_coll_spec, DataSourceCollectionSpec):
@@ -91,11 +110,11 @@ class Dataset(USEntry):
                     yield dsrc_spec.table_name
 
     def find_data_source_configuration(  # type: ignore  # TODO: fix
-            self,
-            connection_id: Optional[str],
-            created_from: Optional[CreateDSFrom] = None,
-            title: Optional[str] = None,
-            parameters: Optional[dict] = None,
+        self,
+        connection_id: Optional[str],
+        created_from: Optional[CreateDSFrom] = None,
+        title: Optional[str] = None,
+        parameters: Optional[dict] = None,
     ) -> Optional[str]:
         """
         Check whether dataset already has a source with the given configuration.
@@ -120,12 +139,12 @@ class Dataset(USEntry):
 
         for dsrc_coll_spec in self.data.source_collections:
             if (
-                    isinstance(dsrc_coll_spec, DataSourceCollectionSpec)
-                    and dsrc_coll_spec.origin is not None
-                    and dsrc_coll_spec.origin.connection_ref == connection_ref
-                    and dsrc_coll_spec.origin.source_type == created_from
-                    and spec_matches_parameters(dsrc_coll_spec.origin)
-                    and (True if title is None else dsrc_coll_spec.title == title)
+                isinstance(dsrc_coll_spec, DataSourceCollectionSpec)
+                and dsrc_coll_spec.origin is not None
+                and dsrc_coll_spec.origin.connection_ref == connection_ref
+                and dsrc_coll_spec.origin.source_type == created_from
+                and spec_matches_parameters(dsrc_coll_spec.origin)
+                and (True if title is None else dsrc_coll_spec.title == title)
             ):
                 # reference matches params
                 return dsrc_coll_spec.id
@@ -140,7 +159,7 @@ class Dataset(USEntry):
         title = column.title
         if autofix_title:
             existing_titles = {f.title for f in self.result_schema.fields}
-            title = resolve_id_collisions(item=title, existing_items=existing_titles, formatter='{} ({})')
+            title = resolve_id_collisions(item=title, existing_items=existing_titles, formatter="{} ({})")
 
         if field_id_generator is None:
             FieldIdGeneratorClass = FIELD_ID_GENERATOR_MAP[DEFAULT_FIELD_ID_GENERATOR_TYPE]
@@ -154,20 +173,20 @@ class Dataset(USEntry):
             hidden = True
 
         column_data = {
-            'title': title,
-            'guid': guid,
-            'hidden': hidden,
-            'description': column.description,
-            'aggregation': AggregationFunction.none.name,
-            'cast': column.user_type.name,
-            'type': FieldType.DIMENSION.name,
-            'data_type': column.user_type.name,
-            'initial_data_type': column.user_type.name,
-            'valid': True,
-            'has_auto_aggregation': column.has_auto_aggregation,
-            'lock_aggregation': column.lock_aggregation,
-            'managed_by': ManagedBy.user.name,
-            'calc_spec': DirectCalculationSpec(
+            "title": title,
+            "guid": guid,
+            "hidden": hidden,
+            "description": column.description,
+            "aggregation": AggregationFunction.none.name,
+            "cast": column.user_type.name,
+            "type": FieldType.DIMENSION.name,
+            "data_type": column.user_type.name,
+            "initial_data_type": column.user_type.name,
+            "valid": True,
+            "has_auto_aggregation": column.has_auto_aggregation,
+            "lock_aggregation": column.lock_aggregation,
+            "managed_by": ManagedBy.user.name,
+            "calc_spec": DirectCalculationSpec(
                 avatar_id=avatar_id,
                 source=column.name,
             ),
@@ -186,7 +205,7 @@ class Dataset(USEntry):
 
     @property
     def created_via(self) -> DataSourceCreatedVia:
-        created_via_name = self.meta.get('created_via') or DataSourceCreatedVia.user.name
+        created_via_name = self.meta.get("created_via") or DataSourceCreatedVia.user.name
         return DataSourceCreatedVia[created_via_name]
 
     @property

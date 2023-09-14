@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import datetime
-from typing import Optional, Union
+from typing import (
+    Optional,
+    Union,
+)
 
-import dateutil.relativedelta
 import dateutil.parser
+import dateutil.relativedelta
 
 
 def now():
@@ -47,13 +50,13 @@ class approx_timestamp(approximately):
 
 def to_str(v) -> str:
     if isinstance(v, bytes):
-        return v.decode('ascii')
+        return v.decode("ascii")
     return v
 
 
 def to_unicode(v) -> str:
     if isinstance(v, bytes):
-        return v.decode('utf-8')
+        return v.decode("utf-8")
     return v
 
 
@@ -86,6 +89,6 @@ def utc_ts(*args, tzinfo: Optional[datetime.tzinfo] = None) -> float:
 
 
 def as_tz(dt: datetime.datetime, tzinfo: datetime.tzinfo) -> datetime.datetime:
-    assert hasattr(tzinfo, 'localize'), 'non-pytz time zones are not supported'
+    assert hasattr(tzinfo, "localize"), "non-pytz time zones are not supported"
     # Sadly pytz has no single base class defining the `localize` interface
     return tzinfo.localize(dt)  # type: ignore

@@ -1,16 +1,24 @@
 from __future__ import annotations
 
-from typing import Any, Generator, TypeVar, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    TypeVar,
+)
 
 import attr
 
 from bi_api_lib.pivot.base.data_frame import PivotDataFrame
 
 if TYPE_CHECKING:
-    from bi_api_lib.pivot.primitives import MeasureValues, PivotHeader
+    from bi_api_lib.pivot.primitives import (
+        MeasureValues,
+        PivotHeader,
+    )
 
 
-_PIVOT_DATA_FRAME_TV = TypeVar('_PIVOT_DATA_FRAME_TV', bound='EmptyPivotDataFrame')
+_PIVOT_DATA_FRAME_TV = TypeVar("_PIVOT_DATA_FRAME_TV", bound="EmptyPivotDataFrame")
 
 
 @attr.s

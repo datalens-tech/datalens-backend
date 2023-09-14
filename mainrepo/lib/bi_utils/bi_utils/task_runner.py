@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import abc
 import asyncio
-from typing import Any, Awaitable, Iterable, List
+from typing import (
+    Any,
+    Awaitable,
+    Iterable,
+    List,
+)
 
 
 class TaskRunner(abc.ABC):

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import itertools
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import sqlalchemy as sa
 
@@ -32,9 +35,8 @@ class Formatter:
         pieces_len = sum(len(piece) for piece in pieces)
         # Note that this isn't necessarily correct as the further indentation
         # isn't taken into account.
-        inline_len = (
-            pieces_len
-            + (len(extra_separator) + len(self.inline_separator)) * (len(pieces) - 1 if pieces else 0)
+        inline_len = pieces_len + (len(extra_separator) + len(self.inline_separator)) * (
+            len(pieces) - 1 if pieces else 0
         )
         if inline_len <= self.preferred_width:
             return self.join(pieces, separator=(extra_separator + self.inline_separator))
@@ -46,9 +48,9 @@ class Formatter:
     def join_block(self, name: str, contents: str, block_indent: bool = True) -> str:
         inline_pieces = [name, self.inline_separator, contents]
         if (
-                "\n" not in name
-                and "\n" not in contents
-                and sum(len(item) for item in inline_pieces) <= self.preferred_width
+            "\n" not in name
+            and "\n" not in contents
+            and sum(len(item) for item in inline_pieces) <= self.preferred_width
         ):
             return "".join(inline_pieces)
         return self.join((name, self.indent(contents) if block_indent else contents))
@@ -61,8 +63,12 @@ class Formatter:
         return sql_text
 
     def join_sql_join(
-            self, left: str, join_type: str, right: str,
-            onclause: str, ontext: str = "ON",
+        self,
+        left: str,
+        join_type: str,
+        right: str,
+        onclause: str,
+        ontext: str = "ON",
     ):
         return self.join_ext(
             (
@@ -79,19 +85,17 @@ class Formatter:
             return sql_text
         if "\n" not in sql_text:
             return sql_text
-        return self.join((
-            "(",
-            self.indent(sql_text.removeprefix("(").removesuffix(")")),
-            ")",
-        ))
+        return self.join(
+            (
+                "(",
+                self.indent(sql_text.removeprefix("(").removesuffix(")")),
+                ")",
+            )
+        )
 
 
 def _cls_keys(cls: type) -> set[str]:
-    return {
-        key
-        for key in cls.__dict__
-        if not key.startswith("__")
-    }
+    return {key for key in cls.__dict__ if not key.startswith("__")}
 
 
 class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO: fix
@@ -149,17 +153,13 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         if uncovered_attrs:
             raise Exception(
                 "Dialect-specific compiler overrides methods that aren't re-overridden in `bi_...`",
-                dict(uncovered_attrs=uncovered_attrs, bi_clss=bi_clss, base_clss=base_clss)
+                dict(uncovered_attrs=uncovered_attrs, bi_clss=bi_clss, base_clss=base_clss),
             )
         super().__init_subclass__()
 
     def visit_join(self, join, asfrom=False, from_linter=None, **kwargs):
         if from_linter:
-            from_linter.edges.update(
-                itertools.product(
-                    join.left._from_objects, join.right._from_objects
-                )
-            )
+            from_linter.edges.update(itertools.product(join.left._from_objects, join.right._from_objects))
 
         if join.full:
             join_type = " FULL OUTER JOIN "
@@ -188,7 +188,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         select_wraps_for=None,
         lateral=False,
         from_linter=None,
-        **kwargs
+        **kwargs,
     ):
         assert select_wraps_for is None, (
             "SQLAlchemy 1.4 requires use of "
@@ -201,9 +201,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         # passed in.  for ORM use this will convert from an ORM-state
         # SELECT to a regular "Core" SELECT.  other composed operations
         # such as computation of joins will be performed.
-        compile_state = select_stmt._compile_state_factory(
-            select_stmt, self, **kwargs
-        )
+        compile_state = select_stmt._compile_state_factory(select_stmt, self, **kwargs)
         select_stmt = compile_state.statement
 
         toplevel = not self.stack
@@ -217,9 +215,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         # restructure the SELECT to allow for LIMIT/OFFSET and possibly
         # other conditions
         if self.translate_select_structure:
-            new_select_stmt = self.translate_select_structure(
-                select_stmt, asfrom=asfrom, **kwargs
-            )
+            new_select_stmt = self.translate_select_structure(select_stmt, asfrom=asfrom, **kwargs)
 
             # if SELECT was restructured, maintain a link to the originals
             # and assemble a new compile state
@@ -228,9 +224,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
                 select_wraps_for = select_stmt
                 select_stmt = new_select_stmt
 
-                compile_state = select_stmt._compile_state_factory(
-                    select_stmt, self, **kwargs
-                )
+                compile_state = select_stmt._compile_state_factory(select_stmt, self, **kwargs)
                 select_stmt = compile_state.statement
 
         entry = self._default_stack_entry if toplevel else self.stack[-1]
@@ -252,14 +246,10 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         if not populate_result_map and "add_to_result_map" in kwargs:
             del kwargs["add_to_result_map"]
 
-        froms = self._setup_select_stack(
-            select_stmt, compile_state, entry, asfrom, lateral, compound_index
-        )
+        froms = self._setup_select_stack(select_stmt, compile_state, entry, asfrom, lateral, compound_index)
 
         column_clause_args = kwargs.copy()
-        column_clause_args.update(
-            {"within_label_clause": False, "within_columns_clause": False}
-        )
+        column_clause_args.update({"within_label_clause": False, "within_columns_clause": False})
 
         text_pieces = ["SELECT"]  # we're off to a good start !
 
@@ -275,9 +265,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
                 cte._compiler_dispatch(self, **kwargs)
 
         if select_stmt._prefixes:
-            text_pieces.append(self._generate_prefixes(
-                select_stmt, select_stmt._prefixes, **kwargs
-            ))
+            text_pieces.append(self._generate_prefixes(select_stmt, select_stmt._prefixes, **kwargs))
 
         subtext = self.get_select_precolumns(select_stmt, **kwargs)
         if subtext:
@@ -358,9 +346,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
 
         if select_stmt._statement_hints:
             per_dialect = [
-                ht
-                for (dialect_name, ht) in select_stmt._statement_hints
-                if dialect_name in ("*", self.dialect.name)
+                ht for (dialect_name, ht) in select_stmt._statement_hints if dialect_name in ("*", self.dialect.name)
             ]
             if per_dialect:
                 text_pieces.append(self.get_statement_hint_text(per_dialect))
@@ -372,9 +358,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
                 text_pieces = [self._render_cte_clause(nesting_level=nesting_level)] + text_pieces
 
         if select_stmt._suffixes:
-            text_pieces.append(self._generate_prefixes(
-                select_stmt, select_stmt._suffixes, **kwargs
-            ))
+            text_pieces.append(self._generate_prefixes(select_stmt, select_stmt._suffixes, **kwargs))
 
         self.stack.pop(-1)
 
@@ -407,36 +391,20 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
             if select._hints:
                 from_sql = self._pretty.join_group(
                     [
-                        f._compiler_dispatch(
-                            self,
-                            asfrom=True,
-                            fromhints=byfrom,
-                            from_linter=from_linter,
-                            **kwargs
-                        )
+                        f._compiler_dispatch(self, asfrom=True, fromhints=byfrom, from_linter=from_linter, **kwargs)
                         for f in froms
                     ]
                 )
             else:
                 from_sql = self._pretty.join_group(
-                    [
-                        f._compiler_dispatch(
-                            self,
-                            asfrom=True,
-                            from_linter=from_linter,
-                            **kwargs
-                        )
-                        for f in froms
-                    ]
+                    [f._compiler_dispatch(self, asfrom=True, from_linter=from_linter, **kwargs) for f in froms]
                 )
             text_pieces.append(self._pretty.join_block("FROM", from_sql, block_indent=False))
         else:
             text_pieces.append(self.default_from())
 
         if select._where_criteria:
-            t = self._generate_delimited_and_list(
-                select._where_criteria, from_linter=from_linter, **kwargs
-            )
+            t = self._generate_delimited_and_list(select._where_criteria, from_linter=from_linter, **kwargs)
             if t:
                 text_pieces.append(self._pretty.join_block("WHERE", t))
 
@@ -447,9 +415,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
             text_pieces.append(self.group_by_clause(select, **kwargs))
 
         if select._having_criteria:
-            t = self._generate_delimited_and_list(
-                select._having_criteria, **kwargs
-            )
+            t = self._generate_delimited_and_list(select._having_criteria, **kwargs)
             if t:
                 text_pieces.append(self._pretty.join_block("HAVING", t))
 
@@ -485,10 +451,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
     def visit_clauselist(self, clauselist, *args, **kwargs):
         if clauselist.operator is sa.sql.operators.and_:
             assert sa.sql.compiler.OPERATORS[clauselist.operator].strip() == "AND"
-            pieces = [
-                el._compiler_dispatch(self, *args, **kwargs)
-                for el in clauselist.clauses
-            ]
+            pieces = [el._compiler_dispatch(self, *args, **kwargs) for el in clauselist.clauses]
             separator = "AND "
             pieces = pieces[:1] + [separator + piece for piece in pieces[1:]]
             return self._pretty.join_ext(pieces, extra_separator="")

@@ -16,11 +16,11 @@ class BiApiTestEnvironmentConfiguration:
 
     mutation_cache_enabled: bool = attr.ib(default=True)
 
-    bi_compeng_pg_url: str = attr.ib(default='')
+    bi_compeng_pg_url: str = attr.ib(default="")
 
-    redis_host: str = attr.ib(default='')
+    redis_host: str = attr.ib(default="")
     redis_port: int = attr.ib(default=6379)
-    redis_password: str = attr.ib(default='')
+    redis_password: str = attr.ib(default="")
     redis_db_default: int = attr.ib(default=0)
     redis_db_cache: int = attr.ib(default=1)
     redis_db_mutation: int = attr.ib(default=2)

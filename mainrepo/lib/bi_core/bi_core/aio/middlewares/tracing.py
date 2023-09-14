@@ -2,14 +2,21 @@ from __future__ import annotations
 
 import contextlib
 import logging
-from typing import Generator, Optional, Any
+from typing import (
+    Any,
+    Generator,
+    Optional,
+)
 
-import opentracing
-import opentracing.tags
 from aiohttp import web
 from aiohttp.typedefs import Handler
+import opentracing
+import opentracing.tags
 
-from bi_api_commons.aio.middlewares.commons import add_logging_ctx_controller, get_endpoint_code
+from bi_api_commons.aio.middlewares.commons import (
+    add_logging_ctx_controller,
+    get_endpoint_code,
+)
 from bi_api_commons.logging_tracing import OpenTracingLoggingContextController
 
 LOGGER = logging.getLogger(__name__)

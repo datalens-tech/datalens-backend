@@ -40,9 +40,7 @@ SECRET_VAR_CONTENT_RE = re.compile(
     ")"
 )
 
-S3_TBL_FUNC_RE = re.compile(
-    "s3\([^,]*['\"]http([^,]+,){3}"  # noqa
-)
+S3_TBL_FUNC_RE = re.compile("s3\([^,]*['\"]http([^,]+,){3}")  # noqa
 
 
 def is_secret_var(var_name: str) -> bool:
@@ -72,7 +70,7 @@ def contains_s3_tbl_func(content: Any) -> bool:
 def mask_s3_tbl_func(content: Any) -> str:
     content_repr = get_content_repr(content)
     while match := S3_TBL_FUNC_RE.search(content_repr):
-        content_repr = content_repr[:match.start() + 3] + '<hidden>' + content_repr[match.end():]
+        content_repr = content_repr[: match.start() + 3] + "<hidden>" + content_repr[match.end() :]
     return content_repr
 
 
@@ -80,7 +78,7 @@ def cleanup_local_vars(local_vars: dict) -> None:
     """Mutates local vars dict inplace"""
     for name, val in local_vars.items():
         if is_secret_var(name) or is_secret_content(val):
-            local_vars[name] = '[hidden]'
+            local_vars[name] = "[hidden]"
         elif contains_s3_tbl_func(val):
             local_vars[name] = mask_s3_tbl_func(val)
 
@@ -89,7 +87,11 @@ def cleanup_event_headers(original_headers: dict[str, str]) -> dict[str, str]:
     return {
         name: value
         for name, value in clean_secret_data_in_headers(
-            (original_name, original_value,) for original_name, original_value in original_headers.items()
+            (
+                original_name,
+                original_value,
+            )
+            for original_name, original_value in original_headers.items()
         )
     }
 
@@ -110,12 +112,12 @@ def cleanup_event_request_section(req_section: dict[str, str | dict[str, str]]) 
 
 
 def cleanup_common_secret_data(
-        event: dict,
-        hint: dict,  # noqa
+    event: dict,
+    hint: dict,  # noqa
 ) -> dict:
     for exc_data in event.get("exception", {}).get("values"):
-        for frame in exc_data.get('stacktrace', {}).get('frames', ()):
-            local_vars = frame.get('vars', {})
+        for frame in exc_data.get("stacktrace", {}).get("frames", ()):
+            local_vars = frame.get("vars", {})
             cleanup_local_vars(local_vars)
 
     secret_original_req_section = event.get("request")

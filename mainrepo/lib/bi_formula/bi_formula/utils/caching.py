@@ -1,21 +1,33 @@
 from __future__ import annotations
 
+from functools import (
+    _CacheInfo,
+    lru_cache,
+    wraps,
+)
 import threading
-from functools import lru_cache, wraps, _CacheInfo
-from typing import Any, Callable, Dict, Generic, Optional, Tuple, Type, TypeVar
-
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+)
 
 _FUNC = Callable[..., Any]
-_QUALIFIER_VALUE_TV = TypeVar('_QUALIFIER_VALUE_TV')
+_QUALIFIER_VALUE_TV = TypeVar("_QUALIFIER_VALUE_TV")
 
 
 class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
     def __init__(
-            self,
-            wrapped_function: _FUNC,
-            maxsize: int,
-            cache_exceptions: Tuple[Type[Exception], ...] = (),
-            cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
+        self,
+        wrapped_function: _FUNC,
+        maxsize: int,
+        cache_exceptions: Tuple[Type[Exception], ...] = (),
+        cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
     ):
         self._wrapped_function = wrapped_function
         self._cache_exceptions = cache_exceptions
@@ -66,10 +78,7 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
     def cache_info(self) -> Dict[Optional[_QUALIFIER_VALUE_TV], _CacheInfo]:
         """Collect cache info objects for all existing cache qualifier values."""
         with self._cached_wrappers_lock:
-            return {
-                qvalue: wrapper.cache_info()  # type: ignore
-                for qvalue, wrapper in self._cached_wrappers.items()
-            }
+            return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}  # type: ignore
 
     def cache_clear(self) -> None:
         """Clear all existing caches."""
@@ -79,9 +88,9 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
 
 
 def multi_cached_with_errors(
-        maxsize: int,
-        cache_exceptions: Tuple[Type[Exception], ...] = (),
-        cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
+    maxsize: int,
+    cache_exceptions: Tuple[Type[Exception], ...] = (),
+    cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
 ) -> Callable[[_FUNC], _FUNC]:
     """
     Parameterized decorator that works just like ``lru_cache``,

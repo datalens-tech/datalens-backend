@@ -1,21 +1,29 @@
 import asyncio
+from datetime import timedelta
 import socket
 import time
-from typing import Dict, Union, Iterable, Optional
-from datetime import timedelta
-
-import attr
+from typing import (
+    Dict,
+    Iterable,
+    Optional,
+    Union,
+)
 
 from arq import Worker as _ArqWorker
 from arq.connections import RedisSettings
 from arq.worker import async_check_health
+import attr
 
-from bi_task_processor.arq_wrapper import arq_base_task, EXECUTOR_KEY, create_redis_pool, CronTask
-from bi_task_processor.executor import ExecutorFabric
+from bi_task_processor.arq_wrapper import (
+    EXECUTOR_KEY,
+    CronTask,
+    arq_base_task,
+    create_redis_pool,
+)
 from bi_task_processor.context import BaseContextFabric
+from bi_task_processor.executor import ExecutorFabric
 
-
-CONTEXT_KEY = 'bi_context'
+CONTEXT_KEY = "bi_context"
 
 
 @attr.s
@@ -25,7 +33,7 @@ class WorkerSettings:
     retry_hard_limit: Union[int, float] = attr.ib(default=100)
     job_timeout: int = attr.ib(default=600)  # seconds
     health_check_interval: int = attr.ib(default=30)
-    health_check_suffix: str = attr.ib(default='bihealthcheck')
+    health_check_suffix: str = attr.ib(default="bihealthcheck")
 
 
 @attr.s
@@ -39,7 +47,7 @@ class ArqWorker:
 
     @property
     def health_check_key(self) -> str:
-        return f'{socket.gethostname()}::{self._worker_settings.health_check_suffix}'
+        return f"{socket.gethostname()}::{self._worker_settings.health_check_suffix}"
 
     async def start(self) -> None:
         redis_pool = await create_redis_pool(self._redis_settings)
@@ -47,25 +55,23 @@ class ArqWorker:
             # let's trick strange typing in arq
             # everybody does it o_O
             **{
-                'functions': [arq_base_task],
-                'on_startup': self.start_executor,
-                'on_shutdown': self.stop_executor,
-                'max_tries': self._worker_settings.retry_hard_limit,
-                'job_timeout': timedelta(seconds=self._worker_settings.job_timeout),
-                'retry_jobs': True,
-                'health_check_key': self.health_check_key,
-                'handle_signals': False,
-                'health_check_interval': self._worker_settings.health_check_interval,
-                'cron_jobs': self._cron_tasks,
+                "functions": [arq_base_task],
+                "on_startup": self.start_executor,
+                "on_shutdown": self.stop_executor,
+                "max_tries": self._worker_settings.retry_hard_limit,
+                "job_timeout": timedelta(seconds=self._worker_settings.job_timeout),
+                "retry_jobs": True,
+                "health_check_key": self.health_check_key,
+                "handle_signals": False,
+                "health_check_interval": self._worker_settings.health_check_interval,
+                "cron_jobs": self._cron_tasks,
             },
             redis_pool=redis_pool,
         )
         await self._arq_worker.main()
 
     async def check_health(self) -> bool:
-        return bool(
-            not await async_check_health(self._redis_settings, health_check_key=self.health_check_key)
-        )
+        return bool(not await async_check_health(self._redis_settings, health_check_key=self.health_check_key))
 
     # param's name is important
     async def start_executor(self, ctx: Dict) -> None:
@@ -78,8 +84,8 @@ class ArqWorker:
 
     # param's name is important
     async def stop_executor(self, ctx: Dict) -> None:
-        assert EXECUTOR_KEY in ctx, 'Arq worker has not been run'
-        assert CONTEXT_KEY in ctx, 'Arq worker has not been run'
+        assert EXECUTOR_KEY in ctx, "Arq worker has not been run"
+        assert CONTEXT_KEY in ctx, "Arq worker has not been run"
         await self._context_fab.tear_down(ctx[CONTEXT_KEY])
 
     async def stop(self) -> None:
@@ -104,7 +110,7 @@ class HealthChecker:
     async def check_and_raise(self) -> None:
         result = await self._worker.check_health()
         if not result:
-            raise ValueError('Health check unsuccessful')
+            raise ValueError("Health check unsuccessful")
 
     async def wait_for_ok(self, timeout: Optional[int] = None, cooldown: int = 1) -> None:
         # you should use it only in tests
@@ -114,7 +120,7 @@ class HealthChecker:
             if result:
                 return
             await asyncio.sleep(cooldown)
-        raise RuntimeError(f'Worker did not start in {timeout} seconds')
+        raise RuntimeError(f"Worker did not start in {timeout} seconds")
 
 
 @attr.s
@@ -130,7 +136,7 @@ class ArqWorkerTestWrapper:
         return self._worker
 
     async def stop(self):
-        assert self._task is not None, 'Arq worker has not been run'
+        assert self._task is not None, "Arq worker has not been run"
         try:
             await self._worker.stop()
         except asyncio.exceptions.CancelledError:

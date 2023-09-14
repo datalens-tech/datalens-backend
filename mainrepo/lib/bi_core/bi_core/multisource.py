@@ -6,9 +6,19 @@ from typing import List
 
 import attr
 
-from bi_constants.enums import ConditionPartCalcMode, JoinConditionType, BinaryJoinOperator, JoinType, ManagedBy
-
-from bi_core.components.ids import AvatarId, FieldId, RelationId, SourceId
+from bi_constants.enums import (
+    BinaryJoinOperator,
+    ConditionPartCalcMode,
+    JoinConditionType,
+    JoinType,
+    ManagedBy,
+)
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+    RelationId,
+    SourceId,
+)
 
 
 @attr.s(frozen=True)
@@ -19,6 +29,7 @@ class ConditionPart:
 @attr.s(frozen=True)
 class ConditionPartDirect(ConditionPart):
     """Condition part that references a column from avatar's raw schema"""
+
     source: str = attr.ib()
     calc_mode: ConditionPartCalcMode = attr.ib(default=ConditionPartCalcMode.direct)
 
@@ -26,6 +37,7 @@ class ConditionPartDirect(ConditionPart):
 @attr.s(frozen=True)
 class ConditionPartFormula(ConditionPart):  # TODO: Remove
     """Condition part defined by a formula that references avatar's raw schema columns"""
+
     formula: str = attr.ib()
     calc_mode: ConditionPartCalcMode = attr.ib(default=ConditionPartCalcMode.formula)
 
@@ -33,6 +45,7 @@ class ConditionPartFormula(ConditionPart):  # TODO: Remove
 @attr.s(frozen=True)
 class ConditionPartResultField(ConditionPart):
     """Condition part that references a field from dataset's result schema"""
+
     field_id: FieldId = attr.ib()
     calc_mode: ConditionPartCalcMode = attr.ib(default=ConditionPartCalcMode.result_field)
 

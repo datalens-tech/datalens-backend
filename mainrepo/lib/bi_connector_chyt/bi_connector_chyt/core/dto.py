@@ -1,8 +1,7 @@
 import attr
 
-from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseBaseDTO
-
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
+from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseBaseDTO
 
 
 @attr.s(frozen=True, kw_only=True)

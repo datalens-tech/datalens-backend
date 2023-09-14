@@ -1,4 +1,7 @@
-from typing import NamedTuple, Optional
+from typing import (
+    NamedTuple,
+    Optional,
+)
 
 
 class BasicOpItemKey(NamedTuple):

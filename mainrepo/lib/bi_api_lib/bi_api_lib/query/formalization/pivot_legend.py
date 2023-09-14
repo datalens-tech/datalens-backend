@@ -1,13 +1,22 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, List, Optional, Sequence
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-import bi_query_processing.exc
-from bi_constants.enums import OrderDirection, PivotRole, PivotItemType
 from bi_api_lib.pivot.primitives import PivotMeasureSorting
+from bi_constants.enums import (
+    OrderDirection,
+    PivotItemType,
+    PivotRole,
+)
+import bi_query_processing.exc
 
 
 @attr.s(frozen=True)
@@ -23,7 +32,9 @@ class PivotDimensionRoleSpec(PivotRoleSpec):
 @attr.s(frozen=True)
 class PivotAnnotationRoleSpec(PivotRoleSpec):
     annotation_type: str = attr.ib(kw_only=True)
-    target_legend_item_ids: Optional[list[int]] = attr.ib(kw_only=True, default=None)  # if None, then applies to all measures
+    target_legend_item_ids: Optional[list[int]] = attr.ib(
+        kw_only=True, default=None
+    )  # if None, then applies to all measures
 
 
 @attr.s(frozen=True)
@@ -67,7 +78,7 @@ class PivotLegend:
         try:
             return self._piid_to_item[pivot_item_id]
         except KeyError:
-            raise bi_query_processing.exc.PivotLegendItemReferenceError(f'Unknown pivot legend item: {pivot_item_id}')
+            raise bi_query_processing.exc.PivotLegendItemReferenceError(f"Unknown pivot legend item: {pivot_item_id}")
 
     def leg_item_id_to_pivot_item_id_list(self, legend_item_id: int) -> list[int]:
         return self._liid_to_piid[legend_item_id]
@@ -80,16 +91,10 @@ class PivotLegend:
         return tuple(item for item in self._items if item.role_spec.role == role)
 
     def get_measure_name_pivot_item_ids(self) -> List[int]:
-        return [
-            item.pivot_item_id for item in self.items
-            if item.item_type == PivotItemType.measure_name
-        ]
+        return [item.pivot_item_id for item in self.items if item.item_type == PivotItemType.measure_name]
 
     def get_dimension_name_pivot_item_ids(self) -> List[int]:
-        return [
-            item.pivot_item_id for item in self.items
-            if item.item_type == PivotItemType.dimension_name
-        ]
+        return [item.pivot_item_id for item in self.items if item.item_type == PivotItemType.dimension_name]
 
     def get_unused_pivot_item_id(self) -> int:
         return max(item.pivot_item_id for item in self._items) + 1

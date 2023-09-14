@@ -1,11 +1,18 @@
-from typing import Collection, Optional
+from typing import (
+    Collection,
+    Optional,
+)
 
 import attr
 
 from bi_formula.definitions.ll_registry_loader import (
-    populate_translation_registry, populate_ll_op_registry,
+    populate_ll_op_registry,
+    populate_translation_registry,
 )
-from bi_formula.formula_connectors import load_all_connectors, register_all_connectors
+from bi_formula.formula_connectors import (
+    load_all_connectors,
+    register_all_connectors,
+)
 
 
 @attr.s(frozen=True)
@@ -15,7 +22,7 @@ class FormulaLibraryConfig:
 
 
 def preload_bi_formula() -> None:
-    """ Loads all entrypoint connectors without registering them """
+    """Loads all entrypoint connectors without registering them"""
 
     load_all_connectors()
 

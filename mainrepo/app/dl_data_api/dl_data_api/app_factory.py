@@ -2,10 +2,21 @@ from __future__ import annotations
 
 from typing import Optional
 
+from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from bi_api_lib.app.data_api.app import (
+    DataApiAppFactory,
+    EnvSetupResult,
+)
+from bi_api_lib.app_common import SRFactoryBuilder
+from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from bi_api_lib.app_settings import (
+    AppSettings,
+    DataApiAppSettings,
+)
+from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.enums import RequiredService
 from bi_constants.enums import ConnectionType
-
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.aio.middlewares.services_registry import services_registry_middleware
 from bi_core.aio.middlewares.us_manager import service_us_manager_middleware
@@ -15,15 +26,6 @@ from bi_core.services_registry.env_manager_factory import InsecureEnvManagerFact
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
-from bi_api_lib.app_settings import DataApiAppSettings, AppSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-
-from bi_api_commons.aio.typing import AIOHTTPMiddleware
-
 from dl_data_api import app_version
 
 
@@ -35,8 +37,8 @@ class DataApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
         return InsecureEnvManagerFactory()
 
     def _get_inst_specific_sr_factory(
-            self,
-            settings: AppSettings,
+        self,
+        settings: AppSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         return None
 
@@ -65,8 +67,8 @@ class DataApiAppFactoryOS(DataApiAppFactory[DataApiAppSettings], DataApiSRFactor
         return app_version
 
     def set_up_environment(
-            self,
-            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        self,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
         auth_mw_list: list[AIOHTTPMiddleware]
         sr_middleware_list: list[AIOHTTPMiddleware]
@@ -80,8 +82,8 @@ class DataApiAppFactoryOS(DataApiAppFactory[DataApiAppSettings], DataApiSRFactor
         # Auth middlewares
         auth_mw_list = [
             auth_trust_middleware(
-                fake_user_id='_user_id_',
-                fake_user_name='_user_name_',
+                fake_user_id="_user_id_",
+                fake_user_name="_user_name_",
             )
         ]
 

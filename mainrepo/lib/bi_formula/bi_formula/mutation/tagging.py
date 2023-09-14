@@ -3,21 +3,21 @@ from __future__ import annotations
 from enum import Enum
 from typing import Tuple
 
-import bi_formula.core.nodes as nodes
 import bi_formula.core.fork_nodes as fork_nodes
+import bi_formula.core.nodes as nodes
 from bi_formula.core.tag import LevelTag
-from bi_formula.mutation.mutation import FormulaMutation
-from bi_formula.inspect.function import supports_bfb
 from bi_formula.inspect.expression import (
-    get_window_function_wrapping_level,
     get_qfork_wrapping_level_until_winfunc,
+    get_window_function_wrapping_level,
 )
+from bi_formula.inspect.function import supports_bfb
 from bi_formula.inspect.node import is_aggregate_function
+from bi_formula.mutation.mutation import FormulaMutation
 
 
 class LevelTagType(Enum):
-    win_func = 'win_func'
-    query_fork = 'query_fork'
+    win_func = "win_func"
+    query_fork = "query_fork"
 
 
 class FunctionLevelTagMutation(FormulaMutation):
@@ -74,21 +74,17 @@ class FunctionLevelTagMutation(FormulaMutation):
     @staticmethod
     def _make_tagged_node(node: nodes.FormulaItem, level_tag: LevelTag) -> nodes.FormulaItem:
         if isinstance(node, nodes.WindowFuncCall):
-            return nodes.ParenthesizedExpr.make(
-                expr=node, meta=node.meta.with_tag(level_tag)
-            )
+            return nodes.ParenthesizedExpr.make(expr=node, meta=node.meta.with_tag(level_tag))
         if isinstance(node, fork_nodes.QueryFork):
             return node.with_tag(level_tag=level_tag)
         raise TypeError(type(node))
 
     @classmethod
-    def match_node(
-            cls, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
-    ) -> bool:
+    def match_node(cls, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
         return cls._node_is_taggable(node) and not cls._node_is_already_tagged(node, parent_stack)
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, (nodes.FuncCall, fork_nodes.QueryFork))
         cur_field_names = old.before_filter_by.field_names

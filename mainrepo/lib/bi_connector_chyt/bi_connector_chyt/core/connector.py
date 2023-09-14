@@ -1,22 +1,24 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 
 from bi_core.connectors.base.connector import (
-    CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
 )
 
-from bi_connector_chyt.core.constants import (
-    BACKEND_TYPE_CHYT, CONNECTION_TYPE_CHYT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE, SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST, SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
-)
-from bi_connector_chyt.core.us_connection import ConnectionCHYTToken
-from bi_connector_chyt.core.storage_schemas.connection import (
-    ConnectionCHYTDataStorageSchema,
-)
-from bi_connector_chyt.core.type_transformer import CHYTTypeTransformer
+from bi_connector_chyt.core.adapters import CHYTAdapter
+from bi_connector_chyt.core.async_adapters import AsyncCHYTAdapter
 from bi_connector_chyt.core.connection_executors import (
-    CHYTSyncAdapterConnExecutor,
     CHYTAsyncAdapterConnExecutor,
+    CHYTSyncAdapterConnExecutor,
+)
+from bi_connector_chyt.core.constants import (
+    BACKEND_TYPE_CHYT,
+    CONNECTION_TYPE_CHYT,
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
 )
 from bi_connector_chyt.core.data_source import (
     CHYTTableDataSource,
@@ -24,22 +26,23 @@ from bi_connector_chyt.core.data_source import (
     CHYTTableRangeDataSource,
     CHYTTableSubselectDataSource,
 )
-from bi_connector_chyt.core.adapters import CHYTAdapter
-from bi_connector_chyt.core.async_adapters import AsyncCHYTAdapter
+from bi_connector_chyt.core.data_source_migration import CHYTDataSourceMigrator
 from bi_connector_chyt.core.data_source_spec import (
+    CHYTSubselectDataSourceSpec,
     CHYTTableDataSourceSpec,
     CHYTTableListDataSourceSpec,
     CHYTTableRangeDataSourceSpec,
-    CHYTSubselectDataSourceSpec,
 )
 from bi_connector_chyt.core.settings import CHYTSettingDefinition
+from bi_connector_chyt.core.storage_schemas.connection import ConnectionCHYTDataStorageSchema
 from bi_connector_chyt.core.storage_schemas.data_source_spec import (
+    CHYTSubselectDataSourceSpecStorageSchema,
     CHYTTableDataSourceSpecStorageSchema,
     CHYTTableListDataSourceSpecStorageSchema,
     CHYTTableRangeDataSourceSpecStorageSchema,
-    CHYTSubselectDataSourceSpecStorageSchema,
 )
-from bi_connector_chyt.core.data_source_migration import CHYTDataSourceMigrator
+from bi_connector_chyt.core.type_transformer import CHYTTypeTransformer
+from bi_connector_chyt.core.us_connection import ConnectionCHYTToken
 
 
 class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
@@ -49,7 +52,7 @@ class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = CHYTTypeTransformer
     sync_conn_executor_cls = CHYTSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTAsyncAdapterConnExecutor
-    dialect_string = 'bi_chyt'
+    dialect_string = "bi_chyt"
     settings_definition = CHYTSettingDefinition
     data_source_migrator_cls = CHYTDataSourceMigrator
 
@@ -84,17 +87,17 @@ class CHYTTableSubselectCoreSourceDefinition(CoreSourceDefinition):
 
 class CHYTCoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_CHYT
-    connection_definitions = (
-        CHYTCoreConnectionDefinition,
-    )
+    connection_definitions = (CHYTCoreConnectionDefinition,)
     source_definitions = (
         CHYTTableCoreSourceDefinition,
         CHYTTableListCoreSourceDefinition,
         CHYTTableRangeCoreSourceDefinition,
         CHYTTableSubselectCoreSourceDefinition,
     )
-    rqe_adapter_classes = frozenset({
-        CHYTAdapter,
-        AsyncCHYTAdapter,
-    })
+    rqe_adapter_classes = frozenset(
+        {
+            CHYTAdapter,
+            AsyncCHYTAdapter,
+        }
+    )
     query_cls = CHQuery

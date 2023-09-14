@@ -4,30 +4,57 @@ import datetime
 import decimal
 import json
 import math
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Optional,
+    Type,
+)
 import uuid
-from typing import TYPE_CHECKING, Any, Callable, Optional, Type
 
 from aiohttp import web
 
-import bi_api_lib.schemas.main
+from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
+from bi_api_connector.dashsql import TValueBase
+from bi_api_lib.app.data_api.resources.base import (
+    BaseView,
+    RequiredResourceDSAPI,
+    requires,
+)
+from bi_api_lib.dashsql.registry import get_dash_sql_param_literalizer
 from bi_api_lib.enums import USPermissionKind
-from bi_core.exc import DashSQLError
-from bi_query_processing.utils.datetime import parse_datetime
-from bi_api_lib.app.data_api.resources.base import BaseView, RequiredResourceDSAPI, requires
+import bi_api_lib.schemas.main
 from bi_api_lib.utils.base import need_permission_on_entry
 from bi_app_tools.profiling_base import generic_profiler_async
-from bi_constants.enums import BIType, ConnectionType
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
-from bi_core.data_processing.dashsql import BindParamInfo, DashSQLCachedSelector, DashSQLEvent, TRow
-from bi_core.exc import UnexpectedUSEntryType
-from bi_core.us_connection_base import ConnectionBase, ExecutorBasedMixin, SubselectMixin
+from bi_constants.enums import (
+    BIType,
+    ConnectionType,
+)
 from bi_core.backend_types import get_backend_type
-from bi_api_connector.dashsql import TValueBase
-from bi_api_lib.dashsql.registry import get_dash_sql_param_literalizer
+from bi_core.data_processing.dashsql import (
+    BindParamInfo,
+    DashSQLCachedSelector,
+    DashSQLEvent,
+    TRow,
+)
+from bi_core.exc import (
+    DashSQLError,
+    UnexpectedUSEntryType,
+)
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    ExecutorBasedMixin,
+    SubselectMixin,
+)
+from bi_query_processing.utils.datetime import parse_datetime
 
 if TYPE_CHECKING:
-    from bi_core.data_processing.dashsql import DashSQLSelector, TResultEvents
     from bi_constants.types import TJSONLike
+    from bi_core.data_processing.dashsql import (
+        DashSQLSelector,
+        TResultEvents,
+    )
 
 
 TRowProcessor = Callable[[TRow], TRow]
@@ -43,21 +70,21 @@ def parse_value(value: Optional[str], bi_type: BIType) -> Any:
     if bi_type == BIType.float:
         return float(value)
     if bi_type == BIType.date:
-        return datetime.datetime.strptime(value, '%Y-%m-%d').date()
+        return datetime.datetime.strptime(value, "%Y-%m-%d").date()
     if bi_type == BIType.datetime:
         return parse_datetime(value)
     if bi_type == BIType.boolean:
-        if value == 'true':
+        if value == "true":
             return True
-        if value == 'false':
+        if value == "false":
             return False
         raise ValueError(f"Not a valid boolean: {value!r}")
     raise DashSQLError(f"Unsupported type: {bi_type.name!r}")
 
 
 def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindParamInfo:
-    type_name: str = param['type_name']
-    value_base: TValueBase = param['value']
+    type_name: str = param["type_name"]
+    value_base: TValueBase = param["value"]
 
     try:
         bi_type = BIType[type_name]
@@ -70,10 +97,7 @@ def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindPar
 
     try:
         if isinstance(value_base, (list, tuple)):
-            value = [
-                parse_value(sub_value, bi_type)
-                for sub_value in value_base
-            ]
+            value = [parse_value(sub_value, bi_type) for sub_value in value_base]
         else:
             value = parse_value(value_base, bi_type)
     except ValueError:
@@ -98,13 +122,13 @@ class DashSQLView(BaseView):
 
     # TODO?: cache support
 
-    endpoint_code = 'DashSQL'
-    profiler_prefix = 'dashsql_result'
+    endpoint_code = "DashSQL"
+    profiler_prefix = "dashsql_result"
     dashsql_selector_cls: Type[DashSQLSelector] = DashSQLCachedSelector
 
     @property
     def conn_id(self) -> Optional[str]:
-        return self.request.match_info.get('conn_id')
+        return self.request.match_info.get("conn_id")
 
     def enrich_logging_context(self, conn: ConnectionBase) -> None:
         """
@@ -114,16 +138,16 @@ class DashSQLView(BaseView):
         if not self.dl_request.log_ctx_controller:
             # TODO?: warn
             return
-        self.dl_request.log_ctx_controller.put_to_context('conn_type', conn.conn_type.name)
+        self.dl_request.log_ctx_controller.put_to_context("conn_type", conn.conn_type.name)
         sr = self.dl_request.services_registry
         if isinstance(conn, ExecutorBasedMixin):
             ce_cls_str = sr.get_conn_executor_factory().get_async_conn_executor_cls(conn).__qualname__
-            self.dl_request.log_ctx_controller.put_to_context('conn_exec_cls', ce_cls_str)
+            self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
 
     @staticmethod
     def _json_default(value: Any) -> TJSONLike:
         if isinstance(value, bytes):
-            return value.decode('utf-8', errors='replace')
+            return value.decode("utf-8", errors="replace")
         if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
             return value.isoformat()
         if isinstance(value, datetime.timedelta):
@@ -144,8 +168,7 @@ class DashSQLView(BaseView):
             return tuple(cls._postprocess_any(sub_value) for sub_value in value)
         if isinstance(value, dict):
             return {
-                cls._postprocess_key(sub_key): cls._postprocess_any(sub_value)
-                for sub_key, sub_value in value.items()
+                cls._postprocess_key(sub_key): cls._postprocess_any(sub_value) for sub_key, sub_value in value.items()
             }
         if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
             return str(value)
@@ -168,17 +191,14 @@ class DashSQLView(BaseView):
                 assert isinstance(event_data, dict)
                 postprocess_row = self._make_postprocess_row(event_data["bi_types"])  # type: ignore  # TODO: fix
             elif event_name == DashSQLEvent.rowchunk.value and postprocess_row is not None:
-                event_data = tuple(
-                    postprocess_row(row)  # type: ignore  # TODO: fix
-                    for row in event_data
-                )
+                event_data = tuple(postprocess_row(row) for row in event_data)  # type: ignore  # TODO: fix
             elif event_name == DashSQLEvent.row.value and postprocess_row is not None:  # should be obsolete
                 event_data = postprocess_row(event_data)  # type: ignore  # TODO: fix
             yield event_name, event_data
 
     @staticmethod
     async def _flatten_chunk_events(result_events: TResultEvents) -> TResultEvents:
-        """ Unwrap `rowchunk` events into `row` events, to avoid changing the protocol (for now) """
+        """Unwrap `rowchunk` events into `row` events, to avoid changing the protocol (for now)"""
         async for event_name, event_data in result_events:
             if event_name == DashSQLEvent.rowchunk.value:
                 for row in event_data:
@@ -190,9 +210,7 @@ class DashSQLView(BaseView):
     async def collect_result_events_into_response(self, result_events: TResultEvents) -> web.Response:
         events: list = []
         async for event_name, event_data in result_events:
-            events.append(
-                dict(event=event_name, data=event_data)
-            )
+            events.append(dict(event=event_name, data=event_data))
 
         data = json.dumps(events, default=self._json_default)
         response = web.Response(
@@ -208,14 +226,14 @@ class DashSQLView(BaseView):
         assert conn_id
 
         if self.dl_request.log_ctx_controller:
-            self.dl_request.log_ctx_controller.put_to_context('conn_id', conn_id)
+            self.dl_request.log_ctx_controller.put_to_context("conn_id", conn_id)
 
         schema = bi_api_lib.schemas.main.DashSQLRequestSchema()
         body = schema.load(self.dl_request.json)
-        sql_query = body['sql_query']
-        params = body.get('params')
-        db_params = body.get('db_params')
-        connector_specific_params = body.get('connector_specific_params')
+        sql_query = body["sql_query"]
+        params = body.get("params")
+        db_params = body.get("db_params")
+        connector_specific_params = body.get("connector_specific_params")
 
         conn = await self.dl_request.us_manager.get_by_id(conn_id, ConnectionBase)
         assert isinstance(conn, ConnectionBase)
@@ -235,13 +253,10 @@ class DashSQLView(BaseView):
         conn_type = conn.conn_type
         param_objs = None
         if params is not None:
-            param_objs = [
-                make_param_obj(name, param, conn_type=conn_type)
-                for name, param in params.items()
-            ]
+            param_objs = [make_param_obj(name, param, conn_type=conn_type) for name, param in params.items()]
 
         # TODO: move dashsql selector's construction to factory
-        bleeding_edge_users = self.request.app.get('BLEEDING_EDGE_USERS', ())
+        bleeding_edge_users = self.request.app.get("BLEEDING_EDGE_USERS", ())
         is_bleeding_edge_user = self.dl_request.rci.user_name in bleeding_edge_users
 
         dashsql_selector = self.dashsql_selector_cls(

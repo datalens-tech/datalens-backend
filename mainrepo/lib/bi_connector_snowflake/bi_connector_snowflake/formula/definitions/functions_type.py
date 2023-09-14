@@ -1,15 +1,13 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_type as base
 from bi_formula.core.datatype import DataType
 from bi_formula.definitions.args import ArgTypeSequence
 from bi_formula.definitions.base import (
-    SingleVariantTranslationBase,
     Function,
-)
-from bi_formula.definitions.base import (
+    SingleVariantTranslationBase,
     TranslationVariant,
 )
+import bi_formula.definitions.functions_type as base
 from bi_formula.definitions.scope import Scope
 from bi_formula.definitions.type_strategy import Fixed
 
@@ -26,7 +24,10 @@ class FuncDatetime2SF(SingleVariantTranslationBase, base.FuncTypeGenericDatetime
     dialects = D.SNOWFLAKE
     argument_types = [
         ArgTypeSequence(
-            [{DataType.DATETIME, DataType.GENERICDATETIME, DataType.INTEGER, DataType.FLOAT, DataType.STRING}, DataType.CONST_STRING]
+            [
+                {DataType.DATETIME, DataType.GENERICDATETIME, DataType.INTEGER, DataType.FLOAT, DataType.STRING},
+                DataType.CONST_STRING,
+            ]
         ),
     ]
     name = "datetime"
@@ -65,7 +66,12 @@ class FuncDatetime2SF(SingleVariantTranslationBase, base.FuncTypeGenericDatetime
         value_type = value_ctx.data_type
         tz = tz_ctx.expression
 
-        if value_type in (DataType.DATETIME, DataType.CONST_DATETIME, DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME):
+        if value_type in (
+            DataType.DATETIME,
+            DataType.CONST_DATETIME,
+            DataType.GENERICDATETIME,
+            DataType.CONST_GENERICDATETIME,
+        ):
             pass  # value = value
         elif value_type in (DataType.INTEGER, DataType.CONST_INTEGER, DataType.FLOAT, DataType.CONST_FLOAT):
             value = sa.func.to_timestamp(value)
@@ -105,7 +111,6 @@ DEFINITIONS_TYPE = [
     base.FuncBoolFromBool.for_dialect(D.SNOWFLAKE),
     base.FuncBoolFromStrGeo.for_dialect(D.SNOWFLAKE),
     base.FuncBoolFromDateDatetime.for_dialect(D.SNOWFLAKE),
-
     # date
     base.FuncDate1FromNull.for_dialect(D.SNOWFLAKE),
     base.FuncDate1FromDatetime(
@@ -126,7 +131,6 @@ DEFINITIONS_TYPE = [
             ),
         ]
     ),
-
     # datetime
     base.FuncDatetime1FromNull.for_dialect(D.SNOWFLAKE),
     base.FuncDatetime1FromDatetime.for_dialect(D.SNOWFLAKE),
@@ -148,10 +152,8 @@ DEFINITIONS_TYPE = [
         ]
     ),
     FuncDatetime2SF.for_dialect(D.SNOWFLAKE),
-
     # datetimetz
     base.FuncDatetimeTZConst.for_dialect(D.SNOWFLAKE),
-
     # float
     FuncFloatFromNullSF(),
     base.FuncFloatNumber(
@@ -193,7 +195,6 @@ DEFINITIONS_TYPE = [
             V(D.SNOWFLAKE, lambda value: sa.func.TO_DOUBLE(sa.func.DATE_PART("epoch_second", value))),
         ]
     ),
-
     # genericdatetime
     base.FuncGenericDatetime1FromNull.for_dialect(D.SNOWFLAKE),
     base.FuncGenericDatetime1FromDatetime.for_dialect(D.SNOWFLAKE),
@@ -208,14 +209,11 @@ DEFINITIONS_TYPE = [
     ),
     base.FuncGenericDatetime1FromString.for_dialect(D.SNOWFLAKE),
     FuncGenericDatetime2SF.for_dialect(D.SNOWFLAKE),
-
     # geopoint
     base.FuncGeopointFromStr.for_dialect(D.SNOWFLAKE),  # todo:
     base.FuncGeopointFromCoords.for_dialect(D.SNOWFLAKE),  # todo:
-
     # geopolygon
     base.FuncGeopolygon.for_dialect(D.SNOWFLAKE),  # todo:
-
     # int
     base.FuncIntFromNull(
         variants=[
@@ -262,7 +260,6 @@ DEFINITIONS_TYPE = [
             V(D.SNOWFLAKE, lambda value: sa.func.DATE_PART("epoch_second", value)),
         ]
     ),
-
     # str
     base.FuncStrFromNull(
         variants=[

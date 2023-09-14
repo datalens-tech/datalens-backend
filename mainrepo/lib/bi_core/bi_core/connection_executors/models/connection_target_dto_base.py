@@ -7,7 +7,15 @@ and possibly augmented with data calculated in runtime or fetched from cache e.g
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, Optional, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Dict,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 from typing_extensions import final
@@ -18,7 +26,7 @@ if TYPE_CHECKING:
     from bi_constants.types import TJSONLike
 
 
-_CT_DTO_TV = TypeVar("_CT_DTO_TV", bound='ConnTargetDTO')
+_CT_DTO_TV = TypeVar("_CT_DTO_TV", bound="ConnTargetDTO")
 
 
 @attr.s(frozen=True)
@@ -41,14 +49,14 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
     @final
     def from_polymorphic_jsonable_dict(cls, data: Dict) -> ConnTargetDTO:
         data = {**data}
-        cls_name = data.pop('cls_name')
+        cls_name = data.pop("cls_name")
         target_cls = cls._MAP_CLASS_NAME_CLASS[cls_name]
         return target_cls.from_jsonable_dict(data)
 
     @classmethod
     @final
     def from_jsonable_dict(cls: Type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
-        if 'cls_name' in data:
+        if "cls_name" in data:
             raise ValueError("Property 'cls_name' in data dict. Use from_polymorphic_jsonable_dict() to unmarshal it.")
         return cls._from_jsonable_dict(data)
 

@@ -1,31 +1,43 @@
 from __future__ import annotations
 
 import itertools
-from typing import ClassVar, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-import bi_query_processing.exc
-from bi_constants.enums import FieldRole, PivotRole
-
-from bi_api_lib.request_model.data import PivotDataRequestModel
-from bi_api_lib.request_model.normalization.drm_normalizer_base import (
-    RequestModelNormalizerBase, RequestPartSpecNormalizerBase,
-)
-from bi_api_lib.query.formalization.raw_specs import (
-    RawTemplateRoleSpec, RawRoleSpec, PlaceholderRef,
-    RawQuerySpecUnion, RawRowRoleSpec,
-    spec_is_field_name_pseudo_dimension,
-)
 from bi_api_lib.query.formalization.id_gen import IdGenerator
 from bi_api_lib.query.formalization.raw_pivot_specs import (
-    RawPivotTotalsSpec, RawPivotTotalsItemSpec, RawPivotSpec,
     RawAnnotationPivotRoleSpec,
+    RawPivotSpec,
+    RawPivotTotalsItemSpec,
+    RawPivotTotalsSpec,
 )
+from bi_api_lib.query.formalization.raw_specs import (
+    PlaceholderRef,
+    RawQuerySpecUnion,
+    RawRoleSpec,
+    RawRowRoleSpec,
+    RawTemplateRoleSpec,
+    spec_is_field_name_pseudo_dimension,
+)
+from bi_api_lib.request_model.data import PivotDataRequestModel
+from bi_api_lib.request_model.normalization.drm_normalizer_base import (
+    RequestModelNormalizerBase,
+    RequestPartSpecNormalizerBase,
+)
+from bi_constants.enums import (
+    FieldRole,
+    PivotRole,
+)
+import bi_query_processing.exc
 
 if TYPE_CHECKING:
-    from bi_api_lib.query.formalization.raw_specs import RawSelectFieldSpec
     from bi_api_lib.query.formalization.raw_pivot_specs import RawPivotLegendItem
+    from bi_api_lib.query.formalization.raw_specs import RawSelectFieldSpec
 
 
 @attr.s
@@ -44,11 +56,11 @@ class PivotTotalsNormalizerHelper:
         for item in self._original_select_specs:
             if item.legend_item_id == legend_item_id:
                 return item
-        raise bi_query_processing.exc.LegendItemReferenceError(f'Unknown legend item: {legend_item_id}')
+        raise bi_query_processing.exc.LegendItemReferenceError(f"Unknown legend item: {legend_item_id}")
 
     def make_role_spec(self, item_type: int) -> RawRoleSpec:
         if item_type is self.T_TEMPLATE:
-            return RawTemplateRoleSpec(role=FieldRole.template, template='')
+            return RawTemplateRoleSpec(role=FieldRole.template, template="")
         if item_type is self.T_MEASURE:
             return RawRoleSpec(role=FieldRole.total)
         return RawRowRoleSpec(role=FieldRole.row)
@@ -64,7 +76,8 @@ class PivotTotalsNormalizerHelper:
 
     def make_legend_item(
         self,
-        item_type: int, orig_pivot_item: RawPivotLegendItem,
+        item_type: int,
+        orig_pivot_item: RawPivotLegendItem,
         block_id: int,
     ) -> tuple[Optional[RawSelectFieldSpec], RawPivotLegendItem]:
         """
@@ -84,24 +97,17 @@ class PivotTotalsNormalizerHelper:
             legend_item_id=legend_item_id,
             block_id=block_id,
         )
-        updated_pivot_item = orig_pivot_item.clone(
-            legend_item_ids=orig_pivot_item.legend_item_ids + [legend_item_id]
-        )
+        updated_pivot_item = orig_pivot_item.clone(legend_item_ids=orig_pivot_item.legend_item_ids + [legend_item_id])
         return new_item, updated_pivot_item
 
     def gen_single_dir_totals(
-            self,
-            this_level: Optional[int],
-            other_level: Optional[int],
-            this_dir_dimensions: list[RawPivotLegendItem],
-            other_dir_dimensions: list[RawPivotLegendItem],
-            measures: list[RawPivotLegendItem],
-    ) -> tuple[
-            list[RawSelectFieldSpec],
-            list[RawPivotLegendItem],
-            list[RawPivotLegendItem],
-            list[RawPivotLegendItem],
-    ]:
+        self,
+        this_level: Optional[int],
+        other_level: Optional[int],
+        this_dir_dimensions: list[RawPivotLegendItem],
+        other_dir_dimensions: list[RawPivotLegendItem],
+        measures: list[RawPivotLegendItem],
+    ) -> tuple[list[RawSelectFieldSpec], list[RawPivotLegendItem], list[RawPivotLegendItem], list[RawPivotLegendItem],]:
         """
         Generate new items for the legend (raw_query_spec_union)
         and pivot spec.
@@ -181,10 +187,11 @@ class PivotSpecNormalizer(RequestPartSpecNormalizerBase[RawPivotSpec]):
         return pivot_spec
 
     def _normalize_totals(
-            self, pivot_spec: RawPivotSpec, raw_query_spec_union: RawQuerySpecUnion,
-            liid_gen: IdGenerator,
+        self,
+        pivot_spec: RawPivotSpec,
+        raw_query_spec_union: RawQuerySpecUnion,
+        liid_gen: IdGenerator,
     ) -> tuple[RawPivotSpec, RawQuerySpecUnion]:
-
         raw_pivot_items = pivot_spec.structure
         totals = pivot_spec.totals
         assert totals is not None
@@ -193,7 +200,7 @@ class PivotSpecNormalizer(RequestPartSpecNormalizerBase[RawPivotSpec]):
         block_ids = raw_query_spec_union.get_unique_block_ids()
         if len(block_ids) > 1:
             raise bi_query_processing.exc.MultipleBlocksUnsupportedError(
-                'Incoming multiple blocks not supported in simplified API'
+                "Incoming multiple blocks not supported in simplified API"
             )
         base_block_id = next(iter(block_ids)) if block_ids else self.DEFAULT_BLOCK_ID
         block_id_gen = IdGenerator(used_ids={base_block_id})
@@ -216,51 +223,46 @@ class PivotSpecNormalizer(RequestPartSpecNormalizerBase[RawPivotSpec]):
         ]
 
         def filter_raw_items(role: PivotRole) -> list[RawPivotLegendItem]:
-            return [
-                item for item in raw_pivot_items
-                if item.role_spec.role == role
-            ]
+            return [item for item in raw_pivot_items if item.role_spec.role == role]
 
         def normalize_target_legend_item_ids(item: RawPivotLegendItem) -> RawPivotLegendItem:
             anno_role_spec = item.role_spec
             assert isinstance(anno_role_spec, RawAnnotationPivotRoleSpec)
             if anno_role_spec.target_legend_item_ids is None:
-                item = item.clone(role_spec=anno_role_spec.clone(
-                    target_legend_item_ids=measure_legend_item_ids,
-                ))
+                item = item.clone(
+                    role_spec=anno_role_spec.clone(
+                        target_legend_item_ids=measure_legend_item_ids,
+                    )
+                )
             return item
 
         row_dimensions = filter_raw_items(PivotRole.pivot_row)
         column_dimensions = filter_raw_items(PivotRole.pivot_column)
         strict_measures = filter_raw_items(PivotRole.pivot_measure)
-        measure_legend_item_ids = sorted(set(itertools.chain.from_iterable(
-            item.legend_item_ids for item in strict_measures
-        )))
-        annotations = [
-            normalize_target_legend_item_ids(item)
-            for item in filter_raw_items(PivotRole.pivot_annotation)
-        ]
+        measure_legend_item_ids = sorted(
+            set(itertools.chain.from_iterable(item.legend_item_ids for item in strict_measures))
+        )
+        annotations = [normalize_target_legend_item_ids(item) for item in filter_raw_items(PivotRole.pivot_annotation)]
         measures = strict_measures + annotations
         other_pivot_items = [
-            item for item in raw_pivot_items
-            if item.role_spec.role not in {
-                PivotRole.pivot_row, PivotRole.pivot_column,
-                PivotRole.pivot_measure, PivotRole.pivot_annotation,
+            item
+            for item in raw_pivot_items
+            if item.role_spec.role
+            not in {
+                PivotRole.pivot_row,
+                PivotRole.pivot_column,
+                PivotRole.pivot_measure,
+                PivotRole.pivot_annotation,
             }
         ]
 
         # Check whether either `rows` or `columns` contains only Measure Names
-        mname_liids = {
-            item.legend_item_id for item in select_specs
-            if spec_is_field_name_pseudo_dimension(item)
-        }
+        mname_liids = {item.legend_item_id for item in select_specs if spec_is_field_name_pseudo_dimension(item)}
         non_mname_row_dims = any(
-            legend_item_id not in mname_liids
-            for item in row_dimensions for legend_item_id in item.legend_item_ids
+            legend_item_id not in mname_liids for item in row_dimensions for legend_item_id in item.legend_item_ids
         )
         non_mname_column_dims = any(
-            legend_item_id not in mname_liids
-            for item in column_dimensions for legend_item_id in item.legend_item_ids
+            legend_item_id not in mname_liids for item in column_dimensions for legend_item_id in item.legend_item_ids
         )
 
         if not row_dimensions or not non_mname_row_dims:
@@ -273,8 +275,10 @@ class PivotSpecNormalizer(RequestPartSpecNormalizerBase[RawPivotSpec]):
             return pivot_spec, raw_query_spec_union
 
         helper = PivotTotalsNormalizerHelper(
-            original_select_specs=select_specs, legend_item_id_gen=liid_gen,
-            block_id_gen=block_id_gen, base_block_id=base_block_id,
+            original_select_specs=select_specs,
+            legend_item_id_gen=liid_gen,
+            block_id_gen=block_id_gen,
+            base_block_id=base_block_id,
         )
 
         # 1. "Horizontal" totals
@@ -317,22 +321,27 @@ class PivotSpecNormalizer(RequestPartSpecNormalizerBase[RawPivotSpec]):
             order_by_specs=order_by_specs,
         )
         pivot_spec = pivot_spec.clone(
-            structure=list(itertools.chain(
-                column_dimensions,
-                row_dimensions,
-                measures,
-                other_pivot_items,
-            )),
+            structure=list(
+                itertools.chain(
+                    column_dimensions,
+                    row_dimensions,
+                    measures,
+                    other_pivot_items,
+                )
+            ),
             totals=None,  # We've used it all up, so remove it
         )
 
         return pivot_spec, raw_query_spec_union
 
     def normalize_spec(
-            self, spec: RawPivotSpec, raw_query_spec_union: RawQuerySpecUnion,
+        self,
+        spec: RawPivotSpec,
+        raw_query_spec_union: RawQuerySpecUnion,
     ) -> tuple[RawPivotSpec, RawQuerySpecUnion]:
         spec, raw_query_spec_union = super().normalize_spec(
-            spec=spec, raw_query_spec_union=raw_query_spec_union,
+            spec=spec,
+            raw_query_spec_union=raw_query_spec_union,
         )
         pivot_spec = spec
 
@@ -343,7 +352,8 @@ class PivotSpecNormalizer(RequestPartSpecNormalizerBase[RawPivotSpec]):
 
         if pivot_spec.totals is not None:
             pivot_spec, raw_query_spec_union = self._normalize_totals(
-                pivot_spec=pivot_spec, raw_query_spec_union=raw_query_spec_union,
+                pivot_spec=pivot_spec,
+                raw_query_spec_union=raw_query_spec_union,
                 liid_gen=liid_gen,
             )
 
@@ -363,7 +373,8 @@ class PivotRequestModelNormalizer(RequestModelNormalizerBase[PivotDataRequestMod
 
         pivot_spec_normalizer = PivotSpecNormalizer()
         pivot_spec, raw_query_spec_union = pivot_spec_normalizer.normalize_spec(
-            spec=drm.pivot, raw_query_spec_union=drm.raw_query_spec_union,
+            spec=drm.pivot,
+            raw_query_spec_union=drm.raw_query_spec_union,
         )
         if pivot_spec is not drm.pivot or raw_query_spec_union is not drm.raw_query_spec_union:
             drm = drm.clone(

@@ -1,7 +1,6 @@
 from snowflake import sqlalchemy as ssa
 
 from bi_constants.enums import BIType
-
 from bi_core.db.conversion_base import (
     TypeTransformer,
     make_native_type,
@@ -9,28 +8,33 @@ from bi_core.db.conversion_base import (
 
 from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 
-
-SNOW_TYPES_INT = frozenset((
-    ssa.BIGINT,
-    ssa.SMALLINT,
-    ssa.INTEGER,
-    ssa.TINYINT,
-    ssa.SMALLINT,
-))
-SNOW_TYPES_FLOAT = frozenset((
-    ssa.FLOAT,
-    ssa.DECIMAL,
-    ssa.DEC,
-    ssa.DOUBLE,
-    ssa.REAL,
-))
-SNOW_TYPES_STRING = frozenset((
-    ssa.STRING,
-    ssa.VARCHAR,
-    ssa.CHAR,
-    ssa.CHARACTER,
-    ssa.TEXT,
-))
+SNOW_TYPES_INT = frozenset(
+    (
+        ssa.BIGINT,
+        ssa.SMALLINT,
+        ssa.INTEGER,
+        ssa.TINYINT,
+        ssa.SMALLINT,
+    )
+)
+SNOW_TYPES_FLOAT = frozenset(
+    (
+        ssa.FLOAT,
+        ssa.DECIMAL,
+        ssa.DEC,
+        ssa.DOUBLE,
+        ssa.REAL,
+    )
+)
+SNOW_TYPES_STRING = frozenset(
+    (
+        ssa.STRING,
+        ssa.VARCHAR,
+        ssa.CHAR,
+        ssa.CHARACTER,
+        ssa.TEXT,
+    )
+)
 
 
 class SnowFlakeTypeTransformer(TypeTransformer):
@@ -40,20 +44,10 @@ class SnowFlakeTypeTransformer(TypeTransformer):
     native_to_user_map = {
         make_native_type(CONNECTION_TYPE_SNOWFLAKE, ssa.DATE): BIType.date,
         make_native_type(CONNECTION_TYPE_SNOWFLAKE, ssa.DATETIME): BIType.genericdatetime,
-        **{
-            make_native_type(CONNECTION_TYPE_SNOWFLAKE, t): BIType.integer
-            for t in SNOW_TYPES_INT
-        },
-        **{
-            make_native_type(CONNECTION_TYPE_SNOWFLAKE, t): BIType.float
-            for t in SNOW_TYPES_FLOAT
-        },
-        **{
-            make_native_type(CONNECTION_TYPE_SNOWFLAKE, t): BIType.string
-            for t in SNOW_TYPES_STRING
-        },
+        **{make_native_type(CONNECTION_TYPE_SNOWFLAKE, t): BIType.integer for t in SNOW_TYPES_INT},
+        **{make_native_type(CONNECTION_TYPE_SNOWFLAKE, t): BIType.float for t in SNOW_TYPES_FLOAT},
+        **{make_native_type(CONNECTION_TYPE_SNOWFLAKE, t): BIType.string for t in SNOW_TYPES_STRING},
         make_native_type(CONNECTION_TYPE_SNOWFLAKE, ssa.BOOLEAN): BIType.boolean,
-
         # todo: review datetime/genericdatime/datetimetz/timestamp
         # todo: array, geo
     }

@@ -2,16 +2,22 @@ from __future__ import annotations
 
 import datetime
 import logging
-from typing import Optional, ClassVar
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from bi_constants.enums import FileProcessingStatus, DataSourceRole
+from bi_constants.enums import (
+    DataSourceRole,
+    FileProcessingStatus,
+)
+from bi_core.services_registry.file_uploader_client_factory import GSheetsFileSourceDesc
 from bi_utils.utils import DataKey
 
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_core.services_registry.file_uploader_client_factory import GSheetsFileSourceDesc
+from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,14 +26,17 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
     source_type = SOURCE_TYPE_GSHEETS_V2
     allowed_source_types = frozenset((SOURCE_TYPE_GSHEETS_V2,))
 
-    editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
-        BaseFileS3Connection.editable_data_source_parameters +
-        ('spreadsheet_id', 'sheet_id', 'first_line_is_header', 'data_updated_at',)
+    editable_data_source_parameters: ClassVar[
+        tuple[str, ...]
+    ] = BaseFileS3Connection.editable_data_source_parameters + (
+        "spreadsheet_id",
+        "sheet_id",
+        "first_line_is_header",
+        "data_updated_at",
     )
 
     @attr.s(eq=False, kw_only=True)
     class FileDataSource(BaseFileS3Connection.FileDataSource):
-
         spreadsheet_id: Optional[str] = attr.ib(default=None)
         sheet_id: Optional[int] = attr.ib(default=None)
         first_line_is_header: Optional[bool] = attr.ib(default=None)
@@ -36,15 +45,26 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
         def __hash__(self) -> int:
             raw_schema = tuple(self.raw_schema) if self.raw_schema is not None else tuple()
             return hash(
-                (self.id, self.file_id, self.title, self.s3_filename,
-                 raw_schema, self.status, self.sheet_id, self.spreadsheet_id)
+                (
+                    self.id,
+                    self.file_id,
+                    self.title,
+                    self.s3_filename,
+                    raw_schema,
+                    self.status,
+                    self.sheet_id,
+                    self.spreadsheet_id,
+                )
             )
 
         def str_for_hash(self) -> str:
-            return ','.join([
-                super().str_for_hash(),
-                str(self.spreadsheet_id), str(self.sheet_id),
-            ])
+            return ",".join(
+                [
+                    super().str_for_hash(),
+                    str(self.spreadsheet_id),
+                    str(self.sheet_id),
+                ]
+            )
 
         def get_desc(self) -> GSheetsFileSourceDesc:
             return GSheetsFileSourceDesc(
@@ -66,7 +86,7 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
         refresh_enabled: bool = attr.ib(default=False)
 
         def oldest_data_update_time(
-                self, exclude_statuses: Optional[set[FileProcessingStatus]] = None
+            self, exclude_statuses: Optional[set[FileProcessingStatus]] = None
         ) -> Optional[datetime.datetime]:
             if exclude_statuses is None:
                 exclude_statuses = set()
@@ -79,7 +99,7 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
-            return {DataKey(parts=('refresh_token',))}
+            return {DataKey(parts=("refresh_token",))}
 
     data: DataModel
 

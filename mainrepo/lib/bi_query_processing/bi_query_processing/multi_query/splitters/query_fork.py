@@ -1,26 +1,28 @@
-import itertools
 from collections import OrderedDict
+import itertools
 from typing import Any
 
 import attr
 
 from bi_constants.enums import JoinType
-
-import bi_formula.core.nodes as formula_nodes
-import bi_formula.core.fork_nodes as formula_fork_nodes
 from bi_formula.core.extract import NodeExtract
+import bi_formula.core.fork_nodes as formula_fork_nodes
 from bi_formula.core.index import NodeHierarchyIndex
+import bi_formula.core.nodes as formula_nodes
 from bi_formula.inspect.env import InspectionEnvironment
-import bi_formula.inspect.node as inspect_node
 import bi_formula.inspect.expression as inspect_expression
-
-from bi_query_processing.enums import QueryPart
+import bi_formula.inspect.node as inspect_node
 from bi_query_processing.compilation.primitives import CompiledQuery
+from bi_query_processing.enums import QueryPart
 from bi_query_processing.multi_query.splitters.mask_based import (
-    MultiQuerySplitter, AliasedFormulaSplitMask, FormulaSplitMask, QuerySplitMask, AddFormulaInfo, SubqueryType
+    AddFormulaInfo,
+    AliasedFormulaSplitMask,
+    FormulaSplitMask,
+    MultiQuerySplitter,
+    QuerySplitMask,
+    SubqueryType,
 )
 from bi_query_processing.utils.name_gen import PrefixedIdGen
-
 
 _JOIN_TYPE_MAP = {
     formula_fork_nodes.JoinType.inner: JoinType.inner,
@@ -57,7 +59,8 @@ FMask_QFork_BFB = tuple[FormulaSplitMask, formula_fork_nodes.QueryFork, frozense
 @attr.s
 class QueryForkQuerySplitter(MultiQuerySplitter):
     def _get_child_lod_extracts(
-            self, node: formula_nodes.FormulaItem,
+        self,
+        node: formula_nodes.FormulaItem,
     ) -> frozenset[NodeExtract]:
         """
         Get LODs of child QueryFork's (retrieved subqueries)
@@ -67,8 +70,10 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
         """
         child_lod_extracts: set[NodeExtract] = set()
         child_query_forks = self._get_query_forks_from_expression(
-            node=node, index_prefix=NodeHierarchyIndex(),
-            query_part=QueryPart.select, formula_idx=0,  # Fake values, but they don't matter
+            node=node,
+            index_prefix=NodeHierarchyIndex(),
+            query_part=QueryPart.select,
+            formula_idx=0,  # Fake values, but they don't matter
         )
         for _, child_qfork in child_query_forks:
             child_lod_extracts.add(child_qfork.lod.extract_not_none)
@@ -77,10 +82,11 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
 
     def _get_query_forks_from_expression(
         self,
-        node: formula_nodes.FormulaItem, index_prefix: NodeHierarchyIndex,
-        query_part: QueryPart, formula_idx: int,
+        node: formula_nodes.FormulaItem,
+        index_prefix: NodeHierarchyIndex,
+        query_part: QueryPart,
+        formula_idx: int,
     ) -> list[tuple[FormulaSplitMask, formula_fork_nodes.QueryFork]]:
-
         result: list[tuple[FormulaSplitMask, formula_fork_nodes.QueryFork]] = []
         if isinstance(node, formula_fork_nodes.QueryFork):
             result.append(
@@ -95,16 +101,21 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                 )
             )
         else:
-            for child_index, child, stack in inspect_expression.enumerate_autonomous_children(node, prefix=index_prefix):
+            for child_index, child, _stack in inspect_expression.enumerate_autonomous_children(
+                node, prefix=index_prefix
+            ):
                 result += self._get_query_forks_from_expression(
-                    node=child, index_prefix=child_index,
-                    query_part=query_part, formula_idx=formula_idx,
+                    node=child,
+                    index_prefix=child_index,
+                    query_part=query_part,
+                    formula_idx=formula_idx,
                 )
 
         return result
 
     def _prioritize_and_filter_query_forks(
-            self, fmask_qfork_bfb_list: list[FMask_QFork_BFB],
+        self,
+        fmask_qfork_bfb_list: list[FMask_QFork_BFB],
     ) -> tuple[SubqueryType, list[FMask_QFork_BFB]]:
         """
         Filter the found query forks.
@@ -146,10 +157,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
 
         filtered_fmask_qfork_bfb_list: list[FMask_QFork_BFB] = []
         for formula_split_mask, qfork_node, normalized_bfb in fmask_qfork_bfb_list:
-            if (
-                    not inspect_node.qfork_is_window(qfork_node)
-                    or normalized_bfb != smallest_wf_bfb
-            ):
+            if not inspect_node.qfork_is_window(qfork_node) or normalized_bfb != smallest_wf_bfb:
                 # Window function-prioritization is on,
                 # so all non-WF q. forks or WF q. forks with non-matching BFBs will be ignored
                 continue
@@ -166,10 +174,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
         by the mutate_cropped_query method
         """
 
-        subq_types = {
-            mask.subquery_type for mask in split_masks
-            if mask.subquery_type != SubqueryType.generated_base
-        }
+        subq_types = {mask.subquery_type for mask in split_masks if mask.subquery_type != SubqueryType.generated_base}
         assert len(subq_types) == 1
         subqery_type = next(iter(subq_types))
 
@@ -214,10 +219,11 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
         return split_masks
 
     def _collect_query_forks(
-            self, query: CompiledQuery, expr_id_gen: PrefixedIdGen,
-            disable_grouping_lods: bool = False,
+        self,
+        query: CompiledQuery,
+        expr_id_gen: PrefixedIdGen,
+        disable_grouping_lods: bool = False,
     ) -> list[QueryForkInfo]:
-
         inspect_env = InspectionEnvironment()
 
         result: list[QueryForkInfo] = []
@@ -235,13 +241,16 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             formula_list = query.get_formula_list(query_part)
             for formula_idx, formula in enumerate(formula_list):
                 fmask_qfork_list += self._get_query_forks_from_expression(
-                    node=formula.formula_obj, index_prefix=NodeHierarchyIndex(),
-                    query_part=query_part, formula_idx=formula_idx,
+                    node=formula.formula_obj,
+                    index_prefix=NodeHierarchyIndex(),
+                    query_part=query_part,
+                    formula_idx=formula_idx,
                 )
 
         # Normalize BFBs
         available_filter_ids = frozenset(
-            filter_formula.original_field_id for filter_formula in query.filters
+            filter_formula.original_field_id
+            for filter_formula in query.filters
             if filter_formula.original_field_id is not None
         )
 
@@ -266,7 +275,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                 # Inherit (copy) original query's dimension list
                 dim_list = tuple(gb_formula.formula_obj.expr for gb_formula in query.group_by)
             else:
-                raise TypeError(f'Unsupported LodSpecifier type: {type(lod).__name__}')
+                raise TypeError(f"Unsupported LodSpecifier type: {type(lod).__name__}")
 
             joining: formula_fork_nodes.QueryForkJoiningBase = qfork_node.joining
             if len(dim_list) == 0:
@@ -363,11 +372,10 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
         return result
 
     def _normalize_joining_node(
-            self,
-            joining_node: formula_fork_nodes.QueryForkJoiningBase,
-            expr_extract_to_alias_map: dict[NodeExtract, str],
+        self,
+        joining_node: formula_fork_nodes.QueryForkJoiningBase,
+        expr_extract_to_alias_map: dict[NodeExtract, str],
     ) -> formula_fork_nodes.QueryForkJoiningBase:
-
         def match_func(node: formula_nodes.FormulaItem, *args: Any) -> bool:
             return node.extract in expr_extract_to_alias_map
 
@@ -385,9 +393,11 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
         return split_masks
 
     def get_split_masks(
-            self, query: CompiledQuery, expr_id_gen: PrefixedIdGen, query_id_gen: PrefixedIdGen,
+        self,
+        query: CompiledQuery,
+        expr_id_gen: PrefixedIdGen,
+        query_id_gen: PrefixedIdGen,
     ) -> list[QuerySplitMask]:
-
         mask_list: list[QuerySplitMask] = []
         collected_query_fork_infos = self._collect_query_forks(query, expr_id_gen=expr_id_gen)
 
@@ -405,12 +415,12 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             # To replace these expressions with their column aliases
             # in the JOIN ON expressions.
             expr_extract_to_alias_map = {
-                add_formula.expr.extract_not_none: add_formula.alias
-                for add_formula in qfork_info.add_formulas
+                add_formula.expr.extract_not_none: add_formula.alias for add_formula in qfork_info.add_formulas
             }
             # So apply this mapping to the `joining` node
             joining_node = self._normalize_joining_node(
-                joining_node=qfork_info.joining_node, expr_extract_to_alias_map=expr_extract_to_alias_map)
+                joining_node=qfork_info.joining_node, expr_extract_to_alias_map=expr_extract_to_alias_map
+            )
 
             # Collect indices of filters that should be applied to the sub-query
             filter_indices: set[int] = set()
@@ -469,9 +479,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             # Nothing to do in this case
             return query
 
-        assert len(agg_statuses) == 1, (
-            f'Inconsistent aggregation status among SELECT items. Got: {agg_statuses}'
-        )
+        assert len(agg_statuses) == 1, f"Inconsistent aggregation status among SELECT items. Got: {agg_statuses}"
         agg_status = next(iter(agg_statuses))
         if not agg_status:
             # SELECT items are not aggregated

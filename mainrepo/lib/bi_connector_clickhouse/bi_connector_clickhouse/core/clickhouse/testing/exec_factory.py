@@ -1,12 +1,14 @@
-from typing import Any, Type
+from typing import (
+    Any,
+    Type,
+)
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+from bi_core_testing.executors import ExecutorFactoryBase
 
 from bi_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
 from bi_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
-
-from bi_core_testing.executors import ExecutorFactoryBase
 
 
 class ClickHouseExecutorFactory(ExecutorFactoryBase):
@@ -19,7 +21,7 @@ class ClickHouseExecutorFactory(ExecutorFactoryBase):
     def get_dto_kwargs(self) -> dict[str, Any]:
         return dict(
             **super().get_dto_kwargs(),
-            protocol='http',
+            protocol="http",
             cluster_name=None,
             endpoint=None,
             connect_timeout=None,

@@ -1,10 +1,19 @@
 from __future__ import annotations
 
-from typing import Dict, ClassVar, Type, Union, Optional, List, FrozenSet
+from typing import (
+    ClassVar,
+    Dict,
+    FrozenSet,
+    List,
+    Optional,
+    Type,
+    Union,
+)
 
 from marshmallow import Schema
 
-from . import schema_actions as act_schemas, dba_actions as actions
+from . import dba_actions as actions
+from . import schema_actions as act_schemas
 from . import schemas_exc as exc_schemas
 from ..adapters.common_base import CommonBaseDirectAdapter
 from ..models.db_adapter_data import RawSchemaInfo
@@ -28,18 +37,17 @@ class ActionSerializer:
     def serialize_action(self, obj: actions.RemoteDBAdapterAction) -> Dict:
         schema = self.MAP_ACT_TYPE_SCHEMA_CLS[type(obj)]()
         result = schema.dump(obj)
-        result['type'] = type(obj).__qualname__
+        result["type"] = type(obj).__qualname__
         return result
 
     def deserialize_action(
-            self,
-            data: Dict,
-            allowed_dba_classes: FrozenSet[Type[CommonBaseDirectAdapter]],
+        self,
+        data: Dict,
+        allowed_dba_classes: FrozenSet[Type[CommonBaseDirectAdapter]],
     ) -> actions.RemoteDBAdapterAction:
-        action_cls_qualname = data.pop('type', None)
+        action_cls_qualname = data.pop("type", None)
         action_cls = next(
-            filter(lambda clz: clz.__qualname__ == action_cls_qualname, self.MAP_ACT_TYPE_SCHEMA_CLS.keys()),
-            None
+            filter(lambda clz: clz.__qualname__ == action_cls_qualname, self.MAP_ACT_TYPE_SCHEMA_CLS.keys()), None
         )
         if action_cls is None:
             raise TypeError(f"Action {action_cls_qualname} is not listed in serializable actions")

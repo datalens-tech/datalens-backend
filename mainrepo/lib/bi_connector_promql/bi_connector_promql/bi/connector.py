@@ -1,5 +1,15 @@
 from __future__ import annotations
 
+from bi_api_connector.api_schema.source_base import (
+    SimpleDataSourceSchema,
+    SimpleDataSourceTemplateSchema,
+)
+from bi_api_connector.connector import (
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
+)
+
 from bi_connector_promql.bi.api_schema.connection import PromQLConnectionSchema
 from bi_connector_promql.bi.connection_form.form_config import PromQLConnectionFormFactory
 from bi_connector_promql.bi.connection_info import PromQLConnectionInfoProvider
@@ -8,15 +18,6 @@ from bi_connector_promql.core.connector import (
     PromQLCoreConnectionDefinition,
     PromQLCoreConnector,
     PromQLCoreSourceDefinition,
-)
-
-from bi_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
-)
-
-from bi_api_connector.api_schema.source_base import (
-    SimpleDataSourceSchema,
-    SimpleDataSourceTemplateSchema,
 )
 
 
@@ -35,10 +36,6 @@ class PromQLBiApiSourceDefinition(BiApiSourceDefinition):
 
 class PromQLBiApiConnector(BiApiConnector):
     core_connector_cls = PromQLCoreConnector
-    connection_definitions = (
-        PromQLBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        PromQLBiApiSourceDefinition,
-    )
+    connection_definitions = (PromQLBiApiConnectionDefinition,)
+    source_definitions = (PromQLBiApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

@@ -1,11 +1,12 @@
 from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from bi_core.aio.web_app_services.s3 import S3Service
-from bi_task_processor.processor import TaskProcessor, make_task_processor
-
-from bi_file_uploader_lib.redis_model.base import RedisModelManager
-
 from bi_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from bi_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
+from bi_file_uploader_lib.redis_model.base import RedisModelManager
+from bi_task_processor.processor import (
+    TaskProcessor,
+    make_task_processor,
+)
 
 
 class FileUploaderDLRequest(DLRequestDataCore):

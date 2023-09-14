@@ -1,12 +1,15 @@
 import itertools
+from pathlib import Path
 import re
 import shutil
 import subprocess
-from pathlib import Path
 from typing import Sequence
 
 from dl_repmanager.metapkg_manager import MetaPackageManager
-from dl_repmanager.primitives import LocalReqPackageSpec, PypiReqPackageSpec
+from dl_repmanager.primitives import (
+    LocalReqPackageSpec,
+    PypiReqPackageSpec,
+)
 
 
 def run_poetry_lock(dir_path: Path) -> None:
@@ -14,13 +17,13 @@ def run_poetry_lock(dir_path: Path) -> None:
 
 
 def sync_scoped_metapkg(
-        *,
-        original_metapkg_path: Path,
-        scoped_metapkg_path: Path,
-        package_dirs_to_include: Sequence[Path],  # Relative to scoped package
-        prevent_prune_for_deps: Sequence[str],
-        remove_private_pypi: bool = False,
-        use_target_lock: bool = False,
+    *,
+    original_metapkg_path: Path,
+    scoped_metapkg_path: Path,
+    package_dirs_to_include: Sequence[Path],  # Relative to scoped package
+    prevent_prune_for_deps: Sequence[str],
+    remove_private_pypi: bool = False,
+    use_target_lock: bool = False,
 ):
     def is_local_package_in_scope(dep_from_scoped_pkg: LocalReqPackageSpec) -> bool:
         for package_dir in package_dirs_to_include:
@@ -42,8 +45,7 @@ def sync_scoped_metapkg(
     all_local_dependencies = scoped_metapkg.get_dependencies("ci")
     all_groups = scoped_metapkg.list_poetry_groups()
     declared_external_dependencies: list[PypiReqPackageSpec] = [
-        dep for dep in scoped_metapkg.get_dependencies(None)
-        if isinstance(dep, PypiReqPackageSpec)
+        dep for dep in scoped_metapkg.get_dependencies(None) if isinstance(dep, PypiReqPackageSpec)
     ]
 
     for dep in all_local_dependencies:
@@ -56,7 +58,7 @@ def sync_scoped_metapkg(
 
     scoped_metapkg.save()
 
-    # Rerun lock 
+    # Rerun lock
     run_poetry_lock(scoped_metapkg_path)
 
     ci_deps_raw = scoped_metapkg.export_dependencies_raw("ci")

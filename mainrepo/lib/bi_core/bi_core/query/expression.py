@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Sequence, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    Sequence,
+    TypeVar,
+)
 
 import attr
 
@@ -9,12 +15,14 @@ from bi_constants.enums import OrderDirection
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ClauseElement
 
-    from bi_constants.enums import BIType, JoinType
-
+    from bi_constants.enums import (
+        BIType,
+        JoinType,
+    )
     from bi_core.components.ids import AvatarId
 
 
-_EXPRESSION_CTX_TV = TypeVar('_EXPRESSION_CTX_TV', bound='ExpressionCtx')
+_EXPRESSION_CTX_TV = TypeVar("_EXPRESSION_CTX_TV", bound="ExpressionCtx")
 
 
 @attr.s(auto_attribs=True, frozen=True)

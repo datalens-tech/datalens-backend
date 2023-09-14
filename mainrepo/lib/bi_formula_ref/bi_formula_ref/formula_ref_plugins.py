@@ -1,15 +1,17 @@
-from typing import Collection, Optional, Type
+from typing import (
+    Collection,
+    Optional,
+    Type,
+)
 
 import attr
-
-from bi_utils.entrypoints import EntrypointClassManager
 
 import bi_formula_ref as package
 from bi_formula_ref.plugins.base.plugin import FormulaRefPlugin
 from bi_formula_ref.plugins.registration import FORMULA_REF_PLUGIN_REG
+from bi_utils.entrypoints import EntrypointClassManager
 
-
-_PLUGIN_EP_GROUP = f'{package.__name__}.plugins'
+_PLUGIN_EP_GROUP = f"{package.__name__}.plugins"
 
 
 @attr.s

@@ -1,12 +1,16 @@
 import functools
+from typing import (
+    Any,
+    Callable,
+)
 import weakref
-from typing import Callable, Any
 
 
 def method_lru(maxsize: int = 128, typed: bool = False) -> Callable:
     """
     Hacked lru cache for methods
     """
+
     def wrapper(func: Callable) -> Callable:
         @functools.lru_cache(maxsize, typed)
         def _func(_self: Callable, *args, **kwargs) -> Any:  # type: ignore

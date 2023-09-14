@@ -2,27 +2,38 @@ from __future__ import annotations
 
 from typing import Optional
 
-import bi_formula.core.nodes as nodes
 import bi_formula.core.fork_nodes as fork_nodes
-from bi_formula.inspect.function import can_be_aggregate, supports_bfb
+import bi_formula.core.nodes as nodes
+from bi_formula.inspect.function import (
+    can_be_aggregate,
+    supports_bfb,
+)
 
 
 def get_token(node: nodes.FormulaItem) -> Optional[str]:
     if isinstance(node, nodes.NamedItem):
         return node.name
-    if isinstance(node, (nodes.LiteralUuid, nodes.LiteralString, nodes.LiteralBoolean, nodes.LiteralInteger,
-                         nodes.LiteralFloat, nodes.LiteralGeopoint, nodes.LiteralGeopolygon)):
+    if isinstance(
+        node,
+        (
+            nodes.LiteralUuid,
+            nodes.LiteralString,
+            nodes.LiteralBoolean,
+            nodes.LiteralInteger,
+            nodes.LiteralFloat,
+            nodes.LiteralGeopoint,
+            nodes.LiteralGeopolygon,
+        ),
+    ):
         return str(node.value)
     if isinstance(node, nodes.Null):
-        return 'null'
+        return "null"
     return None
 
 
 def is_aggregate_function(node: nodes.FormulaItem) -> bool:
     return (
-        isinstance(node, nodes.FuncCall)
-        and not isinstance(node, nodes.WindowFuncCall)
-        and can_be_aggregate(node.name)
+        isinstance(node, nodes.FuncCall) and not isinstance(node, nodes.WindowFuncCall) and can_be_aggregate(node.name)
     )
 
 
@@ -70,16 +81,14 @@ def is_default_lod_aggregation(node: nodes.FormulaItem) -> bool:
 
 
 def qfork_is_aggregation(node: fork_nodes.QueryFork) -> bool:
-    return (
-        not isinstance(node.lod, nodes.InheritedLodSpecifier)  # Only lookups have these
-        and is_aggregate_function(node.result_expr)
+    return not isinstance(node.lod, nodes.InheritedLodSpecifier) and is_aggregate_function(  # Only lookups have these
+        node.result_expr
     )
 
 
 def qfork_is_window(node: fork_nodes.QueryFork) -> bool:
-    return (
-        not isinstance(node.lod, nodes.InheritedLodSpecifier)  # Only lookups have these
-        and is_window_function(node.result_expr)
+    return not isinstance(node.lod, nodes.InheritedLodSpecifier) and is_window_function(  # Only lookups have these
+        node.result_expr
     )
 
 

@@ -3,10 +3,10 @@ from __future__ import annotations
 import attr
 
 from bi_core.data_source_spec.sql import (
-    TableSQLDataSourceSpec,
+    DbSQLDataSourceSpec,
     SchemaSQLDataSourceSpec,
     SubselectDataSourceSpec,
-    DbSQLDataSourceSpec,
+    TableSQLDataSourceSpec,
 )
 
 

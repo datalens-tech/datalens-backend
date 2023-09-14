@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 from os import environ
-from typing import Dict, Optional, Mapping, Any
+from typing import (
+    Any,
+    Dict,
+    Mapping,
+    Optional,
+)
 
 import attr
 from cryptography import fernet
@@ -66,6 +71,7 @@ class _CryptoKeysConfigOnlySettings(SettingsBase):
     Loader can not handle this case due to root settings class should be env dict.
     So we make this wrapper.
     """
+
     cry: CryptoKeysConfig = s_attrib("DL_CRY", json_converter=CryptoKeysConfig.from_json, sensitive=True)
 
 

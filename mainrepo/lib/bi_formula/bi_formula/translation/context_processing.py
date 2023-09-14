@@ -1,9 +1,8 @@
 from functools import lru_cache
 from typing import Type
 
-from bi_formula.core.dialect import DialectCombo
 from bi_formula.connectors.base.context_processor import ContextPostprocessor
-
+from bi_formula.core.dialect import DialectCombo
 
 _CONTEXT_PROCESSORS: dict[DialectCombo, ContextPostprocessor] = {}
 
@@ -11,8 +10,7 @@ _CONTEXT_PROCESSORS: dict[DialectCombo, ContextPostprocessor] = {}
 @lru_cache
 def get_context_processor(dialect: DialectCombo) -> ContextPostprocessor:
     sorted_dialect_items = sorted(
-        _CONTEXT_PROCESSORS.items(),
-        key=lambda el: el[0].ambiguity
+        _CONTEXT_PROCESSORS.items(), key=lambda el: el[0].ambiguity
     )  # Most specific dialects go first, the most ambiguous ones go last
     for d, context_processor in sorted_dialect_items:
         if d & dialect == dialect:

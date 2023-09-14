@@ -1,18 +1,28 @@
 from __future__ import annotations
 
-from typing import Any, Generator, Hashable, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    Hashable,
+)
 
 import attr
 
-
+from bi_api_lib.pivot.primitives import (
+    DataRow,
+    MeasureNameValue,
+)
 from bi_api_lib.query.formalization.pivot_legend import PivotLegend
-from bi_api_lib.pivot.primitives import DataRow, MeasureNameValue
 from bi_query_processing.postprocessing.primitives import PostprocessedValue
 
 if TYPE_CHECKING:
     from bi_api_lib.pivot.base.facade import TableDataFacade
     from bi_api_lib.pivot.hashable_packing import HashableValuePackerBase
-    from bi_api_lib.pivot.primitives import DataCellVector, PivotHeader
+    from bi_api_lib.pivot.primitives import (
+        DataCellVector,
+        PivotHeader,
+    )
 
 
 @attr.s

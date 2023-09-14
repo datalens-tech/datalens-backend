@@ -1,42 +1,65 @@
 from __future__ import annotations
 
-import logging
 from itertools import chain
-from typing import AbstractSet, Iterable, List, Sequence, Set, TYPE_CHECKING
+import logging
+from typing import (
+    TYPE_CHECKING,
+    AbstractSet,
+    Iterable,
+    List,
+    Sequence,
+    Set,
+)
 
 import attr
 
-import bi_query_processing.exc
 from bi_core.components.ids import FieldId
 from bi_core.us_dataset import Dataset
 from bi_core.utils import attrs_evolve_to_subclass
-
 import bi_formula.core.nodes as formula_nodes
 from bi_formula.core.tag import LevelTag
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.inspect.expression import (
-    is_window_expression, is_aggregate_expression, collect_tags,
+    collect_tags,
+    is_aggregate_expression,
+    is_window_expression,
 )
-
+from bi_query_processing.compilation.primitives import (
+    CompiledJoinOnFormulaInfo,
+    CompiledOrderByFormulaInfo,
+)
 from bi_query_processing.enums import QueryType
-from bi_query_processing.compilation.primitives import CompiledOrderByFormulaInfo, CompiledJoinOnFormulaInfo
+import bi_query_processing.exc
 from bi_query_processing.legacy_pipeline.planning.primitives import (
-    ExecutionLevel, LevelPlan, SlicingPlan,
-    PlannedFormula, PlannedOrderByFormula, PlannedJoinOnFormula,
-    ExecutionPlan, SlicerType, TaggedSlicerConfiguration,
-    TOP_SLICER_CONFIG, WINDOW_SLICER_CONFIG, FIELD_SLICER_CONFIG,
+    FIELD_SLICER_CONFIG,
+    TOP_SLICER_CONFIG,
+    WINDOW_SLICER_CONFIG,
+    ExecutionLevel,
+    ExecutionPlan,
+    LevelPlan,
+    PlannedFormula,
+    PlannedJoinOnFormula,
+    PlannedOrderByFormula,
+    SlicerType,
+    SlicingPlan,
+    TaggedSlicerConfiguration,
 )
 
 if TYPE_CHECKING:
-    from bi_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledQuery
+    from bi_query_processing.compilation.primitives import (
+        CompiledFormulaInfo,
+        CompiledQuery,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 def _plan_to_level(
-        formulas: Sequence[CompiledFormulaInfo], *,
-        level_plan: LevelPlan, slicing_plan: SlicingPlan,
+    formulas: Sequence[CompiledFormulaInfo],
+    *,
+    level_plan: LevelPlan,
+    slicing_plan: SlicingPlan,
 ) -> List[PlannedFormula]:
     return [
         PlannedFormula(
@@ -64,7 +87,7 @@ def split_list(iterable, condition):  # type: ignore  # TODO: fix
 
 @attr.s
 class ExecutionPlanner:
-    """ ... """
+    """..."""
 
     ds: Dataset = attr.ib(kw_only=True)
     inspect_env: InspectionEnvironment = attr.ib(kw_only=True)
@@ -76,13 +99,15 @@ class ExecutionPlanner:
             LOGGER.info(*args, **kwargs)
 
     def _all_formulas(self, compiled_query: CompiledQuery) -> Iterable[CompiledFormulaInfo]:
-        return chain.from_iterable((
-            compiled_query.select,
-            compiled_query.group_by,
-            compiled_query.order_by,
-            compiled_query.filters,
-            compiled_query.join_on,
-        ))
+        return chain.from_iterable(
+            (
+                compiled_query.select,
+                compiled_query.group_by,
+                compiled_query.order_by,
+                compiled_query.filters,
+                compiled_query.join_on,
+            )
+        )
 
     def _collect_tags(self, compiled_query: CompiledQuery) -> AbstractSet[LevelTag]:
         """
@@ -95,14 +120,14 @@ class ExecutionPlanner:
         return tags
 
     def _is_window(self, formula_info: CompiledFormulaInfo) -> bool:
-        """ Convenience wrapper for `is_window_expression` """
+        """Convenience wrapper for `is_window_expression`"""
         return is_window_expression(
             formula_info.formula_obj,
             env=self.inspect_env,
         )
 
     def _is_aggregate(self, formula_info: CompiledFormulaInfo) -> bool:
-        """ Convenience wrapper for `is_aggregate_expression` """
+        """Convenience wrapper for `is_aggregate_expression`"""
         return is_aggregate_expression(
             formula_info.formula_obj,
             env=self.inspect_env,
@@ -144,16 +169,21 @@ class WindowToCompengExecutionPlanner(ExecutionPlanner):
 
         needs_compeng = any(self._is_window(formula) for formula in self._all_formulas(compiled_query))
         unordered_tags = self._collect_tags(compiled_query=compiled_query)
-        bfb_filter_field_ids: Set[FieldId] = set(chain.from_iterable((
-            tag.bfb_names for tag in unordered_tags
-            if tag.func_nesting != 0  # Referenced by a window function -> compeng
-        )))
+        bfb_filter_field_ids: Set[FieldId] = set(
+            chain.from_iterable(
+                (
+                    tag.bfb_names
+                    for tag in unordered_tags
+                    if tag.func_nesting != 0  # Referenced by a window function -> compeng
+                )
+            )
+        )
 
         def plan_select_formula(formula: CompiledFormulaInfo) -> PlannedFormula:
             return plan_formula(formula, force_compeng=needs_compeng)  # All SELECTs must go to the top level
 
         def plan_group_by_formula(formula: CompiledFormulaInfo) -> PlannedFormula:
-            assert not self._is_window(formula), 'GROUP BY formulas must be planned to source_db'
+            assert not self._is_window(formula), "GROUP BY formulas must be planned to source_db"
             return plan_formula(formula)
 
         def plan_filter_formula(formula: CompiledFormulaInfo) -> PlannedFormula:
@@ -163,13 +193,15 @@ class WindowToCompengExecutionPlanner(ExecutionPlanner):
 
         def plan_order_by_formula(formula: CompiledOrderByFormulaInfo) -> PlannedOrderByFormula:
             return attrs_evolve_to_subclass(
-                cls=PlannedOrderByFormula, inst=plan_formula(formula, force_compeng=needs_compeng),
+                cls=PlannedOrderByFormula,
+                inst=plan_formula(formula, force_compeng=needs_compeng),
                 direction=formula.direction,
             )
 
         def plan_join_on_formula(formula: CompiledJoinOnFormulaInfo) -> PlannedJoinOnFormula:
             return attrs_evolve_to_subclass(
-                cls=PlannedJoinOnFormula, inst=plan_formula(formula),
+                cls=PlannedJoinOnFormula,
+                inst=plan_formula(formula),
                 left_id=formula.left_id,
                 right_id=formula.right_id,
                 join_type=formula.join_type,
@@ -273,7 +305,8 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
     level_type: ExecutionLevel = attr.ib(kw_only=True)
 
     def _get_query_level_plan(
-            self, level_tags: List[LevelTag],
+        self,
+        level_tags: List[LevelTag],
     ) -> LevelPlan:
         """
         Determine the query's execution levels,
@@ -284,9 +317,9 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
 
         level_types = [self.level_type] * execution_level_count
 
-        self._log_info('Found %s tag levels', tag_level_count)
-        self._log_info('Using %s execution levels', execution_level_count)
-        self._log_info('All level types: %s', level_types)
+        self._log_info("Found %s tag levels", tag_level_count)
+        self._log_info("Using %s execution levels", execution_level_count)
+        self._log_info("All level types: %s", level_types)
 
         return LevelPlan(level_types=level_types)
 
@@ -317,7 +350,9 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
         return 0  # always the first level
 
     def _get_level_for_filter(
-            self, formula: CompiledFormulaInfo, level_tags: List[LevelTag],
+        self,
+        formula: CompiledFormulaInfo,
+        level_tags: List[LevelTag],
     ) -> int:
         """
         Cases:
@@ -340,12 +375,15 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
             # Find the last tag containing the filter's ID
             tag_relative_level = len(level_tags)
             while tag_relative_level > 0:
-                tag = level_tags[tag_relative_level-1]
+                tag = level_tags[tag_relative_level - 1]
                 if filter_field_id in tag.bfb_names:
                     bfb_ref_level = base_execution_level + tag_relative_level
                     self._log_info(
-                        'Filter based on field %s is referenced in tag %s, which results in level %s',
-                        filter_field_id, tag, bfb_ref_level)
+                        "Filter based on field %s is referenced in tag %s, which results in level %s",
+                        filter_field_id,
+                        tag,
+                        bfb_ref_level,
+                    )
 
                     if tag.qfork_nesting != 0:
                         # The top BFB reference for this filter is a qfork.
@@ -362,35 +400,34 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
             top_filter_tag = min(filter_tags)
             filter_func_dep_level = base_execution_level + level_tags.index(top_filter_tag) + 1
             self._log_info(
-                'Filter based on field %s contains node with tag %s, which results in level %s',
-                filter_field_id, top_filter_tag, filter_func_dep_level)
+                "Filter based on field %s contains node with tag %s, which results in level %s",
+                filter_field_id,
+                top_filter_tag,
+                filter_func_dep_level,
+            )
             filter_level = max(filter_level, filter_func_dep_level)
 
         if filter_field_id is not None:
-            self._log_info(f'Level of filter based on field {filter_field_id} was determined to be {filter_level}')
+            self._log_info(f"Level of filter based on field {filter_field_id} was determined to be {filter_level}")
 
         return filter_level
 
     def _get_formula_slicing_plan(
-            self, formula: CompiledFormulaInfo, level_plan: LevelPlan,
-            before_level: int, level_tags: List[LevelTag]
+        self, formula: CompiledFormulaInfo, level_plan: LevelPlan, before_level: int, level_tags: List[LevelTag]
     ) -> SlicingPlan:
         """
         Define how to slice the part of the formula that is executed in in ``self.level_type``.
         Slicing is defined by BFB (BEFORE FILTER BY) tags
         that act as wrappers for all BFB functions.
         """
-        assert all(
-            lt == self.level_type
-            for lt in level_plan.level_types[:before_level]
-        )
+        assert all(lt == self.level_type for lt in level_plan.level_types[:before_level])
 
         levels_in_zone = before_level
-        assert levels_in_zone != 0, 'Cannot plan to 0 levels'
+        assert levels_in_zone != 0, "Cannot plan to 0 levels"
 
         slicer_configs = []
 
-        for level_tag in level_tags[:levels_in_zone - 1]:  # -1 because of the extra filter level
+        for level_tag in level_tags[: levels_in_zone - 1]:  # -1 because of the extra filter level
             level_boundary_config = TaggedSlicerConfiguration(
                 slicer_type=SlicerType.level_tagged,
                 tag=level_tag,
@@ -402,12 +439,15 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
         return SlicingPlan(slicer_configs=tuple(slicer_configs))
 
     def _plan_formula(
-            self, formula: CompiledFormulaInfo, level_plan: LevelPlan,
-            before_level: int, level_tags: List[LevelTag],
+        self,
+        formula: CompiledFormulaInfo,
+        level_plan: LevelPlan,
+        before_level: int,
+        level_tags: List[LevelTag],
     ) -> PlannedFormula:
         formula_slicing_plan = self._get_formula_slicing_plan(
-            formula=formula, level_plan=level_plan,
-            before_level=before_level, level_tags=level_tags)
+            formula=formula, level_plan=level_plan, before_level=before_level, level_tags=level_tags
+        )
         formula_level_plan = LevelPlan(level_types=level_plan.level_types[:before_level])
         return PlannedFormula(
             formula=formula,
@@ -416,28 +456,36 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
         )
 
     def _plan_order_by_formula(
-            self, formula: CompiledOrderByFormulaInfo, level_plan: LevelPlan,
-            before_level: int, level_tags: List[LevelTag],
+        self,
+        formula: CompiledOrderByFormulaInfo,
+        level_plan: LevelPlan,
+        before_level: int,
+        level_tags: List[LevelTag],
     ) -> PlannedOrderByFormula:
         assert isinstance(formula, CompiledOrderByFormulaInfo)
         planned_formula = self._plan_formula(
-            formula=formula, level_plan=level_plan,
-            before_level=before_level, level_tags=level_tags)
+            formula=formula, level_plan=level_plan, before_level=before_level, level_tags=level_tags
+        )
         return attrs_evolve_to_subclass(
-            cls=PlannedOrderByFormula, inst=planned_formula,
+            cls=PlannedOrderByFormula,
+            inst=planned_formula,
             direction=formula.direction,
         )
 
     def _plan_join_on_formula(
-            self, formula: CompiledJoinOnFormulaInfo, level_plan: LevelPlan,
-            before_level: int, level_tags: List[LevelTag],
+        self,
+        formula: CompiledJoinOnFormulaInfo,
+        level_plan: LevelPlan,
+        before_level: int,
+        level_tags: List[LevelTag],
     ) -> PlannedJoinOnFormula:
         assert isinstance(formula, CompiledJoinOnFormulaInfo)
         planned_formula = self._plan_formula(
-            formula=formula, level_plan=level_plan,
-            before_level=before_level, level_tags=level_tags)
+            formula=formula, level_plan=level_plan, before_level=before_level, level_tags=level_tags
+        )
         return attrs_evolve_to_subclass(
-            cls=PlannedJoinOnFormula, inst=planned_formula,
+            cls=PlannedJoinOnFormula,
+            inst=planned_formula,
             left_id=formula.left_id,
             right_id=formula.right_id,
             join_type=formula.join_type,
@@ -446,7 +494,7 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
     def plan(self, compiled_query: CompiledQuery) -> ExecutionPlan:
         unordered_tags = self._collect_tags(compiled_query=compiled_query)
         level_tags = self._validate_and_order_tags(tags=unordered_tags)
-        self._log_info('Using level tags for slicing: %s', level_tags)
+        self._log_info("Using level tags for slicing: %s", level_tags)
         level_plan = self._get_query_level_plan(level_tags=level_tags)
 
         select_level = level_plan.level_count() - 1
@@ -459,35 +507,30 @@ class NestedLevelTagExecutionPlanner(ExecutionPlanner):  # noqa
         for filter_formula in compiled_query.filters:
             filter_level = self._get_level_for_filter(formula=filter_formula, level_tags=level_tags)
             planned_filter = self._plan_formula(
-                formula=filter_formula, level_plan=level_plan,
-                before_level=filter_level+1, level_tags=level_tags)
+                formula=filter_formula, level_plan=level_plan, before_level=filter_level + 1, level_tags=level_tags
+            )
             planned_filters.append(planned_filter)
 
         def _plan_regular_formula(formula: CompiledFormulaInfo, before_level: int) -> PlannedFormula:
             return self._plan_formula(
-                formula=formula, level_plan=level_plan,
-                before_level=before_level, level_tags=level_tags
+                formula=formula, level_plan=level_plan, before_level=before_level, level_tags=level_tags
             )
 
         planned_select = [
-            _plan_regular_formula(formula, before_level=select_level+1)
-            for formula in compiled_query.select
+            _plan_regular_formula(formula, before_level=select_level + 1) for formula in compiled_query.select
         ]
         planned_group_by = [
-            _plan_regular_formula(formula, before_level=group_by_level+1)
-            for formula in compiled_query.group_by
+            _plan_regular_formula(formula, before_level=group_by_level + 1) for formula in compiled_query.group_by
         ]
         planned_order_by = [
             self._plan_order_by_formula(
-                formula=formula, level_plan=level_plan,
-                before_level=order_by_level+1, level_tags=level_tags
+                formula=formula, level_plan=level_plan, before_level=order_by_level + 1, level_tags=level_tags
             )
             for formula in compiled_query.order_by
         ]
         planned_join_on = [
             self._plan_join_on_formula(
-                formula=formula, level_plan=level_plan,
-                before_level=join_on_level+1, level_tags=level_tags
+                formula=formula, level_plan=level_plan, before_level=join_on_level + 1, level_tags=level_tags
             )
             for formula in compiled_query.join_on
         ]
@@ -538,16 +581,13 @@ class PrefilterAndCompengExecutionPlanner(ExecutionPlanner):
             and not compiled_query.group_by
             and not compiled_query.join_on
             and not compeng_only_filters
-            and not any(
-                self._expr_requires_compeng(formula.formula_obj.expr)
-                for formula in compiled_query.select
-            )
+            and not any(self._expr_requires_compeng(formula.formula_obj.expr) for formula in compiled_query.select)
         ):
             return True
         return False
 
     def _get_needs_compeng(
-            self, compiled_query: CompiledQuery, compeng_only_filters: List[CompiledFormulaInfo]
+        self, compiled_query: CompiledQuery, compeng_only_filters: List[CompiledFormulaInfo]
     ) -> bool:
         if compiled_query.meta.query_type in (QueryType.value_range, QueryType.distinct):
             return False
@@ -556,9 +596,7 @@ class PrefilterAndCompengExecutionPlanner(ExecutionPlanner):
     def plan(self, compiled_query: CompiledQuery) -> ExecutionPlan:
         tags = self._collect_tags(compiled_query=compiled_query)
         bfb_filter_ids: Set[FieldId] = {
-            filter_field_id
-            for tag in tags if isinstance(tag, LevelTag)
-            for filter_field_id in tag.bfb_names
+            filter_field_id for tag in tags if isinstance(tag, LevelTag) for filter_field_id in tag.bfb_names
         }
 
         pre_filters: List[CompiledFormulaInfo] = []
@@ -601,20 +639,22 @@ class PrefilterAndCompengExecutionPlanner(ExecutionPlanner):
             return plan_formula(formula, use_compeng=needs_compeng)  # All SELECTs must go to the top level
 
         def plan_group_by_formula(formula: CompiledFormulaInfo) -> PlannedFormula:
-            assert not self._is_aggregate(formula), 'GROUP BY formulas must cannot have aggregations'
-            assert needs_compeng, 'COMPENG is required for GROUP BY'
+            assert not self._is_aggregate(formula), "GROUP BY formulas must cannot have aggregations"
+            assert needs_compeng, "COMPENG is required for GROUP BY"
             return plan_formula(formula, use_compeng=True)
 
         def plan_order_by_formula(formula: CompiledOrderByFormulaInfo) -> PlannedOrderByFormula:
             return attrs_evolve_to_subclass(  # All ORDER BYs must go to the top level
-                cls=PlannedOrderByFormula, inst=plan_formula(formula, use_compeng=needs_compeng),
+                cls=PlannedOrderByFormula,
+                inst=plan_formula(formula, use_compeng=needs_compeng),
                 direction=formula.direction,
             )
 
         def plan_join_on_formula(formula: CompiledJoinOnFormulaInfo) -> PlannedJoinOnFormula:
-            assert needs_compeng, 'COMPENG is required for JOINs'
+            assert needs_compeng, "COMPENG is required for JOINs"
             return attrs_evolve_to_subclass(
-                cls=PlannedJoinOnFormula, inst=plan_formula(formula, use_compeng=True),
+                cls=PlannedJoinOnFormula,
+                inst=plan_formula(formula, use_compeng=True),
                 left_id=formula.left_id,
                 right_id=formula.right_id,
                 join_type=formula.join_type,
@@ -625,15 +665,13 @@ class PrefilterAndCompengExecutionPlanner(ExecutionPlanner):
             # Duplicate pre-filters into compeng just in case
             all_compeng_filters = pre_filters + compeng_only_filters
         else:
-            assert not compeng_only_filters, 'There shouldn\'t be any compeng filters'
+            assert not compeng_only_filters, "There shouldn't be any compeng filters"
             all_compeng_filters = []
 
         planned_select = [plan_select_formula(f) for f in compiled_query.select]
         planned_group_by = [plan_group_by_formula(f) for f in compiled_query.group_by]
         planned_order_by = [plan_order_by_formula(f) for f in compiled_query.order_by]
-        planned_filters = [
-            plan_formula(f, use_compeng=False) for f in pre_filters
-        ] + [
+        planned_filters = [plan_formula(f, use_compeng=False) for f in pre_filters] + [
             plan_formula(f, use_compeng=True) for f in all_compeng_filters
         ]
         planned_join_on = [plan_join_on_formula(f) for f in compiled_query.join_on]

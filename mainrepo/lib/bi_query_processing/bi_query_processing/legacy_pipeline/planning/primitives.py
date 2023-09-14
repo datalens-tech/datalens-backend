@@ -1,29 +1,37 @@
 from __future__ import annotations
 
-from enum import Enum, unique
-from typing import List, Optional, Sequence, Tuple
+from enum import (
+    Enum,
+    unique,
+)
+from typing import (
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import attr
 
 from bi_constants.enums import JoinType
-
 from bi_core.components.ids import AvatarId
 from bi_formula.core.tag import LevelTag
-
-from bi_query_processing.enums import ExecutionLevel
+from bi_query_processing.compilation.primitives import (
+    CompiledFormulaInfo,
+    JoinedFromObject,
+)
 from bi_query_processing.compilation.query_meta import QueryMetaInfo
-from bi_query_processing.compilation.primitives import CompiledFormulaInfo, JoinedFromObject
-
 from bi_query_processing.compilation.specs import OrderDirection
+from bi_query_processing.enums import ExecutionLevel
 
 
 @unique
 class SlicerType(Enum):
     # Common types
-    top = 'top'
-    window = 'window'
-    fields = 'fields'
-    level_tagged = 'level_tagged'
+    top = "top"
+    window = "window"
+    fields = "fields"
+    level_tagged = "level_tagged"
 
 
 @attr.s(slots=True, frozen=True)
@@ -67,7 +75,7 @@ class SlicingPlan:
     def get_level_slicer_config(self, level_index: int) -> SlicerConfiguration:
         return self.slicer_configs[level_index]
 
-    def __add__(self, other: 'SlicingPlan') -> 'SlicingPlan':
+    def __add__(self, other: "SlicingPlan") -> "SlicingPlan":
         assert isinstance(other, SlicingPlan)
         return SlicingPlan(slicer_configs=self.slicer_configs + other.slicer_configs)
 

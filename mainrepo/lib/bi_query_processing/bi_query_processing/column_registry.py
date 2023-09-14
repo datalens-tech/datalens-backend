@@ -1,20 +1,28 @@
 from __future__ import annotations
 
-import logging
 from itertools import chain
-from typing import Callable, Collection, Dict, NamedTuple, Optional, Set, Tuple
+import logging
+from typing import (
+    Callable,
+    Collection,
+    Dict,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+)
 
-from bi_core.components.ids import AvatarId, SourceId
+from bi_core.components.ids import (
+    AvatarId,
+    SourceId,
+)
 from bi_core.db.elements import SchemaColumn
 from bi_core.utils import make_id
-
-import bi_formula.core.exc as formula_exc
 from bi_formula.core.datatype import DataType
+import bi_formula.core.exc as formula_exc
 import bi_formula.core.nodes as formula_nodes
 from bi_formula.inspect.expression import used_fields
-
 from bi_query_processing.compilation.type_mapping import BI_TO_FORMULA_TYPES
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -30,9 +38,9 @@ class AvatarColumn(NamedTuple):
 
 class ColumnRegistry:
     def __init__(
-            self,
-            db_columns: Optional[Collection[SchemaColumn]] = None,
-            avatar_source_map: Optional[Dict[AvatarId, SourceId]] = None,
+        self,
+        db_columns: Optional[Collection[SchemaColumn]] = None,
+        avatar_source_map: Optional[Dict[AvatarId, SourceId]] = None,
     ):
         self._db_columns = list(db_columns) if db_columns is not None else []
         self._avatar_source_map = avatar_source_map.copy() if avatar_source_map is not None else {}
@@ -60,7 +68,8 @@ class ColumnRegistry:
         )
         for column_id, avatar_column in chain(self._columns.items(), other._columns.items()):
             result.register_column(
-                column_id=column_id, db_column=avatar_column.column, avatar_id=avatar_column.avatar_id)
+                column_id=column_id, db_column=avatar_column.column, avatar_id=avatar_column.avatar_id
+            )
         return result
 
     def register_avatar(self, avatar_id: AvatarId, source_id: SourceId) -> None:
@@ -99,9 +108,7 @@ class ColumnRegistry:
         column_ids = {field_node.name for field_node in used_fields(formula_obj)}
         return {self._columns.get(column_id).avatar_id for column_id in column_ids}  # type: ignore  # TODO: fix
 
-    def get_multipart_column_names(
-            self, avatar_alias_mapper: Callable[[AvatarId], str]
-    ) -> Dict[str, Tuple[str, str]]:
+    def get_multipart_column_names(self, avatar_alias_mapper: Callable[[AvatarId], str]) -> Dict[str, Tuple[str, str]]:
         return {
             column_id: (avatar_alias_mapper(av_column.avatar_id), av_column.column.name)
             for column_id, av_column in self._columns.items()
@@ -109,8 +116,7 @@ class ColumnRegistry:
 
     def get_column_formula_types(self) -> Dict[str, DataType]:
         return {
-            column_id: BI_TO_FORMULA_TYPES[av_column.column.user_type]
-            for column_id, av_column in self._columns.items()
+            column_id: BI_TO_FORMULA_TYPES[av_column.column.user_type] for column_id, av_column in self._columns.items()
         }
 
     def get(self, column_id: str) -> AvatarColumn:
@@ -122,14 +128,13 @@ class ColumnRegistry:
             return self._columns[column_id]
         except KeyError:
             raise formula_exc.FormulaError(
-                f'Unknown referenced source column: {name}',
+                f"Unknown referenced source column: {name}",
                 code=formula_exc.UnknownSourceColumnError.default_code,
             )
 
     def get_column_ids(self) -> Dict[Tuple[str, str], str]:
         return {
-            (av_column.avatar_id, av_column.column.name): column_id
-            for column_id, av_column in self._columns.items()
+            (av_column.avatar_id, av_column.column.name): column_id for column_id, av_column in self._columns.items()
         }
 
     def get_column_avatar_ids(self) -> Dict[Tuple[str, str], str]:
@@ -139,7 +144,7 @@ class ColumnRegistry:
         }
 
     def get_columns_for_avatar(self, avatar_id: str) -> list[AvatarColumn]:
-        return sorted([
-            av_column for av_column in self._columns.values()
-            if av_column.avatar_id == avatar_id
-        ], key=lambda col: col.id)
+        return sorted(
+            [av_column for av_column in self._columns.values() if av_column.avatar_id == avatar_id],
+            key=lambda col: col.id,
+        )

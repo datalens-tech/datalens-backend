@@ -1,32 +1,31 @@
+from enum import Enum
 import json
 import uuid
-from enum import Enum
 
 import attr
-import pytest
 from marshmallow import fields
+import pytest
 
 from bi_api_commons.base_models import RequestContextInfo
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
-from bi_utils.utils import DataKey
-
 from bi_file_uploader_lib.redis_model.base import (
-    register_redis_model_storage_schema,
-    SecretContainingMixin,
-    RedisModel,
-    RedisModelUserIdAuth,
-    BaseSchema,
     BaseModelSchema,
+    BaseSchema,
+    RedisModel,
+    RedisModelAccessDenied,
     RedisModelManager,
     RedisModelNotFound,
-    RedisModelAccessDenied,
+    RedisModelUserIdAuth,
     RedisSetManager,
+    SecretContainingMixin,
+    register_redis_model_storage_schema,
 )
+from bi_utils.utils import DataKey
 
 
 class SomeEnum(Enum):
-    val1 = 'val1'
-    val2 = 'val2'
+    val1 = "val1"
+    val2 = "val2"
 
 
 @attr.s
@@ -40,7 +39,7 @@ class SomeSubModelWithSecret(SecretContainingMixin):
     secret: str = attr.ib()
 
     def get_secret_keys(self) -> set[DataKey]:
-        return {DataKey(parts=('secret',))}
+        return {DataKey(parts=("secret",))}
 
 
 @attr.s
@@ -52,11 +51,11 @@ class SomeModel(RedisModel):
     sub_model: SomeSubModel = attr.ib()
     sub_model_with_secret: SomeSubModelWithSecret = attr.ib()
 
-    KEY_PREFIX: str = 'some'
+    KEY_PREFIX: str = "some"
 
     def get_secret_keys(self) -> set[DataKey]:
         lower_level_keys = self.sub_model_with_secret.get_secret_keys()
-        return {DataKey(parts=('sub_model_with_secret',) + ll_key.parts) for ll_key in lower_level_keys}
+        return {DataKey(parts=("sub_model_with_secret",) + ll_key.parts) for ll_key in lower_level_keys}
 
 
 @attr.s
@@ -64,7 +63,7 @@ class SomeAuthorizedModel(RedisModelUserIdAuth):
     title: str = attr.ib()
     value: int = attr.ib()
 
-    KEY_PREFIX: str = 'some_auth'
+    KEY_PREFIX: str = "some_auth"
 
 
 class SomeSubModelSchema(BaseSchema):
@@ -111,13 +110,13 @@ async def test_redis_model(redis_cli):
     rmm = RedisModelManager(redis=redis_cli, crypto_keys_config=get_dummy_crypto_keys_config())
 
     with pytest.raises(RedisModelNotFound):
-        await SomeModel.get(manager=rmm, obj_id='qwerty')
+        await SomeModel.get(manager=rmm, obj_id="qwerty")
 
-    obj_sub = SomeSubModel(title='qwe', value=12)
-    obj_sub_w_secret = SomeSubModelWithSecret(secret='very very secret')
+    obj_sub = SomeSubModel(title="qwe", value=12)
+    obj_sub_w_secret = SomeSubModelWithSecret(secret="very very secret")
     obj = SomeModel(
         manager=rmm,
-        title='some model instance',
+        title="some model instance",
         value=42,
         some_list=[str(i) for i in range(10)],
         enum_field=SomeEnum.val1,
@@ -128,20 +127,20 @@ async def test_redis_model(redis_cli):
 
     await obj.save()
 
-    redis_data = await redis_cli.get(f'some/{obj.id}')
+    redis_data = await redis_cli.get(f"some/{obj.id}")
     decoded_data = json.loads(redis_data.decode())
-    assert decoded_data.pop('id')
-    assert 'cypher_text' in json.loads(decoded_data.pop('sub_model_with_secret')['secret'])
+    assert decoded_data.pop("id")
+    assert "cypher_text" in json.loads(decoded_data.pop("sub_model_with_secret")["secret"])
     assert decoded_data == {
-        'some_list': ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        'enum_field': 'val1',
-        'sub_model': {'value': 12, 'title': 'qwe'},
-        'value': 42,
-        'title': 'some model instance',
+        "some_list": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        "enum_field": "val1",
+        "sub_model": {"value": 12, "title": "qwe"},
+        "value": 42,
+        "title": "some model instance",
     }
     obj1 = await SomeModel.get(manager=rmm, obj_id=obj.id)
-    assert obj1.title == 'some model instance'
-    assert obj1.sub_model_with_secret.secret == 'very very secret'
+    assert obj1.title == "some model instance"
+    assert obj1.sub_model_with_secret.secret == "very very secret"
     assert obj == obj1
 
     await obj.delete()
@@ -153,37 +152,41 @@ async def test_redis_model(redis_cli):
 async def test_authorized_redis_model(redis_cli):
     crypto_keys_config = get_dummy_crypto_keys_config()
     rmm_no_auth = RedisModelManager(redis=redis_cli, crypto_keys_config=crypto_keys_config)
-    rmm_auth_1 = RedisModelManager(redis=redis_cli, rci=RequestContextInfo(user_id='123'), crypto_keys_config=crypto_keys_config)
-    rmm_auth_2 = RedisModelManager(redis=redis_cli, rci=RequestContextInfo(user_id='456'), crypto_keys_config=crypto_keys_config)
+    rmm_auth_1 = RedisModelManager(
+        redis=redis_cli, rci=RequestContextInfo(user_id="123"), crypto_keys_config=crypto_keys_config
+    )
+    rmm_auth_2 = RedisModelManager(
+        redis=redis_cli, rci=RequestContextInfo(user_id="456"), crypto_keys_config=crypto_keys_config
+    )
 
-    obj = SomeAuthorizedModel(manager=rmm_auth_1, title='qwe', value=12)
+    obj = SomeAuthorizedModel(manager=rmm_auth_1, title="qwe", value=12)
     initial_obj_id = obj.id
-    assert obj.user_id == '123'
+    assert obj.user_id == "123"
 
     await obj.save()
 
     obj1 = await SomeAuthorizedModel.get(manager=rmm_no_auth, obj_id=initial_obj_id)
-    assert obj1.user_id == '123'
+    assert obj1.user_id == "123"
 
     obj1 = await SomeAuthorizedModel.get(manager=rmm_auth_1, obj_id=initial_obj_id)
-    assert obj1.user_id == '123'
+    assert obj1.user_id == "123"
 
     obj1 = await SomeAuthorizedModel.get_authorized(manager=rmm_auth_1, obj_id=initial_obj_id)
-    assert obj1.user_id == '123'
+    assert obj1.user_id == "123"
 
     with pytest.raises(RedisModelAccessDenied):
         await SomeAuthorizedModel.get_authorized(manager=rmm_auth_2, obj_id=initial_obj_id)
 
 
 class SomeRedisSet(RedisSetManager):
-    KEY_PREFIX = 'some_set_prefix'
+    KEY_PREFIX = "some_set_prefix"
 
 
 @pytest.mark.asyncio
 async def test_redis_set(redis_cli):
     some_set = SomeRedisSet(redis=redis_cli, id=str(uuid.uuid4()))
 
-    expected_values = {'a', 'b', 'c'}
+    expected_values = {"a", "b", "c"}
 
     for value in expected_values:
         await some_set.add(value)

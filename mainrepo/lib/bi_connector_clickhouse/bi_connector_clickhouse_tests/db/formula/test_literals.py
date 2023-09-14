@@ -1,6 +1,4 @@
-from bi_formula_testing.testcases.literals import (
-    DefaultLiteralFormulaConnectorTestSuite,
-)
+from bi_formula_testing.testcases.literals import DefaultLiteralFormulaConnectorTestSuite
 
 from bi_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 

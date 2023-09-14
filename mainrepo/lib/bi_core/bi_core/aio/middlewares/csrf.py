@@ -1,23 +1,24 @@
-from typing import Optional, ClassVar
-
 import hmac
 import logging
 import time
+from typing import (
+    ClassVar,
+    Optional,
+)
 
-import attr
 from aiohttp import web
 from aiohttp.typedefs import Handler
+import attr
 
 from bi_api_commons.aiohttp import aiohttp_wrappers
-
 
 LOGGER = logging.getLogger(__name__)
 
 
 def generate_csrf_token(user_id: str, timestamp: int, csrf_secret: str) -> str:
-    msg = bytes('{}:{}'.format(user_id, timestamp), encoding='utf-8')
-    secret = bytes(csrf_secret, encoding='utf-8')
-    h = hmac.new(key=secret, msg=msg, digestmod='sha1')
+    msg = bytes("{}:{}".format(user_id, timestamp), encoding="utf-8")
+    secret = bytes(csrf_secret, encoding="utf-8")
+    h = hmac.new(key=secret, msg=msg, digestmod="sha1")
     return h.hexdigest()
 
 
@@ -28,14 +29,14 @@ class CSRFMiddleware:
     csrf_header_name: str = attr.ib()
     csrf_time_limit: int = attr.ib()
     csrf_secret: str = attr.ib()
-    csrf_methods: tuple[str, ...] = attr.ib(default=('POST', 'PUT', 'DELETE'))
+    csrf_methods: tuple[str, ...] = attr.ib(default=("POST", "PUT", "DELETE"))
 
     def validate_csrf_token(self, token_header_value: Optional[str], user_token: str) -> bool:
         if not token_header_value:
             return False
 
         try:
-            token, timestamp_str = token_header_value.split(':')
+            token, timestamp_str = token_header_value.split(":")
             timestamp = int(timestamp_str)
         except ValueError:
             return False
@@ -54,11 +55,7 @@ class CSRFMiddleware:
 
     @web.middleware
     @aiohttp_wrappers.DLRequestBase.use_dl_request_on_method
-    async def middleware(
-            self,
-            dl_request: aiohttp_wrappers.DLRequestBase,
-            handler: Handler
-    ) -> web.StreamResponse:
+    async def middleware(self, dl_request: aiohttp_wrappers.DLRequestBase, handler: Handler) -> web.StreamResponse:
         async def _continue_request() -> web.StreamResponse:
             return await handler(dl_request.request)
 
@@ -83,17 +80,17 @@ class CSRFMiddleware:
 
         csrf_token = dl_request.request.headers.get(self.csrf_header_name)
 
-        LOGGER.info('Checking CSRF token for user tokens: %s', user_tokens)
+        LOGGER.info("Checking CSRF token for user tokens: %s", user_tokens)
 
         token_is_valid = None
         for user_token in user_tokens:
             token_is_valid = self.validate_csrf_token(csrf_token, user_token)
             if token_is_valid:
-                LOGGER.info('CSRF token is valid for user token %s', user_token)
+                LOGGER.info("CSRF token is valid for user token %s", user_token)
                 break
 
         if not token_is_valid:
-            LOGGER.info('CSRF validation failed.')
-            return web.Response(body='CSRF validation failed', content_type='text/html', status=400)
+            LOGGER.info("CSRF validation failed.")
+            return web.Response(body="CSRF validation failed", content_type="text/html", status=400)
 
         return await handler(dl_request.request)

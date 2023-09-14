@@ -1,20 +1,29 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import ClassVar, List, Sequence, Tuple, Type
+from typing import (
+    ClassVar,
+    List,
+    Sequence,
+    Tuple,
+    Type,
+)
 
 import attr
 
-import bi_formula.core.nodes as nodes
-import bi_formula.core.fork_nodes as fork_nodes
+from bi_formula.collections import NodeSet
 import bi_formula.core.exc as exc
+import bi_formula.core.fork_nodes as fork_nodes
+import bi_formula.core.nodes as nodes
+from bi_formula.inspect.env import InspectionEnvironment
 import bi_formula.inspect.expression
 import bi_formula.inspect.function
 import bi_formula.inspect.node
-from bi_formula.collections import NodeSet
-from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.validation.env import ValidationEnvironment
-from bi_formula.validation.validator import Checker, ValidatorProxy
+from bi_formula.validation.validator import (
+    Checker,
+    ValidatorProxy,
+)
 
 
 @attr.s
@@ -47,8 +56,10 @@ class AggregationChecker(Checker):
         return dim_bound
 
     def perform_node_check(
-            self, validator: ValidatorProxy, node: nodes.FormulaItem,
-            parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        validator: ValidatorProxy,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> None:
         if not bi_formula.inspect.expression.is_aggregate_expression(node, env=self._inspect_env):
             # node has no aggregations in it,
@@ -66,7 +77,7 @@ class AggregationChecker(Checker):
         children_w_stacks = bi_formula.inspect.expression.autonomous_children_w_stack(
             node,  # TODO: Find a solution more elegant than excludes:
             parent_stack=parent_stack,
-            exclude_node_types=self._exclude_node_types
+            exclude_node_types=self._exclude_node_types,
         )
 
         for child, stack in children_w_stacks:
@@ -77,7 +88,8 @@ class AggregationChecker(Checker):
                 agg_children = True
             else:
                 _, dimension_set, _ = bi_formula.inspect.expression.resolve_dimensions(
-                    node_stack=chain(stack, (child,)), dimensions=self._global_dimensions,
+                    node_stack=chain(stack, (child,)),
+                    dimensions=self._global_dimensions,
                     env=self._inspect_env,
                 )
                 dim_bound = self._check_is_dimension_bound(child, dimension_set=dimension_set)
@@ -93,7 +105,7 @@ class AggregationChecker(Checker):
 
                     if do_raise:
                         raise exc.InconsistentAggregationError(
-                            'Inconsistent aggregation among operands',
+                            "Inconsistent aggregation among operands",
                             token=bi_formula.inspect.node.get_token(child),
                             position=child.position,
                         )
@@ -103,7 +115,7 @@ class AggregationChecker(Checker):
             if agg_children:
                 with validator.handle_error(node=node):
                     raise exc.DoubleAggregationError(
-                        'Double aggregation is forbidden',
+                        "Double aggregation is forbidden",
                         token=bi_formula.inspect.node.get_token(node),
                         position=node.position,
                     )

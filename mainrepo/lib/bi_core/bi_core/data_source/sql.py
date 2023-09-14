@@ -1,31 +1,54 @@
 from __future__ import annotations
 
 import abc
-import logging
 from functools import wraps
-from typing import Any, Callable, ClassVar, Optional, Type, TYPE_CHECKING
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+    Type,
+)
 
 import attr
 import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
 from bi_constants.enums import JoinType
-
 from bi_core import exc
-from bi_core.connectors.base.query_compiler import QueryCompiler
-from bi_core.connection_models import TableIdent, SATextTableDefinition, TableDefinition, DBIdent
-from bi_core.data_source.base import DataSource, DbInfo, IncompatibleDataSourceMixin
-from bi_core.data_source_spec.sql import (
-    StandardSchemaSQLDataSourceSpec, StandardSQLDataSourceSpec, SQLDataSourceSpecBase,
-    DbSQLDataSourceSpec, TableSQLDataSourceSpec, SchemaSQLDataSourceSpec,
-    IndexedSQLDataSourceSpec, SubselectDataSourceSpec,
+from bi_core.connection_models import (
+    DBIdent,
+    SATextTableDefinition,
+    TableDefinition,
+    TableIdent,
 )
-from bi_core.db import SchemaInfo, IndexInfo
+from bi_core.connectors.base.query_compiler import QueryCompiler
+from bi_core.data_source.base import (
+    DataSource,
+    DbInfo,
+    IncompatibleDataSourceMixin,
+)
+from bi_core.data_source_spec.sql import (
+    DbSQLDataSourceSpec,
+    IndexedSQLDataSourceSpec,
+    SchemaSQLDataSourceSpec,
+    SQLDataSourceSpecBase,
+    StandardSchemaSQLDataSourceSpec,
+    StandardSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+    TableSQLDataSourceSpec,
+)
+from bi_core.db import (
+    IndexInfo,
+    SchemaInfo,
+)
 from bi_core.utils import sa_plain_text
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
     from bi_core.connection_executors.async_base import AsyncConnExecutorBase
+    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
 LOGGER = logging.getLogger(__name__)
@@ -47,10 +70,12 @@ class BaseSQLDataSource(DataSource):
     """Data source for SQL database"""
 
     default_raw_data_batch_size = 10000
-    supported_join_types = frozenset({
-        JoinType.inner,
-        JoinType.left,
-    })
+    supported_join_types = frozenset(
+        {
+            JoinType.inner,
+            JoinType.left,
+        }
+    )
     compiler_cls: Type[QueryCompiler] = QueryCompiler
 
     # Instance attrs
@@ -76,10 +101,7 @@ class BaseSQLDataSource(DataSource):
         return {}
 
     def _postprocess_raw_schema_from_db(self, schema_info: SchemaInfo) -> SchemaInfo:
-        columns = tuple(
-            col._replace(source_id=self.id)
-            for col in schema_info.schema
-        )
+        columns = tuple(col._replace(source_id=self.id) for col in schema_info.schema)
 
         if not columns:
             raise exc.FailedToLoadSchema()
@@ -88,7 +110,7 @@ class BaseSQLDataSource(DataSource):
 
     @property
     def default_title(self) -> str:
-        return 'SQL'
+        return "SQL"
 
     def _check_existence(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> bool:
         return True
@@ -97,8 +119,9 @@ class BaseSQLDataSource(DataSource):
         return True
 
     def source_exists(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
-            force_refresh: bool = False,
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        force_refresh: bool = False,
     ) -> bool:
         if self._exists is None or force_refresh:
             self._exists = self._check_existence(conn_executor_factory=conn_executor_factory)
@@ -135,10 +158,11 @@ class BaseSQLDataSource(DataSource):
         )
 
     def get_db_info(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> DbInfo:
         # self.connection
-        LOGGER.info('Fetching version info from the database')
+        LOGGER.info("Fetching version info from the database")
         db_version = self._get_db_version(conn_executor_factory=conn_executor_factory)
         return DbInfo(
             version=db_version,
@@ -155,6 +179,7 @@ class SubselectDataSource(BaseSQLDataSource):
     """
     `select … from (select …) …` source (for user-input inner-select).
     """
+
     _subsql: Optional[str] = attr.ib(default=None)
 
     @property
@@ -172,8 +197,8 @@ class SubselectDataSource(BaseSQLDataSource):
             subsql=self.subsql,
         )
 
-    _subquery_alias_joiner = ' AS '
-    _subquery_auto_alias = 'source'
+    _subquery_alias_joiner = " AS "
+    _subquery_auto_alias = "source"
 
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
         if not self.connection.is_subselect_allowed:
@@ -183,25 +208,22 @@ class SubselectDataSource(BaseSQLDataSource):
         if not subsql:
             raise exc.TableNameNotConfiguredError
 
-        from_sql = '(\n{}\n)'.format(subsql)
+        from_sql = "(\n{}\n)".format(subsql)
 
         # e.g. PG doesn't allow unaliased subqueries at all.
         if alias is None:
             alias = self._subquery_auto_alias
 
         if alias is not None:
-            from_sql = '{}{}{}'.format(
-                from_sql,
-                self._subquery_alias_joiner,
-                self.quote(alias))
+            from_sql = "{}{}{}".format(from_sql, self._subquery_alias_joiner, self.quote(alias))
         return sa_plain_text(from_sql)
 
     @property
     def default_title(self) -> str:
-        return '(select ...)'
+        return "(select ...)"
 
     def get_table_definition(self) -> TableDefinition:
-        subselect = self.get_sql_source(alias='source')
+        subselect = self.get_sql_source(alias="source")
         return SATextTableDefinition(text=subselect)
 
 
@@ -240,8 +262,9 @@ class SQLDataSource(abc.ABC, BaseSQLDataSource):
         return await async_conn_executor.is_table_exists(table_def)
 
     def source_exists(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
-            force_refresh: bool = False,
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        force_refresh: bool = False,
     ) -> bool:
         if not self.table_name:
             return False
@@ -251,8 +274,8 @@ class SQLDataSource(abc.ABC, BaseSQLDataSource):
     @require_table_name
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
         q = self.quote
-        alias_str = '' if alias is None else f' AS {q(alias)}'
-        return sa_plain_text(f'{q(self.db_name)}.{q(self.table_name)}{alias_str}')
+        alias_str = "" if alias is None else f" AS {q(alias)}"
+        return sa_plain_text(f"{q(self.db_name)}.{q(self.table_name)}{alias_str}")
 
     @require_table_name
     def get_table_definition(self) -> TableDefinition:
@@ -272,7 +295,7 @@ class DbSQLDataSourceMixin(BaseSQLDataSource):
     @property
     def db_name(self) -> Optional[str]:
         assert isinstance(self._spec, DbSQLDataSourceSpec)
-        return self._spec.db_name or getattr(self.connection, 'db_name', None)
+        return self._spec.db_name or getattr(self.connection, "db_name", None)
 
     def get_parameters(self) -> dict:
         return dict(
@@ -288,7 +311,7 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
     @property
     def table_name(self) -> Optional[str]:
         assert isinstance(self._spec, TableSQLDataSourceSpec)
-        return self._spec.table_name or getattr(self.connection, 'table_name', None)
+        return self._spec.table_name or getattr(self.connection, "table_name", None)
 
     def get_parameters(self) -> dict:
         return dict(
@@ -309,10 +332,10 @@ class IndexedSQLDataSourceMixin(BaseSQLDataSource):
 
 @attr.s
 class StandardSQLDataSource(
-        DbSQLDataSourceMixin,
-        TableSQLDataSourceMixin,
-        IndexedSQLDataSourceMixin,
-        SQLDataSource,  # <-- the main logic is in this one
+    DbSQLDataSourceMixin,
+    TableSQLDataSourceMixin,
+    IndexedSQLDataSourceMixin,
+    SQLDataSource,  # <-- the main logic is in this one
 ):
     """SQL data source with db_name, table_name and indexes"""
 
@@ -368,9 +391,9 @@ class StandardSchemaSQLDataSource(StandardSQLDataSource, SchemaSQLDataSourceMixi
         if not self.schema_name:
             return super().get_sql_source(alias=alias)
         q = self.quote
-        alias_str = '' if alias is None else f' AS {q(alias)}'
-        schema_str = '' if self.schema_name is None else f'{q(self.schema_name)}.'
-        return sa_plain_text(f'{q(self.db_name)}.{schema_str}{q(self.table_name)}{alias_str}')
+        alias_str = "" if alias is None else f" AS {q(alias)}"
+        schema_str = "" if self.schema_name is None else f"{q(self.schema_name)}."
+        return sa_plain_text(f"{q(self.db_name)}.{schema_str}{q(self.table_name)}{alias_str}")
 
     @require_table_name
     def get_table_definition(self) -> TableDefinition:

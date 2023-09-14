@@ -5,7 +5,9 @@ from typing import Optional
 import attr
 
 from bi_core.data_source_spec.sql import (
-    SQLDataSourceSpecBase, TableSQLDataSourceSpec, SubselectDataSourceSpec,
+    SQLDataSourceSpecBase,
+    SubselectDataSourceSpec,
+    TableSQLDataSourceSpec,
 )
 
 

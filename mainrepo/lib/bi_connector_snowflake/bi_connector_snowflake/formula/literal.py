@@ -2,8 +2,11 @@ import datetime
 
 import sqlalchemy as sa
 
+from bi_formula.connectors.base.literal import (
+    Literal,
+    Literalizer,
+)
 from bi_formula.core.dialect import DialectCombo
-from bi_formula.connectors.base.literal import Literal, Literalizer
 
 
 class SnowFlakeLiteralizer(Literalizer):

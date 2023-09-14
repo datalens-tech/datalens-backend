@@ -1,11 +1,11 @@
 import pytest
 
-from bi_formula_testing.testcases.functions_math import (
-    DefaultMathFunctionFormulaConnectorTestSuite,
-)
 from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
+
 from bi_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
+    PostgreSQL_9_3TestBase,
+    PostgreSQL_9_4TestBase,
 )
 
 
@@ -16,16 +16,16 @@ class PostgreSQLMatchTestMixin:
 
 
 class TestMathFunctionPostgreSQL_9_3(
-        PostgreSQL_9_3TestBase,
-        DefaultMathFunctionFormulaConnectorTestSuite,
-        PostgreSQLMatchTestMixin,
+    PostgreSQL_9_3TestBase,
+    DefaultMathFunctionFormulaConnectorTestSuite,
+    PostgreSQLMatchTestMixin,
 ):
     pass
 
 
 class TestMathFunctionPostgreSQL_9_4(
-        PostgreSQL_9_4TestBase,
-        DefaultMathFunctionFormulaConnectorTestSuite,
-        PostgreSQLMatchTestMixin,
+    PostgreSQL_9_4TestBase,
+    DefaultMathFunctionFormulaConnectorTestSuite,
+    PostgreSQLMatchTestMixin,
 ):
     pass

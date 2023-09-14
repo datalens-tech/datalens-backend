@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import enum
-from typing import TypedDict, Sequence, Union, Optional
+from typing import (
+    Optional,
+    Sequence,
+    TypedDict,
+    Union,
+)
 
 import attr
 

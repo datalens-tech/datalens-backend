@@ -1,34 +1,62 @@
 from __future__ import annotations
 
-import json
-import uuid
-from datetime import date, datetime
-from enum import Enum
-from typing import (
-    Any, ClassVar, Collection, Dict, Generator, Generic,
-    List, Optional, Tuple, TypeVar, Union,
+from datetime import (
+    date,
+    datetime,
 )
+from enum import Enum
+import json
+from typing import (
+    Any,
+    ClassVar,
+    Collection,
+    Dict,
+    Generator,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
+import uuid
 
 import attr
 
 from bi_constants.enums import (
-    BIType, QueryItemRefType, FieldRole, LegendItemType,
-    CreateDSFrom, BinaryJoinOperator, CalcMode, FieldType, FieldVisibility,
-    AggregationFunction, ConditionPartCalcMode, JoinType, ManagedBy,
-    ComponentErrorLevel, ComponentType, WhereClauseOperation,
-    OrderDirection, ParameterValueConstraintType, QueryBlockPlacementType,
-    RangeType, PivotRole, PivotHeaderRole,
+    AggregationFunction,
+    BinaryJoinOperator,
+    BIType,
+    CalcMode,
+    ComponentErrorLevel,
+    ComponentType,
+    ConditionPartCalcMode,
+    CreateDSFrom,
+    FieldRole,
+    FieldType,
+    FieldVisibility,
+    JoinType,
+    LegendItemType,
+    ManagedBy,
+    OrderDirection,
+    ParameterValueConstraintType,
+    PivotHeaderRole,
+    PivotRole,
+    QueryBlockPlacementType,
+    QueryItemRefType,
+    RangeType,
+    WhereClauseOperation,
 )
 
 
 class Action(Enum):
-    add = 'add'
-    update = 'update'
-    delete = 'delete'
-    refresh = 'refresh'
+    add = "add"
+    update = "update"
+    delete = "delete"
+    refresh = "refresh"
 
 
-_API_OBJ_TV = TypeVar('_API_OBJ_TV', bound='ApiProxyObject')
+_API_OBJ_TV = TypeVar("_API_OBJ_TV", bound="ApiProxyObject")
 
 
 @attr.s
@@ -77,7 +105,7 @@ class UpdateAction:
     order_index: int = 0
 
 
-_ITEM_TV = TypeVar('_ITEM_TV', bound=ApiProxyObject)
+_ITEM_TV = TypeVar("_ITEM_TV", bound=ApiProxyObject)
 
 
 class Container(Generic[_ITEM_TV]):
@@ -86,7 +114,7 @@ class Container(Generic[_ITEM_TV]):
     Items can be fetched both by integer (by index) and string (by alias) keys.
     """
 
-    def __init__(self, data: Union[list, tuple, dict, 'Container'] = None):
+    def __init__(self, data: Union[list, tuple, dict, "Container"] = None):
         self._item_ids: List[str] = []  # order list of object IDs
         self._items: Dict[str, _ITEM_TV] = {}  # objects by ID
         self._id_by_alias: Dict[str, str] = {}  # alias -> ID
@@ -95,7 +123,7 @@ class Container(Generic[_ITEM_TV]):
             self.__iadd__(data)
 
     def __repr__(self) -> str:
-        return f'{self.__class__.__name__}({self._items})'
+        return f"{self.__class__.__name__}({self._items})"
 
     def __str__(self) -> str:
         return self.__repr__()
@@ -114,12 +142,12 @@ class Container(Generic[_ITEM_TV]):
         Item order is preserved.
         """
         if not isinstance(alias, str):
-            raise TypeError(f'Invalid key type for item assignment in container: {type(alias)}')
+            raise TypeError(f"Invalid key type for item assignment in container: {type(alias)}")
 
         self._items[item.id] = item
         self._item_ids.append(item.id)
         self._id_by_alias[alias] = item.id
-        if hasattr(item, 'set_name'):
+        if hasattr(item, "set_name"):
             item.set_name(alias)
 
     def __getitem__(self, key: Union[str, int]) -> _ITEM_TV:
@@ -131,7 +159,7 @@ class Container(Generic[_ITEM_TV]):
             # key is an index
             return self._items[self._item_ids[key]]
 
-        raise TypeError(f'Invalid key type for container: {type(key)}')
+        raise TypeError(f"Invalid key type for container: {type(key)}")
 
     def items(self) -> Generator[Tuple[str, _ITEM_TV], None, None]:
         """Just like ``dict.items()`` - iterate over key-value tuples."""
@@ -202,16 +230,14 @@ class DataSource(ApiProxyObject):
     def prepare(self) -> None:
         super().prepare()
         if self.title is None:
-            self.title = f'Source {self.id}'
+            self.title = f"Source {self.id}"
 
     def avatar(self, **kwargs: Any) -> SourceAvatar:
         return SourceAvatar(source_id=self.id, **kwargs)
 
-    def refresh(self, force_update_fields: bool = False) -> 'UpdateAction':
+    def refresh(self, force_update_fields: bool = False) -> "UpdateAction":
         """Generate ``refresh_source`` action"""
-        return self._make_action(
-            Action.refresh, data={'force_update_fields': force_update_fields}
-        )
+        return self._make_action(Action.refresh, data={"force_update_fields": force_update_fields})
 
 
 @attr.s
@@ -225,18 +251,18 @@ class SourceAvatar(ApiProxyObject):
     def prepare(self) -> None:
         super().prepare()
         if self.title is None:
-            self.title = f'Avatar {self.id}'
+            self.title = f"Avatar {self.id}"
 
     def set_name(self, name: str) -> None:
         if self.title is None:
             self.title = name
 
     def join(
-            self,
-            other: 'SourceAvatar',
-            conditions: List['JoinCondition'] = None,
-            join_type: JoinType = JoinType.inner,
-    ) -> 'AvatarRelation':
+        self,
+        other: "SourceAvatar",
+        conditions: List["JoinCondition"] = None,
+        join_type: JoinType = JoinType.inner,
+    ) -> "AvatarRelation":
         return AvatarRelation(
             left_avatar_id=self.id,
             right_avatar_id=other.id,
@@ -244,7 +270,7 @@ class SourceAvatar(ApiProxyObject):
             join_type=join_type,
         )
 
-    def field(self, **kwargs) -> 'ResultField':  # type: ignore  # TODO: fix
+    def field(self, **kwargs) -> "ResultField":  # type: ignore  # TODO: fix
         return ResultField(avatar_id=self.id, **kwargs)
 
 
@@ -273,29 +299,27 @@ class FormulaJoinPart(JoinPart):
 class ConditionMakerMixin:
     """Mixin that enables construction of join conditions using Python's comparison operators"""
 
-    def _simple_condition(self, other: 'ConditionMakerMixin', operator: BinaryJoinOperator) -> 'JoinCondition':
+    def _simple_condition(self, other: "ConditionMakerMixin", operator: BinaryJoinOperator) -> "JoinCondition":
         return JoinCondition(
-            left_part=self.get_cpart_from_self(),
-            right_part=other.get_cpart_from_self(),
-            operator=operator
+            left_part=self.get_cpart_from_self(), right_part=other.get_cpart_from_self(), operator=operator
         )
 
-    def __eq__(self, other: 'ConditionMakerMixin'):  # type: ignore  # TODO: fix
+    def __eq__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.eq)
 
-    def __ne__(self, other: 'ConditionMakerMixin'):  # type: ignore  # TODO: fix
+    def __ne__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.ne)
 
-    def __lt__(self, other: 'ConditionMakerMixin'):  # type: ignore  # TODO: fix
+    def __lt__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.lt)
 
-    def __le__(self, other: 'ConditionMakerMixin'):  # type: ignore  # TODO: fix
+    def __le__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.lte)
 
-    def __gt__(self, other: 'ConditionMakerMixin'):  # type: ignore  # TODO: fix
+    def __gt__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.gt)
 
-    def __ge__(self, other: 'ConditionMakerMixin'):  # type: ignore  # TODO: fix
+    def __ge__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.gte)
 
     def get_cpart_from_self(self) -> JoinPart:
@@ -310,7 +334,7 @@ class _Column:
     user_type: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
     native_type: Optional[dict] = attr.ib(default=None)
     nullable: bool = attr.ib(default=True)
-    description: str = attr.ib(default='')
+    description: str = attr.ib(default="")
     has_auto_aggregation: bool = attr.ib(default=False)
     lock_aggregation: bool = attr.ib(default=False)
 
@@ -448,14 +472,13 @@ class SetParameterValueConstraint(ParameterValueConstraint):
 
 
 def _make_pivot_role_spec(
-        role: PivotRole,
-        annotation_type: Optional[str] = None,
-        target_legend_item_ids: Optional[list[int]] = None,
-        direction: OrderDirection = OrderDirection.asc,
-        measure_sorting_settings: Optional[PivotMeasureSorting] = None,
-        allow_roles: Optional[Collection[PivotRole]] = None,
+    role: PivotRole,
+    annotation_type: Optional[str] = None,
+    target_legend_item_ids: Optional[list[int]] = None,
+    direction: OrderDirection = OrderDirection.asc,
+    measure_sorting_settings: Optional[PivotMeasureSorting] = None,
+    allow_roles: Optional[Collection[PivotRole]] = None,
 ) -> PivotRoleSpec:
-
     if allow_roles is not None:
         assert role in allow_roles
 
@@ -486,12 +509,14 @@ def _make_pivot_role_spec(
 class _ResultField(ApiProxyObject):
     title: Optional[str] = attr.ib(default=None)
     calc_mode: CalcMode = attr.ib(default=CalcMode.direct, converter=CalcMode.normalize)
-    aggregation: AggregationFunction = attr.ib(default=AggregationFunction.none, converter=AggregationFunction.normalize)
+    aggregation: AggregationFunction = attr.ib(
+        default=AggregationFunction.none, converter=AggregationFunction.normalize
+    )
     type: FieldType = attr.ib(default=FieldType.DIMENSION, converter=FieldType.normalize)
     source: Optional[str] = attr.ib(default=None)
     hidden: bool = attr.ib(default=False)
-    description: str = attr.ib(default='')
-    formula: str = attr.ib(default='')
+    description: str = attr.ib(default="")
+    formula: str = attr.ib(default="")
     initial_data_type: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
     cast: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
     data_type: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
@@ -511,35 +536,31 @@ class _ResultField(ApiProxyObject):
         super().prepare()
         if self.source and not self.formula and self.default_value is None:
             self.calc_mode = CalcMode.direct
-            self.formula = ''
+            self.formula = ""
             self.default_value = None
             self.value_constraint = None
         elif self.formula and not self.source and self.default_value is None:
             self.calc_mode = CalcMode.formula
-            self.source = ''
+            self.source = ""
             self.default_value = None
             self.value_constraint = None
         elif self.default_value is not None and not self.source and not self.formula:
             self.calc_mode = CalcMode.parameter
-            self.source = ''
-            self.formula = ''
+            self.source = ""
+            self.formula = ""
 
         if self.title is None:
             if self.calc_mode == CalcMode.direct:
                 self.title = self.source
             else:
-                self.title = f'Formula {self.id}'
+                self.title = f"Formula {self.id}"
 
         self.avatar_id = self.avatar_id if self.calc_mode == CalcMode.direct else None
 
     def filter(self, op: Union[str, WhereClauseOperation], values: list) -> WhereClause:
         if isinstance(op, str):
             op = WhereClauseOperation[op]
-        return WhereClause(
-            column=self.id if self.id is not None else self.title,
-            operation=op,
-            values=values
-        )
+        return WhereClause(column=self.id if self.id is not None else self.title, operation=op, values=values)
 
     @property
     def asc(self) -> OrderedField:
@@ -553,14 +574,14 @@ class _ResultField(ApiProxyObject):
         return ParameterFieldValue(field_id=self.id, value=value if value is not None else self.default_value.value)
 
     def as_req_legend_item(
-            self,
-            role: FieldRole = FieldRole.row,
-            range_type: Optional[RangeType] = None,
-            dimension_values: Optional[Dict[int, Any]] = None,
-            tree_prefix: Optional[list] = None,
-            tree_level: Optional[int] = None,
-            legend_item_id: Optional[int] = None,
-            block_id: Optional[int] = None,
+        self,
+        role: FieldRole = FieldRole.row,
+        range_type: Optional[RangeType] = None,
+        dimension_values: Optional[Dict[int, Any]] = None,
+        tree_prefix: Optional[list] = None,
+        tree_level: Optional[int] = None,
+        legend_item_id: Optional[int] = None,
+        block_id: Optional[int] = None,
     ) -> RequestLegendItem:
         role_spec: RoleSpec  # TODO: Move role_spec creation to a separate func
         if role == FieldRole.range:
@@ -618,7 +639,7 @@ class WhereClause:
 
 @attr.s
 class ObligatoryFilter(ApiProxyObject):
-    field_guid: str = attr.ib(default='')
+    field_guid: str = attr.ib(default="")
     default_filters: List[WhereClause] = attr.ib(factory=list)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     valid: bool = attr.ib(default=True)
@@ -851,7 +872,7 @@ class ParameterFieldValue:
 class ComponentError:
     level: ComponentErrorLevel = attr.ib()
     message: str = attr.ib()
-    code: str = attr.ib(default='')
+    code: str = attr.ib(default="")
     details: dict = attr.ib(factory=dict)
 
 
@@ -893,7 +914,7 @@ class Dataset(ApiProxyObject):
     def prepare(self) -> None:
         super().prepare()
         if self.name is None:
-            self.name = f'My Dataset {str(uuid.uuid4())}'
+            self.name = f"My Dataset {str(uuid.uuid4())}"
 
     @staticmethod
     def source(**kwargs: Any) -> DataSource:
@@ -901,12 +922,12 @@ class Dataset(ApiProxyObject):
 
     @staticmethod
     def col(name: str, **kwargs: Any) -> Column:
-        if 'title' not in kwargs:
-            kwargs['title'] = name
+        if "title" not in kwargs:
+            kwargs["title"] = name
         return Column(name=name, **kwargs)
 
-    def field(self, avatar: SourceAvatar = None, **kwargs) -> 'ResultField':  # type: ignore  # TODO: fix
-        avatar_id = avatar.id if avatar is not None else kwargs.pop('avatar_id', None)
+    def field(self, avatar: SourceAvatar = None, **kwargs) -> "ResultField":  # type: ignore  # TODO: fix
+        avatar_id = avatar.id if avatar is not None else kwargs.pop("avatar_id", None)
         return ResultField(avatar_id=avatar_id, **kwargs)
 
     def find_field(self, title: Optional[str] = None, id: Optional[str] = None) -> ResultField:
@@ -915,13 +936,13 @@ class Dataset(ApiProxyObject):
                 return field
             if title is not None and field.title == title:
                 return field
-        raise KeyError('Field not found')
+        raise KeyError("Field not found")
 
     def measure_name_as_req_legend_item(
-            self,
-            role: FieldRole = FieldRole.row,
-            legend_item_id: Optional[int] = None,
-            block_id: Optional[int] = None,
+        self,
+        role: FieldRole = FieldRole.row,
+        legend_item_id: Optional[int] = None,
+        block_id: Optional[int] = None,
     ) -> RequestLegendItem:
         assert role in (FieldRole.row, FieldRole.info)
         if role == FieldRole.row:
@@ -936,11 +957,11 @@ class Dataset(ApiProxyObject):
         )
 
     def placeholder_as_req_legend_item(
-            self,
-            role: FieldRole = FieldRole.row,
-            template: Optional[str] = None,
-            legend_item_id: Optional[int] = None,
-            block_id: Optional[int] = None,
+        self,
+        role: FieldRole = FieldRole.row,
+        template: Optional[str] = None,
+        legend_item_id: Optional[int] = None,
+        block_id: Optional[int] = None,
     ) -> RequestLegendItem:
         role_spec: RoleSpec
         if role == FieldRole.template:
@@ -961,14 +982,14 @@ class Dataset(ApiProxyObject):
         )
 
     def make_req_pivot_item(
-            self,
-            legend_item_ids: list[int],
-            role: PivotRole = PivotRole.pivot_row,
-            title: Optional[str] = None,
-            annotation_type: Optional[str] = None,
-            target_legend_item_ids: Optional[list[int]] = None,
-            direction: OrderDirection = OrderDirection.asc,
-            measure_sorting_settings: Optional[PivotMeasureSorting] = None,
+        self,
+        legend_item_ids: list[int],
+        role: PivotRole = PivotRole.pivot_row,
+        title: Optional[str] = None,
+        annotation_type: Optional[str] = None,
+        target_legend_item_ids: Optional[list[int]] = None,
+        direction: OrderDirection = OrderDirection.asc,
+        measure_sorting_settings: Optional[PivotMeasureSorting] = None,
     ) -> RequestPivotItem:
         role_spec = _make_pivot_role_spec(
             role=role,

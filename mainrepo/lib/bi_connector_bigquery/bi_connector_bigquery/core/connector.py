@@ -1,28 +1,34 @@
 from bi_core.connectors.base.connector import (
-    CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
 )
 
-from bi_connector_bigquery.core.constants import (
-    BACKEND_TYPE_BIGQUERY, CONNECTION_TYPE_BIGQUERY,
-    SOURCE_TYPE_BIGQUERY_TABLE, SOURCE_TYPE_BIGQUERY_SUBSELECT
-)
-from bi_connector_bigquery.core.query_compiler import BigQueryQueryCompiler
-from bi_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
-from bi_connector_bigquery.core.type_transformer import BigQueryTypeTransformer
+from bi_connector_bigquery.core.adapters import BigQueryDefaultAdapter
 from bi_connector_bigquery.core.connection_executors import BigQueryAsyncConnExecutor
-from bi_connector_bigquery.core.data_source_spec import (
-    BigQueryTableDataSourceSpec, BigQuerySubselectDataSourceSpec,
+from bi_connector_bigquery.core.constants import (
+    BACKEND_TYPE_BIGQUERY,
+    CONNECTION_TYPE_BIGQUERY,
+    SOURCE_TYPE_BIGQUERY_SUBSELECT,
+    SOURCE_TYPE_BIGQUERY_TABLE,
 )
 from bi_connector_bigquery.core.data_source import (
-    BigQueryTableDataSource, BigQuerySubselectDataSource,
+    BigQuerySubselectDataSource,
+    BigQueryTableDataSource,
 )
-from bi_connector_bigquery.core.adapters import BigQueryDefaultAdapter
-from bi_connector_bigquery.core.storage_schemas.data_source_spec import (
-    BigQueryTableDataSourceSpecStorageSchema,
-    BigQuerySubselectDataSourceSpecStorageSchema,
+from bi_connector_bigquery.core.data_source_spec import (
+    BigQuerySubselectDataSourceSpec,
+    BigQueryTableDataSourceSpec,
 )
-from bi_connector_bigquery.core.storage_schemas.connection import BigQueryConnectionDataStorageSchema
+from bi_connector_bigquery.core.query_compiler import BigQueryQueryCompiler
 from bi_connector_bigquery.core.sa_types import SQLALCHEMY_BIGQUERY_TYPES
+from bi_connector_bigquery.core.storage_schemas.connection import BigQueryConnectionDataStorageSchema
+from bi_connector_bigquery.core.storage_schemas.data_source_spec import (
+    BigQuerySubselectDataSourceSpecStorageSchema,
+    BigQueryTableDataSourceSpecStorageSchema,
+)
+from bi_connector_bigquery.core.type_transformer import BigQueryTypeTransformer
+from bi_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 
 
 class BigQueryCoreConnectionDefinition(CoreConnectionDefinition):
@@ -32,7 +38,7 @@ class BigQueryCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = BigQueryTypeTransformer
     sync_conn_executor_cls = BigQueryAsyncConnExecutor
     async_conn_executor_cls = BigQueryAsyncConnExecutor
-    dialect_string = 'bigquery'
+    dialect_string = "bigquery"
 
 
 class BigQueryCoreTableSourceDefinition(CoreSourceDefinition):
@@ -52,9 +58,7 @@ class BigQueryCoreSubselectSourceDefinition(CoreSourceDefinition):
 class BigQueryCoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_BIGQUERY
     compiler_cls = BigQueryQueryCompiler
-    connection_definitions = (
-        BigQueryCoreConnectionDefinition,
-    )
+    connection_definitions = (BigQueryCoreConnectionDefinition,)
     source_definitions = (
         BigQueryCoreTableSourceDefinition,
         BigQueryCoreSubselectSourceDefinition,

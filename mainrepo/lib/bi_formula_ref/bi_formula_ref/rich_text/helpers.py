@@ -1,9 +1,14 @@
-from typing import Collection, List, Set
+from typing import (
+    Collection,
+    List,
+    Set,
+)
 
 from bi_formula.core.datatype import DataType
-
-from bi_formula_ref.texts import HUMAN_DATA_TYPES, ANY_TYPE
-
+from bi_formula_ref.texts import (
+    ANY_TYPE,
+    HUMAN_DATA_TYPES,
+)
 
 HIDDEN_TYPES = {
     DataType.DATETIME,
@@ -41,37 +46,37 @@ def escape_cell(s: str) -> str:
     Pipe (``|``) characters must either be wrapped into ``<code></code>`` tags
     or replaced with HTML escape sequence ``&#124;`` so that the don't break cell structure
     """
-    if '|' not in s:
+    if "|" not in s:
         return s
 
-    if '`' not in s:
-        return s.replace('|', '&#124;')
+    if "`" not in s:
+        return s.replace("|", "&#124;")
 
-    escaped_s = ''
+    escaped_s = ""
     i = 0
     while True:
         # add the substring before next opening backtick
-        bt_ind = s.find('`', i)
+        bt_ind = s.find("`", i)
         if bt_ind == -1:
             bt_ind = len(s)
-        escaped_s += s[i:bt_ind].replace('|', '&#124;')
+        escaped_s += s[i:bt_ind].replace("|", "&#124;")
         if bt_ind >= len(s):
             break
 
         use_tags = False
         # find closing backtick and check whether there are any pipes inside
-        next_pipe_ind = s.find('|', bt_ind+1)
-        next_bt_ind = s.find('`', bt_ind+1)
+        next_pipe_ind = s.find("|", bt_ind + 1)
+        next_bt_ind = s.find("`", bt_ind + 1)
         if next_pipe_ind != -1 and next_pipe_ind < next_bt_ind:
             # found pipe inside backticks, so will have to use tags instead of backticks
             use_tags = True
 
         if use_tags:
-            escaped_s = '{}{}{}{}'.format(escaped_s, '<code>', s[bt_ind+1:next_bt_ind], '</code>')
+            escaped_s = "{}{}{}{}".format(escaped_s, "<code>", s[bt_ind + 1 : next_bt_ind], "</code>")
         else:
-            escaped_s = escaped_s + s[bt_ind:next_bt_ind+1]
+            escaped_s = escaped_s + s[bt_ind : next_bt_ind + 1]
 
         i = next_bt_ind + 1
 
-    escaped_s = escaped_s.replace('|', '&#124;')
+    escaped_s = escaped_s.replace("|", "&#124;")
     return escaped_s

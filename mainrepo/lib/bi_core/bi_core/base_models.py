@@ -1,19 +1,26 @@
 from __future__ import annotations
 
-import logging
-from typing import Any, Optional
-
 import abc
+import logging
+from typing import (
+    Any,
+    Optional,
+)
+
 import attr
 
-from bi_constants.enums import WhereClauseOperation, ManagedBy, RawSQLLevel
-
+from bi_constants.enums import (
+    ManagedBy,
+    RawSQLLevel,
+    WhereClauseOperation,
+)
 from bi_utils.utils import DataKey
 
 LOGGER = logging.getLogger(__name__)
 
 
 # Connection references
+
 
 @attr.s(frozen=True, slots=True)
 class ConnectionRef:

@@ -6,10 +6,7 @@ import aiohttp.pytest_plugin
 import aiohttp.test_utils
 import pytest
 
-
-pytest_plugins = (
-    'aiohttp.pytest_plugin',
-)
+pytest_plugins = ("aiohttp.pytest_plugin",)
 
 
 try:

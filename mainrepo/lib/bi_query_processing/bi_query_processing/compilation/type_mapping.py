@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from bi_constants.enums import BIType
-
 from bi_formula.core.datatype import DataType
-
 
 BI_TO_FORMULA_TYPES = {
     BIType.integer: DataType.INTEGER,

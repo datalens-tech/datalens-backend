@@ -4,6 +4,4 @@ from bi_connector_bigquery.db_testing.engine_wrapper import BigQueryEngineWrappe
 
 
 class BigQueryDbTestingConnector(DbTestingConnector):
-    engine_wrapper_classes = (
-        BigQueryEngineWrapper,
-    )
+    engine_wrapper_classes = (BigQueryEngineWrapper,)

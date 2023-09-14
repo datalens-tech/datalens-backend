@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from typing import Dict, Any, Union, Type, FrozenSet
+from typing import (
+    Any,
+    Dict,
+    FrozenSet,
+    Type,
+    Union,
+)
 
 from marshmallow import fields
 
@@ -10,32 +16,29 @@ from bi_core.connection_executors.qe_serializer import dba_actions as dba_action
 from bi_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
 from bi_core.connection_executors.qe_serializer.schemas_common import (
     DBAdapterScopedRCISchema,
+    DBIdentSchema,
     GenericDBAQuerySchema,
+    SchemaIdentSchema,
     TableDefinitionSchema,
     TableIdentSchema,
-    DBIdentSchema,
-    SchemaIdentSchema,
 )
 
 
 class DBAdapterActionBaseSchema(BaseQEAPISchema):
-    target_conn_dto = fields.Method(serialize='dump_target_conn_dto', deserialize='load_target_conn_dto')
-    dba_cls = fields.Method(serialize='dump_dba_cls', deserialize='load_dba_cls')
+    target_conn_dto = fields.Method(serialize="dump_target_conn_dto", deserialize="load_target_conn_dto")
+    dba_cls = fields.Method(serialize="dump_dba_cls", deserialize="load_dba_cls")
     req_ctx_info = fields.Nested(DBAdapterScopedRCISchema)
 
     @property
     def allowed_dba_classes(self) -> FrozenSet[Type[CommonBaseDirectAdapter]]:
         # TODO FIX: Ensure no classes with same qualname or use FQDN
-        return self.context['allowed_dba_classes']
+        return self.context["allowed_dba_classes"]
 
     def dump_dba_cls(self, act: dba_actions.ActionExecuteQuery) -> str:
         return act.dba_cls.__qualname__
 
     def load_dba_cls(self, value: str) -> Union[Type[CommonBaseDirectAdapter]]:
-        candidate = next(filter(
-            lambda clz: clz.__qualname__ == value,
-            self.allowed_dba_classes
-        ), None)
+        candidate = next(filter(lambda clz: clz.__qualname__ == value, self.allowed_dba_classes), None)
         if candidate is None:
             raise ValueError(f"Can not restore DBA class from string '{value}'")
         return candidate
@@ -65,7 +68,6 @@ class ActionGetDBVersionSchema(DBAdapterActionBaseSchema):
 
 
 class ActionTestSchema(DBAdapterActionBaseSchema):
-
     def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionTest:
         return dba_actions.ActionTest(**data)
 

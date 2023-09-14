@@ -2,14 +2,21 @@ from __future__ import annotations
 
 import datetime
 from functools import singledispatchmethod
-from typing import Any, Union
+from typing import (
+    Any,
+    Union,
+)
 
 import sqlalchemy as sa
-from sqlalchemy.sql.elements import BindParameter, Cast, Null
 import sqlalchemy.dialects.postgresql as sa_postgresql
+from sqlalchemy.sql.elements import (
+    BindParameter,
+    Cast,
+    Null,
+)
 
-from bi_formula.core.nodes import BaseLiteral
 from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.nodes import BaseLiteral
 
 
 class TypeDefiningCast(Cast):
@@ -23,7 +30,7 @@ class TypeDefiningCast(Cast):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert isinstance(self.clause, sa.sql.elements.BindParameter), 'This Cast is only meant for constants'
+        assert isinstance(self.clause, sa.sql.elements.BindParameter), "This Cast is only meant for constants"
 
     @property
     def value(self):

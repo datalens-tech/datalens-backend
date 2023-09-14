@@ -1,14 +1,13 @@
-import os
 import inspect
+import os
 import re
 from typing import Optional
 
 import attr
 import yaml
 
-
-_CONTAINER_HOST_FROM_COMPOSE_MARKER = 'from_compose'
-_APPLIB_PATH_RE = re.compile(r'.+\/(?:app|lib|site-packages)\/[^\/]+\/')
+_CONTAINER_HOST_FROM_COMPOSE_MARKER = "from_compose"
+_APPLIB_PATH_RE = re.compile(r".+\/(?:app|lib|site-packages)\/[^\/]+\/")
 
 
 @attr.s(frozen=True)
@@ -17,20 +16,20 @@ class HostPort:
     port: int = attr.ib()
 
     def as_pair(self) -> str:
-        return f'{self.host}:{self.port}'
+        return f"{self.host}:{self.port}"
 
 
 def _get_docker_compose_file_path(filename: Optional[str] = None) -> str | None:
-    filename = filename or 'docker-compose.yml'
+    filename = filename or "docker-compose.yml"
     assert filename is not None
     base_filename: str
     stack = inspect.stack()
     for frame in stack:
-        if '/bi_testing/' not in frame.filename:
+        if "/bi_testing/" not in frame.filename:
             base_filename = frame.filename
             break
     else:
-        raise Exception('No test dir found in stack')
+        raise Exception("No test dir found in stack")
 
     re_match = _APPLIB_PATH_RE.search(base_filename)
     if not re_match:
@@ -43,7 +42,7 @@ def get_test_container_hostport(
     service_key: str,
     original_port: Optional[int] = None,
     fallback_port: Optional[int] = None,  # likely redundant
-    dc_filename: Optional[str] = None
+    dc_filename: Optional[str] = None,
 ) -> HostPort:
     # TODO: Turn this into a method of a class with dc_filename in self
     host: str
@@ -51,24 +50,24 @@ def get_test_container_hostport(
 
     file_path = _get_docker_compose_file_path(filename=dc_filename)
     if not file_path and fallback_port is not None:
-        return HostPort(host='127.0.0.1', port=fallback_port)
+        return HostPort(host="127.0.0.1", port=fallback_port)
     else:
         try:
             with open(file_path) as dcyml:
                 docker_compose_yml = yaml.load(dcyml)
         except FileNotFoundError:
             if fallback_port is not None:
-                return HostPort(host='127.0.0.1', port=fallback_port)
+                return HostPort(host="127.0.0.1", port=fallback_port)
             else:
                 raise
 
-    ports = docker_compose_yml['services'][service_key]['ports']
+    ports = docker_compose_yml["services"][service_key]["ports"]
     if original_port is not None:
-        port_pair = [pp.split(':') for pp in ports if int(pp.split(':')[1]) == original_port][0]
+        port_pair = [pp.split(":") for pp in ports if int(pp.split(":")[1]) == original_port][0]
     else:
-        port_pair = ports[0].split(':')
+        port_pair = ports[0].split(":")
 
-    if (container_host := os.environ.get('TEST_CONTAINER_HOST')) is not None:
+    if (container_host := os.environ.get("TEST_CONTAINER_HOST")) is not None:
         if container_host == _CONTAINER_HOST_FROM_COMPOSE_MARKER:
             # github actions env, taking host from docker-compose and original port
             host = service_key
@@ -79,7 +78,7 @@ def get_test_container_hostport(
             port = int(port_pair[0])
     else:
         # remote test run, with containers on the same host
-        host = '127.0.0.1'
+        host = "127.0.0.1"
         port = int(port_pair[0])
 
     return HostPort(host=host, port=port)

@@ -1,58 +1,78 @@
 from __future__ import annotations
 
-import json
-import logging
 from collections import ChainMap
 from contextlib import contextmanager
+import json
+import logging
 from typing import (
-    TYPE_CHECKING, Any, ChainMap as ChainMapGeneric, ClassVar, Dict, Optional,
-    Set, Type, Union, TypeVar,
+    ClassVar,
+    Dict,
+    Optional,
+    Set,
+    Type,
+    TypeVar,
+    Union,
 )
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
+from typing import ChainMap as ChainMapGeneric
 
 import attr
 import marshmallow
 
+from bi_api_commons.base_models import (
+    RequestContextInfo,
+    TenantDef,
+)
+from bi_configs.crypto_keys import (
+    CryptoKeysConfig,
+    get_crypto_keys_config_from_env,
+)
 from bi_constants.enums import ConnectionType
-
-from bi_configs.crypto_keys import CryptoKeysConfig, get_crypto_keys_config_from_env
-
 from bi_core import exc
 from bi_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
-    PathEntryLocation,
     EntryLocation,
+    PathEntryLocation,
     WorkbookEntryLocation,
 )
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.base_models import TenantDef
-from bi_core.united_storage_client import USAuthContextBase, UStorageClientBase
+from bi_core.lifecycle.factory import DefaultEntryLifecycleManagerFactory
+from bi_core.united_storage_client import (
+    USAuthContextBase,
+    UStorageClientBase,
+)
 from bi_core.us_connection import get_connection_class
 from bi_core.us_connection_base import ConnectionBase
 from bi_core.us_dataset import Dataset
-from bi_core.us_entry import BaseAttrsDataModel, USEntry, USMigrationEntry
+from bi_core.us_entry import (
+    BaseAttrsDataModel,
+    USEntry,
+    USMigrationEntry,
+)
 from bi_core.us_manager.crypto.main import CryptoController
-from bi_core.us_manager.storage_schemas.dataset import DatasetStorageSchema
+from bi_core.us_manager.local_cache import USEntryBuffer
 from bi_core.us_manager.storage_schemas.connection_schema_registry import MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA
+from bi_core.us_manager.storage_schemas.dataset import DatasetStorageSchema
 from bi_core.us_manager.us_entry_serializer import (
     USDataPack,
     USEntrySerializer,
     USEntrySerializerMarshmallow,
 )
 from bi_core.us_manager.utils.fake_us_client import FakeUSClient
-from bi_core.lifecycle.factory import DefaultEntryLifecycleManagerFactory
-from bi_core.us_manager.local_cache import USEntryBuffer
 from bi_utils.utils import AddressableData
 
 if TYPE_CHECKING:
-    from bi_core.services_registry import ServicesRegistry
     from bi_core.lifecycle.base import EntryLifecycleManager
     from bi_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase
+    from bi_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
 
-_ENTRY_TV = TypeVar('_ENTRY_TV', bound=USEntry)
+_ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
 
 
 @attr.s(frozen=True)
@@ -62,13 +82,11 @@ class CryptoKeyInfo:
 
 
 class USManagerBase:
-    _MAP_TYPE_TO_SCHEMA: ClassVar[
-        ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]
-    ] = ChainMap(
+    _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]] = ChainMap(
         MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # TODO: fix
         {
             Dataset.DataModel: DatasetStorageSchema,
-        }
+        },
     )
 
     _bi_context: RequestContextInfo
@@ -81,14 +99,14 @@ class USManagerBase:
     _lifecycle_manager_factory: EntryLifecycleManagerFactoryBase
 
     def __init__(
-            self,
-            bi_context: RequestContextInfo,
-            crypto_keys_config: Optional[CryptoKeysConfig],
-            us_base_url: str,
-            us_api_prefix: Optional[str],
-            us_auth_context: USAuthContextBase,
-            services_registry: ServicesRegistry,
-            lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        self,
+        bi_context: RequestContextInfo,
+        crypto_keys_config: Optional[CryptoKeysConfig],
+        us_base_url: str,
+        us_api_prefix: Optional[str],
+        us_auth_context: USAuthContextBase,
+        services_registry: ServicesRegistry,
+        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
     ):
         # TODO FIX: Try to connect it together to eliminate possible divergence
         if services_registry is not None:
@@ -135,16 +153,12 @@ class USManagerBase:
         return self._crypto_keys_config.actual_key_id
 
     def get_lifecycle_manager(
-            self,
-            entry: USEntry,
-            service_registry: Optional[ServicesRegistry] = None
+        self, entry: USEntry, service_registry: Optional[ServicesRegistry] = None
     ) -> EntryLifecycleManager:
         if service_registry is None:
             service_registry = self.get_services_registry()
         return self._lifecycle_manager_factory.get_lifecycle_manager(
-            entry=entry,
-            us_manager=self,
-            service_registry=service_registry
+            entry=entry, us_manager=self, service_registry=service_registry
         )
 
     # TODO FIX: Prevent saving entries with folder ID that doesn't match current folder ID
@@ -171,21 +185,23 @@ class USManagerBase:
             if issubclass(data_cls, BaseAttrsDataModel):
                 return USEntrySerializerMarshmallow()
 
-        raise ValueError(f'Unknown type for US entry data: {entry_cls.DataModel}')
+        raise ValueError(f"Unknown type for US entry data: {entry_cls.DataModel}")
 
     # TODO FIX: Replace with on-import collecting of USEntry inheritors type/scope
     @classmethod
-    def _get_entry_class(cls, *, us_scope: str, us_type: str, entry_key: Optional[EntryLocation] = None) -> Type[USEntry]:
+    def _get_entry_class(
+        cls, *, us_scope: str, us_type: str, entry_key: Optional[EntryLocation] = None
+    ) -> Type[USEntry]:
         err_msg = (
             f"Unknown combination of scope/type: {us_scope}/{us_type}"
             f" key={'not provided' if entry_key is None else entry_key.to_short_string()}"
         )
 
         try:
-            if us_scope == 'dataset':
+            if us_scope == "dataset":
                 return Dataset
 
-            elif us_scope == 'connection':
+            elif us_scope == "connection":
                 conn_type: ConnectionType
                 try:
                     conn_type = ConnectionType(us_type)
@@ -205,8 +221,8 @@ class USManagerBase:
             us_resp = entry._us_resp
             assert us_resp is not None
             entry_cls = self._get_entry_class(
-                us_type=us_resp['type'],
-                us_scope=us_resp['scope'],
+                us_type=us_resp["type"],
+                us_scope=us_resp["scope"],
                 entry_key=entry.entry_key,
             )
             data_model_cls = entry_cls.DataModel
@@ -220,7 +236,7 @@ class USManagerBase:
             us_resp = entry._us_resp
             assert us_resp is not None
             fields_info_addressable = AddressableData({})
-            unversioned_addressable = AddressableData(us_resp['unversionedData'])
+            unversioned_addressable = AddressableData(us_resp["unversionedData"])
 
             for field_key in sensitive_fields:
                 if unversioned_addressable.contains(field_key):
@@ -229,15 +245,9 @@ class USManagerBase:
                         key_id = None
                         key_kind = None
                     else:
-                        key_id = field_value['key_id']
-                        key_kind = field_value['key_kind']
-                    fields_info_addressable.set(
-                        field_key,
-                        CryptoKeyInfo(
-                            key_id=key_id,
-                            key_kind=key_kind
-                        )
-                    )
+                        key_id = field_value["key_id"]
+                        key_kind = field_value["key_kind"]
+                    fields_info_addressable.set(field_key, CryptoKeyInfo(key_id=key_id, key_kind=key_kind))
 
                 else:
                     fields_info_addressable.set(field_key, None)
@@ -249,8 +259,8 @@ class USManagerBase:
         assert us_resp is not None
 
         entry_cls = self._get_entry_class(
-            us_type=us_resp['type'],
-            us_scope=us_resp['scope'],
+            us_type=us_resp["type"],
+            us_scope=us_resp["scope"],
             entry_key=entry.entry_key,
         )
 
@@ -273,13 +283,13 @@ class USManagerBase:
         """
 
         entry_loc: EntryLocation
-        raw_entry_key = us_resp['key']
+        raw_entry_key = us_resp["key"]
         assert isinstance(raw_entry_key, str), f"Got non-string US entry key: {raw_entry_key!r}"
 
-        if us_resp.get('workbookId') is not None:
+        if us_resp.get("workbookId") is not None:
             entry_name = raw_entry_key.split("/")[-1]
             entry_loc = WorkbookEntryLocation(
-                workbook_id=us_resp['workbookId'],
+                workbook_id=us_resp["workbookId"],
                 entry_name=entry_name,
             )
         else:
@@ -290,8 +300,8 @@ class USManagerBase:
             entry_cls = USMigrationEntry
         else:
             entry_cls = self._get_entry_class(  # type: ignore  # TODO: fix
-                us_type=us_resp['type'],
-                us_scope=us_resp['scope'],
+                us_type=us_resp["type"],
+                us_scope=us_resp["scope"],
                 entry_key=entry_loc,
             )
             if expected_type is not None and not issubclass(entry_cls, expected_type):
@@ -302,37 +312,37 @@ class USManagerBase:
 
         common_properties: dict[str, Any] = dict(
             entry_key=entry_loc,
-            type_=us_resp['type'],
-            meta=us_resp['meta'],
-            is_locked=us_resp.get('isLocked'),
-            is_favorite=us_resp.get('isFavorite'),
-            permissions=us_resp.get('permissions') or {},
-            links=us_resp.get('links') or {},
-            hidden=us_resp['hidden'],
+            type_=us_resp["type"],
+            meta=us_resp["meta"],
+            is_locked=us_resp.get("isLocked"),
+            is_favorite=us_resp.get("isFavorite"),
+            permissions=us_resp.get("permissions") or {},
+            links=us_resp.get("links") or {},
+            hidden=us_resp["hidden"],
         )
 
         entry: USEntry
         if entry_cls == USMigrationEntry:
             entry = USMigrationEntry(
-                uuid=us_resp['entryId'],
+                uuid=us_resp["entryId"],
                 us_manager=self,
-                data=us_resp.get('data'),
-                unversioned_data=us_resp.get('unversionedData'),
+                data=us_resp.get("data"),
+                unversioned_data=us_resp.get("unversionedData"),
                 data_strict=False,
                 **common_properties,
             )
         else:
-            data = us_resp.get('data')
+            data = us_resp.get("data")
             serializer = self.get_us_entry_serializer(entry_cls)
             data_pack = USDataPack(
                 data=data,  # type: ignore
-                secrets=us_resp.get('unversionedData'),  # type: ignore
+                secrets=us_resp.get("unversionedData"),  # type: ignore
             )
 
             entry = serializer.deserialize(
                 entry_cls,
                 data_pack,
-                us_resp['entryId'],
+                us_resp["entryId"],
                 us_manager=self,
                 common_properties=common_properties,
                 data_strict=False,
@@ -359,7 +369,7 @@ class USManagerBase:
         entry_data.update(
             entryId=entry.uuid,
             unversionedData=entry_data.pop("unversioned_data"),
-            **entry_loc.to_us_resp_api_params(entry.raw_us_key)
+            **entry_loc.to_us_resp_api_params(entry.raw_us_key),
         )
         return self._entry_dict_to_obj(entry_data)
 
@@ -390,8 +400,8 @@ class USManagerBase:
 
         # Validating type on update
         if entry._us_resp:
-            prev_type = entry._us_resp.get('type')
-            if prev_type == '' and us_type is None:
+            prev_type = entry._us_resp.get("type")
+            if prev_type == "" and us_type is None:
                 pass
             elif prev_type != us_type:
                 raise ValueError(f"Type mismatch on US entry update: was '{prev_type}'; become '{us_type}'")
@@ -447,7 +457,7 @@ class USManagerBase:
 
         copied_entry = type(source)(
             uuid=None,
-            data=source_save_params['data'],
+            data=source_save_params["data"],
             entry_key=key,
             type_=source.type_,
             is_locked=source.is_locked,
@@ -467,8 +477,8 @@ class USManagerBase:
     @staticmethod
     @contextmanager
     def _enrich_us_exception(  # type: ignore  # TODO: fix
-            entry_id: Optional[str] = None,
-            entry_scope: Optional[str] = None,
+        entry_id: Optional[str] = None,
+        entry_scope: Optional[str] = None,
     ):
         try:
             yield
@@ -495,8 +505,7 @@ class USManagerBase:
         if isinstance(entry, Dataset):
             lifecycle_manager = self.get_lifecycle_manager(entry=entry)
             linked_entries_refs: Set[ConnectionRef] = {
-                DefaultConnectionRef(conn_id=conn_id)
-                for conn_id in lifecycle_manager.collect_links().values()
+                DefaultConnectionRef(conn_id=conn_id) for conn_id in lifecycle_manager.collect_links().values()
             }
 
             return linked_entries_refs

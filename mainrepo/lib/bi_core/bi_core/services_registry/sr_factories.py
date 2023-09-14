@@ -3,39 +3,54 @@ from __future__ import annotations
 import abc
 import logging
 from typing import (
-    TYPE_CHECKING, Any, Callable, ClassVar, Dict,
-    FrozenSet, Generic, Optional, Sequence, Type, TypeVar,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    FrozenSet,
+    Generic,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
 )
 
+from arq.connections import RedisSettings as ArqRedisSettings
 import attr
 from typing_extensions import final
-from arq.connections import RedisSettings as ArqRedisSettings
-
-from bi_constants.enums import ProcessorType
-
-from bi_configs.enums import RequiredService
 
 from bi_api_commons.reporting.registry import ReportingRegistry
+from bi_configs.enums import RequiredService
+from bi_constants.enums import ProcessorType
+from bi_core.mdb_utils import (
+    MDBDomainManagerFactory,
+    MDBDomainManagerSettings,
+)
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
-from bi_core.services_registry.selector_factory import DefaultSelectorFactory
-from bi_core.services_registry.top_level import DefaultServicesRegistry, ServicesRegistry
-from bi_core.services_registry.file_uploader_client_factory import FileUploaderClientFactory, FileUploaderSettings
+from bi_core.services_registry.file_uploader_client_factory import (
+    FileUploaderClientFactory,
+    FileUploaderSettings,
+)
 from bi_core.services_registry.rqe_caches import RQECachesSetting
+from bi_core.services_registry.selector_factory import DefaultSelectorFactory
+from bi_core.services_registry.top_level import (
+    DefaultServicesRegistry,
+    ServicesRegistry,
+)
 from bi_core.us_manager.mutation_cache.usentry_mutation_cache_factory import USEntryMutationCacheFactory
 from bi_core.utils import FutureRef
-from bi_core.mdb_utils import MDBDomainManagerSettings, MDBDomainManagerFactory
 from bi_task_processor.processor import ARQTaskProcessorFactory
 
 if TYPE_CHECKING:
     from redis.asyncio import Redis
 
+    from bi_api_commons.base_models import RequestContextInfo
     from bi_configs.connectors_settings import ConnectorSettingsBase
     from bi_configs.rqe import RQEConfig
     from bi_constants.enums import ConnectionType
-
-    from bi_api_commons.base_models import RequestContextInfo
-    from bi_core.data_processing.cache.primitives import CacheTTLConfig
     from bi_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
+    from bi_core.data_processing.cache.primitives import CacheTTLConfig
     from bi_core.services_registry.entity_checker import EntityUsageChecker
     from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
     from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
@@ -44,19 +59,19 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
-SERVICE_REGISTRY_TV = TypeVar('SERVICE_REGISTRY_TV', bound=ServicesRegistry)
+SERVICE_REGISTRY_TV = TypeVar("SERVICE_REGISTRY_TV", bound=ServicesRegistry)
 
 
 class SRFactory(Generic[SERVICE_REGISTRY_TV], metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def make_service_registry(
-            self,
-            request_context_info: RequestContextInfo,
-            mutations_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-            mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
-            reporting_registry: Optional[ReportingRegistry] = None,
-            caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-            data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
+        self,
+        request_context_info: RequestContextInfo,
+        mutations_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
+        reporting_registry: Optional[ReportingRegistry] = None,
+        caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
     ) -> SERVICE_REGISTRY_TV:
         """
         :param request_context_info: RCI to pass to services registry.
@@ -95,13 +110,13 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
         return request_context_info.user_name in self.bleeding_edge_users
 
     def make_conn_executor_factory(
-            self,
-            request_context_info: RequestContextInfo,
-            sr_ref: FutureRef[SERVICE_REGISTRY_TV],
+        self,
+        request_context_info: RequestContextInfo,
+        sr_ref: FutureRef[SERVICE_REGISTRY_TV],
     ) -> DefaultConnExecutorFactory:
         is_bleeding_edge_user = self.is_bleeding_edge_user(request_context_info)
         if is_bleeding_edge_user:
-            LOGGER.info('ATTENTION! It\'s bleeding edge user')
+            LOGGER.info("ATTENTION! It's bleeding edge user")
         return DefaultConnExecutorFactory(
             async_env=self.async_env,
             tpe=None,
@@ -119,21 +134,23 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
         )
 
     def additional_sr_constructor_kwargs(
-            self, request_context_info: RequestContextInfo, sr_ref: FutureRef[ServicesRegistry],
+        self,
+        request_context_info: RequestContextInfo,
+        sr_ref: FutureRef[ServicesRegistry],
     ) -> Dict[str, Any]:
         return dict()
 
     @final
     def make_service_registry(
-            self,
-            request_context_info: RequestContextInfo,
-            mutations_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-            mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
-            reporting_registry: Optional[ReportingRegistry] = None,
-            # TODO: refactor usage of redis and pg here
-            #  (some kind of multi-purpose factory instead of separate getters)
-            caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-            data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
+        self,
+        request_context_info: RequestContextInfo,
+        mutations_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
+        reporting_registry: Optional[ReportingRegistry] = None,
+        # TODO: refactor usage of redis and pg here
+        #  (some kind of multi-purpose factory instead of separate getters)
+        caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
     ) -> SERVICE_REGISTRY_TV:
         sr_ref: FutureRef[ServicesRegistry] = FutureRef()
         sr = self.service_registry_cls(  # type: ignore  # TODO: fix
@@ -152,18 +169,25 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             ),
             file_uploader_client_factory=FileUploaderClientFactory(
                 self.file_uploader_settings,
-            ) if self.file_uploader_settings else None,
+            )
+            if self.file_uploader_settings
+            else None,
             task_processor_factory=ARQTaskProcessorFactory(
                 redis_pool_settings=self.redis_pool_settings,
-            ) if self.redis_pool_settings else None,
+            )
+            if self.redis_pool_settings
+            else None,
             mdb_domain_manager_factory=MDBDomainManagerFactory(
                 settings=self.mdb_domain_manager_settings,
-            ) if self.mdb_domain_manager_settings else None,
+            )
+            if self.mdb_domain_manager_settings
+            else None,
             rqe_caches_settings=self.rqe_caches_settings,
             required_services=self.required_services,
             inst_specific_sr=(
                 self.inst_specific_sr_factory.get_inst_specific_sr(sr_ref)
-                if self.inst_specific_sr_factory is not None else None
+                if self.inst_specific_sr_factory is not None
+                else None
             ),
             **self.additional_sr_constructor_kwargs(request_context_info, sr_ref),
         )

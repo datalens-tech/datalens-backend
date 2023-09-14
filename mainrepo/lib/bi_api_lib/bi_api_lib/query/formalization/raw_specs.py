@@ -1,19 +1,38 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import AbstractSet, Any, ClassVar, Iterable, List, Optional, TypeVar, Union
+from typing import (
+    AbstractSet,
+    Any,
+    ClassVar,
+    Iterable,
+    List,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 import attr
 
-from bi_constants.internal_constants import MEASURE_NAME_ID, DIMENSION_NAME_ID, PLACEHOLDER_ID
 from bi_constants.enums import (
-    FieldRole, FieldVisibility, OrderDirection, WhereClauseOperation, QueryBlockPlacementType, RangeType,
+    FieldRole,
+    FieldVisibility,
+    OrderDirection,
+    QueryBlockPlacementType,
+    RangeType,
+    WhereClauseOperation,
 )
-
-from bi_query_processing.enums import QueryType, GroupByPolicy
+from bi_constants.internal_constants import (
+    DIMENSION_NAME_ID,
+    MEASURE_NAME_ID,
+    PLACEHOLDER_ID,
+)
 from bi_query_processing.base_specs.dimensions import DimensionValueSpec
+from bi_query_processing.enums import (
+    GroupByPolicy,
+    QueryType,
+)
 from bi_query_processing.postprocessing.primitives import PostprocessedValue
-
 
 FilterArgType = Union[str, int, float, None]
 
@@ -53,7 +72,7 @@ class PlaceholderRef(FieldRef):
     id: str = attr.ib(kw_only=True, init=False, default=PLACEHOLDER_ID)
 
 
-_FIELD_SPEC_TV = TypeVar('_FIELD_SPEC_TV', bound='RawFieldSpec')
+_FIELD_SPEC_TV = TypeVar("_FIELD_SPEC_TV", bound="RawFieldSpec")
 
 
 @attr.s(frozen=True)
@@ -93,7 +112,7 @@ class RawRowRoleSpec(RawDimensionRoleSpec):
 
 @attr.s(frozen=True)
 class RawTemplateRoleSpec(RawDimensionRoleSpec):
-    template: str = attr.ib(kw_only=True, default='')
+    template: str = attr.ib(kw_only=True, default="")
 
 
 @attr.s(frozen=True)
@@ -120,6 +139,7 @@ class RawOrderByFieldSpec(RawFieldSpec):  # noqa
     Ambiguous ORDER BY field clause specifier that serves as input from the API,
     where either field ID or title can be specified.
     """
+
     direction: OrderDirection = attr.ib(kw_only=True)
 
 
@@ -128,6 +148,7 @@ class RawFilterFieldSpec(RawFieldSpec):  # noqa
     """
     Ambiguous filter specifier
     """
+
     operation: WhereClauseOperation = attr.ib(kw_only=True)
     values: List[FilterArgType] = attr.ib(kw_only=True)
     block_id: Optional[int] = attr.ib(kw_only=True, default=None)
@@ -178,10 +199,7 @@ class RawQuerySpecUnion:
         )
 
     def get_unique_block_ids(self) -> AbstractSet[int]:
-        return {
-            spec.block_id for spec in self.iter_item_specs()
-            if spec.block_id is not None
-        }
+        return {spec.block_id for spec in self.iter_item_specs() if spec.block_id is not None}
 
 
 @attr.s(frozen=True)

@@ -1,17 +1,29 @@
 from __future__ import annotations
 
-from typing import List, Union, Callable, Sequence, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    List,
+    Sequence,
+    Union,
+)
 
+from bi_formula.core.datatype import (
+    DataType,
+    DataTypeParams,
+)
 import bi_formula.core.exc as exc
-from bi_formula.core.datatype import DataType, DataTypeParams
-from bi_formula.translation.type_strategy import TypeStrategy, TypeParamsStrategy
+from bi_formula.translation.type_strategy import (
+    TypeParamsStrategy,
+    TypeStrategy,
+)
 
 if TYPE_CHECKING:
     from bi_formula.translation.context import TranslationCtx
 
 
 class Fixed(TypeStrategy):
-    __slots__ = ('_type',)
+    __slots__ = ("_type",)
 
     def __init__(self, type_: DataType):
         self._type = type_
@@ -25,7 +37,7 @@ class Fixed(TypeStrategy):
 
 
 class FromArgs(TypeStrategy):
-    __slots__ = ('_indices',)
+    __slots__ = ("_indices",)
 
     def __init__(self, *indices: Union[int, slice]):
         self._indices = indices or [slice(0, None)]
@@ -35,7 +47,8 @@ class FromArgs(TypeStrategy):
 
     @staticmethod
     def _get_from_args_and_indices(
-            arg_types: List[DataType], indices: Sequence[Union[int, slice]],
+        arg_types: List[DataType],
+        indices: Sequence[Union[int, slice]],
     ) -> DataType:
         use_arg_types = []
         for ind in indices:  # type: ignore
@@ -60,7 +73,7 @@ class DynamicIndexStrategy(FromArgs):
 
 
 class Combined(TypeStrategy):
-    __slots__ = ('_substrats', '_replace_types')
+    __slots__ = ("_substrats", "_replace_types")
 
     def __init__(self, *substrats: TypeStrategy, replace_types=None):
         self._substrats = []
@@ -88,12 +101,9 @@ class CaseTypeStrategy(DynamicIndexStrategy):
 
     def get_indices(self, arg_cnt: int) -> List[Union[int, slice]]:
         if arg_cnt < 2 or arg_cnt % 2 != 0:
-            raise exc.TranslationError(f'Invalid number of arguments for CASE: {arg_cnt}')
+            raise exc.TranslationError(f"Invalid number of arguments for CASE: {arg_cnt}")
         num_of_whens = (arg_cnt - 1) // 2  # 1 for main CASE value arg, 2 for each WHEN part
-        return [
-            *[2 + 2 * i for i in range(num_of_whens)],  # THENs
-            1 + 2 * num_of_whens  # ELSE
-        ]
+        return [*[2 + 2 * i for i in range(num_of_whens)], 1 + 2 * num_of_whens]  # THENs  # ELSE
 
 
 class IfTypeStrategy(DynamicIndexStrategy):
@@ -101,22 +111,17 @@ class IfTypeStrategy(DynamicIndexStrategy):
 
     def get_indices(self, arg_cnt: int) -> List[Union[int, slice]]:
         if arg_cnt < 3 or arg_cnt % 2 != 1:
-            raise exc.TranslationError(f'Invalid number of arguments for IF: {arg_cnt}')
+            raise exc.TranslationError(f"Invalid number of arguments for IF: {arg_cnt}")
         num_of_if_parts = arg_cnt // 2
-        return [
-            *[2 * i + 1 for i in range(num_of_if_parts)],  # THENs
-            2 * num_of_if_parts  # ELSE
-        ]
+        return [*[2 * i + 1 for i in range(num_of_if_parts)], 2 * num_of_if_parts]  # THENs  # ELSE
 
 
 class ParamsEmpty(TypeParamsStrategy):
-
     def get_from_arg_values(self, args: List[TranslationCtx]) -> DataTypeParams:
         return DataTypeParams()
 
 
 class ParamsCustom(TypeParamsStrategy):
-
     def __init__(self, func: Callable[[List[TranslationCtx]], DataTypeParams]):
         self._func = func
 
@@ -125,7 +130,6 @@ class ParamsCustom(TypeParamsStrategy):
 
 
 class ParamsFromArgs(TypeParamsStrategy):
-
     def __init__(self, index: int):
         self._index = index
 

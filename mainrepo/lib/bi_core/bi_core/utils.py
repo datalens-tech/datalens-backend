@@ -4,44 +4,55 @@ import ipaddress
 import logging
 import os
 import re
-import uuid
 from typing import (
     Any,
     Generic,
+    Iterable,
     Optional,
     Type,
     TypeVar,
-    Iterable,
 )
 from urllib.parse import urlparse
+import uuid
 
+from aiohttp import (
+    ClientResponse,
+    ClientResponseError,
+    RequestInfo,
+)
 import attr
 import jaeger_client
+from multidict import (
+    CIMultiDict,
+    CIMultiDictProxy,
+)
 import opentracing
 import requests
 import requests.adapters
 import requests.exceptions
 import shortuuid
-from aiohttp import ClientResponseError, ClientResponse, RequestInfo
-from multidict import CIMultiDict, CIMultiDictProxy
 import sqlalchemy as sa
 
+from bi_api_commons import clean_secret_data_in_headers
+from bi_api_commons.base_models import (
+    AuthData,
+    RequestContextInfo,
+)
+from bi_api_commons.utils import (
+    stringify_dl_cookies,
+    stringify_dl_headers,
+)
 from bi_configs.settings_loaders.env_remap import remap_env
 from bi_constants.api_constants import DLHeadersCommon
-from bi_api_commons import clean_secret_data_in_headers
-from bi_api_commons.utils import stringify_dl_headers, stringify_dl_cookies
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.base_models import AuthData
-
 
 LOGGER = logging.getLogger(__name__)
 
 
 def make_url(
-        protocol: str,
-        host: str,
-        port: int,
-        path: Optional[str] = None,
+    protocol: str,
+    host: str,
+    port: int,
+    path: Optional[str] = None,
 ) -> str:
     # TODO FIX: Sanitize/use urllib
     if path is None:
@@ -51,8 +62,8 @@ def make_url(
 
 def get_requests_session() -> requests.Session:
     session = requests.Session()
-    ua = '{}, Datalens'.format(requests.utils.default_user_agent())
-    session.headers.update({'User-Agent': ua})
+    ua = "{}, Datalens".format(requests.utils.default_user_agent())
+    session.headers.update({"User-Agent": ua})
     return session
 
 
@@ -64,15 +75,14 @@ def get_retriable_requests_session() -> requests.Session:
         backoff_factor=0.5,
         status_forcelist=[500, 501, 502, 503, 504, 521],
         redirect=10,
-        method_whitelist=frozenset(
-            ['HEAD', 'TRACE', 'GET', 'PUT', 'OPTIONS', 'DELETE', 'POST']),
+        method_whitelist=frozenset(["HEAD", "TRACE", "GET", "PUT", "OPTIONS", "DELETE", "POST"]),
         # # TODO:
         # # (the good: will return a response when it's an error response)
         # # (the bad: need to raise_for_status() manually, same as without retry conf)
         # raise_on_status=False,
     )
 
-    for schema in ('http://', 'https://'):
+    for schema in ("http://", "https://"):
         session.mount(
             schema,
             # noinspection PyUnresolvedReferences
@@ -85,18 +95,16 @@ def get_retriable_requests_session() -> requests.Session:
 
 
 def make_user_auth_headers(
-        rci: RequestContextInfo,
-        auth_data_override: Optional[AuthData] = None,
-        sudo_override: Optional[bool] = None,
-        allow_superuser_override: Optional[bool] = None,
+    rci: RequestContextInfo,
+    auth_data_override: Optional[AuthData] = None,
+    sudo_override: Optional[bool] = None,
+    allow_superuser_override: Optional[bool] = None,
 ) -> dict[str, str]:
     headers: dict[str, str] = {}
 
     effective_auth_data: Optional[AuthData] = rci.auth_data if auth_data_override is None else auth_data_override
     if effective_auth_data is not None:
-        headers.update(
-            stringify_dl_headers(effective_auth_data.get_headers())
-        )
+        headers.update(stringify_dl_headers(effective_auth_data.get_headers()))
 
     req_id = rci.request_id
     if req_id is not None:
@@ -128,8 +136,8 @@ def make_user_auth_headers(
 
 
 def make_user_auth_cookies(
-        rci: RequestContextInfo,
-        auth_data_override: Optional[AuthData] = None,
+    rci: RequestContextInfo,
+    auth_data_override: Optional[AuthData] = None,
 ) -> dict[str, str]:
     effective_auth_data: Optional[AuthData] = rci.auth_data if auth_data_override is None else auth_data_override
     if effective_auth_data is not None:
@@ -149,15 +157,15 @@ def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
             return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
         except NotImplementedError:
             compiled = query.compile(dialect=dialect)
-            return '{0}; {1!r}'.format(str(query), compiled.params)
+            return "{0}; {1!r}".format(str(query), compiled.params)
     except Exception:
-        return '-'
+        return "-"
 
 
 def parse_comma_separated_hosts(host: Optional[str]) -> tuple[str, ...]:
     if not host:
         return tuple()
-    return tuple(h.strip() for h in host.split(','))
+    return tuple(h.strip() for h in host.split(","))
 
 
 def validate_hostname_or_ip_address(hostname: str):  # type: ignore  # TODO: fix
@@ -186,7 +194,7 @@ def validate_hostname_or_ip_address(hostname: str):  # type: ignore  # TODO: fix
         raise ValueError("Not a valid domain name")
 
     # Ensure valid netloc (from previous hostname validation mechanism)
-    parsed_url = urlparse('//{}'.format(hostname))
+    parsed_url = urlparse("//{}".format(hostname))
     if parsed_url.netloc != hostname:
         raise ValueError("Not a valid netloc")
 
@@ -195,7 +203,7 @@ def shorten_uuid(some_uuid: str):  # type: ignore  # TODO: fix
     return shortuuid.encode(uuid.UUID(some_uuid))
 
 
-_FUTURE_REF_TV = TypeVar('_FUTURE_REF_TV')
+_FUTURE_REF_TV = TypeVar("_FUTURE_REF_TV")
 
 
 @attr.s(eq=False, hash=False, order=False)
@@ -203,7 +211,7 @@ class FutureRef(Generic[_FUTURE_REF_TV]):
     __ref: Optional[_FUTURE_REF_TV] = attr.ib(init=False, default=None)
 
     @property
-    def ref(self) -> '_FUTURE_REF_TV':
+    def ref(self) -> "_FUTURE_REF_TV":
         if self.__ref is None:
             raise ValueError("FutureRef was not fulfilled")
         return self.__ref
@@ -214,7 +222,7 @@ class FutureRef(Generic[_FUTURE_REF_TV]):
         self.__ref = obj
 
     @classmethod
-    def fulfilled(cls, obj: _FUTURE_REF_TV) -> 'FutureRef[_FUTURE_REF_TV]':
+    def fulfilled(cls, obj: _FUTURE_REF_TV) -> "FutureRef[_FUTURE_REF_TV]":
         fr = cls()
         fr.fulfill(obj)
         return fr
@@ -223,14 +231,14 @@ class FutureRef(Generic[_FUTURE_REF_TV]):
 # TODO FIX: BI-2497 try to load in generic ways
 def get_eqe_secret_key() -> bytes:
     effective_env = remap_env(os.environ)
-    return effective_env.get('RQE_SECRET_KEY', '').encode()
+    return effective_env.get("RQE_SECRET_KEY", "").encode()
 
 
 def make_id() -> str:
     return shortuuid.uuid()
 
 
-_MODEL_TYPE_TV = TypeVar('_MODEL_TYPE_TV', bound=attr.AttrsInstance)
+_MODEL_TYPE_TV = TypeVar("_MODEL_TYPE_TV", bound=attr.AttrsInstance)
 
 
 def attrs_evolve_to_subclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix
@@ -245,11 +253,8 @@ def attrs_evolve_to_subclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> 
             return attr.evolve(inst, **kwargs)
         else:
             return inst
-    assert issubclass(cls, super_cls), f'Expected subclass of {super_cls.__name__}, got {cls.__name__}'
-    all_attrs = {
-        f.name: getattr(inst, f.name.lstrip('_'))
-        for f in attr.fields(super_cls) if f.init
-    }
+    assert issubclass(cls, super_cls), f"Expected subclass of {super_cls.__name__}, got {cls.__name__}"
+    all_attrs = {f.name: getattr(inst, f.name.lstrip("_")) for f in attr.fields(super_cls) if f.init}
     all_attrs.update(kwargs)
     return cls(**all_attrs)  # type: ignore  # TODO: fix
 
@@ -266,11 +271,8 @@ def attrs_evolve_to_superclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -
             return attr.evolve(inst, **kwargs)
         else:
             return inst
-    assert issubclass(sub_cls, cls), f'Expected superclass of {sub_cls.__name__}, got {cls.__name__}'
-    all_attrs = {
-        f.name: getattr(inst, f.name.lstrip('_'))
-        for f in attr.fields(cls) if f.init
-    }
+    assert issubclass(sub_cls, cls), f"Expected superclass of {sub_cls.__name__}, got {cls.__name__}"
+    all_attrs = {f.name: getattr(inst, f.name.lstrip("_")) for f in attr.fields(cls) if f.init}
     all_attrs.update(kwargs)
     return cls(**all_attrs)  # type: ignore  # TODO: fix
 
@@ -290,12 +292,12 @@ def get_current_w3c_tracing_headers(
 
         if isinstance(span_ctx, jaeger_client.SpanContext):
             if override_sampled is None:
-                flags = '01' if span_ctx.flags & 0x1 else '00'
+                flags = "01" if span_ctx.flags & 0x1 else "00"
             else:
-                flags = '01' if override_sampled else '00'
+                flags = "01" if override_sampled else "00"
 
-            header_value = f'00-{span_ctx.trace_id:032x}-{span_ctx.span_id:016x}-{flags}'
-            LOGGER.info('Traceparent header was generated for req_id %r: %r', req_id, header_value)
+            header_value = f"00-{span_ctx.trace_id:032x}-{span_ctx.span_id:016x}-{flags}"
+            LOGGER.info("Traceparent header was generated for req_id %r: %r", req_id, header_value)
             tracing_headers.update(
                 traceparent=header_value,
             )
@@ -313,9 +315,9 @@ def generate_revision_id() -> str:
 
 
 def sa_plain_text(query: str) -> sa.sql.elements.TextClause:
-    """ sa.text without SA semantics (':'-parameters) """
+    """sa.text without SA semantics (':'-parameters)"""
     # query = query.replace('\\', r'\\')  # weirdly, seems unnecessary
-    query = query.replace(':', r'\:')
+    query = query.replace(":", r"\:")
     return sa.text(query)
 
 
@@ -323,19 +325,19 @@ SECREPR_SIDE_SIZE = 0
 
 
 def secrepr(value: Optional[str]) -> str:
-    """ Convenience function for attrs-repr of secrets """
+    """Convenience function for attrs-repr of secrets"""
     if value is None:
         return repr(value)
     if not value:
         return repr(value)
     if not isinstance(value, str):
         # Really shouldn't raise in a `repr`
-        return f'???{type(value)!r}???'
+        return f"???{type(value)!r}???"
 
     side_size = SECREPR_SIDE_SIZE  # not a kwarg just to keep mypy happier
     if not side_size or len(value) <= side_size * 3:
-        return '...'
-    return repr(f'{value[:side_size]}...{value[-side_size:]}')
+        return "..."
+    return repr(f"{value[:side_size]}...{value[-side_size:]}")
 
 
 def _multidict_to_list(md: CIMultiDictProxy[str]) -> Iterable[tuple[str, str]]:
@@ -354,7 +356,7 @@ def raise_for_status_and_hide_secret_headers(response: ClientResponse) -> None:
         new_request_info = RequestInfo(
             response.request_info.url,
             response.request_info.method,
-            CIMultiDict(clean_secret_data_in_headers(_multidict_to_list(response.request_info.headers)))
+            CIMultiDict(clean_secret_data_in_headers(_multidict_to_list(response.request_info.headers))),
         )
         raise ClientResponseError(
             new_request_info,

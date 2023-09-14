@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-import logging
 from collections import defaultdict
-from typing import Callable, Optional
+import logging
+from typing import (
+    Callable,
+    Optional,
+)
 
 import attr
 
@@ -10,19 +13,22 @@ from bi_formula.core.dialect import DialectCombo
 from bi_formula.core.message_ctx import FormulaErrorCtx
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.translation.env import TranslationStats
-
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.primitives import (
-    FromObject, AvatarFromObject, SubqueryFromObject,
-    CompiledQuery, CompiledMultiQueryBase,
-)
-from bi_query_processing.translation.primitives import (
-    TranslatedMultiQueryBase, TranslatedMultiQuery, TranslatedFlatQuery,
-)
-from bi_query_processing.translation.flat_translator import FlatQueryTranslator
 from bi_query_processing.column_registry import ColumnRegistry
+from bi_query_processing.compilation.primitives import (
+    AvatarFromObject,
+    CompiledMultiQueryBase,
+    CompiledQuery,
+    FromObject,
+    SubqueryFromObject,
+)
+from bi_query_processing.enums import ExecutionLevel
 from bi_query_processing.translation.error_collector import FormulaErrorCollector
-
+from bi_query_processing.translation.flat_translator import FlatQueryTranslator
+from bi_query_processing.translation.primitives import (
+    TranslatedFlatQuery,
+    TranslatedMultiQuery,
+    TranslatedMultiQueryBase,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,7 +72,8 @@ class MultiLevelQueryTranslator:
             LOGGER.info(*args, **kwargs)
 
     def _log_collected_stats(
-            self, stats_lists: dict[ExecutionLevel, list[TranslationStats]],
+        self,
+        stats_lists: dict[ExecutionLevel, list[TranslationStats]],
     ) -> None:
         """
         Log stats collected by all translators during translation
@@ -75,29 +82,33 @@ class MultiLevelQueryTranslator:
         for level_type in sorted(stats_lists, key=lambda lt: lt.name):
             combined_stats = TranslationStats.combine(*stats_lists[level_type])
             data = {
-                'functions': [
+                "functions": [
                     dict(signature.as_dict(), weight=weight)
                     for signature, weight in combined_stats.function_usage_weights.items()
                 ],
-                'level_type': level_type.name,
-                'cache_hits': combined_stats,
+                "level_type": level_type.name,
+                "cache_hits": combined_stats,
             }
             LOGGER.info(
-                f'Function translation statistics for {level_type.name}',
-                extra=dict(function_translation_statistics=data)
+                f"Function translation statistics for {level_type.name}",
+                extra=dict(function_translation_statistics=data),
             )
 
     def _log_query_complexity_stats(self, compiled_multi_query: CompiledMultiQueryBase) -> None:
         LOGGER.info(
-            'Query structural info',
-            extra=dict(query_struct_info=dict(
-                complexity=compiled_multi_query.get_complexity(),
-                subquery_count=compiled_multi_query.query_count(),
-            ))
+            "Query structural info",
+            extra=dict(
+                query_struct_info=dict(
+                    complexity=compiled_multi_query.get_complexity(),
+                    subquery_count=compiled_multi_query.query_count(),
+                )
+            ),
         )
 
     def _get_flat_translator_for_level_type(
-            self, level_type: ExecutionLevel, columns: ColumnRegistry,
+        self,
+        level_type: ExecutionLevel,
+        columns: ColumnRegistry,
     ) -> FlatQueryTranslator:
         flat_trans: FlatQueryTranslator
         if level_type == ExecutionLevel.source_db:
@@ -109,7 +120,9 @@ class MultiLevelQueryTranslator:
         return flat_trans
 
     def _make_column_reg_for_from_obj(
-            self, from_obj: FromObject, translated_queries_by_id: dict[str, TranslatedFlatQuery],
+        self,
+        from_obj: FromObject,
+        translated_queries_by_id: dict[str, TranslatedFlatQuery],
     ) -> ColumnRegistry:
         """Generate pair <source_id, avatar_id> for using a FromObject in a ColumnRegistry"""
         if isinstance(from_obj, AvatarFromObject):
@@ -126,26 +139,26 @@ class MultiLevelQueryTranslator:
         raise TypeError(type(from_obj))
 
     def translate_multi_query(
-            self,
-            compiled_multi_query: CompiledMultiQueryBase,
-            collect_errors: bool = False,
+        self,
+        compiled_multi_query: CompiledMultiQueryBase,
+        collect_errors: bool = False,
     ) -> TranslatedMultiQueryBase:
-
         def _translate_subquery(compiled_flat_subquery: CompiledQuery) -> None:
             from_ids = set(compiled_flat_subquery.joined_from.iter_ids())
             self._log_info(
-                f'Translating flat query with id {compiled_flat_subquery.id}, '
-                f'using from-objects {from_ids}'
+                f"Translating flat query with id {compiled_flat_subquery.id}, " f"using from-objects {from_ids}"
             )
             joined_from_column_reg = ColumnRegistry()
             for from_obj in compiled_flat_subquery.joined_from.froms:
                 from_column_reg = self._make_column_reg_for_from_obj(
-                    from_obj=from_obj, translated_queries_by_id=translated_queries_by_id,
+                    from_obj=from_obj,
+                    translated_queries_by_id=translated_queries_by_id,
                 )
                 joined_from_column_reg += from_column_reg
 
             flat_trans = self._get_flat_translator_for_level_type(
-                level_type=compiled_flat_subquery.level_type, columns=joined_from_column_reg,
+                level_type=compiled_flat_subquery.level_type,
+                columns=joined_from_column_reg,
             )
             trans_flat_query = flat_trans.translate_flat_query(
                 compiled_flat_query=compiled_flat_subquery,
@@ -180,9 +193,7 @@ class MultiLevelQueryTranslator:
         return TranslatedMultiQuery(queries=list(translated_queries_by_id.values()))
 
     def collect_errors(
-            self,
-            compiled_multi_query: CompiledMultiQueryBase,
-            feature_errors: bool = True
+        self, compiled_multi_query: CompiledMultiQueryBase, feature_errors: bool = True
     ) -> list[FormulaErrorCtx]:
         with FormulaErrorCollector() as collector:
             self.translate_multi_query(compiled_multi_query=compiled_multi_query, collect_errors=True)

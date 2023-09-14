@@ -4,10 +4,14 @@ import asyncio
 import json
 
 from aiohttp import web
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from statcommons.unistat.uwsgi import process_uwsgi_data_for_unistat
 
-from .base import BaseView, requires
+from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
+
+from .base import (
+    BaseView,
+    requires,
+)
 
 
 # TODO FIX: Move to bi-common
@@ -32,6 +36,6 @@ async def uwsgi_unistat(path):  # type: ignore  # TODO: fix
 @requires(RequiredResourceCommon.SKIP_AUTH)
 class UnistatView(BaseView):
     async def get(self) -> web.Response:
-        result = await uwsgi_unistat('/tmp/uwsgi_stats_rqe_int_sync.sock')
+        result = await uwsgi_unistat("/tmp/uwsgi_stats_rqe_int_sync.sock")
         result = list(result.items())
         return web.json_response(result)

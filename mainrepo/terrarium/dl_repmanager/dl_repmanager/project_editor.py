@@ -1,16 +1,19 @@
 """
 Bunch of logic to edit pyproject.toml's across entire repo
 """
-import subprocess
 from functools import cached_property
 from logging import getLogger
 from pathlib import Path
+import subprocess
 
 import attr
 
-from dl_repmanager.repository_env import RepoEnvironment
 from dl_repmanager.package_index import PackageIndex
-from dl_repmanager.package_meta_reader import PackageMetaReader, PackageMetaIOFactory
+from dl_repmanager.package_meta_reader import (
+    PackageMetaIOFactory,
+    PackageMetaReader,
+)
+from dl_repmanager.repository_env import RepoEnvironment
 
 log = getLogger()
 
@@ -30,7 +33,7 @@ class PyPrjEditor:
 
     @cached_property
     def meta_project_reader(self) -> PackageMetaReader:
-        toml_path = self.base_path / 'ops/ci/pyproject.toml'
+        toml_path = self.base_path / "ops/ci/pyproject.toml"
         with self.package_meta_io_factory.package_meta_reader(toml_path) as reader:
             return reader
 
@@ -43,4 +46,4 @@ class PyPrjEditor:
 
             log.debug(f"pyproject-fmt {str(pi.abs_path / 'pyproject.toml')}")
             subprocess.run(f"pyproject-fmt {str(pi.abs_path)}", shell=True)
-            (pi.abs_path / 'mypy.ini').unlink(missing_ok=True)
+            (pi.abs_path / "mypy.ini").unlink(missing_ok=True)

@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import abc
-from typing import List, NamedTuple, Set, TYPE_CHECKING
-
+from typing import (
+    TYPE_CHECKING,
+    List,
+    NamedTuple,
+    Set,
+)
 
 from bi_formula.core.datatype import DataType
 
 if TYPE_CHECKING:
-    from bi_formula_ref.registry.env import GenerationEnvironment
     import bi_formula_ref.registry.base as _registry_base
+    from bi_formula_ref.registry.env import GenerationEnvironment
 
 
 class FuncArg(NamedTuple):
@@ -18,7 +22,7 @@ class FuncArg(NamedTuple):
 
     @property
     def formal_type(self) -> str:
-        return '|'.join(sorted([t.name for t in self.types])) or 'ANY'
+        return "|".join(sorted([t.name for t in self.types])) or "ANY"
 
     @property
     def is_const(self) -> bool:

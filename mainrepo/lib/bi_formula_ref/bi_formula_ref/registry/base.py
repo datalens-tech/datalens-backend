@@ -1,34 +1,42 @@
 from __future__ import annotations
 
-from typing import List, Optional, Sequence, Set, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Optional,
+    Sequence,
+    Set,
+)
 
 import attr
 
 from bi_formula.core.dialect import DialectCombo
-
 from bi_formula_ref.registry.aliased_res import AliasedResourceRegistry
-from bi_formula_ref.registry.text import ParameterizedText
-from bi_formula_ref.registry.dialect_extractor import DefaultDialectExtractor
-from bi_formula_ref.registry.naming import DefaultNamingProvider
-from bi_formula_ref.registry.impl_selector import DefaultImplementationSelector
-from bi_formula_ref.registry.signature_gen import DefaultSignatureGenerator
-from bi_formula_ref.registry.note_extractor import DefaultNoteExtractor
 from bi_formula_ref.registry.arg_extractor import DefaultArgumentExtractor
+from bi_formula_ref.registry.dialect_extractor import DefaultDialectExtractor
+from bi_formula_ref.registry.impl_selector import DefaultImplementationSelector
+from bi_formula_ref.registry.naming import DefaultNamingProvider
+from bi_formula_ref.registry.note_extractor import DefaultNoteExtractor
 from bi_formula_ref.registry.return_extractor import DefaultReturnTypeExtractor
 from bi_formula_ref.registry.scopes import SCOPES_DEFAULT
+from bi_formula_ref.registry.signature_gen import DefaultSignatureGenerator
+from bi_formula_ref.registry.text import ParameterizedText
 
 if TYPE_CHECKING:
     import bi_formula_ref.registry.arg_base as _arg_base
-    import bi_formula_ref.registry.signature_base as _signature_base
+    from bi_formula_ref.registry.dialect_base import DialectExtractorBase
+    from bi_formula_ref.registry.env import GenerationEnvironment
+    from bi_formula_ref.registry.example_base import ExampleBase
+    from bi_formula_ref.registry.impl_selector_base import ImplementationSelectorBase
+    from bi_formula_ref.registry.impl_spec import FunctionImplementationSpec
+    from bi_formula_ref.registry.naming import NamingProviderBase
+    from bi_formula_ref.registry.note import (
+        Note,
+        ParameterizedNote,
+    )
     import bi_formula_ref.registry.note_extr_base as _note_extr_base
     import bi_formula_ref.registry.return_base as _return_base
-    from bi_formula_ref.registry.note import Note, ParameterizedNote
-    from bi_formula_ref.registry.example_base import ExampleBase
-    from bi_formula_ref.registry.dialect_base import DialectExtractorBase
-    from bi_formula_ref.registry.naming import NamingProviderBase
-    from bi_formula_ref.registry.impl_selector_base import ImplementationSelectorBase
-    from bi_formula_ref.registry.env import GenerationEnvironment
-    from bi_formula_ref.registry.impl_spec import FunctionImplementationSpec
+    import bi_formula_ref.registry.signature_base as _signature_base
 
 
 @attr.s(frozen=True)
@@ -70,7 +78,8 @@ class FunctionDocRegistryItem:
     _arg_extractor: _arg_base.ArgumentExtractorBase = attr.ib(kw_only=True, factory=DefaultArgumentExtractor)
     _note_extractor: _note_extr_base.NoteExtractorBase = attr.ib(kw_only=True, factory=DefaultNoteExtractor)
     _return_type_extractor: _return_base.ReturnTypeExtractorBase = attr.ib(
-        kw_only=True, factory=DefaultReturnTypeExtractor)
+        kw_only=True, factory=DefaultReturnTypeExtractor
+    )
     _dialect_extractor: DialectExtractorBase = attr.ib(kw_only=True, factory=DefaultDialectExtractor)
     _naming_provider: NamingProviderBase = attr.ib(kw_only=True, factory=DefaultNamingProvider)
 

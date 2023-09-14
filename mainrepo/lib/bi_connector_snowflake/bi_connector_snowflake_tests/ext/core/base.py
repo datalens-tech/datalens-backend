@@ -3,15 +3,14 @@ from typing import Any
 
 import pytest
 
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
-from bi_core_testing.database import CoreDbConfig
 from bi_core.us_manager.us_manager_sync import SyncUSManager
+from bi_core_testing.database import CoreDbConfig
+from bi_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from bi_connector_snowflake.core.testing.connection import make_snowflake_saved_connection
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from bi_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig
-
 import bi_connector_snowflake_tests.ext.config as test_config  # noqa
 
 
@@ -24,7 +23,7 @@ class BaseSnowFlakeTestClass(BaseConnectionTestClass[ConnectionSQLSnowFlake]):
     def db_url(self) -> str:
         return test_config.DB_DSN
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db(self, db_config: CoreDbConfig) -> Any:
         return None
 
@@ -74,7 +73,9 @@ class BaseSnowFlakeTestClass(BaseConnectionTestClass[ConnectionSQLSnowFlake]):
         sync_us_manager: SyncUSManager,
         connection_creation_params_with_expired_refresh_token: dict,
     ) -> ConnectionSQLSnowFlake:
-        conn = make_snowflake_saved_connection(sync_usm=sync_us_manager, **connection_creation_params_with_expired_refresh_token)
+        conn = make_snowflake_saved_connection(
+            sync_usm=sync_us_manager, **connection_creation_params_with_expired_refresh_token
+        )
         return conn
 
     @pytest.fixture(scope="function")
@@ -98,6 +99,7 @@ class BaseSnowFlakeTestClass(BaseConnectionTestClass[ConnectionSQLSnowFlake]):
         sync_us_manager: SyncUSManager,
         connection_creation_params_with_refresh_token_soon_to_expire: dict,
     ) -> ConnectionSQLSnowFlake:
-        conn = make_snowflake_saved_connection(sync_usm=sync_us_manager,
-                                               **connection_creation_params_with_refresh_token_soon_to_expire)
+        conn = make_snowflake_saved_connection(
+            sync_usm=sync_us_manager, **connection_creation_params_with_refresh_token_soon_to_expire
+        )
         return conn

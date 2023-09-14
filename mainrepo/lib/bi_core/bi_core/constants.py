@@ -1,4 +1,3 @@
-
 # Headers for internal services communication
 INTERNAL_HEADER_FOLDER_ID = "X-DL-Folder-ID"
 

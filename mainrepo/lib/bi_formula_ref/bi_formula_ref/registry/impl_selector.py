@@ -4,20 +4,18 @@ from collections import defaultdict
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
-from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.core.datatype import DataType
+from bi_formula.core.dialect import StandardDialect as D
+from bi_formula.definitions.base import MultiVariantTranslation
 from bi_formula.definitions.flags import ContextFlag
 from bi_formula.definitions.registry import OPERATION_REGISTRY
-from bi_formula.definitions.base import MultiVariantTranslation
-
 from bi_formula_ref.registry.arg_extractor import INFINITE_ARG_COUNT
 from bi_formula_ref.registry.impl_selector_base import ImplementationSelectorBase
 from bi_formula_ref.registry.impl_spec import FunctionImplementationSpec
 
-
 if TYPE_CHECKING:
-    from bi_formula_ref.registry.env import GenerationEnvironment
     from bi_formula_ref.registry.base import FunctionDocRegistryItem
+    from bi_formula_ref.registry.env import GenerationEnvironment
 
 
 def _is_deprecated(defn: FunctionImplementationSpec) -> bool:
@@ -57,14 +55,18 @@ def _get_implementation_map(env: GenerationEnvironment) -> dict[tuple[str, bool]
 
 class EmptyImplementationSelector(ImplementationSelectorBase):
     def get_implementations(
-            self, item: FunctionDocRegistryItem, env: GenerationEnvironment,
+        self,
+        item: FunctionDocRegistryItem,
+        env: GenerationEnvironment,
     ) -> list[FunctionImplementationSpec]:
         return []
 
 
 class DefaultImplementationSelector(ImplementationSelectorBase):
     def get_implementations(
-            self, item: FunctionDocRegistryItem, env: GenerationEnvironment,
+        self,
+        item: FunctionDocRegistryItem,
+        env: GenerationEnvironment,
     ) -> list[FunctionImplementationSpec]:
         return _get_implementation_map(env=env)[(item.name, item.is_window)]
 
@@ -84,8 +86,7 @@ class ArgAwareImplementationSelector(ImplementationSelectorBase):
             for arg_type_matcher in impl.argument_types:
                 for pos in self.exp_arg_types.keys():
                     actual_arg_types[pos] |= arg_type_matcher.get_possible_arg_types_at_pos(
-                        pos=pos,
-                        total=impl.arg_cnt or INFINITE_ARG_COUNT
+                        pos=pos, total=impl.arg_cnt or INFINITE_ARG_COUNT
                     )
             for pos, arg_types in self.exp_arg_types.items():
                 if pos not in actual_arg_types or pos in actual_arg_types and not (actual_arg_types[pos] & arg_types):

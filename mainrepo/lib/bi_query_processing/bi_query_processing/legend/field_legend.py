@@ -1,20 +1,38 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, Collection, Dict, Iterator, List, Optional, Sequence
+from typing import (
+    Any,
+    Collection,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-import bi_query_processing.exc
-from bi_constants.internal_constants import (
-    MEASURE_NAME_ID, MEASURE_NAME_TITLE, PLACEHOLDER_ID, PLACEHOLDER_TITLE,
-    DIMENSION_NAME_ID, DIMENSION_NAME_TITLE,
-)
 from bi_constants.enums import (
-    BIType, FieldRole, LegendItemType, FieldType, FieldVisibility, OrderDirection, WhereClauseOperation, RangeType,
+    BIType,
+    FieldRole,
+    FieldType,
+    FieldVisibility,
+    LegendItemType,
+    OrderDirection,
+    RangeType,
+    WhereClauseOperation,
 )
-
+from bi_constants.internal_constants import (
+    DIMENSION_NAME_ID,
+    DIMENSION_NAME_TITLE,
+    MEASURE_NAME_ID,
+    MEASURE_NAME_TITLE,
+    PLACEHOLDER_ID,
+    PLACEHOLDER_TITLE,
+)
 from bi_query_processing.base_specs.dimensions import DimensionValueSpec
+import bi_query_processing.exc
 
 
 @attr.s(frozen=True)
@@ -163,7 +181,7 @@ class Legend:
         try:
             return self._liid_to_item[legend_item_id]
         except KeyError:
-            raise bi_query_processing.exc.LegendItemReferenceError(f'Unknown legend item: {legend_item_id}')
+            raise bi_query_processing.exc.LegendItemReferenceError(f"Unknown legend item: {legend_item_id}")
 
     def add_item(self, item: LegendItem) -> None:
         self._items.append(item)
@@ -198,16 +216,14 @@ class Legend:
 
     def limit_to_block(self, block_id: int) -> Legend:
         return Legend(
-            items=[
-                item for item in self.items
-                if item.block_id is None or item.block_id == block_id
-            ],
+            items=[item for item in self.items if item.block_id is None or item.block_id == block_id],
         )
 
     def list_selectable_items(self) -> List[LegendItem]:
         """List the items that can be selected from the data source"""
         items = [
-            item for item in self.items
+            item
+            for item in self.items
             if item.role_spec.role in SELECTABLE_ROLES and isinstance(item.obj, FieldObjSpec)
         ]
         return items
@@ -215,7 +231,8 @@ class Legend:
     def list_streamable_items(self) -> Sequence[LegendItem]:
         """List streamable items + special derived ones like templates"""
         items = [
-            item for item in self.items
+            item
+            for item in self.items
             if item.role_spec.role in SELECTABLE_ROLES and isinstance(item.obj, (FieldObjSpec, PlaceholderObjSpec))
         ]
         return items

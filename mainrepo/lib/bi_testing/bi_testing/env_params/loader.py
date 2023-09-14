@@ -1,10 +1,13 @@
-from typing import ClassVar, Sequence, Mapping
+from typing import (
+    ClassVar,
+    Mapping,
+    Sequence,
+)
 
 import attr
 
-from bi_utils.entrypoints import EntrypointClassManager
-
 from bi_testing.env_params.getter import EnvParamGetter
+from bi_utils.entrypoints import EntrypointClassManager
 
 
 @attr.s
@@ -12,7 +15,7 @@ class EnvParamGetterLoader:
     _getters: dict[str, EnvParamGetter] = attr.ib(init=False, factory=dict)
     _ep_mgr: EntrypointClassManager = attr.ib(init=False)
 
-    EP_NAME: ClassVar[str] = 'env_param_getters'
+    EP_NAME: ClassVar[str] = "env_param_getters"
 
     @_ep_mgr.default
     def _make_ep_mgr(self) -> EntrypointClassManager:
@@ -22,7 +25,7 @@ class EnvParamGetterLoader:
         try:
             return self._getters[name]
         except KeyError:
-            if name.startswith('$'):
+            if name.startswith("$"):
                 self._auto_add_getter(name)
                 return self.get_getter(name)
 
@@ -30,7 +33,7 @@ class EnvParamGetterLoader:
         return name in self._getters
 
     def _auto_add_getter(self, name: str) -> None:
-        assert name.startswith('$')
+        assert name.startswith("$")
         getter_type_name = name[1:]
         getter_cls = self._ep_mgr.get_ep_class(getter_type_name)
         getter = getter_cls()
@@ -38,20 +41,20 @@ class EnvParamGetterLoader:
         self._getters[name] = getter
 
     def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> str:
-        if setting['type'] == 'value':
-            return setting['value']
-        if setting['type'] == 'param':
-            key = setting['key']
+        if setting["type"] == "value":
+            return setting["value"]
+        if setting["type"] == "param":
+            key = setting["key"]
             return requirement_getter.get_str_value(key)
 
     def initialize(self, getter_config_list: Sequence[Mapping], requirement_getter: EnvParamGetter) -> None:
         for getter_config in getter_config_list:
-            getter_name = getter_config['name']
-            getter_type_name = getter_config['type']
+            getter_name = getter_config["name"]
+            getter_type_name = getter_config["type"]
             getter_cls = self._ep_mgr.get_ep_class(getter_type_name)
             getter: EnvParamGetter = getter_cls()
 
-            raw_getter_settings = getter_config['settings']
+            raw_getter_settings = getter_config["settings"]
             resolved_getter_settings: dict[str, str] = {}
             assert isinstance(raw_getter_settings, dict)
             for setting_name, raw_setting in raw_getter_settings.items():

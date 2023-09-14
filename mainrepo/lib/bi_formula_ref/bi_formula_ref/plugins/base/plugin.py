@@ -1,12 +1,13 @@
 from typing import ClassVar
 
-from bi_i18n.localizer_base import TranslationConfig
-
 from bi_formula.core.dialect import DialectCombo
-
-from bi_formula_ref.config import ConfigVersion, RefDocGeneratorConfig
-from bi_formula_ref.texts import StyledDialect
+from bi_formula_ref.config import (
+    ConfigVersion,
+    RefDocGeneratorConfig,
+)
 from bi_formula_ref.functions.type_conversion import DbCastExtension
+from bi_formula_ref.texts import StyledDialect
+from bi_i18n.localizer_base import TranslationConfig
 
 
 class FormulaRefPlugin:

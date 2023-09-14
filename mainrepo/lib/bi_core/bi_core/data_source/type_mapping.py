@@ -1,9 +1,14 @@
 from __future__ import annotations
 
-from typing import Collection, Type, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    Type,
+)
 
 if TYPE_CHECKING:
     from bi_constants.enums import CreateDSFrom
+
     from .base import DataSource
 
 

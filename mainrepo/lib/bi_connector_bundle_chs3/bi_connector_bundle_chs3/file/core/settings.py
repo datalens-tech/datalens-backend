@@ -1,14 +1,24 @@
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
 from bi_configs.settings_loaders.meta_definition import required
+from bi_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
+)
 
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
-
-from bi_connector_bundle_chs3.chs3_base.core.settings import ConnectorsDataFileBase, FileS3ConnectorSettings
+from bi_connector_bundle_chs3.chs3_base.core.settings import (
+    ConnectorsDataFileBase,
+    FileS3ConnectorSettings,
+)
 
 
 def file_s3_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='FILE', connector_data_class=ConnectorsDataFileBase,
+        full_cfg,
+        object_like_config_key="FILE",
+        connector_data_class=ConnectorsDataFileBase,
     )
     if cfg is None:
         return {}

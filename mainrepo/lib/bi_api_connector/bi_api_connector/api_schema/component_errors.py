@@ -1,11 +1,12 @@
 from marshmallow import fields as ma_fields
 
-from bi_constants.enums import ComponentErrorLevel, ComponentType
-
-from bi_model_tools.schema.base import DefaultSchema
-
+from bi_constants.enums import (
+    ComponentErrorLevel,
+    ComponentType,
+)
 from bi_core import component_errors
 from bi_core.marshmallow import ErrorCodeField
+from bi_model_tools.schema.base import DefaultSchema
 
 
 class ComponentErrorListSchema(DefaultSchema[component_errors.ComponentErrorRegistry]):

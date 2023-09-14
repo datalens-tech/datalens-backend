@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import attr
 
-from bi_formula.core.datatype import DataType
 from bi_formula.collections import NodeValueMap
+from bi_formula.core.datatype import DataType
 
 
 @attr.s

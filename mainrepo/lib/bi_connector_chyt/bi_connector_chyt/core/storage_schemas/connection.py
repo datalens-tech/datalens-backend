@@ -1,16 +1,22 @@
-from typing import TypeVar, Generic
+from typing import (
+    Generic,
+    TypeVar,
+)
 
 from marshmallow import fields as ma_fields
 
-from bi_connector_chyt.core.us_connection import BaseConnectionCHYT, ConnectionCHYTToken
 from bi_core.us_manager.storage_schemas.connection import (
     CacheableConnectionDataSchemaMixin,
-    SubselectConnectionDataSchemaMixin,
     ConnectionBaseDataStorageSchema,
+    SubselectConnectionDataSchemaMixin,
 )
 
+from bi_connector_chyt.core.us_connection import (
+    BaseConnectionCHYT,
+    ConnectionCHYTToken,
+)
 
-_CHYT_CONN_DATA_TV = TypeVar('_CHYT_CONN_DATA_TV', bound=BaseConnectionCHYT.DataModel)
+_CHYT_CONN_DATA_TV = TypeVar("_CHYT_CONN_DATA_TV", bound=BaseConnectionCHYT.DataModel)
 
 
 class ConnectionCHYTBaseDataStorageSchema(

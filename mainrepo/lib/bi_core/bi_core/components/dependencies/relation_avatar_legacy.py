@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
-from typing import AbstractSet, Dict
+from typing import (
+    AbstractSet,
+    Dict,
+)
 
 import attr
 
-from bi_core.components.ids import AvatarId, RelationId
 from bi_core.components.dependencies.relation_avatar_base import RelationAvatarDependencyManagerBase
+from bi_core.components.ids import (
+    AvatarId,
+    RelationId,
+)
 from bi_core.query.expression import ExpressionCtx
 
 

@@ -2,23 +2,34 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import AbstractSet, Collection, List, Optional, Sequence, Tuple
+from typing import (
+    AbstractSet,
+    Collection,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import attr
 
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+)
 from bi_core.constants import DataAPILimits
-from bi_core.components.ids import AvatarId, FieldId
-
 from bi_query_processing.compilation.query_meta import QueryMetaInfo
-
-from bi_query_processing.legend.block_legend import (
-    BlockSpec,
-)
 from bi_query_processing.compilation.specs import (
-    FilterFieldSpec, OrderByFieldSpec, QuerySpec, ParameterValueSpec,
-    FilterSourceColumnSpec, RelationSpec, SelectFieldSpec, GroupByFieldSpec,
+    FilterFieldSpec,
+    FilterSourceColumnSpec,
+    GroupByFieldSpec,
+    OrderByFieldSpec,
+    ParameterValueSpec,
+    QuerySpec,
+    RelationSpec,
+    SelectFieldSpec,
 )
-
+from bi_query_processing.legend.block_legend import BlockSpec
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,34 +49,39 @@ class QuerySpecFormalizerBase(abc.ABC):
 
     @abc.abstractmethod
     def make_phantom_select_ids(
-            self, block_spec: BlockSpec,
-            order_by_specs: Sequence[OrderByFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        order_by_specs: Sequence[OrderByFieldSpec],
     ) -> List[FieldId]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_select_specs(
-            self, block_spec: BlockSpec,
-            phantom_select_ids: List[FieldId],
+        self,
+        block_spec: BlockSpec,
+        phantom_select_ids: List[FieldId],
     ) -> List[SelectFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_group_by_specs(
-            self, block_spec: BlockSpec,
-            select_specs: Sequence[SelectFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        select_specs: Sequence[SelectFieldSpec],
     ) -> List[GroupByFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_filter_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[FilterFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_order_by_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[OrderByFieldSpec]:
         raise NotImplementedError
 
@@ -75,14 +91,15 @@ class QuerySpecFormalizerBase(abc.ABC):
 
     @abc.abstractmethod
     def make_relation_and_avatar_specs(
-            self,
-            used_field_ids: Collection[FieldId],
+        self,
+        used_field_ids: Collection[FieldId],
     ) -> Tuple[List[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_parameter_value_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[ParameterValueSpec]:
         raise NotImplementedError
 
@@ -90,10 +107,11 @@ class QuerySpecFormalizerBase(abc.ABC):
         return block_spec.limit, block_spec.offset
 
     def make_query_meta(
-            self, block_spec: BlockSpec,
-            phantom_select_ids: List[FieldId],
-            select_specs: List[SelectFieldSpec],
-            root_avatar_id: Optional[AvatarId],
+        self,
+        block_spec: BlockSpec,
+        phantom_select_ids: List[FieldId],
+        select_specs: List[SelectFieldSpec],
+        root_avatar_id: Optional[AvatarId],
     ) -> QueryMetaInfo:
         row_count_hard_limit = block_spec.row_count_hard_limit
         if row_count_hard_limit is None:
@@ -115,23 +133,19 @@ class QuerySpecFormalizerBase(abc.ABC):
         return query_meta
 
     def make_query_spec(self, block_spec: BlockSpec) -> QuerySpec:
-
         order_by_specs = self.make_order_by_specs(block_spec=block_spec)
-        phantom_select_ids = self.make_phantom_select_ids(
-            block_spec=block_spec,
-            order_by_specs=order_by_specs)
-        select_specs = self.make_select_specs(
-            block_spec=block_spec,
-            phantom_select_ids=phantom_select_ids)
-        group_by_specs = self.make_group_by_specs(
-            block_spec=block_spec,
-            select_specs=select_specs)
+        phantom_select_ids = self.make_phantom_select_ids(block_spec=block_spec, order_by_specs=order_by_specs)
+        select_specs = self.make_select_specs(block_spec=block_spec, phantom_select_ids=phantom_select_ids)
+        group_by_specs = self.make_group_by_specs(block_spec=block_spec, select_specs=select_specs)
         filter_specs = self.make_filter_specs(block_spec=block_spec)
-        used_field_ids = {spec.field_id for spec in select_specs} | {
-            fs.field_id for fs in filter_specs
-        } | {obs.field_id for obs in order_by_specs}
+        used_field_ids = (
+            {spec.field_id for spec in select_specs}
+            | {fs.field_id for fs in filter_specs}
+            | {obs.field_id for obs in order_by_specs}
+        )
         relation_specs, required_avatar_ids, root_avatar_id = self.make_relation_and_avatar_specs(
-            used_field_ids=used_field_ids)
+            used_field_ids=used_field_ids
+        )
         source_column_filter_specs = self.make_source_column_filter_specs()
         parameter_value_specs = self.make_parameter_value_specs(block_spec=block_spec)
         limit, offset = self.make_limit_offset(block_spec=block_spec)

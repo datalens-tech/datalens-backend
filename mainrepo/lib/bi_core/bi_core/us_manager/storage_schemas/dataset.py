@@ -1,36 +1,79 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Dict
+from typing import (
+    Any,
+    Dict,
+)
 
-from marshmallow import fields as ma_fields, post_dump, post_load, pre_load
+from marshmallow import (
+    post_dump,
+    post_load,
+    pre_load,
+)
+from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import (
-    BIType, ManagedBy, JoinType, BinaryJoinOperator,
-    JoinConditionType, ConditionPartCalcMode, CalcMode, AggregationFunction, FieldType,
-    RLSSubjectType, RLSPatternType,
-    WhereClauseOperation, ParameterValueConstraintType,
+    AggregationFunction,
+    BinaryJoinOperator,
+    BIType,
+    CalcMode,
+    ConditionPartCalcMode,
+    FieldType,
+    JoinConditionType,
+    JoinType,
+    ManagedBy,
+    ParameterValueConstraintType,
+    RLSPatternType,
+    RLSSubjectType,
+    WhereClauseOperation,
+)
+from bi_core import multisource
+from bi_core import rls as rls_module
+from bi_core.base_models import (
+    DefaultWhereClause,
+    ObligatoryFilter,
+)
+from bi_core.components.dependencies.primitives import (
+    FieldInterDependencyInfo,
+    FieldInterDependencyItem,
+)
+from bi_core.fields import (
+    BIField,
+    CalculationSpec,
+    DirectCalculationSpec,
+    FormulaCalculationSpec,
+    ParameterCalculationSpec,
+    ParameterValueConstraint,
+    RangeParameterValueConstraint,
+    ResultSchema,
+    SetParameterValueConstraint,
+    del_calc_spec_kwargs_from,
+    filter_calc_spec_kwargs,
 )
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.storage_schemas.base import DefaultStorageSchema
-from bi_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema
 from bi_core.us_manager.storage_schemas.data_source_collection import GenericDataSourceCollectionStorageSchema
-from bi_core import (
-    multisource,
-    rls as rls_module
-)
-from bi_core.fields import (
-    ResultSchema, BIField, ParameterValueConstraint, RangeParameterValueConstraint, SetParameterValueConstraint,
-    CalculationSpec, DirectCalculationSpec, FormulaCalculationSpec, ParameterCalculationSpec,
-    del_calc_spec_kwargs_from, filter_calc_spec_kwargs,
-)
-from bi_core.base_models import ObligatoryFilter, DefaultWhereClause
-from bi_core.components.dependencies.primitives import FieldInterDependencyItem, FieldInterDependencyInfo
+from bi_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema
 from bi_core.values import (
-    BIValue, StringValue, IntegerValue, FloatValue, DateValue, DateTimeValue, DateTimeTZValue, GenericDateTimeValue,
-    BooleanValue, GeoPointValue, GeoPolygonValue, UuidValue, MarkupValue, ArrayStrValue, ArrayIntValue, ArrayFloatValue,
+    ArrayFloatValue,
+    ArrayIntValue,
+    ArrayStrValue,
+    BIValue,
+    BooleanValue,
+    DateTimeTZValue,
+    DateTimeValue,
+    DateValue,
+    FloatValue,
+    GenericDateTimeValue,
+    GeoPointValue,
+    GeoPolygonValue,
+    IntegerValue,
+    MarkupValue,
+    StringValue,
     TreeStrValue,
+    UuidValue,
 )
 
 
@@ -65,10 +108,11 @@ class ConditionPartFormulaSchema(ConditionPartBaseSchema):
 
 
 class ConditionPartSchema(OneOfSchema):
-    type_field = 'calc_mode'
+    type_field = "calc_mode"
     type_field_remove = False
     type_schemas = {
-        k.name: v for k, v in {
+        k.name: v
+        for k, v in {
             ConditionPartCalcMode.direct: ConditionPartDirectSchema,
             ConditionPartCalcMode.result_field: ConditionPartResultFieldSchema,
             ConditionPartCalcMode.formula: ConditionPartFormulaSchema,
@@ -123,11 +167,11 @@ class RLSSchema(DefaultStorageSchema):
     items = ma_fields.List(ma_fields.Nested(RLSEntrySchema))
 
     def pre_process_input_data(self, data):  # type: ignore  # TODO: fix
-        return {'items': data}
+        return {"items": data}
 
     @post_dump
     def flatten_items(self, data, **_):  # type: ignore  # TODO: fix
-        return data.get('items')
+        return data.get("items")
 
 
 class BaseValueSchema(DefaultStorageSchema):
@@ -216,7 +260,7 @@ class TreeStrValueSchema(BaseValueSchema):
 
 
 class ValueSchema(OneOfSchema):
-    type_field = 'type'
+    type_field = "type"
     type_schemas = {
         BIType.string.name: StringValueSchema,
         BIType.integer.name: IntegerValueSchema,
@@ -263,7 +307,7 @@ class SetParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
 
 
 class ParameterValueConstraintSchema(OneOfSchema):
-    type_field = 'type'
+    type_field = "type"
     type_schemas = {
         ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
@@ -299,7 +343,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         TARGET_CLS = BIField
 
         class CalculationSpecSchema(OneOfSchema):
-            type_field = 'mode'
+            type_field = "mode"
             type_field_remove = False
             type_schemas = {
                 CalcMode.direct.name: DirectCalculationSpecSchema,
@@ -331,21 +375,21 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         @post_dump(pass_many=False)
         def add_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
             data = deepcopy(data)
-            calc_spec_data = data.pop('calc_spec')
-            calc_spec_data['calc_mode'] = calc_spec_data.pop('mode')
+            calc_spec_data = data.pop("calc_spec")
+            calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
             data.update(calc_spec_data)
             # For backward compatibility use '' for formula and source; avatar_id must be present even if None
-            for key in ('formula', 'guid_formula', 'source'):
-                data.setdefault(key, '')
-            for key in ('avatar_id', 'default_value', 'value_constraint'):
+            for key in ("formula", "guid_formula", "source"):
+                data.setdefault(key, "")
+            for key in ("avatar_id", "default_value", "value_constraint"):
                 data.setdefault(key, None)
             return data
 
         @pre_load(pass_many=False)
         def extract_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
             data = deepcopy(data)
-            mode = data['calc_mode']
-            data['calc_spec'] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
+            mode = data["calc_mode"]
+            data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
             return del_calc_spec_kwargs_from(data)
 
         def to_object(self, data: dict) -> BIField:
@@ -354,25 +398,19 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
     fields = ma_fields.List(ma_fields.Nested(BIFieldSchema))  # type: ignore  # TODO: fix
 
     def pre_process_input_data(self, data):  # type: ignore  # TODO: fix
-        return {'fields': data}
+        return {"fields": data}
 
     @post_dump
     def flatten_fields(self, data, **_):  # type: ignore  # TODO: fix
-        return data.get('fields')
+        return data.get("fields")
 
     @post_load
     def make_missing_formulas(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
         field: BIField
-        titles_to_guids = {
-            field.title: field.guid
-            for field in data['fields']
-        }
-        guids_to_titles = {
-            field.guid: field.title
-            for field in data['fields']
-        }
+        titles_to_guids = {field.title: field.guid for field in data["fields"]}
+        guids_to_titles = {field.guid: field.title for field in data["fields"]}
         new_fields = []
-        for field in data['fields']:
+        for field in data["fields"]:
             if field.calc_mode == CalcMode.formula:
                 new_field = field
                 if field.formula and not field.guid_formula:
@@ -386,7 +424,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
                 new_fields.append(new_field)
             else:
                 new_fields.append(field)
-        data['fields'] = new_fields
+        data["fields"] = new_fields
         return data
 
 

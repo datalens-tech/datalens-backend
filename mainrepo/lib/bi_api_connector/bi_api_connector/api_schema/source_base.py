@@ -1,25 +1,42 @@
 from __future__ import annotations
 
-from typing import Any, Mapping, Optional, Union, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Mapping,
+    Optional,
+    Union,
+)
 
-from marshmallow import fields as ma_fields, EXCLUDE, post_load
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
+from marshmallow import post_load
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import (
-    BIType, BinaryJoinOperator, ConditionPartCalcMode,
-    CreateDSFrom, JoinConditionType, JoinType, ManagedBy,
+    BinaryJoinOperator,
+    BIType,
+    ConditionPartCalcMode,
+    CreateDSFrom,
     IndexKind,
+    JoinConditionType,
+    JoinType,
+    ManagedBy,
 )
-
+from bi_core.db import (
+    IndexInfo,
+    SchemaColumn,
+)
+from bi_core.db.native_type_schema import OneOfNativeTypeSchema
+from bi_core.marshmallow import FrozenSetField
+from bi_core.multisource import (
+    BinaryCondition,
+    ConditionPartDirect,
+    ConditionPartFormula,
+    ConditionPartResultField,
+)
 from bi_model_tools.schema.base import BaseSchema
 from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
-
-from bi_core.marshmallow import FrozenSetField
-from bi_core.db import SchemaColumn, IndexInfo
-from bi_core.db.native_type_schema import OneOfNativeTypeSchema
-from bi_core.multisource import (
-    BinaryCondition, ConditionPartDirect, ConditionPartFormula, ConditionPartResultField,
-)
 
 if TYPE_CHECKING:
     from bi_core.multisource import ConditionPart
@@ -32,7 +49,7 @@ class RawSchemaColumnSchema(BaseSchema):
     native_type = ma_fields.Nested(OneOfNativeTypeSchema, allow_none=True)
 
     user_type = ma_fields.Enum(BIType)
-    description = ma_fields.String(dump_default='', allow_none=True)
+    description = ma_fields.String(dump_default="", allow_none=True)
     has_auto_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     nullable = ma_fields.Boolean(dump_default=None, allow_none=True)
@@ -40,14 +57,14 @@ class RawSchemaColumnSchema(BaseSchema):
     @post_load
     def make_column(self, data: dict, **kwargs: Any) -> SchemaColumn:
         return SchemaColumn(
-            name=data['name'],
-            title=data['title'],
-            user_type=data['user_type'],
-            native_type=data['native_type'],
-            description=data.get('description', ''),
-            has_auto_aggregation=data.get('has_auto_aggregation', False),
-            lock_aggregation=data.get('lock_aggregation', False),
-            nullable=data['nullable'],
+            name=data["name"],
+            title=data["title"],
+            user_type=data["user_type"],
+            native_type=data["native_type"],
+            description=data.get("description", ""),
+            has_auto_aggregation=data.get("has_auto_aggregation", False),
+            lock_aggregation=data.get("lock_aggregation", False),
+            nullable=data["nullable"],
         )
 
 
@@ -57,11 +74,8 @@ class IndexInfoSchema(BaseSchema):
 
     @post_load
     def make_index_info(self, data: dict, **kwargs: Any) -> IndexInfo:
-        columns = tuple(data.pop('columns'))
-        return IndexInfo(
-            columns=columns,
-            **data
-        )
+        columns = tuple(data.pop("columns"))
+        return IndexInfo(columns=columns, **data)
 
 
 class SimpleParametersSchema(BaseSchema):
@@ -89,8 +103,10 @@ class DataSourceCommonSchema(BaseSchema):
     raw_schema = ma_fields.Nested(RawSchemaColumnSchema, many=True, allow_none=True)
     index_info_set = FrozenSetField(
         ma_fields.Nested(IndexInfoSchema),
-        sort_output=True, allow_none=True,
-        load_default=None, dump_default=None,
+        sort_output=True,
+        allow_none=True,
+        load_default=None,
+        dump_default=None,
     )
     parameters = ma_fields.Nested(SimpleParametersSchema)  # redefined in subclasses
     parameter_hash = ma_fields.String(dump_only=True)
@@ -100,29 +116,36 @@ class DataSourceTemplateResponseField(ma_fields.Field):
     """
     Optimized version of the `DataSourceTemplateResponseSchema` that does a bare minimum.
     """
-    _allowed_keys = frozenset((
-        'title', 'tab_title', 'connection_id',
-        'source_type',
-        # In `DataSourceCommonSchema` but not intended for dsrc templates: 'raw_schema'
-        'index_info_set',
-        'parameters', 'parameter_hash',
-        'id', 'managed_by', 'virtual', 'valid',
-        'group', 'form', 'disabled',
-    ))
+
+    _allowed_keys = frozenset(
+        (
+            "title",
+            "tab_title",
+            "connection_id",
+            "source_type",
+            # In `DataSourceCommonSchema` but not intended for dsrc templates: 'raw_schema'
+            "index_info_set",
+            "parameters",
+            "parameter_hash",
+            "id",
+            "managed_by",
+            "virtual",
+            "valid",
+            "group",
+            "form",
+            "disabled",
+        )
+    )
 
     def _serialize(self, value: Optional[dict], attr: Optional[str], obj: Any, **kwargs: Any) -> Optional[dict]:
         if value is None:
             return None
         assert isinstance(value, dict)
         allowed_keys = self._allowed_keys
-        value = {
-            key: val
-            for key, val in value.items()
-            if key in allowed_keys
-        }
-        st = value.get('source_type', None)
+        value = {key: val for key, val in value.items() if key in allowed_keys}
+        st = value.get("source_type", None)
         if st is not None:
-            value['source_type'] = st.name
+            value["source_type"] = st.name
         return value
 
     def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> Any:
@@ -141,7 +164,7 @@ class VirtualFlagField(ma_fields.Field):
 class DataSourceBaseSchema(DataSourceCommonSchema):
     id = ma_fields.String(required=True)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
-    virtual = VirtualFlagField(attribute='managed_by', dump_only=True)
+    virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
     valid = ma_fields.Boolean(load_default=True)
 
 
@@ -190,7 +213,7 @@ class SourceAvatarSchema(BaseSchema):
     title = ma_fields.String()
     is_root = ma_fields.Boolean()
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
-    virtual = VirtualFlagField(attribute='managed_by', dump_only=True)
+    virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
     valid = ma_fields.Boolean(dump_only=True)
 
 
@@ -207,7 +230,7 @@ class ConditionPartDirectSchema(ConditionPartSchema):
 
     @post_load
     def make_condition_part(self, data: dict, **kwargs: Any) -> ConditionPartDirect:
-        return ConditionPartDirect(source=data['source'])
+        return ConditionPartDirect(source=data["source"])
 
 
 class ConditionPartFormulaSchema(ConditionPartSchema):
@@ -215,7 +238,7 @@ class ConditionPartFormulaSchema(ConditionPartSchema):
 
     @post_load
     def make_condition_part(self, data: dict, **kwargs: Any) -> ConditionPartFormula:
-        return ConditionPartFormula(formula=data['formula'])
+        return ConditionPartFormula(formula=data["formula"])
 
 
 class ConditionPartResultFieldSchema(ConditionPartSchema):
@@ -223,7 +246,7 @@ class ConditionPartResultFieldSchema(ConditionPartSchema):
 
     @post_load
     def make_condition_part(self, data: dict, **kwargs: Any) -> ConditionPartResultField:
-        return ConditionPartResultField(field_id=data['field_id'])
+        return ConditionPartResultField(field_id=data["field_id"])
 
 
 class ConditionPartGenericSchema(OneOfSchema):
@@ -231,7 +254,7 @@ class ConditionPartGenericSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'calc_mode'
+    type_field = "calc_mode"
     type_schemas = {
         ConditionPartCalcMode.direct.name: ConditionPartDirectSchema,
         ConditionPartCalcMode.formula.name: ConditionPartFormulaSchema,
@@ -244,17 +267,17 @@ class ConditionPartGenericSchema(OneOfSchema):
 
 class AvatarRelationSchema(BaseSchema):
     class JoinConditionSchema(BaseSchema):
-        type = ma_fields.Enum(JoinConditionType, attribute='condition_type', required=True)
+        type = ma_fields.Enum(JoinConditionType, attribute="condition_type", required=True)
         operator = ma_fields.Enum(BinaryJoinOperator, required=True)
-        left = ma_fields.Nested(ConditionPartGenericSchema, attribute='left_part', required=True)
-        right = ma_fields.Nested(ConditionPartGenericSchema, attribute='right_part', required=True)
+        left = ma_fields.Nested(ConditionPartGenericSchema, attribute="left_part", required=True)
+        right = ma_fields.Nested(ConditionPartGenericSchema, attribute="right_part", required=True)
 
         @post_load
         def make_condition(self, data: dict, **kwargs: Any) -> BinaryCondition:
             return BinaryCondition(
-                operator=data['operator'],
-                left_part=data['left_part'],
-                right_part=data['right_part'],
+                operator=data["operator"],
+                left_part=data["left_part"],
+                right_part=data["right_part"],
             )
 
     id = ma_fields.String(required=True)
@@ -263,4 +286,4 @@ class AvatarRelationSchema(BaseSchema):
     conditions = ma_fields.Nested(JoinConditionSchema, many=True)
     join_type = ma_fields.Enum(JoinType)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
-    virtual = VirtualFlagField(attribute='managed_by', dump_only=True)
+    virtual = VirtualFlagField(attribute="managed_by", dump_only=True)

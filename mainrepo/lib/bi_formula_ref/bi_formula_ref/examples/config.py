@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Sequence, Tuple
+from typing import (
+    Any,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import attr
 
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo
-
-from bi_formula_ref.texts import EXAMPLE_TITLE
 from bi_formula_ref.examples.data_table import DataTable
+from bi_formula_ref.texts import EXAMPLE_TITLE
 
 
 @attr.s(frozen=True)
@@ -29,7 +34,7 @@ class ExampleConfig:
     order_by: Sequence[str] = attr.ib(kw_only=True, default=())
     show_source_table: bool = attr.ib(kw_only=True, default=False)
     formulas_as_names: bool = attr.ib(kw_only=True, default=True)
-    float_format: str = attr.ib(kw_only=True, default='{:.02f}')
+    float_format: str = attr.ib(kw_only=True, default="{:.02f}")
     # Sequence of transformations described by formulas just like in `formula_fields`
     # They are applied to the result table in the same sequence as they are defined.
     additional_transformations: Sequence[List[Tuple[str, str]]] = attr.ib(kw_only=True, default=())

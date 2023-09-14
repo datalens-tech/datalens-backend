@@ -7,7 +7,6 @@ from bi_us_client.constants import OpCode
 
 @attr.s()
 class USWorkbookCommandClient(CommonInternalAPIClient):
-
     async def create_workbook(self, title: str) -> str:
         op_code = OpCode.WB_CREATE
 
@@ -17,7 +16,7 @@ class USWorkbookCommandClient(CommonInternalAPIClient):
             data_json=dict(
                 title=title,
             ),
-            require_ok=False
+            require_ok=False,
         )
         resp = await self.make_request(req)
 
@@ -29,11 +28,7 @@ class USWorkbookCommandClient(CommonInternalAPIClient):
     async def delete_workbook(self, wb_id: str) -> None:
         op_code = OpCode.WB_DELETE
 
-        req = Req(
-            method="delete",
-            url=f"v2/workbooks/{wb_id}",
-            require_ok=False
-        )
+        req = Req(method="delete", url=f"v2/workbooks/{wb_id}", require_ok=False)
         resp = await self.make_request(req)
 
         if resp.status == 200:
@@ -48,22 +43,13 @@ class USWorkbookCommandClient(CommonInternalAPIClient):
                 dict(
                     action="ADD",
                     accessBinding=dict(
-                        roleId="datalens.workbooks.admin",
-                        subject=dict(
-                            id=sa_id,
-                            type="serviceAccount"
-                        )
-                    )
+                        roleId="datalens.workbooks.admin", subject=dict(id=sa_id, type="serviceAccount")
+                    ),
                 )
             ],
         )
 
-        req = Req(
-            method="post",
-            url=f"v2/workbooks/{wb_id}/access-bindings",
-            data_json=data_json,
-            require_ok=False
-        )
+        req = Req(method="post", url=f"v2/workbooks/{wb_id}/access-bindings", data_json=data_json, require_ok=False)
         resp = await self.make_request(req)
 
         if resp.status != 200:

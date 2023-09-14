@@ -2,25 +2,37 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Type, Optional
+from typing import (
+    Optional,
+    Type,
+)
 
-import attr
 from aiohttp import web
+import attr
 
+from bi_api_commons import (
+    log_request_start,
+    make_uuid_from_parts,
+    request_id_generator,
+)
+from bi_api_commons.aiohttp import aiohttp_wrappers
+from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+from bi_api_commons.base_models import RequestContextInfo
+from bi_api_commons.headers import (
+    HEADER_DEBUG_MODE_ENABLED,
+    HEADER_LOGGING_CONTEXT,
+    get_x_dl_context,
+)
+from bi_api_commons.logging import (
+    NON_TRANSITIVE_LOGGING_CTX_KEYS,
+    log_request_end,
+)
+from bi_api_commons.reporting.profiler import DefaultReportingProfiler
+from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_app_tools import log
-
 from bi_constants.api_constants import DLHeadersCommon
 
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
-from bi_api_commons import request_id_generator, make_uuid_from_parts, log_request_start
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from .commons import get_endpoint_code
-from bi_api_commons.aiohttp import aiohttp_wrappers
-from bi_api_commons.headers import HEADER_LOGGING_CONTEXT, HEADER_DEBUG_MODE_ENABLED, get_x_dl_context
-from bi_api_commons.logging import NON_TRANSITIVE_LOGGING_CTX_KEYS, log_request_end
-from bi_api_commons.reporting.profiler import DefaultReportingProfiler
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -46,15 +58,8 @@ class RequestId:
 
     async def on_response_prepare(self, request: web.Request, response: web.StreamResponse) -> None:
         dl_req = self.dl_request_cls.get_for_request(request)
-        if (
-                dl_req is not None
-                and dl_req.last_resort_rci is not None
-                and dl_req.last_resort_rci.request_id is not None
-        ):
-            response.headers.add(
-                self.header_name,
-                dl_req.last_resort_rci.request_id
-            )
+        if dl_req is not None and dl_req.last_resort_rci is not None and dl_req.last_resort_rci.request_id is not None:
+            response.headers.add(self.header_name, dl_req.last_resort_rci.request_id)
 
     def dl_request_init(self, request: web.Request) -> DLRequestBase:
         dl_request = self.dl_request_cls.init_and_bind_to_aiohttp_request(request)
@@ -72,23 +77,24 @@ class RequestId:
         endpoint_code = get_endpoint_code(request)
 
         if dl_request.log_ctx_controller:
-            dl_request.log_ctx_controller.put_to_context('request_id', request_id)
-            dl_request.log_ctx_controller.put_to_context('parent_request_id', parent_request_id)
-            dl_request.log_ctx_controller.put_to_context('endpoint_code', endpoint_code)
+            dl_request.log_ctx_controller.put_to_context("request_id", request_id)
+            dl_request.log_ctx_controller.put_to_context("parent_request_id", parent_request_id)
+            dl_request.log_ctx_controller.put_to_context("endpoint_code", endpoint_code)
 
         log.context.reset_context()
         initial_log_context = log.context.get_log_context()
-        assert len(initial_log_context) == 0, f'Initial log context for request {request_id}' \
-                                              f' is not empty: {initial_log_context}'
+        assert len(initial_log_context) == 0, (
+            f"Initial log context for request {request_id}" f" is not empty: {initial_log_context}"
+        )
 
-        log.context.put_to_context('request_id', request_id)
-        log.context.put_to_context('parent_request_id', parent_request_id)
-        log.context.put_to_context('endpoint_code', endpoint_code)
+        log.context.put_to_context("request_id", request_id)
+        log.context.put_to_context("parent_request_id", parent_request_id)
+        log.context.put_to_context("endpoint_code", endpoint_code)
 
         if self.accept_logging_ctx and self.logging_ctx_header_name in request.headers:
             assert self.logging_ctx_header_name is not None
             try:
-                logging_ctx_from_header = json.loads(request.headers.get(self.logging_ctx_header_name) or '')
+                logging_ctx_from_header = json.loads(request.headers.get(self.logging_ctx_header_name) or "")
                 for ctx_key in NON_TRANSITIVE_LOGGING_CTX_KEYS:
                     logging_ctx_from_header.pop(ctx_key, None)
             except Exception:  # noqa
@@ -106,26 +112,25 @@ class RequestId:
                         log.context.put_to_context(ctx_key, ctx_val)
 
         log_request_start(
-            logger=LOGGER,
-            method=request.method,
-            full_path=request.path_qs,
-            headers=request.headers.items()
+            logger=LOGGER, method=request.method, full_path=request.path_qs, headers=request.headers.items()
         )
 
-        dl_request.init_temp_rci(RequestContextInfo.create(
-            request_id=request_id,
-            x_dl_debug_mode=bool(int(request.headers.get(HEADER_DEBUG_MODE_ENABLED, "0"))),
-            endpoint_code=endpoint_code,
-            x_dl_context=get_x_dl_context(dl_request.request.headers.get(DLHeadersCommon.DL_CONTEXT, '{}')),
-            # This props will be filled in commit_rci middleware
-            plain_headers=None,
-            secret_headers=None,
-            # This props will be filled in auth middleware
-            tenant=None,
-            user_id=None,
-            user_name=None,
-            auth_data=None,
-        ))
+        dl_request.init_temp_rci(
+            RequestContextInfo.create(
+                request_id=request_id,
+                x_dl_debug_mode=bool(int(request.headers.get(HEADER_DEBUG_MODE_ENABLED, "0"))),
+                endpoint_code=endpoint_code,
+                x_dl_context=get_x_dl_context(dl_request.request.headers.get(DLHeadersCommon.DL_CONTEXT, "{}")),
+                # This props will be filled in commit_rci middleware
+                plain_headers=None,
+                secret_headers=None,
+                # This props will be filled in auth middleware
+                tenant=None,
+                user_id=None,
+                user_name=None,
+                auth_data=None,
+            )
+        )
 
         reporting_registry = DefaultReportingRegistry(rci=dl_request.temp_rci)
         dl_request.reporting_registry = reporting_registry

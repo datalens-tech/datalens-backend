@@ -4,7 +4,8 @@ from collections import defaultdict
 
 from sqlalchemy.engine.default import DefaultDialect
 
-from bi_formula.core.dialect import DialectCombo, StandardDialect as D
+from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.dialect import StandardDialect as D
 
 
 def get_sa_dialect(dialect: DialectCombo) -> DefaultDialect:

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional,
+)
 
 from bi_core import exc
 
@@ -34,40 +37,40 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
 
 
 class CannotInsertNullInOrdinaryColumn(exc.DatabaseQueryError):
-    err_code = exc.DatabaseQueryError.err_code + ['CANNOT_INSERT_NULL_IN_ORDINARY_COLUMN']
-    default_message = 'Cannot convert NULL value to non-Nullable type.'
+    err_code = exc.DatabaseQueryError.err_code + ["CANNOT_INSERT_NULL_IN_ORDINARY_COLUMN"]
+    default_message = "Cannot convert NULL value to non-Nullable type."
 
 
 class CHQueryError(exc.DatabaseQueryError):
-    err_code = exc.DatabaseQueryError.err_code + ['CH']
-    default_message = 'CH Error'
+    err_code = exc.DatabaseQueryError.err_code + ["CH"]
+    default_message = "CH Error"
 
 
 class CHIncorrectData(CHQueryError):
-    err_code = CHQueryError.err_code + ['INCORRECT_DATA']
-    default_message = 'Clickhouse could not parse the data in the specified source'
+    err_code = CHQueryError.err_code + ["INCORRECT_DATA"]
+    default_message = "Clickhouse could not parse the data in the specified source"
 
 
 class CHReadonlyUser(CHQueryError):
-    err_code = CHQueryError.err_code + ['READONLY_USER']
-    default_message = 'Clickhouse user should have parameter readonly set to 0 or 2'
+    err_code = CHQueryError.err_code + ["READONLY_USER"]
+    default_message = "Clickhouse user should have parameter readonly set to 0 or 2"
 
 
 class EstimatedExecutionTooLong(exc.DatabaseQueryError):
-    err_code = exc.DatabaseQueryError.err_code + ['EST_EXEC_TOO_LONG']
-    default_message = 'Estimated query execution time is too long. Maximum: 14400.'
+    err_code = exc.DatabaseQueryError.err_code + ["EST_EXEC_TOO_LONG"]
+    default_message = "Estimated query execution time is too long. Maximum: 14400."
 
 
 class TooManyColumns(exc.DatabaseQueryError):
-    err_code = exc.DatabaseQueryError.err_code + ['TOO_MANY_COLUMNS']
-    default_message = 'Too many columns - limit exceeded.'
+    err_code = exc.DatabaseQueryError.err_code + ["TOO_MANY_COLUMNS"]
+    default_message = "Too many columns - limit exceeded."
 
 
 class InvalidSplitSeparator(exc.DatabaseQueryError):
-    err_code = exc.DatabaseQueryError.err_code + ['INVALID_SPLIT_SEPARATOR']
-    default_message = 'Invalid separator for splitting.'
+    err_code = exc.DatabaseQueryError.err_code + ["INVALID_SPLIT_SEPARATOR"]
+    default_message = "Invalid separator for splitting."
 
 
 class CHRowTooLarge(exc.SourceProtocolError):
-    err_code = exc.SourceProtocolError.err_code + ['TOO_LARGE_ROW']
-    default_message = 'Data source failed to respond correctly (too large row).'
+    err_code = exc.SourceProtocolError.err_code + ["TOO_LARGE_ROW"]
+    default_message = "Data source failed to respond correctly (too large row)."

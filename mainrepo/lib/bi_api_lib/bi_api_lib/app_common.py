@@ -2,37 +2,52 @@ from __future__ import annotations
 
 import abc
 import logging.config
-from typing import TYPE_CHECKING, Optional, final, Generic, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Generic,
+    Optional,
+    TypeVar,
+    final,
+)
 
 import attr
-
-from bi_task_processor.arq_wrapper import create_arq_redis_settings
-
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.enums import RequiredService
-from bi_constants.enums import ConnectionType
-from bi_constants.enums import RLSSubjectType
-
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_i18n.localizer_base import LocalizerLoader, TranslationConfig
-from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.file_uploader_client_factory import FileUploaderSettings
-from bi_core.services_registry.inst_specific_sr import (
-    InstallationSpecificServiceRegistryFactory,
-    InstallationSpecificServiceRegistry,
-)
-from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.mdb_utils import MDBDomainManagerSettings
-from bi_core.rls import BaseSubjectResolver, RLSSubject, RLS_FAILED_USER_NAME_PREFIX
-from bi_core.utils import FutureRef
-from bi_core.services_registry.top_level import ServicesRegistry
 
 from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import AppSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.i18n.registry import LOCALIZATION_CONFIGS, register_translation_configs
-from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from bi_api_lib.i18n.registry import (
+    LOCALIZATION_CONFIGS,
+    register_translation_configs,
+)
 from bi_api_lib.service_registry.sr_factory import DefaultBiApiSRFactory
+from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from bi_configs.connectors_settings import ConnectorSettingsBase
+from bi_configs.enums import RequiredService
+from bi_constants.enums import (
+    ConnectionType,
+    RLSSubjectType,
+)
+from bi_core.data_processing.cache.primitives import CacheTTLConfig
+from bi_core.mdb_utils import MDBDomainManagerSettings
+from bi_core.rls import (
+    RLS_FAILED_USER_NAME_PREFIX,
+    BaseSubjectResolver,
+    RLSSubject,
+)
+from bi_core.services_registry.entity_checker import EntityUsageChecker
+from bi_core.services_registry.file_uploader_client_factory import FileUploaderSettings
+from bi_core.services_registry.inst_specific_sr import (
+    InstallationSpecificServiceRegistry,
+    InstallationSpecificServiceRegistryFactory,
+)
+from bi_core.services_registry.rqe_caches import RQECachesSetting
+from bi_core.services_registry.top_level import ServicesRegistry
+from bi_core.utils import FutureRef
+from bi_i18n.localizer_base import (
+    LocalizerLoader,
+    TranslationConfig,
+)
+from bi_task_processor.arq_wrapper import create_arq_redis_settings
 
 if TYPE_CHECKING:
     from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -46,10 +61,11 @@ class NotFoundSubjectResolver(BaseSubjectResolver):
     def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
         return [
             RLSSubject(
-                subject_id='',
+                subject_id="",
                 subject_type=RLSSubjectType.notfound,
                 subject_name=RLS_FAILED_USER_NAME_PREFIX + name,
-            ) for name in names
+            )
+            for name in names
         ]
 
 
@@ -84,7 +100,8 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
 
     @abc.abstractmethod
     def _get_inst_specific_sr_factory(
-            self, settings: TSettings,
+        self,
+        settings: TSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         raise NotImplementedError
 
@@ -121,10 +138,14 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
     ) -> DefaultBiApiSRFactory:
         supported_functions_manager = SupportedFunctionsManager(supported_tags=settings.FORMULA_SUPPORTED_FUNC_TAGS)
 
-        file_uploader_settings = FileUploaderSettings(
-            base_url=settings.FILE_UPLOADER_BASE_URL,
-            master_token=settings.FILE_UPLOADER_MASTER_TOKEN,
-        ) if settings.FILE_UPLOADER_BASE_URL and settings.FILE_UPLOADER_MASTER_TOKEN else None
+        file_uploader_settings = (
+            FileUploaderSettings(
+                base_url=settings.FILE_UPLOADER_BASE_URL,
+                master_token=settings.FILE_UPLOADER_MASTER_TOKEN,
+            )
+            if settings.FILE_UPLOADER_BASE_URL and settings.FILE_UPLOADER_MASTER_TOKEN
+            else None
+        )
 
         mdb_domain_manager_settings = MDBDomainManagerSettings(
             managed_network_enabled=settings.MDB.MANAGED_NETWORK_ENABLED,
@@ -140,9 +161,9 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         register_translation_configs(self._extra_translation_configs)
         localization_loader = LocalizerLoader(configs=LOCALIZATION_CONFIGS)
         localization_factory = localization_loader.load()
-        localizer_fallback = localization_factory.get_for_locale(
-            locale=settings.DEFAULT_LOCALE
-        ) if settings.DEFAULT_LOCALE else None
+        localizer_fallback = (
+            localization_factory.get_for_locale(locale=settings.DEFAULT_LOCALE) if settings.DEFAULT_LOCALE else None
+        )
 
         sr_factory = DefaultBiApiSRFactory(
             async_env=self._is_async_env,

@@ -13,9 +13,9 @@ class EnvType(enum.Enum):
 
 
 class FeatureEnablingMode(enum.Enum):
-    enabled = 'enabled'
-    bleeding_edge = 'bleeding_edge'
-    disabled = 'disabled'
+    enabled = "enabled"
+    bleeding_edge = "bleeding_edge"
+    disabled = "disabled"
 
 
 class AppType(enum.Enum):
@@ -39,7 +39,7 @@ class RequiredService(enum.Enum):
 RQE_SERVICES: set[RequiredService] = {
     RequiredService.RQE_INT_SYNC,
     RequiredService.RQE_EXT_SYNC,
-    RequiredService.RQE_EXT_ASYNC
+    RequiredService.RQE_EXT_ASYNC,
 }
 
 

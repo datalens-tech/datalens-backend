@@ -1,36 +1,51 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, ClassVar, Type, Any
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Type,
+)
 
-import attr
 from aiochclient.http_clients import aiohttp
-
-from bi_utils.aio import await_sync
+import attr
 
 from bi_constants.enums import IndexKind
-
 from bi_core import exc
 from bi_core.connection_executors.models.db_adapter_data import RawIndexInfo
 from bi_core.connection_models import TableIdent
 from bi_core.connectors.base.error_transformer import DBExcKWArgs
-from bi_connector_clickhouse.core.clickhouse_base.adapters import BaseClickHouseConnLineConstructor, BaseClickHouseAdapter
-from bi_connector_clickhouse.core.clickhouse_base.ch_commons import get_ch_settings, ensure_db_message
-from bi_core.utils import get_current_w3c_tracing_headers, make_url
+from bi_core.utils import (
+    get_current_w3c_tracing_headers,
+    make_url,
+)
+from bi_utils.aio import await_sync
 
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
-from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO, CHYTConnTargetDTO
+from bi_connector_chyt.core.target_dto import (
+    BaseCHYTConnTargetDTO,
+    CHYTConnTargetDTO,
+)
 from bi_connector_chyt.core.utils import CHYTUtils
+from bi_connector_clickhouse.core.clickhouse_base.adapters import (
+    BaseClickHouseAdapter,
+    BaseClickHouseConnLineConstructor,
+)
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import (
+    ensure_db_message,
+    get_ch_settings,
+)
 
 
 class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):
     def _get_dsn_params(
-            self,
-            safe_db_symbols: tuple[str, ...] = (),
-            db_name: Optional[str] = None,
-            standard_auth: Optional[bool] = True,
+        self,
+        safe_db_symbols: tuple[str, ...] = (),
+        db_name: Optional[str] = None,
+        standard_auth: Optional[bool] = True,
     ) -> dict:
-        new_safe_symbols = safe_db_symbols + ('*',)
+        new_safe_symbols = safe_db_symbols + ("*",)
         return super()._get_dsn_params(safe_db_symbols=new_safe_symbols, db_name=db_name, standard_auth=standard_auth)
 
 
@@ -42,7 +57,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
 
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
         params = {
-            'statuses_to_retry': '500,502,504',
+            "statuses_to_retry": "500,502,504",
             **super()._get_dsn_params_from_headers(),
         }
         params.update(
@@ -65,11 +80,11 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
     # Fat boilerplate of an override.
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
-            cls,
-            wrapper_exc: Exception,
-            orig_exc: Optional[Exception],
-            debug_compiled_query: Optional[str],
-            **kwargs: Any,
+        cls,
+        wrapper_exc: Exception,
+        orig_exc: Optional[Exception],
+        debug_compiled_query: Optional[str],
+        **kwargs: Any,
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(
             wrapper_exc=wrapper_exc,
@@ -97,16 +112,14 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
                 params=dict(path=f"{table_path}/@schema"),
                 headers={
                     **secret_auth_headers,
-                    'accept': 'application/json',
-                }
+                    "accept": "application/json",
+                },
             ) as resp:
                 resp.raise_for_status()
                 resp_js = await resp.json()
 
         sorting_columns = tuple(
-            col_js["name"]
-            for col_js in resp_js["$value"]
-            if isinstance(col_js.get("sort_order"), str)
+            col_js["name"] for col_js in resp_js["$value"] if isinstance(col_js.get("sort_order"), str)
         )
 
         if sorting_columns:
@@ -133,10 +146,11 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
     def _get_table_indexes(self, table_ident: TableIdent) -> tuple[RawIndexInfo, ...]:
         """Even does not try to use SA to fetch indexes"""
 
-        may_be_sorting_idx = await_sync(self._get_yt_table_index_info(
-            table_path=table_ident.table_name,
-            secret_auth_headers=self._get_yt_proxy_auth_headers()
-        ))
+        may_be_sorting_idx = await_sync(
+            self._get_yt_table_index_info(
+                table_path=table_ident.table_name, secret_auth_headers=self._get_yt_proxy_auth_headers()
+            )
+        )
         return (may_be_sorting_idx,) if may_be_sorting_idx is not None else ()
 
 
@@ -146,7 +160,7 @@ class CHYTAdapter(BaseCHYTAdapter):
     _target_dto: CHYTConnTargetDTO = attr.ib()
 
     def _get_yt_proxy_auth_headers(self) -> dict[str, str]:
-        return {'Authorization': f"OAuth {self._target_dto.password}"}
+        return {"Authorization": f"OAuth {self._target_dto.password}"}
 
     async def _get_yt_table_index_info(
         self,

@@ -4,7 +4,12 @@ Non-"natural" nodes that can be used to facilitate translation, validation, slic
 
 from __future__ import annotations
 
-from typing import Hashable, Optional, Sequence, cast
+from typing import (
+    Hashable,
+    Optional,
+    Sequence,
+    cast,
+)
 
 import bi_formula.core.nodes as nodes
 
@@ -13,7 +18,7 @@ class ErrorNode(nodes.Null):
     """Node for setting up an error inside a formula to be raised by the translator"""
 
     __slots__ = ()
-    show_names = nodes.FormulaItem.show_names + ('err_code', 'message')
+    show_names = nodes.FormulaItem.show_names + ("err_code", "message")
 
     @property
     def err_code(self) -> tuple[str, ...]:
@@ -25,10 +30,11 @@ class ErrorNode(nodes.Null):
 
     @classmethod
     def make(
-            cls, *,
-            err_code: tuple[str, ...],
-            message: str,
-            meta: Optional[nodes.NodeMeta] = None,
+        cls,
+        *,
+        err_code: tuple[str, ...],
+        message: str,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> ErrorNode:
         children = ()
         internal_value = (err_code, message)

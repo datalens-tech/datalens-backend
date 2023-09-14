@@ -2,25 +2,40 @@ import abc
 import contextlib
 import datetime
 import re
+from typing import (
+    Any,
+    ClassVar,
+    Generator,
+    Sequence,
+    Type,
+)
 import uuid
-from typing import Any, ClassVar, Generator, Sequence, Type
 
+import pytest
 import pytz
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
-import pytest
 
-from bi_db_testing.database.engine_wrapper import TableSpec, DbEngineConfig
-from bi_db_testing.database.dispenser import DbDispenserBase
 from bi_db_testing.database.base import DbBase
-
+from bi_db_testing.database.dispenser import DbDispenserBase
+from bi_db_testing.database.engine_wrapper import (
+    DbEngineConfig,
+    TableSpec,
+)
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import DialectCombo
-from bi_formula_testing.database import FormulaDbConfig, FormulaDbDispenser
+from bi_formula_testing.database import (
+    FormulaDbConfig,
+    FormulaDbDispenser,
+)
 from bi_formula_testing.evaluator import DbEvaluator
 from bi_formula_testing.table import (
-    generate_sample_data, get_column_sa_type, ColumnSpec,
-    TABLE_SPEC, TABLE_SPEC_ARRAYS, NULL_DATA_TABLE_SPEC,
+    NULL_DATA_TABLE_SPEC,
+    TABLE_SPEC,
+    TABLE_SPEC_ARRAYS,
+    ColumnSpec,
+    generate_sample_data,
+    get_column_sa_type,
 )
 
 
@@ -39,23 +54,23 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
     engine_config_cls: ClassVar[Type[DbEngineConfig]] = DbEngineConfig
 
     @abc.abstractmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         pass
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
         return {}
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def tzinfo(self) -> datetime.tzinfo:
         return pytz.UTC
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict) -> DbEngineConfig:
         return self.engine_config_cls(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_config(self, engine_config: DbEngineConfig, tzinfo: datetime.tzinfo) -> FormulaDbConfig:
         return FormulaDbConfig(
             engine_config=engine_config,
@@ -63,7 +78,7 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
             tzinfo=tzinfo,
         )
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def dbe(self, db_config: FormulaDbConfig) -> DbEvaluator:
         db = self.db_dispenser.get_database(db_config)
         dbe = DbEvaluator(
@@ -82,13 +97,12 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
 
     def make_columns(self, column_specs: Sequence[ColumnSpec]) -> list[sa.Column]:
         columns = [
-            sa.Column(name=spec.name, type_=self.get_column_sa_type(data_type=spec.data_type))
-            for spec in column_specs
+            sa.Column(name=spec.name, type_=self.get_column_sa_type(data_type=spec.data_type)) for spec in column_specs
         ]
         return columns
 
     def generate_table_name(self, prefix: str) -> str:
-        return f'{prefix}_{uuid.uuid4().hex[:6]}'
+        return f"{prefix}_{uuid.uuid4().hex[:6]}"
 
     def generate_table_spec(self, table_name_prefix: str) -> TableSpec:
         return TableSpec(
@@ -103,7 +117,7 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
         columns = self.make_columns(column_specs)
         return self.lowlevel_make_sa_table(db=db, table_spec=table_spec, columns=columns)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def data_table(self, dbe: DbEvaluator) -> Generator[sa.Table, None, None]:
         with self.make_data_table(dbe=dbe) as table:
             yield table
@@ -111,23 +125,23 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
     @contextlib.contextmanager
     def make_data_table(self, dbe: DbEvaluator) -> Generator[sa.Table, None, None]:
         db = dbe.db
-        table_spec = self.generate_table_spec(table_name_prefix='test_table')
+        table_spec = self.generate_table_spec(table_name_prefix="test_table")
         table = self.make_sa_table(db=dbe.db, table_spec=table_spec)
         db.create_table(table)
 
         table_data = generate_sample_data(add_arrays=self.supports_arrays)
         db.insert_into_table(table, table_data)
 
-        table.int_values = [row['int_value'] for row in table_data]
-        table.date_values = [row['date_value'] for row in table_data]
-        table.datetime_values = [row['datetime_value'] for row in table_data]
+        table.int_values = [row["int_value"] for row in table_data]
+        table.date_values = [row["date_value"] for row in table_data]
+        table.datetime_values = [row["datetime_value"] for row in table_data]
 
         try:
             yield table
         finally:
             dbe.db.drop_table(table)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def null_data_table(self, dbe: DbEvaluator) -> Generator[sa.Table, None, None]:
         with self.make_null_data_table(dbe=dbe) as table:
             yield table
@@ -135,7 +149,7 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
     @contextlib.contextmanager
     def make_null_data_table(self, dbe: DbEvaluator) -> Generator[sa.Table, None, None]:
         column_specs = NULL_DATA_TABLE_SPEC
-        table_spec = self.generate_table_spec('null_test_table')
+        table_spec = self.generate_table_spec("null_test_table")
 
         columns = self.make_columns(column_specs)
         table = self.lowlevel_make_sa_table(db=dbe.db, table_spec=table_spec, columns=columns)
@@ -151,9 +165,9 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
 
     @contextlib.contextmanager
     def make_scalar_table(
-            self, dbe: DbEvaluator, col_name: str, data_type: DataType, value: Any
+        self, dbe: DbEvaluator, col_name: str, data_type: DataType, value: Any
     ) -> Generator[sa.Table, None, None]:
-        table_spec = self.generate_table_spec(table_name_prefix='scalar_test_table')
+        table_spec = self.generate_table_spec(table_name_prefix="scalar_test_table")
         column_specs = [ColumnSpec(name=col_name, data_type=data_type)]
         columns = self.make_columns(column_specs)
         table = self.lowlevel_make_sa_table(db=dbe.db, table_spec=table_spec, columns=columns)

@@ -2,11 +2,19 @@ from __future__ import annotations
 
 import abc
 from itertools import chain
-from typing import AbstractSet, Callable, Iterable
+from typing import (
+    AbstractSet,
+    Callable,
+    Iterable,
+)
 
 import attr
 
-from bi_api_client.dsmaker.data_abstraction.primitives import DataCellTuple, DataItem, DataItemTag
+from bi_api_client.dsmaker.data_abstraction.primitives import (
+    DataCellTuple,
+    DataItem,
+    DataItemTag,
+)
 
 
 class DataCellMapper1D(abc.ABC):
@@ -27,17 +35,20 @@ class DataCellMapper1D(abc.ABC):
         raise NotImplementedError
 
     def apply_tagger(
-            self, tagger: Callable[[DataCellTuple, DataItem], AbstractSet[DataItemTag]],
+        self,
+        tagger: Callable[[DataCellTuple, DataItem], AbstractSet[DataItemTag]],
     ) -> DataCellMapper1D:
         return TaggerProxyDataCellMapper1D(nested=self, tagger=tagger)
 
     def apply_filter(
-            self,
-            require_tag_combos: AbstractSet[frozenset[DataItemTag]] = frozenset(),
-            exclude_tag_combos: AbstractSet[frozenset[DataItemTag]] = frozenset(),
+        self,
+        require_tag_combos: AbstractSet[frozenset[DataItemTag]] = frozenset(),
+        exclude_tag_combos: AbstractSet[frozenset[DataItemTag]] = frozenset(),
     ) -> DataCellMapper1D:
         return FilterProxyDataCellMapper1D(
-            nested=self, require_tag_combos=require_tag_combos, exclude_tag_combos=exclude_tag_combos,
+            nested=self,
+            require_tag_combos=require_tag_combos,
+            exclude_tag_combos=exclude_tag_combos,
         )
 
 
@@ -50,9 +61,7 @@ class SimpleDataCellMapper1D(DataCellMapper1D):
     _cells: dict[DataCellTuple, DataItem] = attr.ib()
 
     def items(self) -> Iterable[tuple[DataCellTuple, DataItem]]:
-        return (
-            (key, value) for key, value in self._cells.items()
-        )
+        return ((key, value) for key, value in self._cells.items())
 
     def as_dict(self) -> dict[DataCellTuple, DataItem]:
         return self._cells
@@ -93,15 +102,13 @@ class FilterProxyDataCellMapper1D(DataCellMapper1D):
     exclude_tag_combos: AbstractSet[frozenset[DataItemTag]] = attr.ib(kw_only=True, factory=frozenset)
 
     def __attrs_post_init__(self) -> None:
-        assert not self.require_tag_combos and self.exclude_tag_combos, \
-            'Cannot specify both requirements and excludes'
+        assert not self.require_tag_combos and self.exclude_tag_combos, "Cannot specify both requirements and excludes"
 
     def items(self) -> Iterable[tuple[DataCellTuple, DataItem]]:
         for dims, item in self.nested.items():
             # if there are requirements, apply them
-            if (
-                    self.require_tag_combos
-                    and not any(item.meta.tags.issuperset(combo) for combo in self.require_tag_combos)
+            if self.require_tag_combos and not any(
+                item.meta.tags.issuperset(combo) for combo in self.require_tag_combos
             ):
                 continue
 
@@ -134,18 +141,19 @@ class DataCellMapper2D(abc.ABC):
         Turn a pair of `DataCellTuple`s into a single `DataCellTuple`.
         Sort the data cells by cell title.
         """
-        return DataCellTuple(tuple(sorted(
-            (dim_cell for dim_cell in chain(orig_dim_coords[0].cells, orig_dim_coords[1].cells)),
-            key=lambda _cell: _cell.title
-        )))
+        return DataCellTuple(
+            tuple(
+                sorted(
+                    (dim_cell for dim_cell in chain(orig_dim_coords[0].cells, orig_dim_coords[1].cells)),
+                    key=lambda _cell: _cell.title,
+                )
+            )
+        )
 
     def as_1d_mapper(self) -> DataCellMapper1D:
         """
         Convert into a `DataCellMapper1D` by flattening the dimension coord pair into a single `DataCellTuple`
         """
 
-        cells_1d = {
-            self._make_1d_coords(orig_dim_coords): value
-            for orig_dim_coords, value in self.items()
-        }
+        cells_1d = {self._make_1d_coords(orig_dim_coords): value for orig_dim_coords, value in self.items()}
         return SimpleDataCellMapper1D(cells_1d)

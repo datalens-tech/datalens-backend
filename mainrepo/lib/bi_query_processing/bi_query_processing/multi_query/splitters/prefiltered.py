@@ -1,21 +1,33 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 import bi_formula.core.nodes as formula_nodes
-
-from bi_query_processing.enums import QueryPart, ExecutionLevel
-from bi_query_processing.compilation.query_meta import QueryMetaInfo
 from bi_query_processing.compilation.primitives import (
-    CompiledFormulaInfo, CompiledJoinOnFormulaInfo,
-    CompiledQuery, CompiledMultiQueryBase, CompiledMultiQuery,
-    FromColumn, FromObject, SubqueryFromObject, JoinedFromObject,
+    CompiledFormulaInfo,
+    CompiledJoinOnFormulaInfo,
+    CompiledMultiQuery,
+    CompiledMultiQueryBase,
+    CompiledQuery,
+    FromColumn,
+    FromObject,
+    JoinedFromObject,
+    SubqueryFromObject,
 )
+from bi_query_processing.compilation.query_meta import QueryMetaInfo
+from bi_query_processing.enums import (
+    ExecutionLevel,
+    QueryPart,
+)
+from bi_query_processing.multi_query.splitters.base import MultiQuerySplitterBase
 from bi_query_processing.multi_query.tools import CompiledMultiQueryPatch
 from bi_query_processing.utils.name_gen import PrefixedIdGen
-from bi_query_processing.multi_query.splitters.base import MultiQuerySplitterBase
 
 
 @attr.s
@@ -45,11 +57,12 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
         return True
 
     def split_query(
-            self,
-            query: CompiledQuery, requirement_subtree: CompiledMultiQueryBase,
-            query_id_gen: PrefixedIdGen, expr_id_gen: PrefixedIdGen,
+        self,
+        query: CompiledQuery,
+        requirement_subtree: CompiledMultiQueryBase,
+        query_id_gen: PrefixedIdGen,
+        expr_id_gen: PrefixedIdGen,
     ) -> Optional[CompiledMultiQueryPatch]:
-
         # First check if we really need to do anything
         if self.is_simple_query(query):
             return None
@@ -111,10 +124,7 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
                 formula_obj = formula.formula_obj
                 # Replace all field names with sub-query-referencing aliases
                 cropped_formula_obj = formula_obj.replace_nodes(match_func=match_func, replace_func=replace_func)
-                used_subquery_ids = {
-                    avatar_subq_map[from_id]
-                    for from_id in formula.avatar_ids
-                }
+                used_subquery_ids = {avatar_subq_map[from_id] for from_id in formula.avatar_ids}
                 formula = formula.clone(
                     formula_obj=cropped_formula_obj,
                     avatar_ids=used_subquery_ids,
@@ -144,7 +154,9 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
 
             cropped_froms.append(
                 SubqueryFromObject(
-                    id=new_from_id, alias=new_from_id, query_id=new_from_id,
+                    id=new_from_id,
+                    alias=new_from_id,
+                    query_id=new_from_id,
                     columns=tuple(columns),
                 )
             )
@@ -199,7 +211,5 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
             level_type=self.crop_to_level_type,
         )
 
-        patch = CompiledMultiQueryPatch(
-            patch_multi_query=CompiledMultiQuery(queries=[cropped_query, *subqueries])
-        )
+        patch = CompiledMultiQueryPatch(patch_multi_query=CompiledMultiQuery(queries=[cropped_query, *subqueries]))
         return patch

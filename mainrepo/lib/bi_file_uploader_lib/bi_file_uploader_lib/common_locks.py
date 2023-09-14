@@ -5,14 +5,13 @@ import logging
 import redis
 from redis.asyncio.lock import Lock as RedisLock
 
-
 LOGGER = logging.getLogger(__name__)
 
 
 def get_update_connection_source_lock(src_id: str) -> tuple[str, str]:
-    """ Returns redis lock key and token """
+    """Returns redis lock key and token"""
 
-    return f'UpdateConnectionSource/{src_id}', src_id
+    return f"UpdateConnectionSource/{src_id}", src_id
 
 
 async def release_source_update_locks(redis_cli: redis.asyncio.Redis, *source_ids: str) -> None:
@@ -23,6 +22,6 @@ async def release_source_update_locks(redis_cli: redis.asyncio.Redis, *source_id
         try:
             await source_lock.release()
         except redis.exceptions.LockError:
-            LOGGER.info(f'Lock {source_update_lock_key} is already released')
+            LOGGER.info(f"Lock {source_update_lock_key} is already released")
         else:
-            LOGGER.info(f'Released lock {source_update_lock_key}')
+            LOGGER.info(f"Released lock {source_update_lock_key}")

@@ -22,4 +22,4 @@ class BaseClickHouseConnTargetDTO(BaseSQLConnTargetDTO):
 
 
 class ClickHouseConnTargetDTO(BaseClickHouseConnTargetDTO):
-    """ ... """
+    """..."""

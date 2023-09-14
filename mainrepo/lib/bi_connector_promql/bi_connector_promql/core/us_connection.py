@@ -5,6 +5,7 @@ from typing import ClassVar
 import attr
 
 from bi_core.us_connection_base import ClassicConnectionSQL
+
 from bi_connector_promql.core.dto import PromQLConnDTO
 
 
@@ -24,8 +25,8 @@ class PromQLConnection(ClassicConnectionSQL):
             port=self.data.port,
             username=self.data.username,
             password=self.data.password,
-            db_name=self.data.db_name or '',
-            protocol='https' if self.data.secure else 'http',
+            db_name=self.data.db_name or "",
+            protocol="https" if self.data.secure else "http",
             multihosts=(),
         )
 

@@ -1,16 +1,21 @@
 import logging
-from typing import ClassVar, Optional, Sequence
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_query_processing.compilation.primitives import CompiledMultiQueryBase
+from bi_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
 from bi_query_processing.multi_query.splitters.base import MultiQuerySplitterBase
 from bi_query_processing.multi_query.tools import (
-    build_requirement_subtree, apply_query_patch, CompiledMultiQueryPatch,
+    CompiledMultiQueryPatch,
+    apply_query_patch,
+    build_requirement_subtree,
 )
 from bi_query_processing.utils.name_gen import PrefixedIdGen
-from bi_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,8 +37,8 @@ class SplitterMultiQueryMutator(MultiQueryMutatorBase):
             LOGGER.log(level=level, msg=msg)
 
     def mutate_multi_query(self, multi_query: CompiledMultiQueryBase) -> CompiledMultiQueryBase:
-        query_id_gen = PrefixedIdGen('q')
-        expr_id_gen = PrefixedIdGen('e')
+        query_id_gen = PrefixedIdGen("q")
+        expr_id_gen = PrefixedIdGen("e")
         for splitter in self._splitters:
             skip_queries: set[str] = set()
 
@@ -41,7 +46,7 @@ class SplitterMultiQueryMutator(MultiQueryMutatorBase):
             while True:
                 # Prevent infinite loop
                 if iteration_cnt >= self._max_iterations:
-                    raise RuntimeError('Maximum multi-query iterations')
+                    raise RuntimeError("Maximum multi-query iterations")
 
                 # Iterate over the whole multi-query object each time
                 # because we don't know, how its structure has been changed
@@ -53,8 +58,10 @@ class SplitterMultiQueryMutator(MultiQueryMutatorBase):
 
                     requirement_subtree = build_requirement_subtree(multi_query, query.id)
                     multi_query_patch = splitter.split_query(
-                        query=query, requirement_subtree=requirement_subtree,
-                        query_id_gen=query_id_gen, expr_id_gen=expr_id_gen,
+                        query=query,
+                        requirement_subtree=requirement_subtree,
+                        query_id_gen=query_id_gen,
+                        expr_id_gen=expr_id_gen,
                     )
                     skip_queries.add(query.id)
                     if multi_query_patch is not None:
@@ -71,8 +78,8 @@ class SplitterMultiQueryMutator(MultiQueryMutatorBase):
 
             if iteration_cnt > 0:
                 self.log(
-                    f'Applied mutation patches in {iteration_cnt} iterations '
-                    f'for splitter {splitter.__class__.__name__}'
+                    f"Applied mutation patches in {iteration_cnt} iterations "
+                    f"for splitter {splitter.__class__.__name__}"
                 )
 
         return multi_query

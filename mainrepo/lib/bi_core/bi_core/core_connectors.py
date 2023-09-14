@@ -1,8 +1,12 @@
-from typing import Collection, Optional, Type
+from typing import (
+    Collection,
+    Optional,
+    Type,
+)
 
-from bi_core.connectors.registry import get_all_connectors
-from bi_core.connectors.base.registrator import CONN_REG_CORE
 from bi_core.connectors.base.connector import CoreConnector
+from bi_core.connectors.base.registrator import CONN_REG_CORE
+from bi_core.connectors.registry import get_all_connectors
 
 
 def _register_connector(connector_cls: Type[CoreConnector]) -> None:

@@ -1,10 +1,26 @@
 from __future__ import annotations
 
-from marshmallow.decorators import POST_DUMP, POST_LOAD, PRE_DUMP, PRE_LOAD
+from typing import (
+    AbstractSet,
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Union,
+)
+
+from marshmallow.decorators import (
+    POST_DUMP,
+    POST_LOAD,
+    PRE_DUMP,
+    PRE_LOAD,
+)
 from marshmallow.error_store import ErrorStore
 from marshmallow.exceptions import ValidationError
 from marshmallow_oneofschema import OneOfSchema
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, AbstractSet, Union
 
 
 class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
@@ -16,27 +32,19 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
     """
 
     def dump(
-        self,
-        obj: Any,
-        *,
-        many: Optional[bool] = None,
-        **kwargs: Any
+        self, obj: Any, *, many: Optional[bool] = None, **kwargs: Any
     ) -> Union[Mapping[str, Any], Iterable[Mapping[str, Any]]]:
         many = self.many if many is None else bool(many)
 
         if self._has_processors(PRE_DUMP):
-            processed_obj = self._invoke_dump_processors(
-                PRE_DUMP, obj, many=many, original_data=obj
-            )
+            processed_obj = self._invoke_dump_processors(PRE_DUMP, obj, many=many, original_data=obj)
         else:
             processed_obj = obj
 
         result = super().dump(processed_obj, many=many, **kwargs)
 
         if self._has_processors(POST_DUMP):
-            result = self._invoke_dump_processors(
-                POST_DUMP, result, many=many, original_data=obj
-            )
+            result = self._invoke_dump_processors(POST_DUMP, result, many=many, original_data=obj)
 
         return result
 
@@ -47,7 +55,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
         many: Optional[bool] = None,
         partial: Optional[Union[bool, Sequence[str], AbstractSet[str]]] = None,
         unknown: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Any:
         error_store = ErrorStore()
         errors: Dict[str, List[str]] = {}
@@ -65,9 +73,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
                 )
             except ValidationError as err:
                 errors = err.normalized_messages()
-                result = (
-                    None
-                )
+                result = None
         if not errors:
             # Deserialize data
             try:

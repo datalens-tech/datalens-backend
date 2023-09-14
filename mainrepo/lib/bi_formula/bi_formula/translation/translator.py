@@ -3,29 +3,38 @@ from __future__ import annotations
 import datetime
 from functools import singledispatchmethod
 from itertools import chain
-from typing import Optional, Union
+from typing import (
+    Optional,
+    Union,
+)
 
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.sql.functions import Function
 
-import bi_formula.core.exc as exc
-import bi_formula.inspect.literal
-import bi_formula.core.nodes as nodes
 import bi_formula.core.aux_nodes as aux_nodes
+from bi_formula.core.datatype import (
+    DataType,
+    DataTypeParams,
+)
 from bi_formula.core.dialect import DialectCombo
-from bi_formula.core.datatype import DataType, DataTypeParams
-from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.registry import OPERATION_REGISTRY
-from bi_formula.definitions.literals import literal
-from bi_formula.definitions.type_strategy import FromArgs
+import bi_formula.core.exc as exc
+import bi_formula.core.nodes as nodes
 from bi_formula.definitions.common import desc
+from bi_formula.definitions.literals import literal
+from bi_formula.definitions.registry import OPERATION_REGISTRY
+from bi_formula.definitions.scope import Scope
+from bi_formula.definitions.type_strategy import FromArgs
+import bi_formula.inspect.literal
 from bi_formula.translation import ext_nodes
-from bi_formula.translation.sa_dialects import get_sa_dialect
-from bi_formula.translation.context import TranslationCtx
-from bi_formula.translation.env import TranslationEnvironment, FunctionStatsSignature
-from bi_formula.translation.context_processing import get_context_processor
 from bi_formula.translation.columns import get_column_renderer
+from bi_formula.translation.context import TranslationCtx
+from bi_formula.translation.context_processing import get_context_processor
+from bi_formula.translation.env import (
+    FunctionStatsSignature,
+    TranslationEnvironment,
+)
+from bi_formula.translation.sa_dialects import get_sa_dialect
 
 
 class SqlAlchemyTranslator:
@@ -33,11 +42,11 @@ class SqlAlchemyTranslator:
     default_restrict_fields = True
 
     def __init__(
-            self,
-            env: TranslationEnvironment,
-            restrict_funcs: Optional[bool] = None,
-            restrict_fields: Optional[bool] = None,
-            collect_stats: bool = False,
+        self,
+        env: TranslationEnvironment,
+        restrict_funcs: Optional[bool] = None,
+        restrict_fields: Optional[bool] = None,
+        collect_stats: bool = False,
     ):
         self._env = env
         self._restrict_funcs = restrict_funcs if restrict_funcs is not None else self.default_restrict_funcs
@@ -61,9 +70,9 @@ class SqlAlchemyTranslator:
         def translator_cb(obj: nodes.FormulaItem) -> Union[nodes.FormulaItem, ClauseElement]:
             """Callback that can translate a formula node for usage from function implementation"""
             return self.translate_node(  # type: ignore  # TODO: fix
-                obj, ctx=TranslationCtx(
-                    node=obj, required_scopes=ctx.required_scopes & ~Scope.EXPLICIT_USAGE
-                ), postprocess=False
+                obj,
+                ctx=TranslationCtx(node=obj, required_scopes=ctx.required_scopes & ~Scope.EXPLICIT_USAGE),
+                postprocess=False,
             ).expression
 
         func_name = node.name
@@ -82,21 +91,18 @@ class SqlAlchemyTranslator:
                     for dim in grouping.dim_list
                 ]
             else:
-                raise TypeError(f'{type(grouping)} is not supported as a grouping type')
+                raise TypeError(f"{type(grouping)} is not supported as a grouping type")
 
             translated_order_by = [
                 self.translate_node(dim, ctx=ctx.child(node=dim), postprocess=False).expression
                 for dim in node.ordering.children
             ]
 
-        translated_args = [
-            self.translate_node(arg, ctx=ctx.child(node=arg), postprocess=False)
-            for arg in node.args
-        ]
+        translated_args = [self.translate_node(arg, ctx=ctx.child(node=arg), postprocess=False) for arg in node.args]
         arg_types = [arg.data_type for arg in translated_args]
 
         if self._collect_stats:
-            dialect_name = self._env.dialect.single_bit.name.name if self._env.dialect.deterministic else ''
+            dialect_name = self._env.dialect.single_bit.name.name if self._env.dialect.deterministic else ""
             signature = FunctionStatsSignature(
                 name=func_name,
                 arg_types=tuple(at.name for at in arg_types),  # type: ignore  # TODO: fix
@@ -108,7 +114,8 @@ class SqlAlchemyTranslator:
         # find matching function in the registry
         try:
             func_definition = OPERATION_REGISTRY.get_definition(
-                name=func_name, arg_types=arg_types,  # type: ignore  # TODO: fix
+                name=func_name,
+                arg_types=arg_types,  # type: ignore  # TODO: fix
                 is_window=isinstance(node, nodes.WindowFuncCall),
                 dialect=self._env.dialect,
                 required_scopes=ctx.required_scopes,
@@ -150,7 +157,10 @@ class SqlAlchemyTranslator:
         ctx.set_expression(translated_func)
 
     def translate(
-            self, formula: nodes.Formula, collect_errors: Optional[bool] = None, context_flags: Optional[int] = None,
+        self,
+        formula: nodes.Formula,
+        collect_errors: Optional[bool] = None,
+        context_flags: Optional[int] = None,
     ) -> TranslationCtx:
         """
         Translate ``Formula`` object into an SQLAlchemy selectable,
@@ -192,9 +202,7 @@ class SqlAlchemyTranslator:
         elif ctx.data_type in (DataType.CONST_GENERICDATETIME, DataType.GENERICDATETIME):
             ctx.set_expression(sa.type_coerce(ctx.expression, sa.DateTime))
 
-    def translate_node(
-            self, node: nodes.FormulaItem, ctx: TranslationCtx, postprocess: bool = True
-    ) -> TranslationCtx:
+    def translate_node(self, node: nodes.FormulaItem, ctx: TranslationCtx, postprocess: bool = True) -> TranslationCtx:
         """Wrapper for internal implementation of translation methods"""
 
         # check replacements and cache first
@@ -269,7 +277,7 @@ class SqlAlchemyTranslator:
     def _translate_node_literal(self, node: nodes.BaseLiteral, ctx: TranslationCtx) -> None:
         data_type_params: Optional[DataTypeParams] = None
         if isinstance(node, nodes.LiteralDatetimeTZ):
-            data_type_params = DataTypeParams(timezone='UTC')  # not certain
+            data_type_params = DataTypeParams(timezone="UTC")  # not certain
         ctx.set_type(
             bi_formula.inspect.literal.get_data_type(node),
             data_type_params=data_type_params,
@@ -336,23 +344,22 @@ class SqlAlchemyTranslator:
     def _translate_node_case_block(self, node: nodes.CaseBlock, ctx: TranslationCtx) -> None:
         args: list[nodes.FormulaItem] = [
             node.case_expr,
-            *chain.from_iterable(when_part.children for when_part in node.when_list)  # type: ignore
+            *chain.from_iterable(when_part.children for when_part in node.when_list),  # type: ignore
         ]
         if node.else_expr is not None:
             args.append(node.else_expr)
         self.simple_translate_func(
-            node=nodes.FuncCall.make('_case_block_', args=args),
-            ctx=ctx.child(required_scopes=ctx.required_scopes)
+            node=nodes.FuncCall.make("_case_block_", args=args), ctx=ctx.child(required_scopes=ctx.required_scopes)
         )
 
     @_translate_node.register(nodes.IfBlock)
     def _translate_node_if_block(self, node: nodes.IfBlock, ctx: TranslationCtx) -> None:
         args: list[nodes.FormulaItem] = [
             *chain.from_iterable(if_part.children for if_part in node.if_list),  # type: ignore
-            node.else_expr
+            node.else_expr,
         ]
         self.simple_translate_func(
-            node=nodes.FuncCall.make('_if_block_', args=args),
+            node=nodes.FuncCall.make("_if_block_", args=args),
             ctx=ctx.child(required_scopes=ctx.required_scopes),
         )
 
@@ -379,13 +386,17 @@ class SqlAlchemyTranslator:
 
 
 def translate(
-        formula: nodes.Formula, dialect: Optional[DialectCombo] = None,
-        required_scopes: int = Scope.EXPLICIT_USAGE,
-        restrict_funcs: Optional[bool] = None, restrict_fields: Optional[bool] = None,
-        collect_errors: Optional[bool] = None, collect_stats: bool = False,
-        field_types: Optional[dict[str, DataType]] = None,
-        context_flags: Optional[int] = None, field_names: Optional[dict[str, tuple[str, ...]]] = None,
-        env: Optional[TranslationEnvironment] = None,
+    formula: nodes.Formula,
+    dialect: Optional[DialectCombo] = None,
+    required_scopes: int = Scope.EXPLICIT_USAGE,
+    restrict_funcs: Optional[bool] = None,
+    restrict_fields: Optional[bool] = None,
+    collect_errors: Optional[bool] = None,
+    collect_stats: bool = False,
+    field_types: Optional[dict[str, DataType]] = None,
+    context_flags: Optional[int] = None,
+    field_names: Optional[dict[str, tuple[str, ...]]] = None,
+    env: Optional[TranslationEnvironment] = None,
 ) -> TranslationCtx:
     """Translate ``Formula`` tree object into an SQLAlchemy representation that can be used for queries"""
 
@@ -406,19 +417,24 @@ def translate(
         collect_stats=collect_stats,
     )
     return translator.translate(
-        formula, collect_errors=collect_errors, context_flags=context_flags,
+        formula,
+        collect_errors=collect_errors,
+        context_flags=context_flags,
     )
 
 
 def translate_and_compile(
-        formula: nodes.Formula,
-        dialect: Optional[DialectCombo] = None,
-        required_scopes: int = Scope.EXPLICIT_USAGE,
-        restrict_funcs: Optional[bool] = None, restrict_fields: Optional[bool] = None,
-        collect_errors: Optional[bool] = None, collect_stats: bool = False,
-        field_types: Optional[dict[str, DataType]] = None,
-        context_flags: Optional[int] = None, field_names: Optional[dict[str, tuple[str, ...]]] = None,
-        env: Optional[TranslationEnvironment] = None,
+    formula: nodes.Formula,
+    dialect: Optional[DialectCombo] = None,
+    required_scopes: int = Scope.EXPLICIT_USAGE,
+    restrict_funcs: Optional[bool] = None,
+    restrict_fields: Optional[bool] = None,
+    collect_errors: Optional[bool] = None,
+    collect_stats: bool = False,
+    field_types: Optional[dict[str, DataType]] = None,
+    context_flags: Optional[int] = None,
+    field_names: Optional[dict[str, tuple[str, ...]]] = None,
+    env: Optional[TranslationEnvironment] = None,
 ) -> str:
     """Translate ``Formula`` tree object into an SQLAlchemy representation and compile it into raw SQL"""
 

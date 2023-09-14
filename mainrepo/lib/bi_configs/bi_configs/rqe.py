@@ -7,19 +7,22 @@ import attr
 
 from bi_configs.settings_loaders.common import SDict
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader
-from bi_configs.settings_loaders.meta_definition import s_attrib, required
+from bi_configs.settings_loaders.meta_definition import (
+    required,
+    s_attrib,
+)
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.utils import validate_one_of
 
 
 @attr.s(frozen=True)
 class RQEBaseURL(SettingsBase):
-    scheme: str = s_attrib("SCHEME", env_var_converter=validate_one_of({'http', 'https'}), missing='http')
+    scheme: str = s_attrib("SCHEME", env_var_converter=validate_one_of({"http", "https"}), missing="http")
     host: str = s_attrib("HOST")
     port: int = s_attrib("PORT")
 
     def __str__(self) -> str:
-        return f'{self.scheme}://{self.host}:{self.port}'
+        return f"{self.scheme}://{self.host}:{self.port}"
 
 
 @attr.s(frozen=True)
@@ -31,17 +34,17 @@ class RQEConfig(SettingsBase):
     hmac_key: bytes = s_attrib(
         "SECRET_KEY",
         sensitive=True,
-        env_var_converter=lambda s: s.encode('ascii'),
+        env_var_converter=lambda s: s.encode("ascii"),
     )
 
     @classmethod
     def get_default(cls) -> RQEConfig:
         return RQEConfig(
             hmac_key=required(bytes),
-            int_sync_rqe=RQEBaseURL(scheme='http', host="[::1]", port=9874),
-            int_async_rqe=RQEBaseURL(scheme='http', host="[::1]", port=9875),
-            ext_sync_rqe=RQEBaseURL(scheme='http', host="[::1]", port=9876),
-            ext_async_rqe=RQEBaseURL(scheme='http', host="[::1]", port=9877),
+            int_sync_rqe=RQEBaseURL(scheme="http", host="[::1]", port=9874),
+            int_async_rqe=RQEBaseURL(scheme="http", host="[::1]", port=9875),
+            ext_sync_rqe=RQEBaseURL(scheme="http", host="[::1]", port=9876),
+            ext_async_rqe=RQEBaseURL(scheme="http", host="[::1]", port=9877),
         )
 
     def clone(self, **kwargs):

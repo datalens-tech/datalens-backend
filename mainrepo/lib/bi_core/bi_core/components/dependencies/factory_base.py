@@ -5,26 +5,26 @@ from typing import Optional
 
 import attr
 
-from bi_core.components.dependencies.field_shallow_base import FieldShallowInterDependencyManagerBase
-from bi_core.components.dependencies.field_deep_base import FieldDeepInterDependencyManagerBase
-from bi_core.components.dependencies.field_avatar_base import FieldAvatarDependencyManagerBase
-from bi_core.components.dependencies.relation_avatar_base import RelationAvatarDependencyManagerBase
 from bi_core.components.dependencies.avatar_tree_base import AvatarTreeResolverBase
+from bi_core.components.dependencies.field_avatar_base import FieldAvatarDependencyManagerBase
+from bi_core.components.dependencies.field_deep_base import FieldDeepInterDependencyManagerBase
+from bi_core.components.dependencies.field_shallow_base import FieldShallowInterDependencyManagerBase
+from bi_core.components.dependencies.relation_avatar_base import RelationAvatarDependencyManagerBase
 
 
 @attr.s
 class ComponentDependencyManagerFactoryBase(abc.ABC):
-
     _field_shallow_inter_dependency_manager: Optional[FieldShallowInterDependencyManagerBase] = attr.ib(
-        kw_only=True, default=None)
+        kw_only=True, default=None
+    )
     _field_deep_inter_dependency_manager: Optional[FieldDeepInterDependencyManagerBase] = attr.ib(
-        kw_only=True, default=None)
-    _field_avatar_dependency_manager: Optional[FieldAvatarDependencyManagerBase] = attr.ib(
-        kw_only=True, default=None)
+        kw_only=True, default=None
+    )
+    _field_avatar_dependency_manager: Optional[FieldAvatarDependencyManagerBase] = attr.ib(kw_only=True, default=None)
     _relation_avatar_dependency_manager: Optional[RelationAvatarDependencyManagerBase] = attr.ib(
-        kw_only=True, default=None)
-    _avatar_tree_resolver: Optional[AvatarTreeResolverBase] = attr.ib(
-        kw_only=True, default=None)
+        kw_only=True, default=None
+    )
+    _avatar_tree_resolver: Optional[AvatarTreeResolverBase] = attr.ib(kw_only=True, default=None)
 
     @abc.abstractmethod
     def _make_field_shallow_inter_dependency_manager(self) -> FieldShallowInterDependencyManagerBase:

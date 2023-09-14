@@ -1,28 +1,34 @@
 from __future__ import annotations
 
-from typing import Sequence, Set
+from typing import (
+    Sequence,
+    Set,
+)
 
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import StandardDialect as D
-from bi_formula.definitions.args import ArgTypeForAll, ArgTypeSequence
-from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.base import Function, TranslationVariant, TranslationVariantWrapped
+from bi_formula.definitions.args import (
+    ArgTypeForAll,
+    ArgTypeSequence,
+)
+from bi_formula.definitions.base import (
+    Function,
+    TranslationVariant,
+    TranslationVariantWrapped,
+)
 from bi_formula.definitions.operators_binary import BinaryPlus
+from bi_formula.definitions.scope import Scope
 from bi_formula.definitions.type_strategy import Fixed
 from bi_formula.shortcuts import n
-
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
-MARKUP_EFFECTIVELY = (
-    DataType.MARKUP.autocast_types |
-    DataType.STRING.autocast_types
-)
+MARKUP_EFFECTIVELY = DataType.MARKUP.autocast_types | DataType.STRING.autocast_types
 
-MARK_LPAR = '('
-MARK_RPAR = ')'
-MARK_SEP = ' '
+MARK_LPAR = "("
+MARK_RPAR = ")"
+MARK_SEP = " "
 MARK_QUOT = '"'
 
 
@@ -48,7 +54,7 @@ class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
 
 
 # TODO: make this definitely unnecessary.
-def concat_strings(items, sep=''):
+def concat_strings(items, sep=""):
     result = []
     literals_buf = []  # type: ignore  # TODO: fix
 
@@ -72,18 +78,15 @@ class FuncInternalStrBase(Function):
     Base class for a helper for converting markup to str internally.
     """
 
-    name = '__str'
+    name = "__str"
     scopes = Function.scopes & ~Scope.EXPLICIT_USAGE & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
-    arg_names = ['expression']
+    arg_names = ["expression"]
     arg_cnt = 1
 
     # Markup is already a string value, so nothing to do.
     variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda value: value
-        ),
+        V(D.DUMMY | D.SQLITE, lambda value: value),
     ]
 
 
@@ -103,10 +106,7 @@ class FuncInternalStr(FuncInternalStrBase):
 
 def concat(nodes):
     nodes = concat_strings(nodes)
-    nodes_processed = [
-        n.func.__STR(node)
-        for node in nodes
-    ]
+    nodes_processed = [n.func.__STR(node) for node in nodes]
 
     if len(nodes_processed) == 1:
         return nodes_processed[0]
@@ -120,18 +120,12 @@ def process_markup_child(node):
     if node.data_type == DataType.CONST_MARKUP:
         return node
     if node.data_type == DataType.STRING:
-        pieces = [
-            MARK_QUOT,
-            n.func.REPLACE(node, MARK_QUOT, MARK_QUOT + MARK_QUOT),
-            MARK_QUOT]
+        pieces = [MARK_QUOT, n.func.REPLACE(node, MARK_QUOT, MARK_QUOT + MARK_QUOT), MARK_QUOT]
         return concat(pieces)
     # XXXX: Should probaly be handled automatically by the `STRING` case above.
     if node.data_type == DataType.CONST_STRING:
         value = node.expression.value
-        return ''.join((
-            MARK_QUOT,
-            str(value).replace(MARK_QUOT, MARK_QUOT + MARK_QUOT),
-            MARK_QUOT))
+        return "".join((MARK_QUOT, str(value).replace(MARK_QUOT, MARK_QUOT + MARK_QUOT), MARK_QUOT))
     if node.data_type == DataType.NULL:
         return node
     raise Exception("Unexpected markup child type", node)
@@ -143,7 +137,8 @@ def markup_node(func_name, *children):
     something parseable by the special parser.
     """
     pieces = [
-        MARK_LPAR, func_name,
+        MARK_LPAR,
+        func_name,
     ]
     for child in children:
         child_res = process_markup_child(child)
@@ -172,9 +167,7 @@ class MarkupTypeStrategy(Fixed):
         super().__init__(DataType.MARKUP)
 
     def get_from_args(self, arg_types):
-        if all(arg.casts_to(DataType.CONST_MARKUP) or
-               arg.casts_to(DataType.CONST_STRING)
-               for arg in arg_types):
+        if all(arg.casts_to(DataType.CONST_MARKUP) or arg.casts_to(DataType.CONST_STRING) for arg in arg_types):
             return DataType.CONST_MARKUP
         return DataType.MARKUP
 
@@ -195,35 +188,35 @@ class FuncMarkupUnary(FuncMarkup):
     # arguments, passing them to concat internally.
 
     arg_cnt = 1
-    arg_names = ['text']
+    arg_names = ["text"]
     argument_types = [
         ArgTypeSequence([MARKUP_EFFECTIVELY]),
     ]
 
 
 class FuncBold(FuncMarkupUnary):
-    name = 'bold'
-    variants = make_variants('b')
+    name = "bold"
+    variants = make_variants("b")
 
 
 class FuncItalics(FuncMarkupUnary):
-    name = 'italic'
-    variants = make_variants('i')
+    name = "italic"
+    variants = make_variants("i")
 
 
 class FuncUrl(FuncMarkup):
-    name = 'url'
+    name = "url"
     arg_cnt = 2
-    arg_names = ['address', 'text']
+    arg_names = ["address", "text"]
     argument_types = [
         # url(str, markup|str)
         ArgTypeSequence([DataType.STRING, MARKUP_EFFECTIVELY]),
     ]
-    variants = make_variants('a')
+    variants = make_variants("a")
 
 
 class BinaryPlusMarkup(BinaryPlus):
-    variants = make_variants('c')
+    variants = make_variants("c")
     argument_types = [
         StrictMarkupCompatibleArgTypes(),
     ]
@@ -236,33 +229,29 @@ class ConcatMultiMarkup(FuncMarkup):
     Also useful for turning a string into markup,
     e.g. `if cond then italics(col) else markup(col) end` case.
     """
-    name = 'markup'
+
+    name = "markup"
     arg_cnt = None
     argument_types = [
         ArgTypeForAll(MARKUP_EFFECTIVELY),
     ]
     return_type = Fixed(DataType.MARKUP)  # type: ignore  # TODO: fix
 
-    variants = make_variants('c')
+    variants = make_variants("c")
 
 
 DEFINITIONS_MARKUP = [
     # +
     BinaryPlusMarkup,
-
     # __str
     FuncInternalStrConst,
     FuncInternalStr,
-
     # bold
     FuncBold,
-
     # italic
     FuncItalics,
-
     # markup
     ConcatMultiMarkup,
-
     # url
     FuncUrl,
 ]

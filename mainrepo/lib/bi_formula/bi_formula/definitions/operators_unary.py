@@ -2,15 +2,21 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
-from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.core.datatype import DataType
-from bi_formula.definitions.args import ArgFlagSequence, ArgTypeSequence
-from bi_formula.definitions.flags import ContextFlag
-from bi_formula.definitions.type_strategy import FromArgs, Fixed
-from bi_formula.definitions.base import (
-    MultiVariantTranslation, TranslationVariant,
+from bi_formula.core.dialect import StandardDialect as D
+from bi_formula.definitions.args import (
+    ArgFlagSequence,
+    ArgTypeSequence,
 )
-
+from bi_formula.definitions.base import (
+    MultiVariantTranslation,
+    TranslationVariant,
+)
+from bi_formula.definitions.flags import ContextFlag
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
+)
 
 V = TranslationVariant.make
 
@@ -21,7 +27,7 @@ class Unary(MultiVariantTranslation):
 
 
 class UnaryNot(Unary):
-    name = 'not'
+    name = "not"
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = int(ContextFlag.IS_CONDITION)
 
@@ -44,7 +50,7 @@ class UnaryNotNumbers(UnaryNot):
 
 class UnaryNotStringGeo(UnaryNot):
     variants = [
-        V(D.DUMMY, lambda x: x == ''),
+        V(D.DUMMY, lambda x: x == ""),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -66,7 +72,7 @@ class UnaryNotDateDatetime(UnaryNot):
 
 
 class UnaryNegate(Unary):
-    name = 'neg'
+    name = "neg"
     variants = [V(D.DUMMY | D.SQLITE, lambda x: -x)]
     return_type = FromArgs()
     argument_types = [
@@ -81,14 +87,14 @@ class UnaryIsOpBase(Unary):
 
 
 class UnaryIsTrue(UnaryIsOpBase):
-    name = 'istrue'
-    arg_names = ['value']
+    name = "istrue"
+    arg_names = ["value"]
 
 
 class UnaryIsTrueStringGeo(UnaryIsTrue):
     variants = [
         # TODO?: use `n.func.NOT`?
-        V(D.DUMMY, lambda x: x != ''),
+        V(D.DUMMY, lambda x: x != ""),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -128,14 +134,14 @@ class UnaryIsTrueBoolean(UnaryIsTrue):
 
 
 class UnaryIsFalse(UnaryIsOpBase):
-    name = 'isfalse'
-    arg_names = ['value']
+    name = "isfalse"
+    arg_names = ["value"]
 
 
 class UnaryIsFalseStringGeo(UnaryIsFalse):
     variants = [
         # TODO?: use `n.func.NOT`?
-        V(D.DUMMY, lambda x: x == ''),
+        V(D.DUMMY, lambda x: x == ""),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -178,16 +184,13 @@ DEFINITIONS_UNARY = [
     UnaryIsFalseNumbers,
     UnaryIsFalseDateTime,
     UnaryIsFalseBoolean,
-
     # istrue
     UnaryIsTrueStringGeo,
     UnaryIsTrueNumbers,
     UnaryIsTrueDateTime,
     UnaryIsTrueBoolean,
-
     # neg
     UnaryNegate,
-
     # not
     UnaryNotBool,
     UnaryNotNumbers,

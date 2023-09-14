@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import Dict
 
 from bi_constants.enums import SourceBackendType
-
 from bi_formula.core.dialect import DialectName
-
 
 _DIALECT_NAMES_FROM_SA: Dict[SourceBackendType, DialectName] = {}
 

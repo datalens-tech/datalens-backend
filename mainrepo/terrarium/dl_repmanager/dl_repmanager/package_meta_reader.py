@@ -32,9 +32,9 @@ class PackageMetaReader:
 
     _toml_reader: TOMLReaderBase = attr.ib(kw_only=True)
 
-    _SECTION_NAME_MAIN = 'tool.poetry'
-    _SECTION_NAME_META = 'datalens.meta'  # get this from env?
-    _SECTION_NAME_I18N_DOMAINS = 'datalens.i18n.domains'
+    _SECTION_NAME_MAIN = "tool.poetry"
+    _SECTION_NAME_META = "datalens.meta"  # get this from env?
+    _SECTION_NAME_I18N_DOMAINS = "datalens.i18n.domains"
 
     def _get_main_section(self) -> dict:
         return self._toml_reader.get_section(self._SECTION_NAME_MAIN)
@@ -43,16 +43,16 @@ class PackageMetaReader:
         return self._toml_reader.get_section(self._SECTION_NAME_META, strict=False)
 
     def get_package_reg_name(self) -> str:
-        package_reg_name = self._get_main_section()['name']
+        package_reg_name = self._get_main_section()["name"]
         assert isinstance(package_reg_name, str)
         return package_reg_name
 
     def get_package_module_names(self) -> tuple[str, ...]:
-        module_names = tuple(pkg['include'] for pkg in self._get_main_section()['packages'])  # type: ignore
+        module_names = tuple(pkg["include"] for pkg in self._get_main_section()["packages"])  # type: ignore
         return module_names
 
     def get_package_type(self) -> Optional[str]:  # FIXME: remove `Optional` after it is added to all toml files
-        package_reg_name = self._get_meta_section().get('package_type')
+        package_reg_name = self._get_meta_section().get("package_type")
         assert package_reg_name is None or isinstance(package_reg_name, str)
         return package_reg_name
 
@@ -61,9 +61,9 @@ class PackageMetaReader:
             if key is None:
                 continue
 
-            item_as_dict = {'name': key}
+            item_as_dict = {"name": key}
             if isinstance(item.value, str):
-                item_as_dict['version'] = item.value
+                item_as_dict["version"] = item.value
             elif isinstance(item.value, dict):
                 item_as_dict.update(item.value)
 
@@ -75,13 +75,13 @@ class PackageMetaReader:
             domain_str = str(domain).strip()
             result[domain_str] = []
             for path_data in item_data:
-                result[domain_str].append(str(path_data['path']).strip())
+                result[domain_str].append(str(path_data["path"]).strip())
 
         return result
 
     def get_implicit_dependencies(self) -> list[str]:
         meta_section = self._toml_reader.get_section(self._SECTION_NAME_META, strict=False)
-        implicit_deps = meta_section.get('implicit_dependencies', ())
+        implicit_deps = meta_section.get("implicit_dependencies", ())
         return [item for item in implicit_deps]
 
     def get_mypy_stubs_overrides(self) -> dict:
@@ -108,10 +108,7 @@ class PackageMetaWriter(PackageMetaReader):
             section.remove(item_name)
 
     def _get_item_opt(self, section_name: str, item_name) -> Optional[dict[str, Any]]:
-        items = [
-            item for item in self.iter_requirement_items(section_name=section_name)
-            if item['name'] == item_name
-        ]
+        items = [item for item in self.iter_requirement_items(section_name=section_name) if item["name"] == item_name]
         if not items:
             return None
 
@@ -119,15 +116,18 @@ class PackageMetaWriter(PackageMetaReader):
         return items[0]
 
     def update_requirement_item(
-            self, section_name: str, item_name: str,
-            new_item_name: str, new_path: Path,
+        self,
+        section_name: str,
+        item_name: str,
+        new_item_name: str,
+        new_path: Path,
     ) -> None:
         original_item = self._get_item_opt(section_name=section_name, item_name=item_name)
         if original_item is not None:
             section = self.toml_writer.get_editable_section(section_name)
             section.remove(item_name)
             package_dep_table = tomlkit.inline_table()
-            package_dep_table.add('path', str(new_path))
+            package_dep_table.add("path", str(new_path))
             section.add(new_item_name, package_dep_table)
 
     def add_mypy_overrides_ignore(self, pkg_names: list[str]):

@@ -1,20 +1,30 @@
 from __future__ import annotations
 
+from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
 
-from bi_constants.enums import BIType, ConnectionType as CT
-from bi_core.db.elements import GenericNativeType
-from bi_core.db.conversion_base import (
-    TypeTransformer, make_native_type,
-)
-from clickhouse_sqlalchemy import types as ch_types
+from bi_constants.enums import BIType
+from bi_constants.enums import ConnectionType as CT
 from bi_core.backend_types import get_backend_type
+from bi_core.db.conversion_base import (
+    TypeTransformer,
+    make_native_type,
+)
+from bi_core.db.elements import GenericNativeType
 
-
-CH_TYPES_INT = frozenset((
-    ch_types.Int, ch_types.Int8, ch_types.Int16, ch_types.Int32, ch_types.Int64,
-    ch_types.UInt8, ch_types.UInt16, ch_types.UInt32, ch_types.UInt64,
-))
+CH_TYPES_INT = frozenset(
+    (
+        ch_types.Int,
+        ch_types.Int8,
+        ch_types.Int16,
+        ch_types.Int32,
+        ch_types.Int64,
+        ch_types.UInt8,
+        ch_types.UInt16,
+        ch_types.UInt32,
+        ch_types.UInt64,
+    )
+)
 CH_TYPES_FLOAT = frozenset((ch_types.Float, ch_types.Float32, ch_types.Float64, ch_types.Decimal))
 CH_TYPES_DATE = frozenset((ch_types.Date, ch_types.Date32))
 
@@ -23,9 +33,10 @@ class ClickHouseTypeTransformer(TypeTransformer):
     conn_type = CT.clickhouse
     native_to_user_map = {
         **{make_native_type(CT.clickhouse, typecls): BIType.integer for typecls in CH_TYPES_INT},  # type: ignore  # TODO: fix
-        **{make_native_type(CT.clickhouse, typecls): BIType.string for typecls in (
-            ch_types.String,  # TODO: FixedString
-        )},
+        **{
+            make_native_type(CT.clickhouse, typecls): BIType.string
+            for typecls in (ch_types.String,)  # TODO: FixedString
+        },
         make_native_type(CT.clickhouse, ch_types.Enum8): BIType.string,
         make_native_type(CT.clickhouse, ch_types.Enum16): BIType.string,
         **{make_native_type(CT.clickhouse, typecls): BIType.float for typecls in CH_TYPES_FLOAT},
@@ -36,13 +47,10 @@ class ClickHouseTypeTransformer(TypeTransformer):
         make_native_type(CT.clickhouse, ch_types.DateTime64): BIType.genericdatetime,
         make_native_type(CT.clickhouse, ch_types.DateTimeWithTZ): BIType.genericdatetime,
         make_native_type(CT.clickhouse, ch_types.DateTime64WithTZ): BIType.genericdatetime,
-
         make_native_type(CT.clickhouse, ch_types.UUID): BIType.uuid,
-
         **{make_native_type(CT.clickhouse, ch_types.Array(typecls)): BIType.array_int for typecls in CH_TYPES_INT},
         **{make_native_type(CT.clickhouse, ch_types.Array(typecls)): BIType.array_float for typecls in CH_TYPES_FLOAT},
         make_native_type(CT.clickhouse, ch_types.Array(ch_types.String())): BIType.array_str,
-
         make_native_type(CT.clickhouse, sa.sql.sqltypes.NullType): BIType.unsupported,
     }
     user_to_native_map = {

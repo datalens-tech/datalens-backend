@@ -2,15 +2,15 @@ from typing import Optional
 
 import attr
 
+from bi_api_commons.base_models import RequestContextInfo
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_constants.api_constants import DLHeadersCommon
-from bi_api_commons.base_models import RequestContextInfo
 from bi_core.services_registry import ServicesRegistry
 from bi_core.united_storage_client import (
-    USAuthContextRegular,
+    USAuthContextEmbed,
     USAuthContextMaster,
     USAuthContextPublic,
-    USAuthContextEmbed,
+    USAuthContextRegular,
 )
 from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_core.us_manager.us_manager_sync import SyncUSManager
@@ -54,9 +54,9 @@ class USMFactory:
 
     # Async
     def get_regular_async_usm(
-            self,
-            rci: RequestContextInfo,
-            services_registry: ServicesRegistry,
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
     ) -> AsyncUSManager:
         return AsyncUSManager(
             us_auth_context=self.get_regular_us_auth_ctx_from_rci(rci),
@@ -67,9 +67,9 @@ class USMFactory:
         )
 
     def get_master_async_usm(
-            self,
-            rci: RequestContextInfo,
-            services_registry: ServicesRegistry,
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
     ) -> AsyncUSManager:
         return AsyncUSManager(
             us_auth_context=self.get_master_auth_context(),
@@ -80,9 +80,9 @@ class USMFactory:
         )
 
     def get_public_async_usm(
-            self,
-            rci: RequestContextInfo,
-            services_registry: ServicesRegistry,
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
     ) -> AsyncUSManager:
         assert self.us_public_token is not None, "US public token must be set in factory to create USAuthContextMaster"
 
@@ -98,9 +98,9 @@ class USMFactory:
 
     # Sync
     def get_regular_sync_usm(
-            self,
-            rci: RequestContextInfo,
-            services_registry: ServicesRegistry,
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
     ) -> SyncUSManager:
         return SyncUSManager(
             us_auth_context=self.get_regular_us_auth_ctx_from_rci(rci),
@@ -111,9 +111,9 @@ class USMFactory:
         )
 
     def get_master_sync_usm(
-            self,
-            rci: RequestContextInfo,
-            services_registry: ServicesRegistry,
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
     ) -> SyncUSManager:
         return SyncUSManager(
             us_auth_context=self.get_master_auth_context(),
@@ -124,9 +124,9 @@ class USMFactory:
         )
 
     def get_embed_async_usm(
-            self,
-            rci: RequestContextInfo,
-            services_registry: ServicesRegistry,
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
     ) -> AsyncUSManager:
         return AsyncUSManager(
             us_auth_context=self.def_embed_us_auth_ctx_from_rci(rci),

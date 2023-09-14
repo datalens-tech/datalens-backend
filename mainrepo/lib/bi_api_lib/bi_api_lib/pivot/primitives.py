@@ -1,10 +1,17 @@
 from __future__ import annotations
 
-from typing import Hashable, NamedTuple, Optional
+from typing import (
+    Hashable,
+    NamedTuple,
+    Optional,
+)
 
 import attr
 
-from bi_constants.enums import OrderDirection, PivotHeaderRole
+from bi_constants.enums import (
+    OrderDirection,
+    PivotHeaderRole,
+)
 
 
 class DataCell(NamedTuple):

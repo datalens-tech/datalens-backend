@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, Optional
+from typing import (
+    Dict,
+    Optional,
+)
 
 import attr
 
 from bi_formula.parser.base import FormulaParser
-from bi_formula.parser.factory import ParserType, get_parser
-
+from bi_formula.parser.factory import (
+    ParserType,
+    get_parser,
+)
 
 _DEFAULT_PARSER_TYPE = ParserType.antlr_py
 
@@ -33,20 +38,19 @@ class FormulaParserFactory:
         parser = self._saved_parsers[parser_type]
         stats = parser.get_usage_stats()
         data = {
-            'global_cache_hits': stats.global_cache_hits,
-            'global_cache_misses': stats.global_cache_misses,
-            'global_cache_maxsize': stats.global_cache_maxsize,
-            'global_cache_currsize': stats.global_cache_currsize,
-            'call_count': stats.call_count,
-            'call_time': stats.call_time,
-            'length_counts': stats.length_counts,
-            'length_avg_times': stats.length_avg_times,
-            'length_median_times': stats.length_median_times,
-            'parser_type': parser_type.name,
+            "global_cache_hits": stats.global_cache_hits,
+            "global_cache_misses": stats.global_cache_misses,
+            "global_cache_maxsize": stats.global_cache_maxsize,
+            "global_cache_currsize": stats.global_cache_currsize,
+            "call_count": stats.call_count,
+            "call_time": stats.call_time,
+            "length_counts": stats.length_counts,
+            "length_avg_times": stats.length_avg_times,
+            "length_median_times": stats.length_median_times,
+            "parser_type": parser_type.name,
         }
         LOGGER.info(
-            f'Formula parser global statistics ({parser_type.name})',
-            extra=dict(function_parser_statistics=data)
+            f"Formula parser global statistics ({parser_type.name})", extra=dict(function_parser_statistics=data)
         )
 
     def log_parser_stats_for_all_used_parsers(self) -> None:

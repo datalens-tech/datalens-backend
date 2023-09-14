@@ -1,21 +1,34 @@
 from __future__ import annotations
 
-from typing import List, Type
+from typing import (
+    List,
+    Type,
+)
 
-import bi_formula.core.nodes as nodes
 from bi_formula.core.datatype import DataType
 from bi_formula.core.dialect import StandardDialect as D
-from bi_formula.definitions.args import ArgTypeSequence, ArgTypeForAll
+import bi_formula.core.nodes as nodes
+from bi_formula.definitions.args import (
+    ArgTypeForAll,
+    ArgTypeSequence,
+)
 from bi_formula.definitions.base import (
-    TranslationVariant, TranslationVariantWrapped,
-    Function
+    Function,
+    TranslationVariant,
+    TranslationVariantWrapped,
 )
 from bi_formula.definitions.flags import ContextFlag
-from bi_formula.definitions.functions_string import FuncLen, FuncContains, FuncStartswith
+from bi_formula.definitions.functions_string import (
+    FuncContains,
+    FuncLen,
+    FuncStartswith,
+)
 from bi_formula.definitions.literals import un_literal
-from bi_formula.definitions.type_strategy import Fixed, FromArgs
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
+)
 from bi_formula.translation.context import TranslationCtx
-
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
@@ -26,8 +39,8 @@ class ArrayFunction(Function):
 
 
 class FuncCreateArray(ArrayFunction):
-    name = 'array'
-    arg_names = ['value_1', 'value_2', 'value_3']
+    name = "array"
+    arg_names = ["value_1", "value_2", "value_3"]
     arg_cnt = None
 
 
@@ -48,10 +61,7 @@ class FuncConstArrayBase(FuncCreateArray):
 
 class FuncConstArrayFloat(FuncConstArrayBase):
     variants = [
-        VW(
-            D.DUMMY,
-            lambda *args: nodes.LiteralArrayFloat.make(_normalize_arr_items(args, float))
-        ),
+        VW(D.DUMMY, lambda *args: nodes.LiteralArrayFloat.make(_normalize_arr_items(args, float))),
     ]
     argument_types = [
         ArgTypeForAll({DataType.CONST_FLOAT, DataType.NULL}, require_type_match=DataType.CONST_FLOAT),
@@ -61,10 +71,7 @@ class FuncConstArrayFloat(FuncConstArrayBase):
 
 class FuncConstArrayInt(FuncConstArrayBase):
     variants = [
-        VW(
-            D.DUMMY,
-            lambda *args: nodes.LiteralArrayInteger.make(_normalize_arr_items(args, int))
-        ),
+        VW(D.DUMMY, lambda *args: nodes.LiteralArrayInteger.make(_normalize_arr_items(args, int))),
     ]
     argument_types = [
         ArgTypeForAll({DataType.CONST_INTEGER, DataType.NULL}, require_type_match=DataType.CONST_INTEGER),
@@ -74,10 +81,7 @@ class FuncConstArrayInt(FuncConstArrayBase):
 
 class FuncConstArrayStr(FuncConstArrayBase):
     variants = [
-        VW(
-            D.DUMMY,
-            lambda *args: nodes.LiteralArrayString.make(_normalize_arr_items(args, str))
-        ),
+        VW(D.DUMMY, lambda *args: nodes.LiteralArrayString.make(_normalize_arr_items(args, str))),
     ]
     argument_types = [
         ArgTypeForAll({DataType.CONST_STRING, DataType.NULL}, require_type_match=DataType.CONST_STRING),
@@ -111,29 +115,23 @@ class FuncNonConstArrayStr(FuncNonConstArrayBase):
 
 
 class FuncUnnestArray(ArrayFunction):
-    name = 'unnest'
-    arg_names = ['array']
+    name = "unnest"
+    arg_names = ["array"]
     arg_cnt = 1
 
 
 class FuncUnnestArrayFloat(FuncUnnestArray):
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_FLOAT])
-    ]
+    argument_types = [ArgTypeSequence([DataType.ARRAY_FLOAT])]
     return_type = Fixed(DataType.FLOAT)
 
 
 class FuncUnnestArrayInt(FuncUnnestArray):
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_INT])
-    ]
+    argument_types = [ArgTypeSequence([DataType.ARRAY_INT])]
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncUnnestArrayStr(FuncUnnestArray):
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_STR])
-    ]
+    argument_types = [ArgTypeSequence([DataType.ARRAY_STR])]
     return_type = Fixed(DataType.STRING)
 
 
@@ -146,8 +144,8 @@ class FuncLenArray(FuncLen):
 
 
 class FuncGetArrayItem(ArrayFunction):
-    name = 'get_item'
-    arg_names = ['array', 'index']
+    name = "get_item"
+    arg_names = ["array", "index"]
     arg_cnt = 2
 
 
@@ -173,8 +171,8 @@ class FuncGetArrayItemStr(FuncGetArrayItem):
 
 
 class FuncArrStr(ArrayFunction):
-    name = 'arr_str'
-    arg_names = ['array', 'delimiter', 'null_str']
+    name = "arr_str"
+    arg_names = ["array", "delimiter", "null_str"]
     return_type = Fixed(DataType.STRING)
 
 
@@ -206,8 +204,8 @@ class FuncArrStr3(FuncArrStr):
 
 
 class FuncArrayCountItem(ArrayFunction):
-    name = 'count_item'
-    arg_names = ['array', 'value']
+    name = "count_item"
+    arg_names = ["array", "value"]
     arg_cnt = 2
 
     return_type = Fixed(DataType.INTEGER)
@@ -232,7 +230,7 @@ class FuncArrayCountItemStr(FuncArrayCountItem):
 
 
 class FuncArrayContains(FuncContains):
-    arg_names = ['array', 'value']
+    arg_names = ["array", "value"]
     argument_types = [
         ArgTypeSequence([DataType.ARRAY_INT, DataType.INTEGER]),
         ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.FLOAT]),
@@ -241,8 +239,8 @@ class FuncArrayContains(FuncContains):
 
 
 class FuncArrayContainsAll(ArrayFunction):
-    name = 'contains_all'
-    arg_names = ['array_1', 'array_2']
+    name = "contains_all"
+    arg_names = ["array_1", "array_2"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -255,8 +253,8 @@ class FuncArrayContainsAll(ArrayFunction):
 
 
 class FuncArrayContainsAny(ArrayFunction):
-    name = 'contains_any'
-    arg_names = ['array_1', 'array_2']
+    name = "contains_any"
+    arg_names = ["array_1", "array_2"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -269,8 +267,8 @@ class FuncArrayContainsAny(ArrayFunction):
 
 
 class FuncArrayContainsSubsequence(ArrayFunction):
-    name = 'contains_subsequence'
-    arg_names = ['array_1', 'array_2']
+    name = "contains_subsequence"
+    arg_names = ["array_1", "array_2"]
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -283,7 +281,7 @@ class FuncArrayContainsSubsequence(ArrayFunction):
 
 
 class FuncStartswithArrayBase(FuncStartswith):
-    arg_names = ['array_1', 'array_2']
+    arg_names = ["array_1", "array_2"]
 
 
 class FuncStartswithArrayConst(FuncStartswithArrayBase):
@@ -303,24 +301,26 @@ class FuncStartswithArrayNonConst(FuncStartswithArrayBase):
 
 
 class FuncArraySlice(ArrayFunction):
-    name = 'slice'
-    arg_names = ['array', 'offset', 'length']
+    name = "slice"
+    arg_names = ["array", "offset", "length"]
     arg_cnt = 3
     argument_types = [
-        ArgTypeSequence([
-            {DataType.ARRAY_INT, DataType.ARRAY_FLOAT, DataType.ARRAY_STR},
-            DataType.CONST_INTEGER,
-            DataType.CONST_INTEGER,
-        ]),
+        ArgTypeSequence(
+            [
+                {DataType.ARRAY_INT, DataType.ARRAY_FLOAT, DataType.ARRAY_STR},
+                DataType.CONST_INTEGER,
+                DataType.CONST_INTEGER,
+            ]
+        ),
     ]
 
     return_type = FromArgs(0)
 
 
 class FuncReplaceArrayBase(ArrayFunction):
-    name = 'replace'
+    name = "replace"
     arg_cnt = 3
-    arg_names = ['array', 'old', 'new']
+    arg_names = ["array", "old", "new"]
 
     return_type = FromArgs(0)
 
@@ -348,11 +348,11 @@ class FuncReplaceArrayDefault(FuncReplaceArrayBase):
 
 class FuncArrayCast(ArrayFunction):
     arg_cnt = 1
-    arg_names = ['array']
+    arg_names = ["array"]
 
 
 class FuncIntArray(FuncArrayCast):
-    name = 'cast_arr_int'
+    name = "cast_arr_int"
     return_type = Fixed(DataType.ARRAY_INT)
 
 
@@ -378,7 +378,7 @@ class FuncIntArrayFromStringArray(FuncIntArray):
 
 
 class FuncFloatArray(FuncArrayCast):
-    name = 'cast_arr_float'
+    name = "cast_arr_float"
     return_type = Fixed(DataType.ARRAY_FLOAT)
 
 
@@ -404,7 +404,7 @@ class FuncFloatArrayFromStringArray(FuncFloatArray):
 
 
 class FuncStrArray(FuncArrayCast):
-    name = 'cast_arr_str'
+    name = "cast_arr_str"
     return_type = Fixed(DataType.ARRAY_STR)
 
 
@@ -430,8 +430,8 @@ class FuncStringArrayFromStringArray(FuncStrArray):
 
 
 class FuncArrayMinBase(ArrayFunction):
-    name = 'arr_min'
-    arg_names = ['array']
+    name = "arr_min"
+    arg_names = ["array"]
     arg_cnt = 1
 
 
@@ -450,8 +450,8 @@ class FuncArrayMinInt(FuncArrayMinBase):
 
 
 class FuncArrayMaxBase(ArrayFunction):
-    name = 'arr_max'
-    arg_names = ['array']
+    name = "arr_max"
+    arg_names = ["array"]
     arg_cnt = 1
 
 
@@ -470,8 +470,8 @@ class FuncArrayMaxInt(FuncArrayMaxBase):
 
 
 class FuncArraySumBase(ArrayFunction):
-    name = 'arr_sum'
-    arg_names = ['array']
+    name = "arr_sum"
+    arg_names = ["array"]
     arg_cnt = 1
 
 
@@ -490,8 +490,8 @@ class FuncArraySumInt(FuncArraySumBase):
 
 
 class FuncArrayAvg(ArrayFunction):
-    name = 'arr_avg'
-    arg_names = ['array']
+    name = "arr_avg"
+    arg_names = ["array"]
     arg_cnt = 1
     argument_types = [
         ArgTypeSequence([{DataType.ARRAY_INT, DataType.ARRAY_FLOAT}]),
@@ -500,8 +500,8 @@ class FuncArrayAvg(ArrayFunction):
 
 
 class FuncArrayProduct(ArrayFunction):
-    name = 'arr_product'
-    arg_names = ['array']
+    name = "arr_product"
+    arg_names = ["array"]
     arg_cnt = 1
     argument_types = [
         ArgTypeSequence([{DataType.ARRAY_INT, DataType.ARRAY_FLOAT}]),
@@ -510,8 +510,8 @@ class FuncArrayProduct(ArrayFunction):
 
 
 class FuncArrayRemoveBase(ArrayFunction):
-    name = 'arr_remove'
-    arg_names = ['array', 'value']
+    name = "arr_remove"
+    arg_names = ["array", "value"]
     arg_cnt = 2
 
     return_type = FromArgs(0)
@@ -541,31 +541,24 @@ class FuncArrayRemoveDefault(FuncArrayRemoveBase):
 DEFINITIONS_ARRAY = [
     # arr_avg
     FuncArrayAvg,
-
     # arr_max
     FuncArrayMaxFloat,
     FuncArrayMaxInt,
-
     # arr_min
     FuncArrayMinFloat,
     FuncArrayMinInt,
-
     # arr_product
     FuncArrayProduct,
-
     # arr_remove
     FuncArrayRemoveLiteralNull,
     FuncArrayRemoveDefault,
-
     # arr_str
     FuncArrStr1,
     FuncArrStr2,
     FuncArrStr3,
-
     # arr_sum
     FuncArraySumFloat,
     FuncArraySumInt,
-
     # array
     FuncConstArrayFloat,
     FuncConstArrayInt,
@@ -573,58 +566,44 @@ DEFINITIONS_ARRAY = [
     FuncNonConstArrayInt,
     FuncNonConstArrayFloat,
     FuncNonConstArrayStr,
-
     # cast_arr_float
     FuncFloatArrayFromIntArray,
     FuncFloatArrayFromFloatArray,
     FuncFloatArrayFromStringArray,
-
     # cast_arr_int
     FuncIntArrayFromIntArray,
     FuncIntArrayFromFloatArray,
     FuncIntArrayFromStringArray,
-
     # cast_arr_str
     FuncStringArrayFromIntArray,
     FuncStringArrayFromFloatArray,
     FuncStringArrayFromStringArray,
-
     # contains
     FuncArrayContains,
-
     # contains_all
     FuncArrayContainsAll,
-
     # contains_any
     FuncArrayContainsAny,
-
     # contains_subsequence
     FuncArrayContainsSubsequence,
-
     # count_item
     FuncArrayCountItemInt,
     FuncArrayCountItemFloat,
     FuncArrayCountItemStr,
-
     # get_item
     FuncGetArrayItemFloat,
     FuncGetArrayItemInt,
     FuncGetArrayItemStr,
-
     # len
     FuncLenArray,
-
     # replace
     FuncReplaceArrayLiteralNull,
     FuncReplaceArrayDefault,
-
     # slice
     FuncArraySlice,
-
     # startswith
     FuncStartswithArrayConst,
     FuncStartswithArrayNonConst,
-
     # unnest
     FuncUnnestArrayFloat,
     FuncUnnestArrayInt,

@@ -1,16 +1,20 @@
 from __future__ import annotations
 
-from typing import Optional, Dict, Any
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
 
 import attr
 import sqlalchemy.dialects.postgresql as sa_pg
 
+from bi_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
+from bi_core.db.native_type import SATypeSpec
+
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-from bi_core.db.native_type import SATypeSpec
-from bi_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
-
 
 # One way to obtain this data:
 # docker exec bi-api_db-postgres_1 psql -U datalens -d  bi_db -A -t -F, -c 'select oid, typname from pg_type order by oid'
@@ -333,10 +337,7 @@ OID_KNOWLEDGE_RAW = """
 11750,user_mappings
 """
 OID_KNOWLEDGE = {  # type: ignore  # TODO: fix
-    int(oid): typname
-    for oid, typname in (
-        item.split(',', 1)
-        for item in OID_KNOWLEDGE_RAW.strip().splitlines())
+    int(oid): typname for oid, typname in (item.split(",", 1) for item in OID_KNOWLEDGE_RAW.strip().splitlines())
 }
 
 # `relkind`:
@@ -359,7 +360,9 @@ WHERE
     AND pg_namespace.nspname != 'information_schema'
     AND pg_class.relkind in ('m', 'p', 'r', 'v')
 ORDER BY schema, name
-""".strip().replace('\n', '  ')
+""".strip().replace(
+    "\n", "  "
+)
 # NOTE: there's also `AND NOT pg_class.relispartition` in postgresql>=10
 
 
@@ -410,10 +413,10 @@ class BasePostgresAdapter(BaseSSLCertAdapter):
 
     @staticmethod
     def _convert_bytea(value: memoryview) -> Optional[str]:
-        str_value = bytes(value[:110]).decode('utf-8', errors='replace')
+        str_value = bytes(value[:110]).decode("utf-8", errors="replace")
         if len(value) > 110 or len(str_value) > 100:
             str_value = str_value[:100]
-            str_value = str_value + '…'
+            str_value = str_value + "…"
         return str_value
 
     # it's static because of typing hell in target_dto
@@ -422,5 +425,5 @@ class BasePostgresAdapter(BaseSSLCertAdapter):
         if target_dto.enforce_collate == PGEnforceCollateMode.auto:
             raise Exception("Resolution of PGEnforceCollateMode.auto is not allowed at this point")
         if target_dto.enforce_collate == PGEnforceCollateMode.on:
-            return 'en_US'
+            return "en_US"
         return None

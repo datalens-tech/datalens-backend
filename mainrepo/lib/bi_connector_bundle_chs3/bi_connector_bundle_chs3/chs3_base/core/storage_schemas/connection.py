@@ -1,7 +1,9 @@
-from marshmallow import Schema, fields
+from marshmallow import (
+    Schema,
+    fields,
+)
 
 from bi_constants.enums import FileProcessingStatus
-
 from bi_core.us_manager.storage_schemas.base import DefaultStorageSchema
 from bi_core.us_manager.storage_schemas.base_types import SchemaColumnStorageSchema
 from bi_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema

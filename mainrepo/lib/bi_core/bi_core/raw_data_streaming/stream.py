@@ -1,10 +1,15 @@
 from __future__ import annotations
 
 from abc import ABCMeta
-from typing import Iterator, Optional, Union, AsyncIterator, TypeVar
+from typing import (
+    AsyncIterator,
+    Iterator,
+    Optional,
+    TypeVar,
+    Union,
+)
 
-
-_ITER_TV = TypeVar('_ITER_TV')
+_ITER_TV = TypeVar("_ITER_TV")
 
 
 class DataStreamBase(Iterator[_ITER_TV], metaclass=ABCMeta):
@@ -39,6 +44,7 @@ class SimpleDataStream(DataStreamBase):
     """
     Data stream that calculates progress percentage based on total data size.
     """
+
     def __init__(self, data_iter: Iterator[dict], rows_to_copy: Optional[int] = None):
         self._data_iter = data_iter
         self._rows_to_copy = rows_to_copy
@@ -63,6 +69,7 @@ class LazyDataStream(DataStreamBase):
     Data stream with progress percentage set from the outside.
     Does no calculations by itself.
     """
+
     def __init__(self, data_iter: Iterator[dict]):
         self._data_iter = data_iter
 
@@ -83,6 +90,7 @@ class SimpleUntypedDataStream(DataStreamBase):
     """
     Data stream that calculates progress percentage based on total data size.
     """
+
     def __init__(self, data_iter: Iterator[list], rows_to_copy: Optional[int] = None):
         self._data_iter = data_iter
         self._rows_to_copy = rows_to_copy

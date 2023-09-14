@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import Any, Callable, ClassVar, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 from clickhouse_sqlalchemy.quoting import Quoter
 
@@ -9,16 +15,15 @@ from bi_constants.enums import (
     CreateDSFrom,
     FileProcessingStatus,
 )
-
 from bi_core import exc
-from bi_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
-from bi_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 from bi_core.db import SchemaInfo
 from bi_core.utils import sa_plain_text
 
 from bi_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
+from bi_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -66,8 +71,9 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
 
     @require_file_configured
     def source_exists(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
-            force_refresh: bool = False,
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        force_refresh: bool = False,
     ) -> bool:
         try:
             self.connection.get_file_source_by_id(self.origin_source_id)
@@ -123,15 +129,15 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
         bucket = self.connection.bucket
         assert s3_endpoint is not None and bucket is not None and raw_schema is not None
 
-        s3_path = self.quote_str('{}/{}/{}'.format(s3_endpoint.strip('/'), bucket.strip('/'), s3_filename))
-        key_id_placeholder = self.quote_str(f'key_id_{replace_secret}')
-        secret_key_placeholder = self.quote_str(f'secret_key_{replace_secret}')
-        file_fmt = self.quote_str('Native')
+        s3_path = self.quote_str("{}/{}/{}".format(s3_endpoint.strip("/"), bucket.strip("/"), s3_filename))
+        key_id_placeholder = self.quote_str(f"key_id_{replace_secret}")
+        secret_key_placeholder = self.quote_str(f"secret_key_{replace_secret}")
+        file_fmt = self.quote_str("Native")
         dialect = AsyncFileS3Adapter.get_dialect()
-        schema_str = self.quote_str(', '.join(
-            create_column_sql(dialect, col, self.type_transformer)
-            for col in raw_schema))
-        alias_str = '' if alias is None else f' AS {self.quote(alias)}'
+        schema_str = self.quote_str(
+            ", ".join(create_column_sql(dialect, col, self.type_transformer) for col in raw_schema)
+        )
+        alias_str = "" if alias is None else f" AS {self.quote(alias)}"
 
         return sa_plain_text(
             f"s3({s3_path}, {key_id_placeholder}, {secret_key_placeholder}, {file_fmt}, {schema_str}){alias_str}"

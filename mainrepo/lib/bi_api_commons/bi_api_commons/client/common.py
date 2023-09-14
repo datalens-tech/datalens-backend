@@ -1,14 +1,23 @@
 import contextlib
 import json
 import logging
-from typing import Iterator, NoReturn, Any, Optional
+from typing import (
+    Any,
+    Iterator,
+    NoReturn,
+    Optional,
+)
 
 import attr
 import marshmallow.exceptions
 
+from bi_api_commons.client.base import (
+    DLCommonAPIClient,
+    Req,
+    Resp,
+)
 import bi_api_commons.error_messages
 import bi_api_commons.exc
-from bi_api_commons.client.base import Req, Resp, DLCommonAPIClient
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,16 +44,16 @@ class CommonInternalAPIClient(DLCommonAPIClient):
             LOGGER.info(f"Deserialization fail in internal API client: {type(self).__name__}", exc_info=True)
             effective_messages: dict[str, Any] = ma_exc.messages  # type: ignore
 
-            raise bi_api_commons.exc.MalformedAPIResponseErr(self.create_exc_data(
-                resp,
-                operation=op_code,
-                validation_errors=effective_messages,
-            )) from ma_exc
+            raise bi_api_commons.exc.MalformedAPIResponseErr(
+                self.create_exc_data(
+                    resp,
+                    operation=op_code,
+                    validation_errors=effective_messages,
+                )
+            ) from ma_exc
 
     def create_exc_data(
-            self,
-            resp: Resp, operation: str,
-            validation_errors: Optional[dict[str, Any]] = None
+        self, resp: Resp, operation: str, validation_errors: Optional[dict[str, Any]] = None
     ) -> bi_api_commons.exc.APIResponseData:
         body: Any
         try:
@@ -56,7 +65,7 @@ class CommonInternalAPIClient(DLCommonAPIClient):
             status_code=resp.status,
             response_body=body,
             operation=operation,
-            response_body_validation_errors=validation_errors
+            response_body_validation_errors=validation_errors,
         )
 
     def raise_from_resp(self, resp: Resp, *, op_code: str) -> NoReturn:
@@ -67,10 +76,13 @@ class CommonInternalAPIClient(DLCommonAPIClient):
         except Exception:  # noqa
             resp_data = repr(common_data.response_body)
 
-        LOGGER.info(f"Handling unexpected response in internal API client: {type(self).__name__}", extra=dict(
-            status_code=resp.status,
-            resp_data=resp_data,
-        ))
+        LOGGER.info(
+            f"Handling unexpected response in internal API client: {type(self).__name__}",
+            extra=dict(
+                status_code=resp.status,
+                resp_data=resp_data,
+            ),
+        )
 
         if resp.status in (401, 403):
             raise bi_api_commons.exc.AccessDeniedErr(common_data)

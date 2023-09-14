@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 from bi_constants.enums import CreateDSFrom
-
-from bi_core.data_source.sql import BaseSQLDataSource, StandardSchemaSQLDataSource, SubselectDataSource
-
-from bi_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
-from bi_connector_greenplum.core.constants import (
-    CONNECTION_TYPE_GREENPLUM, SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT,
+from bi_core.data_source.sql import (
+    BaseSQLDataSource,
+    StandardSchemaSQLDataSource,
+    SubselectDataSource,
 )
+
+from bi_connector_greenplum.core.constants import (
+    CONNECTION_TYPE_GREENPLUM,
+    SOURCE_TYPE_GP_SUBSELECT,
+    SOURCE_TYPE_GP_TABLE,
+)
+from bi_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 
 
 class GreenplumDataSourceMixin(BaseSQLDataSource):
@@ -21,8 +26,8 @@ class GreenplumDataSourceMixin(BaseSQLDataSource):
 
 
 class GreenplumTableDataSource(GreenplumDataSourceMixin, StandardSchemaSQLDataSource):
-    """ Greenplum table """
+    """Greenplum table"""
 
 
 class GreenplumSubselectDataSource(GreenplumDataSourceMixin, SubselectDataSource):
-    """ Greenplum subselect """
+    """Greenplum subselect"""

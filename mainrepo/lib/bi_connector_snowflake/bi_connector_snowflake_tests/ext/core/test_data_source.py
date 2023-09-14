@@ -1,32 +1,39 @@
 import pytest
 
-from bi_connector_snowflake.core.constants import SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT
+from bi_constants.enums import (
+    BIType,
+    RawSQLLevel,
+)
+from bi_core_testing.testcases.data_source import DefaultDataSourceTestClass
+
+from bi_connector_snowflake.core.constants import (
+    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
+)
 from bi_connector_snowflake.core.data_source import (
-    SnowFlakeTableDataSource,
     SnowFlakeSubselectDataSource,
+    SnowFlakeTableDataSource,
 )
 from bi_connector_snowflake.core.data_source_spec import (
-    SnowFlakeTableDataSourceSpec,
     SnowFlakeSubselectDataSourceSpec,
+    SnowFlakeTableDataSourceSpec,
 )
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from bi_connector_snowflake_tests.ext.config import SAMPLE_TABLE_SIMPLIFIED_SCHEMA
 from bi_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
-from bi_constants.enums import BIType, RawSQLLevel
-from bi_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
 
 class TestSnowFlakeTableDataSource(
-        BaseSnowFlakeTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionSQLSnowFlake,
-            SnowFlakeTableDataSourceSpec,
-            SnowFlakeTableDataSource,
-        ],
+    BaseSnowFlakeTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionSQLSnowFlake,
+        SnowFlakeTableDataSourceSpec,
+        SnowFlakeTableDataSource,
+    ],
 ):
     DSRC_CLS = SnowFlakeTableDataSource
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sf_secrets) -> SnowFlakeTableDataSourceSpec:
         dsrc_spec = SnowFlakeTableDataSourceSpec(
             source_type=SOURCE_TYPE_SNOWFLAKE_TABLE,
@@ -41,22 +48,22 @@ class TestSnowFlakeTableDataSource(
 
 
 class TestSnowFlakeSubselectDataSoure(
-        BaseSnowFlakeTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionSQLSnowFlake,
-            SnowFlakeSubselectDataSourceSpec,
-            SnowFlakeSubselectDataSource,
-        ]
+    BaseSnowFlakeTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionSQLSnowFlake,
+        SnowFlakeSubselectDataSourceSpec,
+        SnowFlakeSubselectDataSource,
+    ],
 ):
     DSRC_CLS = SnowFlakeSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sf_secrets) -> SnowFlakeSubselectDataSourceSpec:
         dsrc_spec = SnowFlakeSubselectDataSourceSpec(
             source_type=SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
-            subsql=f'SELECT * FROM {sf_secrets.get_database()}.{sf_secrets.get_schema()}.{sf_secrets.get_table_name()}',
+            subsql=f"SELECT * FROM {sf_secrets.get_database()}.{sf_secrets.get_schema()}.{sf_secrets.get_table_name()}",
         )
         return dsrc_spec
 

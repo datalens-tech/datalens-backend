@@ -2,11 +2,20 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Sequence, Type
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
 
-from bi_constants.enums import ComponentType, ComponentErrorLevel
+from bi_constants.enums import (
+    ComponentErrorLevel,
+    ComponentType,
+)
 
 
 @attr.s
@@ -24,27 +33,27 @@ class ComponentErrorPack:
     errors: List[ComponentError] = attr.ib(factory=list)
 
     def get_errors(
-            self,
-            code: Optional[Sequence[str]] = None,
-            code_prefix: Optional[Sequence[str]] = None,
+        self,
+        code: Optional[Sequence[str]] = None,
+        code_prefix: Optional[Sequence[str]] = None,
     ) -> List[ComponentError]:
         if code is not None and code_prefix is not None:
-            raise ValueError('Cannot specify both code and code_prefix')
+            raise ValueError("Cannot specify both code and code_prefix")
 
         if code is not None:
             code = list(code)
             cond = lambda err: err.code == code
         elif code_prefix is not None:
             code_prefix = list(code_prefix)
-            cond = lambda err: err.code[:len(code_prefix)] == code_prefix  # type: ignore  # TODO: fix
+            cond = lambda err: err.code[: len(code_prefix)] == code_prefix  # type: ignore  # TODO: fix
         else:
             cond = lambda err: True
         return [err for err in self.errors if cond(err)]
 
     def remove_errors(
-            self,
-            code: Optional[Sequence[str]] = None,
-            code_prefix: Optional[Sequence[str]] = None,
+        self,
+        code: Optional[Sequence[str]] = None,
+        code_prefix: Optional[Sequence[str]] = None,
     ) -> None:
         for err in self.get_errors(code=code, code_prefix=code_prefix):
             self.errors.remove(err)
@@ -71,10 +80,10 @@ class ComponentErrorRegistry:
                 return item
 
     def remove_errors(
-            self,
-            id: str,
-            code: Optional[Sequence[str]] = None,
-            code_prefix: Optional[Sequence[str]] = None,
+        self,
+        id: str,
+        code: Optional[Sequence[str]] = None,
+        code_prefix: Optional[Sequence[str]] = None,
     ) -> None:
         """
         Remove errors for object with given ID.
@@ -89,32 +98,28 @@ class ComponentErrorRegistry:
             self.items.remove(item)
 
     def add_error(  # type: ignore  # TODO: fix
-            self,
-            id: str, type: ComponentType,
-            message: str,
-            code: Sequence[str],
-            level: ComponentErrorLevel = ComponentErrorLevel.error,
-            details: Optional[dict] = None,
+        self,
+        id: str,
+        type: ComponentType,
+        message: str,
+        code: Sequence[str],
+        level: ComponentErrorLevel = ComponentErrorLevel.error,
+        details: Optional[dict] = None,
     ):
         details = details or {}
         error_cls = ERROR_CLS_BY_COMP_TYPE.get(type)
         if error_cls is None:
-            raise ValueError(f'Invalid value for type: {type}')
+            raise ValueError(f"Invalid value for type: {type}")
 
         item = self.get_pack(id=id)
         if item is None:
             item = ComponentErrorPack(id=id, type=type)
             self.items.append(item)
 
-        item.errors.append(error_cls(
-            message=message, code=list(code), level=level, details=details
-        ))
+        item.errors.append(error_cls(message=message, code=list(code), level=level, details=details))
 
     def for_type(self, type: ComponentType) -> List[ComponentErrorPack]:
-        return [
-            item for item in self.items
-            if item.type == type
-        ]
+        return [item for item in self.items if item.type == type]
 
     def rename_pack(self, old_id: str, new_id: str) -> None:
         for item in self.items:

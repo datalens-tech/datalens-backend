@@ -21,19 +21,18 @@ class NameGen:  # TODO: Rename
     'fld2_1'
     """
 
-    sep = '_'
+    sep = "_"
 
     def __init__(self) -> None:
         self.counters = defaultdict(lambda: 0)
 
     def __call__(self, node: formula_nodes.FormulaItem, name: str) -> str:
         self.counters[name] += 1
-        return f'{name}{self.sep}{self.counters[name]}'
+        return f"{name}{self.sep}{self.counters[name]}"
 
 
 class MappedNameGen(NameGen):
-
-    sep = ''
+    sep = ""
 
     def __init__(self, namemap) -> None:
         super().__init__()
@@ -53,4 +52,4 @@ class PrefixedIdGen:
         self._cnt = count()
 
     def get_id(self) -> str:
-        return f'{self._prefix}_{next(self._cnt)}'
+        return f"{self._prefix}_{next(self._cnt)}"

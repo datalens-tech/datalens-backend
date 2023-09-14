@@ -3,20 +3,26 @@
 from __future__ import annotations
 
 import cProfile
+from contextlib import contextmanager
 import datetime
 import logging
 import os
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Iterable,
+    Iterator,
+    Optional,
+)
 import uuid
-from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Optional
+
+from bi_api_lib.enums import USPermissionKind
+from bi_app_tools.profiling_base import GenericProfiler
+import bi_core.exc as common_exc
+from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 
 # noinspection PyUnresolvedReferences
 
-from bi_app_tools.profiling_base import GenericProfiler
-from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
-import bi_core.exc as common_exc
-
-from bi_api_lib.enums import USPermissionKind
 
 if TYPE_CHECKING:
     from bi_core.us_entry import USEntry
@@ -26,18 +32,22 @@ LOGGER = logging.getLogger(__name__)
 
 @contextmanager
 def query_execution_context(
-        log_error: bool = True,
-        dataset_id: Optional[str] = None,
-        version: Optional[str] = None,
-        body: Optional[dict] = None,
+    log_error: bool = True,
+    dataset_id: Optional[str] = None,
+    version: Optional[str] = None,
+    body: Optional[dict] = None,
 ) -> Iterator[None]:
     try:
         yield  # execute query here
     except common_exc.DatabaseQueryError as err:
         if log_error:
             LOGGER.info(
-                'Failed SQL query for dataset %s-%s. Request: %s.  Query: %s. Error: %s',
-                dataset_id, version, str(body)[:1000], err.query, err.db_message,
+                "Failed SQL query for dataset %s-%s. Request: %s.  Query: %s. Error: %s",
+                dataset_id,
+                version,
+                str(body)[:1000],
+                err.query,
+                err.db_message,
                 exc_info=True,
             )
         raise
@@ -46,7 +56,7 @@ def query_execution_context(
 @contextmanager
 def profile_stats(stats_dir: Optional[str] = None) -> Iterator[None]:
     """Save profiler stats to file"""
-    stats_dir = stats_dir or './cprofiler'
+    stats_dir = stats_dir or "./cprofiler"
     if not os.path.exists(stats_dir):
         os.makedirs(stats_dir)
     pr = cProfile.Profile()
@@ -57,9 +67,8 @@ def profile_stats(stats_dir: Optional[str] = None) -> Iterator[None]:
         pr.disable()
         filename = os.path.join(
             stats_dir,
-            '{}-{}.stats'.format(
-                datetime.datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S'),
-                str(uuid.uuid4())[:4]))
+            "{}-{}.stats".format(datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-%M-%S"), str(uuid.uuid4())[:4]),
+        )
         pr.dump_stats(filename)
 
 
@@ -77,9 +86,9 @@ def need_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) ->
 
 
 def chunks(lst: list[Any], size: int) -> Iterable[list[Any]]:
-    """ Yield successive chunks from lst. No padding.  """
+    """Yield successive chunks from lst. No padding."""
     for idx in range(0, len(lst), size):
-        yield lst[idx:idx + size]
+        yield lst[idx : idx + size]
 
 
 def split_by_quoted_quote(value: str, quote: str = "'") -> tuple[str, str]:
@@ -106,14 +115,14 @@ def split_by_quoted_quote(value: str, quote: str = "'") -> tuple[str, str]:
             raise ValueError("Unclosed quote")
         value_piece = value[:next_quote]
         result.append(value_piece)
-        value = value[next_quote + ql:]
+        value = value[next_quote + ql :]
         if value.startswith(quote):
             result.append(quote)
             value = value[ql:]
         else:  # some other text, or end-of-line.
             break
 
-    return ''.join(result), value
+    return "".join(result), value
 
 
 def quote_by_quote(value: str, quote: str = "'") -> str:
@@ -125,7 +134,4 @@ def quote_by_quote(value: str, quote: str = "'") -> str:
     >>> split_by_quoted_quote(quote_by_quote("a'b'") + "and 'stuff'")
     ("a'b'", "and 'stuff'")
     """
-    return "{}{}{}".format(
-        quote,
-        value.replace(quote, quote + quote),
-        quote)
+    return "{}{}{}".format(quote, value.replace(quote, quote + quote), quote)

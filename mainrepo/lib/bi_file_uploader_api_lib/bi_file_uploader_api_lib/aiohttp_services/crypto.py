@@ -1,14 +1,14 @@
 from typing import ClassVar
 
-import attr
 from aiohttp import web
+import attr
 
 from bi_configs.crypto_keys import CryptoKeysConfig
 
 
 @attr.s
 class CryptoService:
-    APP_KEY: ClassVar[str] = 'CRYPTO'
+    APP_KEY: ClassVar[str] = "CRYPTO"
 
     crypto_keys_config: CryptoKeysConfig = attr.ib(repr=False)
 

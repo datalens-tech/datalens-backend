@@ -1,8 +1,7 @@
 from typing import Type
 
-from bi_constants.enums import ConnectionType
-
 from bi_api_connector.connection_info import ConnectionInfoProvider
+from bi_constants.enums import ConnectionType
 
 
 class InfoProviderNotFound(Exception):
@@ -13,8 +12,8 @@ CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE: dict[ConnectionType, Type[ConnectionInfoPro
 
 
 def register_connector_info_provider_cls(
-        conn_type: ConnectionType,
-        info_provider_cls: Type[ConnectionInfoProvider],
+    conn_type: ConnectionType,
+    info_provider_cls: Type[ConnectionInfoProvider],
 ) -> None:
     CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE[conn_type] = info_provider_cls
 

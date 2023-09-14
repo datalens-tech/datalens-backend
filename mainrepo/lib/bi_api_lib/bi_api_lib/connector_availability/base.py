@@ -3,29 +3,33 @@ from __future__ import annotations
 import abc
 import itertools
 import logging
-from typing import Any, Iterator, Optional
+from typing import (
+    Any,
+    Iterator,
+    Optional,
+)
 
 import attr
 
+from bi_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
+from bi_api_lib.connection_info import get_connector_info_provider_cls
+from bi_api_lib.i18n.localizer import Translatable
 from bi_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
-    SectionSettings,
     ConnectorBaseSettings,
     ConnectorContainerSettings,
     ConnectorSettings,
+    SectionSettings,
 )
 from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
 from bi_configs.utils import conn_type_set_env_var_converter
-
-from bi_constants.enums import ConnectionType, ConnectorAvailability
-
+from bi_constants.enums import (
+    ConnectionType,
+    ConnectorAvailability,
+)
 from bi_i18n.localizer_base import Localizer
-from bi_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
-from bi_api_lib.connection_info import get_connector_info_provider_cls
-from bi_api_lib.i18n.localizer import Translatable
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,11 +55,11 @@ class Section(LocalizedSerializable):
     @classmethod
     def from_settings(cls, settings: SectionSettings) -> Section:
         def _connector_from_settings(settings: ConnectorBaseSettings | ObjectLikeConfig) -> ConnectorBase:
-            if hasattr(settings, 'conn_type'):
+            if hasattr(settings, "conn_type"):
                 return Connector.from_settings(settings)  # type: ignore
-            elif hasattr(settings, 'includes'):
+            elif hasattr(settings, "includes"):
                 return ConnectorContainer.from_settings(settings)  # typeL ignore
-            raise ValueError(f'Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
+            raise ValueError('Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
 
         return cls(
             title_translatable=_make_translatable(settings.title_translatable.text, settings.title_translatable.domain),
@@ -65,7 +69,7 @@ class Section(LocalizedSerializable):
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
             title=localizer.translate(self.title_translatable),
-            connectors=[connector.as_dict(localizer) for connector in self.connectors]
+            connectors=[connector.as_dict(localizer) for connector in self.connectors],
         )
 
 
@@ -107,10 +111,12 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
 @attr.s(kw_only=True)
 class Connector(ConnectorBase):
-    """ Represents an actual connection type """
+    """Represents an actual connection type"""
 
     _hidden: bool = attr.ib(init=False, default=False)
-    conn_type: ConnectionType = attr.ib(converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v)
+    conn_type: ConnectionType = attr.ib(
+        converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v
+    )
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
 
     @classmethod
@@ -147,7 +153,7 @@ class ConnectorContainer(ConnectorBase):
     It is up to the UI to decide what to do with it
     """
 
-    conn_type_str = '__meta__'
+    conn_type_str = "__meta__"
     _alias: str = attr.ib()
     includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
     title_translatable: Translatable = attr.ib()
@@ -175,7 +181,7 @@ class ConnectorContainer(ConnectorBase):
         return cls(
             alias=settings.alias,
             title_translatable=_make_translatable(settings.title_translatable.text, settings.title_translatable.domain),
-            includes=[Connector.from_settings(item) for item in settings.includes]
+            includes=[Connector.from_settings(item) for item in settings.includes],
         )
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
@@ -201,7 +207,9 @@ class ConnectorAvailabilityConfig(SettingsBase):
             connector._hidden = connector.conn_type not in self.visible_connectors
 
     @classmethod
-    def from_settings(cls, settings: ConnectorAvailabilityConfigSettings | ObjectLikeConfig) -> ConnectorAvailabilityConfig:
+    def from_settings(
+        cls, settings: ConnectorAvailabilityConfigSettings | ObjectLikeConfig
+    ) -> ConnectorAvailabilityConfig:
         visible_connectors: set[ConnectionType] = {ConnectionType(item) for item in settings.visible_connectors}
 
         return cls(
@@ -216,7 +224,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
             itertools.chain.from_iterable(
                 connector.includes if isinstance(connector, ConnectorContainer) else (connector,)  # type: ignore
                 for connector in itertools.chain.from_iterable(section.connectors for section in self.sections)
-            )
+            ),
         )
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
@@ -228,7 +236,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
     def check_connector_is_available(self, conn_type: ConnectionType) -> bool:
         conn_options = next((conn for conn in self._iter_connectors() if conn.conn_type == conn_type), None)
         if conn_options is None:
-            LOGGER.warning('Connector %s is not available in current env', conn_type.name)
+            LOGGER.warning("Connector %s is not available in current env", conn_type.name)
             return False
 
         return conn_options.availability == ConnectorAvailability.free

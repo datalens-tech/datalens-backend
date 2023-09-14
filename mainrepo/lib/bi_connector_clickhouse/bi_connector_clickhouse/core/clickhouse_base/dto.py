@@ -5,8 +5,10 @@ from typing import Optional
 import attr
 
 from bi_constants.enums import ConnectionType
-
-from bi_core.connection_models.dto_defs import ConnDTO, DefaultSQLDTO
+from bi_core.connection_models.dto_defs import (
+    ConnDTO,
+    DefaultSQLDTO,
+)
 
 
 @attr.s(frozen=True)

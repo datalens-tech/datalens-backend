@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from bi_formula.core.datatype import DataType, DataTypeParams
+from bi_formula.core.datatype import (
+    DataType,
+    DataTypeParams,
+)
 
 
 class TypeStrategy:

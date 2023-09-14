@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-from .format import (
-    JsonFormatter,
-)
+from .format import JsonFormatter
 
-
-__all__ = (
-    'JsonFormatter',
-)
+__all__ = ("JsonFormatter",)

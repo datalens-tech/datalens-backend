@@ -1,5 +1,5 @@
-import subprocess
 from pathlib import Path
+import subprocess
 from typing import Optional
 
 import attr
@@ -11,10 +11,10 @@ class GitManager:
     _suppress_stdout_on_run = attr.ib(default=True)
 
     def _run_git(
-            self,
-            args: list[str],
-            cwd: Optional[Path] = None,
-            extract_stdout: bool = False,
+        self,
+        args: list[str],
+        cwd: Optional[Path] = None,
+        extract_stdout: bool = False,
     ) -> subprocess.CompletedProcess:
         actual_cwd: Path = cwd or self._path
 
@@ -34,11 +34,11 @@ class GitManager:
         )
 
     def _get_git_output(
-            self,
-            args: list[str],
-            *,
-            auto_strip: bool,
-            cwd: Optional[Path] = None,
+        self,
+        args: list[str],
+        *,
+        auto_strip: bool,
+        cwd: Optional[Path] = None,
     ) -> str:
         proc = self._run_git(args=args, cwd=cwd, extract_stdout=True)
         stdout = proc.stdout.decode("ascii")

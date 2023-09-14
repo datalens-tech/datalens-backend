@@ -2,9 +2,15 @@ from __future__ import annotations
 
 import attr
 
-from bi_formula_ref.examples.config import ExampleConfig, PredefinedExampleConfig
+from bi_formula_ref.examples.config import (
+    ExampleConfig,
+    PredefinedExampleConfig,
+)
 from bi_formula_ref.examples.renderer import ExampleRenderer
-from bi_formula_ref.registry.example_base import ExampleBase, DataExampleRendererConfig
+from bi_formula_ref.registry.example_base import (
+    DataExampleRendererConfig,
+    ExampleBase,
+)
 
 
 @attr.s(frozen=True)
@@ -12,11 +18,7 @@ class SimpleExample(ExampleBase):
     _text: str = attr.ib()
 
     def render(self, func_name: str, locale: str, config: DataExampleRendererConfig, under_cut: bool) -> str:
-        return (
-            '```\n'
-            f'{self._text.strip()}\n'
-            '```'
-        )
+        return "```\n" f"{self._text.strip()}\n" "```"
 
 
 @attr.s(frozen=True)
@@ -45,7 +47,9 @@ class DataExample(DataExampleBase):
     def render(self, func_name: str, locale: str, config: DataExampleRendererConfig, under_cut: bool) -> str:
         example_renderer = self._get_renderer(locale=locale, config=config)
         text = example_renderer.render_example_from_storage(
-            example=self._example_config, func_name=func_name, under_cut=under_cut,
+            example=self._example_config,
+            func_name=func_name,
+            under_cut=under_cut,
         )
         return text
 

@@ -1,15 +1,20 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, cast
+from typing import (
+    TYPE_CHECKING,
+    cast,
+)
 
 from bi_formula.core.datatype import DataType
-
-from bi_formula_ref.registry.arg_base import FuncArg, ArgumentExtractorBase
+from bi_formula_ref.registry.arg_base import (
+    ArgumentExtractorBase,
+    FuncArg,
+)
 
 if TYPE_CHECKING:
-    from bi_formula_ref.registry.env import GenerationEnvironment
     import bi_formula_ref.registry.base as _registry_base
+    from bi_formula_ref.registry.env import GenerationEnvironment
 
 
 INFINITE_ARG_COUNT = 3
@@ -31,7 +36,8 @@ def _get_expandable_types() -> dict[DataType, set[DataType]]:
         autocast_dtypes = cast(
             set[DataType],
             {
-                actype for actype in dtype.autocast_types
+                actype
+                for actype in dtype.autocast_types
                 if actype is not dtype and not actype.is_const and actype is not DataType.NULL
             },
         )
@@ -78,9 +84,9 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
         # generate arg names if they are not defined
         if not arg_names:  # single anonymous arg
             if max_arg_cnt == 1:
-                arg_names = ['value']
+                arg_names = ["value"]
             else:  # multiple anonymous args
-                arg_names = ['arg_{}'.format(i + 1) for i in range(max_arg_cnt)]
+                arg_names = ["arg_{}".format(i + 1) for i in range(max_arg_cnt)]
 
         # patch all type sets with implicit INTEGERs if FLOAT is accepted
         for types in arg_type_lists.values():
@@ -93,5 +99,6 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
                 name=arg_names[i],
                 types=arg_type_lists[i],
                 optional_level=max(0, i + 1 - min_arg_cnt),
-            ) for i in range(max_arg_cnt)
+            )
+            for i in range(max_arg_cnt)
         ]

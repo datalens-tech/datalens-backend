@@ -1,18 +1,26 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Collection, Iterable, Optional, Sequence
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    Iterable,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 if TYPE_CHECKING:
     from bi_constants.enums import BIType
-
-    import bi_core.data_source
+    from bi_constants.types import TBIDataRow
     from bi_core.components.ids import AvatarId
     from bi_core.data_processing.cache.primitives import LocalKeyRepresentation
-    from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo, PreparedSingleFromInfo
+    from bi_core.data_processing.prepared_components.primitives import (
+        PreparedMultiFromInfo,
+        PreparedSingleFromInfo,
+    )
     from bi_core.data_processing.types import TValuesChunkStream
-    from bi_constants.types import TBIDataRow
+    import bi_core.data_source
 
 
 @attr.s
@@ -60,6 +68,7 @@ class VirtualStream(AbstractStream):
 @attr.s
 class DataSourceVS(VirtualStream):
     """A data source avatar"""
+
     result_id: AvatarId = attr.ib(kw_only=True)
     alias: str = attr.ib(kw_only=True)
     prep_src_info: PreparedSingleFromInfo = attr.ib(kw_only=True)
@@ -68,6 +77,7 @@ class DataSourceVS(VirtualStream):
 @attr.s
 class JointDataSourceVS(VirtualStream):
     """Joint data source info"""
+
     joint_dsrc_info: PreparedMultiFromInfo = attr.ib(kw_only=True)
 
 

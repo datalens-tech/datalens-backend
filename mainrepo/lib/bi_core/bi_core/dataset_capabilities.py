@@ -1,24 +1,40 @@
 from __future__ import annotations
 
-import logging
 from functools import lru_cache
 from itertools import chain
-from typing import Collection, Dict, FrozenSet, Optional, Set, Tuple, TYPE_CHECKING
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    Dict,
+    FrozenSet,
+    Optional,
+    Set,
+    Tuple,
+)
 
 import attr
 
-from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceRole, JoinType, SourceBackendType
-
-import bi_core.exc as exc
+from bi_constants.enums import (
+    ConnectionType,
+    CreateDSFrom,
+    DataSourceRole,
+    JoinType,
+    SourceBackendType,
+)
+from bi_core.backend_types import get_backend_type
+from bi_core.components.accessor import DatasetComponentAccessor
 import bi_core.data_source as data_source
 from bi_core.data_source.type_mapping import list_registered_source_types
+import bi_core.exc as exc
 from bi_core.us_connection import CONNECTION_TYPES
-from bi_core.backend_types import get_backend_type
 from bi_core.us_dataset import Dataset
-from bi_core.components.accessor import DatasetComponentAccessor
 
 if TYPE_CHECKING:
-    from bi_core.data_source.collection import DataSourceCollectionFactory, DataSourceCollectionBase
+    from bi_core.data_source.collection import (
+        DataSourceCollectionBase,
+        DataSourceCollectionFactory,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -26,13 +42,14 @@ LOGGER = logging.getLogger(__name__)
 
 @lru_cache(maxsize=200)
 def get_compatible_source_types(source_type: CreateDSFrom) -> FrozenSet[CreateDSFrom]:
-    """ Return frozen set of data source types compatible with ``ds_type`` """
+    """Return frozen set of data source types compatible with ``ds_type``"""
 
     raw_comp_types = frozenset(list_registered_source_types())
 
     dsrc_cls = data_source.get_data_source_class(ds_type=source_type)
     compat_types = {
-        comp_source_type for comp_source_type in raw_comp_types
+        comp_source_type
+        for comp_source_type in raw_comp_types
         if dsrc_cls.is_compatible_with_type(source_type=comp_source_type)
     }
     return frozenset(compat_types)
@@ -44,23 +61,19 @@ _SOURCE_CONNECTION_COMPATIBILITY: Dict[CreateDSFrom, FrozenSet[ConnectionType]] 
 def _populate_compatibility_map():  # type: ignore  # TODO: fix
     for conn_type, conn_cls in CONNECTION_TYPES.items():
         for dsrc_type in conn_cls.get_provided_source_types():
-            _SOURCE_CONNECTION_COMPATIBILITY[dsrc_type] = (
-                _SOURCE_CONNECTION_COMPATIBILITY.get(dsrc_type, frozenset()) |
-                frozenset([conn_type])
-            )
+            _SOURCE_CONNECTION_COMPATIBILITY[dsrc_type] = _SOURCE_CONNECTION_COMPATIBILITY.get(
+                dsrc_type, frozenset()
+            ) | frozenset([conn_type])
 
 
 @lru_cache(maxsize=100)
-def get_conn_types_compatible_with_src_types(
-        source_types: FrozenSet[CreateDSFrom]
-) -> FrozenSet[ConnectionType]:
+def get_conn_types_compatible_with_src_types(source_types: FrozenSet[CreateDSFrom]) -> FrozenSet[ConnectionType]:
     if not _SOURCE_CONNECTION_COMPATIBILITY:
         _populate_compatibility_map()
     assert _SOURCE_CONNECTION_COMPATIBILITY
-    return frozenset(chain.from_iterable(
-        _SOURCE_CONNECTION_COMPATIBILITY.get(dsrc_type, frozenset())
-        for dsrc_type in source_types
-    ))
+    return frozenset(
+        chain.from_iterable(_SOURCE_CONNECTION_COMPATIBILITY.get(dsrc_type, frozenset()) for dsrc_type in source_types)
+    )
 
 
 @attr.s
@@ -80,8 +93,9 @@ class DatasetCapabilities:
         return dsrc
 
     def _get_first_dsrc_collection(
-            self, ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> Optional['data_source.DataSourceCollectionBase']:
+        self,
+        ignore_source_ids: Optional[Collection[str]] = None,
+    ) -> Optional["data_source.DataSourceCollectionBase"]:
         source_id = self._dataset.get_single_data_source_id(ignore_source_ids=ignore_source_ids)
         if source_id is not None:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id)
@@ -91,14 +105,16 @@ class DatasetCapabilities:
         return None
 
     def get_effective_connection_id(  # type: ignore  # TODO: fix
-            self, ignore_source_ids: Optional[Collection[str]] = None,
+        self,
+        ignore_source_ids: Optional[Collection[str]] = None,
     ) -> Optional[str]:
         dsrc_coll = self._get_first_dsrc_collection(ignore_source_ids=ignore_source_ids)
         if dsrc_coll is not None:
             return dsrc_coll.effective_connection_id
 
     def get_supported_join_types(
-            self, ignore_source_ids: Optional[Collection[str]] = None,
+        self,
+        ignore_source_ids: Optional[Collection[str]] = None,
     ) -> Set[JoinType]:
         ignore_source_ids = ignore_source_ids or ()
         role = self.resolve_source_role(ignore_source_ids=ignore_source_ids)
@@ -110,10 +126,10 @@ class DatasetCapabilities:
         return result
 
     def source_can_be_added(
-            self,
-            connection_id: Optional[str],
-            created_from: CreateDSFrom,
-            ignore_source_ids: Optional[Collection[str]] = None,
+        self,
+        connection_id: Optional[str],
+        created_from: CreateDSFrom,
+        ignore_source_ids: Optional[Collection[str]] = None,
     ) -> bool:
         """
         Check whether a data source with given connection and type can be added to the dataset.
@@ -137,10 +153,10 @@ class DatasetCapabilities:
         return connection_id == effective_connection_id
 
     def get_compatible_source_types(
-            self,
-            ignore_source_ids: Optional[Collection[str]] = None,
+        self,
+        ignore_source_ids: Optional[Collection[str]] = None,
     ) -> FrozenSet[CreateDSFrom]:
-        """ Return a frozen set of source types compatible with dataset's current state """
+        """Return a frozen set of source types compatible with dataset's current state"""
 
         ignore_source_ids = ignore_source_ids or ()
         # All available source types
@@ -161,34 +177,32 @@ class DatasetCapabilities:
         return result
 
     def get_compatible_connection_types(
-            self,
-            ignore_connection_ids: Optional[Collection[str]] = None,
+        self,
+        ignore_connection_ids: Optional[Collection[str]] = None,
     ) -> FrozenSet[ConnectionType]:
-        """ Return a frozen set of connection types compatible with dataset's current state """
+        """Return a frozen set of connection types compatible with dataset's current state"""
 
         ignore_connection_ids = ignore_connection_ids or ()
         ignore_source_ids = {
             # all sources that use the ignored connections
-            dsrc_coll.id for dsrc_coll in self._get_data_source_collections().values()
+            dsrc_coll.id
+            for dsrc_coll in self._get_data_source_collections().values()
             if dsrc_coll.get_connection_id(role=DataSourceRole.origin) in ignore_connection_ids
         }
 
         # No two connections can be used together in a single non-materialized dataset
         existing_source_ids = {
-            source_id for source_id in self._ds_accessor.get_data_source_id_list()
-            if source_id not in ignore_source_ids
+            source_id for source_id in self._ds_accessor.get_data_source_id_list() if source_id not in ignore_source_ids
         }
         if existing_source_ids:
             # A connection is already present in the dataset. Can't add a second one, no matter what type.
             return frozenset()
 
         # Dataset is empty (taking into account ignore_source_ids)
-        return get_conn_types_compatible_with_src_types(
-            frozenset(list_registered_source_types())
-        )
+        return get_conn_types_compatible_with_src_types(frozenset(list_registered_source_types()))
 
     def supports_offset(self, role: DataSourceRole) -> bool:
-        for source_id, dsrc_coll in self._get_data_source_collections().items():
+        for _source_id, dsrc_coll in self._get_data_source_collections().items():
             dsrc = dsrc_coll.get_strict(role=role)
             if not dsrc.supports_offset:
                 return False
@@ -202,10 +216,10 @@ class DatasetCapabilities:
         return get_backend_type(conn_type=dsrc.conn_type)
 
     def resolve_source_role(
-            self,
-            for_preview: bool = False,
-            ignore_source_ids: Optional[Collection[str]] = None,
-            log_reasons: bool = False,
+        self,
+        for_preview: bool = False,
+        ignore_source_ids: Optional[Collection[str]] = None,
+        log_reasons: bool = False,
     ) -> DataSourceRole:
         """
         Resolve role that should be used for all source collections
@@ -224,14 +238,16 @@ class DatasetCapabilities:
 
             if log_reasons:
                 LOGGER.info(
-                    f'Role resolution_info for data source {coll.id}',
-                    extra=dict(role_resolution_info=dict(
-                        source_id=coll.id,
-                        source_type=coll.source_type.name,
-                        origin=role_resolution_info.origin.name,
-                        sample=role_resolution_info.sample.name,
-                        materialization=role_resolution_info.materialization.name,
-                    ))
+                    f"Role resolution_info for data source {coll.id}",
+                    extra=dict(
+                        role_resolution_info=dict(
+                            source_id=coll.id,
+                            source_type=coll.source_type.name,
+                            origin=role_resolution_info.origin.name,
+                            sample=role_resolution_info.sample.name,
+                            materialization=role_resolution_info.materialization.name,
+                        )
+                    ),
                 )
 
             for role in common_priorities.copy():
@@ -257,7 +273,7 @@ class DatasetCapabilities:
         Check whether dataset supports preview.
         Used in options to tell the UI (or some other client) whether preview should/could be shown.
         """
-        for source_id, dsrc_coll in self._get_data_source_collections().items():
+        for _source_id, dsrc_coll in self._get_data_source_collections().items():
             if not dsrc_coll.get_strict().preview_enabled:
                 return False
 

@@ -2,8 +2,19 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import TYPE_CHECKING, Any, ClassVar, Optional, TypeVar, Generic, Type
-from urllib.parse import quote_plus, urlencode
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+)
+from urllib.parse import (
+    quote_plus,
+    urlencode,
+)
 
 import attr
 import sqlalchemy as sa
@@ -12,13 +23,17 @@ from sqlalchemy.engine.base import Engine
 from bi_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from bi_core.connection_executors.adapters.common_base import get_dialect_string
 from bi_core.connection_executors.adapters.mixins import WithMinimalCursorInfo
+from bi_core.connection_executors.models.connection_target_dto_base import (
+    BaseSQLConnTargetDTO,
+    ConnTargetDTO,
+)
 from bi_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery, ExecutionStepCursorInfo, RawColumnInfo, RawSchemaInfo,
+    DBAdapterQuery,
+    ExecutionStepCursorInfo,
+    RawColumnInfo,
+    RawSchemaInfo,
 )
 from bi_core.db.native_type import CommonNativeType
-from bi_core.connection_executors.models.connection_target_dto_base import (
-    BaseSQLConnTargetDTO, ConnTargetDTO,
-)
 
 if TYPE_CHECKING:
     from bi_core.connection_models import SATextTableDefinition
@@ -56,20 +71,19 @@ class BaseConnLineConstructor(abc.ABC, Generic[_CONN_DTO_TV]):
 
         if params:
             params = {key: val for key, val in params.items() if val is not None}
-            conn_line += '?' + urlencode(params)
+            conn_line += "?" + urlencode(params)
 
         return conn_line
 
 
-_DBA_CLASSIC_SA_DTO_TV = TypeVar("_DBA_CLASSIC_SA_DTO_TV", bound='BaseSQLConnTargetDTO')
+_DBA_CLASSIC_SA_DTO_TV = TypeVar("_DBA_CLASSIC_SA_DTO_TV", bound="BaseSQLConnTargetDTO")
 
 
 @attr.s(cmp=False)
 class ClassicSQLConnLineConstructor(
-        BaseConnLineConstructor[_DBA_CLASSIC_SA_DTO_TV],
-        Generic[_DBA_CLASSIC_SA_DTO_TV],
+    BaseConnLineConstructor[_DBA_CLASSIC_SA_DTO_TV],
+    Generic[_DBA_CLASSIC_SA_DTO_TV],
 ):
-
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
@@ -82,13 +96,13 @@ class ClassicSQLConnLineConstructor(
             passwd=quote_plus(self._target_dto.password) if standard_auth else None,
             host=quote_plus(self._target_dto.host),
             port=quote_plus(str(self._target_dto.port)),
-            db_name=db_name or quote_plus(self._target_dto.db_name or '', safe=''.join(safe_db_symbols)),
+            db_name=db_name or quote_plus(self._target_dto.db_name or "", safe="".join(safe_db_symbols)),
         )
 
 
 @attr.s(cmp=False)
 class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
-    dsn_template: ClassVar[str] = '{dialect}://{user}:{passwd}@{host}:{port}/{db_name}'
+    dsn_template: ClassVar[str] = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
     execution_options: ClassVar[dict[str, Any]] = {}
     conn_line_constructor_type: ClassVar[Type[BaseConnLineConstructor]] = ClassicSQLConnLineConstructor
 
@@ -122,7 +136,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
         execution_options = self.execution_options
         if disable_streaming:
             execution_options = execution_options.copy()
-            execution_options.pop('stream_results', None)
+            execution_options.pop("stream_results", None)
 
         engine = sa.create_engine(
             conn_line,
@@ -137,10 +151,10 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     _subselect_cursor_info_where_false: ClassVar[bool] = True
 
     def _get_subselect_raw_cursor_info_and_data(
-            self,
-            subselect: sa.sql.elements.TextClause,
-            limit: Optional[int] = 1,
-            where_false: Optional[bool] = None,
+        self,
+        subselect: sa.sql.elements.TextClause,
+        limit: Optional[int] = 1,
+        where_false: Optional[bool] = None,
     ) -> dict:
         """
         Run a `select * limit 1` query, return cursor info.
@@ -149,7 +163,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
 
         NOTE: `subselect` must be already aliased (in most cases).
         """
-        sa_query = sa.select([sa.literal_column('*')]).select_from(subselect)
+        sa_query = sa.select([sa.literal_column("*")]).select_from(subselect)
         if where_false is None:
             where_false = self._subselect_cursor_info_where_false
         if where_false:
@@ -164,7 +178,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
         return query_res.raw_cursor_info, data  # type: ignore  # TODO: fix
 
     def _get_subselect_table_info(self, subquery: SATextTableDefinition) -> RawSchemaInfo:
-        """ Will not work without non-empty `self._type_code_to_sa` """
+        """Will not work without non-empty `self._type_code_to_sa`"""
         raw_cursor_info, _ = self._get_subselect_raw_cursor_info_and_data(subquery.text)
         return self._raw_cursor_info_to_schema(raw_cursor_info)
 
@@ -188,11 +202,13 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
                     name=self.normalize_sa_col_type(sa.sql.sqltypes.NullType),  # type: ignore  # TODO: fix
                     nullable=True,
                 )
-            columns.append(RawColumnInfo(
-                name=name,
-                title=name,
-                nullable=native_type.nullable,
-                native_type=native_type,
-            ))
+            columns.append(
+                RawColumnInfo(
+                    name=name,
+                    title=name,
+                    nullable=native_type.nullable,
+                    native_type=native_type,
+                )
+            )
 
         return RawSchemaInfo(columns=tuple(columns))

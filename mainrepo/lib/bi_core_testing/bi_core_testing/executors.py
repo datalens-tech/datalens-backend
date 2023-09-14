@@ -1,10 +1,13 @@
-from typing import Any, Dict, Type
+from typing import (
+    Any,
+    Dict,
+    Type,
+)
 
 import attr
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
-
 from bi_core_testing.database import Db
 
 

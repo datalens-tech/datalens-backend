@@ -3,8 +3,11 @@ from typing import Union
 
 import sqlalchemy as sa
 
+from bi_formula.connectors.base.literal import (
+    Literal,
+    Literalizer,
+)
 from bi_formula.core.dialect import DialectCombo
-from bi_formula.connectors.base.literal import Literal, Literalizer
 
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
@@ -17,7 +20,7 @@ class ClickHouseLiteralizer(Literalizer):
         tzinfo = value.tzinfo
         value = value.replace(microsecond=0, tzinfo=None)
         if tzinfo:
-            tzname = getattr(tzinfo, 'zone', tzinfo.tzname(value))
+            tzname = getattr(tzinfo, "zone", tzinfo.tzname(value))
             return sa.func.toDateTime(value.isoformat(), tzname)
         else:
             return sa.func.toDateTime(value.isoformat())

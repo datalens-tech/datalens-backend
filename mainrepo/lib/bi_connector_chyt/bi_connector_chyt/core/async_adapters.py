@@ -3,16 +3,14 @@ from __future__ import annotations
 import logging
 
 import attr
-
 from clickhouse_sqlalchemy.drivers.http.transport import _get_type  # noqa
 
-from bi_connector_clickhouse.core.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
 from bi_core.utils import get_current_w3c_tracing_headers
 
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO
 from bi_connector_chyt.core.utils import CHYTUtils
-
+from bi_connector_clickhouse.core.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
 
 LOGGER = logging.getLogger(__name__)
 

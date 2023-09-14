@@ -1,42 +1,51 @@
 from typing import List
 
 from bi_formula.core.datatype import DataType
-
-from bi_formula_ref.registry.base import FunctionDocRegistryItem
-from bi_formula_ref.examples.config import ExampleSource, ExampleConfig
-from bi_formula_ref.registry.example import SimpleExample, DataExample
+from bi_formula_ref.categories.window import CATEGORY_WINDOW
+from bi_formula_ref.examples.config import (
+    ExampleConfig,
+    ExampleSource,
+)
+from bi_formula_ref.localization import get_gettext
 from bi_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry, AliasedTextResource, AliasedTableResource
+    AliasedResourceRegistry,
+    AliasedTableResource,
+    AliasedTextResource,
+)
+from bi_formula_ref.registry.base import FunctionDocRegistryItem
+from bi_formula_ref.registry.example import (
+    DataExample,
+    SimpleExample,
 )
 from bi_formula_ref.registry.naming import CategoryPostfixNamingProvider
-from bi_formula_ref.registry.note import Note, NoteLevel
-from bi_formula_ref.categories.window import CATEGORY_WINDOW
-from bi_formula_ref.localization import get_gettext
-
+from bi_formula_ref.registry.note import (
+    Note,
+    NoteLevel,
+)
 
 _ = get_gettext()
 
 _SOURCE_SALES_DATA_1 = ExampleSource(
     columns=[
-        ('Date', DataType.STRING),
-        ('City', DataType.STRING),
-        ('Category', DataType.STRING),
-        ('Orders', DataType.INTEGER),
-        ('Profit', DataType.FLOAT),
+        ("Date", DataType.STRING),
+        ("City", DataType.STRING),
+        ("Category", DataType.STRING),
+        ("Orders", DataType.INTEGER),
+        ("Profit", DataType.FLOAT),
     ],
     data=[
-        ['2019-03-01', 'London', 'Office Supplies', 8, 120.8],
-        ['2019-03-04', 'London', 'Office Supplies', 2, 100.0],
-        ['2019-03-05', 'London', 'Furniture', 1, 750.0],
-        ['2019-03-02', 'Moscow', 'Furniture', 2, 1250.5],
-        ['2019-03-03', 'Moscow', 'Office Supplies', 4, 85.0],
-        ['2019-03-01', 'San Francisco', 'Office Supplies', 23, 723.0],
-        ['2019-03-01', 'San Francisco', 'Furniture', 1, 1000.0],
-        ['2019-03-03', 'San Francisco', 'Furniture', 4, 4000.0],
-        ['2019-03-02', 'Detroit', 'Furniture', 5, 3700.0],
-        ['2019-03-04', 'Detroit', 'Office Supplies', 25, 1200.0],
-        ['2019-03-04', 'Detroit', 'Furniture', 2, 3500.00],
-    ]
+        ["2019-03-01", "London", "Office Supplies", 8, 120.8],
+        ["2019-03-04", "London", "Office Supplies", 2, 100.0],
+        ["2019-03-05", "London", "Furniture", 1, 750.0],
+        ["2019-03-02", "Moscow", "Furniture", 2, 1250.5],
+        ["2019-03-03", "Moscow", "Office Supplies", 4, 85.0],
+        ["2019-03-01", "San Francisco", "Office Supplies", 23, 723.0],
+        ["2019-03-01", "San Francisco", "Furniture", 1, 1000.0],
+        ["2019-03-03", "San Francisco", "Furniture", 4, 4000.0],
+        ["2019-03-02", "Detroit", "Furniture", 5, 3700.0],
+        ["2019-03-04", "Detroit", "Office Supplies", 25, 1200.0],
+        ["2019-03-04", "Detroit", "Furniture", 2, 3500.00],
+    ],
 )
 
 
@@ -45,25 +54,29 @@ def _make_standard_window_examples(func: str) -> List[DataExample]:
     examples = [
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with grouping'),
+                name=_("Example with grouping"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]', '[Category]'],
-                order_by=['[City]', '[Category]'],
+                group_by=["[City]", "[Category]"],
+                order_by=["[City]", "[Category]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Category', '[Category]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Category", "[Category]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Category', '[Category]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum] TOTAL)'),
-                        (f'{func} 2', f'{func}([Order Sum] WITHIN [City])'),
-                        (f'{func} 3', f'{func}([Order Sum] WITHIN [Category])'),
+                        ("City", "[City]"),
+                        ("Category", "[Category]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f"{func}([Order Sum] TOTAL)"),
+                        (f"{func} 2", f"{func}([Order Sum] WITHIN [City])"),
+                        (f"{func} 3", f"{func}([Order Sum] WITHIN [Category])"),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Category', '[Category]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]) TOTAL)'),
-                    (f'{func} 2', f'{func}(SUM([Orders]) WITHIN [City])'),
-                    (f'{func} 3', f'{func}(SUM([Orders]) AMONG [City])'),
+                    ("City", "[City]"),
+                    ("Category", "[Category]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]) TOTAL)"),
+                    (f"{func} 2", f"{func}(SUM([Orders]) WITHIN [City])"),
+                    (f"{func} 3", f"{func}(SUM([Orders]) AMONG [City])"),
                 ],
             ),
         ),
@@ -76,23 +89,25 @@ def _make_rank_examples(func: str) -> List[DataExample]:
     examples = [
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with two arguments'),
+                name=_("Example with two arguments"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]'],
-                order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum], "desc")'),
-                        (f'{func} 2', f'{func}([Order Sum], "asc")'),
+                        ("City", "[City]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f'{func}([Order Sum], "desc")'),
+                        (f"{func} 2", f'{func}([Order Sum], "asc")'),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]), "desc")'),
-                    (f'{func} 2', f'{func}(SUM([Orders]), "asc")'),
+                    ("City", "[City]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f'{func}(SUM([Orders]), "desc")'),
+                    (f"{func} 2", f'{func}(SUM([Orders]), "asc")'),
                 ],
             ),
         ),
@@ -100,15 +115,19 @@ def _make_rank_examples(func: str) -> List[DataExample]:
     return examples
 
 
-_RANK_RESOURCES = AliasedResourceRegistry(resources={
-    'rank_direction_description': AliasedTextResource(body=_(
-        "If {arg:1} is `\"desc\"` or omitted, then ranking is done from greatest to "
-        "least, if `\"asc\"`, then from least to greatest."
-    ),),
-})
+_RANK_RESOURCES = AliasedResourceRegistry(
+    resources={
+        "rank_direction_description": AliasedTextResource(
+            body=_(
+                'If {arg:1} is `"desc"` or omitted, then ranking is done from greatest to '
+                'least, if `"asc"`, then from least to greatest.'
+            ),
+        ),
+    }
+)
 
 FUNCTION_RANK = FunctionDocRegistryItem(
-    name='rank',
+    name="rank",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -124,13 +143,13 @@ FUNCTION_RANK = FunctionDocRegistryItem(
     ),
     resources=_RANK_RESOURCES,
     examples=[
-        *_make_rank_examples('rank'),
-        *_make_standard_window_examples('rank'),
+        *_make_rank_examples("rank"),
+        *_make_standard_window_examples("rank"),
     ],
 )
 
 FUNCTION_RANK_DENSE = FunctionDocRegistryItem(
-    name='rank_dense',
+    name="rank_dense",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -146,13 +165,13 @@ FUNCTION_RANK_DENSE = FunctionDocRegistryItem(
     ),
     resources=_RANK_RESOURCES,
     examples=[
-        *_make_rank_examples('rank_dense'),
-        *_make_standard_window_examples('rank_dense'),
+        *_make_rank_examples("rank_dense"),
+        *_make_standard_window_examples("rank_dense"),
     ],
 )
 
 FUNCTION_RANK_UNIQUE = FunctionDocRegistryItem(
-    name='rank_unique',
+    name="rank_unique",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -168,13 +187,13 @@ FUNCTION_RANK_UNIQUE = FunctionDocRegistryItem(
     ),
     resources=_RANK_RESOURCES,
     examples=[
-        *_make_rank_examples('rank_unique'),
-        *_make_standard_window_examples('rank_unique'),
+        *_make_rank_examples("rank_unique"),
+        *_make_standard_window_examples("rank_unique"),
     ],
 )
 
 FUNCTION_RANK_PERCENTILE = FunctionDocRegistryItem(
-    name='rank_percentile',
+    name="rank_percentile",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -188,118 +207,102 @@ FUNCTION_RANK_PERCENTILE = FunctionDocRegistryItem(
     ),
     resources=_RANK_RESOURCES,
     examples=[
-        *_make_rank_examples('rank_percentile'),
-        *_make_standard_window_examples('rank_percentile'),
+        *_make_rank_examples("rank_percentile"),
+        *_make_standard_window_examples("rank_percentile"),
     ],
 )
 
 FUNCTION_SUM_WINDOW = FunctionDocRegistryItem(
-    name='sum',
+    name="sum",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='sum_window',
+        internal_name="sum_window",
     ),
     category=CATEGORY_WINDOW,
-    description=_(
-        'Returns the sum of all expression values. Applicable to numeric data types only.'
-    ),
-    examples=[
-        *_make_standard_window_examples('sum')
-    ],
+    description=_("Returns the sum of all expression values. Applicable to numeric data types only."),
+    examples=[*_make_standard_window_examples("sum")],
 )
 
 FUNCTION_MIN_WINDOW = FunctionDocRegistryItem(
-    name='min',
+    name="min",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='min_window',
+        internal_name="min_window",
     ),
     category=CATEGORY_WINDOW,
     description=_(
-        'Returns the minimum value.\n\n'
-        'If {arg:0}:\n'
-        '- number — Returns the smallest number.\n'
-        '- date — Returns the earliest date.\n'
-        '- string — Returns the first value in the alphabetic order.\n'
+        "Returns the minimum value.\n\n"
+        "If {arg:0}:\n"
+        "- number — Returns the smallest number.\n"
+        "- date — Returns the earliest date.\n"
+        "- string — Returns the first value in the alphabetic order.\n"
     ),
-    examples=[
-        *_make_standard_window_examples('min')
-    ],
+    examples=[*_make_standard_window_examples("min")],
 )
 
 FUNCTION_MAX_WINDOW = FunctionDocRegistryItem(
-    name='max',
+    name="max",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='max_window',
+        internal_name="max_window",
     ),
     category=CATEGORY_WINDOW,
     description=_(
-        'Returns the maximum value.\n\n'
-        'If {arg:0}:\n'
-        '- number — Returns the largest number.\n'
-        '- date — Returns the latest date.\n'
-        '- string — Returns the last value in the alphabetic order.\n'
+        "Returns the maximum value.\n\n"
+        "If {arg:0}:\n"
+        "- number — Returns the largest number.\n"
+        "- date — Returns the latest date.\n"
+        "- string — Returns the last value in the alphabetic order.\n"
     ),
-    examples=[
-        *_make_standard_window_examples('max')
-    ],
+    examples=[*_make_standard_window_examples("max")],
 )
 
 FUNCTION_COUNT_WINDOW = FunctionDocRegistryItem(
-    name='count',
+    name="count",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='count_window',
+        internal_name="count_window",
     ),
     category=CATEGORY_WINDOW,
-    description=_(
-        'Returns the number of items in the specified window.'
-    ),
-    examples=[
-        *_make_standard_window_examples('count')
-    ],
+    description=_("Returns the number of items in the specified window."),
+    examples=[*_make_standard_window_examples("count")],
 )
 
 FUNCTION_AVG_WINDOW = FunctionDocRegistryItem(
-    name='avg',
+    name="avg",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='avg_window',
+        internal_name="avg_window",
     ),
     category=CATEGORY_WINDOW,
-    description=_(
-        'Returns the average of all values. Applicable to numeric data types.'
-    ),
-    examples=[
-        *_make_standard_window_examples('avg')
-    ],
+    description=_("Returns the average of all values. Applicable to numeric data types."),
+    examples=[*_make_standard_window_examples("avg")],
 )
 
 FUNCTION_SUM_IF_WINDOW = FunctionDocRegistryItem(
-    name='sum_if',
+    name="sum_if",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='sum_if_window',
+        internal_name="sum_if_window",
     ),
     category=CATEGORY_WINDOW,
     description=_(
-        'Returns the sum of all the expression values that meet the {arg:1} condition. '
-        'Applicable to numeric data types only.'
+        "Returns the sum of all the expression values that meet the {arg:1} condition. "
+        "Applicable to numeric data types only."
     ),
     examples=[
         SimpleExample(example_str)
         for example_str in (
-            'SUM_IF([Profit], [Category] = \'Office Supplies\' TOTAL)',  # translates into:
+            "SUM_IF([Profit], [Category] = 'Office Supplies' TOTAL)",  # translates into:
             #    SUM("Profit") FILTER (WHERE "Category" = 'Office Supplies')
             #    OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
-            'SUM_IF([Profit], [Category] = \'Office Supplies\' WITHIN [Date])',  # translates into:
+            "SUM_IF([Profit], [Category] = 'Office Supplies' WITHIN [Date])",  # translates into:
             #    SUM("Profit") FILTER (WHERE "Category" = 'Office Supplies')
             #    OVER (
             #        PARTITION BY "Date"
             #        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             #    )
-            'SUM_IF([Profit], [Category] = \'Office Supplies\' AMONG [Date])',  # translates into:
+            "SUM_IF([Profit], [Category] = 'Office Supplies' AMONG [Date])",  # translates into:
             #    SUM("Profit") FILTER (WHERE "Category" = 'Office Supplies')
             #    OVER (
             #        PARTITION BY <all dimensions except "Date">
@@ -310,42 +313,40 @@ FUNCTION_SUM_IF_WINDOW = FunctionDocRegistryItem(
 )
 
 FUNCTION_COUNT_IF_WINDOW = FunctionDocRegistryItem(
-    name='count_if',
+    name="count_if",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='count_if_window',
+        internal_name="count_if_window",
     ),
     category=CATEGORY_WINDOW,
-    description=_(
-        'Returns the number of items in the specified window meeting the {arg:0} condition.'
-    ),
+    description=_("Returns the number of items in the specified window meeting the {arg:0} condition."),
     examples=[
         SimpleExample(example_str)
         for example_str in (
-            'COUNT_IF([Profit], [Category] = \'Office Supplies\' TOTAL)',
-            'COUNT_IF([Profit], [Category] = \'Office Supplies\' WITHIN [Date])',
-            'COUNT_IF([Profit], [Category] = \'Office Supplies\' AMONG [Date])',
+            "COUNT_IF([Profit], [Category] = 'Office Supplies' TOTAL)",
+            "COUNT_IF([Profit], [Category] = 'Office Supplies' WITHIN [Date])",
+            "COUNT_IF([Profit], [Category] = 'Office Supplies' AMONG [Date])",
         )
     ],
 )
 
 FUNCTION_AVG_IF_WINDOW = FunctionDocRegistryItem(
-    name='avg_if',
+    name="avg_if",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(
-        internal_name='avg_if_window',
+        internal_name="avg_if_window",
     ),
     category=CATEGORY_WINDOW,
     description=_(
-        'Returns the average of all values that meet the {arg:1} condition. '
-        'If the values don\'t exist, it returns `NULL`. Applicable to numeric data types only.'
+        "Returns the average of all values that meet the {arg:1} condition. "
+        "If the values don't exist, it returns `NULL`. Applicable to numeric data types only."
     ),
     examples=[
         SimpleExample(example_str)
         for example_str in (
-            'AVG_IF([Profit], [Category] = \'Office Supplies\' TOTAL)',
-            'AVG_IF([Profit], [Category] = \'Office Supplies\' WITHIN [Date])',
-            'AVG_IF([Profit], [Category] = \'Office Supplies\' AMONG [Date])',
+            "AVG_IF([Profit], [Category] = 'Office Supplies' TOTAL)",
+            "AVG_IF([Profit], [Category] = 'Office Supplies' WITHIN [Date])",
+            "AVG_IF([Profit], [Category] = 'Office Supplies' AMONG [Date])",
         )
     ],
 )
@@ -356,21 +357,25 @@ def _make_simple_order_by_examples(func: str) -> List[DataExample]:
     examples = [
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with ORDER BY'),
+                name=_("Example with ORDER BY"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]'],
-                order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
-                    [('City', '[City]'), ('Order Sum', '[Order Sum]'),
-                     (f'{func} 1', f'{func}([Order Sum] ORDER BY [City] DESC)'),
-                     (f'{func} 2', f'{func}([Order Sum] ORDER BY [Order Sum])')],
+                    [
+                        ("City", "[City]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f"{func}([Order Sum] ORDER BY [City] DESC)"),
+                        (f"{func} 2", f"{func}([Order Sum] ORDER BY [Order Sum])"),
+                    ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]) ORDER BY [City] DESC)'),
-                    (f'{func} 2', f'{func}(SUM([Orders]) ORDER BY [Order Sum])'),
+                    ("City", "[City]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]) ORDER BY [City] DESC)"),
+                    (f"{func} 2", f"{func}(SUM([Orders]) ORDER BY [Order Sum])"),
                 ],
             ),
         ),
@@ -380,7 +385,8 @@ def _make_simple_order_by_examples(func: str) -> List[DataExample]:
 
 _ORDERED_WFUNC_NOTES = [
     Note(
-        level=NoteLevel.warning, text=_(
+        level=NoteLevel.warning,
+        text=_(
             "The sorting order is based on the fields listed in the sorting section of "
             "the chart and in the `ORDER BY` clause. First, `ORDER BY` fields are used, "
             "and then they are complemented by the fields from the chart."
@@ -394,25 +400,27 @@ def _make_rfunc_examples(func: str) -> List[DataExample]:
     examples = [
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with ORDER BY'),
+                name=_("Example with ORDER BY"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]'],
-                order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum], "desc")'),
-                        (f'{func} 2', f'{func}([Order Sum], "asc" ORDER BY [City] DESC)'),
-                        (f'{func} 3', f'{func}([Order Sum] ORDER BY [Order Sum])'),
+                        ("City", "[City]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f'{func}([Order Sum], "desc")'),
+                        (f"{func} 2", f'{func}([Order Sum], "asc" ORDER BY [City] DESC)'),
+                        (f"{func} 3", f"{func}([Order Sum] ORDER BY [Order Sum])"),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]), "desc")'),
-                    (f'{func} 2', f'{func}(SUM([Orders]), "asc" ORDER BY [City] DESC)'),
-                    (f'{func} 3', f'{func}(SUM([Orders]) ORDER BY [Order Sum])'),
+                    ("City", "[City]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f'{func}(SUM([Orders]), "desc")'),
+                    (f"{func} 2", f'{func}(SUM([Orders]), "asc" ORDER BY [City] DESC)'),
+                    (f"{func} 3", f"{func}(SUM([Orders]) ORDER BY [Order Sum])"),
                 ],
             ),
         ),
@@ -420,22 +428,23 @@ def _make_rfunc_examples(func: str) -> List[DataExample]:
     return examples
 
 
-_RFUNC_RESOURCES = AliasedResourceRegistry(resources={
-    'rwindow_description_table': AliasedTableResource(table_body=[
-        ['{arg:1}', _("Window")],
-        ['`\"asc\"`', _("Starts from the first row and ends at the current row.")],
-        ['`\"desc\"`', _("Starts from the current row and ends at the last row.")],
-    ]),
-    'rwindow_description': AliasedTextResource(body=_(
-        "\n"
-        "{table:rwindow_description_table}\n"
-        "\n"
-        "By default `\"asc\"` is used.\n"
-    )),
-})
+_RFUNC_RESOURCES = AliasedResourceRegistry(
+    resources={
+        "rwindow_description_table": AliasedTableResource(
+            table_body=[
+                ["{arg:1}", _("Window")],
+                ['`"asc"`', _("Starts from the first row and ends at the current row.")],
+                ['`"desc"`', _("Starts from the current row and ends at the last row.")],
+            ]
+        ),
+        "rwindow_description": AliasedTextResource(
+            body=_("\n" "{table:rwindow_description_table}\n" "\n" 'By default `"asc"` is used.\n')
+        ),
+    }
+)
 
 FUNCTION_RSUM = FunctionDocRegistryItem(
-    name='rsum',
+    name="rsum",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -451,13 +460,13 @@ FUNCTION_RSUM = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_RFUNC_RESOURCES,
     examples=[
-        *_make_standard_window_examples('rsum'),
-        *_make_rfunc_examples('rsum'),
+        *_make_standard_window_examples("rsum"),
+        *_make_rfunc_examples("rsum"),
     ],
 )
 
 FUNCTION_RCOUNT = FunctionDocRegistryItem(
-    name='rcount',
+    name="rcount",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -473,13 +482,13 @@ FUNCTION_RCOUNT = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_RFUNC_RESOURCES,
     examples=[
-        *_make_standard_window_examples('rcount'),
-        *_make_rfunc_examples('rcount'),
+        *_make_standard_window_examples("rcount"),
+        *_make_rfunc_examples("rcount"),
     ],
 )
 
 FUNCTION_RMIN = FunctionDocRegistryItem(
-    name='rmin',
+    name="rmin",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -495,13 +504,13 @@ FUNCTION_RMIN = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_RFUNC_RESOURCES,
     examples=[
-        *_make_standard_window_examples('rmin'),
-        *_make_rfunc_examples('rmin'),
+        *_make_standard_window_examples("rmin"),
+        *_make_rfunc_examples("rmin"),
     ],
 )
 
 FUNCTION_RMAX = FunctionDocRegistryItem(
-    name='rmax',
+    name="rmax",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -518,13 +527,13 @@ FUNCTION_RMAX = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_RFUNC_RESOURCES,
     examples=[
-        *_make_standard_window_examples('rmax'),
-        *_make_rfunc_examples('rmax'),
+        *_make_standard_window_examples("rmax"),
+        *_make_rfunc_examples("rmax"),
     ],
 )
 
 FUNCTION_RAVG = FunctionDocRegistryItem(
-    name='ravg',
+    name="ravg",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -540,8 +549,8 @@ FUNCTION_RAVG = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_RFUNC_RESOURCES,
     examples=[
-        *_make_standard_window_examples('ravg'),
-        *_make_rfunc_examples('ravg'),
+        *_make_standard_window_examples("ravg"),
+        *_make_rfunc_examples("ravg"),
     ],
 )
 
@@ -551,71 +560,79 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
     examples = [
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with two and three arguments'),
+                name=_("Example with two and three arguments"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]'],
-                order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum], 1)'),
-                        (f'{func} 2', f'{func}([Order Sum], -2)'),
-                        (f'{func} 3', f'{func}([Order Sum], 1, 1)'),
+                        ("City", "[City]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f"{func}([Order Sum], 1)"),
+                        (f"{func} 2", f"{func}([Order Sum], -2)"),
+                        (f"{func} 3", f"{func}([Order Sum], 1, 1)"),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]), 1)'),
-                    (f'{func} 2', f'{func}(SUM([Orders]), -2)'),
-                    (f'{func} 3', f'{func}(SUM([Orders]) 1, 1)'),
+                    ("City", "[City]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]), 1)"),
+                    (f"{func} 2", f"{func}(SUM([Orders]), -2)"),
+                    (f"{func} 3", f"{func}(SUM([Orders]) 1, 1)"),
                 ],
             ),
         ),
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with ORDER BY'),
+                name=_("Example with ORDER BY"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]'],
-                order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum], 1 ORDER BY [City] DESC)'),
-                        (f'{func} 2', f'{func}([Order Sum], 1 ORDER BY [Order Sum])'),
+                        ("City", "[City]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f"{func}([Order Sum], 1 ORDER BY [City] DESC)"),
+                        (f"{func} 2", f"{func}([Order Sum], 1 ORDER BY [Order Sum])"),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]), 1 ORDER BY [City] DESC)'),
-                    (f'{func} 2', f'{func}(SUM([Orders]), 1 ORDER BY [Order Sum])'),
+                    ("City", "[City]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]), 1 ORDER BY [City] DESC)"),
+                    (f"{func} 2", f"{func}(SUM([Orders]), 1 ORDER BY [Order Sum])"),
                 ],
             ),
         ),
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with grouping'),
+                name=_("Example with grouping"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]', '[Category]'],
-                order_by=['[City]', '[Category]'],
+                group_by=["[City]", "[Category]"],
+                order_by=["[City]", "[Category]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Category', '[Category]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Category", "[Category]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Category', '[Category]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum], 1 TOTAL)'),
-                        (f'{func} 2', f'{func}([Order Sum], 1 WITHIN [City])'),
-                        (f'{func} 3', f'{func}([Order Sum], 1 WITHIN [Category])'),
+                        ("City", "[City]"),
+                        ("Category", "[Category]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f"{func}([Order Sum], 1 TOTAL)"),
+                        (f"{func} 2", f"{func}([Order Sum], 1 WITHIN [City])"),
+                        (f"{func} 3", f"{func}([Order Sum], 1 WITHIN [Category])"),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Category', '[Category]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]), 1 TOTAL)'),
-                    (f'{func} 2', f'{func}(SUM([Orders]), 1 WITHIN [City])'),
-                    (f'{func} 3', f'{func}(SUM([Orders]), 1 AMONG [City])'),
+                    ("City", "[City]"),
+                    ("Category", "[Category]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]), 1 TOTAL)"),
+                    (f"{func} 2", f"{func}(SUM([Orders]), 1 WITHIN [City])"),
+                    (f"{func} 3", f"{func}(SUM([Orders]), 1 AMONG [City])"),
                 ],
             ),
         ),
@@ -623,22 +640,26 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
     return examples
 
 
-_MFUNC_RESOURCES = AliasedResourceRegistry(resources={
-    'mwindow_description_table': AliasedTableResource(table_body=[
-        ['{arg:1}', '{arg:2}', _("Window")],
-        [_('positive'), '-', _("The current row and {arg:1} preceding rows.")],
-        [_('negative'), '-', _("The current row and -{arg:1} following rows.")],
-        [_('any sign'), _('any sign'), _("{arg:1} preceding rows, the current row and {arg:2} following rows.")],
-    ]),
-    'mwindow_description': AliasedTextResource(body=(
-        "\n"
-        "{table:mwindow_description_table}\n"
-        "\n"
-    )),
-})
+_MFUNC_RESOURCES = AliasedResourceRegistry(
+    resources={
+        "mwindow_description_table": AliasedTableResource(
+            table_body=[
+                ["{arg:1}", "{arg:2}", _("Window")],
+                [_("positive"), "-", _("The current row and {arg:1} preceding rows.")],
+                [_("negative"), "-", _("The current row and -{arg:1} following rows.")],
+                [
+                    _("any sign"),
+                    _("any sign"),
+                    _("{arg:1} preceding rows, the current row and {arg:2} following rows."),
+                ],
+            ]
+        ),
+        "mwindow_description": AliasedTextResource(body=("\n" "{table:mwindow_description_table}\n" "\n")),
+    }
+)
 
 FUNCTION_MSUM = FunctionDocRegistryItem(
-    name='msum',
+    name="msum",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -653,12 +674,12 @@ FUNCTION_MSUM = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_MFUNC_RESOURCES,
     examples=[
-        *_make_mfunc_examples('msum'),
+        *_make_mfunc_examples("msum"),
     ],
 )
 
 FUNCTION_MCOUNT = FunctionDocRegistryItem(
-    name='mcount',
+    name="mcount",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -673,12 +694,12 @@ FUNCTION_MCOUNT = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_MFUNC_RESOURCES,
     examples=[
-        *_make_mfunc_examples('mcount'),
+        *_make_mfunc_examples("mcount"),
     ],
 )
 
 FUNCTION_MMIN = FunctionDocRegistryItem(
-    name='mmin',
+    name="mmin",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -693,12 +714,12 @@ FUNCTION_MMIN = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_MFUNC_RESOURCES,
     examples=[
-        *_make_mfunc_examples('mmin'),
+        *_make_mfunc_examples("mmin"),
     ],
 )
 
 FUNCTION_MMAX = FunctionDocRegistryItem(
-    name='mmax',
+    name="mmax",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -713,12 +734,12 @@ FUNCTION_MMAX = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_MFUNC_RESOURCES,
     examples=[
-        *_make_mfunc_examples('mmax'),
+        *_make_mfunc_examples("mmax"),
     ],
 )
 
 FUNCTION_MAVG = FunctionDocRegistryItem(
-    name='mavg',
+    name="mavg",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -733,7 +754,7 @@ FUNCTION_MAVG = FunctionDocRegistryItem(
     notes=_ORDERED_WFUNC_NOTES,
     resources=_MFUNC_RESOURCES,
     examples=[
-        *_make_mfunc_examples('mavg'),
+        *_make_mfunc_examples("mavg"),
     ],
 )
 
@@ -743,23 +764,25 @@ def _make_lag_examples(func: str) -> List[DataExample]:
     examples = [
         DataExample(
             example_config=ExampleConfig(
-                name=_('Example with the optional argument'),
+                name=_("Example with the optional argument"),
                 source=_SOURCE_SALES_DATA_1,
-                group_by=['[City]'],
-                order_by=['[City]'],
+                group_by=["[City]"],
+                order_by=["[City]"],
                 show_source_table=True,
-                formula_fields=[('City', '[City]'), ('Order Sum', 'SUM([Orders])')],
+                formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
                 additional_transformations=[
                     [
-                        ('City', '[City]'), ('Order Sum', '[Order Sum]'),
-                        (f'{func} 1', f'{func}([Order Sum], 1)'),
-                        (f'{func} 2', f'{func}([Order Sum], -2)'),
+                        ("City", "[City]"),
+                        ("Order Sum", "[Order Sum]"),
+                        (f"{func} 1", f"{func}([Order Sum], 1)"),
+                        (f"{func} 2", f"{func}([Order Sum], -2)"),
                     ],
                 ],
                 override_formula_fields=[
-                    ('City', '[City]'), ('Order Sum', 'SUM([Orders])'),
-                    (f'{func} 1', f'{func}(SUM([Orders]), 1)'),
-                    (f'{func} 2', f'{func}(SUM([Orders]), -2)'),
+                    ("City", "[City]"),
+                    ("Order Sum", "SUM([Orders])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]), 1)"),
+                    (f"{func} 2", f"{func}(SUM([Orders]), -2)"),
                 ],
             ),
         ),
@@ -768,7 +791,7 @@ def _make_lag_examples(func: str) -> List[DataExample]:
 
 
 FUNCTION_LAG = FunctionDocRegistryItem(
-    name='lag',
+    name="lag",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
@@ -788,39 +811,35 @@ FUNCTION_LAG = FunctionDocRegistryItem(
     ),
     notes=_ORDERED_WFUNC_NOTES,
     examples=[
-        *_make_standard_window_examples('lag'),
-        *_make_lag_examples('lag'),
-        *_make_simple_order_by_examples('lag'),
+        *_make_standard_window_examples("lag"),
+        *_make_lag_examples("lag"),
+        *_make_simple_order_by_examples("lag"),
     ],
 )
 
 FUNCTION_FIRST = FunctionDocRegistryItem(
-    name='first',
+    name="first",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
-    description=_(
-        "Returns the value of {arg:0} from the first row in the window. See also {ref:LAST}."
-    ),
+    description=_("Returns the value of {arg:0} from the first row in the window. See also {ref:LAST}."),
     notes=_ORDERED_WFUNC_NOTES,
     examples=[
-        *_make_standard_window_examples('first'),
-        *_make_simple_order_by_examples('first'),
+        *_make_standard_window_examples("first"),
+        *_make_simple_order_by_examples("first"),
     ],
 )
 
 FUNCTION_LAST = FunctionDocRegistryItem(
-    name='last',
+    name="last",
     is_window=True,
     naming_provider=CategoryPostfixNamingProvider(),
     category=CATEGORY_WINDOW,
-    description=_(
-        "Returns the value of {arg:0} from the last row in the window. See also {ref:FIRST}."
-    ),
+    description=_("Returns the value of {arg:0} from the last row in the window. See also {ref:FIRST}."),
     notes=_ORDERED_WFUNC_NOTES,
     examples=[
-        *_make_standard_window_examples('last'),
-        *_make_simple_order_by_examples('last'),
+        *_make_standard_window_examples("last"),
+        *_make_simple_order_by_examples("last"),
     ],
 )
 

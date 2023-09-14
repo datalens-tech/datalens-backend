@@ -1,25 +1,37 @@
 from __future__ import annotations
 
-from typing import TypeVar, ClassVar, Dict, Optional, Type, Generic
-
 import abc
+from typing import (
+    ClassVar,
+    Dict,
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+)
+
 import attr
 
+from bi_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
+from bi_compeng_pg.compeng_pg_base.op_executors import UploadOpExecutorAsync
+from bi_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
 from bi_constants.enums import BIType
-
-from bi_core.data_processing.processing.operation import (
-    BaseOp, UploadOp, DownloadOp, CalcOp, JoinOp,
-)
 from bi_core.data_processing.processing.context import OpExecutionContext
 from bi_core.data_processing.processing.db_base.op_executors import (
-    OpExecutorAsync, DownloadOpExecutorAsync, CalcOpExecutorAsync, JoinOpExecutorAsync,
+    CalcOpExecutorAsync,
+    DownloadOpExecutorAsync,
+    JoinOpExecutorAsync,
+    OpExecutorAsync,
 )
-from bi_compeng_pg.compeng_pg_base.op_executors import UploadOpExecutorAsync
-from bi_core.data_processing.stream_base import AbstractStream
+from bi_core.data_processing.processing.operation import (
+    BaseOp,
+    CalcOp,
+    DownloadOp,
+    JoinOp,
+    UploadOp,
+)
 from bi_core.data_processing.processing.processor import OperationProcessorAsyncBase
-from bi_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
-from bi_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
-
+from bi_core.data_processing.stream_base import AbstractStream
 
 _ADAPTER_TV = TypeVar("_ADAPTER_TV", bound=PostgreSQLExecAdapterAsync)
 _POOL_TV = TypeVar("_POOL_TV", bound=BasePgPoolWrapper)
@@ -28,10 +40,8 @@ _CONN_TV = TypeVar("_CONN_TV")
 
 @attr.s
 class PostgreSQLOperationProcessor(
-        OperationProcessorAsyncBase,
-        Generic[_ADAPTER_TV, _POOL_TV, _CONN_TV],
-        metaclass=abc.ABCMeta):
-
+    OperationProcessorAsyncBase, Generic[_ADAPTER_TV, _POOL_TV, _CONN_TV], metaclass=abc.ABCMeta
+):
     _pg_pool: _POOL_TV = attr.ib()
     _task_timeout: Optional[int] = attr.ib(default=None)
     _pgex_adapter: Optional[_ADAPTER_TV] = attr.ib(init=False, default=None)
@@ -39,15 +49,15 @@ class PostgreSQLOperationProcessor(
 
     @abc.abstractmethod
     async def start(self) -> None:
-        """ Prepare for work. """
+        """Prepare for work."""
 
     @abc.abstractmethod
     async def end(self) -> None:
-        """ Cleanup. """
+        """Cleanup."""
 
     async def ping(self) -> Optional[int]:
         assert self._pgex_adapter is not None
-        result = await self._pgex_adapter.scalar('select 1', user_type=BIType.integer)
+        result = await self._pgex_adapter.scalar("select 1", user_type=BIType.integer)
         assert result is None or isinstance(result, int)
         return result
 

@@ -28,9 +28,7 @@ class ColumnRenderer(abc.ABC):
 class DefaultColumnRenderer(ColumnRenderer):
     def make_column(self, name: str) -> sa.sql.ClauseElement:
         full_name_parts = self._field_names.get(name) or (name,)
-        return sa.literal_column(
-            '.'.join([self._quoter(part) for part in full_name_parts])
-        )
+        return sa.literal_column(".".join([self._quoter(part) for part in full_name_parts]))
 
 
 @attr.s

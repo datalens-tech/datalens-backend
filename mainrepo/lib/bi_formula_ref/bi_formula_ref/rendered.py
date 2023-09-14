@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-import attr
+from typing import (
+    TYPE_CHECKING,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+)
 
-from typing import Iterable, List, NamedTuple, Optional, Set, TYPE_CHECKING
+import attr
 
 if TYPE_CHECKING:
     from bi_formula.core.dialect import DialectCombo
-
     from bi_formula_ref.audience import Audience
     from bi_formula_ref.primitives import ParameterizedNote
     from bi_formula_ref.registry.arg_base import FuncArg
@@ -57,10 +63,10 @@ class RenderedFunc(NamedTuple):
 
     @property
     def category_description_short(self) -> str:
-        first_sentence = self.category_description.split('.', 1)[0]
+        first_sentence = self.category_description.split(".", 1)[0]
         if not first_sentence:
-            return ''
-        return f'{first_sentence}.'
+            return ""
+        return f"{first_sentence}."
 
 
 @attr.s(frozen=True)

@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import List, Callable, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    List,
+    Optional,
+)
 
 if TYPE_CHECKING:
     from bi_core.connection_models import ConnectOptions
     from bi_core.us_connection_base import ExecutorBasedMixin
 
 
-_T_CONN_OPTIONS_MUTATOR = Callable[['ConnectOptions', 'ExecutorBasedMixin'], Optional['ConnectOptions']]
+_T_CONN_OPTIONS_MUTATOR = Callable[["ConnectOptions", "ExecutorBasedMixin"], Optional["ConnectOptions"]]
 
 
 class ConnOptionsMutatorsFactory:

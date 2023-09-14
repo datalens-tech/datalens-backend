@@ -4,16 +4,17 @@ import logging
 
 from marshmallow import fields as ma_fields
 
+from bi_api_lib.enums import WhereClauseOperation
 from bi_constants.enums import (
-    BIType, JoinType, BinaryJoinOperator, AggregationFunction,
-    ConnectionType, CreateDSFrom,
+    AggregationFunction,
+    BinaryJoinOperator,
+    BIType,
+    ConnectionType,
+    CreateDSFrom,
+    JoinType,
 )
-
 from bi_model_tools.schema.base import BaseSchema
 from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
-
-from bi_api_lib.enums import WhereClauseOperation
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -88,7 +89,7 @@ class OptionsSchema(BaseSchema):
     schema_update_enabled = ma_fields.Boolean()
     data_types = ma_fields.Nested(DataTypesSchema)
     preview = ma_fields.Nested(PreviewSchema)
-    fields_ = ma_fields.Nested(FieldsSchema, attribute='fields', data_key='fields')
+    fields_ = ma_fields.Nested(FieldsSchema, attribute="fields", data_key="fields")
     connections = ma_fields.Nested(ConnectionsSchema)
     sources = ma_fields.Nested(SourcesSchema)
     source_avatars = ma_fields.Nested(AvatarsSchema)

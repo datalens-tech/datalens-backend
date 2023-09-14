@@ -3,21 +3,31 @@ from __future__ import annotations
 import abc
 import logging
 import re
-from typing import Any, ClassVar, Dict, Generator, Iterable, List, Optional, Sequence, Tuple
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import attr
 
-from bi_constants.enums import LegendItemType
-
 from bi_app_tools.profiling_base import GenericProfiler
-
+from bi_constants.enums import LegendItemType
 from bi_query_processing.enums import QueryType
-from bi_query_processing.postprocessing.postprocessors.all import postprocess_data
-from bi_query_processing.legend.field_legend import TemplateRoleSpec
-from bi_query_processing.legend.block_legend import BlockSpec
 from bi_query_processing.execution.primitives import ExecutedQuery
-from bi_query_processing.postprocessing.primitives import PostprocessedQueryMetaInfo, PostprocessedQuery
-
+from bi_query_processing.legend.block_legend import BlockSpec
+from bi_query_processing.legend.field_legend import TemplateRoleSpec
+from bi_query_processing.postprocessing.postprocessors.all import postprocess_data
+from bi_query_processing.postprocessing.primitives import (
+    PostprocessedQuery,
+    PostprocessedQueryMetaInfo,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +63,7 @@ class IndexValueRestorer(ValueRestorerBase):
 class TemplateValueRestorer(ValueRestorerBase):
     """Restores value simply by applying values to a string template"""
 
-    template_re: ClassVar[re.Pattern] = re.compile(r'\{\{(?P<field>[^{}]+)\}\}')
+    template_re: ClassVar[re.Pattern] = re.compile(r"\{\{(?P<field>[^{}]+)\}\}")
 
     template: Optional[str] = attr.ib(kw_only=True)
     idx_by_field_id: Dict[str, int] = attr.ib(kw_only=True)
@@ -63,7 +73,7 @@ class TemplateValueRestorer(ValueRestorerBase):
             return None
 
         def sub_value(field_match: re.Match) -> str:
-            field_id = field_match.group('field').strip()
+            field_id = field_match.group("field").strip()
             idx = self.idx_by_field_id[field_id]
             return raw_row[idx]
 
@@ -75,7 +85,9 @@ class DataPostprocessor:
     profiler_prefix: str = attr.ib(kw_only=True)
 
     def _make_value_restorers(
-            self, executed_query: ExecutedQuery, block_spec: BlockSpec,
+        self,
+        executed_query: ExecutedQuery,
+        block_spec: BlockSpec,
     ) -> List[ValueRestorerBase]:
         # Mapping of which field corresponds to which index in the data stream
         field_order = executed_query.meta.field_order
@@ -97,19 +109,20 @@ class DataPostprocessor:
         return result
 
     def get_postprocessed_data(
-            self, executed_query: ExecutedQuery, block_spec: BlockSpec,
+        self,
+        executed_query: ExecutedQuery,
+        block_spec: BlockSpec,
     ) -> PostprocessedQuery:
         query_meta = executed_query.meta
         data: Iterable[Sequence[Any]] = executed_query.rows
 
-        ordered_value_restorers = self._make_value_restorers(
-            executed_query=executed_query, block_spec=block_spec)
+        ordered_value_restorers = self._make_value_restorers(executed_query=executed_query, block_spec=block_spec)
 
         def restore_order(data: Iterable[Sequence[Any]]) -> Generator[Tuple[Any, ...], None, None]:
             for row in data:
                 yield tuple(restorer.restore_value(row) for restorer in ordered_value_restorers)
 
-        with GenericProfiler(f'{self.profiler_prefix}-response-prepare'):
+        with GenericProfiler(f"{self.profiler_prefix}-response-prepare"):
             result_fields_types = query_meta.detailed_types
             assert result_fields_types is not None
 
@@ -124,8 +137,7 @@ class DataPostprocessor:
                 postprocessed_data = tuple(restore_order(postprocessed_data))
 
         LOGGER.info(
-            f'Returning dataset data: {len(postprocessed_data)} rows '
-            f'with {len(result_fields_types)} columns',
+            f"Returning dataset data: {len(postprocessed_data)} rows " f"with {len(result_fields_types)} columns",
             extra=dict(
                 fetched_data_statistics=dict(
                     row_count=len(postprocessed_data),
@@ -135,8 +147,7 @@ class DataPostprocessor:
         )
 
         postprocessed_query = PostprocessedQuery(
-            postprocessed_data=postprocessed_data,
-            meta=PostprocessedQueryMetaInfo.from_exec_meta(exec_meta=query_meta)
+            postprocessed_data=postprocessed_data, meta=PostprocessedQueryMetaInfo.from_exec_meta(exec_meta=query_meta)
         )
 
         return postprocessed_query

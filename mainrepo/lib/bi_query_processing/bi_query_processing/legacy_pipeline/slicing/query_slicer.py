@@ -5,19 +5,26 @@ import logging
 
 import attr
 
-from bi_formula.inspect.env import InspectionEnvironment
-
 from bi_core.utils import attrs_evolve_to_subclass
-
+from bi_formula.inspect.env import InspectionEnvironment
 from bi_query_processing.compilation.primitives import CompiledFormulaInfo
 from bi_query_processing.legacy_pipeline.planning.primitives import (
-    PlannedFormula, PlannedOrderByFormula, PlannedJoinOnFormula, ExecutionPlan,
+    ExecutionPlan,
+    PlannedFormula,
+    PlannedJoinOnFormula,
+    PlannedOrderByFormula,
 )
-from bi_query_processing.legacy_pipeline.slicing.factory import SlicerFactoryBase, SlicerFactory
+from bi_query_processing.legacy_pipeline.slicing.factory import (
+    SlicerFactory,
+    SlicerFactoryBase,
+)
 from bi_query_processing.legacy_pipeline.slicing.primitives import (
-    SliceFormulaSlice, SlicedFormula, SlicedOrderByFormula, SlicedJoinOnFormula, SlicedQuery,
+    SlicedFormula,
+    SlicedJoinOnFormula,
+    SlicedOrderByFormula,
+    SlicedQuery,
+    SliceFormulaSlice,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,13 +36,14 @@ class QuerySlicerBase(abc.ABC):
 
     def slice_formula(self, planned_formula: PlannedFormula, top_level_idx: int, iteration_id: str) -> SlicedFormula:
         if self._debug_mode:
-            LOGGER.info(f'Getting slicer for plan {planned_formula.slicing_plan} on slicing iteration {iteration_id}')
+            LOGGER.info(f"Getting slicer for plan {planned_formula.slicing_plan} on slicing iteration {iteration_id}")
         slicer = self._factory.get_slicer(
-            slicing_plan=planned_formula.slicing_plan, iteration_id=iteration_id,
+            slicing_plan=planned_formula.slicing_plan,
+            iteration_id=iteration_id,
         )
 
         if self._debug_mode:
-            LOGGER.info(f'Slicing formula {planned_formula.formula.pretty()} on slicing iteration {iteration_id}')
+            LOGGER.info(f"Slicing formula {planned_formula.formula.pretty()} on slicing iteration {iteration_id}")
         raw_slices = slicer.slice_formula(formula=planned_formula.formula.formula_obj).slices
         slices = []
         for level_idx, raw_slice in enumerate(raw_slices):
@@ -43,7 +51,7 @@ class QuerySlicerBase(abc.ABC):
             aliased_formulas = {}
             for piece_alias, piece_formula in raw_slice.aliased_nodes.items():
                 if is_top_level:
-                    assert len(raw_slice.aliased_nodes) == 1, 'There can be only one node at the top level'
+                    assert len(raw_slice.aliased_nodes) == 1, "There can be only one node at the top level"
                     # Set original alias for top-level expressions
                     piece_alias = planned_formula.formula.alias  # type: ignore  # TODO: fix
                 aliased_formulas[piece_alias] = CompiledFormulaInfo(
@@ -52,10 +60,9 @@ class QuerySlicerBase(abc.ABC):
                     original_field_id=planned_formula.formula.original_field_id,
                     avatar_ids=planned_formula.formula.avatar_ids,
                 )
-            slices.append(SliceFormulaSlice(
-                aliased_formulas=aliased_formulas,
-                required_fields=raw_slice.required_fields
-            ))
+            slices.append(
+                SliceFormulaSlice(aliased_formulas=aliased_formulas, required_fields=raw_slice.required_fields)
+            )
 
         return SlicedFormula(
             slices=slices,
@@ -64,24 +71,34 @@ class QuerySlicerBase(abc.ABC):
         )
 
     def slice_order_by_formula(
-            self, planned_formula: PlannedOrderByFormula, top_level_idx: int, iteration_id: str,
+        self,
+        planned_formula: PlannedOrderByFormula,
+        top_level_idx: int,
+        iteration_id: str,
     ) -> SlicedOrderByFormula:
         assert isinstance(planned_formula, PlannedOrderByFormula)
         sliced_formula = self.slice_formula(
-            planned_formula=planned_formula, top_level_idx=top_level_idx, iteration_id=iteration_id)
+            planned_formula=planned_formula, top_level_idx=top_level_idx, iteration_id=iteration_id
+        )
         return attrs_evolve_to_subclass(
-            cls=SlicedOrderByFormula, inst=sliced_formula,
+            cls=SlicedOrderByFormula,
+            inst=sliced_formula,
             direction=planned_formula.direction,
         )
 
     def slice_join_on_formula(
-            self, planned_formula: PlannedJoinOnFormula, top_level_idx: int, iteration_id: str,
+        self,
+        planned_formula: PlannedJoinOnFormula,
+        top_level_idx: int,
+        iteration_id: str,
     ) -> SlicedJoinOnFormula:
         assert isinstance(planned_formula, PlannedJoinOnFormula)
         sliced_formula = self.slice_formula(
-            planned_formula=planned_formula, top_level_idx=top_level_idx, iteration_id=iteration_id)
+            planned_formula=planned_formula, top_level_idx=top_level_idx, iteration_id=iteration_id
+        )
         return attrs_evolve_to_subclass(
-            cls=SlicedJoinOnFormula, inst=sliced_formula,
+            cls=SlicedJoinOnFormula,
+            inst=sliced_formula,
             left_id=planned_formula.left_id,
             right_id=planned_formula.right_id,
             join_type=planned_formula.join_type,

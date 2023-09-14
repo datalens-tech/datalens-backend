@@ -1,12 +1,22 @@
 from __future__ import annotations
 
-from typing import Iterable, TYPE_CHECKING, Union
+from typing import (
+    TYPE_CHECKING,
+    Iterable,
+    Union,
+)
 
 import attr
 
+from bi_core.base_models import (
+    ConnectionRef,
+    DefaultConnectionRef,
+)
 import bi_core.exc as exc
-from bi_core.base_models import ConnectionRef, DefaultConnectionRef
-from bi_core.us_manager.broken_link import BrokenUSLink, BrokenUSLinkErrorKind
+from bi_core.us_manager.broken_link import (
+    BrokenUSLink,
+    BrokenUSLinkErrorKind,
+)
 
 if TYPE_CHECKING:
     from bi_core.us_entry import USEntry
@@ -26,7 +36,7 @@ class USEntryBuffer:
                 elif entry.error_kind == BrokenUSLinkErrorKind.ACCESS_DENIED:
                     raise exc.ReferencedUSEntryAccessDenied(
                         f"Referenced connection {entry.reference.conn_id} cannot be loaded: access denied",
-                        details=dict(scope='connection', entry_id=entry.reference.conn_id)
+                        details=dict(scope="connection", entry_id=entry.reference.conn_id),
                     )
                 else:
                     raise ValueError(f"Referenced connection {entry.reference} cannot be loaded: {entry.error_kind}")

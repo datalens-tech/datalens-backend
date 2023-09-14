@@ -15,7 +15,10 @@ def cache_ttl_field(
 ) -> ma_fields.Integer:
     return ma_fields.Integer(
         attribute=attribute,
-        required=required, allow_none=allow_none, load_default=missing, dump_default=default,
+        required=required,
+        allow_none=allow_none,
+        load_default=missing,
+        dump_default=default,
         bi_extra=bi_extra,
     )
 
@@ -30,6 +33,8 @@ def secret_string_field(
     return ma_fields.String(
         attribute=attribute,
         load_only=True,  # do not expose never
-        required=required, allow_none=allow_none, dump_default=default,
+        required=required,
+        allow_none=allow_none,
+        dump_default=default,
         bi_extra=bi_extra,
     )

@@ -1,60 +1,73 @@
+import asyncio
 import datetime
 import logging
-import asyncio
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional,
+)
 
 import attr
-import shortuuid
 from redis.asyncio.lock import Lock as RedisLock
+import shortuuid
 
-from bi_constants.enums import DataSourceRole, FileProcessingStatus
-from bi_utils.aio import ContextVarExecutor
+from bi_constants.enums import (
+    DataSourceRole,
+    FileProcessingStatus,
+)
 from bi_core import exc as core_exc
 from bi_core.aio.web_app_services.s3 import S3Service
+from bi_core.connection_executors import ConnExecutorQuery
 from bi_core.db import SchemaColumn
 from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.connection_executors import ConnExecutorQuery
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-
-from bi_task_processor.task import BaseExecutorTask, TaskResult, Success, Fail, Retry
-import bi_file_uploader_task_interface.tasks as task_interface
-from bi_file_uploader_task_interface.tasks import TaskExecutionMode
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext
-
-from bi_file_uploader_lib.enums import FileType
 from bi_file_uploader_lib.common_locks import release_source_update_locks
+from bi_file_uploader_lib.enums import FileType
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
 from bi_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
     DataSourcePreview,
     GSheetsFileSourceSettings,
-    GSheetsUserSourceProperties,
     GSheetsUserSourceDataSourceProperties,
+    GSheetsUserSourceProperties,
     PreviewSet,
 )
+from bi_file_uploader_task_interface.context import FileUploaderTaskContext
+import bi_file_uploader_task_interface.tasks as task_interface
+from bi_file_uploader_task_interface.tasks import TaskExecutionMode
+from bi_file_uploader_worker_lib.utils.s3_utils import (
+    S3Object,
+    copy_from_s3_to_s3,
+    make_s3_table_func_sql_source,
+)
+from bi_task_processor.task import (
+    BaseExecutorTask,
+    Fail,
+    Retry,
+    Success,
+    TaskResult,
+)
+from bi_utils.aio import ContextVarExecutor
 
-from bi_file_uploader_worker_lib.utils.s3_utils import make_s3_table_func_sql_source, copy_from_s3_to_s3, S3Object
-
+from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 LOGGER = logging.getLogger(__name__)
 
 
 def _make_source_s3_filename(tenant_id: str) -> str:
-    return f'{tenant_id}_{shortuuid.uuid()}'
+    return f"{tenant_id}_{shortuuid.uuid()}"
 
 
 def _make_tmp_source_s3_filename(source_id: str) -> str:
-    return f'{source_id}-{shortuuid.uuid()}.json'
+    return f"{source_id}-{shortuuid.uuid()}.json"
 
 
 async def _prepare_file(
-        s3_service: S3Service,
-        tpe: ContextVarExecutor,
-        dfile: DataFile,
-        src_source: DataSource,
-        dst_source_id: str,
-        conn_raw_schema: list[SchemaColumn],
+    s3_service: S3Service,
+    tpe: ContextVarExecutor,
+    dfile: DataFile,
+    src_source: DataSource,
+    dst_source_id: str,
+    conn_raw_schema: list[SchemaColumn],
 ) -> str:
     src_filename = dfile.s3_key if dfile.file_type == FileType.csv else src_source.s3_key
 
@@ -73,7 +86,7 @@ async def _prepare_file(
         )
 
     loop = asyncio.get_running_loop()
-    LOGGER.info('Copying data from user file to tmp s3 file (in JSONCompactEachRow format)')
+    LOGGER.info("Copying data from user file to tmp s3 file (in JSONCompactEachRow format)")
     await loop.run_in_executor(tpe, do_s3_copy_sync)
 
     return tmp_s3_filename
@@ -89,11 +102,13 @@ def _get_conn_specific_dsrc_params(dfile: DataFile, src: DataSource) -> dict[str
         user_source_dsrc_properties = src.user_source_dsrc_properties
         assert isinstance(user_source_dsrc_properties, GSheetsUserSourceDataSourceProperties)
 
-        kwargs.update(dict(
-            spreadsheet_id=user_source_properties.spreadsheet_id,
-            sheet_id=user_source_dsrc_properties.sheet_id,
-            first_line_is_header=file_source_settings.first_line_is_header,
-        ))
+        kwargs.update(
+            dict(
+                spreadsheet_id=user_source_properties.spreadsheet_id,
+                sheet_id=user_source_dsrc_properties.sheet_id,
+                first_line_is_header=file_source_settings.first_line_is_header,
+            )
+        )
     return kwargs
 
 
@@ -103,9 +118,9 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
 
     async def run(self) -> TaskResult:
         try:
-            LOGGER.info(f'SaveSourceTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}')
+            LOGGER.info(f"SaveSourceTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}")
             if self.meta.exec_mode == TaskExecutionMode.UPDATE_NO_SAVE:
-                LOGGER.warning(f'Cannot run SaveSourceTask in {self.meta.exec_mode.name} mode, failing the task')
+                LOGGER.warning(f"Cannot run SaveSourceTask in {self.meta.exec_mode.name} mode, failing the task")
                 return Fail()
 
             redis = self._ctx.redis_service.get_redis()
@@ -121,10 +136,10 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
             service_registry = self._ctx.get_service_registry(rci=rci)
             release_update_source_lock_flag = False
             async with usm:
-                source_lock_key = f'SaveSourceTask/{dst_source_id}'
-                LOGGER.info(f'Acquiring redis lock {source_lock_key}')
+                source_lock_key = f"SaveSourceTask/{dst_source_id}"
+                LOGGER.info(f"Acquiring redis lock {source_lock_key}")
                 async with RedisLock(redis, name=source_lock_key, timeout=120, blocking_timeout=120):
-                    LOGGER.info(f'Lock {source_lock_key} acquired')
+                    LOGGER.info(f"Lock {source_lock_key} acquired")
                     assert isinstance(usm, AsyncUSManager)
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
@@ -136,8 +151,10 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
 
                     try:
                         conn_file_source = conn.get_file_source_by_id(dst_source_id)
-                        if (conn_file_source.status == FileProcessingStatus.ready and
-                                self.meta.exec_mode != TaskExecutionMode.UPDATE_AND_SAVE):
+                        if (
+                            conn_file_source.status == FileProcessingStatus.ready
+                            and self.meta.exec_mode != TaskExecutionMode.UPDATE_AND_SAVE
+                        ):
                             LOGGER.info(
                                 f'Source {dst_source_id} in connection {conn.uuid} has status "ready". Finishing task.'
                             )
@@ -147,7 +164,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         orig_s3_filename = conn_file_source.s3_filename
                         orig_preview_id = conn_file_source.preview_id
                     except core_exc.SourceDoesNotExist:
-                        LOGGER.info(f'Source {dst_source_id} not present in connection {conn.uuid}. Finishing task.')
+                        LOGGER.info(f"Source {dst_source_id} not present in connection {conn.uuid}. Finishing task.")
                         return Success()
 
                     s3_service = self._ctx.s3_service
@@ -175,7 +192,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             source_id=dst_source_id,
                             bucket=s3_service.tmp_bucket_name,
                             filename=tmp_s3_filename,
-                            file_fmt='JSONCompactEachRow',
+                            file_fmt="JSONCompactEachRow",
                             for_debug=for_debug,
                             raw_schema_override=raw_schema_override,
                         )
@@ -184,11 +201,11 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             source_id=dst_source_id,
                             bucket=s3_service.persistent_bucket_name,
                             filename=new_s3_filename,
-                            file_fmt='Native',
+                            file_fmt="Native",
                             for_debug=for_debug,
                             raw_schema_override=raw_schema_override,
                         )
-                        return f'insert into FUNCTION {dst_sql} select * from {src_sql}'
+                        return f"insert into FUNCTION {dst_sql} select * from {src_sql}"
 
                     ce_query = ConnExecutorQuery(
                         query=_construct_insert_from_select_query(),
@@ -198,8 +215,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     )
 
                     LOGGER.info(
-                        'Running INSERT FROM SELECT clickhouse query '
-                        'to transform S3 data to CH Native format.'
+                        "Running INSERT FROM SELECT clickhouse query " "to transform S3 data to CH Native format."
                     )
                     conn_executor_factory = service_registry.get_conn_executor_factory()
                     async_conn_executor = conn_executor_factory.get_async_conn_executor(conn)
@@ -209,32 +225,37 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     async with usm.locked_entry_cm(
                         self.meta.connection_id,
                         expected_type=BaseFileS3Connection,
-                        wait_timeout_sec=60, duration_sec=10,
+                        wait_timeout_sec=60,
+                        duration_sec=10,
                     ) as conn:
                         assert isinstance(conn, BaseFileS3Connection)
                         try:
                             conn.get_file_source_by_id(id=dst_source_id)
                             conn_file_source = conn.get_file_source_by_id(id=dst_source_id)
                         except core_exc.SourceDoesNotExist:
-                            LOGGER.info(f'Source {dst_source_id} not present in connection {conn.uuid}. Finishing task.')
+                            LOGGER.info(
+                                f"Source {dst_source_id} not present in connection {conn.uuid}. Finishing task."
+                            )
                             conn.data.component_errors.remove_errors(id=dst_source_id)
                             return Success()
 
-                        if (conn_file_source.status == FileProcessingStatus.ready and
-                                self.meta.exec_mode != TaskExecutionMode.UPDATE_AND_SAVE):
+                        if (
+                            conn_file_source.status == FileProcessingStatus.ready
+                            and self.meta.exec_mode != TaskExecutionMode.UPDATE_AND_SAVE
+                        ):
                             LOGGER.info(
                                 f'Source {dst_source_id} in connection {conn.uuid} already has status "ready". '
-                                'Something strange, considering present lock. '
-                                'Failing task.'
+                                "Something strange, considering present lock. "
+                                "Failing task."
                             )
                             return Fail()
 
                         extra_dsrc_params = _get_conn_specific_dsrc_params(dfile, src_source)
                         if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
-                            extra_dsrc_params['data_updated_at'] = datetime.datetime.now(datetime.timezone.utc)
+                            extra_dsrc_params["data_updated_at"] = datetime.datetime.now(datetime.timezone.utc)
                             release_update_source_lock_flag = True
-                            extra_dsrc_params['raw_schema'] = raw_schema_override
-                            extra_dsrc_params['file_id'] = dfile.id
+                            extra_dsrc_params["raw_schema"] = raw_schema_override
+                            extra_dsrc_params["file_id"] = dfile.id
 
                         conn.update_data_source(
                             dst_source_id,
@@ -261,13 +282,13 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             await task_processor.schedule(delete_file_task)
                         else:
                             LOGGER.warning(
-                                f'file_id in connection source ({orig_file_id}) and passed file_id'
-                                f' ({self.meta.file_id}) are different and execution mode is'
-                                f' {self.meta.exec_mode.name}, expected it to be'
-                                f' {TaskExecutionMode.UPDATE_AND_SAVE.name}'
+                                f"file_id in connection source ({orig_file_id}) and passed file_id"
+                                f" ({self.meta.file_id}) are different and execution mode is"
+                                f" {self.meta.exec_mode.name}, expected it to be"
+                                f" {TaskExecutionMode.UPDATE_AND_SAVE.name}"
                             )
 
-                LOGGER.info(f'Released lock {source_lock_key}')
+                LOGGER.info(f"Released lock {source_lock_key}")
 
                 if release_update_source_lock_flag:
                     await release_source_update_locks(redis, dst_source_id)

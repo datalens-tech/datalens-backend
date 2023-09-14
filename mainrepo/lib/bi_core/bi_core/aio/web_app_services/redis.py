@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import abc
 import logging
-
-import redis.asyncio
-import attr
-from typing import ClassVar, Optional, Sequence
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 from aiohttp import web
-from redis.asyncio.sentinel import Sentinel as RedisSentinel, SentinelConnectionPool
+import attr
+import redis.asyncio
+from redis.asyncio.sentinel import Sentinel as RedisSentinel
+from redis.asyncio.sentinel import SentinelConnectionPool
 
 from bi_constants.enums import RedisInstanceKind
 from bi_core.utils import secrepr
@@ -29,11 +33,11 @@ async def extract_redis_conn_params(redis_cli: Optional[redis.asyncio.Redis]) ->
     if redis_cli is None:
         return None
     redis_conn_params = redis_cli.connection_pool.connection_kwargs
-    host = redis_conn_params.get('host')
-    port = redis_conn_params.get('port')
+    host = redis_conn_params.get("host")
+    port = redis_conn_params.get("port")
 
-    if 'connection_pool' in redis_conn_params:
-        conn_pool: SentinelConnectionPool = redis_conn_params['connection_pool']
+    if "connection_pool" in redis_conn_params:
+        conn_pool: SentinelConnectionPool = redis_conn_params["connection_pool"]
         master_address = await conn_pool.get_master_address()
         host, port = master_address
 
@@ -43,9 +47,9 @@ async def extract_redis_conn_params(redis_cli: Optional[redis.asyncio.Redis]) ->
     return RedisConnParams(
         host=host,
         port=port,
-        db=redis_conn_params['db'],
-        password=redis_conn_params['password'],
-        ssl=redis_conn_params.get('ssl'),
+        db=redis_conn_params["db"],
+        password=redis_conn_params["password"],
+        ssl=redis_conn_params.get("ssl"),
     )
 
 
@@ -72,7 +76,7 @@ class RedisBaseService(metaclass=abc.ABCMeta):
         return f"{cls.APP_KEY}_{instance_kind.name}"
 
     @classmethod
-    def get_app_instance(cls, app: web.Application, instance_kind: RedisInstanceKind) -> 'RedisBaseService':
+    def get_app_instance(cls, app: web.Application, instance_kind: RedisInstanceKind) -> "RedisBaseService":
         service = app.get(cls.get_full_app_key(instance_kind), None)
         if service is None:
             raise ValueError("Redis was not initiated for application")

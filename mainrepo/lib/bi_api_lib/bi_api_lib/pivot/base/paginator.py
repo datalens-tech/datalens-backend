@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 if TYPE_CHECKING:
     from bi_api_lib.pivot.base.data_frame import PivotDataFrame
@@ -10,8 +13,9 @@ if TYPE_CHECKING:
 class PivotPaginator(abc.ABC):
     @abc.abstractmethod
     def paginate(
-            self, pivot_dframe: PivotDataFrame,
-            limit_rows: Optional[int] = None,
-            offset_rows: Optional[int] = None,
+        self,
+        pivot_dframe: PivotDataFrame,
+        limit_rows: Optional[int] = None,
+        offset_rows: Optional[int] = None,
     ) -> PivotDataFrame:
         raise NotImplementedError

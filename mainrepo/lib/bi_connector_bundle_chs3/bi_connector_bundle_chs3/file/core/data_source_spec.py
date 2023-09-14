@@ -1,8 +1,6 @@
 import attr
 
-from bi_connector_bundle_chs3.chs3_base.core.data_source_spec import (
-    BaseFileS3DataSourceSpec,
-)
+from bi_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec
 
 
 @attr.s

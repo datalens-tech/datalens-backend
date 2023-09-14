@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Hashable, NamedTuple, Optional, Tuple
+from typing import (
+    Any,
+    Hashable,
+    NamedTuple,
+    Optional,
+    Tuple,
+)
 
 import attr
 
@@ -43,7 +49,7 @@ class DataKeyPart(NamedTuple):
             part_content_str = self.part_content.stringify()
         else:
             part_content_str = str(self.part_content)
-        return f'{self.part_type}:{part_content_str}'
+        return f"{self.part_type}:{part_content_str}"
 
     def validate(self) -> None:
         if not self.part_type:
@@ -71,7 +77,7 @@ class LocalKeyRepresentation:
     @property
     def key_parts_str(self) -> str:
         if self._key_parts_str is None:
-            self._key_parts_str = ';'.join(part.stringify() for part in self.key_parts)
+            self._key_parts_str = ";".join(part.stringify() for part in self.key_parts)
         return self._key_parts_str
 
     @property
@@ -82,9 +88,7 @@ class LocalKeyRepresentation:
 
     def extend(self, part_type: str, part_content: Hashable) -> LocalKeyRepresentation:
         new_part = DataKeyPart(part_type=part_type, part_content=part_content)
-        return LocalKeyRepresentation(
-            key_parts=self.key_parts + (new_part,)
-        )
+        return LocalKeyRepresentation(key_parts=self.key_parts + (new_part,))
 
     def multi_extend(self, *parts: DataKeyPart) -> LocalKeyRepresentation:
         return LocalKeyRepresentation(key_parts=self.key_parts + parts)

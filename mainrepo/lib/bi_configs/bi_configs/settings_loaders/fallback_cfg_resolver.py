@@ -1,14 +1,18 @@
-import logging
 from collections.abc import Mapping
-from typing import Any, ClassVar, Optional, Iterator
+import logging
+from typing import (
+    Any,
+    ClassVar,
+    Iterator,
+    Optional,
+)
 
-import yaml
 import attr
+import yaml
 
 from bi_configs.environments import LegacyDefaults
 from bi_configs.settings_loaders.common import SDict
 from bi_configs.settings_loaders.exc import SettingsLoadingException
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,10 +21,7 @@ def resolve_by_yenv_type(yenv_type: str, env_map: Any, install_map: Any) -> Lega
     public_env_postfix = "-public"
     sec_embeds_postfix = "-sec-embeds"
 
-    effective_yenv_type = yenv_type \
-        .removesuffix(public_env_postfix) \
-        .removesuffix(sec_embeds_postfix) \
-        .replace("-", "_")
+    effective_yenv_type = yenv_type.removesuffix(public_env_postfix).removesuffix(sec_embeds_postfix).replace("-", "_")
 
     if not hasattr(env_map, effective_yenv_type):
         raise SettingsLoadingException(f"Unknown YENV type: {yenv_type!r} ({effective_yenv_type})")
@@ -48,7 +49,7 @@ class YEnvFallbackConfigResolver(FallbackConfigResolver):
     _env_map: Any = attr.ib()
 
     def resolve(self, s_dict: SDict) -> LegacyDefaults:
-        LOGGER.info('Resolve by YEnvFallbackConfigResolver')
+        LOGGER.info("Resolve by YEnvFallbackConfigResolver")
         yenv_type = s_dict.get(self.yenv_type_key)
         if yenv_type is None:
             raise SettingsLoadingException(f"Could not determine YENV type (key: {self.yenv_type_key!r})")
@@ -72,7 +73,7 @@ class ObjectLikeConfig(Mapping):
 
     def _get_key(self, key: Any):
         if key not in self._data:
-            path = '.'.join(self._path + [key])
+            path = ".".join(self._path + [key])
             raise AttributeError(f'There is no record in config by path: "{path}"')
         return self._data[key]
 
@@ -86,7 +87,7 @@ class ObjectLikeConfig(Mapping):
         return self._get_key(key)
 
     @classmethod
-    def from_dict(cls, data: dict, path: Optional[list] = None) -> 'ObjectLikeConfig':
+    def from_dict(cls, data: dict, path: Optional[list] = None) -> "ObjectLikeConfig":
         if path is None:
             path = []
 
@@ -95,17 +96,13 @@ class ObjectLikeConfig(Mapping):
                 return cls.from_dict(v, path + [k])
             if isinstance(v, (list, tuple)):
                 return [
-                    cls.from_dict(item, path + [k] + [str(idx)])
-                    if isinstance(item, dict) else item
+                    cls.from_dict(item, path + [k] + [str(idx)]) if isinstance(item, dict) else item
                     for idx, item in enumerate(v)
                 ]
             return v
 
         ret = cls(
-            data={
-                k: _get_value_for_cfg(k, v)
-                for k, v in data.items()
-            },
+            data={k: _get_value_for_cfg(k, v) for k, v in data.items()},
             path=path,
         )
         return ret
@@ -118,10 +115,7 @@ class ObjectLikeConfig(Mapping):
                 return [item.to_dict if isinstance(item, ObjectLikeConfig) else item for item in v]
             return v
 
-        return {
-            k: _get_value_for_dict(v)
-            for k, v in self._data.items()
-        }
+        return {k: _get_value_for_dict(v) for k, v in self._data.items()}
 
 
 @attr.s
@@ -141,7 +135,7 @@ class YamlFileConfigResolver(FallbackConfigResolver):
         return result
 
     def resolve(self, s_dict: SDict) -> ObjectLikeConfig:
-        LOGGER.info('Resolve by YamlFileConfigResolver')
+        LOGGER.info("Resolve by YamlFileConfigResolver")
         path = self._get_config_path(s_dict)
         with open(path) as f:
             config = yaml.safe_load(f.read())

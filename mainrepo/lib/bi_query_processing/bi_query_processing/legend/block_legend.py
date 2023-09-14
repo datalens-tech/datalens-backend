@@ -1,13 +1,24 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Optional
+from typing import (
+    Any,
+    ClassVar,
+    List,
+    Optional,
+)
 
 import attr
 
 from bi_constants.enums import QueryBlockPlacementType
-
-from bi_query_processing.enums import QueryType, GroupByPolicy, EmptyQueryMode
-from bi_query_processing.base_specs.dimensions import DimensionSpec, DimensionValueSpec
+from bi_query_processing.base_specs.dimensions import (
+    DimensionSpec,
+    DimensionValueSpec,
+)
+from bi_query_processing.enums import (
+    EmptyQueryMode,
+    GroupByPolicy,
+    QueryType,
+)
 from bi_query_processing.legend.field_legend import Legend
 
 

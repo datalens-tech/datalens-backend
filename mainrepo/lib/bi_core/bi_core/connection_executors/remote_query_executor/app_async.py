@@ -1,41 +1,57 @@
 from __future__ import annotations
 
-import logging
-import sys
 import argparse
+import logging
 import pickle
-from typing import TYPE_CHECKING, Union, Type, Optional, Any
+import sys
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    Type,
+    Union,
+)
 
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
-from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
-from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_utils.aio import ContextVarExecutor
-
 from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from bi_api_commons.aio.middlewares.request_id import RequestId
-
-from bi_core.enums import RQEEventType
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from bi_configs.env_var_definitions import (
+    jaeger_service_name_env_aware,
+    use_jaeger_tracer,
+)
 from bi_core.aio.web_app_services.server_header import ServerHeader
 from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
-from bi_core.connection_executors.adapters.async_adapters_base import AsyncDBAdapter, AsyncDirectDBAdapter
+from bi_core.connection_executors.adapters.async_adapters_base import (
+    AsyncDBAdapter,
+    AsyncDirectDBAdapter,
+)
 from bi_core.connection_executors.adapters.async_adapters_sync_wrapper import AsyncWrapperForSyncAdapter
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.models.constants import HEADER_REQUEST_ID, HEADER_BODY_SIGNATURE
+from bi_core.connection_executors.models.constants import (
+    HEADER_BODY_SIGNATURE,
+    HEADER_REQUEST_ID,
+)
 from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core.connection_executors.qe_serializer import (
     ActionSerializer,
     ResponseTypes,
-    dba_actions as act,
 )
-from bi_core.connection_executors.remote_query_executor.commons import SUPPORTED_ADAPTER_CLS, DEFAULT_CHUNK_SIZE
+from bi_core.connection_executors.qe_serializer import dba_actions as act
+from bi_core.connection_executors.remote_query_executor.commons import (
+    DEFAULT_CHUNK_SIZE,
+    SUPPORTED_ADAPTER_CLS,
+)
 from bi_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from bi_core.connection_executors.remote_query_executor.error_handler_rqe import RQEErrorHandler
+from bi_core.enums import RQEEventType
+from bi_core.loader import load_bi_core
 from bi_core.logging_config import configure_logging
 from bi_core.utils import get_eqe_secret_key
-from bi_core.loader import load_bi_core
+from bi_utils.aio import ContextVarExecutor
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
@@ -47,22 +63,20 @@ LOGGER = logging.getLogger(__name__)
 class BaseView(web.View):
     @property
     def tpe(self) -> ContextVarExecutor:
-        return self.request.app['tpe']
+        return self.request.app["tpe"]
 
 
 def adapter_factory(
-        target_conn_dto: ConnTargetDTO,
-        dba_cls: Type[CommonBaseDirectAdapter],
-        req_ctx_info: DBAdapterScopedRCI,
-        tpe: ContextVarExecutor
+    target_conn_dto: ConnTargetDTO,
+    dba_cls: Type[CommonBaseDirectAdapter],
+    req_ctx_info: DBAdapterScopedRCI,
+    tpe: ContextVarExecutor,
 ) -> AsyncDBAdapter:
     default_chunk_size = DEFAULT_CHUNK_SIZE
 
     if issubclass(dba_cls, SyncDirectDBAdapter):
         sync_dba = dba_cls.create(
-            target_dto=target_conn_dto,
-            req_ctx_info=req_ctx_info,
-            default_chunk_size=default_chunk_size
+            target_dto=target_conn_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size
         )
 
         return AsyncWrapperForSyncAdapter(
@@ -72,9 +86,7 @@ def adapter_factory(
 
     elif issubclass(dba_cls, AsyncDirectDBAdapter):
         return dba_cls.create(
-            target_dto=target_conn_dto,
-            req_ctx_info=req_ctx_info,
-            default_chunk_size=default_chunk_size
+            target_dto=target_conn_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size
         )
 
     else:
@@ -83,9 +95,11 @@ def adapter_factory(
 
 class PingView(BaseView):
     async def get(self) -> web.Response:
-        return web.json_response(dict(
-            result='PONG',
-        ))
+        return web.json_response(
+            dict(
+                result="PONG",
+            )
+        )
 
 
 class ActionHandlingView(BaseView):
@@ -99,9 +113,9 @@ class ActionHandlingView(BaseView):
         return pickle.dumps((event.value, data))
 
     async def handle_query_action(
-            self,
-            dba: AsyncDBAdapter,
-            dba_query: DBAdapterQuery,
+        self,
+        dba: AsyncDBAdapter,
+        dba_query: DBAdapterQuery,
     ) -> Union[web.StreamResponse, web.Response]:
         try:
             result = await dba.execute(dba_query)
@@ -123,18 +137,18 @@ class ActionHandlingView(BaseView):
                     await response.write(self.serialize_event(RQEEventType.raw_chunk, raw_chunk))
 
             except Exception as err:
-                await response.write(self.serialize_event(
-                    RQEEventType.error_dump,
-                    ActionSerializer().serialize_exc(err)))
+                await response.write(
+                    self.serialize_event(RQEEventType.error_dump, ActionSerializer().serialize_exc(err))
+                )
             # Proper chunked close should also indicate this, but making an explicit end-of-stream at this
             await response.write(self.serialize_event(RQEEventType.finished, None))
 
         return response
 
     async def execute_non_streamed_action(
-            self,
-            dba: AsyncDBAdapter,
-            action: act.NonStreamAction,
+        self,
+        dba: AsyncDBAdapter,
+        action: act.NonStreamAction,
     ) -> ResponseTypes:
         if isinstance(action, act.ActionTest):
             await dba.test()
@@ -189,7 +203,7 @@ def body_signature_validation_middleware(hmac_key: bytes) -> AIOHTTPMiddleware:
         if not hmac_key:  # do not consider an empty hmac key as valid.
             raise Exception("body_signature_validation_middleware: no hmac_key.")
 
-        if request.method in ('HEAD', 'OPTIONS', 'GET'):
+        if request.method in ("HEAD", "OPTIONS", "GET"):
             return await handler(request)
 
         body_bytes = await request.read()
@@ -216,38 +230,40 @@ def create_async_qe_app(hmac_key: Optional[bytes] = None) -> web.Application:
     error_handler = RQEErrorHandler(
         sentry_app_name_tag=None,
     )
-    app = web.Application(middlewares=[
-        RequestBootstrap(
-            req_id_service=req_id_service,
-            error_handler=error_handler,
-        ).middleware,
-        # TODO FIX: Add profiling middleware.
-        body_signature_validation_middleware(hmac_key=hmac_key),
-    ])
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(
+                req_id_service=req_id_service,
+                error_handler=error_handler,
+            ).middleware,
+            # TODO FIX: Add profiling middleware.
+            body_signature_validation_middleware(hmac_key=hmac_key),
+        ]
+    )
     app.on_response_prepare.append(req_id_service.on_response_prepare)
     ServerHeader("DataLens QE").add_signal_handlers(app)
 
     # TODO FIX: Close on app exit
-    app['tpe'] = ContextVarExecutor()
+    app["tpe"] = ContextVarExecutor()
 
-    app.router.add_route('get', '/ping', PingView)
-    app.router.add_route('*', '/execute_action', ActionHandlingView)
+    app.router.add_route("get", "/ping", PingView)
+    app.router.add_route("*", "/execute_action", ActionHandlingView)
 
     return app
 
 
 def async_qe_main() -> None:
     configure_logging(
-        app_name='rqe-async',
+        app_name="rqe-async",
         app_prefix=None,  # not useful with `append_local_req_id=False`.
         use_jaeger_tracer=use_jaeger_tracer(),
-        jaeger_service_name=jaeger_service_name_env_aware('bi-rqe-async'),
+        jaeger_service_name=jaeger_service_name_env_aware("bi-rqe-async"),
     )
     load_bi_core()
     try:
-        parser = argparse.ArgumentParser(description='Process some integers.')
-        parser.add_argument('--host', type=str)
-        parser.add_argument('--port', type=int)
+        parser = argparse.ArgumentParser(description="Process some integers.")
+        parser.add_argument("--host", type=str)
+        parser.add_argument("--port", type=int)
         args = parser.parse_args()
     except Exception as err:
         LOGGER.exception("rqe-async args error: %r", err)

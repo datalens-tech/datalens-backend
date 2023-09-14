@@ -1,31 +1,40 @@
 import asyncio
-import attr
 import logging
-
 from typing import Optional
 
 import arq
+import attr
 
 from bi_configs.settings_submodels import RedisSettings
-from bi_utils.aio import ContextVarExecutor
-
 from bi_task_processor.arq_wrapper import create_redis_pool
-from bi_task_processor.context import BaseContext, BaseContextFabric
-from bi_task_processor.executor import Executor
-from bi_task_processor.processor import LocalProcessorImpl, TaskProcessor, make_task_processor
-from bi_task_processor.state import TaskState, DummyStateImpl
-from bi_task_processor.task import (
-    TaskName,
-    BaseTaskMeta,
-    BaseExecutorTask,
-    TaskResult,
-    Success,
-    Retry, TaskRegistry,
+from bi_task_processor.context import (
+    BaseContext,
+    BaseContextFabric,
 )
+from bi_task_processor.executor import Executor
+from bi_task_processor.processor import (
+    LocalProcessorImpl,
+    TaskProcessor,
+    make_task_processor,
+)
+from bi_task_processor.state import (
+    DummyStateImpl,
+    TaskState,
+)
+from bi_task_processor.task import (
+    BaseExecutorTask,
+    BaseTaskMeta,
+    Retry,
+    Success,
+    TaskName,
+    TaskRegistry,
+    TaskResult,
+)
+from bi_utils.aio import ContextVarExecutor
 
 LOGGER = logging.getLogger(__name__)
 
-BROKEN_MARK = 'mark_broken_task'
+BROKEN_MARK = "mark_broken_task"
 
 
 @attr.s
@@ -79,31 +88,31 @@ class ARQContextFab(BaseContextFabric):
 
 @attr.s
 class SomeTaskInterface(BaseTaskMeta):
-    name = TaskName('some_task')
+    name = TaskName("some_task")
     foo: str = attr.ib()
 
 
 @attr.s
 class BrokenTaskInterface(BaseTaskMeta):
-    name = TaskName('broken_task')
+    name = TaskName("broken_task")
     bar: str = attr.ib()
 
 
 @attr.s
 class RetryTaskInterface(BaseTaskMeta):
-    name = TaskName('retry_task')
+    name = TaskName("retry_task")
     foobar: str = attr.ib()
 
 
 @attr.s
 class TestIdsTaskInterface(BaseTaskMeta):
-    name = TaskName('test_ids_task')
+    name = TaskName("test_ids_task")
     expected_request_id: str = attr.ib()
 
 
 @attr.s
 class ScheduleFromTaskTaskInterface(BaseTaskMeta):
-    name = TaskName('test_schedule_from_task_task')
+    name = TaskName("test_schedule_from_task_task")
 
 
 @attr.s
@@ -111,12 +120,12 @@ class SomeTask(BaseExecutorTask[SomeTaskInterface, Context]):
     cls_meta = SomeTaskInterface
 
     async def run(self) -> TaskResult:
-        LOGGER.info(f'Its some task with a {self._ctx} {self.meta.foo}')
+        LOGGER.info(f"Its some task with a {self._ctx} {self.meta.foo}")
         loop = asyncio.get_running_loop()
         try:
             result = await loop.run_in_executor(
                 self._ctx.tpe,
-                lambda t: ', '.join((str(i) for i in range(t))),
+                lambda t: ", ".join((str(i) for i in range(t))),
                 10,
             )
         except Exception as ex:
@@ -127,7 +136,7 @@ class SomeTask(BaseExecutorTask[SomeTaskInterface, Context]):
 
 
 def some_sync_function_with_logs() -> None:
-    LOGGER.info(f'{BROKEN_MARK}')
+    LOGGER.info(f"{BROKEN_MARK}")
 
 
 @attr.s
@@ -159,7 +168,7 @@ class RetryTask(BaseExecutorTask[RetryTaskInterface, Context]):
     cls_meta = RetryTaskInterface
 
     async def run(self) -> TaskResult:
-        LOGGER.info(f'Its retry task with a {self._ctx} {self.meta.foobar}')
+        LOGGER.info(f"Its retry task with a {self._ctx} {self.meta.foobar}")
         return Retry(
             attempts=2,
             backoff=1,
@@ -171,14 +180,16 @@ class ScheduleFromTaskTask(BaseExecutorTask[ScheduleFromTaskTaskInterface, Conte
     cls_meta = ScheduleFromTaskTaskInterface
 
     async def run(self) -> TaskResult:
-        await self._ctx.tp.schedule(SomeTaskInterface(foo='1'))
+        await self._ctx.tp.schedule(SomeTaskInterface(foo="1"))
         return Success()
 
 
-REGISTRY: TaskRegistry = TaskRegistry.create([
-    SomeTask,
-    BrokenTask,
-    RetryTask,
-    TestIdsTask,
-    ScheduleFromTaskTask,
-])
+REGISTRY: TaskRegistry = TaskRegistry.create(
+    [
+        SomeTask,
+        BrokenTask,
+        RetryTask,
+        TestIdsTask,
+        ScheduleFromTaskTask,
+    ]
+)

@@ -1,25 +1,29 @@
-from typing import Optional, Any
+from typing import (
+    Any,
+    Optional,
+)
 
-import attr
 import arq
+import attr
 
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_utils.aio import ContextVarExecutor
-
-from bi_api_commons.tenant_resolver import TenantResolver
 from bi_api_commons.base_models import RequestContextInfo
+from bi_api_commons.tenant_resolver import TenantResolver
+from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_core.aio.web_app_services.gsheets import GSheetsSettings
-from bi_core.aio.web_app_services.s3 import S3Service
 from bi_core.aio.web_app_services.redis import RedisBaseService
-from bi_core.us_manager.us_manager_async import AsyncUSManager
+from bi_core.aio.web_app_services.s3 import S3Service
 from bi_core.services_registry.top_level import ServicesRegistry
-
-from bi_task_processor.context import BaseContext
-from bi_task_processor.processor import TaskProcessor, make_task_processor
+from bi_core.us_manager.us_manager_async import AsyncUSManager
 from bi_file_uploader_task_interface.utils_service_registry import (
     create_sr_factory_from_env_vars,
     get_async_service_us_manager,
 )
+from bi_task_processor.context import BaseContext
+from bi_task_processor.processor import (
+    TaskProcessor,
+    make_task_processor,
+)
+from bi_utils.aio import ContextVarExecutor
 
 
 @attr.s

@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.operators_binary as base
 from bi_formula.definitions.base import TranslationVariant
 from bi_formula.definitions.common_datetime import DAY_SEC
+import bi_formula.definitions.operators_binary as base
 
 from bi_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
@@ -12,7 +12,6 @@ V = TranslationVariant.make
 DEFINITIONS_BINARY = [
     # !=
     base.BinaryNotEqual.for_dialect(D.SNOWFLAKE),
-
     # %
     base.BinaryModInteger(
         variants=[
@@ -24,7 +23,6 @@ DEFINITIONS_BINARY = [
             V(D.SNOWFLAKE, lambda left, right: left - sa.func.FLOOR(left / right) * right),
         ]
     ),
-
     # *
     base.BinaryMultNumbers.for_dialect(D.SNOWFLAKE),
     base.BinaryMultStringConst.for_dialect(D.SNOWFLAKE),
@@ -33,7 +31,6 @@ DEFINITIONS_BINARY = [
             V(D.SNOWFLAKE, sa.func.REPEAT),
         ]
     ),
-
     # +
     base.BinaryPlusNumbers.for_dialect(D.SNOWFLAKE),
     base.BinaryPlusStrings.for_dialect(D.SNOWFLAKE),
@@ -118,49 +115,34 @@ DEFINITIONS_BINARY = [
     # /
     base.BinaryDivInt.for_dialect(D.SNOWFLAKE),
     base.BinaryDivFloat.for_dialect(D.SNOWFLAKE),
-
     # <
     base.BinaryLessThan.for_dialect(D.SNOWFLAKE),
-
     # <=
     base.BinaryLessThanOrEqual.for_dialect(D.SNOWFLAKE),
-
     # ==
     base.BinaryEqual.for_dialect(D.SNOWFLAKE),
-
     # >
     base.BinaryGreaterThan.for_dialect(D.SNOWFLAKE),
-
     # >=
     base.BinaryGreaterThanOrEqual.for_dialect(D.SNOWFLAKE),
-
     # ^
     base.BinaryPower.for_dialect(D.SNOWFLAKE),
-
     # _!=
     base.BinaryNotEqualInternal.for_dialect(D.SNOWFLAKE),
-
     # _==
     base.BinaryEqualInternal.for_dialect(D.SNOWFLAKE),
-
     # _dneq
     base.BinaryEqualDenullified.for_dialect(D.SNOWFLAKE),
-
     # and
     base.BinaryAnd.for_dialect(D.SNOWFLAKE),
-
     # in
     base.BinaryIn.for_dialect(D.SNOWFLAKE),
-
     # like
     base.BinaryLike.for_dialect(D.SNOWFLAKE),
-
     # notin
     base.BinaryNotIn.for_dialect(D.SNOWFLAKE),
-
     # notlike
     base.BinaryNotLike.for_dialect(D.SNOWFLAKE),
-
     # or
     base.BinaryOr.for_dialect(D.SNOWFLAKE),
 ]

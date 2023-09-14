@@ -1,40 +1,46 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal, Optional, Any
+from typing import (
+    Any,
+    Literal,
+    Optional,
+)
 
 import attr
 
 from bi_api_connector.form_config.models.common import (
-    TFieldName,
     SerializableConfig,
-    skip_if_null,
+    TFieldName,
     remap_skip_if_null,
+    skip_if_null,
 )
 
 
 @attr.s(kw_only=True, frozen=True)
 class FormFieldSelector(SerializableConfig):
-    """ Can be used to refer to a specific field of the form """
+    """Can be used to refer to a specific field of the form"""
 
     name: TFieldName = attr.ib()
 
 
 class FormFieldApiAction(Enum):
-    """ What to do with the field when sending a request to the API (validate and include it in the request) """
+    """What to do with the field when sending a request to the API (validate and include it in the request)"""
 
-    include = 'include'
-    skip = 'skip'
+    include = "include"
+    skip = "skip"
 
 
 @attr.s(kw_only=True, frozen=True)
 class FormFieldApiSchema(SerializableConfig):
     name: TFieldName = attr.ib()
-    type: Optional[Literal['string', 'boolean']] = attr.ib(default=None, metadata=skip_if_null())
+    type: Optional[Literal["string", "boolean"]] = attr.ib(default=None, metadata=skip_if_null())
     required: bool = attr.ib(default=False)
     length: Optional[int] = attr.ib(default=None, metadata=skip_if_null())
     nullable: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
-    default_action: FormFieldApiAction = attr.ib(default=FormFieldApiAction.include, metadata=remap_skip_if_null('defaultAction'))
+    default_action: FormFieldApiAction = attr.ib(
+        default=FormFieldApiAction.include, metadata=remap_skip_if_null("defaultAction")
+    )
 
 
 @attr.s(kw_only=True, frozen=True)

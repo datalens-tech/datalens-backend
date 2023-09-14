@@ -1,30 +1,41 @@
 from __future__ import annotations
 
-import re
 from datetime import datetime
-from typing import Callable, ClassVar, Optional
+import re
+from typing import (
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 import marshmallow as ma
 
 from bi_api_commons.reporting.models import NotificationReportingRecord
-from bi_connector_snowflake.auth import SFAuthProvider
-from bi_connector_snowflake.core.constants import ACCOUNT_NAME_RE, NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
-from bi_connector_snowflake.core.constants import (
-    CONNECTION_TYPE_SNOWFLAKE,
-    SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
-)
-from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 from bi_core.base_models import (
-    ConnectionDataModelBase,
     ConnCacheableDataModelMixin,
+    ConnectionDataModelBase,
     ConnSubselectDataModelMixin,
 )
-from bi_core.reporting.notifications import get_notification_record
-from bi_i18n.localizer_base import Localizer
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionSQL, DataSourceTemplate, ConnectionBase
+from bi_core.reporting.notifications import get_notification_record
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    ConnectionSQL,
+    DataSourceTemplate,
+)
+from bi_i18n.localizer_base import Localizer
 from bi_utils.utils import DataKey
+
+from bi_connector_snowflake.auth import SFAuthProvider
+from bi_connector_snowflake.core.constants import (
+    ACCOUNT_NAME_RE,
+    CONNECTION_TYPE_SNOWFLAKE,
+    NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE,
+    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
+)
+from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 
 
 class ConnectionSQLSnowFlake(ConnectionSQL):
@@ -56,9 +67,9 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
             return {DataKey(parts=("client_secret",)), DataKey(parts=("refresh_token",))}
 
     async def validate_new_data(
-            self,
-            changes: Optional[dict] = None,
-            original_version: Optional[ConnectionBase] = None,
+        self,
+        changes: Optional[dict] = None,
+        original_version: Optional[ConnectionBase] = None,
     ) -> None:
         if not re.fullmatch(ACCOUNT_NAME_RE, self.data.account_name):
             raise ma.ValidationError(message="Field account_name is not valid")
@@ -92,28 +103,34 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
         )
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         # todo: for initial implementation using only schema and db name from conn dto
         tables = self.get_tables(
             conn_executor_factory=conn_executor_factory,
-            schema_name=self.data.schema, db_name=self.data.db_name,
+            schema_name=self.data.schema,
+            db_name=self.data.db_name,
         )
         return [dict(schema_name=tid.schema_name, table_name=tid.table_name) for tid in tables]
 
     def get_data_source_template_group(self, parameters: dict) -> list[str]:
-        return [val for val in (
-            parameters.get('account_name'),
-            parameters.get('user_name'),
-            parameters.get('user_role'),
-            parameters.get('client_id'),
-            parameters.get('client_secret'),
-            parameters.get('refresh_token'),
-            parameters.get('refresh_token_expire_time'),
-            parameters.get('schema'),
-            parameters.get('db_name'),
-            parameters.get('warehouse'),
-        ) if val is not None]
+        return [
+            val
+            for val in (
+                parameters.get("account_name"),
+                parameters.get("user_name"),
+                parameters.get("user_role"),
+                parameters.get("client_id"),
+                parameters.get("client_secret"),
+                parameters.get("refresh_token"),
+                parameters.get("refresh_token_expire_time"),
+                parameters.get("schema"),
+                parameters.get("db_name"),
+                parameters.get("warehouse"),
+            )
+            if val is not None
+        ]
 
     @property
     def allow_public_usage(self) -> bool:

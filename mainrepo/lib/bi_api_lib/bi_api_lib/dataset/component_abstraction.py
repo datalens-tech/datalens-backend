@@ -1,22 +1,35 @@
 from __future__ import annotations
 
-from typing import Generator, NamedTuple, Optional, Union, ClassVar
+from typing import (
+    ClassVar,
+    Generator,
+    NamedTuple,
+    Optional,
+    Union,
+)
 
 import attr
 
-from bi_constants.enums import ComponentType, ManagedBy
-
-import bi_core.exc as common_exc
-from bi_core.data_source import DataSourceCollectionBase
-from bi_core.data_source.collection import DataSourceCollectionFactory
-from bi_core.fields import BIField, ResultSchema
-from bi_core.multisource import SourceAvatar, AvatarRelation
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.local_cache import USEntryBuffer
+from bi_constants.enums import (
+    ComponentType,
+    ManagedBy,
+)
 from bi_core.base_models import ObligatoryFilter
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.components.editor import DatasetComponentEditor
-
+from bi_core.data_source import DataSourceCollectionBase
+from bi_core.data_source.collection import DataSourceCollectionFactory
+import bi_core.exc as common_exc
+from bi_core.fields import (
+    BIField,
+    ResultSchema,
+)
+from bi_core.multisource import (
+    AvatarRelation,
+    SourceAvatar,
+)
+from bi_core.us_dataset import Dataset
+from bi_core.us_manager.local_cache import USEntryBuffer
 
 DatasetComponent = Union[
     DataSourceCollectionBase,
@@ -41,13 +54,15 @@ class DatasetComponentAbstraction:
     _ds_editor: DatasetComponentEditor = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
 
-    _can_check_valid: ClassVar[frozenset[ComponentType]] = frozenset({
-        ComponentType.data_source,
-        ComponentType.source_avatar,
-        ComponentType.avatar_relation,
-        ComponentType.field,
-        ComponentType.obligatory_filter,
-    })
+    _can_check_valid: ClassVar[frozenset[ComponentType]] = frozenset(
+        {
+            ComponentType.data_source,
+            ComponentType.source_avatar,
+            ComponentType.avatar_relation,
+            ComponentType.field,
+            ComponentType.obligatory_filter,
+        }
+    )
 
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
@@ -97,7 +112,7 @@ class DatasetComponentAbstraction:
                 return self._ds.result_schema
             return None
 
-        raise ValueError(f'Unsupported component_type {component_ref.component_type.name}')
+        raise ValueError(f"Unsupported component_type {component_ref.component_type.name}")
 
     def update_component_validity(self, component_ref: DatasetComponentRef, valid: bool) -> None:
         """
@@ -105,7 +120,9 @@ class DatasetComponentAbstraction:
         If component doesn't exist, return peacefully.
         """
         component = self.get_component(component_ref=component_ref)
-        if component_ref.component_type not in self._can_check_valid or component is None:  # or valid == component.valid:
+        if (
+            component_ref.component_type not in self._can_check_valid or component is None
+        ):  # or valid == component.valid:
             return
 
         if valid != component.valid:
@@ -122,11 +139,9 @@ class DatasetComponentAbstraction:
                     if field.guid == component_ref.component_id:
                         self._ds.result_schema.update_field(idx=field_idx, field=field.clone(valid=valid))
             else:
-                raise ValueError(f'Unsupported component_type {component_ref.component_type.name}')
+                raise ValueError(f"Unsupported component_type {component_ref.component_type.name}")
 
-    def iter_dataset_components_by_type(
-            self, component_type: ComponentType
-    ) -> Generator[DatasetComponent, None, None]:
+    def iter_dataset_components_by_type(self, component_type: ComponentType) -> Generator[DatasetComponent, None, None]:
         """Iterate over dataset components of given type"""
         if component_type == ComponentType.data_source:
             for other_component_id in self._ds_accessor.get_data_source_id_list():
@@ -142,15 +157,13 @@ class DatasetComponentAbstraction:
         elif component_type == ComponentType.result_schema:
             yield self._ds.result_schema
         else:
-            raise ValueError(f'Unsupported component_type {component_type.name}')
+            raise ValueError(f"Unsupported component_type {component_type.name}")
 
-    def validate_component_can_be_managed(
-            self, component_ref: DatasetComponentRef, by: Optional[ManagedBy]
-    ) -> None:
+    def validate_component_can_be_managed(self, component_ref: DatasetComponentRef, by: Optional[ManagedBy]) -> None:
         if by is not None:
             component = self.get_component(component_ref=component_ref)
             if component.managed_by != by:  # type: ignore  # TODO: fix
                 raise common_exc.DatasetConfigurationError(
-                    f'Component {component_ref.component_type.name} {component_ref.component_id} '
-                    f'cannot be managed by {by.name}'
+                    f"Component {component_ref.component_type.name} {component_ref.component_id} "
+                    f"cannot be managed by {by.name}"
                 )

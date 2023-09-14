@@ -5,7 +5,6 @@ from typing import Optional
 import attr
 
 from bi_constants.enums import CreateDSFrom
-
 from bi_core.base_models import ConnectionRef
 from bi_core.db.elements import SchemaColumn
 
@@ -23,8 +22,4 @@ class DataSourceSpec:
 
     @classmethod
     def get_public_fields(cls) -> list[str]:
-        return [
-            field.name
-            for field in attr.fields(cls)
-            if not field.name.startswith('_')
-        ]
+        return [field.name for field in attr.fields(cls) if not field.name.startswith("_")]

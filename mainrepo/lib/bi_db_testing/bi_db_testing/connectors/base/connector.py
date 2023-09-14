@@ -1,4 +1,7 @@
-from typing import ClassVar, Type
+from typing import (
+    ClassVar,
+    Type,
+)
 
 from bi_db_testing.database.engine_wrapper import EngineWrapperBase
 

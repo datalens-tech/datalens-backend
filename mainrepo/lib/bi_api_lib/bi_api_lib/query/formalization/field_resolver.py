@@ -1,19 +1,24 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import attr
 
+from bi_api_lib.query.formalization.raw_specs import (
+    IdFieldRef,
+    IdOrTitleFieldRef,
+    TitleFieldRef,
+)
 import bi_core.exc
 
-from bi_api_lib.query.formalization.raw_specs import IdFieldRef, TitleFieldRef, IdOrTitleFieldRef
-
 if TYPE_CHECKING:
-    from bi_core.us_dataset import Dataset
+    from bi_api_lib.query.formalization.raw_specs import FieldRef
     from bi_core.components.ids import FieldId
     from bi_core.fields import BIField
-
-    from bi_api_lib.query.formalization.raw_specs import FieldRef
+    from bi_core.us_dataset import Dataset
 
 
 @attr.s
@@ -38,5 +43,5 @@ class FieldResolver:
         elif isinstance(field_ref, IdOrTitleFieldRef):
             field_id = self._find_field_by_id_or_title(field_ref.id_or_title).guid
         else:
-            raise TypeError(f'Invalid field spec: {field_ref}')
+            raise TypeError(f"Invalid field spec: {field_ref}")
         return field_id

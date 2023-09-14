@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import (
+    Optional,
+    Tuple,
+)
 
 import attr
 
-from bi_constants.enums import QueryType, ConnectionType, NotificationLevel
-
 from bi_api_commons.reporting.records import ReportingRecord
+from bi_constants.enums import (
+    ConnectionType,
+    NotificationLevel,
+    QueryType,
+)
 
 
 @attr.s(frozen=True, auto_attribs=True)

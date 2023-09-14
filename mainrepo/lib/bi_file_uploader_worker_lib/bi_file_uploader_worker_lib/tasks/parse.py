@@ -1,24 +1,36 @@
 import logging
-from typing import Optional, Type
+from typing import (
+    Optional,
+    Type,
+)
 
 import attr
 
 from bi_constants.enums import FileProcessingStatus
-
-from bi_task_processor.task import BaseExecutorTask, TaskResult, Success, Fail, Retry
-import bi_file_uploader_task_interface.tasks as task_interface
-from bi_file_uploader_task_interface.tasks import TaskExecutionMode
-from bi_file_uploader_task_interface.context import FileUploaderTaskContext
-
 from bi_file_uploader_lib import exc
 from bi_file_uploader_lib.common_locks import release_source_update_locks
 from bi_file_uploader_lib.enums import FileType
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
-from bi_file_uploader_lib.redis_model.models import DataFile, FileProcessingError
-
+from bi_file_uploader_lib.redis_model.models import (
+    DataFile,
+    FileProcessingError,
+)
+from bi_file_uploader_task_interface.context import FileUploaderTaskContext
+import bi_file_uploader_task_interface.tasks as task_interface
+from bi_file_uploader_task_interface.tasks import TaskExecutionMode
 from bi_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
-from bi_file_uploader_worker_lib.utils.file_parser import FileParser, CSVFileParser, SpreadsheetFileParser
-
+from bi_file_uploader_worker_lib.utils.file_parser import (
+    CSVFileParser,
+    FileParser,
+    SpreadsheetFileParser,
+)
+from bi_task_processor.task import (
+    BaseExecutorTask,
+    Fail,
+    Retry,
+    Success,
+    TaskResult,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +52,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
         redis = self._ctx.redis_service.get_redis()
         connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
         try:
-            LOGGER.info(f'ParseFileTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}')
+            LOGGER.info(f"ParseFileTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}")
 
             redis = self._ctx.redis_service.get_redis()
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
@@ -66,7 +78,9 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                     continue
 
                 try:
-                    has_header, raw_schema, file_settings, dsrc_settings = await file_parser.guess_header_and_schema(dsrc)
+                    has_header, raw_schema, file_settings, dsrc_settings = await file_parser.guess_header_and_schema(
+                        dsrc
+                    )
                 except exc.DLFileUploaderBaseError as e:
                     dsrc.status = FileProcessingStatus.failed
                     dsrc.error = FileProcessingError.from_exception(e)
@@ -78,10 +92,12 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.file_source_settings = dsrc_settings
 
                 preview = await file_parser.prepare_preview(dsrc, rmm)
-                await preview.save(ttl=12 * 12 * 60)  # save preview temporarily, so it is deleted if source never gets saved
+                await preview.save(
+                    ttl=12 * 12 * 60
+                )  # save preview temporarily, so it is deleted if source never gets saved
                 dsrc.preview_id = preview.id
 
-                LOGGER.info('DataSourcePreview object saved.')
+                LOGGER.info("DataSourcePreview object saved.")
 
                 dsrc.status = FileProcessingStatus.ready
 
@@ -93,7 +109,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
 
             await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
             await dfile.save()
-            LOGGER.info('DataFile object saved.')
+            LOGGER.info("DataFile object saved.")
 
             if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
                 for dsrc in dfile.sources or ():
@@ -110,7 +126,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                         exec_mode=self.meta.exec_mode,
                     )
                     await task_processor.schedule(save_source_task)
-                    LOGGER.info(f'Scheduled SaveSourceTask for file_id {dfile.id}')
+                    LOGGER.info(f"Scheduled SaveSourceTask for file_id {dfile.id}")
             elif self.meta.exec_mode == TaskExecutionMode.UPDATE_NO_SAVE and dfile.sources:
                 await release_source_update_locks(redis, *[dsrc.id for dsrc in dfile.sources])
 

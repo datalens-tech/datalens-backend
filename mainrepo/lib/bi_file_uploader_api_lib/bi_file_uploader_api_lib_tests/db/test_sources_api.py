@@ -1,8 +1,8 @@
 import pytest
-from bi_constants.api_constants import DLHeadersCommon
-from bi_file_uploader_lib.redis_model.models import DataFile
 
+from bi_constants.api_constants import DLHeadersCommon
 from bi_file_uploader_api_lib_tests.req_builder import ReqBuilder
+from bi_file_uploader_lib.redis_model.models import DataFile
 
 
 @pytest.mark.asyncio

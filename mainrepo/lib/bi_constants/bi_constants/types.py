@@ -2,16 +2,25 @@ from __future__ import annotations
 
 import datetime
 import decimal
+from typing import (
+    AsyncGenerator,
+    AsyncIterable,
+    Sequence,
+    Union,
+)
 import uuid
-from typing import AsyncGenerator, AsyncIterable, Sequence, Union
-
 
 TJSONScalar = Union[str, float, int, bool, None]
 TBIDataValue = Union[
     # All the python types that connection executors are known to spit out.
     # (does not include e.g. `memoryview` which should always be processed in the executor).
-    datetime.date, datetime.datetime, datetime.time, datetime.timedelta,
-    decimal.Decimal, uuid.UUID, bytes,
+    datetime.date,
+    datetime.datetime,
+    datetime.time,
+    datetime.timedelta,
+    decimal.Decimal,
+    uuid.UUID,
+    bytes,
     TJSONScalar,
 ]
 
@@ -26,7 +35,9 @@ TBIDataValue = Union[
 # ]
 # # Limited recursion:
 TJSONLikeUnchecked = Union[
-    dict, list, tuple,
+    dict,
+    list,
+    tuple,
     TJSONScalar,
 ]
 TJSONLike = Union[
@@ -47,7 +58,9 @@ TJSONLike = Union[
 # ]
 # # Limited recursion:
 TJSONExtUnchecked = Union[
-    dict, list, tuple,
+    dict,
+    list,
+    tuple,
     TBIDataValue,
 ]
 TJSONExt = Union[

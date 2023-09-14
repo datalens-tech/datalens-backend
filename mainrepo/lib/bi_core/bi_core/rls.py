@@ -8,13 +8,20 @@ from __future__ import annotations
 
 import abc
 import copy
-from typing import Dict, List, Optional, Tuple
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Tuple,
+)
 
 import attr
 
+from bi_constants.enums import (
+    RLSPatternType,
+    RLSSubjectType,
+)
 from bi_utils.utils import split_list
-
-from bi_constants.enums import RLSSubjectType, RLSPatternType
 
 
 @attr.s(slots=True)
@@ -25,18 +32,14 @@ class RLSSubject:
 
 
 # Special type subject that denotes 'all subjects'.
-RLS_ALL_SUBJECT_NAME = '*'
+RLS_ALL_SUBJECT_NAME = "*"
 RLS_ALL_SUBJECT = RLSSubject(
-    subject_type=RLSSubjectType.all,
-    subject_id=RLS_ALL_SUBJECT_NAME,
-    subject_name=RLS_ALL_SUBJECT_NAME)
-RLS_FAILED_USER_NAME_PREFIX = '!FAILED_'
+    subject_type=RLSSubjectType.all, subject_id=RLS_ALL_SUBJECT_NAME, subject_name=RLS_ALL_SUBJECT_NAME
+)
+RLS_FAILED_USER_NAME_PREFIX = "!FAILED_"
 # Special type subject that denotes 'insert userid'.
-RLS_USERID_SUBJECT_NAME = 'userid'
-RLS_USERID_SUBJECT = RLSSubject(
-    subject_type=RLSSubjectType.userid,
-    subject_id='',
-    subject_name=RLS_USERID_SUBJECT_NAME)
+RLS_USERID_SUBJECT_NAME = "userid"
+RLS_USERID_SUBJECT = RLSSubject(subject_type=RLSSubjectType.userid, subject_id="", subject_name=RLS_USERID_SUBJECT_NAME)
 
 
 @attr.s(slots=True)
@@ -70,53 +73,47 @@ class RLS:
         return list(set(item.field_guid for item in self.items))
 
     def get_entries(
-            self, field_guid: str, subject_type: RLSSubjectType, subject_id: str,
-            add_userid_entry: bool = True
+        self, field_guid: str, subject_type: RLSSubjectType, subject_id: str, add_userid_entry: bool = True
     ) -> List[RLSEntry]:
         return [
             item
             for item in self.items
-            if item.field_guid == field_guid and (
+            if item.field_guid == field_guid
+            and (
                 # Same subject
-                (item.subject.subject_type == subject_type and
-                 item.subject.subject_id == subject_id)
+                (item.subject.subject_type == subject_type and item.subject.subject_id == subject_id)
                 # 'all subjects' matches any subject.
                 or item.subject.subject_type == RLSSubjectType.all
                 # `userid: userid`
-                or (
-                    add_userid_entry
-                    and item.pattern_type == RLSPatternType.userid
-                )
+                or (add_userid_entry and item.pattern_type == RLSPatternType.userid)
             )
         ]
 
     def get_field_restriction_for_subject(
-            self, field_guid: str, subject_type: RLSSubjectType, subject_id: str,
+        self,
+        field_guid: str,
+        subject_type: RLSSubjectType,
+        subject_id: str,
     ) -> Tuple[bool, bool, Optional[List[str]]]:
         """
         For subject and field, return `allow_all_values, allowed_values`.
         """
-        rls_entries = self.get_entries(
-            field_guid=field_guid, subject_type=subject_type, subject_id=subject_id)
+        rls_entries = self.get_entries(field_guid=field_guid, subject_type=subject_type, subject_id=subject_id)
 
         # There's a `*: {current_user}` entry, no need to filter.
-        if any(
-                rls_entry.pattern_type == RLSPatternType.all
-                for rls_entry in rls_entries):
+        if any(rls_entry.pattern_type == RLSPatternType.all for rls_entry in rls_entries):
             return True, False, None
 
         # Pick out userid-entry, if any
         userid_entries, rls_entries = split_list(
-            rls_entries,
-            lambda rls_entry: rls_entry.pattern_type == RLSPatternType.userid)
+            rls_entries, lambda rls_entry: rls_entry.pattern_type == RLSPatternType.userid
+        )
 
         # normal values
         assert all(
-            rls_entry.pattern_type == RLSPatternType.value
-            for rls_entry in rls_entries), 'only simple values should remain at this point'
-        allowed_values = [
-            rls_entry.allowed_value
-            for rls_entry in rls_entries]
+            rls_entry.pattern_type == RLSPatternType.value for rls_entry in rls_entries
+        ), "only simple values should remain at this point"
+        allowed_values = [rls_entry.allowed_value for rls_entry in rls_entries]
 
         # `userid: userid` case
         allow_userid = False
@@ -132,13 +129,16 @@ class RLS:
         return False, allow_userid, allowed_values  # type: ignore  # TODO: fix
 
     def _should_add_entry(
-            self,
-            field_guid: str,
-            subject_type: RLSSubjectType, subject_id: str,
-            allowed_value: Optional[str], pattern_type: RLSPatternType,
+        self,
+        field_guid: str,
+        subject_type: RLSSubjectType,
+        subject_id: str,
+        allowed_value: Optional[str],
+        pattern_type: RLSPatternType,
     ) -> bool:
         existing_allow_all_values, allow_userid, existing_allowed_values = self.get_field_restriction_for_subject(
-            field_guid=field_guid, subject_type=subject_type, subject_id=subject_id)
+            field_guid=field_guid, subject_type=subject_type, subject_id=subject_id
+        )
         if existing_allow_all_values:  # already wildcarded, skip
             return False
         if pattern_type == RLSPatternType.userid:
@@ -147,11 +147,14 @@ class RLS:
         return allowed_value not in existing_allowed_values  # type: ignore  # TODO: fix
 
     def add_field_restriction_for_subject(
-            self,
-            field_guid: str,
-            subject_type: RLSSubjectType, subject_id: str, subject_name: str,
-            allowed_value: Optional[str], pattern_type: RLSPatternType = RLSPatternType.value,
-            force: bool = False,
+        self,
+        field_guid: str,
+        subject_type: RLSSubjectType,
+        subject_id: str,
+        subject_name: str,
+        allowed_value: Optional[str],
+        pattern_type: RLSPatternType = RLSPatternType.value,
+        force: bool = False,
     ) -> None:
         """
         Register a new RLS restriction.
@@ -159,31 +162,36 @@ class RLS:
         Currently, only used in tests.
         """
         if force or self._should_add_entry(
-                field_guid=field_guid,
-                subject_type=subject_type,
-                subject_id=subject_id,
-                allowed_value=allowed_value,
-                pattern_type=pattern_type
+            field_guid=field_guid,
+            subject_type=subject_type,
+            subject_id=subject_id,
+            allowed_value=allowed_value,
+            pattern_type=pattern_type,
         ):
             # TODO?: if allow_all_values, drop all prior items for subject+field?
-            self.items.append(RLSEntry(
-                field_guid=field_guid,
-                allowed_value=allowed_value,
-                pattern_type=pattern_type,
-                subject=RLSSubject(
-                    subject_type=subject_type,
-                    subject_name=subject_name,
-                    subject_id=subject_id,
-                ),
-            ))
+            self.items.append(
+                RLSEntry(
+                    field_guid=field_guid,
+                    allowed_value=allowed_value,
+                    pattern_type=pattern_type,
+                    subject=RLSSubject(
+                        subject_type=subject_type,
+                        subject_name=subject_name,
+                        subject_id=subject_id,
+                    ),
+                )
+            )
 
     def get_subject_restrictions(
-            self, subject_type: RLSSubjectType, subject_id: str,
+        self,
+        subject_type: RLSSubjectType,
+        subject_id: str,
     ) -> Dict[str, List[str]]:
         result = {}
         for field_guid in self.fields_with_rls:
             allow_all_values, allow_userid, allowed_values = self.get_field_restriction_for_subject(
-                field_guid=field_guid, subject_type=subject_type, subject_id=subject_id)
+                field_guid=field_guid, subject_type=subject_type, subject_id=subject_id
+            )
             if allow_all_values:
                 # `*: subject` => 'not restricted'
                 continue

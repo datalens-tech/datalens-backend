@@ -1,23 +1,46 @@
 from __future__ import annotations
 
-from typing import ClassVar, NamedTuple, Sequence, Set, Tuple, TYPE_CHECKING, Type, Union, Optional
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Type,
+    Union,
+)
 
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import TypeEngine
 
 from bi_formula.core import exc
-from bi_formula.core.datatype import DataType, DataTypeParams
+from bi_formula.core.datatype import (
+    DataType,
+    DataTypeParams,
+)
 from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.definitions.args import ArgTypeSequence
 from bi_formula.definitions.base import (
-    Function, SingleVariantTranslationBase, TranslationVariant,
-    TranslationVariantWrapped
+    Function,
+    SingleVariantTranslationBase,
+    TranslationVariant,
+    TranslationVariantWrapped,
 )
 from bi_formula.definitions.flags import ContextFlag
-from bi_formula.definitions.literals import literal, un_literal
+from bi_formula.definitions.literals import (
+    literal,
+    un_literal,
+)
 from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.type_strategy import Fixed, FromArgs, ParamsCustom, ParamsEmpty
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
+    ParamsCustom,
+    ParamsEmpty,
+)
 from bi_formula.shortcuts import n
 from bi_formula.utils.datetime import make_datetimetz_value
 
@@ -36,8 +59,8 @@ class TypeConvFunction(Function):
 
 
 class FuncDate(TypeConvFunction):
-    name = 'date'
-    arg_names = ['expression', 'timezone']
+    name = "date"
+    arg_names = ["expression", "timezone"]
     return_type = Fixed(DataType.DATE)
 
 
@@ -96,7 +119,7 @@ class FuncDatetimeImpl(TypeConvFunction):
     # WARNING: the `{arg:1}` in this description requires there to be at least
     # one `arg_cnt = 2` registered subclass translation, such as
     # `FuncDatetime2FromCHStuff`.
-    arg_names = ['expression', 'timezone']
+    arg_names = ["expression", "timezone"]
 
 
 class FuncTypeGenericDatetimeImpl(FuncDatetimeImpl):
@@ -117,11 +140,7 @@ class FuncTypeGenericDatetime1FromNullImpl(FuncTypeGenericDatetime1Impl):
 
 
 class FuncTypeGenericDatetime1FromDatetimeImpl(FuncTypeGenericDatetime1Impl):
-    variants = [
-        V(
-            D.DUMMY | D.SQLITE,
-            lambda expr: expr
-        )]
+    variants = [V(D.DUMMY | D.SQLITE, lambda expr: expr)]
     argument_types = [
         ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}]),
     ]
@@ -157,57 +176,57 @@ class FuncTypeGenericDatetime2Impl(FuncTypeGenericDatetimeImpl):
 
 
 class FuncDatetime1FromNull(FuncTypeGenericDatetime1FromNullImpl):
-    name = 'datetime'
+    name = "datetime"
 
 
 class FuncDatetime1FromDatetime(FuncTypeGenericDatetime1FromDatetimeImpl):
-    name = 'datetime'
+    name = "datetime"
 
 
 class FuncDatetime1FromDate(FuncTypeGenericDatetime1FromDateImpl):
-    name = 'datetime'
+    name = "datetime"
 
 
 class FuncDatetime1FromNumber(FuncTypeGenericDatetime1FromNumberImpl):
-    name = 'datetime'
+    name = "datetime"
 
 
 class FuncDatetime1FromString(FuncTypeGenericDatetime1FromStringImpl):
-    name = 'datetime'
+    name = "datetime"
 
 
 class FuncGenericDatetime1FromNull(FuncTypeGenericDatetime1FromNullImpl):
-    name = 'genericdatetime'
+    name = "genericdatetime"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncGenericDatetime1FromDatetime(FuncTypeGenericDatetime1FromDatetimeImpl):
-    name = 'genericdatetime'
+    name = "genericdatetime"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncGenericDatetime1FromDate(FuncTypeGenericDatetime1FromDateImpl):
-    name = 'genericdatetime'
+    name = "genericdatetime"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncGenericDatetime1FromNumber(FuncTypeGenericDatetime1FromNumberImpl):
-    name = 'genericdatetime'
+    name = "genericdatetime"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncGenericDatetime1FromString(FuncTypeGenericDatetime1FromStringImpl):
-    name = 'genericdatetime'
+    name = "genericdatetime"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncDatetimeTZ(TypeConvFunction):
-    name = 'datetimetz'
+    name = "datetimetz"
 
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
     arg_cnt = 2
-    arg_names = ['expression', 'timezone']
+    arg_names = ["expression", "timezone"]
 
     return_type = Fixed(DataType.DATETIMETZ)
     return_type_params = ParamsCustom(
@@ -218,16 +237,20 @@ class FuncDatetimeTZ(TypeConvFunction):
 class FuncDatetimeTZConst(SingleVariantTranslationBase, FuncDatetimeTZ):
     dialects = D.DUMMY | D.SQLITE
     argument_types = [
-        ArgTypeSequence([
-            {DataType.CONST_DATETIME,
-             DataType.CONST_GENERICDATETIME,
-             DataType.CONST_DATETIMETZ,
-             # Dubious: `DataType.CONST_DATE`.
-             DataType.CONST_INTEGER,
-             DataType.CONST_FLOAT,
-             DataType.CONST_STRING,
-             },
-            DataType.CONST_STRING]),
+        ArgTypeSequence(
+            [
+                {
+                    DataType.CONST_DATETIME,
+                    DataType.CONST_GENERICDATETIME,
+                    DataType.CONST_DATETIMETZ,
+                    # Dubious: `DataType.CONST_DATE`.
+                    DataType.CONST_INTEGER,
+                    DataType.CONST_FLOAT,
+                    DataType.CONST_STRING,
+                },
+                DataType.CONST_STRING,
+            ]
+        ),
     ]
 
     @classmethod
@@ -246,10 +269,10 @@ class FuncDatetimeTZConst(SingleVariantTranslationBase, FuncDatetimeTZ):
 
 
 class FuncDatetimeTZToNaive(SingleVariantTranslationBase, TypeConvFunction):
-    name = 'datetimetz_to_naive'  # TODO: consider having `datetime(datetimetz_value)` for this.
+    name = "datetimetz_to_naive"  # TODO: consider having `datetime(datetimetz_value)` for this.
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     arg_cnt = 1
-    arg_names = ['datetimetz']
+    arg_names = ["datetimetz"]
     argument_types = [
         ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING]),
     ]
@@ -259,8 +282,8 @@ class FuncDatetimeTZToNaive(SingleVariantTranslationBase, TypeConvFunction):
 
 
 class FuncFloat(TypeConvFunction):
-    name = 'float'
-    arg_names = ['expression']
+    name = "float"
+    arg_names = ["expression"]
     arg_cnt = 1
     return_type = Fixed(DataType.FLOAT)
 
@@ -303,8 +326,8 @@ class FuncFloatFromGenericDatetime(FuncFloat):
 
 
 class FuncInt(TypeConvFunction):
-    name = 'int'
-    arg_names = ['expression']
+    name = "int"
+    arg_names = ["expression"]
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
 
@@ -372,8 +395,8 @@ class FuncIntFromDatetimeTZ(FuncInt):
 
 
 class FuncBool(TypeConvFunction):
-    name = 'bool'
-    arg_names = ['expression']
+    name = "bool"
+    arg_names = ["expression"]
     arg_cnt = 1
     return_type = Fixed(DataType.BOOLEAN)
 
@@ -382,18 +405,14 @@ class FuncBoolFromNull(FuncBool):
     variants = [
         V(D.DUMMY, lambda _: sa.cast(sa.null(), sa.Boolean())),
     ]
-    argument_types = [
-        ArgTypeSequence([DataType.NULL])
-    ]
+    argument_types = [ArgTypeSequence([DataType.NULL])]
 
 
 class FuncBoolFromNumber(FuncBool):
     variants = [
         V(D.DUMMY, lambda value: value != 0),
     ]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT])
-    ]
+    argument_types = [ArgTypeSequence([DataType.FLOAT])]
     return_flags = ContextFlag.IS_CONDITION
 
 
@@ -406,7 +425,7 @@ class FuncBoolFromBool(FuncBool):
 
 class FuncBoolFromStrGeo(FuncBool):
     variants = [
-        V(D.DUMMY, lambda value: value != ''),
+        V(D.DUMMY, lambda value: value != ""),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -428,8 +447,8 @@ class FuncBoolFromDateDatetime(FuncBool):
 
 
 class FuncStr(TypeConvFunction):
-    name = 'str'
-    arg_names = ['expression']
+    name = "str"
+    arg_names = ["expression"]
     arg_cnt = 1
     return_type = Fixed(DataType.STRING)
 
@@ -536,27 +555,25 @@ class FuncTypeGenericDatetimeParseImpl(FuncDatetimeParseImpl):
 
 
 class FuncDatetimeParse(FuncTypeGenericDatetimeParseImpl):
-    name = 'datetime_parse'
+    name = "datetime_parse"
 
 
 class FuncGenericDatetimeParse(FuncTypeGenericDatetimeParseImpl):
-    name = 'genericdatetime_parse'
+    name = "genericdatetime_parse"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncDateParse(TypeConvFunction):
-    name = 'date_parse'
+    name = "date_parse"
     arg_cnt = 1
     # CLICKHOUSE
-    argument_types = [
-        ArgTypeSequence([DataType.STRING])
-    ]
+    argument_types = [ArgTypeSequence([DataType.STRING])]
     return_type = Fixed(DataType.DATE)
 
 
 class FuncGeopoint(TypeConvFunction):
-    name = 'geopoint'
-    arg_names = ['value_1', 'value_2']
+    name = "geopoint"
+    arg_names = ["value_1", "value_2"]
     return_type = Fixed(DataType.GEOPOINT)
 
 
@@ -572,7 +589,7 @@ class FuncGeopointFromStr(FuncGeopoint):
 class FuncGeopointFromCoords(FuncGeopoint):
     arg_cnt = 2
     variants = [
-        VW(D.DUMMY | D.SQLITE, lambda lat, lon: n.func.CONCAT('[', lat, ',', lon, ']')),
+        VW(D.DUMMY | D.SQLITE, lambda lat, lon: n.func.CONCAT("[", lat, ",", lon, "]")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
@@ -581,7 +598,7 @@ class FuncGeopointFromCoords(FuncGeopoint):
 
 
 class FuncGeopolygonBase(TypeConvFunction):
-    name = 'geopolygon'
+    name = "geopolygon"
     return_type = Fixed(DataType.GEOPOLYGON)
     arg_cnt = 1
 
@@ -596,8 +613,8 @@ class FuncGeopolygon(FuncGeopolygonBase):
 
 class FuncTreeBase(TypeConvFunction):
     arg_cnt = 1
-    name = 'tree'
-    arg_names = ['array']
+    name = "tree"
+    arg_names = ["array"]
     variants = [
         V(D.DUMMY, lambda val: val),
     ]
@@ -614,28 +631,30 @@ class DbCastArgTypes(ArgTypeSequence):
     __slots__ = ()
 
     def __init__(self):
-        super().__init__(arg_types=[
-            # 1. expression
-            {
-                DataType.INTEGER,
-                DataType.FLOAT,
-                DataType.STRING,
-                DataType.DATE,
-                DataType.ARRAY_INT,
-                DataType.ARRAY_FLOAT,
-                DataType.ARRAY_STR,
-                # Expand as other types become supported
-            },
-            # 2. native_type
-            DataType.CONST_STRING,
-            # Followed by custom type params, but they are all handled in the translation function,
-            # not passed down to the arg matcher superclass.
-        ])
+        super().__init__(
+            arg_types=[
+                # 1. expression
+                {
+                    DataType.INTEGER,
+                    DataType.FLOAT,
+                    DataType.STRING,
+                    DataType.DATE,
+                    DataType.ARRAY_INT,
+                    DataType.ARRAY_FLOAT,
+                    DataType.ARRAY_STR,
+                    # Expand as other types become supported
+                },
+                # 2. native_type
+                DataType.CONST_STRING,
+                # Followed by custom type params, but they are all handled in the translation function,
+                # not passed down to the arg matcher superclass.
+            ]
+        )
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
         # Check the first two arguments using superclass
         # The rest can have any types and will be validated by the translation
-        return super().match_arg_types(arg_types[:len(self._exp_arg_types)])
+        return super().match_arg_types(arg_types[: len(self._exp_arg_types)])
 
     def get_possible_arg_types_at_pos(self, pos: int, total: int) -> Set[DataType]:
         if pos < len(self._exp_arg_types):
@@ -654,12 +673,12 @@ class WhitelistTypeSpec(NamedTuple):
 
 
 DECIMAL_CAST_ARG_T = (DataType.CONST_INTEGER, DataType.CONST_INTEGER)
-CHAR_CAST_ARG_T = (DataType.CONST_INTEGER, )
+CHAR_CAST_ARG_T = (DataType.CONST_INTEGER,)
 
 
 class FuncDbCastBase(TypeConvFunction):
-    name = 'db_cast'
-    arg_names = ['expression', 'native_type', 'param_1', 'param_2', 'param_3']
+    name = "db_cast"
+    arg_names = ["expression", "native_type", "param_1", "param_2", "param_3"]
     argument_types = [
         DbCastArgTypes(),
     ]
@@ -669,8 +688,7 @@ class FuncDbCastBase(TypeConvFunction):
 
     @classmethod
     def generate_cast_type(
-            cls, dialect: DialectCombo, wr_name: TranslationCtx, value: TranslationCtx,
-            type_args: Sequence[TranslationCtx]
+        cls, dialect: DialectCombo, wr_name: TranslationCtx, value: TranslationCtx, type_args: Sequence[TranslationCtx]
     ) -> TypeEngine:
         whitelist_by_type = cls.WHITELISTS[dialect]
         name = un_literal(wr_name.expression)  # type: ignore  # TODO: fix
@@ -681,8 +699,7 @@ class FuncDbCastBase(TypeConvFunction):
         try:
             whitelist = whitelist_by_type[data_type]
         except KeyError:
-            raise exc.TranslationError(
-                f'Data type {data_type} is not supported by function {cls.name.upper()}')
+            raise exc.TranslationError(f"Data type {data_type} is not supported by function {cls.name.upper()}")
 
         # Find the correct spec by data type name
         for each_spec in whitelist:
@@ -690,19 +707,18 @@ class FuncDbCastBase(TypeConvFunction):
                 type_spec = each_spec
                 break
         else:
-            raise exc.TranslationError(
-                f'Native data type {name} is not supported by function {cls.name.upper()}')
+            raise exc.TranslationError(f"Native data type {name} is not supported by function {cls.name.upper()}")
 
         if len(type_args) != len(type_spec.arg_types):
             raise exc.TranslationError(
-                f'Native type cast to {name} requires {type_spec.arg_types}, got {len(type_args)}')
+                f"Native type cast to {name} requires {type_spec.arg_types}, got {len(type_args)}"
+            )
 
         def _raise_type_mismath(_arg_num: int):
             dtype = type_args[_arg_num].data_type
             assert dtype is not None
             raise exc.TranslationError(
-                f'Argument {_arg_num+1} of native type cast to {name} '
-                f'has invalid type {dtype.name}'
+                f"Argument {_arg_num+1} of native type cast to {name} " f"has invalid type {dtype.name}"
             )
 
         unwrapped_native_type_args = []
@@ -730,16 +746,17 @@ class FuncDbCastBase(TypeConvFunction):
 
     @classmethod
     def apply_cast_wrapper(
-            cls, dialect: DialectCombo, expression: ClauseElement, type_: TypeEngine,
+        cls,
+        dialect: DialectCombo,
+        expression: ClauseElement,
+        type_: TypeEngine,
     ) -> ClauseElement:
         return sa.cast(expression, type_)
 
     @classmethod
     def perform_cast(
-        cls, dialect: DialectCombo, wr_name: TranslationCtx, value: TranslationCtx,
-        type_args: Sequence[TranslationCtx]
+        cls, dialect: DialectCombo, wr_name: TranslationCtx, value: TranslationCtx, type_args: Sequence[TranslationCtx]
     ) -> ClauseElement:
-
         type_ = cls.generate_cast_type(dialect=dialect, wr_name=wr_name, value=value, type_args=type_args)
         assert value.expression is not None
         return cls.apply_cast_wrapper(dialect=dialect, expression=value.expression, type_=type_)
@@ -752,10 +769,14 @@ class FuncDbCastBase(TypeConvFunction):
                 dialects=dialect,
                 translation=(
                     lambda value, wr_name, *args, _dialect=dialect: self.perform_cast(
-                        dialect=_dialect, wr_name=wr_name, value=value, type_args=args,
+                        dialect=_dialect,
+                        wr_name=wr_name,
+                        value=value,
+                        type_args=args,
                     )
                 ),
-            ) for dialect in self.WHITELISTS.keys()
+            )
+            for dialect in self.WHITELISTS.keys()
         ]
 
 
@@ -778,37 +799,30 @@ DEFINITIONS_TYPE = [
     FuncBoolFromBool,
     FuncBoolFromStrGeo,
     FuncBoolFromDateDatetime,
-
     # date
     FuncDate1FromNull,
     FuncDate1FromDatetime,
     FuncDate1FromDatetimeTZ,
     FuncDate1FromString,
     FuncDate1FromNumber,
-
     # date_parse
     FuncDateParse,  # only CLICKHOUSE
-
     # datetime
     FuncDatetime1FromNull,
     FuncDatetime1FromDatetime,
     FuncDatetime1FromDate,
     FuncDatetime1FromNumber,
     FuncDatetime1FromString,
-
     # datetime_parse
     FuncDatetimeParse,  # only CLICKHOUSE
-
     # datetimetz
     FuncDatetimeTZConst,
-
     # datetimetz_to_naive
     # -> only for some dialects
     # db_cast
     FuncDbCast2,
     FuncDbCast3,
     FuncDbCast4,
-
     # float
     FuncFloatNumber,
     FuncFloatString,
@@ -816,24 +830,19 @@ DEFINITIONS_TYPE = [
     FuncFloatFromDate,
     FuncFloatFromDatetime,
     FuncFloatFromGenericDatetime,
-
     # genericdatetime
     FuncGenericDatetime1FromNull,
     FuncGenericDatetime1FromDatetime,
     FuncGenericDatetime1FromDate,
     FuncGenericDatetime1FromNumber,
     FuncGenericDatetime1FromString,
-
     # genericdatetime_parse
     FuncGenericDatetimeParse,  # only CLICKHOUSE
-
     # geopoint
     FuncGeopointFromStr,
     FuncGeopointFromCoords,
-
     # geopolygon
     FuncGeopolygon,
-
     # int
     FuncIntFromNull,
     FuncIntFromInt,
@@ -844,7 +853,6 @@ DEFINITIONS_TYPE = [
     FuncIntFromDatetime,
     FuncIntFromGenericDatetime,
     FuncIntFromDatetimeTZ,
-
     # str
     FuncStrFromNull,
     FuncStrFromUnsupported,
@@ -858,7 +866,6 @@ DEFINITIONS_TYPE = [
     FuncStrFromString,
     FuncStrFromUUID,
     FuncStrFromArray,
-
     # tree
     FuncTreeStr,
 ]

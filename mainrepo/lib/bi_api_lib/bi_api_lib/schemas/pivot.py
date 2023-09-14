@@ -1,21 +1,38 @@
 from typing import Any
 
-from marshmallow import fields as ma_fields, EXCLUDE, validate as ma_validate
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
+from marshmallow import validate as ma_validate
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import PivotHeaderRole, PivotRole, OrderDirection
-
-from bi_model_tools.schema.base import BaseSchema, DefaultSchema
-
 from bi_api_lib.pivot.primitives import (
-    PivotHeaderRoleSpec, PivotHeaderValue, PivotMeasureSortingSettings, PivotMeasureSorting, PivotHeaderInfo
-)
-from bi_api_lib.query.formalization.raw_pivot_specs import (
-    RawPivotRoleSpec, RawAnnotationPivotRoleSpec, RawDimensionPivotRoleSpec, RawPivotMeasureRoleSpec,
-    RawPivotLegendItem, RawPivotSpec, RawPivotTotalsItemSpec, RawPivotTotalsSpec,
-    PivotPaginationSpec,
+    PivotHeaderInfo,
+    PivotHeaderRoleSpec,
+    PivotHeaderValue,
+    PivotMeasureSorting,
+    PivotMeasureSortingSettings,
 )
 from bi_api_lib.query.formalization.pivot_legend import PivotRoleSpec
+from bi_api_lib.query.formalization.raw_pivot_specs import (
+    PivotPaginationSpec,
+    RawAnnotationPivotRoleSpec,
+    RawDimensionPivotRoleSpec,
+    RawPivotLegendItem,
+    RawPivotMeasureRoleSpec,
+    RawPivotRoleSpec,
+    RawPivotSpec,
+    RawPivotTotalsItemSpec,
+    RawPivotTotalsSpec,
+)
+from bi_constants.enums import (
+    OrderDirection,
+    PivotHeaderRole,
+    PivotRole,
+)
+from bi_model_tools.schema.base import (
+    BaseSchema,
+    DefaultSchema,
+)
 
 
 class PivotHeaderRoleSpecSchema(DefaultSchema[PivotHeaderRoleSpec]):
@@ -50,7 +67,7 @@ class PivotRoleSpecSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'role'
+    type_field = "role"
 
     class PivotRoleSpecSchemaVariant(DefaultSchema[RawPivotRoleSpec]):
         TARGET_CLS = RawPivotRoleSpec

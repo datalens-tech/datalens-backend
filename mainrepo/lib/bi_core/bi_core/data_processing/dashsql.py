@@ -6,7 +6,16 @@ import re
 import sys
 import time
 from typing import (
-    TYPE_CHECKING, Any, AsyncIterable, Dict, List, Optional, Sequence, Set, Tuple, Union,
+    TYPE_CHECKING,
+    Any,
+    AsyncIterable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
 )
 
 import attr
@@ -14,21 +23,34 @@ import sqlalchemy as sa
 
 from bi_api_commons.reporting.models import (
     QueryExecutionCacheInfoReportingRecord,
-    QueryExecutionEndReportingRecord, QueryExecutionStartReportingRecord,
+    QueryExecutionEndReportingRecord,
+    QueryExecutionStartReportingRecord,
 )
-
 from bi_constants.enums import ConnectionType
+from bi_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
 from bi_core import exc
 from bi_core.connection_executors.common_base import ConnExecutorQuery
-from bi_core.data_processing.cache.processing_helper import CacheProcessingHelper, CacheSituation
+from bi_core.data_processing.cache.processing_helper import (
+    CacheProcessingHelper,
+    CacheSituation,
+)
 from bi_core.data_processing.cache.utils import DashSQLCacheOptionsBuilder
-from bi_core.data_processing.streaming import AsyncChunked, chunkify_by_one
-from bi_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
+from bi_core.data_processing.streaming import (
+    AsyncChunked,
+    chunkify_by_one,
+)
 from bi_core.us_connection_base import ExecutorBasedMixin
-from bi_core.utils import compile_query_for_debug, make_id, sa_plain_text
+from bi_core.utils import (
+    compile_query_for_debug,
+    make_id,
+    sa_plain_text,
+)
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.async_base import AsyncConnExecutorBase, AsyncExecutionResult
+    from bi_core.connection_executors.async_base import (
+        AsyncConnExecutorBase,
+        AsyncExecutionResult,
+    )
     from bi_core.data_processing.cache.primitives import BIQueryCacheOptions
     from bi_core.data_processing.types import TJSONExtChunkStream
     from bi_core.services_registry import ServicesRegistry
@@ -40,11 +62,11 @@ LOGGER = logging.getLogger(__name__)
 
 @enum.unique
 class DashSQLEvent(enum.Enum):
-    metadata = 'metadata'
-    row = 'row'  # to be deprecated
-    rowchunk = 'rowchunk'
-    error = 'error'
-    footer = 'footer'
+    metadata = "metadata"
+    row = "row"  # to be deprecated
+    rowchunk = "rowchunk"
+    error = "error"
+    footer = "footer"
 
 
 TRow = Tuple[TJSONExt, ...]
@@ -79,16 +101,16 @@ class ParamsReformatter:
     known_params: Set[str] = attr.ib(factory=set)  # for the uniqueness checks
     params_namemap: Dict[str, str] = attr.ib(factory=dict)
     pcounter: int = attr.ib(default=1)  # for making new unique names
-    nameprefix: str = attr.ib(default='p')
+    nameprefix: str = attr.ib(default="p")
 
     def __attrs_post_init__(self) -> None:
         self.known_params.update(self.existing_params)
 
     def prenormalize_param_name(self, name: str) -> str:
-        """ To make sure there're no catches with `:param`, normalize param names """
-        name = re.sub(r'[^A-Za-z0-9]', '_', name)
-        if not re.search(r'^[A-Za-z]', name):
-            name = f'{self.nameprefix}{name}'
+        """To make sure there're no catches with `:param`, normalize param names"""
+        name = re.sub(r"[^A-Za-z0-9]", "_", name)
+        if not re.search(r"^[A-Za-z]", name):
+            name = f"{self.nameprefix}{name}"
         return name
 
     def normalize_param_name(self, name: str) -> str:
@@ -101,7 +123,7 @@ class ParamsReformatter:
 
         if mapped in self.known_params:
             while True:
-                candidate = f'{mapped}_{self.pcounter}'
+                candidate = f"{mapped}_{self.pcounter}"
                 if candidate not in self.known_params:
                     mapped = candidate
                     break
@@ -118,13 +140,13 @@ class ParamsReformatter:
 
         self.found_params.add(param_name)
         mapped_name = self.normalize_param_name(param_name)
-        return f':{mapped_name}'
+        return f":{mapped_name}"
 
     def reformat(self) -> str:
-        """ Convert from `{{paramname}}` to `:paramname` """
+        """Convert from `{{paramname}}` to `:paramname`"""
         query = self.query
-        query = query.replace(':', r'\:')
-        query = re.sub(r'\{\{([^}]+)\}\}', self.param_repl, query)
+        query = query.replace(":", r"\:")
+        query = re.sub(r"\{\{([^}]+)\}\}", self.param_repl, query)
         return query
 
 
@@ -139,14 +161,14 @@ class DashSQLSelector:
 
     def __attrs_post_init__(self) -> None:
         conn_type_cpecific_param = {
-            ConnectionType.promql: ('from', 'to', 'step'),
-            ConnectionType.solomon: ('from', 'to', 'project_id'),
-            ConnectionType.monitoring: ('from', 'to'),
+            ConnectionType.promql: ("from", "to", "step"),
+            ConnectionType.solomon: ("from", "to", "project_id"),
+            ConnectionType.monitoring: ("from", "to"),
         }
         if (
-            self.conn.conn_type in conn_type_cpecific_param and
-            self.connector_specific_params is None and
-            self.params is not None
+            self.conn.conn_type in conn_type_cpecific_param
+            and self.connector_specific_params is None
+            and self.params is not None
         ):
             specific_param_keys = conn_type_cpecific_param[self.conn.conn_type]
             self.connector_specific_params = {
@@ -173,17 +195,19 @@ class DashSQLSelector:
         )
         query = reformatter.reformat()
         try:
-            sa_text = sa.text(query).bindparams(*[
-                sa.bindparam(
-                    reformatter.normalize_param_name(param.name),
-                    type_=param.sa_type,
-                    value=param.value,
-                    expanding=param.expanding,
-                )
-                for param in params
-                # dubious current behavior: skip unknown params
-                if param.name in reformatter.found_params
-            ])
+            sa_text = sa.text(query).bindparams(
+                *[
+                    sa.bindparam(
+                        reformatter.normalize_param_name(param.name),
+                        type_=param.sa_type,
+                        value=param.value,
+                        expanding=param.expanding,
+                    )
+                    for param in params
+                    # dubious current behavior: skip unknown params
+                    if param.name in reformatter.found_params
+                ]
+            )
         except sa.exc.ArgumentError:
             raise exc.WrongQueryParameterization()
         conn = self.conn
@@ -214,9 +238,9 @@ class DashSQLSelector:
 
     @staticmethod
     async def event_gen(
-            result_head: TMeta,
-            result_chunks: AsyncIterable[Sequence[Any]],
-            result_footer_holder: TMeta,
+        result_head: TMeta,
+        result_chunks: AsyncIterable[Sequence[Any]],
+        result_footer_holder: TMeta,
     ) -> TResultEvents:
         # Note: returning strings for easier jsonability.
         # Additionally, those strings are in the API output as-is.
@@ -233,7 +257,7 @@ class DashSQLSelector:
     def process_result(self, exec_result: AsyncExecutionResult) -> TResultEvents:
         result_head = exec_result.cursor_info
         assert result_head
-        db_types = result_head.get('db_types')
+        db_types = result_head.get("db_types")
         user_types = exec_result.user_types
         result_head = dict(
             result_head,
@@ -241,15 +265,9 @@ class DashSQLSelector:
             db_types=[],
         )
         if user_types:
-            result_head['bi_types'] = [
-                bi_type.name if bi_type else None
-                for bi_type in user_types
-            ]
+            result_head["bi_types"] = [bi_type.name if bi_type else None for bi_type in user_types]
         if db_types:
-            result_head['db_types'] = [
-                db_type.name if db_type else None
-                for db_type in db_types
-            ]
+            result_head["db_types"] = [db_type.name if db_type else None for db_type in db_types]
 
         result_chunks = exec_result.result
         result_footer_holder: dict = {}  # mutable  # TODO: return footer from CE
@@ -259,7 +277,7 @@ class DashSQLSelector:
         return self.event_gen(result_head, result_chunks, result_footer_holder)
 
     async def _execute(self, ce: AsyncConnExecutorBase, ce_query: ConnExecutorQuery) -> TResultEvents:
-        """ Simplified override point """
+        """Simplified override point"""
         exec_result = await ce.execute(ce_query)
         return self.process_result(exec_result)
 
@@ -277,7 +295,7 @@ class DashSQLCachedSelector(DashSQLSelector):
     _is_bleeding_edge_user: bool = attr.ib(default=False)
 
     def make_query_id(self) -> str:
-        return 'dashsql_{}'.format(make_id())
+        return "dashsql_{}".format(make_id())
 
     def _get_jsonable_params(self) -> Optional[TJSONExt]:
         if self.params is None:
@@ -285,14 +303,13 @@ class DashSQLCachedSelector(DashSQLSelector):
         return tuple(
             # `value` might contain e.g. datetimes
             (param.name, param.type_name, param.value, param.expanding)
-            for param in self.params)
+            for param in self.params
+        )
 
     def _get_jsonable_connector_specific_params(self) -> Optional[TJSONExt]:
         if self.connector_specific_params is None:
             return None
-        return tuple(
-            (name, value) for name, value in self.connector_specific_params.items()
-        )
+        return tuple((name, value) for name, value in self.connector_specific_params.items())
 
     def make_cache_options(self) -> BIQueryCacheOptions:
         cache_options_builder = DashSQLCacheOptionsBuilder(is_bleeding_edge_user=self._is_bleeding_edge_user)
@@ -305,11 +322,10 @@ class DashSQLCachedSelector(DashSQLSelector):
         )
 
     async def _execute(
-            self,
-            ce: AsyncConnExecutorBase,
-            ce_query: ConnExecutorQuery,
+        self,
+        ce: AsyncConnExecutorBase,
+        ce_query: ConnExecutorQuery,
     ) -> TResultEvents:
-
         async def _request_db() -> TResultEvents:  # basically just `super()`
             exec_result = await ce.execute(ce_query)
             return self.process_result(exec_result)
@@ -323,7 +339,7 @@ class DashSQLCachedSelector(DashSQLSelector):
             return AsyncChunked(chunked_data=chunks)
 
         query_id = self.make_query_id()
-        assert isinstance(self.conn, ExecutorBasedMixin), 'connection must be derived from ExecutorBasedMixin'
+        assert isinstance(self.conn, ExecutorBasedMixin), "connection must be derived from ExecutorBasedMixin"
         conn = self.conn
         conn_id = conn.uuid
         assert conn_id
@@ -331,15 +347,17 @@ class DashSQLCachedSelector(DashSQLSelector):
         service_registry = self._service_registry
         reporting_registry = service_registry.get_reporting_registry()
 
-        reporting_registry.save_reporting_record(QueryExecutionStartReportingRecord(
-            timestamp=time.time(),
-            query_id=query_id,
-            dataset_id=None,
-            query_type=None,
-            connection_type=conn.conn_type,
-            conn_reporting_data=self.conn.get_conn_dto().conn_reporting_data(),
-            query=str(ce_query.query),
-        ))
+        reporting_registry.save_reporting_record(
+            QueryExecutionStartReportingRecord(
+                timestamp=time.time(),
+                query_id=query_id,
+                dataset_id=None,
+                query_type=None,
+                connection_type=conn.conn_type,
+                conn_reporting_data=self.conn.get_conn_dto().conn_reporting_data(),
+                query=str(ce_query.query),
+            )
+        )
 
         cache_helper = CacheProcessingHelper(
             entity_id=conn_id,
@@ -353,11 +371,13 @@ class DashSQLCachedSelector(DashSQLSelector):
             finally:
                 _, exec_exception, _ = sys.exc_info()
 
-                reporting_registry.save_reporting_record(QueryExecutionEndReportingRecord(
-                    timestamp=time.time(),
-                    query_id=query_id,
-                    exception=exec_exception,
-                ))
+                reporting_registry.save_reporting_record(
+                    QueryExecutionEndReportingRecord(
+                        timestamp=time.time(),
+                        query_id=query_id,
+                        exception=exec_exception,
+                    )
+                )
 
         # TODO: make this env-configurable through settings.
         use_locked_cache = self.conn.use_locked_cache
@@ -376,17 +396,21 @@ class DashSQLCachedSelector(DashSQLSelector):
         finally:
             _, exec_exception, _ = sys.exc_info()
 
-            reporting_registry.save_reporting_record(QueryExecutionCacheInfoReportingRecord(
-                query_id=query_id,
-                cache_full_hit=cache_full_hit,
-                timestamp=time.time(),
-            ))
+            reporting_registry.save_reporting_record(
+                QueryExecutionCacheInfoReportingRecord(
+                    query_id=query_id,
+                    cache_full_hit=cache_full_hit,
+                    timestamp=time.time(),
+                )
+            )
 
-            reporting_registry.save_reporting_record(QueryExecutionEndReportingRecord(
-                timestamp=time.time(),
-                query_id=query_id,
-                exception=exec_exception,
-            ))
+            reporting_registry.save_reporting_record(
+                QueryExecutionEndReportingRecord(
+                    timestamp=time.time(),
+                    query_id=query_id,
+                    exception=exec_exception,
+                )
+            )
 
         assert result_stream is not None
         return result_stream.items  # type: ignore  # TODO: fix

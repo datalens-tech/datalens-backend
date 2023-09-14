@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import math
 import time
-import logging
 from typing import Optional
-
 
 LOGGER = logging.getLogger(__name__)
 
 
 class LatencyTracker:
-
     bins_base: float = 1.5  # logarithmic binning exponent
     sleep_interval_sec: float = 100 / 1000
     stats_log_interval_sec: float = 5.0
@@ -25,9 +23,7 @@ class LatencyTracker:
         self._task: Optional[asyncio.Task] = None
 
     def _to_bin(self, value: float) -> int:
-        return int(
-            self.bins_base ** math.floor(math.log(value) / math.log(self.bins_base))
-        )
+        return int(self.bins_base ** math.floor(math.log(value) / math.log(self.bins_base)))
 
     def _log_duration(self, duration_sec: float) -> None:
         duration_msec = duration_sec * 1000

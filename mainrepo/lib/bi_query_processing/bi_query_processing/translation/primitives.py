@@ -1,22 +1,39 @@
 from __future__ import annotations
 
 import abc
-from typing import AbstractSet, Any, Iterable, List, NamedTuple, Optional, Sequence, Type, TypeVar
+from typing import (
+    AbstractSet,
+    Any,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 
 from bi_constants.enums import BIType
-
-from bi_core.components.ids import AvatarId, FieldId
-from bi_core.query.expression import ExpressionCtx, OrderByExpressionCtx, JoinOnExpressionCtx
-from bi_core.utils import attrs_evolve_to_subclass
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+)
 from bi_core.db.elements import SchemaColumn
-
-from bi_formula.core.datatype import DataType, DataTypeParams
-
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.query_meta import QueryMetaInfo
+from bi_core.query.expression import (
+    ExpressionCtx,
+    JoinOnExpressionCtx,
+    OrderByExpressionCtx,
+)
+from bi_core.utils import attrs_evolve_to_subclass
+from bi_formula.core.datatype import (
+    DataType,
+    DataTypeParams,
+)
 from bi_query_processing.compilation.primitives import FromObject
+from bi_query_processing.compilation.query_meta import QueryMetaInfo
+from bi_query_processing.enums import ExecutionLevel
 
 
 class DetailedType(NamedTuple):
@@ -27,7 +44,7 @@ class DetailedType(NamedTuple):
     formula_data_type_params: Optional[DataTypeParams] = None
 
 
-_META_TV = TypeVar('_META_TV', bound='TranslatedQueryMetaInfo')
+_META_TV = TypeVar("_META_TV", bound="TranslatedQueryMetaInfo")
 
 
 @attr.s
@@ -36,13 +53,15 @@ class TranslatedQueryMetaInfo(QueryMetaInfo):
 
     @classmethod
     def from_comp_meta(
-            cls: Type[_META_TV], comp_meta: QueryMetaInfo,
-            detailed_types: Optional[list[Optional[DetailedType]]] = None,
+        cls: Type[_META_TV],
+        comp_meta: QueryMetaInfo,
+        detailed_types: Optional[list[Optional[DetailedType]]] = None,
     ) -> _META_TV:
         detailed_types = detailed_types or []
         assert detailed_types is not None
         return attrs_evolve_to_subclass(
-            cls=cls, inst=comp_meta,
+            cls=cls,
+            inst=comp_meta,
             detailed_types=detailed_types,
         )
 
@@ -55,6 +74,7 @@ class ExpressionCtxExt(ExpressionCtx):
     as it contains info for postprocessing the data,
     which is not needed in other clauses.
     """
+
     formula_data_type: Optional[DataType] = None
     formula_data_type_params: Optional[DataTypeParams] = None
     original_field_id: Optional[FieldId] = None
@@ -91,7 +111,7 @@ class TranslatedFlatQuery:
         return not self.select
 
 
-_TRANS_MULTI_QUERY_TV = TypeVar('_TRANS_MULTI_QUERY_TV', bound='TranslatedMultiQueryBase')
+_TRANS_MULTI_QUERY_TV = TypeVar("_TRANS_MULTI_QUERY_TV", bound="TranslatedMultiQueryBase")
 
 
 @attr.s(frozen=True)
@@ -153,11 +173,7 @@ class TranslatedMultiLevelQuery(TranslatedMultiQueryBase):  # TODO: Remove this 
     def get_required_avatar_ids(self) -> set[str]:
         if not self.levels:
             return set()
-        return {
-            from_id
-            for query in self.levels[0].queries
-            for from_id in query.joined_from.iter_ids()
-        }
+        return {from_id for query in self.levels[0].queries for from_id in query.joined_from.iter_ids()}
 
     def iter_queries(self) -> Iterable[TranslatedFlatQuery]:
         for level in self.levels:
@@ -185,7 +201,8 @@ class TranslatedMultiLevelQuery(TranslatedMultiQueryBase):  # TODO: Remove this 
         if not self.levels or not self.levels[0].queries:
             return frozenset()
         return {
-            query.joined_from.root_from_id for query in self.levels[0].queries
+            query.joined_from.root_from_id
+            for query in self.levels[0].queries
             if query.joined_from.root_from_id is not None
         }
 
@@ -215,11 +232,7 @@ class TranslatedMultiQuery(TranslatedMultiQueryBase):
 
     @_unreferenced_ids.default
     def _make_unreferenced_ids(self) -> list[str]:
-        referenced_ids = {
-            from_obj.id
-            for query in self.queries
-            for from_obj in query.joined_from.froms
-        }
+        referenced_ids = {from_obj.id for query in self.queries for from_obj in query.joined_from.froms}
         query_ids = {query.id for query in self.queries}
         return sorted(query_ids - referenced_ids)
 

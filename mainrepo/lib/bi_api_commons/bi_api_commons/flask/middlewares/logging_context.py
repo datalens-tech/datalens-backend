@@ -1,11 +1,19 @@
 from __future__ import annotations
 
 import functools
-from typing import Any, TypeVar, Callable
+from typing import (
+    Any,
+    Callable,
+    TypeVar,
+)
 
 import flask
-from bi_api_commons.logging import CompositeLoggingContextController, LogRequestLoggingContextController
+
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
+from bi_api_commons.logging import (
+    CompositeLoggingContextController,
+    LogRequestLoggingContextController,
+)
 
 
 class RequestLoggingContextControllerMiddleWare:
@@ -13,15 +21,22 @@ class RequestLoggingContextControllerMiddleWare:
     _APP_INIT_FLAG = "_bi_middleware_flag_req_log_ctx_ctrl"
 
     def set_up(self, app: flask.Flask) -> None:
-        assert ContextVarMiddleware.is_wrapping_app(app), \
-            "ContextVarMiddleware should be initialized before RequestLoggingContextControllerMiddleWare"
+        assert ContextVarMiddleware.is_wrapping_app(
+            app
+        ), "ContextVarMiddleware should be initialized before RequestLoggingContextControllerMiddleWare"
         app.before_request(self._bind_logging_request_controller_to_request)
         setattr(app, self._APP_INIT_FLAG, True)
 
     def _bind_logging_request_controller_to_request(self) -> None:
-        setattr(flask.g, self._G_ATTR_NAME, CompositeLoggingContextController([
-            LogRequestLoggingContextController(),
-        ]))
+        setattr(
+            flask.g,
+            self._G_ATTR_NAME,
+            CompositeLoggingContextController(
+                [
+                    LogRequestLoggingContextController(),
+                ]
+            ),
+        )
 
     @classmethod
     def is_initialized_for_app(cls, app: flask.Flask) -> bool:
@@ -35,7 +50,7 @@ class RequestLoggingContextControllerMiddleWare:
         raise ValueError("Request logging context controller info was not created")
 
 
-_RESULT_TV = TypeVar('_RESULT_TV')
+_RESULT_TV = TypeVar("_RESULT_TV")
 
 
 def put_to_request_context(**ctx: Any) -> Callable[[Callable[..., _RESULT_TV]], Callable[..., _RESULT_TV]]:

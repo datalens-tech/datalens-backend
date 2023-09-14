@@ -2,18 +2,25 @@
 
 from __future__ import annotations
 
-import logging
 from contextlib import contextmanager
-from typing import Collection, Generator, Type
+import logging
+from typing import (
+    Collection,
+    Generator,
+    Type,
+)
 
-import sqlalchemy.exc
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import sessionmaker, Session, Query
+import sqlalchemy.exc
+from sqlalchemy.orm import (
+    Query,
+    Session,
+    sessionmaker,
+)
 
-from bi_constants.enums import SourceBackendType
-
-from bi_core import exc
 from bi_app_tools.profiling_base import GenericProfiler
+from bi_constants.enums import SourceBackendType
+from bi_core import exc
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,13 +48,13 @@ class CustomSession(Session):
 
     def execute(self, *args, **kwargs):  # type: ignore
         if self.__closed:
-            raise exc.DBSessionError('Cannot execute on closed session')
+            raise exc.DBSessionError("Cannot execute on closed session")
         return super().execute(*args, **kwargs)
 
 
 def get_db_session(db_engine: Engine, backend_type: SourceBackendType) -> Session:
     session_kwargs = {}
-    session_kwargs['query_cls'] = get_sa_query_cls(backend_type=backend_type)
+    session_kwargs["query_cls"] = get_sa_query_cls(backend_type=backend_type)
     SessionCls = sessionmaker(bind=db_engine, class_=CustomSession)
     return SessionCls(**session_kwargs)
 
@@ -79,9 +86,9 @@ def db_session_context(db_engine: Engine, backend_type: SourceBackendType) -> Ge
             session.rollback()
         except get_query_fail_exceptions():
             LOGGER.info(
-                'Rollback failed because transaction has already been rolled back '
-                'due to an internal exception')
-        LOGGER.error('Rolling back transaction because of error: %s', err)
+                "Rollback failed because transaction has already been rolled back " "due to an internal exception"
+            )
+        LOGGER.error("Rolling back transaction because of error: %s", err)
         raise
     else:
         session.commit()

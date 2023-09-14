@@ -1,17 +1,27 @@
 import logging
-import uuid
 import ssl
-from typing import Union, Optional, Any, Mapping, AsyncIterable
+from typing import (
+    Any,
+    AsyncIterable,
+    Mapping,
+    Optional,
+    Union,
+)
+import uuid
 
 import aiohttp
 import attr
 
-from bi_configs.utils import get_root_certificates_path
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon
-
-from bi_api_commons.base_models import TenantDef, AuthData
+from bi_api_commons.base_models import (
+    AuthData,
+    TenantDef,
+)
 from bi_api_commons.tracing import get_current_tracing_headers
-
+from bi_configs.utils import get_root_certificates_path
+from bi_constants.api_constants import (
+    DLHeaders,
+    DLHeadersCommon,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,13 +50,7 @@ class Resp:
 
 
 class RequestExecutionException(Exception):
-    def __init__(
-            self,
-            msg: str,
-            content: bytes,
-            status: int,
-            request_id: str
-    ):
+    def __init__(self, msg: str, content: bytes, status: int, request_id: str):
         super().__init__(msg, content)
         self.status = status
         self.request_id = request_id
@@ -54,9 +58,7 @@ class RequestExecutionException(Exception):
 
 def get_default_aiohttp_session() -> aiohttp.ClientSession:
     return aiohttp.ClientSession(
-        connector=aiohttp.TCPConnector(
-            ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())
-        ),
+        connector=aiohttp.TCPConnector(ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())),
     )
 
 
@@ -80,10 +82,7 @@ class DLCommonAPIClient:
     # TODO FIX: Check if no overrides (take in account that headers are CI)
     @staticmethod
     def dl_headers_to_plain(dl_headers: dict[DLHeaders, str], extra_plain_headers: dict[str, str]) -> dict[str, str]:
-        result: dict[str, str] = {
-            dl_header.value: value
-            for dl_header, value in dl_headers.items()
-        }
+        result: dict[str, str] = {dl_header.value: value for dl_header, value in dl_headers.items()}
         result.update(extra_plain_headers)
         return result
 
@@ -122,7 +121,8 @@ class DLCommonAPIClient:
 
         req_id = uuid.uuid4().hex if self._req_id is None else self._req_id
         resp = await self._session.request(
-            rq.method, self.make_full_url(rq.url),
+            rq.method,
+            self.make_full_url(rq.url),
             headers=self.get_effective_headers_for_request(rq, req_id),
             params=rq.params,
             json=rq.data_json,
@@ -130,7 +130,7 @@ class DLCommonAPIClient:
         )
         content = await resp.read()
 
-        if resp.content_type == 'application/json':
+        if resp.content_type == "application/json":
             resp_json = await resp.json()
         else:
             resp_json = None

@@ -22,7 +22,7 @@ def test_integration(caplog):
         append_local_req_id=False,
     ).set_up(app)
     ReqCtxInfoMiddleware(
-        plain_headers=('include-me',),
+        plain_headers=("include-me",),
     ).set_up(app)
 
     rci_lst = []
@@ -34,18 +34,21 @@ def test_integration(caplog):
 
     client = app.test_client()
 
-    resp = client.get("/test", headers={
-        'x-request-id': 'asdf1234',
-        'include-me': 'include_me',
-        'exclude-me': 'exclude_me',
-        'referer': 'referer',
-        'x-chart-id': 'x-chart-id',
-    })
+    resp = client.get(
+        "/test",
+        headers={
+            "x-request-id": "asdf1234",
+            "include-me": "include_me",
+            "exclude-me": "exclude_me",
+            "referer": "referer",
+            "x-chart-id": "x-chart-id",
+        },
+    )
     assert resp.status_code == 200
     assert len(rci_lst) == 1
     rci: RequestContextInfo = rci_lst[0]
 
-    assert rci.request_id == 'asdf1234'
-    assert rci.plain_headers.get('include-me') == 'include_me'
-    assert rci.plain_headers.get('exclude-me') is None
+    assert rci.request_id == "asdf1234"
+    assert rci.plain_headers.get("include-me") == "include_me"
+    assert rci.plain_headers.get("exclude-me") is None
     # TODO FIX: Check headers

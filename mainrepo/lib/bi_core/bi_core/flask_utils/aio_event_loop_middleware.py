@@ -3,9 +3,6 @@ Middleware to reset asyncio event loop on each request
 """
 from __future__ import annotations
 
-
-from __future__ import annotations
-
 import asyncio
 from typing import TYPE_CHECKING
 
@@ -14,7 +11,11 @@ import attr
 from bi_api_commons.flask.middlewares.wsgi_middleware import FlaskWSGIMiddleware
 
 if TYPE_CHECKING:
-    from bi_api_commons.flask.types import WSGIEnviron, WSGIStartResponse, WSGIReturn
+    from bi_api_commons.flask.types import (
+        WSGIEnviron,
+        WSGIReturn,
+        WSGIStartResponse,
+    )
 
 
 @attr.s

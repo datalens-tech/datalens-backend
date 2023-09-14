@@ -1,10 +1,12 @@
-from typing import Optional, Sequence
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 from sqlalchemy.sql.selectable import Select
 
 import bi_formula.core.nodes as nodes
-
 from bi_formula_ref.examples.data_table import DataColumn
 
 

@@ -7,7 +7,6 @@ LOGGER = logging.getLogger(__name__)
 
 REMAP = {
     "EXT_QUERY_EXECUTER_SECRET_KEY": "RQE_SECRET_KEY",
-
     # TODO FIX: BI-1753 remove after sensitive info will leave versioned data of US entry
     "FERNET_KEY": "DL_CRY_KEY_VAL_ID_0",
 }
@@ -15,8 +14,7 @@ REMAP = {
 _LEGACY_AND_ACTUAL_KEYS_INTERSECTION = set(REMAP.keys()) & set(REMAP.values())
 
 assert not _LEGACY_AND_ACTUAL_KEYS_INTERSECTION, (
-    f"Got non-empty intersection of legacy & actual keys:"
-    f" {_LEGACY_AND_ACTUAL_KEYS_INTERSECTION}"
+    f"Got non-empty intersection of legacy & actual keys:" f" {_LEGACY_AND_ACTUAL_KEYS_INTERSECTION}"
 )
 
 
@@ -32,7 +30,8 @@ def remap_env(s_dict: SDict) -> SDict:
         if actual_key in s_dict:
             LOGGER.warning(
                 "Environment contains both legacy (%r) and actual (%r) keys. Actual key taking precedence.",
-                legacy_key, actual_key
+                legacy_key,
+                actual_key,
             )
             continue
 

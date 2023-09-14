@@ -4,12 +4,12 @@ import logging
 
 from aiohttp import web
 from aiohttp.typedefs import Handler
-from bi_constants.api_constants import DLHeadersCommon
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_api_lib.aio.aiohttp_wrappers import DSAPIRequest
+from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from bi_api_commons.base_models import TenantCommon
+from bi_api_lib.aio.aiohttp_wrappers import DSAPIRequest
+from bi_constants.api_constants import DLHeadersCommon
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,11 +36,13 @@ def public_api_key_middleware(api_key: str) -> AIOHTTPMiddleware:
 
         LOGGER.info("API key check passed")
 
-        dl_request.replace_temp_rci(dl_request.temp_rci.clone(
-            user_id='__ANONYMOUS_USER_OF_PUBLIC_DATALENS__',
-            user_name='Anonymous (Public) User',
-            tenant=TenantCommon(),
-        ))
+        dl_request.replace_temp_rci(
+            dl_request.temp_rci.clone(
+                user_id="__ANONYMOUS_USER_OF_PUBLIC_DATALENS__",
+                user_name="Anonymous (Public) User",
+                tenant=TenantCommon(),
+            )
+        )
 
         return await handler(dl_request.request)
 

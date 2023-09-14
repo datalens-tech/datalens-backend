@@ -1,18 +1,33 @@
 from __future__ import annotations
 
 import copy
-from datetime import datetime, timezone
-from typing import Optional, Dict, Any
+from datetime import (
+    datetime,
+    timezone,
+)
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
 
-import shortuuid
 from cryptography import fernet
+import shortuuid
 
+from bi_api_commons.base_models import RequestContextInfo
 from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_core.base_models import EntryLocation
-from bi_api_commons.base_models import RequestContextInfo
 from bi_core.exc import USObjectNotFoundException
-from bi_core.services_registry.top_level import ServicesRegistry, DummyServiceRegistry
-from bi_core.united_storage_client import UStorageClient, UStorageClientBase, USAuthContextMaster, USAuthContextBase
+from bi_core.services_registry.top_level import (
+    DummyServiceRegistry,
+    ServicesRegistry,
+)
+from bi_core.united_storage_client import (
+    USAuthContextBase,
+    USAuthContextMaster,
+    UStorageClient,
+    UStorageClientBase,
+)
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
 
@@ -23,7 +38,7 @@ class MockedUStorageClient(UStorageClient):
         auth_ctx: USAuthContextBase,
         prefix: Optional[str] = None,
         timeout: int = 30,
-        context_request_id: Optional[str] = None
+        context_request_id: Optional[str] = None,
     ):
         super().__init__(host, auth_ctx, prefix, timeout, context_request_id)
         self._saved_entries: Dict[str, Dict[str, Any]] = {}
@@ -31,19 +46,26 @@ class MockedUStorageClient(UStorageClient):
     @classmethod
     def format_dt(cls, dt: datetime) -> str:
         assert dt.tzinfo
-        pre_formatted = dt.replace(microsecond=dt.microsecond // 1000 * 1000).astimezone(timezone.utc).strftime(
-            '%Y-%m-%dT%H:%M:%S.%f'
-        )[:-3]
+        pre_formatted = (
+            dt.replace(microsecond=dt.microsecond // 1000 * 1000)
+            .astimezone(timezone.utc)
+            .strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+        )
         return f"{pre_formatted}Z"
 
     def _request(self, request_data: UStorageClientBase.RequestData) -> Dict[str, Any]:
         raise NotImplementedError("This is dummy US client")
 
     def create_entry(
-        self, key: EntryLocation, scope: str,
+        self,
+        key: EntryLocation,
+        scope: str,
         meta: Optional[Dict[str, str]] = None,
-        data: Optional[Dict[str, Any]] = None, unversioned_data: Optional[Dict[str, Any]] = None,
-        type_: Optional[str] = None, hidden: Optional[bool] = None, links: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+        unversioned_data: Optional[Dict[str, Any]] = None,
+        type_: Optional[str] = None,
+        hidden: Optional[bool] = None,
+        links: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         assert not kwargs, "Not supported by dummy"
@@ -78,11 +100,15 @@ class MockedUStorageClient(UStorageClient):
         return copy.deepcopy(resp)
 
     def update_entry(
-        self, entry_id: str,
-        data: Optional[Dict[str, Any]] = None, unversioned_data: Optional[Dict[str, Any]] = None,
+        self,
+        entry_id: str,
+        data: Optional[Dict[str, Any]] = None,
+        unversioned_data: Optional[Dict[str, Any]] = None,
         meta: Optional[Dict[str, str]] = None,
-        mode: str = 'save', lock: Optional[str] = None,
-        hidden: Optional[bool] = None, links: Optional[Dict[str, Any]] = None,
+        mode: str = "save",
+        lock: Optional[str] = None,
+        hidden: Optional[bool] = None,
+        links: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         previous_resp = self._saved_entries[entry_id]
 
@@ -95,7 +121,6 @@ class MockedUStorageClient(UStorageClient):
             unversionedData=copy.deepcopy(unversioned_data),
             meta=copy.deepcopy(meta),
             hidden=hidden,
-
             revId=new_revision_id,
             savedId=new_revision_id,
             updatedBy=subject,
@@ -134,9 +159,11 @@ class MockedSyncUSManager(SyncUSManager):
             crypto_keys_config=CryptoKeysConfig(
                 map_id_key={"dummy_usm_key": fernet.Fernet.generate_key()},  # type: ignore
                 actual_key_id="dummy_usm_key",
-            ) if crypto_keys_config is None else crypto_keys_config,
+            )
+            if crypto_keys_config is None
+            else crypto_keys_config,
             us_auth_context=USAuthContextMaster("FakeKey"),
-            services_registry=services_registry
+            services_registry=services_registry,
         )
 
     def _create_us_client(self) -> UStorageClient:

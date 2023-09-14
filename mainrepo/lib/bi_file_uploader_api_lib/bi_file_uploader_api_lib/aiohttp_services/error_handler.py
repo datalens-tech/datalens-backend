@@ -4,13 +4,18 @@ import aiogoogle
 from aiohttp import web
 from marshmallow import ValidationError as MValidationError
 
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-
+from bi_api_commons.aio.middlewares.error_handling_outer import (
+    AIOHTTPErrorHandler,
+    ErrorData,
+    ErrorLevel,
+)
 from bi_file_uploader_lib import exc
 from bi_file_uploader_lib.gsheets_client import google_api_error_to_file_uploader_exception
-from bi_file_uploader_lib.redis_model.base import RedisModelAccessDenied, RedisModelNotFound
+from bi_file_uploader_lib.redis_model.base import (
+    RedisModelAccessDenied,
+    RedisModelNotFound,
+)
 from bi_file_uploader_lib.redis_model.models import models
-
 
 STATUS_CODES = {
     exc.CannotUpdateDataError: HTTPStatus.BAD_REQUEST,

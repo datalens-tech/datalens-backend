@@ -12,7 +12,6 @@ from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 
 @attr.s(frozen=True, kw_only=True)
 class SnowFlakeConnTargetDTO(ConnTargetDTO):
-
     account_name: str = attr.ib()
     user_name: str = attr.ib()
     user_role: Optional[str] = attr.ib()

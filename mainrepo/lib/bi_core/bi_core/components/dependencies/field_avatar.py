@@ -1,15 +1,20 @@
 from __future__ import annotations
 
-from typing import AbstractSet, Set
+from typing import (
+    AbstractSet,
+    Set,
+)
 
 import attr
 
 from bi_constants.enums import CalcMode
-
-from bi_core.fields import ResultSchema
-from bi_core.components.ids import AvatarId, FieldId
-from bi_core.components.dependencies.field_deep_base import FieldDeepInterDependencyManagerBase
 from bi_core.components.dependencies.field_avatar_base import FieldAvatarDependencyManagerBase
+from bi_core.components.dependencies.field_deep_base import FieldDeepInterDependencyManagerBase
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+)
+from bi_core.fields import ResultSchema
 
 
 @attr.s

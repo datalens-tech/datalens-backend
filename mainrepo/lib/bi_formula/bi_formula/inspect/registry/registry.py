@@ -2,8 +2,10 @@ from functools import lru_cache
 from typing import Dict
 
 from bi_formula.inspect.registry.item import (
-    BasicOpItem, BasicOpItemKey,
-    NameIsWinOpItem, NameIsWinOpItemKey,
+    BasicOpItem,
+    BasicOpItemKey,
+    NameIsWinOpItem,
+    NameIsWinOpItemKey,
     NameOpItem,
 )
 

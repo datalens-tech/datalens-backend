@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 import sys
+
 import oracledb
 
 oracledb.version = "8.3.0"
@@ -12,11 +14,11 @@ from bi_sqlalchemy_common.base import CompilerPrettyMixin  # noqa: E402
 
 
 class BIOracleCompilerBasic(UPSTREAM.statement_compiler):
-    """ Necessary overrides """
+    """Necessary overrides"""
 
 
 class BIOracleCompiler(BIOracleCompilerBasic, UPSTREAM.statement_compiler, CompilerPrettyMixin):
-    """ Added prettification """
+    """Added prettification"""
 
     def limit_clause(self, *args, **kwargs):
         # upstream: `return ""`; no prettification to be done.

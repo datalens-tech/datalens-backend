@@ -1,8 +1,10 @@
 from typing import Type
 
 from bi_constants.enums import ProcessorType
-
-from bi_core.aio.web_app_services.data_processing.data_processor import DataProcessorService, DataProcessorConfig
+from bi_core.aio.web_app_services.data_processing.data_processor import (
+    DataProcessorConfig,
+    DataProcessorService,
+)
 
 
 def make_compeng_service(processor_type: ProcessorType, config: DataProcessorConfig) -> DataProcessorService:
@@ -14,7 +16,8 @@ _DATA_PROCESSOR_SERVICE_CLASSES: dict[ProcessorType, Type[DataProcessorService]]
 
 
 def register_data_processor_service_class(
-        processor_type: ProcessorType, data_processor_srv_cls: Type[DataProcessorService],
+    processor_type: ProcessorType,
+    data_processor_srv_cls: Type[DataProcessorService],
 ) -> None:
     try:
         assert _DATA_PROCESSOR_SERVICE_CLASSES[processor_type] is data_processor_srv_cls
@@ -27,4 +30,4 @@ def get_data_processor_service_class(processor_type: ProcessorType) -> Type[Data
         return _DATA_PROCESSOR_SERVICE_CLASSES[processor_type]
     except KeyError:
         # TODO: Support non-pg data processor here too
-        raise ValueError(f'Data processor type {processor_type} is not supported')
+        raise ValueError(f"Data processor type {processor_type} is not supported")

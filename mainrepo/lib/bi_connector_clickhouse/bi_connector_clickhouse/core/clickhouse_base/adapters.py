@@ -1,68 +1,97 @@
 from __future__ import annotations
 
-
-import logging
 import contextlib
 import json
-from typing import (
-    Any, AsyncGenerator, Callable, ClassVar, ContextManager, Generator, Optional, Sequence, Type, TYPE_CHECKING, TypeVar
-)
+import logging
 import ssl
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Callable,
+    ClassVar,
+    ContextManager,
+    Generator,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
-import attr
-import requests
-import sqlalchemy as sa
 from aiohttp import BasicAuth
-from aiohttp.client import ClientResponse, ClientTimeout
-from sqlalchemy.sql.type_api import TypeEngine
-
-from bi_core.connection_executors.adapters.common_base import get_dialect_string
+from aiohttp.client import (
+    ClientResponse,
+    ClientTimeout,
+)
+import attr
 from clickhouse_sqlalchemy import exceptions as ch_exc
 from clickhouse_sqlalchemy import types as ch_types
 from clickhouse_sqlalchemy.drivers.http.transport import _get_type  # noqa
 from clickhouse_sqlalchemy.parsers.jsoncompact import JSONCompactChunksParser
+import requests
+import sqlalchemy as sa
+from sqlalchemy.sql.type_api import TypeEngine
 
-from bi_constants.enums import ConnectionType, IndexKind
-
-from bi_core import exc
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, ClassicSQLConnLineConstructor
-from bi_core.connectors.base.error_transformer import DBExcKWArgs
-from bi_connector_clickhouse.core.clickhouse_base.ch_commons import (
-    ClickHouseBaseUtils, ClickHouseUtils, get_ch_settings,
+from bi_app_tools.profiling_base import generic_profiler_async
+from bi_constants.enums import (
+    ConnectionType,
+    IndexKind,
 )
-from bi_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
+from bi_core import exc
+from bi_core.connection_executors.adapters.adapters_base_sa_classic import (
+    BaseClassicAdapter,
+    ClassicSQLConnLineConstructor,
+)
+from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
+from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
+from bi_core.connection_executors.adapters.common_base import get_dialect_string
 from bi_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
-    RawColumnInfo, RawIndexInfo, RawSchemaInfo,
+    RawColumnInfo,
+    RawIndexInfo,
+    RawSchemaInfo,
 )
-from bi_core.connection_models import TableIdent, TableDefinition, SATextTableDefinition
-from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
-from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
+from bi_core.connection_models import (
+    SATextTableDefinition,
+    TableDefinition,
+    TableIdent,
+)
+from bi_core.connectors.base.error_transformer import DBExcKWArgs
+from bi_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
 from bi_core.db.native_type import (
-    GenericNativeType,
-    ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
-    ClickHouseNativeType, norm_native_type,
+    ClickHouseDateTimeWithTZNativeType,
+    ClickHouseNativeType,
+    GenericNativeType,
+    norm_native_type,
 )
-from bi_app_tools.profiling_base import generic_profiler_async
 from bi_core.utils import make_url
-from bi_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
+
+from bi_connector_clickhouse.core.clickhouse_base.ch_commons import (
+    ClickHouseBaseUtils,
+    ClickHouseUtils,
+    get_ch_settings,
+)
+from bi_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
 
 if TYPE_CHECKING:
-    from bi_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
-        BaseClickHouseConnTargetDTO, ClickHouseConnTargetDTO,
-    )
+    from bi_constants.types import TBIChunksGen
     from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
     from bi_core.connection_models.common_models import (
-        DBIdent, SchemaIdent,
+        DBIdent,
+        SchemaIdent,
     )
-    from bi_constants.types import TBIChunksGen
+
+    from bi_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
+        BaseClickHouseConnTargetDTO,
+        ClickHouseConnTargetDTO,
+    )
 
 LOGGER = logging.getLogger(__name__)
 
 _DBA_TV = TypeVar("_DBA_TV", bound="BaseAsyncClickHouseAdapter")
-_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound='BaseClickHouseConnTargetDTO')
+_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="BaseClickHouseConnTargetDTO")
 
 
 @attr.s()
@@ -88,7 +117,7 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
         }
 
 
-class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], BaseSSLCertAdapter):
+class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], BaseSSLCertAdapter):
     allow_sa_text_as_columns_source = True
     ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
     conn_line_constructor_type: ClassVar[Type[BaseClickHouseConnLineConstructor]] = BaseClickHouseConnLineConstructor
@@ -96,9 +125,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
     _dt_with_system_tz = True
 
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
-        return self._convert_headers_to_dsn_params(
-            self.ch_utils.get_context_headers(self._req_ctx_info)
-        )
+        return self._convert_headers_to_dsn_params(self.ch_utils.get_context_headers(self._req_ctx_info))
 
     def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
         return self.conn_line_constructor_type(
@@ -124,9 +151,9 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
             # Hard-code server version
             #  to prevent querying in on each engine instantiation against CH server (default dialect behaviour).
             #  Dialect at this moment does not depends on CH version, so we can hard code it.
-            'server_version': '19.16.2.2',
-            'ch_settings': self.get_ch_settings(),
-            'format': 'JSONCompact',
+            "server_version": "19.16.2.2",
+            "ch_settings": self.get_ch_settings(),
+            "format": "JSONCompact",
         }
 
         if self._target_dto.secure:
@@ -151,19 +178,13 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
 
     @staticmethod
     def _convert_headers_to_dsn_params(headers: dict[str, str]) -> dict[str, str]:
-        return {
-            f"header__{h_name}": h_val
-            for h_name, h_val in headers.items()
-        }
+        return {f"header__{h_name}": h_val for h_name, h_val in headers.items()}
 
     EXTRA_EXC_CLS = (ch_exc.DatabaseException,)
 
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
-            cls,
-            wrapper_exc: Exception,
-            orig_exc: Optional[Exception],
-            debug_compiled_query: Optional[str]
+        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
@@ -171,7 +192,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
         if isinstance(wrapper_exc, ch_exc.DatabaseException):
             # Special case for ClickHouse
             # try to differentiate errors by error code
-            db_msg = kw['db_message']
+            db_msg = kw["db_message"]
             if db_msg:
                 try:
                     # TODO: Temporary, will be fixed for sync adapter later
@@ -186,7 +207,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
             exc_cls = ch_exc_cls
 
         elif isinstance(orig_exc, requests.exceptions.ReadTimeout):
-            LOGGER.info('ClickHouse timed out')
+            LOGGER.info("ClickHouse timed out")
             exc_cls = exc.SourceTimeout
 
         elif isinstance(orig_exc, requests.exceptions.ConnectionError):
@@ -204,27 +225,25 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
         return super().normalize_sa_col_type(sa_col_type)
 
     def _test(self) -> None:
-        self.execute(DBAdapterQuery('select 1'))
+        self.execute(DBAdapterQuery("select 1"))
 
     def _get_subselect_table_info(self, subquery: SATextTableDefinition) -> RawSchemaInfo:
         # `describe table {table_func}/{subselect}` also works in CH.
-        return RawSchemaInfo(
-            columns=self._get_raw_columns_info(subquery)
-        )
+        return RawSchemaInfo(columns=self._get_raw_columns_info(subquery))
 
     def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
         table_columns = self._get_sa_table_columns(table_def)
         db_name = table_def.db_name if isinstance(table_def, TableIdent) else None
         db_engine = self.get_db_engine(db_name)
         if self._dt_with_system_tz:
-            system_tz = db_engine.scalar(sa.text('select timezone()'))
+            system_tz = db_engine.scalar(sa.text("select timezone()"))
 
         def make_native_type(col):  # type: ignore  # TODO: fix
-            col_type = col['type']
+            col_type = col["type"]
             col_type = self.normalize_sa_col_type(col_type)
 
-            nullable = col.get('nullable', True)
-            lowcardinality = col.get('lowcardinality', False)
+            nullable = col.get("nullable", True)
+            lowcardinality = col.get("lowcardinality", False)
             is_array = False
 
             if isinstance(col_type, ch_types.Array):
@@ -239,12 +258,10 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
 
             explicit_timezone = True
             if self._dt_with_system_tz:
-                if (isinstance(col_type, ch_types.DateTime) and
-                        not isinstance(col_type, ch_types.DateTimeWithTZ)):
+                if isinstance(col_type, ch_types.DateTime) and not isinstance(col_type, ch_types.DateTimeWithTZ):
                     explicit_timezone = False
                     col_type = ch_types.DateTimeWithTZ(system_tz)
-                elif (isinstance(col_type, ch_types.DateTime64) and
-                        not isinstance(col_type, ch_types.DateTime64WithTZ)):
+                elif isinstance(col_type, ch_types.DateTime64) and not isinstance(col_type, ch_types.DateTime64WithTZ):
                     explicit_timezone = False
                     col_type = ch_types.DateTime64WithTZ(col_type.precision, system_tz)
 
@@ -256,34 +273,42 @@ class BaseClickHouseAdapter(BaseClassicAdapter['BaseClickHouseConnTargetDTO'], B
 
             if isinstance(col_type, ch_types.DateTimeWithTZ):
                 return ClickHouseDateTimeWithTZNativeType(
-                    conn_type=conn_type, name=name,  # type: ignore  # TODO: fix
-                    nullable=nullable, lowcardinality=lowcardinality,
+                    conn_type=conn_type,
+                    name=name,  # type: ignore  # TODO: fix
+                    nullable=nullable,
+                    lowcardinality=lowcardinality,
                     timezone_name=col_type.tz,
                     explicit_timezone=explicit_timezone,
                 )
             if isinstance(col_type, ch_types.DateTime64WithTZ):
                 return ClickHouseDateTime64WithTZNativeType(
-                    conn_type=conn_type, name=name,  # type: ignore  # TODO: fix
-                    nullable=nullable, lowcardinality=lowcardinality,
+                    conn_type=conn_type,
+                    name=name,  # type: ignore  # TODO: fix
+                    nullable=nullable,
+                    lowcardinality=lowcardinality,
                     precision=col_type.precision,
                     timezone_name=col_type.tz,
                     explicit_timezone=explicit_timezone,
                 )
             if isinstance(col_type, ch_types.DateTime64):
                 return ClickHouseDateTime64NativeType(
-                    conn_type=conn_type, name=name,  # type: ignore  # TODO: fix
-                    nullable=nullable, lowcardinality=lowcardinality,
+                    conn_type=conn_type,
+                    name=name,  # type: ignore  # TODO: fix
+                    nullable=nullable,
+                    lowcardinality=lowcardinality,
                     precision=col_type.precision,
                 )
             return ClickHouseNativeType(
-                conn_type=conn_type, name=name,  # type: ignore  # TODO: fix
-                nullable=nullable, lowcardinality=lowcardinality,
+                conn_type=conn_type,
+                name=name,  # type: ignore  # TODO: fix
+                nullable=nullable,
+                lowcardinality=lowcardinality,
             )
 
         return tuple(
             RawColumnInfo(
-                name=column['name'],
-                title=column.get('title'),
+                name=column["name"],
+                title=column.get("title"),
                 nullable=True,
                 # column.get('nullable'),  # forced `True` for table-creation.  # to be deprecated entirely.
                 native_type=make_native_type(column),
@@ -302,34 +327,35 @@ class ClickHouseAdapter(BaseClickHouseAdapter):
 
     def _get_table_indexes(self, table_ident: TableIdent) -> tuple[RawIndexInfo, ...]:
         common_indexes = super()._get_table_indexes(table_ident)
-        result = self.execute(DBAdapterQuery(
-            query=sa.select(
-                [sa.column('sorting_key')],
-            ).select_from(
-                sa.table('tables')
-            ).where(
-                sa.and_(
-                    sa.column('name') == table_ident.table_name,
-                    sa.column('database') == self.get_db_name_for_query(table_ident.db_name),
+        result = self.execute(
+            DBAdapterQuery(
+                query=sa.select(
+                    [sa.column("sorting_key")],
                 )
-            ),
-            db_name='system'
-        )).get_all()
+                .select_from(sa.table("tables"))
+                .where(
+                    sa.and_(
+                        sa.column("name") == table_ident.table_name,
+                        sa.column("database") == self.get_db_name_for_query(table_ident.db_name),
+                    )
+                ),
+                db_name="system",
+            )
+        ).get_all()
         assert len(result) == 1, "Number of row for table name "
 
         ch_specific_idx_list = []
         sorting_key_str = result[0][0]
 
         if sorting_key_str and sorting_key_str.strip():
-            sorting_key = tuple(
-                col_name.strip()
-                for col_name in sorting_key_str.split(',')
+            sorting_key = tuple(col_name.strip() for col_name in sorting_key_str.split(","))
+            ch_specific_idx_list.append(
+                RawIndexInfo(
+                    columns=sorting_key,
+                    unique=False,
+                    kind=IndexKind.table_sorting,
+                )
             )
-            ch_specific_idx_list.append(RawIndexInfo(
-                columns=sorting_key,
-                unique=False,
-                kind=IndexKind.table_sorting,
-            ))
 
         return common_indexes + tuple(ch_specific_idx_list)
 
@@ -352,16 +378,13 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         )
 
     def get_session_timeout(self) -> Optional[ClientTimeout]:  # type: ignore  # TODO: fix
-        return ClientTimeout(
-            connect=self._target_dto.connect_timeout,
-            total=self._target_dto.total_timeout
-        )
+        return ClientTimeout(connect=self._target_dto.connect_timeout, total=self._target_dto.total_timeout)
 
     def get_session_auth(self) -> Optional[BasicAuth]:
         return BasicAuth(
             login=self._target_dto.username,
             password=self._target_dto.password,
-            encoding='utf-8',
+            encoding="utf-8",
         )
 
     def get_session_headers(self) -> dict[str, str]:
@@ -374,11 +397,10 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         read_only_level = None if dba_q.trusted_query else 2
         return dict(
             # TODO FIX: Move to utils
-            database=dba_q.db_name or self._target_dto.db_name or 'system',
+            database=dba_q.db_name or self._target_dto.db_name or "system",
             **get_ch_settings(
                 read_only_level=read_only_level,
                 max_execution_time=self._target_dto.max_execution_time,
-
                 # doesn't matter until materializer uses async ch adapter
                 insert_quorum=self._target_dto.insert_quorum,
                 insert_quorum_timeout=self._target_dto.insert_quorum_timeout,
@@ -397,7 +419,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         if isinstance(dba_q.query, str):
             _query_for_check = dba_q.query.lower()
             if not dba_q.trusted_query:
-                assert _query_for_check.startswith(('select ', 'select\n', 'explain ', 'explain\n'))
+                assert _query_for_check.startswith(("select ", "select\n", "explain ", "explain\n"))
             query_str = dba_q.query
         else:
             query_str = dba_q.query.compile(dialect=self.get_dialect(), compile_kwargs={"literal_binds": True}).string
@@ -420,11 +442,11 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             query_for_log[:max_log_len],
             "..." if len(query_for_log) > max_log_len else "",
             extra={
-                'ch_query': query_for_log,
-                'ch_url': self._url,
-                'ch_params': json.dumps(ch_params),
-                'event_code': 'async_dba_ch_query_ready',
-            }
+                "ch_query": query_for_log,
+                "ch_url": self._url,
+                "ch_params": json.dumps(ch_params),
+                "event_code": "async_dba_ch_query_ready",
+            },
         )
 
         tracing_headers = self._get_current_tracing_headers()
@@ -439,7 +461,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         )
 
         # CHYT rewrites incoming query_id so we log returned one instead of constructing own id
-        LOGGER.info('Query has been sent to CH with query_id %s', resp.headers.get('X-ClickHouse-Query-Id'))
+        LOGGER.info("Query has been sent to CH with query_id %s", resp.headers.get("X-ClickHouse-Query-Id"))
 
         return resp
 
@@ -471,7 +493,8 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                         assert bytes_chunk is not None
                         LOGGER.info(
                             "Got duplicated FINISHED event from stream parser, chunk len=%s, truncated chunk: %r",
-                            len(bytes_chunk), bytes_chunk[:1024],
+                            len(bytes_chunk),
+                            bytes_chunk[:1024],
                         )
 
                     break
@@ -482,30 +505,30 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             if event != parser.parts.FINISHED:
                 # TODO: return a sensible user-facing error in this case
                 # (see a test in `bi-api/tests/db/result/test_error_handling.py`)
-                decoded_chunk: Optional[str] = bytes_chunk.decode(errors='replace') if bytes_chunk is not None else None
+                decoded_chunk: Optional[str] = bytes_chunk.decode(errors="replace") if bytes_chunk is not None else None
                 raise exc.SourceProtocolError(
-                    debug_info=dict(msg='Unexpected last event', event=event, data=data, chunk=decoded_chunk),
+                    debug_info=dict(msg="Unexpected last event", event=event, data=data, chunk=decoded_chunk),
                     # TODO: provide the actual query
-                    query='',
+                    query="",
                     # TODO?: show the chunk here for the user databases?
-                    db_message='',
+                    db_message="",
                 )
 
         try:
             LOGGER.info(
-                'Dumping clickhouse summary from headers',
-                extra={'ch_summary': json.loads(resp.headers['X-ClickHouse-Summary'])}
+                "Dumping clickhouse summary from headers",
+                extra={"ch_summary": json.loads(resp.headers["X-ClickHouse-Summary"])},
             )
         except KeyError:
-            LOGGER.warning('No clickhouse summary in headers')
+            LOGGER.warning("No clickhouse summary in headers")
         except Exception:
-            LOGGER.warning('Failed to dump clickhouse summary', exc_info=True)
+            LOGGER.warning("Failed to dump clickhouse summary", exc_info=True)
 
     @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
         et = JSONCompactChunksParser.parts
 
-        with self.wrap_execute_excs(query=query, stage='request'):
+        with self.wrap_execute_excs(query=query, stage="request"):
             # TODO FIX: Statuses for retry
             resp = await self._make_query(query)
 
@@ -516,16 +539,13 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             raise db_exc
 
         # Primarily for DashSQL
-        ch_resp_headers = {
-            key: val
-            for key, val in resp.headers.items()
-            if key.lower().startswith('x-clickhouse-')
-        }
+        ch_resp_headers = {key: val for key, val in resp.headers.items() if key.lower().startswith("x-clickhouse-")}
 
         if query.is_ddl_dml_query:
+
             async def empty_chunk_gen() -> TBIChunksGen:
                 return
-                yield   # noqa
+                yield  # noqa
 
             return AsyncRawExecutionResult(
                 raw_cursor_info=dict(clickhouse_headers=ch_resp_headers),
@@ -536,19 +556,16 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             try:
                 return col_conv(val)
             except ValueError as err:
-                raise exc.DataParseError(
-                    f'Cannot convert {val!r}',
-                    query=query.debug_compiled_query
-                ) from err
+                raise exc.DataParseError(f"Cannot convert {val!r}", query=query.debug_compiled_query) from err
 
         events_generator = self._parse_response_body(resp)
-        with self.wrap_execute_excs(query=query, stage='meta'):
+        with self.wrap_execute_excs(query=query, stage="meta"):
             first_evt_type, first_evt_data = await events_generator.__anext__()
         assert first_evt_type == et.META
         if self._target_dto.disable_value_processing:
             row_converters = tuple(None for _ in first_evt_data)
         else:
-            row_converters = tuple(_get_type(field['type']) for field in first_evt_data)
+            row_converters = tuple(_get_type(field["type"]) for field in first_evt_data)
 
         # TODO FIX: Here we ignore requested size of chunk
         # TODO FIX: Handle to large row exception
@@ -556,7 +573,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             expected_types: Sequence[Any] = (et.DATACHUNK, et.STATS)
             evt_type, evt_data = None, None
 
-            with self.wrap_execute_excs(query=query, stage='rows'):
+            with self.wrap_execute_excs(query=query, stage="rows"):
                 async for evt_tuple in events_generator:
                     evt_type, evt_data = evt_tuple
                     if evt_type not in expected_types:
@@ -574,8 +591,8 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                         )
                     elif evt_type == et.STATS:
                         LOGGER.info(
-                            'Dumping clickhouse statistics from response',
-                            extra=evt_data  # statistics (elapsed, rows_read, bytes_read) + rows (num)
+                            "Dumping clickhouse statistics from response",
+                            extra=evt_data,  # statistics (elapsed, rows_read, bytes_read) + rows (num)
                         )
                         expected_types = (et.FINISHED,)
                     elif evt_type == et.FINISHED:
@@ -584,7 +601,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             if evt_type != et.FINISHED:
                 # TODO: For user databases this should probably be passed to the user.
                 raise exc.SourceProtocolError(  # type: ignore  # TODO: fix
-                    debug_info=dict(msg='Unexpected last event', event=evt_type, data=evt_data)
+                    debug_info=dict(msg="Unexpected last event", event=evt_type, data=evt_data)
                 )
 
         return AsyncRawExecutionResult(
@@ -592,22 +609,11 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             # Primarily useful for DashSQL
             raw_cursor_info=dict(
                 # Deprecating this in favor of `names` + `db_types`:
-                columns=[
-                    {"name": col["name"], "clickhouse_type_name": col["type"]}
-                    for col in first_evt_data],
+                columns=[{"name": col["name"], "clickhouse_type_name": col["type"]} for col in first_evt_data],
                 # ...
-                names=[
-                    col["name"]
-                    for col in first_evt_data
-                ],
-                driver_types=[
-                    col["type"]
-                    for col in first_evt_data
-                ],
-                db_types=[
-                    self._ch_type_name_to_native_type(col["type"])
-                    for col in first_evt_data
-                ],
+                names=[col["name"] for col in first_evt_data],
+                driver_types=[col["type"] for col in first_evt_data],
+                db_types=[self._ch_type_name_to_native_type(col["type"]) for col in first_evt_data],
                 clickhouse_headers=ch_resp_headers,
             ),
             # Data
@@ -615,22 +621,22 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         )
 
     def _ch_type_name_to_native_type(self, type_name: str) -> GenericNativeType:
-        """ A simplified CH type parser for some commonly useful cases """
-        type_pieces = type_name.lower().strip(')').split('(')
-        if type_pieces and type_pieces[0] == 'lowcardinality':
+        """A simplified CH type parser for some commonly useful cases"""
+        type_pieces = type_name.lower().strip(")").split("(")
+        if type_pieces and type_pieces[0] == "lowcardinality":
             type_pieces = type_pieces[1:]
-        if type_pieces and type_pieces[0] == 'nullable':
+        if type_pieces and type_pieces[0] == "nullable":
             type_pieces = type_pieces[1:]
         return GenericNativeType.normalize_name_and_create(
             conn_type=self.conn_type,
-            name=type_pieces[0] if type_pieces else '',
+            name=type_pieces[0] if type_pieces else "",
         )
 
     def make_exc(  # TODO:  Move to ErrorTransformer
-            self,
-            status_code: int,  # noqa
-            err_body: str,
-            debug_compiled_query: Optional[str] = None,
+        self,
+        status_code: int,  # noqa
+        err_body: str,
+        debug_compiled_query: Optional[str] = None,
     ) -> exc.DatabaseQueryError:
         exc_cls: Type[exc.DatabaseQueryError]
         try:
@@ -647,7 +653,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         )
 
     async def test(self) -> None:
-        await self.execute(DBAdapterQuery('select 1'))
+        await self.execute(DBAdapterQuery("select 1"))
 
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         raise NotImplementedError()
@@ -666,10 +672,10 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
     @classmethod
     def create(  # type: ignore  # TODO: fix
-            cls: Type[_DBA_TV],
-            target_dto: _TARGET_DTO_TV,
-            req_ctx_info: DBAdapterScopedRCI,
-            default_chunk_size: int,
+        cls: Type[_DBA_TV],
+        target_dto: _TARGET_DTO_TV,
+        req_ctx_info: DBAdapterScopedRCI,
+        default_chunk_size: int,
     ) -> _DBA_TV:
         return cls(
             target_dto=target_dto,

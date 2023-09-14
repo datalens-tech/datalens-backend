@@ -10,9 +10,9 @@ def pytest_configure(config):  # noqa
     register_dialect()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def engine_url():
-    return 'bi_mssql://'
+    return "bi_mssql://"
 
 
 @pytest.fixture(scope="session")

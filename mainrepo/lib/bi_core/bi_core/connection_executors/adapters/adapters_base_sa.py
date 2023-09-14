@@ -4,8 +4,18 @@ import abc
 import contextlib
 import logging
 from typing import (
-    TYPE_CHECKING, Any, ClassVar, Dict, Generator, List, Optional, Tuple, Type, TypeVar,
-    Callable, Union,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
 )
 
 import attr
@@ -14,26 +24,45 @@ from sqlalchemy import event
 from sqlalchemy.engine.base import Engine
 from typing_extensions import final
 
-from bi_app_tools.profiling_base import GenericProfiler, generic_profiler
+from bi_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler,
+)
 from bi_core import exc
 from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from bi_core.connection_executors.adapters.mixins import (
-    SAColumnTypeNormalizer, WithCursorInfo, WithDatabaseNameOverride, WithNoneRowConverters,
+    SAColumnTypeNormalizer,
+    WithCursorInfo,
+    WithDatabaseNameOverride,
+    WithNoneRowConverters,
 )
-from bi_core.connection_executors.adapters.sa_utils import CursorLogger, compile_query_for_debug, get_db_version_query
+from bi_core.connection_executors.adapters.sa_utils import (
+    CursorLogger,
+    compile_query_for_debug,
+    get_db_version_query,
+)
 from bi_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     ExecutionStep,
     ExecutionStepCursorInfo,
     ExecutionStepDataChunk,
-    RawSchemaInfo,
     RawColumnInfo,
     RawIndexInfo,
+    RawSchemaInfo,
 )
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_core.connection_models import TableIdent, DBIdent, SchemaIdent, TableDefinition, SATextTableDefinition
+from bi_core.connection_models import (
+    DBIdent,
+    SATextTableDefinition,
+    SchemaIdent,
+    TableDefinition,
+    TableIdent,
+)
 from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
-from bi_core.connectors.base.error_transformer import DbErrorTransformer, make_default_transformer_with_custom_rules
+from bi_core.connectors.base.error_transformer import (
+    DbErrorTransformer,
+    make_default_transformer_with_custom_rules,
+)
 from bi_core.db.native_type import CommonNativeType
 from bi_core.db_session_utils import db_session_context
 from bi_utils.utils import get_type_full_name
@@ -44,15 +73,18 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_DBA_SA_TV = TypeVar("_DBA_SA_TV", bound='BaseSAAdapter')
-_DBA_SA_DTO_TV = TypeVar("_DBA_SA_DTO_TV", bound='ConnTargetDTO')
+_DBA_SA_TV = TypeVar("_DBA_SA_TV", bound="BaseSAAdapter")
+_DBA_SA_DTO_TV = TypeVar("_DBA_SA_DTO_TV", bound="ConnTargetDTO")
 
 
 @attr.s()
 class BaseSAAdapter(
-        WithCursorInfo, WithDatabaseNameOverride, WithNoneRowConverters,
-        ETBasedExceptionMaker,
-        SyncDirectDBAdapter[_DBA_SA_DTO_TV], SAColumnTypeNormalizer,
+    WithCursorInfo,
+    WithDatabaseNameOverride,
+    WithNoneRowConverters,
+    ETBasedExceptionMaker,
+    SyncDirectDBAdapter[_DBA_SA_DTO_TV],
+    SAColumnTypeNormalizer,
 ):
     allow_sa_text_as_columns_source: ClassVar[bool] = False
 
@@ -66,10 +98,7 @@ class BaseSAAdapter(
 
     @classmethod
     def create(
-            cls: Type[_DBA_SA_TV],
-            target_dto: _DBA_SA_DTO_TV,
-            req_ctx_info: DBAdapterScopedRCI,
-            default_chunk_size: int
+        cls: Type[_DBA_SA_TV], target_dto: _DBA_SA_DTO_TV, req_ctx_info: DBAdapterScopedRCI, default_chunk_size: int
     ) -> _DBA_SA_TV:
         return cls(target_dto=target_dto, default_chunk_size=default_chunk_size, req_ctx_info=req_ctx_info)
 
@@ -91,8 +120,8 @@ class BaseSAAdapter(
             new_engine = self._get_db_engine(db_name=effective_db_name, disable_streaming=disable_streaming)
             # Adding event listeners
             # TODO CONSIDER: May be add adapters by flag?
-            event.listen(new_engine, 'before_cursor_execute', CursorLogger.before_cursor_execute_handler)
-            event.listen(new_engine, 'after_cursor_execute', CursorLogger.after_cursor_execute_handler)
+            event.listen(new_engine, "before_cursor_execute", CursorLogger.before_cursor_execute_handler)
+            event.listen(new_engine, "after_cursor_execute", CursorLogger.after_cursor_execute_handler)
 
             self._engine_cache[cache_key] = new_engine
 
@@ -120,10 +149,9 @@ class BaseSAAdapter(
         # TODO FIX: Delegate query compilation for debug to error handler or make method of debug compilation
         compiled_query = query if isinstance(query, str) else compile_query_for_debug(query, engine.dialect)
 
-        with db_session_context(backend_type=self.get_backend_type(), db_engine=engine) as db_session, \
-                self.handle_execution_error(compiled_query), \
-                self.execution_context():
-
+        with db_session_context(
+            backend_type=self.get_backend_type(), db_engine=engine
+        ) as db_session, self.handle_execution_error(compiled_query), self.execution_context():
             with GenericProfiler("db-exec"):
                 result = db_session.execute(
                     query,
@@ -132,8 +160,7 @@ class BaseSAAdapter(
                 )
 
             cursor_info = ExecutionStepCursorInfo(
-                cursor_info=self._make_cursor_info(
-                    result.cursor, db_session=db_session),
+                cursor_info=self._make_cursor_info(result.cursor, db_session=db_session),
                 raw_cursor_description=list(result.cursor.description),
                 raw_engine=engine,
             )
@@ -141,48 +168,48 @@ class BaseSAAdapter(
 
             row_converters = self._get_row_converters(cursor_info=cursor_info)
             while True:
-                LOGGER.info('Fetching %s rows (conn %s)', chunk_size, self.conn_id)
+                LOGGER.info("Fetching %s rows (conn %s)", chunk_size, self.conn_id)
                 with GenericProfiler("db-fetch"):
                     rows = result.fetchmany(chunk_size)
 
                 if not rows:
-                    LOGGER.info('No rows remaining')
+                    LOGGER.info("No rows remaining")
                     break
 
-                LOGGER.info('Rows fetched, yielding')
-                yield ExecutionStepDataChunk(tuple(
+                LOGGER.info("Rows fetched, yielding")
+                yield ExecutionStepDataChunk(
                     tuple(
-                        (
-                            col_converter(val)
-                            if col_converter is not None and val is not None
-                            else val
+                        tuple(
+                            (col_converter(val) if col_converter is not None and val is not None else val)
+                            # for val, col_converter in zip_longest(row, row_converters)
+                            for val, col_converter in zip(row, row_converters)
                         )
-                        # for val, col_converter in zip_longest(row, row_converters)
-                        for val, col_converter in zip(row, row_converters)
+                        for row in rows
                     )
-                    for row in rows
-                ))
+                )
 
     @final
     def test(self) -> None:
-        with self.handle_execution_error(debug_compiled_query='<test()>'):
+        with self.handle_execution_error(debug_compiled_query="<test()>"):
             self._test()
 
     @final
     def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        with self.handle_execution_error(debug_compiled_query=f'<get_db_version({db_ident})>'):
+        with self.handle_execution_error(debug_compiled_query=f"<get_db_version({db_ident})>"):
             return self._get_db_version(db_ident)
 
     @final
     def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        with self.handle_execution_error(debug_compiled_query=f'<get_schema_names({db_ident})>'), \
-                self.execution_context():
+        with self.handle_execution_error(
+            debug_compiled_query=f"<get_schema_names({db_ident})>"
+        ), self.execution_context():
             return self._get_schema_names(db_ident)
 
     @final
     def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        with self.handle_execution_error(debug_compiled_query=f'<get_tables({schema_ident})>'), \
-                self.execution_context():
+        with self.handle_execution_error(
+            debug_compiled_query=f"<get_tables({schema_ident})>"
+        ), self.execution_context():
             return self._get_tables(schema_ident)
 
     @final
@@ -191,10 +218,10 @@ class BaseSAAdapter(
         exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None
 
         if isinstance(table_def, TableIdent):
-            debug_compiled_query = f'<get_columns({table_def})>'
+            debug_compiled_query = f"<get_columns({table_def})>"
 
         elif isinstance(table_def, SATextTableDefinition):
-            debug_compiled_query = '<get_columns(<subselect>)>'
+            debug_compiled_query = "<get_columns(<subselect>)>"
 
             # TODO FIX: Do not fill details at such low level
             #  Better way is to set flag that this was a user subselect and depending on user permissions
@@ -202,9 +229,9 @@ class BaseSAAdapter(
             # A catch-point intended for adding `query` and `db_message` only for subselect-schema errors.
             def exc_post_processor(db_exc: exc.DatabaseQueryError) -> None:
                 assert isinstance(db_exc, exc.DatabaseQueryError)
-                db_exc.query = 'SELECT * FROM {}'.format(table_def.text)  # type: ignore  # TODO: fix
-                db_exc.details.setdefault('query', db_exc.query)
-                db_exc.details.setdefault('db_message', db_exc.db_message)
+                db_exc.query = "SELECT * FROM {}".format(table_def.text)  # type: ignore  # TODO: fix
+                db_exc.details.setdefault("query", db_exc.query)
+                db_exc.details.setdefault("db_message", db_exc.db_message)
 
         else:
             raise TypeError(
@@ -212,10 +239,9 @@ class BaseSAAdapter(
             )
 
         with self.handle_execution_error(
-                debug_compiled_query=debug_compiled_query,
-                exc_post_processor=exc_post_processor,
+            debug_compiled_query=debug_compiled_query,
+            exc_post_processor=exc_post_processor,
         ), self.execution_context():
-
             if isinstance(table_def, TableIdent):
                 columns = self._get_raw_columns_info(table_def)
                 indexes: Optional[Tuple[RawIndexInfo, ...]] = None
@@ -228,10 +254,7 @@ class BaseSAAdapter(
                     except Exception:  # noqa
                         LOGGER.exception("Indexes fetching fail for %s", table_def)
 
-                return RawSchemaInfo(
-                    columns=columns,
-                    indexes=indexes
-                )
+                return RawSchemaInfo(columns=columns, indexes=indexes)
 
             elif isinstance(table_def, SATextTableDefinition):
                 return self._get_subselect_table_info(table_def)
@@ -245,13 +268,11 @@ class BaseSAAdapter(
 
     @final
     def is_table_exists(self, table_ident: TableIdent) -> bool:
-        with self.handle_execution_error(
-                f"<exists({table_ident})>"
-        ), self.execution_context():
+        with self.handle_execution_error(f"<exists({table_ident})>"), self.execution_context():
             return self._is_table_exists(table_ident)
 
     def _test(self) -> None:
-        self.execute(DBAdapterQuery('select 1')).get_all()
+        self.execute(DBAdapterQuery("select 1")).get_all()
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         """Return database version string for this connection"""
@@ -304,14 +325,14 @@ class BaseSAAdapter(
 
         return tuple(
             RawColumnInfo(
-                name=column['name'],
-                title=column.get('title'),
-                nullable=column.get('nullable', True),  # To be deprecated.
+                name=column["name"],
+                title=column.get("title"),
+                nullable=column.get("nullable", True),  # To be deprecated.
                 native_type=CommonNativeType.normalize_name_and_create(
                     conn_type=self.conn_type,
-                    name=self.normalize_sa_col_type(column['type']),
-                    nullable=column.get('nullable', True),
-                )
+                    name=self.normalize_sa_col_type(column["type"]),
+                    nullable=column.get("nullable", True),
+                ),
             )
             for column in table_columns
         )
@@ -324,8 +345,8 @@ class BaseSAAdapter(
 
         return tuple(
             RawIndexInfo(
-                columns=tuple(idx['column_names']),
-                unique=idx['unique'],
+                columns=tuple(idx["column_names"]),
+                unique=idx["unique"],
                 kind=None,
             )
             for idx in idx_list

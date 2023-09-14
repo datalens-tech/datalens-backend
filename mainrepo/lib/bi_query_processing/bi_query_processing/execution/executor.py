@@ -2,30 +2,56 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import AbstractSet, Callable, Collection, Dict, List, Optional, Tuple
+from typing import (
+    AbstractSet,
+    Callable,
+    Collection,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+)
 
 import attr
 
-from bi_query_processing import exc
-from bi_constants.enums import DataSourceRole, SelectorType, ProcessorType
-
+from bi_constants.enums import (
+    DataSourceRole,
+    ProcessorType,
+    SelectorType,
+)
 from bi_constants.types import TBIDataRow
 from bi_core.components.ids import AvatarId
+from bi_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
+from bi_core.data_processing.processing.operation import (
+    BaseOp,
+    CalcOp,
+    DownloadOp,
+    JoinOp,
+    UploadOp,
+)
+from bi_core.data_processing.processing.processor import OperationProcessorAsyncBase
+from bi_core.data_processing.stream_base import (
+    AbstractStream,
+    DataSourceVS,
+    DataStreamAsync,
+)
+from bi_core.services_registry import ServicesRegistry
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
-from bi_core.services_registry import ServicesRegistry
-from bi_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
-from bi_core.data_processing.stream_base import AbstractStream, DataStreamAsync, DataSourceVS
-from bi_core.data_processing.processing.operation import BaseOp, CalcOp, DownloadOp, UploadOp, JoinOp
-from bi_core.data_processing.processing.processor import OperationProcessorAsyncBase
 from bi_core.utils import make_id
-
-from bi_query_processing.enums import QueryType, EmptyQueryMode, ExecutionLevel
-from bi_query_processing.translation.primitives import TranslatedMultiQueryBase
-from bi_query_processing.execution.primitives import ExecutedQuery, ExecutedQueryMetaInfo
-from bi_query_processing.execution.executor_base import QueryExecutorBase
+from bi_query_processing import exc
+from bi_query_processing.enums import (
+    EmptyQueryMode,
+    ExecutionLevel,
+    QueryType,
+)
 from bi_query_processing.execution.exec_info import QueryExecutionInfo
-
+from bi_query_processing.execution.executor_base import QueryExecutorBase
+from bi_query_processing.execution.primitives import (
+    ExecutedQuery,
+    ExecutedQueryMetaInfo,
+)
+from bi_query_processing.translation.primitives import TranslatedMultiQueryBase
 
 LOGGER = logging.getLogger(__name__)
 
@@ -72,26 +98,28 @@ class QueryExecutor(QueryExecutorBase):
         )
 
     async def _get_data_processor(
-            self, level_type: ExecutionLevel, role: DataSourceRole,
+        self,
+        level_type: ExecutionLevel,
+        role: DataSourceRole,
     ) -> OperationProcessorAsyncBase:
         if level_type == ExecutionLevel.source_db:
             return await self._get_source_db_data_processor(role=role)
         if level_type == ExecutionLevel.compeng:
             return await self._get_compeng_data_processor()
-        raise ValueError(f'Unsupported level_type: {level_type}')
+        raise ValueError(f"Unsupported level_type: {level_type}")
 
     async def _process_multi_query(
-            self, *,
-            level_type: ExecutionLevel,
-            streams_by_result_id: Dict[AvatarId, AbstractStream],
-            translated_multi_query: TranslatedMultiQueryBase,
-            stream_aliases: Dict[str, str],
-            upload_inputs: bool,
-            distinct: bool,
-            role: DataSourceRole,
-            row_count_hard_limit: int,
+        self,
+        *,
+        level_type: ExecutionLevel,
+        streams_by_result_id: Dict[AvatarId, AbstractStream],
+        translated_multi_query: TranslatedMultiQueryBase,
+        stream_aliases: Dict[str, str],
+        upload_inputs: bool,
+        distinct: bool,
+        role: DataSourceRole,
+        row_count_hard_limit: int,
     ) -> Tuple[Dict[AvatarId, DataStreamAsync], Dict[AvatarId, str]]:
-
         if translated_multi_query.is_empty():
             for stream in streams_by_result_id.values():
                 assert isinstance(stream, DataStreamAsync)
@@ -100,8 +128,7 @@ class QueryExecutor(QueryExecutorBase):
         op: BaseOp  # For usage in various parts of this function
 
         LOGGER.info(
-            f'Executing level type {level_type}. '
-            f'Got source streams with result IDs: {list(streams_by_result_id)}'
+            f"Executing level type {level_type}. " f"Got source streams with result IDs: {list(streams_by_result_id)}"
         )
 
         streams: List[DataStreamAsync] = [stream for _, stream in sorted(streams_by_result_id.items())]  # type: ignore  # TODO: fix
@@ -121,10 +148,7 @@ class QueryExecutor(QueryExecutorBase):
                 operations.append(op)
                 result_to_stream_id_map[result_id] = op.dest_stream_id
         else:
-            result_to_stream_id_map = {
-                result_id: stream.id
-                for result_id, stream in streams_by_result_id.items()
-            }
+            result_to_stream_id_map = {result_id: stream.id for result_id, stream in streams_by_result_id.items()}
 
         required_avatar_ids: AbstractSet[str]
 
@@ -227,8 +251,8 @@ class QueryExecutor(QueryExecutorBase):
             )
             assert isinstance(op, DownloadOp)  # for typing
             LOGGER.info(
-                f'Adding DownloadOp for query {result_id} with '
-                f'input stream {op.source_stream_id} and output stream {op.dest_stream_id}'
+                f"Adding DownloadOp for query {result_id} with "
+                f"input stream {op.source_stream_id} and output stream {op.dest_stream_id}"
             )
             operations.append(op)
             output_stream_to_result_map[op.dest_stream_id] = result_id
@@ -237,20 +261,21 @@ class QueryExecutor(QueryExecutorBase):
         processor = await self._get_data_processor(level_type=level_type, role=role)
 
         output_stream_list = await processor.run(
-            operations=operations, streams=streams,
+            operations=operations,
+            streams=streams,
             output_stream_ids=set(output_stream_to_result_map),
         )
-        output_streams_by_result_id = {
-            output_stream_to_result_map[stream.id]: stream
-            for stream in output_stream_list
-        }
+        output_streams_by_result_id = {output_stream_to_result_map[stream.id]: stream for stream in output_stream_list}
         return output_streams_by_result_id, output_stream_aliases
 
     def _make_source_db_input_streams(
-            self, *, role: DataSourceRole, translated_multi_query: TranslatedMultiQueryBase,
-            from_subquery: bool, subquery_limit: Optional[int],
+        self,
+        *,
+        role: DataSourceRole,
+        translated_multi_query: TranslatedMultiQueryBase,
+        from_subquery: bool,
+        subquery_limit: Optional[int],
     ) -> Tuple[Dict[AvatarId, AbstractStream], Dict[AvatarId, str]]:
-
         base_avatar_ids = translated_multi_query.get_base_root_from_ids()
         required_avatar_ids: list[str] = [from_id for from_id in translated_multi_query.get_base_froms()]
         required_avatar_ids = sorted(set(required_avatar_ids + list(base_avatar_ids)))
@@ -266,7 +291,8 @@ class QueryExecutor(QueryExecutorBase):
         for avatar_id in required_avatar_ids:
             alias = self._avatar_alias_mapper(avatar_id)  # type: ignore  # TODO: fix
             prep_src_info = prep_component_manager.get_prepared_source(
-                avatar_id=avatar_id, alias=alias,
+                avatar_id=avatar_id,
+                alias=alias,
                 from_subquery=from_subquery,
                 subquery_limit=subquery_limit,
             )
@@ -283,8 +309,8 @@ class QueryExecutor(QueryExecutorBase):
             stream_aliases[stream.id] = stream.alias
 
         id_map_for_log = {result_id: stream.id for result_id, stream in streams_by_result_id.items()}
-        LOGGER.info(f'Generated base streams for result IDs: {id_map_for_log}')
-        LOGGER.info(f'Using aliases: {stream_aliases}')
+        LOGGER.info(f"Generated base streams for result IDs: {id_map_for_log}")
+        LOGGER.info(f"Using aliases: {stream_aliases}")
         assert len(streams_by_result_id) == len(stream_aliases)
         return streams_by_result_id, stream_aliases
 
@@ -308,8 +334,10 @@ class QueryExecutor(QueryExecutorBase):
         row_count_hard_limit = top_query.meta.row_count_hard_limit
 
         streams_by_result_id, stream_aliases = self._make_source_db_input_streams(
-            role=exec_info.role, translated_multi_query=translated_multi_query,
-            from_subquery=from_subquery, subquery_limit=subquery_limit,
+            role=exec_info.role,
+            translated_multi_query=translated_multi_query,
+            from_subquery=from_subquery,
+            subquery_limit=subquery_limit,
         )
 
         # Process data in source_db
@@ -347,7 +375,7 @@ class QueryExecutor(QueryExecutorBase):
             for _, out_s in sorted(streams_by_result_id.items())
             if out_s.meta.query is not None and out_s.meta.pass_db_query_to_user  # type: ignore  # TODO: fix
         ]
-        query_for_response = '\n;\n\n'.join(source_db_queries) or None
+        query_for_response = "\n;\n\n".join(source_db_queries) or None
 
         # Process data in compeng
         async with self._compeng_semaphore:
@@ -363,7 +391,7 @@ class QueryExecutor(QueryExecutorBase):
             )
 
         streams = [stream for stream in streams_by_result_id.values()]
-        assert len(streams) == 1, f'There must be exactly one output data stream, got {len(streams)}'
+        assert len(streams) == 1, f"There must be exactly one output data stream, got {len(streams)}"
         one_stream = streams[0]
 
         assert isinstance(one_stream, DataStreamAsync)
@@ -375,9 +403,7 @@ class QueryExecutor(QueryExecutorBase):
                 trans_meta=top_query.meta,
                 debug_query=query_for_response,
                 target_connection_ids=set(
-                    target_conn.uuid
-                    for target_conn in exec_info.target_connections
-                    if target_conn.uuid is not None
+                    target_conn.uuid for target_conn in exec_info.target_connections if target_conn.uuid is not None
                 ),
             ),
         )

@@ -1,17 +1,16 @@
 import asyncio
 from typing import Generator
 
-import pytest
 from frozendict import frozendict
+import pytest
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
 
-from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-
 from bi_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
+from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 import bi_connector_clickhouse_tests.db.config as test_config
 
 
@@ -28,15 +27,15 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
         # https://github.com/pytest-dev/pytest-asyncio/commit/51d986cec83fdbc14fa08015424c79397afc7ad9
         asyncio.set_event_loop_policy(None)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict) -> ClickhouseDbEngineConfig:
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -47,23 +46,22 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def saved_connection(
-            self, sync_us_manager: SyncUSManager, connection_creation_params: dict,
+        self,
+        sync_us_manager: SyncUSManager,
+        connection_creation_params: dict,
     ) -> ConnectionClickhouse:
-        conn = make_clickhouse_saved_connection(
-            sync_usm=sync_us_manager,
-            **connection_creation_params
-        )
+        conn = make_clickhouse_saved_connection(sync_usm=sync_us_manager, **connection_creation_params)
         return conn
 
 
 class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
         return {
             "connect_args": frozendict(
@@ -71,7 +69,7 @@ class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
             )
         }
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,

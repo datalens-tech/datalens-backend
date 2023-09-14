@@ -2,19 +2,29 @@ from __future__ import annotations
 
 import abc
 from itertools import chain
-from typing import Any, Generator, Iterable
+from typing import (
+    Any,
+    Generator,
+    Iterable,
+)
 
 import attr
 
+from bi_api_client.dsmaker.api.data_api import HttpDataApiResponse
+from bi_api_client.dsmaker.data_abstraction.legend import FieldLegend
+from bi_api_client.dsmaker.data_abstraction.mapping_base import (
+    DataCellMapper1D,
+    SimpleDataCellMapper1D,
+)
+from bi_api_client.dsmaker.data_abstraction.primitives import (
+    DataCell,
+    DataCellTuple,
+    DataItem,
+    DataItemMeta,
+    DataItemTag,
+)
 from bi_constants.enums import FieldRole
 from bi_constants.internal_constants import MEASURE_NAME_TITLE
-
-from bi_api_client.dsmaker.api.data_api import HttpDataApiResponse
-from bi_api_client.dsmaker.data_abstraction.primitives import (
-    DataCell, DataCellTuple, DataItem, DataItemTag, DataItemMeta,
-)
-from bi_api_client.dsmaker.data_abstraction.legend import FieldLegend
-from bi_api_client.dsmaker.data_abstraction.mapping_base import DataCellMapper1D, SimpleDataCellMapper1D
 
 
 @attr.s(frozen=True)
@@ -35,11 +45,11 @@ class PivotDataRowProxy(PivotDataSliceProxy):
     row_idx: int = attr.ib(kw_only=True)
 
     def get_compound_header(self) -> tuple[Any, ...]:
-        row_data = self.resp_data['pivot_data']['rows'][self.row_idx]['header']
+        row_data = self.resp_data["pivot_data"]["rows"][self.row_idx]["header"]
         return tuple(raw_vect[0][0] for raw_vect in row_data)
 
     def get_flat_header(self) -> Any:
-        row_data = self.resp_data['pivot_data']['rows'][self.row_idx]['header']
+        row_data = self.resp_data["pivot_data"]["rows"][self.row_idx]["header"]
         assert len(row_data) == 1
         return row_data[0][0][0]
 
@@ -49,11 +59,11 @@ class PivotDataColumnProxy(PivotDataSliceProxy):
     col_idx: int = attr.ib(kw_only=True)
 
     def get_compound_header(self) -> tuple[Any, ...]:
-        col_data = self.resp_data['pivot_data']['columns'][self.col_idx]
+        col_data = self.resp_data["pivot_data"]["columns"][self.col_idx]
         return tuple(raw_vect[0][0] for raw_vect in col_data)
 
     def get_flat_header(self) -> Any:
-        col_data = self.resp_data['pivot_data']['columns'][self.col_idx]
+        col_data = self.resp_data["pivot_data"]["columns"][self.col_idx]
         assert len(col_data) == 1
         return col_data[0][0][0]
 
@@ -67,7 +77,7 @@ class PivotDataAbstraction:
     resp_data: dict = attr.ib(kw_only=True)
 
     def get_field_legend(self) -> FieldLegend:
-        return FieldLegend(self.resp_data['fields'])
+        return FieldLegend(self.resp_data["fields"])
 
     def _iter_all_cells(self) -> Generator[tuple[DataCellTuple, DataItem], None, None]:
         """
@@ -80,7 +90,7 @@ class PivotDataAbstraction:
         """
 
         legend = self.get_field_legend()
-        columns = self.resp_data['pivot_data']['columns']
+        columns = self.resp_data["pivot_data"]["columns"]
 
         def make_cell_from_raw_cell(raw_cell: list[Any]) -> DataCell:
             """Convert raw value pair into a `DataCell` object."""
@@ -97,21 +107,21 @@ class PivotDataAbstraction:
         # we will first remove it, and the add it again manually
         # to normalized the `dimensions -> measure` mapping
 
-        rows = self.resp_data['pivot_data']['rows']
+        rows = self.resp_data["pivot_data"]["rows"]
         column_value_sets = [
-            remove_measure_name_cells(
-                make_cell_from_raw_cell(dim_cell_vector[0]) for dim_cell_vector in column
-            )
+            remove_measure_name_cells(make_cell_from_raw_cell(dim_cell_vector[0]) for dim_cell_vector in column)
             for column in columns
         ]
 
         for row in rows:
-            row_value_set = set(remove_measure_name_cells(
-                make_cell_from_raw_cell(dim_cell_vector[0]) for dim_cell_vector in row['header']
-            ))
+            row_value_set = set(
+                remove_measure_name_cells(
+                    make_cell_from_raw_cell(dim_cell_vector[0]) for dim_cell_vector in row["header"]
+                )
+            )
 
             for col_idx, col_value_set in enumerate(column_value_sets):
-                measure_raw_cell_vector = row['values'][col_idx]
+                measure_raw_cell_vector = row["values"][col_idx]
                 if measure_raw_cell_vector is None:
                     # no data to yield here, so skip
                     continue
@@ -132,10 +142,9 @@ class PivotDataAbstraction:
                     mname_cell = DataCell(value=measure_cell.title, title=MEASURE_NAME_TITLE)
 
                     dim_tuple = DataCellTuple(
-                        cells=tuple(sorted(
-                            chain(row_value_set, col_value_set, [mname_cell]),
-                            key=lambda cell: cell.title
-                        )),
+                        cells=tuple(
+                            sorted(chain(row_value_set, col_value_set, [mname_cell]), key=lambda cell: cell.title)
+                        ),
                     )
 
                     yield dim_tuple, DataItem(cell=measure_cell, meta=DataItemMeta(tags=frozenset(tags)))
@@ -152,11 +161,11 @@ class PivotDataAbstraction:
         return PivotDataColumnProxy(resp_data=self.resp_data, col_idx=idx)
 
     def iter_rows(self) -> Generator[PivotDataRowProxy, None, None]:
-        for row_idx in range(len(self.resp_data['pivot_data']['rows'])):
+        for row_idx in range(len(self.resp_data["pivot_data"]["rows"])):
             yield self.get_row(row_idx)
 
     def iter_columns(self) -> Generator[PivotDataColumnProxy, None, None]:
-        for col_idx in range(len(self.resp_data['pivot_data']['columns'])):
+        for col_idx in range(len(self.resp_data["pivot_data"]["columns"])):
             yield self.get_column(col_idx)
 
     def get_flat_row_headers(self) -> list[Any]:
@@ -173,5 +182,5 @@ class PivotDataAbstraction:
 
     @classmethod
     def from_response(cls, response: HttpDataApiResponse) -> PivotDataAbstraction:
-        assert response.api_version == 'v2'
+        assert response.api_version == "v2"
         return cls(resp_data=response.data)

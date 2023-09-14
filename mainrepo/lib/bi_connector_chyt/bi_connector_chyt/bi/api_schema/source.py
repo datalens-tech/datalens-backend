@@ -2,7 +2,8 @@ from marshmallow import fields as ma_fields
 
 from bi_api_connector.api_schema.source_base import (
     DataSourceTemplateBaseSchema,
-    SimpleParametersSchema, SimpleDataSourceSchema,
+    SimpleDataSourceSchema,
+    SimpleParametersSchema,
 )
 
 # Effectively `CHYTTableSourceSchema = SQLDataSourceSchema` because it is in `SQL_SOURCE_TYPES`.

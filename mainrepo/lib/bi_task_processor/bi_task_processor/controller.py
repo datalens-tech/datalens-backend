@@ -1,15 +1,20 @@
 import argparse
 import json
-from typing import Iterable, Dict, Type, List
+from typing import (
+    Dict,
+    Iterable,
+    List,
+    Type,
+)
 
 import attr
 
 from bi_task_processor.processor import TaskProcessor
 from bi_task_processor.task import (
-    TaskRegistry,
-    TaskName,
     BaseTaskMeta,
     TaskInstance,
+    TaskName,
+    TaskRegistry,
 )
 
 
@@ -52,15 +57,16 @@ class Controller:
     POST (change state) -- stop, reschedule
     /instances/<>/actions
     """
+
     _processor: TaskProcessor = attr.ib()
     _registry: TaskRegistry = attr.ib()
 
     @property
-    def tasks(self) -> 'TaskController':
+    def tasks(self) -> "TaskController":
         return TaskController(registry=self._registry)
 
     @property
-    def instances(self) -> 'InstanceController':
+    def instances(self) -> "InstanceController":
         return InstanceController(processor=self._processor)
 
 
@@ -100,57 +106,58 @@ class Cli:
 
     @classmethod
     def parse_params(cls, args: List) -> argparse.Namespace:
-        parser = argparse.ArgumentParser(description='Task Processor controller')
-        subparsers = parser.add_subparsers(dest='subparser')
+        parser = argparse.ArgumentParser(description="Task Processor controller")
+        subparsers = parser.add_subparsers(dest="subparser")
 
         # task parsers
-        parser_tasks = subparsers.add_parser('task')
-        subparsers_tasks = parser_tasks.add_subparsers(dest='action')
+        parser_tasks = subparsers.add_parser("task")
+        subparsers_tasks = parser_tasks.add_subparsers(dest="action")
         # task filter parsers
-        task_info_parser = subparsers_tasks.add_parser('info', help='Show tasks with name and params')
-        task_info_parser.add_argument('--name', default=None, help='Task name')
+        task_info_parser = subparsers_tasks.add_parser("info", help="Show tasks with name and params")
+        task_info_parser.add_argument("--name", default=None, help="Task name")
         # only defaults below
-        task_info_parser.add_argument('--format', choices=['json'], default='json', help='Output format')
-        task_info_parser.add_argument('--fields', choices=['all'], nargs='*', default=['all'], help='List of fields or `all`')
+        task_info_parser.add_argument("--format", choices=["json"], default="json", help="Output format")
+        task_info_parser.add_argument(
+            "--fields", choices=["all"], nargs="*", default=["all"], help="List of fields or `all`"
+        )
 
         # instance parsers
-        parser_instances = subparsers.add_parser('instance')
-        subparsers_instances = parser_instances.add_subparsers(dest='action')
+        parser_instances = subparsers.add_parser("instance")
+        subparsers_instances = parser_instances.add_subparsers(dest="action")
         # instance schedule parsers
-        instances_schedule_parser = subparsers_instances.add_parser('schedule', help='Schedule task')
-        instances_schedule_parser.add_argument('--name', help='Task name', required=True)
-        instances_schedule_parser.add_argument('--params', default=[], help='Task params', nargs='+')
+        instances_schedule_parser = subparsers_instances.add_parser("schedule", help="Schedule task")
+        instances_schedule_parser.add_argument("--name", help="Task name", required=True)
+        instances_schedule_parser.add_argument("--params", default=[], help="Task params", nargs="+")
 
         return parser.parse_args(args)
 
     async def run(self, args: argparse.Namespace) -> None:
         def _parse_task_params(params: Iterable) -> Dict:
-            return {
-                item.split('=')[0]: item.split('=')[1] for item in params
-            }
+            return {item.split("=")[0]: item.split("=")[1] for item in params}
+
         controller = Controller(registry=self._registry, processor=self._processor)
-        if args.subparser == 'instance':
-            if args.action == 'schedule':
+        if args.subparser == "instance":
+            if args.action == "schedule":
                 task = controller.tasks.meta(TaskName(args.name))
                 params = _parse_task_params(args.params)
                 await controller.instances.schedule(task(**params))
             else:
-                raise ValueError(f'Unknown action {args.action}')
-        elif args.subparser == 'task':
-            if args.action == 'info':
+                raise ValueError(f"Unknown action {args.action}")
+        elif args.subparser == "task":
+            if args.action == "info":
                 tasks = controller.tasks.filter(name=TaskName(args.name))
                 for task in tasks:
                     print(
                         json.dumps(
                             {
-                                'name': task.name,
-                                'params': task.get_schema(),
+                                "name": task.name,
+                                "params": task.get_schema(),
                             },
                             sort_keys=True,
-                            indent=4
+                            indent=4,
                         ),
                     )
             else:
-                raise ValueError(f'Unknown action {args.action}')
+                raise ValueError(f"Unknown action {args.action}")
         else:
-            raise ValueError(f'Unknown subparser {args.subparser}')
+            raise ValueError(f"Unknown subparser {args.subparser}")

@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import abc
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Type, TypeVar
+from typing import (
+    AsyncGenerator,
+    Type,
+    TypeVar,
+)
 
-
-_POOL_WRAPPER_TV = TypeVar('_POOL_WRAPPER_TV', bound='BasePgPoolWrapper')
+_POOL_WRAPPER_TV = TypeVar("_POOL_WRAPPER_TV", bound="BasePgPoolWrapper")
 
 DEFAULT_POOL_MIN_SIZE = 10
 DEFAULT_POOL_MAX_SIZE = 20
@@ -36,10 +39,7 @@ class BasePgPoolWrapper(metaclass=abc.ABCMeta):
         operation_timeout: float = DEFAULT_OPERATION_TIMEOUT,
     ) -> AsyncGenerator[_POOL_WRAPPER_TV, None]:
         pool_wrapper = await cls.connect(
-            url=url,
-            pool_min_size=pool_min_size,
-            pool_max_size=pool_max_size,
-            operation_timeout=operation_timeout
+            url=url, pool_min_size=pool_min_size, pool_max_size=pool_max_size, operation_timeout=operation_timeout
         )
         try:
             yield pool_wrapper

@@ -8,10 +8,13 @@ import logging
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
-from bi_api_lib.aio.aiohttp_wrappers import DSAPIRequest
-from bi_api_lib.app.data_api.resources.base import BaseView, RequiredResourceDSAPI
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
+from bi_api_lib.aio.aiohttp_wrappers import DSAPIRequest
+from bi_api_lib.app.data_api.resources.base import (
+    BaseView,
+    RequiredResourceDSAPI,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,9 +27,9 @@ def json_body_middleware() -> AIOHTTPMiddleware:
         view_cls = request.match_info.handler
 
         if (
-                RequiredResourceDSAPI.JSON_REQUEST in dl_request.required_resources
-                # TODO FIX: ensure methods
-                and request.method.lower() in ('post', 'put', 'patch', 'delete')
+            RequiredResourceDSAPI.JSON_REQUEST in dl_request.required_resources
+            # TODO FIX: ensure methods
+            and request.method.lower() in ("post", "put", "patch", "delete")
         ):
             # TODO CONSIDER: Maybe check content type first
             try:
@@ -44,12 +47,10 @@ def json_body_middleware() -> AIOHTTPMiddleware:
                 request_path=url,
                 request_body=dbg_body,
             )
-            LOGGER.debug(
-                'Body for %s: %s...',
-                url, dbg_body[:100],
-                extra=extra)
+            LOGGER.debug("Body for %s: %s...", url, dbg_body[:100], extra=extra)
 
         if isinstance(view_cls, type) and issubclass(view_cls, BaseView):
+
             async def json_is_ready():
                 raise Exception("Direct usage of request.json() is prohibited. Use DLRequest.json_body")
 

@@ -1,19 +1,26 @@
 from __future__ import annotations
 
-from typing import Callable, Sequence, Optional
+from typing import (
+    Callable,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL
 from bi_core.mdb_utils import MDBDomainManager
+from bi_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+)
 
 from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 
 
 class ConnectionPostgreSQLBase(ClassicConnectionSQL):
     has_schema = True
-    default_schema_name = 'public'
+    default_schema_name = "public"
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
@@ -23,19 +30,18 @@ class ConnectionPostgreSQLBase(ClassicConnectionSQL):
 
     @staticmethod
     def _get_effective_enforce_collate(
-        enforce_collate: PGEnforceCollateMode, multihosts: Sequence[str],
+        enforce_collate: PGEnforceCollateMode,
+        multihosts: Sequence[str],
     ) -> PGEnforceCollateMode:
         if enforce_collate == PGEnforceCollateMode.auto:
             mdb_man = MDBDomainManager.from_env()
             is_mdb = any(mdb_man.host_in_mdb(host) for host in multihosts)
-            enforce_collate = (
-                PGEnforceCollateMode.on
-                if is_mdb
-                else PGEnforceCollateMode.off)
+            enforce_collate = PGEnforceCollateMode.on if is_mdb else PGEnforceCollateMode.off
         return enforce_collate
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         if not self.db_name:
             return []

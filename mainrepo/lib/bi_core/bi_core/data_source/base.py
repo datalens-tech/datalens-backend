@@ -3,25 +3,42 @@ from __future__ import annotations
 import abc
 import logging
 from typing import (
-    TYPE_CHECKING, Any, Callable, ClassVar, Iterable,
-    NamedTuple, Optional, Type,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Iterable,
+    NamedTuple,
+    Optional,
+    Type,
 )
 
 import attr
-from bi_core.us_connection import get_connection_class
 
-from bi_constants.enums import ConnectionType, CreateDSFrom, JoinType
-
-from bi_core.base_models import ConnectionRef, SourceFilterSpec
+from bi_constants.enums import (
+    ConnectionType,
+    CreateDSFrom,
+    JoinType,
+)
+from bi_core.base_models import (
+    ConnectionRef,
+    SourceFilterSpec,
+)
 from bi_core.data_source_spec.base import DataSourceSpec
-from bi_core.db import SchemaColumn, SchemaInfo, IndexInfo, get_type_transformer
+from bi_core.db import (
+    IndexInfo,
+    SchemaColumn,
+    SchemaInfo,
+    get_type_transformer,
+)
+from bi_core.us_connection import get_connection_class
 from bi_core.us_connection_base import ConnectionBase
 
 if TYPE_CHECKING:
-    from bi_core.db.conversion_base import TypeTransformer
-    from bi_core.us_manager.local_cache import USEntryBuffer
-    from bi_core.services_registry.top_level import ServicesRegistry
     from bi_core.connection_executors.sync_base import SyncConnExecutorBase
+    from bi_core.db.conversion_base import TypeTransformer
+    from bi_core.services_registry.top_level import ServicesRegistry
+    from bi_core.us_manager.local_cache import USEntryBuffer
 
 
 LOGGER = logging.getLogger(__name__)
@@ -50,7 +67,7 @@ class DataSource(metaclass=abc.ABCMeta):
     store_raw_schema: ClassVar[bool] = True
     preview_enabled: ClassVar[bool] = True
     default_chunk_row_count: ClassVar[int] = 10000
-    chunk_size_bytes: ClassVar[int] = 3 * 1024 ** 2
+    chunk_size_bytes: ClassVar[int] = 3 * 1024**2
 
     conn_type: ClassVar[ConnectionType]  # TODO unbind DataSource and Connection classes BI-4083
 
@@ -176,13 +193,15 @@ class DataSource(metaclass=abc.ABCMeta):
         return None
 
     def source_exists(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
-            force_refresh: bool = False,
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        force_refresh: bool = False,
     ) -> bool:
         return True
 
     def get_db_info(
-            self, conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> DbInfo:
         return self.get_cached_db_info()
 

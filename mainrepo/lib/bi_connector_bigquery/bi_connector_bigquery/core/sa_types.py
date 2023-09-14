@@ -1,8 +1,11 @@
 import sqlalchemy_bigquery._types as bq_types
 
-from bi_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY as CT_BQ
-from bi_core.db.sa_types_base import make_native_type, simple_instantiator
+from bi_core.db.sa_types_base import (
+    make_native_type,
+    simple_instantiator,
+)
 
+from bi_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY as CT_BQ
 
 SQLALCHEMY_BIGQUERY_TYPES = {
     make_native_type(CT_BQ, bq_types.DATE): simple_instantiator(bq_types.DATE),

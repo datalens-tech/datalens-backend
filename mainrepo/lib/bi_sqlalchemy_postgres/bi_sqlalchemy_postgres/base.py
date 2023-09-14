@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import datetime
+from typing import (
+    Any,
+    Optional,
+)
 
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2 as UPSTREAM
 from sqlalchemy.sql import sqltypes
-from typing import Optional, Any
 
 from bi_sqlalchemy_common.base import CompilerPrettyMixin
 
@@ -20,21 +23,17 @@ class CITEXT(sqltypes.TEXT):
 
     __visit_name__ = "CITEXT"
 
-    def coerce_compared_value(
-        self, op: Optional[Any], value: Any
-    ) -> sqltypes.TypeEngine[Any]:
+    def coerce_compared_value(self, op: Optional[Any], value: Any) -> sqltypes.TypeEngine[Any]:
         return self
 
 
 class BIPGCompilerBasic(UPSTREAM.statement_compiler):
-    """ Necessary overrides """
+    """Necessary overrides"""
 
     def _add_collate(self, result):
         collate = self.dialect.enforce_collate
         if collate:
-            return '%s COLLATE %s' % (
-                result,
-                self.dialect.identifier_preparer.quote(collate))
+            return "%s COLLATE %s" % (result, self.dialect.identifier_preparer.quote(collate))
         return result
 
     def visit_ilike_op_binary(self, *args, **kwargs):
@@ -49,7 +48,7 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
         if add_grouping_collate:
             result = grouping.element._compiler_dispatch(self, **kwargs)
             result = self._add_collate(result)
-            return '(%s)' % (result,)
+            return "(%s)" % (result,)
         return super().visit_grouping(grouping, asfrom=asfrom, **kwargs)
 
     def _func_with_collate(self, func, **kwargs):
@@ -82,11 +81,11 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
             if isinstance(value, datetime.datetime):
                 # This should've been `type_.timezone` but it didn't go well
                 if value.tzinfo is not None:
-                    type_name = 'timestamp with time zone'
+                    type_name = "timestamp with time zone"
                     value = value.astimezone(datetime.timezone.utc)
                     value = value.replace(tzinfo=None)
                 else:
-                    type_name = 'timestamp'
+                    type_name = "timestamp"
                     if value.tzinfo is not None:
                         value = value.replace(tzinfo=None)
                 return "'{}'::{}".format(value.isoformat(), type_name)
@@ -95,7 +94,7 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
 
 
 class BIPGCompiler(BIPGCompilerBasic, UPSTREAM.statement_compiler, CompilerPrettyMixin):
-    """ Added prettification """
+    """Added prettification"""
 
     def limit_clause(self, select, **kw):
         sup = super().limit_clause(select, **kw)
@@ -103,17 +102,16 @@ class BIPGCompiler(BIPGCompilerBasic, UPSTREAM.statement_compiler, CompilerPrett
 
 
 class BICustomPGTypeCompiler(UPSTREAM.type_compiler):
-
     def visit_CITEXT(self, type_, **kw):
         return "CITEXT"
 
 
 bi_pg_ischema_names = UPSTREAM.ischema_names.copy()
-bi_pg_ischema_names.update({'citext': CITEXT})
+bi_pg_ischema_names.update({"citext": CITEXT})
 
 
 class BIPGDialectBasic(UPSTREAM):
-    """ ... """
+    """..."""
 
     def __init__(self, enforce_collate=None, **kwargs):
         # Side note: due to how sqlalchemy determines dialect arguments,

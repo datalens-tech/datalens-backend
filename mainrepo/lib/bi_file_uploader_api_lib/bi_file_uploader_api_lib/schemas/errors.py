@@ -3,12 +3,12 @@ from __future__ import annotations
 import marshmallow as ma
 
 from bi_constants.exc import GLOBAL_ERR_PREFIX
-
 from bi_core.marshmallow import ErrorCodeField
-
-from bi_file_uploader_lib.enums import ErrorLevel, ErrorObjectKind
-
 from bi_file_uploader_api_lib.schemas.base import BaseRequestSchema
+from bi_file_uploader_lib.enums import (
+    ErrorLevel,
+    ErrorObjectKind,
+)
 
 
 class ErrorInfoSchema(BaseRequestSchema):

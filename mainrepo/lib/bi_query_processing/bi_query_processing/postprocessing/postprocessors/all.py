@@ -1,15 +1,27 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Callable, Iterable, Optional, Sequence, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Iterable,
+    Optional,
+    Sequence,
+)
 
 from bi_constants.enums import BIType
-
 from bi_formula.core.datatype import DataType
-
-from bi_query_processing.postprocessing.postprocessors.geo import postprocess_geopoint, postprocess_geopolygon
+from bi_query_processing.postprocessing.postprocessors.datetime import (
+    make_postprocess_datetimetz,
+    postprocess_datetime,
+    postprocess_genericdatetime,
+)
+from bi_query_processing.postprocessing.postprocessors.geo import (
+    postprocess_geopoint,
+    postprocess_geopolygon,
+)
 from bi_query_processing.postprocessing.postprocessors.markup import postprocess_markup
-from bi_query_processing.postprocessing.postprocessors.datetime import postprocess_datetime, postprocess_genericdatetime, make_postprocess_datetimetz
 from bi_query_processing.postprocessing.primitives import PostprocessedData
 
 if TYPE_CHECKING:
@@ -64,16 +76,9 @@ def get_type_processor(field_type_info: Optional[DetailedType]) -> Callable[[Any
 
 # TODO FIX: Turn into generator when response streaming become real
 def postprocess_data(
-        data: Iterable[Sequence[Any]],
-        field_types: Iterable[Optional[DetailedType]],
+    data: Iterable[Sequence[Any]],
+    field_types: Iterable[Optional[DetailedType]],
 ) -> PostprocessedData:
-    columns_processors = [
-        get_type_processor(ft)
-        for ft in field_types]
+    columns_processors = [get_type_processor(ft) for ft in field_types]
 
-    return tuple(
-        tuple(
-            processor(col)
-            for processor, col in zip(columns_processors, row))
-        for row in data
-    )
+    return tuple(tuple(processor(col) for processor, col in zip(columns_processors, row)) for row in data)

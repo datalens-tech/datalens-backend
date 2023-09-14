@@ -1,8 +1,10 @@
 import sqlalchemy_bigquery._types as bq_types
 
 from bi_constants.enums import BIType
-
-from bi_core.db.conversion_base import TypeTransformer, make_native_type
+from bi_core.db.conversion_base import (
+    TypeTransformer,
+    make_native_type,
+)
 
 from bi_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
 

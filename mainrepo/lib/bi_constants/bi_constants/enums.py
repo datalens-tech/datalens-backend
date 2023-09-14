@@ -4,12 +4,27 @@ Common enums used in API and core internals of BI projects
 
 from __future__ import annotations
 
-from enum import Enum, IntEnum, auto, unique
-from typing import Generic, Optional, Type, TypeVar, Union, cast
+from enum import (
+    Enum,
+    IntEnum,
+    auto,
+    unique,
+)
+from typing import (
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
-from dynamic_enum import DynamicEnum, AutoEnumValue
+from dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 
-_ENUM_TYPE = TypeVar('_ENUM_TYPE', bound=Enum)
+_ENUM_TYPE = TypeVar("_ENUM_TYPE", bound=Enum)
 
 
 class _Normalizable(Generic[_ENUM_TYPE]):
@@ -21,7 +36,7 @@ class _Normalizable(Generic[_ENUM_TYPE]):
 
 
 @unique
-class BIType(_Normalizable['BIType'], Enum):
+class BIType(_Normalizable["BIType"], Enum):
     string = auto()
     integer = auto()
     float = auto()
@@ -59,153 +74,153 @@ class ConnectionType(DynamicEnum):
 
 @unique
 class QueryBlockPlacementType(Enum):
-    root = 'root'
-    after = 'after'
-    dispersed_after = 'dispersed_after'
+    root = "root"
+    after = "after"
+    dispersed_after = "dispersed_after"
 
 
 @unique
 class FieldRole(Enum):
-    row = 'row'
-    measure = 'measure'  # TODO: Deprecate
-    info = 'info'
-    order_by = 'order_by'
-    filter = 'filter'
-    parameter = 'parameter'
-    distinct = 'distinct'
-    range = 'range'
-    total = 'total'
-    template = 'template'
-    tree = 'tree'
+    row = "row"
+    measure = "measure"  # TODO: Deprecate
+    info = "info"
+    order_by = "order_by"
+    filter = "filter"
+    parameter = "parameter"
+    distinct = "distinct"
+    range = "range"
+    total = "total"
+    template = "template"
+    tree = "tree"
 
 
 @unique
 class FieldVisibility(Enum):
-    visible = 'visible'
-    hidden = 'hidden'
+    visible = "visible"
+    hidden = "hidden"
 
 
 @unique
 class PivotRole(Enum):
-    pivot_row = 'pivot_row'
-    pivot_column = 'pivot_column'
-    pivot_measure = 'pivot_measure'
-    pivot_annotation = 'pivot_annotation'
-    pivot_info = 'pivot_info'
+    pivot_row = "pivot_row"
+    pivot_column = "pivot_column"
+    pivot_measure = "pivot_measure"
+    pivot_annotation = "pivot_annotation"
+    pivot_info = "pivot_info"
 
 
 @unique
 class PivotHeaderRole(Enum):
-    data = 'data'
-    total = 'total'
+    data = "data"
+    total = "total"
 
 
 @unique
 class PivotItemType(Enum):
-    stream_item = 'stream_item'
-    measure_name = 'measure_name'
-    dimension_name = 'dimension_name'
+    stream_item = "stream_item"
+    measure_name = "measure_name"
+    dimension_name = "dimension_name"
 
 
 @unique
 class LegendItemType(Enum):
-    field = 'field'
-    measure_name = 'measure_name'
-    dimension_name = 'dimension_name'
-    placeholder = 'placeholder'
+    field = "field"
+    measure_name = "measure_name"
+    dimension_name = "dimension_name"
+    placeholder = "placeholder"
 
 
 class QueryItemRefType(Enum):
-    id = 'id'
-    title = 'title'
-    measure_name = 'measure_name'
-    dimension_name = 'dimension_name'
-    placeholder = 'placeholder'
+    id = "id"
+    title = "title"
+    measure_name = "measure_name"
+    dimension_name = "dimension_name"
+    placeholder = "placeholder"
 
 
 @unique
 class ParameterValueConstraintType(Enum):
-    all = 'all'
-    range = 'range'
-    set = 'set'
+    all = "all"
+    range = "range"
+    set = "set"
 
 
 @unique
-class CalcMode(_Normalizable['CalcMode'], Enum):
-    direct = 'direct'
-    formula = 'formula'
-    parameter = 'parameter'
+class CalcMode(_Normalizable["CalcMode"], Enum):
+    direct = "direct"
+    formula = "formula"
+    parameter = "parameter"
 
 
 @unique
 class ConditionPartCalcMode(Enum):
-    direct = 'direct'
-    formula = 'formula'
-    result_field = 'result_field'
+    direct = "direct"
+    formula = "formula"
+    result_field = "result_field"
 
 
 @unique
-class AggregationFunction(_Normalizable['AggregationFunction'], Enum):
-    none = 'none'
-    sum = 'sum'
-    avg = 'avg'
-    min = 'min'
-    max = 'max'
-    count = 'count'
-    countunique = 'countunique'
+class AggregationFunction(_Normalizable["AggregationFunction"], Enum):
+    none = "none"
+    sum = "sum"
+    avg = "avg"
+    min = "min"
+    max = "max"
+    count = "count"
+    countunique = "countunique"
     # TODO: 'any'
 
 
 @unique
 class BinaryJoinOperator(Enum):
-    gt = 'gt'
-    lt = 'lt'
-    gte = 'gte'
-    lte = 'lte'
-    eq = 'eq'
-    ne = 'ne'
+    gt = "gt"
+    lt = "lt"
+    gte = "gte"
+    lte = "lte"
+    eq = "eq"
+    ne = "ne"
 
 
 @unique
-class FieldType(_Normalizable['FieldType'], Enum):
-    DIMENSION = 'DIMENSION'
-    MEASURE = 'MEASURE'
+class FieldType(_Normalizable["FieldType"], Enum):
+    DIMENSION = "DIMENSION"
+    MEASURE = "MEASURE"
 
 
 @unique
 class WhereClauseOperation(Enum):
     # unary
-    ISNULL = 'isnull'
-    ISNOTNULL = 'isnotnull'
+    ISNULL = "isnull"
+    ISNOTNULL = "isnotnull"
 
     # binary
-    GT = 'gt'
-    LT = 'lt'
-    GTE = 'gte'
-    LTE = 'lte'
-    EQ = 'eq'
-    NE = 'ne'
-    STARTSWITH = 'startswith'
-    ISTARTSWITH = 'istartswith'
-    ENDSWITH = 'endswith'
-    IENDSWITH = 'iendswith'
-    CONTAINS = 'contains'
-    ICONTAINS = 'icontains'
-    NOTCONTAINS = 'notcontains'
-    NOTICONTAINS = 'noticontains'
-    LENEQ = 'leneq'
-    LENNE = 'lenne'
-    LENGT = 'lengt'
-    LENGTE = 'lengte'
-    LENLT = 'lenlt'
-    LENLTE = 'lenlte'
+    GT = "gt"
+    LT = "lt"
+    GTE = "gte"
+    LTE = "lte"
+    EQ = "eq"
+    NE = "ne"
+    STARTSWITH = "startswith"
+    ISTARTSWITH = "istartswith"
+    ENDSWITH = "endswith"
+    IENDSWITH = "iendswith"
+    CONTAINS = "contains"
+    ICONTAINS = "icontains"
+    NOTCONTAINS = "notcontains"
+    NOTICONTAINS = "noticontains"
+    LENEQ = "leneq"
+    LENNE = "lenne"
+    LENGT = "lengt"
+    LENGTE = "lengte"
+    LENLT = "lenlt"
+    LENLTE = "lenlte"
 
     # binary with list
-    IN = 'in'
-    NIN = 'nin'
+    IN = "in"
+    NIN = "nin"
 
     # ternary
-    BETWEEN = 'between'
+    BETWEEN = "between"
 
 
 class CreateDSFrom(DynamicEnum):
@@ -229,13 +244,13 @@ class ConnectionState(IntEnum):
 
 
 class DataSourceRole(Enum):
-    origin = 'origin'
-    sample = 'sample'
-    materialization = 'materialization'
+    origin = "origin"
+    sample = "sample"
+    materialization = "materialization"
 
 
 class DataSourceCollectionType(Enum):
-    collection = 'collection'
+    collection = "collection"
 
 
 class DataSourceCreatedVia(DynamicEnum):
@@ -243,81 +258,81 @@ class DataSourceCreatedVia(DynamicEnum):
 
 
 class RLSSubjectType(Enum):
-    user = 'user'  # `{value}: {login}` meaning `value allowed for user {login}`
-    all = 'all'  # `{value}: *` meaning 'value allowed for all subjects'
-    userid = 'userid'  # 'userid: userid' meaning 'filter by `field = {userid}`'
-    unknown = 'unknown'  # placeholder, should not be normally used.
-    notfound = 'notfound'  # subject that couldn't be found in subject resolver
+    user = "user"  # `{value}: {login}` meaning `value allowed for user {login}`
+    all = "all"  # `{value}: *` meaning 'value allowed for all subjects'
+    userid = "userid"  # 'userid: userid' meaning 'filter by `field = {userid}`'
+    unknown = "unknown"  # placeholder, should not be normally used.
+    notfound = "notfound"  # subject that couldn't be found in subject resolver
 
 
 class RLSPatternType(Enum):
-    value = 'user'
-    all = 'all'
-    userid = 'userid'
+    value = "user"
+    all = "all"
+    userid = "userid"
 
 
 class QueryType(Enum):
-    internal = 'internal'
-    external = 'external'
+    internal = "internal"
+    external = "external"
 
 
 class JoinConditionType(Enum):
-    binary = 'binary'
+    binary = "binary"
 
 
 @unique
 class JoinType(Enum):
-    inner = 'inner'
-    left = 'left'
-    right = 'right'
-    full = 'full'
+    inner = "inner"
+    left = "left"
+    right = "right"
+    full = "full"
 
 
 @unique
-class ManagedBy(_Normalizable['ManagedBy'], Enum):
-    user = 'user'
-    feature = 'feature'
-    compiler_runtime = 'compiler_runtime'
+class ManagedBy(_Normalizable["ManagedBy"], Enum):
+    user = "user"
+    feature = "feature"
+    compiler_runtime = "compiler_runtime"
 
 
 @unique
 class USAuthMode(Enum):
-    master = 'master'
-    public = 'public'
-    regular = 'regular'
+    master = "master"
+    public = "public"
+    regular = "regular"
 
 
 @unique
 class ComponentType(Enum):
-    data_source = 'data_source'
-    source_avatar = 'source_avatar'
-    avatar_relation = 'avatar_relation'
-    field = 'field'
-    obligatory_filter = 'obligatory_filter'
-    result_schema = 'result_schema'
+    data_source = "data_source"
+    source_avatar = "source_avatar"
+    avatar_relation = "avatar_relation"
+    field = "field"
+    obligatory_filter = "obligatory_filter"
+    result_schema = "result_schema"
 
 
 @unique
 class TopLevelComponentId(Enum):
-    result_schema = '__result_schema__'
+    result_schema = "__result_schema__"
 
 
 @unique
 class ComponentErrorLevel(Enum):
-    error = 'error'
-    warning = 'warning'
+    error = "error"
+    warning = "warning"
 
 
 @unique
 class OrderDirection(Enum):
-    asc = 'asc'
-    desc = 'desc'
+    asc = "asc"
+    desc = "desc"
 
 
 @unique
 class RangeType(Enum):
-    min = 'min'
-    max = 'max'
+    min = "min"
+    max = "max"
 
 
 class SelectorType(Enum):
@@ -333,16 +348,16 @@ class ProcessorType(Enum):
 
 @unique
 class RawSQLLevel(Enum):
-    off = 'off'  # no raw sql allowed
-    subselect = 'subselect'  # wrapped raw SQL with `edit` permissions
-    dashsql = 'dashsql'  # unwrapped raw SQL with `execute` permissions
+    off = "off"  # no raw sql allowed
+    subselect = "subselect"  # wrapped raw SQL with `edit` permissions
+    dashsql = "dashsql"  # unwrapped raw SQL with `execute` permissions
 
 
 @unique
 class NotificationStatus(Enum):
-    OK = 'OK'
-    WARN = 'WARN'
-    CRIT = 'CRIT'
+    OK = "OK"
+    WARN = "WARN"
+    CRIT = "CRIT"
 
 
 class IndexKind(Enum):
@@ -357,17 +372,17 @@ class RedisInstanceKind(Enum):
 
 
 class FileProcessingStatus(Enum):
-    in_progress = 'in_progress'
-    ready = 'ready'
-    failed = 'failed'
-    expired = 'expired'
+    in_progress = "in_progress"
+    ready = "ready"
+    failed = "failed"
+    expired = "expired"
 
 
 @unique
 class NotificationLevel(Enum):
-    info = 'info'
-    warning = 'warning'
-    critical = 'critical'
+    info = "info"
+    warning = "warning"
+    critical = "critical"
 
 
 class NotificationType(DynamicEnum):
@@ -375,5 +390,5 @@ class NotificationType(DynamicEnum):
 
 
 class ConnectorAvailability(Enum):
-    free = 'free'
-    whitelist = 'whitelist'
+    free = "free"
+    whitelist = "whitelist"

@@ -2,29 +2,40 @@ from typing import cast
 
 import attr
 
-import bi_query_processing.exc
-from bi_constants.enums import (
-    FieldRole, PivotRole, FieldType, PivotItemType,
-)
-from bi_constants.internal_constants import MEASURE_NAME_TITLE, DIMENSION_NAME_TITLE
-
-from bi_core.us_dataset import Dataset
-
-from bi_query_processing.legend.field_legend import (
-    Legend, MeasureNameObjSpec, LegendItem,
-)
+from bi_api_lib.query.formalization.id_gen import IdGenerator
 from bi_api_lib.query.formalization.pivot_legend import (
-    PivotLegend, PivotLegendItem,
-    PivotRoleSpec, PivotDimensionRoleSpec, PivotAnnotationRoleSpec,
+    PivotAnnotationRoleSpec,
+    PivotDimensionRoleSpec,
+    PivotLegend,
+    PivotLegendItem,
     PivotMeasureRoleSpec,
+    PivotRoleSpec,
 )
 from bi_api_lib.query.formalization.raw_pivot_specs import (
-    RawPivotSpec, RawPivotLegendItem,
-    RawPivotRoleSpec, RawAnnotationPivotRoleSpec, RawDimensionPivotRoleSpec,
+    RawAnnotationPivotRoleSpec,
+    RawDimensionPivotRoleSpec,
+    RawPivotLegendItem,
     RawPivotMeasureRoleSpec,
+    RawPivotRoleSpec,
+    RawPivotSpec,
 )
-from bi_api_lib.query.formalization.id_gen import IdGenerator
-
+from bi_constants.enums import (
+    FieldRole,
+    FieldType,
+    PivotItemType,
+    PivotRole,
+)
+from bi_constants.internal_constants import (
+    DIMENSION_NAME_TITLE,
+    MEASURE_NAME_TITLE,
+)
+from bi_core.us_dataset import Dataset
+import bi_query_processing.exc
+from bi_query_processing.legend.field_legend import (
+    Legend,
+    LegendItem,
+    MeasureNameObjSpec,
+)
 
 DIMENSION_ROLES = {PivotRole.pivot_row, PivotRole.pivot_column}
 MEASURE_ROLES = {PivotRole.pivot_measure}
@@ -50,10 +61,7 @@ class PivotFormalizerBase:
         assert mname_legend_item_ids
         mname_legend_item_id = next(iter(mname_legend_item_ids))
 
-        mname_cnt = len([
-            item for item in pivot_legend.items
-            if item.item_type == PivotItemType.measure_name
-        ])
+        mname_cnt = len([item for item in pivot_legend.items if item.item_type == PivotItemType.measure_name])
 
         if row_cnt == 0 or column_cnt == 0:
             # Patch one-sided cases
@@ -64,21 +72,25 @@ class PivotFormalizerBase:
                 # One measure or mnames not yet used,
                 # so it is safe to add mnames to the side that's empty
                 if column_cnt == 0:  # Columns have priority if both are missing
-                    pivot_legend.add_item(PivotLegendItem(
-                        pivot_item_id=id_gen.generate_id(),
-                        legend_item_ids=[mname_legend_item_id],
-                        role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
-                        item_type=PivotItemType.measure_name,
-                        title=MEASURE_NAME_TITLE,
-                    ))
+                    pivot_legend.add_item(
+                        PivotLegendItem(
+                            pivot_item_id=id_gen.generate_id(),
+                            legend_item_ids=[mname_legend_item_id],
+                            role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
+                            item_type=PivotItemType.measure_name,
+                            title=MEASURE_NAME_TITLE,
+                        )
+                    )
                 elif row_cnt == 0:
-                    pivot_legend.add_item(PivotLegendItem(
-                        pivot_item_id=id_gen.generate_id(),
-                        legend_item_ids=[mname_legend_item_id],
-                        role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row),
-                        item_type=PivotItemType.measure_name,
-                        title=MEASURE_NAME_TITLE,
-                    ))
+                    pivot_legend.add_item(
+                        PivotLegendItem(
+                            pivot_item_id=id_gen.generate_id(),
+                            legend_item_ids=[mname_legend_item_id],
+                            role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row),
+                            item_type=PivotItemType.measure_name,
+                            title=MEASURE_NAME_TITLE,
+                        )
+                    )
             elif measure_cnt > 1:  # and mname_cnt > 0
                 # Can't add another mnames.
                 # Must use a dummy dimension
@@ -87,18 +99,17 @@ class PivotFormalizerBase:
         dname_legend_item_ids = self._legend.get_dimension_name_legend_item_ids()
         assert dname_legend_item_ids
         dname_legend_item_id = next(iter(dname_legend_item_ids))
-        dname_cnt = len([
-            item for item in pivot_legend.items
-            if item.item_type == PivotItemType.dimension_name
-        ])
+        dname_cnt = len([item for item in pivot_legend.items if item.item_type == PivotItemType.dimension_name])
         if dname_cnt == 0:
-            pivot_legend.add_item(PivotLegendItem(
-                pivot_item_id=id_gen.generate_id(),
-                legend_item_ids=[dname_legend_item_id],
-                role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_info),
-                item_type=PivotItemType.dimension_name,
-                title=DIMENSION_NAME_TITLE,
-            ))
+            pivot_legend.add_item(
+                PivotLegendItem(
+                    pivot_item_id=id_gen.generate_id(),
+                    legend_item_ids=[dname_legend_item_id],
+                    role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_info),
+                    item_type=PivotItemType.dimension_name,
+                    title=DIMENSION_NAME_TITLE,
+                )
+            )
 
     def validate_pivot_legend(self, pivot_legend: PivotLegend) -> None:
         measures = pivot_legend.list_for_role(PivotRole.pivot_measure)
@@ -127,8 +138,10 @@ class PivotFormalizerBase:
         if measure_sorts_by_column > 1 or measure_sorts_by_row > 1:
             # Multiple sort along the same axis
             raise bi_query_processing.exc.PivotSortingMultipleColumnsOrRows()
-        if measure_cnt > 1 and ((mname_role == PivotRole.pivot_row and measure_sorts_by_column > 0) or
-                                (mname_role == PivotRole.pivot_column and measure_sorts_by_row > 0)):
+        if measure_cnt > 1 and (
+            (mname_role == PivotRole.pivot_row and measure_sorts_by_column > 0)
+            or (mname_role == PivotRole.pivot_column and measure_sorts_by_row > 0)
+        ):
             # Multiple measures, but some sorts are directed across them, which makes no sense
             raise bi_query_processing.exc.PivotSortingAgainstMultipleMeasures()
 
@@ -164,19 +177,16 @@ class PivotFormalizer(PivotFormalizerBase):
                 target_legend_item_ids=raw_pivot_role_spec.target_legend_item_ids,
             )
         else:
-            raise ValueError(f'Unknown pivot role: {raw_pivot_role_spec.role}')
+            raise ValueError(f"Unknown pivot role: {raw_pivot_role_spec.role}")
 
         return role_spec
 
     def make_item_type(self, legend_items: list[LegendItem], role: PivotRole) -> PivotItemType:
-        is_mname_set = {
-            isinstance(legend_item.obj, MeasureNameObjSpec)
-            for legend_item in legend_items
-        }
+        is_mname_set = {isinstance(legend_item.obj, MeasureNameObjSpec) for legend_item in legend_items}
         assert len(is_mname_set) > 0
         if len(is_mname_set) > 1:
             raise bi_query_processing.exc.PivotItemsIncompatibleError(
-                f'Pivot items have incompatible types in the same {role.name} role'
+                f"Pivot items have incompatible types in the same {role.name} role"
             )
         is_mname = next(iter(is_mname_set))
         if is_mname:
@@ -185,15 +195,15 @@ class PivotFormalizer(PivotFormalizerBase):
 
     def make_item_title(self, legend_items: list[LegendItem], role: PivotRole) -> str:
         title_set = {
-            legend_item.title for legend_item in legend_items
+            legend_item.title
+            for legend_item in legend_items
             # ignore templates for totals
             if legend_item.role_spec.role != FieldRole.template
         }
         assert len(title_set) > 0
         if len(title_set) > 1:
             raise bi_query_processing.exc.PivotItemsIncompatibleError(
-                f'Pivot items have incompatible titles: {",".join(sorted(title_set))} '
-                f'in the same {role.name} role'
+                f'Pivot items have incompatible titles: {",".join(sorted(title_set))} ' f"in the same {role.name} role"
             )
 
         return next(iter(title_set))
@@ -201,18 +211,23 @@ class PivotFormalizer(PivotFormalizerBase):
     def make_pivot_item(self, raw_pivot_item: RawPivotLegendItem, id_gen: IdGenerator) -> PivotLegendItem:
         role_spec = self.make_pivot_role_spec(raw_pivot_item.role_spec)
         target_legend_items = [
-            self._legend.get_item(legend_item_id)
-            for legend_item_id in raw_pivot_item.legend_item_ids
+            self._legend.get_item(legend_item_id) for legend_item_id in raw_pivot_item.legend_item_ids
         ]
 
         has_measures = any(item.field_type == FieldType.MEASURE for item in target_legend_items)
         has_dimensions = any(item.field_type == FieldType.DIMENSION for item in target_legend_items)
         if has_measures and role_spec.role in DIMENSION_ROLES:
-            raise bi_query_processing.exc.PivotInvalidRoleLegendError('Measure field cannot be used as a pivot dimension')
+            raise bi_query_processing.exc.PivotInvalidRoleLegendError(
+                "Measure field cannot be used as a pivot dimension"
+            )
         if has_dimensions and role_spec.role in MEASURE_ROLES:
-            raise bi_query_processing.exc.PivotInvalidRoleLegendError('Dimension field cannot be used as a pivot measure')
+            raise bi_query_processing.exc.PivotInvalidRoleLegendError(
+                "Dimension field cannot be used as a pivot measure"
+            )
         if not self._allow_dimension_annotations and has_dimensions and role_spec.role in ANNOTATION_ROLES:
-            raise bi_query_processing.exc.PivotInvalidRoleLegendError('Dimension field cannot be used as a pivot annotation')
+            raise bi_query_processing.exc.PivotInvalidRoleLegendError(
+                "Dimension field cannot be used as a pivot annotation"
+            )
 
         item_type = self.make_item_type(target_legend_items, role=raw_pivot_item.role_spec.role)
 
@@ -227,16 +242,13 @@ class PivotFormalizer(PivotFormalizerBase):
             legend_item_ids=raw_pivot_item.legend_item_ids,
             role_spec=role_spec,
             item_type=item_type,
-            title=title
+            title=title,
         )
         return item
 
     def make_pivot_legend(self, raw_pivot_spec: RawPivotSpec) -> PivotLegend:
         id_gen = IdGenerator()
-        items = [
-            self.make_pivot_item(raw_pivot_item, id_gen=id_gen)
-            for raw_pivot_item in raw_pivot_spec.structure
-        ]
+        items = [self.make_pivot_item(raw_pivot_item, id_gen=id_gen) for raw_pivot_item in raw_pivot_spec.structure]
         pivot_legend = PivotLegend(items=items)
 
         self.patch_pivot_legend(pivot_legend, id_gen=id_gen)

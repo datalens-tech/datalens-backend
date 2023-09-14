@@ -1,13 +1,15 @@
 import logging
+from typing import (
+    Any,
+    ClassVar,
+)
 
-import attr
-from typing import ClassVar, Any
-
-import botocore.session
-import botocore.client
-from aiohttp import web
-from aiobotocore.session import get_session
 from aiobotocore.client import AioBaseClient
+from aiobotocore.session import get_session
+from aiohttp import web
+import attr
+import botocore.client
+import botocore.session
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +42,7 @@ class S3Service:
     async def initialize(self) -> None:
         LOGGER.info("Initializing S3 service")
         self._client_init_params = dict(
-            service_name='s3',
+            service_name="s3",
             aws_access_key_id=self._access_key_id,
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
@@ -55,7 +57,7 @@ class S3Service:
         await self.client.close()
 
     @classmethod
-    def get_app_instance(cls, app: web.Application) -> 'S3Service':
+    def get_app_instance(cls, app: web.Application) -> "S3Service":
         service = app.get(cls.APP_KEY, None)
         if service is None:
             raise ValueError("S3BucketService was not initiated for application")

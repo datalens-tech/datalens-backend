@@ -3,7 +3,10 @@ from typing import Optional
 
 import attr
 
-from bi_task_processor.task import TaskName, BaseTaskMeta
+from bi_task_processor.task import (
+    BaseTaskMeta,
+    TaskName,
+)
 
 
 class TaskExecutionMode(enum.Enum):
@@ -14,7 +17,7 @@ class TaskExecutionMode(enum.Enum):
 
 @attr.s
 class DownloadGSheetTask(BaseTaskMeta):
-    name = TaskName('download_gsheet')
+    name = TaskName("download_gsheet")
 
     file_id: str = attr.ib()
     authorized: bool = attr.ib()
@@ -27,7 +30,7 @@ class DownloadGSheetTask(BaseTaskMeta):
 
 @attr.s
 class ParseFileTask(BaseTaskMeta):
-    name = TaskName('parse_file')
+    name = TaskName("parse_file")
 
     file_id: str = attr.ib()
     source_id: Optional[str] = attr.ib(default=None)
@@ -41,7 +44,7 @@ class ParseFileTask(BaseTaskMeta):
 
 @attr.s
 class ProcessExcelTask(BaseTaskMeta):
-    name = TaskName('process_excel')
+    name = TaskName("process_excel")
 
     file_id: str = attr.ib()
 
@@ -58,7 +61,7 @@ class SaveSourceTask(BaseTaskMeta):
     src_source_id == dst_source_id when the source is being saved for the 1st time
     """
 
-    name = TaskName('save_source')
+    name = TaskName("save_source")
 
     tenant_id: str = attr.ib()
     file_id: str = attr.ib()
@@ -71,7 +74,7 @@ class SaveSourceTask(BaseTaskMeta):
 
 @attr.s
 class DeleteFileTask(BaseTaskMeta):
-    name = TaskName('delete_file')
+    name = TaskName("delete_file")
 
     s3_filename: str = attr.ib()
     preview_id: Optional[str] = attr.ib(default=None)
@@ -79,25 +82,25 @@ class DeleteFileTask(BaseTaskMeta):
 
 @attr.s
 class CleanupTenantTask(BaseTaskMeta):
-    name = TaskName('cleanup')
+    name = TaskName("cleanup")
 
     tenant_id: str = attr.ib()
 
 
 @attr.s
 class CleanS3LifecycleRulesTask(BaseTaskMeta):
-    name = TaskName('regular_bucket_lifecycle_cleanup')
+    name = TaskName("regular_bucket_lifecycle_cleanup")
 
 
 @attr.s
 class CleanupTenantFilePreviewsTask(BaseTaskMeta):
-    name = TaskName('cleanup_previews')
+    name = TaskName("cleanup_previews")
 
     tenant_id: str = attr.ib()
 
 
 @attr.s
 class RenameTenantFilesTask(BaseTaskMeta):
-    name = TaskName('rename_tenant_files_task')
+    name = TaskName("rename_tenant_files_task")
 
     tenant_id: str = attr.ib()

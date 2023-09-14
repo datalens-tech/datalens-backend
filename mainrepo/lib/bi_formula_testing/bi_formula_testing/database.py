@@ -1,23 +1,26 @@
 from __future__ import annotations
 
 import datetime
+from functools import partial
 import logging
 import time
-from functools import partial
-from typing import Optional, Union
+from typing import (
+    Optional,
+    Union,
+)
 
 import attr
 import pytz
 import sqlalchemy as sa
 
-from bi_utils.wait import wait_for
-
-from bi_db_testing.database.engine_wrapper import get_engine_wrapper_cls_for_url
-from bi_db_testing.database.base import DbBase, DbConfig
+from bi_db_testing.database.base import (
+    DbBase,
+    DbConfig,
+)
 from bi_db_testing.database.dispenser import DbDispenserBase
-
+from bi_db_testing.database.engine_wrapper import get_engine_wrapper_cls_for_url
 from bi_formula.core.dialect import DialectCombo
-
+from bi_utils.wait import wait_for
 
 LOGGER = logging.getLogger(__name__)
 
@@ -50,7 +53,8 @@ def make_db_config(dialect: DialectCombo, url: str, tzinfo: Optional[datetime.tz
     db_eng_config = db_eng_config_cls(url=url)
     db_config = FormulaDbConfig(
         engine_config=db_eng_config,
-        dialect=dialect, tzinfo=tzinfo,
+        dialect=dialect,
+        tzinfo=tzinfo,
     )
     return db_config
 
@@ -77,7 +81,7 @@ class FormulaDbDispenser(DbDispenserBase[FormulaDbConfig, Db]):
             return False, str(exc)
         else:
             assert check_value_res == check_value_in
-            return True, ''
+            return True, ""
 
     def make_database(self, db_config: FormulaDbConfig) -> Db:
         # Share the 'max time to up' between all dialects:
@@ -89,8 +93,8 @@ class FormulaDbDispenser(DbDispenserBase[FormulaDbConfig, Db]):
         timelimit = self.first_call_time + self.global_timeout
         db = make_db_from_config(db_config)
         wait_condition = partial(self.ensure_db_is_up, db=db)
-        logging.info(f'Waiting for db to come up: {db_config!r}')
-        wait_for('Make database', condition=wait_condition, timeout=timelimit, interval=self.poll_pause)
+        logging.info(f"Waiting for db to come up: {db_config!r}")
+        wait_for("Make database", condition=wait_condition, timeout=timelimit, interval=self.poll_pause)
 
         return db
 

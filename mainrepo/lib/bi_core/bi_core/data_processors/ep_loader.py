@@ -2,13 +2,11 @@ from typing import Type
 
 import attr
 
-from bi_utils.entrypoints import EntrypointClassManager
-
 import bi_core as package
 from bi_core.data_processors.base.plugin import DataProcessorPlugin
+from bi_utils.entrypoints import EntrypointClassManager
 
-
-_DATA_PROC_SRV_EP_GROUP = f'{package.__name__}.data_processor_plugins'
+_DATA_PROC_SRV_EP_GROUP = f"{package.__name__}.data_processor_plugins"
 
 
 @attr.s

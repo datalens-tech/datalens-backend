@@ -1,10 +1,15 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 from bi_api_lib.pivot.base.paginator import PivotPaginator
 from bi_api_lib.pivot.pandas.data_frame import (
-    PdPivotDataFrame, PdVSeriesPivotDataFrame, PdHSeriesPivotDataFrame,
+    PdHSeriesPivotDataFrame,
+    PdPivotDataFrame,
+    PdVSeriesPivotDataFrame,
 )
 
 if TYPE_CHECKING:
@@ -13,9 +18,10 @@ if TYPE_CHECKING:
 
 class PdPivotPaginator(PivotPaginator):
     def paginate(
-            self, pivot_dframe: PivotDataFrame,
-            limit_rows: Optional[int] = None,
-            offset_rows: Optional[int] = None,
+        self,
+        pivot_dframe: PivotDataFrame,
+        limit_rows: Optional[int] = None,
+        offset_rows: Optional[int] = None,
     ) -> PivotDataFrame:
         assert isinstance(pivot_dframe, PdPivotDataFrame)
         pd_df = pivot_dframe.pd_df
@@ -38,9 +44,10 @@ class PdPivotPaginator(PivotPaginator):
 
 class PdHSeriesPivotPaginator(PivotPaginator):
     def paginate(
-            self, pivot_dframe: PivotDataFrame,
-            limit_rows: Optional[int] = None,
-            offset_rows: Optional[int] = None,
+        self,
+        pivot_dframe: PivotDataFrame,
+        limit_rows: Optional[int] = None,
+        offset_rows: Optional[int] = None,
     ) -> PivotDataFrame:
         assert isinstance(pivot_dframe, PdHSeriesPivotDataFrame)
         pd_series = pivot_dframe.pd_series
@@ -56,9 +63,10 @@ class PdHSeriesPivotPaginator(PivotPaginator):
 
 class PdVSeriesPivotPaginator(PivotPaginator):
     def paginate(
-            self, pivot_dframe: PivotDataFrame,
-            limit_rows: Optional[int] = None,
-            offset_rows: Optional[int] = None,
+        self,
+        pivot_dframe: PivotDataFrame,
+        limit_rows: Optional[int] = None,
+        offset_rows: Optional[int] = None,
     ) -> PivotDataFrame:
         assert isinstance(pivot_dframe, PdVSeriesPivotDataFrame)
         pd_series = pivot_dframe.pd_series

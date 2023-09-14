@@ -5,16 +5,23 @@ from typing import Optional
 import attr
 import redis.asyncio
 
-from bi_constants.enums import ComponentErrorLevel, DataSourceRole, FileProcessingStatus, ComponentType
+from bi_constants.enums import (
+    ComponentErrorLevel,
+    ComponentType,
+    DataSourceRole,
+    FileProcessingStatus,
+)
 from bi_core import exc as core_exc
 from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_file_uploader_task_interface.tasks import DeleteFileTask, TaskExecutionMode
-from bi_task_processor.processor import TaskProcessor
-
 from bi_file_uploader_lib.common_locks import release_source_update_locks
 from bi_file_uploader_lib.redis_model.models import FileProcessingError
+from bi_file_uploader_task_interface.tasks import (
+    DeleteFileTask,
+    TaskExecutionMode,
+)
+from bi_task_processor.processor import TaskProcessor
 
+from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,11 +47,11 @@ class FileConnectionDataSourceErrorTracker:
 
         if (existing_error := self._error_registry.get(source_id)) is not None:
             LOGGER.warning(
-                f'Attempt to overwrite existing error for source {source_id}'
-                f'({existing_error.code}) with a new one: {err.code}'
+                f"Attempt to overwrite existing error for source {source_id}"
+                f"({existing_error.code}) with a new one: {err.code}"
             )
             return
-        err.details['request-id'] = self._request_id
+        err.details["request-id"] = self._request_id
         self._error_registry[source_id] = err
 
     def clear(self) -> None:
@@ -59,11 +66,12 @@ class FileConnectionDataSourceErrorTracker:
         async with self._usm.locked_entry_cm(
             connection_id,
             expected_type=BaseFileS3Connection,
-            wait_timeout_sec=60, duration_sec=10,
+            wait_timeout_sec=60,
+            duration_sec=10,
         ) as conn:
             assert isinstance(conn, BaseFileS3Connection)
             for source_id, error in self._error_registry.items():
-                reason = '.'.join(error.code)
+                reason = ".".join(error.code)
                 try:
                     err_level = ComponentErrorLevel(error.level.name)
                 except ValueError:
@@ -72,21 +80,23 @@ class FileConnectionDataSourceErrorTracker:
                 try:
                     src = conn.get_file_source_by_id(source_id)
                 except core_exc.SourceDoesNotExist:
-                    LOGGER.info(f'Source {source_id} not present in connection {conn.uuid}. No need to fail source.')
+                    LOGGER.info(f"Source {source_id} not present in connection {conn.uuid}. No need to fail source.")
                     conn.data.component_errors.remove_errors(id=source_id)
                     continue
 
                 LOGGER.info(
-                    f'Going to fail source id={source_id} in connection id={connection_id}'
+                    f"Going to fail source id={source_id} in connection id={connection_id}"
                     f' due to reason "{reason}" with level "{err_level}"'
                 )
 
                 if err_level == ComponentErrorLevel.error:
                     if src.s3_filename is not None:
-                        delete_tasks.append(DeleteFileTask(
-                            s3_filename=src.s3_filename,
-                            preview_id=src.preview_id,
-                        ))
+                        delete_tasks.append(
+                            DeleteFileTask(
+                                s3_filename=src.s3_filename,
+                                preview_id=src.preview_id,
+                            )
+                        )
 
                     conn.update_data_source(
                         source_id,
@@ -118,7 +128,7 @@ class FileConnectionDataSourceErrorTracker:
 
         for delete_file_task in delete_tasks:
             await self._task_processor.schedule(delete_file_task)
-            LOGGER.info(f'Scheduled task DeleteFileTask for source_id {src.id}, filename {src.s3_filename}')
+            LOGGER.info(f"Scheduled task DeleteFileTask for source_id {src.id}, filename {src.s3_filename}")
 
     async def finalize(self, mode: TaskExecutionMode, connection_id: Optional[str] = None) -> None:
         """
@@ -129,10 +139,10 @@ class FileConnectionDataSourceErrorTracker:
         """
 
         if mode not in (TaskExecutionMode.UPDATE_AND_SAVE, TaskExecutionMode.UPDATE_NO_SAVE):
-            LOGGER.info(f'Nothing to do with errors for mode {mode}')
+            LOGGER.info(f"Nothing to do with errors for mode {mode}")
             return
         if mode == TaskExecutionMode.UPDATE_AND_SAVE:
-            assert connection_id is not None, 'No connection_id to fail sources in'
+            assert connection_id is not None, "No connection_id to fail sources in"
             await self._fail_connection_sources(connection_id)
         await self._release_source_update_locks()
         self.clear()

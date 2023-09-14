@@ -1,20 +1,36 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional,
+)
 
 import sqlalchemy as sa
-from sqlalchemy.sql.elements import ClauseList, ClauseElement
+from sqlalchemy.sql.elements import (
+    ClauseElement,
+    ClauseList,
+)
 from sqlalchemy.sql.functions import Function as SAFunction
 
 from bi_formula.core import exc
-from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.core.datatype import DataType
-from bi_formula.definitions.type_strategy import Fixed, FromArgs
+from bi_formula.core.dialect import StandardDialect as D
 from bi_formula.definitions.args import ArgTypeSequence
-from bi_formula.definitions.base import Function, TranslationVariant, WinRangeTuple
-from bi_formula.definitions.literals import Literal, is_literal, un_literal
+from bi_formula.definitions.base import (
+    Function,
+    TranslationVariant,
+    WinRangeTuple,
+)
 from bi_formula.definitions.common import desc
-
+from bi_formula.definitions.literals import (
+    Literal,
+    is_literal,
+    un_literal,
+)
+from bi_formula.definitions.type_strategy import (
+    Fixed,
+    FromArgs,
+)
 
 V = TranslationVariant.make
 
@@ -42,7 +58,7 @@ class WindowFunction(Function):
 def _order_by_from_args(*args: ClauseElement) -> ClauseList:
     """Defined the ORDER BY clause that is generated from function arguments"""
     if len(args) not in (1, 2):
-        raise ValueError(f'Invalid number of arguments: {len(args)}')
+        raise ValueError(f"Invalid number of arguments: {len(args)}")
 
     param = args[0]
     if len(args) == 2:
@@ -50,11 +66,11 @@ def _order_by_from_args(*args: ClauseElement) -> ClauseList:
         dir_value = args[1].value.lower()
     else:
         # Default ranking is from greatest to least
-        dir_value = 'desc'
+        dir_value = "desc"
 
-    if dir_value in ('asc', 'ascending'):
+    if dir_value in ("asc", "ascending"):
         pass
-    elif dir_value in ('desc', 'descending'):
+    elif dir_value in ("desc", "descending"):
         param = desc(param)
     else:
         raise ValueError(dir_value)
@@ -67,18 +83,16 @@ def _rows_full_window(*_: Any) -> WinRangeTuple:
     return None, None
 
 
-def _rows_stretching_window(
-        _: ClauseElement, direction: ClauseElement = sa.literal('asc')
-) -> WinRangeTuple:
+def _rows_stretching_window(_: ClauseElement, direction: ClauseElement = sa.literal("asc")) -> WinRangeTuple:
     """Defines range tuple for functions that need a stretching or shrinking window."""
     assert is_literal(direction)
     assert isinstance(un_literal(direction), str)
     dir_value = direction.value.lower()
-    if dir_value == 'asc':
+    if dir_value == "asc":
         return None, 0
-    elif dir_value == 'desc':
+    elif dir_value == "desc":
         return 0, None
-    raise exc.TranslationError('Invalid value for direction parameter')
+    raise exc.TranslationError("Invalid value for direction parameter")
 
 
 class WinGenericRankBase(WindowFunction):
@@ -117,12 +131,13 @@ class WinGenericRankBase(WindowFunction):
             ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
         )
     """
-    arg_names = ['value', 'direction']
+
+    arg_names = ["value", "direction"]
     return_type = Fixed(DataType.INTEGER)
 
 
 class WinRankBase(WinGenericRankBase):
-    name = 'rank'
+    name = "rank"
     variants = [
         V(
             D.DUMMY,
@@ -148,7 +163,7 @@ class WinRank2(WinRankBase):
 
 
 class WinRankDenseBase(WinGenericRankBase):
-    name = 'rank_dense'
+    name = "rank_dense"
     variants = [
         V(
             D.DUMMY,
@@ -174,7 +189,7 @@ class WinRankDense2(WinRankDenseBase):
 
 
 class WinRankUniqueBase(WinGenericRankBase):
-    name = 'rank_unique'
+    name = "rank_unique"
     variants = [
         V(
             D.DUMMY,
@@ -200,7 +215,7 @@ class WinRankUnique2(WinRankUniqueBase):
 
 
 class WinRankPercentileBase(WinGenericRankBase):
-    name = 'rank_percentile'
+    name = "rank_percentile"
     return_type = Fixed(DataType.FLOAT)
     variants = [
         V(
@@ -253,7 +268,7 @@ class WinAggBase(WindowFunction):
 
 
 class WinSum(WinAggBase):
-    name = 'sum'
+    name = "sum"
     arg_cnt = 1
     argument_types = [
         ArgTypeSequence([NUMERIC_TYPES]),
@@ -278,7 +293,7 @@ class WinMinMaxBase(WinAggBase):
 
 
 class WinMin(WinMinMaxBase):
-    name = 'min'
+    name = "min"
     variants = [
         V(
             D.DUMMY,
@@ -290,7 +305,7 @@ class WinMin(WinMinMaxBase):
 
 
 class WinMax(WinMinMaxBase):
-    name = 'max'
+    name = "max"
     variants = [
         V(
             D.DUMMY,
@@ -302,7 +317,7 @@ class WinMax(WinMinMaxBase):
 
 
 class WinCountBase(WinAggBase):
-    name = 'count'
+    name = "count"
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -311,7 +326,7 @@ class WinCount0(WinCountBase):
     variants = [
         V(
             D.DUMMY,
-            translation=lambda: sa.func.COUNT(sa.text('*')),
+            translation=lambda: sa.func.COUNT(sa.text("*")),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
@@ -331,7 +346,7 @@ class WinCount1(WinCountBase):
 
 
 class WinAvg(WinAggBase):  # TODO: support DATE & DATETIME
-    name = 'avg'
+    name = "avg"
     return_type = Fixed(DataType.FLOAT)
     arg_cnt = 1
     variants = [
@@ -372,14 +387,14 @@ class WinAggIf(WindowFunction):
     """
 
     arg_cnt = 2
-    arg_names = ['expression', 'condition']
+    arg_names = ["expression", "condition"]
     argument_types = [
         ArgTypeSequence([NUMERIC_TYPES, DataType.BOOLEAN]),
     ]
 
 
 class WinSumIf(WinAggIf):
-    name = 'sum_if'
+    name = "sum_if"
     variants = [
         V(
             D.DUMMY,
@@ -392,7 +407,7 @@ class WinSumIf(WinAggIf):
 
 
 class WinCountIf(WinAggIf):
-    name = 'count_if'
+    name = "count_if"
     variants = [
         V(
             D.DUMMY,
@@ -405,7 +420,7 @@ class WinCountIf(WinAggIf):
 
 
 class WinAvgIf(WinAggIf):  # TODO: support DATE & DATETIME
-    name = 'avg_if'
+    name = "avg_if"
     variants = [
         V(
             D.DUMMY,
@@ -451,11 +466,12 @@ class WinRFuncBase(OrderedWinFuncBase):
             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
         )
     """
-    arg_names = ['value', 'direction']
+
+    arg_names = ["value", "direction"]
 
 
 class WinRSumBase(WinRFuncBase):
-    name = 'rsum'
+    name = "rsum"
     variants = [
         V(
             D.DUMMY,
@@ -479,7 +495,7 @@ class WinRSum2(WinRSumBase):
 
 
 class WinRCountBase(WinRFuncBase):
-    name = 'rcount'
+    name = "rcount"
     variants = [
         V(
             D.DUMMY,
@@ -510,7 +526,7 @@ class WinRMinMaxBase(WinRFuncBase):
 
 
 class WinRMinBase(WinRMinMaxBase):
-    name = 'rmin'
+    name = "rmin"
     variants = [
         V(
             D.DUMMY,
@@ -530,7 +546,7 @@ class WinRMin2(WinRMinBase):
 
 
 class WinRMaxBase(WinRMinMaxBase):
-    name = 'rmax'
+    name = "rmax"
     variants = [
         V(
             D.DUMMY,
@@ -550,7 +566,7 @@ class WinRMax2(WinRMaxBase):
 
 
 class WinRAvgBase(WinRFuncBase):  # TODO: Add support for DATE & DATETIME
-    name = 'ravg'
+    name = "ravg"
     variants = [
         V(
             D.DUMMY,
@@ -643,11 +659,12 @@ class MFuncBase(OrderedWinFuncBase):
             ROWS BETWEEN CURRENT ROW AND 5 FOLLOWING
         )
     """
-    arg_names = ['value', 'rows_1', 'rows_2']
+
+    arg_names = ["value", "rows_1", "rows_2"]
 
 
 class WinMSumBase(MFuncBase):
-    name = 'msum'
+    name = "msum"
     variants = [
         V(
             D.DUMMY,
@@ -671,7 +688,7 @@ class WinMSum3(WinMSumBase):
 
 
 class WinMCountBase(MFuncBase):
-    name = 'mcount'
+    name = "mcount"
     variants = [
         V(
             D.DUMMY,
@@ -702,7 +719,7 @@ class WinMMinMaxBase(MFuncBase):
 
 
 class WinMMinBase(WinMMinMaxBase):
-    name = 'mmin'
+    name = "mmin"
     variants = [
         V(
             D.DUMMY,
@@ -722,7 +739,7 @@ class WinMMin3(WinMMinBase):
 
 
 class WinMMaxBase(WinMMinMaxBase):
-    name = 'mmax'
+    name = "mmax"
     variants = [
         V(
             D.DUMMY,
@@ -742,7 +759,7 @@ class WinMMax3(WinMMaxBase):
 
 
 class WinMAvgBase(MFuncBase):  # TODO: support DATE & DATETIME
-    name = 'mavg'
+    name = "mavg"
     variants = [
         V(
             D.DUMMY,
@@ -766,8 +783,11 @@ class WinMAvg3(WinMAvgBase):
 
 
 def lag_implementation(
-        x: Any, offset: Any = sa.literal(1), default: Any = sa.null(),
-        lag_name: str = 'LAG', lead_name: str = 'LEAD',
+    x: Any,
+    offset: Any = sa.literal(1),
+    default: Any = sa.null(),
+    lag_name: str = "LAG",
+    lead_name: str = "LEAD",
 ) -> ClauseElement:
     result: ClauseElement
     if un_literal(offset) > 0:
@@ -780,8 +800,8 @@ def lag_implementation(
 
 
 class WinLagBase(OrderedWinFuncBase):
-    name = 'lag'
-    arg_names = ['value', 'offset', 'default']
+    name = "lag"
+    arg_names = ["value", "offset", "default"]
     variants = [
         V(
             D.DUMMY,
@@ -795,11 +815,7 @@ class WinLagBase(OrderedWinFuncBase):
         ),
     ]
     argument_types = [
-        ArgTypeSequence([
-            set(DataType),
-            DataType.CONST_INTEGER,
-            {dtype for dtype in DataType if dtype.is_const}
-        ]),
+        ArgTypeSequence([set(DataType), DataType.CONST_INTEGER, {dtype for dtype in DataType if dtype.is_const}]),
     ]
     return_type = FromArgs(0)
 
@@ -818,17 +834,19 @@ class WinLag3(WinLagBase):
 
 class WinFirstLastBase(OrderedWinFuncBase):
     arg_cnt = 1
-    arg_names = ['value']
+    arg_names = ["value"]
     argument_types = [
-        ArgTypeSequence([
-            set(DataType),
-        ]),
+        ArgTypeSequence(
+            [
+                set(DataType),
+            ]
+        ),
     ]
     return_type = FromArgs(0)
 
 
 class WinFirst(WinFirstLastBase):
-    name = 'first'
+    name = "first"
     variants = [
         V(
             D.DUMMY,
@@ -840,7 +858,7 @@ class WinFirst(WinFirstLastBase):
 
 
 class WinLast(WinFirstLastBase):
-    name = 'last'
+    name = "last"
     variants = [
         V(
             D.DUMMY,
@@ -854,93 +872,69 @@ class WinLast(WinFirstLastBase):
 DEFINITIONS_WINDOW = [
     # avg
     WinAvg,
-
     # avg_if
     WinAvgIf,
-
     # count
     WinCount0,
     WinCount1,
-
     # count_if
     WinCountIf,
-
     # first
     WinFirst,
-
     # lag
     WinLag1,
     WinLag2,
     WinLag3,
-
     # last
     WinLast,
-
     # mavg
     WinMAvg2,
     WinMAvg3,
-
     # max
     WinMax,
-
     # mcount
     WinMCount2,
     WinMCount3,
-
     # min
     WinMin,
-
     # mmax
     WinMMax2,
     WinMMax3,
-
     # mmin
     WinMMin2,
     WinMMin3,
-
     # msum
     WinMSum2,
     WinMSum3,
-
     # rank
     WinRank1,
     WinRank2,
-
     # rank_dense
     WinRankDense1,
     WinRankDense2,
-
     # rank_percentile
     WinRankPercentile1,
     WinRankPercentile2,
-
     # rank_unique
     WinRankUnique1,
     WinRankUnique2,
-
     # ravg
     WinRAvg1,
     WinRAvg2,
-
     # rcount
     WinRCount1,
     WinRCount2,
-
     # rmax
     WinRMax1,
     WinRMax2,
-
     # rmin
     WinRMin1,
     WinRMin2,
-
     # rsum
     WinRSum1,
     WinRSum2,
-
     # sum
     WinSum,
-
     # sum_if
     WinSumIf,
 ]

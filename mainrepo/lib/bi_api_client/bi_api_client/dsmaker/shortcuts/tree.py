@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import json
 
+from bi_api_client.dsmaker.primitives import (
+    Dataset,
+    RequestLegendItem,
+)
 from bi_constants.enums import FieldRole
-
-from bi_api_client.dsmaker.primitives import Dataset, RequestLegendItem
 
 
 def make_request_legend_items_for_tree_branches(
-        tree_title: str,
-        branches: list[tuple[int, list[str]]],
-        dataset: Dataset,
+    tree_title: str,
+    branches: list[tuple[int, list[str]]],
+    dataset: Dataset,
 ) -> list[RequestLegendItem]:
     """
     Generate request legend items for tree branches specified like this:

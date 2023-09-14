@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import abc
+from http.cookies import SimpleCookie
 import logging
 import os
 import re
-from http.cookies import SimpleCookie
-from typing import Any, ClassVar, Iterable, Optional, Pattern, Sequence
+from typing import (
+    Any,
+    ClassVar,
+    Iterable,
+    Optional,
+    Pattern,
+    Sequence,
+)
 
 import attr
 
@@ -13,31 +20,36 @@ from bi_app_tools import log
 
 from .headers import normalize_header_name
 
-
 LOGGER = logging.getLogger(__name__)
 
-NON_TRANSITIVE_LOGGING_CTX_KEYS = frozenset({
-    'request_id',
-    'pid',
-})
-
-SECRET_HEADERS: frozenset[str] = frozenset(h.lower() for h in (
-    'Authorization',
-    'X-Us-Master-Token',
-    'Master-Token',
-    'X-DL-API-Key',
-))
-
-SECRET_HEADERS_PATTERNS: Sequence[Pattern] = (
-    re.compile(r".*token.*", re.IGNORECASE),
+NON_TRANSITIVE_LOGGING_CTX_KEYS = frozenset(
+    {
+        "request_id",
+        "pid",
+    }
 )
 
-SECRET_COOKIES: frozenset[str] = frozenset(c.lower() for c in (
-    'Session_id',
-    'sessionid2',
-    'yc_session',
-    'iam_cookie',
-))
+SECRET_HEADERS: frozenset[str] = frozenset(
+    h.lower()
+    for h in (
+        "Authorization",
+        "X-Us-Master-Token",
+        "Master-Token",
+        "X-DL-API-Key",
+    )
+)
+
+SECRET_HEADERS_PATTERNS: Sequence[Pattern] = (re.compile(r".*token.*", re.IGNORECASE),)
+
+SECRET_COOKIES: frozenset[str] = frozenset(
+    c.lower()
+    for c in (
+        "Session_id",
+        "sessionid2",
+        "yc_session",
+        "iam_cookie",
+    )
+)
 
 
 def _is_secret_header(header_name: str) -> bool:
@@ -52,7 +64,7 @@ def _is_secret_header(header_name: str) -> bool:
 
 
 def _obfuscate_value(secret_value: str) -> str:
-    repl_str = '<hidden>'
+    repl_str = "<hidden>"
     if len(secret_value) > 8:
         return secret_value[:3] + repl_str + secret_value[-3:]
     else:
@@ -66,17 +78,20 @@ def _obfuscate_cookie_header_value(cookie_string: str) -> str:
             repl_str = "<hidden>"
             cookie[cookie_name].set(cookie_name, repl_str, repl_str)
 
-    return cookie.output(header='', sep=';').strip()
+    return cookie.output(header="", sep=";").strip()
 
 
 def clean_secret_data_in_headers(headers: Iterable[tuple[str, str]]) -> Iterable[tuple[str, str]]:
     return tuple(
         (
             name,
-            _obfuscate_value(val) if _is_secret_header(name)
-            else _obfuscate_cookie_header_value(val) if name.lower() == 'cookie'
-            else val
-        ) for name, val in headers
+            _obfuscate_value(val)
+            if _is_secret_header(name)
+            else _obfuscate_cookie_header_value(val)
+            if name.lower() == "cookie"
+            else val,
+        )
+        for name, val in headers
     )
 
 
@@ -84,23 +99,23 @@ def log_request_start(logger: logging.Logger, method: str, full_path: str, heade
     clean_headers = clean_secret_data_in_headers(headers)
 
     logger.info(
-        'Received request. method: %s, path: %s, headers: %s, pid: %s',
+        "Received request. method: %s, path: %s, headers: %s, pid: %s",
         method.upper(),
         full_path,
         # Complexity to be compatible with previous version of logger
-        "{{{}}}".format(
-            ", ".join([f"{k!r}: {v!r}" for k, v in clean_headers])
-        ),
-        os.getpid()
+        "{{{}}}".format(", ".join([f"{k!r}: {v!r}" for k, v in clean_headers])),
+        os.getpid(),
     )
 
 
 def log_request_end(logger: logging.Logger, method: str, full_path: str, status_code: int) -> None:
     logger.info(
-        'Response. method: %s, path: %s, status: %d',
-        method.upper(), full_path, status_code,
+        "Response. method: %s, path: %s, status: %d",
+        method.upper(),
+        full_path,
+        status_code,
         extra=dict(
-            event_code='http_response',
+            event_code="http_response",
             request_method=method,
             request_path=full_path,
             response_status=status_code,
@@ -112,12 +127,10 @@ def log_request_end(logger: logging.Logger, method: str, full_path: str, status_
 def _normalize_headers(headers: Any) -> Optional[dict[str, str]]:
     if headers is None:
         return None
-    if hasattr(headers, 'items'):
+    if hasattr(headers, "items"):
         headers = headers.items()
     headers = sorted(headers)
-    headers = {
-        normalize_header_name(key): value
-        for key, value in headers}
+    headers = {normalize_header_name(key): value for key, value in headers}
 
     headers = dict(clean_secret_data_in_headers(headers.items()))
 
@@ -126,16 +139,20 @@ def _normalize_headers(headers: Any) -> Optional[dict[str, str]]:
 
 # TODO CONSIDER: Create custom type for headers
 def log_request_end_extended(
-        logger: logging.Logger,
-        request_method: str, request_path: str, request_headers: Optional[dict],
-        response_status: int, response_headers: Optional[dict],
-        response_timing: Optional[float],
-        # ...
-        user_id: Optional[str] = None, username: Optional[str] = None,
-        # extra extra for when they're not in the context.
-        # TODO: tenant_id (folder_id)
-        request_id: Optional[str] = None,
-        endpoint_code: Optional[str] = None,
+    logger: logging.Logger,
+    request_method: str,
+    request_path: str,
+    request_headers: Optional[dict],
+    response_status: int,
+    response_headers: Optional[dict],
+    response_timing: Optional[float],
+    # ...
+    user_id: Optional[str] = None,
+    username: Optional[str] = None,
+    # extra extra for when they're not in the context.
+    # TODO: tenant_id (folder_id)
+    request_id: Optional[str] = None,
+    endpoint_code: Optional[str] = None,
 ) -> None:
     """
     Response pre-return detailed (extended) logging.
@@ -175,7 +192,7 @@ def log_request_end_extended(
         response_timing = round(response_timing, 4)
 
     extra = dict(
-        event_code='http_response',
+        event_code="http_response",
         request_method=request_method,
         request_path=request_path,
         request_headers=request_headers,
@@ -189,14 +206,13 @@ def log_request_end_extended(
         # response_details=dict(...),
     )
     if request_id is not None:
-        extra['request_id'] = request_id
+        extra["request_id"] = request_id
     if endpoint_code is not None:
-        extra['endpoint_code'] = endpoint_code
+        extra["endpoint_code"] = endpoint_code
 
     logger.info(
-        'Response. method: %s, path: %s, status: %d',
-        request_method, request_path, response_status,
-        extra=extra)
+        "Response. method: %s, path: %s, status: %d", request_method, request_path, response_status, extra=extra
+    )
 
 
 class RequestLoggingContextController(metaclass=abc.ABCMeta):
@@ -249,7 +265,8 @@ def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwarg
         else:
             parts.append(f"{label}=N/A")
             LOGGER.warning(
-                "Can not found extra key during message formatting: %s", extra_name,
+                "Can not found extra key during message formatting: %s",
+                extra_name,
                 extra=extra_with_evt_code("logging_missing_extra_in_formatting", dict(extra_name=extra_name)),
             )
 
@@ -257,18 +274,17 @@ def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwarg
 
 
 def mask_sensitive_fields_by_name_in_json_recursive(
-        source: Optional[dict[str, Any]],
-        extra_sensitive_key_names: Iterable[str] = ()
+    source: Optional[dict[str, Any]], extra_sensitive_key_names: Iterable[str] = ()
 ) -> Optional[dict[str, Any]]:
     if source is None:
         return None
 
     all_sensitive_key_names: set[str] = {
-        'password',
-        'token',
-        'secret',
-        'private_key',
-        'cypher_text',
+        "password",
+        "token",
+        "secret",
+        "private_key",
+        "cypher_text",
     }
     all_sensitive_key_names.update(extra_sensitive_key_names)
 
@@ -277,21 +293,28 @@ def mask_sensitive_fields_by_name_in_json_recursive(
             return None
 
         if isinstance(value, dict):
-            return {
-                nested_key: process_value(nested_key, nested_value)
-                for nested_key, nested_value in value.items()
-            }
-        if isinstance(value, (list, tuple,)):
-            return [
-                process_value(key_name, nested_value)
-                for nested_value in value
-            ]
+            return {nested_key: process_value(nested_key, nested_value) for nested_key, nested_value in value.items()}
+        if isinstance(
+            value,
+            (
+                list,
+                tuple,
+            ),
+        ):
+            return [process_value(key_name, nested_value) for nested_value in value]
         if isinstance(value, str):
             if key_name in all_sensitive_key_names:
                 return _obfuscate_value(value)
             return value
 
-        if isinstance(value, (bool, float, int,)):
+        if isinstance(
+            value,
+            (
+                bool,
+                float,
+                int,
+            ),
+        ):
             if key_name in all_sensitive_key_names:
                 LOGGER.error("Non-string type for sensitive field '%s': %s", key_name, type(value))
                 return _obfuscate_value(str(value))
@@ -304,13 +327,13 @@ def mask_sensitive_fields_by_name_in_json_recursive(
 
 class LogRequestLoggingContextController(RequestLoggingContextController):
     allowed_keys: ClassVar[tuple[str, ...]] = (
-        'request_id',
-        'parent_request_id',
-        'endpoint_code',
-        'user_id',
-        'folder_id',
-        'project_id',
-        'org_id',
+        "request_id",
+        "parent_request_id",
+        "endpoint_code",
+        "user_id",
+        "folder_id",
+        "project_id",
+        "org_id",
     )
 
     def put_to_context(self, key: str, value: Any) -> None:

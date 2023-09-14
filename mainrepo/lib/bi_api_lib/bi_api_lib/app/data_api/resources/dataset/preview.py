@@ -2,43 +2,48 @@ from __future__ import annotations
 
 import abc
 import logging
-
-from typing import Any, Collection, Dict, Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Collection,
+    Dict,
+    Optional,
+)
 
 from aiohttp import web
 
+from bi_api_lib.app.data_api.resources.base import (
+    RequiredResourceDSAPI,
+    requires,
+)
+from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
+from bi_api_lib.dataset.utils import invalidate_sample_sources
+import bi_api_lib.schemas.data
+import bi_api_lib.schemas.main
+from bi_app_tools.profiling_base import generic_profiler_async
 from bi_constants.enums import DataSourceRole
-
-import bi_core.exc as common_exc
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.data_source.collection import DataSourceCollectionFactory
 from bi_core.dataset_capabilities import DatasetCapabilities
-
-from bi_app_tools.profiling_base import generic_profiler_async
-
-import bi_api_lib.schemas.data
-import bi_api_lib.schemas.main
-
-from bi_api_lib.app.data_api.resources.base import RequiredResourceDSAPI, requires
-from bi_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
-from bi_api_lib.dataset.utils import invalidate_sample_sources
+import bi_core.exc as common_exc
 from bi_query_processing.legend.block_legend import BlockSpec
-from bi_query_processing.postprocessing.primitives import PostprocessedQuery
 from bi_query_processing.merging.primitives import MergedQueryDataStream
+from bi_query_processing.postprocessing.primitives import PostprocessedQuery
 
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
-    from bi_core.us_dataset import Dataset
+
     from bi_api_lib.request_model.data import DataRequestModel
+    from bi_core.us_dataset import Dataset
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
-    endpoint_code = 'DatasetVersionPreview'
+    endpoint_code = "DatasetVersionPreview"
     # TODO FIX: Move to constants
-    profiler_prefix = 'preview'
+    profiler_prefix = "preview"
 
     STORED_DATASET_REQUIRED = False
 
@@ -49,7 +54,8 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
             return capabilities.resolve_source_role(for_preview=True, log_reasons=log_reasons)
         except common_exc.NoCommonRoleError:
             raise common_exc.TableNameNotConfiguredError(
-                "Dataset's sources are not configured correctly. Direct access is not possible")
+                "Dataset's sources are not configured correctly. Direct access is not possible"
+            )
 
     # TODO FIX: Add docs/schemas decorator
     # @schematic_request(
@@ -69,7 +75,8 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
 
         new_sources = update_info.added_own_source_ids + update_info.updated_own_source_ids
         invalidate_sample_sources(
-            dataset=self.dataset, source_ids=new_sources,
+            dataset=self.dataset,
+            source_ids=new_sources,
             us_manager=self.dl_request.us_manager,
         )
 
@@ -83,10 +90,10 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         return web.json_response(response_json)
 
     async def execute_query(
-            self,
-            block_spec: BlockSpec,
-            possible_data_lengths: Optional[Collection] = None,
-            profiling_postfix: str = '',
+        self,
+        block_spec: BlockSpec,
+        possible_data_lengths: Optional[Collection] = None,
+        profiling_postfix: str = "",
     ) -> PostprocessedQuery:
         ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
         if not ds_accessor.get_data_source_id_list():
@@ -104,7 +111,9 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
 
     @abc.abstractmethod
     def make_response(
-            self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         raise NotImplementedError()
 
@@ -115,7 +124,9 @@ class DatasetPreviewViewV1(DatasetPreviewView):
     """
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
@@ -132,6 +143,8 @@ class DatasetPreviewViewV2(DatasetPreviewView):
     """
 
     def make_response(
-        self, req_model: DataRequestModel, merged_stream: MergedQueryDataStream,
+        self,
+        req_model: DataRequestModel,
+        merged_stream: MergedQueryDataStream,
     ) -> Dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

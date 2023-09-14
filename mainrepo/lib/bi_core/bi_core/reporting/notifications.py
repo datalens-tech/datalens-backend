@@ -1,9 +1,16 @@
 import time
-from typing import Any, Callable, Optional, Type
-
-from bi_constants.enums import NotificationLevel, NotificationType
+from typing import (
+    Any,
+    Callable,
+    Optional,
+    Type,
+)
 
 from bi_api_commons.reporting.models import NotificationReportingRecord
+from bi_constants.enums import (
+    NotificationLevel,
+    NotificationType,
+)
 
 
 class BaseNotification:
@@ -41,20 +48,20 @@ def register_notification() -> Callable[[Type[BaseNotification]], Type[BaseNotif
     def wrap(cls: Type[BaseNotification]) -> Type[BaseNotification]:
         _NOTIFICATIONS[cls.type] = cls
         return cls
+
     return wrap
 
 
 @register_notification()
 class TotalsRemovedDueToMeasureFilterNotification(BaseNotification):
     type = NotificationType.totals_removed_due_to_measure_filter
-    _title = 'No totals shown'
-    _message = 'Totals have been removed because there is filtering by measure'
+    _title = "No totals shown"
+    _message = "Totals have been removed because there is filtering by measure"
     _level = NotificationLevel.info
 
 
 def get_notification_record(
-    notification_type: NotificationType,
-    **kwargs: Any
+    notification_type: NotificationType, **kwargs: Any
 ) -> Optional[NotificationReportingRecord]:
     ntf_cls = _NOTIFICATIONS.get(notification_type)
     if ntf_cls is None:

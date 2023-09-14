@@ -2,17 +2,18 @@ import attr
 
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.inspect.expression import is_window_expression
-
-from bi_query_processing.enums import ExecutionLevel
 from bi_query_processing.compilation.primitives import (
-    CompiledQuery, CompiledMultiQueryBase, CompiledMultiQuery,
+    CompiledMultiQuery,
+    CompiledMultiQueryBase,
+    CompiledQuery,
     SubqueryFromObject,
 )
+from bi_query_processing.enums import ExecutionLevel
 from bi_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
 from bi_query_processing.multi_query.splitters.mask_based import MultiQuerySplitter
 from bi_query_processing.multi_query.splitters.win_func import WinFuncQuerySplitter
-from bi_query_processing.utils.name_gen import PrefixedIdGen
 from bi_query_processing.multi_query.tools import build_requirement_subtree
+from bi_query_processing.utils.name_gen import PrefixedIdGen
 
 
 @attr.s
@@ -25,8 +26,11 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
     optimize_compeng_usage: bool = attr.ib(kw_only=True, default=True)
 
     def split_borderline_query(
-            self, query: CompiledQuery, requirement_subtree: CompiledMultiQueryBase,
-            query_id_gen: PrefixedIdGen, expr_id_gen: PrefixedIdGen,
+        self,
+        query: CompiledQuery,
+        requirement_subtree: CompiledMultiQueryBase,
+        query_id_gen: PrefixedIdGen,
+        expr_id_gen: PrefixedIdGen,
     ) -> list[CompiledQuery]:
         """
         Split the borderline sub-query into two:
@@ -37,8 +41,10 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
         original_query_id = query.id
         splitter: MultiQuerySplitter = WinFuncQuerySplitter()
         multi_query_patch = splitter.split_query(
-            query=query, requirement_subtree=requirement_subtree,
-            query_id_gen=query_id_gen, expr_id_gen=expr_id_gen,
+            query=query,
+            requirement_subtree=requirement_subtree,
+            query_id_gen=query_id_gen,
+            expr_id_gen=expr_id_gen,
         )
         assert multi_query_patch is not None
         new_subqueries = list(multi_query_patch.patch_multi_query.iter_queries())
@@ -51,8 +57,8 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
         return [top_query, bottom_query]
 
     def mutate_multi_query(self, multi_query: CompiledMultiQueryBase) -> CompiledMultiQueryBase:
-        query_id_gen = PrefixedIdGen('qb')
-        expr_id_gen = PrefixedIdGen('eb')
+        query_id_gen = PrefixedIdGen("qb")
+        expr_id_gen = PrefixedIdGen("eb")
 
         # First determine if there is a need for compeng
         inspect_env = InspectionEnvironment()
@@ -60,8 +66,7 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
         borderline_queries: set[str] = set()  # queries with WF, whose sub-queries don't have WF
         for query in multi_query.iter_queries():
             query_has_winfuncs = any(
-                is_window_expression(node=formula.formula_obj, env=inspect_env)
-                for formula in query.all_formulas
+                is_window_expression(node=formula.formula_obj, env=inspect_env) for formula in query.all_formulas
             )
             if query_has_winfuncs:
                 queries_with_win_funcs.add(query.id)
@@ -100,9 +105,11 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
             this_iteration_updated_queries: list[CompiledQuery] = []
             if (
                 # optimized version
-                self.optimize_compeng_usage and query.id in queries_with_win_funcs
+                self.optimize_compeng_usage
+                and query.id in queries_with_win_funcs
                 # non-optimized version
-                or not self.optimize_compeng_usage and not query_is_base
+                or not self.optimize_compeng_usage
+                and not query_is_base
             ):
                 if self.optimize_compeng_usage and query.id in borderline_queries:
                     # Split borderline queries so that only the part that starts with window functions
@@ -110,8 +117,10 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
                     requirement_subtree = build_requirement_subtree(multi_query, query.id)
                     this_iteration_updated_queries.extend(
                         self.split_borderline_query(
-                            query=query, requirement_subtree=requirement_subtree,
-                            query_id_gen=query_id_gen, expr_id_gen=expr_id_gen,
+                            query=query,
+                            requirement_subtree=requirement_subtree,
+                            query_id_gen=query_id_gen,
+                            expr_id_gen=expr_id_gen,
                         )
                     )
                 else:

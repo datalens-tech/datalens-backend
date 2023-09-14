@@ -1,17 +1,42 @@
 from __future__ import annotations
 
 from sqlalchemy import util
-from sqlalchemy.dialects.postgresql import INTERVAL, UUID, OID, REGCLASS
-from sqlalchemy.sql import sqltypes
+from sqlalchemy.dialects.postgresql import (
+    INTERVAL,
+    OID,
+    REGCLASS,
+    UUID,
+)
+
 # we dont use SA asyncpg beta objects
 # but it's ok to use type descriptions
 from sqlalchemy.dialects.postgresql.asyncpg import (
-    AsyncpgNumeric, AsyncpgTime, AsyncpgDate, AsyncpgDateTime, AsyncPgInterval, AsyncpgUUID, AsyncpgBoolean,
-    AsyncpgInteger, AsyncpgBigInteger, AsyncpgJSON, AsyncpgJSONB, AsyncpgJSONPathType, AsyncpgJSONIndexType,
-    AsyncpgJSONIntIndexType, AsyncpgJSONStrIndexType, AsyncPgEnum, AsyncpgOID, AsyncpgREGCLASS, json as asynpg_json
+    AsyncpgBigInteger,
+    AsyncpgBoolean,
+    AsyncpgDate,
+    AsyncpgDateTime,
+    AsyncPgEnum,
+    AsyncpgInteger,
+    AsyncPgInterval,
+    AsyncpgJSON,
+    AsyncpgJSONB,
+    AsyncpgJSONIndexType,
+    AsyncpgJSONIntIndexType,
+    AsyncpgJSONPathType,
+    AsyncpgJSONStrIndexType,
+    AsyncpgNumeric,
+    AsyncpgOID,
+    AsyncpgREGCLASS,
+    AsyncpgTime,
+    AsyncpgUUID,
 )
+from sqlalchemy.dialects.postgresql.asyncpg import json as asynpg_json
+from sqlalchemy.sql import sqltypes
 
-from bi_sqlalchemy_postgres.base import BIPGDialect, CITEXT
+from bi_sqlalchemy_postgres.base import (
+    CITEXT,
+    BIPGDialect,
+)
 
 
 # for backward compatibility with SA psycopg

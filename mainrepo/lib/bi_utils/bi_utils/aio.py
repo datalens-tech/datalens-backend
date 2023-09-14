@@ -1,15 +1,25 @@
 from __future__ import annotations
 
 import asyncio
-import contextvars
-import logging
-import weakref
 from concurrent.futures import ThreadPoolExecutor
+import contextvars
 from functools import partial
-from typing import (
-    TYPE_CHECKING, Any, AsyncIterable, Awaitable, Callable, Iterable, List, Optional, TypeVar, cast, Type
-)
+import logging
 from types import TracebackType
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncIterable,
+    Awaitable,
+    Callable,
+    Iterable,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    cast,
+)
+import weakref
 
 from async_timeout import Timeout as VanillaTimeout
 
@@ -19,12 +29,11 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_CORO_TV = TypeVar('_CORO_TV')
+_CORO_TV = TypeVar("_CORO_TV")
 
 
 async def shield_wait_for_complete(
-        coro: Awaitable[_CORO_TV],
-        log_msg_on_cancel: str = "CancelledError during critical section execution"
+    coro: Awaitable[_CORO_TV], log_msg_on_cancel: str = "CancelledError during critical section execution"
 ) -> _CORO_TV:
     """
     Shields coroutine from cancellation and waits until it finished.
@@ -67,10 +76,7 @@ class ContextVarExecutor(ThreadPoolExecutor):
 
     def submit(self, fn: Callable[..., _SUBMIT_RT], /, *args: Any, **kwargs: Any) -> Future[_SUBMIT_RT]:
         ctx = contextvars.copy_context()  # type: contextvars.Context
-        fut = super().submit(cast(
-            Callable[..., _SUBMIT_RT],
-            partial(ctx.run, partial(fn, *args, **kwargs))
-        ))
+        fut = super().submit(cast(Callable[..., _SUBMIT_RT], partial(ctx.run, partial(fn, *args, **kwargs))))
         # TODO FIX: Periodically cleanup set
         self._futures_set.add(fut)
         return fut
@@ -90,8 +96,8 @@ _ITERABLE_T = TypeVar("_ITERABLE_T")
 
 
 def to_sync_iterable(
-        async_iterable: AsyncIterable[_ITERABLE_T],
-        loop: Optional[asyncio.AbstractEventLoop] = None,
+    async_iterable: AsyncIterable[_ITERABLE_T],
+    loop: Optional[asyncio.AbstractEventLoop] = None,
 ) -> Iterable[_ITERABLE_T]:
     actual_loop = asyncio.get_event_loop() if loop is None else loop
 
@@ -107,7 +113,7 @@ def to_sync_iterable(
 
 
 async def alist(aiterable: AsyncIterable[_ITERABLE_T]) -> List[_ITERABLE_T]:
-    """ Gather an async iterable into a single list """
+    """Gather an async iterable into a single list"""
     result = []
     async for item in aiterable:
         result.append(item)

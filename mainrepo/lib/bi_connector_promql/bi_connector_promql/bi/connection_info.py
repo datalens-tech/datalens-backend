@@ -4,4 +4,4 @@ from bi_connector_promql.bi.i18n.localizer import Translatable
 
 
 class PromQLConnectionInfoProvider(ConnectionInfoProvider):
-    title_translatable = Translatable('label_connector-promql')
+    title_translatable = Translatable("label_connector-promql")

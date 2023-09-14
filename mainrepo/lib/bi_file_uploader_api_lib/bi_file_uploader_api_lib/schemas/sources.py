@@ -1,18 +1,29 @@
 from __future__ import annotations
 
-from typing import Any, Type
+from typing import (
+    Any,
+    Type,
+)
 
 import marshmallow as ma
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import BIType, FileProcessingStatus
-from bi_core.db.native_type_schema import OneOfNativeTypeSchema
+from bi_constants.enums import (
+    BIType,
+    FileProcessingStatus,
+)
 from bi_core.db.elements import SchemaColumn
-
-from bi_file_uploader_lib.enums import FileType, CSVEncoding, CSVDelimiter
-
+from bi_core.db.native_type_schema import OneOfNativeTypeSchema
 from bi_file_uploader_api_lib.schemas.base import BaseRequestSchema
-from bi_file_uploader_api_lib.schemas.errors import ErrorInfoSchema, FileProcessingErrorApiSchema
+from bi_file_uploader_api_lib.schemas.errors import (
+    ErrorInfoSchema,
+    FileProcessingErrorApiSchema,
+)
+from bi_file_uploader_lib.enums import (
+    CSVDelimiter,
+    CSVEncoding,
+    FileType,
+)
 
 
 class SourceInfoBaseRequestSchema(BaseRequestSchema):
@@ -36,7 +47,7 @@ class RawSchemaColumnSchema(ma.Schema):
     native_type = ma.fields.Nested(OneOfNativeTypeSchema, allow_none=True, load_default=None)
 
     user_type = ma.fields.Enum(BIType)
-    description = ma.fields.String(dump_default='', allow_none=True, load_default='')
+    description = ma.fields.String(dump_default="", allow_none=True, load_default="")
     has_auto_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True, load_default=False)
     lock_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True, load_default=False)
     nullable = ma.fields.Boolean(dump_default=None, allow_none=True, load_default=None)
@@ -44,14 +55,14 @@ class RawSchemaColumnSchema(ma.Schema):
     @ma.post_load
     def make_column(self, data: dict, **kwargs: Any) -> SchemaColumn:
         return SchemaColumn(
-            name=data['name'],
-            title=data['title'],
-            user_type=data['user_type'],
-            native_type=data['native_type'],
-            description=data.get('description', ''),
-            has_auto_aggregation=data.get('has_auto_aggregation', False),
-            lock_aggregation=data.get('lock_aggregation', False),
-            nullable=data['nullable'],
+            name=data["name"],
+            title=data["title"],
+            user_type=data["user_type"],
+            native_type=data["native_type"],
+            description=data.get("description", ""),
+            has_auto_aggregation=data.get("has_auto_aggregation", False),
+            lock_aggregation=data.get("lock_aggregation", False),
+            nullable=data["nullable"],
         )
 
 
@@ -64,7 +75,7 @@ class FileTypeOneOfSchema(OneOfSchema):
         unknown = ma.EXCLUDE
 
     type_field_remove = True
-    type_field = 'file_type'
+    type_field = "file_type"
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:
         type_field = obj[self.type_field] if isinstance(obj, dict) else getattr(obj, self.type_field)
@@ -124,7 +135,7 @@ class SourceInfoResultSchema(ma.Schema):
     file_type = ma.fields.Enum(FileType)
     errors = ma.fields.Nested(ErrorInfoSchema, many=True)
     source = ma.fields.Nested(SourceInfoSchema)
-    data_settings = ma.fields.Nested(CSVSettingsSchema)     # TODO: One of schema by file_type
+    data_settings = ma.fields.Nested(CSVSettingsSchema)  # TODO: One of schema by file_type
     options = ma.fields.Nested(OptionsSchema, allow_none=True)
 
 

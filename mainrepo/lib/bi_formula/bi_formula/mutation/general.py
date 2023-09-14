@@ -1,15 +1,19 @@
 from __future__ import annotations
 
 import abc
-import logging
 from functools import cached_property
 from itertools import chain
-from typing import Any, Callable, Optional, Tuple
+import logging
+from typing import (
+    Any,
+    Callable,
+    Optional,
+    Tuple,
+)
 
-import bi_formula.core.nodes as nodes
 from bi_formula.core.dialect import DialectCombo
+import bi_formula.core.nodes as nodes
 from bi_formula.mutation.mutation import FormulaMutation
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,12 +27,16 @@ class IgnoreParenthesisWrapperMutation(FormulaMutation):
     """
 
     def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> bool:
         return type(node) is nodes.ParenthesizedExpr and node.level_tag is None
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.ParenthesizedExpr)
         return old.expr
@@ -40,28 +48,32 @@ class ConvertBlocksToFunctionsMutation(FormulaMutation):
     """
 
     def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> bool:
         return isinstance(node, nodes.IfBlock) or isinstance(node, nodes.IfBlock)
 
     def _make_replacement_for_if_block(self, node: nodes.IfBlock) -> nodes.FuncCall:
         args: list[nodes.FormulaItem] = [
             *chain.from_iterable(if_part.children for if_part in node.if_list),  # type: ignore
-            node.else_expr
+            node.else_expr,
         ]
-        return nodes.FuncCall.make('if', args=args, meta=node.meta)
+        return nodes.FuncCall.make("if", args=args, meta=node.meta)
 
     def _make_replacement_for_case_block(self, node: nodes.CaseBlock) -> nodes.FuncCall:
         args: list[nodes.FormulaItem] = [
             node.case_expr,
-            *chain.from_iterable(when_part.children for when_part in node.when_list)  # type: ignore
+            *chain.from_iterable(when_part.children for when_part in node.when_list),  # type: ignore
         ]
         if node.else_expr is not None:
             args.append(node.else_expr)
-        return nodes.FuncCall.make('case', args=args, meta=node.meta)
+        return nodes.FuncCall.make("case", args=args, meta=node.meta)
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         if isinstance(old, nodes.IfBlock):
             return self._make_replacement_for_if_block(old)
@@ -78,14 +90,16 @@ class OptimizeConstComparisonMutation(FormulaMutation):
     """
 
     _opt_ops = {
-        '==': lambda left, right: left == right,
-        '_==': lambda left, right: left == right,
-        '!=': lambda left, right: left != right,
-        '_!=': lambda left, right: left != right,
+        "==": lambda left, right: left == right,
+        "_==": lambda left, right: left == right,
+        "!=": lambda left, right: left != right,
+        "_!=": lambda left, right: left != right,
     }
 
     def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> bool:
         return (
             isinstance(node, nodes.Binary)
@@ -99,7 +113,9 @@ class OptimizeConstComparisonMutation(FormulaMutation):
         )
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.Binary)
         left, right = old.left, old.right
@@ -111,7 +127,7 @@ class OptimizeConstComparisonMutation(FormulaMutation):
 
 class OptimizeUnaryBoolFunctions(FormulaMutation):
     _opt_ops: dict[str, dict[Optional[DialectCombo], Callable[[Any], bool]]] = {
-        'isnull': {None: lambda node: node is None},
+        "isnull": {None: lambda node: node is None},
     }
 
     def __init__(self, dialects: DialectCombo):
@@ -135,9 +151,7 @@ class OptimizeUnaryBoolFunctions(FormulaMutation):
                     opt_ops[k] = v[None]
         return opt_ops
 
-    def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
-    ) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
         return (
             isinstance(node, nodes.OperationCall)
             and len(node.args) == 1
@@ -146,7 +160,7 @@ class OptimizeUnaryBoolFunctions(FormulaMutation):
         )
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.OperationCall)
         f = self.opt_ops[old.name]
@@ -168,18 +182,20 @@ class OptimizeConstAndOrMutation(FormulaMutation):
     """
 
     _opt_ops = {
-        'and': {
+        "and": {
             True: lambda node, meta: node,
             False: lambda node, meta: nodes.LiteralBoolean.make(value=False, meta=meta),
         },
-        'or': {
+        "or": {
             True: lambda node, meta: nodes.LiteralBoolean.make(value=True, meta=meta),
             False: lambda node, meta: node,
         },
     }
 
     def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> bool:
         return (
             isinstance(node, nodes.Binary)
@@ -190,7 +206,9 @@ class OptimizeConstAndOrMutation(FormulaMutation):
         )
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.Binary)
 
@@ -224,7 +242,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
 
     class IfFuncOptimizer(ConstFuncOptimizer):
         def can_optimize(self, node: nodes.FuncCall) -> bool:
-            assert node.name == 'if'
+            assert node.name == "if"
             assert len(node.args) % 2 == 1
             for cond_arg in node.args[:-1:2]:  # excluding the last one (the "else" part) with a step of 2
                 if isinstance(cond_arg, nodes.BaseLiteral):
@@ -257,11 +275,11 @@ class OptimizeConstFuncMutation(FormulaMutation):
             if len(new_args) == 1:  # All conditions turned out to be false (only "else" in new args)
                 return node.args[-1]  # the "else"
 
-            return nodes.FuncCall.make('if', args=new_args, meta=node.meta)
+            return nodes.FuncCall.make("if", args=new_args, meta=node.meta)
 
     class CaseFuncOptimizer(ConstFuncOptimizer):
         def can_optimize(self, node: nodes.FuncCall) -> bool:
-            assert node.name == 'case'
+            assert node.name == "case"
             assert len(node.args) % 2 == 0 and len(node.args) >= 2
             if isinstance(node.args[0], nodes.BaseLiteral):
                 # the CASE expression needs to be a const for the optimization
@@ -305,16 +323,17 @@ class OptimizeConstFuncMutation(FormulaMutation):
             if len(new_args) == 2:  # All conditions turned out to be false
                 return node.args[-1]  # the "else"
 
-            return nodes.FuncCall.make('case', args=new_args, meta=node.meta)
-
+            return nodes.FuncCall.make("case", args=new_args, meta=node.meta)
 
     _func_optimizers: dict[str, ConstFuncOptimizer] = {
-        'if': IfFuncOptimizer(),
-        'case': CaseFuncOptimizer(),
+        "if": IfFuncOptimizer(),
+        "case": CaseFuncOptimizer(),
     }
 
     def match_node(
-            self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> bool:
         return (
             isinstance(node, nodes.FuncCall)
@@ -325,7 +344,9 @@ class OptimizeConstFuncMutation(FormulaMutation):
         )
 
     def make_replacement(
-            self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
 

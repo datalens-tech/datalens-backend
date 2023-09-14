@@ -4,31 +4,42 @@ import abc
 import asyncio
 import contextlib
 import ssl
-from typing import TYPE_CHECKING, Dict, Generator, Optional, Sequence, Tuple, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    Generator,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
+)
 
+from aiohttp.client import (
+    ClientSession,
+    ClientTimeout,
+)
 import aiohttp.client_exceptions
 import attr
-from aiohttp.client import ClientSession, ClientTimeout
 
 from bi_configs.utils import get_root_certificates_path
-
-from bi_core.connection_executors.adapters.async_adapters_base import AsyncDirectDBAdapter
 from bi_core import exc
+from bi_core.connection_executors.adapters.async_adapters_base import AsyncDirectDBAdapter
 
 if TYPE_CHECKING:
     from aiohttp import BasicAuth
 
-    from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
     from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+    from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 
 
-_DBA_TV = TypeVar('_DBA_TV', bound='AiohttpDBAdapter')
+_DBA_TV = TypeVar("_DBA_TV", bound="AiohttpDBAdapter")
 
 
 @attr.s
 class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
-    """ Common base for adapters that primarily use an aiohttp client """
+    """Common base for adapters that primarily use an aiohttp client"""
 
     # TODO?: commonize some of the CTDTO attributes such as connect_timeout?
     _target_dto: ConnTargetDTO = attr.ib()
@@ -46,7 +57,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
             headers=self.get_session_headers(),
             connector=self.create_aiohttp_connector(
                 ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())
-            )
+            ),
         )
 
     def create_aiohttp_connector(self, ssl_context: Optional[ssl.SSLContext]) -> aiohttp.TCPConnector:
@@ -56,10 +67,10 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
 
     @classmethod
     def create(
-            cls: Type[_DBA_TV],
-            target_dto: ConnTargetDTO,
-            req_ctx_info: DBAdapterScopedRCI,
-            default_chunk_size: int,
+        cls: Type[_DBA_TV],
+        target_dto: ConnTargetDTO,
+        req_ctx_info: DBAdapterScopedRCI,
+        default_chunk_size: int,
     ) -> _DBA_TV:
         return cls(
             target_dto=target_dto,
@@ -77,7 +88,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     def get_session_headers(self) -> Dict[str, str]:
         return {
             # TODO: bi_constants / bi_configs.constants
-            'user-agent': 'DataLens',
+            "user-agent": "DataLens",
         }
 
     async def close(self) -> None:
@@ -104,7 +115,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
                     raise exc.RSTError() from pre_err
                 raise
             except aiohttp.client_exceptions.ServerTimeoutError as aiohttp_timeout_err:
-                if aiohttp_timeout_err.args[0].startswith('Connection timeout'):
+                if aiohttp_timeout_err.args[0].startswith("Connection timeout"):
                     # https://github.com/aio-libs/aiohttp/blob/3.8/aiohttp/client.py#L541
                     raise exc.AIOHttpConnTimeoutError() from aiohttp_timeout_err
                 raise

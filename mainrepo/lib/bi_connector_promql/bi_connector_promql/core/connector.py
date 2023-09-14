@@ -1,23 +1,26 @@
-from bi_connector_promql.core.storage_schemas.connection import PromQLConnectionDataStorageSchema
-
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
 )
 
+from bi_connector_promql.core.adapter import (
+    AsyncPromQLAdapter,
+    PromQLAdapter,
+)
+from bi_connector_promql.core.connection_executors import (
+    PromQLAsyncAdapterConnExecutor,
+    PromQLConnExecutor,
+)
 from bi_connector_promql.core.constants import (
     BACKEND_TYPE_PROMQL,
     CONNECTION_TYPE_PROMQL,
     SOURCE_TYPE_PROMQL,
 )
-from bi_connector_promql.core.adapter import AsyncPromQLAdapter, PromQLAdapter
-from bi_connector_promql.core.connection_executors import (
-    PromQLConnExecutor, PromQLAsyncAdapterConnExecutor,
-)
+from bi_connector_promql.core.data_source import PromQLDataSource
+from bi_connector_promql.core.storage_schemas.connection import PromQLConnectionDataStorageSchema
 from bi_connector_promql.core.type_transformer import PromQLTypeTransformer
 from bi_connector_promql.core.us_connection import PromQLConnection
-from bi_connector_promql.core.data_source import PromQLDataSource
 
 
 class PromQLCoreConnectionDefinition(CoreConnectionDefinition):
@@ -27,7 +30,7 @@ class PromQLCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = PromQLTypeTransformer
     sync_conn_executor_cls = PromQLConnExecutor
     async_conn_executor_cls = PromQLAsyncAdapterConnExecutor
-    dialect_string = 'bi_promql'
+    dialect_string = "bi_promql"
 
 
 class PromQLCoreSourceDefinition(CoreSourceDefinition):
@@ -37,10 +40,6 @@ class PromQLCoreSourceDefinition(CoreSourceDefinition):
 
 class PromQLCoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_PROMQL
-    connection_definitions = (
-        PromQLCoreConnectionDefinition,
-    )
-    source_definitions = (
-        PromQLCoreSourceDefinition,
-    )
+    connection_definitions = (PromQLCoreConnectionDefinition,)
+    source_definitions = (PromQLCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({AsyncPromQLAdapter, PromQLAdapter})

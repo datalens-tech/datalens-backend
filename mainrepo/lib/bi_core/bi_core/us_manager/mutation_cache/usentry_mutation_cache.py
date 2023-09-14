@@ -3,16 +3,20 @@ import datetime
 import json
 import logging
 import time
-from typing import Type, Optional, Tuple, Dict
+from typing import (
+    Dict,
+    Optional,
+    Tuple,
+    Type,
+)
 
-import redis.exceptions
 import attr
 from redis.asyncio import Redis
+import redis.exceptions
 
 from bi_core.us_entry import USEntry
 from bi_core.us_manager.mutation_cache.mutation_key_base import MutationKey
 from bi_core.us_manager.us_manager import USManagerBase
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -57,14 +61,14 @@ class RedisCacheEngine(GenericCacheEngine):
         try:
             await self.redis.set(name=key, value=data, ex=datetime.timedelta(seconds=ttl))
         except redis.exceptions.ConnectionError as e:
-            LOGGER.warning('Error while saving to redis cache: connection error')
+            LOGGER.warning("Error while saving to redis cache: connection error")
             raise MutationCacheError() from e
 
     async def load(self, key: str) -> Optional[str]:
         try:
             return await self.redis.get(key)
         except redis.exceptions.ConnectionError as e:
-            LOGGER.warning('Error while loading from redis cache: connection error')
+            LOGGER.warning("Error while loading from redis cache: connection error")
             raise MutationCacheError() from e
 
 
@@ -87,9 +91,9 @@ class USEntryMutationCache:
 
     def _prepare_cache_data(self, entry: USEntry, mutation_key: MutationKey) -> str:
         serialized_entry = self._usm._get_entry_save_params(entry)
-        serialized_entry['key'] = entry.raw_us_key
-        serialized_entry['entryId'] = entry.uuid
-        serialized_entry['unversionedData'] = serialized_entry.pop('unversioned_data')
+        serialized_entry["key"] = entry.raw_us_key
+        serialized_entry["entryId"] = entry.uuid
+        serialized_entry["unversionedData"] = serialized_entry.pop("unversioned_data")
         return self._dump_raw_cache_data(mutation_key.get_collision_tier_breaker(), serialized_entry)
 
     def _restore_entry_from_cache_representation(self, data: str) -> USEntry:
@@ -99,7 +103,7 @@ class USEntryMutationCache:
     async def save_mutation_cache(self, entry: USEntry, mutation_key: MutationKey) -> None:
         key = USEntryMutationCacheKey(
             scope=entry.scope,  # type: ignore  # TODO: Fix
-            entry_id=entry.uuid,   # type: ignore  # TODO: Fix
+            entry_id=entry.uuid,  # type: ignore  # TODO: Fix
             entry_revision_id=entry.revision_id,
             mutation_key_hash=mutation_key.get_hash(),
         )
@@ -107,42 +111,41 @@ class USEntryMutationCache:
         try:
             await self._cache_engine.save(key=key.to_string(), data=data, ttl=self._default_ttl)
         except MutationCacheError:
-            LOGGER.warning('Error saving to cache', exc_info=True)
+            LOGGER.warning("Error saving to cache", exc_info=True)
 
     @classmethod
     def _load_raw_cache_data(cls, data: str) -> Tuple[str, str]:
         all_data: dict = json.loads(data)
         return (
-            all_data['collision_meta'],
-            all_data['us_entry_data'],
+            all_data["collision_meta"],
+            all_data["us_entry_data"],
         )
 
     @classmethod
     def _dump_raw_cache_data(cls, collision_meta: str, us_entry_data: dict) -> str:
-        return json.dumps({
-            'us_entry_data': json.dumps(us_entry_data),
-            'collision_meta': collision_meta
-        }, ensure_ascii=True)
+        return json.dumps(
+            {"us_entry_data": json.dumps(us_entry_data), "collision_meta": collision_meta}, ensure_ascii=True
+        )
 
     # TODO FIX: Consider passing whole USEntry to decrease possibility of unauthorized access to cache
     async def get_mutated_entry_from_cache(
-            self,
-            expected_type: Type[USEntry],
-            entry_id: str,
-            revision_id: str,
-            mutation_key: MutationKey,
+        self,
+        expected_type: Type[USEntry],
+        entry_id: str,
+        revision_id: str,
+        mutation_key: MutationKey,
     ) -> Optional[USEntry]:
         key = USEntryMutationCacheKey(
-            scope=expected_type.scope,   # type: ignore  # TODO: Fix
+            scope=expected_type.scope,  # type: ignore  # TODO: Fix
             entry_id=entry_id,
             entry_revision_id=revision_id,
-            mutation_key_hash=mutation_key.get_hash()
+            mutation_key_hash=mutation_key.get_hash(),
         )
 
         try:
             data = await self._cache_engine.load(key.to_string())
         except MutationCacheError:
-            LOGGER.warning('Error loading from cache', exc_info=True)
+            LOGGER.warning("Error loading from cache", exc_info=True)
             return None
 
         if data is None:

@@ -1,7 +1,9 @@
-from typing import ClassVar, Type
+from typing import (
+    ClassVar,
+    Type,
+)
 
 from bi_constants.enums import ProcessorType
-
 from bi_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
 
 

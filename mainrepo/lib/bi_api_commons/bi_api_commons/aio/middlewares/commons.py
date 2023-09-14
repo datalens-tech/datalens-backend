@@ -5,7 +5,10 @@ from typing import Optional
 from aiohttp import web
 
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
-from bi_api_commons.logging import CompositeLoggingContextController, RequestLoggingContextController
+from bi_api_commons.logging import (
+    CompositeLoggingContextController,
+    RequestLoggingContextController,
+)
 
 
 def get_root_logging_context_controller(request: web.Request) -> CompositeLoggingContextController:

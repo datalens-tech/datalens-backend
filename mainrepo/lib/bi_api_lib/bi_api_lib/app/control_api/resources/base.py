@@ -2,25 +2,27 @@ from __future__ import annotations
 
 import os
 import re
-from typing import Optional, Any
+from typing import (
+    Any,
+    Optional,
+)
 
 import flask
-
-from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
-from bi_core.us_manager.us_manager_sync import SyncUSManager
 from flask_restx import Resource
 
-from bi_api_lib import api_decorators
+from bi_api_commons.base_models import RequestContextInfo
+from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_api_connector.api_schema.extras import OperationsMode
+from bi_api_lib import api_decorators
 from bi_api_lib.schemas.tools import prepare_schema_context
+from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
+from bi_core.us_manager.us_manager_sync import SyncUSManager
 
-PROFILE_REQUESTS = os.environ.get('PROFILE_REQUESTS', '')
-PROFILE_REQ_CLASSES = {v for v in set(os.environ.get('PROFILE_REQ_CLASSES', '').split(',')) if v}
-PROFILE_REQ_METHODS = {v for v in set(os.environ.get('PROFILE_REQ_METHODS', '').lower().split(',')) if v}
-PROFILE_REQ_PATH_RE = os.environ.get('PROFILE_REQ_PATH_RE')
+PROFILE_REQUESTS = os.environ.get("PROFILE_REQUESTS", "")
+PROFILE_REQ_CLASSES = {v for v in set(os.environ.get("PROFILE_REQ_CLASSES", "").split(",")) if v}
+PROFILE_REQ_METHODS = {v for v in set(os.environ.get("PROFILE_REQ_METHODS", "").lower().split(",")) if v}
+PROFILE_REQ_PATH_RE = os.environ.get("PROFILE_REQ_PATH_RE")
 
 # When turning on the profiler try to be as specific as possible. Example:
 # PROFILE_REQUESTS="/tmp/cprofiler/"
@@ -41,7 +43,7 @@ def _profile_request_check(*args, **kwargs) -> bool:  # type: ignore  # TODO: fi
     return True
 
 
-COMMON_INFO_HEADERS = ('Referer', 'X-Chart-Id')  # TODO: bi-common
+COMMON_INFO_HEADERS = ("Referer", "X-Chart-Id")  # TODO: bi-common
 
 
 class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
@@ -64,14 +66,11 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
                     return getattr(base, attr_name)
 
     def __new__(mcs, name, bases, attrs):  # type: ignore  # TODO: fix
-        profile_methods = mcs._get_future_class_attr(bases, attrs, 'profile_methods')
+        profile_methods = mcs._get_future_class_attr(bases, attrs, "profile_methods")
         if PROFILE_REQ_METHODS:
             profile_methods = set(profile_methods) & PROFILE_REQ_METHODS
 
-        if (
-                PROFILE_REQUESTS and profile_methods
-                and (not PROFILE_REQ_CLASSES or (name in PROFILE_REQ_CLASSES))
-        ):
+        if PROFILE_REQUESTS and profile_methods and (not PROFILE_REQ_CLASSES or (name in PROFILE_REQ_CLASSES)):
             # enable request profiler
             stats_dir = os.path.join(PROFILE_REQUESTS, name)
             attrs = {
@@ -80,10 +79,11 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
                     api_decorators.with_profiler_stats(
                         os.path.join(stats_dir, meth_name),
                         # turn on checker only if there is something to check
-                        condition_check=_profile_request_check if PROFILE_REQ_PATH_RE else None
+                        condition_check=_profile_request_check if PROFILE_REQ_PATH_RE else None,
                     )(method)
                     if meth_name in profile_methods
-                    else method)
+                    else method
+                )
                 for meth_name, method in attrs.items()
             }
 
@@ -92,14 +92,14 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
 
 class BIResource(Resource, metaclass=BIResourceMeta):
     """Base class for all BI handler classes"""
+
     @classmethod
     def get_current_rci(cls) -> RequestContextInfo:
         return ReqCtxInfoMiddleware.get_request_context_info()
 
     @classmethod
     def get_schema_ctx(
-        cls,
-        schema_operations_mode: Optional[OperationsMode] = None, editable_object: Any = None
+        cls, schema_operations_mode: Optional[OperationsMode] = None, editable_object: Any = None
     ) -> dict:
         return prepare_schema_context(
             usm=cls.get_us_manager(),
@@ -121,4 +121,4 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         assert isinstance(service_registry, BiApiServiceRegistry)
         return service_registry
 
-    profile_methods = ('get', 'post', 'delete', 'put', 'patch', 'options', 'head')
+    profile_methods = ("get", "post", "delete", "put", "patch", "options", "head")

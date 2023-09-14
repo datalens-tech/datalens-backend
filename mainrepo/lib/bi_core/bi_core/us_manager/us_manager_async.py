@@ -1,48 +1,62 @@
 from __future__ import annotations
 
-import logging
 from contextlib import asynccontextmanager
+import logging
 from typing import (
-    TYPE_CHECKING, Any, AsyncGenerator, AsyncIterable, Iterable, Optional, Type, TypeVar, Union, overload,
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    AsyncIterable,
+    Iterable,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    overload,
 )
 
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_utils.aio import shield_wait_for_complete
-
-from bi_core import exc
-from bi_core.base_models import ConnectionRef, DefaultConnectionRef
 from bi_api_commons.base_models import RequestContextInfo
 from bi_app_tools.profiling_base import generic_profiler_async
+from bi_configs.crypto_keys import CryptoKeysConfig
+from bi_core import exc
+from bi_core.base_models import (
+    ConnectionRef,
+    DefaultConnectionRef,
+)
 from bi_core.united_storage_client import USAuthContextBase
 from bi_core.united_storage_client_aio import UStorageClientAIO
 from bi_core.us_connection_base import ConnectionBase
 from bi_core.us_dataset import Dataset
 from bi_core.us_entry import USEntry
-from bi_core.us_manager.broken_link import BrokenUSLink, BrokenUSLinkErrorKind
+from bi_core.us_manager.broken_link import (
+    BrokenUSLink,
+    BrokenUSLinkErrorKind,
+)
 from bi_core.us_manager.us_manager import USManagerBase
+from bi_utils.aio import shield_wait_for_complete
 
 if TYPE_CHECKING:
-    from bi_core.services_registry import ServicesRegistry
     from bi_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase
+    from bi_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
 
-_ENTRY_TV = TypeVar('_ENTRY_TV', bound=USEntry)
+_ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
 
 
 class AsyncUSManager(USManagerBase):
     _us_client: UStorageClientAIO
 
     def __init__(
-            self,
-            us_auth_context: USAuthContextBase,
-            us_base_url: str,
-            bi_context: RequestContextInfo,
-            services_registry: ServicesRegistry,
-            crypto_keys_config: Optional[CryptoKeysConfig] = None,
-            us_api_prefix: Optional[str] = None,
-            lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        self,
+        us_auth_context: USAuthContextBase,
+        us_base_url: str,
+        bi_context: RequestContextInfo,
+        services_registry: ServicesRegistry,
+        crypto_keys_config: Optional[CryptoKeysConfig] = None,
+        us_api_prefix: Optional[str] = None,
+        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
     ):
         self._us_client = UStorageClientAIO(
             host=us_base_url,
@@ -100,8 +114,8 @@ class AsyncUSManager(USManagerBase):
     @generic_profiler_async("us-fetch-entity")  # type: ignore  # TODO: fix
     async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
         with self._enrich_us_exception(
-                entry_id=entry_id,
-                entry_scope=expected_type.scope if expected_type is not None else None,
+            entry_id=entry_id,
+            entry_scope=expected_type.scope if expected_type is not None else None,
         ):
             us_resp = await self._us_client.get_entry(entry_id)
 
@@ -114,9 +128,9 @@ class AsyncUSManager(USManagerBase):
         self.get_lifecycle_manager(entry=entry).pre_save_hook()
 
         save_params = self._get_entry_save_params(entry)
-        us_scope = save_params.pop('scope')
-        us_type = save_params.pop('type')
-        assert 'data' in save_params and 'unversioned_data' in save_params
+        us_scope = save_params.pop("scope")
+        us_type = save_params.pop("type")
+        assert "data" in save_params and "unversioned_data" in save_params
 
         # noinspection PyProtectedMember
         if not entry._stored_in_db:
@@ -129,15 +143,11 @@ class AsyncUSManager(USManagerBase):
                 type_=us_type,
                 **save_params,
             )
-            entry.uuid = resp['entryId']
+            entry.uuid = resp["entryId"]
             entry._stored_in_db = True
         else:
             # noinspection PyProtectedMember
-            resp = await self._us_client.update_entry(
-                entry.uuid,
-                lock=entry._lock,
-                **save_params
-            )
+            resp = await self._us_client.update_entry(entry.uuid, lock=entry._lock, **save_params)
 
         entry._us_resp = resp
 
@@ -168,12 +178,12 @@ class AsyncUSManager(USManagerBase):
 
     @asynccontextmanager  # type: ignore  # TODO: fix
     async def locked_entry_cm(
-            self,
-            entry_id: str,
-            expected_type: Type[_ENTRY_TV],
-            wait_timeout_sec: int = 30,
-            duration_sec: int = 300,
-            force: bool = False,
+        self,
+        entry_id: str,
+        expected_type: Type[_ENTRY_TV],
+        wait_timeout_sec: int = 30,
+        duration_sec: int = 300,
+        force: bool = False,
     ) -> AsyncGenerator[_ENTRY_TV, None]:
         entry: Optional[_ENTRY_TV] = None
         lock_token = await self._us_client.acquire_lock(
@@ -191,13 +201,15 @@ class AsyncUSManager(USManagerBase):
 
         finally:
             await shield_wait_for_complete(self._us_client.release_lock(entry_id, lock_token))
-            if entry is not None and hasattr(entry, '_lock'):
+            if entry is not None and hasattr(entry, "_lock"):
                 entry._lock = None
 
     async def ensure_entry_preloaded(self, conn_ref: ConnectionRef) -> None:
         await self._ensure_conn_in_cache(None, conn_ref)
 
-    async def _ensure_conn_in_cache(self, referrer: Optional[USEntry], conn_ref: ConnectionRef) -> Optional[ConnectionBase]:
+    async def _ensure_conn_in_cache(
+        self, referrer: Optional[USEntry], conn_ref: ConnectionRef
+    ) -> Optional[ConnectionBase]:
         conn: Union[USEntry, BrokenUSLink]
         if conn_ref in self._loaded_entries:
             conn = self._loaded_entries[conn_ref]
@@ -206,11 +218,14 @@ class AsyncUSManager(USManagerBase):
                 assert isinstance(conn_ref, DefaultConnectionRef)
                 conn = await self.get_by_id(conn_ref.conn_id, ConnectionBase)
             except (exc.USObjectNotFoundException, exc.USAccessDeniedException) as err:
-                r_scope = referrer.scope if referrer is not None else 'unk'
-                r_uuid = referrer.uuid if referrer is not None else 'unk'
+                r_scope = referrer.scope if referrer is not None else "unk"
+                r_uuid = referrer.uuid if referrer is not None else "unk"
                 LOGGER.info(
                     "Can not load dependency for parent=%s/%s: connection %s (%s)",
-                    r_scope, r_uuid, conn_ref, err.message
+                    r_scope,
+                    r_uuid,
+                    conn_ref,
+                    err.message,
                 )
                 err_kind = {
                     exc.USObjectNotFoundException: BrokenUSLinkErrorKind.NOT_FOUND,
@@ -256,10 +271,10 @@ class AsyncUSManager(USManagerBase):
             )
 
     def get_raw_collection(
-            self,
-            entry_scope: str,
-            entry_type: Optional[str] = None,
-            all_tenants: bool = False,
+        self,
+        entry_scope: str,
+        entry_type: Optional[str] = None,
+        all_tenants: bool = False,
     ) -> AsyncIterable[dict]:
         return self._us_client.entries_iterator(
             scope=entry_scope,
@@ -269,16 +284,16 @@ class AsyncUSManager(USManagerBase):
         )
 
     async def get_collection(
-            self,
-            entry_cls: Optional[Type[USEntry]],
-            entry_type: Optional[str] = None,
-            entry_scope: Optional[str] = None,
-            meta: Optional[dict[str, Union[str, int, None]]] = None,
-            all_tenants: bool = False,
-            include_data: bool = True,
-            ids: Optional[Iterable[str]] = None,
-            creation_time: Optional[dict[str, Union[str, int, None]]] = None,
-            raise_on_broken_entry: bool = False,
+        self,
+        entry_cls: Optional[Type[USEntry]],
+        entry_type: Optional[str] = None,
+        entry_scope: Optional[str] = None,
+        meta: Optional[dict[str, Union[str, int, None]]] = None,
+        all_tenants: bool = False,
+        include_data: bool = True,
+        ids: Optional[Iterable[str]] = None,
+        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        raise_on_broken_entry: bool = False,
     ) -> AsyncGenerator[USEntry, None]:
         if all_tenants and include_data:
             raise ValueError("all_tenants and include_data cannot both be True")
@@ -313,6 +328,6 @@ class AsyncUSManager(USManagerBase):
                     obj: USEntry = self._entry_dict_to_obj(us_resp, entry_cls)
                     yield obj
                 except Exception:
-                    LOGGER.exception('Failed to load US object: %s', us_resp)
+                    LOGGER.exception("Failed to load US object: %s", us_resp)
                     if raise_on_broken_entry:
                         raise

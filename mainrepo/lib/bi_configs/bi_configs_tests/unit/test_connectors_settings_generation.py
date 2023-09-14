@@ -1,32 +1,30 @@
-import attr
-from attr import fields
-
 from typing import Optional
 
-from bi_constants.enums import ConnectionType
+import attr
+from attr import fields
 
 from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_configs.settings_loaders.connectors_settings import generate_connectors_settings_class
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
+from bi_constants.enums import ConnectionType
 
-
-CONNECTION_TYPE_APPALLING = ConnectionType.declare('appalling')
-CONNECTION_TYPE_EMPTY_YET_COOL = ConnectionType.declare('empty_yet_cool')
-CONNECTION_TYPE_FANTASTIC = ConnectionType.declare('fantastic')
-CONNECTION_TYPE_WONDERFUL = ConnectionType.declare('wonderful')
+CONNECTION_TYPE_APPALLING = ConnectionType.declare("appalling")
+CONNECTION_TYPE_EMPTY_YET_COOL = ConnectionType.declare("empty_yet_cool")
+CONNECTION_TYPE_FANTASTIC = ConnectionType.declare("fantastic")
+CONNECTION_TYPE_WONDERFUL = ConnectionType.declare("wonderful")
 
 
 @attr.s(frozen=True)
 class WonderfulConnectorSettings(ConnectorSettingsBase):
-    WONDERFUL_STRING_SETTING: str = s_attrib('WONDERFUL_STRING_SETTING', missing=None)
-    WONDERFUL_LIST_OF_STRINGS_SETTING: list[str] = s_attrib('WONDERFUL_LIST_OF_STRINGS_SETTING', missing=None)
+    WONDERFUL_STRING_SETTING: str = s_attrib("WONDERFUL_STRING_SETTING", missing=None)
+    WONDERFUL_LIST_OF_STRINGS_SETTING: list[str] = s_attrib("WONDERFUL_LIST_OF_STRINGS_SETTING", missing=None)
 
 
 @attr.s(frozen=True)
 class FantasticConnectorSettings(ConnectorSettingsBase):
-    FANTASTIC_INTEGER_SETTING: int = s_attrib('FANTASTIC_INTEGER_SETTING', missing=None)
-    FANTASTIC_FLOAT_SETTING: float = s_attrib('FANTASTIC_FLOAT_SETTING', missing=None)
+    FANTASTIC_INTEGER_SETTING: int = s_attrib("FANTASTIC_INTEGER_SETTING", missing=None)
+    FANTASTIC_FLOAT_SETTING: float = s_attrib("FANTASTIC_FLOAT_SETTING", missing=None)
 
 
 @attr.s(frozen=True)
@@ -36,14 +34,14 @@ class EmptyYetCoolConnectorSettings(ConnectorSettingsBase):
 
 @attr.s(frozen=True)
 class AppallingConnectorSettings(ConnectorSettingsBase):
-    APPALING_SET_SETTING: set[int] = s_attrib('APPALING_SET_SETTING', missing=None)
+    APPALING_SET_SETTING: set[int] = s_attrib("APPALING_SET_SETTING", missing=None)
 
 
 @attr.s(frozen=True)
 class ExpectedConnectorsSettings(SettingsBase):
-    EMPTY_YET_COOL: Optional[EmptyYetCoolConnectorSettings] = s_attrib('EMPTY_YET_COOL', missing=None)
-    FANTASTIC: Optional[FantasticConnectorSettings] = s_attrib('FANTASTIC', missing=None)
-    WONDERFUL: Optional[WonderfulConnectorSettings] = s_attrib('WONDERFUL', missing=None)
+    EMPTY_YET_COOL: Optional[EmptyYetCoolConnectorSettings] = s_attrib("EMPTY_YET_COOL", missing=None)
+    FANTASTIC: Optional[FantasticConnectorSettings] = s_attrib("FANTASTIC", missing=None)
+    WONDERFUL: Optional[WonderfulConnectorSettings] = s_attrib("WONDERFUL", missing=None)
 
 
 def test_connectors_settings_class_generator():

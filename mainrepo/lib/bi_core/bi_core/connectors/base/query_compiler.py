@@ -1,15 +1,25 @@
 from __future__ import annotations
 
-from enum import Enum, unique
-from typing import ClassVar, List, Optional, Sequence, TYPE_CHECKING
-
-import sqlalchemy as sa
-from sqlalchemy.sql.expression import nullsfirst, nullslast
+from enum import (
+    Enum,
+    unique,
+)
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
+import sqlalchemy as sa
+from sqlalchemy.sql.expression import (
+    nullsfirst,
+    nullslast,
+)
 
 from bi_constants.enums import OrderDirection
-
 from bi_core import exc
 from bi_core.query.expression import ExpressionCtx
 
@@ -18,7 +28,10 @@ if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ClauseElement
     from sqlalchemy.sql.selectable import Select
 
-    from bi_core.query.bi_query import BIQuery, SqlSourceType
+    from bi_core.query.bi_query import (
+        BIQuery,
+        SqlSourceType,
+    )
     from bi_core.query.expression import OrderByExpressionCtx
 
 
@@ -35,10 +48,11 @@ class SectionAliasMode(Enum):
     In a more general case, this would be 'section priority order for placing
     the column expression with alias', but there's only 3 known cases anyway.
     """
-    aliased = 'aliased'
-    unaliased = 'unaliased'
-    by_alias_in_section = 'by_alias_in_section'
-    by_alias_in_select = 'by_alias_in_select'
+
+    aliased = "aliased"
+    unaliased = "unaliased"
+    by_alias_in_section = "by_alias_in_section"
+    by_alias_in_select = "by_alias_in_select"
 
 
 @attr.s(frozen=True)
@@ -55,7 +69,7 @@ class QueryCompiler:
 
     def aliased_column(self, expr_ctx: ExpressionCtx) -> ClauseElement:
         alias = expr_ctx.alias
-        assert alias, 'cannot refer to unaliased expr_ctx with an alias'
+        assert alias, "cannot refer to unaliased expr_ctx with an alias"
         return sa.literal_column(self.quote(alias))
 
     def make_select_expression(self, expr_ctx: ExpressionCtx, bi_query: BIQuery) -> ClauseElement:
@@ -70,10 +84,7 @@ class QueryCompiler:
         if self.groupby_alias_mode == SectionAliasMode.by_alias_in_section:
             return expr_with_alias
         if self.groupby_alias_mode == SectionAliasMode.by_alias_in_select:
-            is_in_group_by = any(
-                sel_expr_ctx.alias == expr_ctx.alias
-                for sel_expr_ctx in bi_query.group_by_expressions
-            )
+            is_in_group_by = any(sel_expr_ctx.alias == expr_ctx.alias for sel_expr_ctx in bi_query.group_by_expressions)
             if is_in_group_by:
                 return self.aliased_column(expr_ctx)
             return expr_with_alias
@@ -89,10 +100,7 @@ class QueryCompiler:
         if self.groupby_alias_mode == SectionAliasMode.unaliased:
             return expr
         if self.groupby_alias_mode == SectionAliasMode.by_alias_in_section:
-            is_selected = any(
-                sel_expr_ctx.alias == expr_ctx.alias
-                for sel_expr_ctx in bi_query.select_expressions
-            )
+            is_selected = any(sel_expr_ctx.alias == expr_ctx.alias for sel_expr_ctx in bi_query.select_expressions)
             if is_selected:
                 return self.aliased_column(expr_ctx)
             return expr
@@ -112,9 +120,7 @@ class QueryCompiler:
                 else (bi_query.select_expressions,)
             )
             return any(
-                prior_expr_ctx.alias == expr_ctx.alias
-                for section in prior_sections
-                for prior_expr_ctx in section
+                prior_expr_ctx.alias == expr_ctx.alias for section in prior_sections for prior_expr_ctx in section
             )
         raise Exception(f"Unexpected {self.orderby_alias_mode=!r}")
 
@@ -148,10 +154,9 @@ class QueryCompiler:
             """Unwrap ``ExpressionCtx`` objects to nested SA expressions"""
             return [ex.expression if isinstance(ex, ExpressionCtx) else ex for ex in ex_list]
 
-        query = sa.select([
-            self.make_select_expression(expr_ctx, bi_query=bi_query)
-            for expr_ctx in bi_query.select_expressions
-        ])
+        query = sa.select(
+            [self.make_select_expression(expr_ctx, bi_query=bi_query) for expr_ctx in bi_query.select_expressions]
+        )
 
         if sql_source is not None:  # support queries without `from`; mostly for gsheets
             query = query.select_from(sql_source)
@@ -165,10 +170,9 @@ class QueryCompiler:
         if bi_query.distinct:
             query = query.distinct()
 
-        query = query.group_by(*[
-            self.make_group_by_expression(expr_ctx, bi_query=bi_query)
-            for expr_ctx in bi_query.group_by_expressions
-        ])
+        query = query.group_by(
+            *[self.make_group_by_expression(expr_ctx, bi_query=bi_query) for expr_ctx in bi_query.group_by_expressions]
+        )
 
         for order_by_ctx in bi_query.order_by_expressions:
             query = query.order_by(self.make_order_by_expression(order_by_ctx, bi_query=bi_query))
@@ -177,7 +181,7 @@ class QueryCompiler:
             query = query.limit(bi_query.limit)
         if bi_query.offset is not None:
             if not bi_query.order_by_expressions:
-                raise exc.QueryConstructorError('Offset cannot be used without sorting')
+                raise exc.QueryConstructorError("Offset cannot be used without sorting")
             query = query.offset(bi_query.offset)
 
         return query

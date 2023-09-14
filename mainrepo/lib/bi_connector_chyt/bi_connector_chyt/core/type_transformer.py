@@ -1,15 +1,17 @@
 from typing import ClassVar
 
+from bi_constants.enums import BIType
+from bi_constants.enums import ConnectionType as CT
+from bi_core.db.conversion_base import (
+    TypeCaster,
+    YTBooleanTypeCaster,
+    make_native_type,
+)
+from bi_core.db.native_type import GenericNativeType
 from bi_sqlalchemy_chyt import types as chyt_types
 
-from bi_constants.enums import BIType, ConnectionType as CT
-
-from bi_core.db.conversion_base import YTBooleanTypeCaster, make_native_type, TypeCaster
-from bi_core.db.native_type import GenericNativeType
-
-from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-
 from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 
 def make_chyt_native_to_user_map(conn_type: CT) -> dict[GenericNativeType, BIType]:

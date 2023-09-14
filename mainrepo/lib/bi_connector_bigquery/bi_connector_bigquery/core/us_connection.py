@@ -1,20 +1,30 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar
+from typing import (
+    Callable,
+    ClassVar,
+)
 
 import attr
 
-from bi_utils.utils import DataKey
 from bi_core.base_models import (
-    ConnectionDataModelBase, ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
+    ConnCacheableDataModelMixin,
+    ConnectionDataModelBase,
+    ConnSubselectDataModelMixin,
+)
+from bi_core.connection_executors.sync_base import SyncConnExecutorBase
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    ConnectionSQL,
+    DataSourceTemplate,
 )
 from bi_i18n.localizer_base import Localizer
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, ConnectionSQL, DataSourceTemplate
+from bi_utils.utils import DataKey
 
 from bi_connector_bigquery.core.constants import (
     CONNECTION_TYPE_BIGQUERY,
-    SOURCE_TYPE_BIGQUERY_TABLE, SOURCE_TYPE_BIGQUERY_SUBSELECT,
+    SOURCE_TYPE_BIGQUERY_SUBSELECT,
+    SOURCE_TYPE_BIGQUERY_TABLE,
 )
 from bi_connector_bigquery.core.dto import BigQueryConnDTO
 
@@ -38,7 +48,7 @@ class ConnectionSQLBigQuery(ConnectionSQL):
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
-            return {DataKey(parts=('credentials',))}
+            return {DataKey(parts=("credentials",))}
 
     @property
     def project_id(self) -> str:
@@ -52,13 +62,11 @@ class ConnectionSQLBigQuery(ConnectionSQL):
         )
 
     def get_data_source_template_group(self, parameters: dict) -> list[str]:
-        return [val for val in (
-            parameters.get('project_id'),
-            parameters.get('dataset_name')
-        ) if val is not None]
+        return [val for val in (parameters.get("project_id"), parameters.get("dataset_name")) if val is not None]
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         tables = self.get_tables(conn_executor_factory)
         return [

@@ -1,18 +1,39 @@
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, Generic, List, Optional, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 from marshmallow import fields
 
 from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawSchemaInfo
+from bi_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    RawSchemaInfo,
+)
 from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from bi_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
 from bi_core.connection_executors.qe_serializer.schemas_common import TableIdentSchema
-from bi_core.connection_executors.qe_serializer.schemas_responses import PrimitivesResponseSchema, RawSchemaInfoSchema
-from bi_core.connection_models import DBIdent, SchemaIdent, TableDefinition, TableIdent
+from bi_core.connection_executors.qe_serializer.schemas_responses import (
+    PrimitivesResponseSchema,
+    RawSchemaInfoSchema,
+)
+from bi_core.connection_models import (
+    DBIdent,
+    SchemaIdent,
+    TableDefinition,
+    TableIdent,
+)
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO

@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import abc
-import os
 from ast import AST
-from enum import Enum, auto
+from enum import (
+    Enum,
+    auto,
+)
+import os
 from pathlib import Path
-from typing import Any, Optional, TypeVar
+from typing import (
+    Any,
+    Optional,
+    TypeVar,
+)
 
 import attr
 from frozendict import frozendict
@@ -25,7 +32,7 @@ class EntityReference:
     name: str = attr.ib(kw_only=True)
 
 
-_REQ_SPEC_TV = TypeVar('_REQ_SPEC_TV', bound='ReqPackageSpec')
+_REQ_SPEC_TV = TypeVar("_REQ_SPEC_TV", bound="ReqPackageSpec")
 
 
 @attr.s(frozen=True)
@@ -53,10 +60,10 @@ class PypiReqPackageSpec(ReqPackageSpec):
     version: Optional[str] = attr.ib(kw_only=True)
 
     def pretty(self) -> str:
-        extra = ''
+        extra = ""
         if self.version:
-            extra = f' ({self.version})'
-        return f'{self.package_name}{extra}'
+            extra = f" ({self.version})"
+        return f"{self.package_name}{extra}"
 
     def is_exact_version(self) -> bool:
         return bool(self.version and self.version.startswith("=="))
@@ -81,7 +88,7 @@ class LocalReqPackageSpec(ReqPackageSpec):
     path: Path = attr.ib(kw_only=True)
 
     def pretty(self) -> str:
-        return f'{self.package_name} ({self.path})'
+        return f"{self.package_name} ({self.path})"
 
     def as_req_str(self) -> str:
         return f'{self.package_name} = {{path = "{self.path}"}}'
@@ -109,7 +116,7 @@ class PackageInfo:
 
     @property
     def toml_path(self) -> Path:
-        return self.abs_path / 'pyproject.toml'
+        return self.abs_path / "pyproject.toml"
 
     @property
     def single_module_name(self) -> str:
@@ -146,9 +153,9 @@ class PackageInfo:
         return attr.evolve(self, **kwargs)
 
     def is_dependent_on(
-            self,
-            base_package_info: PackageInfo,
-            section_name: str,
+        self,
+        base_package_info: PackageInfo,
+        section_name: str,
     ) -> bool:
         req_specs = self.requirement_lists.get(section_name, RequirementList()).req_specs
         for req_spec in req_specs:

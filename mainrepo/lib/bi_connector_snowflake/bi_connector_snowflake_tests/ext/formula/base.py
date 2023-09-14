@@ -5,13 +5,12 @@ import pytest
 
 from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 
-from bi_connector_snowflake.formula.constants import SnowFlakeDialect as D
-from bi_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig
 from bi_connector_snowflake.auth import SFAuthProvider
 from bi_connector_snowflake.core.adapters import construct_creator_func
 from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 from bi_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
-
+from bi_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig
+from bi_connector_snowflake.formula.constants import SnowFlakeDialect as D
 import bi_connector_snowflake_tests.ext.config as test_config  # noqa
 
 
@@ -30,11 +29,11 @@ class SnowFlakeTestBase(FormulaConnectorTestBase):
     def db_url(self) -> str:
         return test_config.DB_DSN
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def loop(self):
         return asyncio.get_event_loop()
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def _sf_target_dto(self, loop, sf_secrets):
         conn_dto = SnowFlakeConnDTO(
             conn_id=None,
@@ -62,6 +61,6 @@ class SnowFlakeTestBase(FormulaConnectorTestBase):
     def engine_params(self, _sf_creator_func: Callable) -> dict:
         return dict(creator=_sf_creator_func)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, _sf_target_dto) -> SnowFlakeDbEngineConfig:
         return self.engine_config_cls(url=db_url, engine_params=engine_params, db_name=_sf_target_dto.db_name)

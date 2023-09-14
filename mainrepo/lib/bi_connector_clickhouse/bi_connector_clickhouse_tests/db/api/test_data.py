@@ -1,9 +1,9 @@
 from bi_api_lib_testing.connector.data_api_suites import (
-    DefaultConnectorDataResultTestSuite,
-    DefaultConnectorDataGroupByFormulaTestSuite,
-    DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataDistinctTestSuite,
+    DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
+    DefaultConnectorDataRangeTestSuite,
+    DefaultConnectorDataResultTestSuite,
 )
 
 from bi_connector_clickhouse_tests.db.api.base import ClickHouseDataApiTestBase

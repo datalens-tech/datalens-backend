@@ -1,30 +1,45 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Optional, TYPE_CHECKING, Union
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    ClassVar,
+    Optional,
+    Union,
+)
 
 import attr
 
 from bi_constants.enums import (
-    DataSourceRole, DataSourceCollectionType, CreateDSFrom,
-    ManagedBy, JoinType,
+    CreateDSFrom,
+    DataSourceCollectionType,
+    DataSourceRole,
+    JoinType,
+    ManagedBy,
 )
-
-import bi_core.exc as exc
-from bi_core.enums import RoleReason
-from bi_core.db import SchemaColumn
-from bi_core.base_models import DefaultConnectionRef, InternalMaterializationConnectionRef, ConnectionRef
+from bi_core.base_models import (
+    ConnectionRef,
+    DefaultConnectionRef,
+    InternalMaterializationConnectionRef,
+)
+from bi_core.data_source import (
+    base,
+    type_mapping,
+)
+from bi_core.data_source.utils import get_parameters_hash
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.data_source_spec.collection import (
-    DataSourceCollectionSpecBase, DataSourceCollectionSpec,
+    DataSourceCollectionSpec,
+    DataSourceCollectionSpecBase,
 )
-
-from bi_core.data_source import base, type_mapping
-from bi_core.data_source.utils import get_parameters_hash
+from bi_core.db import SchemaColumn
+from bi_core.enums import RoleReason
+import bi_core.exc as exc
 
 if TYPE_CHECKING:
+    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
     from bi_core.us_connection_base import ConnectionBase
     from bi_core.us_manager.local_cache import USEntryBuffer
-    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
 @attr.s(slots=True)
@@ -73,7 +88,7 @@ class DataSourceCollectionBase:
         elif isinstance(conn_ref, InternalMaterializationConnectionRef):
             return None
         else:
-            raise TypeError(f'Unexpected conn_ref class: {type(conn_ref)}')
+            raise TypeError(f"Unexpected conn_ref class: {type(conn_ref)}")
 
     @property
     def effective_connection_id(self) -> Optional[str]:
@@ -84,7 +99,10 @@ class DataSourceCollectionBase:
         return self.get_strict().spec.source_type
 
     def supports_join_type(
-            self, join_type: JoinType, role: Optional[DataSourceRole] = None, for_preview: bool = False,
+        self,
+        join_type: JoinType,
+        role: Optional[DataSourceRole] = None,
+        for_preview: bool = False,
     ) -> bool:
         if role is None:
             role = self.resolve_role(for_preview=for_preview)
@@ -93,6 +111,7 @@ class DataSourceCollectionBase:
 
     def _get_connection_by_ref(self, connection_ref: ConnectionRef) -> ConnectionBase:
         from bi_core.us_connection_base import ConnectionBase  # to avoid circular imports
+
         connection = self._us_entry_buffer.get_entry(connection_ref)
         assert isinstance(connection, ConnectionBase)
         return connection
@@ -111,11 +130,11 @@ class DataSourceCollectionBase:
         Compare raw schemas of two sources and decide whether they are compatible for data selection
         """
 
-        assert role_1 is DataSourceRole.origin, 'First role in comparison must be origin'
+        assert role_1 is DataSourceRole.origin, "First role in comparison must be origin"
         assert role_2 in (
             DataSourceRole.materialization,
             DataSourceRole.sample,
-        ), 'Second role must be some kind of materialization (materialization or sample)'
+        ), "Second role must be some kind of materialization (materialization or sample)"
 
         # Origin never uses the materialization connection,
         # so we can safely load it
@@ -157,9 +176,7 @@ class DataSourceCollectionBase:
             elif not sample_spec.is_configured:
                 resolution_info.sample = RoleReason.not_configured
             # At this point sample is materialized and ready for use.
-            elif not feature_managed and not self.are_schemas_compatible(
-                    DataSourceRole.origin, DataSourceRole.sample
-            ):
+            elif not feature_managed and not self.are_schemas_compatible(DataSourceRole.origin, DataSourceRole.sample):
                 resolution_info.sample = RoleReason.schema_mismatch
             else:
                 # structure is the same, so we can use the existing sample data source
@@ -188,7 +205,7 @@ class DataSourceCollectionBase:
             raise exc.NoCommonRoleError()
         return role_priorities[0]
 
-    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional['base.DataSource']:
+    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional["base.DataSource"]:
         raise NotImplementedError
 
     def get_strict(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> base.DataSource:
@@ -200,9 +217,10 @@ class DataSourceCollectionBase:
         raise NotImplementedError
 
     def get_cached_raw_schema(
-            self, role: Optional[DataSourceRole] = None, for_preview: bool = False,
+        self,
+        role: Optional[DataSourceRole] = None,
+        for_preview: bool = False,
     ) -> Optional[list[SchemaColumn]]:
-
         dsrc = self.get_strict(role=role, for_preview=for_preview)
         raw_schema: Optional[list[SchemaColumn]] = dsrc.saved_raw_schema or []
         if not raw_schema and role != DataSourceRole.origin:
@@ -214,18 +232,23 @@ class DataSourceCollectionBase:
 
             # "import" raw schema from origin dsrc to current one
             tt = origin_dsrc.type_transformer
-            raw_schema = [col.clone(  # type: ignore  # TODO: fix
-                # convert data type to match data source type
-                user_type=col.user_type or tt.type_native_to_user(native_t=col.native_type),
-            ) for col in origin_columns]
+            raw_schema = [
+                col.clone(  # type: ignore  # TODO: fix
+                    # convert data type to match data source type
+                    user_type=col.user_type
+                    or tt.type_native_to_user(native_t=col.native_type),
+                )
+                for col in origin_columns
+            ]
 
         raw_schema = self._patch_raw_schema(raw_schema)
         return raw_schema
 
     def get_raw_schema(
-            self,
-            conn_executor_factory: Callable[[], SyncConnExecutorBase],
-            role: Optional[DataSourceRole] = None, for_preview: bool = False,
+        self,
+        conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        role: Optional[DataSourceRole] = None,
+        for_preview: bool = False,
     ) -> Optional[list[SchemaColumn]]:
         """
         Return raw schema of data source.
@@ -240,7 +263,9 @@ class DataSourceCollectionBase:
         """
 
         dsrc = self.get_strict(role=role, for_preview=for_preview)
-        raw_schema: Optional[list[SchemaColumn]] = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema
+        raw_schema: Optional[list[SchemaColumn]] = dsrc.get_schema_info(
+            conn_executor_factory=conn_executor_factory
+        ).schema
         raw_schema = self._patch_raw_schema(raw_schema)
         return raw_schema
 
@@ -266,7 +291,7 @@ class DataSourceCollection(DataSourceCollectionBase):
         assert isinstance(self._spec, DataSourceCollectionSpec)
         return self._spec
 
-    def _initialize_dsrc(self, dsrc_spec: DataSourceSpec) -> 'base.DataSource':
+    def _initialize_dsrc(self, dsrc_spec: DataSourceSpec) -> "base.DataSource":
         dsrc_cls = type_mapping.get_data_source_class(dsrc_spec.source_type)
         dsrc = dsrc_cls(id=self.id, us_entry_buffer=self._us_entry_buffer, spec=dsrc_spec)
         return dsrc
@@ -278,12 +303,12 @@ class DataSourceCollection(DataSourceCollectionBase):
             return self.spec.materialization
         if role == DataSourceRole.sample:
             return self.spec.sample
-        raise ValueError(f'Invalid role: {role}')
+        raise ValueError(f"Invalid role: {role}")
 
     def __contains__(self, role: DataSourceRole) -> bool:
         return self._get_spec_for_role(role) is not None
 
-    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional['base.DataSource']:
+    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional["base.DataSource"]:
         """Return data source for role. Initialize it if it isn't initialized yet"""
         if role is None:
             role = self.resolve_role(for_preview=for_preview)
@@ -324,4 +349,4 @@ class DataSourceCollectionFactory:  # TODO: Move to service_registry
     def get_data_source_collection(self, spec: DataSourceCollectionSpecBase) -> DataSourceCollectionBase:
         if isinstance(spec, DataSourceCollectionSpec):
             return DataSourceCollection(us_entry_buffer=self._us_entry_buffer, spec=spec)
-        raise TypeError(f'Invalid spec type: {spec})')
+        raise TypeError(f"Invalid spec type: {spec})")

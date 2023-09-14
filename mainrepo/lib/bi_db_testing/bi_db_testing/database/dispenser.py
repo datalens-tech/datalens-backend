@@ -2,16 +2,24 @@ from __future__ import annotations
 
 import abc
 from collections import defaultdict
-from typing import Callable, Dict, Generic, Optional, TypeVar
+from typing import (
+    Callable,
+    Dict,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 import attr
+
+from bi_db_testing.database.base import (
+    DbBase,
+    DbConfig,
+)
 from bi_utils.wait import wait_for
 
-from bi_db_testing.database.base import DbBase, DbConfig
-
-
-_DB_CONFIG_TV = TypeVar('_DB_CONFIG_TV', bound=DbConfig)
-_DB_TV = TypeVar('_DB_TV', bound=DbBase)
+_DB_CONFIG_TV = TypeVar("_DB_CONFIG_TV", bound=DbConfig)
+_DB_TV = TypeVar("_DB_TV", bound=DbBase)
 
 
 class DbDispenserBase(abc.ABC, Generic[_DB_CONFIG_TV, _DB_TV]):
@@ -37,11 +45,7 @@ class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_
         self._check_reinit_db(db_config=db_config)
         return self._db_cache[db_config]
 
-    def add_reinit_hook(
-            self, *,
-            db_config: _DB_CONFIG_TV,
-            reinit_hook: Callable[[], None]
-    ) -> None:
+    def add_reinit_hook(self, *, db_config: _DB_CONFIG_TV, reinit_hook: Callable[[], None]) -> None:
         self._reinit_hooks[db_config] = reinit_hook
 
     def _check_reinit_db(self, db_config: DbConfig, reconnect_timeout: Optional[int] = None) -> bool:
@@ -61,12 +65,12 @@ class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_
             # DB is unavailable, so re-initialize the DB is possible
             reinit_hook()
             # Wait until it comes up
-            wait_for(name=f'test_db_{db_config}', condition=db.test, timeout=reconnect_timeout)
+            wait_for(name=f"test_db_{db_config}", condition=db.test, timeout=reconnect_timeout)
             self._db_reinit_counts[db_config] += 1
             return True
 
         return False
 
     def check_reinit_all(self, reconnect_timeout: Optional[int] = None) -> None:
-        for db_config, db in self._db_cache.items():
+        for db_config, _db in self._db_cache.items():
             self._check_reinit_db(db_config=db_config, reconnect_timeout=reconnect_timeout)

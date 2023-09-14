@@ -1,8 +1,10 @@
+from typing import (
+    ClassVar,
+    Optional,
+)
 import uuid
 
 import attr
-
-from typing import ClassVar, Optional
 
 from bi_configs.connectors_data import ConnectorsDataBase
 from bi_configs.connectors_settings import ConnectorSettingsBase
@@ -36,4 +38,4 @@ class ConnectorsDataFileBase(ConnectorsDataBase):
 
     @classmethod
     def connector_name(cls) -> str:
-        return 'FILE'
+        return "FILE"

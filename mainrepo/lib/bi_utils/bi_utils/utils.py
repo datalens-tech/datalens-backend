@@ -1,15 +1,26 @@
 from __future__ import annotations
 
-from itertools import islice
-
+from contextlib import contextmanager
+from enum import Enum
 import functools
+from itertools import islice
 import operator
 import os
-from contextlib import contextmanager
-from time import time
 import sys
-from enum import Enum
-from typing import Any, Callable, Iterable, List, NoReturn, Optional, Tuple, Type, TypeVar, cast, Generator
+from time import time
+from typing import (
+    Any,
+    Callable,
+    Generator,
+    Iterable,
+    List,
+    NoReturn,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    cast,
+)
 
 import attr
 
@@ -17,9 +28,11 @@ import attr
 def get_pdb() -> Any:
     try:
         import ipdb
+
         return ipdb
     except Exception:
         import pdb
+
         return pdb
 
 
@@ -30,16 +43,17 @@ def maybe_postmortem(ei: Any = None) -> None:
     """
     if ei is None:
         ei = sys.exc_info()
-    if os.environ.get('BI_ERR_PDB') != '1':
+    if os.environ.get("BI_ERR_PDB") != "1":
         return
     _, _, sys.last_traceback = ei
     import traceback
-    print(''.join(traceback.format_exception(*ei)))
+
+    print("".join(traceback.format_exception(*ei)))
     pdb = get_pdb()
     pdb.pm()
 
 
-_CALLABLE_TV = TypeVar('_CALLABLE_TV', bound=Callable)
+_CALLABLE_TV = TypeVar("_CALLABLE_TV", bound=Callable)
 
 
 def exc_catch_wrap(func: _CALLABLE_TV) -> _CALLABLE_TV:
@@ -47,7 +61,7 @@ def exc_catch_wrap(func: _CALLABLE_TV) -> _CALLABLE_TV:
     An env-controlled post-mortem function wrapper.
     Set `BI_ERR_PDB=1` to use. Does nothing otherwise.
     """
-    if os.environ.get('BI_ERR_PDB') != '1':
+    if os.environ.get("BI_ERR_PDB") != "1":
         return func
 
     @functools.wraps(func)
@@ -66,7 +80,7 @@ def exc_catch_awrap(afunc: _CALLABLE_TV) -> _CALLABLE_TV:
     An env-controlled post-mortem async-function wrapper.
     Set `BI_ERR_PDB=1` to use. Does nothing otherwise.
     """
-    if os.environ.get('BI_ERR_PDB') != '1':
+    if os.environ.get("BI_ERR_PDB") != "1":
         return afunc
 
     @functools.wraps(afunc)
@@ -84,18 +98,17 @@ def get_type_full_name(t: Type) -> str:
     module = t.__module__
     qual_name = t.__qualname__
 
-    if module == 'builtins':
+    if module == "builtins":
         return qual_name
     return f"{module}.{qual_name}"
 
 
 # split_list value TypeVar
-_SL_V_TV = TypeVar('_SL_V_TV')
+_SL_V_TV = TypeVar("_SL_V_TV")
 
 
 def split_list(
-        iterable: Iterable[_SL_V_TV],
-        condition: Callable[[_SL_V_TV], bool]
+    iterable: Iterable[_SL_V_TV], condition: Callable[[_SL_V_TV], bool]
 ) -> Tuple[List[_SL_V_TV], List[_SL_V_TV]]:
     """
     Split list items into `(matching, non_matching)` by `condition(item)` callable.
@@ -111,7 +124,7 @@ def split_list(
 
 
 class DotDict(dict):
-    """ A simple dict subclass with items also available over attributes """
+    """A simple dict subclass with items also available over attributes"""
 
     def __getattr__(self, item: str) -> Any:
         try:
@@ -151,19 +164,19 @@ class AddressableData:
         return self.get(key_head).pop(key.parts[-1])
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def batched(iterable: Iterable[T], n: int) -> Iterable[Iterable[T]]:
     if n < 1:
-        raise ValueError('n must be at least one')
+        raise ValueError("n must be at least one")
     it = iter(iterable)
     while batch := tuple(islice(it, n)):
         yield batch
 
 
 def join_in_chunks(pieces: Iterable[str], sep: str, max_len: int) -> Iterable[str]:
-    """ An `sep.join(pieces)` equivalent that chunks the pieces to stay under the maximum piece length """
+    """An `sep.join(pieces)` equivalent that chunks the pieces to stay under the maximum piece length"""
     pieces_it = iter(pieces)
     try:
         result = next(pieces_it)
@@ -179,7 +192,7 @@ def join_in_chunks(pieces: Iterable[str], sep: str, max_len: int) -> Iterable[st
     yield result
 
 
-_ENUM_TV = TypeVar('_ENUM_TV', bound=Enum)
+_ENUM_TV = TypeVar("_ENUM_TV", bound=Enum)
 
 
 def enum_not_none(val: Optional[_ENUM_TV]) -> _ENUM_TV:
@@ -191,12 +204,13 @@ def time_it(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def wrap(*args: Any, **kwargs: Any) -> Any:
         t0 = time()
-        print(f'Invoked {fn}({args}, {kwargs})'[:160])
+        print(f"Invoked {fn}({args}, {kwargs})"[:160])
         result = fn(*args, **kwargs)
         delta = time() - t0
         if delta >= 0.01:
-            print(f'<< Time elapsed: {delta} for {fn}({args}, {kwargs})'[:160])
+            print(f"<< Time elapsed: {delta} for {fn}({args}, {kwargs})"[:160])
         return result
+
     return wrap
 
 
@@ -207,4 +221,4 @@ def time_it_cm(label: str) -> Generator[None, None, None]:
     yield
     delta = time() - t0
     if delta >= 0.01:
-        print(f'Time elapsed for {label}: {delta}')
+        print(f"Time elapsed for {label}: {delta}")

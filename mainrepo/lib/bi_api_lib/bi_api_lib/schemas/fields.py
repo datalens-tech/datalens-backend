@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 
-from bi_core.components.dependencies.primitives import FieldInterDependencyItem, FieldInterDependencyInfo
+from bi_core.components.dependencies.primitives import (
+    FieldInterDependencyInfo,
+    FieldInterDependencyItem,
+)
 from bi_core.us_dataset import Dataset
-
 from bi_model_tools.schema.base import DefaultSchema
 
 

@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import abc
 import asyncio
-from typing import Callable, TypeVar
+from typing import (
+    Callable,
+    TypeVar,
+)
 
 from bi_utils.aio import ContextVarExecutor
 
-
-_IDENTITY_TV = TypeVar('_IDENTITY_TV')
+_IDENTITY_TV = TypeVar("_IDENTITY_TV")
 
 
 class ComputeExecutor:

@@ -2,23 +2,31 @@ from __future__ import annotations
 
 import csv
 import time
+from typing import (
+    ClassVar,
+    Optional,
+)
 import uuid
-from typing import Optional, ClassVar
 
 import attr
 
 from bi_constants.enums import FileProcessingStatus
 from bi_core.db.elements import SchemaColumn
-from bi_utils.utils import DataKey
-
-from bi_file_uploader_lib.enums import ErrorLevel, FileType, CSVEncoding, CSVDelimiter, RenameTenantStatus
+from bi_file_uploader_lib.enums import (
+    CSVDelimiter,
+    CSVEncoding,
+    ErrorLevel,
+    FileType,
+    RenameTenantStatus,
+)
 from bi_file_uploader_lib.exc import DLFileUploaderBaseError
 from bi_file_uploader_lib.redis_model.base import (
-    SecretContainingMixin,
     RedisModel,
     RedisModelUserIdAuth,
     RedisSetManager,
+    SecretContainingMixin,
 )
+from bi_utils.utils import DataKey
 
 
 class DataFileError(Exception):
@@ -91,7 +99,7 @@ class GSheetsUserSourceProperties(UserSourceProperties):
     refresh_token: Optional[str] = attr.ib(default=None, repr=False)
 
     def get_secret_keys(self) -> set[DataKey]:
-        return {DataKey(parts=('refresh_token',))}
+        return {DataKey(parts=("refresh_token",))}
 
 
 @attr.s(init=True, kw_only=True)
@@ -131,10 +139,12 @@ class FileProcessingError:
 @attr.s(init=True, kw_only=True)
 class DataSource:
     id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
-    s3_key: str = attr.ib(default=attr.Factory(
-        lambda self: self.id + '_' + str(uuid.uuid4())[:8],
-        takes_self=True,
-    ))
+    s3_key: str = attr.ib(
+        default=attr.Factory(
+            lambda self: self.id + "_" + str(uuid.uuid4())[:8],
+            takes_self=True,
+        )
+    )
     preview_id: Optional[str] = attr.ib(default=None)
     title: str = attr.ib()
     raw_schema: list[SchemaColumn] = attr.ib()
@@ -159,8 +169,8 @@ class DataFile(RedisModelUserIdAuth):
     status: FileProcessingStatus = attr.ib()
     error: Optional[FileProcessingError] = attr.ib(default=None)
 
-    KEY_PREFIX: ClassVar[str] = 'df'
-    DEFAULT_TTL: ClassVar[Optional[int]] = 12 * 60 * 60   # 12 hours
+    KEY_PREFIX: ClassVar[str] = "df"
+    DEFAULT_TTL: ClassVar[Optional[int]] = 12 * 60 * 60  # 12 hours
 
     @property
     def s3_key(self) -> str:
@@ -171,22 +181,22 @@ class DataFile(RedisModelUserIdAuth):
             return set()
 
         lower_level_keys = self.user_source_properties.get_secret_keys()
-        return {DataKey(parts=('user_source_properties',) + ll_key.parts) for ll_key in lower_level_keys}
+        return {DataKey(parts=("user_source_properties",) + ll_key.parts) for ll_key in lower_level_keys}
 
     def get_source_by_id(self, source_id: str) -> DataSource:
         if not self.sources:
-            raise EmptySourcesError('There are no sources for the file.')
+            raise EmptySourcesError("There are no sources for the file.")
         for src in self.sources:
             if src.id == source_id:
                 return src
-        raise SourceNotFoundError(f'Source with id {source_id} has not been found.')
+        raise SourceNotFoundError(f"Source with id {source_id} has not been found.")
 
 
 @attr.s(init=True, kw_only=True)
 class DataSourcePreview(RedisModel):
     preview_data: list[list[Optional[str]]] = attr.ib()
 
-    KEY_PREFIX: ClassVar[str] = 'df_preview'
+    KEY_PREFIX: ClassVar[str] = "df_preview"
 
 
 @attr.s(init=True, kw_only=True)
@@ -194,9 +204,9 @@ class RenameTenantStatusModel(RedisModel):  # object id is tenant_id
     status: RenameTenantStatus = attr.ib()
     mtime: float = attr.ib(factory=time.time)
 
-    KEY_PREFIX = 'rename_tenant_status'
+    KEY_PREFIX = "rename_tenant_status"
 
 
 @attr.s(init=True, kw_only=True)
 class PreviewSet(RedisSetManager):
-    KEY_PREFIX = 'tenant_previews'
+    KEY_PREFIX = "tenant_previews"

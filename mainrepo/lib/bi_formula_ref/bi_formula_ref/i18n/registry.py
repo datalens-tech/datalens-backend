@@ -2,12 +2,16 @@ from typing import Iterable
 
 import attr
 
-from bi_i18n.localizer_base import TranslationConfig, LocalizerLoader, Localizer, Translatable
-
+from bi_i18n.localizer_base import (
+    Localizer,
+    LocalizerLoader,
+    Translatable,
+    TranslationConfig,
+)
 
 _LOCALIZATION_CONFIGS: set[TranslationConfig] = set()
 
-DOMAIN = 'bi_formula_ref_bi_formula_ref'
+DOMAIN = "bi_formula_ref_bi_formula_ref"
 
 
 def register_translation_configs(config: Iterable[TranslationConfig]) -> None:

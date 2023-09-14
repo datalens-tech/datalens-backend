@@ -1,45 +1,72 @@
 from __future__ import annotations
 
 import copy
-from typing import Any, Dict, List, Optional, Tuple
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+)
 
 from sqlalchemy.sql.elements import ClauseElement
 
+from bi_formula.core.datatype import (
+    DataType,
+    DataTypeParams,
+)
 import bi_formula.core.exc as exc
-from bi_formula.core.message_ctx import FormulaErrorCtx, MessageLevel
-from bi_formula.core.datatype import DataType, DataTypeParams
+from bi_formula.core.extract import NodeExtract
+from bi_formula.core.message_ctx import (
+    FormulaErrorCtx,
+    MessageLevel,
+)
 from bi_formula.core.nodes import FormulaItem
 from bi_formula.core.position import Position
-from bi_formula.core.extract import NodeExtract
 from bi_formula.definitions.scope import Scope
-
 
 ContextFlags = int  # bitwise combination of ContextFlag values
 
 
 class TranslationCtx:
     __slots__ = (
-        'collect_errors', 'base_token', 'children',
-        '_messages', 'forked',
-        'data_type', 'data_type_params', 'expression', 'flags',
-        'node', 'required_scopes',
+        "collect_errors",
+        "base_token",
+        "children",
+        "_messages",
+        "forked",
+        "data_type",
+        "data_type_params",
+        "expression",
+        "flags",
+        "node",
+        "required_scopes",
     )
     _repr_attrs = (
-        'base_token', 'data_type', 'data_type_params', 'flags', 'forked', 'required_scopes',
-        'node', '_expression_str', 'children', 'collect_errors', '_messages',
+        "base_token",
+        "data_type",
+        "data_type_params",
+        "flags",
+        "forked",
+        "required_scopes",
+        "node",
+        "_expression_str",
+        "children",
+        "collect_errors",
+        "_messages",
     )
     default_collect_errors = False
 
     def __init__(
-            self,
-            collect_errors: Optional[bool] = None,
-            base_token: Optional[str] = None,
-            flags: Optional[ContextFlags] = None,
-            expression: Optional[ClauseElement] = None,
-            data_type: Optional[DataType] = None,
-            data_type_params: Optional[DataTypeParams] = None,
-            node: Optional[FormulaItem] = None,
-            required_scopes: int = Scope.EXPLICIT_USAGE,
+        self,
+        collect_errors: Optional[bool] = None,
+        base_token: Optional[str] = None,
+        flags: Optional[ContextFlags] = None,
+        expression: Optional[ClauseElement] = None,
+        data_type: Optional[DataType] = None,
+        data_type_params: Optional[DataTypeParams] = None,
+        node: Optional[FormulaItem] = None,
+        required_scopes: int = Scope.EXPLICIT_USAGE,
     ):
         self.collect_errors = collect_errors if collect_errors is not None else self.default_collect_errors
         self.base_token = base_token
@@ -65,16 +92,15 @@ class TranslationCtx:
             return repr(self.expression)
 
     def __repr__(self):
-        _c0 = '\x1b[0m'
-        _c1 = '\x1b[038;5;118m'
-        return '<{}({})>{}'.format(
+        _c0 = "\x1b[0m"
+        _c1 = "\x1b[038;5;118m"
+        return "<{}({})>{}".format(
             self.__class__.__name__,
-            ',     '.join(
-                f'{_c1}{key}{_c0}={getattr(self, key)!r}'
-                for key in self._repr_attrs),
-            _c0)
+            ",     ".join(f"{_c1}{key}{_c0}={getattr(self, key)!r}" for key in self._repr_attrs),
+            _c0,
+        )
 
-    def copy(self) -> 'TranslationCtx':
+    def copy(self) -> "TranslationCtx":
         return copy.copy(self)
 
     @property
@@ -91,7 +117,7 @@ class TranslationCtx:
         """Return list of registered warnings."""
         return self._messages[MessageLevel.WARNING]
 
-    def flush(self) -> 'TranslationCtx':
+    def flush(self) -> "TranslationCtx":
         """
         Flatten child contexts into self and validate:
         - aggregation consistency and
@@ -109,7 +135,7 @@ class TranslationCtx:
 
         if not self.data_type:
             if self.forked:
-                raise RuntimeError('Data type must be set for forked contexts')
+                raise RuntimeError("Data type must be set for forked contexts")
 
             elif self.children:
                 # propagate directly because there were no calculations here
@@ -135,14 +161,18 @@ class TranslationCtx:
         return self
 
     def _add_message(
-            self, level: MessageLevel, message: str,
-            token: Optional[str] = None,
-            code: Optional[Tuple[str, ...]] = None,
+        self,
+        level: MessageLevel,
+        message: str,
+        token: Optional[str] = None,
+        code: Optional[Tuple[str, ...]] = None,
     ) -> None:
         token = token if token is not None else self.base_token
         position = self.node.position if self.node is not None else Position()
         error = exc.FormulaErrorCtx(
-            message=message, level=level, token=token,
+            message=message,
+            level=level,
+            token=token,
             position=position,
             code=tuple(code or ()),
         )
@@ -181,15 +211,15 @@ class TranslationCtx:
             pass
         else:
             if self.children:
-                raise RuntimeError('Cannot have more than one child in non-forked mode')
+                raise RuntimeError("Cannot have more than one child in non-forked mode")
 
     def child(
-            self,
-            token: Optional[str] = None,
-            flags: Optional[int] = None,
-            node: Optional[FormulaItem] = None,
-            required_scopes: Optional[int] = None
-    ) -> 'TranslationCtx':
+        self,
+        token: Optional[str] = None,
+        flags: Optional[int] = None,
+        node: Optional[FormulaItem] = None,
+        required_scopes: Optional[int] = None,
+    ) -> "TranslationCtx":
         """
         Spawn new child context.
         In `forked` mode only one child is permitted.
@@ -199,7 +229,7 @@ class TranslationCtx:
 
         self._validate_can_add_new_child()
         if not self.forked and node is not None:
-            raise ValueError('Cannot assign node to child in non-forked mode')
+            raise ValueError("Cannot assign node to child in non-forked mode")
 
         child = self.__class__(
             collect_errors=self.collect_errors,
@@ -211,7 +241,7 @@ class TranslationCtx:
         self.children.append(child)
         return child
 
-    def adopt(self, child: 'TranslationCtx') -> None:
+    def adopt(self, child: "TranslationCtx") -> None:
         """
         "Adopt" a child context by adding it to children of self as if it were created by `self.fork()`.
         Can be used for substituting formula nodes for already translated expressions.

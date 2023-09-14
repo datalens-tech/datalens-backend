@@ -2,6 +2,7 @@ import json
 import uuid
 
 from bi_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
+
 from bi_connector_snowflake_tests.ext.api.base import SnowFlakeConnectionTestBase
 
 
@@ -13,9 +14,9 @@ class TestSnowFlakeConnection(SnowFlakeConnectionTestBase, DefaultConnectorConne
         }
         params.update(connection_params)
         r = client.post(
-            '/api/v1/connections/test_connection_params',
+            "/api/v1/connections/test_connection_params",
             data=json.dumps(params),
-            content_type='application/json',
+            content_type="application/json",
         )
         assert r.status_code == 200
 
@@ -26,14 +27,14 @@ class TestSnowFlakeConnection(SnowFlakeConnectionTestBase, DefaultConnectorConne
         }
         params.update(connection_params)
         resp = client.post(
-            '/api/v1/connections',
+            "/api/v1/connections",
             data=json.dumps(params),
-            content_type='application/json',
+            content_type="application/json",
         )
         assert resp.status_code == 200
-        conn_id = resp.json['id']
+        conn_id = resp.json["id"]
 
-        resp = client.get(f'/api/v1/connections/{conn_id}')
+        resp = client.get(f"/api/v1/connections/{conn_id}")
         assert resp.status_code == 200
 
         data = resp.json
@@ -44,9 +45,9 @@ class TestSnowFlakeConnection(SnowFlakeConnectionTestBase, DefaultConnectorConne
             assert v == data[k]
 
         resp = client.post(
-            f'/api/v1/connections/test_connection/{conn_id}',
+            f"/api/v1/connections/test_connection/{conn_id}",
             data=json.dumps({}),
-            content_type='application/json',
+            content_type="application/json",
         )
         assert resp.status_code == 200
 
@@ -60,17 +61,17 @@ class TestSnowFlakeConnection(SnowFlakeConnectionTestBase, DefaultConnectorConne
         for bad_name in bad_names:
             params["account_name"] = bad_name
             resp = client.post(
-                '/api/v1/connections/test_connection_params',
+                "/api/v1/connections/test_connection_params",
                 data=json.dumps(params),
-                content_type='application/json',
+                content_type="application/json",
             )
             assert resp.status_code == 400
 
             resp = client.post(
-                '/api/v1/connections',
+                "/api/v1/connections",
                 data=json.dumps(params),
-                content_type='application/json',
+                content_type="application/json",
             )
             assert resp.status_code == 400
-            assert "account_name" in resp.json['message']
+            assert "account_name" in resp.json["message"]
             assert "id" not in resp.json

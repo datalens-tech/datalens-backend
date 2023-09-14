@@ -2,37 +2,48 @@ from __future__ import annotations
 
 import logging
 import pickle
-from typing import Iterable, Union, Tuple, Optional, Any, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Iterable,
+    Optional,
+    Tuple,
+    Union,
+)
 
 import attr
 import flask.views
-from werkzeug.exceptions import HTTPException, Forbidden
-
-from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
+from werkzeug.exceptions import (
+    Forbidden,
+    HTTPException,
+)
 
 from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from bi_api_commons.flask.middlewares.request_id import RequestIDService
-
+from bi_configs.env_var_definitions import (
+    jaeger_service_name_env_aware,
+    use_jaeger_tracer,
+)
 from bi_core import profiling_middleware
-from bi_core.enums import RQEEventType
 from bi_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from bi_core.connection_executors.models.constants import HEADER_BODY_SIGNATURE
 from bi_core.connection_executors.qe_serializer import (
     ActionSerializer,
     ResponseTypes,
-    dba_actions as act,
 )
-from bi_core.connection_executors.remote_query_executor.commons import SUPPORTED_ADAPTER_CLS, DEFAULT_CHUNK_SIZE
+from bi_core.connection_executors.qe_serializer import dba_actions as act
+from bi_core.connection_executors.remote_query_executor.commons import (
+    DEFAULT_CHUNK_SIZE,
+    SUPPORTED_ADAPTER_CLS,
+)
 from bi_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
+from bi_core.enums import RQEEventType
 from bi_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
 from bi_core.flask_utils.tracing import TracingMiddleware
-from bi_core.logging_config import (
-    hook_configure_logging as _hook_configure_logging,
-)
-from bi_core.utils import get_eqe_secret_key
 from bi_core.loader import load_bi_core
-
+from bi_core.logging_config import hook_configure_logging as _hook_configure_logging
+from bi_core.utils import get_eqe_secret_key
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.adapters.adapters_base import DBAdapterQueryResult
@@ -51,24 +62,24 @@ def chunked_wrap(iterable: Iterable[Union[bytes, str]]) -> Iterable[bytes]:
         if not item:
             continue
         if isinstance(item, str):
-            item = item.encode('utf-8')
-        yield b'%x' % (len(item),)
-        yield b'\r\n'
+            item = item.encode("utf-8")
+        yield b"%x" % (len(item),)
+        yield b"\r\n"
         yield item
-        yield b'\r\n'
-    yield b'0\r\n\r\n'
+        yield b"\r\n"
+    yield b"0\r\n\r\n"
 
 
 class ActionHandlingView(flask.views.View):
-    methods = ['POST']
+    methods = ["POST"]
 
     def get_action(self) -> act.RemoteDBAdapterAction:
         return ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore
 
     def execute_non_streamed_action(
-            self,
-            dba: SyncDirectDBAdapter,
-            action: act.NonStreamAction,
+        self,
+        dba: SyncDirectDBAdapter,
+        action: act.NonStreamAction,
     ) -> ResponseTypes:
         if isinstance(action, act.ActionTest):
             return dba.test()
@@ -102,7 +113,7 @@ class ActionHandlingView(flask.views.View):
     def serialize_event(event: RQEEventType, data: Any) -> bytes:
         return pickle.dumps((event.value, data))
 
-    def response_events_gen(self, db_result: 'DBAdapterQueryResult', dba: SyncDirectDBAdapter) -> Iterable[bytes]:
+    def response_events_gen(self, db_result: "DBAdapterQueryResult", dba: SyncDirectDBAdapter) -> Iterable[bytes]:
         try:
             yield self.serialize_event(RQEEventType.raw_cursor_info, db_result.cursor_info)
 
@@ -118,8 +129,8 @@ class ActionHandlingView(flask.views.View):
         yield self.serialize_event(RQEEventType.finished, None)
 
     def execute_execute_action(
-            self,
-            action: act.ActionExecuteQuery,
+        self,
+        action: act.ActionExecuteQuery,
     ) -> flask.Response:
         dba = self.create_dba_for_action(action)
         try:
@@ -132,7 +143,7 @@ class ActionHandlingView(flask.views.View):
         return flask.Response(
             chunked_wrap(self.response_events_gen(db_result=db_result, dba=dba)),
             headers={
-                'Transfer-Encoding': 'Chunked',
+                "Transfer-Encoding": "Chunked",
             },
         )
 
@@ -174,7 +185,7 @@ class BodySignatureValidator:
     hmac_key: bytes = attr.ib()
 
     def validate_request_body(self) -> None:
-        if flask.request.method in ('HEAD', 'OPTIONS', 'GET'):  # no body to validate.
+        if flask.request.method in ("HEAD", "OPTIONS", "GET"):  # no body to validate.
             return
 
         # For import-test reasons, can't verify this when getting it;
@@ -194,13 +205,13 @@ class BodySignatureValidator:
 
 
 def ping_view() -> flask.Response:
-    return flask.jsonify(dict(result='PONG'))
+    return flask.jsonify(dict(result="PONG"))
 
 
 def hook_init_logging(
     app: Any,
-    app_name: str = 'rqe-sync',
-    jaeger_service_name: str = 'bi-rqe-sync',
+    app_name: str = "rqe-sync",
+    jaeger_service_name: str = "bi-rqe-sync",
     app_prefix: Optional[str] = None,
     **kwargs: Any,
 ) -> None:
@@ -232,9 +243,9 @@ def create_sync_app(hmac_key: Optional[bytes] = None) -> flask.Flask:
     app = flask.Flask(__name__)
     TracingMiddleware(
         url_prefix_exclude=(
-            '/ping',
-            '/unistat',
-            '/metrics',
+            "/ping",
+            "/unistat",
+            "/metrics",
         ),
     ).wrap_flask_app(app)
     ContextVarMiddleware().wrap_flask_app(app)

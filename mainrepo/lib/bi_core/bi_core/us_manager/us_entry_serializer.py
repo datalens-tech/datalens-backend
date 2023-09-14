@@ -1,17 +1,24 @@
 from __future__ import annotations
 
 import abc
+from collections import ChainMap
 import copy
+from functools import reduce
 import json
 import logging
-from collections import ChainMap
-from functools import reduce
-from typing import Any, ChainMap as ChainMapGeneric, ClassVar, Optional, Type, TYPE_CHECKING
+from typing import (
+    ClassVar,
+    Optional,
+    Type,
+)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
+from typing import ChainMap as ChainMapGeneric
 
 import attr
 import marshmallow
-
-from bi_utils.utils import DataKey, AddressableData
 
 from bi_core import exc
 from bi_core.base_models import BaseAttrsDataModel
@@ -20,6 +27,10 @@ from bi_core.us_entry import USEntry
 from bi_core.us_manager.crypto.main import EncryptedData
 from bi_core.us_manager.storage_schemas.connection_schema_registry import MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA
 from bi_core.us_manager.storage_schemas.dataset import DatasetStorageSchema
+from bi_utils.utils import (
+    AddressableData,
+    DataKey,
+)
 
 if TYPE_CHECKING:
     from bi_core.us_manager.us_manager import USManagerBase
@@ -35,13 +46,11 @@ class USDataPack:
 
 
 class USEntrySerializer(abc.ABC):
-    _MAP_TYPE_TO_SCHEMA: ClassVar[
-        ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]
-    ] = ChainMap(
+    _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]] = ChainMap(
         MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore
         {
             Dataset.DataModel: DatasetStorageSchema,
-        }
+        },
     )
 
     @classmethod
@@ -56,21 +65,21 @@ class USEntrySerializer(abc.ABC):
 
     @abc.abstractmethod
     def serialize_raw(self, entry: USEntry) -> dict[str, Any]:
-        """ Returns raw entry data dict """
+        """Returns raw entry data dict"""
 
         raise NotImplementedError()
 
     @abc.abstractmethod
     def deserialize_raw(
-            self,
-            cls: Type[USEntry],
-            raw_data: dict[str, Any],
-            entry_id: str,
-            us_manager: USManagerBase,
-            common_properties: dict[str, Any],
-            data_strict: bool = True,
+        self,
+        cls: Type[USEntry],
+        raw_data: dict[str, Any],
+        entry_id: str,
+        us_manager: USManagerBase,
+        common_properties: dict[str, Any],
+        data_strict: bool = True,
     ) -> USEntry:
-        """ Initializes USEntry with data provided in raw_data """
+        """Initializes USEntry with data provided in raw_data"""
 
         raise NotImplementedError()
 
@@ -104,13 +113,13 @@ class USEntrySerializer(abc.ABC):
         )
 
     def deserialize(
-            self,
-            cls: Type[USEntry],
-            data_pack: USDataPack,
-            entry_id: str,
-            us_manager: USManagerBase,
-            common_properties: dict[str, Any],
-            data_strict: bool = True,
+        self,
+        cls: Type[USEntry],
+        data_pack: USDataPack,
+        entry_id: str,
+        us_manager: USManagerBase,
+        common_properties: dict[str, Any],
+        data_strict: bool = True,
     ) -> USEntry:
         # Assumed that data_pack's dicts was decoupled with initial US response
         data_pack = copy.deepcopy(data_pack)
@@ -151,13 +160,13 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
         return data_dict
 
     def deserialize_raw(
-            self,
-            cls: Type[USEntry],
-            raw_data: dict[str, Any],
-            entry_id: str,
-            us_manager: USManagerBase,
-            common_properties: dict[str, Any],
-            data_strict: bool = True,
+        self,
+        cls: Type[USEntry],
+        raw_data: dict[str, Any],
+        entry_id: str,
+        us_manager: USManagerBase,
+        common_properties: dict[str, Any],
+        data_strict: bool = True,
     ) -> USEntry:
         data_cls = cls.DataModel
         assert data_cls is not None and issubclass(data_cls, BaseAttrsDataModel)

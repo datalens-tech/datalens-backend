@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import (
+    TYPE_CHECKING,
+    List,
+)
 
 import attr
 
 if TYPE_CHECKING:
     from bi_constants.enums import DataSourceRole
-
     from bi_core.us_connection_base import ClassicConnectionSQL
-
     from bi_query_processing.translation.primitives import TranslatedMultiQueryBase
 
 

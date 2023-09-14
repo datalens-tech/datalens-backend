@@ -1,15 +1,23 @@
 from __future__ import annotations
 
 import logging
-from typing import List, Optional, Sequence, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_constants.enums import DataSourceRole
-
 from bi_core.data_processing.selectors.base import BIQueryExecutionContext
 from bi_core.data_processing.selectors.dataset_cached import CachedDatasetDataSelectorAsync
-from bi_core.data_processing.streaming import AsyncChunkedBase, AsyncChunked, LazyAsyncChunked
+from bi_core.data_processing.streaming import (
+    AsyncChunked,
+    AsyncChunkedBase,
+    LazyAsyncChunked,
+)
 
 if TYPE_CHECKING:
     from bi_constants.types import TBIDataValue
@@ -30,9 +38,9 @@ class LazyCachedDatasetDataSelectorAsync(CachedDatasetDataSelectorAsync):
     # even if the selector doesn't fetch any data in the end
 
     def post_exec(
-            self,
-            query_execution_ctx: BIQueryExecutionContext,
-            exec_exception: Optional[Exception],
+        self,
+        query_execution_ctx: BIQueryExecutionContext,
+        exec_exception: Optional[Exception],
     ) -> None:
         """Lazy behaviour: since the query has not even been executed at this point, do nothing."""
 
@@ -42,16 +50,13 @@ class LazyCachedDatasetDataSelectorAsync(CachedDatasetDataSelectorAsync):
             super().post_exec(query_execution_ctx=query_execution_ctx, exec_exception=None)
 
     async def execute_query_context(
-            self,
-            role: DataSourceRole,
-            query_execution_ctx: BIQueryExecutionContext,
-            row_count_hard_limit: Optional[int] = None,
+        self,
+        role: DataSourceRole,
+        query_execution_ctx: BIQueryExecutionContext,
+        row_count_hard_limit: Optional[int] = None,
     ) -> Optional[AsyncChunkedBase[Sequence[TBIDataValue]]]:
-
         result_iter_awaitable = super().execute_query_context(
-            role=role,
-            query_execution_ctx=query_execution_ctx,
-            row_count_hard_limit=row_count_hard_limit
+            role=role, query_execution_ctx=query_execution_ctx, row_count_hard_limit=row_count_hard_limit
         )
 
         async def initialize_data_stream() -> AsyncChunkedBase[List[TBIDataValue]]:

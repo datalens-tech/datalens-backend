@@ -1,10 +1,17 @@
 import abc
 import logging
-from typing import TYPE_CHECKING, Type, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Type,
+)
+
 import attr
 
 from bi_core.us_manager.mutation_cache.usentry_mutation_cache import (
-    GenericCacheEngine, MemoryCacheEngine, RedisCacheEngine
+    GenericCacheEngine,
+    MemoryCacheEngine,
+    RedisCacheEngine,
 )
 from bi_core.utils import FutureRef
 
@@ -26,7 +33,7 @@ class MutationCacheEngineFactory(metaclass=abc.ABCMeta):
 
 @attr.s
 class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
-    _services_registry_ref: FutureRef['ServicesRegistry'] = attr.ib()
+    _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
     cache_type: Type[GenericCacheEngine] = attr.ib()
     _saved_inmemory_engine: Optional[MemoryCacheEngine] = None
 
@@ -37,7 +44,7 @@ class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
         return cls._saved_inmemory_engine
 
     @property
-    def service_registry(self) -> 'ServicesRegistry':
+    def service_registry(self) -> "ServicesRegistry":
         return self._services_registry_ref.ref
 
     def _get_redis_cache_engine(self) -> Optional[RedisCacheEngine]:
@@ -57,6 +64,6 @@ class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
             if redis_cache_engine:
                 return redis_cache_engine
             LOGGER.info("Can not create mutation cache engine: service registry did not return a Redis client")
-            raise CacheInitializationError('Cannot create mutation cache engine')
+            raise CacheInitializationError("Cannot create mutation cache engine")
         else:
-            raise CacheInitializationError('No initialization for this type of Cache Engine in factory')
+            raise CacheInitializationError("No initialization for this type of Cache Engine in factory")

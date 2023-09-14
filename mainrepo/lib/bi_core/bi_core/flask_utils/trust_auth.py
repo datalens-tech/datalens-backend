@@ -3,7 +3,11 @@ from typing import Optional
 import attr
 import flask
 
-from bi_api_commons.base_models import NoAuthData, TenantCommon, TenantDef
+from bi_api_commons.base_models import (
+    NoAuthData,
+    TenantCommon,
+    TenantDef,
+)
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 
 
@@ -13,6 +17,7 @@ class TrustAuthService:
     Service that unconditionally injects user/tenant info into request context.
     Should be used only in tests
     """
+
     fake_user_id: Optional[str] = None
     fake_user_name: Optional[str] = None
     fake_tenant: Optional[TenantDef] = None

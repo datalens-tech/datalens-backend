@@ -1,17 +1,18 @@
 import attr
 
 from bi_constants.enums import JoinType
-
-import bi_formula.core.nodes as formula_nodes
 import bi_formula.core.fork_nodes as formula_fork_nodes
 from bi_formula.core.index import NodeHierarchyIndex
-import bi_formula.inspect.node as inspect_node
-import bi_formula.inspect.expression as inspect_expression
+import bi_formula.core.nodes as formula_nodes
 from bi_formula.inspect.env import InspectionEnvironment
-
+import bi_formula.inspect.expression as inspect_expression
+import bi_formula.inspect.node as inspect_node
 from bi_query_processing.compilation.primitives import CompiledQuery
 from bi_query_processing.multi_query.splitters.mask_based import (
-    MultiQuerySplitter, AliasedFormulaSplitMask, QuerySplitMask, SubqueryType
+    AliasedFormulaSplitMask,
+    MultiQuerySplitter,
+    QuerySplitMask,
+    SubqueryType,
 )
 from bi_query_processing.utils.name_gen import PrefixedIdGen
 
@@ -26,7 +27,9 @@ class WinFuncQuerySplitter(MultiQuerySplitter):
     """
 
     def _collect_win_func_split_indices_from_expression(
-            self, node: formula_nodes.Formula, inspect_env: InspectionEnvironment,
+        self,
+        node: formula_nodes.Formula,
+        inspect_env: InspectionEnvironment,
     ) -> list[NodeHierarchyIndex]:
         """
         Collect indices of nodes that have to be split off.
@@ -54,7 +57,9 @@ class WinFuncQuerySplitter(MultiQuerySplitter):
         return result
 
     def _collect_win_func_formula_masks(
-            self, query: CompiledQuery, expr_id_gen: PrefixedIdGen,
+        self,
+        query: CompiledQuery,
+        expr_id_gen: PrefixedIdGen,
     ) -> list[AliasedFormulaSplitMask]:
         """
         Iterate over all formulas in the query and collect indices of nodes that should be split off.
@@ -67,7 +72,8 @@ class WinFuncQuerySplitter(MultiQuerySplitter):
             formula_list = query.get_formula_list(query_part)
             for formula_idx, formula in enumerate(formula_list):
                 indices = self._collect_win_func_split_indices_from_expression(
-                    node=formula.formula_obj, inspect_env=inspect_env,
+                    node=formula.formula_obj,
+                    inspect_env=inspect_env,
                 )
                 result += [
                     AliasedFormulaSplitMask(
@@ -83,7 +89,10 @@ class WinFuncQuerySplitter(MultiQuerySplitter):
         return result
 
     def get_split_masks(
-            self, query: CompiledQuery, expr_id_gen: PrefixedIdGen, query_id_gen: PrefixedIdGen,
+        self,
+        query: CompiledQuery,
+        expr_id_gen: PrefixedIdGen,
+        query_id_gen: PrefixedIdGen,
     ) -> list[QuerySplitMask]:
         """
         Collect formula split masks for all formulas in the query and generate a single query split mask

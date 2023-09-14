@@ -1,24 +1,35 @@
 from __future__ import annotations
 
 import copy
-import logging
 import datetime
+from functools import lru_cache
+from itertools import islice
+import logging
 import re
 import string
-from itertools import islice
+from typing import (
+    Any,
+    Callable,
+    Iterator,
+    Optional,
+    Sequence,
+    Union,
+)
 from uuid import uuid4
-from functools import lru_cache
-from typing import Optional, Callable, Any, Sequence, Union, Iterator
 
 import attr
 
+from bi_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler,
+)
 from bi_constants.enums import BIType
-
 from bi_core import converter_types_cast
-from bi_core.aio.web_app_services.gsheets import NumberFormatType, Cell
+from bi_core.aio.web_app_services.gsheets import (
+    Cell,
+    NumberFormatType,
+)
 from bi_core.db import SchemaColumn
-from bi_app_tools.profiling_base import GenericProfiler, generic_profiler
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,7 +42,7 @@ class UnknownCellTypeError(Exception):
     pass
 
 
-DATE_RE = r'''
+DATE_RE = r"""
 (?:
   [1-9]\d{3}-
   (?:
@@ -56,10 +67,10 @@ DATE_RE = r'''
   )
   -02-29
 )
-'''
+"""
 
 
-DATE_RU_FMT_RE = r'''
+DATE_RU_FMT_RE = r"""
 (?:
   (?:
     (?:0[1-9]|1\d|2[0-8])
@@ -84,59 +95,45 @@ DATE_RU_FMT_RE = r'''
     00
   )
 )
-'''
+"""
 
 
-TIME_RE = r'''
+TIME_RE = r"""
 (?:[01]\d|2[0-3])
 :
 [0-5]\d
 :
 [0-5]\d
 (\.\d{1,6})?
-'''
+"""
 
 
-DATETIME_MID_SPACE_RE = DATE_RE + r'\s' + TIME_RE
+DATETIME_MID_SPACE_RE = DATE_RE + r"\s" + TIME_RE
 
 
-DATETIME_MID_T_RE = DATE_RE + r'T' + TIME_RE
+DATETIME_MID_T_RE = DATE_RE + r"T" + TIME_RE
 
 
-DATETIME_TZ_RE = r'''
+DATETIME_TZ_RE = r"""
 (?:
   (Z|UTC)
 |
   [+-][01]\d
   (:?[0-5]\d)?
 )
-'''
+"""
 
 
 DATETIME_REGEXES = {
-    'datetime__mid_space_without_tz': re.compile(
-        fr'^{DATE_RE}\s{TIME_RE}$',
-        flags=re.VERBOSE),
-
-    'datetime__mid_space_with_tz': re.compile(
-        fr'^{DATE_RE}\s{TIME_RE}\s?{DATETIME_TZ_RE}$',
-        flags=re.VERBOSE),
-
-    'datetime__full_with_tz': re.compile(
-        fr'^{DATE_RE}T{TIME_RE}\s?{DATETIME_TZ_RE}$',
-        flags=re.VERBOSE),
-
-    'datetime__mid_t_without_tz': re.compile(
-        fr'^{DATE_RE}T{TIME_RE}$',
-        flags=re.VERBOSE),
-
-    'datetime__ru_fmt_mid_space_without_tz': re.compile(
-        fr'^{DATE_RU_FMT_RE}\s{TIME_RE}$',
-        flags=re.VERBOSE),
+    "datetime__mid_space_without_tz": re.compile(rf"^{DATE_RE}\s{TIME_RE}$", flags=re.VERBOSE),
+    "datetime__mid_space_with_tz": re.compile(rf"^{DATE_RE}\s{TIME_RE}\s?{DATETIME_TZ_RE}$", flags=re.VERBOSE),
+    "datetime__full_with_tz": re.compile(rf"^{DATE_RE}T{TIME_RE}\s?{DATETIME_TZ_RE}$", flags=re.VERBOSE),
+    "datetime__mid_t_without_tz": re.compile(rf"^{DATE_RE}T{TIME_RE}$", flags=re.VERBOSE),
+    "datetime__ru_fmt_mid_space_without_tz": re.compile(rf"^{DATE_RU_FMT_RE}\s{TIME_RE}$", flags=re.VERBOSE),
 }
 
 
-@lru_cache(2 ** 15)
+@lru_cache(2**15)
 def _check_datetime_re(value):  # type: ignore  # TODO: fix
     if not value:
         return None
@@ -150,11 +147,9 @@ def _check_datetime_re(value):  # type: ignore  # TODO: fix
 
 
 date_re = {
-    'date__iso_date': re.compile(
-        fr'^{DATE_RE}$',
-        flags=re.VERBOSE),
-
-    'date__reversed_full_year_slashes': re.compile(r'''
+    "date__iso_date": re.compile(rf"^{DATE_RE}$", flags=re.VERBOSE),
+    "date__reversed_full_year_slashes": re.compile(
+        r"""
 ^
 (
   (
@@ -188,8 +183,11 @@ date_re = {
   [1-9]\d{3}
 )
 $
-''', flags=re.VERBOSE),
-    'date__reversed_full_year_dots': re.compile(r'''
+""",
+        flags=re.VERBOSE,
+    ),
+    "date__reversed_full_year_dots": re.compile(
+        r"""
 ^
 (
   (
@@ -223,8 +221,11 @@ $
   [1-9]\d{3}
 )
 $
-''', flags=re.VERBOSE),
-    'date__reversed_short_year_slashes': re.compile(r'''
+""",
+        flags=re.VERBOSE,
+    ),
+    "date__reversed_short_year_slashes": re.compile(
+        r"""
 ^
 (
   (
@@ -254,9 +255,11 @@ $
   \d{2}
 )
 $
-''', flags=re.VERBOSE),
-
-    'date__reversed_short_year_dots': re.compile(r'''
+""",
+        flags=re.VERBOSE,
+    ),
+    "date__reversed_short_year_dots": re.compile(
+        r"""
 ^
 (
   (
@@ -286,11 +289,13 @@ $
   \d{2}
 )
 $
-''', flags=re.VERBOSE),
+""",
+        flags=re.VERBOSE,
+    ),
 }
 
 
-@lru_cache(2 ** 15)
+@lru_cache(2**15)
 def _check_date_re(value):  # type: ignore  # TODO: fix
     if not value:
         return None
@@ -323,18 +328,31 @@ class ParsingDataType:
 
 
 _NONE_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.string, type=str, order=-2, group=_TYPE_GROUP_NONE)
-_BOOLEAN_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.boolean, type=bool, order=-1,
-                                             cast_func=converter_types_cast._to_boolean, group=_TYPE_GROUP_BOOLEAN)
-_INTEGER_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.integer, type=int, order=0,
-                                             cast_func=converter_types_cast._to_int, group=_TYPE_GROUP_NUMBER)
-_FLOAT_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.float, type=float, order=1,
-                                           cast_func=converter_types_cast._to_float, group=_TYPE_GROUP_NUMBER)
-_DATE_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.date, order=2, type=datetime.date,
-                                          cast_func=converter_types_cast._to_date,
-                                          check_func=_check_date_re, group=_TYPE_GROUP_DATETIME)
-_DATETIME_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.genericdatetime, order=3, type=datetime.datetime,
-                                              cast_func=converter_types_cast._to_datetime,
-                                              check_func=_check_datetime_re, group=_TYPE_GROUP_DATETIME)
+_BOOLEAN_PARSING_DATA_TYPE = ParsingDataType(
+    bi_type=BIType.boolean, type=bool, order=-1, cast_func=converter_types_cast._to_boolean, group=_TYPE_GROUP_BOOLEAN
+)
+_INTEGER_PARSING_DATA_TYPE = ParsingDataType(
+    bi_type=BIType.integer, type=int, order=0, cast_func=converter_types_cast._to_int, group=_TYPE_GROUP_NUMBER
+)
+_FLOAT_PARSING_DATA_TYPE = ParsingDataType(
+    bi_type=BIType.float, type=float, order=1, cast_func=converter_types_cast._to_float, group=_TYPE_GROUP_NUMBER
+)
+_DATE_PARSING_DATA_TYPE = ParsingDataType(
+    bi_type=BIType.date,
+    order=2,
+    type=datetime.date,
+    cast_func=converter_types_cast._to_date,
+    check_func=_check_date_re,
+    group=_TYPE_GROUP_DATETIME,
+)
+_DATETIME_PARSING_DATA_TYPE = ParsingDataType(
+    bi_type=BIType.genericdatetime,
+    order=3,
+    type=datetime.datetime,
+    cast_func=converter_types_cast._to_datetime,
+    check_func=_check_datetime_re,
+    group=_TYPE_GROUP_DATETIME,
+)
 _STRING_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.string, type=str, order=4, group=_TYPE_GROUP_STRING)
 
 ALLOWED_DATA_TYPES = (
@@ -351,9 +369,9 @@ TResultColumn = dict[str, Union[str, int]]
 TResultTypes = list[TResultColumn]
 
 
-@lru_cache(2 ** 20)
+@lru_cache(2**20)
 def guess_cell_type(value, start_order: int = 0) -> ParsingDataType:  # type: ignore  # TODO: fix
-    if value is None or value == '':
+    if value is None or value == "":
         return _NONE_PARSING_DATA_TYPE
 
     result = None
@@ -374,13 +392,13 @@ def guess_cell_type(value, start_order: int = 0) -> ParsingDataType:  # type: ig
                 return cell_type
 
     if not result:
-        raise CsvParsingException('Unknown data type')  # TODO: ignore unknown cell types
+        raise CsvParsingException("Unknown data type")  # TODO: ignore unknown cell types
 
 
 def guess_cell_type_gsheet(cell: Cell, *args: Any, **kwargs: Any) -> ParsingDataType:
     value = cell.value
     number_format = cell.number_format_type
-    if value is None or value == '':
+    if value is None or value == "":
         return _NONE_PARSING_DATA_TYPE
 
     number_format_to_parsing_data_type_map = {
@@ -413,7 +431,7 @@ def _choose_new_cell_type(new_type: ParsingDataType, prev_type: ParsingDataType)
 
 
 def generate_column_hash_name():  # type: ignore  # TODO: fix
-    return 'f' + uuid4().hex[:16]
+    return "f" + uuid4().hex[:16]
 
 
 def guess_has_header(header_types: TColumnTypes, column_types: TColumnTypes) -> bool:
@@ -476,7 +494,7 @@ def idx_to_alphabet_notation(idx: int) -> str:
 
 
 def idx_to_file_notation(idx: int) -> str:
-    return f'field{idx + 1}'
+    return f"field{idx + 1}"
 
 
 def make_result_types(
@@ -492,24 +510,26 @@ def make_result_types(
 
     result_types = []
     for index, t in types.items():
-        header_value = get_value(header_values[index]) if has_header and len(header_values) > index else ''
-        result_types.append(dict(
-            name=generate_column_hash_name(),
-            index=index,
-            cast=t.bi_type.name,
-            title=header_value or missing_title_generator(index),
-        ))
-    result_types.sort(key=lambda t: t['index'])
+        header_value = get_value(header_values[index]) if has_header and len(header_values) > index else ""
+        result_types.append(
+            dict(
+                name=generate_column_hash_name(),
+                index=index,
+                cast=t.bi_type.name,
+                title=header_value or missing_title_generator(index),
+            )
+        )
+    result_types.sort(key=lambda t: t["index"])
     return result_types
 
 
 def guess_column_types(
-        data_iter: Iterator,
-        sample_lines_count: Optional[int] = None,
-        cell_type_guesser: Callable[..., ParsingDataType] = guess_cell_type,
+    data_iter: Iterator,
+    sample_lines_count: Optional[int] = None,
+    cell_type_guesser: Callable[..., ParsingDataType] = guess_cell_type,
 ) -> TColumnTypes:
     column_types: TColumnTypes = {}
-    with GenericProfiler('guess_all_rows_types'):
+    with GenericProfiler("guess_all_rows_types"):
         rows_seen = 0
         for row in data_iter:
             if sample_lines_count and rows_seen >= sample_lines_count:
@@ -535,13 +555,13 @@ def guess_column_types(
 
 @generic_profiler("guess_types_and_header")
 def guess_types_and_header(
-        data_iter: Iterator,
-        has_header: Optional[bool] = None,
-        sample_lines_count: Optional[int] = None,
-        **kwargs: Any,
+    data_iter: Iterator,
+    has_header: Optional[bool] = None,
+    sample_lines_count: Optional[int] = None,
+    **kwargs: Any,
 ) -> tuple[bool, TResultTypes]:
     if has_header is None or has_header:
-        header = next(data_iter)   # assume first row is header
+        header = next(data_iter)  # assume first row is header
     else:
         header = []
 
@@ -559,10 +579,10 @@ def guess_types_and_header(
 
 @generic_profiler("guess_types_and_header_gsheets")
 def guess_types_and_header_gsheets(
-        data_iter: Iterator,
-        sample_lines_count: Optional[int] = None,
+    data_iter: Iterator,
+    sample_lines_count: Optional[int] = None,
 ) -> tuple[bool, TResultTypes, TResultTypes, TResultTypes]:
-    header = next(data_iter)   # assume first row is header
+    header = next(data_iter)  # assume first row is header
 
     header_types = {col_index: guess_cell_type_gsheet(value) for col_index, value in enumerate(header)}
     column_types = guess_column_types(data_iter, sample_lines_count, guess_cell_type_gsheet)
@@ -580,8 +600,8 @@ def guess_types_and_header_gsheets(
 
 @generic_profiler("guess_types_gsheets")
 def guess_types_gsheets(
-        data_iter: Iterator,
-        sample_lines_count: Optional[int] = None,
+    data_iter: Iterator,
+    sample_lines_count: Optional[int] = None,
 ) -> TResultTypes:
     column_types = guess_column_types(data_iter, sample_lines_count, guess_cell_type_gsheet)
 
@@ -592,18 +612,18 @@ def guess_types_gsheets(
 
 
 def guess_cell_type_excel(cell: dict, *args: Any, **kwargs: Any) -> ParsingDataType:
-    value = cell.get('value')
-    number_format = cell.get('data_type')
+    value = cell.get("value")
+    number_format = cell.get("data_type")
     assert isinstance(number_format, str)
 
     number_format_to_parsing_data_type_map = {
-        's': _STRING_PARSING_DATA_TYPE,
-        'd': _DATETIME_PARSING_DATA_TYPE,
-        'i': _INTEGER_PARSING_DATA_TYPE,
-        'n': _FLOAT_PARSING_DATA_TYPE,
+        "s": _STRING_PARSING_DATA_TYPE,
+        "d": _DATETIME_PARSING_DATA_TYPE,
+        "i": _INTEGER_PARSING_DATA_TYPE,
+        "n": _FLOAT_PARSING_DATA_TYPE,
     }
 
-    if value is None or value == '':
+    if value is None or value == "":
         return _NONE_PARSING_DATA_TYPE
 
     # Fallback to string in case of type recognition errors
@@ -616,27 +636,29 @@ def make_excel_result_types(
     has_header: bool,
 ) -> TResultTypes:
     def get_value(value):  # type: ignore
-        return value.get('value')
+        return value.get("value")
 
     result_types = []
     for index, t in types.items():
-        header_value = get_value(header_values[index]) if has_header and len(header_values) > index else ''
-        result_types.append(dict(
-            name=generate_column_hash_name(),
-            index=index,
-            cast=t.bi_type.name,
-            title=header_value or 'field{}'.format(index + 1),
-        ))
-    result_types.sort(key=lambda t: t['index'])
+        header_value = get_value(header_values[index]) if has_header and len(header_values) > index else ""
+        result_types.append(
+            dict(
+                name=generate_column_hash_name(),
+                index=index,
+                cast=t.bi_type.name,
+                title=header_value or "field{}".format(index + 1),
+            )
+        )
+    result_types.sort(key=lambda t: t["index"])
     return result_types
 
 
 @generic_profiler("guess_types_and_header_excel")
 def guess_types_and_header_excel(
-        data_iter: Iterator,
-        sample_lines_count: Optional[int] = None,
+    data_iter: Iterator,
+    sample_lines_count: Optional[int] = None,
 ) -> tuple[bool, TResultTypes, TResultTypes, TResultTypes]:
-    header = next(data_iter)   # assume first row is header
+    header = next(data_iter)  # assume first row is header
 
     header_types = {col_index: guess_cell_type_excel(value) for col_index, value in enumerate(header)}
     column_types = guess_column_types(data_iter, sample_lines_count, guess_cell_type_excel)

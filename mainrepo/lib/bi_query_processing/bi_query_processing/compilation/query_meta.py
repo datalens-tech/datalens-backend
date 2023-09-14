@@ -1,15 +1,20 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TypeVar
-
-from bi_core.constants import DataAPILimits
-
-from bi_query_processing.enums import QueryType, EmptyQueryMode
+from typing import (
+    Any,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
+from bi_core.constants import DataAPILimits
+from bi_query_processing.enums import (
+    EmptyQueryMode,
+    QueryType,
+)
 
-_QUERY_META_TV = TypeVar('_QUERY_META_TV', bound='QueryMetaInfo')
+_QUERY_META_TV = TypeVar("_QUERY_META_TV", bound="QueryMetaInfo")
 
 
 @attr.s

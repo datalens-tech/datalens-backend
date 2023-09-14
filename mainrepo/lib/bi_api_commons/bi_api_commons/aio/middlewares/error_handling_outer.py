@@ -1,21 +1,25 @@
 from __future__ import annotations
 
 import abc
+from asyncio import CancelledError
+from contextlib import ExitStack
 import enum
 import logging
 import os
 import sys
-from asyncio import CancelledError
-from contextlib import ExitStack
-from typing import Any, Optional, Dict, Tuple
+from typing import (
+    Any,
+    Dict,
+    Optional,
+    Tuple,
+)
 
+from aiohttp import web
 import attr
 import sentry_sdk
-from aiohttp import web
 from typing_extensions import final
 
 from bi_api_commons.logging import RequestLoggingContextController
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,10 +58,7 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
         pass
 
     def handle_error(
-        self,
-        err: Exception,
-        request: web.Request,
-        req_logging_ctx_ctrl: RequestLoggingContextController
+        self, err: Exception, request: web.Request, req_logging_ctx_ctrl: RequestLoggingContextController
     ) -> Tuple[web.Response, ErrorData]:
         if isinstance(err, CancelledError):
             LOGGER.warning("Client request was cancelled", exc_info=True)
@@ -73,39 +74,41 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
                 return self.make_response(err_data, err, request), err_data
 
             except Exception as on_error_error:  # noqa
-                req_logging_ctx_ctrl.put_to_context('is_error', True)
+                req_logging_ctx_ctrl.put_to_context("is_error", True)
                 LOGGER.error(
                     "Error handler raised an error during handling this exception",
                     exc_info=(type(err), err, err.__traceback__),
                 )
-                LOGGER.critical(
-                    "Error handler raised an error during creating error response",
-                    exc_info=True
-                )
+                LOGGER.critical("Error handler raised an error during creating error response", exc_info=True)
                 err_data = ErrorData(
                     500,
                     http_reason="Internal server error",
                     response_body=dict(message="Internal server error"),
                     level=ErrorLevel.error,
                 )
-                return web.json_response(
-                    dict(message='Internal Server Error'),
-                    status=500,
-                ), err_data
+                return (
+                    web.json_response(
+                        dict(message="Internal Server Error"),
+                        status=500,
+                    ),
+                    err_data,
+                )
 
     def maybe_debug_catch(self, err):  # type: ignore  # TODO: fix
-        if os.environ.get('BI_ERR_PDB'):
+        if os.environ.get("BI_ERR_PDB"):
             sys.last_traceback = err.__traceback__
             import traceback
+
             traceback.print_exc()
             import ipdb
+
             ipdb.pm()
 
     def log_error_http_response(  # type: ignore  # TODO: fix
-            self,
-            err: Exception,
-            err_data: ErrorData,
-            request_logging_context_ctrl: RequestLoggingContextController,
+        self,
+        err: Exception,
+        err_data: ErrorData,
+        request_logging_context_ctrl: RequestLoggingContextController,
     ):
         with ExitStack() as err_logging_stack:
             # skip all 4xx codes
@@ -113,9 +116,9 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
             if use_sentry:
                 reg_exc_scope = err_logging_stack.enter_context(sentry_sdk.push_scope())
                 # Tagging events as captured in this middleware
-                reg_exc_scope.set_tag('event_source', 'outer_error_handling_middleware')
-                reg_exc_scope.set_tag('http_response_code', err_data.status_code)
-                reg_exc_scope.set_extra('http_response_body', err_data.response_body)
+                reg_exc_scope.set_tag("event_source", "outer_error_handling_middleware")
+                reg_exc_scope.set_tag("http_response_code", err_data.status_code)
+                reg_exc_scope.set_extra("http_response_body", err_data.response_body)
                 reg_exc_scope.set_level(err_data.level.name)
 
             if err_data.level == ErrorLevel.info:
@@ -126,5 +129,5 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
             elif err_data.level == ErrorLevel.warning:
                 LOGGER.warning("Warning exception fired", exc_info=True)
             else:
-                request_logging_context_ctrl.put_to_context('is_error', True)
+                request_logging_context_ctrl.put_to_context("is_error", True)
                 LOGGER.exception("Caught an exception in request handler")

@@ -1,15 +1,24 @@
 from __future__ import annotations
 
-from marshmallow import fields as ma_fields, post_dump
-from typing import Any, Dict
+from typing import (
+    Any,
+    Dict,
+)
 
-from bi_constants.enums import ManagedBy
+from marshmallow import fields as ma_fields
+from marshmallow import post_dump
 
-from bi_model_tools.schema.base import DefaultSchema, DefaultValidateSchema
-
-from bi_api_lib.request_model.data import AddUpdateObligatoryFilter
 from bi_api_lib.enums import WhereClauseOperation
-from bi_api_lib.query.formalization.raw_specs import IdOrTitleFieldRef, RawFilterFieldSpec
+from bi_api_lib.query.formalization.raw_specs import (
+    IdOrTitleFieldRef,
+    RawFilterFieldSpec,
+)
+from bi_api_lib.request_model.data import AddUpdateObligatoryFilter
+from bi_constants.enums import ManagedBy
+from bi_model_tools.schema.base import (
+    DefaultSchema,
+    DefaultValidateSchema,
+)
 
 
 class WhereSchema(DefaultSchema[RawFilterFieldSpec]):
@@ -21,9 +30,9 @@ class WhereSchema(DefaultSchema[RawFilterFieldSpec]):
 
     def to_object(self, data: dict) -> RawFilterFieldSpec:
         return RawFilterFieldSpec(
-            ref=IdOrTitleFieldRef(id_or_title=data['column']),
-            operation=data['operation'],
-            values=data['values'],
+            ref=IdOrTitleFieldRef(id_or_title=data["column"]),
+            operation=data["operation"],
+            values=data["values"],
         )
 
 
@@ -38,8 +47,8 @@ class ObligatoryFilterSchema(DefaultValidateSchema[AddUpdateObligatoryFilter]):
 
     @post_dump
     def set_where_column(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
-        if data.get('field_guid'):
-            for filter in data['default_filters']:
-                if not filter.get('column'):
-                    filter['column'] = data['field_guid']
+        if data.get("field_guid"):
+            for filter in data["default_filters"]:
+                if not filter.get("column"):
+                    filter["column"] = data["field_guid"]
         return data

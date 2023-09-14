@@ -5,21 +5,43 @@ import asyncio
 import functools
 import itertools
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 from typing_extensions import final
 
 from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connection_executors import ExecutionMode, SyncWrapperForAsyncConnExecutor
+from bi_core.connection_executors import (
+    ExecutionMode,
+    SyncWrapperForAsyncConnExecutor,
+)
 from bi_core.connection_executors.models.common import RemoteQueryExecutorData
-from bi_core.connection_models import ConnDTO, ConnectOptions
+from bi_core.connection_models import (
+    ConnDTO,
+    ConnectOptions,
+)
 from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.us_connection_base import ConnectionBase, ExecutorBasedMixin
+from bi_core.us_connection_base import (
+    ConnectionBase,
+    ExecutorBasedMixin,
+)
 from bi_core.utils import FutureRef
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors import AsyncConnExecutorBase, SyncConnExecutorBase
+    from bi_core.connection_executors import (
+        AsyncConnExecutorBase,
+        SyncConnExecutorBase,
+    )
     from bi_core.connections_security.base import ConnectionSecurityManager
     from bi_core.services_registry import ServicesRegistry
 
@@ -64,16 +86,16 @@ class ConnExecutorFactory(metaclass=abc.ABCMeta):
         pass
 
 
-_RESULT_TV = TypeVar('_RESULT_TV')
+_RESULT_TV = TypeVar("_RESULT_TV")
 
 
 def ensure_env(async_env: bool = True) -> Callable[[Callable[..., _RESULT_TV]], Callable[..., _RESULT_TV]]:
     def real_deco(wrapped: Callable[..., _RESULT_TV]) -> Callable[..., _RESULT_TV]:
         @functools.wraps(wrapped)
-        def wrapper(self: 'BaseClosableExecutorFactory', *args: Any, **kwargs: Any) -> _RESULT_TV:
+        def wrapper(self: "BaseClosableExecutorFactory", *args: Any, **kwargs: Any) -> _RESULT_TV:
             if self._async_env != async_env:
-                meth_env = 'async' if async_env else 'sync'
-                factory_env = 'async' if self._async_env else 'sync'
+                meth_env = "async" if async_env else "sync"
+                factory_env = "async" if self._async_env else "sync"
                 raise NotImplementedError(
                     f"Factory created for {factory_env} env "
                     f"but .{wrapped.__name__}() may be used only in {meth_env}"
@@ -88,6 +110,7 @@ def ensure_env(async_env: bool = True) -> Callable[[Callable[..., _RESULT_TV]], 
 @attr.s(frozen=True, auto_attribs=True)
 class ConnExecutorRecipe:
     """Class that represent all data to create"""
+
     ce_cls: Type
     conn_dto: ConnDTO
     connect_options: ConnectOptions
@@ -139,11 +162,7 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
 
     # TODO CONSIDER: May be add option to ignore cache?
     @final
-    def _get_or_create_conn_executor(
-            self,
-            conn: ExecutorBasedMixin,
-            with_sync_wrapper: bool
-    ) -> _CECreationResult:
+    def _get_or_create_conn_executor(self, conn: ExecutorBasedMixin, with_sync_wrapper: bool) -> _CECreationResult:
         if self._entity_usage_checker is not None:
             assert isinstance(conn, ConnectionBase)
             self._entity_usage_checker.ensure_data_connection_can_be_used(rci=self.req_ctx_info, conn=conn)
@@ -163,7 +182,8 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
                 loop=asyncio.get_event_loop(),
                 async_conn_executor=async_ce,
             )
-            if with_sync_wrapper else None
+            if with_sync_wrapper
+            else None
         )
         pair = self._CECreationResult(async_ce, sync_wrapper)
         created_list.append(pair)
@@ -199,8 +219,8 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def _get_async_conn_executor_recipe(
-            self,
-            conn: ExecutorBasedMixin,
+        self,
+        conn: ExecutorBasedMixin,
     ) -> ConnExecutorRecipe:
         pass
 

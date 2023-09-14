@@ -1,13 +1,24 @@
 from __future__ import annotations
 
-from typing import AbstractSet, Any, Generator, Iterable, List, NamedTuple, Tuple
+from typing import (
+    AbstractSet,
+    Any,
+    Generator,
+    Iterable,
+    List,
+    NamedTuple,
+    Tuple,
+)
 
 import attr
 
 from bi_core.components.ids import AvatarId
-
+from bi_query_processing.compilation.primitives import (
+    CompiledMultiQueryBase,
+    CompiledQuery,
+    FromObject,
+)
 from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.primitives import CompiledQuery, CompiledMultiQueryBase, FromObject
 
 
 class MultiQueryIndex(NamedTuple):
@@ -69,7 +80,7 @@ class CompiledMultiLevelQuery(CompiledMultiQueryBase):
                 if compiled_flat_query.id == id:
                     return MultiQueryIndex(level_idx=level_idx, query_idx=query_idx)
 
-        raise KeyError(f'No query with ID {id}')
+        raise KeyError(f"No query with ID {id}")
 
     def clone(self, **updates: Any) -> CompiledMultiLevelQuery:
         return attr.evolve(self, **updates)
@@ -115,6 +126,7 @@ class CompiledMultiLevelQuery(CompiledMultiQueryBase):
         if not self.levels or not self.levels[0].queries:
             return frozenset()
         return {
-            query.joined_from.root_from_id for query in self.levels[0].queries
+            query.joined_from.root_from_id
+            for query in self.levels[0].queries
             if query.joined_from.root_from_id is not None
         }

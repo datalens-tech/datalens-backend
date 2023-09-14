@@ -1,10 +1,10 @@
 from marshmallow import fields as ma_fields
 
-from bi_model_tools.schema.base import BaseSchema
-
 from bi_api_connector.api_schema.source_base import (
-    SimpleDataSourceSchema, SimpleDataSourceTemplateSchema,
+    SimpleDataSourceSchema,
+    SimpleDataSourceTemplateSchema,
 )
+from bi_model_tools.schema.base import BaseSchema
 
 
 class BigQueryTableParametersSchema(BaseSchema):

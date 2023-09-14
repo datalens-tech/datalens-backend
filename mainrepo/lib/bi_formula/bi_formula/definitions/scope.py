@@ -1,5 +1,7 @@
-from enum import IntEnum, unique
-
+from enum import (
+    IntEnum,
+    unique,
+)
 
 _BIT = 1
 

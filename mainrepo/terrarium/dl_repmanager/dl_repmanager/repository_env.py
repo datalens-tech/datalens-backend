@@ -39,12 +39,21 @@ Description of the sections:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, Iterable, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Iterable,
+    Optional,
+    Type,
+)
 
 import attr
 import yaml
 
-from dl_repmanager.fs_editor import FilesystemEditor, get_fs_editor
+from dl_repmanager.fs_editor import (
+    FilesystemEditor,
+    get_fs_editor,
+)
 from dl_repmanager.management_plugins import (
     CommonToolingRepositoryManagementPlugin,
     DependencyReregistrationRepositoryManagementPlugin,
@@ -56,7 +65,7 @@ if TYPE_CHECKING:
     from dl_repmanager.package_index import PackageIndex
 
 
-DEFAULT_CONFIG_FILE_NAME = 'dl-repo.yml'
+DEFAULT_CONFIG_FILE_NAME = "dl-repo.yml"
 
 
 @attr.s(frozen=True)
@@ -86,11 +95,8 @@ class RepoEnvironment:
 
     def iter_package_abs_dirs(self) -> Iterable[tuple[str, Path]]:
         return sorted(
-            [
-                (package_type, pkg_type_config.path)
-                for package_type, pkg_type_config in self.package_types.items()
-            ],
-            key=lambda pair: pair[0]
+            [(package_type, pkg_type_config.path) for package_type, pkg_type_config in self.package_types.items()],
+            key=lambda pair: pair[0],
         )
 
     def get_boilerplate_package_dir(self, package_type: str) -> Path:
@@ -103,7 +109,9 @@ class RepoEnvironment:
         return self.package_types[package_type].tags
 
     def get_plugins_for_package_type(
-            self, package_type: str, package_index: PackageIndex,
+        self,
+        package_type: str,
+        package_index: PackageIndex,
     ) -> list[RepositoryManagementPlugin]:
         # TODO: parameterize and load plugins from config
         home_repo_path = self.package_types[package_type].home_repo_path
@@ -121,7 +129,7 @@ class RepoEnvironment:
         return self.fs_editor
 
 
-_DEFAULT_FS_EDITOR_TYPE = 'default'
+_DEFAULT_FS_EDITOR_TYPE = "default"
 
 
 @attr.s(frozen=True)
@@ -139,7 +147,7 @@ def discover_config(base_path: Path, config_file_name: str) -> Path:
             return config_path
         base_path = base_path.parent
 
-    raise RuntimeError('Failed to discover the repo config file. This does not seem to be a managed repository.')
+    raise RuntimeError("Failed to discover the repo config file. This does not seem to be a managed repository.")
 
 
 @attr.s
@@ -153,22 +161,22 @@ class RepoEnvironmentLoader:
 
         base_path = config_path.parent
         package_types: dict[str, PackageTypeConfig] = {}
-        env_settings = config_data.get('dl_repo', {})
-        for package_type_data in env_settings.get('package_types', ()):
-            package_type = package_type_data['type']
+        env_settings = config_data.get("dl_repo", {})
+        for package_type_data in env_settings.get("package_types", ()):
+            package_type = package_type_data["type"]
             pkg_type_config = PackageTypeConfig(
                 home_repo_path=base_path,
-                path=base_path / package_type_data['root_path'],
-                boilerplate_path=base_path / package_type_data['boilerplate_path'],
-                tags=frozenset(package_type_data.get('tags', ())),
+                path=base_path / package_type_data["root_path"],
+                boilerplate_path=base_path / package_type_data["boilerplate_path"],
+                tags=frozenset(package_type_data.get("tags", ())),
             )
             package_types[package_type] = pkg_type_config
 
-        custom_package_map: dict[str, str] = dict(env_settings.get('custom_package_map', {}))
+        custom_package_map: dict[str, str] = dict(env_settings.get("custom_package_map", {}))
 
-        fs_editor_type: Optional[str] = env_settings.get('fs_editor')
+        fs_editor_type: Optional[str] = env_settings.get("fs_editor")
 
-        for include in env_settings.get('include', ()):
+        for include in env_settings.get("include", ()):
             included_config_contents = self._load_params_from_yaml_file(Path(base_path) / include)
             package_types = dict(included_config_contents.package_types, **package_types)
             custom_package_map = dict(included_config_contents.custom_package_map, **custom_package_map)
@@ -202,6 +210,4 @@ class RepoEnvironmentLoader:
         )
 
     def load_env(self, base_path: Path) -> RepoEnvironment:
-        return self._load_from_yaml_file(
-            config_path=discover_config(base_path, self.config_file_name)
-        )
+        return self._load_from_yaml_file(config_path=discover_config(base_path, self.config_file_name))

@@ -1,17 +1,24 @@
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, List, Optional, Sequence
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 
-    from bi_constants.enums import BIType, DataSourceRole
-
-    from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+    from bi_constants.enums import (
+        BIType,
+        DataSourceRole,
+    )
     from bi_core.data_processing.cache.primitives import BIQueryCacheOptions
+    from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
     from bi_core.data_processing.stream_base import DataStreamAsync
     from bi_core.query.bi_query import QueryAndResultInfo
     from bi_core.us_connection_base import ExecutorBasedMixin
@@ -35,16 +42,16 @@ class BIQueryExecutionContext:
 
 
 class DataSelectorAsyncBase(abc.ABC):
-
     @abc.abstractmethod
     async def get_data_stream(
-            self, *,
-            query_id: Optional[str] = None,
-            role: DataSourceRole,
-            query_res_info: QueryAndResultInfo,
-            joint_dsrc_info: PreparedMultiFromInfo,
-            row_count_hard_limit: Optional[int] = None,
-            stream_id: Optional[str] = None,
+        self,
+        *,
+        query_id: Optional[str] = None,
+        role: DataSourceRole,
+        query_res_info: QueryAndResultInfo,
+        joint_dsrc_info: PreparedMultiFromInfo,
+        row_count_hard_limit: Optional[int] = None,
+        stream_id: Optional[str] = None,
     ) -> DataStreamAsync:
         """
         Fetch data from the database.

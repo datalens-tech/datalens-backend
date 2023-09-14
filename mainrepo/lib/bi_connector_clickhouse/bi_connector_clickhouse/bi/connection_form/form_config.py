@@ -1,17 +1,26 @@
 from __future__ import annotations
 
-from typing import Optional, Sequence
-
-from bi_configs.connectors_settings import ConnectorSettingsBase
+from typing import (
+    Optional,
+    Sequence,
+)
 
 from bi_api_commons.base_models import TenantDef
-
-import bi_api_connector.form_config.models.rows as C
-from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from bi_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
-from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
+from bi_api_connector.form_config.models.api_schema import (
+    FormActionApiSchema,
+    FormApiSchema,
+    FormFieldApiSchema,
+)
+from bi_api_connector.form_config.models.base import (
+    ConnectionForm,
+    ConnectionFormFactory,
+    ConnectionFormMode,
+)
 from bi_api_connector.form_config.models.common import CommonFieldName
+import bi_api_connector.form_config.models.rows as C
 from bi_api_connector.form_config.models.rows.base import FormRow
+from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_connector_clickhouse.bi.connection_info import ClickHouseConnectionInfoProvider
 from bi_connector_clickhouse.bi.i18n.localizer import Translatable
@@ -28,7 +37,6 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.secure),
             FormFieldApiSchema(name=CommonFieldName.ssl_ca),
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-
         ]
 
     def _get_base_edit_api_schema(self) -> FormActionApiSchema:
@@ -58,41 +66,46 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         )
 
     def _get_base_form_config(
-            self, host_section: Sequence[FormRow],
-            username_section: Sequence[FormRow],
-            create_api_schema: FormActionApiSchema,
-            edit_api_schema: FormActionApiSchema,
-            check_api_schema: FormActionApiSchema,
-            rc: RowConstructor,
+        self,
+        host_section: Sequence[FormRow],
+        username_section: Sequence[FormRow],
+        create_api_schema: FormActionApiSchema,
+        edit_api_schema: FormActionApiSchema,
+        check_api_schema: FormActionApiSchema,
+        rc: RowConstructor,
     ) -> ConnectionForm:
         return ConnectionForm(
             title=ClickHouseConnectionInfoProvider.get_title(self._localizer),
-            rows=self._filter_nulls([
-                *host_section,
-                rc.port_row(label_text=Translatable('field_click-house-port'), default_value='8443'),
-                *username_section,
-                rc.password_row(mode=self.mode),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row(),
-                rc.collapse_advanced_settings_row(),
-                *rc.ssl_rows(
-                    enabled_name=CommonFieldName.secure,
-                    enabled_help_text=self._localizer.translate(Translatable('label_clickhouse-ssl-enabled-tooltip')),
-                    enabled_default_value=True,
-                ),
-                rc.data_export_forbidden_row(),
-            ]),
+            rows=self._filter_nulls(
+                [
+                    *host_section,
+                    rc.port_row(label_text=Translatable("field_click-house-port"), default_value="8443"),
+                    *username_section,
+                    rc.password_row(mode=self.mode),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                    rc.raw_sql_level_row(),
+                    rc.collapse_advanced_settings_row(),
+                    *rc.ssl_rows(
+                        enabled_name=CommonFieldName.secure,
+                        enabled_help_text=self._localizer.translate(
+                            Translatable("label_clickhouse-ssl-enabled-tooltip")
+                        ),
+                        enabled_default_value=True,
+                    ),
+                    rc.data_export_forbidden_row(),
+                ]
+            ),
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
                 check=check_api_schema,
-            )
+            ),
         )
 
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 

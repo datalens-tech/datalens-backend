@@ -2,11 +2,19 @@ from __future__ import annotations
 
 from typing import Optional
 
-import attr
 from aiohttp import web
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+import attr
 
-from bi_api_lib.error_handling import BIError, PublicAPIErrorSchema, RegularAPIErrorSchema
+from bi_api_commons.aio.middlewares.error_handling_outer import (
+    AIOHTTPErrorHandler,
+    ErrorData,
+    ErrorLevel,
+)
+from bi_api_lib.error_handling import (
+    BIError,
+    PublicAPIErrorSchema,
+    RegularAPIErrorSchema,
+)
 
 
 def bi_error_to_error_data(bi_error: BIError, public_mode: bool, reason: Optional[str] = None) -> ErrorData:

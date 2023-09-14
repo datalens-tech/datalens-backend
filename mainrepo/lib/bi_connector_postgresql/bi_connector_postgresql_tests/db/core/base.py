@@ -5,13 +5,12 @@ import pytest
 import shortuuid
 
 from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
 from bi_core_testing.database import Db
+from bi_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from bi_connector_postgresql.core.postgresql.testing.connection import make_postgresql_saved_connection
-
+from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 import bi_connector_postgresql_tests.db.config as test_config
 
 
@@ -28,11 +27,11 @@ class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):
         # https://github.com/pytest-dev/pytest-asyncio/commit/51d986cec83fdbc14fa08015424c79397afc7ad9
         asyncio.set_event_loop_policy(None)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -43,7 +42,7 @@ class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def saved_connection(
         self,
         sync_us_manager: SyncUSManager,
@@ -55,37 +54,37 @@ class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):
         )
         return conn
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def pg_partitioned_table_name(self, db: Db) -> str:
-        name = f'test_partitioned_table_{shortuuid.uuid().lower()}'
+        name = f"test_partitioned_table_{shortuuid.uuid().lower()}"
         queries = [
-            f'''
+            f"""
                 create table {name}
                 (ts timestamptz not null, value text)
                 partition by range(ts)
-            ''',
-            f'''
+            """,
+            f"""
                 create table {name}_01
                 partition of {name}
                 for values from ('2020-01-01 00:00:00') to ('2021-01-01 00:00:00')
-            ''',
-            f'''
+            """,
+            f"""
                 insert into {name} (ts, value)
                 values ('2020-01-01 01:02:03', 'a')
-            ''',
+            """,
         ]
         for query in queries:
             db.execute(query)
         yield name
-        db.execute(f'drop table if exists {name}')
+        db.execute(f"drop table if exists {name}")
 
 
 class BaseSslPostgreSQLTestClass(BasePostgreSQLTestClass):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,

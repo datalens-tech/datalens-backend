@@ -1,23 +1,25 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 from marshmallow import fields as ma_fields
 
-from bi_constants.enums import ConnectionState, ConnectionType as CT
-
-from bi_core.us_connection_base import ConnectionBase
-
 from bi_api_connector.api_schema.top_level import USEntryBaseSchema
+from bi_constants.enums import ConnectionState
+from bi_constants.enums import ConnectionType as CT
+from bi_core.us_connection_base import ConnectionBase
 from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 class ConnectionSchema(USEntryBaseSchema):
     TARGET_CLS = ConnectionBase
-    CONN_TYPE_CTX_KEY: ClassVar[str] = 'conn_type'
+    CONN_TYPE_CTX_KEY: ClassVar[str] = "conn_type"
 
     # From ConnectionBase.as_dict()
-    db_type = DynamicEnumField(CT, attribute='conn_type', dump_only=True)
+    db_type = DynamicEnumField(CT, attribute="conn_type", dump_only=True)
     # TODO FIX: Change for datetime field after created/updated _at become datetime instead of string
     created_at = ma_fields.String(dump_only=True)
     updated_at = ma_fields.String(dump_only=True)
@@ -36,9 +38,7 @@ class ConnectionSchema(USEntryBaseSchema):
         return dict(data_attributes)
 
     def create_data_model(self, data_attributes: dict[str, Any]) -> Any:
-        return self.TARGET_CLS.DataModel(
-            **self.create_data_model_constructor_kwargs(data_attributes)
-        )
+        return self.TARGET_CLS.DataModel(**self.create_data_model_constructor_kwargs(data_attributes))
 
     def default_create_from_dict_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
         try:
@@ -48,8 +48,8 @@ class ConnectionSchema(USEntryBaseSchema):
         ret = dict(
             super().default_create_from_dict_kwargs(data),
             type_=ct.name,
-            permissions_mode=data['permissions_mode'],
-            initial_permissions=data['initial_permissions'],
+            permissions_mode=data["permissions_mode"],
+            initial_permissions=data["initial_permissions"],
             meta=dict(
                 # TODO CONSIDER: May be do it in handler?
                 state=ConnectionState.saved.name
@@ -64,4 +64,5 @@ class ConnectionMetaMixin(ConnectionSchema):
     This is a base class for Schematic-based connections
     To be removed after migration to attrs
     """
+
     meta = ma_fields.Dict(dump_only=True)  # In ConnectionBase.as_dict() meta was included

@@ -18,12 +18,13 @@ class PromQLCompiler(compiler.SQLCompiler):
 
 
 class PromQLDialect(default.DefaultDialect):  # type: ignore
-    name = 'bi_promql'
+    name = "bi_promql"
     statement_compiler = PromQLCompiler
 
     @classmethod
     def dbapi(cls):
         from . import dbapi
+
         return dbapi
 
     def get_columns(self, connection, table_name, schema=None, **kw):

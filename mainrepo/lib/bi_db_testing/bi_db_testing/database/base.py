@@ -1,13 +1,23 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Any, Generator, Generic, List, Optional, Sequence, TypeVar, Union, cast
+from typing import (
+    Any,
+    Generator,
+    Generic,
+    List,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import attr
 import sqlalchemy as sa
+from sqlalchemy.engine import Connection
 import sqlalchemy.engine.url
 import sqlalchemy.exc as sa_exc
-from sqlalchemy.engine import Connection
 
 import bi_db_testing.database.engine_wrapper as ew
 
@@ -17,7 +27,7 @@ class DbConfig:
     engine_config: ew.DbEngineConfig = attr.ib(kw_only=True)
 
 
-_DB_CONFIG_TV = TypeVar('_DB_CONFIG_TV', bound=DbConfig)
+_DB_CONFIG_TV = TypeVar("_DB_CONFIG_TV", bound=DbConfig)
 
 
 @attr.s
@@ -46,7 +56,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
 
     @property
     def name(self) -> str:
-        return self.get_conn_credentials(full=True)['db_name']
+        return self.get_conn_credentials(full=True)["db_name"]
 
     def count_sql_sessions(self) -> int:
         return self._engine_wrapper.count_sql_sessions()
@@ -93,19 +103,23 @@ class DbBase(Generic[_DB_CONFIG_TV]):
         self._engine_wrapper.create_table(table)
 
     def create_view(self, query: str, name: str, schema: Optional[str] = None) -> None:
-        name = '.'.join([self.quote(part) for part in (schema, name) if part])
-        self.execute(f'CREATE VIEW {name} AS {query}')
+        name = ".".join([self.quote(part) for part in (schema, name) if part])
+        self.execute(f"CREATE VIEW {name} AS {query}")
 
     def load_table(self, table_name: str, schema: Optional[str] = None) -> sa.Table:
         return self._engine_wrapper.load_table(schema=schema, table_name=table_name)
 
     def table_from_columns(
-            self, columns: Sequence[sa.Column], *,
-            schema: Optional[str] = None,
-            table_name: Optional[str] = None,
+        self,
+        columns: Sequence[sa.Column],
+        *,
+        schema: Optional[str] = None,
+        table_name: Optional[str] = None,
     ) -> sa.Table:
         return self._engine_wrapper.table_from_columns(
-            columns=columns, schema=schema, table_name=table_name,
+            columns=columns,
+            schema=schema,
+            table_name=table_name,
         )
 
     def insert_into_table(self, table: sa.Table, data: Sequence[dict]) -> None:
@@ -123,7 +137,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
             value = self.execute(query).scalar()
             return value
         except Exception:
-            print('QUERY:', self.expr_as_str(query))
+            print("QUERY:", self.expr_as_str(query))
             raise
 
     def get_version(self) -> Optional[str]:
@@ -147,7 +161,7 @@ class DbTableBase:
     def insert(self, data: Union[dict, List[dict]]) -> None:
         # TODO: Use insert_into_table
         if not self.can_insert:
-            raise RuntimeError('Can\'t insert into table')
+            raise RuntimeError("Can't insert into table")
         if isinstance(data, dict):
             self.db.execute(self.table.insert(data))
         elif isinstance(data, list):
@@ -158,5 +172,5 @@ class DbTableBase:
 
     @property
     def select_all_query(self) -> str:
-        name = '.'.join([self.db.quote(part) for part in (self.schema, self.name) if part])
-        return f'SELECT * FROM {name}'
+        name = ".".join([self.db.quote(part) for part in (self.schema, self.name) if part])
+        return f"SELECT * FROM {name}"

@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import csv
 import io
-from typing import Dict, List
+from typing import (
+    Dict,
+    List,
+)
 
 
 def make_csv(headers: List[str], rows: List[Dict[str, str]]) -> str:

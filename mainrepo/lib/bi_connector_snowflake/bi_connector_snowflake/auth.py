@@ -10,9 +10,14 @@ from urllib import parse
 import attr
 import requests
 
+from bi_api_commons.aiohttp.aiohttp_client import (
+    BIAioHTTPClient,
+    PredefinedIntervalsRetrier,
+    THeaders,
+)
+
 from bi_connector_snowflake.core.dto import SnowFlakeConnDTO
 from bi_connector_snowflake.core.exc import SnowflakeGetAccessTokenError
-from bi_api_commons.aiohttp.aiohttp_client import PredefinedIntervalsRetrier, BIAioHTTPClient, THeaders
 
 
 @attr.s()

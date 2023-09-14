@@ -2,49 +2,78 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import AbstractSet, Collection, Dict, List, Optional, Sequence, Set, Tuple, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    AbstractSet,
+    Collection,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+)
 
 import attr
 
-import bi_query_processing.exc
-from bi_constants.enums import (
-    DataSourceRole, FieldType, RLSSubjectType, WhereClauseOperation,
-    FieldRole, CalcMode,
-    OrderDirection, RangeType,
-)
-
 from bi_api_commons.base_models import RequestContextInfo
-from bi_constants.enums import BIType
-from bi_core.constants import DataAPILimits
-from bi_core.fields import BIField
-from bi_core.us_dataset import Dataset
-from bi_core.components.ids import AvatarId, FieldId
-from bi_core.components.accessor import DatasetComponentAccessor
-from bi_core.components.dependencies.factory_base import ComponentDependencyManagerFactoryBase
-from bi_core.us_manager.local_cache import USEntryBuffer
-from bi_core.data_source.collection import DataSourceCollectionFactory
-from bi_core.data_source.base import DataSource
-import bi_core.exc
-
-from bi_query_processing.enums import QueryType, SelectValueType, GroupByPolicy
-
-from bi_query_processing.legend.field_legend import (
-    FilterRoleSpec, OrderByRoleSpec, ParameterRoleSpec, RangeRoleSpec,
-    TreeRoleSpec, RoleSpec,
-)
-from bi_query_processing.compilation.specs import (
-    SelectWrapperSpec, ArrayPrefixSelectWrapperSpec,
-    FilterFieldSpec, OrderByFieldSpec, ParameterValueSpec,
-    FilterSourceColumnSpec, SelectFieldSpec, GroupByFieldSpec, RelationSpec,
-)
-from bi_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
 from bi_api_lib.query.formalization.avatar_tools import normalize_explicit_avatar_ids
 from bi_api_lib.query.formalization.field_resolver import FieldResolver
+from bi_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
+from bi_constants.enums import (
+    BIType,
+    CalcMode,
+    DataSourceRole,
+    FieldRole,
+    FieldType,
+    OrderDirection,
+    RangeType,
+    RLSSubjectType,
+    WhereClauseOperation,
+)
+from bi_core.components.accessor import DatasetComponentAccessor
+from bi_core.components.dependencies.factory_base import ComponentDependencyManagerFactoryBase
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+)
+from bi_core.constants import DataAPILimits
+from bi_core.data_source.base import DataSource
+from bi_core.data_source.collection import DataSourceCollectionFactory
+import bi_core.exc
+from bi_core.fields import BIField
+from bi_core.us_dataset import Dataset
+from bi_core.us_manager.local_cache import USEntryBuffer
+from bi_query_processing.compilation.specs import (
+    ArrayPrefixSelectWrapperSpec,
+    FilterFieldSpec,
+    FilterSourceColumnSpec,
+    GroupByFieldSpec,
+    OrderByFieldSpec,
+    ParameterValueSpec,
+    RelationSpec,
+    SelectFieldSpec,
+    SelectWrapperSpec,
+)
+from bi_query_processing.enums import (
+    GroupByPolicy,
+    QueryType,
+    SelectValueType,
+)
+import bi_query_processing.exc
+from bi_query_processing.legend.field_legend import (
+    FilterRoleSpec,
+    OrderByRoleSpec,
+    ParameterRoleSpec,
+    RangeRoleSpec,
+    RoleSpec,
+    TreeRoleSpec,
+)
 
 if TYPE_CHECKING:
+    from bi_core.services_registry.top_level import ServicesRegistry
     from bi_query_processing.compilation.query_meta import QueryMetaInfo
     from bi_query_processing.legend.block_legend import BlockSpec
-    from bi_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -102,8 +131,9 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         return block_spec.query_type == QueryType.preview
 
     def make_phantom_select_ids(
-            self, block_spec: BlockSpec,
-            order_by_specs: Sequence[OrderByFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        order_by_specs: Sequence[OrderByFieldSpec],
     ) -> List[FieldId]:
         return []
 
@@ -119,10 +149,10 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         pass
 
     def make_select_specs(
-            self, block_spec: BlockSpec,
-            phantom_select_ids: List[FieldId],
+        self,
+        block_spec: BlockSpec,
+        phantom_select_ids: List[FieldId],
     ) -> List[SelectFieldSpec]:
-
         select_specs: List[SelectFieldSpec] = []
         select_spec_set: Set[SelectFieldSpec] = set()
         for legend_select_spec in block_spec.legend.list_selectable_items():
@@ -160,8 +190,9 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         return select_specs
 
     def make_group_by_specs(
-            self, block_spec: BlockSpec,
-            select_specs: Sequence[SelectFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        select_specs: Sequence[SelectFieldSpec],
     ) -> List[GroupByFieldSpec]:
         group_by_specs: List[GroupByFieldSpec] = []
         group_by_spec_set: Set[GroupByFieldSpec] = set()
@@ -179,7 +210,8 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         return group_by_specs
 
     def make_filter_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[FilterFieldSpec]:
         result: List[FilterFieldSpec] = []
         for legend_filter_spec in block_spec.legend.list_for_role(FieldRole.filter):
@@ -189,7 +221,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
                 field_id = legend_filter_spec.id
             except bi_core.exc.FieldNotFound:
                 if block_spec.ignore_nonexistent_filters:
-                    self._log_info('Skipping filter for unknown field %s', legend_filter_spec)
+                    self._log_info("Skipping filter for unknown field %s", legend_filter_spec)
                     continue
                 else:
                     raise
@@ -208,7 +240,8 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         return ArrayPrefixSelectWrapperSpec(length=role_spec.level)
 
     def make_order_by_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[OrderByFieldSpec]:
         selectable_items = block_spec.legend.list_selectable_items()
         result: List[OrderByFieldSpec] = []
@@ -237,13 +270,14 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         return []
 
     def make_relation_and_avatar_specs(
-            self,
-            used_field_ids: Collection[FieldId],
+        self,
+        used_field_ids: Collection[FieldId],
     ) -> Tuple[List[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
         return [], set(), None
 
     def make_parameter_value_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[ParameterValueSpec]:
         result: List[ParameterValueSpec] = []
         for legend_parameter_spec in block_spec.legend.list_for_role(FieldRole.parameter):
@@ -253,15 +287,12 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
                 field_id = legend_parameter_spec.id
             except bi_core.exc.FieldNotFound:
                 if block_spec.ignore_nonexistent_filters:
-                    self._log_info('Skipping parameter value for unknown field %s', legend_parameter_spec)
+                    self._log_info("Skipping parameter value for unknown field %s", legend_parameter_spec)
                     continue
                 else:
                     raise
 
-            parameter_value_spec = ParameterValueSpec(
-                field_id=field_id,
-                value=parameter_role_spec.value
-            )
+            parameter_value_spec = ParameterValueSpec(field_id=field_id, value=parameter_role_spec.value)
             result.append(parameter_value_spec)
 
         return result
@@ -322,12 +353,12 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             for phantom_select_id in phantom_select_ids
         ):
             # FIXME: Not really an InvalidFieldError... replace with some other exception
-            raise bi_core.exc.InvalidFieldError('Order by dimension must be in select')
+            raise bi_core.exc.InvalidFieldError("Order by dimension must be in select")
 
     def _ensure_not_measure(self, field: BIField) -> None:
         if field.type != FieldType.DIMENSION:
             raise bi_query_processing.exc.LogicError(
-                f'Request does not support measure fields. Measure field: {field.guid}'
+                f"Request does not support measure fields. Measure field: {field.guid}"
             )
 
     def _ensure_not_unsupported_type(self, field: BIField) -> None:
@@ -344,17 +375,13 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             assert avatar_id is not None
             if not self._avatar_exists(avatar_id=avatar_id):
                 raise bi_core.exc.UnknownReferencedAvatar(
-                    f'Field {field.title!r} ({field_id}) references unknown source avatar '
-                    f'{field.avatar_id}.'
+                    f"Field {field.title!r} ({field_id}) references unknown source avatar " f"{field.avatar_id}."
                 )
 
         if not field.valid:
             # FIXME: Temporarily disabled raising because of BI-2714
             # raise exc.InvalidFieldError(
-            LOGGER.error(
-                f'Field {field.title!r} ({field_id}) is invalid '
-                f'and cannot be selected. Error ignored.'
-            )
+            LOGGER.error(f"Field {field.title!r} ({field_id}) is invalid " f"and cannot be selected. Error ignored.")
 
         self._ensure_not_unsupported_type(field)
         if not block_spec.allow_measure_fields:
@@ -366,42 +393,38 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             raise Exception("No subject to use in RLS")
 
         result: List[FilterFieldSpec] = []
-        restrictions = self._dataset.rls.get_subject_restrictions(
-            subject_type=subject_type, subject_id=subject_id)
+        restrictions = self._dataset.rls.get_subject_restrictions(subject_type=subject_type, subject_id=subject_id)
         for field_guid, values in restrictions.items():
-            result.append(FilterFieldSpec(
-                field_id=field_guid,
-                operation=WhereClauseOperation.IN,
-                values=values,  # type: ignore  # TODO: fix
-                anonymous=True,
-            ))
-        self._log_info(
-            'RLS filters for %s %s: %s',
-            subject_type.name, subject_id, result)
+            result.append(
+                FilterFieldSpec(
+                    field_id=field_guid,
+                    operation=WhereClauseOperation.IN,
+                    values=values,  # type: ignore  # TODO: fix
+                    anonymous=True,
+                )
+            )
+        self._log_info("RLS filters for %s %s: %s", subject_type.name, subject_id, result)
         return result
 
     def make_phantom_select_ids(
-            self, block_spec: BlockSpec,
-            order_by_specs: Sequence[OrderByFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        order_by_specs: Sequence[OrderByFieldSpec],
     ) -> List[FieldId]:
         order_by_id_set: Set[str] = {order_by_spec.field_id for order_by_spec in order_by_specs}
-        select_id_set = {
-            legend_select_spec.id
-            for legend_select_spec in block_spec.legend.list_selectable_items()
-        }
+        select_id_set = {legend_select_spec.id for legend_select_spec in block_spec.legend.list_selectable_items()}
         phantom_select_ids = list(order_by_id_set - select_id_set)
         self._validate_phantom_select_ids(phantom_select_ids)
         return phantom_select_ids
 
-    def make_filter_specs(
-            self, block_spec: BlockSpec
-    ) -> List[FilterFieldSpec]:
+    def make_filter_specs(self, block_spec: BlockSpec) -> List[FilterFieldSpec]:
         filter_specs = super().make_filter_specs(block_spec=block_spec)
 
         if block_spec.disable_rls:
             need_permission_on_entry(self._dataset, "admin")  # TODO: move it up the stack
-            LOGGER.info('Switching off RLS for request: '
-                        'got "disable_rls" parameter and user has admin role for dataset')
+            LOGGER.info(
+                "Switching off RLS for request: " 'got "disable_rls" parameter and user has admin role for dataset'
+            )
 
         if not block_spec.disable_rls:
             filter_specs += self._make_rls_filter_specs(subject_type=RLSSubjectType.user)
@@ -422,25 +445,26 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             dsrc = self._get_data_source_strict(source_id=avatar.source_id, role=self._role)
             dsrc_filters = dsrc.get_filters(service_registry=self._service_registry)
             if dsrc_filters:
-                self._log_info('Filters for source %s: %s', dsrc.id, dsrc_filters)
+                self._log_info("Filters for source %s: %s", dsrc.id, dsrc_filters)
 
             for dsrc_filter_spec in dsrc_filters:
                 source_column_filter_spec = FilterSourceColumnSpec(
-                    avatar_id=avatar_id, column_name=dsrc_filter_spec.name,
-                    operation=dsrc_filter_spec.operation, values=dsrc_filter_spec.values,
+                    avatar_id=avatar_id,
+                    column_name=dsrc_filter_spec.name,
+                    operation=dsrc_filter_spec.operation,
+                    values=dsrc_filter_spec.values,
                 )
                 source_column_filter_specs.append(source_column_filter_spec)
 
         return source_column_filter_specs
 
     def make_group_by_specs(
-            self, block_spec: BlockSpec,
-            select_specs: Sequence[SelectFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        select_specs: Sequence[SelectFieldSpec],
     ) -> List[GroupByFieldSpec]:
-
         has_measures = any(
-            self._dataset.result_schema.by_guid(spec.field_id).type == FieldType.MEASURE
-            for spec in select_specs
+            self._dataset.result_schema.by_guid(spec.field_id).type == FieldType.MEASURE for spec in select_specs
         )
 
         if block_spec.group_by_policy == GroupByPolicy.if_measures:
@@ -452,15 +476,16 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             # GROUP BY is disabled. If there are measures in the query, it is not valid
             if has_measures:
                 raise bi_query_processing.exc.InvalidGroupByConfiguration(
-                    'Invalid parameter disable_group_by for dataset with measure fields')
+                    "Invalid parameter disable_group_by for dataset with measure fields"
+                )
             return []
 
         # Default grouping
         return super().make_group_by_specs(block_spec=block_spec, select_specs=select_specs)
 
     def make_relation_and_avatar_specs(
-            self,
-            used_field_ids: Collection[FieldId],
+        self,
+        used_field_ids: Collection[FieldId],
     ) -> Tuple[List[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
         # Resolve avatars explicitly specified in fields
         deep_dep_mgr = self._dep_mgr_factory.get_field_deep_inter_dependency_manager()
@@ -479,17 +504,16 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
 
         # Normalize avatars (fix them if there are no user-managed ones)
         explicitly_required_avatar_ids = normalize_explicit_avatar_ids(  # type: ignore  # TODO: fix
-            dataset=self._dataset, required_avatar_ids=explicitly_required_avatar_ids)
+            dataset=self._dataset, required_avatar_ids=explicitly_required_avatar_ids
+        )
         if not explicitly_required_avatar_ids:
             return [], set(), self._ds_accessor.get_root_avatar_strict().id
 
         # Resolve the "missing links" and get the required relation IDs
         root_avatar_id, required_avatar_ids, required_relation_ids = tree_resolver.expand_required_avatar_ids(
-            required_avatar_ids=explicitly_required_avatar_ids)
-        relation_specs = [
-            RelationSpec(relation_id=relation_id)
-            for relation_id in sorted(required_relation_ids)
-        ]
+            required_avatar_ids=explicitly_required_avatar_ids
+        )
+        relation_specs = [RelationSpec(relation_id=relation_id) for relation_id in sorted(required_relation_ids)]
         return relation_specs, required_avatar_ids, root_avatar_id
 
     def make_limit_offset(self, block_spec: BlockSpec) -> Tuple[Optional[int], Optional[int]]:
@@ -498,18 +522,16 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
 
         if self._is_preview(block_spec=block_spec) and self._role != DataSourceRole.sample:
             # Using direct/materialization mode, so we must to limit the number of entries
-            limit = min(
-                block_spec.limit or DataAPILimits.PREVIEW_ROW_LIMIT,
-                DataAPILimits.PREVIEW_ROW_LIMIT
-            )
+            limit = min(block_spec.limit or DataAPILimits.PREVIEW_ROW_LIMIT, DataAPILimits.PREVIEW_ROW_LIMIT)
 
         return limit, offset
 
     def make_query_meta(
-            self, block_spec: BlockSpec,
-            phantom_select_ids: List[FieldId],
-            select_specs: List[SelectFieldSpec],
-            root_avatar_id: Optional[AvatarId],
+        self,
+        block_spec: BlockSpec,
+        phantom_select_ids: List[FieldId],
+        select_specs: List[SelectFieldSpec],
+        root_avatar_id: Optional[AvatarId],
     ) -> QueryMetaInfo:
         query_meta = super().make_query_meta(
             block_spec=block_spec,
@@ -518,7 +540,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             root_avatar_id=root_avatar_id,
         )
 
-        allow_subquery = os.environ.get('ALLOW_SUBQUERY_IN_PREVIEW', '0') != '0'  # FIXME: Do not get from env
+        allow_subquery = os.environ.get("ALLOW_SUBQUERY_IN_PREVIEW", "0") != "0"  # FIXME: Do not get from env
         # No point in using subquery when fetching from sample - the table is already pretty small there,
         # so disable it by default
         if self._is_preview(block_spec=block_spec) and self._role != DataSourceRole.sample:
@@ -538,24 +560,26 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
 
 class NoGroupByQuerySpecFormalizerBase(DataQuerySpecFormalizer):
     def make_group_by_specs(
-            self, block_spec: BlockSpec,
-            select_specs: Sequence[SelectFieldSpec],
+        self,
+        block_spec: BlockSpec,
+        select_specs: Sequence[SelectFieldSpec],
     ) -> List[GroupByFieldSpec]:
         return []
 
 
 class ValueDistinctSpecFormalizer(NoGroupByQuerySpecFormalizerBase):
     def make_select_specs(
-            self, block_spec: BlockSpec,
-            phantom_select_ids: List[FieldId],
+        self,
+        block_spec: BlockSpec,
+        phantom_select_ids: List[FieldId],
     ) -> List[SelectFieldSpec]:
-        select_specs = super().make_select_specs(
-            block_spec=block_spec, phantom_select_ids=phantom_select_ids)
+        select_specs = super().make_select_specs(block_spec=block_spec, phantom_select_ids=phantom_select_ids)
         assert len(select_specs) == 1
         return select_specs
 
     def make_order_by_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[OrderByFieldSpec]:
         legend_select_spec_list = block_spec.legend.list_selectable_items()
         assert len(legend_select_spec_list) == 1
@@ -571,7 +595,8 @@ class ValueDistinctSpecFormalizer(NoGroupByQuerySpecFormalizerBase):
 
 class SingleRowQuerySpecFormalizerBase(NoGroupByQuerySpecFormalizerBase):
     def make_order_by_specs(
-            self, block_spec: BlockSpec,
+        self,
+        block_spec: BlockSpec,
     ) -> List[OrderByFieldSpec]:
         return []
 
@@ -582,18 +607,17 @@ class SingleRowQuerySpecFormalizerBase(NoGroupByQuerySpecFormalizerBase):
 class ValueRangeSpecFormalizer(SingleRowQuerySpecFormalizerBase):
     def validate_select_field(self, block_spec: BlockSpec, field: BIField) -> None:
         if field.type != FieldType.DIMENSION:
-            raise bi_query_processing.exc.LogicError('Value range can only be fetched for dimensions')
+            raise bi_query_processing.exc.LogicError("Value range can only be fetched for dimensions")
 
     def make_select_specs(
-            self, block_spec: BlockSpec,
-            phantom_select_ids: List[FieldId],
+        self,
+        block_spec: BlockSpec,
+        phantom_select_ids: List[FieldId],
     ) -> List[SelectFieldSpec]:
-        select_specs = super().make_select_specs(
-            block_spec=block_spec, phantom_select_ids=phantom_select_ids)
+        select_specs = super().make_select_specs(block_spec=block_spec, phantom_select_ids=phantom_select_ids)
         assert len(select_specs) == 2
         assert all(
-            select_spec.wrapper.type in (SelectValueType.min, SelectValueType.max)
-            for select_spec in select_specs
+            select_spec.wrapper.type in (SelectValueType.min, SelectValueType.max) for select_spec in select_specs
         )
         return select_specs
 

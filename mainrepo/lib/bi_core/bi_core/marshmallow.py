@@ -1,10 +1,16 @@
 from __future__ import annotations
 
 import base64
-from typing import Any, FrozenSet, Iterable, Optional, Mapping
+from typing import (
+    Any,
+    FrozenSet,
+    Iterable,
+    Mapping,
+    Optional,
+)
 
-import marshmallow.utils as ma_utils
 from marshmallow import fields
+import marshmallow.utils as ma_utils
 
 
 class FrozenSetField(fields.List):
@@ -24,12 +30,14 @@ class ErrorCodeField(fields.Field):
         super().__init__(*args, **kwargs)
 
     def _serialize(self, value: Any, attr: Optional[str], obj: Any, **kwargs: Any) -> str:
-        return '.'.join(self._prefix + list(value))
+        return ".".join(self._prefix + list(value))
 
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> list[str]:
-        parts = value.split('.')
-        if parts[:len(self._prefix)] == self._prefix:
-            parts = parts[len(self._prefix):]
+    def _deserialize(
+        self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any
+    ) -> list[str]:
+        parts = value.split(".")
+        if parts[: len(self._prefix)] == self._prefix:
+            parts = parts[len(self._prefix) :]
         return parts
 
 
@@ -40,7 +48,6 @@ class OnOffField(fields.Field):
     default_error_messages = {"invalid": "Not a valid boolean."}
 
     def _serialize(self, value: Any, attr: Optional[str], obj: Any, **kwargs: Any) -> str:
-
         if value:
             return self.ON
 
@@ -62,7 +69,9 @@ class Base64StringField(fields.Field):
         "invalid_format": "Not a valid file data string",
     }
 
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> str | None:
+    def _deserialize(
+        self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any
+    ) -> str | None:
         if isinstance(value, bytes):
             value = value.decode(encoding="utf-8")
 

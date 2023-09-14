@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import attr
 
@@ -9,10 +12,16 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from bi_api_lib.service_registry.formula_parser_factory import FormulaParserFactory
 from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
-from bi_i18n.localizer_base import LocalizerFactory, Localizer
 from bi_api_lib.utils.rls import BaseSubjectResolver
-from bi_core.services_registry.top_level import DefaultServicesRegistry, ServicesRegistry
+from bi_core.services_registry.top_level import (
+    DefaultServicesRegistry,
+    ServicesRegistry,
+)
 from bi_formula.parser.factory import ParserType
+from bi_i18n.localizer_base import (
+    Localizer,
+    LocalizerFactory,
+)
 
 if TYPE_CHECKING:
     from bi_api_lib.service_registry.dataset_validator_factory import DatasetValidatorFactory
@@ -25,7 +34,7 @@ class BiApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_dataset_validator_factory(self) -> 'DatasetValidatorFactory':
+    def get_dataset_validator_factory(self) -> "DatasetValidatorFactory":
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -53,7 +62,7 @@ class BiApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
 class DefaultBiApiServiceRegistry(DefaultServicesRegistry, BiApiServiceRegistry):  # noqa
     _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
     _formula_parser_factory: Optional[FormulaParserFactory] = attr.ib(kw_only=True)
-    _dataset_validator_factory: Optional['DatasetValidatorFactory'] = attr.ib(kw_only=True)
+    _dataset_validator_factory: Optional["DatasetValidatorFactory"] = attr.ib(kw_only=True)
     _field_id_generator_factory: Optional[FieldIdGeneratorFactory] = attr.ib(kw_only=True)
     _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
     _localizer_factory: Optional[LocalizerFactory] = attr.ib(kw_only=True, default=None)
@@ -72,7 +81,7 @@ class DefaultBiApiServiceRegistry(DefaultServicesRegistry, BiApiServiceRegistry)
         assert self._formula_parser_factory is not None
         return self._formula_parser_factory
 
-    def get_dataset_validator_factory(self) -> 'DatasetValidatorFactory':
+    def get_dataset_validator_factory(self) -> "DatasetValidatorFactory":
         assert self._dataset_validator_factory is not None
         return self._dataset_validator_factory
 
@@ -91,7 +100,7 @@ class DefaultBiApiServiceRegistry(DefaultServicesRegistry, BiApiServiceRegistry)
     def get_localizer(self) -> Localizer:
         assert self._localizer_factory is not None
         return self._localizer_factory.get_for_locale(
-            self.rci.locale or 'unknown',
+            self.rci.locale or "unknown",
             fallback=self._localizer_fallback,
         )
 

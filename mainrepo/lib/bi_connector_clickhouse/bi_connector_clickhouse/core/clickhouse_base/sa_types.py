@@ -1,22 +1,32 @@
 from __future__ import annotations
 
-from typing import Callable, Collection, Type
 from functools import partial
+from typing import (
+    Callable,
+    Collection,
+    Type,
+)
 
+from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from clickhouse_sqlalchemy import types as ch_types
-
 from bi_constants.enums import ConnectionType
-
 from bi_core.db.native_type import (
-    GenericNativeType, CommonNativeType,
-    ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
-    ClickHouseDateTime64NativeType, ClickHouseDateTime64WithTZNativeType,
+    ClickHouseDateTime64NativeType,
+    ClickHouseDateTime64WithTZNativeType,
+    ClickHouseDateTimeWithTZNativeType,
+    ClickHouseNativeType,
+    CommonNativeType,
+    GenericNativeType,
 )
-from bi_connector_clickhouse.core.clickhouse_base.type_transformer import CH_TYPES_INT, CH_TYPES_FLOAT, CH_TYPES_DATE
 from bi_core.db.sa_types_base import make_native_type
+
+from bi_connector_clickhouse.core.clickhouse_base.type_transformer import (
+    CH_TYPES_DATE,
+    CH_TYPES_FLOAT,
+    CH_TYPES_INT,
+)
 
 
 def _make_ch_type(nt: GenericNativeType, typeobj: TypeEngine) -> TypeEngine:
@@ -37,6 +47,7 @@ def _make_ch_type(nt: GenericNativeType, typeobj: TypeEngine) -> TypeEngine:
 def ch_instantiator(typecls: Type[TypeEngine]) -> Callable:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
         return _make_ch_type(nt=nt, typeobj=typecls())
+
     return type_gen
 
 
@@ -48,7 +59,7 @@ def _make_ch_dtwtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.D
     if isinstance(nt, ClickHouseDateTimeWithTZNativeType):
         tz = nt.timezone_name
     else:
-        tz = 'UTC'
+        tz = "UTC"
     typeobj = typecls(tz)
     return _make_ch_type(nt=nt, typeobj=typeobj)
 
@@ -70,7 +81,7 @@ def _make_ch_dt64wtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types
         tz = nt.timezone_name
         precision = nt.precision
     else:
-        tz = 'UTC'
+        tz = "UTC"
         precision = DEFAULT_DT64_PRECISION
     typeobj = typecls(precision, tz)
     return _make_ch_type(nt=nt, typeobj=typeobj)
@@ -95,20 +106,24 @@ SQLALCHEMY_CLICKHOUSE_BASE_TYPES = (
 
 
 def _generate_complex_ch_types(
-        base_ch_types: Collection[Type[TypeEngine]], conn_type: ConnectionType
+    base_ch_types: Collection[Type[TypeEngine]], conn_type: ConnectionType
 ) -> dict[GenericNativeType, Callable[..., TypeEngine]]:
     return {
-        **{make_native_type(conn_type, typecls): ch_instantiator(typecls)
-           for typecls in base_ch_types},
+        **{make_native_type(conn_type, typecls): ch_instantiator(typecls) for typecls in base_ch_types},
         make_native_type(conn_type, ch_types.DateTimeWithTZ): _make_ch_dtwtz,
         make_native_type(conn_type, ch_types.DateTime64): _make_ch_dt64,
         make_native_type(conn_type, ch_types.DateTime64WithTZ): _make_ch_dt64wtz,
-        **{make_native_type(conn_type, ch_types.Array(typecls)): partial(_make_ch_array, inner_typecls=typecls)
-           for typecls in CH_TYPES_INT},
-        **{make_native_type(conn_type, ch_types.Array(typecls)): partial(_make_ch_array, inner_typecls=typecls)
-           for typecls in CH_TYPES_FLOAT},
-        make_native_type(conn_type, ch_types.Array(ch_types.String)):
-            partial(_make_ch_array, inner_typecls=ch_types.String),
+        **{
+            make_native_type(conn_type, ch_types.Array(typecls)): partial(_make_ch_array, inner_typecls=typecls)
+            for typecls in CH_TYPES_INT
+        },
+        **{
+            make_native_type(conn_type, ch_types.Array(typecls)): partial(_make_ch_array, inner_typecls=typecls)
+            for typecls in CH_TYPES_FLOAT
+        },
+        make_native_type(conn_type, ch_types.Array(ch_types.String)): partial(
+            _make_ch_array, inner_typecls=ch_types.String
+        ),
         # For the `BIType.unsupported`; should only be filled with `NULL`s in materialization.
         # See also: `bi_core.data_source.sql.BaseSQLDataSource._make_raw_column_select`
         make_native_type(conn_type, sa.sql.sqltypes.NullType): ch_fallback_type_gen,
@@ -116,4 +131,5 @@ def _generate_complex_ch_types(
 
 
 SQLALCHEMY_CLICKHOUSE_TYPES = _generate_complex_ch_types(
-    SQLALCHEMY_CLICKHOUSE_BASE_TYPES, conn_type=ConnectionType.clickhouse)
+    SQLALCHEMY_CLICKHOUSE_BASE_TYPES, conn_type=ConnectionType.clickhouse
+)

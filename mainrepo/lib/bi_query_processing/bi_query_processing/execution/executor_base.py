@@ -5,22 +5,21 @@ import abc
 import attr
 
 from bi_core.query.bi_query import BIQuery
-
-from bi_query_processing.translation.primitives import TranslatedFlatQuery
-from bi_query_processing.execution.primitives import ExecutedQuery
 from bi_query_processing.execution.exec_info import QueryExecutionInfo
+from bi_query_processing.execution.primitives import ExecutedQuery
+from bi_query_processing.translation.primitives import TranslatedFlatQuery
 
 
 @attr.s
 class QueryExecutorBase(abc.ABC):
     def make_bi_query(
-            self, *,
-            translated_flat_query: TranslatedFlatQuery,
-            is_top_level: bool = False,
-            distinct: bool = False,
-            row_count_hard_limit: int,
+        self,
+        *,
+        translated_flat_query: TranslatedFlatQuery,
+        is_top_level: bool = False,
+        distinct: bool = False,
+        row_count_hard_limit: int,
     ) -> BIQuery:
-
         limit = translated_flat_query.limit
 
         # Limit query size if hard limit is set to minimize the amount of downloaded data

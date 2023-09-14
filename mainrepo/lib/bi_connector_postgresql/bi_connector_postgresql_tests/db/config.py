@@ -1,45 +1,44 @@
-from typing import ClassVar
 import os
+from typing import ClassVar
 
+from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from bi_core_testing.configuration import DefaultCoreTestConfiguration
 from bi_testing.containers import get_test_container_hostport
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
-    host_us_http=get_test_container_hostport('us', fallback_port=52311).host,
-    port_us_http=get_test_container_hostport('us', fallback_port=52311).port,
-    host_us_pg=get_test_container_hostport('pg-us', fallback_port=52310).host,
-    port_us_pg_5432=get_test_container_hostport('pg-us', fallback_port=52310).port,
-    us_master_token='AC1ofiek8coB',
-    core_connector_whitelist=['postgresql'],
+    host_us_http=get_test_container_hostport("us", fallback_port=52311).host,
+    port_us_http=get_test_container_hostport("us", fallback_port=52311).port,
+    host_us_pg=get_test_container_hostport("pg-us", fallback_port=52310).host,
+    port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52310).port,
+    us_master_token="AC1ofiek8coB",
+    core_connector_whitelist=["postgresql"],
 )
 
 
 def get_postgres_ssl_ca() -> str:
-    path = os.path.join(os.path.dirname(__file__), '../../docker-compose/db-postgres/ssl', 'root.crt')
+    path = os.path.join(os.path.dirname(__file__), "../../docker-compose/db-postgres/ssl", "root.crt")
 
     with open(path) as f:
         return f.read()
 
 
 class CoreConnectionSettings:
-    DB_NAME: ClassVar[str] = 'test_data'
-    HOST: ClassVar[str] = get_test_container_hostport('db-postgres-13', fallback_port=52301).host
-    PORT: ClassVar[int] = get_test_container_hostport('db-postgres-13', fallback_port=52301).port
-    USERNAME: ClassVar[str] = 'datalens'
-    PASSWORD: ClassVar[str] = 'qwerty'
+    DB_NAME: ClassVar[str] = "test_data"
+    HOST: ClassVar[str] = get_test_container_hostport("db-postgres-13", fallback_port=52301).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-postgres-13", fallback_port=52301).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
 
 
 class CoreSslConnectionSettings:
-    DB_NAME: ClassVar[str] = 'test_data'
-    HOST: ClassVar[str] = '127.0.0.1'
+    DB_NAME: ClassVar[str] = "test_data"
+    HOST: ClassVar[str] = "127.0.0.1"
     PORT: ClassVar[int] = 52303
-    USERNAME: ClassVar[str] = 'datalens'
-    PASSWORD: ClassVar[str] = 'qwerty'
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
 
 
 SUBSELECT_QUERY_FULL = r"""
@@ -74,14 +73,14 @@ select
 from base
 limit 10
 """
-DASHSQL_QUERY = '''select
+DASHSQL_QUERY = """select
     '1' as aa,
     ARRAY[2, 3] as bb,
     unnest(ARRAY[4, 5]) as cc,
     '2020-01-01 01:02:03'::timestamp as dd,
     '2020-01-01 02:03:0'::timestamptz as ee,
     'zxc'::bytea as ff
-'''
+"""
 QUERY_WITH_PARAMS = r"""
 select
   'normal '':string'''::text as v1_normal_string,
@@ -114,11 +113,11 @@ DB_URLS = {
     ),
 }
 DB_CORE_URL = DB_URLS[D.POSTGRESQL_9_4]
-DB_CORE_SSL_URL = 'bi_postgresql://datalens:qwerty@localhost:52303/test_data'
+DB_CORE_SSL_URL = "bi_postgresql://datalens:qwerty@localhost:52303/test_data"
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=['postgresql'],
-    core_connector_whitelist=['postgresql'],
+    bi_api_connector_whitelist=["postgresql"],
+    core_connector_whitelist=["postgresql"],
     core_test_config=CORE_TEST_CONFIG,
-    ext_query_executer_secret_key='_some_test_secret_key_',
+    ext_query_executer_secret_key="_some_test_secret_key_",
 )

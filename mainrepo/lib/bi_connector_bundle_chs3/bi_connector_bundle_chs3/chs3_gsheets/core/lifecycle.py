@@ -1,18 +1,21 @@
 import datetime
 
 from bi_constants.enums import FileProcessingStatus
-
 from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
+from bi_core.reporting.notifications import get_notification_record
+from bi_core.utils import (
+    make_user_auth_cookies,
+    make_user_auth_headers,
+)
+
 from bi_connector_bundle_chs3.chs3_base.core.lifecycle import BaseFileS3ConnectionLifecycleManager
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import NOTIF_TYPE_GSHEETS_V2_STALE_DATA
 from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from bi_core.reporting.notifications import get_notification_record
-from bi_core.utils import make_user_auth_headers, make_user_auth_cookies
 
 
 class GSheetsFileS3ConnectionLifecycleManager(
-        BaseFileS3ConnectionLifecycleManager,
-        ConnectionLifecycleManager[GSheetsFileS3Connection],
+    BaseFileS3ConnectionLifecycleManager,
+    ConnectionLifecycleManager[GSheetsFileS3Connection],
 ):
     ENTRY_CLS = GSheetsFileS3Connection
 
@@ -30,7 +33,10 @@ class GSheetsFileS3ConnectionLifecycleManager(
 
         stale_threshold_seconds = 30 * 60
         data_updated_at_all = data.oldest_data_update_time()
-        if data_updated_at_all is not None and (dt_now - data_updated_at_all).total_seconds() >= stale_threshold_seconds:
+        if (
+            data_updated_at_all is not None
+            and (dt_now - data_updated_at_all).total_seconds() >= stale_threshold_seconds
+        ):
             reporting_registry = self._service_registry.get_reporting_registry()
             reporting_registry.save_reporting_record(get_notification_record(NOTIF_TYPE_GSHEETS_V2_STALE_DATA))
 

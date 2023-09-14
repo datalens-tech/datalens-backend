@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from .base import (
-    CHYTTableExpression,
-    CHYTTablesConcat, CHYTTablesRange,
-    CHYTTableSubselect,
     BICHYTDialect,
+    CHYTTableExpression,
+    CHYTTablesConcat,
+    CHYTTablesRange,
+    CHYTTableSubselect,
 )
 
 __all__ = (

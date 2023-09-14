@@ -1,34 +1,76 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Mapping
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Mapping,
+)
 
-from marshmallow import fields as ma_fields, EXCLUDE, post_dump, pre_load
+from marshmallow import (
+    post_dump,
+    pre_load,
+)
+from marshmallow import EXCLUDE
+from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
-
-from bi_constants.enums import (
-    BIType, CalcMode, CreateDSFrom, AggregationFunction, FieldType, ManagedBy,
-    ComponentErrorLevel, ComponentType, WhereClauseOperation,
-    JoinConditionType, BinaryJoinOperator, JoinType, ConditionPartCalcMode, ParameterValueConstraintType
-)
-
-from bi_api_client.dsmaker.primitives import (
-    Dataset,
-    ResultField, ResultSchemaAux,
-    Column, DataSource,
-    SourceAvatar, AvatarRelation, JoinCondition,
-    DirectJoinPart, FormulaJoinPart, ResultFieldJoinPart,
-    ObligatoryFilter, WhereClause,
-    ComponentErrorRegistry, ComponentErrorPack, ComponentError,
-    ParameterValueConstraint, RangeParameterValueConstraint, SetParameterValueConstraint,
-    ParameterValue, StringParameterValue, IntegerParameterValue, FloatParameterValue,
-    DateParameterValue, DateTimeParameterValue, DateTimeTZParameterValue, GenericDateTimeParameterValue,
-    BooleanParameterValue, GeoPointParameterValue, GeoPolygonParameterValue, UuidParameterValue, MarkupParameterValue,
-    ArrayStrParameterValue, ArrayIntParameterValue, ArrayFloatParameterValue,
-    TreeStrParameterValue,
-)
 from bi_api_client.dsmaker.api.schemas.base import DefaultSchema
+from bi_api_client.dsmaker.primitives import (
+    ArrayFloatParameterValue,
+    ArrayIntParameterValue,
+    ArrayStrParameterValue,
+    AvatarRelation,
+    BooleanParameterValue,
+    Column,
+    ComponentError,
+    ComponentErrorPack,
+    ComponentErrorRegistry,
+    Dataset,
+    DataSource,
+    DateParameterValue,
+    DateTimeParameterValue,
+    DateTimeTZParameterValue,
+    DirectJoinPart,
+    FloatParameterValue,
+    FormulaJoinPart,
+    GenericDateTimeParameterValue,
+    GeoPointParameterValue,
+    GeoPolygonParameterValue,
+    IntegerParameterValue,
+    JoinCondition,
+    MarkupParameterValue,
+    ObligatoryFilter,
+    ParameterValue,
+    ParameterValueConstraint,
+    RangeParameterValueConstraint,
+    ResultField,
+    ResultFieldJoinPart,
+    ResultSchemaAux,
+    SetParameterValueConstraint,
+    SourceAvatar,
+    StringParameterValue,
+    TreeStrParameterValue,
+    UuidParameterValue,
+    WhereClause,
+)
+from bi_constants.enums import (
+    AggregationFunction,
+    BinaryJoinOperator,
+    BIType,
+    CalcMode,
+    ComponentErrorLevel,
+    ComponentType,
+    ConditionPartCalcMode,
+    CreateDSFrom,
+    FieldType,
+    JoinConditionType,
+    JoinType,
+    ManagedBy,
+    ParameterValueConstraintType,
+    WhereClauseOperation,
+)
+from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 from bi_utils.schemas import OneOfSchemaWithDumpLoadHooks
 
 if TYPE_CHECKING:
@@ -111,8 +153,8 @@ class ArrayFloatValueSchema(DefaultSchema[ArrayFloatParameterValue]):
 
 
 class ValueSchema(OneOfSchemaWithDumpLoadHooks):
-    CONTEXT_KEY = 'bi_value_type'
-    type_field = 'type'
+    CONTEXT_KEY = "bi_value_type"
+    type_field = "type"
     type_schemas = {
         BIType.string.name: StringValueSchema,
         BIType.integer.name: IntegerValueSchema,
@@ -134,12 +176,12 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
 
     @pre_load(pass_many=False)
     def wrap_value_with_type(self, data: Any, **_: Any) -> Dict[str, Any]:
-        type = getattr(self, 'context', {}).get(self.CONTEXT_KEY)
-        return {'type': type, 'value': data}
+        type = getattr(self, "context", {}).get(self.CONTEXT_KEY)
+        return {"type": type, "value": data}
 
     @post_dump(pass_many=False)
     def extract_value(self, data: Dict[str, Any], **_: Any) -> Any:
-        return data['value']
+        return data["value"]
 
     def get_obj_type(self, obj: ParameterValue) -> str:
         return getattr(obj, self.type_field).name
@@ -163,7 +205,7 @@ class SetParameterValueConstraintSchema(DefaultSchema[SetParameterValueConstrain
 
 
 class ParameterValueConstraintSchema(OneOfSchema):
-    type_field = 'type'
+    type_field = "type"
     type_schemas = {
         ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
@@ -179,11 +221,11 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
 
     title = ma_fields.String(required=True)
     source = ma_fields.String()
-    guid = ma_fields.String(attribute='id')
+    guid = ma_fields.String(attribute="id")
     calc_mode = ma_fields.Enum(CalcMode, required=True)
     hidden = ma_fields.Boolean(load_default=False)
     description = ma_fields.String()
-    formula = ma_fields.String(load_default='')
+    formula = ma_fields.String(load_default="")
     initial_data_type = ma_fields.Enum(BIType, allow_none=True)
     cast = ma_fields.Enum(BIType)
     type = ma_fields.Enum(FieldType, readonly=True)
@@ -198,12 +240,12 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
     value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
 
     # Only locally used
-    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute='created_')  # Always True
+    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute="created_")  # Always True
 
     @pre_load(pass_many=False)
     def store_type_in_context(self, data: Mapping[str, Any], **_: Any) -> Mapping[str, Any]:
-        if 'cast' in data:
-            self.context[ValueSchema.CONTEXT_KEY] = data['cast']
+        if "cast" in data:
+            self.context[ValueSchema.CONTEXT_KEY] = data["cast"]
         return data
 
 
@@ -238,7 +280,7 @@ class ColumnSchema(DefaultSchema[Column]):
     title = ma_fields.String()
     native_type = ma_fields.Dict(allow_none=True)
     user_type = ma_fields.Enum(BIType)
-    description = ma_fields.String(dump_default='', allow_none=True)
+    description = ma_fields.String(dump_default="", allow_none=True)
     has_auto_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     nullable = ma_fields.Boolean(dump_default=None, allow_none=True)
@@ -258,7 +300,7 @@ class DataSourceSchema(DefaultSchema[DataSource]):
     valid = ma_fields.Boolean()
 
     # Only locally used
-    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute='created_')  # Always True
+    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute="created_")  # Always True
 
 
 class SourceAvatarSchema(DefaultSchema[SourceAvatar]):
@@ -272,7 +314,7 @@ class SourceAvatarSchema(DefaultSchema[SourceAvatar]):
     valid = ma_fields.Boolean()
 
     # Only locally used
-    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute='created_')  # Always True
+    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute="created_")  # Always True
 
 
 class ConditionPartDirectSchema(DefaultSchema[DirectJoinPart]):
@@ -298,7 +340,7 @@ class ConditionPartGenericSchema(OneOfSchema):
         unknown = EXCLUDE
 
     type_field_remove = False
-    type_field = 'calc_mode'
+    type_field = "calc_mode"
     type_schemas = {
         ConditionPartCalcMode.direct.name: ConditionPartDirectSchema,
         ConditionPartCalcMode.formula.name: ConditionPartFormulaSchema,
@@ -317,8 +359,8 @@ class AvatarRelationSchema(DefaultSchema[AvatarRelation]):
 
         type = ma_fields.Enum(JoinConditionType, dump_default=JoinConditionType.binary, dump_only=True)
         operator = ma_fields.Enum(BinaryJoinOperator, required=True)
-        left = ma_fields.Nested(ConditionPartGenericSchema, attribute='left_part', required=True)
-        right = ma_fields.Nested(ConditionPartGenericSchema, attribute='right_part', required=True)
+        left = ma_fields.Nested(ConditionPartGenericSchema, attribute="left_part", required=True)
+        right = ma_fields.Nested(ConditionPartGenericSchema, attribute="right_part", required=True)
 
     id = ma_fields.String(required=True)
     left_avatar_id = ma_fields.String()
@@ -328,7 +370,7 @@ class AvatarRelationSchema(DefaultSchema[AvatarRelation]):
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
 
     # Only locally used
-    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute='created_')  # Always True
+    created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute="created_")  # Always True
 
 
 class ComponentErrorListSchema(DefaultSchema[ComponentErrorRegistry]):
@@ -356,6 +398,7 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset]):
     """
     A base class for schemas that need to contain the full dataset description
     """
+
     TARGET_CLS = Dataset
 
     sources = ma_fields.Nested(DataSourceSchema, many=True, required=False)

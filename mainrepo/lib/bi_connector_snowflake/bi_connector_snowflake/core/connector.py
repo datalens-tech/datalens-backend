@@ -1,31 +1,34 @@
 from bi_core.connectors.base.connector import (
-    CoreConnector,
     CoreConnectionDefinition,
+    CoreConnector,
     CoreSourceDefinition,
 )
 
-from bi_connector_snowflake.core.constants import (
-    BACKEND_TYPE_SNOWFLAKE, CONNECTION_TYPE_SNOWFLAKE,
-    SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
-)
 from bi_connector_snowflake.core.adapters import SnowFlakeDefaultAdapter
 from bi_connector_snowflake.core.connection_executors import SnowFlakeSyncConnExecutor
+from bi_connector_snowflake.core.constants import (
+    BACKEND_TYPE_SNOWFLAKE,
+    CONNECTION_TYPE_SNOWFLAKE,
+    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
+)
 from bi_connector_snowflake.core.data_source import (
-    SnowFlakeTableDataSource,
     SnowFlakeSubselectDataSource,
+    SnowFlakeTableDataSource,
 )
 from bi_connector_snowflake.core.data_source_spec import (
-    SnowFlakeTableDataSourceSpec,
     SnowFlakeSubselectDataSourceSpec,
+    SnowFlakeTableDataSourceSpec,
 )
 from bi_connector_snowflake.core.lifecycle import SnowFlakeConnectionLifecycleManager
+from bi_connector_snowflake.core.notifications import SnowflakeRefreshTokenSoonToExpire
 from bi_connector_snowflake.core.storage_schemas.connection import SnowFlakeConnectionDataStorageSchema
 from bi_connector_snowflake.core.storage_schemas.data_source_spec import (
-    SnowFlakeTableDataSourceSpecStorageSchema, SnowFlakeSubselectDataSourceSpecStorageSchema,
+    SnowFlakeSubselectDataSourceSpecStorageSchema,
+    SnowFlakeTableDataSourceSpecStorageSchema,
 )
 from bi_connector_snowflake.core.type_transformer import SnowFlakeTypeTransformer
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
-from bi_connector_snowflake.core.notifications import SnowflakeRefreshTokenSoonToExpire
 
 
 class SnowFlakeCoreConnectionDefinition(CoreConnectionDefinition):
@@ -35,7 +38,7 @@ class SnowFlakeCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = SnowFlakeTypeTransformer
     sync_conn_executor_cls = SnowFlakeSyncConnExecutor
     lifecycle_manager_cls = SnowFlakeConnectionLifecycleManager
-    dialect_string = 'snowflake'
+    dialect_string = "snowflake"
 
 
 class SnowFlakeCoreTableSourceDefinition(CoreSourceDefinition):
@@ -60,6 +63,4 @@ class SnowFlakeCoreConnector(CoreConnector):
         SnowFlakeCoreSubselectSourceDefinition,
     )
     rqe_adapter_classes = frozenset({SnowFlakeDefaultAdapter})
-    notification_classes = (
-        SnowflakeRefreshTokenSoonToExpire,
-    )
+    notification_classes = (SnowflakeRefreshTokenSoonToExpire,)

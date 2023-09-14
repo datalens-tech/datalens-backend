@@ -2,14 +2,15 @@ import datetime
 
 import pytest
 
-from bi_connector_snowflake.core.constants import SOURCE_TYPE_SNOWFLAKE_TABLE, CONNECTION_TYPE_SNOWFLAKE
-
 from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-
 from bi_api_lib_testing.connection_base import ConnectionTestBase
-from bi_api_lib_testing.dataset_base import DatasetTestBase
 from bi_api_lib_testing.data_api_base import StandardizedDataApiTestBase
+from bi_api_lib_testing.dataset_base import DatasetTestBase
 
+from bi_connector_snowflake.core.constants import (
+    CONNECTION_TYPE_SNOWFLAKE,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
+)
 from bi_connector_snowflake_tests.ext.config import BI_TEST_CONFIG
 from bi_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
 
@@ -17,11 +18,11 @@ from bi_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
 class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
         return BI_TEST_CONFIG
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def connection_params_native(self, sf_secrets) -> dict:
         return dict(
             account_name=sf_secrets.get_account_name(),
@@ -36,7 +37,7 @@ class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
             refresh_token_expire_time=datetime.datetime.now() + datetime.timedelta(days=80),
         )
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def connection_params(self, connection_params_native) -> dict:
         to_serialize = {k: v for k, v in connection_params_native.items()}
         # 2014-12-22T03:12:58
@@ -48,7 +49,7 @@ class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
 
 
 class SnowFlakeDatasetTestBase(SnowFlakeConnectionTestBase, DatasetTestBase):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def dataset_params(self, sf_secrets) -> dict:
         return dict(
             source_type=SOURCE_TYPE_SNOWFLAKE_TABLE.name,

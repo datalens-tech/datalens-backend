@@ -1,32 +1,51 @@
 from __future__ import annotations
 
+from collections import ChainMap
 import logging
 import random
-from collections import ChainMap
-from typing import TYPE_CHECKING, FrozenSet, Optional, Sequence, Tuple, Type, ClassVar, MutableMapping
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    FrozenSet,
+    MutableMapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+)
 
 import attr
 
-from bi_configs.rqe import RQEBaseURL, RQEConfig
-from bi_utils.aio import ContextVarExecutor
-
-from bi_core.us_connection_base import ConnectionBase
+from bi_configs.rqe import (
+    RQEBaseURL,
+    RQEConfig,
+)
 from bi_core import connection_executors
 from bi_core.connection_executors import ExecutionMode
 from bi_core.connection_executors.async_base import AsyncConnExecutorBase
 from bi_core.connection_executors.models.common import RemoteQueryExecutorData
-from bi_core.connection_models import ConnDTO, ConnectOptions, DefaultSQLDTO
-
-from bi_core.services_registry.conn_executor_factory_base import (
-    BaseClosableExecutorFactory, CEFactoryError, ConnExecutorRecipe,
+from bi_core.connection_models import (
+    ConnDTO,
+    ConnectOptions,
+    DefaultSQLDTO,
 )
+from bi_core.services_registry.conn_executor_factory_base import (
+    BaseClosableExecutorFactory,
+    CEFactoryError,
+    ConnExecutorRecipe,
+)
+from bi_core.us_connection_base import ConnectionBase
+from bi_utils.aio import ContextVarExecutor
 
 if TYPE_CHECKING:
     from bi_core.connection_executors.common_base import ConnExecutorBase
     from bi_core.connections_security.base import ConnectionSecurityManager
-    from bi_core.services_registry.typing import ConnectOptionsFactory, ConnectOptionsMutator
-    from bi_core.us_connection_base import ExecutorBasedMixin
     from bi_core.mdb_utils import MDBDomainManager
+    from bi_core.services_registry.typing import (
+        ConnectOptionsFactory,
+        ConnectOptionsMutator,
+    )
+    from bi_core.us_connection_base import ExecutorBasedMixin
 
 
 LOGGER = logging.getLogger(__name__)
@@ -90,16 +109,16 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             if len(hosts) == 1:
                 hosts = hosts * self.SINGLE_HOST_RETRY_ATTEMPTS
             elif len(hosts) > self.MAX_HOST_RETRY_ATTEMPTS:
-                LOGGER.info(f'Hosts list truncated from {len(hosts)} to {self.MAX_HOST_RETRY_ATTEMPTS}')
-                hosts = hosts[:self.MAX_HOST_RETRY_ATTEMPTS]
+                LOGGER.info(f"Hosts list truncated from {len(hosts)} to {self.MAX_HOST_RETRY_ATTEMPTS}")
+                hosts = hosts[: self.MAX_HOST_RETRY_ATTEMPTS]
 
             return tuple(hosts)
         else:
             return ()
 
     def _get_async_conn_executor_recipe(
-            self,
-            conn: ExecutorBasedMixin,
+        self,
+        conn: ExecutorBasedMixin,
     ) -> ConnExecutorRecipe:
         # noinspection PyProtectedMember
         assert conn._context is self.req_ctx_info, "Divergence in RCI between CE factory and US connection"
@@ -109,7 +128,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
 
         executor_cls = self.get_async_conn_executor_cls(conn)
         exec_mode, rqe_data = self._get_exec_mode_and_rqe_attrs(conn, executor_cls)
-        LOGGER.info('Connection executor exec_mode = %s', exec_mode)
+        LOGGER.info("Connection executor exec_mode = %s", exec_mode)
 
         overridden_connect_options: Optional[ConnectOptions] = None
         if self.connect_options_factory is not None:
@@ -135,7 +154,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
 
     def _cook_conn_executor(self, recipe: ConnExecutorRecipe, with_tpe: bool) -> AsyncConnExecutorBase:
         def _conn_host_fail_callback_func(host: str):  # type: ignore  # TODO: fix
-            LOGGER.info('DB host %s unavailable', host)
+            LOGGER.info("DB host %s unavailable", host)
 
         executor_cls = recipe.ce_cls
         if issubclass(executor_cls, connection_executors.DefaultSqlAlchemyConnExecutor):
@@ -158,9 +177,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             raise CEFactoryError(f"Can not instantiate {executor_cls}")
 
     def _get_exec_mode_and_rqe_attrs(
-            self,
-            conn: ExecutorBasedMixin,
-            executor_cls: Type[AsyncConnExecutorBase]
+        self, conn: ExecutorBasedMixin, executor_cls: Type[AsyncConnExecutorBase]
     ) -> Tuple[ExecutionMode, Optional[RemoteQueryExecutorData]]:
         conn_dto = conn.get_conn_dto()
         ce_cls = self.get_async_conn_executor_cls(conn)
@@ -187,14 +204,12 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
 
     def _get_rqe_data(self, external: bool) -> RemoteQueryExecutorData:
         if self.rqe_config is None:
-            raise CEFactoryError(
-                "RQE data was requested, but RQE config was not passed to CE factory"
-            )
+            raise CEFactoryError("RQE data was requested, but RQE config was not passed to CE factory")
 
         async_rqe_netloc: RQEBaseURL
         sync_rqe_netloc: RQEBaseURL
 
-        LOGGER.info('RQE mode is "%s"', 'external' if external else 'internal')
+        LOGGER.info('RQE mode is "%s"', "external" if external else "internal")
         if external:
             async_rqe_netloc = self.rqe_config.ext_async_rqe
             sync_rqe_netloc = self.rqe_config.ext_sync_rqe
@@ -220,13 +235,11 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         return attr.evolve(self, **kwargs)
 
 
-def register_sync_conn_executor_class(
-        conn_cls: Type[ConnectionBase], sync_ce_cls: Type[ConnExecutorBase]
-) -> None:
+def register_sync_conn_executor_class(conn_cls: Type[ConnectionBase], sync_ce_cls: Type[ConnExecutorBase]) -> None:
     DefaultConnExecutorFactory.DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE[conn_cls] = sync_ce_cls
 
 
 def register_async_conn_executor_class(
-        conn_cls: Type[ConnectionBase], async_ce_cls: Type[AsyncConnExecutorBase]
+    conn_cls: Type[ConnectionBase], async_ce_cls: Type[AsyncConnExecutorBase]
 ) -> None:
     DefaultConnExecutorFactory.DEFAULT_MAP_CONN_TYPE_ASYNC_CE_TYPE[conn_cls] = async_ce_cls

@@ -4,28 +4,51 @@ import copy
 import itertools
 import logging
 import os
-from typing import ClassVar, Generic, TypeVar, Any, Sequence, Union, Optional, Iterable, final
+from typing import (
+    Any,
+    ClassVar,
+    Generic,
+    Iterable,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+    final,
+)
 
 import marshmallow
-from marshmallow import post_load, fields as ma_fields, Schema, missing, pre_load
+from marshmallow import (
+    missing,
+    post_load,
+    pre_load,
+)
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
 
+from bi_api_connector.api_schema.extras import (
+    CreateMode,
+    EditMode,
+    FieldExtra,
+    OperationsMode,
+    SchemaKWArgs,
+)
 from bi_core import exc as bi_core_exc
-from bi_core.base_models import EntryLocation, PathEntryLocation, WorkbookEntryLocation
+from bi_core.base_models import (
+    EntryLocation,
+    PathEntryLocation,
+    WorkbookEntryLocation,
+)
 from bi_core.us_entry import USEntry
 from bi_core.us_manager.us_manager import USManagerBase
 
-from bi_api_connector.api_schema.extras import (
-    OperationsMode, CreateMode, EditMode, FieldExtra, SchemaKWArgs,
-)
-
 LOGGER = logging.getLogger(__name__)
 
-_TARGET_OBJECT_TV = TypeVar('_TARGET_OBJECT_TV')
+_TARGET_OBJECT_TV = TypeVar("_TARGET_OBJECT_TV")
 
 
 class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
-    CTX_KEY_EDITABLE_OBJECT: ClassVar[str] = 'editable_object'
-    CTX_KEY_OPERATIONS_MODE: ClassVar[str] = 'operations_mode'
+    CTX_KEY_EDITABLE_OBJECT: ClassVar[str] = "editable_object"
+    CTX_KEY_OPERATIONS_MODE: ClassVar[str] = "operations_mode"
 
     TARGET_CLS: ClassVar[type]
 
@@ -57,7 +80,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
     @staticmethod
     def get_field_extra(f: ma_fields.Field) -> Optional[FieldExtra]:
-        return f.metadata.get('bi_extra', None)
+        return f.metadata.get("bi_extra", None)
 
     @property
     def operations_mode(self) -> Optional[CreateMode]:
@@ -80,39 +103,44 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
         ret = copy.deepcopy(kw_args)
 
-        if isinstance(operations_mode, EditMode) and kw_args['only'] is None:
+        if isinstance(operations_mode, EditMode) and kw_args["only"] is None:
             editable_fields = []
-            for field_name, field, field_extra in self.all_fields_with_extra_info():
-                if (isinstance(field_extra.editable, bool) and field_extra.editable is True) \
-                        or (isinstance(field_extra.editable, Sequence) and operations_mode in field_extra.editable):
+            for field_name, _field, field_extra in self.all_fields_with_extra_info():
+                if (isinstance(field_extra.editable, bool) and field_extra.editable is True) or (
+                    isinstance(field_extra.editable, Sequence) and operations_mode in field_extra.editable
+                ):
                     editable_fields.append(field_name)
 
             # To even not accept non-editable fields
-            ret['only'] = editable_fields
+            ret["only"] = editable_fields
             # To reset required flags & prevent fallback to `missing=`
-            ret['partial'] = editable_fields
+            ret["partial"] = editable_fields
         else:
             # Handling extra partials only in non-edit mode
             extra_partial = []
-            for field_name, field, field_extra in self.all_fields_with_extra_info():
+            for field_name, _field, field_extra in self.all_fields_with_extra_info():
                 if operations_mode in field_extra.partial_in:
                     extra_partial.append(field_name)
             # Do not override partials if was passed via schema constructor
             # TODO CONSIDER: May be append to constructor partials if present?
-            if kw_args['partial'] is False and extra_partial:
-                ret['partial'] = tuple(extra_partial)
+            if kw_args["partial"] is False and extra_partial:
+                ret["partial"] = tuple(extra_partial)
 
         # Handling extra excludes in every case
         extra_exclude = []
-        for field_name, field, field_extra in self.all_fields_with_extra_info():
+        for field_name, _field, field_extra in self.all_fields_with_extra_info():
             if operations_mode in field_extra.exclude_in:
                 extra_exclude.append(field_name)
 
         if extra_exclude:
-            ret['exclude'] = tuple(set(itertools.chain(
-                kw_args['exclude'],
-                extra_exclude,
-            )))
+            ret["exclude"] = tuple(
+                set(
+                    itertools.chain(
+                        kw_args["exclude"],
+                        extra_exclude,
+                    )
+                )
+            )
 
         return ret
 
@@ -163,10 +191,14 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         refined_data.update(disallowed_unknown_data)
 
         if allowed_unknown_data or disallowed_unknown_data:
-            sorted_all_unknown_keys = list(sorted(itertools.chain(
-                allowed_unknown_data.keys(),
-                disallowed_unknown_data.keys(),
-            )))
+            sorted_all_unknown_keys = list(
+                sorted(
+                    itertools.chain(
+                        allowed_unknown_data.keys(),
+                        disallowed_unknown_data.keys(),
+                    )
+                )
+            )
             sorted_allowed_unknown_keys = list(sorted(allowed_unknown_data.keys()))
             sorted_disallowed_unknown_keys = list(sorted(disallowed_unknown_data.keys()))
 
@@ -174,8 +206,8 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
                 "Got unknown fields for schema %s/%s. Allowed: %s. Disallowed: %s",
                 type(self).__qualname__,
                 self.operations_mode,
-                ','.join(sorted_allowed_unknown_keys),
-                ','.join(sorted_disallowed_unknown_keys),
+                ",".join(sorted_allowed_unknown_keys),
+                ",".join(sorted_disallowed_unknown_keys),
                 extra=dict(
                     schema_unk_fields=sorted_all_unknown_keys,
                     schema_unk_fields_allowed=sorted_allowed_unknown_keys,
@@ -195,7 +227,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
             ",".join(all_data_keys),
             extra=dict(
                 schema_input_keys=all_data_keys,
-            )
+            ),
         )
         return self.handle_unknown_fields(data)
 
@@ -204,23 +236,28 @@ _US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 
 class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
-    CTX_KEY_USM: ClassVar[str] = 'us_manager'
+    CTX_KEY_USM: ClassVar[str] = "us_manager"
 
-    id = ma_fields.String(dump_only=True, attribute='uuid')
-    key = ma_fields.String(dump_only=True, attribute='raw_us_key')
+    id = ma_fields.String(dump_only=True, attribute="uuid")
+    key = ma_fields.String(dump_only=True, attribute="raw_us_key")
 
     dir_path = ma_fields.String(
-        allow_none=False, load_only=True, load_default='Connection',
+        allow_none=False,
+        load_only=True,
+        load_default="Connection",
         bi_extra=FieldExtra(exclude_in=[CreateMode.test]),
         attribute="entry_key.dir_path",
     )
     workbook_id = ma_fields.String(
-        required=False, allow_none=True, load_default=None,
+        required=False,
+        allow_none=True,
+        load_default=None,
         bi_extra=FieldExtra(exclude_in=[CreateMode.test]),
         attribute="entry_key.workbook_id",
     )
     name = ma_fields.String(
-        required=True, allow_none=False,
+        required=True,
+        allow_none=False,
         bi_extra=FieldExtra(exclude_in=[CreateMode.test]),
         attribute="entry_key.entry_name",
     )
@@ -235,10 +272,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
         entry_wb_id = data["entry_key"]["workbook_id"]
 
         if entry_wb_id is None and entry_dir_path is None:
-            raise marshmallow.ValidationError(
-                "dir_path can not be null if workbook_id is null",
-                field_name="dir_path"
-            )
+            raise marshmallow.ValidationError("dir_path can not be null if workbook_id is null", field_name="dir_path")
 
         return dict(
             ds_key=resolve_entry_loc_from_api_req_body(
@@ -259,14 +293,17 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
             obj.validate()
         except bi_core_exc.EntryValidationError as err:
             if err.model_field:
-                cause_attribute = f'data.{err.model_field}'
-                cause_field_name = next(
-                    map(
-                        lambda field: field.name,
-                        filter(lambda field: field.attribute == cause_attribute, self.fields.values())
-                    ),
-                    None,
-                ) or marshmallow.exceptions.SCHEMA
+                cause_attribute = f"data.{err.model_field}"
+                cause_field_name = (
+                    next(
+                        map(
+                            lambda field: field.name,
+                            filter(lambda field: field.attribute == cause_attribute, self.fields.values()),
+                        ),
+                        None,
+                    )
+                    or marshmallow.exceptions.SCHEMA
+                )
             else:
                 cause_field_name = marshmallow.exceptions.SCHEMA
 
@@ -274,7 +311,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
 
     @final
     def create_object(self, data: dict[str, Any]) -> _US_ENTRY_TV:
-        data_attributes = data.get('data', {})
+        data_attributes = data.get("data", {})
 
         obj = self.TARGET_CLS.create_from_dict(  # type: ignore  # TODO: fix
             data_dict=self.create_data_model(data_attributes),
@@ -286,9 +323,9 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
     @final
     def update_object(self, obj: _US_ENTRY_TV, data: dict[str, Any]) -> _US_ENTRY_TV:
         # Assumed that only data of USEntry can be modified with schema
-        assert not (data.keys() - {'data'})
+        assert not (data.keys() - {"data"})
 
-        for data_field_name, data_field_value in data.get('data', {}).items():
+        for data_field_name, data_field_value in data.get("data", {}).items():
             if data_field_value is missing:
                 continue
 
@@ -302,10 +339,10 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
 
 
 def resolve_entry_loc_from_api_req_body(
-        *,
-        name: str,
-        dir_path: Optional[str],
-        workbook_id: Optional[str],
+    *,
+    name: str,
+    dir_path: Optional[str],
+    workbook_id: Optional[str],
 ) -> EntryLocation:
     assert name is not None, "name can not be None"
 

@@ -1,17 +1,26 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Any, TYPE_CHECKING, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    Type,
+)
 
 import sqlalchemy as sa
-from sqlalchemy.sql.type_api import TypeEngine
-from sqlalchemy.sql.elements import Null
 import sqlalchemy.dialects.postgresql as sa_postgresql
+from sqlalchemy.sql.elements import Null
+from sqlalchemy.sql.type_api import TypeEngine
 
-from bi_formula.core.nodes import BaseLiteral
+from bi_formula.connectors.base.literal import (
+    Literal,
+    Literalizer,
+    TypeDefiningCast,
+)
 from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.nodes import BaseLiteral
 from bi_formula.utils.datetime import make_datetime_value
-from bi_formula.connectors.base.literal import TypeDefiningCast, Literal, Literalizer
 
 if TYPE_CHECKING:
     from bi_formula.translation.context import TranslationCtx
@@ -23,8 +32,7 @@ _LITERALIZER_REGISTRY: dict[DialectCombo, Literalizer] = {}
 @lru_cache
 def get_literalizer(dialect: DialectCombo) -> Literalizer:
     sorted_dialect_items = sorted(
-        _LITERALIZER_REGISTRY.items(),
-        key=lambda el: el[0].ambiguity
+        _LITERALIZER_REGISTRY.items(), key=lambda el: el[0].ambiguity
     )  # Most specific dialects go first, the most ambiguous ones go last
     for d, literalizer in sorted_dialect_items:
         if d & dialect == dialect:
@@ -51,7 +59,7 @@ def literal(value: Any, type_: Optional[TypeEngine] = None, d: Optional[DialectC
 
 
 def un_literal(sa_obj: Optional[Literal], value_ctx: Optional[TranslationCtx] = None):
-    """ Given an SA object produced by `literal` (or compatible), return the original value """
+    """Given an SA object produced by `literal` (or compatible), return the original value"""
 
     assert sa_obj is not None
 
@@ -73,16 +81,13 @@ def un_literal(sa_obj: Optional[Literal], value_ctx: Optional[TranslationCtx] = 
     # More complex expressions via functions
     if isinstance(sa_obj, sa.sql.functions.Function):
         clauses = sa_obj.clauses.clauses
-        if all(
-                isinstance(clause, (sa.sql.elements.BindParameter, Null))
-                for clause in clauses
-        ):
-            if sa_obj.name == 'toDateTime':
+        if all(isinstance(clause, (sa.sql.elements.BindParameter, Null)) for clause in clauses):
+            if sa_obj.name == "toDateTime":
                 # CH datetime un-wrap
                 if len(clauses) == 2:
                     dt_str = un_literal(clauses[0])
                     return make_datetime_value(dt_str)
-            if sa_obj.name == 'array':
+            if sa_obj.name == "array":
                 return [un_literal(clause) for clause in clauses]
 
     raise ValueError(f"Not a literal-like SA object: {sa_obj!r}")

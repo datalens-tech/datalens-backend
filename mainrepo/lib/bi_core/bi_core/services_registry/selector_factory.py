@@ -3,13 +3,15 @@ from __future__ import annotations
 import abc
 import asyncio
 import logging
-from typing import TYPE_CHECKING, List
+from typing import (
+    TYPE_CHECKING,
+    List,
+)
 
 import attr
 
-from bi_constants.enums import SelectorType
-
 from bi_api_commons.base_models import RequestContextInfo
+from bi_constants.enums import SelectorType
 from bi_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
 from bi_core.data_processing.selectors.dataset_cached import CachedDatasetDataSelectorAsync
 from bi_core.data_processing.selectors.dataset_cached_lazy import LazyCachedDatasetDataSelectorAsync
@@ -27,12 +29,12 @@ LOGGER = logging.getLogger(__name__)
 class SelectorFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_dataset_selector(
-            self,
-            dataset: Dataset,
-            selector_type: SelectorType,
-            *,
-            us_entry_buffer: USEntryBuffer,
-            allow_cache_usage: bool = True,
+        self,
+        dataset: Dataset,
+        selector_type: SelectorType,
+        *,
+        us_entry_buffer: USEntryBuffer,
+        allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
         pass
 
@@ -43,11 +45,11 @@ class SelectorFactory(metaclass=abc.ABCMeta):
 
 @attr.s(frozen=True)
 class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
-    _services_registry_ref: FutureRef['ServicesRegistry'] = attr.ib()
+    _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
     _created_dataset_selectors: List[DatasetDataSelectorAsyncBase] = attr.ib(factory=list)
 
     @property
-    def services_registry(self) -> 'ServicesRegistry':
+    def services_registry(self) -> "ServicesRegistry":
         return self._services_registry_ref.ref
 
     @property
@@ -55,12 +57,12 @@ class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
         return self.services_registry.rci
 
     def get_dataset_selector(
-            self,
-            dataset: Dataset,
-            selector_type: SelectorType,
-            *,
-            us_entry_buffer: USEntryBuffer,
-            allow_cache_usage: bool = True,
+        self,
+        dataset: Dataset,
+        selector_type: SelectorType,
+        *,
+        us_entry_buffer: USEntryBuffer,
+        allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
         selector = self._create_dataset_selector(dataset, selector_type, us_entry_buffer=us_entry_buffer)
         self._created_dataset_selectors.append(selector)
@@ -69,17 +71,17 @@ class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def _create_dataset_selector(
-            self,
-            dataset: Dataset,
-            selector_type: SelectorType,
-            *,
-            us_entry_buffer: USEntryBuffer,
-            allow_cache_usage: bool = True,
+        self,
+        dataset: Dataset,
+        selector_type: SelectorType,
+        *,
+        us_entry_buffer: USEntryBuffer,
+        allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
         pass
 
     async def close_async(self) -> None:
-        async def close_selector(s: 'DatasetDataSelectorAsyncBase') -> None:
+        async def close_selector(s: "DatasetDataSelectorAsyncBase") -> None:
             # noinspection PyBroadException
             try:
                 await s.close()
@@ -94,12 +96,12 @@ class DefaultSelectorFactory(BaseClosableSelectorFactory):
     _is_bleeding_edge_user: bool = attr.ib(default=False)
 
     def _create_dataset_selector(
-            self,
-            dataset: Dataset,
-            selector_type: SelectorType,
-            *,
-            us_entry_buffer: USEntryBuffer,
-            allow_cache_usage: bool = True,
+        self,
+        dataset: Dataset,
+        selector_type: SelectorType,
+        *,
+        us_entry_buffer: USEntryBuffer,
+        allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
         if selector_type == SelectorType.CACHED:
             return CachedDatasetDataSelectorAsync(  # type: ignore  # TODO: fix

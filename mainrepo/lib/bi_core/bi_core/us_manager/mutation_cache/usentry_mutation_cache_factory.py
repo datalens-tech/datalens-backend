@@ -1,10 +1,17 @@
 import abc
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import attr
 
-from bi_core.us_manager.mutation_cache.usentry_mutation_cache import USEntryMutationCache, GenericCacheEngine
+from bi_core.us_manager.mutation_cache.usentry_mutation_cache import (
+    GenericCacheEngine,
+    USEntryMutationCache,
+)
+
 from ..us_manager import USManagerBase
 
 if TYPE_CHECKING:

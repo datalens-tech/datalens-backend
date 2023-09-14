@@ -1,17 +1,25 @@
 from __future__ import annotations
 
-from typing import Any, Collection, Optional, Sequence, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Collection,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from bi_constants.enums import BIType, JoinType
-
+from bi_constants.enums import (
+    BIType,
+    JoinType,
+)
 from bi_core.connectors.base.query_compiler import QueryCompiler
 from bi_core.query.bi_query import SqlSourceType
 
 if TYPE_CHECKING:
-    import bi_core.data_source
     from bi_core.base_models import ConnectionRef
+    import bi_core.data_source
 
 
 @attr.s(frozen=True)

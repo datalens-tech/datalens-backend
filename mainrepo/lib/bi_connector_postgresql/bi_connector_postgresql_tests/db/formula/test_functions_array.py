@@ -1,22 +1,23 @@
 import sqlalchemy as sa
 
-from bi_formula_testing.testcases.functions_array import (
-    DefaultArrayFunctionFormulaConnectorTestSuite,
-)
 from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.functions_array import DefaultArrayFunctionFormulaConnectorTestSuite
+
 from bi_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
+    PostgreSQL_9_3TestBase,
+    PostgreSQL_9_4TestBase,
 )
 
 
 class ArrayFunctionPostgreTestSuite(DefaultArrayFunctionFormulaConnectorTestSuite):
-    make_decimal_cast = 'numeric'
-    make_float_cast = 'double precision'
+    make_decimal_cast = "numeric"
+    make_float_cast = "double precision"
 
     def test_startswith_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        assert dbe.eval('STARTSWITH([arr_str_value], [arr_str_value])', from_=data_table)
-        assert not dbe.eval('STARTSWITH([arr_str_value], DB_CAST(ARRAY("", "cde", NULL), "varchar[]"))',
-                            from_=data_table)
+        assert dbe.eval("STARTSWITH([arr_str_value], [arr_str_value])", from_=data_table)
+        assert not dbe.eval(
+            'STARTSWITH([arr_str_value], DB_CAST(ARRAY("", "cde", NULL), "varchar[]"))', from_=data_table
+        )
 
     def test_array_contains_all_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval('CONTAINS_ALL([arr_str_value], DB_CAST(ARRAY("cde"), "varchar[]"))', from_=data_table)

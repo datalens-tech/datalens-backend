@@ -1,16 +1,21 @@
 from __future__ import annotations
 
-from typing import Tuple, Optional
+from typing import (
+    Optional,
+    Tuple,
+)
 
 import attr
 import flask
 from multidict import CIMultiDict
 
-from bi_api_commons.headers import (
-    DEFAULT_RCI_PLAIN_HEADERS, DEFAULT_RCI_SECRET_HEADERS, append_extra_headers_and_normalize,
-)
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons.exc import FlaskRCINotSet
+from bi_api_commons.headers import (
+    DEFAULT_RCI_PLAIN_HEADERS,
+    DEFAULT_RCI_SECRET_HEADERS,
+    append_extra_headers_and_normalize,
+)
 
 
 @attr.s(frozen=True)
@@ -19,18 +24,21 @@ class ReqCtxInfoMiddleware:
     This middleware gathers context info from products of another middleware and request headers.
     It should be setup after request id & auth middleware.
     """
+
     plain_headers: Tuple[str, ...] = attr.ib(
         default=(),
         converter=lambda extra: append_extra_headers_and_normalize(  # type: ignore
             default=DEFAULT_RCI_PLAIN_HEADERS,
             extra=extra,
-        ))
+        ),
+    )
     secret_headers: Tuple[str, ...] = attr.ib(
         default=(),
         converter=lambda extra: append_extra_headers_and_normalize(  # type: ignore
             default=DEFAULT_RCI_SECRET_HEADERS,
             extra=extra,
-        ))
+        ),
+    )
 
     _G_ATTR_NAME_COMMITTED_RCI = "_bi_request_context_info"
     _G_ATTR_NAME_TEMP_RCI = "_bi_temp_request_context_info"
@@ -41,14 +49,24 @@ class ReqCtxInfoMiddleware:
 
         final_rci = temp_rci.clone(
             # TODO CONSIDER: Add default user agent if not passed in header
-            plain_headers=CIMultiDict((
-                (header, flask.request.headers.get(header),)
-                for header in self.plain_headers
-            )),
-            secret_headers=CIMultiDict((
-                (header, flask.request.headers.get(header),)
-                for header in self.secret_headers
-            )),
+            plain_headers=CIMultiDict(
+                (
+                    (
+                        header,
+                        flask.request.headers.get(header),
+                    )
+                    for header in self.plain_headers
+                )
+            ),
+            secret_headers=CIMultiDict(
+                (
+                    (
+                        header,
+                        flask.request.headers.get(header),
+                    )
+                    for header in self.secret_headers
+                )
+            ),
         )
         setattr(flask.g, self._G_ATTR_NAME_COMMITTED_RCI, final_rci)
 

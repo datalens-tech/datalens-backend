@@ -1,36 +1,44 @@
 from __future__ import annotations
 
 import abc
-from typing import ClassVar, NamedTuple, Optional
+from typing import (
+    ClassVar,
+    NamedTuple,
+    Optional,
+)
 
 import pytest
 
-from bi_constants.enums import ConnectionType
-
-from bi_configs.rqe import RQEConfig
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_configs.connectors_settings import ConnectorSettingsBase
-
-from bi_utils.aio import ContextVarExecutor
-
-from bi_db_testing.database.engine_wrapper import DbEngineConfig
-
 from bi_api_commons.base_models import RequestContextInfo
 from bi_api_commons.reporting.registry import DefaultReportingRegistry
-
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
-from bi_core.services_registry.top_level import DefaultServicesRegistry, ServicesRegistry
+from bi_configs.connectors_settings import ConnectorSettingsBase
+from bi_configs.crypto_keys import CryptoKeysConfig
+from bi_configs.rqe import RQEConfig
+from bi_constants.enums import ConnectionType
+from bi_core.connections_security.base import InsecureConnectionSecurityManager
+from bi_core.mdb_utils import (
+    MDBDomainManager,
+    MDBDomainManagerSettings,
+)
 from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
+from bi_core.services_registry.top_level import (
+    DefaultServicesRegistry,
+    ServicesRegistry,
+)
+from bi_core.united_storage_client import USAuthContextMaster
 from bi_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
 from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.mdb_utils import MDBDomainManager, MDBDomainManagerSettings
-from bi_core.connections_security.base import InsecureConnectionSecurityManager
 from bi_core.utils import FutureRef
-
-from bi_core_testing.database import CoreReInitableDbDispenser, Db, CoreDbConfig
 from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
+from bi_core_testing.database import (
+    CoreDbConfig,
+    CoreReInitableDbDispenser,
+    Db,
+)
 from bi_core_testing.fixtures.dispenser import DbCsvTableDispenser
+from bi_db_testing.database.engine_wrapper import DbEngineConfig
+from bi_utils.aio import ContextVarExecutor
 
 
 class USConfig(NamedTuple):
@@ -45,7 +53,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     connection_settings: ClassVar[Optional[ConnectorSettingsBase]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_us_config(self) -> USConfig:
         us_env_config = self.core_test_config.get_us_config()
         return USConfig(
@@ -54,19 +62,19 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             us_crypto_keys_config=self.core_test_config.get_crypto_keys_config(),
         )
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_bi_context(self) -> RequestContextInfo:
         bi_context = RequestContextInfo.create_empty()
         return bi_context
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_exec_factory_async_env(self) -> bool:
         return False
 
     def service_registry_factory(
-            self,
-            conn_exec_factory_async_env: bool,
-            conn_bi_context: RequestContextInfo,
+        self,
+        conn_exec_factory_async_env: bool,
+        conn_bi_context: RequestContextInfo,
     ) -> ServicesRegistry:
         sr_future_ref: FutureRef[ServicesRegistry] = FutureRef()
         service_registry = DefaultServicesRegistry(
@@ -87,49 +95,50 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             connectors_settings={self.conn_type: self.connection_settings} if self.connection_settings else {},
             inst_specific_sr=(
                 self.inst_specific_sr_factory.get_inst_specific_sr(sr_future_ref)
-                if self.inst_specific_sr_factory is not None else None
+                if self.inst_specific_sr_factory is not None
+                else None
             ),
         )
         sr_future_ref.fulfill(service_registry)
         return service_registry
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_sync_service_registry(
-            self,
-            conn_bi_context: RequestContextInfo,
+        self,
+        conn_bi_context: RequestContextInfo,
     ) -> ServicesRegistry:
         return self.service_registry_factory(
             conn_exec_factory_async_env=False,
             conn_bi_context=conn_bi_context,
         )
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_async_service_registry(
-            self,
-            conn_bi_context: RequestContextInfo,
+        self,
+        conn_bi_context: RequestContextInfo,
     ) -> ServicesRegistry:
         return self.service_registry_factory(
             conn_exec_factory_async_env=True,
             conn_bi_context=conn_bi_context,
         )
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def conn_default_service_registry(
-            self,
-            conn_exec_factory_async_env: bool,
-            conn_sync_service_registry: ServicesRegistry,
-            conn_async_service_registry: ServicesRegistry,
+        self,
+        conn_exec_factory_async_env: bool,
+        conn_sync_service_registry: ServicesRegistry,
+        conn_async_service_registry: ServicesRegistry,
     ) -> ServicesRegistry:
         if conn_exec_factory_async_env:
             return conn_async_service_registry
         return conn_sync_service_registry
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def conn_default_sync_us_manager(
-            self,
-            conn_us_config: USConfig,
-            conn_bi_context: RequestContextInfo,
-            conn_default_service_registry: ServicesRegistry,
+        self,
+        conn_us_config: USConfig,
+        conn_bi_context: RequestContextInfo,
+        conn_default_service_registry: ServicesRegistry,
     ) -> SyncUSManager:
         us_manager = SyncUSManager(
             bi_context=conn_bi_context,
@@ -147,40 +156,40 @@ class DbServiceFixtureTextClass(metaclass=abc.ABCMeta):
     db_table_dispenser = DbCsvTableDispenser()
 
     @abc.abstractmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         pass
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
         return {}
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict) -> DbEngineConfig:
         return DbEngineConfig(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_config(self, engine_config: DbEngineConfig) -> CoreDbConfig:
         return CoreDbConfig(
             engine_config=engine_config,
             conn_type=self.conn_type,
         )
 
-    @pytest.fixture(scope='class', autouse=True)
+    @pytest.fixture(scope="class", autouse=True)
     def _add_db_init_hook(self, db_config: CoreDbConfig) -> None:
         self.db_dispenser.add_reinit_hook(
             # This method is idempotent, so it's OK that this will get called for every subclass
             db_config=db_config,
-            reinit_hook=self.db_reinit_hook
+            reinit_hook=self.db_reinit_hook,
         )
 
     def db_reinit_hook(self) -> None:
         pass
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db(self, db_config: CoreDbConfig) -> Db:
         return self.db_dispenser.get_database(db_config)
 
-    @pytest.fixture(scope='class', autouse=True)
+    @pytest.fixture(scope="class", autouse=True)
     def db_is_ready(self, db: Db) -> str:
         pass  # Just making sure that the database is available

@@ -6,7 +6,7 @@ from bi_db_testing.database.engine_wrapper import EngineWrapperBase
 
 
 class CHYTEngineWrapperBase(EngineWrapperBase):
-    URL_PREFIX = 'bi_chyt'
+    URL_PREFIX = "bi_chyt"
 
     def get_conn_credentials(self, full: bool = False) -> dict:
         return {}  # FIXME

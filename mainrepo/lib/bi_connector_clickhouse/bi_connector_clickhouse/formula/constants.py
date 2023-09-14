@@ -1,7 +1,10 @@
-from bi_formula.core.dialect import DialectNamespace, DialectName, simple_combo
+from bi_formula.core.dialect import (
+    DialectName,
+    DialectNamespace,
+    simple_combo,
+)
 
-
-DIALECT_NAME_CLICKHOUSE = DialectName.declare('CLICKHOUSE')
+DIALECT_NAME_CLICKHOUSE = DialectName.declare("CLICKHOUSE")
 
 
 class ClickHouseDialect(DialectNamespace):

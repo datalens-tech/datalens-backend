@@ -1,55 +1,57 @@
 import io
 import json
-from typing import NamedTuple, Iterator, Optional
+from typing import (
+    Iterator,
+    NamedTuple,
+    Optional,
+)
 
 import botocore.client
-
 from clickhouse_sqlalchemy.quoting import Quoter
+
+from bi_core.db import (
+    SchemaColumn,
+    get_type_transformer,
+)
+from bi_core.raw_data_streaming.stream import SimpleDataStream
+from bi_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowFileDataSink
+from bi_file_uploader_lib.enums import FileType
+from bi_file_uploader_lib.redis_model.models import CSVFileSettings
+from bi_file_uploader_lib.redis_model.models.models import (
+    CSVFileSourceSettings,
+    FileSettings,
+    FileSourceSettings,
+    SpreadsheetFileSourceSettings,
+)
+from bi_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
 
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
 from bi_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
-from bi_core.db import SchemaColumn, get_type_transformer
-from bi_core.raw_data_streaming.stream import SimpleDataStream
-
-from bi_file_uploader_lib.enums import FileType
-from bi_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowFileDataSink
-from bi_file_uploader_lib.redis_model.models import CSVFileSettings
-from bi_file_uploader_lib.redis_model.models.models import (
-    FileSettings,
-    CSVFileSourceSettings,
-    FileSourceSettings,
-    SpreadsheetFileSourceSettings,
-)
-
-from bi_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
 
 
 def make_s3_table_func_sql_source(
-        conn: BaseFileS3Connection,
-        source_id: str,
-        bucket: str,
-        filename: str,
-        file_fmt: str,
-        for_debug: bool = False,
-        raw_schema_override: Optional[list[SchemaColumn]] = None,
+    conn: BaseFileS3Connection,
+    source_id: str,
+    bucket: str,
+    filename: str,
+    file_fmt: str,
+    for_debug: bool = False,
+    raw_schema_override: Optional[list[SchemaColumn]] = None,
 ) -> str:
     source_raw_schema: list[SchemaColumn] = conn.get_file_source_by_id(source_id).raw_schema or []
     q = Quoter().quote_str
 
-    s3_path = q('{}/{}/{}'.format(conn.s3_endpoint.strip('/'), bucket.strip('/'), filename))
+    s3_path = q("{}/{}/{}".format(conn.s3_endpoint.strip("/"), bucket.strip("/"), filename))
     file_fmt = q(file_fmt)
 
     dialect = AsyncFileS3Adapter.get_dialect()
     raw_schema = raw_schema_override if raw_schema_override is not None else source_raw_schema
     type_transformer = get_type_transformer(conn.conn_type)
-    schema_str = q(', '.join(
-        create_column_sql(dialect, col, type_transformer)
-        for col in raw_schema
-    ))
+    schema_str = q(", ".join(create_column_sql(dialect, col, type_transformer) for col in raw_schema))
 
     if for_debug:
-        access_key_id, secret_access_key = '<hidden>', '<hidden>'
+        access_key_id, secret_access_key = "<hidden>", "<hidden>"
     else:
         access_key_id = q(conn.s3_access_key_id)
         secret_access_key = q(conn.s3_secret_access_key)
@@ -62,20 +64,20 @@ class S3Object(NamedTuple):
 
 
 def copy_from_s3_to_s3(
-        s3_sync_cli: botocore.client.BaseClient,
-        src_file: S3Object,
-        dst_file: S3Object,
-        file_type: FileType,
-        file_settings: Optional[FileSettings],
-        file_source_settings: FileSourceSettings,
-        raw_schema: list[SchemaColumn],
+    s3_sync_cli: botocore.client.BaseClient,
+    src_file: S3Object,
+    dst_file: S3Object,
+    file_type: FileType,
+    file_settings: Optional[FileSettings],
+    file_source_settings: FileSourceSettings,
+    raw_schema: list[SchemaColumn],
 ) -> None:
     s3_sync_resp = s3_sync_cli.get_object(Bucket=src_file.bucket, Key=src_file.key)
-    s3_data_stream = s3_sync_resp['Body']
+    s3_data_stream = s3_sync_resp["Body"]
 
     def spreadsheet_data_iter() -> Iterator[dict]:
         fieldnames = tuple(sch.name for sch in raw_schema)
-        text_io_wrapper = io.TextIOWrapper(s3_data_stream, encoding='utf-8', newline='')
+        text_io_wrapper = io.TextIOWrapper(s3_data_stream, encoding="utf-8", newline="")
         assert isinstance(file_source_settings, SpreadsheetFileSourceSettings)
         if file_source_settings.first_line_is_header:
             next(text_io_wrapper)

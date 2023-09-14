@@ -1,23 +1,31 @@
 from __future__ import annotations
 
 from typing import (
-    AbstractSet, Callable, Dict, Generator, Iterable, List,
-    Optional, Set, Tuple, Type,
+    AbstractSet,
+    Callable,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Type,
 )
 
-import bi_formula.core.exc as exc
-import bi_formula.core.nodes as nodes
-import bi_formula.core.fork_nodes as fork_nodes
-import bi_formula.translation.ext_nodes as ext_nodes
-import bi_formula.inspect.env
-import bi_formula.inspect.function
-import bi_formula.inspect.node
-import bi_formula.inspect.literal
-import bi_formula.definitions.type_strategy
 from bi_formula.collections import NodeSet
 from bi_formula.core.datatype import DataType
+import bi_formula.core.exc as exc
+import bi_formula.core.fork_nodes as fork_nodes
 from bi_formula.core.index import NodeHierarchyIndex
+import bi_formula.core.nodes as nodes
 from bi_formula.core.tag import LevelTag
+import bi_formula.definitions.type_strategy
+import bi_formula.inspect.env
+import bi_formula.inspect.function
+import bi_formula.inspect.literal
+import bi_formula.inspect.node
+import bi_formula.translation.ext_nodes as ext_nodes
 
 
 def used_fields(item: nodes.FormulaItem) -> List[nodes.Field]:
@@ -31,12 +39,12 @@ def used_func_calls(item: nodes.FormulaItem) -> List[nodes.FuncCall]:
 def validate_not_compiled_expressions(node: nodes.FormulaItem) -> None:
     # TODO: Remove
     if isinstance(node, ext_nodes.CompiledExpression):
-        raise exc.InspectionError('CompiledExpression nodes are not supported in inspection')
+        raise exc.InspectionError("CompiledExpression nodes are not supported in inspection")
 
 
 def is_constant_expression(
-        node: nodes.FormulaItem,
-        env: Optional[bi_formula.inspect.env.InspectionEnvironment] = None,
+    node: nodes.FormulaItem,
+    env: Optional[bi_formula.inspect.env.InspectionEnvironment] = None,
 ) -> bool:
     """
     Check whether the given formula node (subtree) defines a constant expression.
@@ -81,8 +89,8 @@ def is_bound_only_to(node: nodes.FormulaItem, allow_nodes: NodeSet) -> bool:
 
 
 def is_aggregate_expression(
-        node: nodes.FormulaItem,
-        env: 'bi_formula.inspect.env.InspectionEnvironment',
+    node: nodes.FormulaItem,
+    env: "bi_formula.inspect.env.InspectionEnvironment",
 ) -> bool:
     """
     Check whether the given formula node (subtree) defines an aggregate expression.
@@ -106,9 +114,9 @@ def is_aggregate_expression(
 
 
 def is_aggregated_above_sub_node(
-        node: nodes.FormulaItem,
-        index: Optional[NodeHierarchyIndex] = None,
-        sub_node: Optional[nodes.FormulaItem] = None,
+    node: nodes.FormulaItem,
+    index: Optional[NodeHierarchyIndex] = None,
+    sub_node: Optional[nodes.FormulaItem] = None,
 ) -> bool:
     """
     Check whether the given formula node (subtree) wraps
@@ -116,7 +124,7 @@ def is_aggregated_above_sub_node(
     """
 
     if index is not None and sub_node is not None:
-        raise ValueError('Cannot specify both index and sub_node')
+        raise ValueError("Cannot specify both index and sub_node")
 
     if index is None:
         assert sub_node is not None
@@ -134,8 +142,8 @@ def is_aggregated_above_sub_node(
 
 
 def is_window_expression(
-        node: nodes.FormulaItem,
-        env: 'bi_formula.inspect.env.InspectionEnvironment',
+    node: nodes.FormulaItem,
+    env: "bi_formula.inspect.env.InspectionEnvironment",
 ) -> bool:
     """
     Check whether the given formula node (subtree) defines a window function expression.
@@ -159,8 +167,8 @@ def is_window_expression(
 
 
 def is_query_fork_expression(
-        node: nodes.FormulaItem,
-        env: 'bi_formula.inspect.env.InspectionEnvironment',
+    node: nodes.FormulaItem,
+    env: "bi_formula.inspect.env.InspectionEnvironment",
 ) -> bool:
     """
     Check whether the given formula node (subtree) contains any ``QueryFork`` nodes
@@ -185,8 +193,8 @@ def is_query_fork_expression(
 
 
 def get_query_fork_nesting_level(
-        node: nodes.FormulaItem,
-        env: 'bi_formula.inspect.env.InspectionEnvironment',
+    node: nodes.FormulaItem,
+    env: "bi_formula.inspect.env.InspectionEnvironment",
 ) -> int:
     """
     TODO
@@ -214,9 +222,9 @@ def get_query_fork_nesting_level(
 
 
 def infer_data_type(
-        node: nodes.FormulaItem,
-        field_types: Dict[str, DataType],
-        env: 'bi_formula.inspect.env.InspectionEnvironment',
+    node: nodes.FormulaItem,
+    field_types: Dict[str, DataType],
+    env: "bi_formula.inspect.env.InspectionEnvironment",
 ) -> DataType:
     """Calculate the data type that should be returned by the given expression"""
 
@@ -225,7 +233,7 @@ def infer_data_type(
             result = field_types.get(node.name)
             if result is None:
                 raise exc.TranslationUnknownFieldError(
-                    f'Data type inference error: unknown field: {node.name}',
+                    f"Data type inference error: unknown field: {node.name}",
                 )
 
         elif isinstance(node, (nodes.BaseLiteral, nodes.Null)):
@@ -237,10 +245,10 @@ def infer_data_type(
 
         elif isinstance(node, (nodes.OperationCall, nodes.IfBlock, nodes.CaseBlock)):
             if isinstance(node, nodes.IfBlock):
-                func_name = 'if'
+                func_name = "if"
                 children = autonomous_children(node)
             elif isinstance(node, nodes.CaseBlock):
-                func_name = 'case'
+                func_name = "case"
                 children = autonomous_children(node)
             else:
                 func_name = node.name
@@ -248,8 +256,7 @@ def infer_data_type(
 
             child_types = [infer_data_type(child, field_types=field_types, env=env) for child in children]
             result = bi_formula.inspect.function.get_return_type(
-                name=func_name, arg_types=child_types,
-                is_window=isinstance(node, nodes.WindowFuncCall)
+                name=func_name, arg_types=child_types, is_window=isinstance(node, nodes.WindowFuncCall)
             )
 
         elif isinstance(node, (nodes.Formula, nodes.ParenthesizedExpr)):
@@ -273,7 +280,8 @@ def infer_data_type(
 
 
 def enumerate_fields(
-        node: nodes.FormulaItem, prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
+    node: nodes.FormulaItem,
+    prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
 ) -> Generator[Tuple[NodeHierarchyIndex, nodes.Field], None, None]:
     """Just like ``enumerate``, but yields only field nodes."""
     for index, sub_node in node.enumerate(prefix=prefix):
@@ -282,9 +290,10 @@ def enumerate_fields(
 
 
 def enumerate_autonomous_children(
-        node: nodes.FormulaItem, prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
-        exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
-        parent_stack: Tuple[nodes.FormulaItem, ...] = (),
+    node: nodes.FormulaItem,
+    prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
+    exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
+    parent_stack: Tuple[nodes.FormulaItem, ...] = (),
 ) -> Iterable[Tuple[NodeHierarchyIndex, nodes.FormulaItem, Tuple[nodes.FormulaItem, ...]]]:
     """
     Return relative hierarchy indexes and nodes for all logical children -
@@ -310,23 +319,21 @@ def enumerate_autonomous_children(
 
 
 def autonomous_children_w_stack(
-        node: nodes.FormulaItem,
-        exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
-        parent_stack: Tuple[nodes.FormulaItem, ...] = (),
-) -> Iterable[Tuple[
-        nodes.FormulaItem,
-        Tuple[nodes.FormulaItem, ...]
-]]:
+    node: nodes.FormulaItem,
+    exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
+    parent_stack: Tuple[nodes.FormulaItem, ...] = (),
+) -> Iterable[Tuple[nodes.FormulaItem, Tuple[nodes.FormulaItem, ...]]]:
     for _, child, stack in enumerate_autonomous_children(
-            node, exclude_node_types=exclude_node_types,
-            parent_stack=parent_stack,
+        node,
+        exclude_node_types=exclude_node_types,
+        parent_stack=parent_stack,
     ):
         yield child, stack
 
 
 def autonomous_children(
-        node: nodes.FormulaItem,
-        exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
+    node: nodes.FormulaItem,
+    exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
 ) -> Iterable[nodes.FormulaItem]:
     for _, child, _ in enumerate_autonomous_children(node, exclude_node_types=exclude_node_types):
         yield child
@@ -342,10 +349,10 @@ def collect_tags(node: nodes.FormulaItem) -> AbstractSet[LevelTag]:
 
 
 def get_wrapping_level(
-        node: nodes.FormulaItem,
-        qualify_node_cb: Callable[[nodes.FormulaItem], bool],
-        stop_at_node_cb: Optional[Callable[[nodes.FormulaItem], bool]] = None,
-        stop_at_level: Optional[int] = None,
+    node: nodes.FormulaItem,
+    qualify_node_cb: Callable[[nodes.FormulaItem], bool],
+    stop_at_node_cb: Optional[Callable[[nodes.FormulaItem], bool]] = None,
+    stop_at_level: Optional[int] = None,
 ) -> int:
     """
     Calculate wrapping level for node.
@@ -364,18 +371,13 @@ def get_wrapping_level(
         if stop_at_level is not None and level >= stop_at_level:
             return level
 
-        child_max_level = max(
-            (_get_level_recursively(child, level) for child in cur_node.children),
-            default=level
-        )
+        child_max_level = max((_get_level_recursively(child, level) for child in cur_node.children), default=level)
         return max(level, child_max_level)
 
     return _get_level_recursively(node, 0)
 
 
-def _match_bfb_names(
-        node: nodes.FormulaItem, bfb_names: AbstractSet[str]
-) -> bool:
+def _match_bfb_names(node: nodes.FormulaItem, bfb_names: AbstractSet[str]) -> bool:
     if isinstance(node, (nodes.FuncCall, fork_nodes.QueryFork)):
         return node.before_filter_by.field_names == bfb_names
     # Assume True if BFB is not supported
@@ -404,8 +406,7 @@ def get_qfork_wrapping_level_until_winfunc(node: nodes.FormulaItem, bfb_names: A
         node,
         qualify_node_cb=lambda _node: isinstance(_node, fork_nodes.QueryFork),
         stop_at_node_cb=lambda _node: (
-            isinstance(_node, nodes.WindowFuncCall)
-            or not _match_bfb_names(_node, bfb_names)
+            isinstance(_node, nodes.WindowFuncCall) or not _match_bfb_names(_node, bfb_names)
         ),
     )
 
@@ -444,10 +445,10 @@ def contains_lookup_functions(node: nodes.FormulaItem) -> bool:
 
 
 def resolve_dimensions(
-        node_stack: Iterable[nodes.FormulaItem],
-        dimensions: List[nodes.FormulaItem],  # TODO: rename to global_dimensions
-        env: 'bi_formula.inspect.env.InspectionEnvironment',
-        exclude_constants: bool = True,
+    node_stack: Iterable[nodes.FormulaItem],
+    dimensions: List[nodes.FormulaItem],  # TODO: rename to global_dimensions
+    env: "bi_formula.inspect.env.InspectionEnvironment",
+    exclude_constants: bool = True,
 ) -> Tuple[List[nodes.FormulaItem], NodeSet, NodeSet]:
     """
     Return dimension list for current node and set of dimension extracts of the parent node
@@ -459,8 +460,9 @@ def resolve_dimensions(
     # Generate dimension list recursively
     for node in node_stack:  # from top level to the node in question
         if not (
-                isinstance(node, nodes.FuncCall) and bi_formula.inspect.node.is_aggregate_function(node)
-                or isinstance(node, fork_nodes.QueryFork)
+            isinstance(node, nodes.FuncCall)
+            and bi_formula.inspect.node.is_aggregate_function(node)
+            or isinstance(node, fork_nodes.QueryFork)
         ):
             continue
 
@@ -474,24 +476,15 @@ def resolve_dimensions(
         if isinstance(lod, nodes.FixedLodSpecifier):
             dimensions = list(lod.dim_list)
         elif isinstance(lod, nodes.IncludeLodSpecifier):
-            dimensions = parent_dimensions + [
-                dim for dim in lod.dim_list
-                if dim not in parent_dimension_set
-            ]
+            dimensions = parent_dimensions + [dim for dim in lod.dim_list if dim not in parent_dimension_set]
         elif isinstance(lod, nodes.ExcludeLodSpecifier):
             exclude_set = NodeSet(lod.dim_list)
-            dimensions = [
-                dim for dim in parent_dimensions
-                if dim not in exclude_set
-            ]
+            dimensions = [dim for dim in parent_dimensions if dim not in exclude_set]
         else:
-            raise TypeError(f'Invalid type for lod: {type(lod)}')
+            raise TypeError(f"Invalid type for lod: {type(lod)}")
 
         if exclude_constants:
-            dimensions = [
-                dim for dim in dimensions
-                if not is_constant_expression(dim, env=env)
-            ]
+            dimensions = [dim for dim in dimensions if not is_constant_expression(dim, env=env)]
 
         dimension_set = NodeSet(dimensions)
 

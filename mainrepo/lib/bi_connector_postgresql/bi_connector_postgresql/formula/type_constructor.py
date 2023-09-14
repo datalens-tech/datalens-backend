@@ -1,8 +1,8 @@
 import sqlalchemy.dialects.postgresql as sa_postgresql
 from sqlalchemy.types import TypeEngine
 
-from bi_formula.core.datatype import DataType
 from bi_formula.connectors.base.type_constructor import DefaultSATypeConstructor
+from bi_formula.core.datatype import DataType
 
 
 class PostgreSQLTypeConstructor(DefaultSATypeConstructor):

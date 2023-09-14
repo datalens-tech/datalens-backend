@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 import enum
-from typing import Optional, Union, Dict, ClassVar
+from typing import (
+    ClassVar,
+    Dict,
+    Optional,
+    Union,
+)
 
 import attr
 from typing_extensions import Literal
 
-from bi_constants.enums import QueryType, ConnectionType
+from bi_constants.enums import (
+    ConnectionType,
+    QueryType,
+)
 
 
 # TODO FIX: Use as intermediate entity (at this moment is not used)
@@ -24,7 +32,7 @@ class DbQueryExecutionReport:
     username: Optional[str]
     execution_time: int
     query: Optional[str]
-    status: Union[Literal['success'], Literal['error']]
+    status: Union[Literal["success"], Literal["error"]]
     error: Optional[str]
     host: str
 
@@ -48,8 +56,7 @@ class DbQueryExecutionReport:
     def to_logging_extras(self) -> Dict[str, Union[str, int, bool]]:
         return dict(
             {  # type: ignore  # TODO: fix
-                k: self.convert_for_logging_extras(v)  # type: ignore  # TODO: fix
-                for k, v in attr.asdict(self)
+                k: self.convert_for_logging_extras(v) for k, v in attr.asdict(self)  # type: ignore  # TODO: fix
             },
             event_code=self.event_code,
         )

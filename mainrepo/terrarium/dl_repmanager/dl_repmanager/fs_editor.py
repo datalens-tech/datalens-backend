@@ -1,12 +1,20 @@
 import abc
+from contextlib import contextmanager
 import io
 import os
+from pathlib import Path
 import re
 import shutil
 import subprocess
-from contextlib import contextmanager
-from pathlib import Path
-from typing import Callable, Collection, Generator, TextIO, Type, cast, final
+from typing import (
+    Callable,
+    Collection,
+    Generator,
+    TextIO,
+    Type,
+    cast,
+    final,
+)
 
 import attr
 
@@ -18,17 +26,17 @@ class FilesystemEditor(abc.ABC):
     def _is_subpath(self, root: Path, child: Path) -> bool:
         root_parts = root.absolute().parts
         child_parts = child.absolute().parts
-        return child_parts[:len(root_parts)] == root_parts
+        return child_parts[: len(root_parts)] == root_parts
 
     def _validate_paths(self, *paths: Path) -> None:
         base_path_parts = self.base_path.absolute().parts
         for path in paths:
             path_parts = path.absolute().parts
-            if path_parts[:len(base_path_parts)] != base_path_parts:
-                raise RuntimeError(f'Access denied. Path is outside repository context: {path}')
+            if path_parts[: len(base_path_parts)] != base_path_parts:
+                raise RuntimeError(f"Access denied. Path is outside repository context: {path}")
 
     def _replace_file_content(self, file_path: Path, replace_callback: Callable[[str], str]) -> None:
-        with self.open(file_path, 'r+') as f:
+        with self.open(file_path, "r+") as f:
             old_text = f.read()
             new_text = replace_callback(old_text)
             if new_text != old_text:
@@ -43,7 +51,8 @@ class FilesystemEditor(abc.ABC):
 
     def _replace_text_in_file(self, file_path: Path, old_text: str, new_text: str) -> None:
         self.replace_file_content(
-            file_path, replace_callback=lambda text: text.replace(old_text, new_text),
+            file_path,
+            replace_callback=lambda text: text.replace(old_text, new_text),
         )
 
     @final
@@ -52,8 +61,11 @@ class FilesystemEditor(abc.ABC):
         self._replace_text_in_file(file_path=file_path, old_text=old_text, new_text=new_text)
 
     def _replace_text_in_dir(
-            self, old_text: str, new_text: str, path: Path,
-            mask_blacklist: Collection[re.Pattern] = (),
+        self,
+        old_text: str,
+        new_text: str,
+        path: Path,
+        mask_blacklist: Collection[re.Pattern] = (),
     ) -> None:
         for file_path in path.rglob("*/"):
             if file_path.is_file():
@@ -68,8 +80,11 @@ class FilesystemEditor(abc.ABC):
 
     @final
     def replace_text_in_dir(
-            self, old_text: str, new_text: str, path: Path,
-            mask_blacklist: Collection[re.Pattern] = (),
+        self,
+        old_text: str,
+        new_text: str,
+        path: Path,
+        mask_blacklist: Collection[re.Pattern] = (),
     ) -> None:
         self._validate_paths(path)
         self._replace_text_in_dir(old_text=old_text, new_text=new_text, path=path, mask_blacklist=mask_blacklist)
@@ -111,7 +126,7 @@ class FilesystemEditor(abc.ABC):
     @contextmanager
     def open(self, path: Path, mode: str) -> Generator[TextIO, None, None]:
         # TODO: Make all toml editors open files via this method to enforce path restrictions
-        assert mode in ('r', 'r+', 'w')
+        assert mode in ("r", "r+", "w")
         self._validate_paths(path)
         with self._open(path, mode=mode) as file_obj:
             yield file_obj
@@ -120,20 +135,20 @@ class FilesystemEditor(abc.ABC):
 @attr.s(frozen=True)
 class DefaultFilesystemEditor(FilesystemEditor):
     def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
-        assert src_dir.exists(), 'Source dir doesn\'t exist'
-        assert not dst_dir.exists(), 'Destination dir already exists'
+        assert src_dir.exists(), "Source dir doesn't exist"
+        assert not dst_dir.exists(), "Destination dir already exists"
         shutil.copytree(src_dir, dst_dir)
 
     def _move_path(self, old_path: Path, new_path: Path) -> None:
         assert old_path.exists()
         if old_path.is_dir():
             # module is a package
-            print(f'Moving directory {old_path} to {new_path}')
+            print(f"Moving directory {old_path} to {new_path}")
             new_path.mkdir(exist_ok=True)
 
             for child in old_path.iterdir():
                 new_child_path = new_path / child.name
-                assert not new_child_path.exists(), f'Path {new_child_path} exists'
+                assert not new_child_path.exists(), f"Path {new_child_path} exists"
                 shutil.move(child, new_path)
 
             shutil.rmtree(old_path)
@@ -143,7 +158,7 @@ class DefaultFilesystemEditor(FilesystemEditor):
             assert old_path.is_file()
             assert not new_path.exists()
 
-            print(f'Moving module {old_path} to {new_path}')
+            print(f"Moving module {old_path} to {new_path}")
             new_path.parent.mkdir(exist_ok=True)
 
             shutil.move(old_path, new_path)
@@ -175,15 +190,15 @@ class VirtualFilesystemEditor(FilesystemEditor):
 
     def ensure_path_exists(self, path: Path) -> None:
         if not path.exists():
-            raise RuntimeError(f'Path does not exist: {path}')
+            raise RuntimeError(f"Path does not exist: {path}")
 
     def ensure_path_doesnt_exist(self, path: Path) -> None:
         if path.exists():
-            raise RuntimeError(f'Path already exists: {path}')
+            raise RuntimeError(f"Path already exists: {path}")
 
     def _recursive_children(self, path: Path) -> list[Path]:
         children: set[Path] = set()
-        for real_child in path.rglob('*/'):
+        for real_child in path.rglob("*/"):
             if real_child in self._moved_paths.values():
                 # It has been moved
                 continue
@@ -263,29 +278,29 @@ class VirtualFilesystemEditor(FilesystemEditor):
 
         if path in self._edited_files:
             original_text = self._edited_files[path]
-        elif mode == 'w' and not original_path.exists():
-            original_text = ''
+        elif mode == "w" and not original_path.exists():
+            original_text = ""
         else:
-            with super()._open(original_path, mode='r') as file_obj:
+            with super()._open(original_path, mode="r") as file_obj:
                 original_text = file_obj.read()
 
         str_io: io.StringIO
-        if mode == 'w':
+        if mode == "w":
             str_io = io.StringIO()
         else:
             str_io = io.StringIO(original_text)
         yield str_io
 
-        if mode in ('r+', 'w'):
+        if mode in ("r+", "w"):
             new_text = str_io.getvalue()
             if new_text != original_text:
                 self._edited_files[path] = new_text
 
 
 _FS_EDITOR_CLASSES: dict[str, Type[FilesystemEditor]] = {
-    'default': DefaultFilesystemEditor,
-    'git': GitFilesystemEditor,
-    'virtual': VirtualFilesystemEditor,
+    "default": DefaultFilesystemEditor,
+    "git": GitFilesystemEditor,
+    "virtual": VirtualFilesystemEditor,
 }
 
 

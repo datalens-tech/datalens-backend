@@ -2,17 +2,38 @@ from __future__ import annotations
 
 import logging
 from typing import (  # It thinks NamedTuple isn't used, but it is  # noqa: F401
-    Dict, Iterable, Iterator, Generator, List, NamedTuple, Optional, Sequence, Set, Tuple,
-    TYPE_CHECKING
+    TYPE_CHECKING,
+    Dict,
+    Generator,
+    Iterable,
+    Iterator,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
 )
 
 import attr
 
-from bi_constants.enums import PivotRole, FieldType
-
-from bi_query_processing.legend.field_legend import FieldObjSpec, TemplateRoleSpec
-from bi_api_lib.query.formalization.pivot_legend import PivotLegend, PivotAnnotationRoleSpec
-from bi_api_lib.pivot.primitives import DataCell, DataCellVector, MeasureNameValue
+from bi_api_lib.pivot.primitives import (
+    DataCell,
+    DataCellVector,
+    MeasureNameValue,
+)
+from bi_api_lib.query.formalization.pivot_legend import (
+    PivotAnnotationRoleSpec,
+    PivotLegend,
+)
+from bi_constants.enums import (
+    FieldType,
+    PivotRole,
+)
+from bi_query_processing.legend.field_legend import (
+    FieldObjSpec,
+    TemplateRoleSpec,
+)
 from bi_query_processing.merging.primitives import MergedQueryDataRow
 
 if TYPE_CHECKING:
@@ -83,7 +104,7 @@ class DataCellConverter:
                     cell = DataCell(
                         value=self._cell_packer.pack(value),
                         legend_item_id=self._remap_legend_item_id(legend_item_id),
-                        pivot_item_id=pivot_item_id
+                        pivot_item_id=pivot_item_id,
                     )
                     dcell_row.append(cell)
 
@@ -107,6 +128,7 @@ class MeasureDataTransposer:
     2. measure value (original value referencing the original legend item);
     and multiplying the number of rows by the number of measures.
     """
+
     _dcell_stream: Iterable[Sequence[DataCell]] = attr.ib()
     _pivot_legend: PivotLegend = attr.ib(kw_only=True)
     _cell_packer: HashableValuePackerBase = attr.ib(kw_only=True)
@@ -152,14 +174,14 @@ class MeasureDataTransposer:
                     anno_role_spec = anno_item.role_spec
                     assert isinstance(anno_role_spec, PivotAnnotationRoleSpec)
                     if (
-                            anno_role_spec.target_legend_item_ids is None
-                            or measure_legend_item_id in anno_role_spec.target_legend_item_ids
+                        anno_role_spec.target_legend_item_ids is None
+                        or measure_legend_item_id in anno_role_spec.target_legend_item_ids
                     ):
                         _anno_mapping[measure_legend_item_id].append(anno_item.pivot_item_id)
 
         self._should_add_fake_measure = not self._measure_piid_and_name_mask_transp
         if self._should_add_fake_measure:
-            LOGGER.info('No measures found in legend, so using a fake one')
+            LOGGER.info("No measures found in legend, so using a fake one")
 
     @property
     def measure_name_legend_item_id(self) -> int:
@@ -169,12 +191,10 @@ class MeasureDataTransposer:
     def _expand_row(self, row: Sequence[DataCell]) -> Generator[TransposedDataRow, None, None]:
         # Apply direct dimension mask
         common_dim_part = tuple(
-            DataCellVector(cells=(cell,))
-            for cell in row if cell[2] in self._dimension_pivot_item_ids
+            DataCellVector(cells=(cell,)) for cell in row if cell[2] in self._dimension_pivot_item_ids
         )
         measure_value_dict: Dict[int, DataCell] = {
-            cell[2]: cell  # pivot_item_id: cell
-            for cell in row if cell[2] not in self._dimension_pivot_item_ids
+            cell[2]: cell for cell in row if cell[2] not in self._dimension_pivot_item_ids  # pivot_item_id: cell
         }
 
         # Expand transposed measure mask
@@ -182,14 +202,16 @@ class MeasureDataTransposer:
             mnames_dim_part = tuple(
                 # There can be multiple `measure_name` items
                 DataCellVector(
-                    cells=(DataCell(  # the measure name cell
-                        value=MeasureNameValue(
-                            value=self._cell_packer.pack(measure_name),
-                            measure_piid=measure_piid,
+                    cells=(
+                        DataCell(  # the measure name cell
+                            value=MeasureNameValue(
+                                value=self._cell_packer.pack(measure_name),
+                                measure_piid=measure_piid,
+                            ),
+                            legend_item_id=self.measure_name_legend_item_id,
+                            pivot_item_id=measure_name_pivot_item_id,
                         ),
-                        legend_item_id=self.measure_name_legend_item_id,
-                        pivot_item_id=measure_name_pivot_item_id
-                    ),)
+                    )
                 )
                 for measure_name_pivot_item_id in self._measure_name_pivot_item_ids
             )
@@ -197,8 +219,7 @@ class MeasureDataTransposer:
             value_cell = measure_value_dict[measure_piid]
             measure_liid = value_cell.legend_item_id
             anno_cells = (
-                measure_value_dict[anno_piid]
-                for anno_piid in self._anno_piid_list_by_measure_liid[measure_liid]
+                measure_value_dict[anno_piid] for anno_piid in self._anno_piid_list_by_measure_liid[measure_liid]
             )  # generator!!
 
             value_vector = DataCellVector(cells=(value_cell, *anno_cells))

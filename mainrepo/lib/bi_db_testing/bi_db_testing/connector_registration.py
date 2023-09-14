@@ -3,7 +3,6 @@ from typing import Type
 from bi_db_testing.connectors.base.connector import DbTestingConnector
 from bi_db_testing.database.engine_wrapper import register_engine_wrapper_cls
 
-
 _REGISTERED: set[Type[DbTestingConnector]] = set()
 
 

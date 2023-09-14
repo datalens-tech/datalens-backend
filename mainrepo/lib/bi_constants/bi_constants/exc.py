@@ -1,12 +1,17 @@
-from typing import Any, ClassVar, Optional, Type
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Type,
+)
+
 from typing_extensions import final
 
 from bi_constants.types import TJSONLike
 
-
-GLOBAL_ERR_PREFIX = 'ERR'
-DEFAULT_ERR_CODE_API_PREFIX = 'DS_API'
-CODE_OK = 'OK'
+GLOBAL_ERR_PREFIX = "ERR"
+DEFAULT_ERR_CODE_API_PREFIX = "DS_API"
+CODE_OK = "OK"
 
 
 # TODO FIX: Simplify exc data structures to simplify serialization
@@ -17,7 +22,7 @@ class DLBaseException(Exception):
     err_code: ClassVar[list[str]] = []  # TODO: Implement automatic hierarchial code inheritance
     _message: str
 
-    default_message = 'Internal Server Error'
+    default_message = "Internal Server Error"
     formatting_messages: Optional[dict[frozenset[str], str]] = None
 
     # Auxiliary error info. Will not be shown to user (or will be shown as is only in intranet)
@@ -30,12 +35,12 @@ class DLBaseException(Exception):
     params: dict[str, Any]
 
     def __init__(
-            self,
-            message: Optional[str] = None,
-            details: Optional[dict[str, Any]] = None,
-            orig: Optional[Exception] = None,
-            debug_info: Optional[dict[str, Any]] = None,
-            params: Optional[dict[str, Any]] = None,
+        self,
+        message: Optional[str] = None,
+        details: Optional[dict[str, Any]] = None,
+        orig: Optional[Exception] = None,
+        debug_info: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ):
         self._message = message or self.default_message
         self.details = details or {}
@@ -48,7 +53,11 @@ class DLBaseException(Exception):
         """
         Message will be shown directly to user.
         """
-        if self.params and self.formatting_messages and frozenset(self.params.keys()) in self.formatting_messages.keys():
+        if (
+            self.params
+            and self.formatting_messages
+            and frozenset(self.params.keys()) in self.formatting_messages.keys()
+        ):
             return self.formatting_messages[frozenset(self.params.keys())].format(**self.params)
         else:
             return self._message
@@ -59,26 +68,26 @@ class DLBaseException(Exception):
     # ##
     # Serialization logic for passing from QE
     # ##
-    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, Type['DLBaseException']]] = {}
+    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, Type["DLBaseException"]]] = {}
 
     def __init_subclass__(cls, **kwargs):  # type: ignore
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls
 
     @classmethod
     @final
-    def from_jsonable_dict(cls, data: dict) -> 'DLBaseException':
+    def from_jsonable_dict(cls, data: dict) -> "DLBaseException":
         data = {**data}
-        cls_name = data.pop('cls_name')
+        cls_name = data.pop("cls_name")
         target_cls = cls._MAP_CLASS_NAME_CLASS[cls_name]
         # noinspection PyProtectedMember
         return target_cls._from_jsonable_dict(data)
 
     @classmethod
-    def _from_jsonable_dict(cls, data: dict) -> 'DLBaseException':
-        new_exc = cls(message=data.pop('message', None))
-        new_exc.details = data.pop('details')
-        new_exc.debug_info = data.pop('debug_info')
-        new_exc.params = data.pop('params', {})
+    def _from_jsonable_dict(cls, data: dict) -> "DLBaseException":
+        new_exc = cls(message=data.pop("message", None))
+        new_exc.details = data.pop("details")
+        new_exc.debug_info = data.pop("debug_info")
+        new_exc.params = data.pop("params", {})
         return new_exc
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:

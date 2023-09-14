@@ -2,14 +2,23 @@ from __future__ import annotations
 
 import builtins
 import datetime as datetime_mod
-import uuid as uuid_mod
 from functools import wraps
-from typing import FrozenSet, List, Optional, Sequence, Tuple, Union
+from typing import (
+    FrozenSet,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
+import uuid as uuid_mod
 
 from sqlalchemy.sql.elements import ClauseElement
 
-from bi_formula.core import nodes
-from bi_formula.core import fork_nodes
+from bi_formula.core import (
+    fork_nodes,
+    nodes,
+)
 from bi_formula.core.tag import LevelTag
 from bi_formula.translation import ext_nodes
 from bi_formula.translation.context import TranslationCtx
@@ -34,12 +43,23 @@ def _norm(value) -> nodes.FormulaItem:
 
 
 class NodeShortcut:
-    @_require_type((
-        builtins.str, builtins.int, builtins.float, builtins.bool,
-        datetime_mod.date, datetime_mod.datetime, uuid_mod.UUID,
-        nodes.Array(int), nodes.Array(float), nodes.Array(str),
-        ClauseElement, TranslationCtx, type(None),
-    ))
+    @_require_type(
+        (
+            builtins.str,
+            builtins.int,
+            builtins.float,
+            builtins.bool,
+            datetime_mod.date,
+            datetime_mod.datetime,
+            uuid_mod.UUID,
+            nodes.Array(int),
+            nodes.Array(float),
+            nodes.Array(str),
+            ClauseElement,
+            TranslationCtx,
+            type(None),
+        )
+    )
     def lit(self, value) -> Union[nodes.BaseLiteral, nodes.Null]:
         if isinstance(value, str):
             return self.str(value)
@@ -142,17 +162,16 @@ class NodeShortcut:
         return nodes.OrderDescending.make(expr=expr)
 
     def _normalize_raw_bfb(
-            self, before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
+        self,
+        before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
     ) -> nodes.BeforeFilterBy:
         return nodes.BeforeFilterBy.make(
-            field_names=frozenset([
-                f.name if isinstance(f, nodes.Field) else f
-                for f in (before_filter_by or ())
-            ]),
+            field_names=frozenset([f.name if isinstance(f, nodes.Field) else f for f in (before_filter_by or ())]),
         )
 
     class FuncShortcut:
         """SQLAlchemy-like function shortcut provider: ````"""
+
         def __init__(self, assume_window: bool = False):
             self._assume_window = assume_window
 
@@ -164,23 +183,24 @@ class NodeShortcut:
 
         def _make_func(self, name: str):
             def wrapper(
-                    *pos_args: nodes.FormulaItem,
-                    grouping: Optional[nodes.WindowGrouping] = None,
-                    total: Optional[bool] = None,
-                    within: Optional[List[nodes.FormulaItem]] = None,
-                    among: Optional[List[nodes.FormulaItem]] = None,
-                    order_by: Optional[List[nodes.FormulaItem]] = None,
-                    before_filter_by: Optional[List[Union[nodes.Field, str]]] = None,
-                    ignore_dimensions: Optional[nodes.IgnoreDimensions] = None,
-                    lod: Optional[nodes.LodSpecifier] = None,
-                    args: Sequence[nodes.FormulaItem] = (),
-                    meta: Optional[nodes.NodeMeta] = None,
+                *pos_args: nodes.FormulaItem,
+                grouping: Optional[nodes.WindowGrouping] = None,
+                total: Optional[bool] = None,
+                within: Optional[List[nodes.FormulaItem]] = None,
+                among: Optional[List[nodes.FormulaItem]] = None,
+                order_by: Optional[List[nodes.FormulaItem]] = None,
+                before_filter_by: Optional[List[Union[nodes.Field, str]]] = None,
+                ignore_dimensions: Optional[nodes.IgnoreDimensions] = None,
+                lod: Optional[nodes.LodSpecifier] = None,
+                args: Sequence[nodes.FormulaItem] = (),
+                meta: Optional[nodes.NodeMeta] = None,
             ) -> Union[nodes.FuncCall, nodes.WindowFuncCall]:
-                assert len([bool(spec) for spec in (grouping, total, within, among) if spec is not None]) <= 1, \
-                    'Only one grouping specifier is allowed'
+                assert (
+                    len([bool(spec) for spec in (grouping, total, within, among) if spec is not None]) <= 1
+                ), "Only one grouping specifier is allowed"
 
                 if total is not None:
-                    assert total is True, 'Invalid value for total'
+                    assert total is True, "Invalid value for total"
                     grouping = n.total()
                 elif within is not None:
                     grouping = n.within(*within)
@@ -192,10 +212,10 @@ class NodeShortcut:
 
                 before_filter_by_node = n._normalize_raw_bfb(before_filter_by=before_filter_by)
 
-                assert not (pos_args and args), 'Can\'t specify pos args and `args` keyword simultaneously'
+                assert not (pos_args and args), "Can't specify pos args and `args` keyword simultaneously"
                 args = pos_args or args or ()
 
-                if (grouping is None and order_by is None):
+                if grouping is None and order_by is None:
                     return nodes.FuncCall.make(
                         name=name.lower(),
                         args=[_norm(arg) for arg in args],
@@ -226,7 +246,7 @@ class NodeShortcut:
         def then(self, expr) -> nodes.WhenPart:
             return nodes.WhenPart.make(val=_norm(self._val), expr=_norm(expr))
 
-    def when(self, val) -> 'NodeShortcut.WhenProxy':
+    def when(self, val) -> "NodeShortcut.WhenProxy":
         return self.WhenProxy(val)
 
     class CaseProxy:
@@ -234,14 +254,16 @@ class NodeShortcut:
             self._case_expr = case_expr
             self._when_list = []
 
-        def whens(self, *when_list) -> 'NodeShortcut.CaseProxy':
+        def whens(self, *when_list) -> "NodeShortcut.CaseProxy":
             self._when_list += when_list or []
             return self
 
         def else_(self, expr) -> nodes.CaseBlock:
-            return nodes.CaseBlock.make(case_expr=_norm(self._case_expr), when_list=self._when_list, else_expr=_norm(expr))
+            return nodes.CaseBlock.make(
+                case_expr=_norm(self._case_expr), when_list=self._when_list, else_expr=_norm(expr)
+            )
 
-    def case(self, expr) -> 'NodeShortcut.CaseProxy':
+    def case(self, expr) -> "NodeShortcut.CaseProxy":
         """
         Usage:
         TODO
@@ -253,14 +275,14 @@ class NodeShortcut:
             self._cond = cond
             self._expr = None
 
-        def then(self, expr) -> 'NodeShortcut.IfPartProxy':
+        def then(self, expr) -> "NodeShortcut.IfPartProxy":
             self._expr = expr
             return self
 
         def else_(self, expr) -> nodes.IfBlock:
             return n.IfBlockProxy([self]).else_(expr)
 
-    def elseif(self, cond) -> 'NodeShortcut.IfPartProxy':
+    def elseif(self, cond) -> "NodeShortcut.IfPartProxy":
         return self.IfPartProxy(cond)
 
     class IfBlockProxy:
@@ -270,10 +292,10 @@ class NodeShortcut:
         def else_(self, expr) -> nodes.IfBlock:
             return nodes.IfBlock.make(
                 if_list=[nodes.IfPart.make(cond=_norm(ipp._cond), expr=_norm(ipp._expr)) for ipp in self._if_list],
-                else_expr=_norm(expr)
+                else_expr=_norm(expr),
             )
 
-    def if_(self, *exprs) -> Union['NodeShortcut.IfBlockProxy', 'NodeShortcut.IfPartProxy']:
+    def if_(self, *exprs) -> Union["NodeShortcut.IfBlockProxy", "NodeShortcut.IfPartProxy"]:
         """
         Usage:
         TODO
@@ -297,24 +319,28 @@ class NodeShortcut:
         return expr.with_tag(level_tag=tag)
 
     def level_tag(
-            self, names: FrozenSet[builtins.str], nesting: builtins.int,
-            qfork_nesting: builtins.int = 0,
+        self,
+        names: FrozenSet[builtins.str],
+        nesting: builtins.int,
+        qfork_nesting: builtins.int = 0,
     ) -> LevelTag:
         return LevelTag(bfb_names=names, func_nesting=nesting, qfork_nesting=qfork_nesting)
 
     def fork(
-            self,
-            joining: fork_nodes.QueryForkJoiningBase,
-            result_expr: nodes.FormulaItem,
-            before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
-            lod: Optional[nodes.FixedLodSpecifier] = None,
-            join_type: fork_nodes.JoinType = fork_nodes.JoinType.left,
+        self,
+        joining: fork_nodes.QueryForkJoiningBase,
+        result_expr: nodes.FormulaItem,
+        before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
+        lod: Optional[nodes.FixedLodSpecifier] = None,
+        join_type: fork_nodes.JoinType = fork_nodes.JoinType.left,
     ) -> fork_nodes.QueryFork:
         before_filter_by_node = self._normalize_raw_bfb(before_filter_by=before_filter_by)
         return fork_nodes.QueryFork.make(
             join_type=join_type,
-            joining=joining, result_expr=result_expr,
-            before_filter_by=before_filter_by_node, lod=lod,
+            joining=joining,
+            result_expr=result_expr,
+            before_filter_by=before_filter_by_node,
+            lod=lod,
         )
 
     def bin_condition(self, expr: nodes.FormulaItem, fork_expr: nodes.FormulaItem) -> fork_nodes.BinaryJoinCondition:
@@ -324,38 +350,49 @@ class NodeShortcut:
         return fork_nodes.SelfEqualityJoinCondition.make(expr=expr)
 
     def joining(
-            self, *,
-            conditions: Optional[Sequence[fork_nodes.JoinConditionBase]] = None,
+        self,
+        *,
+        conditions: Optional[Sequence[fork_nodes.JoinConditionBase]] = None,
     ) -> fork_nodes.QueryForkJoiningBase:
         if conditions is not None:
             return fork_nodes.QueryForkJoiningWithList.make(
                 condition_list=list(conditions),
             )
-        raise ValueError('Invalid options for joining object')
+        raise ValueError("Invalid options for joining object")
 
     def unary(
-            self, name: builtins.str, expr: nodes.FormulaItem,
-            meta: Optional[nodes.NodeMeta] = None,
+        self,
+        name: builtins.str,
+        expr: nodes.FormulaItem,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> nodes.Unary:
         return nodes.Unary.make(name=name, expr=expr, meta=meta)
 
     def binary(
-            self, name: builtins.str, left: nodes.FormulaItem, right: nodes.FormulaItem,
-            meta: Optional[nodes.NodeMeta] = None,
+        self,
+        name: builtins.str,
+        left: nodes.FormulaItem,
+        right: nodes.FormulaItem,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> nodes.Binary:
         return nodes.Binary.make(name=name, left=left, right=right, meta=meta)
 
     def ternary(
-            self, name: builtins.str,
-            first: nodes.FormulaItem,
-            second: nodes.FormulaItem,
-            third: nodes.FormulaItem,
-            meta: Optional[nodes.NodeMeta] = None,
+        self,
+        name: builtins.str,
+        first: nodes.FormulaItem,
+        second: nodes.FormulaItem,
+        third: nodes.FormulaItem,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> nodes.Ternary:
         return nodes.Ternary.make(name=name, first=first, second=second, third=third, meta=meta)
 
-    def not_(self, expr: nodes.FormulaItem, meta: Optional[nodes.NodeMeta] = None,):
-        return self.unary('not', expr, meta=meta)
+    def not_(
+        self,
+        expr: nodes.FormulaItem,
+        meta: Optional[nodes.NodeMeta] = None,
+    ):
+        return self.unary("not", expr, meta=meta)
 
 
 n = NodeShortcut()

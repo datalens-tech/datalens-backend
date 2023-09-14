@@ -57,18 +57,18 @@ def test_multi_cache():
         counter += 1
         return value.upper()
 
-    assert my_func('panda') == 'PANDA'  # miss
-    assert my_func('puma') == 'PUMA'  # miss
-    assert my_func('tiger') == 'TIGER'  # miss
-    assert my_func('parrot') == 'PARROT'  # miss, overflow -> "panda" ejected
-    assert my_func('tiger') == 'TIGER'  # hit
-    assert my_func('panda') == 'PANDA'  # miss because of "parrot"
+    assert my_func("panda") == "PANDA"  # miss
+    assert my_func("puma") == "PUMA"  # miss
+    assert my_func("tiger") == "TIGER"  # miss
+    assert my_func("parrot") == "PARROT"  # miss, overflow -> "panda" ejected
+    assert my_func("tiger") == "TIGER"  # hit
+    assert my_func("panda") == "PANDA"  # miss because of "parrot"
 
     assert counter == 5  # the number of misses
 
     cache_info = my_func.cache_info()
-    assert set(cache_info.keys()) == {'p', 't'}
-    assert cache_info['p'].misses == 4
-    assert cache_info['p'].hits == 0
-    assert cache_info['t'].misses == 1
-    assert cache_info['t'].hits == 1
+    assert set(cache_info.keys()) == {"p", "t"}
+    assert cache_info["p"].misses == 4
+    assert cache_info["p"].hits == 0
+    assert cache_info["t"].misses == 1
+    assert cache_info["t"].hits == 1

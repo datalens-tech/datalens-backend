@@ -3,12 +3,14 @@ from typing import Optional
 import attr
 
 from bi_configs.environments import is_setting_applicable
-from bi_configs.settings_loaders.meta_definition import s_attrib, required
+from bi_configs.settings_loaders.meta_definition import (
+    required,
+    s_attrib,
+)
 from bi_configs.settings_submodels import (
     CorsSettings,
     CsrfSettings,
 )
-
 from bi_file_uploader_lib.settings import FileUploaderBaseSettings
 
 
@@ -22,7 +24,9 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
                 ALLOWED_HEADERS=cfg.CORS_ALLOWED_HEADERS,
                 EXPOSE_HEADERS=cfg.CORS_EXPOSE_HEADERS,
                 # TODO: move this values to a separate key
-            ) if is_setting_applicable(cfg, 'CORS_ALLOWED_ORIGINS') else None
+            )
+            if is_setting_applicable(cfg, "CORS_ALLOWED_ORIGINS")
+            else None
         ),
     )
 
@@ -35,12 +39,16 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
                 TIME_LIMIT=cfg.CSRF_TIME_LIMIT,
                 SECRET=required(str),
                 # TODO: move this values to a separate key
-            ) if is_setting_applicable(cfg, 'CSRF_METHODS') else None
+            )
+            if is_setting_applicable(cfg, "CSRF_METHODS")
+            else None
         ),
     )
 
     SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore
-        "SENTRY_DSN", fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_API", missing=None,
+        "SENTRY_DSN",
+        fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_API",
+        missing=None,
     )
 
     FILE_UPLOADER_MASTER_TOKEN: str = s_attrib("FILE_UPLOADER_MASTER_TOKEN", sensitive=True)  # type: ignore

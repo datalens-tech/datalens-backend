@@ -1,28 +1,40 @@
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, Optional, Callable, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    Optional,
+    Type,
+    TypeVar,
+)
 
-import redis.asyncio
 import attr
-
-from bi_constants.enums import ProcessorType
-from bi_configs.enums import RequiredService
+import redis.asyncio
 
 from bi_api_commons.base_models import RequestContextInfo
+from bi_api_commons.reporting.registry import ReportingRegistry
+from bi_configs.enums import RequiredService
+from bi_constants.enums import ProcessorType
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.data_source.collection import DataSourceCollectionFactory
-from bi_api_commons.reporting.registry import ReportingRegistry
-from bi_core.services_registry.cache_engine_factory import CacheEngineFactory, DefaultCacheEngineFactory
+from bi_core.services_registry.cache_engine_factory import (
+    CacheEngineFactory,
+    DefaultCacheEngineFactory,
+)
 from bi_core.services_registry.compute_executor import ComputeExecutorTPE
 from bi_core.services_registry.conn_executor_factory_base import ConnExecutorFactory
 from bi_core.services_registry.data_processor_factory import DefaultDataProcessorFactory
 from bi_core.services_registry.data_processor_factory_base import BaseClosableDataProcessorFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistry
-from bi_core.services_registry.selector_factory import SelectorFactory, DefaultSelectorFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
+from bi_core.services_registry.selector_factory import (
+    DefaultSelectorFactory,
+    SelectorFactory,
+)
 from bi_core.us_manager.mutation_cache.engine_factory import (
-    MutationCacheEngineFactory, DefaultMutationCacheEngineFactory,
+    DefaultMutationCacheEngineFactory,
+    MutationCacheEngineFactory,
 )
 from bi_core.us_manager.mutation_cache.usentry_mutation_cache import GenericCacheEngine
 from bi_core.us_manager.mutation_cache.usentry_mutation_cache_factory import USEntryMutationCacheFactory
@@ -32,12 +44,11 @@ from bi_task_processor.processor import TaskProcessorFactory
 if TYPE_CHECKING:
     from bi_configs.connectors_settings import ConnectorSettingsBase
     from bi_constants.enums import ConnectionType
-
+    from bi_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
+    from bi_core.mdb_utils import MDBDomainManagerFactory
     from bi_core.services_registry.compute_executor import ComputeExecutor
     from bi_core.services_registry.file_uploader_client_factory import FileUploaderClientFactory
     from bi_core.us_manager.local_cache import USEntryBuffer
-    from bi_core.mdb_utils import MDBDomainManagerFactory
-    from bi_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
 
 
 _ISSR_T = TypeVar("_ISSR_T", bound=InstallationSpecificServiceRegistry)
@@ -111,8 +122,7 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_mutation_cache_engine_factory(
-        self,
-        cache_type: Type[GenericCacheEngine]
+        self, cache_type: Type[GenericCacheEngine]
     ) -> MutationCacheEngineFactory:  # type: ignore  # TODO: fix
         pass
 
@@ -231,14 +241,10 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
         return self._mutations_cache_factory
 
     def get_mutation_cache_engine_factory(
-        self,
-        cache_type: Type[GenericCacheEngine]
+        self, cache_type: Type[GenericCacheEngine]
     ) -> MutationCacheEngineFactory:  # type: ignore  # TODO: fix
         # TODO: Save already created CacheEngine's?
-        return DefaultMutationCacheEngineFactory(
-            services_registry_ref=FutureRef.fulfilled(self),
-            cache_type=cache_type
-        )
+        return DefaultMutationCacheEngineFactory(services_registry_ref=FutureRef.fulfilled(self), cache_type=cache_type)
 
     def get_data_processor_service_factory(self) -> Optional[Callable[[ProcessorType], DataProcessorService]]:
         return self._data_processor_service_factory
@@ -271,12 +277,12 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
     def get_mdb_domain_manager_factory(self) -> MDBDomainManagerFactory:
         if self._mdb_domain_manager_factory is not None:
             return self._mdb_domain_manager_factory
-        raise ValueError('MDB domain manager factory has not been initialized')
+        raise ValueError("MDB domain manager factory has not been initialized")
 
     def get_installation_specific_service_registry(self, issr_cls: Type[_ISSR_T]) -> _ISSR_T:
         if isinstance(self._inst_specific_sr, issr_cls):
             return self._inst_specific_sr
-        raise ValueError(f'Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}')
+        raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
 
     def close(self) -> None:
         if self._conn_exec_factory is not None:
@@ -310,6 +316,7 @@ class DummyServiceRegistry(ServicesRegistry):
     """
     Service registry implementation that holds RCI for simple test cases (actual services are not required)
     """
+
     _rci: RequestContextInfo = attr.ib()
     _default_cache_ttl_config: Optional[CacheTTLConfig] = attr.ib(default=None)
     _inst_specific_sr: Optional[InstallationSpecificServiceRegistry] = attr.ib(default=None)
@@ -344,15 +351,14 @@ class DummyServiceRegistry(ServicesRegistry):
     def get_selector_factory(self) -> SelectorFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
-    def get_cache_engine_factory(self) -> Optional[CacheEngineFactory]:    # type: ignore  # TODO: fix
+    def get_cache_engine_factory(self) -> Optional[CacheEngineFactory]:  # type: ignore  # TODO: fix
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_mutation_cache_factory(self) -> Optional[USEntryMutationCacheFactory]:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_mutation_cache_engine_factory(
-        self,
-        cache_type: Type[GenericCacheEngine]
+        self, cache_type: Type[GenericCacheEngine]
     ) -> MutationCacheEngineFactory:  # type: ignore  # TODO: fix
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
@@ -386,7 +392,7 @@ class DummyServiceRegistry(ServicesRegistry):
     def get_installation_specific_service_registry(self, issr_cls: Type[_ISSR_T]) -> _ISSR_T:
         if isinstance(self._inst_specific_sr, issr_cls):
             return self._inst_specific_sr
-        raise ValueError(f'Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}')
+        raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
 
     def close(self) -> None:
         pass

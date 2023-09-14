@@ -5,26 +5,35 @@ from collections import defaultdict
 from copy import deepcopy
 from itertools import chain
 from operator import itemgetter
-from typing import Any, Generator, TYPE_CHECKING, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    TypeVar,
+)
 
 import attr
 
-from bi_constants.enums import FieldRole, PivotHeaderRole
 from bi_api_lib.pivot.primitives import PivotHeaderInfo
+from bi_constants.enums import (
+    FieldRole,
+    PivotHeaderRole,
+)
 
 if TYPE_CHECKING:
+    from bi_api_lib.pivot.primitives import (
+        MeasureValues,
+        PivotHeader,
+    )
     from bi_query_processing.legend.field_legend import Legend
-    from bi_api_lib.pivot.primitives import MeasureValues, PivotHeader
 
 
-_PIVOT_DATA_FRAME_TV = TypeVar('_PIVOT_DATA_FRAME_TV', bound='PivotDataFrame')
+_PIVOT_DATA_FRAME_TV = TypeVar("_PIVOT_DATA_FRAME_TV", bound="PivotDataFrame")
 
 
 @attr.s
 class PivotDataFrame(abc.ABC):
-    headers_info: dict[tuple, PivotHeaderInfo] = attr.ib(
-        default=attr.Factory(lambda: defaultdict(PivotHeaderInfo))
-    )
+    headers_info: dict[tuple, PivotHeaderInfo] = attr.ib(default=attr.Factory(lambda: defaultdict(PivotHeaderInfo)))
 
     @abc.abstractmethod
     def iter_columns(self) -> Generator[PivotHeader, None, None]:
@@ -39,7 +48,7 @@ class PivotDataFrame(abc.ABC):
         raise NotImplementedError
 
     def clone(self: _PIVOT_DATA_FRAME_TV, **kwargs: Any) -> _PIVOT_DATA_FRAME_TV:
-        kwargs['headers_info'] = kwargs.pop('headers_info', deepcopy(self.headers_info))
+        kwargs["headers_info"] = kwargs.pop("headers_info", deepcopy(self.headers_info))
         return attr.evolve(self, **kwargs)
 
     @abc.abstractmethod

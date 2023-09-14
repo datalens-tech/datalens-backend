@@ -16,18 +16,17 @@ class EncryptedData(typing.TypedDict):
 
 @attr.s
 class CryptoController:
-    key_kind = 'local_fernet'
+    key_kind = "local_fernet"
 
     _key_config: CryptoKeysConfig = attr.ib()
     _map_key_id_fernet_instance: typing.Dict[str, fernet.Fernet] = attr.ib(init=False)
 
     def __attrs_post_init__(self):  # type: ignore  # TODO: fix
         self._map_key_id_fernet_instance = {
-            key_id: fernet.Fernet(key_val)
-            for key_id, key_val in self._key_config.map_id_key.items()
+            key_id: fernet.Fernet(key_val) for key_id, key_val in self._key_config.map_id_key.items()
         }
 
-    def copy(self) -> 'CryptoController':
+    def copy(self) -> "CryptoController":
         return attr.evolve(self)
 
     def encrypt(self, key_id: str, plain_text: typing.Optional[str]) -> typing.Optional[EncryptedData]:
@@ -46,9 +45,9 @@ class CryptoController:
         if encrypted_data is None:
             return None
 
-        assert encrypted_data['key_kind'] == self.key_kind
-        encoded_cypher_text = encrypted_data['cypher_text'].encode()
-        key_id = encrypted_data['key_id']
+        assert encrypted_data["key_kind"] == self.key_kind
+        encoded_cypher_text = encrypted_data["cypher_text"].encode()
+        key_id = encrypted_data["key_id"]
         plain_text = self._map_key_id_fernet_instance[key_id].decrypt(encoded_cypher_text).decode()
         return plain_text
 

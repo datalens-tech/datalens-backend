@@ -3,10 +3,12 @@ from __future__ import annotations
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from bi_constants.enums import ComponentErrorLevel, ComponentType
-
-from bi_core.us_manager.storage_schemas.base import DefaultStorageSchema
+from bi_constants.enums import (
+    ComponentErrorLevel,
+    ComponentType,
+)
 from bi_core import component_errors
+from bi_core.us_manager.storage_schemas.base import DefaultStorageSchema
 
 
 class GenericComponentErrorPackSchema(DefaultStorageSchema):
@@ -26,10 +28,11 @@ class GenericComponentErrorPackSchema(DefaultStorageSchema):
 
 
 class ComponentErrorPackSchema(OneOfSchema):
-    type_field = 'type'
+    type_field = "type"
     type_field_remove = False
     type_schemas = {
-        k.name: v for k, v in {
+        k.name: v
+        for k, v in {
             ComponentType.data_source: GenericComponentErrorPackSchema,
             ComponentType.source_avatar: GenericComponentErrorPackSchema,
             ComponentType.avatar_relation: GenericComponentErrorPackSchema,

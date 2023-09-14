@@ -3,10 +3,13 @@ from typing import Iterable
 
 import attr
 
-from bi_query_processing.legend.field_legend import Legend
-from bi_api_lib.query.formalization.pivot_legend import PivotLegend
+from bi_api_lib.pivot.hashable_packing import (
+    FastJsonHashableValuePacker,
+    HashableValuePackerBase,
+)
 from bi_api_lib.pivot.table import PivotTable
-from bi_api_lib.pivot.hashable_packing import HashableValuePackerBase, FastJsonHashableValuePacker
+from bi_api_lib.query.formalization.pivot_legend import PivotLegend
+from bi_query_processing.legend.field_legend import Legend
 from bi_query_processing.merging.primitives import MergedQueryDataRow
 
 

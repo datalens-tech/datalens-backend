@@ -1,12 +1,16 @@
 import marshmallow.fields as ma_fields
 
 from bi_core.us_manager.storage_schemas.data_source_spec_base import (
-    BaseSQLDataSourceSpecStorageSchema, TableSQLDataSourceSpecStorageSchemaMixin,
+    BaseSQLDataSourceSpecStorageSchema,
     SubselectDataSourceSpecStorageSchema,
+    TableSQLDataSourceSpecStorageSchemaMixin,
 )
+
 from bi_connector_chyt.core.data_source_spec import (
-    CHYTTableDataSourceSpec, CHYTSubselectDataSourceSpec,
-    CHYTTableListDataSourceSpec, CHYTTableRangeDataSourceSpec,
+    CHYTSubselectDataSourceSpec,
+    CHYTTableDataSourceSpec,
+    CHYTTableListDataSourceSpec,
+    CHYTTableRangeDataSourceSpec,
 )
 
 

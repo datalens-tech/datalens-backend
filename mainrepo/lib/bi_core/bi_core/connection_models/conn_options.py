@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TypeVar, Type
+from typing import (
+    Any,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 
-
-_CONNECT_OPTIONS_TV = TypeVar('_CONNECT_OPTIONS_TV', bound='ConnectOptions')
+_CONNECT_OPTIONS_TV = TypeVar("_CONNECT_OPTIONS_TV", bound="ConnectOptions")
 
 
 @attr.s(frozen=True, hash=True)

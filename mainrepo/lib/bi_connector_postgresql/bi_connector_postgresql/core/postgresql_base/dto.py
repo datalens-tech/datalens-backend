@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+
 import attr
 
 from bi_core.connection_models.dto_defs import DefaultSQLDTO

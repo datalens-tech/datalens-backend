@@ -3,7 +3,6 @@ from typing import Optional
 import attr
 
 from bi_constants.enums import FileProcessingStatus
-
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 

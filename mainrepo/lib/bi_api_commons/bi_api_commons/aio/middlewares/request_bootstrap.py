@@ -1,28 +1,33 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
+from http import HTTPStatus
 import json
 import logging
 import time
-import contextlib
-from http import HTTPStatus
-from typing import Iterable, Any, Optional
+from typing import (
+    Any,
+    Iterable,
+    Optional,
+)
 
-import attr
-import sentry_sdk
 from aiohttp import web
 from aiohttp.typedefs import Handler
+import attr
+import sentry_sdk
 
-from bi_utils.aio import timeout
-
-from bi_api_commons.aio.middlewares.commons import add_logging_ctx_controller, get_root_logging_context_controller
+from bi_api_commons.aio.middlewares.commons import (
+    add_logging_ctx_controller,
+    get_root_logging_context_controller,
+)
 from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler
 from bi_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+from bi_api_commons.exc import RequestTimeoutError
 from bi_api_commons.logging import RequestLoggingContextController
 from bi_api_commons.reporting.records import RequestResultReportingRecord
-from bi_api_commons.exc import RequestTimeoutError
-
+from bi_utils.aio import timeout
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,20 +37,19 @@ class SentryRequestLoggingContextController(RequestLoggingContextController):
     _scope: sentry_sdk.Scope = attr.ib()
     _user_info: dict = attr.ib(init=False, factory=dict)
 
-    allowed_tags = frozenset((
-        'request_id',
-        'parent_request_id',
-        'folder_id',
-        'dataset_id',
-        'conn_id',
-        'conn_exec_cls',
-        'conn_type',
-    ))
+    allowed_tags = frozenset(
+        (
+            "request_id",
+            "parent_request_id",
+            "folder_id",
+            "dataset_id",
+            "conn_id",
+            "conn_exec_cls",
+            "conn_type",
+        )
+    )
 
-    user_info_remap = {
-        'user_name': 'username',
-        'user_id': 'id'
-    }
+    user_info_remap = {"user_name": "username", "user_id": "id"}
 
     def put_to_context(self, key: str, value: Any) -> None:
         val_to_write: Any
@@ -95,7 +99,7 @@ class RequestBootstrap:
                 if self.error_handler is not None and self.error_handler.use_sentry:
                     scope = top_level_stack.enter_context(sentry_sdk.configure_scope())
                     if self.error_handler.sentry_app_name_tag:
-                        scope.set_tag('app_name', self.error_handler.sentry_app_name_tag)
+                        scope.set_tag("app_name", self.error_handler.sentry_app_name_tag)
                     add_logging_ctx_controller(request, SentryRequestLoggingContextController(scope))
 
                 req_logging_ctx_ctrl = get_root_logging_context_controller(request)
@@ -113,21 +117,21 @@ class RequestBootstrap:
         except Exception as err:
             if self.error_handler is not None:
                 result, err_data = self.error_handler.handle_error(err, request, req_logging_ctx_ctrl)
-                err_code = err_data.response_body.get('code', None)
+                err_code = err_data.response_body.get("code", None)
             else:
                 raise
         finally:
             response_status_code = (
-                result.status
-                if isinstance(result, web.Response)
-                else HTTPStatus.INTERNAL_SERVER_ERROR
+                result.status if isinstance(result, web.Response) else HTTPStatus.INTERNAL_SERVER_ERROR
             )
             if dl_request is not None:
-                dl_request.reporting_registry.save_reporting_record(RequestResultReportingRecord(
-                    timestamp=time.time(),
-                    response_status_code=response_status_code,
-                    err_code=err_code,
-                ))
+                dl_request.reporting_registry.save_reporting_record(
+                    RequestResultReportingRecord(
+                        timestamp=time.time(),
+                        response_status_code=response_status_code,
+                        err_code=err_code,
+                    )
+                )
                 self.req_id_service.dl_request_finilize(dl_request)
             self.req_id_service.on_request_end(request.method, request.path_qs, response_status_code)
         assert isinstance(result, web.StreamResponse)

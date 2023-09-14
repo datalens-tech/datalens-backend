@@ -1,27 +1,27 @@
 from __future__ import annotations
 
 import logging
+from typing import Optional
 
 import flask
-from typing import Optional
-from werkzeug.exceptions import BadRequest
 from flask import request
 from flask_restx import Api
+from werkzeug.exceptions import BadRequest
 
 from bi_api_commons.access_control_common import AuthFailureError
 from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from bi_core.exc import USReqException
 
-
-API = Api(prefix='/api/v1')
+API = Api(prefix="/api/v1")
 
 LOGGER = logging.getLogger(__name__)
 
 
 def init_apis(app: flask.Flask) -> None:
+    from . import connections  # noqa
     from . import dataset  # noqa
     from . import info  # noqa
-    from . import connections  # noqa
+
     API.init_app(app)
 
 
@@ -31,13 +31,13 @@ def handle_us_error(error):  # type: ignore
     try:
         text = resp.text
     except Exception:
-        text = resp.content.decode('utf-8', errors='replace')
+        text = resp.content.decode("utf-8", errors="replace")
     LOGGER.warning(
-        'Handling US error: %r (%s)',
+        "Handling US error: %r (%s)",
         text,
         resp.status_code,
     )
-    return {'message': text}, resp.status_code
+    return {"message": text}, resp.status_code
 
 
 @API.errorhandler(BadRequest)
@@ -46,7 +46,7 @@ def handle_bad_request(error):  # type: ignore
     req_id: Optional[str] = rci.request_id if rci is not None else None
 
     LOGGER.warning(
-        'Bad request on %s: %s, req_id: %s',
+        "Bad request on %s: %s, req_id: %s",
         request.url,
         error.data,
         req_id,

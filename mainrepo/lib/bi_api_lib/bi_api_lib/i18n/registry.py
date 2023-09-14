@@ -1,9 +1,9 @@
 from typing import Iterable
 
-from bi_i18n.localizer_base import TranslationConfig
-from bi_core.i18n.localizer import CONFIGS as BI_CORE_CONFIGS
 from bi_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIG
 from bi_api_lib.i18n.localizer import CONFIGS as BI_API_LIB_CONFIGS
+from bi_core.i18n.localizer import CONFIGS as BI_CORE_CONFIGS
+from bi_i18n.localizer_base import TranslationConfig
 
 LOCALIZATION_CONFIGS: set[TranslationConfig] = set()
 

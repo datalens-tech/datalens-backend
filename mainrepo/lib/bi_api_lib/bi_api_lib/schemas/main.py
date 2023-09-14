@@ -1,26 +1,31 @@
 from __future__ import annotations
 
 import datetime
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
 
-from flask_restx import fields, Namespace
+from flask_restx import (
+    Namespace,
+    fields,
+)
 from flask_restx.model import RawModel
-
-from marshmallow import fields as ma_fields, Schema
-from typing import Any, Dict, Optional
-
-from bi_constants.enums import DataSourceCreatedVia
-
-from bi_model_tools.schema.base import BaseSchema
-from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
 
 from bi_api_lib.schemas.dataset_base import DatasetContentSchema
+from bi_constants.enums import DataSourceCreatedVia
+from bi_model_tools.schema.base import BaseSchema
+from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 def get_api_model(
     ma_schema: Optional[Schema],
     ns: Namespace,
     name: Optional[str] = None,
-    schema_fields: Optional[Dict[str, ma_fields.Field]] = None
+    schema_fields: Optional[Dict[str, ma_fields.Field]] = None,
 ) -> RawModel:
     """Generate a ``flask_restx`` schema that will be used for generating Swagger documentation."""
 
@@ -50,10 +55,7 @@ def get_api_model(
                 required=_field.required,
             )
         elif isinstance(_field, ma_fields.Enum):
-            return fields.String(
-                required=_field.required,
-                enum=[x.name for x in list(_field.enum)]
-            )
+            return fields.String(required=_field.required, enum=[x.name for x in list(_field.enum)])
         elif isinstance(_field, ma_fields.List):
             return fields.List(
                 _translate_field(_field.inner),
@@ -96,14 +98,14 @@ class NormalizedDateTime(ma_fields.DateTime):
     """A DateTime field that also accepts strings (formatted datetimes)"""
 
     def _serialize(
-            self,
-            value: str | datetime.datetime,
-            attr: Optional[str],
-            obj: Any,
-            **kwargs: Any,
+        self,
+        value: str | datetime.datetime,
+        attr: Optional[str],
+        obj: Any,
+        **kwargs: Any,
     ) -> Optional[str | float]:
         if isinstance(value, str):
-            value = datetime.datetime.strptime(value.split('.')[0], '%Y-%m-%d %H:%M:%S')
+            value = datetime.datetime.strptime(value.split(".")[0], "%Y-%m-%d %H:%M:%S")
         return super()._serialize(value, attr, obj, **kwargs)
 
 
@@ -112,8 +114,8 @@ class GetDatasetResponseSchema(DatasetContentSchema):
     name = ma_fields.String()
     pub_operation_id = ma_fields.String()
     row_count = ma_fields.Integer()
-    ctime = NormalizedDateTime(format='%Y-%m-%d %H:%M:%S')
-    mtime = NormalizedDateTime(format='%Y-%m-%d %H:%M:%S')
+    ctime = NormalizedDateTime(format="%Y-%m-%d %H:%M:%S")
+    mtime = NormalizedDateTime(format="%Y-%m-%d %H:%M:%S")
     is_favorite = ma_fields.Boolean()
     permissions = ma_fields.Dict(keys=ma_fields.String(), values=ma_fields.Boolean())
 

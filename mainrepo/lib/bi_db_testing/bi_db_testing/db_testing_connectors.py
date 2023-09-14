@@ -2,17 +2,14 @@ from importlib import metadata
 from typing import Type
 
 import bi_db_testing as package
-from bi_db_testing.connectors.base.connector import DbTestingConnector
 from bi_db_testing.connector_registration import CONN_REG_DB_TESTING
+from bi_db_testing.connectors.base.connector import DbTestingConnector
 
-
-_CONNECTOR_EP_GROUP = f'{package.__name__}.connectors'
+_CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 
 def _get_all_ep_connectors() -> dict[str, Type[DbTestingConnector]]:
-    entrypoints = list(metadata.entry_points().select(  # type: ignore
-        group=_CONNECTOR_EP_GROUP
-    ))
+    entrypoints = list(metadata.entry_points().select(group=_CONNECTOR_EP_GROUP))  # type: ignore
     return {ep.name: ep.load() for ep in entrypoints}
 
 

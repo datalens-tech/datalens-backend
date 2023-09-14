@@ -1,16 +1,24 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Set
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Set,
+)
 
 import attr
 
 from bi_constants.enums import JoinType
-
-from bi_core.components.ids import AvatarId, FieldId
-
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+)
+from bi_query_processing.compilation.primitives import (
+    CompiledFormulaInfo,
+    JoinedFromObject,
+)
 from bi_query_processing.compilation.query_meta import QueryMetaInfo
-from bi_query_processing.compilation.primitives import CompiledFormulaInfo, JoinedFromObject
-
 from bi_query_processing.compilation.specs import OrderDirection
 from bi_query_processing.legacy_pipeline.planning.primitives import LevelPlan
 

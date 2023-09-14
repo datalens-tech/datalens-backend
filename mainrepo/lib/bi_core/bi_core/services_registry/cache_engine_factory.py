@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Optional,
+)
 
 import attr
 
@@ -24,11 +29,11 @@ class CacheEngineFactory(metaclass=abc.ABCMeta):
 
 @attr.s
 class DefaultCacheEngineFactory(CacheEngineFactory):
-    _services_registry_ref: FutureRef['ServicesRegistry'] = attr.ib()
+    _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
     cache_save_background: Optional[bool] = attr.ib(default=None)
 
     @property
-    def service_registry(self) -> 'ServicesRegistry':
+    def service_registry(self) -> "ServicesRegistry":
         return self._services_registry_ref.ref
 
     def get_cache_engine(self, entity_id: Optional[str]) -> Optional[EntityCacheEngineAsync]:

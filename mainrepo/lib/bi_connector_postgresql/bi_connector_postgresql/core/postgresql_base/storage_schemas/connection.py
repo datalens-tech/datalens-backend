@@ -7,7 +7,7 @@ from bi_connector_postgresql.core.postgresql_base.us_connection import Connectio
 
 
 class ConnectionPostgreSQLBaseDataStorageSchema(
-        ConnectionSQLDataStorageSchema[ConnectionPostgreSQLBase.DataModel],
+    ConnectionSQLDataStorageSchema[ConnectionPostgreSQLBase.DataModel],
 ):
     enforce_collate = ma_fields.Enum(
         PGEnforceCollateMode,

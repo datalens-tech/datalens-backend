@@ -2,12 +2,21 @@ from __future__ import annotations
 
 import abc
 from contextlib import contextmanager
-from typing import Iterable, List, Optional, Tuple, Type
+from typing import (
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Type,
+)
 
-import bi_formula.core.nodes as nodes
 import bi_formula.core.exc as exc
 from bi_formula.core.message_ctx import FormulaErrorCtx
-from bi_formula.validation.env import ValidationEnvironment, ErrInfo
+import bi_formula.core.nodes as nodes
+from bi_formula.validation.env import (
+    ErrInfo,
+    ValidationEnvironment,
+)
 
 
 class Validator:
@@ -16,7 +25,7 @@ class Validator:
         self._collect_errors = collect_errors
 
     @contextmanager
-    def handle_error(self, checker_cls: Type['Checker'], node: nodes.FormulaItem):
+    def handle_error(self, checker_cls: Type["Checker"], node: nodes.FormulaItem):
         try:
             yield
         except exc.ValidationError as err:
@@ -33,13 +42,13 @@ class Validator:
             if not self._collect_errors:
                 raise err
 
-    def get_from_cache(self, checker_cls: Type['Checker'], node: nodes.FormulaItem) -> Optional[ErrInfo]:
+    def get_from_cache(self, checker_cls: Type["Checker"], node: nodes.FormulaItem) -> Optional[ErrInfo]:
         return self._env.generic_cache_valid[checker_cls].get(node)
 
-    def mark_as_ok_in_cache(self, checker_cls: Type['Checker'], node: nodes.FormulaItem) -> None:
+    def mark_as_ok_in_cache(self, checker_cls: Type["Checker"], node: nodes.FormulaItem) -> None:
         return self._env.generic_cache_valid[checker_cls].add(node, value=ErrInfo(is_error=False, exception=None))
 
-    def proxy_for(self, checker: 'Checker') -> 'ValidatorProxy':
+    def proxy_for(self, checker: "Checker") -> "ValidatorProxy":
         return ValidatorProxy(validator=self, checker_cls=type(checker))
 
     def get_all_errors(self, node: nodes.FormulaItem) -> List[FormulaErrorCtx]:
@@ -54,7 +63,7 @@ class Validator:
 
 
 class ValidatorProxy:
-    def __init__(self, validator: Validator, checker_cls: Type['Checker']):
+    def __init__(self, validator: Validator, checker_cls: Type["Checker"]):
         self._validator = validator
         self._checker_cls = checker_cls
 
@@ -72,8 +81,10 @@ class ValidatorProxy:
 
 class Checker(abc.ABC):
     def check_node(
-            self, validator: ValidatorProxy, node: nodes.FormulaItem,
-            parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        validator: ValidatorProxy,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> None:
         """
         Check the validity of a node recursively an either exit or raise an error.
@@ -100,8 +111,10 @@ class Checker(abc.ABC):
 
     @abc.abstractmethod
     def perform_node_check(
-            self, validator: ValidatorProxy, node: nodes.FormulaItem,
-            parent_stack: Tuple[nodes.FormulaItem, ...],
+        self,
+        validator: ValidatorProxy,
+        node: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> None:
         """Method checks the validity of a node recursively and either exits or raises an error"""
 
@@ -109,10 +122,10 @@ class Checker(abc.ABC):
 
 
 def validate(
-        node: nodes.FormulaItem,
-        env: ValidationEnvironment,
-        checkers: Iterable[Checker] = (),
-        collect_errors: bool = False,
+    node: nodes.FormulaItem,
+    env: ValidationEnvironment,
+    checkers: Iterable[Checker] = (),
+    collect_errors: bool = False,
 ) -> None:
     """
     Apply multiple checkers to a formula item tree.

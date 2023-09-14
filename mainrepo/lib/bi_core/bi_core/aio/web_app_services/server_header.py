@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import attr
 from aiohttp import web
+import attr
 
 
 @attr.s(frozen=True)
@@ -19,4 +19,4 @@ class ServerHeader:
         app.on_response_prepare.append(self.on_response_prepare)
 
     async def on_response_prepare(self, _: web.Request, response: web.Response):  # type: ignore  # TODO: fix
-        response.headers['Server'] = self._server_header
+        response.headers["Server"] = self._server_header

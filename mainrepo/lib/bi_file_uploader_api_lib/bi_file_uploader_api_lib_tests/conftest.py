@@ -13,6 +13,7 @@ import aiohttp.web
 import attr
 import pytest
 import redis.asyncio
+
 from bi_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons.base_models import (
     NoAuthData,
@@ -32,7 +33,6 @@ from bi_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
-from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_constants.api_constants import DLHeadersCommon
 from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from bi_core.loader import load_bi_core
@@ -44,6 +44,9 @@ from bi_core_testing.environment import (
     prepare_united_storage,
 )
 from bi_file_secure_reader.app import create_app as create_reader_app
+from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
+from bi_file_uploader_api_lib.dl_request import FileUploaderDLRequest
+from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
 from bi_file_uploader_task_interface.context import FileUploaderTaskContext
 from bi_file_uploader_worker_lib.settings import (
@@ -64,9 +67,7 @@ from bi_testing.s3_utils import (
 )
 from bi_testing.utils import wait_for_initdb
 
-from bi_file_uploader_api_lib.app import FileUploaderApiAppFactory
-from bi_file_uploader_api_lib.dl_request import FileUploaderDLRequest
-from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
+from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
 from .config import TestingUSConfig
 

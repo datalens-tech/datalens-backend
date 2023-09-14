@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from asyncio import AbstractEventLoop
+from concurrent.futures.thread import ThreadPoolExecutor
 import enum
 import logging
 import threading
-from asyncio import AbstractEventLoop
-from concurrent.futures.thread import ThreadPoolExecutor
-from typing import Generator, Optional, TypeVar, Union, Generic
+from typing import (
+    Generator,
+    Generic,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 import attr
 
@@ -69,7 +75,8 @@ class EndOfStream(AWFSGExeption):
 
 
 class AWFSGRuntimeError(AWFSGExeption):
-    """Something strange and totally unexpected happens """
+    """Something strange and totally unexpected happens"""
+
     pass
 
 
@@ -77,7 +84,7 @@ _STATE_ITEM_TV = TypeVar("_STATE_ITEM_TV")
 
 
 class _NoSet:
-    instance: '_NoSet' = None  # type: ignore  # TODO: fix
+    instance: "_NoSet" = None  # type: ignore  # TODO: fix
 
 
 _NoSet.instance = _NoSet()
@@ -169,11 +176,9 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
             logging.getLogger(__name__),
             extra=dict(
                 job_sys_id=id(self),
-            )
+            ),
         )
-        self._ss = SynchronizedJobState(
-            log=self._log
-        )
+        self._ss = SynchronizedJobState(log=self._log)
 
     @property
     def state(self) -> JobState:
@@ -226,13 +231,12 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
             self._log.debug("Waiting for 'start_confirmed' state")
             try:
                 self._ss.wait_for_state_change(
-                    state=JobState.worker_startup_confirmed,
-                    timeout=self._worker_thread_start_confirmation_timeout
+                    state=JobState.worker_startup_confirmed, timeout=self._worker_thread_start_confirmation_timeout
                 )
             except _WaitForStateTimeout:
                 self._log.error(
                     "Worker thread did not receive start confirmation within timeout %s",
-                    self._worker_thread_start_confirmation_timeout
+                    self._worker_thread_start_confirmation_timeout,
                 )
                 self._ss.set_state(JobState.error)
                 return
@@ -303,8 +307,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
                 self._log.debug("Event 'worker_thread_started_event' received")
                 try:
                     await self._loop.run_in_executor(
-                        self._service_tpe,
-                        self._sync_confirm_worker_start_set_ready_for_data
+                        self._service_tpe, self._sync_confirm_worker_start_set_ready_for_data
                     )
                 except _ErrorInWorkerThread:
                     try:
@@ -347,8 +350,9 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
                     raise WorkerIsClosed()
 
                 else:
-                    self._log.error("Unexpected state encountered during fetching next, scheduling close: %s",
-                                    self.state)
+                    self._log.error(
+                        "Unexpected state encountered during fetching next, scheduling close: %s", self.state
+                    )
                     self._ss.set_state(JobState.pending_close)
                     raise AWFSGRuntimeError(f"Unexpected state encountered during fetching next: {self.state}")
 
@@ -357,8 +361,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
     async def get_next(self) -> _JOB_ITEM_TV:
         try:
             next_chunk = await self._loop.run_in_executor(
-                self._service_tpe,
-                self._sync_fetch_chunk_from_buffer_schedule_next
+                self._service_tpe, self._sync_fetch_chunk_from_buffer_schedule_next
             )
             return next_chunk
         except _ErrorInWorkerThread:
@@ -375,7 +378,6 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
     def _sync_close_wait_closed(self) -> None:
         self._log.info("Awaiting monitor to make state transition to closing")
         with self._ss:
-
             if self.state in (JobState.ready_for_next_chunk, JobState.chunk_in_buffer, JobState.pending_close):
                 if self.state != JobState.pending_close:
                     self._log.info("Settings state to closing")

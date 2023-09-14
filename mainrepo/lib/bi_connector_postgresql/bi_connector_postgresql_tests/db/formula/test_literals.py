@@ -1,8 +1,8 @@
-from bi_formula_testing.testcases.literals import (
-    DefaultLiteralFormulaConnectorTestSuite,
-)
+from bi_formula_testing.testcases.literals import DefaultLiteralFormulaConnectorTestSuite
+
 from bi_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase, PostgreSQL_9_4TestBase,
+    PostgreSQL_9_3TestBase,
+    PostgreSQL_9_4TestBase,
 )
 
 

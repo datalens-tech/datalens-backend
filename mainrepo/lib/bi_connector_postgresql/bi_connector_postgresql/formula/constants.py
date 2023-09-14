@@ -1,8 +1,11 @@
-from bi_formula.core.dialect import DialectNamespace, DialectName, simple_combo
+from bi_formula.core.dialect import (
+    DialectName,
+    DialectNamespace,
+    simple_combo,
+)
 
-
-DIALECT_NAME_POSTGRESQL = DialectName.declare('POSTGRESQL')
-DIALECT_NAME_COMPENG = DialectName.declare('COMPENG')  # computation engine (PostgreSQL-based)
+DIALECT_NAME_POSTGRESQL = DialectName.declare("POSTGRESQL")
+DIALECT_NAME_COMPENG = DialectName.declare("COMPENG")  # computation engine (PostgreSQL-based)
 
 
 class PostgreSQLDialect(DialectNamespace):

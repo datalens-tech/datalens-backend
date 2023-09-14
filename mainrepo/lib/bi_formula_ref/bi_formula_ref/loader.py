@@ -1,9 +1,11 @@
-from typing import Collection, Optional
+from typing import (
+    Collection,
+    Optional,
+)
 
 import attr
 
 from bi_formula.loader import load_bi_formula
-
 from bi_formula_ref.formula_ref_plugins import register_all_plugins
 
 

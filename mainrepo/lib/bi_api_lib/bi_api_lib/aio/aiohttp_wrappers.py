@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import typing
-from typing import Any, Dict
+from typing import (
+    Any,
+    Dict,
+)
 
-import attr
 from aiohttp import web
+import attr
 
 from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResource
 from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
@@ -18,7 +21,7 @@ class AppWrapper:
     _APP_KEY = "DL_APP_WRAPPER"
 
     @classmethod
-    def from_app(cls, app: web.Application) -> 'AppWrapper':
+    def from_app(cls, app: web.Application) -> "AppWrapper":
         return app[cls._APP_KEY]
 
     def bind(self, app: web.Application) -> None:
@@ -34,6 +37,7 @@ class DSAPIRequest(DLRequestDataCore):
     @property
     def required_resources(self) -> typing.FrozenSet[RequiredResource]:
         from bi_api_lib.app.data_api.resources.base import BaseView
+
         view_cls = self.request.match_info.handler
         if isinstance(view_cls, type) and issubclass(view_cls, BaseView):
             return view_cls.get_required_resources(self.request.method)

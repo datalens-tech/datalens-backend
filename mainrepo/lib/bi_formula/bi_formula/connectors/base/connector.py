@@ -1,13 +1,30 @@
-from typing import ClassVar, Iterable, Type, Optional, Sequence
+from typing import (
+    ClassVar,
+    Iterable,
+    Optional,
+    Sequence,
+    Type,
+)
 
 from sqlalchemy.engine.default import DefaultDialect
 
-from bi_formula.core.dialect import DialectNamespace, StandardDialect, DialectCombo, DialectName
-from bi_formula.definitions.base import NodeTranslation
-from bi_formula.connectors.base.literal import Literalizer
-from bi_formula.connectors.base.column import ColumnRenderer, DefaultColumnRenderer
+from bi_formula.connectors.base.column import (
+    ColumnRenderer,
+    DefaultColumnRenderer,
+)
 from bi_formula.connectors.base.context_processor import ContextPostprocessor
-from bi_formula.connectors.base.type_constructor import SATypeConstructor, DefaultSATypeConstructor
+from bi_formula.connectors.base.literal import Literalizer
+from bi_formula.connectors.base.type_constructor import (
+    DefaultSATypeConstructor,
+    SATypeConstructor,
+)
+from bi_formula.core.dialect import (
+    DialectCombo,
+    DialectName,
+    DialectNamespace,
+    StandardDialect,
+)
+from bi_formula.definitions.base import NodeTranslation
 
 
 class FormulaConnector:
@@ -23,10 +40,7 @@ class FormulaConnector:
 
     @classmethod
     def get_dialect_names(cls) -> Sequence[DialectName]:
-        dialect_names = sorted(
-            {bit.name for bit in cls.dialects.bits},
-            key=lambda item: item.name
-        )
+        dialect_names = sorted({bit.name for bit in cls.dialects.bits}, key=lambda item: item.name)
         return dialect_names
 
     @classmethod

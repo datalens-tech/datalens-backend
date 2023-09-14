@@ -1,8 +1,8 @@
-from bi_formula_testing.testcases.functions_window import (
-    DefaultWindowFunctionFormulaConnectorTestSuite,
-)
+from bi_formula_testing.testcases.functions_window import DefaultWindowFunctionFormulaConnectorTestSuite
+
 from bi_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_4TestBase, CompengTestBase,
+    CompengTestBase,
+    PostgreSQL_9_4TestBase,
 )
 
 

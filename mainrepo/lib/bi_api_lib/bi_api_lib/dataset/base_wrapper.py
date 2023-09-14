@@ -1,74 +1,105 @@
 from __future__ import annotations
 
+from itertools import chain
 import logging
 import os
-from itertools import chain
-from typing import Sequence, TYPE_CHECKING, ClassVar, Optional
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
-from bi_constants.enums import DataSourceRole, SourceBackendType
-
+from bi_api_lib.dataset.dialect import resolve_dialect_name
+from bi_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
+from bi_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
+from bi_api_lib.query.registry import (
+    get_compeng_dialect,
+    get_initial_planner_cls,
+    get_multi_query_mutator_factory,
+    is_compeng_enabled,
+    is_forkable_source,
+)
+from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from bi_constants.enums import (
+    DataSourceRole,
+    SourceBackendType,
+)
 from bi_core.components.accessor import DatasetComponentAccessor
 from bi_core.components.dependencies.factory import ComponentDependencyManagerFactory
 from bi_core.components.dependencies.factory_base import ComponentDependencyManagerFactoryBase
 from bi_core.components.editor import DatasetComponentEditor
-from bi_core.components.ids import AvatarId, FieldId, FieldIdValidator
+from bi_core.components.ids import (
+    AvatarId,
+    FieldId,
+    FieldIdValidator,
+)
 from bi_core.data_source.base import DataSource
-from bi_core.data_source.collection import DataSourceCollectionFactory, DataSourceCollectionBase
+from bi_core.data_source.collection import (
+    DataSourceCollectionBase,
+    DataSourceCollectionFactory,
+)
 from bi_core.dataset_capabilities import DatasetCapabilities
-from bi_core.exc import ReferencedUSEntryNotFound, FieldNotFound
+from bi_core.exc import (
+    FieldNotFound,
+    ReferencedUSEntryNotFound,
+)
 from bi_core.us_dataset import Dataset
 from bi_core.us_manager.us_manager import USManagerBase
 from bi_core.utils import shorten_uuid
-
+from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.dialect import StandardDialect as D
+from bi_formula.core.dialect import from_name_and_version
 import bi_formula.core.exc as formula_exc
-from bi_formula.core.dialect import DialectCombo, StandardDialect as D, from_name_and_version
 from bi_formula.definitions.scope import Scope
 from bi_formula.inspect.env import InspectionEnvironment
 from bi_formula.parser.base import FormulaParser
-
-import bi_query_processing.exc
-from bi_query_processing.compilation.primitives import (
-    CompiledQuery, CompiledMultiQueryBase, CompiledMultiQuery,
-)
 from bi_query_processing.column_registry import ColumnRegistry
 from bi_query_processing.compilation.base import RawQueryCompilerBase
 from bi_query_processing.compilation.formula_compiler import FormulaCompiler
+from bi_query_processing.compilation.primitives import (
+    CompiledMultiQuery,
+    CompiledMultiQueryBase,
+    CompiledQuery,
+)
 from bi_query_processing.compilation.query_compiler import DefaultQueryCompiler
 from bi_query_processing.compilation.query_mutator import (
-    QueryMutator, OptimizingQueryMutator, ExtendedAggregationQueryMutator,
+    ExtendedAggregationQueryMutator,
+    OptimizingQueryMutator,
+    QueryMutator,
 )
-from bi_query_processing.enums import QueryType, SelectValueType, ExecutionLevel
-from bi_query_processing.legend.block_legend import BlockSpec
-from bi_query_processing.legend.field_legend import Legend
-from bi_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
-from bi_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
 from bi_query_processing.compilation.specs import QuerySpec
+from bi_query_processing.enums import (
+    ExecutionLevel,
+    QueryType,
+    SelectValueType,
+)
+import bi_query_processing.exc
 from bi_query_processing.legacy_pipeline.planning.planner import NestedLevelTagExecutionPlanner
 from bi_query_processing.legacy_pipeline.recursive_slicing.recursive_slicer import RecursiveQuerySlicer
 from bi_query_processing.legacy_pipeline.separation.separator import QuerySeparator
-from bi_query_processing.legacy_pipeline.slicing.query_slicer import QuerySlicerBase, DefaultQuerySlicer
+from bi_query_processing.legacy_pipeline.slicing.query_slicer import (
+    DefaultQuerySlicer,
+    QuerySlicerBase,
+)
 from bi_query_processing.legacy_pipeline.subqueries.forker import QueryForker
+from bi_query_processing.legend.block_legend import BlockSpec
+from bi_query_processing.legend.field_legend import Legend
 from bi_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
-from bi_api_lib.query.registry import get_multi_query_mutator_factory, get_initial_planner_cls, is_forkable_source
 from bi_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 from bi_query_processing.translation.primitives import TranslatedMultiQueryBase
 
-from bi_api_lib.query.registry import get_compeng_dialect, is_compeng_enabled
-from bi_api_lib.dataset.dialect import resolve_dialect_name
-from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry
-
 if TYPE_CHECKING:
-    from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
+    from bi_core.components.ids import FieldIdGenerator
     from bi_core.db.elements import SchemaColumn
     from bi_core.fields import BIField
-    from bi_core.components.ids import FieldIdGenerator
+    from bi_query_processing.compilation.filter_compiler import FilterFormulaCompiler
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class AvatarAliasMapper:
-
     def __init__(self) -> None:
         self.next_idx = 1
         self.avatar_map: dict[AvatarId, str] = {}
@@ -104,12 +135,13 @@ class DatasetBaseWrapper:
     _verbose_logging: ClassVar[bool] = False
 
     def __init__(
-            self,
-            ds: Dataset, *,
-            us_manager: USManagerBase,
-            block_spec: Optional[BlockSpec] = None,
-            function_scopes: int = Scope.EXPLICIT_USAGE,
-            debug_mode: bool = False,
+        self,
+        ds: Dataset,
+        *,
+        us_manager: USManagerBase,
+        block_spec: Optional[BlockSpec] = None,
+        function_scopes: int = Scope.EXPLICIT_USAGE,
+        debug_mode: bool = False,
     ):
         self._ds = ds
         self._us_manager = us_manager
@@ -146,7 +178,7 @@ class DatasetBaseWrapper:
         self._id_validator = FieldIdValidator()
 
         self._debug_mode = debug_mode
-        self._new_subquery_mode = os.environ.get('NEW_SUBQUERY_MODE', '1') != '0'  # FIXME: This is very temporary
+        self._new_subquery_mode = os.environ.get("NEW_SUBQUERY_MODE", "1") != "0"  # FIXME: This is very temporary
 
     @property
     def query_spec(self) -> QuerySpec:
@@ -195,7 +227,8 @@ class DatasetBaseWrapper:
     def make_query_compiler(self) -> RawQueryCompilerBase:
         assert self._column_reg is not None
         return DefaultQueryCompiler(
-            dataset=self._ds, column_reg=self._column_reg,
+            dataset=self._ds,
+            column_reg=self._column_reg,
             formula_compiler=self.formula_compiler,
             filter_compiler=self.make_filter_compiler(),
         )
@@ -252,7 +285,8 @@ class DatasetBaseWrapper:
     def make_multi_query_mutators(self) -> Sequence[MultiQueryMutatorBase]:
         backend_type = self.get_backend_type()
         factory = get_multi_query_mutator_factory(
-            backend_type=backend_type, dialect=self.dialect,
+            backend_type=backend_type,
+            dialect=self.dialect,
             result_schema=self._ds.result_schema,
         )
         mutators = factory.get_mutators()
@@ -305,14 +339,14 @@ class DatasetBaseWrapper:
             self.load_exbuilders()
 
     def _reload_formalized_specs(self, block_spec: Optional[BlockSpec] = None) -> None:
-        assert block_spec is not None, 'block_spec must not be None in this implementation'
+        assert block_spec is not None, "block_spec must not be None in this implementation"
         self._query_spec = self._formalizer.make_query_spec(block_spec=block_spec)
         if self._formula_compiler is None:
             self.load_exbuilders()
         if self._formula_compiler is not None:
             self._formula_compiler.update_environments(
                 group_by_ids=[spec.field_id for spec in self.query_spec.group_by_specs],
-                order_by_specs=self.query_spec.order_by_specs
+                order_by_specs=self.query_spec.order_by_specs,
             )
 
     def allow_nested_window_functions(self) -> bool:
@@ -322,9 +356,7 @@ class DatasetBaseWrapper:
         self.inspect_env = InspectionEnvironment()
         self._column_reg = ColumnRegistry(
             db_columns=self._generate_raw_column_list(),
-            avatar_source_map={
-                avatar.id: avatar.source_id for avatar in self._ds_accessor.get_avatar_list()
-            },
+            avatar_source_map={avatar.id: avatar.source_id for avatar in self._ds_accessor.get_avatar_list()},
         )
 
         self._formula_compiler = FormulaCompiler(
@@ -335,7 +367,8 @@ class DatasetBaseWrapper:
             group_by_ids=[spec.field_id for spec in self.query_spec.group_by_specs],
             filter_ids=[spec.field_id for spec in self.query_spec.filter_specs],
             field_wrappers={
-                spec.field_id: spec.wrapper for spec in self.query_spec.select_specs
+                spec.field_id: spec.wrapper
+                for spec in self.query_spec.select_specs
                 if spec.wrapper.type in INTERNALLY_APPLIED_WRAPPERS
             },
             order_by_specs=self.query_spec.order_by_specs,
@@ -349,16 +382,18 @@ class DatasetBaseWrapper:
         """Generate info about columns of the data table"""
 
         role = self.resolve_role()
-        return list(chain.from_iterable(
-            (self._get_data_source_coll_strict(source_id=source_id).get_cached_raw_schema(role=role) or ())
-            for source_id in self._ds_accessor.get_data_source_id_list()
-        ))
+        return list(
+            chain.from_iterable(
+                (self._get_data_source_coll_strict(source_id=source_id).get_cached_raw_schema(role=role) or ())
+                for source_id in self._ds_accessor.get_data_source_id_list()
+            )
+        )
 
     def get_field_by_id(self, field_id: FieldId) -> BIField:
         try:
             return self._ds.result_schema.by_guid(field_id)
         except KeyError:
-            raise FieldNotFound(f'Field {field_id} not found in dataset')
+            raise FieldNotFound(f"Field {field_id} not found in dataset")
 
     def process_compiled_query_legacy(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
         # FIXME: This version of the query-processing pipeline is being deprecated

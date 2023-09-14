@@ -4,32 +4,58 @@ Generate structures used for creating documentation
 
 from __future__ import annotations
 
-import os.path
 from collections import defaultdict
-from typing import Collection, Mapping, Optional, TYPE_CHECKING, Union
+import os.path
+from typing import (
+    TYPE_CHECKING,
+    Collection,
+    Mapping,
+    Optional,
+    Union,
+)
 
 import attr
 
 from bi_formula.core.datatype import DataType
-from bi_formula.core.dialect import DialectCombo, StandardDialect as D
-
+from bi_formula.core.dialect import DialectCombo
+from bi_formula.core.dialect import StandardDialect as D
 from bi_formula_ref.audience import Audience
 from bi_formula_ref.i18n.registry import get_localizer
-from bi_formula_ref.texts import (
-    HUMAN_DIALECTS, HUMAN_CATEGORIES,
-    DialectStyle, ALSO_IN_OTHER_CATEGORIES, HIDDEN_DIALECTS, ANY_DIALECTS,
+from bi_formula_ref.paths import (
+    FileLink,
+    PathRenderer,
 )
 from bi_formula_ref.primitives import RawFunc
-from bi_formula_ref.rendered import RenderedFunc, RenderedMultiAudienceFunc, LocalizedFuncArg
 from bi_formula_ref.reference import FuncReference
+from bi_formula_ref.registry.note import (
+    CrosslinkNote,
+    ParameterizedNote,
+)
 from bi_formula_ref.registry.registry import RefFunctionKey
+from bi_formula_ref.registry.signature_base import (
+    FunctionSignature,
+    FunctionSignatureCollection,
+)
 from bi_formula_ref.registry.text import ParameterizedText
-from bi_formula_ref.registry.note import ParameterizedNote, CrosslinkNote
-from bi_formula_ref.registry.signature_base import FunctionSignatureCollection, FunctionSignature
-from bi_formula_ref.rich_text.helpers import get_human_data_type_list
+from bi_formula_ref.rendered import (
+    LocalizedFuncArg,
+    RenderedFunc,
+    RenderedMultiAudienceFunc,
+)
 from bi_formula_ref.rich_text.expander import MacroExpander
-from bi_formula_ref.rich_text.renderer import RichTextRenderEnvironment, MdRichTextRenderer
-from bi_formula_ref.paths import PathRenderer, FileLink
+from bi_formula_ref.rich_text.helpers import get_human_data_type_list
+from bi_formula_ref.rich_text.renderer import (
+    MdRichTextRenderer,
+    RichTextRenderEnvironment,
+)
+from bi_formula_ref.texts import (
+    ALSO_IN_OTHER_CATEGORIES,
+    ANY_DIALECTS,
+    HIDDEN_DIALECTS,
+    HUMAN_CATEGORIES,
+    HUMAN_DIALECTS,
+    DialectStyle,
+)
 
 if TYPE_CHECKING:
     from bi_formula_ref.registry.example_base import DataExampleRendererConfig
@@ -37,20 +63,20 @@ if TYPE_CHECKING:
 
 def translate(text: str, locale: str) -> str:
     gtext = get_localizer(locale).translate
-    return gtext(text) if text else ''
+    return gtext(text) if text else ""
 
 
 def human_dialect(dialect: Union[DialectCombo, str], locale: str, style: DialectStyle = DialectStyle.simple) -> str:
     if isinstance(dialect, str):
         dialect = D.by_name(dialect.upper())
 
-    return '{}'.format(translate(HUMAN_DIALECTS[dialect].for_style(style), locale=locale))
+    return "{}".format(translate(HUMAN_DIALECTS[dialect].for_style(style), locale=locale))
 
 
 def human_data_type(types: Collection[DataType], locale: str) -> str:
     result_types = get_human_data_type_list(types=types)
-    raw_type_str = ' | '.join(translate(t, locale=locale) for t in sorted(result_types))
-    return f'`{raw_type_str}`'
+    raw_type_str = " | ".join(translate(t, locale=locale) for t in sorted(result_types))
+    return f"`{raw_type_str}`"
 
 
 def human_category(category: str, locale: str) -> str:
@@ -71,18 +97,11 @@ def human_dialects(dialects: set[DialectCombo], locale: str) -> list[str]:
         dialects_by_db[dialect.single_bit.name].append(dialect)
 
     sorted_dialects = sorted(
-        [
-            sorted(dialects_for_db, key=lambda d: d.single_bit.version)[0]
-            for dialects_for_db in dialects_by_db.values()
-        ],
-        key=lambda d: d.common_name_and_version
+        [sorted(dialects_for_db, key=lambda d: d.single_bit.version)[0] for dialects_for_db in dialects_by_db.values()],
+        key=lambda d: d.common_name_and_version,
     )
 
-    h_dialects: list[str] = [
-        human_dialect(d, locale=locale)
-        for d in sorted_dialects
-        if d not in HIDDEN_DIALECTS
-    ]
+    h_dialects: list[str] = [human_dialect(d, locale=locale) for d in sorted_dialects if d not in HIDDEN_DIALECTS]
     return h_dialects
 
 
@@ -106,7 +125,7 @@ class FuncRenderer:
 
     def render_text(self, context_path: str, raw_func: RawFunc, text: Union[str, ParameterizedText]) -> str:
         if not text:
-            return ''
+            return ""
         if isinstance(text, ParameterizedText):
             text = ParameterizedText(
                 text=translate(text.text, locale=self._locale),
@@ -137,31 +156,37 @@ class FuncRenderer:
         if not counterpart_keys:
             return None
 
-        counterpart_ref = '{{ref:{category_name}/{func_name}:{human_category}}}'
-        counterpart_refs_list = [counterpart_ref.format(
-            category_name=key.category_name,
-            func_name=func_key.name.upper(),
-            human_category=HUMAN_CATEGORIES[key.category_name],
-        ) for key in counterpart_keys]
+        counterpart_ref = "{{ref:{category_name}/{func_name}:{human_category}}}"
+        counterpart_refs_list = [
+            counterpart_ref.format(
+                category_name=key.category_name,
+                func_name=func_key.name.upper(),
+                human_category=HUMAN_CATEGORIES[key.category_name],
+            )
+            for key in counterpart_keys
+        ]
 
         note = CrosslinkNote(
             param_text=ParameterizedText(
                 text=ALSO_IN_OTHER_CATEGORIES,
-                params={'func_name': func_key.name.upper()},
+                params={"func_name": func_key.name.upper()},
             ),
-            ref_list=counterpart_refs_list
+            ref_list=counterpart_refs_list,
         )
 
         return note
 
     def get_func_link(self, func_name: str, category_name: str, anchor_name: Optional[str] = None) -> FileLink:
         return self._path_renderer.get_func_link(
-            func_name=func_name, category_name=category_name, anchor_name=anchor_name,
+            func_name=func_name,
+            category_name=category_name,
+            anchor_name=anchor_name,
         )
 
     def get_cat_link(self, category_name: str, anchor_name: Optional[str] = None) -> FileLink:
         return self._path_renderer.get_cat_link(
-            category_name=category_name, anchor_name=anchor_name,
+            category_name=category_name,
+            anchor_name=anchor_name,
         )
 
     def render_func(self, func_key: RefFunctionKey, raw_func: RawFunc) -> RenderedFunc:
@@ -178,15 +203,15 @@ class FuncRenderer:
 
         def _render_crosslink_note(note: CrosslinkNote) -> ParameterizedNote:
             text = _render_text(note.param_text)
-            refs_list = ','.join(_render_text(ref) for ref in note.ref_list)
-            new_text = text + refs_list + '.'
+            refs_list = ",".join(_render_text(ref) for ref in note.ref_list)
+            new_text = text + refs_list + "."
             return note.clone(param_text=ParameterizedText(text=new_text))
 
         def _make_keywords(keyword_list_str: str) -> list[str]:
             if not keyword_list_str:
                 return []
             keyword_list_str = gtext(keyword_list_str)
-            return [kw.strip() for kw in keyword_list_str.split(',')]
+            return [kw.strip() for kw in keyword_list_str.split(",")]
 
         crosslink_note = self.get_counterpart_crosslink_note_and_refs(func_key=func_key)
 
@@ -206,10 +231,7 @@ class FuncRenderer:
                 FunctionSignature(
                     title=sign.title,
                     body=sign.body,
-                    description=[
-                        _render_text(desc_part)
-                        for desc_part in sign.description
-                    ],
+                    description=[_render_text(desc_part) for desc_part in sign.description],
                 )
                 for sign in raw_func.signature_coll.signatures
             ],
@@ -222,15 +244,15 @@ class FuncRenderer:
             internal_name=raw_func.internal_name,
             title=raw_func.get_title(locale=self._locale),
             short_title=raw_func.get_short_title(locale=self._locale),
-            category_name=raw_func.category.name or '',
+            category_name=raw_func.category.name or "",
             human_category=human_category(category=raw_func.category.name, locale=self._locale),
             category_description=_render_text(raw_func.category.description),
             category_keywords=_make_keywords(raw_func.category.keywords),
             args=[
                 LocalizedFuncArg(
-                    arg=arg, locale=self._locale,
-                    human_type=human_data_type(types=arg.types, locale=self._locale)
-                ) for arg in raw_func.args
+                    arg=arg, locale=self._locale, human_type=human_data_type(types=arg.types, locale=self._locale)
+                )
+                for arg in raw_func.args
             ],
             description=_render_text(raw_func.description),
             dialects=raw_func.dialects,

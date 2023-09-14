@@ -5,8 +5,8 @@ from typing import Any
 import pytest
 
 import bi_formula.core.exc as exc
-from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 from bi_formula_testing.evaluator import DbEvaluator
+from bi_formula_testing.testcases.base import FormulaConnectorTestBase
 from bi_formula_testing.util import to_str
 
 
@@ -41,12 +41,6 @@ class DefaultMarkupFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         italic(__LIT__('text "6"') + ' ... ') +
         __LIT__('text "8"') + ', text "9"'
         """
-        expected_best_case = (
-            '(c '
-            '(i "text ""6"" ...") '
-            '"text ""8""" ", text ""9""")')
-        expected_acceptable = (
-            '(c '
-            '(c (i "text ""6"" ... ") "text ""8""") '
-            '", text ""9""")')
+        expected_best_case = "(c " '(i "text ""6"" ...") ' '"text ""8""" ", text ""9""")'
+        expected_acceptable = "(c " '(c (i "text ""6"" ... ") "text ""8""") ' '", text ""9""")'
         assert to_str(dbe.eval(expr)) in (expected_best_case, expected_acceptable)

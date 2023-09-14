@@ -1,6 +1,11 @@
 import enum
 import itertools
-from typing import Iterable, Tuple, Optional, overload
+from typing import (
+    Iterable,
+    Optional,
+    Tuple,
+    overload,
+)
 
 
 class AuthFailureError(Exception):
@@ -9,11 +14,7 @@ class AuthFailureError(Exception):
     response_code: Optional[int]
 
     def __init__(
-            self,
-            internal_message: str,
-            *,
-            user_message: Optional[str] = None,
-            response_code: Optional[int] = None
+        self, internal_message: str, *, user_message: Optional[str] = None, response_code: Optional[int] = None
     ) -> None:
         self.internal_message = internal_message
         self.user_message = user_message
@@ -31,10 +32,12 @@ _default_skip_auth_path_list_raw: Tuple[str, ...] = (
     "/metrics",
 )
 
-default_skip_auth_path_list: Tuple[str, ...] = tuple(itertools.chain(
-    (path.rstrip("/") for path in _default_skip_auth_path_list_raw),
-    (path.rstrip('/') + "/" for path in _default_skip_auth_path_list_raw),
-))
+default_skip_auth_path_list: Tuple[str, ...] = tuple(
+    itertools.chain(
+        (path.rstrip("/") for path in _default_skip_auth_path_list_raw),
+        (path.rstrip("/") + "/" for path in _default_skip_auth_path_list_raw),
+    )
+)
 
 
 def match_path_prefix(prefix_list: Iterable[str], path: str) -> bool:
@@ -72,5 +75,5 @@ def get_token_from_authorization_header(secret_header_value, token_type):
 
     raise BadHeaderPrefixError(
         user_message="Invalid format of Authorization header",
-        internal_message=f"Authorization header does not start with {prefix!r}"
+        internal_message=f"Authorization header does not start with {prefix!r}",
     )

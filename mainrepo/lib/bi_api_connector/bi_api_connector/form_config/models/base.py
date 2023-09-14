@@ -2,36 +2,46 @@ from __future__ import annotations
 
 import abc
 from enum import Enum
-from typing import Optional, Any
+from typing import (
+    Any,
+    Optional,
+)
 
 import attr
 
-from bi_api_connector.form_config.models.rows import CustomizableRow
-from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow
-from bi_configs.connectors_settings import ConnectorSettingsBase
-
 from bi_api_commons.base_models import TenantDef
-
-from bi_api_connector.form_config.models.api_schema import FormApiSchema, FormFieldApiSchema
+from bi_api_connector.form_config.models.api_schema import (
+    FormApiSchema,
+    FormFieldApiSchema,
+)
 from bi_api_connector.form_config.models.common import (
     SerializableConfig,
-    TopLevelFieldName,
     TFieldName,
+    TopLevelFieldName,
     remap_skip_if_null,
 )
-from bi_api_connector.form_config.models.rows.base import FormRow, FormFieldMixin, DisplayConditionsMixin
+from bi_api_connector.form_config.models.rows import CustomizableRow
+from bi_api_connector.form_config.models.rows.base import (
+    DisplayConditionsMixin,
+    FormFieldMixin,
+    FormRow,
+)
+from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow
+from bi_configs.connectors_settings import ConnectorSettingsBase
 from bi_i18n.localizer_base import Localizer
 
 
 @attr.s(kw_only=True, frozen=True)
 class FormUIOverride(SerializableConfig):
-    show_create_dataset_btn: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null('showCreateDatasetButton'))
-    show_create_ql_chart_btn: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null('showCreateQlChartButton'))
+    show_create_dataset_btn: Optional[bool] = attr.ib(
+        default=None, metadata=remap_skip_if_null("showCreateDatasetButton")
+    )
+    show_create_ql_chart_btn: Optional[bool] = attr.ib(
+        default=None, metadata=remap_skip_if_null("showCreateQlChartButton")
+    )
 
 
-TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = {
-    field_name for field_name in TopLevelFieldName
-}
+TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = {field_name for field_name in TopLevelFieldName}
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -49,9 +59,9 @@ class ConnectionForm(SerializableConfig):
 
     title: str = attr.ib()
     rows: list[FormRow] = attr.ib()
-    api_schema: Optional[FormApiSchema] = attr.ib(default=None, metadata=remap_skip_if_null('apiSchema'))
-    template_name: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null('templateName'))
-    form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap_skip_if_null('uiSchema'))
+    api_schema: Optional[FormApiSchema] = attr.ib(default=None, metadata=remap_skip_if_null("apiSchema"))
+    template_name: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
+    form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
 
     def validate_conditional_fields(self) -> None:
         form_field_names = self._get_form_field_names()
@@ -59,8 +69,9 @@ class ConnectionForm(SerializableConfig):
 
         rogue_fields = fields_in_conditions - form_field_names - TOP_LEVEL_NON_CONFIG_FIELDS
 
-        assert not rogue_fields, (
-            f'Fields {rogue_fields} are used in conditions, but not defined in the form or component inner fields')
+        assert (
+            not rogue_fields
+        ), f"Fields {rogue_fields} are used in conditions, but not defined in the form or component inner fields"
 
     def validate_api_schema_fields(self) -> None:
         form_field_names = self._get_form_field_names()
@@ -69,8 +80,9 @@ class ConnectionForm(SerializableConfig):
         rogue_fields = api_schema_fields - form_field_names - TOP_LEVEL_NON_CONFIG_FIELDS
 
         assert not rogue_fields, (
-            f'Fields {rogue_fields} are referred to in api schema conditions,'
-            f' but not defined in the form or component inner fields')
+            f"Fields {rogue_fields} are referred to in api schema conditions,"
+            f" but not defined in the form or component inner fields"
+        )
 
     def _get_form_field_names(self) -> set[TFieldName]:
         form_field_names: set[TFieldName] = set()
@@ -105,16 +117,14 @@ class ConnectionForm(SerializableConfig):
     def _get_api_schema_fields(self) -> set[TFieldName]:
         api_schema_fields: set[TFieldName] = set()
 
-        defined_api_schemas = [
-            sch for sch in [
-                self.api_schema.create,
-                self.api_schema.edit,
-                self.api_schema.check
-            ] if sch is not None
-        ] if self.api_schema is not None else []
+        defined_api_schemas = (
+            [sch for sch in [self.api_schema.create, self.api_schema.edit, self.api_schema.check] if sch is not None]
+            if self.api_schema is not None
+            else []
+        )
         for api_schema in defined_api_schemas:
             api_schema_fields |= set(form_field_api_schema.name for form_field_api_schema in api_schema.items)
-            for condition in (api_schema.conditions or []):
+            for condition in api_schema.conditions or []:
                 api_schema_fields.add(condition.when.name)
                 api_schema_fields |= set(conditional_action.selector.name for conditional_action in condition.then)
 
@@ -122,8 +132,8 @@ class ConnectionForm(SerializableConfig):
 
 
 class ConnectionFormMode(Enum):
-    create = 'create'
-    edit = 'edit'
+    create = "create"
+    edit = "edit"
 
 
 class ConnectionFormFactory:
@@ -140,16 +150,18 @@ class ConnectionFormFactory:
         ]
 
     def _get_top_level_check_api_schema_items(self) -> list[FormFieldApiSchema]:
-        return [
-            FormFieldApiSchema(name=TopLevelFieldName.type_),
-        ] if self.mode == ConnectionFormMode.create else []
+        return (
+            [
+                FormFieldApiSchema(name=TopLevelFieldName.type_),
+            ]
+            if self.mode == ConnectionFormMode.create
+            else []
+        )
 
     @abc.abstractmethod
     def get_form_config(
-        self,
-        connector_settings: Optional[ConnectorSettingsBase],
-        tenant: Optional[TenantDef]
+        self, connector_settings: Optional[ConnectorSettingsBase], tenant: Optional[TenantDef]
     ) -> ConnectionForm:
-        """ Returns a form config built according to the specified settings """
+        """Returns a form config built according to the specified settings"""
 
         raise NotImplementedError

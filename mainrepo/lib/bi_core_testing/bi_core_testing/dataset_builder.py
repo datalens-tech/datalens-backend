@@ -5,18 +5,29 @@ import uuid
 
 import attr
 
-from bi_constants.enums import CreateDSFrom, DataSourceRole, BinaryJoinOperator
-
-from bi_core.multisource import BinaryCondition, ConditionPartDirect, AvatarRelation, SourceAvatar
-from bi_core.data_source.base import DataSource
+from bi_constants.enums import (
+    BinaryJoinOperator,
+    CreateDSFrom,
+    DataSourceRole,
+)
 from bi_core.base_models import DefaultConnectionRef
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.us_dataset import Dataset
-from bi_core.us_connection_base import ConnectionBase
+from bi_core.data_source.base import DataSource
+from bi_core.multisource import (
+    AvatarRelation,
+    BinaryCondition,
+    ConditionPartDirect,
+    SourceAvatar,
+)
 from bi_core.services_registry.top_level import ServicesRegistry
-
+from bi_core.us_connection_base import ConnectionBase
+from bi_core.us_dataset import Dataset
+from bi_core.us_manager.us_manager_sync import SyncUSManager
+from bi_core_testing.database import (
+    Db,
+    DbTable,
+    make_table,
+)
 from bi_core_testing.dataset_wrappers import EditableDatasetTestWrapper
-from bi_core_testing.database import Db, DbTable, make_table
 
 
 @attr.s(frozen=True)
@@ -50,9 +61,7 @@ class DefaultDbDatasetSourceGenerator(DatasetSourceGenerator):
         source_type = self.connection.source_type
         assert source_type is not None
         return DataSourceCreationSpec(
-            connection=self.connection,
-            source_type=source_type,
-            dsrc_params=self._get_table_source_params(db_table)
+            connection=self.connection, source_type=source_type, dsrc_params=self._get_table_source_params(db_table)
         )
 
 
@@ -68,7 +77,8 @@ class DataSourceProxy(DatasetBuilderComponentProxy):
     @property
     def target(self) -> DataSource:
         return self.dataset_builder.ds_wrapper.get_data_source_strict(
-            source_id=self.source_id, role=DataSourceRole.origin)
+            source_id=self.source_id, role=DataSourceRole.origin
+        )
 
     def add_avatar(self) -> SourceAvatarProxy:
         return self.dataset_builder.add_source_avatar(source_id=self.source_id)
@@ -83,27 +93,35 @@ class SourceAvatarProxy(DatasetBuilderComponentProxy):
         return self.dataset_builder.ds_wrapper.get_avatar_strict(avatar_id=self.avatar_id)
 
     def add_relation(
-            self, *, right: SourceAvatarProxy | str,
-            conditions: list[BinaryCondition],
+        self,
+        *,
+        right: SourceAvatarProxy | str,
+        conditions: list[BinaryCondition],
     ) -> AvatarRelationProxy:
         if isinstance(right, SourceAvatarProxy):
             right = right.avatar_id
         assert isinstance(right, str)
         return self.dataset_builder.add_avatar_relation(
-            left_avatar_id=self.avatar_id, right_avatar_id=right,
+            left_avatar_id=self.avatar_id,
+            right_avatar_id=right,
             conditions=conditions,
         )
 
     def add_relation_simple_eq(
-            self, *, right: SourceAvatarProxy | str,
-            left_col_name: str, right_col_name: str,
+        self,
+        *,
+        right: SourceAvatarProxy | str,
+        left_col_name: str,
+        right_col_name: str,
     ) -> AvatarRelationProxy:
         if isinstance(right, SourceAvatarProxy):
             right = right.avatar_id
         assert isinstance(right, str)
         return self.dataset_builder.add_avatar_relation_simple_eq(
-            left_avatar_id=self.avatar_id, right_avatar_id=right,
-            left_col_name=left_col_name, right_col_name=right_col_name,
+            left_avatar_id=self.avatar_id,
+            right_avatar_id=right,
+            left_col_name=left_col_name,
+            right_col_name=right_col_name,
         )
 
 
@@ -171,13 +189,16 @@ class DatasetBuilder:
         )
 
     def add_avatar_relation(
-            self, left_avatar_id: str, right_avatar_id: str,
-            conditions: list[BinaryCondition],
+        self,
+        left_avatar_id: str,
+        right_avatar_id: str,
+        conditions: list[BinaryCondition],
     ) -> AvatarRelationProxy:
         relation_id = str(uuid.uuid4())
         self.ds_wrapper.add_avatar_relation(
             relation_id=relation_id,
-            left_avatar_id=left_avatar_id, right_avatar_id=right_avatar_id,
+            left_avatar_id=left_avatar_id,
+            right_avatar_id=right_avatar_id,
             conditions=conditions,
         )
         return AvatarRelationProxy(
@@ -186,8 +207,11 @@ class DatasetBuilder:
         )
 
     def add_avatar_relation_simple_eq(
-            self, left_avatar_id: str, right_avatar_id: str,
-            left_col_name: str, right_col_name: str,
+        self,
+        left_avatar_id: str,
+        right_avatar_id: str,
+        left_col_name: str,
+        right_col_name: str,
     ) -> AvatarRelationProxy:
         conditions = [
             BinaryCondition(
@@ -197,7 +221,8 @@ class DatasetBuilder:
             ),
         ]
         return self.add_avatar_relation(
-            left_avatar_id=left_avatar_id, right_avatar_id=right_avatar_id,
+            left_avatar_id=left_avatar_id,
+            right_avatar_id=right_avatar_id,
             conditions=conditions,
         )
 
@@ -221,6 +246,8 @@ class DefaultDbDatasetBuilderFactory(DatasetBuilderFactory):
 
     def get_dataset_builder(self, dataset: Dataset) -> DatasetBuilder:
         return DatasetBuilder(
-            dataset=dataset, dsrc_generator=self._get_dsrc_generator(),
-            service_registry=self.service_registry, sync_us_manager=self.sync_us_manager,
+            dataset=dataset,
+            dsrc_generator=self._get_dsrc_generator(),
+            service_registry=self.service_registry,
+            sync_us_manager=self.sync_us_manager,
         )

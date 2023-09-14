@@ -1,15 +1,29 @@
 import abc
-from typing import Any, Iterable, List, Mapping, Optional, Sequence, Set, Type
+from typing import (
+    Any,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Set,
+    Type,
+)
 
 import attr
 
 from bi_constants.enums import QueryBlockPlacementType
-
 from bi_query_processing.legend.block_legend import (
-    BlockPlacement, AfterBlockPlacement, DispersedAfterBlockPlacement, DimensionValueSpec,
+    AfterBlockPlacement,
+    BlockPlacement,
+    DimensionValueSpec,
+    DispersedAfterBlockPlacement,
+)
+from bi_query_processing.merging.primitives import (
+    MergedQueryDataRow,
+    MergedQueryDataRowIterable,
 )
 from bi_query_processing.postprocessing.primitives import PostprocessedValue
-from bi_query_processing.merging.primitives import MergedQueryDataRowIterable, MergedQueryDataRow
 
 
 @attr.s(frozen=True)
@@ -23,8 +37,9 @@ class BinaryStreamMerger(abc.ABC):
 
     @abc.abstractmethod
     def merge_two_streams(
-            self, parent_stream: MergedQueryDataRowIterable,
-            child_stream: MergedQueryDataRowIterable,
+        self,
+        parent_stream: MergedQueryDataRowIterable,
+        child_stream: MergedQueryDataRowIterable,
     ) -> MergedQueryDataRowIterable:
         raise NotImplementedError
 
@@ -45,17 +60,11 @@ class RowMatcher:
 
     @_required_legend_item_ids.default
     def _make_required_legend_item_ids(self) -> Set[int]:
-        return {
-            dim_spec.legend_item_id
-            for dim_spec in self._dimension_values
-        }
+        return {dim_spec.legend_item_id for dim_spec in self._dimension_values}
 
     @_match_dim_values.default
     def _make_match_dim_values(self) -> List[PostprocessedValue]:
-        return [
-            dim_spec.value
-            for dim_spec in self._dimension_values
-        ]
+        return [dim_spec.value for dim_spec in self._dimension_values]
 
     def match_row(self, row: MergedQueryDataRow) -> bool:
         if row.legend_item_ids is not self._prev_legend_item_ids:
@@ -64,8 +73,7 @@ class RowMatcher:
             if set(row.legend_item_ids).issuperset(self._required_legend_item_ids):
                 self._row_has_req_items = True
                 self._dimension_mask = [
-                    row.legend_item_ids.index(dim_spec.legend_item_id)
-                    for dim_spec in self._dimension_values
+                    row.legend_item_ids.index(dim_spec.legend_item_id) for dim_spec in self._dimension_values
                 ]
             else:
                 # Row (and subsequent rows) doesn't contain the required legend items,
@@ -96,8 +104,9 @@ class AfterBinaryStreamMerger(BinaryStreamMerger):
         return self.placement
 
     def _merge_two_streams_no_dims(
-            self, parent_stream: MergedQueryDataRowIterable,
-            child_stream: MergedQueryDataRowIterable,
+        self,
+        parent_stream: MergedQueryDataRowIterable,
+        child_stream: MergedQueryDataRowIterable,
     ) -> MergedQueryDataRowIterable:
         """
         Just concatenate them.
@@ -106,8 +115,9 @@ class AfterBinaryStreamMerger(BinaryStreamMerger):
         yield from child_stream
 
     def _merge_two_streams_with_dims(
-            self, parent_stream: MergedQueryDataRowIterable,
-            child_stream: MergedQueryDataRowIterable,
+        self,
+        parent_stream: MergedQueryDataRowIterable,
+        child_stream: MergedQueryDataRowIterable,
     ) -> MergedQueryDataRowIterable:
         """
         Inspect parent stream values and insert after match.
@@ -139,8 +149,9 @@ class AfterBinaryStreamMerger(BinaryStreamMerger):
             yield from child_stream
 
     def merge_two_streams(
-            self, parent_stream: MergedQueryDataRowIterable,
-            child_stream: MergedQueryDataRowIterable,
+        self,
+        parent_stream: MergedQueryDataRowIterable,
+        child_stream: MergedQueryDataRowIterable,
     ) -> MergedQueryDataRowIterable:
         if self.after_placement.dimension_values is None:
             yield from self._merge_two_streams_no_dims(parent_stream, child_stream)
@@ -161,10 +172,10 @@ class DispersedAfterBinaryStreamMerger(BinaryStreamMerger):
         return self.placement
 
     def merge_two_streams(
-            self, parent_stream: MergedQueryDataRowIterable,
-            child_stream: MergedQueryDataRowIterable,
+        self,
+        parent_stream: MergedQueryDataRowIterable,
+        child_stream: MergedQueryDataRowIterable,
     ) -> MergedQueryDataRowIterable:
-
         dim_indices: Optional[tuple[int, ...]] = None  # This value will be redefined
         dim_values: tuple[Any, ...]
         # Create mapping of child stream values:
@@ -187,10 +198,7 @@ class DispersedAfterBinaryStreamMerger(BinaryStreamMerger):
         # Iterate over parent stream and append child value after each match
         prev_dim_values: Optional[tuple[Any, ...]] = None
         fast_forward_row = False
-        expected_parent_dim_set = {
-            dim_spec.legend_item_id
-            for dim_spec in self.disp_after_placement.parent_dimensions
-        }
+        expected_parent_dim_set = {dim_spec.legend_item_id for dim_spec in self.disp_after_placement.parent_dimensions}
         for row in parent_stream:
             if row.legend_item_ids is not prev_legend_item_ids:
                 prev_legend_item_ids = row.legend_item_ids

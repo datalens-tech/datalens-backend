@@ -5,14 +5,19 @@ Auxiliary nodes specific to the forked subquery joining mechanism.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Hashable, Optional, cast, Sequence
+from typing import (
+    Hashable,
+    Optional,
+    Sequence,
+    cast,
+)
 
 import bi_formula.core.nodes as nodes
 
 
 class JoinType(Enum):
-    inner = 'inner'
-    left = 'left'
+    inner = "inner"
+    left = "left"
 
 
 class JoinConditionBase(nodes.FormulaItem):
@@ -33,7 +38,7 @@ class SelfEqualityJoinCondition(JoinConditionBase):
     """
 
     __slots__ = ()
-    show_names = JoinConditionBase.show_names + ('expr',)
+    show_names = JoinConditionBase.show_names + ("expr",)
 
     expr: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
 
@@ -54,7 +59,7 @@ class BinaryJoinCondition(JoinConditionBase):
     """
 
     __slots__ = ()
-    show_names = JoinConditionBase.show_names + ('expr', 'fork_expr')
+    show_names = JoinConditionBase.show_names + ("expr", "fork_expr")
 
     expr: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
     fork_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
@@ -65,8 +70,11 @@ class BinaryJoinCondition(JoinConditionBase):
 
     @classmethod
     def make(
-            cls, expr: nodes.FormulaItem, fork_expr: nodes.FormulaItem, *,
-            meta: Optional[nodes.NodeMeta] = None,
+        cls,
+        expr: nodes.FormulaItem,
+        fork_expr: nodes.FormulaItem,
+        *,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> BinaryJoinCondition:
         children = (expr, fork_expr)
         return cls(*children, meta=meta)
@@ -88,15 +96,16 @@ class QueryForkJoiningWithList(QueryForkJoiningBase):
 
     __slots__ = ()
 
-    show_names = QueryForkJoiningBase.show_names + ('condition_list',)
+    show_names = QueryForkJoiningBase.show_names + ("condition_list",)
 
     condition_list: nodes.MultiChild[JoinConditionBase] = nodes.MultiChild(slice(0, None))
 
     @classmethod
     def make(
-            cls,
-            condition_list: list[JoinConditionBase],
-            *, meta: Optional[nodes.NodeMeta] = None,
+        cls,
+        condition_list: list[JoinConditionBase],
+        *,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> QueryForkJoiningWithList:
         children = condition_list
         return cls(*children, meta=meta)
@@ -120,7 +129,7 @@ class QueryFork(nodes.FormulaItem):
 
     __slots__ = ()
 
-    show_names = nodes.FormulaItem.show_names + ('join_type', 'joining', 'result_expr', 'lod')
+    show_names = nodes.FormulaItem.show_names + ("join_type", "joining", "result_expr", "lod")
 
     joining: nodes.Child[QueryForkJoiningBase] = nodes.Child(0)
     result_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
@@ -129,13 +138,13 @@ class QueryFork(nodes.FormulaItem):
 
     @classmethod
     def make(
-            cls,
-            join_type: JoinType,
-            joining: QueryForkJoiningBase,
-            result_expr: nodes.FormulaItem,
-            before_filter_by: Optional[nodes.BeforeFilterBy] = None,
-            lod: Optional[nodes.LodSpecifier] = None,
-            meta: Optional[nodes.NodeMeta] = None,
+        cls,
+        join_type: JoinType,
+        joining: QueryForkJoiningBase,
+        result_expr: nodes.FormulaItem,
+        before_filter_by: Optional[nodes.BeforeFilterBy] = None,
+        lod: Optional[nodes.LodSpecifier] = None,
+        meta: Optional[nodes.NodeMeta] = None,
     ) -> QueryFork:
         if before_filter_by is None:
             before_filter_by = nodes.BeforeFilterBy.make()

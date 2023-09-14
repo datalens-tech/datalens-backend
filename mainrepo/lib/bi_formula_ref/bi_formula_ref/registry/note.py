@@ -1,18 +1,22 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, NamedTuple, List
+from typing import (
+    Any,
+    List,
+    NamedTuple,
+)
 
 import attr
 
-from bi_formula_ref.registry.text import ParameterizedText
 from bi_formula_ref.registry.scopes import SCOPES_DEFAULT
+from bi_formula_ref.registry.text import ParameterizedText
 
 
 class NoteLevel(Enum):
-    info = 'info'
-    warning = 'warning'
-    alert = 'alert'
+    info = "info"
+    warning = "warning"
+    alert = "alert"
 
 
 class Note(NamedTuple):
@@ -26,8 +30,8 @@ class Note(NamedTuple):
 
 
 class NoteType(Enum):
-    REGULAR = 'REGULAR'
-    ARG_RESTRICTION = 'ARG_RESTRICTION'
+    REGULAR = "REGULAR"
+    ARG_RESTRICTION = "ARG_RESTRICTION"
 
 
 @attr.s(frozen=True)

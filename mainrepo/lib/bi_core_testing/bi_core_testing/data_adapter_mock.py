@@ -1,11 +1,21 @@
 from __future__ import annotations
 
 import json
-from typing import Iterable, List, Optional, Sequence, Dict, Sized
+from typing import (
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Sized,
+)
 
 from aiohttp import web
 import attr
-from marshmallow import Schema, fields
+from marshmallow import (
+    Schema,
+    fields,
+)
 
 from bi_constants.types import TJSONLike
 
@@ -13,9 +23,18 @@ from bi_constants.types import TJSONLike
 @attr.s
 class SC:
     name: str = attr.ib()
-    type: str = attr.ib(validator=attr.validators.in_([
-        'string', 'integer', 'float', 'boolean', 'date', 'datetime',
-    ]))
+    type: str = attr.ib(
+        validator=attr.validators.in_(
+            [
+                "string",
+                "integer",
+                "float",
+                "boolean",
+                "date",
+                "datetime",
+            ]
+        )
+    )
     nullable: bool = attr.ib(default=False)
     title: Optional[str] = attr.ib(default=None)
 
@@ -67,13 +86,13 @@ class TablePropertiesSchema(Schema):
 
 def create_app(table_registry: TablesRegistry):  # type: ignore  # TODO: fix
     app = web.Application()
-    app['TABLE_REGISTRY'] = table_registry
+    app["TABLE_REGISTRY"] = table_registry
 
     def get_table_registry() -> TablesRegistry:
-        return app['TABLE_REGISTRY']
+        return app["TABLE_REGISTRY"]
 
     def get_table_for_request(request: web.Request):  # type: ignore  # TODO: fix
-        tbl = get_table_registry().get_table(request.match_info['table_name'])
+        tbl = get_table_registry().get_table(request.match_info["table_name"])
         if tbl is None:
             raise web.HTTPNotFound()
         return tbl
@@ -81,15 +100,15 @@ def create_app(table_registry: TablesRegistry):  # type: ignore  # TODO: fix
     async def rq_table_data(request: web.Request):  # type: ignore  # TODO: fix
         table = get_table_for_request(request)
         resp = web.StreamResponse(status=200)
-        resp.headers['X-DL-Row-Count'] = str(table.data_length)
-        resp.headers['X-DL-Table-Definition'] = TablePropertiesSchema().dumps(table)
+        resp.headers["X-DL-Row-Count"] = str(table.data_length)
+        resp.headers["X-DL-Table-Definition"] = TablePropertiesSchema().dumps(table)
         resp.enable_chunked_encoding()
         await resp.prepare(request)
 
         for idx, data_line in enumerate(table.data):
             bytes_line = json.dumps(data_line, ensure_ascii=True).encode()
             if idx != 0:
-                bytes_line = b'\n' + bytes_line
+                bytes_line = b"\n" + bytes_line
 
             await resp.write(bytes_line)
 
@@ -99,15 +118,13 @@ def create_app(table_registry: TablesRegistry):  # type: ignore  # TODO: fix
     async def rq_list_tables(_):  # type: ignore  # TODO: fix
         tr = get_table_registry()
 
-        return web.json_response({
-            'tables': [t.name for t in tr.tbl_list]
-        })
+        return web.json_response({"tables": [t.name for t in tr.tbl_list]})
 
     async def rq_table_properties(request: web.Request):  # type: ignore  # TODO: fix
         table = get_table_for_request(request)
         return web.json_response(TablePropertiesSchema().dump(table))
 
-    app.router.add_post('/list_tables', rq_list_tables)
-    app.router.add_post('/table_data/{table_name}', rq_table_data)
-    app.router.add_post('/table_properties/{table_name}', rq_table_properties)
+    app.router.add_post("/list_tables", rq_list_tables)
+    app.router.add_post("/table_data/{table_name}", rq_table_data)
+    app.router.add_post("/table_properties/{table_name}", rq_table_properties)
     return app

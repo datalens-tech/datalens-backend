@@ -1,15 +1,17 @@
+from collections import defaultdict
 import gettext
 import logging
-from collections import defaultdict
-from typing import Iterable, Optional
+from typing import (
+    Iterable,
+    Optional,
+)
 
 import attr
 
 from bi_i18n.exc import (
-    UnknownLocale,
     UnknownDomain,
+    UnknownLocale,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -52,7 +54,7 @@ class Localizer:
 
     def translate(self, message: Translatable) -> str:
         if message.domain not in self._localizers:
-            raise UnknownDomain(f'Unknown domain {message.domain}')
+            raise UnknownDomain(f"Unknown domain {message.domain}")
         return self._localizers[message.domain].translate(message)
 
 
@@ -65,10 +67,10 @@ class LocalizerFactory:
     def get_for_locale(self, locale: str, fallback: Optional[Localizer] = None) -> Localizer:
         localizers = self._localizers.get(locale)
         if localizers is None:
-            LOGGER.info('Unknown locale %s', locale)
+            LOGGER.info("Unknown locale %s", locale)
             if fallback:
                 return fallback
-            raise UnknownLocale(f'Unknown locale {locale}')
+            raise UnknownLocale(f"Unknown locale {locale}")
         return Localizer(localizers)
 
 
@@ -88,7 +90,7 @@ class LocalizerLoader:
                 )
                 assert isinstance(gnu_localizer, gettext.GNUTranslations)
             except FileNotFoundError:
-                raise UnknownDomain(f'Unknown domain {config.domain}')
+                raise UnknownDomain(f"Unknown domain {config.domain}")
             localizers.append(
                 _GNULocalizer(
                     domain=config.domain,
@@ -97,16 +99,9 @@ class LocalizerLoader:
                 ),
             )
             domain_locales[config.key] += 1
-        duplicated_domain_locales = [
-            '-'.join(key)
-            for key, value in domain_locales.items()
-            if value > 1
-        ]
+        duplicated_domain_locales = ["-".join(key) for key, value in domain_locales.items() if value > 1]
         if duplicated_domain_locales:
-            LOGGER.warning(
-                'Duplicated domain-locale pairs: %s',
-                ';'.join(duplicated_domain_locales)
-            )
+            LOGGER.warning("Duplicated domain-locale pairs: %s", ";".join(duplicated_domain_locales))
         return LocalizerFactory(
             localizers=localizers,
         )

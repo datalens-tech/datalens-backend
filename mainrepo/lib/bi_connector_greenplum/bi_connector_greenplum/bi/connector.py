@@ -1,25 +1,25 @@
-from bi_connector_greenplum.core.connector import (
-    GreenplumCoreConnector,
-    GreenplumCoreConnectionDefinition,
-    GreenplumTableCoreSourceDefinition,
-    GreenplumSubselectCoreSourceDefinition,
+from bi_api_connector.api_schema.source_base import (
+    SchematizedSQLDataSourceSchema,
+    SchematizedSQLDataSourceTemplateSchema,
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
 )
-
 from bi_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
-)
-
-from bi_api_connector.api_schema.source_base import (
-    SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
-    SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
+    BiApiSourceDefinition,
 )
 
 from bi_connector_greenplum.bi.api_schema.connection import GreenplumConnectionSchema
 from bi_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
 from bi_connector_greenplum.bi.connection_info import GreenplumConnectionInfoProvider
 from bi_connector_greenplum.bi.i18n.localizer import CONFIGS
+from bi_connector_greenplum.core.connector import (
+    GreenplumCoreConnectionDefinition,
+    GreenplumCoreConnector,
+    GreenplumSubselectCoreSourceDefinition,
+    GreenplumTableCoreSourceDefinition,
+)
 from bi_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
 
 

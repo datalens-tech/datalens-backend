@@ -1,50 +1,71 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from typing import Any, List, Optional, Union, Sequence, FrozenSet
+from typing import (
+    Any,
+    FrozenSet,
+    List,
+    Optional,
+    Sequence,
+    Union,
+)
 
 import attr
 
-from bi_constants.enums import BIType, IndexKind
-
+from bi_constants.enums import (
+    BIType,
+    IndexKind,
+)
+from bi_core.db.native_type import GenericNativeType
 from bi_utils.utils import get_type_full_name
 
-from bi_core.db.native_type import GenericNativeType
-
-
-_SchemaColumn = namedtuple('_SchemaColumn', (
-    'name', 'title', 'user_type',
-    'nullable',  # Deprecated in favor of `native_type.nullable`
-    'native_type', 'source_id',
-    'has_auto_aggregation', 'lock_aggregation', 'description',
-))
+_SchemaColumn = namedtuple(
+    "_SchemaColumn",
+    (
+        "name",
+        "title",
+        "user_type",
+        "nullable",  # Deprecated in favor of `native_type.nullable`
+        "native_type",
+        "source_id",
+        "has_auto_aggregation",
+        "lock_aggregation",
+        "description",
+    ),
+)
 
 
 class SchemaColumn(_SchemaColumn):
     def __new__(  # type: ignore  # TODO: fix
-            cls,
-            name: str,
-            title: Optional[str] = None,
-            user_type: Optional[Union[BIType, str]] = None,
-            nullable: Optional[bool] = True,
-            native_type: Optional[GenericNativeType] = None,
-            source_id: Any = None,
-            has_auto_aggregation: Optional[bool] = None,
-            lock_aggregation: bool = False,
-            description: Optional[str] = None,
+        cls,
+        name: str,
+        title: Optional[str] = None,
+        user_type: Optional[Union[BIType, str]] = None,
+        nullable: Optional[bool] = True,
+        native_type: Optional[GenericNativeType] = None,
+        source_id: Any = None,
+        has_auto_aggregation: Optional[bool] = None,
+        lock_aggregation: bool = False,
+        description: Optional[str] = None,
     ):
         title = title or name
         if isinstance(user_type, str):
             user_type = BIType[user_type]
         has_auto_aggregation = has_auto_aggregation if has_auto_aggregation is not None else False
         return super().__new__(
-            cls, name=name, title=title, user_type=user_type, nullable=nullable,
-            native_type=native_type, source_id=source_id, has_auto_aggregation=has_auto_aggregation,
+            cls,
+            name=name,
+            title=title,
+            user_type=user_type,
+            nullable=nullable,
+            native_type=native_type,
+            source_id=source_id,
+            has_auto_aggregation=has_auto_aggregation,
             lock_aggregation=lock_aggregation,
-            description=description or '',
+            description=description or "",
         )
 
-    def clone(self, **kwargs) -> 'SchemaColumn':  # type: ignore  # TODO: fix
+    def clone(self, **kwargs) -> "SchemaColumn":  # type: ignore  # TODO: fix
         return SchemaColumn(**dict(self._asdict(), **kwargs))
 
 

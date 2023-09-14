@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import attr
 
-from bi_core.components.dependencies.field_shallow import FieldShallowInterDependencyManager
-from bi_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
-from bi_core.components.dependencies.field_avatar import FieldAvatarDependencyManager
-from bi_core.components.dependencies.relation_avatar import RelationAvatarDependencyManager
 from bi_core.components.dependencies.avatar_tree import AvatarTreeResolver
 from bi_core.components.dependencies.factory_base import ComponentDependencyManagerFactoryBase
+from bi_core.components.dependencies.field_avatar import FieldAvatarDependencyManager
+from bi_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
+from bi_core.components.dependencies.field_shallow import FieldShallowInterDependencyManager
+from bi_core.components.dependencies.relation_avatar import RelationAvatarDependencyManager
 from bi_core.us_dataset import Dataset
 
 
 @attr.s
 class ComponentDependencyManagerFactory(ComponentDependencyManagerFactoryBase):  # noqa
-    _dataset:  Dataset = attr.ib(kw_only=True)
+    _dataset: Dataset = attr.ib(kw_only=True)
 
     def _make_field_shallow_inter_dependency_manager(self) -> FieldShallowInterDependencyManager:
         return FieldShallowInterDependencyManager(
@@ -39,6 +39,5 @@ class ComponentDependencyManagerFactory(ComponentDependencyManagerFactoryBase): 
 
     def _make_avatar_tree_resolver(self) -> AvatarTreeResolver:
         return AvatarTreeResolver(
-            dataset=self._dataset,
-            relation_avatar_dep_mgr=self.get_relation_avatar_dependency_manager()
+            dataset=self._dataset, relation_avatar_dep_mgr=self.get_relation_avatar_dependency_manager()
         )

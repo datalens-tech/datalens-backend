@@ -6,7 +6,10 @@ from typing import Optional
 
 import attr
 
-from bi_configs.crypto_keys import CryptoKeysConfig, get_single_key_crypto_keys_config
+from bi_configs.crypto_keys import (
+    CryptoKeysConfig,
+    get_single_key_crypto_keys_config,
+)
 from bi_core.loader import CoreLibraryConfig
 
 LOGGER = logging.getLogger(__name__)
@@ -36,7 +39,7 @@ class CoreTestEnvironmentConfigurationBase(abc.ABC):
 
 
 # These are used only for creation of local environments in tests, not actual external ones
-DEFAULT_FERNET_KEY = 'h1ZpilcYLYRdWp7Nk8X1M1kBPiUi8rdjz9oBfHyUKIk='
+DEFAULT_FERNET_KEY = "h1ZpilcYLYRdWp7Nk8X1M1kBPiUi8rdjz9oBfHyUKIk="
 
 
 @attr.s(frozen=True)
@@ -53,8 +56,8 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
     def get_us_config(self) -> UnitedStorageConfiguration:
         return UnitedStorageConfiguration(
             us_master_token=self.us_master_token,
-            us_host=f'http://{self.host_us_http}:{self.port_us_http}',
-            us_pg_dsn=f'host={self.host_us_pg} port={self.port_us_pg_5432} user=us password=us dbname=us-db-ci_purgeable'
+            us_host=f"http://{self.host_us_http}:{self.port_us_http}",
+            us_pg_dsn=f"host={self.host_us_pg} port={self.port_us_pg_5432} user=us password=us dbname=us-db-ci_purgeable",
         )
 
     def get_crypto_keys_config(self) -> CryptoKeysConfig:

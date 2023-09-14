@@ -1,9 +1,19 @@
 from __future__ import annotations
 
-from contextlib import contextmanager, redirect_stdout, redirect_stderr
+from contextlib import (
+    contextmanager,
+    redirect_stderr,
+    redirect_stdout,
+)
 import io
 import sys
-from typing import Generator, TextIO, Optional, Type, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Generator,
+    Optional,
+    TextIO,
+    Type,
+)
 
 if TYPE_CHECKING:
     from argparse import ArgumentParser

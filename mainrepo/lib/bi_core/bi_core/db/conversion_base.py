@@ -1,25 +1,44 @@
 from __future__ import annotations
 
-import datetime
-import math
-import pytz
 from contextlib import contextmanager
-from functools import lru_cache, partial
+import datetime
+from functools import (
+    lru_cache,
+    partial,
+)
+import math
 from typing import (
-    Any, Callable, ClassVar, Dict, Generator, Iterable, Optional, Type, TypeVar, final,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Generator,
+    Iterable,
+    Optional,
+    Type,
+    TypeVar,
+    final,
 )
 
-from bi_constants.enums import BIType, ConnectionType
+import pytz
 
-from bi_core.db.native_type import GenericNativeType, CommonNativeType
-from bi_core import exc
-from bi_core import converter_types_cast
-
+from bi_constants.enums import (
+    BIType,
+    ConnectionType,
+)
+from bi_core import (
+    converter_types_cast,
+    exc,
+)
+from bi_core.db.native_type import (
+    CommonNativeType,
+    GenericNativeType,
+)
 
 make_native_type = GenericNativeType.normalize_name_and_create
 
 
-_INN_TV = TypeVar('_INN_TV')
+_INN_TV = TypeVar("_INN_TV")
 
 
 def _if_not_none(value: _INN_TV, func: Callable[[_INN_TV], Any]) -> Any:
@@ -27,7 +46,7 @@ def _if_not_none(value: _INN_TV, func: Callable[[_INN_TV], Any]) -> Any:
         try:
             return func(value)
         except ValueError:
-            raise exc.DataParseError(f'Cannot convert {value!r} to {func.__name__}', query=None)
+            raise exc.DataParseError(f"Cannot convert {value!r} to {func.__name__}", query=None)
     return None
 
 
@@ -64,7 +83,7 @@ def _handle_type_cast_errors() -> Generator[None, None, None]:
     try:
         yield
     except (TypeError, ValueError):
-        raise exc.TypeCastFailed('Type casting failed for value')
+        raise exc.TypeCastFailed("Type casting failed for value")
 
 
 class TypeCaster:
@@ -108,9 +127,9 @@ class BooleanTypeCaster(TypeCaster):
 
 class YTBooleanTypeCaster(BooleanTypeCaster):
     def _cast_for_output(self, value: Any) -> Optional[bool]:
-        if value == '0':
+        if value == "0":
             return False
-        elif value == '1':
+        elif value == "1":
             return True
         else:
             return super()._cast_for_output(value)
@@ -222,7 +241,9 @@ class TypeTransformer:
     }
 
     def type_native_to_user(
-            self, native_t: GenericNativeType, user_t: Optional[BIType] = None,
+        self,
+        native_t: GenericNativeType,
+        user_t: Optional[BIType] = None,
     ) -> BIType:
         if user_t is not None:
             # original UT is given, try to validate against NT.
@@ -232,9 +253,7 @@ class TypeTransformer:
                 return user_t
 
         try:
-            return (
-                self.native_to_user_map.get(native_t) or
-                self.native_to_user_map[native_t.as_generic])
+            return self.native_to_user_map.get(native_t) or self.native_to_user_map[native_t.as_generic]
         except KeyError:
             raise exc.UnsupportedNativeTypeError(native_t)
 
@@ -258,8 +277,9 @@ class TypeTransformer:
 
             if native_t.conn_type == self.conn_type:
                 # it is from the same DB type, so try to validate against UT
-                if (user_t == self.native_to_user_map.get(native_t) or
-                        user_t == self.native_to_user_map.get(native_t.as_generic)):
+                if user_t == self.native_to_user_map.get(native_t) or user_t == self.native_to_user_map.get(
+                    native_t.as_generic
+                ):
                     return native_t
 
         try:

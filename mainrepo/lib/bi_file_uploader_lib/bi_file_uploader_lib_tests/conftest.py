@@ -1,23 +1,22 @@
 import pytest
-
 import redis.asyncio
 
 from bi_api_commons.base_models import RequestContextInfo
-from bi_configs.crypto_keys import CryptoKeysConfig, get_dummy_crypto_keys_config
+from bi_configs.crypto_keys import (
+    CryptoKeysConfig,
+    get_dummy_crypto_keys_config,
+)
 from bi_configs.enums import RedisMode
 from bi_configs.settings_submodels import RedisSettings
-
 from bi_file_uploader_lib.redis_model.base import RedisModelManager
 from bi_testing.containers import get_test_container_hostport
 
-pytest_plugins = (
-    'aiohttp.pytest_plugin',
-)
+pytest_plugins = ("aiohttp.pytest_plugin",)
 
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id='_the_tests_asyncapp_user_id_')
+    return RequestContextInfo(user_id="_the_tests_asyncapp_user_id_")
 
 
 @pytest.fixture(scope="session")
@@ -29,7 +28,7 @@ def crypto_keys_config() -> CryptoKeysConfig:
 def redis_app_settings() -> RedisSettings:
     return RedisSettings(
         MODE=RedisMode.single_host,
-        CLUSTER_NAME='',
+        CLUSTER_NAME="",
         HOSTS=(get_test_container_hostport("redis", fallback_port=52404).host,),
         PORT=get_test_container_hostport("redis", fallback_port=52404).port,
         DB=9,

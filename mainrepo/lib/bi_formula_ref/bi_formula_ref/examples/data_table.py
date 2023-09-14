@@ -1,5 +1,9 @@
 from itertools import chain
-from typing import Any, Dict, List
+from typing import (
+    Any,
+    Dict,
+    List,
+)
 
 import attr
 
@@ -20,21 +24,15 @@ class DataTable:
 
 def horizontal_join(*tables: DataTable) -> DataTable:
     lengths = {len(t.rows) for t in tables}
-    assert len(lengths) == 1, f'All tables must have the same number of rows for horizontal join, got {lengths}'
+    assert len(lengths) == 1, f"All tables must have the same number of rows for horizontal join, got {lengths}"
     return DataTable(
         columns=[col for t in tables for col in t.columns],
-        rows=[
-            list(chain.from_iterable(concat_row_parts))
-            for concat_row_parts in zip(*(t.rows for t in tables))
-        ]
+        rows=[list(chain.from_iterable(concat_row_parts)) for concat_row_parts in zip(*(t.rows for t in tables))],
     )
 
 
 def rename_columns(table: DataTable, name_mapping: Dict[str, str]) -> DataTable:
     return DataTable(
-        columns=[
-            DataColumn(name=name_mapping[col.name], data_type=col.data_type)
-            for col in table.columns
-        ],
+        columns=[DataColumn(name=name_mapping[col.name], data_type=col.data_type) for col in table.columns],
         rows=table.rows,
     )

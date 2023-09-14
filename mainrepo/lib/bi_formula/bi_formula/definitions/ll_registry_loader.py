@@ -1,14 +1,14 @@
 # TODO: Remove the `ll_` prefix
 
 from itertools import chain
-from typing import Type, Union
+from typing import (
+    Type,
+    Union,
+)
 
 import attr
 
-from bi_formula.inspect.registry.item import BasicOpItem
-from bi_formula.inspect.registry.registry import LOWLEVEL_OP_REGISTRY, norm_name
 from bi_formula.definitions.base import NodeTranslation
-from bi_formula.definitions.registry import OPERATION_REGISTRY
 from bi_formula.definitions.conditional_blocks import DEFINITIONS_COND_BLOCKS
 from bi_formula.definitions.functions_aggregation import DEFINITIONS_AGGREGATION
 from bi_formula.definitions.functions_array import DEFINITIONS_ARRAY
@@ -24,6 +24,12 @@ from bi_formula.definitions.functions_window import DEFINITIONS_WINDOW
 from bi_formula.definitions.operators_binary import DEFINITIONS_BINARY
 from bi_formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from bi_formula.definitions.operators_unary import DEFINITIONS_UNARY
+from bi_formula.definitions.registry import OPERATION_REGISTRY
+from bi_formula.inspect.registry.item import BasicOpItem
+from bi_formula.inspect.registry.registry import (
+    LOWLEVEL_OP_REGISTRY,
+    norm_name,
+)
 
 
 @attr.s
@@ -68,7 +74,7 @@ def populate_translation_registry() -> None:
 
 
 def populate_ll_op_registry() -> None:
-    for key, impl_cls in OPERATION_REGISTRY.items():
+    for _key, impl_cls in OPERATION_REGISTRY.items():
         name = norm_name(impl_cls.name)
         assert name is not None
         ll_item = BasicOpItem(

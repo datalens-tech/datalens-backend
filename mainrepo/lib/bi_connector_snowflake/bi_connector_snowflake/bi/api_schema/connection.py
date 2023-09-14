@@ -1,10 +1,9 @@
+from marshmallow import fields as ma_fields
+
 from bi_api_connector.api_schema.connection_base import ConnectionSchema
-from bi_api_connector.api_schema.connection_base_fields import (
-    secret_string_field,
-)
+from bi_api_connector.api_schema.connection_base_fields import secret_string_field
 from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
 from bi_api_connector.api_schema.extras import FieldExtra
-from marshmallow import fields as ma_fields
 
 from bi_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 

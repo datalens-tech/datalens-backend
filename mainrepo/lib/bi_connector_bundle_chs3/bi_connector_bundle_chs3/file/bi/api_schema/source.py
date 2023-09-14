@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from marshmallow import fields, RAISE, Schema
+from marshmallow import (
+    RAISE,
+    Schema,
+    fields,
+)
 
 from bi_constants.enums import BIType
 
-from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
-
 from bi_connector_bundle_chs3.chs3_base.bi.api_schema.connection import BaseFileSourceSchema
+from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 
 
 class FileSourceColumnTypeSchema(Schema):

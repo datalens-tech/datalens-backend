@@ -1,12 +1,11 @@
 import asyncio
 
-import pytest
 from mock import MagicMock
+import pytest
 
-from bi_core.us_connection_base import DataSourceTemplate
-from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core.connection_executors.common_base import ConnExecutorQuery
-
+from bi_core.services_registry.top_level import ServicesRegistry
+from bi_core.us_connection_base import DataSourceTemplate
 from bi_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_snowflake.auth import SFAuthProvider
@@ -33,16 +32,18 @@ class TestSnowFlakeConnection(
         pass
 
     def test_connection_with_correct_refresh_token(
-            self, saved_connection: ConnectionSQLSnowFlake,
-            conn_sync_service_registry: ServicesRegistry,
+        self,
+        saved_connection: ConnectionSQLSnowFlake,
+        conn_sync_service_registry: ServicesRegistry,
     ):
         ce_factory = conn_sync_service_registry.get_conn_executor_factory()
         conn_executor = ce_factory.get_sync_conn_executor(saved_connection)
         conn_executor.execute(ConnExecutorQuery(query="select 1"))
 
     def test_connection_test_with_expired_refresh_token(
-            self, saved_connection_with_expired_refresh_token: ConnectionSQLSnowFlake,
-            conn_sync_service_registry: ServicesRegistry,
+        self,
+        saved_connection_with_expired_refresh_token: ConnectionSQLSnowFlake,
+        conn_sync_service_registry: ServicesRegistry,
     ):
         ce_factory = conn_sync_service_registry.get_conn_executor_factory()
         conn_executor = ce_factory.get_sync_conn_executor(saved_connection_with_expired_refresh_token)
@@ -52,9 +53,10 @@ class TestSnowFlakeConnection(
             conn_executor.execute(ConnExecutorQuery(query="select 1"))
 
     def test_bad_access_token(
-            self, saved_connection,
-            conn_sync_service_registry: ServicesRegistry,
-            monkeypatch,
+        self,
+        saved_connection,
+        conn_sync_service_registry: ServicesRegistry,
+        monkeypatch,
     ):
         ce_factory = conn_sync_service_registry.get_conn_executor_factory()
         conn_executor = ce_factory.get_sync_conn_executor(saved_connection)

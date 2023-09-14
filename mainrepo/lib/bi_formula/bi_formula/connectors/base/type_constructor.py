@@ -17,7 +17,11 @@ class DefaultSATypeConstructor(SATypeConstructor):
         type_map: dict[DataType, TypeEngine] = {
             **{
                 str_type: sa.String(length=255)
-                for str_type in (DataType.STRING, DataType.GEOPOINT, DataType.GEOPOLYGON,)
+                for str_type in (
+                    DataType.STRING,
+                    DataType.GEOPOINT,
+                    DataType.GEOPOLYGON,
+                )
             },
             DataType.INTEGER: sa.Integer(),
             DataType.FLOAT: sa.Float(),
@@ -42,8 +46,8 @@ def get_type_constructor(dialect_name: DialectName) -> SATypeConstructor:
 
 
 def register_type_constructor(
-        dialect_name: DialectName,
-        type_constructor_cls: Type[SATypeConstructor],
+    dialect_name: DialectName,
+    type_constructor_cls: Type[SATypeConstructor],
 ) -> None:
     if dialect_name in _REGISTRY:
         assert _REGISTRY[dialect_name] is type_constructor_cls

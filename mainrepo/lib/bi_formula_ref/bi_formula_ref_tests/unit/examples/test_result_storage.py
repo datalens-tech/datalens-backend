@@ -1,26 +1,31 @@
 import tempfile
 
 from bi_formula.core.datatype import DataType
-
-from bi_formula_ref.examples.data_table import DataTable, DataColumn
+from bi_formula_ref.examples.data_table import (
+    DataColumn,
+    DataTable,
+)
 from bi_formula_ref.examples.result_storage import (
-    ReadableDataStorage, WritableDataStorage, StorageKey,
+    ReadableDataStorage,
+    StorageKey,
+    WritableDataStorage,
 )
 
 
 def test_result_storage():
     original_data_table = DataTable(
         columns=[
-            DataColumn(name='int_value', data_type=DataType.INTEGER),
-            DataColumn(name='str_value', data_type=DataType.STRING),
+            DataColumn(name="int_value", data_type=DataType.INTEGER),
+            DataColumn(name="str_value", data_type=DataType.STRING),
         ],
         rows=[
-            [11, 'qwe'],
-            [45, 'rty'],
-        ]
+            [11, "qwe"],
+            [45, "rty"],
+        ],
     )
     storage_key = StorageKey(
-        item_key='smth', example_key='whatever',
+        item_key="smth",
+        example_key="whatever",
     )
 
     with tempfile.NamedTemporaryFile() as st_file:
