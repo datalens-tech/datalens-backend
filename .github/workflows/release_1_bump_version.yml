@@ -1,0 +1,29 @@
+name: release_bump_version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [ self-hosted, linux ]
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/dl_releaser:latest"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: "Cleanup build folder"
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+      - name: "Git security workaround (ownership)"
+        run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - name: "Check current version"
+        run: bump2version --list --dry-run ".bumpversion.cfg" | grep current_version | cut -f 2 -d =
+      - name: "Bump version"
+        run: bump2version ".bumpversion.cfg" minor --verbose
