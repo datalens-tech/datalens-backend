@@ -9,6 +9,7 @@ from bi_constants.enums import ConnectionState, ConnectionType as CT
 from bi_core.us_connection_base import ConnectionBase
 
 from bi_api_connector.api_schema.top_level import USEntryBaseSchema
+from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 class ConnectionSchema(USEntryBaseSchema):
@@ -16,8 +17,7 @@ class ConnectionSchema(USEntryBaseSchema):
     CONN_TYPE_CTX_KEY: ClassVar[str] = 'conn_type'
 
     # From ConnectionBase.as_dict()
-    # TODO CONSIDER: is it okay to use a dynamic enum in this context?
-    db_type = ma_fields.Enum(CT, by_value=False, attribute='conn_type', dump_only=True)  # type: ignore
+    db_type = DynamicEnumField(CT, attribute='conn_type', dump_only=True)
     # TODO FIX: Change for datetime field after created/updated _at become datetime instead of string
     created_at = ma_fields.String(dump_only=True)
     updated_at = ma_fields.String(dump_only=True)
