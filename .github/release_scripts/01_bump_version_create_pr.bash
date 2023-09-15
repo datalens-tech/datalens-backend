@@ -34,11 +34,11 @@ git commit -m "${COMMIT_MSG}"
 git push --set-upstream origin "${NEW_BRANCH_NAME}"
 
 # Creating PR
-PR_URL=$(gh pr create --fill --base "${GIT_CURRENT_BRANCH}" --body "Releasing version ${NEW_VERSION}")
+PR_URL=$(GH_TOKEN="${GH_TOKEN_MAIN}" gh pr create --fill --base "${GIT_CURRENT_BRANCH}" --body "Releasing version ${NEW_VERSION}")
 # Approve PR with another robot
-GH_TOKEN="${GH_TOKEN_MAIN}" gh pr review -a "${PR_URL}"
+GH_TOKEN="${GH_TOKEN_FOR_PR_APPROVE}" gh pr review -a "${PR_URL}"
 # Merge PR
-GH_TOKEN="${GH_TOKEN_FOR_PR_APPROVE}" gh pr merge -s "${PR_URL}"
+GH_TOKEN="${GH_TOKEN_MAIN}" gh pr merge -s "${PR_URL}"
 # Report PR
 echo "${PR_URL}" >> "${GITHUB_STEP_SUMMARY}"
 
