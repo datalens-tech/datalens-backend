@@ -44,7 +44,16 @@ echo "${PR_URL}" >> "${GITHUB_STEP_SUMMARY}"
 
 #
 # Fetch commit SHA for merged PR
-MERGED_PR_COMMIT_SHA=$(gh pr view --json mergeCommit "${PR_URL}" | jq .mergeCommit.oid -r)
+MERGED_PR_COMMIT_SHA=""
+
+while [[ -z "${MERGED_PR_COMMIT_SHA}" || "${MERGED_PR_COMMIT_SHA}" = "null" ]]; do
+    MERGED_PR_COMMIT_SHA=$(gh pr view --json mergeCommit "${PR_URL}" | jq .mergeCommit.oid -r)
+    if [[ -z "${MERGED_PR_COMMIT_SHA}" || "${MERGED_PR_COMMIT_SHA}" = "null" ]]; then
+      echo "Got no merged PR commit SHA: ${MERGED_PR_COMMIT_SHA}. Retrying..."
+      sleep 1
+    fi
+done
+echo "Got merged PR commit SHA: ${MERGED_PR_COMMIT_SHA}"
 
 git fetch
 git checkout "${MERGED_PR_COMMIT_SHA}"
@@ -53,5 +62,8 @@ git checkout "${MERGED_PR_COMMIT_SHA}"
 NEW_VERSION_MAJ_MIN="$(python -c "import configparser; config = configparser.ConfigParser(); config.read('.bumpversion.cfg'); print('.'.join(config.get('bumpversion', 'current_version').split('.')[:-1]))")"
 RELEASE_BRANCH_NAME="release/${NEW_VERSION_MAJ_MIN}"
 
+echo "Creating branch ${RELEASE_BRANCH_NAME}"
 git checkout -b "${RELEASE_BRANCH_NAME}"
+
+echo "Pushing branch ${RELEASE_BRANCH_NAME}"
 git push --set-upstream origin "${RELEASE_BRANCH_NAME}"
