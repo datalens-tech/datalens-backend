@@ -22,6 +22,9 @@ force-exclude= '''
   # The following are specific to Black, you probably don't want those.
   mainrepo/lib/redis-cache-lock
   | mainrepo/lib/clickhouse-sqlalchemy
+  | mainrepo/lib/bi_formula/bi_formula/parser/antlr/gen
+  | lib/yc_apis_proto_stubs
+  | lib/dc_public_api_proto_stubs
 )/
 '''
 
@@ -30,7 +33,10 @@ line_length = 120
 profile = "black"
 skip_glob = [
   "mainrepo/lib/redis-cache-lock/*",
-  "mainrepo/lib/clickhouse-sqlalchemy/*"
+  "mainrepo/lib/clickhouse-sqlalchemy/*",
+  "mainrepo/lib/bi_formula/bi_formula/parser/antlr/gen/*",
+  "lib/yc_apis_proto_stubs/*",
+  "lib/dc_public_api_proto_stubs/*",
 ]
 multi_line_output = 3
 force_grid_wrap = 2
@@ -89,5 +95,8 @@ exclude = [
   "venv",
   "tools_venv",
   "mainrepo/lib/redis-cache-lock/**",
-  "mainrepo/lib/clickhouse-sqlalchemy/**"
+  "mainrepo/lib/clickhouse-sqlalchemy/**",
+  "mainrepo/lib/bi_formula/bi_formula/parser/antlr/gen/**",
+  "lib/yc_apis_proto_stubs/**",
+  "lib/dc_public_api_proto_stubs/**",
 ]
