@@ -92,7 +92,7 @@ class YDBAdapter(YQLAdapterBase[YDBConnTargetDTO]):
                 ]
                 children.sort()
                 for full_path, child in children:
-                    if child.is_table():
+                    if child.is_any_table():
                         yield full_path.removeprefix(unprefix)
                     elif child.is_directory():
                         queue.append(full_path)

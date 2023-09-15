@@ -2299,7 +2299,7 @@ url = "../../mainrepo/app/dl_data_api"
 
 [[package]]
 name = "dl-version"
-version = "0.2003.0"
+version = "0.2004.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -2312,7 +2312,7 @@ url = "../../mainrepo/lib/dl_version"
 
 [[package]]
 name = "dl-version-ya"
-version = "0.2003.0"
+version = "0.2004.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8511,7 +8511,7 @@ yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
 yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
-ydb = ">=2.10.1"
+ydb = ">=3.5.0"
 
 [package.source]
 type = "directory"
@@ -9779,17 +9779,15 @@ reference = "ya"
 
 [[package]]
 name = "ydb"
-version = "3.3.6"
+version = "3.5.0"
 description = "YDB Python SDK"
 optional = false
 python-versions = "*"
 files = [
-    {file = "ydb-3.3.6-py2.py3-none-any.whl", hash = "sha256:f3dbfc84a4a45480550955e742c40a6f152d6ca718c8f49d1611dceca7987ce8"},
-    {file = "ydb-3.3.6-py2.py3-none-any.whl", hash = "sha256:f3dbfc84a4a45480550955e742c40a6f152d6ca718c8f49d1611dceca7987ce8"},
-    {file = "ydb-3.3.6-py2.py3-none-any.whl", hash = "sha256:f3dbfc84a4a45480550955e742c40a6f152d6ca718c8f49d1611dceca7987ce8"},
-    {file = "ydb-3.3.6.tar.gz", hash = "sha256:5ed426e9373ca53d296a0a2ef7b40dc75c420e711a6e32a5996767f456f1f89d"},
-    {file = "ydb-3.3.6.tar.gz", hash = "sha256:5ed426e9373ca53d296a0a2ef7b40dc75c420e711a6e32a5996767f456f1f89d"},
-    {file = "ydb-3.3.6.tar.gz", hash = "sha256:5ed426e9373ca53d296a0a2ef7b40dc75c420e711a6e32a5996767f456f1f89d"},
+    {file = "ydb-3.5.0-py2.py3-none-any.whl", hash = "sha256:6c0fab5b1ccdbd515c8deff902ea474cc983f5e7bddb908e40d8b47a9330aff0"},
+    {file = "ydb-3.5.0-py2.py3-none-any.whl", hash = "sha256:6c0fab5b1ccdbd515c8deff902ea474cc983f5e7bddb908e40d8b47a9330aff0"},
+    {file = "ydb-3.5.0.tar.gz", hash = "sha256:0b39057897847b02e89b96a3c2578030bb94912381ffc64d11e4234ba3144263"},
+    {file = "ydb-3.5.0.tar.gz", hash = "sha256:0b39057897847b02e89b96a3c2578030bb94912381ffc64d11e4234ba3144263"},
 ]
 
 [package.dependencies]
@@ -9865,4 +9863,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "4f82e6610e02c841b03bb1c9d842371052d5e6840b66697aebee129286520ba9"
+content-hash = "72ec8f07a566f0b743fb95ae725ab88ebe92c449110a22db8c7ba1608d749b1a"
