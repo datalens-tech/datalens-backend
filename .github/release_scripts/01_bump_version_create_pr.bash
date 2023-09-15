@@ -7,8 +7,10 @@ export PROJECT_ROOT=$(realpath "${HERE}/../..")
 
 AUTO_BAKE_TARGETS_SPACE_SEPARATED="${AUTO_BAKE_TARGETS_SPACE_SEPARATED}"
 GIT_CURRENT_BRANCH=${GIT_CURRENT_BRANCH}
-PR_URL_FILE_LOCATION=${PR_URL_FILE_LOCATION}
 GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY}
+
+GH_TOKEN_MAIN=${GH_TOKEN_MAIN}
+GH_TOKEN_FOR_PR_APPROVE=${GH_TOKEN_FOR_PR_APPROVE}
 
 _GIT_CURRENT_BRANCH_FROM_GIT="$(git rev-parse --abbrev-ref HEAD)"
 
@@ -33,6 +35,23 @@ git push --set-upstream origin "${NEW_BRANCH_NAME}"
 
 # Creating PR
 PR_URL=$(gh pr create --fill --base "${GIT_CURRENT_BRANCH}" --body "Releasing version ${NEW_VERSION}")
+# Approve PR with another robot
+GH_TOKEN="${GH_TOKEN_MAIN}" gh pr review -a "${PR_URL}"
+# Merge PR
+GH_TOKEN="${GH_TOKEN_FOR_PR_APPROVE}" gh pr merge -s "${PR_URL}"
+# Report PR
 echo "${PR_URL}" >> "${GITHUB_STEP_SUMMARY}"
-echo "${PR_URL}"
-echo "${PR_URL}" > "${PR_URL_FILE_LOCATION}"
+
+#
+# Fetch commit SHA for merged PR
+MERGED_PR_COMMIT_SHA=$(gh pr view --json mergeCommit "${PR_URL}" | jq .mergeCommit.oid -r)
+
+git fetch
+git checkout "${MERGED_PR_COMMIT_SHA}"
+
+# Extract version from .bumpversion.cfg and cut patch
+NEW_VERSION_MAJ_MIN="$(python -c "import configparser; config = configparser.ConfigParser(); config.read('.bumpversion.cfg'); print('.'.join(config.get('bumpversion', 'current_version').split('.')[:-1]))")"
+RELEASE_BRANCH_NAME="release/${NEW_VERSION_MAJ_MIN}"
+
+git checkout -b "${RELEASE_BRANCH_NAME}"
+git push --set-upstream origin "${RELEASE_BRANCH_NAME}"

@@ -36,18 +36,10 @@ jobs:
         run: |
           git config --global user.name "${CI_COMMIT_AUTHOR}"
           git config --global user.email "username@users.noreply.github.com"
-      - name: "Bump version & create PR"
+      - name: "Bump version"
         env:
           GIT_CURRENT_BRANCH: "${{ github.ref_name }}"
-          PR_URL_FILE_LOCATION: "./bump_version_pr_url.txt"
           AUTO_BAKE_TARGETS_SPACE_SEPARATED: ${{ github.event.inputs.auto_build_targets }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN_MAIN: "${{ github.token }}"
+          GH_TOKEN_FOR_PR_APPROVE: "${{ secrets.APPROVE_PR_TOKEN }}"
         run: bash .github/release_scripts/01_bump_version_create_pr.bash
-      - name: "Approve PR"
-        env:
-          GH_TOKEN: "${{ secrets.APPROVE_PR_TOKEN }}"
-        run: gh pr review -a "$(cat ./bump_version_pr_url.txt)"
-      - name: "Merge PR"
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh pr merge -s "$(cat ./bump_version_pr_url.txt)"
