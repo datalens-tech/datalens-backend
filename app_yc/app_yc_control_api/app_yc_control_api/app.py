@@ -76,6 +76,7 @@ def create_uwsgi_app() -> flask.Flask:
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
+        fallback_cfg_resolver=fallback_resolver,
     )
     uwsgi_app = create_app(settings, connectors_settings)
 

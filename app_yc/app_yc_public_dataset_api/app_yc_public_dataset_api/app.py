@@ -56,6 +56,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
+        fallback_cfg_resolver=fallback_resolver,
     )
     configure_logging(
         app_name=settings.app_name,
