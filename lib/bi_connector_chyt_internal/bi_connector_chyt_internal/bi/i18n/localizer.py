@@ -23,3 +23,6 @@ CONFIGS = [
 @attr.s
 class Translatable(BaseTranslatable):
     domain: str = attr.ib(default=DOMAIN)
+
+
+label_chyt_group = Translatable('label_connector-ch_over_yt_group')

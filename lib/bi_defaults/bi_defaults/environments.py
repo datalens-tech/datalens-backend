@@ -27,6 +27,7 @@ from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
 DOMAIN_BI_API_LIB_YA = 'bi_api_lib_ya'
 DOMAIN_YC_CONTROL_API = 'app_yc_control_api'
+DOMAIN_CHYT_INTERNAL = 'bi_connector_chyt_internal'
 
 
 class InstallationBase(LegacyDefaults):
@@ -276,7 +277,10 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
                 connectors=[
                     ConnectorContainerSettings(
                         alias='chyt_connectors',
-                        title_translatable=TranslatableSettings(text='label_connector-ch_over_yt'),
+                        title_translatable=TranslatableSettings(
+                            text='label_connector-ch_over_yt_group',
+                            domain=DOMAIN_CHYT_INTERNAL
+                        ),
                         includes=[
                             ConnectorSettings(conn_type='ch_over_yt'),
                             ConnectorSettings(conn_type='ch_over_yt_user_auth'),
@@ -399,7 +403,10 @@ class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonI
                 connectors=[
                     ConnectorContainerSettings(
                         alias='chyt_connectors',
-                        title_translatable=TranslatableSettings(text='label_connector-ch_over_yt'),
+                        title_translatable=TranslatableSettings(
+                            text='label_connector-ch_over_yt_group',
+                            domain=DOMAIN_CHYT_INTERNAL
+                        ),
                         includes=[
                             ConnectorSettings(conn_type='ch_over_yt'),
                             ConnectorSettings(conn_type='ch_over_yt_user_auth'),
