@@ -47,7 +47,7 @@ echo "${PR_URL}" >> "${GITHUB_STEP_SUMMARY}"
 MERGED_PR_COMMIT_SHA=""
 
 while [[ -z "${MERGED_PR_COMMIT_SHA}" || "${MERGED_PR_COMMIT_SHA}" = "null" ]]; do
-    MERGED_PR_COMMIT_SHA=$(gh pr view --json mergeCommit "${PR_URL}" | jq .mergeCommit.oid -r)
+    MERGED_PR_COMMIT_SHA=$(GH_TOKEN="${GH_TOKEN_MAIN}" gh pr view --json mergeCommit "${PR_URL}" | jq .mergeCommit.oid -r)
     if [[ -z "${MERGED_PR_COMMIT_SHA}" || "${MERGED_PR_COMMIT_SHA}" = "null" ]]; then
       echo "Got no merged PR commit SHA: ${MERGED_PR_COMMIT_SHA}. Retrying..."
       sleep 1
