@@ -127,7 +127,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
 
     @staticmethod
     def _is_local_overrides_class(supcls):
-        if supcls.__module__.startswith("bi_"):
+        if supcls.__module__.startswith("dl_") or supcls.__module__.startswith("bi_"):
             return True
         if supcls.__module__.startswith("tests") or supcls.__module__.endswith("_tests"):
             return True
