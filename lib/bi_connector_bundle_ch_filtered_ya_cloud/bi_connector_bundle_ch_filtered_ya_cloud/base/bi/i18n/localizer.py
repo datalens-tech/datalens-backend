@@ -4,8 +4,10 @@ import attr
 
 from bi_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
 
+import bi_connector_bundle_ch_filtered_ya_cloud as package
 
-DOMAIN = 'bi_connector_bundle_ch_filtered_ya_cloud'
+
+DOMAIN = f'{package.__name__}'
 CONFIGS = [
     TranslationConfig(
         path=os.path.relpath(os.path.join(os.path.dirname(__file__), '../../../locales')),

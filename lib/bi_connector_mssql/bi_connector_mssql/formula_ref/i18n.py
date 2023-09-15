@@ -4,8 +4,9 @@ import attr
 
 from bi_i18n.localizer_base import TranslationConfig, Translatable as BaseTranslatable
 
+import bi_connector_mssql as package
 
-DOMAIN = 'bi_formula_ref_bi_connector_mssql'
+DOMAIN = f'bi_formula_ref_{package.__name__}'
 
 _LOCALE_DIR = os.path.join(os.path.dirname(__file__), '..', 'locales')
 

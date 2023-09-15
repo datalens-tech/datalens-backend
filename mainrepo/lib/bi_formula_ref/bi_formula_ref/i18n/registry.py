@@ -8,10 +8,11 @@ from bi_i18n.localizer_base import (
     Translatable,
     TranslationConfig,
 )
+import bi_formula_ref as package
 
 _LOCALIZATION_CONFIGS: set[TranslationConfig] = set()
 
-DOMAIN = "bi_formula_ref_bi_formula_ref"
+DOMAIN = f'{package.__name__}_{package.__name__}'
 
 
 def register_translation_configs(config: Iterable[TranslationConfig]) -> None:

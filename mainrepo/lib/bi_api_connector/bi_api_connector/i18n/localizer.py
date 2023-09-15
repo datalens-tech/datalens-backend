@@ -5,7 +5,10 @@ import attr
 from bi_i18n.localizer_base import Translatable as BaseTranslatable
 from bi_i18n.localizer_base import TranslationConfig
 
-DOMAIN = "bi_api_connector"
+import bi_api_connector as package
+
+
+DOMAIN = f'{package.__name__}'
 CONFIGS = [
     TranslationConfig(
         path=os.path.relpath(os.path.join(os.path.dirname(__file__), "../locales")),
