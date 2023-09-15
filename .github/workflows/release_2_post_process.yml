@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: [ self-hosted, linux ]
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.title, 'releasing version ')
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/dl_releaser:latest"
       credentials:
