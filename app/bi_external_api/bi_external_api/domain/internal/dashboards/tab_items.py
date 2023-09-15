@@ -4,7 +4,7 @@ import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
-from . import TabItemDataWidget
+from .tab_item_data_widget import TabItemDataWidget
 from .enums import TabItemType
 from .tab_item_data import TabItemData, TabItemDataText, TabItemDataTitle
 from .tab_item_data_control import ControlData
