@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import re
 from typing import (
+    Callable,
     Mapping,
     Optional,
     Sequence,
@@ -87,10 +88,16 @@ class RepositoryManager:
     def _replace_imports(self, old_import_name: str, new_import_name: str) -> list[Path]:
         """Replace imports in all project files, return list of updated files"""
 
+        regex, repl = self._make_regex_and_repl_for_sub(
+            old_str=old_import_name,
+            new_str=new_import_name,
+            allow_dash=True,  # dash can be next to the module name
+        )
+
         updated_files: list[Path] = []
         for file_path in self.repository_navigator.recurse_files_with_import(old_import_name):
             # TODO: Refactor replacement to work by finding the imports in the module AST
-            self.fs_editor.replace_text_in_file(file_path, old_import_name, new_import_name)
+            self.fs_editor.replace_regex_in_file(file_path=file_path, regex=regex, repl=repl)
             updated_files.append(file_path)
 
         return updated_files
@@ -196,6 +203,33 @@ class RepositoryManager:
         # Register package
         self._register_package(package_info=package_info)
 
+    def _make_regex_and_repl_for_sub(
+        self,
+        old_str: str,
+        new_str: str,
+        allow_dash: bool = True,
+    ) -> tuple[re.Pattern, Callable[[re.Match], str]]:
+        """
+        Generate a tuple whose contains can be used as parameters for re.sub.
+        Use this to replace module or package names in files
+        """
+
+        def _repl_mod_name(match: re.Match) -> str:
+            return (
+                match.string[match.start() : match.start("mod_name")]
+                + new_str
+                + match.string[match.end("mod_name") : match.end()]
+            )
+
+        regex: re.Pattern
+        if allow_dash:
+            assert "-" not in old_str and "-" not in new_str
+            regex = re.compile(rf"(^|[^\w])(?P<mod_name>{re.escape(old_str)})($|[^\w])")
+        else:
+            regex = re.compile(rf"(^|[^\w\-])(?P<mod_name>{re.escape(old_str)})($|[^\w\-])")
+
+        return regex, _repl_mod_name
+
     def _rename_package_internals(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
         new_pkg_dir = new_package_info.abs_path
 
@@ -216,16 +250,27 @@ class RepositoryManager:
             re.compile(r".*\.xlsx"),
         )
         for boilerplate_mod_name, package_mod_name in zip(old_package_info.module_names, new_package_info.module_names):
-            self.fs_editor.replace_text_in_dir(
-                old_text=boilerplate_mod_name,
-                new_text=package_mod_name,
+            regex, repl = self._make_regex_and_repl_for_sub(
+                old_str=boilerplate_mod_name,
+                new_str=package_mod_name,
+                allow_dash=True,  # dash can be next to the module name
+            )
+            self.fs_editor.replace_regex_in_dir(
+                regex=regex,
+                repl=repl,
                 path=new_pkg_dir,
                 mask_blacklist=mask_blacklist,
             )
 
-        self.fs_editor.replace_text_in_dir(
-            old_text=old_package_info.package_reg_name,
-            new_text=new_package_info.package_reg_name,
+        # add `-` to the regex
+        regex, repl = self._make_regex_and_repl_for_sub(
+            old_str=old_package_info.package_reg_name,
+            new_str=new_package_info.package_reg_name,
+            allow_dash=False,
+        )
+        self.fs_editor.replace_regex_in_dir(
+            regex=regex,
+            repl=repl,
             path=new_pkg_dir,
             mask_blacklist=mask_blacklist,
         )

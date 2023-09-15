@@ -60,13 +60,27 @@ class FilesystemEditor(abc.ABC):
         self._validate_paths(file_path)
         self._replace_text_in_file(file_path=file_path, old_text=old_text, new_text=new_text)
 
-    def _replace_text_in_dir(
+    def _replace_regex_in_file(
         self,
-        old_text: str,
-        new_text: str,
+        file_path: Path,
+        regex: re.Pattern,
+        repl: Callable[[re.Match], str],
+    ) -> None:
+        self.replace_file_content(
+            file_path,
+            replace_callback=lambda text: regex.sub(repl, text),
+        )
+
+    @final
+    def replace_regex_in_file(self, file_path: Path, regex: re.Pattern, repl: Callable[[re.Match], str]) -> None:
+        self._validate_paths(file_path)
+        self._replace_regex_in_file(file_path=file_path, regex=regex, repl=repl)
+
+    def _iter_files(
+        self,
         path: Path,
         mask_blacklist: Collection[re.Pattern] = (),
-    ) -> None:
+    ) -> Generator[Path, None, None]:
         for file_path in path.rglob("*/"):
             if file_path.is_file():
                 matches_blacklist = False
@@ -76,7 +90,17 @@ class FilesystemEditor(abc.ABC):
                 if matches_blacklist:
                     continue
 
-                self.replace_text_in_file(file_path, old_text=old_text, new_text=new_text)
+                yield file_path
+
+    def _replace_text_in_dir(
+        self,
+        old_text: str,
+        new_text: str,
+        path: Path,
+        mask_blacklist: Collection[re.Pattern] = (),
+    ) -> None:
+        for file_path in self._iter_files(path=path, mask_blacklist=mask_blacklist):
+            self.replace_text_in_file(file_path, old_text=old_text, new_text=new_text)
 
     @final
     def replace_text_in_dir(
@@ -88,6 +112,27 @@ class FilesystemEditor(abc.ABC):
     ) -> None:
         self._validate_paths(path)
         self._replace_text_in_dir(old_text=old_text, new_text=new_text, path=path, mask_blacklist=mask_blacklist)
+
+    def _replace_regex_in_dir(
+        self,
+        path: Path,
+        regex: re.Pattern,
+        repl: Callable[[re.Match], str],
+        mask_blacklist: Collection[re.Pattern] = (),
+    ) -> None:
+        for file_path in self._iter_files(path=path, mask_blacklist=mask_blacklist):
+            self.replace_regex_in_file(file_path, regex=regex, repl=repl)
+
+    @final
+    def replace_regex_in_dir(
+        self,
+        path: Path,
+        regex: re.Pattern,
+        repl: Callable[[re.Match], str],
+        mask_blacklist: Collection[re.Pattern] = (),
+    ) -> None:
+        self._validate_paths(path)
+        self._replace_regex_in_dir(path=path, regex=regex, repl=repl, mask_blacklist=mask_blacklist)
 
     @abc.abstractmethod
     def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
