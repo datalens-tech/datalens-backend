@@ -59,7 +59,7 @@ git fetch
 git checkout "${MERGED_PR_COMMIT_SHA}"
 
 # Extract version from .bumpversion.cfg and cut patch
-NEW_VERSION_MAJ_MIN="$(python -c "import configparser; config = configparser.ConfigParser(); config.read('.bumpversion.cfg'); print('.'.join(config.get('bumpversion', 'current_version').split('.')[:-1]))")"
+NEW_VERSION_MAJ_MIN="$(python3 -c "import configparser; config = configparser.ConfigParser(); config.read('.bumpversion.cfg'); print('.'.join(config.get('bumpversion', 'current_version').split('.')[:-1]))")"
 RELEASE_BRANCH_NAME="release/${NEW_VERSION_MAJ_MIN}"
 
 echo "Creating branch ${RELEASE_BRANCH_NAME}"
