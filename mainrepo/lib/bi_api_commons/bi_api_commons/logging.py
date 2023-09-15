@@ -150,7 +150,7 @@ def log_request_end_extended(
     user_id: Optional[str] = None,
     username: Optional[str] = None,
     # extra extra for when they're not in the context.
-    # TODO: tenant_id (folder_id)
+    # TODO: tenant_id
     request_id: Optional[str] = None,
     endpoint_code: Optional[str] = None,
 ) -> None:

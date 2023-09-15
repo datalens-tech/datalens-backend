@@ -16,7 +16,6 @@ from bi_api_commons.client.base import (
     Req,
     Resp,
 )
-import bi_api_commons.error_messages
 import bi_api_commons.exc
 
 LOGGER = logging.getLogger(__name__)

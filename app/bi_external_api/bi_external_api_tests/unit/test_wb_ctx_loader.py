@@ -2,7 +2,6 @@ import pytest
 from aiohttp import web
 from aiohttp.web_response import json_response
 
-import bi_api_commons.error_messages
 import bi_api_commons.exc
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_external_api.internal_api_clients import exc_api

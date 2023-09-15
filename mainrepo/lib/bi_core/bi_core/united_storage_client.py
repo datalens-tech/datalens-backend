@@ -754,7 +754,7 @@ class UStorageClient(UStorageClientBase):
         :param scope:
         :param entry_type:
         :param meta: Filter entries by "meta" section values.
-        :param all_tenants: Look up across all folders. False by default.
+        :param all_tenants: Look up across all tenants. False by default.
         :param include_data: Return full US entry data. False by default.
         :param ids: Filter entries by uuid.
         :param creation_time: Filter entries by creation_time. Available filters: eq, ne, gt, gte, lt, lte

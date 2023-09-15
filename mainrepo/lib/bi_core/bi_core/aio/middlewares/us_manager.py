@@ -38,11 +38,11 @@ def public_usm_workaround_middleware(
 ) -> AIOHTTPMiddleware:
     """
     This is workaround for the following public API issues:
-     1. We have no explicit folder ID in request
+     1. We have no explicit tenant ID in request
      2. Materialization connection is not public
 
-    For issue 1: middleware fetches dataset or connection from US and pick folder ID from response
-    For issue 2: middleware fetches materialization config (with US master token) for given folder
+    For issue 1: middleware fetches dataset or connection from US and pick tenant ID from response
+    For issue 2: middleware fetches materialization config (with US master token) for given tenant
       and stores it in DLRequest
 
     This middleware works with temp (uncommitted) RCI.
@@ -72,7 +72,7 @@ def public_usm_workaround_middleware(
 
         rci = dl_request.temp_rci
 
-        # Fetching dataset or connection & determining folder id
+        # Fetching dataset or connection & determining tenant id
         # Here we know that we need US manager for request
         entry_id = next(
             dl_request.request.match_info[match_info_code]

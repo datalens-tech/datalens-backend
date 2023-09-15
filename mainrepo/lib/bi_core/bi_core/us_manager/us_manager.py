@@ -161,10 +161,10 @@ class USManagerBase:
             entry=entry, us_manager=self, service_registry=service_registry
         )
 
-    # TODO FIX: Prevent saving entries with folder ID that doesn't match current folder ID
+    # TODO FIX: Prevent saving entries with tenant ID that doesn't match current tenant ID
     def set_tenant_override(self, tenant: TenantDef) -> None:
         if not self._us_auth_context.is_tenant_id_mutable():
-            raise AssertionError("Folder ID might be set only for US manager with master US auth context")
+            raise AssertionError("Tenant ID might be set only for US manager with master US auth context")
         self._us_client.set_tenant_override(tenant)
 
     @classmethod
