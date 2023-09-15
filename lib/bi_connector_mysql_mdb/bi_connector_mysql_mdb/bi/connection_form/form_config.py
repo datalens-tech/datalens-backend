@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, MysqlConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -19,6 +19,7 @@ from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_se
 
 from bi_connector_mysql.bi.connection_form.form_config import MySQLConnectionFormFactory
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
+from bi_connector_mysql_mdb.core.settings import MysqlConnectorSettings
 
 
 class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):

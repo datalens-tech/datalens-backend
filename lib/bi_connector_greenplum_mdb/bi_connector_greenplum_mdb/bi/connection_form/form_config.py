@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, GreenplumConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -19,6 +19,7 @@ from bi_api_connector.form_config.models.rows.base import FormRow
 
 from bi_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
 from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
+from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
 
 
 class GreenplumMDBConnectionFormFactory(GreenplumConnectionFormFactory):

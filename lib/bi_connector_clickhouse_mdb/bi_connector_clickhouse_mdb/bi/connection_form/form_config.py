@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, ClickHouseConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -20,6 +20,7 @@ from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_se
 
 from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
+from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
 
 
 class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):

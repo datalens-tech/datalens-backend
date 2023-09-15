@@ -22,6 +22,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.settings import CHFrozenD
 from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from bi_connector_chyt.core.settings import CHYTConnectorSettings
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
@@ -32,11 +33,14 @@ from bi_connector_clickhouse.core.clickhouse.constants import (
     CONNECTION_TYPE_CLICKHOUSE,
     SOURCE_TYPE_CH_TABLE,
 )
-from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
-from bi_connector_metrica.core.settings import MetricaConnectorSettings, AppmetricaConnectorSettings
-from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
+from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
 from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
+from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
+from bi_connector_metrica.core.settings import MetricaConnectorSettings, AppmetricaConnectorSettings
+from bi_connector_mysql_mdb.core.settings import MysqlConnectorSettings
+from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings
+from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 from bi_connector_yql.core.ydb.settings import YDBConnectorSettings
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.settings import YQConnectorSettings
@@ -54,12 +58,6 @@ from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry, DefaultBiApiServiceRegistry
 from bi_configs import env_var_definitions
-from bi_configs.connectors_settings import (
-    ClickHouseConnectorSettings,
-    GreenplumConnectorSettings,
-    MysqlConnectorSettings,
-    PostgresConnectorSettings,
-)
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig

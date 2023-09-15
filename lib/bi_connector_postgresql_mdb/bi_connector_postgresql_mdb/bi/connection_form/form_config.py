@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
-from bi_configs.connectors_settings import ConnectorSettingsBase, PostgresConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 
@@ -20,6 +20,7 @@ from bi_api_connector.form_config.models.rows.base import FormRow
 from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
 
 from bi_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
+from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings
 
 
 class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):

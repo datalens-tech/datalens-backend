@@ -2,7 +2,7 @@ from typing import Optional
 
 import pytest
 
-from bi_configs.connectors_settings import ConnectorSettingsBase, GreenplumConnectorSettings
+from bi_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_api_commons.base_models import TenantDef
 from bi_api_commons_ya_cloud.models import TenantYCFolder, TenantYCOrganization
@@ -11,6 +11,7 @@ from bi_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 
 from bi_connector_greenplum.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_GREENPLUM_CONFIGS
 from bi_connector_greenplum_mdb.bi.connection_form.form_config import GreenplumMDBConnectionFormFactory
+from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
 
 
 class TestGreenplumMDBConnectionForm(ConnectionFormTestBase):

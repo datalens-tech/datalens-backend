@@ -1,6 +1,14 @@
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase, ClickHouseConnectorSettings
+import attr
+
+from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from bi_configs.settings_loaders.meta_definition import s_attrib
 
 from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
+
+
+@attr.s(frozen=True)
+class ClickHouseConnectorSettings(ConnectorSettingsBase):
+    USE_MDB_CLUSTER_PICKER: bool = s_attrib("USE_MDB_CLUSTER_PICKER", missing=False)  # type: ignore
 
 
 def clickhouse_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
