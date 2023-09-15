@@ -18,6 +18,14 @@ import attr
 from frozendict import frozendict
 from tomlkit import inline_table
 
+_CLONABLE_TV = TypeVar("_CLONABLE_TV", bound="_Clonable")
+
+
+@attr.s(frozen=True)
+class _Clonable(abc.ABC):
+    def clone(self: _CLONABLE_TV, **kwargs: Any) -> _CLONABLE_TV:
+        return attr.evolve(self, **kwargs)
+
 
 class EntityReferenceType(Enum):
     package_type = auto()
@@ -32,11 +40,8 @@ class EntityReference:
     name: str = attr.ib(kw_only=True)
 
 
-_REQ_SPEC_TV = TypeVar("_REQ_SPEC_TV", bound="ReqPackageSpec")
-
-
 @attr.s(frozen=True)
-class ReqPackageSpec(abc.ABC):
+class ReqPackageSpec(_Clonable):
     package_name: str = attr.ib(kw_only=True)
 
     @abc.abstractmethod
@@ -50,9 +55,6 @@ class ReqPackageSpec(abc.ABC):
     @abc.abstractmethod
     def to_toml_value(self) -> Any:
         raise NotImplementedError
-
-    def clone(self: _REQ_SPEC_TV, **kwargs: Any) -> _REQ_SPEC_TV:
-        return attr.evolve(self, **kwargs)
 
 
 @attr.s(frozen=True)
@@ -105,7 +107,13 @@ class RequirementList:
 
 
 @attr.s(frozen=True)
-class PackageInfo:
+class LocaleDomainSpec(_Clonable):
+    domain_name: str = attr.ib(kw_only=True)
+    scan_paths: tuple[Path, ...] = attr.ib(kw_only=True)
+
+
+@attr.s(frozen=True)
+class PackageInfo(_Clonable):
     package_type: str = attr.ib(kw_only=True)
     package_reg_name: str = attr.ib(kw_only=True)
     abs_path: Path = attr.ib(kw_only=True)
@@ -113,6 +121,7 @@ class PackageInfo:
     test_dirs: tuple[str, ...] = attr.ib(kw_only=True, default=())
     requirement_lists: frozendict[str, RequirementList] = attr.ib(kw_only=True, default=frozendict())
     implicit_deps: frozenset[str] = attr.ib(kw_only=True, default=frozenset())
+    i18n_domains: tuple[LocaleDomainSpec] = attr.ib(kw_only=True, default=frozenset())
 
     @property
     def toml_path(self) -> Path:
@@ -148,9 +157,6 @@ class PackageInfo:
 
     def get_relative_path(self, base_path: Path) -> Path:
         return Path(os.path.relpath(self.abs_path, base_path))
-
-    def clone(self, **kwargs: Any) -> PackageInfo:
-        return attr.evolve(self, **kwargs)
 
     def is_dependent_on(
         self,

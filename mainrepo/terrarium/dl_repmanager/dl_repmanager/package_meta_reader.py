@@ -14,6 +14,7 @@ import attr
 import tomlkit
 
 from dl_repmanager.fs_editor import FilesystemEditor
+from dl_repmanager.primitives import LocaleDomainSpec
 from dl_repmanager.toml_tools import (
     TOMLIOFactory,
     TOMLReaderBase,
@@ -69,15 +70,17 @@ class PackageMetaReader:
 
             yield item_as_dict
 
-    def get_i18n_domains(self) -> dict[str, list[str]]:
-        result: dict[str, list[str]] = {}
+    def get_i18n_domains(self) -> tuple[LocaleDomainSpec, ...]:
+        result: set[LocaleDomainSpec] = set()
         for domain, item_data in self._toml_reader.iter_section_items(self._SECTION_NAME_I18N_DOMAINS, strict=False):
             domain_str = str(domain).strip()
-            result[domain_str] = []
+            paths: list[Path] = []
             for path_data in item_data:
-                result[domain_str].append(str(path_data["path"]).strip())
+                paths.append(Path(str(path_data["path"]).strip()))
 
-        return result
+            result.add(LocaleDomainSpec(domain_name=domain_str, scan_paths=tuple(paths)))
+
+        return tuple(result)
 
     def get_implicit_dependencies(self) -> list[str]:
         meta_section = self._toml_reader.get_section(self._SECTION_NAME_META, strict=False)

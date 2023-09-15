@@ -1,3 +1,4 @@
+import itertools
 import os
 from pathlib import Path
 import re
@@ -14,6 +15,7 @@ from dl_repmanager.fs_editor import FilesystemEditor
 from dl_repmanager.package_index import PackageIndex
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.primitives import (
+    LocaleDomainSpec,
     LocalReqPackageSpec,
     PackageInfo,
     ReqPackageSpec,
@@ -156,19 +158,45 @@ class RepositoryManager:
         # Remove the directory
         self.fs_editor.remove_path(package_info.abs_path)
 
+    def _generate_info_for_renamed_package(
+        self,
+        old_package_info: PackageInfo,
+        new_package_module_name: str,
+    ) -> PackageInfo:
+        """Update all paths, locale domains, etc."""
+
+        # Generate i18n domains
+        new_i18n_domain_list: list[LocaleDomainSpec] = []
+        for old_domain_spec in old_package_info.i18n_domains:
+            new_domain_spec = old_domain_spec.clone(
+                domain_name=old_domain_spec.domain_name.replace(
+                    old_package_info.single_module_name,
+                    new_package_module_name,
+                ),
+            )
+            new_i18n_domain_list.append(new_domain_spec)
+
+        # Generate new path
+        new_package_abs_path = old_package_info.abs_path.parent / new_package_module_name
+
+        new_package_info = old_package_info.clone(
+            package_reg_name=self.package_generator.generate_new_package_reg_name(new_package_module_name),
+            module_names=(new_package_module_name,),
+            test_dirs=(self.package_generator.generate_default_test_dir_name(new_package_module_name),),
+            abs_path=new_package_abs_path,
+            i18n_domains=tuple(new_i18n_domain_list),
+        )
+        return new_package_info
+
     def rename_package(self, old_package_module_name: str, new_package_module_name: str) -> PackageInfo:
         old_package_info = self.package_index.get_package_info_from_module_name(old_package_module_name)
 
         if new_package_module_name == old_package_module_name:
             return old_package_info
 
-        # Resolve all the new paths and names
-        new_package_abs_path = old_package_info.abs_path.parent / new_package_module_name
-        new_package_info = old_package_info.clone(
-            package_reg_name=self.package_generator.generate_new_package_reg_name(new_package_module_name),
-            module_names=(new_package_module_name,),
-            test_dirs=(self.package_generator.generate_default_test_dir_name(new_package_module_name),),
-            abs_path=new_package_abs_path,
+        new_package_info = self._generate_info_for_renamed_package(
+            old_package_info,
+            new_package_module_name=new_package_module_name,
         )
 
         # Update it
@@ -186,6 +214,11 @@ class RepositoryManager:
         if new_package_info.single_module_name != old_package_info.single_module_name:
             self._rename_package_internals(old_package_info=old_package_info, new_package_info=new_package_info)
             self._replace_imports(old_package_info.single_module_name, new_package_info.single_module_name)
+            self._rename_in_dependent_meta_files(old_package_info=old_package_info, new_package_info=new_package_info)
+
+        # Rename locale files to match the new domain names
+        if new_package_info.i18n_domains != old_package_info.i18n_domains:
+            self._rename_i18n_files(old_package_info=old_package_info, new_package_info=new_package_info)
 
         # Re-register package under new name
         self._re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
@@ -230,6 +263,51 @@ class RepositoryManager:
 
         return regex, _repl_mod_name
 
+    def _rename_i18n_files(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
+        """Rename the locale files in accordance with the new domain names"""
+        assert len(new_package_info.i18n_domains) == len(old_package_info.i18n_domains)
+        zipped_domain_pairs = zip(old_package_info.i18n_domains, new_package_info.i18n_domains)
+        for old_domain_spec, new_domain_spec in zipped_domain_pairs:
+            if new_domain_spec.domain_name == old_domain_spec.domain_name:
+                continue
+
+            # Update it in pyproject.toml
+            regex, repl = self._make_regex_and_repl_for_sub(
+                old_str=old_domain_spec.domain_name,
+                new_str=new_domain_spec.domain_name,
+                allow_dash=True,
+            )
+            self.fs_editor.replace_regex_in_file(regex=regex, repl=repl, file_path=new_package_info.toml_path)
+
+            # Rename the files
+            locales_path = new_package_info.abs_path / new_package_info.single_module_name / "locales"
+            for locale_dir in locales_path.iterdir():
+                old_path_base = locales_path / locale_dir.name / "LC_MESSAGES" / old_domain_spec.domain_name
+                new_path_base = locales_path / locale_dir.name / "LC_MESSAGES" / new_domain_spec.domain_name
+                for ext in ("po", "mo"):
+                    old_path = Path(f"{str(old_path_base)}.{ext}")
+                    new_path = Path(f"{str(new_path_base)}.{ext}")
+                    self.fs_editor.move_path(old_path=old_path, new_path=new_path)
+
+    def _rename_in_dependent_meta_files(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
+        meta_files = (
+            "pyproject.toml",
+            "README.md",
+        )
+        for other_package_info in self.package_index.list_package_infos():
+            if other_package_info == old_package_info:
+                continue
+            regex, repl = self._make_regex_and_repl_for_sub(
+                old_str=old_package_info.single_module_name,
+                new_str=new_package_info.single_module_name,
+                allow_dash=True,  # dash can be next to the module name
+            )
+            for meta_file_name in meta_files:
+                meta_file_path = other_package_info.abs_path / meta_file_name
+                if not meta_file_path.exists():
+                    continue
+                self.fs_editor.replace_regex_in_file(regex=regex, repl=repl, file_path=meta_file_path)
+
     def _rename_package_internals(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
         new_pkg_dir = new_package_info.abs_path
 
@@ -249,7 +327,14 @@ class RepositoryManager:
             re.compile(r".*\.mo"),
             re.compile(r".*\.xlsx"),
         )
-        for boilerplate_mod_name, package_mod_name in zip(old_package_info.module_names, new_package_info.module_names):
+        all_zipped_modules = itertools.chain(
+            zip(old_package_info.module_names, new_package_info.module_names),
+            zip(old_package_info.test_dirs, new_package_info.test_dirs),
+        )
+        for boilerplate_mod_name, package_mod_name in all_zipped_modules:
+            if boilerplate_mod_name == "tests" or package_mod_name == "tests":
+                # FIXME: Do something
+                continue
             regex, repl = self._make_regex_and_repl_for_sub(
                 old_str=boilerplate_mod_name,
                 new_str=package_mod_name,

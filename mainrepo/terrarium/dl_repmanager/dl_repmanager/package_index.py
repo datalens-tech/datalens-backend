@@ -63,6 +63,7 @@ class PackageIndexBuilder:
     def _load_package_info_from_package_dir(
         self, abs_package_dir_path: Path, default_package_type: str
     ) -> Optional[PackageInfo]:
+        # TODO: Move to a separate class
         toml_path = abs_package_dir_path / "pyproject.toml"
 
         if not toml_path.exists():
@@ -79,6 +80,7 @@ class PackageIndexBuilder:
             module_names = pkg_meta_reader.get_package_module_names()
             package_type = pkg_meta_reader.get_package_type() or default_package_type
             implicit_reqs = frozenset(pkg_meta_reader.get_implicit_dependencies())
+            i18n_domains = pkg_meta_reader.get_i18n_domains()
             if self.load_requirements:
                 for req_list_name in req_list_names:
                     requirement_lists[req_list_name] = RequirementList(
@@ -104,6 +106,7 @@ class PackageIndexBuilder:
             test_dirs=tuple(test_dirs),
             requirement_lists=frozendict(requirement_lists),
             implicit_deps=implicit_reqs,
+            i18n_domains=i18n_domains,
         )
         return package_info
 

@@ -59,8 +59,9 @@ class DlPackageMetaTool:
         """Validate that the tool is being run correctly"""
 
     def list_i18n_domains(self) -> None:
-        for domain, path_list in sorted(self.meta_reader.get_i18n_domains().items()):
-            print(f'{domain}={";".join(path_list)}')
+        for domain_spec in sorted(self.meta_reader.get_i18n_domains(), key=lambda spec: spec.domain_name):
+            paths = [str(path) for path in domain_spec.scan_paths]
+            print(f'{domain_spec.domain_name}={";".join(paths)}')
 
     def sync_mypy_stubs(self, pkg_path: Path, dry_run: bool = True, config_name: str | None = None) -> None:
         base_path = discover_config(pkg_path, config_name or DEFAULT_CONFIG_FILE_NAME).parent
