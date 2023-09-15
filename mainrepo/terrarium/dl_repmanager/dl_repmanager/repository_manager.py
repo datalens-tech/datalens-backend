@@ -36,7 +36,7 @@ class PackageGenerator:
 
     @staticmethod
     def generate_new_package_reg_name(package_name: str) -> str:
-        internal_name = package_name.replace("_", "-")
+        internal_name = package_name.replace("_", "-").replace("dl-", "datalens-")
         return internal_name
 
     @staticmethod
