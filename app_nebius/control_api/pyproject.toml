@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "control_api"
-version = "0.1978.0"
+name = "nebius_control_api"
+version = "0.2000.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@nebius.com>", "Dmitry Nadein nadein@nebius.com"]
 packages = [{ include = "control_api" }]

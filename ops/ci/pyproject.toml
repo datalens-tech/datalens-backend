@@ -274,10 +274,10 @@ yandex-bi-file-uploader-worker-yc = {path = "../../app_yc/app_yc_file_uploader_w
 yandex-bi-integration-tests = {path = "../../ops/bi_integration_tests"}
 
 [tool.poetry.group.nebius_control_api.dependencies]
-control_api = {path = "../../app_nebius/control_api"}
+nebius_control_api = {path = "../../app_nebius/control_api"}
 
 [tool.poetry.group.nebius_data_api.dependencies]
-data_api = {path = "../../app_nebius/data_api"}
+nebius_data_api = {path = "../../app_nebius/data_api"}
 
 
 [tool.poetry.group.dev.dependencies]

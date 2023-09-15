@@ -5,7 +5,7 @@ import os
 keepalive = 80
 timeout = 90
 
-log_config = "/src/gunicorn/gunicorn_logging.ini"
+log_config = "/src/app_nebius/gunicorn/gunicorn_logging.ini"
 bind = "[::]:" + os.environ.get("GUNICORN_LISTEN_PORT", "8080")
 max_requests = int(os.environ.get("GUNICORN_MAX_RQ", "5000"))
 max_requests_jitter = int(os.environ.get("GUNICORN_MAX_RQ_JITTER", "500"))

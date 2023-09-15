@@ -45,7 +45,7 @@ def create_app(
     )
 
 
-def create_uwsgi_app() -> flask.Flask:
+def create_gunicorn_app() -> flask.Flask:
     preload_bi_api_lib()
     settings = load_settings_from_env_with_fallback(ControlPlaneAppSettings)
     load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
@@ -72,4 +72,4 @@ def create_uwsgi_app() -> flask.Flask:
     return app
 
 
-app = create_uwsgi_app()
+app = create_gunicorn_app()
