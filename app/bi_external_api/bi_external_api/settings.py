@@ -2,9 +2,9 @@ from typing import Optional
 
 import attr
 
+from bi_api_lib_ya.app_settings import default_yc_auth_settings, YCAuthSettings
 from bi_configs.enums import AppType
 from bi_configs.settings_loaders.meta_definition import s_attrib
-from bi_configs.settings_submodels import default_yc_auth_settings, YCAuthSettings
 from bi_configs.utils import app_type_env_var_converter
 from bi_external_api.enums import ExtAPIType
 

@@ -5,10 +5,9 @@ import pytest
 
 from bi_configs.enums import AppType
 from bi_configs.rqe import RQEConfig
-from bi_configs.settings_submodels import YCAuthSettings
 
 from bi_core.utils import attrs_evolve_to_subclass
-from bi_api_lib_ya.app_settings import AsyncAppSettings
+from bi_api_lib_ya.app_settings import AsyncAppSettings, YCAuthSettings
 from bi_api_lib.app.data_api.app import DataApiAppFactory
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade

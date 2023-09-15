@@ -11,7 +11,6 @@ from bi_configs.crypto_keys import CryptoKeysConfig
 from bi_configs.rqe import RQEConfig, RQEBaseURL
 from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_configs.settings_loaders.loader_env import EnvSettingsLoader, load_connectors_settings_from_env_with_fallback
-from bi_configs.settings_submodels import YCAuthSettings
 
 from bi_defaults.environments import (
     ExternalTestingInstallation,
@@ -29,7 +28,7 @@ from bi_core.components.ids import FieldIdGeneratorType
 from bi_formula.parser.factory import ParserType
 
 from bi_api_lib.app_settings import RedisSettings, CachesTTLSettings, MDBSettings
-from bi_api_lib_ya.app_settings import AsyncAppSettings
+from bi_api_lib_ya.app_settings import AsyncAppSettings, YCAuthSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
 

@@ -3,7 +3,7 @@ from typing import Optional
 
 import attr
 
-from bi_configs.settings_submodels import YCAuthSettings
+from bi_api_lib_ya.app_settings import YCAuthSettings
 from bi_defaults.environments import CommonExternalInstallation
 
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings

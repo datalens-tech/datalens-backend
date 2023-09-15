@@ -2,7 +2,8 @@ import json
 
 import attr
 
-from bi_configs.settings_submodels import default_yc_auth_settings
+from bi_api_lib_ya.app_settings import default_yc_auth_settings
+
 from bi_configs.utils import app_type_env_var_converter
 
 from bi_file_uploader_api_lib.settings import FileUploaderAPISettings

@@ -15,7 +15,7 @@ from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSett
 from bi_task_processor.processor import DummyTaskProcessorFactory
 from statcommons.logs import LOGMUTATORS
 
-from bi_constants.enums import ConnectionType, ProcessorType
+from bi_constants.enums import ProcessorType
 
 from bi_configs import env_var_definitions
 from bi_configs.rqe import RQEBaseURL, RQEConfig

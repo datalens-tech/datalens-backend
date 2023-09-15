@@ -1,22 +1,47 @@
 from __future__ import annotations
 
 import json
-from typing import Optional, Any
+from typing import Any, Optional, Union
 
 import attr
 
 from bi_configs.enums import AppType, EnvType
+from bi_configs.environments import LegacyDefaults
 from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from bi_configs.settings_loaders.loader_env import NOT_SET
 from bi_configs.settings_loaders.meta_definition import s_attrib
 from bi_configs.settings_loaders.settings_obj_base import SettingsBase
-from bi_configs.settings_submodels import YCAuthSettings, default_yc_auth_settings
 from bi_configs.utils import app_type_env_var_converter, env_type_env_var_converter
 from bi_defaults.environments import CommonInstallation, CommonExternalInstallation
 
 from bi_api_lib.app_settings import AppSettings, DataApiAppSettings, ControlApiAppSettings
 
 from bi_cloud_integration.sa_creds import SACredsMode
+
+
+@attr.s(frozen=True)
+class YCAuthSettings(SettingsBase):
+    YC_AUTHORIZE_PERMISSION: str = s_attrib("AUTHORIZE_PERMISSION")
+    YC_AS_ENDPOINT: str = s_attrib("AS_ENDPOINT")
+    YC_SS_ENDPOINT: Optional[str] = s_attrib("SS_ENDPOINT", missing=None)
+    YC_TS_ENDPOINT: Optional[str] = s_attrib("TS_ENDPOINT", missing=None)
+    YC_API_ENDPOINT_IAM: str = s_attrib("ENDPOINT_IAM", missing=None)
+
+
+def default_yc_auth_settings(
+    cfg: Union[LegacyDefaults, ObjectLikeConfig], app_type: AppType
+) -> Optional[YCAuthSettings]:
+    # TODO: move this values to a separate key
+    if app_type == AppType.CLOUD:
+        assert hasattr(cfg, "YC_AUTHORIZE_PERMISSION")
+        return YCAuthSettings(  # type: ignore  # TODO: fix
+            YC_AUTHORIZE_PERMISSION=cfg.YC_AUTHORIZE_PERMISSION,
+            YC_AS_ENDPOINT=cfg.YC_AS_ENDPOINT,
+            YC_SS_ENDPOINT=cfg.YC_SS_ENDPOINT,
+            YC_TS_ENDPOINT=cfg.YC_TS_ENDPOINT,
+            YC_API_ENDPOINT_IAM=cfg.YC_API_ENDPOINT_IAM,
+        )
+    return None
 
 
 @attr.s(frozen=True)

@@ -16,6 +16,7 @@ from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
@@ -25,7 +26,6 @@ from bi_constants.enums import USAuthMode
 from bi_core.connection_models import ConnectOptions
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
 from bi_core.us_connection_base import ExecutorBasedMixin

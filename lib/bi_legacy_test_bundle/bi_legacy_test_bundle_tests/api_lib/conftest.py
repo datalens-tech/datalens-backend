@@ -53,7 +53,7 @@ from bi_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
     MDBSettings,
 )
-from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings
+from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings, YCAuthSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry, DefaultBiApiServiceRegistry
@@ -61,7 +61,7 @@ from bi_configs import env_var_definitions
 from bi_configs.crypto_keys import get_dummy_crypto_keys_config
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEConfig
-from bi_configs.settings_submodels import S3Settings, GoogleAppSettings, YCAuthSettings
+from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
 from bi_core.loader import CoreLibraryConfig
 
 from bi_db_testing.loader import load_bi_db_testing

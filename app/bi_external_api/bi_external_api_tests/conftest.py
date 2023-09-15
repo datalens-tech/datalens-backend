@@ -15,12 +15,11 @@ from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons.base_models import TenantCommon, NoAuthData
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib_testing_ya.configuration import CONNECTOR_WHITELIST
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings, YCAuthSettings
 from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_configs.enums import AppType, EnvType
 from bi_configs.rqe import RQEBaseURL, RQEConfig
-from bi_configs.settings_submodels import YCAuthSettings
 from bi_constants.enums import USAuthMode
 from bi_core.loader import CoreLibraryConfig
 from bi_core_testing.environment import common_pytest_configure, prepare_united_storage
