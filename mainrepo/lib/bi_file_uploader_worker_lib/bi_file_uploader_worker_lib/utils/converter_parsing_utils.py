@@ -38,10 +38,6 @@ class CsvParsingException(Exception):
     pass
 
 
-class UnknownCellTypeError(Exception):
-    pass
-
-
 DATE_RE = r"""
 (?:
   [1-9]\d{3}-
@@ -106,12 +102,6 @@ TIME_RE = r"""
 [0-5]\d
 (\.\d{1,6})?
 """
-
-
-DATETIME_MID_SPACE_RE = DATE_RE + r"\s" + TIME_RE
-
-
-DATETIME_MID_T_RE = DATE_RE + r"T" + TIME_RE
 
 
 DATETIME_TZ_RE = r"""
