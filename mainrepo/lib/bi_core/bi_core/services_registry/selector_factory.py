@@ -20,7 +20,7 @@ from bi_core.us_manager.local_cache import USEntryBuffer
 from bi_core.utils import FutureRef
 
 if TYPE_CHECKING:
-    from .top_level import ServicesRegistry  # noqa
+    from bi_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -45,11 +45,11 @@ class SelectorFactory(metaclass=abc.ABCMeta):
 
 @attr.s(frozen=True)
 class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
-    _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
+    _services_registry_ref: FutureRef[ServicesRegistry] = attr.ib()
     _created_dataset_selectors: List[DatasetDataSelectorAsyncBase] = attr.ib(factory=list)
 
     @property
-    def services_registry(self) -> "ServicesRegistry":
+    def services_registry(self) -> ServicesRegistry:
         return self._services_registry_ref.ref
 
     @property

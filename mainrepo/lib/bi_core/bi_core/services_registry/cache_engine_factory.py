@@ -15,7 +15,7 @@ from bi_core.data_processing.cache.engine import EntityCacheEngineAsync
 from bi_core.utils import FutureRef
 
 if TYPE_CHECKING:
-    from .top_level import ServicesRegistry  # noqa
+    from bi_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -29,11 +29,11 @@ class CacheEngineFactory(metaclass=abc.ABCMeta):
 
 @attr.s
 class DefaultCacheEngineFactory(CacheEngineFactory):
-    _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
+    _services_registry_ref: FutureRef[ServicesRegistry] = attr.ib()
     cache_save_background: Optional[bool] = attr.ib(default=None)
 
     @property
-    def service_registry(self) -> "ServicesRegistry":
+    def service_registry(self) -> ServicesRegistry:
         return self._services_registry_ref.ref
 
     def get_cache_engine(self, entity_id: Optional[str]) -> Optional[EntityCacheEngineAsync]:

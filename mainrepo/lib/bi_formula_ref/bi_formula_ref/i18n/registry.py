@@ -2,13 +2,13 @@ from typing import Iterable
 
 import attr
 
+import bi_formula_ref as package
 from bi_i18n.localizer_base import (
     Localizer,
     LocalizerLoader,
     Translatable,
     TranslationConfig,
 )
-import bi_formula_ref as package
 
 _LOCALIZATION_CONFIGS: set[TranslationConfig] = set()
 

@@ -23,7 +23,7 @@ class PromQLDialect(default.DefaultDialect):  # type: ignore
 
     @classmethod
     def dbapi(cls):
-        from . import dbapi
+        from bi_sqlalchemy_promql import dbapi  # noqa
 
         return dbapi
 

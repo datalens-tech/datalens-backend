@@ -18,9 +18,8 @@ from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_PO
 from bi_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor
 from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 
-from .test_base import (
-    BaseConnExecutorSet, BaseSchemaSupportedExecutorSet,
-)
+from bi_legacy_test_bundle_tests.core.db.conn_executors.test_base import BaseConnExecutorSet, \
+    BaseSchemaSupportedExecutorSet
 
 
 # noinspection PyMethodMayBeStatic

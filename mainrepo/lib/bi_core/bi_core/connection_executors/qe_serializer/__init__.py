@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .serializer import (
+from bi_core.connection_executors.qe_serializer.serializer import (
     ActionSerializer,
     ResponseTypes,
 )

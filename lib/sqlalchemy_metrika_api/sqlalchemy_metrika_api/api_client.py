@@ -8,13 +8,10 @@ from typing import Optional, List
 from requests.exceptions import RequestException
 from json.decoder import JSONDecodeError
 
-from .exceptions import (  # noqa
-    Error, Warning,
-    InterfaceError, DatabaseError, DataError,
-    OperationalError, IntegrityError, InternalError,
-    ProgrammingError, NotSupportedError,
-    MetrikaApiException, MetrikaHttpApiException,
-    MetrikaApiAccessDeniedException, MetrikaApiObjectNotFoundException,
+from sqlalchemy_metrika_api.exceptions import (  # noqa
+    Error, Warning, InterfaceError, DatabaseError, DataError,
+    OperationalError, IntegrityError, InternalError, ProgrammingError, NotSupportedError, MetrikaApiException,
+    MetrikaHttpApiException, MetrikaApiAccessDeniedException, MetrikaApiObjectNotFoundException,
     ConnectionClosedException, CursorClosedException,
 )
 

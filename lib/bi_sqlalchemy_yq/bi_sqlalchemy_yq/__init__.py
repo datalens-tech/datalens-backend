@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from .base import (
-    BIYQDialect,
-)
+from bi_sqlalchemy_yq.base import BIYQDialect
 
 
 __all__ = (

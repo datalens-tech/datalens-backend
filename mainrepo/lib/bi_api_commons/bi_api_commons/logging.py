@@ -16,9 +16,8 @@ from typing import (
 
 import attr
 
+from bi_api_commons.headers import normalize_header_name
 from bi_app_tools import log
-
-from .headers import normalize_header_name
 
 LOGGER = logging.getLogger(__name__)
 

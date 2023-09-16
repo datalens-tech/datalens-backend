@@ -15,6 +15,7 @@ from bi_api_commons import (
     make_uuid_from_parts,
     request_id_generator,
 )
+from bi_api_commons.aio.middlewares.commons import get_endpoint_code
 from bi_api_commons.aiohttp import aiohttp_wrappers
 from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 from bi_api_commons.base_models import RequestContextInfo
@@ -31,8 +32,6 @@ from bi_api_commons.reporting.profiler import DefaultReportingProfiler
 from bi_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_app_tools import log
 from bi_constants.api_constants import DLHeadersCommon
-
-from .commons import get_endpoint_code
 
 LOGGER = logging.getLogger(__name__)
 

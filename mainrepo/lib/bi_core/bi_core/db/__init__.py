@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from .conversion_base import (
+from bi_core.db.conversion_base import (
     TypeTransformer,
     get_type_transformer,
 )
-from .elements import (
+from bi_core.db.elements import (
     IndexInfo,
     SchemaColumn,
     SchemaInfo,
 )
-from .sa_types import make_sa_type
-from .schema import (
+from bi_core.db.sa_types import make_sa_type
+from bi_core.db.schema import (
     SAMPLE_ID_COLUMN_NAME,
     are_raw_schemas_same,
 )

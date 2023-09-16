@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .top_level import (
+from bi_core.services_registry.top_level import (
     DefaultServicesRegistry,
     ServicesRegistry,
 )

@@ -12,29 +12,31 @@ from typing import (
 
 from marshmallow import Schema
 
-from . import dba_actions as actions
-from . import schema_actions as act_schemas
-from . import schemas_exc as exc_schemas
-from ..adapters.common_base import CommonBaseDirectAdapter
-from ..models.db_adapter_data import RawSchemaInfo
+from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+from bi_core.connection_executors.models.db_adapter_data import RawSchemaInfo
+from bi_core.connection_executors.qe_serializer import (
+    dba_actions,
+    schema_actions,
+    schemas_exc,
+)
 
 ResponseTypes = Union[RawSchemaInfo, List[str], Optional[str], None, bool, int]
 
 
 class ActionSerializer:
-    MAP_ACT_TYPE_SCHEMA_CLS: ClassVar[Dict[Type[actions.RemoteDBAdapterAction], Type[Schema]]] = {
-        actions.ActionExecuteQuery: act_schemas.ActionExecuteQuerySchema,
-        actions.ActionTest: act_schemas.ActionTestSchema,
-        actions.ActionGetDBVersion: act_schemas.ActionGetDBVersionSchema,
-        actions.ActionGetSchemaNames: act_schemas.ActionGetSchemaNamesSchema,
-        actions.ActionGetTables: act_schemas.ActionGetTablesSchema,
-        actions.ActionGetTableInfo: act_schemas.ActionGetTableInfoSchema,
-        actions.ActionIsTableExists: act_schemas.ActionIsTableExistsSchema,
+    MAP_ACT_TYPE_SCHEMA_CLS: ClassVar[Dict[Type[dba_actions.RemoteDBAdapterAction], Type[Schema]]] = {
+        dba_actions.ActionExecuteQuery: schema_actions.ActionExecuteQuerySchema,
+        dba_actions.ActionTest: schema_actions.ActionTestSchema,
+        dba_actions.ActionGetDBVersion: schema_actions.ActionGetDBVersionSchema,
+        dba_actions.ActionGetSchemaNames: schema_actions.ActionGetSchemaNamesSchema,
+        dba_actions.ActionGetTables: schema_actions.ActionGetTablesSchema,
+        dba_actions.ActionGetTableInfo: schema_actions.ActionGetTableInfoSchema,
+        dba_actions.ActionIsTableExists: schema_actions.ActionIsTableExistsSchema,
     }
 
-    EXC_SCHEMA_CLS = exc_schemas.GenericExcSchema
+    EXC_SCHEMA_CLS = schemas_exc.GenericExcSchema
 
-    def serialize_action(self, obj: actions.RemoteDBAdapterAction) -> Dict:
+    def serialize_action(self, obj: dba_actions.RemoteDBAdapterAction) -> Dict:
         schema = self.MAP_ACT_TYPE_SCHEMA_CLS[type(obj)]()
         result = schema.dump(obj)
         result["type"] = type(obj).__qualname__
@@ -44,7 +46,7 @@ class ActionSerializer:
         self,
         data: Dict,
         allowed_dba_classes: FrozenSet[Type[CommonBaseDirectAdapter]],
-    ) -> actions.RemoteDBAdapterAction:
+    ) -> dba_actions.RemoteDBAdapterAction:
         action_cls_qualname = data.pop("type", None)
         action_cls = next(
             filter(lambda clz: clz.__qualname__ == action_cls_qualname, self.MAP_ACT_TYPE_SCHEMA_CLS.keys()), None

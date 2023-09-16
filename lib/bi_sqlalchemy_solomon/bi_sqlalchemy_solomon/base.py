@@ -23,7 +23,7 @@ class SolomonDialect(default.DefaultDialect):  # type: ignore
 
     @classmethod
     def dbapi(cls):
-        from . import dbapi
+        from bi_sqlalchemy_solomon import dbapi
         return dbapi
 
     def get_columns(self, connection, table_name, schema=None, **kw):

@@ -1,23 +1,23 @@
 from __future__ import annotations
 
-from bi_core.raw_data_streaming.stream import DataStreamBase
-
-from .base import (
+from bi_core.data_source.base import (
     DataSource,
     DbInfo,
 )
+from bi_core.data_source.sql import (
+    BaseSQLDataSource,
+    SQLDataSource,
+    StandardSQLDataSource,
+)
+from bi_core.data_source.type_mapping import get_data_source_class
+from bi_core.data_source.utils import get_parameters_hash
+from bi_core.raw_data_streaming.stream import DataStreamBase
+
 from .collection import (
     DataSourceCollection,
     DataSourceCollectionBase,
     DataSourceCollectionFactory,
 )
-from .sql import (
-    BaseSQLDataSource,
-    SQLDataSource,
-    StandardSQLDataSource,
-)
-from .type_mapping import get_data_source_class
-from .utils import get_parameters_hash
 
 __all__ = (
     "DataSource",

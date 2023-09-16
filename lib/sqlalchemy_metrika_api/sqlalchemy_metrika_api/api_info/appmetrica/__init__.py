@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from enum import Enum
 
-from .installs import installs_fields
-from .push_events import push_events_fields
-from .client_events import client_events_fields
-from .audience import audience_fields
-from .audience_socdem import audience_socdem_fields
-from .crash_events import crash_events_fields
+from sqlalchemy_metrika_api.api_info.appmetrica.installs import installs_fields
+from sqlalchemy_metrika_api.api_info.appmetrica.push_events import push_events_fields
+from sqlalchemy_metrika_api.api_info.appmetrica.client_events import client_events_fields
+from sqlalchemy_metrika_api.api_info.appmetrica.audience import audience_fields
+from sqlalchemy_metrika_api.api_info.appmetrica.audience_socdem import audience_socdem_fields
+from sqlalchemy_metrika_api.api_info.appmetrica.crash_events import crash_events_fields
 
 
 class AppMetricaFieldsNamespaces(Enum):

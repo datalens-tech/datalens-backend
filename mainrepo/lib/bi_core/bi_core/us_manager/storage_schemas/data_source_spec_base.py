@@ -6,7 +6,7 @@ import marshmallow.fields as ma_fields
 
 from bi_constants.enums import CreateDSFrom
 from bi_core.base_models import InternalMaterializationConnectionRef
-from bi_core.data_source import get_data_source_class
+from bi_core.data_source.type_mapping import get_data_source_class
 from bi_core.data_source_spec.base import DataSourceSpec
 from bi_core.data_source_spec.sql import (
     SQLDataSourceSpecBase,

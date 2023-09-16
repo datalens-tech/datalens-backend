@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from .common_models import (
+from bi_core.connection_models.common_models import (
     DBIdent,
     SATextTableDefinition,
     SchemaIdent,
     TableDefinition,
     TableIdent,
 )
-from .conn_options import ConnectOptions
-from .dto_defs import (
+from bi_core.connection_models.conn_options import ConnectOptions
+from bi_core.connection_models.dto_defs import (
     ConnDTO,
     DefaultSQLDTO,
 )

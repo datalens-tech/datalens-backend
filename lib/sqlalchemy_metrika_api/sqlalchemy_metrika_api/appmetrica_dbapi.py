@@ -15,7 +15,7 @@ from sqlalchemy.types import (  # noqa
     NULLTYPE,
 )
 
-from .exceptions import (  # noqa
+from sqlalchemy_metrika_api.exceptions import (  # noqa
     Error, Warning,
     InterfaceError, DatabaseError, DataError,
     OperationalError, IntegrityError, InternalError,
@@ -24,8 +24,8 @@ from .exceptions import (  # noqa
     MetrikaApiAccessDeniedException, MetrikaApiObjectNotFoundException,
     ConnectionClosedException, CursorClosedException,
 )
-from . import metrika_dbapi
-from .api_client import APPMETRICA_API_HOST
+from sqlalchemy_metrika_api import metrika_dbapi
+from sqlalchemy_metrika_api.api_client import APPMETRICA_API_HOST
 from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespaces, fields_by_namespace
 
 apilevel = '2.0'

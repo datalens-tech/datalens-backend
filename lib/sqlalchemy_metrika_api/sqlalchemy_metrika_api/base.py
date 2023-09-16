@@ -10,12 +10,12 @@ from sqlalchemy import exc, util, pool, Unicode
 from sqlalchemy.engine import default, reflection
 from sqlalchemy.sql import compiler, elements, operators, sqltypes
 
-from .exceptions import (
+from sqlalchemy_metrika_api.exceptions import (
     NotSupportedError, MetrikaApiNoMetricsNorGroupBy,
     MetrikaApiGroupByNotSupported, MetrikaApiDimensionInCalc
 )
-from . import metrika_dbapi
-from . import appmetrica_dbapi
+from sqlalchemy_metrika_api import metrika_dbapi
+from sqlalchemy_metrika_api import appmetrica_dbapi
 from sqlalchemy_metrika_api.api_info import metrika as metrika_api_info
 from sqlalchemy_metrika_api.api_info import appmetrica as appmetrica_api_info
 

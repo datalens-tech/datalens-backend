@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-from .cli import DLYQClient
-from .cursor import Cursor
+from bi_sqlalchemy_yq.cli import DLYQClient
+from bi_sqlalchemy_yq.cursor import Cursor
 
 
 class Connection(object):

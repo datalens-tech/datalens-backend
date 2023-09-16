@@ -20,7 +20,7 @@ from bi_cloud_integration.yc_client_base import DLYCServiceConfig, DLYCSingleSer
 from bi_cloud_integration.yc_ts_client import get_yc_service_token
 from bi_utils.aio import await_sync
 
-from .errors import YQError
+from bi_sqlalchemy_yq.errors import YQError
 
 
 TColumnDesc = Tuple[str, str]  # name, type_name

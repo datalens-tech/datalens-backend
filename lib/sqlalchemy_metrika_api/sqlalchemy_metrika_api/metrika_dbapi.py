@@ -19,7 +19,7 @@ from sqlalchemy.types import DATETIME
 from sqlalchemy.types import BOOLEAN
 from sqlalchemy.types import NULLTYPE
 
-from .exceptions import (  # noqa
+from sqlalchemy_metrika_api.exceptions import (  # noqa
     Error, Warning,
     InterfaceError, DatabaseError, DataError,
     OperationalError, IntegrityError, InternalError,
@@ -28,7 +28,7 @@ from .exceptions import (  # noqa
     MetrikaApiAccessDeniedException, MetrikaApiObjectNotFoundException,
     ConnectionClosedException, CursorClosedException,
 )
-from .api_client import MetrikaApiClient, METRIKA_API_HOST
+from sqlalchemy_metrika_api.api_client import MetrikaApiClient, METRIKA_API_HOST
 from sqlalchemy_metrika_api.api_info.metrika import (
     MetrikaApiCounterSource, fields_by_namespace, fields_by_name)
 

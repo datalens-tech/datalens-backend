@@ -8,8 +8,7 @@ from typing import (
 
 if TYPE_CHECKING:
     from bi_constants.enums import CreateDSFrom
-
-    from .base import DataSource
+    from bi_core.data_source.base import DataSource
 
 
 _DSRC_TYPES: dict[CreateDSFrom, Type[DataSource]] = {}

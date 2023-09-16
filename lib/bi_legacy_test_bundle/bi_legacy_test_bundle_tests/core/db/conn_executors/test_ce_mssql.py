@@ -14,7 +14,7 @@ from bi_core.connection_models import ConnDTO, TableIdent
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
-from .test_base import BaseSchemaSupportedExecutorSet
+from bi_legacy_test_bundle_tests.core.db.conn_executors.test_base import BaseSchemaSupportedExecutorSet
 
 
 # noinspection PyMethodMayBeStatic

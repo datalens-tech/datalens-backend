@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from enum import Enum
 
-from .visits import visits_fields
-from .hits import hits_fields
-from .advertising import advertising_fields
-from .user_param import user_param_fields
+from sqlalchemy_metrika_api.api_info.metrika.visits import visits_fields
+from sqlalchemy_metrika_api.api_info.metrika.hits import hits_fields
+from sqlalchemy_metrika_api.api_info.metrika.advertising import advertising_fields
+from sqlalchemy_metrika_api.api_info.metrika.user_param import user_param_fields
 
 
 class MetrikaApiCounterSource(Enum):

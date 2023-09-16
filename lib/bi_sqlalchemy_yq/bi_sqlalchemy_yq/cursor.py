@@ -7,7 +7,7 @@ from typing import NamedTuple, Optional, Tuple
 
 from ydb.dbapi.cursor import render_sql
 
-from .errors import DatabaseError, YQError
+from bi_sqlalchemy_yq.errors import DatabaseError, YQError
 
 
 LOGGER = logging.getLogger(__name__)

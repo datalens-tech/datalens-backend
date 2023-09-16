@@ -24,9 +24,7 @@ from marshmallow import (
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_constants.enums import ConnectionType
-from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
-
-from .native_type import (
+from bi_core.db.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
     ClickHouseDateTimeWithTZNativeType,
@@ -35,6 +33,7 @@ from .native_type import (
     GenericNativeType,
     LengthedNativeType,
 )
+from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 LOGGER = logging.getLogger(__name__)
 

@@ -2,10 +2,9 @@ import os
 
 import attr
 
+import bi_api_lib as package
 from bi_i18n.localizer_base import Translatable as BaseTranslatable
 from bi_i18n.localizer_base import TranslationConfig
-
-import bi_api_lib as package
 
 DOMAIN = f'{package.__name__}'
 CONFIGS = [

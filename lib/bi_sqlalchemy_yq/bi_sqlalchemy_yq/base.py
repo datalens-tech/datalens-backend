@@ -11,7 +11,7 @@ class BIYQDialect(UPSTREAM):
 
     @staticmethod
     def dbapi():
-        from . import dbapi
+        from bi_sqlalchemy_yq import dbapi
         return dbapi
 
     def _check_unicode_returns(self, *args, **kwargs):

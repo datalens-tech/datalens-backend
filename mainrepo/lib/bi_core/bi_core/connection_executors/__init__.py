@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from .async_base import AsyncConnExecutorBase
-from .async_sa_executors import DefaultSqlAlchemyConnExecutor
-from .common_base import (
+from bi_core.connection_executors.async_base import AsyncConnExecutorBase
+from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from bi_core.connection_executors.common_base import (
     ConnExecutorQuery,
     ExecutionMode,
 )
-from .sync_base import SyncConnExecutorBase
-from .sync_executor_wrapper import SyncWrapperForAsyncConnExecutor
+from bi_core.connection_executors.sync_base import SyncConnExecutorBase
+from bi_core.connection_executors.sync_executor_wrapper import SyncWrapperForAsyncConnExecutor
 
 __all__ = (
     "ExecutionMode",

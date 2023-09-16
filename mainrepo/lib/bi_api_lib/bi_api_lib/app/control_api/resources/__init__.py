@@ -18,9 +18,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def init_apis(app: flask.Flask) -> None:
-    from . import connections  # noqa
-    from . import dataset  # noqa
-    from . import info  # noqa
+    from bi_api_lib.app.control_api.resources import connections  # noqa
+    from bi_api_lib.app.control_api.resources import dataset  # noqa
+    from bi_api_lib.app.control_api.resources import info  # noqa
 
     API.init_app(app)
 

@@ -10,9 +10,9 @@ from yandex.cloud.priv.oauth.v1 import session_service_pb2, session_service_pb2_
 
 from bi_utils.aio import await_sync
 
-from .local_metadata import get_yc_service_token_local
-from .yc_client_base import DLYCSingleServiceClient
-from .yc_ts_client import get_yc_service_token
+from bi_cloud_integration.local_metadata import get_yc_service_token_local
+from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
+from bi_cloud_integration.yc_ts_client import get_yc_service_token
 
 
 LOGGER = logging.getLogger(__name__)
