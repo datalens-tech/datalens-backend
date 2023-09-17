@@ -347,7 +347,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
 
         assert dbe.eval('DATETRUNC(#2018-07-12#, "second", 5)') == datetime.date(2018, 7, 12)
         assert dbe.eval('DATETRUNC(#2018-07-12#, "minute", 5)') == datetime.date(2018, 7, 12)
-        # assert dbe.eval('DATETRUNC(#2018-07-12#, "hour", 5)') == datetime.date(2018, 7, 12)  # FIXME: CLICKHOUSE-4441
+        # assert dbe.eval('DATETRUNC(#2018-07-12#, "hour", 5)') == datetime.date(2018, 7, 12)  # FIXME: https://github.com/ClickHouse/ClickHouse/issues/10124
         assert dbe.eval('DATETRUNC(#2018-07-12#, "day", 5)') == datetime.date(2018, 7, 8)
         assert dbe.eval('DATETRUNC(#2018-07-12#, "week", 5)') == datetime.date(2018, 7, 2)
         assert dbe.eval('DATETRUNC(#2018-07-12#, "month", 4)') == datetime.date(2018, 5, 1)
@@ -361,7 +361,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "minute", 5)')) == datetime.datetime(
             2018, 7, 12, 11, 5, 0
         )
-        # assert dt_strip(  # FIXME: CLICKHOUSE-4441
+        # assert dt_strip(  # FIXME: https://github.com/ClickHouse/ClickHouse/issues/10124
         #     dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "hour", 5)')) == datetime.datetime(2018, 7, 12, 10, 0, 0)
         assert dt_strip(dbe.eval('DATETRUNC(#2018-07-12 11:07:13#, "day", 5)')) == datetime.datetime(
             2018, 7, 8, 0, 0, 0

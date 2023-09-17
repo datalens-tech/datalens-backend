@@ -13,9 +13,7 @@ HOSTNAME = socket.getfqdn()
 
 ENV_CONTEXT = {
     "app_name": None,  # To be filled in on convigure.
-    # e.g. 'sas1-9aab47fec64f.qloud-c.yandex.net'
     "hostname": HOSTNAME,
-    # e.g. 'dataset-api-1.dataset-api.int-testing.bi.datalens.stable.qloud-d.yandex.net'
     "app_instance": os.environ.get("QLOUD_DISCOVERY_INSTANCE"),
     "app_version": os.environ.get("QLOUD_DOCKER_IMAGE"),
     # global IP addresses, maybe?

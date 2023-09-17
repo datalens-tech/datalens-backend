@@ -70,8 +70,7 @@ def uwsgi_collect_sensors(data, add_sensor):
     add_sensor("locks_total", sum(value for lock in data["locks"] for value in lock.values()))
 
     # sockets:
-    # [{'can_offload': 0, 'name': '/run/yandex-statface-api-v4/uwsgi.sock',
-    #   'proto': 'uwsgi', 'queue': 0, 'shared': 0, 'max_queue': 0}, ...]
+    # [{'can_offload': 0, 'proto': 'uwsgi', 'queue': 0, 'shared': 0, 'max_queue': 0}, ...]
     add_sensor("sockets_queue_total", sum(item["queue"] for item in data["sockets"]))
 
     add_sensor("workers_total", len(data["workers"]))

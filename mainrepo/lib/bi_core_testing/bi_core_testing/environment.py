@@ -71,7 +71,7 @@ def prepare_united_storage(
     *,
     us_host: str,
     us_master_token: str,
-    folder_id: str = "common",
+    tenant_id: str = "common",
     us_pg_dsn: Optional[str] = None,
     force: bool = False,
 ) -> None:
@@ -85,7 +85,7 @@ def prepare_united_storage(
 
     headers = {
         "X-US-Master-Token": us_master_token,
-        "X-YaCloud-FolderId": folder_id,
+        "X-DL-TenantId": tenant_id,
     }
 
     def _wait_for_us() -> tuple[bool, str]:

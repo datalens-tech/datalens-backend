@@ -18,7 +18,6 @@ CODE_OK = "OK"
 #  Make only 2 arguments in constructor: data & orig
 class DLBaseException(Exception):
     # code parts joining by dots on api response preparing.
-    # err_code values should be described at https://wiki.yandex-team.ru/datalens/errors/
     err_code: ClassVar[list[str]] = []  # TODO: Implement automatic hierarchial code inheritance
     _message: str
 

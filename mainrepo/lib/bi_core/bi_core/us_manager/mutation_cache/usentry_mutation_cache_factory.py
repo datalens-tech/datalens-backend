@@ -1,9 +1,6 @@
 import abc
 import logging
-from typing import (
-    TYPE_CHECKING,
-    Optional,
-)
+from typing import Optional
 
 import attr
 
@@ -11,11 +8,7 @@ from bi_core.us_manager.mutation_cache.usentry_mutation_cache import (
     GenericCacheEngine,
     USEntryMutationCache,
 )
-
-from ..us_manager import USManagerBase
-
-if TYPE_CHECKING:
-    from bi_core.services_registry.top_level import ServicesRegistry  # noqa
+from bi_core.us_manager.us_manager import USManagerBase
 
 LOGGER = logging.getLogger(__name__)
 

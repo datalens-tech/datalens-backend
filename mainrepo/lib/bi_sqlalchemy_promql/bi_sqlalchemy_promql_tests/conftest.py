@@ -12,7 +12,7 @@ def pytest_configure(config):  # noqa
 
 @pytest.fixture(scope="session")
 def engine_url():
-    return "bi_promql://user:pass@prometheus-host.yandex.net:2135?protocol=https"
+    return "bi_promql://user:pass@prometheus-host.domain.net:2135?protocol=https"
 
 
 @pytest.fixture(scope="session")

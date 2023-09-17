@@ -394,7 +394,7 @@ class AggAllConcat2(AggAllConcatBase):
 
 class AggTopConcatBase(AggregationFunction):
     name = "top_concat"
-    # Doable for postgresql, but not performant, and very convoluted: https://paste.yandex-team.ru/1116479
+    # Doable for postgresql, but not performant, and very convoluted
     arg_names = ["expression", "amount", "separator"]
     # (Any, ConstInteger, ConstString) -> String
     argument_types = [
