@@ -4,10 +4,8 @@ from bi_core.dataset_capabilities import DatasetCapabilities
 from bi_core_testing.connector import SOURCE_TYPE_TESTING
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
 
-from bi_connector_clickhouse.core.clickhouse.constants import (
-    CONNECTION_TYPE_CLICKHOUSE,
-    SOURCE_TYPE_CH_TABLE,
-)
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 

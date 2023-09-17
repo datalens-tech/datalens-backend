@@ -7,7 +7,7 @@ import uuid
 from bi_constants.enums import RawSQLLevel
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 
 

@@ -8,7 +8,7 @@ import pytest
 from clickhouse_sqlalchemy.drivers.native.base import ClickHouseDialect
 
 from bi_constants.enums import (
-    AggregationFunction, BIType, ConnectionType as CT, BinaryJoinOperator, FieldType
+    AggregationFunction, BIType, BinaryJoinOperator, FieldType
 )
 
 from bi_core.db import SchemaColumn
@@ -41,6 +41,7 @@ from bi_query_processing.translation.multi_level_translator import MultiLevelQue
 
 from bi_api_lib.enums import WhereClauseOperation
 
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 from bi_connector_postgresql.formula.constants import PostgreSQLDialect
 
@@ -82,7 +83,7 @@ def _make_ch_column(name: str, type_name: str, source_id: str) -> SchemaColumn:
         name=name,
         user_type=_TYPE_NAME_TO_USER_TYPE[type_name],
         native_type=ClickHouseNativeType.normalize_name_and_create(
-            conn_type=CT.clickhouse,
+            conn_type=CONNECTION_TYPE_CLICKHOUSE,
             name=type_name,
         ),
         source_id=source_id,

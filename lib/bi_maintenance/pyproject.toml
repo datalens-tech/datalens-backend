@@ -22,6 +22,7 @@ yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}

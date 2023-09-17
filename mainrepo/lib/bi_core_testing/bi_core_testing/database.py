@@ -72,7 +72,7 @@ def make_db_config(
     cluster: Optional[str] = None,
 ) -> CoreDbConfig:
     engine_config_kwargs: dict[str, Any] = {}
-    if conn_type == ConnectionType.clickhouse:
+    if cluster is not None:
         engine_config_kwargs["cluster"] = cluster
     db_eng_config_cls = get_engine_wrapper_cls_for_url(url).CONFIG_CLS
     db_eng_config = db_eng_config_cls(url=url, **engine_config_kwargs)
@@ -329,9 +329,8 @@ class MultiTables(NamedTuple):
     comments: DbTable
 
 
-def make_multiple_db_tables(db):  # type: ignore  # TODO: fix
+def make_multiple_db_tables(db, string_kwargs):  # type: ignore  # TODO: fix
     """Basic table for all db types"""
-    string_kwargs = {} if db.conn_type == ConnectionType.clickhouse else {"length": 255}
     sa_tables = [
         db.table_from_columns(
             [  # users

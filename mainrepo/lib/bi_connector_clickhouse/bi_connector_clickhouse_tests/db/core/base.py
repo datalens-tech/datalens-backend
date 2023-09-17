@@ -7,7 +7,7 @@ import pytest
 from bi_core.us_manager.us_manager_sync import SyncUSManager
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
 
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
 from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig

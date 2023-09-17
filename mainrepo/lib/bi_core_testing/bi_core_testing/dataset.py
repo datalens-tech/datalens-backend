@@ -110,13 +110,13 @@ def get_created_from(db: Db) -> CreateDSFrom:
     return source_type
 
 
-def data_source_settings_from_table(table: DbTable) -> dict:
+def data_source_settings_from_table(table: DbTable, db_name: Optional[str] = None) -> dict:
     source_type = get_created_from(db=table.db)
     data: dict[str, Any] = {  # this still requires connection_id to be defined
         "source_type": source_type,
         "parameters": {
             "table_name": table.name,
-            "db_name": table.db.name if source_type == CreateDSFrom.CH_TABLE else None,  # FIXME
+            "db_name": db_name,
         },
     }
 

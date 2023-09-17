@@ -19,7 +19,7 @@ from bi_core.db.native_type import (
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64WithTZNativeType,
 )
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet, ErrorTestSet
 
 

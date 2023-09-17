@@ -33,10 +33,7 @@ import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
 from bi_app_tools.profiling_base import generic_profiler_async
-from bi_constants.enums import (
-    ConnectionType,
-    IndexKind,
-)
+from bi_constants.enums import IndexKind
 from bi_core import exc
 from bi_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
@@ -73,6 +70,7 @@ from bi_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ClickHouseUtils,
     get_ch_settings,
 )
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
 
 if TYPE_CHECKING:
@@ -318,7 +316,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
 
 
 class ClickHouseAdapter(BaseClickHouseAdapter):
-    conn_type = ConnectionType.clickhouse
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
     warn_on_default_db_name_override = False
     ch_utils = ClickHouseUtils
 
@@ -685,7 +683,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
 
 class AsyncClickHouseAdapter(BaseAsyncClickHouseAdapter):
-    conn_type = ConnectionType.clickhouse
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
     ch_utils = ClickHouseUtils
 
     def _get_ssl_context(self) -> Optional[ssl.SSLContext]:

@@ -15,10 +15,8 @@ from bi_constants.enums import (
 )
 from bi_core import exc
 
-from bi_connector_clickhouse.core.clickhouse.constants import (
-    CONNECTION_TYPE_CLICKHOUSE,
-    SOURCE_TYPE_CH_SUBSELECT,
-)
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
 from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from bi_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
@@ -281,7 +279,8 @@ def schematized_db_view(schematized_db_table):
 @pytest.fixture(scope='session')
 def multiple_db_tables(db):
     """Several logically linked tables for all db types"""
-    return make_multiple_db_tables(db)
+    string_kwargs = {} if db.conn_type == CONNECTION_TYPE_CLICKHOUSE else {"length": 255}
+    return make_multiple_db_tables(db, string_kwargs=string_kwargs)
 
 
 @pytest.fixture(scope='session')
@@ -305,7 +304,7 @@ def two_tables(db):
 @pytest.fixture(scope='session')
 def multiple_clickhouse_tables(clickhouse_db):
     """Several logically linked tables for ClickHouse"""
-    return make_multiple_db_tables(clickhouse_db)
+    return make_multiple_db_tables(clickhouse_db, string_kwargs={"length": 255})
 
 
 @pytest.fixture(scope='session')

@@ -4,11 +4,12 @@ from typing import Optional
 
 import attr
 
-from bi_constants.enums import ConnectionType
 from bi_core.connection_models.dto_defs import (
     ConnDTO,
     DefaultSQLDTO,
 )
+
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 @attr.s(frozen=True)
@@ -18,7 +19,7 @@ class ClickHouseBaseDTO(ConnDTO):
 
 @attr.s(frozen=True)
 class ClickHouseConnDTO(ClickHouseBaseDTO, DefaultSQLDTO):  # noqa
-    conn_type = ConnectionType.clickhouse
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
     secure: bool = attr.ib(kw_only=True, default=False)
     ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
 

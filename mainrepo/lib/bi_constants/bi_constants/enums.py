@@ -57,19 +57,14 @@ class BIType(_Normalizable["BIType"], Enum):
 
 
 class SourceBackendType(DynamicEnum):
-    # Generic
     NONE = AutoEnumValue()
-    CLICKHOUSE = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
 
 
 class ConnectionType(DynamicEnum):
     unknown = AutoEnumValue()
-    clickhouse = AutoEnumValue()  # FIXME: Blocked by usage in clickhouse_base
-    gsheets = AutoEnumValue()  # FIXME: Blocked by usage in options
     promql = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
     solomon = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
     monitoring = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
-    bitrix24 = AutoEnumValue()  # FIXME: Blocked by usage in options
 
 
 @unique
@@ -224,8 +219,6 @@ class WhereClauseOperation(Enum):
 
 
 class CreateDSFrom(DynamicEnum):
-    CH_TABLE = AutoEnumValue()  # FIXME: Blocked by clickhouse_base
-
     @classmethod
     def normalize(cls, value: CreateDSFrom | str | None) -> Optional[CreateDSFrom]:
         # FIXME: Remove this hack (used only in dsmaker)

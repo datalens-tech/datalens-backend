@@ -29,10 +29,8 @@ from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
     DATA_SOURCE_CREATE_VIA_YT_TO_DL,
 )
-from bi_connector_clickhouse.core.clickhouse.constants import (
-    CONNECTION_TYPE_CLICKHOUSE,
-    SOURCE_TYPE_CH_TABLE,
-)
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
 from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings

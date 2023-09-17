@@ -4,7 +4,7 @@ from bi_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
 
 
 BACKEND_TYPE_BITRIX_GDS = SourceBackendType.declare('BITRIX_GDS')
-CONNECTION_TYPE_BITRIX24 = ConnectionType.bitrix24  # FIXME: declaration
+CONNECTION_TYPE_BITRIX24 = ConnectionType.declare('bitrix24')
 SOURCE_TYPE_BITRIX_GDS = CreateDSFrom.declare('BITRIX_GDS')
 
 DEFAULT_DB = 'default'

@@ -47,7 +47,7 @@ from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
 
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL

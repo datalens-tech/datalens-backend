@@ -7,16 +7,14 @@ from typing import (
     ClassVar,
 )
 
-from bi_constants.enums import (
-    ConnectionType,
-    JoinType,
-)
+from bi_constants.enums import JoinType
 from bi_core.data_source.sql import (
     BaseSQLDataSource,
     StandardSQLDataSource,
     SubselectDataSource,
 )
 
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 if TYPE_CHECKING:
@@ -57,7 +55,7 @@ class ActualClickHouseBaseMixin(ClickHouseBaseMixin):
     Data source base class / mixin for actual ClickHouse (i.e. not chyt).
     """
 
-    conn_type = ConnectionType.clickhouse
+    conn_type = CONNECTION_TYPE_CLICKHOUSE
 
 
 class ClickHouseDataSourceBase(ActualClickHouseBaseMixin, StandardSQLDataSource, metaclass=abc.ABCMeta):  # type: ignore  # TODO: fix

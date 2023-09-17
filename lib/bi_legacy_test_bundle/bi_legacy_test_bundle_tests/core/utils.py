@@ -23,10 +23,8 @@ from bi_core.components.editor import DatasetComponentEditor
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
 from bi_core.services_registry.top_level import ServicesRegistry
 
-from bi_connector_clickhouse.core.clickhouse.constants import (
-    CONNECTION_TYPE_CLICKHOUSE,
-    SOURCE_TYPE_CH_TABLE,
-)
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL, SOURCE_TYPE_MYSQL_TABLE
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE, SOURCE_TYPE_ORACLE_TABLE

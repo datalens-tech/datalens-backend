@@ -10,7 +10,6 @@ from typing import (
 from clickhouse_sqlalchemy import types as ch_types
 
 from bi_constants.enums import BIType
-from bi_constants.enums import ConnectionType as CT
 from bi_core.db.conversion_base import (
     BooleanTypeCaster,
     DatetimeTypeCaster,
@@ -23,6 +22,7 @@ from bi_core.db.conversion_base import (
 )
 
 from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 def make_int_cleanup_spaces(value: Any) -> Optional[int]:
@@ -114,9 +114,9 @@ class FileTypeTransformer(ClickHouseTypeTransformer):
 
     user_to_native_map = {
         **ClickHouseTypeTransformer.user_to_native_map,
-        BIType.datetime: make_native_type(CT.clickhouse, ch_types.DateTime64),
-        BIType.genericdatetime: make_native_type(CT.clickhouse, ch_types.DateTime64),
-        BIType.date: make_native_type(CT.clickhouse, ch_types.Date32),
+        BIType.datetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
+        BIType.genericdatetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
+        BIType.date: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.Date32),
     }
 
     @classmethod

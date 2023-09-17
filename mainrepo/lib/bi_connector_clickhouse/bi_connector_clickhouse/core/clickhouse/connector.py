@@ -6,10 +6,10 @@ from bi_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefiniti
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse.constants import (
-    CONNECTION_TYPE_CLICKHOUSE,
-    SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
+    SOURCE_TYPE_CH_SUBSELECT,
 )
 from bi_connector_clickhouse.core.clickhouse.data_source import (
     ClickHouseDataSource,

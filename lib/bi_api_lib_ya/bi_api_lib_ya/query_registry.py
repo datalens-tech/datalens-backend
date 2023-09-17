@@ -1,7 +1,7 @@
 import os
 
 from bi_api_lib.query.registry import register_multi_query_mutator_factory_cls
-from bi_connector_clickhouse.core.clickhouse.constants import BACKEND_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.formula.constants import ClickHouseDialect
 
 # FIXME: Remove connectors

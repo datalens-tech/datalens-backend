@@ -22,6 +22,7 @@ from bi_core.db.native_type import (
 )
 from bi_core.db.sa_types_base import make_native_type
 
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_clickhouse.core.clickhouse_base.type_transformer import (
     CH_TYPES_DATE,
     CH_TYPES_FLOAT,
@@ -131,5 +132,5 @@ def _generate_complex_ch_types(
 
 
 SQLALCHEMY_CLICKHOUSE_TYPES = _generate_complex_ch_types(
-    SQLALCHEMY_CLICKHOUSE_BASE_TYPES, conn_type=ConnectionType.clickhouse
+    SQLALCHEMY_CLICKHOUSE_BASE_TYPES, conn_type=CONNECTION_TYPE_CLICKHOUSE
 )

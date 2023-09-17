@@ -23,7 +23,7 @@ from bi_core.services_registry import ServicesRegistry
 from bi_core_testing.utils import SROptions
 from bi_core_testing.dataset_wrappers import DatasetTestWrapper
 
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records
 

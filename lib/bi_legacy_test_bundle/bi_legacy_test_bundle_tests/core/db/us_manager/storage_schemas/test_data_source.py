@@ -15,7 +15,8 @@ from bi_core.us_manager.storage_schemas.data_source_spec import GenericDataSourc
 from bi_core import data_source
 from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, StandardSchemaSQLDataSourceSpec
 
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE, SOURCE_TYPE_CH_TABLE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 from bi_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource

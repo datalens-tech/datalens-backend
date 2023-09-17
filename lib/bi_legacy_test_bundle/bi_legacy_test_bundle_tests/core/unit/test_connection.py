@@ -16,7 +16,7 @@ from bi_core.connection_executors import ExecutionMode
 from bi_core.connections_security.base import InsecureConnectionSecurityManager
 from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 
-from bi_connector_clickhouse.core.clickhouse.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE

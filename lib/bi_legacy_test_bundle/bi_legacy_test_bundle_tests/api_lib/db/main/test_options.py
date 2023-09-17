@@ -8,10 +8,8 @@ from bi_api_client.dsmaker.primitives import Dataset
 
 from bi_api_lib.enums import WhereClauseOperation, BI_TYPE_AGGREGATIONS
 
-from bi_connector_clickhouse.core.clickhouse.constants import (
-    CONNECTION_TYPE_CLICKHOUSE,
-    SOURCE_TYPE_CH_TABLE,
-)
+from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
