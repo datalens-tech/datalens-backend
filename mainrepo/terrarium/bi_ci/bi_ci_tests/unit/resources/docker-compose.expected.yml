@@ -65,8 +65,6 @@ services:
     - pg-us
     environment:
       AUTH_POLICY: required
-      DISABLE_DLS: 'true'
-      DLS_ENABLED: 'false'
       MASTER_TOKEN: AC1ofiek8coB
       POSTGRES_DSN_LIST: postgres://us:us@pg-us:5432/us-db-ci_purgeable
   zookeeper-1:
