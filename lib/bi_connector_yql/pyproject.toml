@@ -20,7 +20,7 @@ yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-ydb = ">=3.5.0"
+ydb = ">=3.3.6"
 datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
 datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
