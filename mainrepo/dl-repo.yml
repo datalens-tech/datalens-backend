@@ -35,3 +35,8 @@ dl_repo:
     pyuwsgi: uwsgi
     sentry_sdk: sentry-sdk
     snowflake: snowflake-connector-python
+
+  metapackages: []
+
+  plugins:
+    - type: dependency_registration

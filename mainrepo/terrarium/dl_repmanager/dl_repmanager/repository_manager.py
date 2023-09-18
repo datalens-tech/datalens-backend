@@ -105,22 +105,15 @@ class RepositoryManager:
         return updated_files
 
     def _register_package(self, package_info: PackageInfo) -> None:
-        for mng_plugin in self.repository_env.get_plugins_for_package_type(
-            package_type=package_info.package_type, package_index=self.package_index
-        ):
+        for mng_plugin in self.repository_env.get_plugins(package_index=self.package_index):
             mng_plugin.register_package(package_info=package_info)
 
     def _unregister_package(self, package_info: PackageInfo) -> None:
-        for mng_plugin in self.repository_env.get_plugins_for_package_type(
-            package_type=package_info.package_type, package_index=self.package_index
-        ):
+        for mng_plugin in self.repository_env.get_plugins(package_index=self.package_index):
             mng_plugin.register_package(package_info=package_info)
 
     def _re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
-        for mng_plugin in self.repository_env.get_plugins_for_package_type(
-            package_type=new_package_info.package_type,
-            package_index=self.package_index,
-        ):
+        for mng_plugin in self.repository_env.get_plugins(package_index=self.package_index):
             mng_plugin.re_register_package(old_package_info=old_package_info, new_package_info=new_package_info)
 
     def init_package(self, package_module_name: str, package_type: str) -> PackageInfo:

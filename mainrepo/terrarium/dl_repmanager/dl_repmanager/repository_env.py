@@ -23,6 +23,13 @@ The file should have a structure similar to this:
         flask_marshmallow: flask-marshmallow
         jwt: pyjwt
 
+      metapackages:
+        - name: main
+          toml: tools/pyproject.toml
+
+      plugins:
+        - type: dependency_registration
+
 
 Description of the sections:
   - include: section tells the loader to include another repo config file
@@ -41,10 +48,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    ClassVar,
     Iterable,
     Optional,
-    Type,
 )
 
 import attr
@@ -55,11 +60,10 @@ from dl_repmanager.fs_editor import (
     get_fs_editor,
 )
 from dl_repmanager.management_plugins import (
-    CommonToolingRepositoryManagementPlugin,
-    DependencyReregistrationRepositoryManagementPlugin,
-    MainTomlRepositoryManagementPlugin,
     RepositoryManagementPlugin,
+    get_plugin_cls,
 )
+from dl_repmanager.primitives import MetaPackageSpec
 
 if TYPE_CHECKING:
     from dl_repmanager.package_index import PackageIndex
@@ -77,6 +81,12 @@ class PackageTypeConfig:
 
 
 @attr.s(frozen=True)
+class PluginConfig:
+    plugin_type: str = attr.ib(kw_only=True)
+    config_data: dict = attr.ib(kw_only=True)
+
+
+@attr.s(frozen=True)
 class RepoEnvironment:
     """
     Provides information about repository folders and boilerplates
@@ -84,14 +94,10 @@ class RepoEnvironment:
 
     base_path: Path = attr.ib(kw_only=True)
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True)
+    metapackages: dict[str, MetaPackageSpec] = attr.ib(kw_only=True)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor: FilesystemEditor = attr.ib(kw_only=True)
-
-    plugin_classes: ClassVar[tuple[Type[RepositoryManagementPlugin], ...]] = (
-        CommonToolingRepositoryManagementPlugin,
-        MainTomlRepositoryManagementPlugin,
-        DependencyReregistrationRepositoryManagementPlugin,
-    )
+    plugin_configs: list[PluginConfig] = attr.ib(kw_only=True, factory=list)
 
     def iter_package_abs_dirs(self) -> Iterable[tuple[str, Path]]:
         return sorted(
@@ -108,25 +114,26 @@ class RepoEnvironment:
     def get_tags(self, package_type: str) -> frozenset[str]:
         return self.package_types[package_type].tags
 
-    def get_plugins_for_package_type(
+    def get_plugins(
         self,
-        package_type: str,
         package_index: PackageIndex,
     ) -> list[RepositoryManagementPlugin]:
         # TODO: parameterize and load plugins from config
-        home_repo_path = self.package_types[package_type].home_repo_path
         return [
-            plugin_cls(  # type: ignore
+            get_plugin_cls(plugin_type=plugin_config.plugin_type)(  # type: ignore
                 repository_env=self,
                 package_index=package_index,
-                pkg_type_base_path=home_repo_path,
                 base_path=self.base_path,
+                config_data=plugin_config.config_data,
             )
-            for plugin_cls in self.plugin_classes
+            for plugin_config in self.plugin_configs
         ]
 
     def get_fs_editor(self) -> FilesystemEditor:
         return self.fs_editor
+
+    def get_metapackage_spec(self, metapackage_name: str) -> MetaPackageSpec:
+        return self.metapackages[metapackage_name]
 
 
 _DEFAULT_FS_EDITOR_TYPE = "default"
@@ -136,8 +143,10 @@ _DEFAULT_FS_EDITOR_TYPE = "default"
 class ConfigContents:
     base_path: Path = attr.ib(kw_only=True)
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True, factory=dict)
+    metapackages: dict[str, MetaPackageSpec] = attr.ib(kw_only=True, factory=dict)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor_type: Optional[str] = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
+    plugin_configs: list[PluginConfig] = attr.ib(kw_only=True, factory=list)
 
 
 def discover_config(base_path: Path, config_file_name: str) -> Path:
@@ -160,8 +169,8 @@ class RepoEnvironmentLoader:
             config_data = yaml.safe_load(config_file)
 
         base_path = config_path.parent
-        package_types: dict[str, PackageTypeConfig] = {}
         env_settings = config_data.get("dl_repo", {})
+        package_types: dict[str, PackageTypeConfig] = {}
         for package_type_data in env_settings.get("package_types", ()):
             package_type = package_type_data["type"]
             pkg_type_config = PackageTypeConfig(
@@ -172,6 +181,24 @@ class RepoEnvironmentLoader:
             )
             package_types[package_type] = pkg_type_config
 
+        metapackages: dict[str, MetaPackageSpec] = {}
+        for metapackage_data in env_settings.get("metapackages", ()):
+            metapackage_name = metapackage_data["name"]
+            metapackage_config = MetaPackageSpec(
+                name=metapackage_name,
+                toml_path=base_path / metapackage_data["toml"],
+            )
+            metapackages[metapackage_name] = metapackage_config
+
+        plugin_configs: list[PluginConfig] = []
+        for plugin_data in env_settings.get("plugins", ()):
+            plugin_type = plugin_data["type"]
+            plugin_config = PluginConfig(
+                plugin_type=plugin_type,
+                config_data=plugin_data.get("config") or {},
+            )
+            plugin_configs.append(plugin_config)
+
         custom_package_map: dict[str, str] = dict(env_settings.get("custom_package_map", {}))
 
         fs_editor_type: Optional[str] = env_settings.get("fs_editor")
@@ -179,15 +206,18 @@ class RepoEnvironmentLoader:
         for include in env_settings.get("include", ()):
             included_config_contents = self._load_params_from_yaml_file(Path(base_path) / include)
             package_types = dict(included_config_contents.package_types, **package_types)
+            metapackages = dict(included_config_contents.metapackages, **metapackages)
             custom_package_map = dict(included_config_contents.custom_package_map, **custom_package_map)
             fs_editor_type = fs_editor_type or included_config_contents.fs_editor_type
 
-        # FS editor is loaded only from the main config
+        # FS editor and plugins are loaded only from the top-level config
         return ConfigContents(
             base_path=base_path,
             package_types=package_types,
+            metapackages=metapackages,
             custom_package_map=custom_package_map,
             fs_editor_type=fs_editor_type,
+            plugin_configs=plugin_configs,
         )
 
     def _load_from_yaml_file(self, config_path: Path) -> RepoEnvironment:
@@ -202,7 +232,9 @@ class RepoEnvironmentLoader:
         return RepoEnvironment(
             base_path=base_path,
             package_types=config_contents.package_types,
+            metapackages=config_contents.metapackages,
             custom_package_map=config_contents.custom_package_map,
+            plugin_configs=config_contents.plugin_configs,
             fs_editor=get_fs_editor(
                 fs_editor_type=fs_editor_type,
                 base_path=base_path,

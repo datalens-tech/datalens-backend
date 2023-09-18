@@ -121,7 +121,7 @@ class PackageInfo(_Clonable):
     test_dirs: tuple[str, ...] = attr.ib(kw_only=True, default=())
     requirement_lists: frozendict[str, RequirementList] = attr.ib(kw_only=True, default=frozendict())
     implicit_deps: frozenset[str] = attr.ib(kw_only=True, default=frozenset())
-    i18n_domains: tuple[LocaleDomainSpec] = attr.ib(kw_only=True, default=frozenset())
+    i18n_domains: tuple[LocaleDomainSpec, ...] = attr.ib(kw_only=True, default=())
 
     @property
     def toml_path(self) -> Path:
@@ -178,3 +178,9 @@ class ImportSpec:
     import_ast: AST = attr.ib(kw_only=True)
     import_module_name: str = attr.ib(kw_only=True)
     source_path: Path = attr.ib(kw_only=True)
+
+
+@attr.s(frozen=True)
+class MetaPackageSpec(_Clonable):
+    name: str = attr.ib(kw_only=True)
+    toml_path: Path = attr.ib(kw_only=True)

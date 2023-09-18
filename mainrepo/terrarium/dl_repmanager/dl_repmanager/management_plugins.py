@@ -3,7 +3,10 @@ from __future__ import annotations
 import abc
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Type,
+)
 
 import attr
 import tomlkit
@@ -30,7 +33,7 @@ class RepositoryManagementPlugin(abc.ABC):
     repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
     base_path: Path = attr.ib(kw_only=True)
-    pkg_type_base_path: Path = attr.ib(kw_only=True)
+    config_data: dict = attr.ib(kw_only=True)
     fs_editor: FilesystemEditor = attr.ib(init=False)
 
     @fs_editor.default
@@ -52,7 +55,11 @@ class RepositoryManagementPlugin(abc.ABC):
 
 @attr.s
 class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
-    _PACKAGE_LIST_REL_PATH = "tools/local_dev/requirements/all_local_packages.lst"
+    _package_list_rel_path: Path = attr.ib(init=False)
+
+    @_package_list_rel_path.default
+    def _make_package_list_rel_path(self) -> Path:
+        return Path(self.config_data["package_list_path"])
 
     def register_package(self, package_info: PackageInfo) -> None:
         def transform_package_list(old_text: str) -> str:
@@ -62,7 +69,7 @@ class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
             pkg_list.sort()
             return "\n".join(pkg_list) + "\n"
 
-        pkg_list_path = self.base_path / self._PACKAGE_LIST_REL_PATH
+        pkg_list_path = self.base_path / self._package_list_rel_path
         self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_package_list)
 
     def unregister_package(self, package_info: PackageInfo) -> None:
@@ -73,16 +80,24 @@ class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
             pkg_list.sort()
             return "\n".join(pkg_list) + "\n"
 
-        pkg_list_path = self.base_path / self._PACKAGE_LIST_REL_PATH
+        pkg_list_path = self.base_path / self._package_list_rel_path
         self.fs_editor.replace_file_content(pkg_list_path, replace_callback=transform_package_list)
 
 
 @attr.s
 class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
-    _CI_TOML_REL_PATH = "ops/ci/pyproject.toml"
+    _metapackage_name: str = attr.ib(init=False)
+
+    @_metapackage_name.default
+    def _make_metapackage_name(self) -> str:
+        return self.config_data["metapackage"]
+
+    @property
+    def _metapackage_path(self) -> Path:
+        return self.repository_env.get_metapackage_spec(self._metapackage_name).toml_path
 
     def _get_path_for_toml(self, package_info: PackageInfo) -> Path:
-        toml_abs_dir = (self.base_path / self._CI_TOML_REL_PATH).parent
+        toml_abs_dir = (self.base_path / self._metapackage_path).parent
         return package_info.get_relative_path(toml_abs_dir)
 
     def _register_main(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
@@ -115,7 +130,7 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
         toml_writer.delete_section(f"tool.poetry.group.app_{package_base_name}.dependencies")
 
     def register_package(self, package_info: PackageInfo) -> None:
-        toml_path = self.base_path / self._CI_TOML_REL_PATH
+        toml_path = self.base_path / self._metapackage_path
 
         toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
         with toml_io_factory.toml_writer(toml_path) as toml_writer:
@@ -125,7 +140,7 @@ class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
                 self._register_app(toml_writer=toml_writer, package_info=package_info)
 
     def unregister_package(self, package_info: PackageInfo) -> None:
-        toml_path = self.base_path / self._CI_TOML_REL_PATH
+        toml_path = self.base_path / self._metapackage_path
 
         toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
         with toml_io_factory.toml_writer(toml_path) as toml_writer:
@@ -200,3 +215,14 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
                             new_item_name=req_package_info.package_reg_name,
                             new_path=updated_req_path,
                         )
+
+
+_PLUGIN_CLASSES: dict[str, Type[RepositoryManagementPlugin]] = {
+    "common_tooling": CommonToolingRepositoryManagementPlugin,
+    "toml_registration": MainTomlRepositoryManagementPlugin,
+    "dependency_registration": DependencyReregistrationRepositoryManagementPlugin,
+}
+
+
+def get_plugin_cls(plugin_type: str) -> Type[RepositoryManagementPlugin]:
+    return _PLUGIN_CLASSES[plugin_type]
