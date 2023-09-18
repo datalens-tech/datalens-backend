@@ -11,6 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
+bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
 bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 grpcio = ">=1.45.0rc1"
 marshmallow = ">=3.19.0"
