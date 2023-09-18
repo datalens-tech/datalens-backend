@@ -20,7 +20,7 @@ gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 sentry-sdk = ">=1.15.0"
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 bi-defaults = {path = "../../lib/bi_defaults"}

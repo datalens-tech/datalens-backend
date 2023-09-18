@@ -38,7 +38,7 @@ datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 uwsgi = ">=2.0.21"
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 yandex-bi-api = {path = "../../app/bi_api"}
 datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
 datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}

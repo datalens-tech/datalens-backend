@@ -158,8 +158,8 @@ redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
-dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
-dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
+datalens-control-api = {path = "../../mainrepo/app/dl_control_api"}
+datalens-data-api = {path = "../../mainrepo/app/dl_data_api"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
@@ -169,8 +169,8 @@ bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
-dl-version = {path = "../../mainrepo/lib/dl_version"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version = {path = "../../mainrepo/lib/dl_version"}
 
 
 #
@@ -247,10 +247,10 @@ yandex-bi-rqe-ext-sync = {path = "../../app/bi_rqe_ext_sync"}
 yandex-bi-rqe-int-sync = {path = "../../app/bi_rqe_int_sync"}
 
 [tool.poetry.group.app_bi_os_control_api.dependencies]
-dl-control-api = {path = "../../mainrepo/app/dl_control_api"}
+datalens-control-api = {path = "../../mainrepo/app/dl_control_api"}
 
 [tool.poetry.group.app_bi_os_data_api.dependencies]
-dl-data-api = {path = "../../mainrepo/app/dl_data_api"}
+datalens-data-api = {path = "../../mainrepo/app/dl_data_api"}
 
 [tool.poetry.group.app_bi_yc_control_api.dependencies]
 yandex-bi-control-api-yc = {path = "../../app_yc/app_yc_control_api"}

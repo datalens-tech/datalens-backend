@@ -130,7 +130,7 @@ dynamic-enum = {path = "../lib/dynamic_enum"}
 redis_cache_lock = {path = "../lib/redis-cache-lock"}
 statcommons = {path = "../lib/statcommons"}
 bi-formula-testing = {path = "../lib/bi_formula_testing"}
-dl-version = {path = "../lib/dl_version"}
+datalens-version = {path = "../lib/dl_version"}
 
 
 #

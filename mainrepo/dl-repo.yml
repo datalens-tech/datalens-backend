@@ -1,4 +1,4 @@
-# This file is used by dl-repmanager as the main configuration file
+# This file is used by datalens-repmanager as the main configuration file
 
 dl_repo:
   fs_editor: git

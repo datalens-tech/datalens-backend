@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "dl-repmanager"
+name = "datalens-repmanager"
 version = "0.0.1"
 description = ""
 authors = ["Grigorii Statsenko <gstatsenko@yandex-team.ru>"]
@@ -33,7 +33,7 @@ timeout = 600
 dl-repo = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package = "dl_repmanager.scripts.package_meta_cli:main"
 # Legacy names
-dl-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
+datalens-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
 dl-package-meta = "dl_repmanager.scripts.package_meta_cli:main"
 # tmp
 scoped-metapkg-sync = "dl_repmanager.scripts.scoped_metapkg_sync:main"

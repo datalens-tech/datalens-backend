@@ -65,7 +65,7 @@ bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 datalens-file-uploader-task-interface = {path = "../../mainrepo/lib/dl_file_uploader_task_interface"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../../mainrepo/lib/dl_utils"}

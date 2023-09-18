@@ -977,7 +977,7 @@ develop = false
 
 [package.dependencies]
 datalens-file-secure-reader-lib = {path = "../../mainrepo/lib/dl_file_secure_reader_lib"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 
 [package.source]
@@ -1007,7 +1007,7 @@ datalens-file-uploader-api-lib = {path = "../../mainrepo/lib/dl_file_uploader_ap
 datalens-file-uploader-lib = {path = "../../mainrepo/lib/dl_file_uploader_lib"}
 datalens-file-uploader-task-interface = {path = "../../mainrepo/lib/dl_file_uploader_task_interface"}
 datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 docker = ">=6.0.1"
 gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
@@ -1038,7 +1038,7 @@ datalens-file-secure-reader-lib = {path = "../../mainrepo/lib/dl_file_secure_rea
 datalens-file-uploader-task-interface = {path = "../../mainrepo/lib/dl_file_uploader_task_interface"}
 datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
 datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = "==20.1.0"
 
 [package.source]
@@ -3082,7 +3082,7 @@ url = "https://pypi.yandex-team.ru/simple"
 reference = "ya"
 
 [[package]]
-name = "dl-control-api"
+name = "datalens-control-api"
 version = "0.0.0"
 description = ""
 optional = false
@@ -3103,7 +3103,7 @@ datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
 datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../../lib/dl_utils"}
-dl-version = {path = "../../lib/dl_version"}
+datalens-version = {path = "../../lib/dl_version"}
 Flask = ">=2.0.3"
 raven = ">=6.10.0"
 
@@ -3112,7 +3112,7 @@ type = "directory"
 url = "../../mainrepo/app/dl_control_api"
 
 [[package]]
-name = "dl-data-api"
+name = "datalens-data-api"
 version = "0.0.0"
 description = ""
 optional = false
@@ -3132,7 +3132,7 @@ datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
 datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../../lib/dl_utils"}
-dl-version = {path = "../../lib/dl_version"}
+datalens-version = {path = "../../lib/dl_version"}
 gunicorn = ">=20.1.0"
 
 [package.source]
@@ -3140,7 +3140,7 @@ type = "directory"
 url = "../../mainrepo/app/dl_data_api"
 
 [[package]]
-name = "dl-version"
+name = "datalens-version"
 version = "0.2012.0"
 description = ""
 optional = false
@@ -3153,7 +3153,7 @@ type = "directory"
 url = "../../mainrepo/lib/dl_version"
 
 [[package]]
-name = "dl-version-ya"
+name = "datalens-version-ya"
 version = "0.2012.0"
 description = ""
 optional = false
@@ -8491,7 +8491,7 @@ datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgre
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
 datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 Flask = ">=2.0.3"
 flask-marshmallow = ">=0.14.0"
 flask-restx = ">=1.1.0"
@@ -9050,7 +9050,7 @@ datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 raven = ">=6.10.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
@@ -9102,7 +9102,7 @@ datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
@@ -9154,7 +9154,7 @@ datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
@@ -9216,7 +9216,7 @@ bi-defaults = {path = "../../lib/bi_defaults"}
 datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
 datalens-file-uploader-api-lib = {path = "../../mainrepo/lib/dl_file_uploader_api_lib"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 docker = ">=6.0.1"
 gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
@@ -9243,7 +9243,7 @@ bi-defaults = {path = "../../lib/bi_defaults"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
 datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
 datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 
 [package.source]
 type = "directory"
@@ -9321,7 +9321,7 @@ datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
@@ -9358,7 +9358,7 @@ datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplu
 datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
 datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
@@ -9385,7 +9385,7 @@ datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgre
 datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
 datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 uwsgi = ">=2.0.21"
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
@@ -9411,7 +9411,7 @@ datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickho
 datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
 datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 uwsgi = ">=2.0.21"
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}

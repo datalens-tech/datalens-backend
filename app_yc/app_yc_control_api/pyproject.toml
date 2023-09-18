@@ -34,7 +34,7 @@ bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
-dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}

@@ -1094,7 +1094,7 @@ files = [
 ]
 
 [[package]]
-name = "dl-version"
+name = "datalens-version"
 version = "0.2001.0"
 description = ""
 optional = false

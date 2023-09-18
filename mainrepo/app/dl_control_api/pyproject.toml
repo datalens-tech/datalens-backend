@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "dl-control-api"
+name = "datalens-control-api"
 version = "0.0.0"
 description = ""
 authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
@@ -13,7 +13,7 @@ python = ">=3.10, <3.12"
 Flask = ">=2.0.3"
 blinker = ">=1.5"
 raven = ">=6.10.0"
-dl-version = {path = "../../lib/dl_version"}
+datalens-version = {path = "../../lib/dl_version"}
 datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../../lib/dl_utils"}
 datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
