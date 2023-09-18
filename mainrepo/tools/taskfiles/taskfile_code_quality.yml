@@ -261,8 +261,8 @@ tasks:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
       - |        
         echo "#!/usr/bin/env bash
-        task ld:check_changed
-        task ld:check_changed_strict 1> /dev/null 2>/dev/null
+        task cq:check_changed
+        task cq:check_changed_strict 1> /dev/null 2>/dev/null
         
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
@@ -276,7 +276,7 @@ tasks:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
       - |
         echo "#!/usr/bin/env bash
-        task ld:check_changed
+        task cq:check_changed
         
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
@@ -290,7 +290,7 @@ tasks:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
       - |
         echo "#!/usr/bin/env bash        
-        task ld:check_changed_strict || task ld:fix_changed
+        task cq:check_changed_strict || task ld:fix_changed
         unstaged=\$(git diff --name-only)     
         if [ \"\$unstaged\" == \"\"  ]; then exit 0; fi;
         echo ''

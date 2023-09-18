@@ -82,14 +82,10 @@ jobs:
     - run: git config --global --add safe.directory .
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
     - run: git fetch origin trunk
-    - run: |
-        TARGET=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
-        echo "Changed files from git diff: $TARGET"
     - name: Get packages affected by changes in the current commit
       id: get_affected
       run: |
-        TARGET_DATA=$(git diff --no-commit-id --name-only --diff-filter=ACMRTD ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tr "\n" " " || echo '')
-        echo "Changed files from git diff: $TARGET"
+        TARGET_DATA=$(bash /src/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
         echo "$TARGET_DATA" > /tmp/targets.json
         cat /tmp/targets.json
         . /venv/bin/activate && detect-affected-packages \
