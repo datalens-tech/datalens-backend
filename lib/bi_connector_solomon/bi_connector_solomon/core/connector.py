@@ -1,5 +1,3 @@
-from bi_constants.enums import ConnectionType
-
 from bi_core.connectors.base.connector import (
     CoreConnectionDefinition,
     CoreConnector,
@@ -27,6 +25,7 @@ class SolomonCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = SolomonAsyncAdapterConnExecutor
     async_conn_executor_cls = SolomonAsyncAdapterConnExecutor
     dialect_string = 'bi_solomon'
+    custom_dashsql_key_names = frozenset(("from", "to", "project_id"))
 
 
 class SolomonCoreSourceDefinition(CoreSourceDefinition):

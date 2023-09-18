@@ -31,6 +31,7 @@ class PromQLCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = PromQLConnExecutor
     async_conn_executor_cls = PromQLAsyncAdapterConnExecutor
     dialect_string = "bi_promql"
+    custom_dashsql_key_names = frozenset(("from", "to", "step"))
 
 
 class PromQLCoreSourceDefinition(CoreSourceDefinition):

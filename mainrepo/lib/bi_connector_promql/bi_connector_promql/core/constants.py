@@ -5,5 +5,5 @@ from bi_constants.enums import (
 )
 
 BACKEND_TYPE_PROMQL = SourceBackendType.declare("PROMQL")
-CONNECTION_TYPE_PROMQL = ConnectionType.promql  # FIXME: declaration
+CONNECTION_TYPE_PROMQL = ConnectionType.declare("promql")
 SOURCE_TYPE_PROMQL = CreateDSFrom.declare("PROMQL")

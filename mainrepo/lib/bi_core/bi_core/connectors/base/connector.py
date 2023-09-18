@@ -63,6 +63,7 @@ class CoreConnectionDefinition(abc.ABC):
     dialect_string: ClassVar[str]
     data_source_migrator_cls: ClassVar[Type[DataSourceMigrator]] = DefaultDataSourceMigrator
     settings_definition: ClassVar[Optional[Type[ConnectorSettingsDefinition]]] = None
+    custom_dashsql_key_names: frozenset[str] = frozenset()
 
 
 class CoreConnector(abc.ABC):

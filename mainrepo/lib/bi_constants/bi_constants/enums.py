@@ -62,9 +62,6 @@ class SourceBackendType(DynamicEnum):
 
 class ConnectionType(DynamicEnum):
     unknown = AutoEnumValue()
-    promql = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
-    solomon = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
-    monitoring = AutoEnumValue()  # FIXME: Blocked by usage in dashsql
 
 
 @unique

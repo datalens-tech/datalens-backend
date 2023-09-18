@@ -26,10 +26,10 @@ from bi_api_commons.reporting.models import (
     QueryExecutionEndReportingRecord,
     QueryExecutionStartReportingRecord,
 )
-from bi_constants.enums import ConnectionType
 from bi_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
 from bi_core import exc
 from bi_core.connection_executors.common_base import ConnExecutorQuery
+from bi_core.connectors.base.dashsql import get_custom_dash_sql_key_names
 from bi_core.data_processing.cache.processing_helper import (
     CacheProcessingHelper,
     CacheSituation,
@@ -160,17 +160,8 @@ class DashSQLSelector:
     connector_specific_params: Optional[Dict[str, TJSONExt]] = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
-        conn_type_cpecific_param = {
-            ConnectionType.promql: ("from", "to", "step"),
-            ConnectionType.solomon: ("from", "to", "project_id"),
-            ConnectionType.monitoring: ("from", "to"),
-        }
-        if (
-            self.conn.conn_type in conn_type_cpecific_param
-            and self.connector_specific_params is None
-            and self.params is not None
-        ):
-            specific_param_keys = conn_type_cpecific_param[self.conn.conn_type]
+        specific_param_keys = get_custom_dash_sql_key_names(conn_type=self.conn.conn_type)
+        if specific_param_keys and self.connector_specific_params is None and self.params is not None:
             self.connector_specific_params = {
                 param.name: param.value for param in self.params if param.name in specific_param_keys
             }

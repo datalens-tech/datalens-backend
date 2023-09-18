@@ -11,6 +11,7 @@ from bi_core.connectors.base.connector import (
     CoreConnector,
     CoreSourceDefinition,
 )
+from bi_core.connectors.base.dashsql import register_custom_dash_sql_key_names
 from bi_core.connectors.base.data_source_migration import register_data_source_migrator
 from bi_core.connectors.settings.registry import register_connector_settings_class
 from bi_core.data_source.type_mapping import register_data_source_class
@@ -81,6 +82,7 @@ class CoreConnectorRegistrator:
                 fallback=conn_def.settings_definition.fallback,
             )
         register_data_source_migrator(conn_type=conn_def.conn_type, migrator_cls=conn_def.data_source_migrator_cls)
+        register_custom_dash_sql_key_names(conn_type=conn_def.conn_type, key_names=conn_def.custom_dashsql_key_names)
 
     @classmethod
     def register_connector(cls, connector: Type[CoreConnector]) -> None:

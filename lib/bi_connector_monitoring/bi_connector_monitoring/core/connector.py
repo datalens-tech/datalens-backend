@@ -29,6 +29,7 @@ class MonitoringCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = MonitoringAsyncAdapterConnExecutor
     dialect_string = 'bi_solomon'
     settings_definition = MonitoringSettingDefinition
+    custom_dashsql_key_names = frozenset(("from", "to"))
 
 
 class MonitoringCoreSourceDefinition(CoreSourceDefinition):
