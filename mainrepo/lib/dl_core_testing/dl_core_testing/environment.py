@@ -11,6 +11,7 @@ from dl_core.logging_config import setup_jaeger_client
 from dl_core_testing.configuration import UnitedStorageConfiguration
 from dl_db_testing.loader import load_bi_db_testing
 from dl_utils.wait import wait_for
+from dl_app_tools.utils import register_sa_dialects
 
 LOGGER = logging.getLogger(__name__)
 
@@ -118,6 +119,7 @@ def common_pytest_configure(
     use_jaeger_tracer: bool = False,
     tracing_service_name: str = "tests",
 ) -> None:
+    register_sa_dialects()  # make sure the CH dialect is available.
     load_bi_db_testing()
 
     if use_jaeger_tracer:
