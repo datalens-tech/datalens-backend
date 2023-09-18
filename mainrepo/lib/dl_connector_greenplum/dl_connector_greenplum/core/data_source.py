@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from dl_constants.enums import CreateDSFrom
-from dl_core.data_source.sql import (
-    BaseSQLDataSource,
-    StandardSchemaSQLDataSource,
-    SubselectDataSource,
-)
-
 from dl_connector_greenplum.core.constants import (
     CONNECTION_TYPE_GREENPLUM,
     SOURCE_TYPE_GP_SUBSELECT,
     SOURCE_TYPE_GP_TABLE,
 )
 from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
+from dl_constants.enums import CreateDSFrom
+from dl_core.data_source.sql import (
+    BaseSQLDataSource,
+    StandardSchemaSQLDataSource,
+    SubselectDataSource,
+)
 
 
 class GreenplumDataSourceMixin(BaseSQLDataSource):

@@ -11,12 +11,8 @@ class IntegrationTestDataset:
 
 
 PG_SQL_FEATURES = IntegrationTestDataset(
-    source_type=SOURCE_TYPE_PG_TABLE_STR,
-    db_name="information_schema",
-    table_name="sql_features"
+    source_type=SOURCE_TYPE_PG_TABLE_STR, db_name="information_schema", table_name="sql_features"
 )
 PG_SALES = IntegrationTestDataset(
-    source_type=SOURCE_TYPE_PG_TABLE_STR,
-    db_name="public",
-    table_name="integration_tests_sales"
+    source_type=SOURCE_TYPE_PG_TABLE_STR, db_name="public", table_name="integration_tests_sales"
 )

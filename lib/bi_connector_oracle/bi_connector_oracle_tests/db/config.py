@@ -2,34 +2,33 @@ import os
 from typing import ClassVar
 
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
-
-from bi_connector_oracle.formula.constants import OracleDialect as D
 from dl_testing.containers import get_test_container_hostport
 
+from bi_connector_oracle.formula.constants import OracleDialect as D
 
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
-    host_us_http=get_test_container_hostport('us', fallback_port=51811).host,
-    port_us_http=get_test_container_hostport('us', fallback_port=51811).port,
-    host_us_pg=get_test_container_hostport('pg-us', fallback_port=51810).host,
-    port_us_pg_5432=get_test_container_hostport('pg-us', fallback_port=51810).port,
-    us_master_token='AC1ofiek8coB',
+    host_us_http=get_test_container_hostport("us", fallback_port=51811).host,
+    port_us_http=get_test_container_hostport("us", fallback_port=51811).port,
+    host_us_pg=get_test_container_hostport("pg-us", fallback_port=51810).host,
+    port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=51810).port,
+    us_master_token="AC1ofiek8coB",
 )
 
 COMPOSE_PROJECT_NAME = os.environ.get("COMPOSE_PROJECT_NAME", "bi_connector_oracle")
-ORACLE_CONTAINER_LABEL = 'db-oracle'
-INIT_DB_PORT = get_test_container_hostport('init-db', fallback_port=51802).port
+ORACLE_CONTAINER_LABEL = "db-oracle"
+INIT_DB_PORT = get_test_container_hostport("init-db", fallback_port=51802).port
 
 
 class CoreConnectionSettings:
-    DB_NAME: ClassVar[str] = 'XEPDB1'
-    HOST: ClassVar[str] = get_test_container_hostport('db-oracle', fallback_port=51800).host
-    PORT: ClassVar[int] = get_test_container_hostport('db-oracle', fallback_port=51800).port
-    USERNAME: ClassVar[str] = 'datalens'
-    PASSWORD: ClassVar[str] = 'qwerty'
+    DB_NAME: ClassVar[str] = "XEPDB1"
+    HOST: ClassVar[str] = get_test_container_hostport("db-oracle", fallback_port=51800).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-oracle", fallback_port=51800).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
 
 
-DEFAULT_ORACLE_SCHEMA_NAME = 'DATALENS'
+DEFAULT_ORACLE_SCHEMA_NAME = "DATALENS"
 
 
 SUBSELECT_QUERY_FULL = r"""

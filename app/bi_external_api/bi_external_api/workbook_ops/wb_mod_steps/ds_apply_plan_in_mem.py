@@ -9,9 +9,15 @@ from bi_external_api.converter.main import DatasetConverter
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import datasets
-from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    EntrySummary,
+)
 from bi_external_api.workbook_ops.wb_mod_steps.common_apply_plan_in_mem import BaseApplyInMemPlanWBModStep
-from bi_external_api.workbook_ops.wb_modification_context import WorkbookModificationContext, DatasetConvArtifacts
+from bi_external_api.workbook_ops.wb_modification_context import (
+    DatasetConvArtifacts,
+    WorkbookModificationContext,
+)
 
 
 @attr.s()
@@ -26,9 +32,9 @@ class StepApplyPlanInMemoryDatasets(
     int_inst_clz = datasets.DatasetInstance
 
     def _finalize_wb_modification_ctx(
-            self,
-            wb_ctx_with_applied_updates: WorkbookContext,
-            map_entry_id_conversion_artifact: dict[str, DatasetConvArtifacts]
+        self,
+        wb_ctx_with_applied_updates: WorkbookContext,
+        map_entry_id_conversion_artifact: dict[str, DatasetConvArtifacts],
     ) -> WorkbookModificationContext:
         wbm = super()._finalize_wb_modification_ctx(wb_ctx_with_applied_updates, map_entry_id_conversion_artifact)
 
@@ -43,13 +49,13 @@ class StepApplyPlanInMemoryDatasets(
         return wbm.clone(map_ds_id_to_conv_artifacts=new_map_ds_id_to_conv_artifacts)
 
     async def _convert_instance_ext_to_int(
-            self,
-            *,
-            ext_inst: ext.DatasetInstance,
-            int_inst_id: str,
-            prev_int_inst: Optional[datasets.DatasetInstance],
-            wb_ctx: WorkbookContext,
-            converter_ctx: ConverterContext,
+        self,
+        *,
+        ext_inst: ext.DatasetInstance,
+        int_inst_id: str,
+        prev_int_inst: Optional[datasets.DatasetInstance],
+        wb_ctx: WorkbookContext,
+        converter_ctx: ConverterContext,
     ) -> tuple[datasets.DatasetInstance, DatasetConvArtifacts]:
         converter = DatasetConverter(wb_ctx, converter_ctx)
         actions = converter.convert_public_dataset_to_actions(ext_inst.dataset)
@@ -67,5 +73,5 @@ class StepApplyPlanInMemoryDatasets(
                 name=ext_inst.name,
                 scope=EntryScope.dataset,
                 workbook_id=self.wb_id,
-            )
+            ),
         ), DatasetConvArtifacts(validation_response=validation_resp, actions=actions)

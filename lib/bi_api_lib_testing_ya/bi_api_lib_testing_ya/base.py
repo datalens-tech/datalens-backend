@@ -1,36 +1,44 @@
 import abc
-from typing import Any, ClassVar, Generator, Type
+from typing import (
+    Any,
+    ClassVar,
+    Generator,
+    Type,
+)
 
 import pytest
 
-from dl_configs.enums import AppType, EnvType
-from dl_configs.rqe import RQEConfig
-
-from dl_core.utils import attrs_evolve_to_subclass
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings, YCAuthSettings
-from dl_api_lib.app.control_api.app import ControlApiAppFactory
-
-from bi_testing_ya.iam_mock import apply_iam_services_mock
-from bi_cloud_integration.iam_mock import IAMServicesMockFacade
-
-from dl_api_lib_testing.base import BiApiTestBase
 from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
 from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
+from bi_api_lib_ya.app_settings import (
+    ControlPlaneAppSettings,
+    YCAuthSettings,
+)
+from bi_cloud_integration.iam_mock import IAMServicesMockFacade
+from bi_testing_ya.iam_mock import apply_iam_services_mock
+from dl_api_lib.app.control_api.app import ControlApiAppFactory
+from dl_api_lib_testing.base import BiApiTestBase
+from dl_configs.enums import (
+    AppType,
+    EnvType,
+)
+from dl_configs.rqe import RQEConfig
+from dl_core.utils import attrs_evolve_to_subclass
 
 
 class BiApiTestPrivateBase(BiApiTestBase, abc.ABC):
     control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactory]] = TestingControlApiAppFactoryPrivate
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def iam_services_mock(self, monkeypatch: Any) -> Generator[IAMServicesMockFacade, None, None]:
         yield from apply_iam_services_mock(monkeypatch)
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def control_api_app_settings(  # type: ignore[override]
-            self,
-            bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
-            rqe_config_subprocess: RQEConfig,
-            iam_services_mock: IAMServicesMockFacade,
+        self,
+        bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
+        rqe_config_subprocess: RQEConfig,
+        iam_services_mock: IAMServicesMockFacade,
     ) -> ControlPlaneAppSettings:
         base_settings = self.create_control_api_settings(
             bi_test_config=bi_test_config,

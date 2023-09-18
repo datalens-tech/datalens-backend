@@ -1,4 +1,9 @@
-from typing import TypeVar, Type, Iterable, ClassVar
+from typing import (
+    ClassVar,
+    Iterable,
+    Type,
+    TypeVar,
+)
 
 import attr
 
@@ -11,11 +16,13 @@ _ENTRY_INSTANCE_TV = TypeVar("_ENTRY_INSTANCE_TV", bound=ext.EntryInstance)
 class WorkbookAccessor:
     wb: ext.WorkBook = attr.ib()
 
-    _SUPPORTED_INSTANCE_CLZ: ClassVar[frozenset[Type[ext.EntryInstance]]] = frozenset([
-        ext.DatasetInstance,
-        ext.ChartInstance,
-        ext.DashInstance,
-    ])
+    _SUPPORTED_INSTANCE_CLZ: ClassVar[frozenset[Type[ext.EntryInstance]]] = frozenset(
+        [
+            ext.DatasetInstance,
+            ext.ChartInstance,
+            ext.DashInstance,
+        ]
+    )
 
     def get_actual_instances(self, entry_clz: Type[_ENTRY_INSTANCE_TV]) -> Iterable[_ENTRY_INSTANCE_TV]:
         if entry_clz is ext.DatasetInstance:

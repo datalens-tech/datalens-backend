@@ -3,11 +3,16 @@ from __future__ import annotations
 import logging
 
 from dl_constants.enums import CreateDSFrom
-
-from dl_core.data_source.sql import StandardSchemaSQLDataSource, SubselectDataSource, BaseSQLDataSource
+from dl_core.data_source.sql import (
+    BaseSQLDataSource,
+    StandardSchemaSQLDataSource,
+    SubselectDataSource,
+)
 
 from bi_connector_mssql.core.constants import (
-    CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT
+    CONNECTION_TYPE_MSSQL,
+    SOURCE_TYPE_MSSQL_SUBSELECT,
+    SOURCE_TYPE_MSSQL_TABLE,
 )
 from bi_connector_mssql.core.query_compiler import MSSQLQueryCompiler
 
@@ -25,8 +30,8 @@ class MSSQLDataSourceMixin(BaseSQLDataSource):
 
 
 class MSSQLDataSource(MSSQLDataSourceMixin, StandardSchemaSQLDataSource):  # type: ignore  # TODO: fix
-    """ MSSQL table """
+    """MSSQL table"""
 
 
 class MSSQLSubselectDataSource(MSSQLDataSourceMixin, SubselectDataSource):  # type: ignore  # TODO: fix
-    """ MSSQL table """
+    """MSSQL table"""

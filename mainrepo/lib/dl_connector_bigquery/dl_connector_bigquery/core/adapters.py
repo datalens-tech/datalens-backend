@@ -13,6 +13,9 @@ import google.oauth2.service_account as g_service_account
 import sqlalchemy as sa
 import sqlalchemy_bigquery._types as bq_types
 
+from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
+from dl_connector_bigquery.core.error_transformer import big_query_db_error_transformer
+from dl_connector_bigquery.core.target_dto import BigQueryConnTargetDTO
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
     BaseConnLineConstructor,
@@ -23,10 +26,6 @@ from dl_core.connection_models.common_models import (
     SchemaIdent,
     TableIdent,
 )
-
-from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
-from dl_connector_bigquery.core.error_transformer import big_query_db_error_transformer
-from dl_connector_bigquery.core.target_dto import BigQueryConnTargetDTO
 
 
 class BigQueryConnLineConstructor(BaseConnLineConstructor[BigQueryConnTargetDTO]):

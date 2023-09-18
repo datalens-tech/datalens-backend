@@ -3,10 +3,19 @@ from __future__ import annotations
 import abc
 import enum
 import inspect
-from typing import Type, Optional, TypeVar, Sequence, ClassVar, Any, final, List, Union
+from typing import (
+    Any,
+    ClassVar,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+    final,
+)
 
 import attr
-
 from dynamic_enum import DynamicEnum
 
 from bi_external_api.attrs_model_mapper.utils import MText
@@ -103,11 +112,7 @@ class ModelDescriptor(BaseClassDescriptor):
 
     @classmethod
     def get_registered_parents_for(cls, the_type: Type) -> Sequence[Type]:
-        return [
-            parent_cls
-            for parent_cls in inspect.getmro(the_type)
-            if parent_cls in cls._REGISTRY
-        ]
+        return [parent_cls for parent_cls in inspect.getmro(the_type) if parent_cls in cls._REGISTRY]
 
     @classmethod
     def resolve_type_discriminator_attr_name(cls, model_cls: Type) -> Optional[str]:
@@ -170,10 +175,7 @@ class ModelDescriptor(BaseClassDescriptor):
                 f" due to type_discriminator_attr_name set {children_type_discriminator_attr_name!r} in one of parents"
             )
 
-            type_discriminator_candidate = getattr(
-                cls,
-                children_type_discriminator_attr_name
-            )
+            type_discriminator_candidate = getattr(cls, children_type_discriminator_attr_name)
 
             if isinstance(type_discriminator_candidate, enum.Enum):
                 self._effective_type_discriminator = type_discriminator_candidate.name
@@ -182,19 +184,20 @@ class ModelDescriptor(BaseClassDescriptor):
             elif isinstance(type_discriminator_candidate, str):
                 self._effective_type_discriminator = type_discriminator_candidate
             else:
-                raise AssertionError(
-                    f"Unknown type of type discriminator for {cls}: {type_discriminator_candidate}"
-                )
+                raise AssertionError(f"Unknown type of type discriminator for {cls}: {type_discriminator_candidate}")
 
     def set_effective_type_discriminator_aliases(self, cls: Type) -> None:
         ret: List[str] = list()
         children_type_discriminator_aliases_attr_name = self.resolve_type_discriminator_aliases_attr_name(cls)
         if children_type_discriminator_aliases_attr_name is not None:
-            type_discriminator_alias_candidate = getattr(
-                cls,
-                children_type_discriminator_aliases_attr_name,
-                None,
-            ) or tuple()
+            type_discriminator_alias_candidate = (
+                getattr(
+                    cls,
+                    children_type_discriminator_aliases_attr_name,
+                    None,
+                )
+                or tuple()
+            )
 
             for alias in type_discriminator_alias_candidate:
                 if isinstance(alias, str):
@@ -202,9 +205,7 @@ class ModelDescriptor(BaseClassDescriptor):
                 elif isinstance(alias, enum.Enum):
                     ret.append(alias.name)
                 else:
-                    raise AssertionError(
-                        f"Unknown type of type discriminator alias for {cls}: {alias}"
-                    )
+                    raise AssertionError(f"Unknown type of type discriminator alias for {cls}: {alias}")
 
         self._effective_type_discriminator_aliases = tuple(ret)
 
@@ -224,7 +225,7 @@ class AttribDescriptor:
         return {self.METADATA_KEY: self}
 
     @classmethod
-    def from_attrib(cls, attr_ib: attr.Attribute) -> Optional['AttribDescriptor']:
+    def from_attrib(cls, attr_ib: attr.Attribute) -> Optional["AttribDescriptor"]:
         meta = attr_ib.metadata
         if cls.METADATA_KEY in meta:
             may_be_attrib_descriptor = meta[cls.METADATA_KEY]

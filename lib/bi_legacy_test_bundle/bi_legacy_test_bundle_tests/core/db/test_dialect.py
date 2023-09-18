@@ -2,21 +2,22 @@ from __future__ import annotations
 
 import datetime
 
+import pytest
+import pytz
 import sqlalchemy as sa
 import sqlalchemy.dialects.mysql
 import sqlalchemy.sql.sqltypes
-import pytest
-import pytz
-
 
 TEST_VALUES = [datetime.date(2020, 1, 1)] + [
     datetime.datetime(2020, idx1 + 1, idx2 + 1, 3, 4, 5, us).replace(tzinfo=tzinfo)
     for idx1, us in enumerate((0, 123356))
-    for idx2, tzinfo in enumerate((
-        None,
-        datetime.timezone.utc,
-        pytz.timezone('America/New_York'),
-    ))
+    for idx2, tzinfo in enumerate(
+        (
+            None,
+            datetime.timezone.utc,
+            pytz.timezone("America/New_York"),
+        )
+    )
 ]
 
 
@@ -44,28 +45,20 @@ def test_pg_literal_bind_datetimes(value, postgres_db):
     ("value", "type_", "expected"),
     (
         pytest.param(
-            datetime.date(2022, 1, 2),
-            sqlalchemy.sql.sqltypes.Date(),
-            datetime.date(2022, 1, 2),
-            id='date-as-date'
+            datetime.date(2022, 1, 2), sqlalchemy.sql.sqltypes.Date(), datetime.date(2022, 1, 2), id="date-as-date"
         ),
-        pytest.param(
-            '2022-01-02',
-            sqlalchemy.dialects.mysql.DATE(),
-            datetime.date(2022, 1, 2),
-            id='date-as-string'
-        ),
+        pytest.param("2022-01-02", sqlalchemy.dialects.mysql.DATE(), datetime.date(2022, 1, 2), id="date-as-string"),
         pytest.param(
             datetime.datetime(2022, 1, 2, 12, 59, 59),
             sqlalchemy.sql.sqltypes.DateTime(),
             datetime.datetime(2022, 1, 2, 12, 59, 59),
-            id='datetime-as-datetime'
+            id="datetime-as-datetime",
         ),
         pytest.param(
-            '2022-01-02T12:59:59',
+            "2022-01-02T12:59:59",
             sqlalchemy.dialects.mysql.DATETIME(fsp=6),
             datetime.datetime(2022, 1, 2, 12, 59, 59),
-            id='datetime-as-string'
+            id="datetime-as-string",
         ),
     ),
 )

@@ -1,18 +1,26 @@
 import abc
 import logging
-from typing import Any, Callable, Tuple, ClassVar
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Tuple,
+)
 
 import grpc
 import shortuuid
 
-from bi_external_api.grpc_proxy.common import GRequestData, GAuthorizationData
+from bi_external_api.grpc_proxy.common import (
+    GAuthorizationData,
+    GRequestData,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 # Copy-paste from https://github.com/d5h-foss/grpc-interceptor/blob/master/src/grpc_interceptor/server.py
 def _get_factory_and_method(
-        rpc_handler: grpc.RpcMethodHandler,
+    rpc_handler: grpc.RpcMethodHandler,
 ) -> Tuple[Callable, Callable]:
     if rpc_handler.unary_unary:  # type: ignore
         return grpc.unary_unary_rpc_method_handler, rpc_handler.unary_unary  # type: ignore
@@ -30,11 +38,11 @@ def _get_factory_and_method(
 class ServerInterceptor(grpc.ServerInterceptor, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def intercept(
-            self,
-            method: Callable,
-            request_or_iterator: Any,
-            context: grpc.ServicerContext,
-            method_name: str,
+        self,
+        method: Callable,
+        request_or_iterator: Any,
+        context: grpc.ServicerContext,
+        method_name: str,
     ) -> Any:  # pragma: no cover
         return method(request_or_iterator, context)
 
@@ -49,7 +57,10 @@ class ServerInterceptor(grpc.ServerInterceptor, metaclass=abc.ABCMeta):
         def invoke_intercept_method(request_or_iterator, context):  # type: ignore
             method_name = handler_call_details.method
             return self.intercept(
-                next_handler_method, request_or_iterator, context, method_name,
+                next_handler_method,
+                request_or_iterator,
+                context,
+                method_name,
             )
 
         return handler_factory(
@@ -64,19 +75,24 @@ class RequestBootstrapInterceptor(ServerInterceptor):
     md_key_authorization: ClassVar[str] = "authorization"
 
     def intercept(
-            self,
-            method: Callable,
-            request_or_iterator: Any,
-            context: grpc.ServicerContext,
-            method_name: str,
+        self,
+        method: Callable,
+        request_or_iterator: Any,
+        context: grpc.ServicerContext,
+        method_name: str,
     ) -> Any:
         # Inbound request ID is currently ignored
         generated_request_id = f"gp.{shortuuid.uuid()}"
 
         # Sending effective request ID to client
-        context.send_initial_metadata((
-            (self.md_key_request_id, generated_request_id,),
-        ))
+        context.send_initial_metadata(
+            (
+                (
+                    self.md_key_request_id,
+                    generated_request_id,
+                ),
+            )
+        )
         authorization_data = GAuthorizationData.from_invocation_metadata(context.invocation_metadata())
 
         GRequestData.set_request_id(context, generated_request_id)

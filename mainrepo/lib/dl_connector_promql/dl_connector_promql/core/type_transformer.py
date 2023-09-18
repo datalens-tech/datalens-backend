@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 from dl_constants.enums import BIType
 from dl_core.db.conversion_base import (
     TypeTransformer,
     make_native_type,
 )
-
-from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 
 
 class PromQLTypeTransformer(TypeTransformer):

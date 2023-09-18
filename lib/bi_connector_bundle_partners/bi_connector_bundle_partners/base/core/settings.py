@@ -12,6 +12,7 @@ from dl_configs.settings_loaders.meta_definition import s_attrib
 @attr.s(frozen=True)
 class PartnerKeys:
     """Keys by versions"""
+
     dl_private: dict[str, str] = attr.ib(repr=False)
     partner_public: dict[str, str] = attr.ib(repr=False)
 
@@ -21,8 +22,8 @@ class PartnerKeys:
             return None
         data = json.loads(json_data)
         return PartnerKeys(
-            dl_private=data['dl_private'],
-            partner_public=data['partner_public'],
+            dl_private=data["dl_private"],
+            partner_public=data["partner_public"],
         )
 
 

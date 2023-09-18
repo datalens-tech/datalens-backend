@@ -1,15 +1,24 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar
+from typing import (
+    Callable,
+    ClassVar,
+)
 
 import attr
 
-from dl_i18n.localizer_base import Localizer
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate, ConnectionBase
+from dl_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+    DataSourceTemplate,
+)
+from dl_i18n.localizer_base import Localizer
 
 from bi_connector_oracle.core.constants import (
-    OracleDbNameType, SOURCE_TYPE_ORACLE_TABLE, SOURCE_TYPE_ORACLE_SUBSELECT,
+    SOURCE_TYPE_ORACLE_SUBSELECT,
+    SOURCE_TYPE_ORACLE_TABLE,
+    OracleDbNameType,
 )
 from bi_connector_oracle.core.dto import OracleConnDTO
 
@@ -45,7 +54,7 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
         return self._make_subselect_templates(source_type=SOURCE_TYPE_ORACLE_SUBSELECT, localizer=localizer)
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]
+        self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]
     ) -> list[dict]:
         if not self.db_name:
             return []

@@ -1,11 +1,8 @@
 import pytest
 
-from dl_formula_testing.testcases.base import (
-    FormulaConnectorTestBase
-)
+from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
-
 from bi_connector_mysql_tests.db.config import DB_URLS
 
 
@@ -13,7 +10,7 @@ class MySQLTestBase(FormulaConnectorTestBase):
     supports_arrays = False
     supports_uuid = False
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return DB_URLS[self.dialect]
 

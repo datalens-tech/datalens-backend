@@ -1,25 +1,23 @@
 import attr
 
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-from dl_configs.enums import AppType
-
-from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_core.aio.middlewares.csrf import CSRFMiddleware
-
-from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
-
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
-
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
-from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud, AuthorizationModeDataCloud
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.yc_access_control_model import (
+    AuthorizationModeDataCloud,
+    AuthorizationModeYandexCloud,
+)
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
-
 from bi_file_uploader.app_settings import DefaultFileUploaderAPISettings
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_configs.enums import AppType
+from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_core.aio.middlewares.csrf import CSRFMiddleware
+from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 
 
 class DefaultCSRFMiddleware(CSRFMiddleware):
-    USER_ID_COOKIES = ('yandexuid',)
+    USER_ID_COOKIES = ("yandexuid",)
 
 
 @attr.s(kw_only=True)
@@ -70,8 +68,8 @@ class LegacyFileUploaderApiAppFactory(FileUploaderApiAppFactory[DefaultFileUploa
         elif app_type == AppType.TESTS:
             auth_mw_list = [
                 auth_trust_middleware(
-                    fake_user_id='_the_tests_asyncapp_user_id_',
-                    fake_user_name='_the_tests_asyncapp_user_name_',
+                    fake_user_id="_the_tests_asyncapp_user_id_",
+                    fake_user_name="_the_tests_asyncapp_user_name_",
                 )
             ]
         else:

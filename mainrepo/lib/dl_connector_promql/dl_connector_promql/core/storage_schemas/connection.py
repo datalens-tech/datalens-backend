@@ -1,8 +1,7 @@
 from marshmallow import fields as ma_fields
 
-from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
-
 from dl_connector_promql.core.us_connection import PromQLConnection
+from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
 
 class PromQLConnectionDataStorageSchema(ConnectionSQLDataStorageSchema[PromQLConnection.DataModel]):

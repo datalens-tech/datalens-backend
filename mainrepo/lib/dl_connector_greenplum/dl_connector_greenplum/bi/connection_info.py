@@ -1,5 +1,4 @@
 from dl_api_connector.connection_info import ConnectionInfoProvider
-
 from dl_connector_greenplum.bi.i18n.localizer import Translatable
 
 

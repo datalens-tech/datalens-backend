@@ -2,31 +2,31 @@ from __future__ import annotations
 
 from typing import Optional
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_api_commons.base_models import TenantDef
-
-import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
-from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
-
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_api_connector.form_config.models.api_schema import (
-    FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
+    FormFieldApiAction,
+    FormFieldApiActionCondition,
+    FormFieldApiSchema,
     FormFieldConditionalApiAction,
+    FormFieldSelector,
 )
 from dl_api_connector.form_config.models.base import ConnectionForm
 from dl_api_connector.form_config.models.rows.base import FormRow
-
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
 from dl_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
+
 from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
+import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
+from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
 
 
 class GreenplumMDBConnectionFormFactory(GreenplumConnectionFormFactory):
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, GreenplumConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
@@ -43,9 +43,11 @@ class GreenplumMDBConnectionFormFactory(GreenplumConnectionFormFactory):
                 cloud_tree_selector_row,
                 mdb_cluster_row,
                 mdb_host_row,
-                rc.host_row(display_conditions={
-                    mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
-                }),
+                rc.host_row(
+                    display_conditions={
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
+                    }
+                ),
             ]
         else:
             host_section = [rc.host_row()]

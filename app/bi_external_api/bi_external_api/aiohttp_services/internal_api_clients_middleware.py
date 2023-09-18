@@ -1,19 +1,42 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Optional, AsyncIterator
+from typing import (
+    TYPE_CHECKING,
+    AsyncIterator,
+    Optional,
+)
 
+from aiohttp import (
+    ClientSession,
+    TCPConnector,
+    web,
+)
 import attr
-from aiohttp import web, ClientSession, TCPConnector
 
-from dl_api_commons.base_models import TenantDef, AuthData, TenantCommon
-from dl_constants.api_constants import DLHeadersCommon, DLHeaders
-from .base import ExtAPIRequest, ExtAPIRequiredResource, InternalAPIClientsFactory
+from dl_api_commons.base_models import (
+    AuthData,
+    TenantCommon,
+    TenantDef,
+)
+from dl_constants.api_constants import (
+    DLHeaders,
+    DLHeadersCommon,
+)
+
 from ..internal_api_clients.charts_api import APIClientCharts
 from ..internal_api_clients.dash_api import APIClientDashboard
 from ..internal_api_clients.dataset_api import APIClientBIBackControlPlane
 from ..internal_api_clients.main import InternalAPIClients
-from ..internal_api_clients.united_storage import MiniUSClient, USMasterAuthData
+from ..internal_api_clients.united_storage import (
+    MiniUSClient,
+    USMasterAuthData,
+)
+from .base import (
+    ExtAPIRequest,
+    ExtAPIRequiredResource,
+    InternalAPIClientsFactory,
+)
 
 if TYPE_CHECKING:
     from aiohttp.typedefs import Handler
@@ -57,7 +80,9 @@ class InternalAPIClientsDefaultFactory(InternalAPIClientsFactory):
                 req_id=self.req_id,
                 extra_headers=self.extra_headers,
                 use_workbooks_api=self.us_use_workbook_api,
-            ) if charts_api_base_url is not None else None,
+            )
+            if charts_api_base_url is not None
+            else None,
             dash=APIClientDashboard(
                 session=self.session,
                 base_url=dash_api_base_url,
@@ -66,7 +91,9 @@ class InternalAPIClientsDefaultFactory(InternalAPIClientsFactory):
                 req_id=self.req_id,
                 extra_headers=self.extra_headers,
                 use_workbooks_api=self.us_use_workbook_api,
-            ) if dash_api_base_url is not None else None,
+            )
+            if dash_api_base_url is not None
+            else None,
             us=MiniUSClient(
                 session=self.session,
                 base_url=self.us_base_url,
@@ -132,20 +159,20 @@ class InternalAPIClientsMiddleware:
             if header_value is not None
         }
 
-        app_request.set_internal_api_clients_factory(InternalAPIClientsDefaultFactory(
-            dataset_api_base_url=self.dataset_api_base_url,
-            us_base_url=self.us_base_url,
-            us_use_workbook_api=self.us_use_workbook_api,
-            dash_api_base_url=self.dash_api_base_url,
-            charts_api_base_url=self.charts_api_base_url,
-
-            session=session,
-            req_id=req_id,
-            extra_headers=extra_headers,
-            client_auth_data=auth_data,
-
-            us_master_token=self.us_master_token,
-        ))
+        app_request.set_internal_api_clients_factory(
+            InternalAPIClientsDefaultFactory(
+                dataset_api_base_url=self.dataset_api_base_url,
+                us_base_url=self.us_base_url,
+                us_use_workbook_api=self.us_use_workbook_api,
+                dash_api_base_url=self.dash_api_base_url,
+                charts_api_base_url=self.charts_api_base_url,
+                session=session,
+                req_id=req_id,
+                extra_headers=extra_headers,
+                client_auth_data=auth_data,
+                us_master_token=self.us_master_token,
+            )
+        )
 
         yield
 
@@ -157,8 +184,6 @@ class InternalAPIClientsMiddleware:
     async def middleware(self, app_request: ExtAPIRequest, handler: Handler) -> web.StreamResponse:  # type: ignore
         async with contextlib.AsyncExitStack() as exit_stack:
             if ExtAPIRequiredResource.INT_API_CLIENTS in app_request.required_resources:
-                await exit_stack.enter_async_context(
-                    self.associate_int_api_clients_with_app_request(app_request)
-                )
+                await exit_stack.enter_async_context(self.associate_int_api_clients_with_app_request(app_request))
 
             return await handler(app_request.request)

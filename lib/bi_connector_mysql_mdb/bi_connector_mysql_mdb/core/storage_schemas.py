@@ -4,7 +4,7 @@ from bi_connector_mysql_mdb.core.us_connection import ConnectionMySQLMDB
 
 
 class ConnectionMySQLMDBDataStorageSchema(
-        ConnectionMDBStorageDataSchemaMixin,
-        ConnectionMySQLDataStorageSchema,
+    ConnectionMDBStorageDataSchemaMixin,
+    ConnectionMySQLDataStorageSchema,
 ):
     TARGET_CLS = ConnectionMySQLMDB.DataModel

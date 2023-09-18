@@ -5,7 +5,12 @@ import pytest
 
 from bi_external_api.domain import external as ext
 from bi_external_api.ext_examples import SuperStoreExtDSBuilder
-from .test_acceptance import AcceptanceScenario, CreatedConnectionTestingData, ConnectionTestingData
+
+from .test_acceptance import (
+    AcceptanceScenario,
+    ConnectionTestingData,
+    CreatedConnectionTestingData,
+)
 
 
 class AcceptanceScenatioYaTeam(AcceptanceScenario):
@@ -29,10 +34,7 @@ class AcceptanceScenatioYaTeam(AcceptanceScenario):
 
     @pytest.fixture()
     async def chyt_ua_connection(
-            self,
-            api,
-            wb_id: str,
-            chyt_connection_testing_data_ensured
+        self, api, wb_id: str, chyt_connection_testing_data_ensured
     ) -> CreatedConnectionTestingData:
         orig_conn = chyt_connection_testing_data_ensured.connection
         assert isinstance(orig_conn, ext.CHYTConnection)
@@ -47,27 +49,24 @@ class AcceptanceScenatioYaTeam(AcceptanceScenario):
             ),
             secret=None,
         )
-        return await self.create_connection(
-            api, wb_id,
-            ext.CHYTUserAuthConnection,
-            "chyt_ua_conn", effective_data
-        )
+        return await self.create_connection(api, wb_id, ext.CHYTUserAuthConnection, "chyt_ua_conn", effective_data)
 
     @pytest.fixture()
-    async def chyt_connection(self, api, wb_id: str,
-                              chyt_connection_testing_data_ensured) -> CreatedConnectionTestingData:
+    async def chyt_connection(
+        self, api, wb_id: str, chyt_connection_testing_data_ensured
+    ) -> CreatedConnectionTestingData:
         return await self.create_connection(
-            api, wb_id,
-            ext.CHYTConnection,
-            "chyt_conn", chyt_connection_testing_data_ensured
+            api, wb_id, ext.CHYTConnection, "chyt_conn", chyt_connection_testing_data_ensured
         )
 
-    @pytest.fixture(params=[
-        "chyt_connection",
-        # TODO FIX: Uncomment when scope for CHYT will be added for oAuth token of testing robot
-        # "chyt_ua_connection",
-        "ch_connection",
-    ])
+    @pytest.fixture(
+        params=[
+            "chyt_connection",
+            # TODO FIX: Uncomment when scope for CHYT will be added for oAuth token of testing robot
+            # "chyt_ua_connection",
+            "ch_connection",
+        ]
+    )
     def conn_td(self, request) -> ext.EntryInfo:
         """
         Dispatching fixture that return any connection
@@ -84,13 +83,15 @@ class AcceptanceScenatioYaTeam(AcceptanceScenario):
 
         conn_name = "chyt_on_create"
 
-        wb_create_info = await api.create_fake_workbook(ext.FakeWorkbookCreateRequest(
-            workbook_id=wb_id_value,
-            workbook=ext.WorkbookConnectionsOnly(
-                connections=[ext.ConnectionInstance(name=conn_name, connection=conn_data)]
-            ),
-            connection_secrets=[ext.ConnectionSecret(conn_name=conn_name, secret=conn_secret)]
-        ))
+        wb_create_info = await api.create_fake_workbook(
+            ext.FakeWorkbookCreateRequest(
+                workbook_id=wb_id_value,
+                workbook=ext.WorkbookConnectionsOnly(
+                    connections=[ext.ConnectionInstance(name=conn_name, connection=conn_data)]
+                ),
+                connection_secrets=[ext.ConnectionSecret(conn_name=conn_name, secret=conn_secret)],
+            )
+        )
         conn_info = wb_create_info.created_entries_info[0]
 
         # Check that connection was successfully created and dataset can be validated against it

@@ -1,15 +1,22 @@
-import uuid
 from typing import Generator
+import uuid
 
 import pytest
 
-from dl_constants.enums import ConnectionType
-
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.connection_base import ConnectionTestBase
+from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
+from dl_api_lib_testing.dataset_base import DatasetTestBase
 from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
+from dl_constants.enums import ConnectionType
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.database import DbTable
+from dl_core_testing.testcases.service_base import ServiceFixtureTextClass
 
 from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
-    SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT,
+    SOURCE_TYPE_CH_FROZEN_SOURCE,
+    SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.us_connection import ConnectionClickhouseFrozenBase
 from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.constants import CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS
@@ -30,18 +37,12 @@ from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.constants import 
 from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.settings import CHFrozenTransparencyConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.constants import CONNECTION_TYPE_CH_FROZEN_WEATHER
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.settings import CHFrozenWeatherConnectorSettings
-
-from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core_testing.database import DbTable
-from dl_core_testing.testcases.service_base import ServiceFixtureTextClass
-
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_api_lib_testing.dataset_base import DatasetTestBase
-from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
-
 from bi_connector_bundle_ch_frozen_tests.db.config import (
-    BI_TEST_CONFIG, CONNECTION_PARAMS, CORE_TEST_CONFIG, DB_CORE_URL, SR_CONNECTION_SETTINGS_PARAMS
+    BI_TEST_CONFIG,
+    CONNECTION_PARAMS,
+    CORE_TEST_CONFIG,
+    DB_CORE_URL,
+    SR_CONNECTION_SETTINGS_PARAMS,
 )
 
 
@@ -49,30 +50,34 @@ class CHFrozenConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
     core_test_config = CORE_TEST_CONFIG
     bi_compeng_pg_on = False
 
-    @pytest.fixture(scope='class', params=[
-        CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS,
-        CONNECTION_TYPE_CH_FROZEN_COVID,
-        CONNECTION_TYPE_CH_FROZEN_DEMO,
-        CONNECTION_TYPE_CH_FROZEN_DTP,
-        CONNECTION_TYPE_CH_FROZEN_GKH,
-        CONNECTION_TYPE_CH_FROZEN_HORECA,
-        CONNECTION_TYPE_CH_FROZEN_SAMPLES,
-        CONNECTION_TYPE_CH_FROZEN_TRANSPARENCY,
-        CONNECTION_TYPE_CH_FROZEN_WEATHER,
-    ], ids=lambda param: param.value)
+    @pytest.fixture(
+        scope="class",
+        params=[
+            CONNECTION_TYPE_CH_FROZEN_BUMPY_ROADS,
+            CONNECTION_TYPE_CH_FROZEN_COVID,
+            CONNECTION_TYPE_CH_FROZEN_DEMO,
+            CONNECTION_TYPE_CH_FROZEN_DTP,
+            CONNECTION_TYPE_CH_FROZEN_GKH,
+            CONNECTION_TYPE_CH_FROZEN_HORECA,
+            CONNECTION_TYPE_CH_FROZEN_SAMPLES,
+            CONNECTION_TYPE_CH_FROZEN_TRANSPARENCY,
+            CONNECTION_TYPE_CH_FROZEN_WEATHER,
+        ],
+        ids=lambda param: param.value,
+    )
     def _conn_type(self, request) -> ConnectionType:
         request.cls.conn_type = request.param
         return request.param
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def db_url(self, _conn_type: ConnectionType) -> str:
         return DB_CORE_URL
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict) -> ClickhouseDbEngineConfig:
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def connectors_settings(self, sample_table: DbTable) -> dict[ConnectionType, CHFrozenConnectorSettings]:
         params = SR_CONNECTION_SETTINGS_PARAMS | dict(
             ALLOWED_TABLES=[sample_table.name],
@@ -90,25 +95,27 @@ class CHFrozenConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
             CONNECTION_TYPE_CH_FROZEN_WEATHER: CHFrozenWeatherConnectorSettings(**params),
         }
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
         return BI_TEST_CONFIG
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
         return CONNECTION_PARAMS
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def saved_connection_id(
-            self, conn_default_sync_us_manager: SyncUSManager, connection_params: dict,
+        self,
+        conn_default_sync_us_manager: SyncUSManager,
+        connection_params: dict,
     ) -> Generator[str, None, None]:
         usm = conn_default_sync_us_manager
-        conn_name = f'{self.conn_type.name} test conn {uuid.uuid4()}'
+        conn_name = f"{self.conn_type.name} test conn {uuid.uuid4()}"
         conn = ConnectionClickhouseFrozenBase.create_from_dict(
             ConnectionClickhouseFrozenBase.DataModel(**connection_params),
-            ds_key='connections/tests/{}'.format(conn_name),
+            ds_key="connections/tests/{}".format(conn_name),
             type_=self.conn_type.name,
-            meta={'title': conn_name, 'state': 'saved'},
+            meta={"title": conn_name, "state": "saved"},
             us_manager=usm,
         )
 
@@ -118,7 +125,7 @@ class CHFrozenConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
 
 
 class CHFrozenDatasetTestBase(CHFrozenConnectionTestBase, DatasetTestBase):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def dataset_params(self, sample_table: DbTable) -> dict:
         return dict(
             source_type=SOURCE_TYPE_CH_FROZEN_SOURCE.name,
@@ -130,13 +137,13 @@ class CHFrozenDatasetTestBase(CHFrozenConnectionTestBase, DatasetTestBase):
 
 
 class CHFrozenDatasetSubselectTestBase(CHFrozenConnectionTestBase, DatasetTestBase):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def dataset_params(self, sample_table: DbTable) -> dict:
         return dict(
             source_type=SOURCE_TYPE_CH_FROZEN_SUBSELECT.name,
             parameters=dict(
-                subsql=f'select * from {sample_table.db.name}.{sample_table.name} limit 100',
-                title='My SQL Source',
+                subsql=f"select * from {sample_table.db.name}.{sample_table.name} limit 100",
+                title="My SQL Source",
             ),
         )
 

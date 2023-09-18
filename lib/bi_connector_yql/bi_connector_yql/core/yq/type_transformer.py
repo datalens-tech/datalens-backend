@@ -8,10 +8,8 @@ class YQTypeTransformer(YQLTypeTransformerBase):
     conn_type = CONNECTION_TYPE_YQ
 
     native_to_user_map = {
-        nt.clone(conn_type=CONNECTION_TYPE_YQ): bi_t
-        for nt, bi_t in YQLTypeTransformerBase.native_to_user_map.items()
+        nt.clone(conn_type=CONNECTION_TYPE_YQ): bi_t for nt, bi_t in YQLTypeTransformerBase.native_to_user_map.items()
     }
     user_to_native_map = {
-        bi_t: nt.clone(conn_type=CONNECTION_TYPE_YQ)
-        for bi_t, nt in YQLTypeTransformerBase.user_to_native_map.items()
+        bi_t: nt.clone(conn_type=CONNECTION_TYPE_YQ) for bi_t, nt in YQLTypeTransformerBase.user_to_native_map.items()
     }

@@ -1,7 +1,10 @@
 import sqlalchemy as sa
 
+from dl_formula.connectors.base.literal import (
+    Literal,
+    Literalizer,
+)
 from dl_formula.core.dialect import DialectCombo
-from dl_formula.connectors.base.literal import Literal, Literalizer
 
 
 class OracleLiteralizer(Literalizer):
@@ -15,7 +18,7 @@ class OracleLiteralizer(Literalizer):
         # but CHAR has better compatibility with some of the functions, so try to use it
         # with a fallback to NCHAR for non-ASCII strings
         try:
-            value.encode('ascii')
+            value.encode("ascii")
             type_ = sa.CHAR(len(value))
         except UnicodeEncodeError:
             type_ = sa.NCHAR(len(value))

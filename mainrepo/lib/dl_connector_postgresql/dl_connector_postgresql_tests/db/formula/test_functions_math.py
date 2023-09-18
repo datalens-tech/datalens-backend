@@ -1,12 +1,11 @@
 import pytest
 
-from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
-
 from dl_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_3TestBase,
     PostgreSQL_9_4TestBase,
 )
+from dl_formula_testing.evaluator import DbEvaluator
+from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
 
 
 class PostgreSQLMatchTestMixin:

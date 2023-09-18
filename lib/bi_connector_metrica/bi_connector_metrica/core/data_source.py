@@ -2,20 +2,32 @@ from __future__ import annotations
 
 import datetime
 import logging
-from typing import Any, Callable, ClassVar, Optional, Tuple, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+    Tuple,
+)
 
 from dl_constants.enums import BIType
-
 from dl_core import exc
-from bi_connector_metrica.core.us_connection import MetrikaApiConnection
-from dl_core.db import SchemaColumn, SchemaInfo
 from dl_core.data_source.sql import PseudoSQLDataSource
+from dl_core.db import (
+    SchemaColumn,
+    SchemaInfo,
+)
 
-from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
+from bi_connector_metrica.core.constants import (
+    CONNECTION_TYPE_APPMETRICA_API,
+    CONNECTION_TYPE_METRICA_API,
+)
+from bi_connector_metrica.core.us_connection import MetrikaApiConnection
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
     from dl_core.connection_executors.async_base import AsyncConnExecutorBase
+    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
 LOGGER = logging.getLogger(__name__)
@@ -59,10 +71,10 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
             assert self.saved_raw_schema is not None
             column = next(col for col in self.saved_raw_schema if col.name == col_name)
         except StopIteration:
-            raise exc.InvalidColumnError('Invalid field name')
+            raise exc.InvalidColumnError("Invalid field name")
 
         if column.user_type not in (BIType.date, BIType.datetime, BIType.genericdatetime):
-            raise exc.InvalidColumnError('Invalid field for value range')
+            raise exc.InvalidColumnError("Invalid field for value range")
 
         creation_date = self.connection.data.counter_creation_date
         now = datetime.datetime.utcnow()

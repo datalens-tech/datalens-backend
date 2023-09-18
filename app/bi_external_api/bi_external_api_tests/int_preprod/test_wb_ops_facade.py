@@ -3,7 +3,10 @@ from typing import Optional
 import attr
 import pytest
 
-from bi_external_api.attrs_model_mapper import Processor, pretty_repr
+from bi_external_api.attrs_model_mapper import (
+    Processor,
+    pretty_repr,
+)
 from bi_external_api.attrs_model_mapper.field_processor import FieldMeta
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import datasets
@@ -21,7 +24,8 @@ def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> 
             avatars=None,
             sources=[
                 ext.DataSource(
-                    id="tbl", title="tbl",
+                    id="tbl",
+                    title="tbl",
                     connection_ref=pg_connection.summary.name,
                     spec=ext.SubSelectDataSourceSpec(
                         sql="SELECT t.* FROM (VALUES(1, 'one'), (2, 'two')) AS t (num, txt)",
@@ -44,7 +48,7 @@ def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> 
                     title="TXT",
                 ),
             ],
-        )
+        ),
     )
     EXT_CHART_TBL = ext.ChartInstance(
         name="flat_table_over_main_ds",
@@ -57,7 +61,7 @@ def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> 
                         cast=ext.FieldType.string,
                         description="",
                         calc_spec=ext.FormulaCS(formula="CONCAT([TXT],'--')"),
-                        title="The descr"
+                        title="The descr",
                     )
                 )
             ],
@@ -67,29 +71,31 @@ def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> 
                     ext.ChartField.create_as_ref("txt"),
                     ext.ChartField.create_as_ref("descr"),
                 ]
-            )
-        )
+            ),
+        ),
     )
     EXT_DASH = ext.DashInstance(
         name="main_dash",
         dashboard=ext.Dashboard(
             tabs=(
                 ext.DashboardTab(
-                    id='Ak',
-                    title='Вкладка 1',
+                    id="Ak",
+                    title="Вкладка 1",
                     items=(
                         ext.DashboardTabItem(
                             id="g5",
                             placement=ext.DashTabItemPlacement(h=10, w=12, x=0, y=2),
                             element=ext.DashChartsContainer(
                                 hide_title=False,
-                                tabs=[ext.WidgetTab(
-                                    id="ma",
-                                    title="tbl",
-                                    chart_name=EXT_CHART_TBL.name,
-                                )],
+                                tabs=[
+                                    ext.WidgetTab(
+                                        id="ma",
+                                        title="tbl",
+                                        chart_name=EXT_CHART_TBL.name,
+                                    )
+                                ],
                                 default_active_chart_tab_id="ma",
-                            )
+                            ),
                         ),
                         ext.DashboardTabItem(
                             id="OK",
@@ -103,7 +109,7 @@ def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> 
                                 ),
                                 default_value=ext.MultiStringValue(values=["two"]),
                             ),
-                        )
+                        ),
                     ),
                     ignored_connections=(),
                 ),
@@ -120,11 +126,11 @@ def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> 
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_rm_dataset(
-        wb_ops_facade,
-        pg_connection,
-        pseudo_wb_path,
-        wb_ctx_loader,
-        dataset_factory,
+    wb_ops_facade,
+    pg_connection,
+    pseudo_wb_path,
+    wb_ctx_loader,
+    dataset_factory,
 ):
     # Preparing dataset
     ds_inst = await dataset_factory.create_dataset(
@@ -135,14 +141,12 @@ async def test_rm_dataset(
     assert wb_ctx_before_write.resolve_dataset_by_name("testy") == ds_inst
 
     # Executing operation
-    await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=ext.WorkBook(
-            datasets=[],
-            charts=[],
-            dashboards=[]
-        ),
-    ))
+    await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=ext.WorkBook(datasets=[], charts=[], dashboards=[]),
+        )
+    )
 
     # Reloading workbook context
     wb_ctx_after_write = await wb_ctx_loader.load(pseudo_wb_path)
@@ -154,11 +158,11 @@ async def test_rm_dataset(
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_rm_and_create_dataset(
-        wb_ops_facade,
-        pg_connection,
-        pseudo_wb_path,
-        wb_ctx_loader,
-        dataset_factory,
+    wb_ops_facade,
+    pg_connection,
+    pseudo_wb_path,
+    wb_ctx_loader,
+    dataset_factory,
 ):
     # Preparing dataset
     ds_inst = await dataset_factory.create_dataset(
@@ -174,7 +178,8 @@ async def test_rm_and_create_dataset(
             avatars=None,
             sources=[
                 ext.DataSource(
-                    id="tbl", title="tbl",
+                    id="tbl",
+                    title="tbl",
                     connection_ref=pg_connection.name,
                     spec=ext.SubSelectDataSourceSpec(
                         sql="SELECT 1 as ololo",
@@ -190,37 +195,34 @@ async def test_rm_and_create_dataset(
                     title="Ololo",
                 ),
             ],
-        )
+        ),
     )
 
     # Executing operation
-    await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=ext.WorkBook(
-            datasets=[new_ds_inst],
-            charts=[],
-            dashboards=[]
-        ),
-    ))
+    await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=ext.WorkBook(datasets=[new_ds_inst], charts=[], dashboards=[]),
+        )
+    )
 
     # Reloading workbook context
     wb_ctx_after_write = await wb_ctx_loader.load(pseudo_wb_path)
 
     # TODO FIX: replace attr.evolve with clone
     assert wb_ctx_after_write == attr.evolve(
-        wb_ctx_before_write,
-        datasets=[wb_ctx_after_write.resolve_dataset_by_name("my_new_ds")]
+        wb_ctx_before_write, datasets=[wb_ctx_after_write.resolve_dataset_by_name("my_new_ds")]
     )
 
 
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_create_dataset_chart_dash_from_scratch(
-        wb_ops_facade,
-        pg_connection,
-        pseudo_wb_path,
-        wb_ctx_loader,
-        dataset_factory,
+    wb_ops_facade,
+    pg_connection,
+    pseudo_wb_path,
+    wb_ctx_loader,
+    dataset_factory,
 ):
     workbook = create_default_ext_dashboard(pg_connection)
 
@@ -228,10 +230,12 @@ async def test_create_dataset_chart_dash_from_scratch(
     assert workbook.charts
     assert workbook.dashboards
 
-    await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=workbook,
-    ))
+    await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=workbook,
+        )
+    )
 
     wb_read_resp = await wb_ops_facade.read_workbook(ext.WorkbookReadRequest(workbook_id=pseudo_wb_path))
     assert wb_read_resp.workbook
@@ -242,18 +246,20 @@ async def test_create_dataset_chart_dash_from_scratch(
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_update_dash(
-        wb_ops_facade,
-        pg_connection,
-        pseudo_wb_path,
-        wb_ctx_loader,
-        dataset_factory,
+    wb_ops_facade,
+    pg_connection,
+    pseudo_wb_path,
+    wb_ctx_loader,
+    dataset_factory,
 ):
     workbook = create_default_ext_dashboard(pg_connection)
 
-    await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=workbook,
-    ))
+    await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=workbook,
+        )
+    )
 
     wb_read_resp = await wb_ops_facade.read_workbook(ext.WorkbookReadRequest(workbook_id=pseudo_wb_path))
     assert wb_read_resp.workbook
@@ -266,35 +272,38 @@ async def test_update_dash(
             return meta.clz == ext.DashTabItemPlacement
 
         def _process_single_object(
-                self,
-                obj: ext.DashTabItemPlacement,
-                meta: FieldMeta
+            self, obj: ext.DashTabItemPlacement, meta: FieldMeta
         ) -> Optional[ext.DashTabItemPlacement]:
             return attr.evolve(obj, x=obj.x + 1)
 
     workbook_with_modified_dash = DashboardModifier().process(workbook)
     assert workbook != workbook_with_modified_dash
 
-    write_resp = await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=workbook_with_modified_dash,
-    ))
+    write_resp = await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=workbook_with_modified_dash,
+        )
+    )
     # TODO FIX: Check later that chart/dataset was not changed
-    assert ext.EntryOperation(
-        entry_name="main_dash",
-        entry_kind=ext.EntryKind.dashboard,
-        operation_kind=ext.EntryOperationKind.modify,
-    ) in write_resp.executed_plan.operations
+    assert (
+        ext.EntryOperation(
+            entry_name="main_dash",
+            entry_kind=ext.EntryKind.dashboard,
+            operation_kind=ext.EntryOperationKind.modify,
+        )
+        in write_resp.executed_plan.operations
+    )
 
 
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_update_dataset(
-        wb_ops_facade,
-        pg_connection,
-        pseudo_wb_path,
-        wb_ctx_loader,
-        dataset_factory,
+    wb_ops_facade,
+    pg_connection,
+    pseudo_wb_path,
+    wb_ctx_loader,
+    dataset_factory,
 ):
     # Preparing dataset
     EXT_DS_INST = ext.DatasetInstance(
@@ -303,7 +312,8 @@ async def test_update_dataset(
             avatars=None,
             sources=[
                 ext.DataSource(
-                    id="tbl", title="tbl",
+                    id="tbl",
+                    title="tbl",
                     connection_ref=pg_connection.name,
                     spec=ext.SubSelectDataSourceSpec(
                         sql="SELECT t.* FROM (VALUES(1, 'one'), (2, 'two')) AS t (num, txt)",
@@ -326,42 +336,32 @@ async def test_update_dataset(
                     title="TXT",
                 ),
             ],
-        )
+        ),
     )
-    MODIFIED_EXT_DS_INST = attr.evolve(
-        EXT_DS_INST,
-        dataset=attr.evolve(
-            EXT_DS_INST.dataset,
-            fields=[]
-        )
-    )
+    MODIFIED_EXT_DS_INST = attr.evolve(EXT_DS_INST, dataset=attr.evolve(EXT_DS_INST.dataset, fields=[]))
     # TODO FIX: Create dataset manually to ensure that revision ID is set
-    await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=ext.WorkBook(
-            datasets=[EXT_DS_INST],
-            charts=[],
-            dashboards=[]
-        ),
-    ))
-    await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=ext.WorkBook(
-            datasets=[MODIFIED_EXT_DS_INST],
-            charts=[],
-            dashboards=[]
-        ),
-    ))
+    await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=ext.WorkBook(datasets=[EXT_DS_INST], charts=[], dashboards=[]),
+        )
+    )
+    await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=ext.WorkBook(datasets=[MODIFIED_EXT_DS_INST], charts=[], dashboards=[]),
+        )
+    )
 
 
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_no_changes(
-        wb_ops_facade,
-        pg_connection,
-        pseudo_wb_path,
-        wb_ctx_loader,
-        dataset_factory,
+    wb_ops_facade,
+    pg_connection,
+    pseudo_wb_path,
+    wb_ctx_loader,
+    dataset_factory,
 ):
     # Preparing dataset
     EXT_DS_INST = ext.DatasetInstance(
@@ -370,7 +370,8 @@ async def test_no_changes(
             avatars=None,
             sources=[
                 ext.DataSource(
-                    id="tbl", title="tbl",
+                    id="tbl",
+                    title="tbl",
                     connection_ref=pg_connection.name,
                     spec=ext.SubSelectDataSourceSpec(
                         sql="SELECT t.* FROM (VALUES(1, 'one'), (2, 'two')) AS t (num, txt)",
@@ -393,31 +394,33 @@ async def test_no_changes(
                     title="TXT",
                 ),
             ],
+        ),
+    )
+    WB = ext.WorkBook(datasets=[EXT_DS_INST], charts=[], dashboards=[])
+
+    inital_resp = await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=WB,
         )
     )
-    WB = ext.WorkBook(
-        datasets=[EXT_DS_INST],
-        charts=[],
-        dashboards=[]
-    )
-
-    inital_resp = await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=WB,
-    ))
 
     assert inital_resp.executed_plan == ext.ModificationPlan(
-        operations=[ext.EntryOperation(
-            entry_name=EXT_DS_INST.name,
-            entry_kind=ext.EntryKind.dataset,
-            operation_kind=ext.EntryOperationKind.create,
-        )]
+        operations=[
+            ext.EntryOperation(
+                entry_name=EXT_DS_INST.name,
+                entry_kind=ext.EntryKind.dataset,
+                operation_kind=ext.EntryOperationKind.create,
+            )
+        ]
     )
 
-    consequent_resp = await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook_id=pseudo_wb_path,
-        workbook=WB,
-    ))
+    consequent_resp = await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook_id=pseudo_wb_path,
+            workbook=WB,
+        )
+    )
 
     assert consequent_resp.executed_plan == ext.ModificationPlan(
         operations=[],
@@ -457,10 +460,12 @@ async def test_copy_wb(wb_ops_facade, pseudo_wb_path, pg_connection: datasets.BI
         value_to_set=pg_connection.name,
     ).process(wb_get_resp.workbook)
 
-    wb_write_resp = await wb_ops_facade.write_workbook(ext.WorkbookWriteRequest(
-        workbook=wb,
-        workbook_id=pseudo_wb_path,
-    ))
+    wb_write_resp = await wb_ops_facade.write_workbook(
+        ext.WorkbookWriteRequest(
+            workbook=wb,
+            workbook_id=pseudo_wb_path,
+        )
+    )
     assert wb_write_resp is not None
 
 
@@ -504,22 +509,24 @@ async def test_copy_ref_wb(wb_ops_facade, pseudo_wb_path, chyt_connection_ext_va
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_clusterize_wb_by_folder(wb_ops_facade, pseudo_wb_path, dashes_in_hierarchy: list[EntrySummary]):
-    wb_clusterize_resp = await wb_ops_facade.clusterize_workbook(ext.WorkbookClusterizeRequest(
-        navigation_folder_path=pseudo_wb_path,
-    ))
+    wb_clusterize_resp = await wb_ops_facade.clusterize_workbook(
+        ext.WorkbookClusterizeRequest(
+            navigation_folder_path=pseudo_wb_path,
+        )
+    )
     assert {(nme.unique_entry_id, nme.legacy_location) for nme in wb_clusterize_resp.name_map} == {
-        (summary.id, tuple(summary.workbook_id.split("/") + [summary.name]))
-        for summary in dashes_in_hierarchy
+        (summary.id, tuple(summary.workbook_id.split("/") + [summary.name])) for summary in dashes_in_hierarchy
     }
 
 
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_clusterize_wb_by_dash_ids(wb_ops_facade, pseudo_wb_path, dashes_in_hierarchy: list[EntrySummary]):
-    wb_clusterize_resp = await wb_ops_facade.clusterize_workbook(ext.WorkbookClusterizeRequest(
-        dash_id_list=[summary.id for summary in dashes_in_hierarchy],
-    ))
+    wb_clusterize_resp = await wb_ops_facade.clusterize_workbook(
+        ext.WorkbookClusterizeRequest(
+            dash_id_list=[summary.id for summary in dashes_in_hierarchy],
+        )
+    )
     assert {(nme.unique_entry_id, nme.legacy_location) for nme in wb_clusterize_resp.name_map} == {
-        (summary.id, tuple(summary.workbook_id.split("/") + [summary.name]))
-        for summary in dashes_in_hierarchy
+        (summary.id, tuple(summary.workbook_id.split("/") + [summary.name])) for summary in dashes_in_hierarchy
     }

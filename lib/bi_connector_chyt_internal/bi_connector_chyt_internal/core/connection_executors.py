@@ -2,27 +2,36 @@ from __future__ import annotations
 
 import abc
 import asyncio
-import random
 import logging
+import random
 
 import aiohttp
 import attr
 
+from dl_connector_chyt.core.connection_executors import BaseCHYTAdapterConnExecutor
 from dl_core import exc
 from dl_core.utils import raise_for_status_and_hide_secret_headers
 
-from dl_connector_chyt.core.connection_executors import BaseCHYTAdapterConnExecutor
-from bi_connector_chyt_internal.core.async_adapters import AsyncCHYTInternalAdapter, AsyncCHYTUserAuthAdapter
+from bi_connector_chyt_internal.core.adapters import (
+    CHYTInternalAdapter,
+    CHYTUserAuthAdapter,
+)
+from bi_connector_chyt_internal.core.async_adapters import (
+    AsyncCHYTInternalAdapter,
+    AsyncCHYTUserAuthAdapter,
+)
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
-from bi_connector_chyt_internal.core.dto import CHYTInternalBaseDTO, CHYTInternalDTO, CHYTUserAuthDTO
+from bi_connector_chyt_internal.core.dto import (
+    CHYTInternalBaseDTO,
+    CHYTInternalDTO,
+    CHYTUserAuthDTO,
+)
 from bi_connector_chyt_internal.core.target_dto import (
     BaseCHYTInternalConnTargetDTO,
     CHYTInternalConnTargetDTO,
     CHYTUserAuthConnTargetDTO,
 )
-from bi_connector_chyt_internal.core.adapters import CHYTInternalAdapter, CHYTUserAuthAdapter
 from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -61,17 +70,25 @@ class BaseCHYTInternalSyncAdapterConnExecutor(BaseCHYTAdapterConnExecutor):
         LOGGER.info("Requesting host for CHYT")
 
         cluster = self._conn_dto.cluster
-        url = f'http://{cluster}.yt.yandex.net/hosts'
+        url = f"http://{cluster}.yt.yandex.net/hosts"
 
         try:
             async with session.get(url) as resp:
                 resp.raise_for_status()
                 hosts = await resp.json()
                 if not hosts:
-                    raise ValueError((f'Received no heavy-proxy hosts for YT {cluster}. '
-                                      'Check cluster availability and current infra events.'), )
+                    raise ValueError(
+                        (
+                            f"Received no heavy-proxy hosts for YT {cluster}. "
+                            "Check cluster availability and current infra events."
+                        ),
+                    )
         except Exception as err:
-            raise exc.DatabaseUnavailable(message=repr(err), orig=err, details={}, ) from err
+            raise exc.DatabaseUnavailable(
+                message=repr(err),
+                orig=err,
+                details={},
+            ) from err
 
         host = random.choice(hosts)
         LOGGER.info("Got host for CHYT: %s", host)
@@ -96,12 +113,12 @@ class CHYTInternalSyncAdapterConnExecutor(BaseCHYTInternalSyncAdapterConnExecuto
             host=real_host,
             port=80,
             yt_cluster=self._conn_dto.cluster,
-            username='default',
+            username="default",
             password=self._conn_dto.token,
             db_name=self._conn_dto.clique_alias,
             cluster_name=None,
-            endpoint='query',
-            protocol='http',
+            endpoint="query",
+            protocol="http",
             max_execution_time=self._conn_options.max_execution_time,
             total_timeout=self._conn_options.total_timeout,
             connect_timeout=self._conn_options.connect_timeout,
@@ -122,16 +139,17 @@ class CHYTUserAuthSyncAdapterConnExecutor(BaseCHYTInternalSyncAdapterConnExecuto
         LOGGER.info("Requesting csrf token from YT")
 
         cluster = self._conn_dto.cluster
-        url = f'http://{cluster}.yt.yandex.net/auth/whoami'
+        url = f"http://{cluster}.yt.yandex.net/auth/whoami"
 
         auth_headers = get_chyt_user_auth_headers(
-            self._conn_dto.header_authorization, self._conn_dto.header_cookie, None)
+            self._conn_dto.header_authorization, self._conn_dto.header_cookie, None
+        )
 
         try:
             async with session.get(url, headers=auth_headers) as resp:
                 raise_for_status_and_hide_secret_headers(resp)
                 res_data = await resp.json()
-                csrf_token = res_data['csrf_token']
+                csrf_token = res_data["csrf_token"]
         except Exception as err:
             raise exc.DatabaseUnavailable(
                 message=repr(err),
@@ -162,8 +180,8 @@ class CHYTUserAuthSyncAdapterConnExecutor(BaseCHYTInternalSyncAdapterConnExecuto
             header_csrf_token=csrf_token,
             db_name=self._conn_dto.clique_alias,
             cluster_name=None,
-            endpoint='query',
-            protocol='http',
+            endpoint="query",
+            protocol="http",
             max_execution_time=self._conn_options.max_execution_time,
             total_timeout=self._conn_options.total_timeout,
             connect_timeout=self._conn_options.connect_timeout,

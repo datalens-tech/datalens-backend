@@ -1,14 +1,26 @@
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from dl_constants.enums import BIType
-from bi_external_api.converter.charts.utils import convert_field_type_dataset_to_chart, ChartActionConverter
+from bi_external_api.converter.charts.utils import (
+    ChartActionConverter,
+    convert_field_type_dataset_to_chart,
+)
 from bi_external_api.converter.converter_exc import DatasetFieldNotFound
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import charts, datasets
-from bi_external_api.domain.internal.datasets import ResultSchemaField, ResultSchemaFieldFull
+from bi_external_api.domain.internal import (
+    charts,
+    datasets,
+)
+from bi_external_api.domain.internal.datasets import (
+    ResultSchemaField,
+    ResultSchemaFieldFull,
+)
+from dl_constants.enums import BIType
 
 
 @attr.s()
@@ -21,15 +33,14 @@ class ModifiedDatasetFieldResolver:
 
     def __attrs_post_init__(self) -> None:
         self._map_field_id_add_action = {
-            act.field.guid: act
-            for act in self._chart_actions if isinstance(act, charts.ChartActionFieldAdd)
+            act.field.guid: act for act in self._chart_actions if isinstance(act, charts.ChartActionFieldAdd)
         }
 
     @classmethod
     def match_update_action_and_validation_result(
-            cls,
-            field_from_modified_dataset: ResultSchemaFieldFull,
-            field_from_update_action: ResultSchemaField,
+        cls,
+        field_from_modified_dataset: ResultSchemaFieldFull,
+        field_from_update_action: ResultSchemaField,
     ) -> None:
         to_cmp_from_modified_dataset: ResultSchemaField = field_from_modified_dataset.to_writable_result_schema()
         to_cmp_from_update_action: ResultSchemaField
@@ -69,8 +80,9 @@ class ModifiedDatasetFieldResolver:
             modified_dataset = self._ds_with_applied_updates
             # This is potential caveat in case if target database will not be reachable during conversion
             # In this case we will not be able to perform partial validation of chart
-            assert modified_dataset is not None, \
-                f"Can not resolve ad-hoc field {id=}. Dataset was not provided to resolver"
+            assert (
+                modified_dataset is not None
+            ), f"Can not resolve ad-hoc field {id=}. Dataset was not provided to resolver"
 
             field_from_modified_dataset = modified_dataset.get_field_by_id(id)
 
@@ -123,7 +135,8 @@ class ModifiedDatasetFieldResolver:
         ]
         updates_partials = [
             charts.DatasetFieldPartial(guid=act.field.guid, title=act.field.title)
-            for act in self._chart_actions if isinstance(act, charts.ChartActionFieldAdd)
+            for act in self._chart_actions
+            if isinstance(act, charts.ChartActionFieldAdd)
         ]
         return rs_partials + updates_partials
 
@@ -144,9 +157,10 @@ class MultiDatasetFieldResolver:
         return None
 
     def _get_single_dataset_resolver(
-            self, *,
-            name: Optional[str] = None,
-            id: Optional[str] = None,
+        self,
+        *,
+        name: Optional[str] = None,
+        id: Optional[str] = None,
     ) -> ModifiedDatasetFieldResolver:
         ds: datasets.DatasetInstance
 
@@ -161,7 +175,6 @@ class MultiDatasetFieldResolver:
 
             ds = self._wb_context.resolve_dataset_by_id(id)
         else:
-
             raise AssertionError("Only a single name or id must be provided")
 
         relevant_actions = [
@@ -214,12 +227,13 @@ class MultiDatasetFieldResolver:
                 raise AssertionError(f"Can not determine pseudo field type {int_chart_field.title=}")
 
         field_id = int_chart_field.guid
-        assert field_id is not None, \
-            "Got int_chart_field.guid=None in MultiDatasetFieldResolver.get_ext_chart_field_by_int_field()"
+        assert (
+            field_id is not None
+        ), "Got int_chart_field.guid=None in MultiDatasetFieldResolver.get_ext_chart_field_by_int_field()"
 
-        return self._get_single_dataset_resolver(
-            id=int_chart_field.datasetId
-        ).get_ext_chart_field_with_ref_as_source(field_id)
+        return self._get_single_dataset_resolver(id=int_chart_field.datasetId).get_ext_chart_field_with_ref_as_source(
+            field_id
+        )
 
     def get_partials(self, dataset_name: str) -> Sequence[charts.DatasetFieldPartial]:
         return self._get_single_dataset_resolver(name=dataset_name).get_partials()

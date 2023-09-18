@@ -1,12 +1,15 @@
 import attr
 
-from bi_external_api.converter.converter_exc import NotSupportedYet, MalformedEntryConfig
+from bi_external_api.converter.converter_exc import (
+    MalformedEntryConfig,
+    NotSupportedYet,
+)
 from bi_external_api.converter.dash import dash_element_control_guided
 from bi_external_api.converter.dash.dash_element_common import (
     BaseDashElementConverter,
-    WidgetContainerElementConverter,
-    TitleDashElementConverter,
     TextDashElementConverter,
+    TitleDashElementConverter,
+    WidgetContainerElementConverter,
 )
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
@@ -17,10 +20,7 @@ from bi_external_api.domain.internal import dashboards
 class DashElementConverterFacade:
     _wb_context: WorkbookContext = attr.ib()
 
-    def create_element_converter_for_element(
-            self,
-            element: ext.DashElement
-    ) -> BaseDashElementConverter:
+    def create_element_converter_for_element(self, element: ext.DashElement) -> BaseDashElementConverter:
         if isinstance(element, ext.DashChartsContainer):
             return WidgetContainerElementConverter(self._wb_context)
 
@@ -53,8 +53,8 @@ class DashElementConverterFacade:
         )
 
     def create_element_converter_for_tab_item(
-            self,
-            tab_item: dashboards.TabItem,
+        self,
+        tab_item: dashboards.TabItem,
     ) -> BaseDashElementConverter:
         if isinstance(tab_item, dashboards.ItemWidget):
             return WidgetContainerElementConverter(self._wb_context)

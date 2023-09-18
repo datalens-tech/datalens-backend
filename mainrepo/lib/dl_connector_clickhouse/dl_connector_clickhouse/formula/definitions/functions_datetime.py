@@ -9,6 +9,7 @@ import clickhouse_sqlalchemy.types as ch_types
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
@@ -20,8 +21,6 @@ from dl_formula.definitions.common_datetime import (
 )
 import dl_formula.definitions.functions_datetime as base
 from dl_formula.definitions.literals import un_literal
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx

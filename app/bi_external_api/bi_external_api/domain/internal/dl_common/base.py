@@ -1,5 +1,9 @@
 import enum
-from typing import ClassVar, Any, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
@@ -14,25 +18,15 @@ class DatasetAPIBaseModel(MapperBaseModel):
     def _remove_ignored_keys(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
         if cls.ignore_not_declared_fields:
             declared_fields = attr.fields_dict(cls)
-            return {
-                key: val
-                for key, val in data.items()
-                if key in declared_fields
-            }
+            return {key: val for key, val in data.items() if key in declared_fields}
 
-        return {
-            key: val
-            for key, val in data.items()
-            if key not in cls.ignored_keys
-        }
+        return {key: val for key, val in data.items() if key not in cls.ignored_keys}
 
     @classmethod
     def pre_load(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
         normalized_data = cls.adopt_json_before_deserialization(data)
 
-        return cls._remove_ignored_keys(
-            data if normalized_data is None else normalized_data
-        )
+        return cls._remove_ignored_keys(data if normalized_data is None else normalized_data)
 
     @classmethod
     def post_dump(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
@@ -69,16 +63,17 @@ class EntrySummary:
 
     @classmethod
     def from_key(
-            cls,
-            *,
-            entry_id: str,
-            key: str,
-            scope: EntryScope,
-            true_workbook: bool,
-            workbook_id: str = None,
+        cls,
+        *,
+        entry_id: str,
+        key: str,
+        scope: EntryScope,
+        true_workbook: bool,
+        workbook_id: str = None,
     ) -> "EntrySummary":
-        assert "/" in key, \
-            f"Can not build entry summary for entry in US root: {scope.name}(id={entry_id!r}, key={key!r})"
+        assert (
+            "/" in key
+        ), f"Can not build entry summary for entry in US root: {scope.name}(id={entry_id!r}, key={key!r})"
 
         name = key.split("/")[-1]
         effective_workbook_id: str

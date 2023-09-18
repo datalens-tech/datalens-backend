@@ -3,13 +3,12 @@ import tempfile
 
 import pytest
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 from dl_formula_ref.config import DOC_GEN_CONFIG_DEFAULT
 from dl_formula_ref.generator import (
     ConfigVersion,
     ReferenceDocGenerator,
 )
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 
 @pytest.fixture(scope="function")

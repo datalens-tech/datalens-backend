@@ -16,6 +16,8 @@ import attr
 import cchardet as chardet
 
 from dl_app_tools.profiling_base import generic_profiler
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import (
     BIType,
     ConnectionType,
@@ -41,9 +43,6 @@ from dl_file_uploader_worker_lib.utils.converter_parsing_utils import (
     merge_column_types,
     raw_schema_to_column_types,
 )
-
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 LOGGER = logging.getLogger(__name__)
 

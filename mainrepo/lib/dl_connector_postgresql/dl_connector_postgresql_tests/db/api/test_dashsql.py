@@ -2,14 +2,13 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
-from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
-
 from dl_connector_postgresql_tests.db.api.base import PostgreSQLDashSQLConnectionTest
 from dl_connector_postgresql_tests.db.config import (
     DASHSQL_QUERY,
     QUERY_WITH_PARAMS,
     SUBSELECT_QUERY_FULL,
 )
+from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
 
 class TestPostgresDashSQL(PostgreSQLDashSQLConnectionTest, DefaultDashSQLTestSuite):

@@ -2,40 +2,41 @@ from __future__ import annotations
 
 import json
 import logging
-
-import aiohttp
-import attr
-from aiohttp import web, hdrs
-from aiohttp.typedefs import Handler
 from typing import Optional
 
-from dl_constants.api_constants import DLHeadersCommon
+import aiohttp
+from aiohttp import (
+    hdrs,
+    web,
+)
+from aiohttp.typedefs import Handler
+import attr
+
 from bi_api_commons_ya_team.constants import DLCookiesYT
-
-from dl_api_commons.aiohttp import aiohttp_wrappers
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
-from dl_api_commons.access_control_common import AuthTokenType, get_token_from_authorization_header, \
-    BadHeaderPrefixError
-from dl_api_commons.base_models import TenantCommon
-
+from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_blackbox_client.authenticate import authenticate_async
 from bi_blackbox_client.exc import InsufficientAuthData
-
-from bi_api_commons_ya_team.models import YaTeamAuthData
-
+from dl_api_commons.access_control_common import (
+    AuthTokenType,
+    BadHeaderPrefixError,
+    get_token_from_authorization_header,
+)
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_commons.aiohttp import aiohttp_wrappers
+from dl_api_commons.base_models import TenantCommon
+from dl_constants.api_constants import DLHeadersCommon
 
 LOGGER = logging.getLogger(__name__)
 
 
 def blackbox_auth_middleware(
-        client_session: Optional[aiohttp.ClientSession] = None,
-        tvm_info: Optional[str] = None,
+    client_session: Optional[aiohttp.ClientSession] = None,
+    tvm_info: Optional[str] = None,
 ) -> AIOHTTPMiddleware:
     @web.middleware
     @aiohttp_wrappers.DLRequestBase.use_dl_request
     async def actual_blackbox_auth_middleware(
-        app_request: aiohttp_wrappers.DLRequestBase,
-        handler: Handler
+        app_request: aiohttp_wrappers.DLRequestBase, handler: Handler
     ) -> web.StreamResponse:
         if aiohttp_wrappers.RequiredResourceCommon.SKIP_AUTH in app_request.required_resources:
             LOGGER.info("Auth was skipped due to SKIP_AUTH flag in target view")
@@ -85,19 +86,19 @@ def blackbox_auth_middleware(
         except InsufficientAuthData:
             raise web.HTTPForbidden()
 
-        user_id = auth_results.get('user_id')
+        user_id = auth_results.get("user_id")
 
         if user_id is None:
-            LOGGER.info("Blackbox auth was not passed. Blackbox resp: %s", json.dumps(
-                auth_results.get('blackbox_response')
-            ))
+            LOGGER.info(
+                "Blackbox auth was not passed. Blackbox resp: %s", json.dumps(auth_results.get("blackbox_response"))
+            )
             raise web.HTTPForbidden()
 
-        user_name = auth_results.get('username')
+        user_name = auth_results.get("username")
 
         if app_request.log_ctx_controller:
-            app_request.log_ctx_controller.put_to_context('user_id', user_id)
-            app_request.log_ctx_controller.put_to_context('user_name', user_name)
+            app_request.log_ctx_controller.put_to_context("user_id", user_id)
+            app_request.log_ctx_controller.put_to_context("user_name", user_name)
 
         app_request.replace_temp_rci(
             attr.evolve(
@@ -109,7 +110,7 @@ def blackbox_auth_middleware(
                     oauth_token=oauth_token,
                     cookie_session_id=secret_session_id_cookie,
                     cookie_sessionid2=secret_sessionid2_cookie,
-                )
+                ),
             )
         )
         return await handler(app_request.request)

@@ -20,9 +20,5 @@ class CHFrozenGKHCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenGKHCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenGKHCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenGKHCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenGKHCoreConnectionDefinition,)
+    source_definitions = (CHFrozenGKHCoreSourceDefinition,)

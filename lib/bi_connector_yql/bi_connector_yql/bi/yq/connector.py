@@ -1,21 +1,27 @@
 from __future__ import annotations
 
-from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
-)
 from dl_api_connector.api_schema.source_base import (
-    SimpleDataSourceSchema, SimpleDataSourceTemplateSchema,
-    SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
+    SimpleDataSourceSchema,
+    SimpleDataSourceTemplateSchema,
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
+)
+from dl_api_connector.connector import (
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
 
 from bi_connector_yql.bi.yq.api_schema.connection import YQConnectionSchema
 from bi_connector_yql.bi.yq.connection_form.form_config import YQConnectionFormFactory
 from bi_connector_yql.bi.yq.connection_info import YQConnectionInfoProvider
-from bi_connector_yql.core.yq.connector import (
-    YQCoreConnectionDefinition, YQCoreConnector,
-    YQSubselectCoreSourceDefinition, YQTableCoreSourceDefinition,
-)
 from bi_connector_yql.bi.yql_base.i18n.localizer import CONFIGS
+from bi_connector_yql.core.yq.connector import (
+    YQCoreConnectionDefinition,
+    YQCoreConnector,
+    YQSubselectCoreSourceDefinition,
+    YQTableCoreSourceDefinition,
+)
 from bi_connector_yql.formula.constants import DIALECT_NAME_YQ
 
 
@@ -41,9 +47,7 @@ class YQBiApiConnectionDefinition(BiApiConnectionDefinition):
 class YQBiApiConnector(BiApiConnector):
     core_connector_cls = YQCoreConnector
     formula_dialect_name = DIALECT_NAME_YQ
-    connection_definitions = (
-        YQBiApiConnectionDefinition,
-    )
+    connection_definitions = (YQBiApiConnectionDefinition,)
     source_definitions = (
         YQTableBiApiSourceDefinition,
         YQSubselectBiApiSourceDefinition,

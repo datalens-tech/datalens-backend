@@ -2,32 +2,33 @@ from __future__ import annotations
 
 from typing import Optional
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_api_commons.base_models import TenantDef
-
-import dl_api_connector.form_config.models.rows as C
-import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_api_connector.form_config.models.api_schema import (
-    FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
+    FormFieldApiAction,
+    FormFieldApiActionCondition,
+    FormFieldApiSchema,
     FormFieldConditionalApiAction,
+    FormFieldSelector,
 )
 from dl_api_connector.form_config.models.base import ConnectionForm
 from dl_api_connector.form_config.models.common import CommonFieldName
+import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
-from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+
 from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
+import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
+from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
 
 
 class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
@@ -46,18 +47,22 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
                 cloud_tree_selector_row,
                 mdb_cluster_row,
                 mdb_host_row,
-                rc.host_row(display_conditions={
-                    mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
-                }),
+                rc.host_row(
+                    display_conditions={
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
+                    }
+                ),
             ]
 
-            sql_user_management_hidden_row = C.CustomizableRow(items=[
-                C.HiddenRowItem(
-                    inner=True,
-                    name=mdb_c.MDBClusterRow.Inner.sql_user_management,
-                    default_value=False,
-                ),
-            ])
+            sql_user_management_hidden_row = C.CustomizableRow(
+                items=[
+                    C.HiddenRowItem(
+                        inner=True,
+                        name=mdb_c.MDBClusterRow.Inner.sql_user_management,
+                        default_value=False,
+                    ),
+                ]
+            )
 
             mdb_username_row = mdb_c.MDBUsernameRow(
                 name=CommonFieldName.username,

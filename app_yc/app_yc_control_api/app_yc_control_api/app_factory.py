@@ -2,31 +2,33 @@ from __future__ import annotations
 
 from typing import Optional
 
+from app_yc_control_api.i18n.localizer import CONFIGS
 import flask
-
-from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from dl_configs.enums import RequiredService
-from dl_constants.enums import USAuthMode
-
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
-from dl_core.services_registry.entity_checker import EntityUsageChecker
-from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from dl_core.services_registry.rqe_caches import RQECachesSetting
-
-from dl_api_lib.app_common import SRFactoryBuilder
-from dl_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
-from dl_api_lib.app_settings import ControlApiAppTestingsSettings
-from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
-from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
+from bi_cloud_integration.sa_creds import (
+    SACredsRetrieverFactory,
+    SACredsSettings,
+)
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
+from dl_api_lib.app.control_api.app import (
+    ControlApiAppFactory,
+    EnvSetupResult,
+)
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app_settings import ControlApiAppTestingsSettings
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_configs.enums import RequiredService
+from dl_constants.enums import USAuthMode
+from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.services_registry.entity_checker import EntityUsageChecker
+from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_i18n.localizer_base import TranslationConfig
-
-from app_yc_control_api.i18n.localizer import CONFIGS
 
 
 class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
@@ -37,13 +39,17 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
         return CloudEnvManagerFactory(samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS))
 
     def _get_inst_specific_sr_factory(
-            self,
-            settings: ControlPlaneAppSettings,
+        self,
+        settings: ControlPlaneAppSettings,
     ) -> YCServiceRegistryFactory:
-        sa_creds_settings = SACredsSettings(
-            mode=settings.YC_SA_CREDS_MODE,
-            env_key_data=settings.YC_SA_CREDS_KEY_DATA,
-        ) if settings.YC_SA_CREDS_MODE is not None else None
+        sa_creds_settings = (
+            SACredsSettings(
+                mode=settings.YC_SA_CREDS_MODE,
+                env_key_data=settings.YC_SA_CREDS_KEY_DATA,
+            )
+            if settings.YC_SA_CREDS_MODE is not None
+            else None
+        )
 
         return YCServiceRegistryFactory(
             yc_billing_host=settings.YC_BILLING_HOST,
@@ -53,9 +59,10 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
             yc_ts_endpoint=settings.YC_IAM_TS_ENDPOINT,
             yc_api_endpoint_mdb=settings.YC_MDB_API_ENDPOINT,
             sa_creds_retriever_factory=SACredsRetrieverFactory(
-                sa_creds_settings=sa_creds_settings,
-                ts_endpoint=settings.YC_IAM_TS_ENDPOINT
-            ) if sa_creds_settings else None
+                sa_creds_settings=sa_creds_settings, ts_endpoint=settings.YC_IAM_TS_ENDPOINT
+            )
+            if sa_creds_settings
+            else None,
         )
 
     def _get_entity_usage_checker(self, settings: ControlPlaneAppSettings) -> Optional[EntityUsageChecker]:
@@ -82,9 +89,9 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
 
 class ControlApiAppFactoryYC(ControlApiAppFactory[ControlPlaneAppSettings], ControlApiSRFactoryBuilderYC):
     def set_up_environment(
-            self,
-            app: flask.Flask,
-            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        self,
+        app: flask.Flask,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
         yc_auth_settings = self._settings.YC_AUTH_SETTINGS

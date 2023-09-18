@@ -1,10 +1,6 @@
-from dl_formula_testing.testcases.functions_datetime import (
-    DefaultDateTimeFunctionFormulaConnectorTestSuite,
-)
+from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
 
-from bi_connector_oracle_tests.db.formula.base import (
-    OracleTestBase,
-)
+from bi_connector_oracle_tests.db.formula.base import OracleTestBase
 
 
 class TestDateTimeFunctionOracle(OracleTestBase, DefaultDateTimeFunctionFormulaConnectorTestSuite):

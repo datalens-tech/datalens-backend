@@ -16,7 +16,6 @@ from dl_api_connector.api_schema.connection_mixins import (
 )
 from dl_api_connector.api_schema.connection_sql import DBHostField
 from dl_api_connector.api_schema.extras import FieldExtra
-
 from dl_connector_chyt.core.us_connection import ConnectionCHYTToken
 
 

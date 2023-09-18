@@ -1,3 +1,4 @@
+from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
 from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
@@ -8,8 +9,6 @@ from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
-
-from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
 
 # STR
 

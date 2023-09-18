@@ -1,28 +1,46 @@
 from __future__ import annotations
 
-import logging
 from datetime import date
-from typing import Callable, ClassVar, Optional, Sequence, TYPE_CHECKING
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
-
 import sqlalchemy_metrika_api
 from sqlalchemy_metrika_api import api_client as metrika_api_client
 from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespaces
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
-from dl_constants.enums import BIType, ConnectionType
-from dl_utils.utils import DataKey
-
+from dl_constants.enums import (
+    BIType,
+    ConnectionType,
+)
 from dl_core import exc
-from dl_core.db import get_type_transformer, SchemaColumn
+from dl_core.db import (
+    SchemaColumn,
+    get_type_transformer,
+)
 from dl_core.us_connection_base import (
-    ConnectionBase, DataSourceTemplate, ExecutorBasedMixin,
+    ConnectionBase,
+    DataSourceTemplate,
+    ExecutorBasedMixin,
 )
 from dl_core.utils import secrepr
+from dl_utils.utils import DataKey
 
-from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API
-from bi_connector_metrica.core.dto import MetricaAPIConnDTO, AppMetricaAPIConnDTO
+from bi_connector_metrica.core.constants import (
+    SOURCE_TYPE_APPMETRICA_API,
+    SOURCE_TYPE_METRICA_API,
+)
+from bi_connector_metrica.core.dto import (
+    AppMetricaAPIConnDTO,
+    MetricaAPIConnDTO,
+)
 
 if TYPE_CHECKING:
     from dl_core.connection_executors import SyncConnExecutorBase
@@ -34,7 +52,7 @@ LOGGER = logging.getLogger(__name__)
 def parse_metrica_ids(ids_str: str) -> Sequence[str]:
     if not ids_str:
         return []
-    return [id_.strip() for id_ in ids_str.split(',')]
+    return [id_.strip() for id_ in ids_str.split(",")]
 
 
 class MetrikaBaseMixin(ConnectionBase):
@@ -74,9 +92,9 @@ class MetrikaBaseMixin(ConnectionBase):
         return self.get_metrica_api_cli().get_available_counters()
 
     async def validate_new_data(
-            self,
-            changes: Optional[dict] = None,
-            original_version: Optional[ConnectionBase] = None,
+        self,
+        changes: Optional[dict] = None,
+        original_version: Optional[ConnectionBase] = None,
     ) -> None:
         await super().validate_new_data(  # type: ignore  # TODO: fix  # mixin
             changes=changes,
@@ -85,11 +103,11 @@ class MetrikaBaseMixin(ConnectionBase):
         if original_version is None:
             return  # only validating edits here
         assert isinstance(changes, dict)
-        data_changes = changes.get('data') or {}
-        if data_changes.get('token'):
+        data_changes = changes.get("data") or {}
+        if data_changes.get("token"):
             return  # token provided, nothing to check
         current_counter_id = self.data.counter_id  # type: ignore  # TODO: fix  # mixin
-        if str(data_changes.get('counter_id') or '') == str(current_counter_id):
+        if str(data_changes.get("counter_id") or "") == str(current_counter_id):
             return  # no counter_id change
         raise exc.ConnectionConfigurationError('"token" must be specified if "counter_id" is changing.')
 
@@ -112,7 +130,7 @@ class MetrikaApiConnection(MetrikaBaseMixin, ExecutorBasedMixin, ConnectionBase)
         def get_secret_keys(cls) -> set[DataKey]:
             return {
                 *super().get_secret_keys(),
-                DataKey(parts=('token',)),
+                DataKey(parts=("token",)),
             }
 
     @property
@@ -145,41 +163,45 @@ class MetrikaApiConnection(MetrikaBaseMixin, ExecutorBasedMixin, ConnectionBase)
         )
 
         def user_type_converter(type_name: str) -> BIType:
-            return BIType[type_name] if type_name != 'datetime' else BIType.genericdatetime
+            return BIType[type_name] if type_name != "datetime" else BIType.genericdatetime
 
         raw_schema = tuple(
             SchemaColumn(
-                name=field['name'],
-                title=field['title'],
-                user_type=user_type_converter(field['type']),
+                name=field["name"],
+                title=field["title"],
+                user_type=user_type_converter(field["type"]),
                 nullable=True,
                 native_type=get_type_transformer(actual_conn_type).type_user_to_native(
-                    user_t=user_type_converter(field['type'])
+                    user_t=user_type_converter(field["type"])
                 ),
-                description=field.get('description', ''),
-                has_auto_aggregation=not field['is_dim'],
+                description=field.get("description", ""),
+                has_auto_aggregation=not field["is_dim"],
                 lock_aggregation=True,
-            ) for field in fields_info
+            )
+            for field in fields_info
         )
 
         return raw_schema
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         return [dict(db_name=item.name) for item in MetrikaApiCounterSource]
 
     def get_data_source_templates(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         return [
             DataSourceTemplate(
-                title=parameters['db_name'],
+                title=parameters["db_name"],
                 group=[],
                 source_type=self.source_type,
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
                 parameters=parameters,
-            ) for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)
+            )
+            for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)
         ]
 
     @property
@@ -205,7 +227,8 @@ class AppMetricaApiConnection(MetrikaApiConnection):
         return sqlalchemy_metrika_api.api_info.appmetrica
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         return [dict(db_name=item.name) for item in AppMetricaFieldsNamespaces]
 

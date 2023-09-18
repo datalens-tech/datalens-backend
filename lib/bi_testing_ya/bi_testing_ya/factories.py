@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, TypeVar, Generic, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    TypeVar,
+)
 
 import attr
 
@@ -11,7 +16,7 @@ from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 if TYPE_CHECKING:
     from bi_testing_ya.cloud_tokens import AccountCredentials
 
-_FACTORY_TV = TypeVar("_FACTORY_TV", bound='AbstractTestResourceFactory')
+_FACTORY_TV = TypeVar("_FACTORY_TV", bound="AbstractTestResourceFactory")
 _RESOURCE_TV = TypeVar("_RESOURCE_TV")
 _RESOURCE_REQUEST_TV = TypeVar("_RESOURCE_REQUEST_TV")
 
@@ -47,7 +52,7 @@ class AbstractTestResourceFactory(Generic[_RESOURCE_TV, _RESOURCE_REQUEST_TV], m
         self.close_all()
 
 
-_ASYNC_FACTORY_TV = TypeVar("_ASYNC_FACTORY_TV", bound='AbstractAsyncTestResourceFactory')
+_ASYNC_FACTORY_TV = TypeVar("_ASYNC_FACTORY_TV", bound="AbstractAsyncTestResourceFactory")
 
 
 @attr.s

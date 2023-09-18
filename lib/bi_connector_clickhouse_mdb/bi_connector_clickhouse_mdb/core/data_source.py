@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from dl_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource, ClickHouseSubselectDataSource
+from dl_connector_clickhouse.core.clickhouse.data_source import (
+    ClickHouseDataSource,
+    ClickHouseSubselectDataSource,
+)
 
 
 class ClickHouseMDBDataSource(ClickHouseDataSource):
-    """ MDB CH table """
+    """MDB CH table"""
 
 
 class ClickHouseMDBSubselectDataSource(ClickHouseSubselectDataSource):
-    """ MDB CH subselect """
+    """MDB CH subselect"""

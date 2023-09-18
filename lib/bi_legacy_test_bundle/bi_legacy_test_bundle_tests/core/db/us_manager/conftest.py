@@ -6,7 +6,7 @@ from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def sync_usm(bi_context, default_service_registry, core_test_config):
     us_config = core_test_config.get_us_config()
     return SyncUSManager(

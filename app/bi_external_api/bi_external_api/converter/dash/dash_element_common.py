@@ -1,5 +1,9 @@
 import abc
-from typing import TypeVar, Generic, final
+from typing import (
+    Generic,
+    TypeVar,
+    final,
+)
 
 import attr
 
@@ -44,7 +48,7 @@ class TitleDashElementConverter(BaseDashElementConverter[dashboards.ItemTitle, e
             data=dashboards.TabItemDataTitle(
                 text=dash_element.text,
                 showInTOC=dash_element.show_in_toc,
-                size=self._convert_text_size_ext_to_int(dash_element.size)
+                size=self._convert_text_size_ext_to_int(dash_element.size),
             ),
             id=id,
         )
@@ -53,7 +57,7 @@ class TitleDashElementConverter(BaseDashElementConverter[dashboards.ItemTitle, e
         return ext.DashTitle(
             text=tab_item.data.text,
             show_in_toc=tab_item.data.showInTOC or False,
-            size=self._convert_text_size_int_to_ext(tab_item.data.size)
+            size=self._convert_text_size_int_to_ext(tab_item.data.size),
         )
 
 
@@ -67,14 +71,11 @@ class TextDashElementConverter(BaseDashElementConverter[dashboards.ItemText, ext
         )
 
     def _convert_int_to_ext(self, tab_item: dashboards.ItemText) -> ext.DashText:
-        return ext.DashText(
-            text=tab_item.data.text
-        )
+        return ext.DashText(text=tab_item.data.text)
 
 
 class WidgetContainerElementConverter(BaseDashElementConverter[dashboards.ItemWidget, ext.DashChartsContainer]):
     def convert_ext_to_int(self, dash_element: ext.DashChartsContainer, id: str) -> dashboards.ItemWidget:
-
         return dashboards.ItemWidget(
             data=dashboards.TabItemDataWidget(
                 hideTitle=dash_element.hide_title,
@@ -91,7 +92,7 @@ class WidgetContainerElementConverter(BaseDashElementConverter[dashboards.ItemWi
                         # description=None,
                     )
                     for widget_tab in dash_element.tabs
-                ]
+                ],
             ),
             id=id,
         )

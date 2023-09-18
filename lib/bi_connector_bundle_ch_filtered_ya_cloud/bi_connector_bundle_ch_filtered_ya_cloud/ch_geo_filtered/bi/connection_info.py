@@ -4,4 +4,4 @@ from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import Tran
 
 
 class CHGeoFilteredConnectionInfoProvider(ConnectionInfoProvider):
-    title_translatable = Translatable('label_connector-ch_geo_filtered')
+    title_translatable = Translatable("label_connector-ch_geo_filtered")

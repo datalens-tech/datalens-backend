@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_core.connectors.base.query_compiler import QueryCompiler
 
 

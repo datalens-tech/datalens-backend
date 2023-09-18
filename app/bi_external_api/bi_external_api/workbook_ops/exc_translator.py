@@ -1,12 +1,18 @@
 import functools
-from typing import Optional, Sequence
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_external_api.converter import converter_exc
 from bi_external_api.converter.converter_exc import CompositeConverterError
 from bi_external_api.domain import external as ext
-from bi_external_api.internal_api_clients.exc_api import DatasetValidationError, WorkbookNotFound
+from bi_external_api.internal_api_clients.exc_api import (
+    DatasetValidationError,
+    WorkbookNotFound,
+)
 from bi_external_api.workbook_ops.private_exceptions import OperationTerminationError
 
 
@@ -16,9 +22,9 @@ class ConverterExcTranslator:
     do_add_exc_message: bool = attr.ib(default=True)
 
     def _make_ext_common_error(
-            self,
-            user_message: str,
-            exc: Exception,
+        self,
+        user_message: str,
+        exc: Exception,
     ) -> ext.CommonError:
         path = self.path
         return ext.CommonError(
@@ -67,9 +73,9 @@ class GenericExcTranslator:
     do_add_exc_message: bool = attr.ib(default=True)
 
     def _make_ext_common_error(
-            self,
-            user_message: str,
-            exc: Exception,
+        self,
+        user_message: str,
+        exc: Exception,
     ) -> ext.CommonError:
         return ext.CommonError(
             path=None,
@@ -94,7 +100,7 @@ class GenericExcTranslator:
         return self._make_ext_common_error("Requested workbook not found", exc)
 
     @classmethod
-    def create(cls, path: Optional[Sequence[str]], do_add_exc_message: bool) -> 'GenericExcTranslator':
+    def create(cls, path: Optional[Sequence[str]], do_add_exc_message: bool) -> "GenericExcTranslator":
         return cls(
             converter_translator=ConverterExcTranslator(
                 path=path,
@@ -110,9 +116,9 @@ class CompositeExcTranslator:
     do_add_exc_message: bool = attr.ib(default=True)
 
     def _make_ext_common_error(
-            self,
-            user_message: str,
-            exc: Optional[Exception] = None,
+        self,
+        user_message: str,
+        exc: Optional[Exception] = None,
     ) -> ext.CommonError:
         return ext.CommonError(
             path=".".join(self.path) if self.path else None,
@@ -145,12 +151,7 @@ class CompositeExcTranslator:
 
         for ce in ds.component_errors.items:
             for err in ce.errors:
-                result.append(
-                    ext.CommonError(
-                        path=f"{ce.type}.{ce.id}",
-                        message=f"{err.message}, code: {err.code}"
-                    )
-                )
+                result.append(ext.CommonError(path=f"{ce.type}.{ce.id}", message=f"{err.message}, code: {err.code}"))
         return result
 
     @translate_error.register
@@ -164,7 +165,7 @@ class CompositeExcTranslator:
         ]
 
     @classmethod
-    def create(cls, do_add_exc_message: bool, path: Optional[Sequence[str]] = None) -> 'CompositeExcTranslator':
+    def create(cls, do_add_exc_message: bool, path: Optional[Sequence[str]] = None) -> "CompositeExcTranslator":
         return cls(
             path=path,
             do_add_exc_message=do_add_exc_message,

@@ -1,14 +1,25 @@
 from __future__ import annotations
 
 import logging
-from typing import ClassVar, FrozenSet
+from typing import (
+    ClassVar,
+    FrozenSet,
+)
 
-from dl_constants.enums import CreateDSFrom, JoinType
-
-from dl_core.data_source.sql import StandardSQLDataSource, SubselectDataSource, BaseSQLDataSource
+from dl_constants.enums import (
+    CreateDSFrom,
+    JoinType,
+)
+from dl_core.data_source.sql import (
+    BaseSQLDataSource,
+    StandardSQLDataSource,
+    SubselectDataSource,
+)
 
 from bi_connector_mysql.core.constants import (
-    CONNECTION_TYPE_MYSQL, SOURCE_TYPE_MYSQL_TABLE, SOURCE_TYPE_MYSQL_SUBSELECT,
+    CONNECTION_TYPE_MYSQL,
+    SOURCE_TYPE_MYSQL_SUBSELECT,
+    SOURCE_TYPE_MYSQL_TABLE,
 )
 from bi_connector_mysql.core.query_compiler import MySQLQueryCompiler
 
@@ -16,11 +27,13 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MySQLDataSourceMixin(BaseSQLDataSource):
-    supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset({
-        JoinType.inner,
-        JoinType.left,
-        JoinType.right,
-    })
+    supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset(
+        {
+            JoinType.inner,
+            JoinType.left,
+            JoinType.right,
+        }
+    )
 
     conn_type = CONNECTION_TYPE_MYSQL
 
@@ -30,9 +43,10 @@ class MySQLDataSourceMixin(BaseSQLDataSource):
 
 
 class MySQLDataSource(MySQLDataSourceMixin, StandardSQLDataSource):
-    """ MySQL table """
+    """MySQL table"""
+
     compiler_cls = MySQLQueryCompiler
 
 
 class MySQLSubselectDataSource(MySQLDataSourceMixin, SubselectDataSource):
-    """ MySQL table from a subquery """
+    """MySQL table from a subquery"""

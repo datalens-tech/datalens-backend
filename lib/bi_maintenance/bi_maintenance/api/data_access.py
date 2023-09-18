@@ -12,47 +12,62 @@ print_result_data(response_json)
 
 """
 
-from typing import Iterable, Union, Optional
+from typing import (
+    Iterable,
+    Optional,
+    Union,
+)
 
 import tabulate
 
-from dl_constants.enums import PivotRole
-
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.reporting.registry import DefaultReportingRegistry, ReportingRegistry
-from dl_core.us_dataset import Dataset
-from dl_core.us_manager.us_manager import USManagerBase
-
-from dl_api_lib.dataset.view import DatasetView
-from dl_api_lib.query.formalization.raw_specs import (
-    IdOrTitleFieldRef, RawSelectFieldSpec, RawQuerySpecUnion,
+from dl_api_commons.reporting.registry import (
+    DefaultReportingRegistry,
+    ReportingRegistry,
 )
-from dl_api_lib.query.formalization.raw_pivot_specs import (
-    RawPivotLegendItem, RawPivotSpec, RawDimensionPivotRoleSpec, RawPivotMeasureRoleSpec,
-)
-from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
-from dl_query_processing.legend.block_legend import BlockSpec
-from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
-from dl_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
-from dl_query_processing.postprocessing.primitives import PostprocessedQueryUnion, PostprocessedQueryBlock
-from dl_query_processing.postprocessing.postprocessor import DataPostprocessor
-from dl_query_processing.merging.merger import DataStreamMerger
 from dl_api_lib.api_common.data_serialization import (
-    DataRequestResponseSerializer, PivotDataRequestResponseSerializer,
+    DataRequestResponseSerializer,
+    PivotDataRequestResponseSerializer,
+)
+from dl_api_lib.dataset.view import DatasetView
+from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
+from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
+from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
+from dl_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
+from dl_api_lib.query.formalization.raw_pivot_specs import (
+    RawDimensionPivotRoleSpec,
+    RawPivotLegendItem,
+    RawPivotMeasureRoleSpec,
+    RawPivotSpec,
+)
+from dl_api_lib.query.formalization.raw_specs import (
+    IdOrTitleFieldRef,
+    RawQuerySpecUnion,
+    RawSelectFieldSpec,
 )
 from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotSpecNormalizer
+from dl_constants.enums import PivotRole
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager import USManagerBase
+from dl_query_processing.legend.block_legend import BlockSpec
+from dl_query_processing.merging.merger import DataStreamMerger
 from dl_query_processing.merging.primitives import MergedQueryDataStream
-from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
+from dl_query_processing.postprocessing.postprocessor import DataPostprocessor
+from dl_query_processing.postprocessing.primitives import (
+    PostprocessedQueryBlock,
+    PostprocessedQueryUnion,
+)
 
 
 def get_ds_view(
-        dataset: Dataset,
-        us_manager: USManagerBase,
-        block_spec: BlockSpec,
-        rci: Optional[RequestContextInfo] = None,
+    dataset: Dataset,
+    us_manager: USManagerBase,
+    block_spec: BlockSpec,
+    rci: Optional[RequestContextInfo] = None,
 ) -> DatasetView:
     ds_view = DatasetView(
-        ds=dataset, us_manager=us_manager,
+        ds=dataset,
+        us_manager=us_manager,
         block_spec=block_spec,
         rci=rci or RequestContextInfo.create_empty(),
     )
@@ -60,7 +75,8 @@ def get_ds_view(
 
 
 def make_query_spec_union(
-        select: Union[list[str], dict[str, int]], disable_rls: bool = True,
+    select: Union[list[str], dict[str, int]],
+    disable_rls: bool = True,
 ) -> RawQuerySpecUnion:
     if not isinstance(select, dict):
         select = {item: idx for idx, item in enumerate(select)}
@@ -78,19 +94,16 @@ def make_query_spec_union(
 
 
 def make_pivot_spec(
-        row_dimensions: Iterable[str],
-        column_dimensions: Iterable[str],
-        measures: Iterable[str],
-        normalize: bool = True,
+    row_dimensions: Iterable[str],
+    column_dimensions: Iterable[str],
+    measures: Iterable[str],
+    normalize: bool = True,
 ) -> tuple[RawQuerySpecUnion, RawPivotSpec]:
-
     row_dimensions = list(row_dimensions)
     column_dimensions = list(column_dimensions)
     measures = list(measures)
 
-    select = {
-        item: idx for idx, item in enumerate(row_dimensions + column_dimensions + measures)
-    }
+    select = {item: idx for idx, item in enumerate(row_dimensions + column_dimensions + measures)}
     raw_query_spec_union = make_query_spec_union(select=select)
     pivot_items = [
         *(
@@ -127,19 +140,20 @@ def make_pivot_spec(
 
 
 async def get_merged_data_stream(
-        dataset: Dataset,
-        us_manager: USManagerBase,
-        raw_query_spec_union: RawQuerySpecUnion,
-        allow_query_cache_usage: bool = True,
-        reporting_registry: Optional[ReportingRegistry] = None,
+    dataset: Dataset,
+    us_manager: USManagerBase,
+    raw_query_spec_union: RawQuerySpecUnion,
+    allow_query_cache_usage: bool = True,
+    reporting_registry: Optional[ReportingRegistry] = None,
 ) -> MergedQueryDataStream:
-    profiler_prefix = 'maintenance-result'
+    profiler_prefix = "maintenance-result"
 
     legend_formalizer = ResultLegendFormalizer(dataset=dataset)
     legend = legend_formalizer.make_legend(raw_query_spec_union=raw_query_spec_union)
     block_formalizer = BlockFormalizer(dataset=dataset, reporting_registry=reporting_registry)
     block_legend = block_formalizer.make_block_legend(
-        raw_query_spec_union=raw_query_spec_union, legend=legend,
+        raw_query_spec_union=raw_query_spec_union,
+        legend=legend,
     )
     rci = reporting_registry.rci if reporting_registry is not None else RequestContextInfo.create_empty()
     ds_view = get_ds_view(dataset=dataset, us_manager=us_manager, block_spec=block_legend.blocks[0], rci=rci)
@@ -154,9 +168,12 @@ async def get_merged_data_stream(
         block_spec=block_legend.blocks[0],
     )
     postprocessed_query_union = PostprocessedQueryUnion(
-        blocks=[PostprocessedQueryBlock.from_block_spec(
-            block_spec=block_legend.blocks[0], postprocessed_query=postprocessed_query,
-        )],
+        blocks=[
+            PostprocessedQueryBlock.from_block_spec(
+                block_spec=block_legend.blocks[0],
+                postprocessed_query=postprocessed_query,
+            )
+        ],
         legend=legend,
         limit=raw_query_spec_union.limit,
         offset=raw_query_spec_union.offset,
@@ -169,11 +186,11 @@ async def get_result_data(
     dataset: Dataset,
     us_manager: USManagerBase,
     raw_query_spec_union: RawQuerySpecUnion,
-    allow_query_cache_usage: bool = True
+    allow_query_cache_usage: bool = True,
 ) -> dict:
-
     merged_stream = await get_merged_data_stream(
-        dataset=dataset, us_manager=us_manager,
+        dataset=dataset,
+        us_manager=us_manager,
         raw_query_spec_union=raw_query_spec_union,
         allow_query_cache_usage=allow_query_cache_usage,
     )
@@ -182,15 +199,16 @@ async def get_result_data(
 
 
 async def get_pivot_data(
-        dataset: Dataset,
-        us_manager: USManagerBase,
-        raw_query_spec_union: RawQuerySpecUnion,
-        raw_pivot_spec: RawPivotSpec,
-        allow_query_cache_usage: bool = True
+    dataset: Dataset,
+    us_manager: USManagerBase,
+    raw_query_spec_union: RawQuerySpecUnion,
+    raw_pivot_spec: RawPivotSpec,
+    allow_query_cache_usage: bool = True,
 ) -> dict:
     reporting_registry = DefaultReportingRegistry(rci=RequestContextInfo.create_empty())
     merged_stream = await get_merged_data_stream(
-        dataset=dataset, us_manager=us_manager,
+        dataset=dataset,
+        us_manager=us_manager,
         raw_query_spec_union=raw_query_spec_union,
         allow_query_cache_usage=allow_query_cache_usage,
         reporting_registry=reporting_registry,
@@ -200,13 +218,15 @@ async def get_pivot_data(
     pivot_transformer = PdPivotTransformer(legend=merged_stream.legend, pivot_legend=pivot_legend)
     pivot_table = pivot_transformer.pivot(rows=merged_stream.rows)
     response_json = PivotDataRequestResponseSerializer.make_pivot_response(
-        merged_stream=merged_stream, pivot_table=pivot_table, reporting_registry=reporting_registry,
+        merged_stream=merged_stream,
+        pivot_table=pivot_table,
+        reporting_registry=reporting_registry,
     )
     return response_json
 
 
 def print_result_data(response_json: dict) -> None:
-    result_data = response_json['result']['data']
-    headers = [item[0] for item in result_data['Type'][1][1]]
-    data = result_data['Data']
-    print(tabulate.tabulate(data, headers=headers, tablefmt='pipe'))
+    result_data = response_json["result"]["data"]
+    headers = [item[0] for item in result_data["Type"][1][1]]
+    data = result_data["Data"]
+    print(tabulate.tabulate(data, headers=headers, tablefmt="pipe"))

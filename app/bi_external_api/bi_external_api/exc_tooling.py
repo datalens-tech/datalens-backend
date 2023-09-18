@@ -3,7 +3,15 @@ from __future__ import annotations
 import abc
 import contextlib
 import logging
-from typing import Any, Type, TypeVar, Generic, Optional, Iterator, Literal
+from typing import (
+    Any,
+    Generic,
+    Iterator,
+    Literal,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 
@@ -26,10 +34,7 @@ class ExcComposer(Generic[_EXC_EXTRA_CONTEXT_TV], metaclass=abc.ABCMeta):
         return self
 
     def __exit__(
-            self,
-            exc_type: Optional[Type[Exception]],
-            exc_val: Optional[Exception],
-            exc_tb: Any
+        self, exc_type: Optional[Type[Exception]], exc_val: Optional[Exception], exc_tb: Any
     ) -> Literal[False]:
         reduced_exc: Optional[Exception] = None
 
@@ -100,6 +105,7 @@ class SimpleCollectingExcComposer(ExcComposer[_EXC_EXTRA_CONTEXT_TV], metaclass=
     Composer with implemented handle_postponed_exc()/handle_unexpected_exc() which are basically store it in self.
     Only reduce_exc() should be implemented in successors.
     """
+
     _postponed_errors: list[tuple[_EXC_EXTRA_CONTEXT_TV, Exception]] = attr.ib(init=False, factory=list)
     _unexpected_error: Optional[Exception] = attr.ib(init=False, default=None)
 
@@ -113,7 +119,10 @@ class SimpleCollectingExcComposer(ExcComposer[_EXC_EXTRA_CONTEXT_TV], metaclass=
 
     def handle_postponed_exc(self, exception: Exception, extra: _EXC_EXTRA_CONTEXT_TV) -> None:
         self._postponed_errors.append(
-            (extra, exception,)
+            (
+                extra,
+                exception,
+            )
         )
 
     def handle_unexpected_exc(self, exception: Exception) -> None:

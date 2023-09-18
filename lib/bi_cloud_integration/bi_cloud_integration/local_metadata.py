@@ -1,43 +1,45 @@
 import logging
 import time
-from typing import Optional, Tuple
+from typing import (
+    Optional,
+    Tuple,
+)
 
 import aiohttp
 
 from dl_utils.aio import await_sync
 
-
 LOGGER = logging.getLogger(__name__)
 
 
-LOCAL_METADATA_TOKEN_URL = 'http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token'
+LOCAL_METADATA_TOKEN_URL = "http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
 
 
 async def get_yc_service_token_local_details(url: str = LOCAL_METADATA_TOKEN_URL) -> Tuple[str, int]:
-    """ Request the local metadata and return IAM token and its TTL (in seconds) """
-    LOGGER.debug('Going to get SA IAM token from the local metadata')
+    """Request the local metadata and return IAM token and its TTL (in seconds)"""
+    LOGGER.debug("Going to get SA IAM token from the local metadata")
     async with aiohttp.ClientSession() as session:
         req = session.request(
-            method='GET',
+            method="GET",
             url=url,
-            headers={'Metadata-Flavor': 'Google'},
+            headers={"Metadata-Flavor": "Google"},
             allow_redirects=False,
         )
         async with req as resp:
             if resp.status != 200:
-                body = await resp.text('utf-8', errors='replace')
-                raise Exception('Non-ok localhost metadata response', dict(body=body))
+                body = await resp.text("utf-8", errors="replace")
+                raise Exception("Non-ok localhost metadata response", dict(body=body))
             # Example response text:
             #     {"access_token":"t1.9eud…","expires_in":43166,"token_type":"Bearer"}
             token_resp_data = await resp.json()
 
-    token_type = token_resp_data.get('token_type')
-    if token_type and token_type != 'Bearer':
+    token_type = token_resp_data.get("token_type")
+    if token_type and token_type != "Bearer":
         raise ValueError(f"Unexpected token type {token_type!r}, must be 'Bearer'")
 
-    access_token = token_resp_data['access_token']
+    access_token = token_resp_data["access_token"]
     assert isinstance(access_token, str)
-    expires_in = token_resp_data['expires_in']
+    expires_in = token_resp_data["expires_in"]
     assert isinstance(expires_in, int)
     return access_token, expires_in
 
@@ -55,7 +57,7 @@ class LocalTokenCacheSingleton:
             return cls.token
         token, expires_in = await get_yc_service_token_local_details()
         if expires_in < min_ttl_sec * 2:  # fresh token is not fresh enough
-            LOGGER.warning(f'LocalTokenCacheSingleton: {min_ttl_sec=!r} is too low, {expires_in=!r}, {now_abs=!r}')
+            LOGGER.warning(f"LocalTokenCacheSingleton: {min_ttl_sec=!r} is too low, {expires_in=!r}, {now_abs=!r}")
         cls.expires_at = now + expires_in  # err to the earlier expiration
         cls.expires_at_absolute = now_abs + expires_in
         cls.token = token

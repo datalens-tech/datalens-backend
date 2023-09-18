@@ -1,16 +1,16 @@
-import attr
 from typing import Optional
 
+import attr
+
+from bi_dls_client.dls_client import DLSClient
+from bi_dls_client.subject_resolver import DLSSubjectResolver
+from dl_core.rls import BaseSubjectResolver
 from dl_core.services_registry.inst_specific_sr import (
     InstallationSpecificServiceRegistry,
     InstallationSpecificServiceRegistryFactory,
 )
-from dl_core.rls import BaseSubjectResolver
-from dl_core.utils import FutureRef
 from dl_core.services_registry.top_level import ServicesRegistry
-
-from bi_dls_client.dls_client import DLSClient
-from bi_dls_client.subject_resolver import DLSSubjectResolver
+from dl_core.utils import FutureRef
 
 
 @attr.s
@@ -35,8 +35,4 @@ class YTServiceRegistryFactory(InstallationSpecificServiceRegistryFactory):
     _dls_api_key: Optional[str] = attr.ib(default=None)
 
     def get_inst_specific_sr(self, sr_ref: FutureRef[ServicesRegistry]) -> YTServiceRegistry:
-        return YTServiceRegistry(
-            service_registry_ref=sr_ref,
-            dls_host=self._dls_host,
-            dls_api_key=self._dls_api_key
-        )
+        return YTServiceRegistry(service_registry_ref=sr_ref, dls_host=self._dls_host, dls_api_key=self._dls_api_key)

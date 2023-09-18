@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import (
@@ -8,8 +9,6 @@ from dl_formula.definitions.base import (
 )
 import dl_formula.definitions.functions_math as base
 from dl_formula.shortcuts import n
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make

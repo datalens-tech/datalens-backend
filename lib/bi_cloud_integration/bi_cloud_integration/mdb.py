@@ -2,12 +2,12 @@ import abc
 
 from yandex.cloud.priv.mdb.clickhouse.v1 import cluster_service_pb2 as clickhouse_cluster_service_pb2
 from yandex.cloud.priv.mdb.clickhouse.v1 import cluster_service_pb2_grpc as clickhouse_cluster_service_pb2_grpc
-from yandex.cloud.priv.mdb.postgresql.v1 import cluster_service_pb2 as postgresql_cluster_service_pb2
-from yandex.cloud.priv.mdb.postgresql.v1 import cluster_service_pb2_grpc as postgresql_cluster_service_pb2_grpc
-from yandex.cloud.priv.mdb.mysql.v1 import cluster_service_pb2 as mysql_cluster_service_pb2
-from yandex.cloud.priv.mdb.mysql.v1 import cluster_service_pb2_grpc as mysql_cluster_service_pb2_grpc
 from yandex.cloud.priv.mdb.greenplum.v1 import cluster_service_pb2 as greenplum_cluster_service_pb2
 from yandex.cloud.priv.mdb.greenplum.v1 import cluster_service_pb2_grpc as greenplum_cluster_service_pb2_grpc
+from yandex.cloud.priv.mdb.mysql.v1 import cluster_service_pb2 as mysql_cluster_service_pb2
+from yandex.cloud.priv.mdb.mysql.v1 import cluster_service_pb2_grpc as mysql_cluster_service_pb2_grpc
+from yandex.cloud.priv.mdb.postgresql.v1 import cluster_service_pb2 as postgresql_cluster_service_pb2
+from yandex.cloud.priv.mdb.postgresql.v1 import cluster_service_pb2_grpc as postgresql_cluster_service_pb2_grpc
 
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
 

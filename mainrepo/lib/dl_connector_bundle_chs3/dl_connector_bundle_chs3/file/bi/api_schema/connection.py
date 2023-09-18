@@ -6,7 +6,6 @@ from marshmallow import (
 )
 
 from dl_api_connector.api_schema.extras import FieldExtra
-
 from dl_connector_bundle_chs3.chs3_base.bi.api_schema.connection import BaseFileS3ConnectionSchema
 from dl_connector_bundle_chs3.file.bi.api_schema.source import FileSourceSchema
 from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection

@@ -2,11 +2,15 @@ from typing import Any
 
 import attr
 
+from bi_external_api.domain.internal import dashboards
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    EntrySummary,
+)
+from bi_external_api.domain.internal.mapper import internal_models_mapper
 from dl_api_commons.client.base import Req
 from dl_api_commons.client.common import CommonInternalAPIClient
-from bi_external_api.domain.internal import dashboards
-from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
-from bi_external_api.domain.internal.mapper import internal_models_mapper
+
 from .constants import DashOpCode
 
 
@@ -43,7 +47,7 @@ class APIClientDashboard(CommonInternalAPIClient):
             entry_id=id,
             key=resp.json["key"],
             true_workbook=true_workbooks,
-            workbook_id=resp.json["workbookId"] if true_workbooks else None
+            workbook_id=resp.json["workbookId"] if true_workbooks else None,
         )
 
         return dashboards.DashInstance(
@@ -69,12 +73,7 @@ class APIClientDashboard(CommonInternalAPIClient):
                 key=f"{workbook_id}/{name}",
             )
 
-        req = Req(
-            method="POST",
-            url=f"{self.api_prefix}/dashboards",
-            require_ok=False,
-            data_json=data
-        )
+        req = Req(method="POST", url=f"{self.api_prefix}/dashboards", require_ok=False, data_json=data)
         resp = await self.make_request(req)
 
         if resp.status != 200:
@@ -90,16 +89,8 @@ class APIClientDashboard(CommonInternalAPIClient):
     async def modify_dashboard(self, dash: dashboards.Dashboard, *, dash_id: str) -> None:
         op_code = DashOpCode.MODIFY
 
-        data = dict(
-            mode="publish",
-            data=self._serialize_dash(dash)
-        )
-        req = Req(
-            method="POST",
-            url=f"{self.api_prefix}/dashboards/{dash_id}",
-            require_ok=False,
-            data_json=data
-        )
+        data = dict(mode="publish", data=self._serialize_dash(dash))
+        req = Req(method="POST", url=f"{self.api_prefix}/dashboards/{dash_id}", require_ok=False, data_json=data)
         resp = await self.make_request(req)
         if resp.status != 200:
             self.raise_from_resp(resp, op_code=op_code)

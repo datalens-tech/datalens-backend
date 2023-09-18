@@ -2,9 +2,12 @@ from typing import Optional
 
 import attr
 
-from dl_api_commons.exc import NotFoundErr, ExceptionWithData
 from bi_external_api.domain.internal import datasets
 from bi_external_api.exc_defs import ExternalAPIException
+from dl_api_commons.exc import (
+    ExceptionWithData,
+    NotFoundErr,
+)
 
 
 @attr.s()

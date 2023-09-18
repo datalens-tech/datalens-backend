@@ -1,5 +1,3 @@
-
-
 class ChartOpCode:
     GET: str = "chart_get"
     CREATE: str = "chart_create"

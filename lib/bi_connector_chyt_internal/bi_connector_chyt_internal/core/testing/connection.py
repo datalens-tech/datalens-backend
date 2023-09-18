@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Type,
+)
 import uuid
-from typing import TYPE_CHECKING, Optional, Type
 
-from dl_constants.enums import ConnectionType, RawSQLLevel
-
+from dl_constants.enums import (
+    ConnectionType,
+    RawSQLLevel,
+)
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.connection import make_connection_base
@@ -13,20 +19,23 @@ from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
 )
-from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
+from bi_connector_chyt_internal.core.us_connection import (
+    ConnectionCHYTInternalToken,
+    ConnectionCHYTUserAuth,
+)
 
 if TYPE_CHECKING:
     from dl_core.us_connection_base import ConnectionBase
 
 
 def make_chyt_connection(
-        sync_usm: USManagerBase,
-        conn_type: ConnectionType = CONNECTION_TYPE_CH_OVER_YT,
-        conn_cls: Type[ConnectionBase] = ConnectionCHYTInternalToken,
-        alias: Optional[str] = "*chyt_datalens_back",
-        cluster: str = "hahn",
-        raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
-        token: Optional[str] = None,
+    sync_usm: USManagerBase,
+    conn_type: ConnectionType = CONNECTION_TYPE_CH_OVER_YT,
+    conn_cls: Type[ConnectionBase] = ConnectionCHYTInternalToken,
+    alias: Optional[str] = "*chyt_datalens_back",
+    cluster: str = "hahn",
+    raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
+    token: Optional[str] = None,
 ) -> ConnectionBase:
     data_dict = dict(
         alias=alias,
@@ -45,11 +54,11 @@ def make_chyt_connection(
 
 
 def make_saved_chyt_connection(
-        sync_usm: SyncUSManager,
-        alias: Optional[str] = "*chyt_datalens_back",
-        cluster: str = "hahn",
-        raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
-        token: str = 'dummy_token',
+    sync_usm: SyncUSManager,
+    alias: Optional[str] = "*chyt_datalens_back",
+    cluster: str = "hahn",
+    raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
+    token: str = "dummy_token",
 ) -> ConnectionCHYTInternalToken:
     conn = make_chyt_connection(sync_usm, alias=alias, cluster=cluster, raw_sql_level=raw_sql_level, token=token)
     assert isinstance(conn, ConnectionCHYTInternalToken)
@@ -58,11 +67,11 @@ def make_saved_chyt_connection(
 
 
 def make_chyt_user_auth_connection(
-        sync_usm: SyncUSManager,
-        alias: Optional[str] = "*chyt_datalens_back",
-        cluster: str = "hahn",
-        raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
-        token: Optional[str] = None,
+    sync_usm: SyncUSManager,
+    alias: Optional[str] = "*chyt_datalens_back",
+    cluster: str = "hahn",
+    raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
+    token: Optional[str] = None,
 ) -> ConnectionCHYTUserAuth:
     conn = make_chyt_connection(
         sync_usm,
@@ -78,10 +87,10 @@ def make_chyt_user_auth_connection(
 
 
 def make_saved_chyt_user_auth_connection(
-        sync_usm: SyncUSManager,
-        alias: Optional[str] = "*chyt_datalens_back",
-        cluster: str = "hahn",
-        raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
+    sync_usm: SyncUSManager,
+    alias: Optional[str] = "*chyt_datalens_back",
+    cluster: str = "hahn",
+    raw_sql_level: RawSQLLevel = RawSQLLevel.dashsql,
 ) -> ConnectionCHYTUserAuth:
     conn = make_chyt_user_auth_connection(
         sync_usm,

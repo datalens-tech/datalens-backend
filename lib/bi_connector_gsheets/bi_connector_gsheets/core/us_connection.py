@@ -1,13 +1,21 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Optional
+from typing import (
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from dl_core.base_models import ConnCacheableDataModelMixin
-from dl_core.connection_models.conn_options import ConnectOptions
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
+from dl_core.connection_models.conn_options import ConnectOptions
+from dl_core.us_connection_base import (
+    ConnectionBase,
+    DataSourceTemplate,
+    ExecutorBasedMixin,
+)
 
 from bi_connector_gsheets.core.constants import SOURCE_TYPE_GSHEETS
 from bi_connector_gsheets.core.dto import GSheetsConnDTO
@@ -21,7 +29,6 @@ class GSheetsConnectOptions(ConnectOptions):
 
 
 class GSheetsConnection(ExecutorBasedMixin, ConnectionBase):  # type: ignore  # TODO: fix
-
     allow_cache: ClassVar[bool] = True
     # Tricky: is_always_user_source: ClassVar[bool] = True
     use_locked_cache: ClassVar[bool] = True
@@ -39,11 +46,15 @@ class GSheetsConnection(ExecutorBasedMixin, ConnectionBase):  # type: ignore  # 
         return self.data.cache_ttl_sec
 
     def get_conn_options(self) -> GSheetsConnectOptions:
-        return super().get_conn_options().to_subclass(
-            GSheetsConnectOptions,
-            # max_execution_time=66,
-            # connect_timeout=5,
-            # total_timeout=75,
+        return (
+            super()
+            .get_conn_options()
+            .to_subclass(
+                GSheetsConnectOptions,
+                # max_execution_time=66,
+                # connect_timeout=5,
+                # total_timeout=75,
+            )
         )
 
     def get_conn_dto(self) -> GSheetsConnDTO:
@@ -53,11 +64,12 @@ class GSheetsConnection(ExecutorBasedMixin, ConnectionBase):  # type: ignore  # 
         )
 
     def get_data_source_templates(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         return [
             DataSourceTemplate(
-                title='current sheet',  # TODO?: save the current sheet name in the connection or get it on the fly.
+                title="current sheet",  # TODO?: save the current sheet name in the connection or get it on the fly.
                 group=[],
                 source_type=SOURCE_TYPE_GSHEETS,
                 connection_id=self.uuid,  # type: ignore  # TODO: fix

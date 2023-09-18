@@ -1,9 +1,3 @@
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition,
-    CoreConnector,
-    CoreSourceDefinition,
-)
-
 from dl_connector_bigquery.core.adapters import BigQueryDefaultAdapter
 from dl_connector_bigquery.core.connection_executors import BigQueryAsyncConnExecutor
 from dl_connector_bigquery.core.constants import (
@@ -29,6 +23,11 @@ from dl_connector_bigquery.core.storage_schemas.data_source_spec import (
 )
 from dl_connector_bigquery.core.type_transformer import BigQueryTypeTransformer
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
+)
 
 
 class BigQueryCoreConnectionDefinition(CoreConnectionDefinition):

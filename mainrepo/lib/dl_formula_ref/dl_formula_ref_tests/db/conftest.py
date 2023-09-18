@@ -5,6 +5,7 @@ from typing import MutableSet
 
 import pytest
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 from dl_formula.core.dialect import DialectCombo
 from dl_formula.definitions.literals import literal
 from dl_formula_testing.database import (
@@ -14,8 +15,6 @@ from dl_formula_testing.database import (
 )
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_testing.containers import get_test_container_hostport
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 ALL_DB_CONFIGURATIONS = {
     ClickHouseDialect.CLICKHOUSE_22_10: (

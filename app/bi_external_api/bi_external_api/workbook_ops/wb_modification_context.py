@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from typing import Mapping, Sequence, Optional, Any
+from typing import (
+    Any,
+    Mapping,
+    Optional,
+    Sequence,
+)
 
 import attr
 
@@ -25,10 +30,7 @@ class WorkbookModificationContext:
 
     @classmethod
     def create(
-            cls,
-            wb_id: str,
-            plan: WorkbookTransitionPlan,
-            initial_wb_context: WorkbookContext
+        cls, wb_id: str, plan: WorkbookTransitionPlan, initial_wb_context: WorkbookContext
     ) -> WorkbookModificationContext:
         return cls(
             wb_id=wb_id,
@@ -39,9 +41,9 @@ class WorkbookModificationContext:
         )
 
     def clone(
-            self,
-            wb_ctx: Optional[WorkbookContext] = None,
-            map_ds_id_to_conv_artifacts: Optional[Mapping[str, DatasetConvArtifacts]] = None,
+        self,
+        wb_ctx: Optional[WorkbookContext] = None,
+        map_ds_id_to_conv_artifacts: Optional[Mapping[str, DatasetConvArtifacts]] = None,
     ) -> WorkbookModificationContext:
         updates: dict[str, Any] = {}
 

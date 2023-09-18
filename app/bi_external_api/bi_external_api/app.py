@@ -1,39 +1,53 @@
 import logging
 import os
-from typing import Sequence, Any, Type
+from typing import (
+    Any,
+    Sequence,
+    Type,
+)
 
 from aiohttp import web
 
-from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeDataCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
-
-from dl_configs.enums import AppType
-from dl_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-
-from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_core.aio.middlewares.tracing import TracingService
-from dl_core.aio.ping_view import PingView
-from dl_core.logging_config import configure_logging
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
-
-from bi_external_api.aiohttp_services.base import ExtAPIRequest, AppConfig
+from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
+from bi_external_api.aiohttp_services.base import (
+    AppConfig,
+    ExtAPIRequest,
+)
 from bi_external_api.aiohttp_services.error_handler import ExternalAPIErrorHandler
 from bi_external_api.aiohttp_services.internal_api_clients_middleware import InternalAPIClientsMiddleware
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.http_views.workbook_rest import WorkbookRestInstanceView
-from bi_external_api.http_views.workbook_rpc import WorkbookRPCView, WorkbookRPCViewPrivate, WorkbookRPCViewDoubleCloud
+from bi_external_api.http_views.workbook_rpc import (
+    WorkbookRPCView,
+    WorkbookRPCViewDoubleCloud,
+    WorkbookRPCViewPrivate,
+)
 from bi_external_api.http_views.workbook_rpc_unified import WorkbookRPCViewUnifiedNebiusIL
 from bi_external_api.http_views.workbook_rpc_ya_team import WorkbookRPCViewYaTeam
 from bi_external_api.settings import ExternalAPISettings
 from bi_external_api.utils import init_sentry
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_configs.enums import AppType
+from dl_configs.env_var_definitions import (
+    jaeger_service_name_env_aware,
+    use_jaeger_tracer,
+)
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_core.aio.middlewares.tracing import TracingService
+from dl_core.aio.ping_view import PingView
+from dl_core.logging_config import configure_logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -71,8 +85,8 @@ def create_app(settings: ExternalAPISettings) -> web.Application:
     elif app_type == AppType.TESTS:
         auth_mw_list = [
             auth_trust_middleware(
-                fake_user_id='_the_tests_asyncapp_user_id_',
-                fake_user_name='_the_tests_asyncapp_user_name_',
+                fake_user_id="_the_tests_asyncapp_user_id_",
+                fake_user_name="_the_tests_asyncapp_user_name_",
             )
         ]
     else:
@@ -89,11 +103,11 @@ def create_app(settings: ExternalAPISettings) -> web.Application:
         sentry_app_name_tag="ext-api",
     )
 
-    use_wb_api = (settings.API_TYPE in (
+    use_wb_api = settings.API_TYPE in (
         ExtAPIType.DC,
         ExtAPIType.UNIFIED_DC,
         ExtAPIType.UNIFIED_NEBIUS_IL,
-    ))
+    )
 
     middleware_list = [
         TracingService().middleware,
@@ -113,7 +127,7 @@ def create_app(settings: ExternalAPISettings) -> web.Application:
             us_use_workbook_api=use_wb_api,
             force_close_http_conn=settings.INT_API_CLI_FORCE_CLOSE_HTTP_CONN,
             us_master_token=settings.US_MASTER_TOKEN,
-        ).middleware
+        ).middleware,
     ]
 
     app = web.Application(
@@ -133,9 +147,9 @@ def create_app(settings: ExternalAPISettings) -> web.Application:
         ExtAPIType.YA_TEAM: WorkbookRPCViewYaTeam,
     }
 
-    app.router.add_route('get', '/ping', PingView)
-    app.router.add_route('get', '/external_api/v0/workbook/instance/{workbook_id:.*}', WorkbookRestInstanceView)
-    app.router.add_route('post', '/external_api/v0/workbook/rpc', map_api_type_rpc_view_cls[settings.API_TYPE])
+    app.router.add_route("get", "/ping", PingView)
+    app.router.add_route("get", "/external_api/v0/workbook/instance/{workbook_id:.*}", WorkbookRestInstanceView)
+    app.router.add_route("post", "/external_api/v0/workbook/rpc", map_api_type_rpc_view_cls[settings.API_TYPE])
 
     return app
 
@@ -154,9 +168,9 @@ def load_settings() -> ExternalAPISettings:
 
 async def create_gunicorn_app() -> web.Application:
     configure_logging(
-        app_name='bi_external_api',
+        app_name="bi_external_api",
         use_jaeger_tracer=use_jaeger_tracer(),
-        jaeger_service_name=jaeger_service_name_env_aware('bi-external-api'),
+        jaeger_service_name=jaeger_service_name_env_aware("bi-external-api"),
     )
     settings = load_settings()
     try:

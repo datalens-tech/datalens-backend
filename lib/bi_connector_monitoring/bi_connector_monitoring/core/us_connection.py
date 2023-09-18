@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Optional
+from typing import (
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from dl_core.base_models import ConnCacheableDataModelMixin
-
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ConnectionBase,
-    SubselectMixin,
-    ExecutorBasedMixin,
     ConnectionHardcodedDataMixin,
     DataSourceTemplate,
+    ExecutorBasedMixin,
+    SubselectMixin,
 )
 
 from bi_connector_monitoring.core.dto import MonitoringConnDTO
@@ -20,10 +23,10 @@ from bi_connector_monitoring.core.settings import MonitoringConnectorSettings
 
 
 class MonitoringConnection(
-        ConnectionHardcodedDataMixin[MonitoringConnectorSettings],
-        SubselectMixin,
-        ExecutorBasedMixin,
-        ConnectionBase,
+    ConnectionHardcodedDataMixin[MonitoringConnectorSettings],
+    SubselectMixin,
+    ExecutorBasedMixin,
+    ConnectionBase,
 ):
     allow_cache: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
@@ -57,7 +60,7 @@ class MonitoringConnection(
         return False
 
     def get_data_source_templates(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]
+        self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]
     ) -> list[DataSourceTemplate]:
         return []
 

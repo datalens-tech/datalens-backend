@@ -6,8 +6,10 @@ from typing import Optional
 
 import attr
 from lxml import etree as et
-
-from pycharm.common import IDEA_DIR, get_submodules
+from pycharm.common import (
+    IDEA_DIR,
+    get_submodules,
+)
 
 
 class DirectoryCls(enum.Enum):
@@ -58,7 +60,7 @@ class DirectoryMarkingManager:
         if dir_elem is None:
             return None
 
-        if dir_elem.tag == "sourceFolder" and dir_elem.attrib['isTestSource'] == 'false':
+        if dir_elem.tag == "sourceFolder" and dir_elem.attrib["isTestSource"] == "false":
             return DirectoryCls.sources_root
         if dir_elem.tag == "excludeFolder":
             return DirectoryCls.exclude
@@ -76,10 +78,13 @@ class DirectoryMarkingManager:
         if cls == DirectoryCls.exclude:
             new_elem = et.Element("excludeFolder", dict(url=self.url_by_local_path(local_path)))
         elif cls == DirectoryCls.sources_root:
-            new_elem = et.Element("sourceFolder", dict(
-                url=self.url_by_local_path(local_path),
-                isTestSource='false',
-            ))
+            new_elem = et.Element(
+                "sourceFolder",
+                dict(
+                    url=self.url_by_local_path(local_path),
+                    isTestSource="false",
+                ),
+            )
         elif cls is None:
             new_elem = None
         else:
@@ -117,5 +122,5 @@ def main():
     ctrl.dump()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

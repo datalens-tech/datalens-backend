@@ -1,9 +1,8 @@
 import pytest
 
-from dl_formula_testing.testcases.base import FormulaConnectorTestBase
-
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_connector_postgresql_tests.db.config import DB_URLS
+from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 
 class PostgreSQLTestBase(FormulaConnectorTestBase):

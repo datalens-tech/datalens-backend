@@ -12,7 +12,7 @@ from dl_i18n.localizer_base import (
 
 _LOCALIZATION_CONFIGS: set[TranslationConfig] = set()
 
-DOMAIN = f'{package.__name__}_{package.__name__}'
+DOMAIN = f"{package.__name__}_{package.__name__}"
 
 
 def register_translation_configs(config: Iterable[TranslationConfig]) -> None:

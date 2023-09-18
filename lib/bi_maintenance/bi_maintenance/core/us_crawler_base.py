@@ -5,17 +5,37 @@ import copy
 import enum
 import logging
 import time
-from typing import Any, AsyncGenerator, AsyncIterable, ClassVar, Optional, Sequence, Type
+from typing import (
+    Any,
+    AsyncGenerator,
+    AsyncIterable,
+    ClassVar,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
 import shortuuid
 
-from dl_api_commons.logging import extra_with_evt_code, format_dict
+from bi_maintenance.diff_utils import (
+    get_diff_text,
+    get_pre_save_top_level_dict,
+)
 from dl_api_commons.base_models import TenantDef
-from dl_core.us_entry import USEntry, USMigrationEntry
-from bi_maintenance.diff_utils import get_pre_save_top_level_dict, get_diff_text
+from dl_api_commons.logging import (
+    extra_with_evt_code,
+    format_dict,
+)
+from dl_core.us_entry import (
+    USEntry,
+    USMigrationEntry,
+)
 from dl_core.us_manager.us_manager_async import AsyncUSManager
-from dl_utils.task_runner import TaskRunner, ConcurrentTaskRunner
+from dl_utils.task_runner import (
+    ConcurrentTaskRunner,
+    TaskRunner,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -27,12 +47,12 @@ class EntryHandlingResult(enum.Enum):
 
 
 # Logging event code
-EVT_CODE_RUN_START = 'us_entry_crawler_run_start'
-EVT_CODE_ENTRY_HANDLING_START = 'us_entry_crawler_entry_handling_start'
-EVT_CODE_ENTRY_PROCESSING_SUCCESS = 'us_entry_crawler_entry_processing_success'
-EVT_CODE_DIFF_CALC_EXC = 'us_entry_crawler_entry_diff_calc_exc'
-EVT_CODE_ENTRY_HANDLING_END = 'us_entry_crawler_entry_handling_done'
-EVT_CODE_RUN_END = 'us_entry_crawler_run_end'
+EVT_CODE_RUN_START = "us_entry_crawler_run_start"
+EVT_CODE_ENTRY_HANDLING_START = "us_entry_crawler_entry_handling_start"
+EVT_CODE_ENTRY_PROCESSING_SUCCESS = "us_entry_crawler_entry_processing_success"
+EVT_CODE_DIFF_CALC_EXC = "us_entry_crawler_entry_diff_calc_exc"
+EVT_CODE_ENTRY_HANDLING_END = "us_entry_crawler_entry_handling_done"
+EVT_CODE_RUN_END = "us_entry_crawler_run_end"
 
 
 @attr.s
@@ -46,9 +66,9 @@ class USEntryCrawler:
     # internals
     _run_fired: bool = attr.ib(init=False, default=False)
     _run_id: str = attr.ib(init=False, factory=shortuuid.uuid)
-    _task_runner: TaskRunner = attr.ib(kw_only=True,
-                                       default=attr.Factory(lambda self: ConcurrentTaskRunner(self._concurrency_limit),
-                                                            takes_self=True))
+    _task_runner: TaskRunner = attr.ib(
+        kw_only=True, default=attr.Factory(lambda self: ConcurrentTaskRunner(self._concurrency_limit), takes_self=True)
+    )
 
     def __attrs_post_init__(self) -> None:
         if self._usm is not None:
@@ -91,18 +111,23 @@ class USEntryCrawler:
         """
         raise NotImplementedError()
 
-    async def process_entry_get_save_flag(self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None) -> tuple[bool, str]:
+    async def process_entry_get_save_flag(
+        self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None
+    ) -> tuple[bool, str]:
         raise NotImplementedError()
 
     @contextlib.asynccontextmanager
     async def locked_entry_cm(
-            self, entry_id: str, logging_extra: dict[str, Any], usm: AsyncUSManager,
+        self,
+        entry_id: str,
+        logging_extra: dict[str, Any],
+        usm: AsyncUSManager,
     ) -> AsyncGenerator[Optional[USEntry], None]:
         if self._dry_run:
             try:
                 entry = await usm.get_by_id(entry_id, expected_type=self.ENTRY_TYPE)  # type: ignore  # TODO: fix
             except Exception:
-                logging_extra.update(us_entry_crawler_exc_stage='entry_locked_load')
+                logging_extra.update(us_entry_crawler_exc_stage="entry_locked_load")
                 raise
             else:
                 yield entry
@@ -111,12 +136,14 @@ class USEntryCrawler:
                 try:
                     entry = await cmstack.enter_async_context(
                         usm.locked_entry_cm(
-                            expected_type=self.ENTRY_TYPE, entry_id=entry_id,
-                            duration_sec=30, wait_timeout_sec=60,
+                            expected_type=self.ENTRY_TYPE,
+                            entry_id=entry_id,
+                            duration_sec=30,
+                            wait_timeout_sec=60,
                         )
                     )
                 except Exception:
-                    logging_extra.update(us_entry_crawler_exc_stage='entry_locked_load')
+                    logging_extra.update(us_entry_crawler_exc_stage="entry_locked_load")
                     raise
                 else:
                     yield entry
@@ -140,10 +167,12 @@ class USEntryCrawler:
         LOGGER.info(
             "Starting US entry crawler run: %s",
             format_dict(
-                crawler_run_extra, name='us_entry_crawler_name',
-                run_id='us_entry_crawler_run_id', is_dry_run='us_entry_crawler_dry_run',
+                crawler_run_extra,
+                name="us_entry_crawler_name",
+                run_id="us_entry_crawler_run_id",
+                is_dry_run="us_entry_crawler_dry_run",
             ),
-            extra=extra_with_evt_code(EVT_CODE_RUN_START, crawler_run_extra)
+            extra=extra_with_evt_code(EVT_CODE_RUN_START, crawler_run_extra),
         )
 
         started_ts = time.monotonic()
@@ -153,7 +182,9 @@ class USEntryCrawler:
         except Exception:  # noqa
             crawler_run_extra.update(us_entry_crawler_run_success=False)
             LOGGER.exception(
-                "Crawler run failure: %s %s", self.type_name, self._run_id,
+                "Crawler run failure: %s %s",
+                self.type_name,
+                self._run_id,
                 extra=extra_with_evt_code(EVT_CODE_RUN_END, crawler_run_extra),
             )
         else:
@@ -174,11 +205,11 @@ class USEntryCrawler:
                 "Crawler run finished successfully: %s",
                 format_dict(
                     crawler_run_extra,
-                    total='us_entry_crawler_run_cnt_total',
-                    processed='us_entry_crawler_run_cnt_processed',
-                    skipped='us_entry_crawler_run_cnt_skipped',
-                    failed='us_entry_crawler_run_cnt_failed',
-                    time_elapsed='us_entry_crawler_run_time_elapsed',
+                    total="us_entry_crawler_run_cnt_total",
+                    processed="us_entry_crawler_run_cnt_processed",
+                    skipped="us_entry_crawler_run_cnt_skipped",
+                    failed="us_entry_crawler_run_cnt_failed",
+                    time_elapsed="us_entry_crawler_run_time_elapsed",
                 ),
                 extra=extra_with_evt_code(EVT_CODE_RUN_END, crawler_run_extra),
             )
@@ -194,7 +225,8 @@ class USEntryCrawler:
         async for raw_entry in self.get_raw_entry_iterator(crawl_all_tenants=(self._target_tenant is None)):
             await self._task_runner.schedule(
                 self.single_entry_run(
-                    entry_idx=entry_idx, raw_entry=raw_entry,
+                    entry_idx=entry_idx,
+                    raw_entry=raw_entry,
                     crawler_run_extra=crawler_run_extra,
                     entry_id_distribution=entry_id_distribution,
                 )
@@ -207,22 +239,26 @@ class USEntryCrawler:
         return entry_id_distribution  # type: ignore
 
     async def single_entry_run(
-            self, entry_idx: int, raw_entry: dict, crawler_run_extra: dict,
-            entry_id_distribution: dict[EntryHandlingResult, list[str]],
+        self,
+        entry_idx: int,
+        raw_entry: dict,
+        crawler_run_extra: dict,
+        entry_id_distribution: dict[EntryHandlingResult, list[str]],
     ) -> None:
-        entry_id = raw_entry['entryId']
+        entry_id = raw_entry["entryId"]
         entry_handling_extra = dict(
             crawler_run_extra,
             us_entry_id=entry_id,
-            us_entry_key=raw_entry['key'],
-            us_entry_tenant_id=raw_entry.get('tenantId', None),
-            us_entry_type=raw_entry['type'],
-            us_entry_scope=raw_entry['scope'],
+            us_entry_key=raw_entry["key"],
+            us_entry_tenant_id=raw_entry.get("tenantId", None),
+            us_entry_type=raw_entry["type"],
+            us_entry_scope=raw_entry["scope"],
             us_entry_crawler_idx=entry_idx,
         )
         LOGGER.info(
-            "Crawler going to handle entry: %s", entry_id,
-            extra=extra_with_evt_code(EVT_CODE_ENTRY_HANDLING_START, entry_handling_extra)
+            "Crawler going to handle entry: %s",
+            entry_id,
+            extra=extra_with_evt_code(EVT_CODE_ENTRY_HANDLING_START, entry_handling_extra),
         )
         try:
             result = await self._handle_single_entry(
@@ -234,21 +270,24 @@ class USEntryCrawler:
             result = EntryHandlingResult.FAILED
             entry_handling_extra.update(entry_handling_status=result.name)
             LOGGER.exception(
-                "Unexpected exception during handling entry %s", entry_id,
-                extra=extra_with_evt_code(EVT_CODE_ENTRY_HANDLING_END, entry_handling_extra)
+                "Unexpected exception during handling entry %s",
+                entry_id,
+                extra=extra_with_evt_code(EVT_CODE_ENTRY_HANDLING_END, entry_handling_extra),
             )
         else:
             LOGGER.info(
-                "Crawler complete entry handling: %s %s", entry_id, result.name,
-                extra=extra_with_evt_code(EVT_CODE_ENTRY_HANDLING_END, entry_handling_extra)
+                "Crawler complete entry handling: %s %s",
+                entry_id,
+                result.name,
+                extra=extra_with_evt_code(EVT_CODE_ENTRY_HANDLING_END, entry_handling_extra),
             )
 
         entry_id_distribution[result].append(entry_id)
 
     async def _handle_single_entry(
-            self, raw_entry: dict[str, Any], entry_handling_extra: dict[str, Any]
+        self, raw_entry: dict[str, Any], entry_handling_extra: dict[str, Any]
     ) -> EntryHandlingResult:
-        entry_id = raw_entry['entryId']
+        entry_id = raw_entry["entryId"]
         usm = self.usm
         async with self.locked_entry_cm(entry_id, entry_handling_extra, usm=usm) as target_entry:  # type: ignore  # TODO: fix
             assert target_entry is not None
@@ -259,7 +298,7 @@ class USEntryCrawler:
             target_entry._us_resp = us_resp
 
             entry_handling_extra.update(
-                us_entry_rev=us_resp['revId'],
+                us_entry_rev=us_resp["revId"],
             )
             try:
                 need_save, processing_msg = await self.process_entry_get_save_flag(
@@ -268,29 +307,33 @@ class USEntryCrawler:
                     usm=usm,
                 )
             except Exception:
-                entry_handling_extra.update(us_entry_crawler_exc_stage='entry_processing')
+                entry_handling_extra.update(us_entry_crawler_exc_stage="entry_processing")
                 raise
 
             target_entry_diff_str = self._calculate_diff_str(target_entry, entry_handling_extra)
             entry_handling_extra.update(
                 us_entry_crawler_need_save=need_save,
                 us_entry_crawler_proc_msg=processing_msg,
-                us_entry_crawler_entry_diff=target_entry_diff_str
+                us_entry_crawler_entry_diff=target_entry_diff_str,
             )
 
             diff_str = get_diff_text(target_entry, us_manager=usm)
             if diff_str:
-                diff_str = '\n' + diff_str
+                diff_str = "\n" + diff_str
             LOGGER.info(
                 "Entry was processed by crawler: %s%s",
                 format_dict(
                     entry_handling_extra,
-                    idx='us_entry_crawler_idx', entry_id='us_entry_id', scope='us_entry_scope', type='us_entry_type',
-                    need_save='us_entry_crawler_need_save', msg='us_entry_crawler_proc_msg',
-                    diff='us_entry_crawler_entry_diff',
+                    idx="us_entry_crawler_idx",
+                    entry_id="us_entry_id",
+                    scope="us_entry_scope",
+                    type="us_entry_type",
+                    need_save="us_entry_crawler_need_save",
+                    msg="us_entry_crawler_proc_msg",
+                    diff="us_entry_crawler_entry_diff",
                 ),
                 diff_str,
-                extra=extra_with_evt_code(EVT_CODE_ENTRY_PROCESSING_SUCCESS, entry_handling_extra)
+                extra=extra_with_evt_code(EVT_CODE_ENTRY_PROCESSING_SUCCESS, entry_handling_extra),
             )
 
             try:
@@ -301,7 +344,7 @@ class USEntryCrawler:
                     return EntryHandlingResult.SKIPPED
 
             except Exception:
-                entry_handling_extra.update(us_entry_crawler_exc_stage='entry_save')
+                entry_handling_extra.update(us_entry_crawler_exc_stage="entry_save")
                 raise
 
     @staticmethod
@@ -310,19 +353,20 @@ class USEntryCrawler:
             if isinstance(target_entry, USMigrationEntry):
                 entry_diff = get_pre_save_top_level_dict(target_entry)
             else:
-                return 'N/A'
+                return "N/A"
         except Exception:  # noqa
             LOGGER.warning(
                 "Exception during diff calculation",
-                extra=extra_with_evt_code(EVT_CODE_DIFF_CALC_EXC, entry_handling_extra)
+                extra=extra_with_evt_code(EVT_CODE_DIFF_CALC_EXC, entry_handling_extra),
             )
-            return 'N/A'
+            return "N/A"
 
         try:
             return entry_diff.short_str()
         except Exception:  # noqa
             LOGGER.warning(
-                "Can not pretty stringify diff for entry: %s", target_entry.uuid,
-                extra=extra_with_evt_code(EVT_CODE_DIFF_CALC_EXC, entry_handling_extra)
+                "Can not pretty stringify diff for entry: %s",
+                target_entry.uuid,
+                extra=extra_with_evt_code(EVT_CODE_DIFF_CALC_EXC, entry_handling_extra),
             )
             return str(entry_diff)

@@ -1,21 +1,24 @@
 import abc
 from typing import Optional
 
+from bi_api_lib_ya.app.control_api.app import LegacyControlApiAppFactory
+from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
 from bi_api_lib_ya.app_common import LegacySRFactoryBuilder
+from bi_api_lib_ya.app_settings import (
+    AsyncAppSettings,
+    BaseAppSettings,
+)
+from bi_cloud_integration.sa_creds import (
+    SACredsRetrieverFactory,
+    SACredsSettings,
+)
+from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 from dl_configs.enums import RequiredService
-
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
-
-from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
-
-from bi_api_lib_ya.app.control_api.app import LegacyControlApiAppFactory
-from bi_api_lib_ya.app.data_api.app import LegacyDataApiAppFactory
-from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
 
 
 class PrivateTestingSRFactoryBuilder(LegacySRFactoryBuilder, abc.ABC):
@@ -26,13 +29,17 @@ class PrivateTestingSRFactoryBuilder(LegacySRFactoryBuilder, abc.ABC):
         return TestEnvManagerFactory()
 
     def _get_inst_specific_sr_factory(
-            self,
-            settings: BaseAppSettings,
+        self,
+        settings: BaseAppSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
-        sa_creds_settings = SACredsSettings(
-            mode=settings.YC_SA_CREDS_MODE,
-            env_key_data=settings.YC_SA_CREDS_KEY_DATA,
-        ) if settings.YC_SA_CREDS_MODE is not None else None
+        sa_creds_settings = (
+            SACredsSettings(
+                mode=settings.YC_SA_CREDS_MODE,
+                env_key_data=settings.YC_SA_CREDS_KEY_DATA,
+            )
+            if settings.YC_SA_CREDS_MODE is not None
+            else None
+        )
 
         return YCServiceRegistryFactory(
             yc_billing_host=None,
@@ -41,9 +48,10 @@ class PrivateTestingSRFactoryBuilder(LegacySRFactoryBuilder, abc.ABC):
             yc_api_endpoint_iam=settings.YC_AUTH_SETTINGS.YC_API_ENDPOINT_IAM if settings.YC_AUTH_SETTINGS else None,
             yc_ts_endpoint=settings.YC_IAM_TS_ENDPOINT,
             sa_creds_retriever_factory=SACredsRetrieverFactory(
-                sa_creds_settings=sa_creds_settings,
-                ts_endpoint=settings.YC_IAM_TS_ENDPOINT
-            ) if sa_creds_settings else None,
+                sa_creds_settings=sa_creds_settings, ts_endpoint=settings.YC_IAM_TS_ENDPOINT
+            )
+            if sa_creds_settings
+            else None,
             blackbox_name=settings.BLACKBOX_NAME,
         )
 
@@ -70,4 +78,4 @@ class TestingDataApiAppFactoryPrivate(LegacyDataApiAppFactory, PrivateTestingSRF
     """Data API app factory for tests"""
 
     def get_app_version(self) -> str:
-        return 'tests'
+        return "tests"

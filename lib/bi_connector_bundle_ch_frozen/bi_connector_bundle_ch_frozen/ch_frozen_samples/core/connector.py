@@ -20,9 +20,5 @@ class CHFrozenSamplesCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenSamplesCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenSamplesCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenSamplesCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenSamplesCoreConnectionDefinition,)
+    source_definitions = (CHFrozenSamplesCoreSourceDefinition,)

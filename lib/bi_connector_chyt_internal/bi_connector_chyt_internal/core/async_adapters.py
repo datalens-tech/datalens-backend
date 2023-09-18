@@ -2,16 +2,17 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import weakref
 from typing import Optional
+import weakref
 
+from aiohttp import (
+    BasicAuth,
+    ClientResponse,
+)
 import attr
-from aiohttp import ClientResponse, BasicAuth
-
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
 from dl_connector_chyt.core.async_adapters import AsyncCHYTAdapter
-from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
@@ -22,14 +23,14 @@ from bi_connector_chyt_internal.core.target_dto import (
     CHYTInternalConnTargetDTO,
     CHYTUserAuthConnTargetDTO,
 )
-
+from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
 class BaseAsyncCHYTInternalAdapter(AsyncCHYTAdapter):
-    _mirror_dba: Optional['BaseAsyncCHYTInternalAdapter'] = attr.ib(default=None, init=False)
+    _mirror_dba: Optional["BaseAsyncCHYTInternalAdapter"] = attr.ib(default=None, init=False)
     _mirrored_queries_tasks: set[asyncio.Future] = attr.ib(factory=weakref.WeakSet)
 
     def __attrs_post_init__(self) -> None:

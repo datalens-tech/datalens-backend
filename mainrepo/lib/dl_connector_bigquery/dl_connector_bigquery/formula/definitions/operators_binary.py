@@ -1,12 +1,11 @@
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
+from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import raw_sql
 from dl_formula.definitions.common_datetime import DAY_SEC
 import dl_formula.definitions.operators_binary as base
-
-from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
 V = TranslationVariant.make
 

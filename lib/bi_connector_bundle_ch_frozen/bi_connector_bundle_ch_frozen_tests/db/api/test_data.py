@@ -1,8 +1,12 @@
 from dl_api_lib_testing.connector.data_api_suites import (
-    DefaultConnectorDataPreviewTestSuite, DefaultConnectorDataResultTestSuite,
+    DefaultConnectorDataPreviewTestSuite,
+    DefaultConnectorDataResultTestSuite,
 )
 
-from bi_connector_bundle_ch_frozen_tests.db.api.base import CHFrozenDataApiTestBase, CHFrozenDataApiSubselectTestBase
+from bi_connector_bundle_ch_frozen_tests.db.api.base import (
+    CHFrozenDataApiSubselectTestBase,
+    CHFrozenDataApiTestBase,
+)
 
 
 class TestCHFrozenPreview(CHFrozenDataApiTestBase, DefaultConnectorDataPreviewTestSuite):

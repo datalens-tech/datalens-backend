@@ -1,24 +1,28 @@
 from __future__ import annotations
 
 import asyncio
+from collections import defaultdict
 import itertools
 import logging
-import time
-import uuid
-from collections import defaultdict
 from multiprocessing import Process
+import time
 from typing import Any
+import uuid
 
+from aiohttp import (
+    ClientConnectorError,
+    ClientSession,
+    web,
+)
 import attr
 import pytest
 import sentry_sdk
-from aiohttp import web, ClientSession, ClientConnectorError
 
-from dl_constants.api_constants import DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
-from dl_api_commons.logging_sentry import cleanup_common_secret_data
-from dl_core.flask_utils.sentry import configure_raven_for_flask
 from bi_testing_ya.api_wrappers import HTTPClientWrapper
+from dl_api_commons.logging_sentry import cleanup_common_secret_data
+from dl_constants.api_constants import DLHeadersCommon
+from dl_core.flask_utils.sentry import configure_raven_for_flask
 
 
 @attr.s
@@ -36,7 +40,7 @@ class CheckSessionRequest:
     pass
 
 
-S3_TBL_FUNC = '''select * from s3(
+S3_TBL_FUNC = """select * from s3(
     'http://s3-storage/bucket/file.native',
     'access_key_id',
     'secret_access_key',
@@ -50,7 +54,7 @@ join (select c3, c4 from s3(
     'Native',
     'c3 String, c2 Int64'
 )) as t2 on t1.c2 = t2.c4
-'''
+"""
 
 
 def subproc_func(sentry_url: str):
@@ -61,12 +65,10 @@ def subproc_func(sentry_url: str):
     def err_func(fernet_key):
         token = "token_" + fernet_key
         PWD = "some_pwd"  # noqa: F841
-        my_pwd_old = 'sdsd'  # noqa: F841
-        just_a_regular_var = (  # noqa: F841
-            "-----BEGIN PRIVATE KEY-----\nasdfasdfas\n-----END PRIVATE KEY-----"
-        )
-        some_object = PotentiallySensitiveObject(yc_session='cookie_value')  # noqa
-        some_other_object = NonSecretObject(a='asdad')  # noqa
+        my_pwd_old = "sdsd"  # noqa: F841
+        just_a_regular_var = "-----BEGIN PRIVATE KEY-----\nasdfasdfas\n-----END PRIVATE KEY-----"  # noqa: F841
+        some_object = PotentiallySensitiveObject(yc_session="cookie_value")  # noqa
+        some_other_object = NonSecretObject(a="asdad")  # noqa
         check_session_request = CheckSessionRequest()  # noqa
         s3_query_with_keys = S3_TBL_FUNC  # noqa
         nested_err_func(token)
@@ -86,19 +88,19 @@ def subproc_func(sentry_url: str):
 
 
 SECRET_VAR_NAMES = [
-    'token',
-    'fernet_key',
-    'some_secret',
-    'generated_password',
-    'my_pwd_old',
-    'PWD',
-    'just_a_regular_var',  # by var content
-    'some_object',  # by var content
-    'check_session_request',  # by var content
+    "token",
+    "fernet_key",
+    "some_secret",
+    "generated_password",
+    "my_pwd_old",
+    "PWD",
+    "just_a_regular_var",  # by var content
+    "some_object",  # by var content
+    "check_session_request",  # by var content
 ]
 
 
-S3_TBL_FUNC_MASKED = '''select * from s3(<hidden>
+S3_TBL_FUNC_MASKED = """select * from s3(<hidden>
     'Native',
     'c1 String, c2 Int64'
 ) as t1
@@ -106,11 +108,11 @@ join (select c3, c4 from s3(<hidden>
     'Native',
     'c3 String, c2 Int64'
 )) as t2 on t1.c2 = t2.c4
-'''
+"""
 
 
 PARTIALLY_MASKED_VARS = {
-    's3_query_with_keys': {repr(S3_TBL_FUNC_MASKED)},
+    "s3_query_with_keys": {repr(S3_TBL_FUNC_MASKED)},
 }
 
 
@@ -128,10 +130,10 @@ class SentryMock:
             if len(self.rq_json_store) > self.next_event_idx:
                 return self.rq_json_store[self.next_event_idx]
 
-            await asyncio.wait_for(self.got_data_event.wait(), timeout=3.)
+            await asyncio.wait_for(self.got_data_event.wait(), timeout=3.0)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 async def sentry_mock(loop, aiohttp_client) -> SentryMock:
     sentry_spy = web.Application()
     rq_json_store = []
@@ -143,7 +145,7 @@ async def sentry_mock(loop, aiohttp_client) -> SentryMock:
         got_data_event.clear()
         return web.Response(status=200)
 
-    sentry_spy.router.add_route('*', '/{tail:.*}', sentry_spy_view)
+    sentry_spy.router.add_route("*", "/{tail:.*}", sentry_spy_view)
     test_client = await aiohttp_client(sentry_spy)
 
     sentry_url = f"http://{uuid.uuid4().hex}@{test_client.host}:{test_client.port}/100500"
@@ -162,12 +164,12 @@ def run_aiohttp_server(sentry_dsn: str, host: str, port: int):
 
     import sentry_sdk
     from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+    from sentry_sdk.integrations.argv import ArgvIntegration
     from sentry_sdk.integrations.atexit import AtexitIntegration
     from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-    from sentry_sdk.integrations.stdlib import StdlibIntegration
-    from sentry_sdk.integrations.modules import ModulesIntegration
-    from sentry_sdk.integrations.argv import ArgvIntegration
     from sentry_sdk.integrations.logging import LoggingIntegration
+    from sentry_sdk.integrations.modules import ModulesIntegration
+    from sentry_sdk.integrations.stdlib import StdlibIntegration
     from sentry_sdk.integrations.threading import ThreadingIntegration
 
     # from sentry_sdk.integrations.logging import LoggingIntegration
@@ -206,9 +208,9 @@ def run_aiohttp_server(sentry_dsn: str, host: str, port: int):
             logging.exception("Got exception")
         return web.json_response({"secret": secret_var}, status=200)
 
-    app.router.add_route('GET', '/ping', ping)
-    app.router.add_route('*', '/the_exception', fail_on_any)
-    app.router.add_route('*', '/the_ok_but_error_in_logs', the_ok_but_error_in_logs)
+    app.router.add_route("GET", "/ping", ping)
+    app.router.add_route("*", "/the_exception", fail_on_any)
+    app.router.add_route("*", "/the_ok_but_error_in_logs", the_ok_but_error_in_logs)
 
     web.run_app(app, host=host, port=port)
 
@@ -220,6 +222,7 @@ def run_flask_server(sentry_dsn: str, host: str, port: int):
     """
     import flask
     from werkzeug.serving import make_server
+
     from dl_core.logging_config import configure_logging
 
     app = flask.Flask(__name__)
@@ -283,43 +286,44 @@ async def test_locals_cleanup(loop, sentry_mock: SentryMock):
 
     event = await sentry_mock.get_next_event()
 
-    all_frames = itertools.chain(*[exc['stacktrace']['frames'] for exc in event['exception']['values']])
+    all_frames = itertools.chain(*[exc["stacktrace"]["frames"] for exc in event["exception"]["values"]])
 
     collected_secret_var_value_set = defaultdict(set)
     collected_partially_masked_var_value_set = defaultdict(set)
     for frame in all_frames:
-        for var_name, var_val in frame['vars'].items():
+        for var_name, var_val in frame["vars"].items():
             if var_name in SECRET_VAR_NAMES:
                 collected_secret_var_value_set[var_name].add(var_val)
             elif var_name in PARTIALLY_MASKED_VARS:
                 collected_partially_masked_var_value_set[var_name].add(var_val)
 
-    assert dict(collected_secret_var_value_set.items()) == {
-        var_name: {'[hidden]'} for var_name in SECRET_VAR_NAMES
-    }
+    assert dict(collected_secret_var_value_set.items()) == {var_name: {"[hidden]"} for var_name in SECRET_VAR_NAMES}
 
     assert dict(collected_partially_masked_var_value_set.items()) == PARTIALLY_MASKED_VARS
 
 
-@pytest.fixture(scope='function', params=(run_flask_server, run_aiohttp_server))
+@pytest.fixture(scope="function", params=(run_flask_server, run_aiohttp_server))
 def sentry_client_web_app(loop, request, unused_tcp_port, sentry_mock: SentryMock) -> SentryClientWebApp:
     host: str = "127.0.0.1"
     port: int = unused_tcp_port
 
     target_func = request.param
 
-    sentry_client_proc = Process(target=target_func, args=(
-        sentry_mock.dsn,
-        host,
-        port,
-    ))
+    sentry_client_proc = Process(
+        target=target_func,
+        args=(
+            sentry_mock.dsn,
+            host,
+            port,
+        ),
+    )
     sentry_client_proc.start()
 
     session = ClientSession()
     client = HTTPClientWrapper(session=session, base_url=f"http://{host}:{port}/")
 
     start_time = time.monotonic()
-    wait_limit = 5.
+    wait_limit = 5.0
 
     while True:
         if time.monotonic() > start_time + wait_limit:
@@ -339,17 +343,14 @@ def sentry_client_web_app(loop, request, unused_tcp_port, sentry_mock: SentryMoc
 
     if sentry_client_proc.is_alive():
         sentry_client_proc.terminate()
-        sentry_client_proc.join(timeout=1.)
+        sentry_client_proc.join(timeout=1.0)
     if sentry_client_proc.is_alive():
         sentry_client_proc.kill()
         sentry_client_proc.join()
 
 
 def keys_to_lower(d: dict[str, str]) -> dict[str, str]:
-    return {
-        h_name.lower(): h_value
-        for h_name, h_value in d.items()
-    }
+    return {h_name.lower(): h_value for h_name, h_value in d.items()}
 
 
 @pytest.mark.asyncio
@@ -368,10 +369,10 @@ async def test_locals_cleanup_in_apps(sentry_client_web_app: SentryClientWebApp,
     # Just raven logging client also applies headers sanitizer
     # Because currently in flask apps there are 2 clients: one for logging, another one for Flask itself
     if "request" in evt:
-        evt_iam_token = keys_to_lower(evt['request']['headers'])[DLHeadersYC.IAM_TOKEN.value.lower()]
+        evt_iam_token = keys_to_lower(evt["request"]["headers"])[DLHeadersYC.IAM_TOKEN.value.lower()]
         assert evt_iam_token == "<hidden>"
 
-    all_frames = list(itertools.chain(*[exc['stacktrace']['frames'] for exc in evt['exception']['values']]))
+    all_frames = list(itertools.chain(*[exc["stacktrace"]["frames"] for exc in evt["exception"]["values"]]))
     # We throw and capture variable inside of function so we shoud get single frame
     assert len(all_frames) == 1
     frame = all_frames[0]
@@ -388,10 +389,7 @@ async def test_headers_cleanup(sentry_client_web_app: SentryClientWebApp, sentry
         DLHeadersCommon.REQUEST_ID.value: "my_req_id",
     }
 
-    resp = await sentry_client_web_app.client.request(
-        "get", "the_exception",
-        headers=req_headers
-    )
+    resp = await sentry_client_web_app.client.request("get", "the_exception", headers=req_headers)
     assert resp.status == 500
 
     evt = await sentry_mock.get_next_event()
@@ -399,22 +397,22 @@ async def test_headers_cleanup(sentry_client_web_app: SentryClientWebApp, sentry
     # To be able to connect with debugger
     sentry_client_web_app.proc.terminate()
 
-    assert 'request' in evt, evt
-    evt_headers = evt['request']['headers']
+    assert "request" in evt, evt
+    evt_headers = evt["request"]["headers"]
 
     # Gathering header manually set header from event (filter out Content-Type, Keepalive, etc...)
     relevant_event_headers = {
-        h_name: h_val
-        for h_name, h_val in evt_headers.items()
-        if h_name.lower() in keys_to_lower(req_headers)
+        h_name: h_val for h_name, h_val in evt_headers.items() if h_name.lower() in keys_to_lower(req_headers)
     }
 
     # Check that all sent headers are in event
     assert set(keys_to_lower(relevant_event_headers)) == set(keys_to_lower(req_headers))
 
-    assert keys_to_lower(relevant_event_headers) == keys_to_lower({
-        "some-not-hardcodded-secret-token": "hid<hidden>ase",
-        DLHeadersYC.IAM_TOKEN.value: "<hidden>",
-        DLHeadersCommon.AUTHORIZATION_TOKEN.value: "<hidden>",
-        DLHeadersCommon.REQUEST_ID.value: "my_req_id",
-    })
+    assert keys_to_lower(relevant_event_headers) == keys_to_lower(
+        {
+            "some-not-hardcodded-secret-token": "hid<hidden>ase",
+            DLHeadersYC.IAM_TOKEN.value: "<hidden>",
+            DLHeadersCommon.AUTHORIZATION_TOKEN.value: "<hidden>",
+            DLHeadersCommon.REQUEST_ID.value: "my_req_id",
+        }
+    )

@@ -1,8 +1,8 @@
 import sqlalchemy.dialects.mssql as sa_mssqlsrv
 from sqlalchemy.types import TypeEngine
 
-from dl_formula.core.datatype import DataType
 from dl_formula.connectors.base.type_constructor import DefaultSATypeConstructor
+from dl_formula.core.datatype import DataType
 
 
 class MSSQLTypeConstructor(DefaultSATypeConstructor):

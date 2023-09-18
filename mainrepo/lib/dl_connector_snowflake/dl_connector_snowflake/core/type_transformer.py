@@ -1,12 +1,11 @@
 from snowflake import sqlalchemy as ssa
 
+from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from dl_constants.enums import BIType
 from dl_core.db.conversion_base import (
     TypeTransformer,
     make_native_type,
 )
-
-from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 
 SNOW_TYPES_INT = frozenset(
     (

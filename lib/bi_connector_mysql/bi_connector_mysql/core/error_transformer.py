@@ -1,12 +1,17 @@
 from typing import Optional
 
-import sqlalchemy
 import pymysql
+import sqlalchemy
 
 import dl_core.connectors.base.error_transformer as error_transformer
-from dl_core.connectors.base.error_transformer import ExcMatchCondition
+from dl_core.connectors.base.error_transformer import (
+    ExcMatchCondition,
+    wrapper_exc_is_and_matches_re,
+)
+from dl_core.connectors.base.error_transformer import DbErrorTransformer
+from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
-from dl_core.connectors.base.error_transformer import wrapper_exc_is_and_matches_re, DbErrorTransformer, ErrorTransformerRule as Rule
+
 from bi_connector_mysql.core.exc import MysqlSourceDoesNotExistError
 
 
@@ -45,9 +50,7 @@ class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransf
                 orig=wrapper_exc,  # keep orig exception for .args
                 details={},
             )
-        return error_transformer.ChainedDbErrorTransformer._get_error_kw(
-            debug_compiled_query, orig_exc, wrapper_exc
-        )
+        return error_transformer.ChainedDbErrorTransformer._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
 
 
 async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorTransformer(

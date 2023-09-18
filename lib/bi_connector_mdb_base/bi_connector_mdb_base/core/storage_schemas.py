@@ -7,6 +7,6 @@ class ConnectionMDBStorageDataSchemaMixin:
     is_verified_mdb_org = ma_fields.Boolean(required=False, load_default=False, dump_default=False)
     skip_mdb_org_check = ma_fields.Boolean(
         required=False,
-        load_default=True,   # !!! For backwards compatibility consider all the old connections are verified.
+        load_default=True,  # !!! For backwards compatibility consider all the old connections are verified.
         dump_default=False,
     )

@@ -1,12 +1,23 @@
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 import more_itertools
 
-from bi_external_api.converter.worbook_list.list_gatherer import WorkbookListGatherer, \
-    CollectionContentsFetch, UnpagedCollectionContentsFetch, CollectionUnpagedContentsFetchFactory
+from bi_external_api.converter.worbook_list.list_gatherer import (
+    CollectionContentsFetch,
+    CollectionUnpagedContentsFetchFactory,
+    UnpagedCollectionContentsFetch,
+    WorkbookListGatherer,
+)
 from bi_external_api.internal_api_clients.base import CollectionPagedContentsProvider
-from bi_external_api.internal_api_clients.models import CollectionInfo, WorkbookInCollectionInfo, CollectionContentsPage
+from bi_external_api.internal_api_clients.models import (
+    CollectionContentsPage,
+    CollectionInfo,
+    WorkbookInCollectionInfo,
+)
 
 
 @attr.s(auto_attribs=True, frozen=True, kw_only=True)
@@ -15,30 +26,21 @@ class MockCollectionContentsFetch(CollectionContentsFetch):
     workbook_ids: Sequence[str]
 
     @staticmethod
-    def setup_mock_search(
-            level_contents: tuple[Sequence[str], Sequence[str]]
-    ) -> CollectionContentsFetch:
+    def setup_mock_search(level_contents: tuple[Sequence[str], Sequence[str]]) -> CollectionContentsFetch:
         collection_ids, workbook_ids = level_contents
-        return MockCollectionContentsFetch(
-            collection_ids=collection_ids,
-            workbook_ids=workbook_ids
-        )
+        return MockCollectionContentsFetch(collection_ids=collection_ids, workbook_ids=workbook_ids)
 
-    async def get_contents(
-            self
-    ) -> tuple[list[CollectionInfo], list[WorkbookInCollectionInfo]]:
-        return [CollectionInfo(id) for id in self.collection_ids], \
-               [WorkbookInCollectionInfo(id=id, title=id) for id in self.workbook_ids]
+    async def get_contents(self) -> tuple[list[CollectionInfo], list[WorkbookInCollectionInfo]]:
+        return [CollectionInfo(id) for id in self.collection_ids], [
+            WorkbookInCollectionInfo(id=id, title=id) for id in self.workbook_ids
+        ]
 
 
 @attr.s(auto_attribs=True, frozen=True, kw_only=True)
 class MockCollectionUnpagedContentsFetchFactory(CollectionUnpagedContentsFetchFactory):
     tree_levels: dict[Optional[str], tuple[Sequence[str], Sequence[str]]]
 
-    def create_fetch_for_collection_id(
-            self,
-            collection_id: Optional[str]
-    ) -> CollectionContentsFetch:
+    def create_fetch_for_collection_id(self, collection_id: Optional[str]) -> CollectionContentsFetch:
         return MockCollectionContentsFetch.setup_mock_search(self.tree_levels[collection_id])
 
 
@@ -58,8 +60,8 @@ async def test_list_gatherer():
     workbooks = await gatherer.get_all_workbooks()
 
     assert workbooks == {
-        WorkbookInCollectionInfo(id=wb_id, title=wb_id) for wb_id in
-        {"top_wb1", "top_wb2", "top_wb3", "left_wb1", "right_wb1", "right_wb2", "right_left_wb1"}
+        WorkbookInCollectionInfo(id=wb_id, title=wb_id)
+        for wb_id in {"top_wb1", "top_wb2", "top_wb3", "left_wb1", "right_wb1", "right_wb2", "right_left_wb1"}
     }
 
 
@@ -69,11 +71,11 @@ class MockCollectionPagedContentsProvider(CollectionPagedContentsProvider):
     workbook_ids: Sequence[str]
 
     async def get_collection_contents(
-            self,
-            collection_id: Optional[str],
-            collections_page: Optional[str],
-            workbooks_page: Optional[str],
-            page_size: int
+        self,
+        collection_id: Optional[str],
+        collections_page: Optional[str],
+        workbooks_page: Optional[str],
+        page_size: int,
     ) -> CollectionContentsPage:
         collection_ids, collections_next_page_token = self._get_page(self.collection_ids, collections_page, page_size)
         workbook_ids, workbooks_next_page_token = self._get_page(self.workbook_ids, workbooks_page, page_size)
@@ -81,7 +83,7 @@ class MockCollectionPagedContentsProvider(CollectionPagedContentsProvider):
             collections=[CollectionInfo(collection_id) for collection_id in collection_ids],
             collections_next_page_token=collections_next_page_token,
             workbooks=[WorkbookInCollectionInfo(id=wb_id, title=wb_id) for wb_id in workbook_ids],
-            workbooks_next_page_token=workbooks_next_page_token
+            workbooks_next_page_token=workbooks_next_page_token,
         )
 
     def _get_page_number(self, page_str: Optional[str]) -> int:
@@ -101,14 +103,9 @@ class MockCollectionPagedContentsProvider(CollectionPagedContentsProvider):
     workbook_ids: Sequence[str]
 
     @staticmethod
-    def setup_mock_search(
-            level_contents: tuple[Sequence[str], Sequence[str]]
-    ) -> CollectionContentsFetch:
+    def setup_mock_search(level_contents: tuple[Sequence[str], Sequence[str]]) -> CollectionContentsFetch:
         collection_ids, workbook_ids = level_contents
-        return MockCollectionContentsFetch(
-            collection_ids=collection_ids,
-            workbook_ids=workbook_ids
-        )
+        return MockCollectionContentsFetch(collection_ids=collection_ids, workbook_ids=workbook_ids)
 
 
 async def test_unpaged_contents_fetch():
@@ -120,7 +117,7 @@ async def test_unpaged_contents_fetch():
             workbook_ids=workbook_ids,
         ),
         query_page_size=2,
-        collection_id=None
+        collection_id=None,
     )
     contents = await fetch.get_contents()
     assert contents == (

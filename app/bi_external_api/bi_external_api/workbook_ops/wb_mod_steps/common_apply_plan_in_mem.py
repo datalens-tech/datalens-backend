@@ -1,12 +1,22 @@
 import abc
 import contextlib
-from typing import Generic, TypeVar, ClassVar, Type, Optional, Iterator
+from typing import (
+    ClassVar,
+    Generic,
+    Iterator,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 import shortuuid
 
 from bi_external_api.converter.converter_ctx import ConverterContext
-from bi_external_api.converter.workbook import WorkbookContext, EntryRef
+from bi_external_api.converter.workbook import (
+    EntryRef,
+    WorkbookContext,
+)
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import dl_common
 from bi_external_api.workbook_ops.exc_composer import WbErrHandlingCtx
@@ -20,9 +30,7 @@ _CONVERSION_ARTIFACT_TV = TypeVar("_CONVERSION_ARTIFACT_TV")
 
 @attr.s(frozen=True)
 class BaseApplyInMemPlanWBModStep(
-    BaseWBModStep,
-    Generic[_EXT_INST_TV, _INT_INST_TV, _CONVERSION_ARTIFACT_TV],
-    metaclass=abc.ABCMeta
+    BaseWBModStep, Generic[_EXT_INST_TV, _INT_INST_TV, _CONVERSION_ARTIFACT_TV], metaclass=abc.ABCMeta
 ):
     ext_inst_clz: ClassVar[Type[_EXT_INST_TV]]
     int_inst_clz: ClassVar[Type[_INT_INST_TV]]
@@ -76,10 +84,12 @@ class BaseApplyInMemPlanWBModStep(
                     map_entry_id_conversion_artifact[generated_id] = conversion_artifact
                     int_instances_to_create.append(int_inst_to_create)
                 except Exception as exc:
-                    taint_info_to_create_list.append((
-                        self.create_entry_summary(id=generated_id, name=ext_inst_to_create.name),
-                        exc,
-                    ))
+                    taint_info_to_create_list.append(
+                        (
+                            self.create_entry_summary(id=generated_id, name=ext_inst_to_create.name),
+                            exc,
+                        )
+                    )
                     # To be registered by exc composer
                     raise exc
 
@@ -103,20 +113,16 @@ class BaseApplyInMemPlanWBModStep(
                     map_entry_id_conversion_artifact[existing_int_inst.summary.id] = conversion_artifact
                     int_instances_to_update.append(int_inst_to_modify)
                 except Exception as exc:
-                    taint_info_to_update_list.append((
-                        work_copy_wb_ctx.ref(id=existing_int_inst.summary.id),
-                        exc
-                    ))
+                    taint_info_to_update_list.append((work_copy_wb_ctx.ref(id=existing_int_inst.summary.id), exc))
                     # To be registered by exc composer
                     raise exc
 
         # Adding to WB context created/modified instances
         work_copy_wb_ctx = (
-            work_copy_wb_ctx
-                .taint_existing_entries(self.int_inst_clz, taint_info_to_update_list)
-                .replace_entries(self.int_inst_clz, int_instances_to_update)
-                .add_entries(int_instances_to_create)
-                .add_tainted_entries(taint_info_to_create_list)
+            work_copy_wb_ctx.taint_existing_entries(self.int_inst_clz, taint_info_to_update_list)
+            .replace_entries(self.int_inst_clz, int_instances_to_update)
+            .add_entries(int_instances_to_create)
+            .add_tainted_entries(taint_info_to_create_list)
         )
 
         return self._finalize_wb_modification_ctx(
@@ -125,20 +131,20 @@ class BaseApplyInMemPlanWBModStep(
         )
 
     def _finalize_wb_modification_ctx(
-            self,
-            wb_ctx_with_applied_updates: WorkbookContext,
-            map_entry_id_conversion_artifact: dict[str, _CONVERSION_ARTIFACT_TV],
+        self,
+        wb_ctx_with_applied_updates: WorkbookContext,
+        map_entry_id_conversion_artifact: dict[str, _CONVERSION_ARTIFACT_TV],
     ) -> WorkbookModificationContext:
         return self._create_modified_wbm_ctx(new_working_wb_ctx=wb_ctx_with_applied_updates)
 
     @abc.abstractmethod
     async def _convert_instance_ext_to_int(
-            self,
-            *,
-            ext_inst: _EXT_INST_TV,
-            int_inst_id: str,
-            prev_int_inst: Optional[_INT_INST_TV],
-            wb_ctx: WorkbookContext,
-            converter_ctx: ConverterContext,
+        self,
+        *,
+        ext_inst: _EXT_INST_TV,
+        int_inst_id: str,
+        prev_int_inst: Optional[_INT_INST_TV],
+        wb_ctx: WorkbookContext,
+        converter_ctx: ConverterContext,
     ) -> tuple[_INT_INST_TV, _CONVERSION_ARTIFACT_TV]:
         raise NotImplementedError()

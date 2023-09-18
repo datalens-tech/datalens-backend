@@ -45,8 +45,8 @@ from dl_core.exc import UnsupportedNativeTypeError
 if TYPE_CHECKING:
     from dl_constants.types import TJSONExt
     from dl_core.connections_security.base import ConnectionSecurityManager  # noqa
-    from dl_core.services_registry.top_level import ServicesRegistry
     from dl_core.mdb_utils import MDBDomainManager
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -89,7 +89,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
     _req_ctx_info: Optional[RequestContextInfo] = attr.ib()
     _exec_mode: ExecutionMode = attr.ib()
     _sec_mgr: "ConnectionSecurityManager" = attr.ib()
-    _mdb_mgr: "MDBDomainManager" = attr.ib()    # TODO: temporary - remove in favor of MDBHostConnExecutorMixin
+    _mdb_mgr: "MDBDomainManager" = attr.ib()  # TODO: temporary - remove in favor of MDBHostConnExecutorMixin
     _remote_qe_data: Optional[RemoteQueryExecutorData] = attr.ib()
     _services_registry: Optional[ServicesRegistry] = attr.ib(
         kw_only=True, default=None

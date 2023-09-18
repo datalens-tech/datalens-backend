@@ -199,4 +199,6 @@ Furniture,LS-16975,2022-12-29,CA-2022-117702,21215,7.5,East,20.9,Home Office,Fur
 Furniture,TT-21070,2022-12-30,CA-2022-108035,37421,48.8,South,390.4,Consumer,Chairs
 Office Supplies,ME-17725,2022-12-31,CA-2022-116645,19711,45.2,East,155.9,Consumer,Art
 Office Supplies,SC-20800,2022-12-31,CA-2022-102267,78539,0.8,Central,2.4,Consumer,Fasteners
-""".lstrip(" \n\t")
+""".lstrip(
+    " \n\t"
+)

@@ -1,21 +1,26 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, FrozenSet, Optional, Sequence
+from typing import (
+    TYPE_CHECKING,
+    FrozenSet,
+    Optional,
+    Sequence,
+)
 
 import attr
 import pytest
 
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouseBase
-from dl_api_commons.base_models import RequestContextInfo
-from dl_core.services_registry.entity_checker import EntityUsageChecker
 from bi_api_lib_ya.services_registry.env_manager_factory import IntranetEnvManagerFactory
+from dl_api_commons.base_models import RequestContextInfo
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouseBase
+from dl_core.exc import EntityUsageNotAllowed
+from dl_core.mdb_utils import MDBDomainManagerSettings
+from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.typing import ConnectOptionsFactory
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager_async import AsyncUSManager
-from dl_core.exc import EntityUsageNotAllowed
-from dl_core.mdb_utils import MDBDomainManagerSettings
 
 if TYPE_CHECKING:
     from dl_core.us_connection_base import ConnectionBase
@@ -35,11 +40,11 @@ async def usm_factory(rqe_config_subprocess, core_test_config):
     us_config = core_test_config.get_us_config()
 
     def make_sr_usm(
-            rci: RequestContextInfo,
-            victims: Sequence[str],
-            conn_cls_whitelist: Optional[FrozenSet] = None,
-            connect_options_factory: Optional[ConnectOptionsFactory] = None,
-            entity_usage_checker: Optional[EntityUsageChecker] = None,
+        rci: RequestContextInfo,
+        victims: Sequence[str],
+        conn_cls_whitelist: Optional[FrozenSet] = None,
+        connect_options_factory: Optional[ConnectOptionsFactory] = None,
+        entity_usage_checker: Optional[EntityUsageChecker] = None,
     ) -> AsyncUSManager:
         sr_factory = DefaultSRFactory(
             async_env=True,
@@ -71,11 +76,13 @@ async def usm_factory(rqe_config_subprocess, core_test_config):
 
 @pytest.mark.asyncio
 async def test_entity_checker(usm_factory, saved_ch_connection, saved_pg_connection):
-    rci = _rci('some_user')
+    rci = _rci("some_user")
 
     class LocalEntityUsageChecker(EntityUsageChecker):
         def ensure_dataset_can_be_used(
-            self, rci: RequestContextInfo, dataset: Dataset,
+            self,
+            rci: RequestContextInfo,
+            dataset: Dataset,
             us_manager: USManagerBase,
         ) -> None:
             pass

@@ -3,11 +3,6 @@ import asyncio
 from mock import MagicMock
 import pytest
 
-from dl_core.connection_executors.common_base import ConnExecutorQuery
-from dl_core.services_registry.top_level import ServicesRegistry
-from dl_core.us_connection_base import DataSourceTemplate
-from dl_core_testing.testcases.connection import DefaultConnectionTestClass
-
 from dl_connector_snowflake.auth import SFAuthProvider
 from dl_connector_snowflake.core.exc import (
     SnowflakeAccessTokenError,
@@ -15,6 +10,10 @@ from dl_connector_snowflake.core.exc import (
 )
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass  # noqa
+from dl_core.connection_executors.common_base import ConnExecutorQuery
+from dl_core.services_registry.top_level import ServicesRegistry
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 
 class TestSnowFlakeConnection(

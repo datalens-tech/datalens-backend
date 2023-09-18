@@ -21,11 +21,9 @@ class MultiQueryInterceptor:
         self._prepare()
 
     def _prepare(self) -> None:
-        self._mpatch.setattr(MultiLevelQueryTranslator, '_log_query_complexity_stats', self._log_query_complexity_stats)
+        self._mpatch.setattr(MultiLevelQueryTranslator, "_log_query_complexity_stats", self._log_query_complexity_stats)
 
-    def _log_query_complexity_stats(
-            self, compiled_multi_query: CompiledMultiQueryBase
-    ) -> None:
+    def _log_query_complexity_stats(self, compiled_multi_query: CompiledMultiQueryBase) -> None:
         self._callback(compiled_multi_query)
         self._intercepted = True
 

@@ -1,41 +1,64 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional, TYPE_CHECKING, Union
+import datetime
+import json
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Optional,
+    Union,
+)
+import uuid
 
 import attr
-import datetime
-import logging
-import sqlalchemy as sa
-import json
-import uuid
 from redis_cache_lock.types import TClientACM
 from redis_cache_lock.utils import wrap_generate_func
+import sqlalchemy as sa
 from sqlalchemy.sql.elements import TypeCoerce
 
+from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import ConnectionType
-from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
-from bi_connector_bitrix_gds.core.error_transformer import bitrix_error_transformer
-from dl_core.db.native_type import CommonNativeType
-
 from dl_core.aio.web_app_services.redis import RedisConnParams
-from bi_connector_bitrix_gds.core.tables import BITRIX_TABLES_MAP, CRM_DYNAMIC_ITEMS_TABLE, SMART_PROCESS_TABLE_PREFIX
-from bi_connector_bitrix_gds.core.caches import (
-    get_redis_cli_acm_from_params, build_local_key_rep, bitrix_cache_serializer, bitrix_cache_deserializer,
-)
 from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
 from dl_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery, RawSchemaInfo, RawColumnInfo,
+    DBAdapterQuery,
+    RawColumnInfo,
+    RawSchemaInfo,
 )
-from dl_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
+from dl_core.connection_models import (
+    DBIdent,
+    SchemaIdent,
+    TableDefinition,
+    TableIdent,
+)
+from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
 from dl_core.data_processing.cache.engine import RedisCacheLockWrapped
+from dl_core.db.native_type import CommonNativeType
 from dl_core.exc import DatabaseQueryError
-from dl_app_tools.profiling_base import generic_profiler_async
 
-from bi_connector_bitrix_gds.core.constants import CONNECTION_TYPE_BITRIX24, DEFAULT_DB
+from bi_connector_bitrix_gds.core.caches import (
+    bitrix_cache_deserializer,
+    bitrix_cache_serializer,
+    build_local_key_rep,
+    get_redis_cli_acm_from_params,
+)
+from bi_connector_bitrix_gds.core.constants import (
+    CONNECTION_TYPE_BITRIX24,
+    DEFAULT_DB,
+)
+from bi_connector_bitrix_gds.core.error_transformer import bitrix_error_transformer
+from bi_connector_bitrix_gds.core.tables import (
+    BITRIX_TABLES_MAP,
+    CRM_DYNAMIC_ITEMS_TABLE,
+    SMART_PROCESS_TABLE_PREFIX,
+)
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import Label
+
     from bi_connector_bitrix_gds.core.tables import BitrixGDSTable
     from bi_connector_bitrix_gds.core.target_dto import BitrixGDSConnTargetDTO
 
@@ -90,7 +113,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         rcl = RedisCacheLockWrapped(
             key=local_key_rep.key_parts_hash,
             client_acm=self._redis_cli_acm,
-            resource_tag='bic_conn_bitrix_query_cache',
+            resource_tag="bic_conn_bitrix_query_cache",
             lock_ttl_sec=60,
             data_ttl_sec=self._target_dto.redis_caches_ttl or 600,
         )
@@ -102,7 +125,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             ),
         )
         if result is None:
-            LOGGER.info('Result found in cache: %s', local_key_rep.key_parts_hash)
+            LOGGER.info("Result found in cache: %s", local_key_rep.key_parts_hash)
             result = bitrix_cache_deserializer(result_b)
 
         return result
@@ -112,21 +135,23 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         query_text = self.compile_query_for_execution(dba_query.query)
         payload = self._build_request_payload(dba_query)
 
-        api_url = f'https://{self._target_dto.portal}/bitrix/tools/biconnector/pbi.php'
+        api_url = f"https://{self._target_dto.portal}/bitrix/tools/biconnector/pbi.php"
         request_id = self._req_ctx_info.request_id or str(uuid.uuid4())
         LOGGER.info(
-            'Sending query to Bitrix:\nrequest_id: %s\nurl: %s\nquery: %s\nparams: %s',
-            request_id, api_url, query_text,
-            json.dumps({k: (v if k != 'key' else '...') for k, v in payload.json_body.items()}),
+            "Sending query to Bitrix:\nrequest_id: %s\nurl: %s\nquery: %s\nparams: %s",
+            request_id,
+            api_url,
+            query_text,
+            json.dumps({k: (v if k != "key" else "...") for k, v in payload.json_body.items()}),
         )
 
         with self.handle_execution_error(query_text):
             resp = await self._session.post(
                 url=api_url,
                 params={
-                    'table': payload.table,
-                    'consumer': 'datalens',
-                    'request_id': request_id,
+                    "table": payload.table,
+                    "consumer": "datalens",
+                    "request_id": request_id,
                 },
                 json=payload.json_body,
             )
@@ -141,7 +166,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
     def _parse_response_body_data(self, body: list, selected_columns: Optional[list] = None) -> dict:
         if not len(body):
-            raise ValueError('empty response')
+            raise ValueError("empty response")
         cols = body[0]
         rows = body[1:]
 
@@ -152,19 +177,11 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
         try:
             normalized_data = dict(
-                cols=[
-                    dict(
-                        id=col,
-                        label=col,
-                        type=columns_type.get(col, 'string')
-                    ) for col in selected_columns
-                ],
-                rows=[
-                    [dict(zip(cols, row))[col] for col in selected_columns] for row in rows
-                ],
+                cols=[dict(id=col, label=col, type=columns_type.get(col, "string")) for col in selected_columns],
+                rows=[[dict(zip(cols, row))[col] for col in selected_columns] for row in rows],
             )
         except (KeyError, TypeError, ValueError):
-            raise ValueError('unexpected data structure')
+            raise ValueError("unexpected data structure")
 
         return normalized_data
 
@@ -199,20 +216,20 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         assert isinstance(dba_query.query, sa.sql.Select)
         selected_columns_values = dba_query.query.selected_columns.values()
         selected_columns: Optional[list[str]] = None
-        if '*' not in set(column.name for column in selected_columns_values):
+        if "*" not in set(column.name for column in selected_columns_values):
             selected_columns = [extract_select_column_name(column) for column in selected_columns_values]
             # 'table."COLUMN_NAME"' -> 'COLUMN_NAME'
-            selected_columns = [col.split('.')[-1].replace('"', '').replace('`', '') for col in selected_columns]
+            selected_columns = [col.split(".")[-1].replace('"', "").replace("`", "") for col in selected_columns]
 
         try:
             if not isinstance(body, list):
-                raise TypeError('Unexpected response format')
+                raise TypeError("Unexpected response format")
             return self._parse_response_body_data(body, selected_columns=selected_columns)
         except (ValueError, TypeError) as err:
-            LOGGER.debug('Unexpected API response')
+            LOGGER.debug("Unexpected API response")
             raise DatabaseQueryError(
-                message=f'Unexpected API response body: {err.args[0]}',
-                db_message='',
+                message=f"Unexpected API response body: {err.args[0]}",
+                db_message="",
                 query=dba_query.debug_compiled_query,
                 orig=None,
                 details={},
@@ -220,7 +237,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
     @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        with self.wrap_execute_excs(query=query, stage='request'):
+        with self.wrap_execute_excs(query=query, stage="request"):
             if self._redis_cli_acm is not None:
                 resp_body = await self._run_query_cached(query)
             else:
@@ -229,14 +246,14 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         rd = self._parse_response_body(resp_body, query)
 
         async def chunk_gen(chunk_size=query.chunk_size or self._default_chunk_size):  # type: ignore  # TODO: fix
-            data = rd['rows']
+            data = rd["rows"]
             while data:
                 chunk = data[:chunk_size]
                 data = data[chunk_size:]
                 yield chunk
 
         return AsyncRawExecutionResult(
-            raw_cursor_info=dict(cols=rd['cols']),
+            raw_cursor_info=dict(cols=rd["cols"]),
             raw_chunk_generator=chunk_gen(),
         )
 
@@ -249,19 +266,23 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         known_general_tables = BITRIX_TABLES_MAP.keys()
         user_tables = await self._get_user_tables(schema_ident)
-        tables = [table_name for table_name in user_tables
-                  if table_name in known_general_tables or table_name.startswith(SMART_PROCESS_TABLE_PREFIX)]
+        tables = [
+            table_name
+            for table_name in user_tables
+            if table_name in known_general_tables or table_name.startswith(SMART_PROCESS_TABLE_PREFIX)
+        ]
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
                 schema_name=schema_ident.schema_name,
                 table_name=table_name,
-            ) for table_name in tables
+            )
+            for table_name in tables
         ]
 
     async def _get_user_tables(self, schema_ident: SchemaIdent) -> list[str]:
         body: dict[str, Any] = {
-            'key': self._target_dto.token,
+            "key": self._target_dto.token,
         }
         api_url: str = f"https://{self._target_dto.portal}/bitrix/tools/biconnector/gds.php?show_tables"
         resp = await self._session.post(
@@ -272,38 +293,41 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         return tables
 
     @generic_profiler_async("db-table-info")  # type: ignore  # TODO: fix
-    async def get_table_info(self, table_def: Optional[TableDefinition] = None, fetch_idx_info: bool = False) -> RawSchemaInfo:
+    async def get_table_info(
+        self, table_def: Optional[TableDefinition] = None, fetch_idx_info: bool = False
+    ) -> RawSchemaInfo:
         assert isinstance(table_def, TableIdent)
         table_name = table_def.table_name
 
         assert table_name in [table.table_name for table in await self.get_tables(SchemaIdent(DEFAULT_DB, None))]
         bitrix_table = self._table_schema(table_name)
         columns_type = bitrix_table.get_columns_type()
-        query = sa.select(['*']).select_from(
-            sa.table(table_name)
-        )
+        query = sa.select(["*"]).select_from(sa.table(table_name))
         if bitrix_table.daterange_col_name is not None:
             query = query.where(
-                sa.column(bitrix_table.daterange_col_name) == '2000-01-01',
+                sa.column(bitrix_table.daterange_col_name) == "2000-01-01",
             )
         query_obj = DBAdapterQuery(
             query=query,
         )
         res = await self.execute(query_obj)
-        res_cols = res.raw_cursor_info['cols']
+        res_cols = res.raw_cursor_info["cols"]
 
-        return RawSchemaInfo(columns=tuple(
-            RawColumnInfo(
-                name=col['id'],
-                title=col['id'],
-                nullable=True,
-                native_type=CommonNativeType(
-                    conn_type=self.conn_type,
-                    name=columns_type.get(col['id'], 'string'),
+        return RawSchemaInfo(
+            columns=tuple(
+                RawColumnInfo(
+                    name=col["id"],
+                    title=col["id"],
                     nullable=True,
-                ),
+                    native_type=CommonNativeType(
+                        conn_type=self.conn_type,
+                        name=columns_type.get(col["id"], "string"),
+                        nullable=True,
+                    ),
+                )
+                for col in res_cols
             )
-            for col in res_cols))
+        )
 
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
         return table_ident in await self.get_tables(SchemaIdent(DEFAULT_DB, None))
@@ -316,10 +340,10 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         table_name = tables[0].table_name
         table = self._table_schema(table_name)
         query_obj = DBAdapterQuery(
-            query=sa.select(['*']).select_from(
-                sa.table(table_name)
-            ).where(
-                sa.column(table.daterange_col_name) == '2000-01-01',
+            query=sa.select(["*"])
+            .select_from(sa.table(table_name))
+            .where(
+                sa.column(table.daterange_col_name) == "2000-01-01",
             ),
         )
         await self.execute(query_obj)
@@ -327,8 +351,8 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     def generate_body(self, dba_query: DBAdapterQuery) -> tuple[dict[str, Any], dict[str, str]]:
         assert self.table is not None
         body: dict[str, Any] = {
-            'key': self._target_dto.token,
-            'dateRange': {},
+            "key": self._target_dto.token,
+            "dateRange": {},
         }
 
         def date_converter(value: Any) -> Any:
@@ -337,25 +361,25 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             return value
 
         def build_date_range(body: dict[str, Any], clause: sa.sql.expression.BinaryExpression) -> dict[str, Any]:
-            label: str = ''
+            label: str = ""
             if isinstance(clause.left, sa.sql.elements.ColumnClause):
                 label = clause.left.name
             elif isinstance(clause.left, sa.sql.elements.Cast):
                 label = str(clause.left.anon_label)
-            col_name = label.split('.')[-1].replace('"', '').replace('`', '')
-            body['configParams'] = {'timeFilterColumn': col_name}
+            col_name = label.split(".")[-1].replace('"', "").replace("`", "")
+            body["configParams"] = {"timeFilterColumn": col_name}
             op = clause.operator.__name__
-            if op == 'eq':
-                body['dateRange']['startDate'] = date_converter(clause.right.effective_value)
-                body['dateRange']['endDate'] = date_converter(clause.right.effective_value)
-            elif op == 'between_op':
-                body['dateRange']['startDate'] = date_converter(clause.right.clauses[0].effective_value)
-                body['dateRange']['endDate'] = date_converter(clause.right.clauses[1].effective_value)
+            if op == "eq":
+                body["dateRange"]["startDate"] = date_converter(clause.right.effective_value)
+                body["dateRange"]["endDate"] = date_converter(clause.right.effective_value)
+            elif op == "between_op":
+                body["dateRange"]["startDate"] = date_converter(clause.right.clauses[0].effective_value)
+                body["dateRange"]["endDate"] = date_converter(clause.right.clauses[1].effective_value)
             # a bold assumption
-            elif op in ('gt', 'ge'):
-                body['dateRange']['startDate'] = date_converter(clause.right.effective_value)
-            elif op in ('lt', 'le'):
-                body['dateRange']['endDate'] = date_converter(clause.right.effective_value)
+            elif op in ("gt", "ge"):
+                body["dateRange"]["startDate"] = date_converter(clause.right.effective_value)
+            elif op in ("lt", "le"):
+                body["dateRange"]["endDate"] = date_converter(clause.right.effective_value)
             return body
 
         assert isinstance(dba_query.query, sa.sql.Select)
@@ -371,10 +395,10 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
                 body = build_date_range(body, clause)
 
         flatten_body = {
-            'key': body['key'],
-            'startDate': body['dateRange'].get('startDate'),
-            'endDate': body['dateRange'].get('endDate'),
-            'timeFilterColumn': body.get('configParams', dict()).get('timeFilterColumn')
+            "key": body["key"],
+            "startDate": body["dateRange"].get("startDate"),
+            "endDate": body["dateRange"].get("endDate"),
+            "timeFilterColumn": body.get("configParams", dict()).get("timeFilterColumn"),
         }
 
         return body, flatten_body

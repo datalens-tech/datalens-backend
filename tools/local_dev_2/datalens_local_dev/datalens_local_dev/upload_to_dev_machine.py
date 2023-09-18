@@ -22,6 +22,7 @@ def main():
     submodule_list = rel_path_list_for_pycham_upload() + EXTRA_PATH_LIST
 
     from pprint import pprint
+
     pprint(submodule_list)
 
     print(f"\n\n--- Uploading project to {dev_machine=} ---\n")

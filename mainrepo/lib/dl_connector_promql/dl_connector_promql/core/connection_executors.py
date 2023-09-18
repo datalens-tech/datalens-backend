@@ -7,13 +7,12 @@ from typing import (
 
 import attr
 
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-
 from dl_connector_promql.core.adapter import (
     AsyncPromQLAdapter,
     PromQLAdapter,
 )
 from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 if TYPE_CHECKING:
     from dl_connector_promql.core.dto import PromQLConnDTO

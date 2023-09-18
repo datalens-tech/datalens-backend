@@ -3,13 +3,12 @@ from typing import Union
 
 import sqlalchemy as sa
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.connectors.base.literal import (
     Literal,
     Literalizer,
 )
 from dl_formula.core.dialect import DialectCombo
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 class ClickHouseLiteralizer(Literalizer):

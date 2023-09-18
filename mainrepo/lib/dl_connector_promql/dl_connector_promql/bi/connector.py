@@ -9,7 +9,6 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-
 from dl_connector_promql.bi.api_schema.connection import PromQLConnectionSchema
 from dl_connector_promql.bi.connection_form.form_config import PromQLConnectionFormFactory
 from dl_connector_promql.bi.connection_info import PromQLConnectionInfoProvider

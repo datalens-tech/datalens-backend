@@ -1,36 +1,46 @@
 import json
 import os
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+)
 import urllib.parse
-from typing import Sequence, Optional, Any
 
 import attr
 import yaml
 
 from bi_external_api.attrs_model_mapper.domain import (
-    AmmField,
-    AmmScalarField,
-    AmmNestedField,
-    AmmRegularSchema,
-    AmmListField,
-    AmmOneOfDescriptorField,
     AmmEnumDescriptor,
+    AmmField,
+    AmmListField,
+    AmmNestedField,
+    AmmOneOfDescriptorField,
+    AmmRegularSchema,
+    AmmScalarField,
 )
-from bi_external_api.attrs_model_mapper.utils import Locale, MText
+from bi_external_api.attrs_model_mapper.utils import (
+    Locale,
+    MText,
+)
 from bi_external_api.attrs_model_mapper_docs.domain import AmmOperation
 from bi_external_api.attrs_model_mapper_docs.md_link_extractor import process_links
 from bi_external_api.attrs_model_mapper_docs.render_units import (
     DocHeader,
-    RenderContext,
+    DocLink,
     DocSection,
+    DocText,
     DocUnit,
+    DocUnitGroup,
     MultiLineTable,
     MultiLineTableRow,
-    DocText,
-    DocLink,
-    DocUnitGroup,
+    RenderContext,
 )
 from bi_external_api.attrs_model_mapper_docs.writer_utils import DocWriter
-from bi_external_api.docs.dc_grpc_amm_schema import ProtoGenDocAccessor, ExternalClassDef
+from bi_external_api.docs.dc_grpc_amm_schema import (
+    ExternalClassDef,
+    ProtoGenDocAccessor,
+)
 
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True)
@@ -95,24 +105,26 @@ class GRPCDocs:
         return DocText(process_links(en_txt, self.adopt_dc_doc_link))
 
     def create_field_row(
-            self,
-            path: Sequence[str],
-            type_text: str,
-            type_ref: Optional[str],
-            description: Optional[DocText],
+        self,
+        path: Sequence[str],
+        type_text: str,
+        type_ref: Optional[str],
+        description: Optional[DocText],
     ) -> MultiLineTableRow:
         type_id_md = (
-            DocLink(text=type_text, href=type_ref)
-            if type_ref is not None
-            else DocText(["**", type_text, "**"])
+            DocLink(text=type_text, href=type_ref) if type_ref is not None else DocText(["**", type_text, "**"])
         )
-        return MultiLineTableRow([
-            DocText(".".join(f"`{part}`" for part in path)),
-            DocUnitGroup([
-                type_id_md,
-                description,
-            ]),
-        ])
+        return MultiLineTableRow(
+            [
+                DocText(".".join(f"`{part}`" for part in path)),
+                DocUnitGroup(
+                    [
+                        type_id_md,
+                        description,
+                    ]
+                ),
+            ]
+        )
 
     def field_to_doc_lines(self, field: AmmField, path: Sequence[str]) -> Sequence[MultiLineTableRow]:
         cp = field.common_props
@@ -156,8 +168,9 @@ class GRPCDocs:
             if as_ref:
                 return [main_line]
 
-            assert isinstance(nested_schema, AmmRegularSchema), \
-                f"Attempt to generate inline field docs for non-regular schema: {nested_schema}"
+            assert isinstance(
+                nested_schema, AmmRegularSchema
+            ), f"Attempt to generate inline field docs for non-regular schema: {nested_schema}"
             return [
                 main_line,
                 *self.field_dict_to_doc_lines(nested_schema.fields, path),
@@ -178,9 +191,9 @@ class GRPCDocs:
         raise AssertionError(f"Unexpected type of field: {type(field)}")
 
     def field_dict_to_doc_lines(
-            self,
-            field_dict: dict[str, AmmField],
-            path: Sequence[str],
+        self,
+        field_dict: dict[str, AmmField],
+        path: Sequence[str],
     ) -> Sequence[MultiLineTableRow]:
         ret: list[MultiLineTableRow] = []
 
@@ -190,30 +203,38 @@ class GRPCDocs:
         return ret
 
     def regular_schema_to_object_doc(
-            self,
-            schema: AmmRegularSchema,
+        self,
+        schema: AmmRegularSchema,
     ) -> DocUnitGroup:
-        return DocUnitGroup([
-            self.handle_text_from_spec(schema.description),
-            MultiLineTable([
-                MultiLineTableRow(["**Field**", "**Description**"]),
-                *self.field_dict_to_doc_lines(schema.fields, path=[])
-            ]),
-        ])
+        return DocUnitGroup(
+            [
+                self.handle_text_from_spec(schema.description),
+                MultiLineTable(
+                    [
+                        MultiLineTableRow(["**Field**", "**Description**"]),
+                        *self.field_dict_to_doc_lines(schema.fields, path=[]),
+                    ]
+                ),
+            ]
+        )
 
     def enum_descriptor_to_doc_units(self, enum_descriptor: AmmEnumDescriptor) -> Sequence[Optional[DocUnit]]:
         return [
             DocText(enum_descriptor.description) if enum_descriptor.description else None,
-            MultiLineTable([
-                MultiLineTableRow(["**Option**", "**Description**"]),
-                *[
-                    MultiLineTableRow([
-                        DocText(["**", option.key, "**"]),
-                        DocText(option.description) if option.description else ""]
-                    )
-                    for option in enum_descriptor.members
-                ],
-            ])
+            MultiLineTable(
+                [
+                    MultiLineTableRow(["**Option**", "**Description**"]),
+                    *[
+                        MultiLineTableRow(
+                            [
+                                DocText(["**", option.key, "**"]),
+                                DocText(option.description) if option.description else "",
+                            ]
+                        )
+                        for option in enum_descriptor.members
+                    ],
+                ]
+            ),
         ]
 
     def operation_to_doc(self, op: AmmOperation) -> DocSection:
@@ -228,7 +249,7 @@ class GRPCDocs:
                 DocSection(
                     header=DocHeader("Response"),
                     content=[self.regular_schema_to_object_doc(op.amm_schema_rs)],
-                )
+                ),
             ],
         )
 
@@ -238,10 +259,7 @@ class GRPCDocs:
             current_file="",
             locale=locale,
         )
-        doc_writer = DocWriter(
-            initial_ctx,
-            base_dir=dir_path
-        )
+        doc_writer = DocWriter(initial_ctx, base_dir=dir_path)
 
         # Resolving references for messages
         type_info_to_extract_list: list[TypeInfo] = []
@@ -269,14 +287,13 @@ class GRPCDocs:
                             anchor=anchor,
                             is_enum=is_enum,
                             type_id=type_id,
-                            header_text=type_id.removeprefix(service_group.grpc_package_prefix)
+                            header_text=type_id.removeprefix(service_group.grpc_package_prefix),
                         )
                     )
 
-        self._map_type_id_ref.update({
-            type_info.type_id: f"{type_info.file_path}#{type_info.anchor}"
-            for type_info in type_info_to_extract_list
-        })
+        self._map_type_id_ref.update(
+            {type_info.type_id: f"{type_info.file_path}#{type_info.anchor}" for type_info in type_info_to_extract_list}
+        )
 
         # Rendering ref map
         path_map: dict[str, list[TypeInfo]] = {}
@@ -304,15 +321,20 @@ class GRPCDocs:
                 if type_info.anchor is not None:
                     header_value += f" {{#{type_info.anchor}}}"
 
-                children.append(DocSection(
-                    DocHeader(header_value),
-                    content=section_content,
-                ))
+                children.append(
+                    DocSection(
+                        DocHeader(header_value),
+                        content=section_content,
+                    )
+                )
 
-            doc_writer.write(DocSection(
-                header=DocHeader(map_file_path_title[file_path]),
-                content=children,
-            ), file_path)
+            doc_writer.write(
+                DocSection(
+                    header=DocHeader(map_file_path_title[file_path]),
+                    content=children,
+                ),
+                file_path,
+            )
 
         for service_group in self._service_groups:
             group_service_list = service_group.get_all_service_ids(self._proto_gen_doc)
@@ -323,7 +345,7 @@ class GRPCDocs:
                 doc_writer.write(
                     DocSection(
                         header=DocHeader(f"Service {service_name}"),
-                        content=[self.operation_to_doc(op) for op in all_operations]
+                        content=[self.operation_to_doc(op) for op in all_operations],
                     ),
                     service_group.get_service_operations_file_path(service_name),
                 )
@@ -334,85 +356,98 @@ class GRPCDocs:
         for service_group in self._service_groups:
             all_service_ids = service_group.get_all_service_ids(self._proto_gen_doc)
             service_group_toc_path = os.path.join(service_group.directory, "toc-i.yaml")
-            root_toc_includes.append(dict(
-                name=service_group.title,
-                items=None,
-                include=dict(
-                    mode="link",
-                    path=service_group_toc_path,
-                ),
-            ))
+            root_toc_includes.append(
+                dict(
+                    name=service_group.title,
+                    items=None,
+                    include=dict(
+                        mode="link",
+                        path=service_group_toc_path,
+                    ),
+                )
+            )
             # index.yaml for service group
             index_title = f"{service_group.title} API reference"
 
             doc_writer.write_text(
-                yaml.safe_dump(dict(
-                    title=index_title,
-                    # TODO FIX: Externalize
-                    description=(
-                        f"This section contains API reference for DoubleCloud {service_group.title} service."
-                    ),
-                    meta=dict(
+                yaml.safe_dump(
+                    dict(
                         title=index_title,
-                        noIndex=False,
+                        # TODO FIX: Externalize
+                        description=(
+                            f"This section contains API reference for DoubleCloud {service_group.title} service."
+                        ),
+                        meta=dict(
+                            title=index_title,
+                            noIndex=False,
+                        ),
+                        links=[
+                            dict(
+                                title=service_group.get_service_toc_name(svc_id),
+                                description=(
+                                    self._proto_gen_doc.get_service_description(svc_id)
+                                    or service_group.map_svc_fqdn_description_fallback.get(svc_id)
+                                    or ""
+                                ),
+                                href=os.path.relpath(
+                                    service_group.get_service_operations_file_path(svc_id),
+                                    service_group.directory,
+                                ),
+                            )
+                            for svc_id in all_service_ids
+                        ],
                     ),
-                    links=[
-                        dict(
-                            title=service_group.get_service_toc_name(svc_id),
-                            description=(
-                                self._proto_gen_doc.get_service_description(svc_id)
-                                or service_group.map_svc_fqdn_description_fallback.get(svc_id)
-                                or ""
-                            ),
-                            href=os.path.relpath(
-                                service_group.get_service_operations_file_path(svc_id),
-                                service_group.directory,
-                            ),
-                        )
-                        for svc_id in all_service_ids
-                    ],
-                ), default_flow_style=False, sort_keys=False),
+                    default_flow_style=False,
+                    sort_keys=False,
+                ),
                 os.path.join(service_group.directory, "index.yaml"),
             )
             # TOC for service group
             doc_writer.write_text(
-                yaml.safe_dump(dict(
-                    title=service_group.title,
-                    items=[
-                        dict(name="Overview", href="index.yaml"),
-                        *[
-                            dict(
-                                name=service_group.get_service_toc_name(svc_id),
-                                href=os.path.relpath(
-                                    service_group.get_service_operations_file_path(svc_id),
-                                    service_group.directory,
+                yaml.safe_dump(
+                    dict(
+                        title=service_group.title,
+                        items=[
+                            dict(name="Overview", href="index.yaml"),
+                            *[
+                                dict(
+                                    name=service_group.get_service_toc_name(svc_id),
+                                    href=os.path.relpath(
+                                        service_group.get_service_operations_file_path(svc_id),
+                                        service_group.directory,
+                                    ),
                                 )
-                            )
-                            for svc_id in all_service_ids
+                                for svc_id in all_service_ids
+                            ],
+                            *[dict(name="Models", href="models.md")],
+                            *[
+                                dict(
+                                    name=incl.title,
+                                    items=None,
+                                    include=dict(
+                                        mode="link",
+                                        path=incl.rel_path,
+                                    ),
+                                )
+                                for incl in service_group.custom_includes
+                            ],
                         ],
-                        *[
-                            dict(name="Models", href="models.md")
-                        ],
-                        *[
-                            dict(
-                                name=incl.title,
-                                items=None,
-                                include=dict(
-                                    mode="link",
-                                    path=incl.rel_path,
-                                ),
-                            ) for incl in service_group.custom_includes
-                        ],
-                    ],
-                ), default_flow_style=False, sort_keys=False),
+                    ),
+                    default_flow_style=False,
+                    sort_keys=False,
+                ),
                 service_group_toc_path,
             )
 
         doc_writer.write_text(
-            yaml.safe_dump(dict(
-                title="API reference",
-                items=root_toc_includes,
-            ), default_flow_style=False, sort_keys=False),
+            yaml.safe_dump(
+                dict(
+                    title="API reference",
+                    items=root_toc_includes,
+                ),
+                default_flow_style=False,
+                sort_keys=False,
+            ),
             "toc-i.yaml",
         )
 
@@ -434,90 +469,91 @@ def main(*, proto_doc_json: dict[str, Any], render_target: str) -> None:
             ExternalClassDef(full_name="google.rpc.Status"),
             ExternalClassDef(full_name="google.type.DayOfWeek"),
             ExternalClassDef(full_name="int64"),
-            ExternalClassDef(full_name="string")
-        }
+            ExternalClassDef(full_name="string"),
+        },
     )
-    docs = GRPCDocs(acc, [
-        ServiceGroup(
-            title="Common",
-            directory="common",
-            grpc_package_prefix="doublecloud.v1.",
-            models_header="Common models",
-        ),
-        ServiceGroup(
-            title="ClickHouse",
-            directory="clickhouse",
-            grpc_package_prefix="doublecloud.clickhouse.v1.",
-            models_header="ClickHouse API models",
-            map_svc_fqdn_description_fallback={
-                "doublecloud.clickhouse.v1.BackupService": (
-                    "A set of methods for managing ClickHouse cluster backups."
-                ),
-                "doublecloud.clickhouse.v1.VersionService": (
-                    "A set of methods for managing ClickHouse software versions."
-                ),
-            },
-        ),
-        ServiceGroup(
-            title="Kafka",
-            directory="kafka",
-            grpc_package_prefix="doublecloud.kafka.v1.",
-            models_header="Kafka API models",
-            map_svc_fqdn_description_fallback={
-                "doublecloud.kafka.v1.VersionService": "A set of methods for managing Kafka software versions.",
-            },
-        ),
-        ServiceGroup(
-            title="Network",
-            directory="network",
-            grpc_package_prefix="doublecloud.network.v1.",
-            models_header="Network API models",
-        ),
-        ServiceGroup(
-            title="Transfer",
-            directory="transfer",
-            grpc_package_prefix="doublecloud.transfer.v1.",
-            models_header="Transfer API models",
-            map_svc_fqdn_description_fallback={
-                "doublecloud.transfer.v1.EndpointService": "A set of methods for managing endpoints.",
-                "doublecloud.transfer.v1.OperationService": "A set of methods for managing operations.",
-                "doublecloud.transfer.v1.TransferService": "A set of methods for managing transfers.",
-            },
-        ),
-        ServiceGroup(
-            title="Visualization",
-            directory="visualization",
-            grpc_package_prefix="doublecloud.visualization.v1.",
-            models_header="Visualization API models",
-            custom_includes=(
-                # Include of JSON schemas
-                TOCInclude(
-                    title="Configs",
-                    rel_path="configs/toc-i.yaml",
-                ),
+    docs = GRPCDocs(
+        acc,
+        [
+            ServiceGroup(
+                title="Common",
+                directory="common",
+                grpc_package_prefix="doublecloud.v1.",
+                models_header="Common models",
             ),
-            map_svc_fqdn_description_fallback={
-                "doublecloud.visualization.v1.WorkbookService": (
-                    "A set of methods for managing Visualization assets."
+            ServiceGroup(
+                title="ClickHouse",
+                directory="clickhouse",
+                grpc_package_prefix="doublecloud.clickhouse.v1.",
+                models_header="ClickHouse API models",
+                map_svc_fqdn_description_fallback={
+                    "doublecloud.clickhouse.v1.BackupService": (
+                        "A set of methods for managing ClickHouse cluster backups."
+                    ),
+                    "doublecloud.clickhouse.v1.VersionService": (
+                        "A set of methods for managing ClickHouse software versions."
+                    ),
+                },
+            ),
+            ServiceGroup(
+                title="Kafka",
+                directory="kafka",
+                grpc_package_prefix="doublecloud.kafka.v1.",
+                models_header="Kafka API models",
+                map_svc_fqdn_description_fallback={
+                    "doublecloud.kafka.v1.VersionService": "A set of methods for managing Kafka software versions.",
+                },
+            ),
+            ServiceGroup(
+                title="Network",
+                directory="network",
+                grpc_package_prefix="doublecloud.network.v1.",
+                models_header="Network API models",
+            ),
+            ServiceGroup(
+                title="Transfer",
+                directory="transfer",
+                grpc_package_prefix="doublecloud.transfer.v1.",
+                models_header="Transfer API models",
+                map_svc_fqdn_description_fallback={
+                    "doublecloud.transfer.v1.EndpointService": "A set of methods for managing endpoints.",
+                    "doublecloud.transfer.v1.OperationService": "A set of methods for managing operations.",
+                    "doublecloud.transfer.v1.TransferService": "A set of methods for managing transfers.",
+                },
+            ),
+            ServiceGroup(
+                title="Visualization",
+                directory="visualization",
+                grpc_package_prefix="doublecloud.visualization.v1.",
+                models_header="Visualization API models",
+                custom_includes=(
+                    # Include of JSON schemas
+                    TOCInclude(
+                        title="Configs",
+                        rel_path="configs/toc-i.yaml",
+                    ),
                 ),
-            }
-        ),
-    ], map_dcdoc_url_md_url={
-        "dcdoc://visualization-configs/Connection": "visualization/configs/Connection.md",
-        "dcdoc://visualization-configs/Dataset": "visualization/configs/Dataset.md",
-        "dcdoc://visualization-configs/Workbook": "visualization/configs/WorkBook.md",
-    })
+                map_svc_fqdn_description_fallback={
+                    "doublecloud.visualization.v1.WorkbookService": (
+                        "A set of methods for managing Visualization assets."
+                    ),
+                },
+            ),
+        ],
+        map_dcdoc_url_md_url={
+            "dcdoc://visualization-configs/Connection": "visualization/configs/Connection.md",
+            "dcdoc://visualization-configs/Dataset": "visualization/configs/Dataset.md",
+            "dcdoc://visualization-configs/Workbook": "visualization/configs/WorkBook.md",
+        },
+    )
     docs.render(render_target, locale="en")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     with open(os.path.join(os.path.dirname(__file__), "../../temp/dc_api_docs.json")) as f:
         pd_json = json.load(f)
 
-    docs_dir = os.path.realpath(os.path.join(
-        os.path.dirname(__file__),
-        "../../all_dc_docs"
-    ))
+    docs_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "../../all_dc_docs"))
     os.makedirs(docs_dir, exist_ok=True)
 
     main(

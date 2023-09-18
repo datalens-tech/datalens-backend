@@ -28,9 +28,7 @@ class CHFrozenDemoCoreSubselectSourceDefinition(CHFrozenBaseCoreSubselectSourceD
 
 
 class CHFrozenDemoCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenDemoCoreConnectionDefinition,
-    )
+    connection_definitions = (CHFrozenDemoCoreConnectionDefinition,)
     source_definitions = (  # type: ignore
         CHFrozenDemoCoreSourceDefinition,
         CHFrozenDemoCoreSubselectSourceDefinition,

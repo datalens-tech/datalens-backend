@@ -1,5 +1,12 @@
 import enum
-from typing import Type, TypeVar, Generic, Sequence, Any, Optional
+from typing import (
+    Any,
+    Generic,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 
@@ -8,7 +15,10 @@ from bi_external_api.attrs_model_mapper.domain import AmmRegularSchema
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.attrs_model_mapper.marshmallow_base_schemas import BaseOneOfSchema
 from bi_external_api.attrs_model_mapper.utils import MText
-from bi_external_api.attrs_model_mapper_docs.domain import AmmOperation, AmmOperationExample
+from bi_external_api.attrs_model_mapper_docs.domain import (
+    AmmOperation,
+    AmmOperationExample,
+)
 
 _OPERATION_KIND_ENUM_TV = TypeVar("_OPERATION_KIND_ENUM_TV", bound=enum.Enum)
 
@@ -58,9 +68,9 @@ class AmmOperationsBuilder(Generic[_OPERATION_KIND_ENUM_TV]):
         return schema_cls()
 
     def _create_amm_operation_for_kind(
-            self,
-            user_op_info: UserOperationInfo[_OPERATION_KIND_ENUM_TV],
-            rq_base_model_descriptor: ModelDescriptor,
+        self,
+        user_op_info: UserOperationInfo[_OPERATION_KIND_ENUM_TV],
+        rq_base_model_descriptor: ModelDescriptor,
     ) -> AmmOperation:
         discriminator_name = rq_base_model_descriptor.children_type_discriminator_attr_name
         assert discriminator_name is not None
@@ -87,8 +97,9 @@ class AmmOperationsBuilder(Generic[_OPERATION_KIND_ENUM_TV]):
 
     def build(self) -> Sequence[AmmOperation]:
         rq_base_model_descriptor = ModelDescriptor.get_for_type(self.rq_base_type)
-        assert rq_base_model_descriptor is not None, \
-            f"No model descriptor defined for base request class: {self.rq_base_type}"
+        assert (
+            rq_base_model_descriptor is not None
+        ), f"No model descriptor defined for base request class: {self.rq_base_type}"
 
         return [
             self._create_amm_operation_for_kind(

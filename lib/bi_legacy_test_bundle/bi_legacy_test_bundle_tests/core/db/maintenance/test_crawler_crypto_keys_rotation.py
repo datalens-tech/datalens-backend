@@ -1,10 +1,10 @@
+from cryptography import fernet
 import pytest
 import shortuuid
-from cryptography import fernet
 
+from bi_maintenance.core.crawlers.crypto_keys_rotation import RotateCryptoKeyInConnection
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.base_models import PathEntryLocation
-from bi_maintenance.core.crawlers.crypto_keys_rotation import RotateCryptoKeyInConnection
 from dl_core.us_entry import USMigrationEntry
 from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
@@ -12,10 +12,10 @@ from dl_utils.aio import await_sync
 
 _CRYPTO_KEYS_CONFIG = CryptoKeysConfig(
     map_id_key=dict(
-        old=fernet.Fernet.generate_key().decode('ascii'),
-        new=fernet.Fernet.generate_key().decode('ascii'),
+        old=fernet.Fernet.generate_key().decode("ascii"),
+        new=fernet.Fernet.generate_key().decode("ascii"),
     ),
-    actual_key_id='new',
+    actual_key_id="new",
 )
 
 _CRYPTO_CONTROLLER = CryptoController(_CRYPTO_KEYS_CONFIG)
@@ -40,17 +40,17 @@ _DEFAULT_PG_CONN_DATA = dict(
     mdb_cluster_id=None,
     mdb_folder_id=None,
     enforce_collate="auto",
-    sample_table_name=None
+    sample_table_name=None,
 )
 _DEFAULT_PG_CONN_META = dict(
-    state='saved',
+    state="saved",
     version=11,
     mdb_cluster_id=None,
     mdb_folder_id=None,
 )
 _BASE_PG_CONN_ENTRY_DATA = dict(
-    scope='connection',
-    type='postgres',
+    scope="connection",
+    type="postgres",
     data=_DEFAULT_PG_CONN_DATA,
     meta=_DEFAULT_PG_CONN_META,
 )
@@ -60,118 +60,125 @@ _DEFAULT_GSHEETS_V2_CONN_DATA = dict(
     refresh_enabled=True,
 )
 _DEFAULT_GSHEETS_V2_CONN_META = dict(
-    state='saved',
+    state="saved",
     version=11,
     mdb_cluster_id=None,
     mdb_folder_id=None,
 )
 _BASE_GSHEETS_V2_CONN_ENTRY_DATA = dict(
-    scope='connection',
-    type='gsheets_v2',
+    scope="connection",
+    type="gsheets_v2",
     data=_DEFAULT_GSHEETS_V2_CONN_DATA,
     meta=_DEFAULT_GSHEETS_V2_CONN_META,
 )
 
 
-@pytest.mark.parametrize("entry_data,expected_sensitive_fields,expected_should_save,expected_message", [
-    # Default case with actual key
-    (
-        dict(
-            **_BASE_PG_CONN_ENTRY_DATA,
-            unversioned_data=dict(
-                password=_CRYPTO_CONTROLLER.encrypt('new', 'some_password'),
+@pytest.mark.parametrize(
+    "entry_data,expected_sensitive_fields,expected_should_save,expected_message",
+    [
+        # Default case with actual key
+        (
+            dict(
+                **_BASE_PG_CONN_ENTRY_DATA,
+                unversioned_data=dict(
+                    password=_CRYPTO_CONTROLLER.encrypt("new", "some_password"),
+                ),
             ),
+            ("password",),
+            False,
+            _get_ok_message(),
         ),
-        ('password',),
-        False,
-        _get_ok_message(),
-    ),
-    # Single non actual fields case
-    (
-        dict(
-            **_BASE_PG_CONN_ENTRY_DATA,
-            unversioned_data=dict(
-                password=_CRYPTO_CONTROLLER.encrypt('old', 'some_password'),
+        # Single non actual fields case
+        (
+            dict(
+                **_BASE_PG_CONN_ENTRY_DATA,
+                unversioned_data=dict(
+                    password=_CRYPTO_CONTROLLER.encrypt("old", "some_password"),
+                ),
             ),
+            ("password",),
+            True,
+            _get_non_actual_key_message("password"),
         ),
-        ('password',),
-        True,
-        _get_non_actual_key_message('password'),
-    ),
-    # `None` in sensitive field
-    (
-        dict(
-            **_BASE_PG_CONN_ENTRY_DATA,
-            unversioned_data=dict(
-                password=None,
+        # `None` in sensitive field
+        (
+            dict(
+                **_BASE_PG_CONN_ENTRY_DATA,
+                unversioned_data=dict(
+                    password=None,
+                ),
             ),
+            ("password",),
+            False,
+            _get_ok_message(),
         ),
-        ('password',),
-        False,
-        _get_ok_message(),
-    ),
-    # Missing sensitive field
-    (
-        dict(
-            **_BASE_PG_CONN_ENTRY_DATA,
-            unversioned_data=dict(),
-        ),
-        ('password',),
-        False,
-        _get_ok_message(),
-    ),
-
-    # # # attrs DataModel
-    # Default case with actual key
-    (
-        dict(
-            **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
-            unversioned_data=dict(
-                refresh_token=_CRYPTO_CONTROLLER.encrypt('new', 'some_token'),
+        # Missing sensitive field
+        (
+            dict(
+                **_BASE_PG_CONN_ENTRY_DATA,
+                unversioned_data=dict(),
             ),
+            ("password",),
+            False,
+            _get_ok_message(),
         ),
-        ('refresh_token',),
-        False,
-        _get_ok_message(),
-    ),
-    # Single non actual fields case
-    (
-        dict(
-            **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
-            unversioned_data=dict(
-                refresh_token=_CRYPTO_CONTROLLER.encrypt('old', 'some_token'),
+        # # # attrs DataModel
+        # Default case with actual key
+        (
+            dict(
+                **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
+                unversioned_data=dict(
+                    refresh_token=_CRYPTO_CONTROLLER.encrypt("new", "some_token"),
+                ),
             ),
+            ("refresh_token",),
+            False,
+            _get_ok_message(),
         ),
-        ('refresh_token',),
-        True,
-        _get_non_actual_key_message('refresh_token'),
-    ),
-    # `None` in sensitive field
-    (
-        dict(
-            **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
-            unversioned_data=dict(
-                refresh_token=None,
+        # Single non actual fields case
+        (
+            dict(
+                **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
+                unversioned_data=dict(
+                    refresh_token=_CRYPTO_CONTROLLER.encrypt("old", "some_token"),
+                ),
             ),
+            ("refresh_token",),
+            True,
+            _get_non_actual_key_message("refresh_token"),
         ),
-        ('refresh_token',),
-        False,
-        _get_ok_message(),
-    ),
-    # Missing sensitive field
-    (
-        dict(
-            **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
-            unversioned_data=dict(),
+        # `None` in sensitive field
+        (
+            dict(
+                **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
+                unversioned_data=dict(
+                    refresh_token=None,
+                ),
+            ),
+            ("refresh_token",),
+            False,
+            _get_ok_message(),
         ),
-        ('refresh_token',),
-        False,
-        _get_ok_message(),
-    ),
-])
+        # Missing sensitive field
+        (
+            dict(
+                **_BASE_GSHEETS_V2_CONN_ENTRY_DATA,
+                unversioned_data=dict(),
+            ),
+            ("refresh_token",),
+            False,
+            _get_ok_message(),
+        ),
+    ],
+)
 def test_process_entry_get_save_flag(
-    entry_data, expected_sensitive_fields, expected_should_save, expected_message,
-    caplog, bi_context, default_service_registry,
+    entry_data,
+    expected_sensitive_fields,
+    expected_should_save,
+    expected_message,
+    caplog,
+    bi_context,
+    default_service_registry,
 ):
     usm = MockedSyncUSManager(
         bi_context=bi_context,
@@ -187,16 +194,16 @@ def test_process_entry_get_save_flag(
         }
 
     def ensure_unversioned_data_is_sync(the_entry: USMigrationEntry):
-        assert dict(the_entry.unversioned_data) == the_entry._us_resp['unversionedData']
+        assert dict(the_entry.unversioned_data) == the_entry._us_resp["unversionedData"]
 
     resp = usm._us_client.create_entry(
-        scope=entry_data['scope'],
-        type_=entry_data['type'],
-        data=entry_data['data'],
-        unversioned_data=entry_data['unversioned_data'],
+        scope=entry_data["scope"],
+        type_=entry_data["type"],
+        data=entry_data["data"],
+        unversioned_data=entry_data["unversioned_data"],
         key=PathEntryLocation(shortuuid.uuid()),
     )
-    entry_id = resp['entryId']
+    entry_id = resp["entryId"]
 
     entry = usm.get_by_id(entry_id, USMigrationEntry)
     # Check that entry can be correctly deserialized
@@ -228,7 +235,7 @@ def test_process_entry_get_save_flag(
     }
 
     # Check that all key IDs was updates
-    assert all([key_info.key_id == 'new' for key_info in presented_fields_key_info.values()])
+    assert all([key_info.key_id == "new" for key_info in presented_fields_key_info.values()])
 
     # Check that decrypted values are not changed
     sensitive_fields_after_update = get_sensitive_fields_decrypted_values(entry)

@@ -1,9 +1,19 @@
 import abc
-from typing import Type, Any, Sequence, ClassVar, Collection, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Collection,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper.utils import CommonAttributeProps, MText
+from bi_external_api.attrs_model_mapper.utils import (
+    CommonAttributeProps,
+    MText,
+)
 
 
 @attr.s()
@@ -40,8 +50,7 @@ class AmmSchemaRegistry:
 
     def dump_open_api_schemas(self) -> dict[str, dict[str, Any]]:
         return {
-            self._map_type_name[schema.clz]: schema.to_openapi_dict(self)
-            for schema in self._map_type_schema.values()
+            self._map_type_name[schema.clz]: schema.to_openapi_dict(self) for schema in self._map_type_schema.values()
         }
 
 
@@ -50,9 +59,7 @@ class AmmField:
     common_props: CommonAttributeProps = attr.ib()
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
-        ret: dict[str, Any] = dict(
-            nullable=self.common_props.allow_none
-        )
+        ret: dict[str, Any] = dict(nullable=self.common_props.allow_none)
         if self.common_props.load_only:
             ret["writeOnly"] = True
         return ret
@@ -73,7 +80,7 @@ class AmmScalarField(AmmField):
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
         return {
             "type": self.TYPE_MAP[self.scalar_type],
-            **super().to_openapi_dict(ref_resolver, is_root_prop=is_root_prop)
+            **super().to_openapi_dict(ref_resolver, is_root_prop=is_root_prop),
         }
 
 
@@ -95,9 +102,7 @@ class AmmNestedField(AmmField):
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
         return {
             **super().to_openapi_dict(ref_resolver, is_root_prop=is_root_prop),
-            "allOf": [
-                {"$ref": ref_resolver.get_ref_for_type(self.item.clz)}
-            ]
+            "allOf": [{"$ref": ref_resolver.get_ref_for_type(self.item.clz)}],
         }
 
 
@@ -106,10 +111,7 @@ class AmmListField(AmmField):
     item: "AmmField" = attr.ib()
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
-        return dict(
-            type="array",
-            items=self.item.to_openapi_dict(ref_resolver, is_root_prop=False)
-        )
+        return dict(type="array", items=self.item.to_openapi_dict(ref_resolver, is_root_prop=False))
 
 
 @attr.s()
@@ -117,10 +119,7 @@ class AmmStringMappingField(AmmField):
     value: "AmmField" = attr.ib()
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
-        return dict(
-            type="object",
-            additionalProperties=self.value.to_openapi_dict(ref_resolver, is_root_prop=False)
-        )
+        return dict(type="object", additionalProperties=self.value.to_openapi_dict(ref_resolver, is_root_prop=False))
 
 
 @attr.s()
@@ -129,6 +128,7 @@ class AmmOneOfDescriptorField(AmmField):
     Workaround for GRPC oneof's with external/scalars that do not suit to OpenAPI like one-of/inheritance.
     Assumed that will be used only for generating docs by protospecs.
     """
+
     field_names: list[str] = attr.ib()
 
 
@@ -167,15 +167,10 @@ class AmmRegularSchema(AmmSchema):
         ret = {
             "type": "object",
             "properties": {
-                f_name: field.to_openapi_dict(ref_resolver, is_root_prop=True)
-                for f_name, field in self.fields.items()
-            }
+                f_name: field.to_openapi_dict(ref_resolver, is_root_prop=True) for f_name, field in self.fields.items()
+            },
         }
-        required_names = [
-            f_name
-            for f_name, field in self.fields.items()
-            if field.common_props.required
-        ]
+        required_names = [f_name for f_name, field in self.fields.items() if field.common_props.required]
         if required_names:
             ret.update(required=required_names)
         return ret
@@ -192,15 +187,9 @@ class AmmGenericSchema(AmmSchema):
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry) -> dict[str, Any]:
         return {
-            "oneOf": [
-                {"$ref": ref_resolver.get_ref_for_type(schema.clz)}
-                for schema in self.mapping.values()
-            ],
+            "oneOf": [{"$ref": ref_resolver.get_ref_for_type(schema.clz)} for schema in self.mapping.values()],
             "discriminator": {
                 "propertyName": self.discriminator_property_name,
-                "mapping": {
-                    discr: ref_resolver.get_ref_for_type(schema.clz)
-                    for discr, schema in self.mapping.items()
-                }
-            }
+                "mapping": {discr: ref_resolver.get_ref_for_type(schema.clz) for discr, schema in self.mapping.items()},
+            },
         }

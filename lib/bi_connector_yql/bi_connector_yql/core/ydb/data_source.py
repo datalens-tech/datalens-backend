@@ -1,16 +1,24 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional,
+)
 
 from dl_constants.enums import CreateDSFrom
-
-from bi_connector_yql.core.yql_base.data_source import YQLDataSourceMixin
-from dl_core.data_source.sql import StandardSQLDataSource, SubselectDataSource, require_table_name
+from dl_core.data_source.sql import (
+    StandardSQLDataSource,
+    SubselectDataSource,
+    require_table_name,
+)
 from dl_core.utils import sa_plain_text
 
 from bi_connector_yql.core.ydb.constants import (
-    CONNECTION_TYPE_YDB, SOURCE_TYPE_YDB_TABLE, SOURCE_TYPE_YDB_SUBSELECT
+    CONNECTION_TYPE_YDB,
+    SOURCE_TYPE_YDB_SUBSELECT,
+    SOURCE_TYPE_YDB_TABLE,
 )
+from bi_connector_yql.core.yql_base.data_source import YQLDataSourceMixin
 
 
 class YDBDataSourceMixin(YQLDataSourceMixin):
@@ -22,7 +30,7 @@ class YDBDataSourceMixin(YQLDataSourceMixin):
 
 
 class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
-    """ YDB table """
+    """YDB table"""
 
     @require_table_name
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
@@ -31,9 +39,9 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
 
         # Unlike `super()`, not adding the database name here.
         q = self.quote
-        alias_str = '' if alias is None else f' AS {q(alias)}'
-        return sa_plain_text(f'{q(self.table_name)}{alias_str}')
+        alias_str = "" if alias is None else f" AS {q(alias)}"
+        return sa_plain_text(f"{q(self.table_name)}{alias_str}")
 
 
 class YDBSubselectDataSource(YDBDataSourceMixin, SubselectDataSource):
-    """ YDB subselect """
+    """YDB subselect"""

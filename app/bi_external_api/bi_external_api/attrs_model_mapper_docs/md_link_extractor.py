@@ -1,14 +1,18 @@
 import re
-from typing import Sequence, Callable, Optional
+from typing import (
+    Callable,
+    Optional,
+    Sequence,
+)
 
 from bi_external_api.attrs_model_mapper_docs.render_units import DocLink
 
-INLINE_LINK_RE = re.compile(r'\[([^]]+)]\(([^)]+)\)')
+INLINE_LINK_RE = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 
 
 def process_links(
-        txt: str,
-        link_processor: Optional[Callable[[DocLink], Optional[DocLink]]] = None,
+    txt: str,
+    link_processor: Optional[Callable[[DocLink], Optional[DocLink]]] = None,
 ) -> Sequence[str | DocLink]:
     """
     Tokenize `txt` into 2 types of tokens: plain text & links.
@@ -19,9 +23,7 @@ def process_links(
     """
     ret: list[str | DocLink] = []
     effective_link_processor: Callable[[DocLink], Optional[DocLink]] = (
-        link_processor
-        if link_processor is not None
-        else lambda x: x
+        link_processor if link_processor is not None else lambda x: x
     )
     pos = 0
 
@@ -39,6 +41,6 @@ def process_links(
             pos = span_end
 
     if pos < len(txt):
-        ret.append(txt[pos:len(txt)])
+        ret.append(txt[pos : len(txt)])
 
     return ret

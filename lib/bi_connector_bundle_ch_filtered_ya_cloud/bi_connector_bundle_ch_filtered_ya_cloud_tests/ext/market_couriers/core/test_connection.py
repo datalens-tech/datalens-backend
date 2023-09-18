@@ -4,27 +4,25 @@ from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.settings impo
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.us_connection import (
     ConnectionClickhouseMarketCouriers,
 )
-
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config import SR_CONNECTION_SETTINGS_PARAMS
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.connection import (
     BaseClickhouseFilteredSubselectByPuidConnectionTestClass,
     ClickhouseFilteredSubselectByPuidConnectionTestWithWrongAuth,
 )
-
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.market_couriers.core.base import (
-    BaseMarketCouriersTestClass, MarketCouriersTestClassWithWrongAuth
+    BaseMarketCouriersTestClass,
+    MarketCouriersTestClassWithWrongAuth,
 )
 
 
 class TestMarketCouriersConnection(
-        BaseMarketCouriersTestClass,
-        BaseClickhouseFilteredSubselectByPuidConnectionTestClass[ConnectionClickhouseMarketCouriers],
+    BaseMarketCouriersTestClass,
+    BaseClickhouseFilteredSubselectByPuidConnectionTestClass[ConnectionClickhouseMarketCouriers],
 ):
     sr_connection_settings = MarketCouriersConnectorSettings(**SR_CONNECTION_SETTINGS_PARAMS)
 
 
 class TestMarketCouriersConnectionWithWrongAuth(
-        MarketCouriersTestClassWithWrongAuth,
-        ClickhouseFilteredSubselectByPuidConnectionTestWithWrongAuth
+    MarketCouriersTestClassWithWrongAuth, ClickhouseFilteredSubselectByPuidConnectionTestWithWrongAuth
 ):
     pass

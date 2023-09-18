@@ -1,18 +1,24 @@
-from dl_core.connections_security.base import ConnSecuritySettings
 from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
 from dl_connector_postgresql.core.postgresql.connector import (
     PostgreSQLCoreConnectionDefinition,
     PostgreSQLCoreConnector,
-    PostgreSQLTableCoreSourceDefinition,
     PostgreSQLSubselectCoreSourceDefinition,
+    PostgreSQLTableCoreSourceDefinition,
 )
 from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+from dl_core.connections_security.base import ConnSecuritySettings
 
-from bi_connector_postgresql_mdb.core.data_source import PostgreSQLMDBDataSource, PostgreSQLMDBSubselectDataSource
-from bi_connector_postgresql_mdb.core.us_connection import ConnectionPostgreSQLMDB
-from bi_connector_postgresql_mdb.core.storage_schemas import ConnectionPostgreSQLMDBDataStorageSchema
+from bi_connector_postgresql_mdb.core.connection_executors import (
+    AsyncPostgresMDBConnExecutor,
+    PostgresMDBConnExecutor,
+)
+from bi_connector_postgresql_mdb.core.data_source import (
+    PostgreSQLMDBDataSource,
+    PostgreSQLMDBSubselectDataSource,
+)
 from bi_connector_postgresql_mdb.core.settings import PostgreSQLMDBSettingDefinition
-from bi_connector_postgresql_mdb.core.connection_executors import PostgresMDBConnExecutor, AsyncPostgresMDBConnExecutor
+from bi_connector_postgresql_mdb.core.storage_schemas import ConnectionPostgreSQLMDBDataStorageSchema
+from bi_connector_postgresql_mdb.core.us_connection import ConnectionPostgreSQLMDB
 
 
 class PostgreSQLMDBCoreConnectionDefinition(PostgreSQLCoreConnectionDefinition):
@@ -32,13 +38,13 @@ class PostgreSQLMDBSubselectCoreSourceDefinition(PostgreSQLSubselectCoreSourceDe
 
 
 class PostgreSQLMDBCoreConnector(PostgreSQLCoreConnector):
-    connection_definitions = (
-        PostgreSQLMDBCoreConnectionDefinition,
-    )
+    connection_definitions = (PostgreSQLMDBCoreConnectionDefinition,)
     source_definitions = (
         PostgreSQLMDBTableCoreSourceDefinition,
         PostgreSQLMDBSubselectCoreSourceDefinition,
     )
-    conn_security = frozenset({
-        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({PostgresConnDTO})),
-    })
+    conn_security = frozenset(
+        {
+            ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({PostgresConnDTO})),
+        }
+    )

@@ -1,6 +1,3 @@
-from dl_formula_ref.functions.type_conversion import DbCastExtension
-from dl_formula_ref.plugins.base.plugin import FormulaRefPlugin
-
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect
 from dl_connector_postgresql.formula.definitions.functions_type import FuncDbCastPostgreSQLBase
 from dl_connector_postgresql.formula_ref.human_dialects import HUMAN_DIALECTS
@@ -8,6 +5,8 @@ from dl_connector_postgresql.formula_ref.i18n import (
     CONFIGS,
     Translatable,
 )
+from dl_formula_ref.functions.type_conversion import DbCastExtension
+from dl_formula_ref.plugins.base.plugin import FormulaRefPlugin
 
 
 class PostgresSQLFormulaRefPlugin(FormulaRefPlugin):

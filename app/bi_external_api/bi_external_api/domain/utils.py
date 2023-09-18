@@ -1,4 +1,7 @@
-from typing import Optional, Sequence
+from typing import (
+    Optional,
+    Sequence,
+)
 
 
 def ensure_tuple(col: Optional[Sequence]) -> Optional[tuple]:
@@ -18,9 +21,6 @@ def ensure_tuple_of_tuples(col: Optional[Sequence[Sequence]]) -> Optional[tuple[
     if isinstance(col, tuple) and all(isinstance(sub_col, tuple) for sub_col in col):
         return col
     if isinstance(col, (list, tuple)):
-        return tuple(
-            sub_col if isinstance(sub_col, tuple) else tuple(sub_col)
-            for sub_col in col
-        )
+        return tuple(sub_col if isinstance(sub_col, tuple) else tuple(sub_col) for sub_col in col)
     else:
         raise TypeError()

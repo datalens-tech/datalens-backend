@@ -3,6 +3,7 @@ from __future__ import annotations
 from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
 
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_constants.enums import BIType
 from dl_core.backend_types import get_backend_type
 from dl_core.db.conversion_base import (
@@ -10,8 +11,6 @@ from dl_core.db.conversion_base import (
     make_native_type,
 )
 from dl_core.db.elements import GenericNativeType
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 CH_TYPES_INT = frozenset(
     (
@@ -69,7 +68,9 @@ class ClickHouseTypeTransformer(TypeTransformer):
         BIType.datetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime),  # TODO: DateTime64
         BIType.genericdatetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime),  # TODO: DateTime64
         # WARNING: underparametrized
-        BIType.datetimetz: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTimeWithTZ),  # TODO: DateTime64WithTZ
+        BIType.datetimetz: make_native_type(
+            CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTimeWithTZ
+        ),  # TODO: DateTime64WithTZ
         BIType.geopoint: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.String),
         BIType.geopolygon: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.String),
         BIType.uuid: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.UUID),

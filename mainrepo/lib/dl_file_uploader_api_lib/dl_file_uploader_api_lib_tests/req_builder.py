@@ -7,12 +7,11 @@ from typing import (
 import aiohttp
 
 from dl_api_commons.client.common import Req
+from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.api_constants import (
     DLHeaders,
     DLHeadersCommon,
 )
-
-from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 
 class ReqBuilder:

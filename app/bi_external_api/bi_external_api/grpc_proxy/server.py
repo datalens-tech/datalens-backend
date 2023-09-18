@@ -1,28 +1,31 @@
-import logging
 from concurrent import futures
 from contextlib import contextmanager
+import logging
 from typing import (
+    Generator,
     Optional,
     TypeVar,
-    Generator,
 )
 
 import attr
-import grpc
+from doublecloud.visualization.v1 import workbook_service_pb2 as ws
+from doublecloud.visualization.v1 import workbook_service_pb2_grpc as ws_grpc
 from google.protobuf.timestamp_pb2 import Timestamp  # noqa
+import grpc
 
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
-from dl_core.logging_config import configure_logging
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy.common_interceptor import RequestBootstrapInterceptor
 from bi_external_api.grpc_proxy.ext_api_client import ExtApiClient
 from bi_external_api.grpc_proxy.workbook_service import WorkbookService
 from bi_external_api.settings import GrpcProxySettings
 from bi_external_api.utils import init_sentry
-from doublecloud.visualization.v1 import workbook_service_pb2 as ws
-from doublecloud.visualization.v1 import workbook_service_pb2_grpc as ws_grpc
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from dl_core.logging_config import configure_logging
 
 try:
     from src.proto.grpc.health.v1 import health_pb2  # type: ignore
@@ -38,9 +41,9 @@ LOGGER = logging.getLogger(__name__)
 
 class GrpcProxyHealthServicer(health_pb2_grpc.HealthServicer):
     def Check(
-            self,
-            request: health_pb2.HealthCheckRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: health_pb2.HealthCheckRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> health_pb2.HealthCheckResponse:  # type: ignore
         return health_pb2.HealthCheckResponse(status=health_pb2.HealthCheckResponse.SERVING)  # type: ignore
 
@@ -74,11 +77,11 @@ _SERVER_TV = TypeVar("_SERVER_TV", bound=grpc.Server)
 
 @contextmanager
 def serve_grpc_server(
-        server: _SERVER_TV,
-        host: str,
-        port: int,
-        server_credentials: Optional[grpc.ServerCredentials] = None,
-        timeout: Optional[float] = None,
+    server: _SERVER_TV,
+    host: str,
+    port: int,
+    server_credentials: Optional[grpc.ServerCredentials] = None,
+    timeout: Optional[float] = None,
 ) -> Generator[_SERVER_TV, None, None]:
     if server_credentials is None:
         server.add_insecure_port(f"{host}:{port}")
@@ -93,16 +96,16 @@ def serve_grpc_server(
 def run_from_settings(settings: GrpcProxySettings) -> None:
     init_sentry(settings.SENTRY_DSN)
     configure_logging(
-        app_name='bi_external_api_grpc_proxy',
+        app_name="bi_external_api_grpc_proxy",
     )
 
     ext_api_client = ExtApiClient(
         base_url=settings.TARGET_ENDPOINT,
         ext_api_type=ExtAPIType.DC,
     )
-    server = GrpcProxyProvider(
-        max_workers=settings.WORKERS_NUM
-    ).create_threadpool_grpc_server(ext_api_client=ext_api_client)
+    server = GrpcProxyProvider(max_workers=settings.WORKERS_NUM).create_threadpool_grpc_server(
+        ext_api_client=ext_api_client
+    )
     host = settings.BIND_HOST
     port = int(settings.BIND_PORT)
     with serve_grpc_server(server, host, port):

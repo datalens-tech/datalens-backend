@@ -21,20 +21,19 @@ import aiohttp
 import attr
 import pytest
 
-from dl_constants.api_constants import DLHeadersCommon
-from dl_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_defaults.environments import InternalProductionInstallation
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
-from dl_api_commons.client.common import CommonInternalAPIClient
 from bi_external_api.internal_api_clients.dash_api import APIClientDashboard
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
-
+from dl_api_commons.base_models import TenantCommon
+from dl_api_commons.client.common import CommonInternalAPIClient
+from dl_constants.api_constants import DLHeadersCommon
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
@@ -43,17 +42,15 @@ class DevAuthData:
     oauth_yt_stat: str = attr.ib(repr=False)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def env_param_getter() -> GenericEnvParamGetter:
-    filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
+    filepath = os.path.join(os.path.dirname(__file__), "params.yml")
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
 @pytest.fixture(scope="function")
 def dev_auth_data(env_param_getter: GenericEnvParamGetter) -> DevAuthData:
-    return DevAuthData(
-        env_param_getter.get_str_value('OAUTH_YT_STAT')
-    )
+    return DevAuthData(env_param_getter.get_str_value("OAUTH_YT_STAT"))
 
 
 @pytest.fixture(scope="function")
@@ -73,14 +70,8 @@ def bi_ext_api_int_prod_su_int_api_clients(loop, dev_auth_data) -> InternalAPICl
         )
 
     yield InternalAPIClients(
-        datasets_cp=cli(
-            APIClientBIBackControlPlane,
-            InternalProductionInstallation.DATALENS_API_LB_MAIN_BASE_URL
-        ),
-        charts=cli(
-            APIClientCharts,
-            "https://charts.yandex-team.ru"
-        ),
+        datasets_cp=cli(APIClientBIBackControlPlane, InternalProductionInstallation.DATALENS_API_LB_MAIN_BASE_URL),
+        charts=cli(APIClientCharts, "https://charts.yandex-team.ru"),
         dash=cli(
             APIClientDashboard,
             "https://api.dash.yandex.net",
@@ -103,8 +94,8 @@ def bi_ext_api_int_prod_su_wb_ctx_loader(bi_ext_api_int_prod_su_int_api_clients)
 
 @pytest.fixture(scope="function")
 def bi_ext_api_int_prod_su_wb_ops_facade(
-        bi_ext_api_int_prod_su_int_api_clients,
-        bi_ext_api_int_prod_su_wb_ctx_loader,
+    bi_ext_api_int_prod_su_int_api_clients,
+    bi_ext_api_int_prod_su_wb_ctx_loader,
 ) -> WorkbookOpsFacade:
     return WorkbookOpsFacade(
         internal_api_clients=bi_ext_api_int_prod_su_int_api_clients,

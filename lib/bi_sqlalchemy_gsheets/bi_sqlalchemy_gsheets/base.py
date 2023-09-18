@@ -2,21 +2,28 @@ import sqlalchemy as sa
 
 
 class GSheetsCompiler(sa.sql.compiler.SQLCompiler):
-
     def _compose_select_body(
-        self, text, select, compile_state, inner_columns, froms, byfrom, toplevel, kwargs,
+        self,
+        text,
+        select,
+        compile_state,
+        inner_columns,
+        froms,
+        byfrom,
+        toplevel,
+        kwargs,
     ):
         # Strip `from`, as it is not supported
         return super()._compose_select_body(text, select, compile_state, inner_columns, None, byfrom, toplevel, kwargs)
 
     def visit_label(
-            self,
-            label,
-            add_to_result_map=None,
-            within_label_clause=False,
-            within_columns_clause=False,
-            render_label_as_label=None,
-            **kw,
+        self,
+        label,
+        add_to_result_map=None,
+        within_label_clause=False,
+        within_columns_clause=False,
+        render_label_as_label=None,
+        **kw,
     ):
         # Labels are not supported at all
         return label.element._compiler_dispatch(
@@ -28,7 +35,6 @@ class GSheetsCompiler(sa.sql.compiler.SQLCompiler):
 
 
 class GSheetsIdentifierPreparer(sa.sql.compiler.IdentifierPreparer):
-
     def __init__(self, *args, **kwargs):
         quote = "`"
         super().__init__(*args, initial_quote=quote, escape_quote=quote, **kwargs)
@@ -184,9 +190,9 @@ dialect = GSheetsDialect
 
 
 def register_dialect(
-        name="gsheets",
-        module="bi_sqlalchemy_gsheets.base",
-        cls="GSheetsDialect",
+    name="gsheets",
+    module="bi_sqlalchemy_gsheets.base",
+    cls="GSheetsDialect",
 ):
     """
     Make sure the dialect is registered

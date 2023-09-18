@@ -1,27 +1,26 @@
 from dl_formula_testing.testcases.functions_type_conversion import (
-    DefaultStrTypeFunctionFormulaConnectorTestSuite,
-    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
-    DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
+    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
+    DefaultIntTypeFunctionFormulaConnectorTestSuite,
+    DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
 
-from bi_connector_oracle_tests.db.formula.base import (
-    OracleTestBase,
-)
-
+from bi_connector_oracle_tests.db.formula.base import OracleTestBase
 
 # STR
 
+
 class TestStrTypeFunctionOracle(OracleTestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
-    zero_float_to_str_value = '0'
+    zero_float_to_str_value = "0"
     skip_custom_tz = True
 
 
 # FLOAT
+
 
 class TestFloatTypeFunctionOracle(OracleTestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -29,11 +28,13 @@ class TestFloatTypeFunctionOracle(OracleTestBase, DefaultFloatTypeFunctionFormul
 
 # BOOL
 
+
 class TestBoolTypeFunctionOracle(OracleTestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # INT
+
 
 class TestIntTypeFunctionOracle(OracleTestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
@@ -41,29 +42,36 @@ class TestIntTypeFunctionOracle(OracleTestBase, DefaultIntTypeFunctionFormulaCon
 
 # DATE
 
+
 class TestDateTypeFunctionOracle(OracleTestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # GENERICDATETIME (& DATETIME)
 
+
 class TestGenericDatetimeTypeFunctionOracle(
-        OracleTestBase, DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
+    OracleTestBase,
+    DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 # GEOPOINT
 
+
 class TestGeopointTypeFunctionOracle(
-        OracleTestBase, DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
+    OracleTestBase,
+    DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
 # GEOPOLYGON
 
+
 class TestGeopolygonTypeFunctionOracle(
-        OracleTestBase, DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
+    OracleTestBase,
+    DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

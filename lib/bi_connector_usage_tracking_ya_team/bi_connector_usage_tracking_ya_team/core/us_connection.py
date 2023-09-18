@@ -2,20 +2,20 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from dl_connector_clickhouse.core.clickhouse_base.us_connection import (
+    SubselectParameter,
+    SubselectParameterType,
+)
 from dl_core.us_connection_base import HiddenDatabaseNameMixin
 
 from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
-from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from dl_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
-from bi_connector_usage_tracking_ya_team.core.constants import (
-    SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,
-)
+from bi_connector_usage_tracking_ya_team.core.constants import SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE
 from bi_connector_usage_tracking_ya_team.core.settings import UsageTrackingYaTeamConnectionSettings
 
 
 class UsageTrackingYaTeamConnection(
-        HiddenDatabaseNameMixin,
-        ConnectionCHFilteredHardcodedDataBase[UsageTrackingYaTeamConnectionSettings]
+    HiddenDatabaseNameMixin, ConnectionCHFilteredHardcodedDataBase[UsageTrackingYaTeamConnectionSettings]
 ):
     source_type = SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,))
@@ -28,8 +28,12 @@ class UsageTrackingYaTeamConnection(
         return True
 
     def get_conn_options(self) -> CHConnectOptions:
-        return super().get_conn_options().clone(
-            max_execution_time=self._connector_settings.MAX_EXECUTION_TIME,
+        return (
+            super()
+            .get_conn_options()
+            .clone(
+                max_execution_time=self._connector_settings.MAX_EXECUTION_TIME,
+            )
         )
 
     @property
@@ -38,7 +42,7 @@ class UsageTrackingYaTeamConnection(
         assert user_id is not None
         return [
             SubselectParameter(
-                name='user_id',
+                name="user_id",
                 ss_type=SubselectParameterType.single_value,
                 values=user_id,
             )

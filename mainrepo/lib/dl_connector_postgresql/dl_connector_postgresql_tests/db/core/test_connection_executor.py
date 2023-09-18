@@ -8,6 +8,9 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql_tests.db.config import CoreConnectionSettings
+from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 from dl_constants.enums import BIType
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models.common_models import (
@@ -22,10 +25,6 @@ from dl_core_testing.testcases.connection_executor import (
 )
 from dl_sqlalchemy_postgres.base import CITEXT
 from dl_testing.regulated_test import RegulatedTestParams
-
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from dl_connector_postgresql_tests.db.config import CoreConnectionSettings
-from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 
 
 class PostgreSQLSyncAsyncConnectionExecutorCheckBase(

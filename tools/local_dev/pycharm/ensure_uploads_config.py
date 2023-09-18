@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-import sys
 from os import path
+import sys
 
 from lxml import etree as ET
-
-from pycharm.common import IDEA_DIR, get_submodules, PKG_ROOT_PATH, SUBMODULE_DEFAULT_EXCLUDES
+from pycharm.common import (
+    IDEA_DIR,
+    PKG_ROOT_PATH,
+    SUBMODULE_DEFAULT_EXCLUDES,
+    get_submodules,
+)
 
 
 def main():
@@ -26,24 +30,25 @@ def main():
     # Mappings
     mappings_node = ET.SubElement(server_data_node, "mappings")
     for submodule in submodules:
-        ET.SubElement(mappings_node, "mapping", dict(
-            deploy=path.join(PKG_ROOT_PATH, submodule),
-            local=path.join("$PROJECT_DIR$", submodule),
-            web="/"
-        ))
+        ET.SubElement(
+            mappings_node,
+            "mapping",
+            dict(deploy=path.join(PKG_ROOT_PATH, submodule), local=path.join("$PROJECT_DIR$", submodule), web="/"),
+        )
 
     # Excludes
     excluded_path_node = ET.SubElement(server_data_node, "excludedPaths")
     for submodule in submodules:
         for default_exclude in SUBMODULE_DEFAULT_EXCLUDES:
-            ET.SubElement(excluded_path_node, "excludedPath", dict(
-                local="true",
-                path=path.join("$PROJECT_DIR$", submodule, default_exclude)
-            ))
+            ET.SubElement(
+                excluded_path_node,
+                "excludedPath",
+                dict(local="true", path=path.join("$PROJECT_DIR$", submodule, default_exclude)),
+            )
             # TODO FIX: add egg info
 
     tree.write(deployment_fp, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -2,11 +2,15 @@ from typing import Any
 
 import attr
 
+from bi_external_api.domain.internal import charts as chart_mod
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    EntrySummary,
+)
+from bi_external_api.domain.internal.mapper import internal_models_mapper
 from dl_api_commons.client.base import Req
 from dl_api_commons.client.common import CommonInternalAPIClient
-from bi_external_api.domain.internal import charts as chart_mod
-from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
-from bi_external_api.domain.internal.mapper import internal_models_mapper
+
 from .constants import ChartOpCode
 
 
@@ -43,7 +47,7 @@ class APIClientCharts(CommonInternalAPIClient):
             entry_id=id,
             key=resp.json["key"],
             true_workbook=true_workbooks,
-            workbook_id=resp.json["workbookId"] if true_workbooks else None
+            workbook_id=resp.json["workbookId"] if true_workbooks else None,
         )
 
         return chart_mod.ChartInstance(

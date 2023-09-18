@@ -5,9 +5,8 @@ from typing import (
     Optional,
 )
 
-from dl_core.data_source.sql import PseudoSQLDataSource
-
 from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
+from dl_core.data_source.sql import PseudoSQLDataSource
 
 
 class PromQLDataSource(PseudoSQLDataSource):

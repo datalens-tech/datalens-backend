@@ -20,9 +20,5 @@ class CHFrozenDTPCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenDTPCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenDTPCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenDTPCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenDTPCoreConnectionDefinition,)
+    source_definitions = (CHFrozenDTPCoreSourceDefinition,)

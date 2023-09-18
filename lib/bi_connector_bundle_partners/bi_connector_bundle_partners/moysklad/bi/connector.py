@@ -1,22 +1,25 @@
 from __future__ import annotations
 
-from bi_connector_bundle_partners.moysklad.core.connector import (
-    MoySkladCoreConnectionDefinition,
-    MoySkladTableCoreSourceDefinition,
-    MoySkladCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_partners.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_partners.moysklad.bi.api_schema.connection import MoySkladConnectionSchema
 from bi_connector_bundle_partners.moysklad.bi.connection_form.form_config import MoySkladConnectionFormFactory
 from bi_connector_bundle_partners.moysklad.bi.connection_info import MoySkladConnectionInfoProvider
+from bi_connector_bundle_partners.moysklad.core.connector import (
+    MoySkladCoreConnectionDefinition,
+    MoySkladCoreConnector,
+    MoySkladTableCoreSourceDefinition,
+)
 
 
 class MoySkladTableBiApiSourceDefinition(BiApiSourceDefinition):
@@ -35,10 +38,6 @@ class MoySkladBiApiConnectionDefinition(BiApiConnectionDefinition):
 class MoySkladBiApiConnector(BiApiConnector):
     core_connector_cls = MoySkladCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        MoySkladBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        MoySkladTableBiApiSourceDefinition,
-    )
+    connection_definitions = (MoySkladBiApiConnectionDefinition,)
+    source_definitions = (MoySkladTableBiApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

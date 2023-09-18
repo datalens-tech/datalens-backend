@@ -9,12 +9,11 @@ from typing import (
 import attr
 import sqlalchemy.dialects.postgresql as sa_pg
 
-from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
-from dl_core.db.native_type import SATypeSpec
-
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
+from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
+from dl_core.db.native_type import SATypeSpec
 
 # One way to obtain this data:
 # docker exec bi-api_db-postgres_1 psql -U datalens -d  bi_db -A -t -F, -c 'select oid, typname from pg_type order by oid'

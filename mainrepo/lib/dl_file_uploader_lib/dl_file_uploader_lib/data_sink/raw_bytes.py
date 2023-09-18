@@ -9,12 +9,11 @@ from typing import (
 
 from aiobotocore.client import AioBaseClient
 
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import ConnectionType
 from dl_core.data_sink import DataSinkAsync
 from dl_core.raw_data_streaming.stream import AsyncDataStreamBase
 from dl_file_uploader_lib import exc
-
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 LOGGER = logging.getLogger(__name__)
 

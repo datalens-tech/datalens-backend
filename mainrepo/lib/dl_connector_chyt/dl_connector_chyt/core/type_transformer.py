@@ -1,5 +1,7 @@
 from typing import ClassVar
 
+from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
+from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 from dl_constants.enums import BIType
 from dl_constants.enums import ConnectionType as CT
 from dl_core.db.conversion_base import (
@@ -9,9 +11,6 @@ from dl_core.db.conversion_base import (
 )
 from dl_core.db.native_type import GenericNativeType
 from dl_sqlalchemy_chyt import types as chyt_types
-
-from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
-from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 
 def make_chyt_native_to_user_map(conn_type: CT) -> dict[GenericNativeType, BIType]:

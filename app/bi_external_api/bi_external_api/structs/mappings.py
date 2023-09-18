@@ -1,6 +1,14 @@
-from collections.abc import Mapping, Sequence, Iterator, Hashable
-
-from typing import Union, Tuple, TypeVar
+from collections.abc import (
+    Hashable,
+    Iterator,
+    Mapping,
+    Sequence,
+)
+from typing import (
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 
 class FrozenMappingStrToStrOrStrSeq(Mapping[str, Union[str, Sequence[str]]], Hashable):
@@ -13,10 +21,7 @@ class FrozenMappingStrToStrOrStrSeq(Mapping[str, Union[str, Sequence[str]]], Has
         return tuple(seq)
 
     def __init__(self, mapping: Mapping[str, Union[str, Sequence[str]]]) -> None:
-        self._dict = {
-            k: v if isinstance(v, str) else self.ensure_tuple_of_str(v)
-            for k, v in mapping.items()
-        }
+        self._dict = {k: v if isinstance(v, str) else self.ensure_tuple_of_str(v) for k, v in mapping.items()}
 
     def __getitem__(self, k: str) -> Union[str, Sequence[str]]:
         return self._dict.__getitem__(k)

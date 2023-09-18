@@ -3,6 +3,7 @@ import attr
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import dashboards
+
 from .dash_element import DashElementConverterFacade
 from .layout_item import LayoutItemConverter
 
@@ -32,9 +33,9 @@ class BaseDashboardItemConverter:
         )
 
     def convert_int_to_ext(
-            self,
-            tab_item: dashboards.TabItem,
-            layout_item: dashboards.LayoutItem,
+        self,
+        tab_item: dashboards.TabItem,
+        layout_item: dashboards.LayoutItem,
     ) -> ext.DashboardTabItem:
         tab_item_dash_element_converter = self.create_tab_item_dash_element_converter_facade()
 

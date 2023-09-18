@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from dl_api_connector.api_schema.source_base import SubselectDataSourceSchema, SubselectDataSourceTemplateSchema
-
-from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.connector import (
-    CHFrozenDemoCoreSourceDefinition,
-    CHFrozenDemoCoreConnectionDefinition,
-    CHFrozenDemoCoreConnector, CHFrozenDemoCoreSubselectSourceDefinition,
+from dl_api_connector.api_schema.source_base import (
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
 )
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.connector import (
-    BaseCHFrozenTableBiApiSourceDefinition,
     BaseCHFrozenBiApiConnectionDefinition,
     BaseCHFrozenBiApiConnector,
+    BaseCHFrozenTableBiApiSourceDefinition,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connection_form.form_config import CHFrozenDemoFormFactory
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connection_info import CHFrozenDemoConnectionInfoProvider
+from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.connector import (
+    CHFrozenDemoCoreConnectionDefinition,
+    CHFrozenDemoCoreConnector,
+    CHFrozenDemoCoreSourceDefinition,
+    CHFrozenDemoCoreSubselectSourceDefinition,
+)
 
 
 class CHFrozenDemoTableBiApiSourceDefinition(BaseCHFrozenTableBiApiSourceDefinition):
@@ -35,9 +38,7 @@ class CHFrozenDemoBiApiConnectionDefinition(BaseCHFrozenBiApiConnectionDefinitio
 
 class CHFrozenDemoBiApiConnector(BaseCHFrozenBiApiConnector):
     core_connector_cls = CHFrozenDemoCoreConnector
-    connection_definitions = (
-        CHFrozenDemoBiApiConnectionDefinition,
-    )
+    connection_definitions = (CHFrozenDemoBiApiConnectionDefinition,)
     source_definitions = (  # type: ignore
         CHFrozenDemoTableBiApiSourceDefinition,
         CHFrozenDemoBiApiSubselectSourceDefinition,

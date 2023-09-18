@@ -2,29 +2,25 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from dl_i18n.localizer_base import Localizer
-from dl_core.us_connection_base import DataSourceTemplate
-
-from dl_constants.enums import RawSQLLevel
-
 from dl_connector_clickhouse.core.clickhouse.constants import (
-    SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
+    SOURCE_TYPE_CH_TABLE,
 )
+from dl_constants.enums import RawSQLLevel
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_i18n.localizer_base import Localizer
+
 from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
-    SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT
+    SOURCE_TYPE_CH_FROZEN_SOURCE,
+    SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
 
 
 class ConnectionClickhouseFrozenBase(ConnectionCHFilteredHardcodedDataBase[CHFrozenConnectorSettings]):
     source_type = SOURCE_TYPE_CH_FROZEN_SOURCE
-    allowed_source_types = frozenset((
-        SOURCE_TYPE_CH_TABLE,
-        SOURCE_TYPE_CH_SUBSELECT,
-        SOURCE_TYPE_CH_FROZEN_SUBSELECT
-    ))
+    allowed_source_types = frozenset((SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT, SOURCE_TYPE_CH_FROZEN_SUBSELECT))
     allow_cache: ClassVar[bool] = True
     is_always_internal_source: ClassVar[bool] = True
     settings_type = CHFrozenConnectorSettings

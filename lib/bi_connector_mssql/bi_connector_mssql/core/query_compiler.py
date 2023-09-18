@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dl_core.query.expression import ExpressionCtx
-from dl_core.query.bi_query import BIQuery
 from dl_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.query.bi_query import BIQuery
+from dl_core.query.expression import ExpressionCtx
 
 
 class MSSQLQueryCompiler(QueryCompiler):

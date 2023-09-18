@@ -1,6 +1,5 @@
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
-
 from dl_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
 from dl_connector_postgresql.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
 

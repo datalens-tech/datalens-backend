@@ -1,17 +1,17 @@
 from functools import cached_property
 from typing import (
-    Optional,
     Any,
+    Optional,
 )
 
 import attr
 import requests
 
-from dl_constants.api_constants import DLHeadersCommon
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.domain.external import get_external_model_mapper
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy.common import GHeaders
+from dl_constants.api_constants import DLHeadersCommon
 
 
 @attr.s(kw_only=True)
@@ -61,11 +61,7 @@ class ExtApiClient:
                     if self.authorization_header is not None
                     else {}
                 ),
-                **(
-                    {DLHeadersCommon.REQUEST_ID.value: self.request_id}
-                    if self.request_id is not None
-                    else {}
-                ),
+                **({DLHeadersCommon.REQUEST_ID.value: self.request_id} if self.request_id is not None else {}),
                 **(request.headers or {}),
             },
             json=request.data_json,
@@ -123,12 +119,12 @@ class ExtApiClient:
         return self._make_request(Request(headers=headers, data_json=payload))
 
     def create_connection(
-            self,
-            workbook_id: str,
-            connection_name: str,
-            connection_params: dict,
-            secret: dict,
-            headers: Optional[GHeaders] = None,
+        self,
+        workbook_id: str,
+        connection_name: str,
+        connection_params: dict,
+        secret: dict,
+        headers: Optional[GHeaders] = None,
     ) -> Response:
         payload = dict(
             kind="connection_create",
@@ -142,10 +138,10 @@ class ExtApiClient:
         return self._make_request(Request(headers=headers, data_json=payload))
 
     def get_connection(
-            self,
-            workbook_id: str,
-            connection_name: str,
-            headers: Optional[GHeaders] = None,
+        self,
+        workbook_id: str,
+        connection_name: str,
+        headers: Optional[GHeaders] = None,
     ) -> Response:
         payload = dict(
             kind="connection_get",
@@ -155,12 +151,12 @@ class ExtApiClient:
         return self._make_request(Request(headers=headers, data_json=payload))
 
     def update_connection(
-            self,
-            workbook_id: str,
-            connection_name: str,
-            connection_params: dict,
-            secret: dict,
-            headers: Optional[GHeaders] = None,
+        self,
+        workbook_id: str,
+        connection_name: str,
+        connection_params: dict,
+        secret: dict,
+        headers: Optional[GHeaders] = None,
     ) -> Response:
         payload = dict(
             kind="connection_modify",
@@ -174,10 +170,10 @@ class ExtApiClient:
         return self._make_request(Request(headers=headers, data_json=payload))
 
     def delete_connection(
-            self,
-            workbook_id: str,
-            connection_name: str,
-            headers: Optional[GHeaders] = None,
+        self,
+        workbook_id: str,
+        connection_name: str,
+        headers: Optional[GHeaders] = None,
     ) -> Response:
         payload = dict(
             kind="connection_delete",
@@ -187,11 +183,11 @@ class ExtApiClient:
         return self._make_request(Request(headers=headers, data_json=payload))
 
     def advice_dataset_fields(
-            self,
-            workbook_id: str,
-            connection_name: str,
-            partial_dataset: dict,
-            headers: Optional[GHeaders] = None,
+        self,
+        workbook_id: str,
+        connection_name: str,
+        partial_dataset: dict,
+        headers: Optional[GHeaders] = None,
     ) -> Response:
         payload = dict(
             kind="advise_dataset_fields",
@@ -202,9 +198,9 @@ class ExtApiClient:
         return self._make_request(Request(headers=headers, data_json=payload))
 
     def list_workbooks(
-            self,
-            project_id: str,
-            headers: Optional[GHeaders] = None,
+        self,
+        project_id: str,
+        headers: Optional[GHeaders] = None,
     ) -> Response:
         payload = dict(
             kind="wb_list",

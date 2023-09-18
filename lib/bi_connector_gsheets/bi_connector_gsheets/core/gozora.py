@@ -4,13 +4,21 @@ Tooling for requesting through gozora.
 Currently only used in the gsheets adapter.
 """
 
-from typing import Any, Dict, Optional
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
 
 import aiohttp
 
-from bi_blackbox_client.tvm import TvmCliSingleton, TvmDestination, get_tvm_headers
+from bi_blackbox_client.tvm import (
+    TvmCliSingleton,
+    TvmDestination,
+    get_tvm_headers,
+)
 
-GOZORA_PROXY = 'http://go.zora.yandex.net:1080'
+GOZORA_PROXY = "http://go.zora.yandex.net:1080"
 
 
 class TvmCliSingletonGoZora(TvmCliSingleton):
@@ -24,8 +32,8 @@ async def prepare_aiohttp_kwargs(request_id: Optional[str] = None) -> Dict[str, 
         **tvm_headers,
     }
     if request_id:
-        proxy_headers['X-Ya-Req-Id']: request_id  # type: ignore  # TODO: fix
-    proxy_headers['X-Ya-Client-Id'] = 'datalens_backend_internal'
+        proxy_headers["X-Ya-Req-Id"]: request_id  # type: ignore  # TODO: fix
+    proxy_headers["X-Ya-Client-Id"] = "datalens_backend_internal"
     return dict(
         proxy=GOZORA_PROXY,
         proxy_headers=proxy_headers,
@@ -34,8 +42,9 @@ async def prepare_aiohttp_kwargs(request_id: Optional[str] = None) -> Dict[str, 
     )
 
 
-assert hasattr(aiohttp.TCPConnector, "_loop_supports_start_tls"), \
-    "aiohttp.TCPConnector has no _loop_supports_start_tls meth. Path is not working anymore"
+assert hasattr(
+    aiohttp.TCPConnector, "_loop_supports_start_tls"
+), "aiohttp.TCPConnector has no _loop_supports_start_tls meth. Path is not working anymore"
 
 
 class GoZoraTCPConnector(aiohttp.TCPConnector):

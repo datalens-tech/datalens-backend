@@ -1,15 +1,6 @@
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition,
-    CoreSourceDefinition,
-)
-from dl_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefinitionBase
-from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse.constants import (
-    SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
+    SOURCE_TYPE_CH_TABLE,
 )
 from dl_connector_clickhouse.core.clickhouse.data_source import (
     ClickHouseDataSource,
@@ -23,7 +14,15 @@ from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor,
 )
 from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreSourceDefinition,
+)
+from dl_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefinitionBase
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
 
 class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):

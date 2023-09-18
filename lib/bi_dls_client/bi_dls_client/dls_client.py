@@ -10,13 +10,6 @@ from typing import (
 )
 from urllib.parse import urljoin
 
-from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.headers import INTERNAL_HEADER_PROFILING_STACK
-from dl_api_commons.utils import stringify_dl_headers
-from dl_app_tools.profiling_base import GenericProfiler
-from dl_constants.enums import RLSSubjectType
-from dl_core.rls import RLSSubject
-from dl_core.utils import get_retriable_requests_session  # todo: move to bi api commons
 from requests import (
     Response,
     Session,
@@ -26,11 +19,18 @@ from bi_dls_client.exc import (
     DLSNotAvailable,
     DLSSubjectNotFound,
 )
+from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.headers import INTERNAL_HEADER_PROFILING_STACK
+from dl_api_commons.utils import stringify_dl_headers
+from dl_app_tools.profiling_base import GenericProfiler
+from dl_constants.enums import RLSSubjectType
+from dl_core.rls import RLSSubject
+from dl_core.utils import get_retriable_requests_session  # todo: move to bi api commons
 
 LOGGER = logging.getLogger(__name__)
 
 ST_DLS_TO_RLS = {
-    'user': RLSSubjectType.user,
+    "user": RLSSubjectType.user,
     # 'all': not in DLS.
 }
 
@@ -48,20 +48,22 @@ class DLSClient:
         req_id = rci.request_id
 
         if req_id is not None:
-            self._session.headers.update({'x-request-id': req_id})
+            self._session.headers.update({"x-request-id": req_id})
 
         assert rci.user_id is not None
 
-        self._session.headers.update({'X-API-Key': self._api_key})
+        self._session.headers.update({"X-API-Key": self._api_key})
 
     @property
     def rci(self) -> RequestContextInfo:
         return self._rci
 
-    def _request(self, method: str, url: str, json: Any = None, params: Any = None, headers: Mapping[str, Any] = None) -> Response:
+    def _request(
+        self, method: str, url: str, json: Any = None, params: Any = None, headers: Mapping[str, Any] = None
+    ) -> Response:
         response = self._session.request(
             method=method,
-            url=urljoin(urljoin(self._host, '_dls/'), url),
+            url=urljoin(urljoin(self._host, "_dls/"), url),
             json=json,
             params=params,
             headers={
@@ -87,17 +89,19 @@ class DLSClient:
         fail_on_error: bool = True,
     ) -> List[RLSSubject]:
         response = self._request(
-            method='POST',
-            url='batch/render_subjects_by_login/',
+            method="POST",
+            url="batch/render_subjects_by_login/",
             headers=self._get_tenancy_headers(),
-            params={'require': fail_on_error},
+            params={"require": fail_on_error},
             json={
-                'subjects': names,
+                "subjects": names,
             },
         )
-        if response.status_code == 404 and response.json()['error'] == 'missing_subjects':
-            missing_names = response.json()['missing']
-            raise DLSSubjectNotFound('Logins do not exist: {}'.format(', '.join(missing_names)), details={'missing_names': missing_names})
+        if response.status_code == 404 and response.json()["error"] == "missing_subjects":
+            missing_names = response.json()["missing"]
+            raise DLSSubjectNotFound(
+                "Logins do not exist: {}".format(", ".join(missing_names)), details={"missing_names": missing_names}
+            )
 
         data = response.json()
 
@@ -105,7 +109,7 @@ class DLSClient:
             name: str,
             info: dict,
         ) -> RLSSubject:
-            s_type, s_id = info['name'].split(':', 1)
+            s_type, s_id = info["name"].split(":", 1)
             return RLSSubject(
                 subject_id=s_id,
                 subject_type=ST_DLS_TO_RLS[s_type],
@@ -117,18 +121,18 @@ class DLSClient:
             # Note: the key (`name`) in results should be as requested, and the
             # subjects in values (`info`) might not be unique (e.g. if
             # requested logins are `['user', 'User']`).
-            for name, info in data['results'].items()
+            for name, info in data["results"].items()
         ]
 
     def get_node_info(self, node_id: str) -> Optional[Dict[str, Any]]:
         response = self._request(
-            method='GET',
-            url=f'nodes/all/{node_id}',
+            method="GET",
+            url=f"nodes/all/{node_id}",
             headers=self._get_tenancy_headers(),
         )
         if response.status_code == 404:
             try:
-                dls_error_message = response.json()['message']
+                dls_error_message = response.json()["message"]
                 if dls_error_message.startswith("The specified node was not found"):
                     return None
             except Exception:  # noqa
@@ -139,10 +143,10 @@ class DLSClient:
 
     def create_owner_only_node(self, node_id: str, owner_id: str) -> None:
         response = self._request(
-            method='PUT',
-            url=f'nodes/entries/{node_id}',
+            method="PUT",
+            url=f"nodes/entries/{node_id}",
             headers=self._get_tenancy_headers(),
-            json={'initialPermissionsMode': 'owner_only', 'initialOwner': f'user:{owner_id}', 'scope': 'connection'},
+            json={"initialPermissionsMode": "owner_only", "initialOwner": f"user:{owner_id}", "scope": "connection"},
         )
         response.raise_for_status()
 
@@ -158,25 +162,25 @@ class DLSClient:
         assert self._rci is not None and self._rci.user_id is not None, ".assign_admin_role() requires RCI with user ID"
 
         payload = {
-            'diff': {
-                'added': {
-                    'acl_adm': [
+            "diff": {
+                "added": {
+                    "acl_adm": [
                         {
-                            'subject': f'user:{user_id}',
-                            'comment': comment,
+                            "subject": f"user:{user_id}",
+                            "comment": comment,
                         }
                     ]
                 },
-                'removed': {},
+                "removed": {},
             }
         }
 
         response = self._request(
-            method='PATCH',
-            url=f'nodes/all/{entry_id}/permissions',
+            method="PATCH",
+            url=f"nodes/all/{entry_id}/permissions",
             headers={
                 **self._get_tenancy_headers(),
-                'X-User-Id': f'user:{self._rci.user_id}',
+                "X-User-Id": f"user:{self._rci.user_id}",
             },
             json=payload,
         )
@@ -184,11 +188,11 @@ class DLSClient:
 
     def get_node_permissions(self, node_id: str) -> Optional[Dict[str, Any]]:
         response = self._request(
-            method='GET',
-            url=f'nodes/all/{node_id}/permissions',
+            method="GET",
+            url=f"nodes/all/{node_id}/permissions",
             headers={
                 **self._get_tenancy_headers(),
-                'X-User-Id': f'user:{self._rci.user_id}',
+                "X-User-Id": f"user:{self._rci.user_id}",
             },
         )
         response.raise_for_status()

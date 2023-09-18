@@ -1,15 +1,49 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 
+from dl_connector_chyt.core.data_source_spec import (
+    CHYTSubselectDataSourceSpec,
+    CHYTTableDataSourceSpec,
+    CHYTTableListDataSourceSpec,
+    CHYTTableRangeDataSourceSpec,
+)
+from dl_connector_chyt.core.storage_schemas.data_source_spec import (
+    CHYTSubselectDataSourceSpecStorageSchema,
+    CHYTTableDataSourceSpecStorageSchema,
+    CHYTTableListDataSourceSpecStorageSchema,
+    CHYTTableRangeDataSourceSpecStorageSchema,
+)
 from dl_core.connectors.base.connector import (
-    CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
 )
 
+from bi_connector_chyt_internal.core.adapters import (
+    CHYTInternalAdapter,
+    CHYTUserAuthAdapter,
+)
+from bi_connector_chyt_internal.core.async_adapters import (
+    AsyncCHYTInternalAdapter,
+    AsyncCHYTUserAuthAdapter,
+)
+from bi_connector_chyt_internal.core.connection_executors import (
+    CHYTInternalAsyncAdapterConnExecutor,
+    CHYTInternalSyncAdapterConnExecutor,
+    CHYTUserAuthAsyncAdapterConnExecutor,
+    CHYTUserAuthSyncAdapterConnExecutor,
+)
 from bi_connector_chyt_internal.core.constants import (
-    BACKEND_TYPE_CHYT, CONNECTION_TYPE_CH_OVER_YT, CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
-    SOURCE_TYPE_CHYT_TABLE, SOURCE_TYPE_CHYT_SUBSELECT,
-    SOURCE_TYPE_CHYT_TABLE_LIST, SOURCE_TYPE_CHYT_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_USER_AUTH_TABLE, SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
-    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST, SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+    BACKEND_TYPE_CHYT,
+    CONNECTION_TYPE_CH_OVER_YT,
+    CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_TABLE,
+    SOURCE_TYPE_CHYT_TABLE_LIST,
+    SOURCE_TYPE_CHYT_TABLE_RANGE,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+    SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
 )
 from bi_connector_chyt_internal.core.data_source import (
     CHYTInternalTableDataSource,
@@ -21,38 +55,28 @@ from bi_connector_chyt_internal.core.data_source import (
     CHYTUserAuthTableRangeDataSource,
     CHYTUserAuthTableSubselectDataSource,
 )
-from bi_connector_chyt_internal.core.async_adapters import AsyncCHYTInternalAdapter, AsyncCHYTUserAuthAdapter
-from dl_connector_chyt.core.data_source_spec import (
-    CHYTTableDataSourceSpec,
-    CHYTTableListDataSourceSpec,
-    CHYTTableRangeDataSourceSpec,
-    CHYTSubselectDataSourceSpec,
+from bi_connector_chyt_internal.core.data_source_migration import (
+    CHYTInternalDataSourceMigrator,
+    CHYTInternalUserAuthDataSourceMigrator,
 )
-from dl_connector_chyt.core.storage_schemas.data_source_spec import (
-    CHYTTableDataSourceSpecStorageSchema,
-    CHYTTableListDataSourceSpecStorageSchema,
-    CHYTTableRangeDataSourceSpecStorageSchema,
-    CHYTSubselectDataSourceSpecStorageSchema,
+from bi_connector_chyt_internal.core.notifications import UsingPublicClickhouseCliqueNotification
+from bi_connector_chyt_internal.core.sa_types import SQLALCHEMY_CHYT_INTERNAL_TYPES
+from bi_connector_chyt_internal.core.settings import (
+    CHYTInternalSettingDefinition,
+    CHYTUserAuthSettingDefinition,
 )
-from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 from bi_connector_chyt_internal.core.storage_schemas.connection import (
     ConnectionCHYTInternalTokenDataStorageSchema,
     ConnectionCHYTUserAuthDataStorageSchema,
 )
-from bi_connector_chyt_internal.core.type_transformer import CHYTUserAuthTypeTransformer, CHYTInternalTypeTransformer
-from bi_connector_chyt_internal.core.connection_executors import (
-    CHYTInternalSyncAdapterConnExecutor,
-    CHYTUserAuthSyncAdapterConnExecutor,
-    CHYTInternalAsyncAdapterConnExecutor,
-    CHYTUserAuthAsyncAdapterConnExecutor,
+from bi_connector_chyt_internal.core.type_transformer import (
+    CHYTInternalTypeTransformer,
+    CHYTUserAuthTypeTransformer,
 )
-from bi_connector_chyt_internal.core.adapters import CHYTInternalAdapter, CHYTUserAuthAdapter
-from bi_connector_chyt_internal.core.sa_types import SQLALCHEMY_CHYT_INTERNAL_TYPES
-from bi_connector_chyt_internal.core.settings import CHYTInternalSettingDefinition, CHYTUserAuthSettingDefinition
-from bi_connector_chyt_internal.core.data_source_migration import (
-    CHYTInternalDataSourceMigrator, CHYTInternalUserAuthDataSourceMigrator,
+from bi_connector_chyt_internal.core.us_connection import (
+    ConnectionCHYTInternalToken,
+    ConnectionCHYTUserAuth,
 )
-from bi_connector_chyt_internal.core.notifications import UsingPublicClickhouseCliqueNotification
 
 
 class CHYTInternalCoreConnectionDefinition(CoreConnectionDefinition):
@@ -62,7 +86,7 @@ class CHYTInternalCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = CHYTInternalTypeTransformer
     sync_conn_executor_cls = CHYTInternalSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTInternalAsyncAdapterConnExecutor
-    dialect_string = 'bi_chyt'
+    dialect_string = "bi_chyt"
     settings_definition = CHYTInternalSettingDefinition
     data_source_migrator_cls = CHYTInternalDataSourceMigrator
 
@@ -102,7 +126,7 @@ class CHYTUserAuthCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = CHYTUserAuthTypeTransformer
     sync_conn_executor_cls = CHYTUserAuthSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTUserAuthAsyncAdapterConnExecutor
-    dialect_string = 'bi_chyt'
+    dialect_string = "bi_chyt"
     settings_definition = CHYTUserAuthSettingDefinition
     data_source_migrator_cls = CHYTInternalUserAuthDataSourceMigrator
 
@@ -151,14 +175,14 @@ class CHYTInternalCoreConnector(CoreConnector):
         CHYTUserAuthTableRangeCoreSourceDefinition,
         CHYTUserAuthTableSubselectCoreSourceDefinition,
     )
-    rqe_adapter_classes = frozenset({
-        CHYTInternalAdapter,
-        AsyncCHYTInternalAdapter,
-        CHYTUserAuthAdapter,
-        AsyncCHYTUserAuthAdapter,
-    })
-    sa_types = SQLALCHEMY_CHYT_INTERNAL_TYPES
-    notification_classes = (
-        UsingPublicClickhouseCliqueNotification,
+    rqe_adapter_classes = frozenset(
+        {
+            CHYTInternalAdapter,
+            AsyncCHYTInternalAdapter,
+            CHYTUserAuthAdapter,
+            AsyncCHYTUserAuthAdapter,
+        }
     )
+    sa_types = SQLALCHEMY_CHYT_INTERNAL_TYPES
+    notification_classes = (UsingPublicClickhouseCliqueNotification,)
     query_cls = CHQuery

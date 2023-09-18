@@ -6,13 +6,13 @@ from control_api import app_version
 from control_api.app_factory import ControlApiAppFactoryNebius
 import flask
 
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_bi_api_lib,
     preload_bi_api_lib,
 )
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,

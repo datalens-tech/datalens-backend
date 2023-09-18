@@ -3,13 +3,20 @@ import random
 import attr
 import pytest
 
-from dl_constants.enums import ManagedBy, CalcMode, AggregationFunction, BIType
 from bi_external_api.domain.internal import datasets
-from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    EntrySummary,
+)
 from bi_external_api.internal_api_clients import exc_api
 from bi_testing_ya.api_wrappers import Req
-
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    ManagedBy,
+)
 
 
 @pytest.mark.asyncio
@@ -59,15 +66,12 @@ async def test_get_wb_info(bi_ext_api_test_env_bi_api_control_plane_client):
 
 
 def _create_actions_to_add_pg_subsql_source(
-        *,
-        pg_conn_id: str,
-        sql: str,
+    *,
+    pg_conn_id: str,
+    sql: str,
 ) -> tuple[datasets.DataSourcePGSubSQL, datasets.Avatar]:
     source = datasets.DataSourcePGSubSQL(
-        id="src_1",
-        title="SRC 1",
-        connection_id=pg_conn_id,
-        parameters=datasets.DataSourceParamsSubSQL(subsql=sql)
+        id="src_1", title="SRC 1", connection_id=pg_conn_id, parameters=datasets.DataSourceParamsSubSQL(subsql=sql)
     )
     avatar = datasets.Avatar(
         is_root=True,
@@ -82,10 +86,7 @@ def _create_actions_to_add_pg_subsql_source(
 async def test_dataset_actions_single_source(bi_ext_api_test_env_bi_api_control_plane_client, pg_connection):
     int_api_cli = bi_ext_api_test_env_bi_api_control_plane_client
 
-    source, avatar = _create_actions_to_add_pg_subsql_source(
-        pg_conn_id=pg_connection.id,
-        sql="SELECT 1 as num"
-    )
+    source, avatar = _create_actions_to_add_pg_subsql_source(pg_conn_id=pg_connection.id, sql="SELECT 1 as num")
     actions = [
         datasets.ActionDataSourceAdd(source=source),
         datasets.ActionAvatarAdd(source_avatar=avatar, disable_fields_update=False),
@@ -115,24 +116,24 @@ async def test_dataset_actions_single_source(bi_ext_api_test_env_bi_api_control_
     assert len(dateset.result_schema) == 0
 
 
-@pytest.mark.parametrize("bi_type,param_default_value", [
-    [BIType.string, datasets.DefaultValueString("DEFAULT!!!!")],
-    [BIType.integer, datasets.DefaultValueInteger(1)],
-    [BIType.float, datasets.DefaultValueFloat(1.5)],
-])
+@pytest.mark.parametrize(
+    "bi_type,param_default_value",
+    [
+        [BIType.string, datasets.DefaultValueString("DEFAULT!!!!")],
+        [BIType.integer, datasets.DefaultValueInteger(1)],
+        [BIType.float, datasets.DefaultValueFloat(1.5)],
+    ],
+)
 @pytest.mark.asyncio
 async def test_dataset_with_parameter_round_trip(
-        bi_ext_api_test_env_bi_api_control_plane_client,
-        pg_connection,
-        bi_type: BIType,
-        param_default_value: datasets.DefaultValue,
+    bi_ext_api_test_env_bi_api_control_plane_client,
+    pg_connection,
+    bi_type: BIType,
+    param_default_value: datasets.DefaultValue,
 ):
     int_api_cli = bi_ext_api_test_env_bi_api_control_plane_client
 
-    source, avatar = _create_actions_to_add_pg_subsql_source(
-        pg_conn_id=pg_connection.id,
-        sql="SELECT 1 as num"
-    )
+    source, avatar = _create_actions_to_add_pg_subsql_source(pg_conn_id=pg_connection.id, sql="SELECT 1 as num")
     writable_field = datasets.ResultSchemaField(
         guid="some_param_fid",
         title="Parampampam",
@@ -185,7 +186,7 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
                         message="Unknown referenced source column: non_existing_column_name",
                         code="ERR.DS_API.FORMULA.UNKNOWN_SOURCE_COLUMN",
                     )
-                ]
+                ],
             ),
         ],
     ),
@@ -260,7 +261,7 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
                         message="Unknown field found in formula: not_a_field",
                         code="ERR.DS_API.FORMULA.UNKNOWN_FIELD_IN_FORMULA",
                     )
-                ]
+                ],
             ),
         ],
     ),
@@ -274,17 +275,14 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
 )
 @pytest.mark.asyncio
 async def test_dataset_validation_error_handling(
-        bi_ext_api_test_env_bi_api_control_plane_client,
-        pg_connection,
-        fields_to_add: list[datasets.ResultSchemaField],
-        errors: list[datasets.SingleComponentErrorContainer],
+    bi_ext_api_test_env_bi_api_control_plane_client,
+    pg_connection,
+    fields_to_add: list[datasets.ResultSchemaField],
+    errors: list[datasets.SingleComponentErrorContainer],
 ):
     int_api_cli = bi_ext_api_test_env_bi_api_control_plane_client
 
-    source, avatar = _create_actions_to_add_pg_subsql_source(
-        pg_conn_id=pg_connection.id,
-        sql="SELECT 1 as num"
-    )
+    source, avatar = _create_actions_to_add_pg_subsql_source(pg_conn_id=pg_connection.id, sql="SELECT 1 as num")
 
     actions = [
         datasets.ActionDataSourceAdd(source=source),
@@ -292,10 +290,10 @@ async def test_dataset_validation_error_handling(
         *[
             datasets.ActionFieldAdd(
                 order_index=idx,
-                field=attr.evolve(rs_field, avatar_id=avatar.id) if rs_field.calc_mode == CalcMode.direct else rs_field
+                field=attr.evolve(rs_field, avatar_id=avatar.id) if rs_field.calc_mode == CalcMode.direct else rs_field,
             )
             for idx, rs_field in enumerate(fields_to_add)
-        ]
+        ],
     ]
 
     with pytest.raises(exc_api.DatasetValidationError) as exc_info:

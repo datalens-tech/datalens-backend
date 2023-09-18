@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
@@ -8,8 +9,6 @@ from dl_formula.definitions.base import (
 from dl_formula.definitions.common import make_binary_chain
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
-
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make

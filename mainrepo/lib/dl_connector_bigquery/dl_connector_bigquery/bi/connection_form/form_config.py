@@ -21,10 +21,9 @@ from dl_api_connector.form_config.models.common import (
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_constants.enums import RawSQLLevel
-
 from dl_connector_bigquery.bi.connection_info import BigQueryConnectionInfoProvider
 from dl_connector_bigquery.bi.i18n.localizer import Translatable
+from dl_constants.enums import RawSQLLevel
 
 
 @unique

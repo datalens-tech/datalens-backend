@@ -1,12 +1,11 @@
 import datetime
 
-from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.operators import DefaultOperatorFormulaConnectorTestSuite
-
 from dl_connector_clickhouse_tests.db.formula.base import (
     ClickHouse_21_8TestBase,
     ClickHouse_22_10TestBase,
 )
+from dl_formula_testing.evaluator import DbEvaluator
+from dl_formula_testing.testcases.operators import DefaultOperatorFormulaConnectorTestSuite
 
 
 class TestOperatorClickHouse_21_8(ClickHouse_21_8TestBase, DefaultOperatorFormulaConnectorTestSuite):

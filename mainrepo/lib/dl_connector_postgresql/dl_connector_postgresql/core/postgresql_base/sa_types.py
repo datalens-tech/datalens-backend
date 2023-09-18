@@ -2,18 +2,17 @@ from __future__ import annotations
 
 from sqlalchemy.dialects import postgresql as pg_types
 
-from dl_core.db.sa_types_base import (
-    make_native_type,
-    simple_instantiator,
-    timezone_instantiator,
-    typed_instantiator,
-)
-
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import (
     PG_TYPES_FLOAT,
     PG_TYPES_INT,
     PG_TYPES_STRING,
+)
+from dl_core.db.sa_types_base import (
+    make_native_type,
+    simple_instantiator,
+    timezone_instantiator,
+    typed_instantiator,
 )
 
 SQLALCHEMY_POSTGRES_BASE_TYPES = (

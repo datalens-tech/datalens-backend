@@ -1,8 +1,16 @@
-from typing import TypeVar, Generic, ClassVar, Type
+from typing import (
+    ClassVar,
+    Generic,
+    Type,
+    TypeVar,
+)
 
-from dl_constants.enums import BIType
-from bi_external_api.converter.converter_exc import ConstraintViolationError, NotSupportedYet
+from bi_external_api.converter.converter_exc import (
+    ConstraintViolationError,
+    NotSupportedYet,
+)
 from bi_external_api.domain.internal import datasets
+from dl_constants.enums import BIType
 
 _DEFAULT_VALUE_TV = TypeVar("_DEFAULT_VALUE_TV", bound=datasets.DefaultValue)
 _DEFAULT_VALUE_CODEC_TV = TypeVar("_DEFAULT_VALUE_CODEC_TV", bound="DefaultValueToStringCodec")
@@ -73,8 +81,7 @@ class DefaultValueConverterExtStringValue:
         DefaultValueToStringCodecFloat,
     )
     map_bi_type_to_codec_cls: ClassVar[dict[BIType, Type[DefaultValueToStringCodec]]] = {
-        codec_cls.DEFAULT_VALUE_CLS.type: codec_cls
-        for codec_cls in all_codecs
+        codec_cls.DEFAULT_VALUE_CLS.type: codec_cls for codec_cls in all_codecs
     }
 
     @classmethod

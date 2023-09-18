@@ -1,10 +1,6 @@
-from dl_formula_testing.testcases.literals import (
-    DefaultLiteralFormulaConnectorTestSuite,
-)
+from dl_formula_testing.testcases.literals import DefaultLiteralFormulaConnectorTestSuite
 
-from bi_connector_oracle_tests.db.formula.base import (
-    OracleTestBase,
-)
+from bi_connector_oracle_tests.db.formula.base import OracleTestBase
 
 
 class TestConditionalBlockOracle(OracleTestBase, DefaultLiteralFormulaConnectorTestSuite):

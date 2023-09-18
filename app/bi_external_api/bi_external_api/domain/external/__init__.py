@@ -3,10 +3,12 @@ from typing import Type
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
+
+from ...enums import ExtAPIType
 from .avatar import (
     AvatarDef,
-    AvatarsConfig,
     AvatarJoinCondition,
+    AvatarsConfig,
 )
 from .chart_coloring import (
     ColoringKind,
@@ -35,32 +37,32 @@ from .chart_shape import (
 )
 from .charts import (
     AdHocField,
+    AreaChart,
+    AreaChartNormalized,
+    BarChart,
+    BarChartNormalized,
+    BaseAreaChart,
+    BaseBarChart,
+    BaseCircularChart,
+    BaseColumnChart,
     Chart,
     ChartField,
     ChartFilter,
     ChartSort,
-    BaseColumnChart,
     ColumnChart,
     ColumnChartNormalized,
+    DonutChart,
     FlatTable,
     Indicator,
     LineChart,
+    PieChart,
     PivotTable,
+    ScatterPlot,
     SortDirection,
+    TreeMap,
+    UnsupportedVisualization,
     Visualization,
     VisualizationType,
-    UnsupportedVisualization,
-    TreeMap,
-    BaseAreaChart,
-    AreaChart,
-    AreaChartNormalized,
-    BaseBarChart,
-    BarChart,
-    BarChartNormalized,
-    ScatterPlot,
-    BaseCircularChart,
-    PieChart,
-    DonutChart,
 )
 from .common import (
     EntryIDRef,
@@ -87,19 +89,19 @@ from .connection import (
     SQLConnection,
 )
 from .dash import (
-    DashTabItemPlacement,
-    DashboardTabItem,
-    DashboardTab,
-    IgnoredConnection,
     Dashboard,
+    DashboardTab,
+    DashboardTabItem,
+    DashTabItemPlacement,
+    IgnoredConnection,
 )
 from .dash_elements import (
+    DashChartsContainer,
     DashElement,
+    DashText,
     DashTitle,
     DashTitleTextSize,
-    DashText,
     WidgetTab,
-    DashChartsContainer,
 )
 from .dash_elements_control import (
     ControlValueSource,
@@ -141,21 +143,15 @@ from .dataset_field import (
     IDFormulaCS,
     ParameterCS,
 )
-from .dataset_main import (
-    Dataset,
-)
+from .dataset_main import Dataset
 from .errors import (
     CommonError,
     EntryError,
     ErrWorkbookOp,
     ErrWorkbookOpClusterization,
 )
-from .filters import (
-    ComparisonOperation,
-)
-from .model_tags import (
-    ExtModelTags,
-)
+from .filters import ComparisonOperation
+from .model_tags import ExtModelTags
 from .object_model import (
     ObjectParent,
     ObjectParentKind,
@@ -167,21 +163,25 @@ from .rpc import (
     AdviseDatasetFieldsResponse,
     ConnectionCreateRequest,
     ConnectionCreateResponse,
+    ConnectionDeleteRequest,
+    ConnectionDeleteResponse,
     ConnectionGetRequest,
     ConnectionGetResponse,
     ConnectionModifyRequest,
     ConnectionModifyResponse,
-    ConnectionDeleteRequest,
-    ConnectionDeleteResponse,
-    TrueWorkbookCreateResponse,
-    TrueWorkbookCreateRequest,
     EntryOperation,
     EntryOperationKind,
-    ModificationPlan,
-    WorkbookClusterizeRequest,
-    WorkbookClusterizeResponse,
     FakeWorkbookCreateRequest,
     FakeWorkbookCreateResponse,
+    ModificationPlan,
+    TrueWorkbookCreateRequest,
+    TrueWorkbookCreateResponse,
+    WorkbookClusterizeRequest,
+    WorkbookClusterizeResponse,
+    WorkbookDeleteRequest,
+    WorkbookDeleteResponse,
+    WorkbookListRequest,
+    WorkbookListResponse,
     WorkbookOpKind,
     WorkbookOpRequest,
     WorkbookOpResponse,
@@ -189,10 +189,6 @@ from .rpc import (
     WorkbookReadResponse,
     WorkbookWriteRequest,
     WorkbookWriteResponse,
-    WorkbookDeleteRequest,
-    WorkbookDeleteResponse,
-    WorkbookListRequest,
-    WorkbookListResponse,
 )
 from .rpc_dc import (
     DCOpAdviseDatasetFieldsRequest,
@@ -213,10 +209,10 @@ from .rpc_dc import (
     DCOpWorkbookDeleteResponse,
     DCOpWorkbookGetRequest,
     DCOpWorkbookGetResponse,
-    DCOpWorkbookModifyRequest,
-    DCOpWorkbookModifyResponse,
     DCOpWorkbookListRequest,
     DCOpWorkbookListResponse,
+    DCOpWorkbookModifyRequest,
+    DCOpWorkbookModifyResponse,
 )
 from .workbook import (
     ChartInstance,
@@ -226,9 +222,8 @@ from .workbook import (
     EntryInstance,
     WorkBook,
     WorkbookConnectionsOnly,
-    WorkbookIndexItem
+    WorkbookIndexItem,
 )
-from ...enums import ExtAPIType
 
 _all_models = [
     AvatarDef,
@@ -430,7 +425,7 @@ _all_models = [
     EntryInstance,
     WorkBook,
     WorkbookConnectionsOnly,
-    WorkbookIndexItem
+    WorkbookIndexItem,
 ]
 
 # assert all([
@@ -460,11 +455,7 @@ def keep_model(model_cls: Type, api_type: ExtAPIType) -> bool:
 @cache
 def get_external_model_mapper(api_type: ExtAPIType) -> ModelMapperMarshmallow:
     mm = ModelMapperMarshmallow()
-    to_register = [
-        model_cls
-        for model_cls in _all_models
-        if keep_model(model_cls, api_type)
-    ]
+    to_register = [model_cls for model_cls in _all_models if keep_model(model_cls, api_type)]
 
     mm.register_models(to_register)
     return mm

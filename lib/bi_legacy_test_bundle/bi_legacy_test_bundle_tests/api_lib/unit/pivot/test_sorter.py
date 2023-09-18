@@ -1,23 +1,42 @@
-from dl_constants.enums import BIType, PivotRole, PivotItemType, FieldType, OrderDirection, PivotHeaderRole
-
+from dl_api_lib.pivot.hashable_packing import JsonHashableValuePacker
+from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
+from dl_api_lib.pivot.primitives import (
+    PivotHeader,
+    PivotHeaderInfo,
+    PivotHeaderRoleSpec,
+    PivotHeaderValue,
+    PivotMeasureSorting,
+    PivotMeasureSortingSettings,
+)
+from dl_api_lib.pivot.primitives import DataCell as DC
+from dl_api_lib.pivot.primitives import DataCellVector as DV
+from dl_api_lib.pivot.primitives import DataRow
+from dl_api_lib.pivot.primitives import MeasureNameValue as MNV
 from dl_api_lib.query.formalization.pivot_legend import (
-    PivotLegend, PivotLegendItem, PivotMeasureRoleSpec, PivotDimensionRoleSpec,
+    PivotDimensionRoleSpec,
+    PivotLegend,
+    PivotLegendItem,
+    PivotMeasureRoleSpec,
+)
+from dl_constants.enums import (
+    BIType,
+    FieldType,
+    OrderDirection,
+    PivotHeaderRole,
+    PivotItemType,
+    PivotRole,
 )
 from dl_query_processing.legend.field_legend import (
-    Legend, LegendItem, FieldObjSpec, MeasureNameObjSpec,
+    FieldObjSpec,
+    Legend,
+    LegendItem,
+    MeasureNameObjSpec,
 )
-from dl_api_lib.pivot.primitives import (
-    DataCell as DC, DataCellVector as DV, DataRow, MeasureNameValue as MNV,
-    PivotMeasureSorting, PivotMeasureSortingSettings, PivotHeaderRoleSpec, PivotHeaderValue,
-    PivotHeader, PivotHeaderInfo
-)
-from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
-from dl_api_lib.pivot.hashable_packing import JsonHashableValuePacker
 from dl_query_processing.merging.primitives import MergedQueryDataRow
 
 
 def test_measure_sort_basic():
-    fid_city, fid_ctgry, fid_sales = '123', '456', '789'
+    fid_city, fid_ctgry, fid_sales = "123", "456", "789"
     liid_ctgry = 0
     liid_city = 1
     liid_mnames = 2
@@ -25,36 +44,42 @@ def test_measure_sort_basic():
     legend_item_ids = (liid_city, liid_ctgry, liid_sales)
 
     data = [
-        MergedQueryDataRow(data=('Detroit', 'Furniture', 100), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Moscow', 'Technology', 200), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('San Francisco', 'Furniture', 300), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('San Francisco', 'Office Supplies', 400), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Moscow', 'Office Supplies', 500), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Detroit', 'Office Supplies', 600), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Detroit", "Furniture", 100), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Moscow", "Technology", 200), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("San Francisco", "Furniture", 300), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("San Francisco", "Office Supplies", 400), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Moscow", "Office Supplies", 500), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Detroit", "Office Supplies", 600), legend_item_ids=legend_item_ids),
     ]
 
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=liid_ctgry,
-            obj=FieldObjSpec(id=fid_ctgry, title='Category'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_city,
-            obj=FieldObjSpec(id=fid_city, title='City'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_mnames,
-            obj=MeasureNameObjSpec(),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_sales,
-            obj=FieldObjSpec(id=fid_sales, title='Sales'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=liid_ctgry,
+                obj=FieldObjSpec(id=fid_ctgry, title="Category"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_city,
+                obj=FieldObjSpec(id=fid_city, title="City"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_mnames,
+                obj=MeasureNameObjSpec(),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_sales,
+                obj=FieldObjSpec(id=fid_sales, title="Sales"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+        ]
+    )
 
     # Pivot item IDs
     piid_mnames = 10
@@ -64,44 +89,50 @@ def test_measure_sort_basic():
     pivot_legend = PivotLegend(
         items=[
             PivotLegendItem(
-                pivot_item_id=piid_ctgry, legend_item_ids=[liid_ctgry],
+                pivot_item_id=piid_ctgry,
+                legend_item_ids=[liid_ctgry],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column, direction=OrderDirection.desc),
-                title='Category',
+                title="Category",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_city, legend_item_ids=[liid_city],
+                pivot_item_id=piid_city,
+                legend_item_ids=[liid_city],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row, direction=OrderDirection.asc),
-                title='City',
+                title="City",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_mnames, item_type=PivotItemType.measure_name, legend_item_ids=[liid_mnames],
+                pivot_item_id=piid_mnames,
+                item_type=PivotItemType.measure_name,
+                legend_item_ids=[liid_mnames],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row),
-                title='Measure Name',
+                title="Measure Name",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_sales, legend_item_ids=[liid_sales],
+                pivot_item_id=piid_sales,
+                legend_item_ids=[liid_sales],
                 role_spec=PivotMeasureRoleSpec(
                     role=PivotRole.pivot_measure,
                     sorting=PivotMeasureSorting(
                         column=PivotMeasureSortingSettings(
-                            header_values=[PivotHeaderValue(value='Furniture')],
+                            header_values=[PivotHeaderValue(value="Furniture")],
                             direction=OrderDirection.desc,
                             role_spec=PivotHeaderRoleSpec(role=PivotHeaderRole.data),
                         ),
                         row=PivotMeasureSortingSettings(
-                            header_values=[PivotHeaderValue(value='Moscow')],
+                            header_values=[PivotHeaderValue(value="Moscow")],
                             direction=OrderDirection.asc,
                             role_spec=PivotHeaderRoleSpec(role=PivotHeaderRole.data),
-                        )
-                    )
+                        ),
+                    ),
                 ),
-                title='Sales',
+                title="Sales",
             ),
         ],
     )
 
     transformer = PdPivotTransformer(
-        legend=legend, pivot_legend=pivot_legend,
+        legend=legend,
+        pivot_legend=pivot_legend,
         cell_packer=JsonHashableValuePacker(),
     )
     actual_pivot_table = transformer.pivot(data)
@@ -109,21 +140,23 @@ def test_measure_sort_basic():
 
     expected_pivot_columns = [
         PivotHeader(
-            values=(DV(cells=(DC('Furniture', liid_ctgry, piid_ctgry),)),),
+            values=(DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),),
             info=PivotHeaderInfo(sorting_direction=OrderDirection.desc),
         ),
-        PivotHeader(values=(DV(cells=(DC('Technology', liid_ctgry, piid_ctgry),)),)),
-        PivotHeader(values=(DV(cells=(DC('Office Supplies', liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Technology", liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Office Supplies", liid_ctgry, piid_ctgry),)),)),
     ]
     actual_pivot_columns = actual_pivot_table.get_columns()
     assert actual_pivot_columns == expected_pivot_columns
 
     expected_pivot_rows = [
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('San Francisco', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(300, liid_sales, piid_sales),)),
                 None,
@@ -131,10 +164,12 @@ def test_measure_sort_basic():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Detroit', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(100, liid_sales, piid_sales),)),
                 None,
@@ -144,8 +179,8 @@ def test_measure_sort_basic():
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC('Moscow', liid_city, piid_city),)),
-                    DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
+                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
                 ),
                 info=PivotHeaderInfo(sorting_direction=OrderDirection.asc),
             ),
@@ -161,35 +196,40 @@ def test_measure_sort_basic():
 
 
 def test_measure_sort_no_rows_dimension():
-    fid_ctgry, fid_sales = '123', '456'
+    fid_ctgry, fid_sales = "123", "456"
     liid_ctgry = 0
     liid_mnames = 1
     liid_sales = 2
     legend_item_ids = (liid_ctgry, liid_sales)
 
     data = [
-        MergedQueryDataRow(data=('Furniture', 200), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Office Supplies', 400), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Technology', 100), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Furniture", 200), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Office Supplies", 400), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Technology", 100), legend_item_ids=legend_item_ids),
     ]
 
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=liid_ctgry,
-            obj=FieldObjSpec(id=fid_ctgry, title='Category'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_mnames,
-            obj=MeasureNameObjSpec(),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_sales,
-            obj=FieldObjSpec(id=fid_sales, title='Sales'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=liid_ctgry,
+                obj=FieldObjSpec(id=fid_ctgry, title="Category"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_mnames,
+                obj=MeasureNameObjSpec(),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_sales,
+                obj=FieldObjSpec(id=fid_sales, title="Sales"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+        ]
+    )
 
     # Pivot item IDs
     piid_mnames = 10
@@ -198,49 +238,54 @@ def test_measure_sort_no_rows_dimension():
     pivot_legend = PivotLegend(
         items=[
             PivotLegendItem(
-                pivot_item_id=piid_ctgry, legend_item_ids=[liid_ctgry],
+                pivot_item_id=piid_ctgry,
+                legend_item_ids=[liid_ctgry],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
-                title='Category',
+                title="Category",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_mnames, item_type=PivotItemType.measure_name, legend_item_ids=[liid_mnames],
+                pivot_item_id=piid_mnames,
+                item_type=PivotItemType.measure_name,
+                legend_item_ids=[liid_mnames],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
-                title='Measure Name',
+                title="Measure Name",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_sales, legend_item_ids=[liid_sales],
+                pivot_item_id=piid_sales,
+                legend_item_ids=[liid_sales],
                 role_spec=PivotMeasureRoleSpec(
                     role=PivotRole.pivot_measure,
                     sorting=PivotMeasureSorting(
                         column=PivotMeasureSortingSettings(
-                            header_values=[PivotHeaderValue(value='Office Supplies'), PivotHeaderValue(value='Sales')],
+                            header_values=[PivotHeaderValue(value="Office Supplies"), PivotHeaderValue(value="Sales")],
                             direction=OrderDirection.asc,
                             role_spec=PivotHeaderRoleSpec(role=PivotHeaderRole.data),
                         ),
                         row=None,
-                    )
+                    ),
                 ),
-                title='Sales',
+                title="Sales",
             ),
         ],
     )
 
     transformer = PdPivotTransformer(
-        legend=legend, pivot_legend=pivot_legend,
+        legend=legend,
+        pivot_legend=pivot_legend,
         cell_packer=JsonHashableValuePacker(),
     )
     actual_pivot_table = transformer.pivot(data)
     actual_pivot_table.facade.sort()
 
     # data should be left intact, as "sorting" was performed by column with only one value
-    mnames_dv = DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),))
+    mnames_dv = DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),))
     expected_pivot_columns = [
-        PivotHeader(values=(DV(cells=(DC('Furniture', liid_ctgry, piid_ctgry),)), mnames_dv)),
+        PivotHeader(values=(DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)), mnames_dv)),
         PivotHeader(
-            values=(DV(cells=(DC('Office Supplies', liid_ctgry, piid_ctgry),)), mnames_dv),
+            values=(DV(cells=(DC("Office Supplies", liid_ctgry, piid_ctgry),)), mnames_dv),
             info=PivotHeaderInfo(sorting_direction=OrderDirection.asc),
         ),
-        PivotHeader(values=(DV(cells=(DC('Technology', liid_ctgry, piid_ctgry),)), mnames_dv)),
+        PivotHeader(values=(DV(cells=(DC("Technology", liid_ctgry, piid_ctgry),)), mnames_dv)),
     ]
     actual_pivot_columns = actual_pivot_table.get_columns()
     assert actual_pivot_columns == expected_pivot_columns
@@ -260,7 +305,7 @@ def test_measure_sort_no_rows_dimension():
 
 
 def test_measure_sort_with_multiple_measures():
-    fid_city, fid_ctgry, fid_sales, fid_profit = ('123', '456', '789', '000')
+    fid_city, fid_ctgry, fid_sales, fid_profit = ("123", "456", "789", "000")
     liid_ctgry = 0
     liid_city = 1
     liid_mnames = 2
@@ -269,41 +314,48 @@ def test_measure_sort_with_multiple_measures():
     legend_item_ids = (liid_city, liid_ctgry, liid_sales, liid_profit)
 
     data = [
-        MergedQueryDataRow(data=('Detroit', 'Furniture', 100, 10), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Moscow', 'Technology', 200, 20), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('San Francisco', 'Furniture', 300, 30), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('San Francisco', 'Office Supplies', 400, 40), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Moscow', 'Office Supplies', 500, 50), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Detroit', 'Office Supplies', 600, 60), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Detroit", "Furniture", 100, 10), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Moscow", "Technology", 200, 20), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("San Francisco", "Furniture", 300, 30), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("San Francisco", "Office Supplies", 400, 40), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Moscow", "Office Supplies", 500, 50), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Detroit", "Office Supplies", 600, 60), legend_item_ids=legend_item_ids),
     ]
 
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=liid_ctgry,
-            obj=FieldObjSpec(id=fid_ctgry, title='Category'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_city,
-            obj=FieldObjSpec(id=fid_city, title='City'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_mnames,
-            obj=MeasureNameObjSpec(),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_sales,
-            obj=FieldObjSpec(id=fid_sales, title='Sales'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-        LegendItem(
-            legend_item_id=liid_profit,
-            obj=FieldObjSpec(id=fid_profit, title='Profit'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=liid_ctgry,
+                obj=FieldObjSpec(id=fid_ctgry, title="Category"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_city,
+                obj=FieldObjSpec(id=fid_city, title="City"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_mnames,
+                obj=MeasureNameObjSpec(),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_sales,
+                obj=FieldObjSpec(id=fid_sales, title="Sales"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+            LegendItem(
+                legend_item_id=liid_profit,
+                obj=FieldObjSpec(id=fid_profit, title="Profit"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+        ]
+    )
 
     # Pivot item IDs
     piid_mnames = 10
@@ -314,64 +366,73 @@ def test_measure_sort_with_multiple_measures():
     pivot_legend = PivotLegend(
         items=[
             PivotLegendItem(
-                pivot_item_id=piid_ctgry, legend_item_ids=[liid_ctgry],
+                pivot_item_id=piid_ctgry,
+                legend_item_ids=[liid_ctgry],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
-                title='Category',
+                title="Category",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_city, legend_item_ids=[liid_city],
+                pivot_item_id=piid_city,
+                legend_item_ids=[liid_city],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row, direction=OrderDirection.desc),
-                title='City',
+                title="City",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_mnames, item_type=PivotItemType.measure_name, legend_item_ids=[liid_mnames],
+                pivot_item_id=piid_mnames,
+                item_type=PivotItemType.measure_name,
+                legend_item_ids=[liid_mnames],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row),
-                title='Measure Name',
+                title="Measure Name",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_sales, legend_item_ids=[liid_sales],
+                pivot_item_id=piid_sales,
+                legend_item_ids=[liid_sales],
                 role_spec=PivotMeasureRoleSpec(
                     role=PivotRole.pivot_measure,
                     sorting=PivotMeasureSorting(
                         column=None,
                         row=PivotMeasureSortingSettings(
-                            header_values=[PivotHeaderValue(value='Moscow'), PivotHeaderValue(value='Sales')],
+                            header_values=[PivotHeaderValue(value="Moscow"), PivotHeaderValue(value="Sales")],
                             direction=OrderDirection.desc,
                             role_spec=PivotHeaderRoleSpec(role=PivotHeaderRole.data),
-                        )
-                    )
+                        ),
+                    ),
                 ),
-                title='Sales',
+                title="Sales",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_profit, legend_item_ids=[liid_profit],
+                pivot_item_id=piid_profit,
+                legend_item_ids=[liid_profit],
                 role_spec=PivotMeasureRoleSpec(role=PivotRole.pivot_measure),
-                title='Profit',
+                title="Profit",
             ),
         ],
     )
 
     transformer = PdPivotTransformer(
-        legend=legend, pivot_legend=pivot_legend,
+        legend=legend,
+        pivot_legend=pivot_legend,
         cell_packer=JsonHashableValuePacker(),
     )
     actual_pivot_table = transformer.pivot(data)
     actual_pivot_table.facade.sort()
 
     expected_pivot_columns = [
-        PivotHeader(values=(DV(cells=(DC('Office Supplies', liid_ctgry, piid_ctgry),)),)),
-        PivotHeader(values=(DV(cells=(DC('Technology', liid_ctgry, piid_ctgry),)),)),
-        PivotHeader(values=(DV(cells=(DC('Furniture', liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Office Supplies", liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Technology", liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),)),
     ]
     actual_pivot_columns = actual_pivot_table.get_columns()
     assert actual_pivot_columns == expected_pivot_columns
 
     expected_pivot_rows = [
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('San Francisco', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(400, liid_sales, piid_sales),)),
                 None,
@@ -379,22 +440,23 @@ def test_measure_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('San Francisco', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Profit', piid_profit), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(40, liid_profit, piid_profit),)),
                 None,
                 DV(cells=(DC(30, liid_profit, piid_profit),)),
             ),
         ),
-
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC('Moscow', liid_city, piid_city),)),
-                    DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
+                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
                 ),
                 info=PivotHeaderInfo(sorting_direction=OrderDirection.desc),
             ),
@@ -405,10 +467,12 @@ def test_measure_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Moscow', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Profit', piid_profit), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(50, liid_profit, piid_profit),)),
                 DV(cells=(DC(20, liid_profit, piid_profit),)),
@@ -416,10 +480,12 @@ def test_measure_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Detroit', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(600, liid_sales, piid_sales),)),
                 None,
@@ -427,10 +493,12 @@ def test_measure_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Detroit', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Profit', piid_profit), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(60, liid_profit, piid_profit),)),
                 None,
@@ -443,7 +511,7 @@ def test_measure_sort_with_multiple_measures():
 
 
 def test_dimension_sort_with_multiple_measures():
-    fid_city, fid_ctgry, fid_sales, fid_profit = ('123', '456', '789', '000')
+    fid_city, fid_ctgry, fid_sales, fid_profit = ("123", "456", "789", "000")
     liid_ctgry = 0
     liid_city = 1
     liid_mnames = 2
@@ -452,41 +520,48 @@ def test_dimension_sort_with_multiple_measures():
     legend_item_ids = (liid_city, liid_ctgry, liid_sales, liid_profit)
 
     data = [
-        MergedQueryDataRow(data=('Detroit', 'Furniture', 100, 10), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Moscow', 'Technology', 200, 20), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('San Francisco', 'Furniture', 300, 30), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('San Francisco', 'Office Supplies', 400, 40), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Moscow', 'Office Supplies', 500, 50), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('Detroit', 'Office Supplies', 600, 60), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Detroit", "Furniture", 100, 10), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Moscow", "Technology", 200, 20), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("San Francisco", "Furniture", 300, 30), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("San Francisco", "Office Supplies", 400, 40), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Moscow", "Office Supplies", 500, 50), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("Detroit", "Office Supplies", 600, 60), legend_item_ids=legend_item_ids),
     ]
 
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=liid_ctgry,
-            obj=FieldObjSpec(id=fid_ctgry, title='Category'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_city,
-            obj=FieldObjSpec(id=fid_city, title='City'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_mnames,
-            obj=MeasureNameObjSpec(),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_sales,
-            obj=FieldObjSpec(id=fid_sales, title='Sales'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-        LegendItem(
-            legend_item_id=liid_profit,
-            obj=FieldObjSpec(id=fid_profit, title='Profit'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=liid_ctgry,
+                obj=FieldObjSpec(id=fid_ctgry, title="Category"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_city,
+                obj=FieldObjSpec(id=fid_city, title="City"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_mnames,
+                obj=MeasureNameObjSpec(),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_sales,
+                obj=FieldObjSpec(id=fid_sales, title="Sales"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+            LegendItem(
+                legend_item_id=liid_profit,
+                obj=FieldObjSpec(id=fid_profit, title="Profit"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+        ]
+    )
 
     # Pivot item IDs
     piid_mnames = 10
@@ -497,35 +572,42 @@ def test_dimension_sort_with_multiple_measures():
     pivot_legend = PivotLegend(
         items=[
             PivotLegendItem(
-                pivot_item_id=piid_ctgry, legend_item_ids=[liid_ctgry],
+                pivot_item_id=piid_ctgry,
+                legend_item_ids=[liid_ctgry],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column, direction=OrderDirection.desc),
-                title='Category',
+                title="Category",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_city, legend_item_ids=[liid_city],
+                pivot_item_id=piid_city,
+                legend_item_ids=[liid_city],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row, direction=OrderDirection.asc),
-                title='City',
+                title="City",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_mnames, item_type=PivotItemType.measure_name, legend_item_ids=[liid_mnames],
+                pivot_item_id=piid_mnames,
+                item_type=PivotItemType.measure_name,
+                legend_item_ids=[liid_mnames],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row),
-                title='Measure Name',
+                title="Measure Name",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_sales, legend_item_ids=[liid_sales],
+                pivot_item_id=piid_sales,
+                legend_item_ids=[liid_sales],
                 role_spec=PivotMeasureRoleSpec(role=PivotRole.pivot_measure),
-                title='Sales',
+                title="Sales",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_profit, legend_item_ids=[liid_profit],
+                pivot_item_id=piid_profit,
+                legend_item_ids=[liid_profit],
                 role_spec=PivotMeasureRoleSpec(role=PivotRole.pivot_measure),
-                title='Profit',
+                title="Profit",
             ),
         ],
     )
 
     transformer = PdPivotTransformer(
-        legend=legend, pivot_legend=pivot_legend,
+        legend=legend,
+        pivot_legend=pivot_legend,
         cell_packer=JsonHashableValuePacker(),
     )
     actual_pivot_table = transformer.pivot(data)
@@ -533,9 +615,9 @@ def test_dimension_sort_with_multiple_measures():
 
     expected_pivot_columns = [
         # DESC
-        PivotHeader(values=(DV(cells=(DC('Technology', liid_ctgry, piid_ctgry),)),)),
-        PivotHeader(values=(DV(cells=(DC('Office Supplies', liid_ctgry, piid_ctgry),)),)),
-        PivotHeader(values=(DV(cells=(DC('Furniture', liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Technology", liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Office Supplies", liid_ctgry, piid_ctgry),)),)),
+        PivotHeader(values=(DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),)),
     ]
     actual_pivot_columns = actual_pivot_table.get_columns()
     assert actual_pivot_columns == expected_pivot_columns
@@ -544,10 +626,12 @@ def test_dimension_sort_with_multiple_measures():
         # ASC by City;
         # Measure Name should have the same order as in the legend ('Sales', 'Profit')
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Detroit', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 None,
                 DV(cells=(DC(600, liid_sales, piid_sales),)),
@@ -555,10 +639,12 @@ def test_dimension_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Detroit', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Profit', piid_profit), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 None,
                 DV(cells=(DC(60, liid_profit, piid_profit),)),
@@ -566,10 +652,12 @@ def test_dimension_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Moscow', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(200, liid_sales, piid_sales),)),
                 DV(cells=(DC(500, liid_sales, piid_sales),)),
@@ -577,10 +665,12 @@ def test_dimension_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('Moscow', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Profit', piid_profit), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 DV(cells=(DC(20, liid_profit, piid_profit),)),
                 DV(cells=(DC(50, liid_profit, piid_profit),)),
@@ -588,10 +678,12 @@ def test_dimension_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('San Francisco', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Sales', piid_sales), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 None,
                 DV(cells=(DC(400, liid_sales, piid_sales),)),
@@ -599,10 +691,12 @@ def test_dimension_sort_with_multiple_measures():
             ),
         ),
         DataRow(
-            header=PivotHeader(values=(
-                DV(cells=(DC('San Francisco', liid_city, piid_city),)),
-                DV(cells=(DC(MNV('Profit', piid_profit), liid_mnames, piid_mnames),)),
-            )),
+            header=PivotHeader(
+                values=(
+                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
+                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                )
+            ),
             values=(
                 None,
                 DV(cells=(DC(40, liid_profit, piid_profit),)),
@@ -615,37 +709,42 @@ def test_dimension_sort_with_multiple_measures():
 
 
 def test_dimension_sort_mixed_case_strings():
-    fid_thing, fid_string, fid_measure = ('123', '456', '789')
+    fid_thing, fid_string, fid_measure = ("123", "456", "789")
     liid_thing, liid_string, liid_measure = (0, 1, 2)
     legend_item_ids = (liid_thing, liid_string, liid_measure)
 
     data = [
-        MergedQueryDataRow(data=('This', 'Abc', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', 'bCd', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', 'ab', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', 'CDE', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', 'cd', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', 'BC', None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "Abc", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "bCd", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "ab", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "CDE", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "cd", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "BC", None), legend_item_ids=legend_item_ids),
     ]
 
     # Legend item IDs
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=liid_thing,
-            obj=FieldObjSpec(id=fid_thing, title='Thing'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_string,
-            obj=FieldObjSpec(id=fid_string, title='String'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_measure,
-            obj=FieldObjSpec(id=fid_measure, title='Measure'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=liid_thing,
+                obj=FieldObjSpec(id=fid_thing, title="Thing"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_string,
+                obj=FieldObjSpec(id=fid_string, title="String"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_measure,
+                obj=FieldObjSpec(id=fid_measure, title="Measure"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+        ]
+    )
 
     # Pivot item IDs
     piid_thing = 10
@@ -654,25 +753,29 @@ def test_dimension_sort_mixed_case_strings():
     pivot_legend = PivotLegend(
         items=[
             PivotLegendItem(
-                pivot_item_id=piid_thing, legend_item_ids=[liid_thing],
+                pivot_item_id=piid_thing,
+                legend_item_ids=[liid_thing],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
-                title='Thing',
+                title="Thing",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_string, legend_item_ids=[liid_string],
+                pivot_item_id=piid_string,
+                legend_item_ids=[liid_string],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row, direction=OrderDirection.asc),
-                title='String',
+                title="String",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_measure, legend_item_ids=[liid_measure],
+                pivot_item_id=piid_measure,
+                legend_item_ids=[liid_measure],
                 role_spec=PivotMeasureRoleSpec(role=PivotRole.pivot_measure),
-                title='Measure',
+                title="Measure",
             ),
         ],
     )
 
     transformer = PdPivotTransformer(
-        legend=legend, pivot_legend=pivot_legend,
+        legend=legend,
+        pivot_legend=pivot_legend,
         cell_packer=JsonHashableValuePacker(),
     )
     actual_pivot_table = transformer.pivot(data)
@@ -682,27 +785,27 @@ def test_dimension_sort_mixed_case_strings():
 
     expected_pivot_rows = [
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('ab', liid_string, piid_string),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("ab", liid_string, piid_string),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('Abc', liid_string, piid_string),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("Abc", liid_string, piid_string),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('BC', liid_string, piid_string),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("BC", liid_string, piid_string),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('bCd', liid_string, piid_string),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("bCd", liid_string, piid_string),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('cd', liid_string, piid_string),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("cd", liid_string, piid_string),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('CDE', liid_string, piid_string),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("CDE", liid_string, piid_string),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
     ]
@@ -711,35 +814,40 @@ def test_dimension_sort_mixed_case_strings():
 
 
 def test_dimension_sort_stringified_numbers():
-    fid_thing, fid_number, fid_measure = ('123', '456', '789')
+    fid_thing, fid_number, fid_measure = ("123", "456", "789")
     liid_thing, liid_number, liid_measure = (0, 1, 2)
     legend_item_ids = (liid_thing, liid_number, liid_measure)
     data = [
-        MergedQueryDataRow(data=('This', '1', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', '24', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', '2', None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "1", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "24", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "2", None), legend_item_ids=legend_item_ids),
         # None is a valid value in data from DB
-        MergedQueryDataRow(data=('This', None, None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', '12', None), legend_item_ids=legend_item_ids),
-        MergedQueryDataRow(data=('This', '3', None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", None, None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "12", None), legend_item_ids=legend_item_ids),
+        MergedQueryDataRow(data=("This", "3", None), legend_item_ids=legend_item_ids),
     ]
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=liid_thing,
-            obj=FieldObjSpec(id=fid_thing, title='Thing'),
-            field_type=FieldType.DIMENSION, data_type=BIType.string,
-        ),
-        LegendItem(
-            legend_item_id=liid_number,
-            obj=FieldObjSpec(id=fid_number, title='Number'),
-            field_type=FieldType.DIMENSION, data_type=BIType.integer,
-        ),
-        LegendItem(
-            legend_item_id=liid_measure,
-            obj=FieldObjSpec(id=fid_measure, title='Measure'),
-            field_type=FieldType.MEASURE, data_type=BIType.integer,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=liid_thing,
+                obj=FieldObjSpec(id=fid_thing, title="Thing"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.string,
+            ),
+            LegendItem(
+                legend_item_id=liid_number,
+                obj=FieldObjSpec(id=fid_number, title="Number"),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.integer,
+            ),
+            LegendItem(
+                legend_item_id=liid_measure,
+                obj=FieldObjSpec(id=fid_measure, title="Measure"),
+                field_type=FieldType.MEASURE,
+                data_type=BIType.integer,
+            ),
+        ]
+    )
 
     # Pivot item IDs
     piid_thing = 10
@@ -748,25 +856,29 @@ def test_dimension_sort_stringified_numbers():
     pivot_legend = PivotLegend(
         items=[
             PivotLegendItem(
-                pivot_item_id=piid_thing, legend_item_ids=[liid_thing],
+                pivot_item_id=piid_thing,
+                legend_item_ids=[liid_thing],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_column),
-                title='Thing',
+                title="Thing",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_number, legend_item_ids=[liid_number],
+                pivot_item_id=piid_number,
+                legend_item_ids=[liid_number],
                 role_spec=PivotDimensionRoleSpec(role=PivotRole.pivot_row, direction=OrderDirection.asc),
-                title='Number',
+                title="Number",
             ),
             PivotLegendItem(
-                pivot_item_id=piid_measure, legend_item_ids=[liid_measure],
+                pivot_item_id=piid_measure,
+                legend_item_ids=[liid_measure],
                 role_spec=PivotMeasureRoleSpec(role=PivotRole.pivot_measure),
-                title='Measure',
+                title="Measure",
             ),
         ],
     )
 
     transformer = PdPivotTransformer(
-        legend=legend, pivot_legend=pivot_legend,
+        legend=legend,
+        pivot_legend=pivot_legend,
         cell_packer=JsonHashableValuePacker(),
     )
     actual_pivot_table = transformer.pivot(data)
@@ -780,23 +892,23 @@ def test_dimension_sort_stringified_numbers():
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('1', liid_number, piid_number),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("1", liid_number, piid_number),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('2', liid_number, piid_number),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("2", liid_number, piid_number),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('3', liid_number, piid_number),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("3", liid_number, piid_number),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('12', liid_number, piid_number),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("12", liid_number, piid_number),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC('24', liid_number, piid_number),)),)),
+            header=PivotHeader(values=(DV(cells=(DC("24", liid_number, piid_number),)),)),
             values=(DV(cells=(DC(None, liid_measure, piid_measure),)),),
         ),
     ]

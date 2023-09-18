@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    ClassVar,
+)
 
 from dl_constants.enums import CreateDSFrom
 from dl_core.data_source.sql import DataSource
@@ -27,4 +31,4 @@ class SolomonDataSource(DataSource):
 
     @property
     def default_title(self) -> str:
-        return ''
+        return ""

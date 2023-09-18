@@ -1,10 +1,9 @@
 import sqlalchemy as sa
 
+from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
-
-from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
 V = TranslationVariant.make
 

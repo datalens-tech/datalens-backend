@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import time
 from http import HTTPStatus
+import time
 
 from dl_api_client.dsmaker.primitives import Dataset
 
@@ -14,11 +14,9 @@ def test_dataset_with_many_formula_fields(api_v1, dataset_id):
 
     names = [f.title for f in ds.result_schema]
     for cnt in range(formula_field_cnt):
-        new_name = f'Autogen {cnt}'
+        new_name = f"Autogen {cnt}"
         ds.result_schema[new_name] = ds.field(
-            formula='CONCAT({})'.format(', '.join([
-                f'[{name}]' for name in names[cnt:cnt+fields_in_formula]
-            ]))
+            formula="CONCAT({})".format(", ".join([f"[{name}]" for name in names[cnt : cnt + fields_in_formula]]))
         )
         names.append(new_name)
 
@@ -27,9 +25,13 @@ def test_dataset_with_many_formula_fields(api_v1, dataset_id):
     ds = ds_resp.dataset
 
     started = time.monotonic()
-    ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True, updates=[
-        ds.sources[0].refresh(),
-    ])
+    ds_resp = api_v1.apply_updates(
+        dataset=ds,
+        fail_ok=True,
+        updates=[
+            ds.sources[0].refresh(),
+        ],
+    )
     finished = time.monotonic()
 
     assert ds_resp.status_code == HTTPStatus.OK, ds_resp.response_errors

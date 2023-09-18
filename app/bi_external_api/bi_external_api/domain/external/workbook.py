@@ -4,12 +4,13 @@ from typing import ClassVar
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
+
 from . import EntryKind
+from ..utils import ensure_tuple
 from .charts import Chart
 from .connection import Connection
 from .dash import Dashboard
 from .dataset_main import Dataset
-from ..utils import ensure_tuple
 
 
 @attr.s(frozen=True)

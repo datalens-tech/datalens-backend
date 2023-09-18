@@ -1,12 +1,20 @@
 import enum
-from typing import Sequence, ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
-from .dash_elements import DashElement, DashElementKind
-from .filters import ComparisonOperation
+
 from ..utils import ensure_tuple
+from .dash_elements import (
+    DashElement,
+    DashElementKind,
+)
+from .filters import ComparisonOperation
 
 
 class ValueKind(enum.Enum):

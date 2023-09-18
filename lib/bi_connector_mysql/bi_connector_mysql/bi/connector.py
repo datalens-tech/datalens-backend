@@ -1,24 +1,26 @@
-from bi_connector_mysql.core.connector import (
-    MySQLCoreConnector,
-    MySQLCoreConnectionDefinition,
-    MySQLTableCoreSourceDefinition,
-    MySQLSubselectCoreSourceDefinition,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
 )
-
 from dl_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
-)
-from dl_api_connector.api_schema.source_base import (
-    SQLDataSourceSchema, SQLDataSourceTemplateSchema, SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
+    BiApiSourceDefinition,
 )
 
-from bi_connector_mysql.formula.constants import DIALECT_NAME_MYSQL
 from bi_connector_mysql.bi.api_schema.connection import MySQLConnectionSchema
 from bi_connector_mysql.bi.connection_form.form_config import MySQLConnectionFormFactory
 from bi_connector_mysql.bi.connection_info import MySQLConnectionInfoProvider
 from bi_connector_mysql.bi.i18n.localizer import CONFIGS
+from bi_connector_mysql.core.connector import (
+    MySQLCoreConnectionDefinition,
+    MySQLCoreConnector,
+    MySQLSubselectCoreSourceDefinition,
+    MySQLTableCoreSourceDefinition,
+)
+from bi_connector_mysql.formula.constants import DIALECT_NAME_MYSQL
 
 
 class MySQLBiApiTableSourceDefinition(BiApiSourceDefinition):

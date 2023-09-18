@@ -1,4 +1,8 @@
-from dl_connector_postgresql.bi.connector import PostgreSQLBiApiConnectionDefinition, PostgreSQLBiApiConnector
+from dl_connector_postgresql.bi.connector import (
+    PostgreSQLBiApiConnectionDefinition,
+    PostgreSQLBiApiConnector,
+)
+
 from bi_connector_postgresql_mdb.bi.api_schema.connection import PostgreSQLMDBConnectionSchema
 from bi_connector_postgresql_mdb.bi.connection_form.form_config import PostgreSQLMDBConnectionFormFactory
 from bi_connector_postgresql_mdb.core.connector import PostgreSQLMDBCoreConnector

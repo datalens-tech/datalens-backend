@@ -5,36 +5,52 @@ https://www.python.org/dev/peps/pep-0249/
 
 from __future__ import annotations
 
-from functools import wraps
-from enum import Enum
-from urllib.parse import parse_qs
 from datetime import date
+from enum import Enum
+from functools import wraps
+from urllib.parse import parse_qs
+
 import dateutil.parser
-
-from sqlalchemy.types import FLOAT
-from sqlalchemy.types import INTEGER
-from sqlalchemy.types import VARCHAR
-from sqlalchemy.types import DATE
-from sqlalchemy.types import DATETIME
-from sqlalchemy.types import BOOLEAN
-from sqlalchemy.types import NULLTYPE
-
-from sqlalchemy_metrika_api.exceptions import (  # noqa
-    Error, Warning,
-    InterfaceError, DatabaseError, DataError,
-    OperationalError, IntegrityError, InternalError,
-    ProgrammingError, NotSupportedError,
-    MetrikaApiException, MetrikaHttpApiException,
-    MetrikaApiAccessDeniedException, MetrikaApiObjectNotFoundException,
-    ConnectionClosedException, CursorClosedException,
+from sqlalchemy.types import (
+    BOOLEAN,
+    DATE,
+    DATETIME,
+    FLOAT,
+    INTEGER,
+    NULLTYPE,
+    VARCHAR,
 )
-from sqlalchemy_metrika_api.api_client import MetrikaApiClient, METRIKA_API_HOST
+from sqlalchemy_metrika_api.api_client import (
+    METRIKA_API_HOST,
+    MetrikaApiClient,
+)
 from sqlalchemy_metrika_api.api_info.metrika import (
-    MetrikaApiCounterSource, fields_by_namespace, fields_by_name)
+    MetrikaApiCounterSource,
+    fields_by_name,
+    fields_by_namespace,
+)
+from sqlalchemy_metrika_api.exceptions import (  # noqa
+    ConnectionClosedException,
+    CursorClosedException,
+    DatabaseError,
+    DataError,
+    Error,
+    IntegrityError,
+    InterfaceError,
+    InternalError,
+    MetrikaApiAccessDeniedException,
+    MetrikaApiException,
+    MetrikaApiObjectNotFoundException,
+    MetrikaHttpApiException,
+    NotSupportedError,
+    OperationalError,
+    ProgrammingError,
+    Warning,
+)
 
-apilevel = '2.0'
+apilevel = "2.0"
 threadsafety = 2
-paramstyle = 'pyformat'
+paramstyle = "pyformat"
 default_storage_plugin = ""
 
 
@@ -81,6 +97,7 @@ def check_connected(func):
             raise ConnectionClosedException("Connection object is closed")
         else:
             return func(self, *args, **kwargs)
+
     return func_wrapper
 
 
@@ -92,11 +109,11 @@ class Connection(object):
     accuracy = None
 
     def __init__(self, oauth_token, fields_namespace=None, accuracy=None, **client_kwargs):
-        client_kwargs.setdefault('host', self.metrica_host)
+        client_kwargs.setdefault("host", self.metrica_host)
         self._cli = MetrikaApiClient(oauth_token, **client_kwargs)
         if fields_namespace:
             if not hasattr(self.metrica_fields_namespaces_enum, fields_namespace):
-                raise MetrikaApiException('Unknown fields namespace: %s' % fields_namespace)
+                raise MetrikaApiException("Unknown fields namespace: %s" % fields_namespace)
             self.fields_namespace = self.metrica_fields_namespaces_enum[fields_namespace]
         self.accuracy = accuracy
 
@@ -123,15 +140,14 @@ class Connection(object):
     @check_connected
     def get_table_names(self):
         avail_counters = self._cli.get_available_counters()
-        return list(str(c_info['id']) for c_info in avail_counters)
+        return list(str(c_info["id"]) for c_info in avail_counters)
 
     def get_columns(self):
-        field_props = ('name', 'type', 'is_dim')
+        field_props = ("name", "type", "is_dim")
         return {
-            'fields': field_props,
-            'data': [
-                tuple(f_desc[prop] for prop in field_props)
-                for f_desc in fields_by_namespace[self.fields_namespace]
+            "fields": field_props,
+            "data": [
+                tuple(f_desc[prop] for prop in field_props) for f_desc in fields_by_namespace[self.fields_namespace]
             ],
         }
 
@@ -141,10 +157,10 @@ class Connection(object):
 
 
 def connect(oauth_token=None, **kwargs):
-    oauth_token = oauth_token or kwargs.get('password')
-    fields_namespace = kwargs.get('database')
-    accuracy = kwargs.get('accuracy')
-    return Connection(oauth_token=oauth_token, fields_namespace=fields_namespace, accuracy=accuracy)   # , **kwargs)
+    oauth_token = oauth_token or kwargs.get("password")
+    fields_namespace = kwargs.get("database")
+    accuracy = kwargs.get("accuracy")
+    return Connection(oauth_token=oauth_token, fields_namespace=fields_namespace, accuracy=accuracy)  # , **kwargs)
 
 
 def check_cursor_connected(func):
@@ -161,10 +177,10 @@ def check_cursor_connected(func):
 
 
 class InternalCommands(Enum):
-    get_columns = '__GET_COLUMNS_COMMAND__'
-    get_tables = '__GET_TABLES_COMMAND__'
-    get_avail_date_min = '__GET_AVAILABLE_DATE_MIN__'
-    get_avail_date_max = '__GET_AVAILABLE_DATE_MAX__'
+    get_columns = "__GET_COLUMNS_COMMAND__"
+    get_tables = "__GET_TABLES_COMMAND__"
+    get_avail_date_min = "__GET_AVAILABLE_DATE_MIN__"
+    get_avail_date_max = "__GET_AVAILABLE_DATE_MAX__"
 
 
 class Cursor(object):
@@ -192,7 +208,7 @@ class Cursor(object):
         if subst_params:
             for k, v in query_params.items():
                 if len(v) != 1:
-                    raise ProgrammingError('Unexpected multiple parameter %s values %s' % (k, v))
+                    raise ProgrammingError("Unexpected multiple parameter %s values %s" % (k, v))
                 v = v[0] % subst_params
                 query_params[k] = v
 
@@ -200,41 +216,45 @@ class Cursor(object):
 
     def _exec_get_columns(self, operation, parameters):
         res = self.connection.get_columns()
-        self._result_data = res['data']
+        self._result_data = res["data"]
         self.rowcount = len(self._result_data)
-        self.description = [
-            (f_name, VARCHAR, None, None, None, None, None) for f_name in res['fields']
-        ]
+        self.description = [(f_name, VARCHAR, None, None, None, None, None) for f_name in res["fields"]]
 
     def _exec_get_tables(self, operation, parameters):
         table_names = self.connection.get_table_names()
-        self._result_data = [(tn, ) for tn in table_names]
+        self._result_data = [(tn,) for tn in table_names]
         self.rowcount = len(self._result_data)
-        self.description = [('name', VARCHAR, None, None, None, None, None), ]
+        self.description = [
+            ("name", VARCHAR, None, None, None, None, None),
+        ]
 
     def _exec_get_avail_date_min(self, operation, parameters):
-        counter_id = parameters.get('_COUNTER_ID_')
+        counter_id = parameters.get("_COUNTER_ID_")
         date_min = self.connection.get_avail_date_min(counter_id)
-        self._result_data = [(date_min.isoformat(), )]
+        self._result_data = [(date_min.isoformat(),)]
         self.rowcount = 1
-        result_columns = parameters.get('__RESULT_COLUMNS__', [])
+        result_columns = parameters.get("__RESULT_COLUMNS__", [])
         if result_columns:
-            col_name = result_columns[0]['label'] or result_columns[0]['name']
+            col_name = result_columns[0]["label"] or result_columns[0]["name"]
         else:
-            col_name = 'date_min'
-        self.description = [(col_name, DATE, None, None, None, None, None), ]
+            col_name = "date_min"
+        self.description = [
+            (col_name, DATE, None, None, None, None, None),
+        ]
 
     def _exec_get_avail_date_max(self, operation, parameters):
         # TODO: use counter timezone
         today = date.today()
-        self._result_data = [(today.isoformat(), )]
+        self._result_data = [(today.isoformat(),)]
         self.rowcount = 1
-        result_columns = parameters.pop('__RESULT_COLUMNS__', [])
+        result_columns = parameters.pop("__RESULT_COLUMNS__", [])
         if result_columns:
-            col_name = result_columns[0]['label'] or result_columns[0]['name']
+            col_name = result_columns[0]["label"] or result_columns[0]["name"]
         else:
-            col_name = 'date_max'
-        self.description = [(col_name, DATE, None, None, None, None, None), ]
+            col_name = "date_max"
+        self.description = [
+            (col_name, DATE, None, None, None, None, None),
+        ]
 
     def _meth_by_operation(self, operation):
         meth = {
@@ -255,16 +275,14 @@ class Cursor(object):
         return meth(operation, parameters)
 
     def _execute_select_data(self, operation, parameters):
-        casts = parameters.pop('__CASTS__', None)
-        result_columns = parameters.pop('__RESULT_COLUMNS__', None)
+        casts = parameters.pop("__CASTS__", None)
+        result_columns = parameters.pop("__RESULT_COLUMNS__", None)
         for col in result_columns:
-            col_name = col['name']
+            col_name = col["name"]
             if casts and col_name in casts:
-                col['cast_processor'] = cast_processors[casts[col_name]]
-            elif col_name in fields_by_name and \
-                    fields_by_name[col_name]['type'] in cast_processors_for_metrika_types:
-                col['cast_processor'] = cast_processors_for_metrika_types[
-                    fields_by_name[col_name]['type']]
+                col["cast_processor"] = cast_processors[casts[col_name]]
+            elif col_name in fields_by_name and fields_by_name[col_name]["type"] in cast_processors_for_metrika_types:
+                col["cast_processor"] = cast_processors_for_metrika_types[fields_by_name[col_name]["type"]]
 
         query_params = self._prepare_query_params(operation, parameters)
 
@@ -273,20 +291,18 @@ class Cursor(object):
 
         result = self._cli.get_table_data(query_params, result_columns=result_columns)
 
-        self._result_data = result['data']
+        self._result_data = result["data"]
         self.rowcount = len(self._result_data)
 
         self.description = []
-        for col in result['fields']:
-            if casts and col['name'] in casts:
-                col_type = cast_type_to_sqla_type[casts[col['name']]]
-            elif col['name'] not in fields_by_name:
+        for col in result["fields"]:
+            if casts and col["name"] in casts:
+                col_type = cast_type_to_sqla_type[casts[col["name"]]]
+            elif col["name"] not in fields_by_name:
                 col_type = VARCHAR
             else:
-                col_type = metrika_types_to_sqla.get(fields_by_name[col['name']]['type'], NULLTYPE)
-            self.description.append(
-                (col['label'] or col['name'], col_type, None, None, None, None, None)
-            )
+                col_type = metrika_types_to_sqla.get(fields_by_name[col["name"]]["type"], NULLTYPE)
+            self.description.append((col["label"] or col["name"], col_type, None, None, None, None, None))
 
     # def executemany(self, sql: str, seq_of_parameters: Iterable[Iterable]): ...
 

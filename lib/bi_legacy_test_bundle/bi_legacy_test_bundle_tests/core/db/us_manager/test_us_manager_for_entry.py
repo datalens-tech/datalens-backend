@@ -5,15 +5,15 @@ from typing import Callable
 import pytest
 
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-
-from dl_core.us_entry import USEntry, USMigrationEntry
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_core.us_entry import (
+    USEntry,
+    USMigrationEntry,
+)
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
-
 from dl_core_testing.connection import make_connection
-
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 
 
 class BaseTestUSMForEntry:
@@ -82,17 +82,17 @@ class BaseTestUSMForEntry:
         sync_usm.save(initial_entry)
 
         raw_entry = sync_usm.get_by_id(initial_entry.uuid, expected_type=USMigrationEntry)
-        raw_entry.unversioned_data['new_unversioned_field'] = 'new_unversioned_val'
-        raw_entry.data['new_data_field'] = 'new_data_val'
+        raw_entry.unversioned_data["new_unversioned_field"] = "new_unversioned_val"
+        raw_entry.data["new_data_field"] = "new_data_val"
         sync_usm.save(raw_entry)
 
         reloaded_raw_entry = sync_usm.get_by_id(initial_entry.uuid, expected_type=USMigrationEntry)
         assert raw_entry is not reloaded_raw_entry
 
-        assert reloaded_raw_entry.data['new_data_field'] == 'new_data_val'
+        assert reloaded_raw_entry.data["new_data_field"] == "new_data_val"
         assert reloaded_raw_entry.data == raw_entry.data
 
-        assert reloaded_raw_entry.unversioned_data['new_unversioned_field'] == 'new_unversioned_val'
+        assert reloaded_raw_entry.unversioned_data["new_unversioned_field"] == "new_unversioned_val"
         assert reloaded_raw_entry.unversioned_data == raw_entry.unversioned_data
 
     def test_encryption_sync_usm(self, entry_sync_usm, sync_usm):
@@ -142,7 +142,7 @@ class BaseTestUSMForEntry:
 
 
 class TestUSMForConnectionPostgres(BaseTestUSMForEntry):
-    sensitive_fields = ('password',)
+    sensitive_fields = ("password",)
 
     @pytest.fixture()
     def entry_factory(self, postgres_db) -> Callable[[USManagerBase], ConnectionPostgreSQL]:
@@ -153,7 +153,7 @@ class TestUSMForConnectionPostgres(BaseTestUSMForEntry):
 
 
 class TestUSMForConnectionClickhouse(BaseTestUSMForEntry):
-    sensitive_fields = ('password',)
+    sensitive_fields = ("password",)
 
     @pytest.fixture()
     def entry_factory(self, clickhouse_db) -> Callable[[USManagerBase], ConnectionClickhouse]:

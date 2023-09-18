@@ -1,17 +1,25 @@
 from __future__ import annotations
 
+from bi_blackbox_client.tvm import (
+    TvmCliSingleton,
+    TvmDestination,
+    TvmDestinationSet,
+)
 from dl_core.exc import DatabaseQueryError
-from bi_blackbox_client.tvm import TvmCliSingleton, TvmDestination, TvmDestinationSet
-
 
 SOLOMON_TVM_MAP = {
-    'https://solomon.yandex.net': TvmDestination.SolomonProd,
-    'https://solomon-prestable.yandex.net': TvmDestination.SolomonPre,
+    "https://solomon.yandex.net": TvmDestination.SolomonProd,
+    "https://solomon-prestable.yandex.net": TvmDestination.SolomonPre,
 }
 
 
 class TvmCliSingletonSolomon(TvmCliSingleton):
-    destinations: TvmDestinationSet = frozenset((TvmDestination.SolomonProd, TvmDestination.SolomonPre,))  # type: ignore  # TODO: fix
+    destinations: TvmDestinationSet = frozenset(
+        (
+            TvmDestination.SolomonProd,
+            TvmDestination.SolomonPre,
+        )
+    )  # type: ignore  # TODO: fix
 
 
 def get_solomon_tvm_destination(url: str) -> TvmDestination:
@@ -19,8 +27,8 @@ def get_solomon_tvm_destination(url: str) -> TvmDestination:
         tvm_destination = SOLOMON_TVM_MAP[url]
     except KeyError as err:
         raise DatabaseQueryError(
-            message='Unexpected Solomon host',
+            message="Unexpected Solomon host",
             db_message=str(err),
-            query='',
+            query="",
         )
     return tvm_destination

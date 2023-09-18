@@ -1,6 +1,10 @@
 import asyncpg.exceptions as asyncpg_exc
 import psycopg2.errors
 
+from dl_connector_postgresql.core.postgresql_base.exc import (
+    PgDoublePrecisionRoundError,
+    PostgresSourceDoesNotExistError,
+)
 from dl_core.connectors.base.error_transformer import (
     ChainedDbErrorTransformer,
     DbErrorTransformer,
@@ -12,11 +16,6 @@ from dl_core.connectors.base.error_transformer import (
 )
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
-
-from dl_connector_postgresql.core.postgresql_base.exc import (
-    PgDoublePrecisionRoundError,
-    PostgresSourceDoesNotExistError,
-)
 
 sync_pg_db_error_transformer: DbErrorTransformer = ChainedDbErrorTransformer(
     [

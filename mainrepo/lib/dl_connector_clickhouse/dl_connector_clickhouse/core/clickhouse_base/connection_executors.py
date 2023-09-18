@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import (
+    Optional,
+    TypeVar,
+)
 
 import attr
-
-from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 from dl_connector_clickhouse.core.clickhouse_base.adapters import (
     AsyncClickHouseAdapter,
@@ -14,6 +14,8 @@ from dl_connector_clickhouse.core.clickhouse_base.adapters import (
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
+from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 _BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 

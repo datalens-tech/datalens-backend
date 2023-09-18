@@ -1,16 +1,5 @@
 import pytest
 
-from dl_constants.enums import (
-    BIType,
-    RawSQLLevel,
-)
-from dl_core.data_source_spec.sql import (
-    StandardSQLDataSourceSpec,
-    SubselectDataSourceSpec,
-)
-from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
-
 from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
@@ -21,6 +10,16 @@ from dl_connector_clickhouse.core.clickhouse.data_source import (
 )
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
+from dl_constants.enums import (
+    BIType,
+    RawSQLLevel,
+)
+from dl_core.data_source_spec.sql import (
+    StandardSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+)
+from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
 
 class TestClickHouseTableDataSource(

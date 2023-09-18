@@ -1,5 +1,9 @@
 import enum
-from typing import Type, ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+    Type,
+)
 
 import attr
 
@@ -36,42 +40,42 @@ class DocsBuilder:
                 MText(
                     ru="Спецификация определения цвета для показателя",
                     en="Measures coloring specification",
-                )
+                ),
             ),
             (
                 ext.DataSourceSpec,
                 MText(
                     ru="Спецификация источника данных: таблица, подзапрос и т. д.",
                     en="Data source specification: table, subquery, etc.",
-                )
+                ),
             ),
             (
                 ext.CalcSpec,
                 MText(
                     ru="Спецификация поля данных: поле в таблице, формула и т. д.",
                     en="Data field specification: table cell, formula etc.",
-                )
+                ),
             ),
             (
                 ext.ChartFieldSource,
                 MText(
                     ru="Ссылка на поле данных или специальный тип поля.",
                     en="Link to a data field or a special field type.",
-                )
+                ),
             ),
             (
                 ext.FieldColoring,
                 MText(
                     ru="Конфигурация цветового изменения чарта.",
                     en="Chart color changes configuration.",
-                )
+                ),
             ),
             (
                 ext.Visualization,
                 MText(
                     ru="Визуализация данных.",
                     en="Data visualization",
-                )
+                ),
             ),
             (
                 ext.ControlValueSource,
@@ -99,7 +103,7 @@ class DocsBuilder:
                 MText(
                     ru="Секрет (пароль или токен) для подключения. На данный момент поддерживается только plain-text.",
                     en="Secret for connection (password or token). Currently, only the plain text is supported.",
-                )
+                ),
             ),
             (
                 ext.EntryRef,
@@ -108,13 +112,7 @@ class DocsBuilder:
                     en="Link to a component in Visualization.",
                 ),
             ),
-            (
-                ext.Connection,
-                MText(
-                    ru="Подключение к базе данных.",
-                    en="Connection to database"
-                )
-            ),
+            (ext.Connection, MText(ru="Подключение к базе данных.", en="Connection to database")),
         ]
 
     def get_types_to_register_as_dedicated_docs(self) -> list[Type]:

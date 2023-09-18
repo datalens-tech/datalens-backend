@@ -4,10 +4,13 @@ from typing import Optional
 
 import attr
 
-from dl_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
 from bi_api_commons_ya_team.constants import DLCookiesYT
-
 from dl_api_commons.base_models import AuthData
+from dl_constants.api_constants import (
+    DLCookies,
+    DLHeaders,
+    DLHeadersCommon,
+)
 
 
 @attr.s(frozen=True)
@@ -30,8 +33,4 @@ class YaTeamAuthData(AuthData):
             DLCookiesYT.YA_TEAM_SESSION_ID: self.cookie_session_id,
             DLCookiesYT.YA_TEAM_SESSION_ID_2: self.cookie_sessionid2,
         }
-        return {
-            c_name: c_value
-            for c_name, c_value in cookies.items()
-            if c_value is not None
-        }
+        return {c_name: c_value for c_name, c_value in cookies.items() if c_value is not None}

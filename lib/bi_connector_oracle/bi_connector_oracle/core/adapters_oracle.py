@@ -1,16 +1,28 @@
 from __future__ import annotations
 
-from typing import Any, Tuple, Optional, ClassVar, Type
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Tuple,
+    Type,
+)
 
 import oracledb  # type: ignore  # TODO: fix
 import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_ora  # not all data types are imported in init in older SA versions
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, \
-    ClassicSQLConnLineConstructor
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
+    BaseClassicAdapter,
+    ClassicSQLConnLineConstructor,
+)
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from dl_core.connection_models import DBIdent, SchemaIdent, TableIdent
+from dl_core.connection_models import (
+    DBIdent,
+    SchemaIdent,
+    TableIdent,
+)
 from dl_core.db.native_type import SATypeSpec
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
@@ -38,15 +50,17 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     conn_type = CONNECTION_TYPE_ORACLE
     conn_line_constructor_type: ClassVar[Type[OracleConnLineConstructor]] = OracleConnLineConstructor
 
-    dsn_template = '{dialect}://{user}:{passwd}@(DESCRIPTION=' \
-                   '(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={port}))' \
-                   '(CONNECT_DATA=({db_name_type}={db_name})))'
+    dsn_template = (
+        "{dialect}://{user}:{passwd}@(DESCRIPTION="
+        "(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={port}))"
+        "(CONNECT_DATA=({db_name_type}={db_name})))"
+    )
 
     def _test(self) -> None:
-        self.execute(DBAdapterQuery('SELECT 1 FROM DUAL')).get_all()
+        self.execute(DBAdapterQuery("SELECT 1 FROM DUAL")).get_all()
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        return self.execute(DBAdapterQuery('SELECT * FROM V$VERSION', db_name=db_ident.db_name)).get_all()[0][0]
+        return self.execute(DBAdapterQuery("SELECT * FROM V$VERSION", db_name=db_ident.db_name)).get_all()[0][0]
 
     def normalize_sa_col_type(self, sa_col_type: TypeEngine) -> TypeEngine:
         if isinstance(sa_col_type, sa_ora.NUMBER) and not sa_col_type.scale:
@@ -61,9 +75,11 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         if not sa_exists_result:
             assert "'" not in table_ident.table_name  # FIXME: quote the name properly
 
-            rows = self.execute(DBAdapterQuery(
-                f'SELECT view_name FROM all_views WHERE UPPER(view_name) = \'{table_ident.table_name.upper()}\''
-            )).get_all()
+            rows = self.execute(
+                DBAdapterQuery(
+                    f"SELECT view_name FROM all_views WHERE UPPER(view_name) = '{table_ident.table_name.upper()}'"
+                )
+            ).get_all()
 
             return len(rows) > 0
 
@@ -82,36 +98,36 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         # # Listed are all types from 8.1.0,
         # # Enabled are types listed in `dl_core.db.conversions`.
         # getattr(oracledb, 'DB_TYPE_BFILE', None): sa_ora.NULL,
-        getattr(oracledb, 'DB_TYPE_BINARY_DOUBLE', None): sa_ora.BINARY_DOUBLE,
-        getattr(oracledb, 'DB_TYPE_BINARY_FLOAT', None): sa_ora.BINARY_FLOAT,
+        getattr(oracledb, "DB_TYPE_BINARY_DOUBLE", None): sa_ora.BINARY_DOUBLE,
+        getattr(oracledb, "DB_TYPE_BINARY_FLOAT", None): sa_ora.BINARY_FLOAT,
         # getattr(oracledb, 'DB_TYPE_BINARY_INTEGER', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_BLOB', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_BOOLEAN', None): sa_ora.NULL,
-        getattr(oracledb, 'DB_TYPE_CHAR', None): sa_ora.CHAR,
+        getattr(oracledb, "DB_TYPE_CHAR", None): sa_ora.CHAR,
         # getattr(oracledb, 'DB_TYPE_CLOB', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_CURSOR', None): sa_ora.NULL,
-        getattr(oracledb, 'DB_TYPE_DATE', None): sa_ora.DATE,
+        getattr(oracledb, "DB_TYPE_DATE", None): sa_ora.DATE,
         # getattr(oracledb, 'DB_TYPE_INTERVAL_DS', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_INTERVAL_YM', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_JSON', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_LONG', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_LONG_RAW', None): sa_ora.NULL,
-        getattr(oracledb, 'DB_TYPE_NCHAR', None): sa_ora.NCHAR,
+        getattr(oracledb, "DB_TYPE_NCHAR", None): sa_ora.NCHAR,
         # getattr(oracledb, 'DB_TYPE_NCLOB', None): sa_ora.NULL,
-        getattr(oracledb, 'DB_TYPE_NUMBER', None): sa_ora.NUMBER,
-        getattr(oracledb, 'DB_TYPE_NVARCHAR', None): sa_ora.NVARCHAR,
+        getattr(oracledb, "DB_TYPE_NUMBER", None): sa_ora.NUMBER,
+        getattr(oracledb, "DB_TYPE_NVARCHAR", None): sa_ora.NVARCHAR,
         # getattr(oracledb, 'DB_TYPE_OBJECT', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_RAW', None): sa_ora.NULL,
         # getattr(oracledb, 'DB_TYPE_ROWID', None): sa_ora.NULL,
-        getattr(oracledb, 'DB_TYPE_TIMESTAMP', None): sa_ora.TIMESTAMP,
+        getattr(oracledb, "DB_TYPE_TIMESTAMP", None): sa_ora.TIMESTAMP,
         # getattr(oracledb, 'DB_TYPE_TIMESTAMP_LTZ', None): sa_ora.NULL,
         # # NOTE: not `timestamptz` here; matches the view schema, somehow.
-        getattr(oracledb, 'DB_TYPE_TIMESTAMP_TZ', None): sa_ora.TIMESTAMP,
-        getattr(oracledb, 'DB_TYPE_VARCHAR', None): sa_ora.VARCHAR,
+        getattr(oracledb, "DB_TYPE_TIMESTAMP_TZ", None): sa_ora.TIMESTAMP,
+        getattr(oracledb, "DB_TYPE_VARCHAR", None): sa_ora.VARCHAR,
     }
 
     def _cursor_column_to_name(self, cursor_col, dialect=None) -> str:  # type: ignore  # TODO: fix
-        assert dialect, 'required in this case'
+        assert dialect, "required in this case"
         # To match the `get_columns` result.
         # Generally just lowercases the name.
         # Notably, column names seem to be case-insensitive in oracle.
@@ -162,10 +178,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     def _make_cursor_info(self, cursor, db_session=None) -> dict:  # type: ignore  # TODO: fix
         return dict(
             super()._make_cursor_info(cursor, db_session=db_session),
-            cxoracle_types=[
-                self._cursor_type_to_str(column[1])
-                for column in cursor.description
-            ],
+            cxoracle_types=[self._cursor_type_to_str(column[1]) for column in cursor.description],
         )
 
     ORACLE_LIST_SOURCES_ALL_SCHEMA_SQL = """

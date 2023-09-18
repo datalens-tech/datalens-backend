@@ -1,15 +1,13 @@
-from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
-from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
+from dl_api_connector.form_config.models.common import CommonFieldName
 from dl_constants.enums import ConnectionType
 
-from dl_api_connector.form_config.models.common import CommonFieldName
+from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
+from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 
 
-def get_db_host_section(db_type: ConnectionType) -> tuple[
-        mdb_components.CloudTreeSelectRow,
-        mdb_components.MDBClusterRow,
-        mdb_components.MDBHostRow,
-]:
+def get_db_host_section(
+    db_type: ConnectionType,
+) -> tuple[mdb_components.CloudTreeSelectRow, mdb_components.MDBClusterRow, mdb_components.MDBHostRow,]:
     cloud_tree_selector_row = mdb_components.CloudTreeSelectRow(
         name=MDBFieldName.mdb_folder_id,
         display_conditions={

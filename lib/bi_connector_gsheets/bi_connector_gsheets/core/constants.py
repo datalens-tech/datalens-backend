@@ -1,6 +1,9 @@
-from dl_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
+from dl_constants.enums import (
+    ConnectionType,
+    CreateDSFrom,
+    SourceBackendType,
+)
 
-
-BACKEND_TYPE_GSHEETS = SourceBackendType.declare('GSHEETS')
-CONNECTION_TYPE_GSHEETS = ConnectionType.declare('gsheets')
-SOURCE_TYPE_GSHEETS = CreateDSFrom.declare('GSHEETS')
+BACKEND_TYPE_GSHEETS = SourceBackendType.declare("GSHEETS")
+CONNECTION_TYPE_GSHEETS = ConnectionType.declare("gsheets")
+SOURCE_TYPE_GSHEETS = CreateDSFrom.declare("GSHEETS")

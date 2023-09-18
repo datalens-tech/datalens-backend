@@ -7,6 +7,13 @@ import flask
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
+from bi_cloud_integration.sa_creds import (
+    SACredsRetrieverFactory,
+    SACredsSettings,
+)
+from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
 from dl_api_lib.app.control_api.app import (
     ControlApiAppFactory,
     EnvSetupResult,
@@ -14,19 +21,12 @@ from dl_api_lib.app.control_api.app import (
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
-from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
-from bi_cloud_integration.sa_creds import (
-    SACredsRetrieverFactory,
-    SACredsSettings,
-)
 from dl_configs.enums import RequiredService
 from dl_constants.enums import USAuthMode
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
-from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
 
 
 class ControlApiSRFactoryBuilderNebius(SRFactoryBuilder[ControlPlaneAppSettings]):

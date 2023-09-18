@@ -20,6 +20,7 @@ import attr
 import sqlalchemy as sa
 
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 from dl_constants.enums import ConnectionType
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
@@ -31,9 +32,8 @@ from dl_core.db.native_type import GenericNativeType
 from dl_core.exc import DatabaseQueryError
 from dl_core.utils import make_url
 
-from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
-
 if TYPE_CHECKING:
+    from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
     from dl_constants.types import TBIChunksGen
     from dl_core.connection_executors.models.db_adapter_data import (
         DBAdapterQuery,
@@ -45,8 +45,6 @@ if TYPE_CHECKING:
         TableDefinition,
         TableIdent,
     )
-
-    from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
 
 LOGGER = logging.getLogger(__name__)
 

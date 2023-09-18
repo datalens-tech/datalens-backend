@@ -2,6 +2,9 @@ from typing import Optional
 
 import pytest
 
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse_tests.db.config import CoreConnectionSettings
+from dl_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
@@ -9,10 +12,6 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite,
 )
 from dl_testing.regulated_test import RegulatedTestParams
-
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-from dl_connector_clickhouse_tests.db.config import CoreConnectionSettings
-from dl_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
 
 
 class ClickHouseSyncAsyncConnectionExecutorCheckBase(

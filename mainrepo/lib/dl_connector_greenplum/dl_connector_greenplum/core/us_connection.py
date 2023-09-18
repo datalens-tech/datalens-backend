@@ -2,15 +2,14 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from dl_core.us_connection_base import DataSourceTemplate
-from dl_i18n.localizer_base import Localizer
-
 from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_SUBSELECT,
     SOURCE_TYPE_GP_TABLE,
 )
 from dl_connector_greenplum.core.dto import GreenplumConnDTO
 from dl_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_i18n.localizer_base import Localizer
 
 
 class GreenplumConnection(ConnectionPostgreSQLBase):

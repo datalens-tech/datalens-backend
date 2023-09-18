@@ -1,11 +1,17 @@
-from typing import Any, TypeVar, Sequence, Optional
+from copy import deepcopy
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+    TypeVar,
+)
 
 import attr
-from copy import deepcopy
+
+from bi_external_api.domain.utils import ensure_tuple
 
 from .common import ChartJSONBuilder
 from .dataset import BaseDatasetJSONBuilder
-from bi_external_api.domain.utils import ensure_tuple
 
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="ChartJSONBuilderSingleDataset")
 
@@ -81,6 +87,6 @@ class ChartJSONBuilderSingleDataset(ChartJSONBuilder):
             datasets=[dataset_name],
             ad_hoc_fields=all_ad_hoc_fields,
             visualization=visualization,
-            filters=[]  # TODO: more customization for acceptance tests
+            filters=[],  # TODO: more customization for acceptance tests
         )
         return chart

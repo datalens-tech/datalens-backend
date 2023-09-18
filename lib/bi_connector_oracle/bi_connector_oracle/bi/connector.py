@@ -1,26 +1,27 @@
-from bi_connector_oracle.core.connector import (
-    OracleCoreConnector,
-    OracleCoreConnectionDefinition,
-    OracleTableCoreSourceDefinition,
-    OracleSubselectCoreSourceDefinition,
+from dl_api_connector.api_schema.source_base import (
+    SchematizedSQLDataSourceSchema,
+    SchematizedSQLDataSourceTemplateSchema,
+    SubselectDataSourceSchema,
+    SubselectDataSourceTemplateSchema,
 )
-
 from dl_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
-)
-from dl_api_connector.api_schema.source_base import (
-    SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
-    SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
+    BiApiSourceDefinition,
 )
 
-from bi_connector_oracle.formula.constants import DIALECT_NAME_ORACLE
 from bi_connector_oracle.bi.api_schema.connection import OracleConnectionSchema
 from bi_connector_oracle.bi.connection_form.form_config import OracleConnectionFormFactory
 from bi_connector_oracle.bi.connection_info import OracleConnectionInfoProvider
-from bi_connector_oracle.bi.i18n.localizer import CONFIGS
 from bi_connector_oracle.bi.dashsql import OracleDashSQLParamLiteralizer
+from bi_connector_oracle.bi.i18n.localizer import CONFIGS
+from bi_connector_oracle.core.connector import (
+    OracleCoreConnectionDefinition,
+    OracleCoreConnector,
+    OracleSubselectCoreSourceDefinition,
+    OracleTableCoreSourceDefinition,
+)
+from bi_connector_oracle.formula.constants import DIALECT_NAME_ORACLE
 
 
 class OracleBiApiTableSourceDefinition(BiApiSourceDefinition):

@@ -1,47 +1,64 @@
 from __future__ import annotations
 
 import datetime
-from typing import List, Optional, Sequence, Any
+from typing import (
+    Any,
+    List,
+    Optional,
+    Sequence,
+)
 
 import attr
 from grpc import Channel
-
 from yandex.cloud.priv.access.access_pb2 import (
-    AccessBinding, AccessBindingAction, AccessBindingDelta,
-    ListAccessBindingsRequest, Subject, UpdateAccessBindingsRequest,
+    AccessBinding,
+    AccessBindingAction,
+    AccessBindingDelta,
+    ListAccessBindingsRequest,
+    Subject,
+    UpdateAccessBindingsRequest,
 )
 from yandex.cloud.priv.iam.v1.key_service_pb2 import (
-    CreateKeyRequest, DeleteKeyRequest, GetKeyRequest, ListKeysRequest,
+    CreateKeyRequest,
+    DeleteKeyRequest,
+    GetKeyRequest,
+    ListKeysRequest,
 )
 from yandex.cloud.priv.iam.v1.key_service_pb2_grpc import KeyServiceStub
 from yandex.cloud.priv.iam.v1.service_account_pb2 import ServiceAccount
+
 # https://a.yandex-team.ru/arc/trunk/arcadia/cloud/bitbucket/private-api/yandex/cloud/priv/iam/v1/service_account_service.proto
 from yandex.cloud.priv.iam.v1.service_account_service_pb2 import (
-    CreateServiceAccountRequest, DeleteServiceAccountRequest,
-    GetServiceAccountRequest, ListServiceAccountsRequest,
+    CreateServiceAccountRequest,
+    DeleteServiceAccountRequest,
+    GetServiceAccountRequest,
+    ListServiceAccountsRequest,
 )
 from yandex.cloud.priv.iam.v1.service_account_service_pb2_grpc import ServiceAccountServiceStub
-from yandex.cloud.priv.resourcemanager.v1.folder_service_pb2 import ResolveFoldersRequest
-from yandex.cloud.priv.resourcemanager.v1.folder_service_pb2_grpc import FolderServiceStub
 from yandex.cloud.priv.resourcemanager.v1.cloud_service_pb2 import ResolveCloudsRequest
 from yandex.cloud.priv.resourcemanager.v1.cloud_service_pb2_grpc import CloudServiceStub
+from yandex.cloud.priv.resourcemanager.v1.folder_service_pb2 import ResolveFoldersRequest
+from yandex.cloud.priv.resourcemanager.v1.folder_service_pb2_grpc import FolderServiceStub
 from yandex.cloud.priv.resourcemanager.v1.operation_service_pb2 import GetOperationRequest
 from yandex.cloud.priv.resourcemanager.v1.operation_service_pb2_grpc import OperationServiceStub
 
 from bi_cloud_integration import model
 from bi_cloud_integration.exc import grpc_exc_handler
 from bi_cloud_integration.model import (
-    ServiceAccountData,
-    ServiceAccountKeyWithPrivateKeyData,
-    ServiceAccountKeyData,
     Operation,
+    ServiceAccountData,
+    ServiceAccountKeyData,
+    ServiceAccountKeyWithPrivateKeyData,
 )
-from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient, DLYCServiceConfig
+from bi_cloud_integration.yc_client_base import (
+    DLYCServiceConfig,
+    DLYCSingleServiceClient,
+)
 from bi_cloud_integration.yc_operation_base import (
-    NoResponseOpConverter,
     DLGenericOperationService,
-    YCOperationFailed,
+    NoResponseOpConverter,
     YCOperationAwaitTimeout,
+    YCOperationFailed,
 )
 
 
@@ -60,7 +77,7 @@ class DLSAServiceClient(DLYCSingleServiceClient):
         return ServiceAccountData(id=grpc_sa.id, name=grpc_sa.name, description=grpc_sa.description)
 
     def _handle_grpc_error(self, err: Any) -> None:
-        """ Disable the handle-by-default here, to specify the `operation_code` explicitly """
+        """Disable the handle-by-default here, to specify the `operation_code` explicitly"""
         pass
 
     def get_svc_acct_sync(self, svc_acct_id: str) -> Optional[ServiceAccountData]:
@@ -69,9 +86,7 @@ class DLSAServiceClient(DLYCSingleServiceClient):
 
     def list_svc_accts_sync(self, folder_id: str) -> List[ServiceAccountData]:
         rs = self.service.List(ListServiceAccountsRequest(folder_id=folder_id))
-        return [
-            ServiceAccountData(id=sa.id, name=sa.name, description=sa.description)
-            for sa in rs.service_accounts]
+        return [ServiceAccountData(id=sa.id, name=sa.name, description=sa.description) for sa in rs.service_accounts]
 
     def create_svc_acct_sync(self, folder_id: str, name: str, description: str) -> ServiceAccountData:
         """
@@ -80,12 +95,14 @@ class DLSAServiceClient(DLYCSingleServiceClient):
         :param description: Descritpion of
         :return: Created service account data
         """
-        with grpc_exc_handler(operation_code='sa_create'):
-            rs = self.service.Create(CreateServiceAccountRequest(
-                folder_id=folder_id,
-                name=name,
-                description=description,
-            ))
+        with grpc_exc_handler(operation_code="sa_create"):
+            rs = self.service.Create(
+                CreateServiceAccountRequest(
+                    folder_id=folder_id,
+                    name=name,
+                    description=description,
+                )
+            )
 
         if rs.response.Is(ServiceAccount.DESCRIPTOR):  # type: ignore
             sa = ServiceAccount()
@@ -118,11 +135,15 @@ class DLKeyServiceClient(DLYCSingleServiceClient):
             public_key=pb_key.public_key,
         )
 
-    def create_svc_acct_key_sync(self, service_account_id: str, description: str) -> ServiceAccountKeyWithPrivateKeyData:
-        rs = self.service.Create(CreateKeyRequest(
-            service_account_id=service_account_id,
-            description=description,
-        ))
+    def create_svc_acct_key_sync(
+        self, service_account_id: str, description: str
+    ) -> ServiceAccountKeyWithPrivateKeyData:
+        rs = self.service.Create(
+            CreateKeyRequest(
+                service_account_id=service_account_id,
+                description=description,
+            )
+        )
         pb_key = rs.key
         return ServiceAccountKeyWithPrivateKeyData(
             svc_acct_key_data=self._pb_key_to_key_data(pb_key),
@@ -130,23 +151,23 @@ class DLKeyServiceClient(DLYCSingleServiceClient):
         )
 
     def list_svc_acct_keys_sync(
-            self,
-            service_account_id: str,
-            _page_size: Optional[int] = None,
+        self,
+        service_account_id: str,
+        _page_size: Optional[int] = None,
     ) -> List[ServiceAccountKeyData]:
         page_size = self._get_page_size(_page_size)
         page_token = None
         result: List[ServiceAccountKeyData] = []
 
         while True:
-            rs = self.service.List(ListKeysRequest(
-                service_account_id=service_account_id,
-                page_size=page_size,
-                page_token=page_token,
-            ))
-            result.extend(
-                self._pb_key_to_key_data(pb_key)
-                for pb_key in rs.keys)
+            rs = self.service.List(
+                ListKeysRequest(
+                    service_account_id=service_account_id,
+                    page_size=page_size,
+                    page_token=page_token,
+                )
+            )
+            result.extend(self._pb_key_to_key_data(pb_key) for pb_key in rs.keys)
             page_token = rs.next_page_token
             if not page_token:
                 break
@@ -180,28 +201,29 @@ class DLFolderServiceClient(DLYCSingleServiceClient):
         return resolved[0].cloud_id
 
     def list_svc_acct_role_ids_on_folder_sync(
-            self,
-            svc_acct_id: str,
-            folder_id: str,
-            acct_type: str = 'serviceAccount',
-            _page_size: Optional[int] = None,
+        self,
+        svc_acct_id: str,
+        folder_id: str,
+        acct_type: str = "serviceAccount",
+        _page_size: Optional[int] = None,
     ) -> List[str]:
         page_size = self._get_page_size(_page_size)
         page_token = None
         result: List[str] = []
 
         while True:
-            rs = self.service.ListAccessBindings(ListAccessBindingsRequest(
-                resource_id=folder_id,
-                page_size=page_size,
-                page_token=page_token,
-                private_call=False,
-            ))
+            rs = self.service.ListAccessBindings(
+                ListAccessBindingsRequest(
+                    resource_id=folder_id,
+                    page_size=page_size,
+                    page_token=page_token,
+                    private_call=False,
+                )
+            )
             result.extend(
                 access_binding.role_id
                 for access_binding in rs.access_bindings
-                if access_binding.subject.id == svc_acct_id
-                and access_binding.subject.type == acct_type
+                if access_binding.subject.id == svc_acct_id and access_binding.subject.type == acct_type
             )
             page_token = rs.next_page_token
             if not page_token:
@@ -210,12 +232,12 @@ class DLFolderServiceClient(DLYCSingleServiceClient):
         return result
 
     def modify_folder_access_bindings_for_svc_acct_sync(
-            self,
-            svc_acct_id: str,
-            folder_id: str,
-            role_ids: Sequence[str],
-            action: model.AccessBindingAction,
-            acct_type: str = "serviceAccount",
+        self,
+        svc_acct_id: str,
+        folder_id: str,
+        role_ids: Sequence[str],
+        action: model.AccessBindingAction,
+        acct_type: str = "serviceAccount",
     ) -> Operation:
         rq = UpdateAccessBindingsRequest(
             resource_id=folder_id,
@@ -223,7 +245,7 @@ class DLFolderServiceClient(DLYCSingleServiceClient):
                 AccessBindingDelta(
                     action={
                         model.AccessBindingAction.ADD: AccessBindingAction.ADD,  # type: ignore
-                        model.AccessBindingAction.REMOVE: AccessBindingAction.REMOVE  # type: ignore
+                        model.AccessBindingAction.REMOVE: AccessBindingAction.REMOVE,  # type: ignore
                     }[action],
                     access_binding=AccessBinding(
                         role_id=role_id,
@@ -231,8 +253,9 @@ class DLFolderServiceClient(DLYCSingleServiceClient):
                             id=svc_acct_id,
                             type=acct_type,
                         ),
-                    )
-                ) for role_id in role_ids
+                    ),
+                )
+                for role_id in role_ids
             ],
             private_call=False,
         )
@@ -308,15 +331,19 @@ class IAMRMClient:
 
         # IAM
         self._sa_service_cli = DLSAServiceClient(
-            service_config=iam_service_config, channel=iam_channel, bearer_token=iam_token)
+            service_config=iam_service_config, channel=iam_channel, bearer_token=iam_token
+        )
         self._key_service_cli = DLKeyServiceClient(
-            service_config=iam_service_config, channel=iam_channel, bearer_token=iam_token)
+            service_config=iam_service_config, channel=iam_channel, bearer_token=iam_token
+        )
 
         # RM
         self._folder_service_cli = DLFolderServiceClient(
-            service_config=rm_service_config, channel=rm_channel, bearer_token=iam_token)
+            service_config=rm_service_config, channel=rm_channel, bearer_token=iam_token
+        )
         self._rm_operation_service = DLRMOperationService(
-            service_config=rm_service_config, channel=rm_channel, bearer_token=iam_token)
+            service_config=rm_service_config, channel=rm_channel, bearer_token=iam_token
+        )
 
     def get_svc_acct_sync(self, svc_acct_id: str) -> Optional[ServiceAccountData]:
         with grpc_exc_handler("sa_get"):
@@ -327,24 +354,30 @@ class IAMRMClient:
 
     def create_svc_acct_sync(self, folder_id: str, name: str, description: str) -> ServiceAccountData:
         return self._sa_service_cli.create_svc_acct_sync(
-            folder_id=folder_id, name=name, description=description,
+            folder_id=folder_id,
+            name=name,
+            description=description,
         )
 
     def delete_svc_acct_sync(self, svc_acct_id: str) -> None:
         return self._sa_service_cli.delete_svc_acct_sync(svc_acct_id=svc_acct_id)
 
-    def create_svc_acct_key_sync(self, service_account_id: str, description: str) -> ServiceAccountKeyWithPrivateKeyData:
+    def create_svc_acct_key_sync(
+        self, service_account_id: str, description: str
+    ) -> ServiceAccountKeyWithPrivateKeyData:
         return self._key_service_cli.create_svc_acct_key_sync(
-            service_account_id=service_account_id, description=description,
+            service_account_id=service_account_id,
+            description=description,
         )
 
     def list_svc_acct_keys_sync(
-            self,
-            service_account_id: str,
-            _page_size: Optional[int] = None,
+        self,
+        service_account_id: str,
+        _page_size: Optional[int] = None,
     ) -> List[ServiceAccountKeyData]:
         return self._key_service_cli.list_svc_acct_keys_sync(
-            service_account_id=service_account_id, _page_size=_page_size,
+            service_account_id=service_account_id,
+            _page_size=_page_size,
         )
 
     def get_svc_acct_key_sync(self, key_id: str) -> ServiceAccountKeyData:
@@ -354,28 +387,34 @@ class IAMRMClient:
         return self._key_service_cli.delete_svc_acct_key_sync(key_id=key_id)
 
     def list_svc_acct_role_ids_on_folder_sync(
-            self,
-            svc_acct_id: str,
-            folder_id: str,
-            acct_type: str = 'serviceAccount',
-            _page_size: Optional[int] = None,
+        self,
+        svc_acct_id: str,
+        folder_id: str,
+        acct_type: str = "serviceAccount",
+        _page_size: Optional[int] = None,
     ) -> List[str]:
         with grpc_exc_handler("sa_list_roles"):
             return self._folder_service_cli.list_svc_acct_role_ids_on_folder_sync(
-                svc_acct_id=svc_acct_id, folder_id=folder_id, acct_type=acct_type, _page_size=_page_size,
+                svc_acct_id=svc_acct_id,
+                folder_id=folder_id,
+                acct_type=acct_type,
+                _page_size=_page_size,
             )
 
     def modify_folder_access_bindings_for_svc_acct_sync(
-            self,
-            svc_acct_id: str,
-            folder_id: str,
-            role_ids: Sequence[str],
-            action: model.AccessBindingAction,
-            acct_type: str = "serviceAccount",
+        self,
+        svc_acct_id: str,
+        folder_id: str,
+        role_ids: Sequence[str],
+        action: model.AccessBindingAction,
+        acct_type: str = "serviceAccount",
     ) -> None:
         initial_op = self._folder_service_cli.modify_folder_access_bindings_for_svc_acct_sync(
-            svc_acct_id=svc_acct_id, folder_id=folder_id, role_ids=role_ids,
-            action=action, acct_type=acct_type,
+            svc_acct_id=svc_acct_id,
+            folder_id=folder_id,
+            role_ids=role_ids,
+            action=action,
+            acct_type=acct_type,
         )
 
         try:

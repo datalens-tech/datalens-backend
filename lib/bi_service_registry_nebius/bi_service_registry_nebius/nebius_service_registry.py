@@ -10,6 +10,7 @@ from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_billing_client import YCBillingApiClient
 from bi_cloud_integration.yc_subjects import DLYCMSClient
 from bi_cloud_integration.yc_ts_client import DLTSClient
+from bi_service_registry_nebius.iam_subject_resolver import IAMSubjectResolver
 from dl_core.rls import BaseSubjectResolver
 from dl_core.services_registry.inst_specific_sr import (
     InstallationSpecificServiceRegistry,
@@ -17,7 +18,6 @@ from dl_core.services_registry.inst_specific_sr import (
 )
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.utils import FutureRef
-from bi_service_registry_nebius.iam_subject_resolver import IAMSubjectResolver
 
 
 @attr.s

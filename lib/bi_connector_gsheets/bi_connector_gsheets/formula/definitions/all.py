@@ -4,7 +4,6 @@ from bi_connector_gsheets.formula.definitions.functions_string import DEFINITION
 from bi_connector_gsheets.formula.definitions.functions_type import DEFINITIONS_TYPE
 from bi_connector_gsheets.formula.definitions.operators_binary import DEFINITIONS_BINARY
 
-
 DEFINITIONS = [
     *DEFINITIONS_DATETIME,
     *DEFINITIONS_MARKUP,

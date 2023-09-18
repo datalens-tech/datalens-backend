@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 from dl_constants.enums import CreateDSFrom
+from dl_core.data_source.sql import (
+    StandardSQLDataSource,
+    SubselectDataSource,
+)
 
-from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ, SOURCE_TYPE_YQ_TABLE, SOURCE_TYPE_YQ_SUBSELECT
+from bi_connector_yql.core.yq.constants import (
+    CONNECTION_TYPE_YQ,
+    SOURCE_TYPE_YQ_SUBSELECT,
+    SOURCE_TYPE_YQ_TABLE,
+)
 from bi_connector_yql.core.yql_base.data_source import YQLDataSourceMixin
-from dl_core.data_source.sql import StandardSQLDataSource, SubselectDataSource
 
 
 class YQDataSourceMixin(YQLDataSourceMixin):
@@ -16,8 +23,8 @@ class YQDataSourceMixin(YQLDataSourceMixin):
 
 
 class YQTableDataSource(YQDataSourceMixin, StandardSQLDataSource):
-    """ YQ table """
+    """YQ table"""
 
 
 class YQSubselectDataSource(YQDataSourceMixin, SubselectDataSource):
-    """ YQ subselect """
+    """YQ subselect"""

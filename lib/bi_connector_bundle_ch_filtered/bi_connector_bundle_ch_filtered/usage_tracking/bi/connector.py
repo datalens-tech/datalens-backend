@@ -1,21 +1,24 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_filtered.usage_tracking.core.connector import (
-    UsageTrackingCoreConnectionDefinition,
-    UsageTrackingCoreSourceDefinition,
-    UsageTrackingCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_ch_filtered.usage_tracking.bi.api_schema.connection import UsageTrackingConnectionSchema
 from bi_connector_bundle_ch_filtered.usage_tracking.bi.connection_info import UsageTrackingConnectionInfoProvider
+from bi_connector_bundle_ch_filtered.usage_tracking.core.connector import (
+    UsageTrackingCoreConnectionDefinition,
+    UsageTrackingCoreConnector,
+    UsageTrackingCoreSourceDefinition,
+)
 
 
 class UsageTrackingBiApiConnectionDefinition(BiApiConnectionDefinition):
@@ -33,10 +36,6 @@ class UsageTrackingBiApiSourceDefinition(BiApiSourceDefinition):
 class UsageTrackingBiApiConnector(BiApiConnector):
     core_connector_cls = UsageTrackingCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        UsageTrackingBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        UsageTrackingBiApiSourceDefinition,
-    )
+    connection_definitions = (UsageTrackingBiApiConnectionDefinition,)
+    source_definitions = (UsageTrackingBiApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

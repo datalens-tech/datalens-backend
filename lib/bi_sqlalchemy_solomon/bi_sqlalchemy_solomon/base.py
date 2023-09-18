@@ -18,12 +18,13 @@ class SolomonCompiler(compiler.SQLCompiler):
 
 
 class SolomonDialect(default.DefaultDialect):  # type: ignore
-    name = 'bi_solomon'
+    name = "bi_solomon"
     statement_compiler = SolomonCompiler
 
     @classmethod
     def dbapi(cls):
         from bi_sqlalchemy_solomon import dbapi
+
         return dbapi
 
     def get_columns(self, connection, table_name, schema=None, **kw):

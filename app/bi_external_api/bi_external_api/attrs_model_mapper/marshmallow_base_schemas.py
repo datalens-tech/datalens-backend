@@ -2,10 +2,25 @@ from __future__ import annotations
 
 import collections
 import logging
-from typing import Generic, ClassVar, Type, Dict, Any, TypeVar, OrderedDict, Union, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Generic,
+    Optional,
+    OrderedDict,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import marshmallow
-from marshmallow import post_load, fields, pre_load, post_dump
+from marshmallow import (
+    fields,
+    post_dump,
+    post_load,
+    pre_load,
+)
 from marshmallow_oneofschema import OneOfSchema
 
 from bi_external_api.attrs_model_mapper import MapperBaseModel
@@ -47,8 +62,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
 
         if len(self._fields_to_skip_on_none):
             ordered_data = {
-                k: v for k, v in ordered_data.items()
-                if k not in self._fields_to_skip_on_none or v is not None
+                k: v for k, v in ordered_data.items() if k not in self._fields_to_skip_on_none or v is not None
             }
 
         if issubclass(self.target_cls, MapperBaseModel):
@@ -60,15 +74,14 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
 
     @classmethod
     def generate_new_regular_schema(
-            cls,
-            generate_for: Type[_TARGET_OBJECT_GENERATED_TV],
-            field_map: dict[str, fields.Field],
-            fields_to_skip_on_none: Optional[set[str]] = None,
+        cls,
+        generate_for: Type[_TARGET_OBJECT_GENERATED_TV],
+        field_map: dict[str, fields.Field],
+        fields_to_skip_on_none: Optional[set[str]] = None,
     ) -> Type[BaseSchema[_TARGET_OBJECT_GENERATED_TV]]:
         # TODO FIX: Generate mnemonic class name
         class ResultingSchema(
-            BaseSchema[_TARGET_OBJECT_GENERATED_TV],
-            marshmallow.Schema.from_dict(field_map)  # type: ignore
+            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)  # type: ignore
         ):
             class Meta:
                 ordered = True

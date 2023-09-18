@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import contextlib
 import logging
-from typing import Dict, Generator, Optional, Type
+from typing import (
+    Dict,
+    Generator,
+    Optional,
+    Type,
+)
 
 import attr
 import grpc
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,7 +25,7 @@ class DefaultYCExcInfo:
 
 @attr.s
 class YCBillingAPIError(Exception):
-    message: Optional[str] = attr.ib(default='YC Billing API error')
+    message: Optional[str] = attr.ib(default="YC Billing API error")
     status_code: Optional[int] = attr.ib(default=None)
 
 
@@ -56,7 +60,7 @@ CODE_TO_SIMPLE_CLS: Dict[grpc.StatusCode, Type[YCException]] = {
 
 
 def get_grpc_code(exc: grpc.RpcError) -> Optional[grpc.StatusCode]:
-    if hasattr(exc, 'code') and callable(exc.code):  # type: ignore
+    if hasattr(exc, "code") and callable(exc.code):  # type: ignore
         try:
             return exc.code()  # type: ignore
         except Exception:  # noqa
@@ -65,7 +69,7 @@ def get_grpc_code(exc: grpc.RpcError) -> Optional[grpc.StatusCode]:
 
 
 def get_grpc_details(exc: grpc.RpcError) -> Optional[str]:
-    if hasattr(exc, 'details') and callable(exc.details):  # type: ignore
+    if hasattr(exc, "details") and callable(exc.details):  # type: ignore
         try:
             return exc.details()  # type: ignore
         except Exception:  # noqa
@@ -78,10 +82,12 @@ def handle_grpc_error(err: grpc.RpcError, operation_code: Optional[str] = None) 
     err_grpc_code = get_grpc_code(err)
     err_cls = CODE_TO_SIMPLE_CLS.get(err_grpc_code)  # type: ignore
     if err_cls is not None:
-        raise err_cls(DefaultYCExcInfo(
-            operation_code=operation_code,
-            internal_details=internal_details,
-        )) from err
+        raise err_cls(
+            DefaultYCExcInfo(
+                operation_code=operation_code,
+                internal_details=internal_details,
+            )
+        ) from err
 
 
 @contextlib.contextmanager

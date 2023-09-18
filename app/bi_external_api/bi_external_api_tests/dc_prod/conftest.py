@@ -10,21 +10,21 @@ from bi_testing_ya.dlenv import DLEnv
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def env_param_getter() -> GenericEnvParamGetter:
-    filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
+    filepath = os.path.join(os.path.dirname(__file__), "params.yml")
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
 # Override fixture from `lib/dl_testing`
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def dl_env() -> DLEnv:
     return DLEnv.dc_prod
 
 
 @pytest.fixture(scope="session")
 def dc_rs_project_id(env_param_getter) -> str:
-    return env_param_getter.get_yaml_value('INTEGRATION_TESTS_DC_PROD_DATA')['could_id']  # FIXME: cloud_id?
+    return env_param_getter.get_yaml_value("INTEGRATION_TESTS_DC_PROD_DATA")["could_id"]  # FIXME: cloud_id?
 
 
 @pytest.fixture(scope="session")
@@ -37,24 +37,16 @@ def dc_rs_user_account(integration_tests_admin_sa_data) -> AccountCredentials:
 
     now = int(time.time())
     payload = {
-        'aud': 'https://auth.double.cloud/oauth/token',
-        'iss': sa_data.sa_id,
-        'sub': sa_data.sa_id,
-        'iat': now,
-        'exp': now + 360
+        "aud": "https://auth.double.cloud/oauth/token",
+        "iss": sa_data.sa_id,
+        "sub": sa_data.sa_id,
+        "iat": now,
+        "exp": now + 360,
     }
-    encoded_token = jwt.encode(
-        payload,
-        sa_data.key_pem_data,
-        algorithm='PS256',
-        headers={'kid': sa_data.key_id}
-    )
+    encoded_token = jwt.encode(payload, sa_data.key_pem_data, algorithm="PS256", headers={"kid": sa_data.key_id})
     resp = requests.post(
         "https://auth.double.cloud/oauth/token",
-        data={
-            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-            "assertion": encoded_token
-        },
+        data={"grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer", "assertion": encoded_token},
     )
     resp.raise_for_status()
 

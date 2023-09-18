@@ -1,14 +1,17 @@
-from typing import Type, TypedDict
+from typing import (
+    Type,
+    TypedDict,
+)
 
 import attr
 
-from dl_constants.enums import ConnectionType
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import datasets
-
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_constants.enums import ConnectionType
+
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
@@ -17,7 +20,6 @@ from bi_connector_chyt_internal.core.constants import (
 
 @attr.s
 class ConverterExtDataSourceToParams(ext.ExtDataSourceProcessor[datasets.DataSourceParams]):
-
     def process_schematized_table(self, dsrc: ext.TableDataSourceSpec) -> datasets.DataSourceParams:
         return datasets.DataSourceParamsSQL(
             db_name=dsrc.db_name,
@@ -43,9 +45,7 @@ class ConverterExtDataSourceToParams(ext.ExtDataSourceProcessor[datasets.DataSou
         return datasets.DataSourceParamsSubSQL(subsql=dsrc.sql)
 
     def process_chyt_list(self, dsrc: ext.CHYTTableListDataSourceSpec) -> datasets.DataSourceParams:
-        return datasets.DataSourceParamsCHYTTableList(
-            table_names="\n".join(dsrc.tables)
-        )
+        return datasets.DataSourceParamsCHYTTableList(table_names="\n".join(dsrc.tables))
 
 
 MAP_EXT_DSRC_TYPE_CONN_TYPE_INT_DSRC_TYPE: dict[
@@ -72,7 +72,7 @@ MAP_EXT_DSRC_TYPE_CONN_TYPE_INT_DSRC_TYPE: dict[
     ext.CHYTTableListDataSourceSpec: {
         CONNECTION_TYPE_CH_OVER_YT: datasets.DataSourceCHYTTableList,
         CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: datasets.DataSourceCHYTUserAuthTableList,
-    }
+    },
 }
 
 
@@ -86,8 +86,7 @@ def resolve_internal_dsrc_type(dsrc: ext.DataSource, conn_type: ConnectionType) 
 
 
 def convert_external_dsrc_to_add_action(
-        dsrc: ext.DataSource, *,
-        wb_context: WorkbookContext
+    dsrc: ext.DataSource, *, wb_context: WorkbookContext
 ) -> datasets.ActionDataSourceAdd:
     internal_conn_inst = wb_context.resolve_entry(
         datasets.ConnectionInstance,
@@ -161,17 +160,17 @@ class ConverterDataSourceParamsToExt:
 
 
 def convert_internal_datasource_to_external_data_source(
-        int_dsrc: datasets.DataSource,
-        *,
-        wb_context: WorkbookContext
+    int_dsrc: datasets.DataSource, *, wb_context: WorkbookContext
 ) -> ext.DataSource:
     internal_conn_inst = wb_context.resolve_entry(
         datasets.ConnectionInstance,
         ref=wb_context.ref(id=int_dsrc.connection_id),
     )
 
-    return ConverterDataSourceParamsToExt(common_args=dict(
-        connection_ref=internal_conn_inst.summary.name,
-        id=int_dsrc.id,
-        title=int_dsrc.title,
-    )).process(int_dsrc.parameters)
+    return ConverterDataSourceParamsToExt(
+        common_args=dict(
+            connection_ref=internal_conn_inst.summary.name,
+            id=int_dsrc.id,
+            title=int_dsrc.title,
+        )
+    ).process(int_dsrc.parameters)

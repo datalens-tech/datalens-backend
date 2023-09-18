@@ -1,37 +1,51 @@
 import json
 import os
 import random
-from typing import Callable, Dict, Optional, ClassVar, Any
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Optional,
+)
 
 import attr
+from bi import app_async
+import bi.app
 import boto3
+from botocore.client import BaseClient
 import flask
 import pytest
 import requests
 import shortuuid
-from botocore.client import BaseClient
 
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
-
-from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_configs.enums import AppType, EnvType
-
+from bi_api_lib_ya.app_settings import (
+    AsyncAppSettings,
+    ControlPlaneAppSettings,
+    YCAuthSettings,
+)
+from bi_legacy_test_bundle_tests.api_lib.config import DB_PARAMS
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
-from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
-from dl_testing.env_params.generic import GenericEnvParamGetter
-
-from dl_core_testing.flask_utils import FlaskTestClient, FlaskTestResponse
-
-import bi.app
-from bi import app_async
-from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings, YCAuthSettings
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-
-from dl_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
-
-from bi_legacy_test_bundle_tests.api_lib.config import DB_PARAMS
+from dl_api_lib_testing.client import (
+    FlaskSyncApiClient,
+    TestClientConverterAiohttpToFlask,
+    WrappedAioSyncApiClient,
+)
+from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_configs.enums import (
+    AppType,
+    EnvType,
+)
+from dl_core_testing.flask_utils import (
+    FlaskTestClient,
+    FlaskTestResponse,
+)
+from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
 class DataCloudTestingData:
@@ -40,24 +54,24 @@ class DataCloudTestingData:
 
     US_BASE_URL: ClassVar[str] = "https://us.pp-preprod.bi.yadc.io"
 
-    AWS_SECRET_ID_CRYPTO_KEYS: ClassVar[str] = (
-        "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-cry-k-cfg-CQImlk"
-    )
-    AWS_SECRET_ID_US_MASTER_TOKEN: ClassVar[str] = (
-        "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-us-master-token-2ceSkf"
-    )
+    AWS_SECRET_ID_CRYPTO_KEYS: ClassVar[
+        str
+    ] = "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-cry-k-cfg-CQImlk"
+    AWS_SECRET_ID_US_MASTER_TOKEN: ClassVar[
+        str
+    ] = "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-us-master-token-2ceSkf"
 
 
 def _get_aws_secret_value(client: Any, secret_id: str) -> str:
     return client.get_secret_value(
         SecretId=secret_id,
-        VersionStage='AWSCURRENT',
-    )['SecretString']
+        VersionStage="AWSCURRENT",
+    )["SecretString"]
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def env_param_getter() -> GenericEnvParamGetter:
-    filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
+    filepath = os.path.join(os.path.dirname(__file__), "params.yml")
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
@@ -75,8 +89,7 @@ def dc_rs_secret_mgr_client(env_param_getter: GenericEnvParamGetter) -> BaseClie
 @pytest.fixture(scope="session")
 def dc_rs_crypto_keys_config(dc_rs_secret_mgr_client) -> CryptoKeysConfig:
     secret_plain_text = _get_aws_secret_value(
-        dc_rs_secret_mgr_client,
-        secret_id=DataCloudTestingData.AWS_SECRET_ID_CRYPTO_KEYS
+        dc_rs_secret_mgr_client, secret_id=DataCloudTestingData.AWS_SECRET_ID_CRYPTO_KEYS
     )
     return CryptoKeysConfig.from_json(json.loads(secret_plain_text))
 
@@ -105,14 +118,15 @@ def dc_rs_us_base_url() -> str:
 # Control plane settings & apps
 #
 
+
 @pytest.fixture(scope="session")
 def dc_rs_cp_app_settings(
-        dl_env,
-        rqe_config_subprocess,
-        dc_rs_us_master_token,
-        dc_rs_crypto_keys_config,
-        dc_rs_us_base_url,
-        ext_sys_requisites,
+    dl_env,
+    rqe_config_subprocess,
+    dc_rs_us_master_token,
+    dc_rs_crypto_keys_config,
+    dc_rs_us_base_url,
+    ext_sys_requisites,
 ) -> ControlPlaneAppSettings:
     assert dl_env == DLEnv.dc_testing
 
@@ -140,11 +154,11 @@ def dc_rs_cp_app(dc_rs_cp_app_settings) -> flask.Flask:
     )
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def dc_rs_bi_api_client_factory(
-        dc_rs_cp_app,
-        dc_rc_user_account,
-        dc_rs_project_id,
+    dc_rs_cp_app,
+    dc_rc_user_account,
+    dc_rs_project_id,
 ) -> Callable[[], FlaskTestClient]:
     def factory():
         class LocalClient(FlaskTestClient):
@@ -166,7 +180,7 @@ def dc_rs_bi_api_client_factory(
     return factory
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def dc_rs_bi_api_client(dc_rs_bi_api_client_factory) -> FlaskTestClient:
     return dc_rs_bi_api_client_factory()
 
@@ -175,14 +189,15 @@ def dc_rs_bi_api_client(dc_rs_bi_api_client_factory) -> FlaskTestClient:
 # Data plane settings & apps
 #
 
+
 @pytest.fixture(scope="session")
 def dc_rs_dp_app_settings(
-        dl_env,
-        ext_sys_requisites,
-        rqe_config_subprocess,
-        dc_rs_us_master_token,
-        dc_rs_crypto_keys_config,
-        dc_rs_us_base_url,
+    dl_env,
+    ext_sys_requisites,
+    rqe_config_subprocess,
+    dc_rs_us_master_token,
+    dc_rs_crypto_keys_config,
+    dc_rs_us_base_url,
 ) -> AsyncAppSettings:
     assert dl_env == DLEnv.dc_testing
     return AsyncAppSettings(
@@ -201,13 +216,13 @@ def dc_rs_dp_app_settings(
     )
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def dc_rs_dp_low_level_client(loop, aiohttp_client, dc_rs_dp_app_settings):
     app = app_async.create_app(setting=dc_rs_dp_app_settings, connectors_settings={})
     return loop.run_until_complete(aiohttp_client(app))
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def dc_rs_data_api_v1(loop, dc_rs_project_id, dc_rc_user_account, dc_rs_dp_low_level_client) -> SyncHttpDataApiV1:
     return SyncHttpDataApiV1(
         client=WrappedAioSyncApiClient(
@@ -217,7 +232,7 @@ def dc_rs_data_api_v1(loop, dc_rs_project_id, dc_rc_user_account, dc_rs_dp_low_l
                 extra_headers={
                     DLHeadersYC.IAM_TOKEN.value: dc_rc_user_account.token,
                     "x-dc-projectid": dc_rs_project_id,
-                }
+                },
             )
         )
     )
@@ -229,7 +244,7 @@ class DatasetAPISet:
     data_api_v1: SyncHttpDataApiV1
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def dc_rs_ds_api_set(dc_rs_data_api_v1, dc_rs_bi_api_client) -> DatasetAPISet:
     api_set = DatasetAPISet(
         control_api_v1=SyncHttpDatasetApiV1(
@@ -245,6 +260,7 @@ def dc_rs_ds_api_set(dc_rs_data_api_v1, dc_rs_bi_api_client) -> DatasetAPISet:
 # Entities
 #
 
+
 @pytest.fixture(scope="session")
 def dc_rs_conn_data_clickhouse() -> Dict[str, Any]:
     ch_user = "datalens"
@@ -253,11 +269,11 @@ def dc_rs_conn_data_clickhouse() -> Dict[str, Any]:
     ch_port = int(ch_port)
 
     return {
-        'secure': 'off',
-        'host': ch_host,
-        'port': ch_port,
-        'username': ch_user,
-        'password': ch_password,
+        "secure": "off",
+        "host": ch_host,
+        "port": ch_port,
+        "username": ch_user,
+        "password": ch_password,
     }
 
 
@@ -270,29 +286,29 @@ def dc_rs_conn_data_postgres() -> Dict[str, Any]:
     pg_db = "datalens"
 
     return {
-        'host': pg_host,
-        'port': pg_port,
-        'db_name': pg_db,
-        'username': pg_user,
-        'password': pg_password,
+        "host": pg_host,
+        "port": pg_port,
+        "db_name": pg_db,
+        "username": pg_user,
+        "password": pg_password,
     }
 
 
 @pytest.fixture(scope="function")
 def dc_rs_connection_id_clickhouse(dc_rs_conn_data_clickhouse, dc_rs_bi_api_client, dc_rs_workbook_id) -> str:
-    conn_name = 'test__{}'.format(random.randint(0, 10000000))
+    conn_name = "test__{}".format(random.randint(0, 10000000))
     conn_data = {
-        'name': conn_name,
-        'workbook_id': dc_rs_workbook_id,
+        "name": conn_name,
+        "workbook_id": dc_rs_workbook_id,
         #
-        'type': 'clickhouse',
+        "type": "clickhouse",
         **dc_rs_conn_data_clickhouse,
     }
 
     resp = dc_rs_bi_api_client.post(
         "/api/v1/connections",
         data=json.dumps(conn_data),
-        content_type='application/json',
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
     return resp.json["id"]
@@ -300,19 +316,19 @@ def dc_rs_connection_id_clickhouse(dc_rs_conn_data_clickhouse, dc_rs_bi_api_clie
 
 @pytest.fixture(scope="function")
 def dc_rs_connection_id_postgres(dc_rs_conn_data_postgres, dc_rs_bi_api_client, dc_rs_workbook_id) -> str:
-    conn_name = 'test__{}'.format(random.randint(0, 10000000))
+    conn_name = "test__{}".format(random.randint(0, 10000000))
     conn_data = {
-        'name': conn_name,
-        'workbook_id': dc_rs_workbook_id,
+        "name": conn_name,
+        "workbook_id": dc_rs_workbook_id,
         #
-        'type': 'postgres',
+        "type": "postgres",
         **dc_rs_conn_data_postgres,
     }
 
     resp = dc_rs_bi_api_client.post(
         "/api/v1/connections",
         data=json.dumps(conn_data),
-        content_type='application/json',
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
     return resp.json["id"]
@@ -326,7 +342,7 @@ def dc_rs_project_id(env_param_getter, dl_env: DLEnv) -> str:
     }.get(dl_env)
 
     assert it_data_secret_entry_key is not None
-    return env_param_getter.get_yaml_value(it_data_secret_entry_key)['could_id']  # FIXME: cloud_id?
+    return env_param_getter.get_yaml_value(it_data_secret_entry_key)["could_id"]  # FIXME: cloud_id?
 
 
 @pytest.fixture(scope="session")
@@ -337,13 +353,7 @@ def dc_rs_workbook_id(dc_rs_project_id, dc_rs_us_base_url, dc_rc_user_account):
         DLHeadersYC.IAM_TOKEN.value: dc_rc_user_account.token,
     }
 
-    wb_create_resp = requests.post(
-        url=url,
-        headers=headers,
-        json=dict(
-            title=f"Autotests {shortuuid.uuid()}"
-        )
-    )
+    wb_create_resp = requests.post(url=url, headers=headers, json=dict(title=f"Autotests {shortuuid.uuid()}"))
     assert wb_create_resp.status_code == 200, wb_create_resp.content
 
     workbook_id = wb_create_resp.json()["workbookId"]

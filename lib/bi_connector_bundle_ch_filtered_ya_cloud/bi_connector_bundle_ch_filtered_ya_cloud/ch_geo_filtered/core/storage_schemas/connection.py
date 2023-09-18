@@ -1,13 +1,13 @@
 from marshmallow import fields as ma_fields
 
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.us_connection import ConnectionClickhouseGeoFiltered
 from bi_connector_bundle_ch_filtered.base.core.storage_schemas.connection import (
     ConnectionClickhouseFilteredBaseDataStorageSchema,
 )
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.us_connection import ConnectionClickhouseGeoFiltered
 
 
 class ConnectionClickhouseGeoFilteredDataStorageSchema(
-        ConnectionClickhouseFilteredBaseDataStorageSchema[ConnectionClickhouseGeoFiltered.DataModel],
+    ConnectionClickhouseFilteredBaseDataStorageSchema[ConnectionClickhouseGeoFiltered.DataModel],
 ):
     TARGET_CLS = ConnectionClickhouseGeoFiltered.DataModel
 

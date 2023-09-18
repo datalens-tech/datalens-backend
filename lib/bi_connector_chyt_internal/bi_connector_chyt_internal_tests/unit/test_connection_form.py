@@ -1,7 +1,12 @@
-from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
-from bi_connector_chyt_internal.bi.connection_form.user_auth_form.form_config import CHYTInternalUserConnectionFormFactory
-from bi_connector_chyt_internal.bi.connection_form.token_auth_form.form_config import CHYTInternalTokenConnectionFormFactory
+from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
+
+from bi_connector_chyt_internal.bi.connection_form.token_auth_form.form_config import (
+    CHYTInternalTokenConnectionFormFactory,
+)
+from bi_connector_chyt_internal.bi.connection_form.user_auth_form.form_config import (
+    CHYTInternalUserConnectionFormFactory,
+)
 from bi_connector_chyt_internal.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_CHYT_CONFIGS
 
 

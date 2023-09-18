@@ -1,4 +1,7 @@
-from typing import Sequence, ClassVar
+from typing import (
+    ClassVar,
+    Sequence,
+)
 
 
 class ExternalAPIException(Exception):

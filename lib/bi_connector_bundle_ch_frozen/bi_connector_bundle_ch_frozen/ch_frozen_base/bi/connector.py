@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
-    CHFrozenBaseCoreSourceDefinition,
-    CHFrozenBaseCoreConnectionDefinition,
-    CHFrozenCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.api_schema.connection import BaseClickHouseFrozenConnectionSchema
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.i18n.localizer import CONFIGS
+from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
+    CHFrozenBaseCoreConnectionDefinition,
+    CHFrozenBaseCoreSourceDefinition,
+    CHFrozenCoreConnector,
+)
 
 
 class BaseCHFrozenTableBiApiSourceDefinition(BiApiSourceDefinition):
@@ -31,10 +34,6 @@ class BaseCHFrozenBiApiConnectionDefinition(BiApiConnectionDefinition):
 class BaseCHFrozenBiApiConnector(BiApiConnector):
     core_connector_cls = CHFrozenCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        BaseCHFrozenBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        BaseCHFrozenTableBiApiSourceDefinition,
-    )
+    connection_definitions = (BaseCHFrozenBiApiConnectionDefinition,)
+    source_definitions = (BaseCHFrozenTableBiApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

@@ -5,8 +5,14 @@ import os
 import re
 import shlex
 import sys
+from typing import (
+    Any,
+    Iterable,
+    Optional,
+    Sequence,
+    Union,
+)
 import urllib.parse
-from typing import Any, Iterable, Optional, Sequence, Union
 
 TD_THRESHOLD = float(os.environ.get("TVS_TD") or 0.04)
 ENABLE_COLORS = True

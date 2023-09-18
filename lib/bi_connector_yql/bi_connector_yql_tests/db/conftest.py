@@ -1,5 +1,4 @@
 from dl_core_testing.initialization import initialize_core_test
-
 from dl_formula.loader import load_bi_formula
 from dl_formula_testing.forced_literal import forced_literal_use
 
@@ -13,5 +12,5 @@ def pytest_configure(config):  # noqa
 
 __all__ = (
     # auto-use fixtures:
-    'forced_literal_use',
+    "forced_literal_use",
 )

@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
+import logging
 import os
 import sys
-import logging
 import time
 
-import requests
-import hjson
 import gitchronicler
-
+import hjson
+import requests
 
 CONFIG_FILENAME = '.release.hjson'
 CONFIG_KEY = '_x_bi_cloud_preprod_build_conf_ids'

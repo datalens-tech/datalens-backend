@@ -1,37 +1,46 @@
 from __future__ import annotations
 
+from datetime import date
 import logging
 import uuid
-from datetime import date
 
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from dl_constants.enums import BIType, DataSourceRole, ManagedBy
-
+from bi_legacy_test_bundle_tests.core.utils import (
+    assert_no_warnings,
+    get_dump_request_profile_records,
+)
 from dl_api_commons.reporting.profiler import DefaultReportingProfiler
-
-from dl_core import exc
-from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
+from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
+from dl_constants.enums import (
+    BIType,
+    DataSourceRole,
+    ManagedBy,
+)
+from dl_core import exc
+from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_processing.cache.engine import EntityCacheEngineAsync
 from dl_core.db.elements import SchemaColumn
 from dl_core.query.bi_query import BIQuery
-from dl_core.query.expression import ExpressionCtx, OrderByExpressionCtx
+from dl_core.query.expression import (
+    ExpressionCtx,
+    OrderByExpressionCtx,
+)
 from dl_core.services_registry import ServicesRegistry
-from dl_core_testing.data import DataFetcher
-from dl_core_testing.database import C, Db, make_table
-from dl_core_testing.utils import SROptions
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.utils import attrs_evolve_to_subclass
-from dl_core.components.editor import DatasetComponentEditor
-
-from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
-
-from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records, assert_no_warnings
-
+from dl_core_testing.data import DataFetcher
+from dl_core_testing.database import (
+    C,
+    Db,
+    make_table,
+)
+from dl_core_testing.utils import SROptions
 
 PG_TT = PostgreSQLTypeTransformer()
 
@@ -47,20 +56,20 @@ def _make_schema_column(name: str, user_type: BIType) -> SchemaColumn:
 
 @pytest.mark.asyncio
 async def test_dataset_async_select_data(
-        saved_dataset_no_dsrc: Dataset,
-        postgres_db: Db,
-        clickhouse_db: Db,
-        saved_pg_connection: ConnectionPostgreSQL,
-        local_private_usm: AsyncUSManager,
-        async_service_registry_factory,
-        bi_context,
-        caplog,
+    saved_dataset_no_dsrc: Dataset,
+    postgres_db: Db,
+    clickhouse_db: Db,
+    saved_pg_connection: ConnectionPostgreSQL,
+    local_private_usm: AsyncUSManager,
+    async_service_registry_factory,
+    bi_context,
+    caplog,
 ):
     us_manager = local_private_usm
     dataset = saved_dataset_no_dsrc
     ds_editor = DatasetComponentEditor(dataset=dataset)
     async_sr_with_caches: ServicesRegistry = async_service_registry_factory(SROptions(rci=bi_context, with_caches=True))
-    caplog.set_level(logging.INFO, logger='bi_core.profiling_db')
+    caplog.set_level(logging.INFO, logger="bi_core.profiling_db")
     caplog.clear()
 
     data = [
@@ -90,9 +99,9 @@ async def test_dataset_async_select_data(
         C("event_count", BIType.integer, vg=cg[2]),
     ]
     raw_schema = [
-        _make_schema_column('date', BIType.date),
-        _make_schema_column('event_code', BIType.string),
-        _make_schema_column('event_count', BIType.integer),
+        _make_schema_column("date", BIType.date),
+        _make_schema_column("event_code", BIType.string),
+        _make_schema_column("event_count", BIType.integer),
     ]
 
     orig_table = make_table(
@@ -110,18 +119,20 @@ async def test_dataset_async_select_data(
         managed_by=ManagedBy.user,
         raw_schema=raw_schema,
         parameters=dict(
-            db_name=postgres_db.name, table_name=orig_table.name,
+            db_name=postgres_db.name,
+            table_name=orig_table.name,
         ),
     )
     avatar_id = uuid.uuid4().hex
-    ds_editor.add_avatar(avatar_id=avatar_id, source_id=dsrc_id, title='My Avatar')
+    ds_editor.add_avatar(avatar_id=avatar_id, source_id=dsrc_id, title="My Avatar")
     await us_manager.save(dataset)
 
     def make_expr(expression: ClauseElement, alias: str, user_type: BIType) -> ExpressionCtx:
         return ExpressionCtx(
             expression=expression,
             avatar_ids=[avatar_id],
-            alias=alias, user_type=user_type,
+            alias=alias,
+            user_type=user_type,
         )
 
     dataset = await us_manager.get_by_id(dataset.uuid, Dataset)
@@ -134,18 +145,18 @@ async def test_dataset_async_select_data(
     await dce.invalidate_all()
     bi_query = BIQuery(
         select_expressions=[
-            make_expr(sa.literal_column("date"), 'date', BIType.date),
-            make_expr(sa.literal_column("event_code"), 'event_code', BIType.string),
-            make_expr(sa.literal_column("event_count"), 'event_count', BIType.integer),
+            make_expr(sa.literal_column("date"), "date", BIType.date),
+            make_expr(sa.literal_column("event_code"), "event_code", BIType.string),
+            make_expr(sa.literal_column("event_count"), "event_count", BIType.integer),
         ],
         order_by_expressions=[
             attrs_evolve_to_subclass(
                 cls=OrderByExpressionCtx,
-                inst=make_expr(sa.literal_column("date"), 'date', BIType.date),
+                inst=make_expr(sa.literal_column("date"), "date", BIType.date),
             ),
             attrs_evolve_to_subclass(
                 cls=OrderByExpressionCtx,
-                inst=make_expr(sa.literal_column("event_code"), 'event_code', BIType.string),
+                inst=make_expr(sa.literal_column("event_code"), "event_code", BIType.string),
             ),
         ],
     )
@@ -155,12 +166,15 @@ async def test_dataset_async_select_data(
     # Expecting no cache hit
     data_fetcher = DataFetcher(
         service_registry=async_sr_with_caches,
-        dataset=dataset, us_manager=us_manager,
+        dataset=dataset,
+        us_manager=us_manager,
     )
-    result = await (await data_fetcher.get_data_stream_async(
-        role=role,
-        bi_query=bi_query,
-    )).data.all()
+    result = await (
+        await data_fetcher.get_data_stream_async(
+            role=role,
+            bi_query=bi_query,
+        )
+    ).data.all()
     reporting_registry = async_sr_with_caches.get_reporting_registry()
     profiler = DefaultReportingProfiler(reporting_registry=reporting_registry)
     profiler.flush_all_query_reports()
@@ -191,8 +205,10 @@ async def test_dataset_async_select_data(
 
     # row_count_hard_limit
     with pytest.raises(exc.ResultRowCountLimitExceeded):
-        await (await data_fetcher.get_data_stream_async(
-            role=role,
-            bi_query=bi_query,
-            row_count_hard_limit=3,
-        )).data.all()
+        await (
+            await data_fetcher.get_data_stream_async(
+                role=role,
+                bi_query=bi_query,
+                row_count_hard_limit=3,
+            )
+        ).data.all()

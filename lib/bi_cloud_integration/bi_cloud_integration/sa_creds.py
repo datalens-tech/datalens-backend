@@ -1,5 +1,8 @@
+from abc import (
+    ABC,
+    abstractmethod,
+)
 import enum
-from abc import ABC, abstractmethod
 from typing import Optional
 
 import attr
@@ -24,6 +27,7 @@ class SACredsRetrieverBase(ABC):
     """
     Base class for YC service account credentials (IAM token) retrieving
     """
+
     sa_creds_settings: SACredsSettings = attr.ib()
 
     @abstractmethod
@@ -35,6 +39,7 @@ class SACredsRetrieverLocalMetadata(SACredsRetrieverBase):
     """
     Retrieves token from local metadata of YC virtual machine (for VM service account)
     """
+
     async def get_sa_token(self) -> str:
         return await get_yc_service_token_local()
 
@@ -44,6 +49,7 @@ class SACredsRetrieverEnvKeyData(SACredsRetrieverBase):
     """
     Retrieves token for service account which key data is specified in env
     """
+
     ts_endpoint: Optional[str] = attr.ib(default=None)
 
     async def get_sa_token(self) -> str:
@@ -64,9 +70,6 @@ class SACredsRetrieverFactory:
         if self.sa_creds_settings.mode == SACredsMode.local_metadata:
             return SACredsRetrieverLocalMetadata(sa_creds_settings=self.sa_creds_settings)
         elif self.sa_creds_settings.mode == SACredsMode.env_key_data:
-            return SACredsRetrieverEnvKeyData(
-                sa_creds_settings=self.sa_creds_settings,
-                ts_endpoint=self.ts_endpoint
-            )
+            return SACredsRetrieverEnvKeyData(sa_creds_settings=self.sa_creds_settings, ts_endpoint=self.ts_endpoint)
         else:
-            raise ValueError(f'Unsupported sa_creds mode: {self.sa_creds_settings.mode}')
+            raise ValueError(f"Unsupported sa_creds mode: {self.sa_creds_settings.mode}")

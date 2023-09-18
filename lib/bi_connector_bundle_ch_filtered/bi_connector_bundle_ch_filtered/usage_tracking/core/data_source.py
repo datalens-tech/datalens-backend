@@ -5,12 +5,10 @@ import logging
 from dl_constants.enums import CreateDSFrom
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
-
 from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
     CONNECTION_TYPE_USAGE_TRACKING,
     SOURCE_TYPE_CH_USAGE_TRACKING_TABLE,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 

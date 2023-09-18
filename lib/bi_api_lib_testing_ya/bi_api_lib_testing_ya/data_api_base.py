@@ -1,31 +1,35 @@
 import abc
-from typing import ClassVar, Type
+from typing import (
+    ClassVar,
+    Type,
+)
 
 import pytest
 
+from bi_api_lib_testing_ya.app import TestingDataApiAppFactoryPrivate
+from bi_api_lib_testing_ya.base import BiApiTestPrivateBase
+from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
+from bi_api_lib_ya.app_settings import (
+    AsyncAppSettings,
+    YCAuthSettings,
+)
+from bi_cloud_integration.iam_mock import IAMServicesMockFacade
+from dl_api_lib.app.data_api.app import DataApiAppFactory
+from dl_api_lib_testing.data_api_base import DataApiTestBase
 from dl_configs.enums import AppType
 from dl_configs.rqe import RQEConfig
-
 from dl_core.utils import attrs_evolve_to_subclass
-from bi_api_lib_ya.app_settings import AsyncAppSettings, YCAuthSettings
-from dl_api_lib.app.data_api.app import DataApiAppFactory
-
-from bi_cloud_integration.iam_mock import IAMServicesMockFacade
-from dl_api_lib_testing.data_api_base import DataApiTestBase
-from bi_api_lib_testing_ya.app import TestingDataApiAppFactoryPrivate
-from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
-from bi_api_lib_testing_ya.base import BiApiTestPrivateBase
 
 
 class DataApiTestPrivateBase(DataApiTestBase, BiApiTestPrivateBase, metaclass=abc.ABCMeta):
     data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactoryPrivate
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def data_api_app_settings(  # type: ignore[override]
-            self,
-            bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
-            rqe_config_subprocess: RQEConfig,
-            iam_services_mock: IAMServicesMockFacade,
+        self,
+        bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
+        rqe_config_subprocess: RQEConfig,
+        iam_services_mock: IAMServicesMockFacade,
     ) -> AsyncAppSettings:
         base_settings = self.create_data_api_settings(
             bi_test_config=bi_test_config,

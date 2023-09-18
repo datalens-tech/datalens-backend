@@ -2,10 +2,13 @@ from typing import Optional
 
 import aiohttp
 import attr
-from dl_api_commons.base_models import TenantDef
 
 from bi_integration_tests import report_formatting
-from bi_testing_ya import api_wrappers, cloud_tokens
+from bi_testing_ya import (
+    api_wrappers,
+    cloud_tokens,
+)
+from dl_api_commons.base_models import TenantDef
 
 
 @attr.s(auto_attribs=True, frozen=True)
@@ -21,20 +24,17 @@ class BaseRequestExecutor:
         logger: report_formatting.ReportFormatter,
         account_creds: cloud_tokens.AccountCredentials | None = None,
         public_api_key: str | None = None,
-        tenant: Optional[TenantDef] = None
+        tenant: Optional[TenantDef] = None,
     ):
         """Creates executor object using passed parameters."""
-        web_app = api_wrappers.HTTPClientWrapper(
-            session=aiohttp.ClientSession(),
-            base_url=base_url
-        )
+        web_app = api_wrappers.HTTPClientWrapper(session=aiohttp.ClientSession(), base_url=base_url)
 
         client = api_wrappers.APIClient(
             web_app=web_app,
             folder_id=folder_id,
             account_credentials=account_creds,
             public_api_key=public_api_key,
-            tenant=tenant
+            tenant=tenant,
         )
 
         return cls(client, logger)

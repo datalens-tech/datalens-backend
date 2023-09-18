@@ -1,29 +1,35 @@
 from __future__ import annotations
 
-from dl_constants.enums import JoinType
-
-from dl_formula.shortcuts import n
-
-from dl_query_processing.enums import ExecutionLevel
-from dl_query_processing.compilation.primitives import (
-    CompiledFormulaInfo, CompiledJoinOnFormulaInfo, CompiledQuery,
-    FromColumn, AvatarFromObject,
-)
-from dl_query_processing.legacy_pipeline.separation.primitives import CompiledMultiLevelQuery, CompiledLevel
-from dl_query_processing.legacy_pipeline.subqueries.forker import QueryForker
-
 from bi_legacy_test_bundle_tests.api_lib.unit.query.utils import joined_from_from_avatar_ids
+from dl_constants.enums import JoinType
+from dl_formula.shortcuts import n
+from dl_query_processing.compilation.primitives import (
+    AvatarFromObject,
+    CompiledFormulaInfo,
+    CompiledJoinOnFormulaInfo,
+    CompiledQuery,
+    FromColumn,
+)
+from dl_query_processing.enums import ExecutionLevel
+from dl_query_processing.legacy_pipeline.separation.primitives import (
+    CompiledLevel,
+    CompiledMultiLevelQuery,
+)
+from dl_query_processing.legacy_pipeline.subqueries.forker import QueryForker
 
 
 def test_forking_with_explicit_dimension_condition_list():
     base_avatars = {
-        'a1': AvatarFromObject(
-            id='a1', avatar_id='a1', source_id='s1', alias='a1',
+        "a1": AvatarFromObject(
+            id="a1",
+            avatar_id="a1",
+            source_id="s1",
+            alias="a1",
             columns=(
-                FromColumn(id='dim_1', name='dim_1'),
-                FromColumn(id='dim_2', name='dim_2'),
-                FromColumn(id='val_1', name='val_1'),
-            )
+                FromColumn(id="dim_1", name="dim_1"),
+                FromColumn(id="dim_2", name="dim_2"),
+                FromColumn(id="val_1", name="val_1"),
+            ),
         ),
     }
     compiled_multi_query = CompiledMultiLevelQuery(
@@ -32,47 +38,48 @@ def test_forking_with_explicit_dimension_condition_list():
                 level_type=ExecutionLevel.source_db,
                 queries=[
                     CompiledQuery(
-                        id='q1',
+                        id="q1",
                         level_type=ExecutionLevel.source_db,
                         select=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1')),
-                                alias='dim_1_1',
-                                original_field_id='dim_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_1")),
+                                alias="dim_1_1",
+                                original_field_id="dim_1",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2')),
-                                alias='dim_2_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_2")),
+                                alias="dim_2_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.func.SUM(n.field('val_1'))),
-                                alias='val_1_1',
-                                original_field_id='val_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.func.SUM(n.field("val_1"))),
+                                alias="val_1_1",
+                                original_field_id="val_1",
+                                avatar_ids={"a1"},
                             ),
                         ],
                         group_by=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1')),
-                                alias='dim_1_1',
-                                original_field_id='dim_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_1")),
+                                alias="dim_1_1",
+                                original_field_id="dim_1",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2')),
-                                alias='dim_2_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_2")),
+                                alias="dim_2_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"a1"},
                             ),
                         ],
                         order_by=[],
                         filters=[],
                         join_on=[],
                         joined_from=joined_from_from_avatar_ids(
-                            from_ids=['a1'], base_avatars=base_avatars,
+                            from_ids=["a1"],
+                            base_avatars=base_avatars,
                             cols_by_query={},
                         ),
                         limit=None,
@@ -84,40 +91,42 @@ def test_forking_with_explicit_dimension_condition_list():
                 level_type=ExecutionLevel.source_db,
                 queries=[
                     CompiledQuery(
-                        id='q2',
+                        id="q2",
                         level_type=ExecutionLevel.source_db,
                         select=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1_1')),
-                                alias='dim_1_1_1',
-                                original_field_id='dim_1',
-                                avatar_ids={'q1'},
+                                formula_obj=n.formula(n.field("dim_1_1")),
+                                alias="dim_1_1_1",
+                                original_field_id="dim_1",
+                                avatar_ids={"q1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2_1')),
-                                alias='dim_2_1_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'q1'},
+                                formula_obj=n.formula(n.field("dim_2_1")),
+                                alias="dim_2_1_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"q1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.fork(
-                                    result_expr=n.field('val_1_1'),
-                                    joining=n.joining(
-                                        conditions=[
-                                            n.self_condition(
-                                                expr=n.field('dim_1_1'),
-                                            ),
-                                            n.bin_condition(
-                                                expr=n.field('dim_2_1'),
-                                                fork_expr=n.func.SOMEFUNC(n.field('dim_2_1')),
-                                            ),
-                                        ],
-                                    ),
-                                    lod=n.fixed(n.field('dim_1_1'), n.field('dim_2_1')),
-                                )),
-                                alias='val_1_1_1',
-                                original_field_id='val_1',
-                                avatar_ids={'q1'},
+                                formula_obj=n.formula(
+                                    n.fork(
+                                        result_expr=n.field("val_1_1"),
+                                        joining=n.joining(
+                                            conditions=[
+                                                n.self_condition(
+                                                    expr=n.field("dim_1_1"),
+                                                ),
+                                                n.bin_condition(
+                                                    expr=n.field("dim_2_1"),
+                                                    fork_expr=n.func.SOMEFUNC(n.field("dim_2_1")),
+                                                ),
+                                            ],
+                                        ),
+                                        lod=n.fixed(n.field("dim_1_1"), n.field("dim_2_1")),
+                                    )
+                                ),
+                                alias="val_1_1_1",
+                                original_field_id="val_1",
+                                avatar_ids={"q1"},
                             ),
                         ],
                         group_by=[],
@@ -125,8 +134,9 @@ def test_forking_with_explicit_dimension_condition_list():
                         filters=[],
                         join_on=[],
                         joined_from=joined_from_from_avatar_ids(
-                            from_ids=['q1'], base_avatars=base_avatars,
-                            cols_by_query={'q1': ['dim_1', 'dim_2', 'val_1']},
+                            from_ids=["q1"],
+                            base_avatars=base_avatars,
+                            cols_by_query={"q1": ["dim_1", "dim_2", "val_1"]},
                         ),
                         limit=None,
                         offset=None,
@@ -146,88 +156,90 @@ def test_forking_with_explicit_dimension_condition_list():
                 level_type=ExecutionLevel.source_db,
                 queries=[
                     CompiledQuery(
-                        id='q1',
+                        id="q1",
                         level_type=ExecutionLevel.source_db,
                         select=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1')),
-                                alias='dim_1_1',
-                                original_field_id='dim_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_1")),
+                                alias="dim_1_1",
+                                original_field_id="dim_1",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2')),
-                                alias='dim_2_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_2")),
+                                alias="dim_2_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"a1"},
                             ),
                         ],
                         group_by=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1')),
-                                alias='dim_1_1',
-                                original_field_id='dim_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_1")),
+                                alias="dim_1_1",
+                                original_field_id="dim_1",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2')),
-                                alias='dim_2_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_2")),
+                                alias="dim_2_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"a1"},
                             ),
                         ],
                         order_by=[],
                         filters=[],
                         join_on=[],
                         joined_from=joined_from_from_avatar_ids(
-                            from_ids=['a1'], base_avatars=base_avatars,
+                            from_ids=["a1"],
+                            base_avatars=base_avatars,
                             cols_by_query={},
                         ),
                         limit=None,
                         offset=None,
                     ),
                     CompiledQuery(
-                        id='q1_f0',
+                        id="q1_f0",
                         level_type=ExecutionLevel.source_db,
                         select=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1')),
-                                alias='q1_f0_0',
-                                original_field_id='dim_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_1")),
+                                alias="q1_f0_0",
+                                original_field_id="dim_1",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2')),
-                                alias='q1_f0_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_2")),
+                                alias="q1_f0_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.func.SUM(n.field('val_1'))),
-                                alias='q1_f0_2',
-                                original_field_id='val_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.func.SUM(n.field("val_1"))),
+                                alias="q1_f0_2",
+                                original_field_id="val_1",
+                                avatar_ids={"a1"},
                             ),
                         ],
                         group_by=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1')),
-                                alias='q1_f0_0',
-                                original_field_id='dim_1',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_1")),
+                                alias="q1_f0_0",
+                                original_field_id="dim_1",
+                                avatar_ids={"a1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2')),
-                                alias='q1_f0_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'a1'},
+                                formula_obj=n.formula(n.field("dim_2")),
+                                alias="q1_f0_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"a1"},
                             ),
                         ],
                         order_by=[],
                         filters=[],
                         join_on=[],
                         joined_from=joined_from_from_avatar_ids(
-                            from_ids=['a1'], base_avatars=base_avatars,
+                            from_ids=["a1"],
+                            base_avatars=base_avatars,
                             cols_by_query={},
                         ),
                         limit=None,
@@ -239,26 +251,26 @@ def test_forking_with_explicit_dimension_condition_list():
                 level_type=ExecutionLevel.source_db,
                 queries=[
                     CompiledQuery(
-                        id='q2',
+                        id="q2",
                         level_type=ExecutionLevel.source_db,
                         select=[
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_1_1')),
-                                alias='dim_1_1_1',
-                                original_field_id='dim_1',
-                                avatar_ids={'q1'},
+                                formula_obj=n.formula(n.field("dim_1_1")),
+                                alias="dim_1_1_1",
+                                original_field_id="dim_1",
+                                avatar_ids={"q1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('dim_2_1')),
-                                alias='dim_2_1_1',
-                                original_field_id='dim_2',
-                                avatar_ids={'q1'},
+                                formula_obj=n.formula(n.field("dim_2_1")),
+                                alias="dim_2_1_1",
+                                original_field_id="dim_2",
+                                avatar_ids={"q1"},
                             ),
                             CompiledFormulaInfo(
-                                formula_obj=n.formula(n.field('q1_f0_2')),
-                                alias='val_1_1_1',
-                                original_field_id='val_1',
-                                avatar_ids={'q1', 'q1_f0'},
+                                formula_obj=n.formula(n.field("q1_f0_2")),
+                                alias="val_1_1_1",
+                                original_field_id="val_1",
+                                avatar_ids={"q1", "q1_f0"},
                             ),
                         ],
                         group_by=[],
@@ -268,32 +280,33 @@ def test_forking_with_explicit_dimension_condition_list():
                             CompiledJoinOnFormulaInfo(
                                 formula_obj=n.formula(
                                     n.binary(
-                                        name='and',
+                                        name="and",
                                         left=n.binary(
-                                            name='_==',
-                                            left=n.field('dim_1_1'),
-                                            right=n.field('q1_f0_0'),
+                                            name="_==",
+                                            left=n.field("dim_1_1"),
+                                            right=n.field("q1_f0_0"),
                                         ),
                                         right=n.binary(
-                                            name='_==',
-                                            left=n.field('dim_2_1'),
-                                            right=n.func.SOMEFUNC(n.field('q1_f0_1')),
+                                            name="_==",
+                                            left=n.field("dim_2_1"),
+                                            right=n.func.SOMEFUNC(n.field("q1_f0_1")),
                                         ),
                                     ),
                                 ),
                                 alias=None,
                                 original_field_id=None,
-                                avatar_ids={'q1', 'q1_f0'},
-                                left_id='q1',
-                                right_id='q1_f0',
+                                avatar_ids={"q1", "q1_f0"},
+                                left_id="q1",
+                                right_id="q1_f0",
                                 join_type=JoinType.left,
                             ),
                         ],
                         joined_from=joined_from_from_avatar_ids(
-                            from_ids=['q1', 'q1_f0'], base_avatars=base_avatars,
+                            from_ids=["q1", "q1_f0"],
+                            base_avatars=base_avatars,
                             cols_by_query={
-                                'q1': ['dim_1_1', 'dim_2_1', 'val_1_1'],
-                                'q1_f0': ['q1_f0_0', 'q1_f0_1', 'q1_f0_2'],
+                                "q1": ["dim_1_1", "dim_2_1", "val_1_1"],
+                                "q1_f0": ["q1_f0_0", "q1_f0_1", "q1_f0_2"],
                             },
                         ),
                         limit=None,

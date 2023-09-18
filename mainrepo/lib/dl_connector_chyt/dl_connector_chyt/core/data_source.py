@@ -14,6 +14,22 @@ import urllib.parse
 import attr
 import sqlalchemy as sa
 
+from dl_connector_chyt.core.constants import (
+    CONNECTION_TYPE_CHYT,
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+)
+from dl_connector_chyt.core.data_source_spec import (
+    CHYTTableDataSourceSpec,
+    CHYTTableListDataSourceSpec,
+    CHYTTableRangeDataSourceSpec,
+)
+from dl_connector_clickhouse.core.clickhouse_base.data_source import (
+    ClickHouseBaseMixin,
+    CommonClickHouseSubselectDataSource,
+)
 from dl_constants.enums import (
     BIType,
     CreateDSFrom,
@@ -38,23 +54,6 @@ from dl_sqlalchemy_chyt import (
     CHYTTablesConcat,
     CHYTTablesRange,
     CHYTTableSubselect,
-)
-
-from dl_connector_chyt.core.constants import (
-    CONNECTION_TYPE_CHYT,
-    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
-)
-from dl_connector_chyt.core.data_source_spec import (
-    CHYTTableDataSourceSpec,
-    CHYTTableListDataSourceSpec,
-    CHYTTableRangeDataSourceSpec,
-)
-from dl_connector_clickhouse.core.clickhouse_base.data_source import (
-    ClickHouseBaseMixin,
-    CommonClickHouseSubselectDataSource,
 )
 
 if TYPE_CHECKING:

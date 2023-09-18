@@ -1,48 +1,50 @@
 import functools
-from typing import ClassVar, Optional, Sequence
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
-from bi_external_api.domain.external import ConnectionSecret
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
+from bi_external_api.domain.external import ConnectionSecret
 from bi_external_api.enums import ExtAPIType
-from .common import EntryInfo, Secret, EntryWBRef
+
+from .common import (
+    EntryInfo,
+    EntryWBRef,
+    Secret,
+)
 from .dataset_main import Dataset
 from .rpc import (
+    AdviseDatasetFieldsRequest,
+    AdviseDatasetFieldsResponse,
+    ConnectionCreateRequest,
+    ConnectionCreateResponse,
+    ConnectionDeleteRequest,
+    ConnectionDeleteResponse,
+    ConnectionGetRequest,
+    ConnectionGetResponse,
+    ConnectionModifyRequest,
+    ConnectionModifyResponse,
+    FakeWorkbookCreateRequest,
+    FakeWorkbookCreateResponse,
+    ModificationPlan,
     ParticularAPIOperationTranslator,
-    #
     WorkbookOpKind,
     WorkbookOpRequest,
     WorkbookOpResponse,
-    #
-    ModificationPlan,
-    #
     WorkbookReadRequest,
     WorkbookReadResponse,
-    #
-    FakeWorkbookCreateResponse,
-    FakeWorkbookCreateRequest,
-    #
     WorkbookWriteRequest,
     WorkbookWriteResponse,
-    #
-    #
-    AdviseDatasetFieldsRequest,
-    AdviseDatasetFieldsResponse,
-    #
-    ConnectionGetResponse,
-    ConnectionGetRequest,
-    #
-    ConnectionCreateRequest,
-    ConnectionCreateResponse,
-    #
-    ConnectionModifyRequest,
-    ConnectionModifyResponse,
-    #
-    ConnectionDeleteRequest,
-    ConnectionDeleteResponse,
 )
-from .workbook import WorkBook, ConnectionInstance, WorkbookConnectionsOnly
+from .workbook import (
+    ConnectionInstance,
+    WorkBook,
+    WorkbookConnectionsOnly,
+)
 
 
 @ModelDescriptor(api_types=[ExtAPIType.YA_TEAM], is_abstract=True, children_type_discriminator_attr_name="kind")
@@ -287,16 +289,13 @@ class YaTeamPublicAPIOperationTranslator(ParticularAPIOperationTranslator[YaTeam
     @translate_op_rq.register
     def translate_op_rq_wb_create(self, op_rq: YaTeamOpWorkbookCreateRequest) -> FakeWorkbookCreateRequest:
         return FakeWorkbookCreateRequest(
-            workbook_id=op_rq.workbook_id,
-            workbook=op_rq.workbook,
-            connection_secrets=op_rq.connection_secrets
+            workbook_id=op_rq.workbook_id, workbook=op_rq.workbook, connection_secrets=op_rq.connection_secrets
         )
 
     @translate_op_rs.register
     def translate_op_rs_wb_create(self, op_rs: FakeWorkbookCreateResponse) -> YaTeamOpWorkbookCreateResponse:
         return YaTeamOpWorkbookCreateResponse(
-            workbook_id=op_rs.workbook_id,
-            created_entries_info=op_rs.created_entries_info
+            workbook_id=op_rs.workbook_id, created_entries_info=op_rs.created_entries_info
         )
 
     # Modify
@@ -355,8 +354,7 @@ class YaTeamPublicAPIOperationTranslator(ParticularAPIOperationTranslator[YaTeam
 
     @translate_op_rs.register
     def translate_op_rs_connection_modify(self, op_rs: ConnectionModifyResponse) -> YaTeamOpConnectionModifyResponse:
-        return YaTeamOpConnectionModifyResponse(
-        )
+        return YaTeamOpConnectionModifyResponse()
 
     # Connection delete
     @translate_op_rq.register
@@ -373,8 +371,7 @@ class YaTeamPublicAPIOperationTranslator(ParticularAPIOperationTranslator[YaTeam
     # Advise dataset fields
     @translate_op_rq.register
     def translate_op_rq_advise_dataset_fields(
-            self,
-            op_rq: YaTeamOpAdviseDatasetFieldsRequest
+        self, op_rq: YaTeamOpAdviseDatasetFieldsRequest
     ) -> AdviseDatasetFieldsRequest:
         return AdviseDatasetFieldsRequest(
             connection_ref=EntryWBRef(
@@ -386,8 +383,8 @@ class YaTeamPublicAPIOperationTranslator(ParticularAPIOperationTranslator[YaTeam
 
     @translate_op_rs.register
     def translate_op_rs_advise_dataset_fields(
-            self,
-            op_rs: AdviseDatasetFieldsResponse,
+        self,
+        op_rs: AdviseDatasetFieldsResponse,
     ) -> YaTeamOpAdviseDatasetFieldsResponse:
         return YaTeamOpAdviseDatasetFieldsResponse(
             dataset=op_rs.dataset,

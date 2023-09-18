@@ -5,7 +5,6 @@ from bi_connector_bitrix_gds.formula.definitions.functions_type import DEFINITIO
 from bi_connector_bitrix_gds.formula.definitions.operators_binary import DEFINITIONS_BINARY
 from bi_connector_bitrix_gds.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 
-
 DEFINITIONS = [
     *DEFINITIONS_DATETIME,
     *DEFINITIONS_MARKUP,

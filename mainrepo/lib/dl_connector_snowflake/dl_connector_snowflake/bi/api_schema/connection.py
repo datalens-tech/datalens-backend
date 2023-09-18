@@ -4,7 +4,6 @@ from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
 from dl_api_connector.api_schema.extras import FieldExtra
-
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 
 

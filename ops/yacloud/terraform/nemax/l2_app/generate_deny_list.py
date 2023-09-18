@@ -2,27 +2,26 @@
 
 from __future__ import annotations
 
-import subprocess
-
 import json
+import subprocess
 
 
 def read_deny_config() -> dict[str, list]:
     return dict(
         deny_dst_host_list=[
             # 'us.datalens-front.yandexcloud.co.il',  # TODO
-            'main.back.datalens.nemax.nebiuscloud.net',
+            "main.back.datalens.nemax.nebiuscloud.net",
         ],
         deny_dst_subnet_list=[
-            '127.0.0.1/32',
-            '::1/128',
-            '169.254.0.0/16',
-            '10.0.0.0/16',
-            '10.1.0.0/16',
-            '10.2.0.0/16',
-            '2a13:5947:10:0:9010:45::/112',
-            '2a13:5947:11:0:9010:45::/112',
-            '2a13:5947:12:0:9010:45::/112',
+            "127.0.0.1/32",
+            "::1/128",
+            "169.254.0.0/16",
+            "10.0.0.0/16",
+            "10.1.0.0/16",
+            "10.2.0.0/16",
+            "2a13:5947:10:0:9010:45::/112",
+            "2a13:5947:11:0:9010:45::/112",
+            "2a13:5947:12:0:9010:45::/112",
         ],
     )
 
@@ -30,35 +29,35 @@ def read_deny_config() -> dict[str, list]:
 def process_host_list(host_list: list[str]) -> list[str]:
     result = []
     for host in host_list:
-        result.extend(map(lambda x: f'{x}/32', run_cmd('dig', '+short', 'A', host).split()))
-        result.extend(map(lambda x: f'{x}/128', run_cmd('dig', '+short', 'AAAA', host).split()))
+        result.extend(map(lambda x: f"{x}/32", run_cmd("dig", "+short", "A", host).split()))
+        result.extend(map(lambda x: f"{x}/128", run_cmd("dig", "+short", "AAAA", host).split()))
 
     return result
 
 
 def run_cmd(*command) -> str:
-    result = ''
+    result = ""
     try:
-        result = str(subprocess.check_output(command), 'utf-8')
+        result = str(subprocess.check_output(command), "utf-8")
     except subprocess.CalledProcessError:
         pass
-    return result.rstrip('\n')
+    return result.rstrip("\n")
 
 
 def main() -> dict[str, str]:
     config = read_deny_config()
     deny_ips = []
 
-    deny_ips.extend(process_host_list(config['deny_dst_host_list']))
-    deny_ips.extend(config['deny_dst_subnet_list'])
+    deny_ips.extend(process_host_list(config["deny_dst_host_list"]))
+    deny_ips.extend(config["deny_dst_subnet_list"])
 
     return dict(
-        ipv4=','.join([ip for ip in deny_ips if ':' not in ip]),
-        ipv6=','.join([ip for ip in deny_ips if ':' in ip]),
+        ipv4=",".join([ip for ip in deny_ips if ":" not in ip]),
+        ipv6=",".join([ip for ip in deny_ips if ":" in ip]),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = main()
 
     result_json = json.dumps(result)

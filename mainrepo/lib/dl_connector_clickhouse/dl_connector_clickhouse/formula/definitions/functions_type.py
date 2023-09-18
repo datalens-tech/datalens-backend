@@ -4,6 +4,7 @@ import clickhouse_sqlalchemy.types as ch_types
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import DialectCombo
 from dl_formula.definitions.args import ArgTypeSequence
@@ -21,8 +22,6 @@ import dl_formula.definitions.functions_type as base
 from dl_formula.definitions.scope import Scope
 from dl_formula.shortcuts import n
 from dl_formula.translation.context import TranslationCtx
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make

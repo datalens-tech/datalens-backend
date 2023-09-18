@@ -1,8 +1,11 @@
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
+from dl_api_connector.dashsql import (
+    DefaultDashSQLParamLiteralizer,
+    TValueBase,
+)
 from dl_constants.enums import BIType
-from dl_api_connector.dashsql import DefaultDashSQLParamLiteralizer, TValueBase
 
 
 class OracleDashSQLParamLiteralizer(DefaultDashSQLParamLiteralizer):
@@ -13,7 +16,7 @@ class OracleDashSQLParamLiteralizer(DefaultDashSQLParamLiteralizer):
             max_len = max(len(val) for val in value_lst)
             try:
                 for val in value_lst:
-                    val.encode('ascii')
+                    val.encode("ascii")
             except UnicodeEncodeError:
                 return sa.NCHAR(max_len)
             return sa.CHAR(max_len)

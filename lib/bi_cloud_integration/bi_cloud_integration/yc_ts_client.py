@@ -2,75 +2,105 @@ from __future__ import annotations
 
 import json
 import time
-from typing import Any, Optional, Union
+from typing import (
+    Any,
+    Optional,
+    Union,
+)
 
 import jwt
-
 from yandex.cloud.priv.iam.v1.iam_token_service_pb2 import (
-    CreateIamTokenForServiceAccountRequest, CreateIamTokenRequest,
+    CreateIamTokenForServiceAccountRequest,
+    CreateIamTokenRequest,
 )
 from yandex.cloud.priv.iam.v1.iam_token_service_pb2_grpc import IamTokenServiceStub
 
-from dl_utils.aio import await_sync
-
 from bi_cloud_integration.local_metadata import get_yc_service_token_local
-from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient, DLYCRetryPolicy
+from bi_cloud_integration.yc_client_base import (
+    DLYCRetryPolicy,
+    DLYCSingleServiceClient,
+)
+from dl_utils.aio import await_sync
 
 
 class DLTSClient(DLYCSingleServiceClient):
-    """ TS (Token Service) client """
+    """TS (Token Service) client"""
 
     service_cls = IamTokenServiceStub
 
     @staticmethod
     def jwt_encode_token(
-            service_account_id: str, key_id: str, private_key: str,
-            expiration: int = 360, timestamp: Optional[float] = None,
+        service_account_id: str,
+        key_id: str,
+        private_key: str,
+        expiration: int = 360,
+        timestamp: Optional[float] = None,
     ) -> str:
         if timestamp is None:
             timestamp = time.time()
         timestamp = int(timestamp)
         payload = dict(
-            aud='https://iam.api.cloud.yandex.net/iam/v1/tokens',
+            aud="https://iam.api.cloud.yandex.net/iam/v1/tokens",
             iss=service_account_id,  # e.g. bfbks94685cfqsau06r0
             iat=timestamp,
             exp=timestamp + expiration,
         )
         return jwt.encode(
             payload,
-            private_key.encode('ascii'),  # '-----BEGIN PRIVATE KEY-----\n...\n...--END ...---'
-            algorithm='PS256',
-            headers={'kid': key_id},  # e.g. 'bfbmvosk975v4duo8pke'
+            private_key.encode("ascii"),  # '-----BEGIN PRIVATE KEY-----\n...\n...--END ...---'
+            algorithm="PS256",
+            headers={"kid": key_id},  # e.g. 'bfbmvosk975v4duo8pke'
         )
 
     async def create_token_resp(
-            self, service_account_id: str, key_id: str, private_key: str,
-            expiration: int = 360, timestamp: Optional[float] = None,
+        self,
+        service_account_id: str,
+        key_id: str,
+        private_key: str,
+        expiration: int = 360,
+        timestamp: Optional[float] = None,
     ) -> Any:
         encoded_token = self.jwt_encode_token(
-            service_account_id=service_account_id, key_id=key_id,
-            private_key=private_key, expiration=expiration,
+            service_account_id=service_account_id,
+            key_id=key_id,
+            private_key=private_key,
+            expiration=expiration,
             timestamp=timestamp,
         )
         req = CreateIamTokenRequest(jwt=encoded_token)
         return await self.service.Create.aio(req)
 
     def create_token_resp_sync(
-            self, service_account_id: str, key_id: str, private_key: str,
-            expiration: int = 360, timestamp: Optional[float] = None,
+        self,
+        service_account_id: str,
+        key_id: str,
+        private_key: str,
+        expiration: int = 360,
+        timestamp: Optional[float] = None,
     ) -> Any:
-        return await_sync(self.create_token_resp(
-            service_account_id=service_account_id, key_id=key_id, private_key=private_key,
-            expiration=expiration, timestamp=timestamp,
-        ))
+        return await_sync(
+            self.create_token_resp(
+                service_account_id=service_account_id,
+                key_id=key_id,
+                private_key=private_key,
+                expiration=expiration,
+                timestamp=timestamp,
+            )
+        )
 
     async def create_token(
-            self, service_account_id: str, key_id: str, private_key: str,
-            expiration: int = 360, timestamp: Optional[float] = None,
+        self,
+        service_account_id: str,
+        key_id: str,
+        private_key: str,
+        expiration: int = 360,
+        timestamp: Optional[float] = None,
     ) -> str:
         rs = await self.create_token_resp(
-            service_account_id=service_account_id, key_id=key_id,
-            private_key=private_key, expiration=expiration,
+            service_account_id=service_account_id,
+            key_id=key_id,
+            private_key=private_key,
+            expiration=expiration,
             timestamp=timestamp,
         )
         return rs.iam_token
@@ -96,8 +126,8 @@ class DLTSClient(DLYCSingleServiceClient):
 
 
 async def get_yc_service_token(
-        key_data: Union[bytes, str, dict], yc_ts_endpoint: str,
-        timeout: float = 32.0, expiration: int = 3600) -> str:
+    key_data: Union[bytes, str, dict], yc_ts_endpoint: str, timeout: float = 32.0, expiration: int = 3600
+) -> str:
     """
     :param key_data: dict / json string, with IAM service account auth key data
 
@@ -117,17 +147,17 @@ async def get_yc_service_token(
         ),
     )
     iam_token = await yc_ts_client.create_token(
-        service_account_id=key_data['service_account_id'],
-        key_id=key_data.get('key_id') or key_data['id'],
-        private_key=key_data['private_key'],
+        service_account_id=key_data["service_account_id"],
+        key_id=key_data.get("key_id") or key_data["id"],
+        private_key=key_data["private_key"],
         expiration=expiration,
     )
     return iam_token
 
 
 def get_yc_service_token_sync(
-        key_data: Union[bytes, str, dict], yc_ts_endpoint: str,
-        timeout: float = 32.0, expiration: int = 3600) -> str:
-    return await_sync(get_yc_service_token(
-        key_data=key_data, yc_ts_endpoint=yc_ts_endpoint,
-        timeout=timeout, expiration=expiration))
+    key_data: Union[bytes, str, dict], yc_ts_endpoint: str, timeout: float = 32.0, expiration: int = 3600
+) -> str:
+    return await_sync(
+        get_yc_service_token(key_data=key_data, yc_ts_endpoint=yc_ts_endpoint, timeout=timeout, expiration=expiration)
+    )

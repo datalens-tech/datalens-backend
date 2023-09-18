@@ -11,6 +11,7 @@ from sqlalchemy.sql.elements import (
 )
 from sqlalchemy.sql.functions import Function as SAFunction
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import (
     FuncTranslationImplementationBase,
     TranslateCallback,
@@ -19,8 +20,6 @@ from dl_formula.definitions.base import (
 import dl_formula.definitions.functions_window as base
 from dl_formula.translation.context import TranslationCtx
 from dl_formula.translation.env import TranslationEnvironment
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 V = TranslationVariant.make
 

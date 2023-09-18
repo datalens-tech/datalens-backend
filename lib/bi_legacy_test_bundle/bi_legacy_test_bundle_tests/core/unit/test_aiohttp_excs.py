@@ -5,14 +5,13 @@ import contextlib
 import functools
 import socket
 
-import aiohttp.web
-import aiohttp.client_exceptions
 import aiohttp.client
+import aiohttp.client_exceptions
 import aiohttp.connector
+import aiohttp.web
 import pytest
 
-
-FAKE_URL = 'http://127.0.0.2:62345/'
+FAKE_URL = "http://127.0.0.2:62345/"
 
 
 async def req(url, connect_timeout=0.2, total_timeout=0.4):
@@ -22,12 +21,12 @@ async def req(url, connect_timeout=0.2, total_timeout=0.4):
             total=total_timeout,
         ),
         auth=aiohttp.client.BasicAuth(
-            login='1',
-            password='2',
-            encoding='utf-8',
+            login="1",
+            password="2",
+            encoding="utf-8",
         ),
         headers={
-            'X-Test': '3',
+            "X-Test": "3",
         },
     )
     async with sess_cm as sess:
@@ -38,9 +37,7 @@ async def req(url, connect_timeout=0.2, total_timeout=0.4):
 
 
 def awrap_sleeper(duration):
-
     def awrap_sleeper_configured(func):
-
         @functools.wraps(func)
         async def awrapped_sleeper(*args, **kwargs):
             await asyncio.sleep(duration)
@@ -52,7 +49,6 @@ def awrap_sleeper(duration):
 
 
 def make_araiser(exc):
-
     async def araiser(*args, **kwargs):
         raise exc
 
@@ -60,7 +56,6 @@ def make_araiser(exc):
 
 
 def make_areturner(value):
-
     async def areturner(*args, **kwargs):
         return value
 
@@ -77,31 +72,28 @@ def monkeywrap(monkeypatch, obj, attname, wrapper):
 async def test_connect_timeout(monkeypatch):
     with pytest.raises(aiohttp.client_exceptions.ClientConnectorError):
         await req(FAKE_URL)
-    monkeywrap(
-        monkeypatch=monkeypatch,
-        obj=aiohttp.connector.TCPConnector,
-        attname='connect',
-        wrapper=awrap_sleeper(3))
+    monkeywrap(monkeypatch=monkeypatch, obj=aiohttp.connector.TCPConnector, attname="connect", wrapper=awrap_sleeper(3))
     with pytest.raises(aiohttp.client_exceptions.ServerTimeoutError):
         await req(FAKE_URL)
 
 
 @contextlib.asynccontextmanager
-async def run_server(handler, methods=('POST',), bind='127.0.0.1'):
+async def run_server(handler, methods=("POST",), bind="127.0.0.1"):
     app = aiohttp.web.Application()
     for method in methods:
-        app.router.add_route(method, '/', handler)
+        app.router.add_route(method, "/", handler)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         sock.bind((bind, 0))
         port = sock.getsockname()[1]
-        url = f'http://{bind}:{port}/'
+        url = f"http://{bind}:{port}/"
         server_task = asyncio.create_task(
             aiohttp.web._run_app(
                 app=app,
                 sock=sock,
                 print=None,
-            ))
+            )
+        )
         try:
             yield url
         finally:
@@ -117,7 +109,7 @@ async def test_response_timeout(monkeypatch):
 
     async with run_server(handler_ok) as url:
         resp_info = await req(url, total_timeout=0.03)
-        assert resp_info['status'] == 200
+        assert resp_info["status"] == 200
 
     async def handler_fail(request):
         resp = aiohttp.web.StreamResponse(headers={"content-length": "100"})

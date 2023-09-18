@@ -25,7 +25,6 @@ import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_connector_postgresql.bi.connection_info import PostgreSQLConnectionInfoProvider
 from dl_connector_postgresql.bi.i18n.localizer import Translatable
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode

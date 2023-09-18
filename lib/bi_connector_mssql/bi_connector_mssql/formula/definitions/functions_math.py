@@ -3,12 +3,11 @@ import sqlalchemy.dialects.mssql as sa_mssqlsrv
 
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
-from dl_formula.definitions.type_strategy import ParamsFromArgs
-import dl_formula.definitions.functions_math as base
 from dl_formula.definitions.base import TranslationVariant
+import dl_formula.definitions.functions_math as base
+from dl_formula.definitions.type_strategy import ParamsFromArgs
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
-
 
 V = TranslationVariant.make
 
@@ -56,9 +55,7 @@ class FuncDivSafe3MSSQLFloat(base.FuncDivSafe3):
 
 
 class FuncGreatestMSSQL(base.FuncGreatestBase):
-    variants = [
-        V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x >= y, x, y))
-    ]
+    variants = [V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x >= y, x, y))]
     argument_types = [
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
@@ -89,9 +86,7 @@ class FuncGreatestDatetimesMSSQL(base.FuncGreatestBase):
 
 
 class FuncLeastMSSQL(base.FuncLeastBase):
-    variants = [
-        V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x <= y, x, y))
-    ]
+    variants = [V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x <= y, x, y))]
     argument_types = [
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
@@ -124,115 +119,104 @@ class FuncLeastDatetimesMSSQL(base.FuncLeastBase):
 DEFINITIONS_MATH = [
     # abs
     base.FuncAbs.for_dialect(D.MSSQLSRV),
-
     # acos
     base.FuncAcos.for_dialect(D.MSSQLSRV),
-
     # asin
     base.FuncAsin.for_dialect(D.MSSQLSRV),
-
     # atan
     base.FuncAtan.for_dialect(D.MSSQLSRV),
-
     # atan2
-    base.FuncAtan2(variants=[
-        V(D.MSSQLSRV, sa.func.ATN2),
-    ]),
-
+    base.FuncAtan2(
+        variants=[
+            V(D.MSSQLSRV, sa.func.ATN2),
+        ]
+    ),
     # ceiling
-    base.FuncCeiling(variants=[
-        V(D.MSSQLSRV, sa.func.CEILING),
-    ]),
-
+    base.FuncCeiling(
+        variants=[
+            V(D.MSSQLSRV, sa.func.CEILING),
+        ]
+    ),
     # cos
     base.FuncCos.for_dialect(D.MSSQLSRV),
-
     # cot
     base.FuncCot.for_dialect(D.MSSQLSRV),
-
     # degrees
     base.FuncDegrees.for_dialect(D.MSSQLSRV),
-
     # div
     FuncDivMSSQLInt(),
     FuncDivMSSQLFloat(),
-
     # div_safe
     FuncDivSafe2MSSQLInt(),
     FuncDivSafe3MSSQLInt(),
     FuncDivSafe2MSSQLFloat(),
     FuncDivSafe3MSSQLFloat(),
-
     # exp
     base.FuncExp.for_dialect(D.MSSQLSRV),
-
     # fdiv_safe
     base.FuncFDivSafe2.for_dialect(D.MSSQLSRV),
     base.FuncFDivSafe3.for_dialect(D.MSSQLSRV),
-
     # floor
     base.FuncFloor.for_dialect(D.MSSQLSRV),
-
     # greatest
     base.FuncGreatest1.for_dialect(D.MSSQLSRV),
     FuncGreatestMSSQL(),
     FuncGreatestDatesMSSQL(),
     FuncGreatestDatetimesMSSQL(),
     base.GreatestMulti.for_dialect(D.MSSQLSRV),
-
     # least
     base.FuncLeast1.for_dialect(D.MSSQLSRV),
     FuncLeastMSSQL(),
     FuncLeastDatesMSSQL(),
     FuncLeastDatetimesMSSQL(),
     base.LeastMulti.for_dialect(D.MSSQLSRV),
-
     # ln
-    base.FuncLn(variants=[
-        V(D.MSSQLSRV, sa.func.LOG),
-    ]),
-
+    base.FuncLn(
+        variants=[
+            V(D.MSSQLSRV, sa.func.LOG),
+        ]
+    ),
     # log
-    base.FuncLog(variants=[
-        V(D.MSSQLSRV, lambda x, base: sa.func.LOG(x, base)),
-    ]),
-
+    base.FuncLog(
+        variants=[
+            V(D.MSSQLSRV, lambda x, base: sa.func.LOG(x, base)),
+        ]
+    ),
     # log10
     base.FuncLog10.for_dialect(D.MSSQLSRV),
-
     # pi
     base.FuncPi.for_dialect(D.MSSQLSRV),
-
     # power
-    base.FuncPower(variants=[
-        V(D.MSSQLSRV, lambda x, y: sa.func.POWER(sa.cast(x, sa_mssqlsrv.FLOAT), sa.cast(y, sa_mssqlsrv.FLOAT))),
-    ]),
-
+    base.FuncPower(
+        variants=[
+            V(D.MSSQLSRV, lambda x, y: sa.func.POWER(sa.cast(x, sa_mssqlsrv.FLOAT), sa.cast(y, sa_mssqlsrv.FLOAT))),
+        ]
+    ),
     # radians
-    base.FuncRadians(variants=[
-        V(D.MSSQLSRV, lambda x: sa.func.RADIANS(sa.cast(x, sa_mssqlsrv.FLOAT))),
-    ]),
-
+    base.FuncRadians(
+        variants=[
+            V(D.MSSQLSRV, lambda x: sa.func.RADIANS(sa.cast(x, sa_mssqlsrv.FLOAT))),
+        ]
+    ),
     # round
-    base.FuncRound1(variants=[
-        V(D.MSSQLSRV, lambda x: sa.func.ROUND(x, 0)),
-    ]),
+    base.FuncRound1(
+        variants=[
+            V(D.MSSQLSRV, lambda x: sa.func.ROUND(x, 0)),
+        ]
+    ),
     base.FuncRound2.for_dialect(D.MSSQLSRV),
-
     # sign
     base.FuncSign.for_dialect(D.MSSQLSRV),
-
     # sin
     base.FuncSin.for_dialect(D.MSSQLSRV),
-
     # sqrt
     base.FuncSqrt.for_dialect(D.MSSQLSRV),
-
     # square
-    base.FuncSquare(variants=[
-        V(D.MSSQLSRV, sa.func.SQUARE),
-    ]),
-
+    base.FuncSquare(
+        variants=[
+            V(D.MSSQLSRV, sa.func.SQUARE),
+        ]
+    ),
     # tan
     base.FuncTan.for_dialect(D.MSSQLSRV),
 ]

@@ -1,44 +1,51 @@
 from __future__ import annotations
 
-from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
-)
 from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
     SubselectDataSourceSchema,
     SubselectDataSourceTemplateSchema,
 )
-
-from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
-
+from dl_api_connector.connector import (
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
+)
 from dl_connector_chyt.bi.api_schema.source import (
     CHYTTableListDataSourceSchema,
     CHYTTableListDataSourceTemplateSchema,
     CHYTTableRangeDataSourceSchema,
     CHYTTableRangeDataSourceTemplateSchema,
 )
-from bi_connector_chyt_internal.bi.api_schema.connection import CHYTConnectionSchema, CHYTUserAuthConnectionSchema
+from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+
+from bi_connector_chyt_internal.bi.api_schema.connection import (
+    CHYTConnectionSchema,
+    CHYTUserAuthConnectionSchema,
+)
+from bi_connector_chyt_internal.bi.connection_form.token_auth_form.form_config import (
+    CHYTInternalTokenConnectionFormFactory,
+)
+from bi_connector_chyt_internal.bi.connection_form.user_auth_form.form_config import (
+    CHYTInternalUserConnectionFormFactory,
+)
 from bi_connector_chyt_internal.bi.connection_info import (
-    CHYTInternalTokenConnectionInfoProvider, CHYTUserAuthConnectionInfoProvider,
+    CHYTInternalTokenConnectionInfoProvider,
+    CHYTUserAuthConnectionInfoProvider,
 )
 from bi_connector_chyt_internal.bi.i18n.localizer import CONFIGS
-from bi_connector_chyt_internal.bi.connection_form.user_auth_form.form_config import CHYTInternalUserConnectionFormFactory
-from bi_connector_chyt_internal.bi.connection_form.token_auth_form.form_config import CHYTInternalTokenConnectionFormFactory
-
-
 from bi_connector_chyt_internal.core.connector import (
     CHYTInternalCoreConnectionDefinition,
-    CHYTUserAuthCoreConnectionDefinition,
+    CHYTInternalCoreConnector,
     CHYTTableCoreSourceDefinition,
     CHYTTableListCoreSourceDefinition,
     CHYTTableRangeCoreSourceDefinition,
     CHYTTableSubselectCoreSourceDefinition,
+    CHYTUserAuthCoreConnectionDefinition,
     CHYTUserAuthTableCoreSourceDefinition,
     CHYTUserAuthTableListCoreSourceDefinition,
     CHYTUserAuthTableRangeCoreSourceDefinition,
     CHYTUserAuthTableSubselectCoreSourceDefinition,
-    CHYTInternalCoreConnector,
 )
 
 

@@ -1,11 +1,10 @@
 from typing import Any
 import uuid
 
-from dl_constants.enums import RawSQLLevel
-from dl_core.us_manager.us_manager_sync import SyncUSManager
-
 from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
+from dl_constants.enums import RawSQLLevel
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
 def make_bigquery_saved_connection(

@@ -20,9 +20,5 @@ class CHFrozenWeatherCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenWeatherCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenWeatherCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenWeatherCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenWeatherCoreConnectionDefinition,)
+    source_definitions = (CHFrozenWeatherCoreSourceDefinition,)

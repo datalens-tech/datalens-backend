@@ -1,15 +1,17 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Generator, List
+from typing import (
+    Generator,
+    List,
+)
 
 import attr
 import pytest
 
+from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet
 from dl_core.connection_models import DBIdent
 from dl_core_testing.database import make_schema
-
-from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet
 
 
 # noinspection PyMethodMayBeStatic
@@ -36,7 +38,7 @@ class BaseSchemaSupportedExecutorSet(BaseConnExecutorSet):
         full_match_required: bool
 
     @pytest.fixture()
-    def get_schema_names_test_case(self, db) -> 'ListSchemaTestCase':
+    def get_schema_names_test_case(self, db) -> "ListSchemaTestCase":
         schema_name_list = [make_schema(db) for _ in range(3)]
         yield self.ListSchemaTestCase(
             target_db_ident=DBIdent(None),

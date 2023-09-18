@@ -1,8 +1,7 @@
 import pytest
 
-from dl_api_client.dsmaker.primitives import Dataset
 from bi_testing_ya.dlenv import DLEnv
-
+from dl_api_client.dsmaker.primitives import Dataset
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 
@@ -19,15 +18,15 @@ def test_simple_dataset(dl_env, dc_rs_ds_api_set, dc_rs_connection_id_clickhouse
     data_api_v1 = dc_rs_ds_api_set.data_api_v1
 
     ds = Dataset()
-    ds.sources['source_1'] = ds.source(
+    ds.sources["source_1"] = ds.source(
         source_type=SOURCE_TYPE_CH_TABLE,
         connection_id=dc_rs_connection_id_clickhouse,
         parameters=dict(
-            db_name='test_data',
-            table_name='sample_superstore',
-        )
+            db_name="test_data",
+            table_name="sample_superstore",
+        ),
     )
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
+    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
     ds = api_v1.apply_updates(dataset=ds).dataset
     ds_resp = api_v1.save_dataset(
         dataset=ds,
@@ -38,5 +37,5 @@ def test_simple_dataset(dl_env, dc_rs_ds_api_set, dc_rs_connection_id_clickhouse
 
     result_reps = data_api_v1.get_result(dataset=ds, fields=[ds.find_field(title="City")])
     assert result_reps.status_code == 200
-    city_list = [row[0] for row in result_reps.json['result']['data']['Data']]
-    assert 'Baltimore' in city_list
+    city_list = [row[0] for row in result_reps.json["result"]["data"]["Data"]]
+    assert "Baltimore" in city_list

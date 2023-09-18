@@ -1,21 +1,28 @@
-from typing import Any, Type, Optional
+from typing import (
+    Any,
+    Optional,
+    Type,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper.domain import (
-    AmmSchemaRegistry,
-    AmmSchema,
+    AmmEnumDescriptor,
+    AmmEnumField,
+    AmmEnumMemberDescriptor,
     AmmField,
+    AmmListField,
     AmmNestedField,
+    AmmOneOfDescriptorField,
     AmmRegularSchema,
     AmmScalarField,
-    AmmOneOfDescriptorField,
-    AmmEnumField,
-    AmmEnumDescriptor,
-    AmmEnumMemberDescriptor,
-    AmmListField,
+    AmmSchema,
+    AmmSchemaRegistry,
 )
-from bi_external_api.attrs_model_mapper.utils import CommonAttributeProps, MText
+from bi_external_api.attrs_model_mapper.utils import (
+    CommonAttributeProps,
+    MText,
+)
 from bi_external_api.attrs_model_mapper_docs.domain import AmmOperation
 
 
@@ -97,9 +104,9 @@ class ProtoGenDocAccessor:
         )
 
     def create_amm_field(
-            self,
-            field_dict: dict[str, Any],
-            common_props_override: Optional[CommonAttributeProps] = None,
+        self,
+        field_dict: dict[str, Any],
+        common_props_override: Optional[CommonAttributeProps] = None,
     ) -> AmmField:
         full_type_name = field_dict["fullType"]
         pseudo_type = self.get_regular_type(full_type_name)
@@ -152,7 +159,7 @@ class ProtoGenDocAccessor:
         schema_fields: dict[str, AmmField] = {}
 
         for field_dict in msg_dict["fields"]:
-            field_name = field_dict['name']
+            field_name = field_dict["name"]
 
             if field_dict["isoneof"]:
                 one_of_field_name = field_dict["oneofdecl"]
@@ -192,10 +199,12 @@ class ProtoGenDocAccessor:
                     description=MText(
                         en=member["description"],
                         ru=member["description"],
-                    ) if member["description"] else None,
+                    )
+                    if member["description"]
+                    else None,
                 )
                 for member in enum_dict["values"]
-            ]
+            ],
         )
 
     def get_operations(self, svc_name: str) -> list[AmmOperation]:
@@ -213,27 +222,19 @@ class ProtoGenDocAccessor:
                 amm_schema_rs=self._amm_schema_registry.get_regular_type_schema(
                     self.get_regular_type(method["responseFullType"])
                 ),
-                examples=[]
-            ) for method in svc_dict["methods"]
+                examples=[],
+            )
+            for method in svc_dict["methods"]
         ]
 
     def get_service_description(self, svc_id: str) -> Optional[str]:
         return self._map_svc_full_name_dict[svc_id]["description"] or None
 
     def get_services_by_prefix(self, prefix: str) -> list[str]:
-        return [
-            svc_name for svc_name in self._map_svc_full_name_dict
-            if svc_name.startswith(prefix)
-        ]
+        return [svc_name for svc_name in self._map_svc_full_name_dict if svc_name.startswith(prefix)]
 
     def get_messages_by_prefix(self, prefix: str) -> list[str]:
-        return [
-            msg_name for msg_name in self._map_msg_full_name_dict
-            if msg_name.startswith(prefix)
-        ]
+        return [msg_name for msg_name in self._map_msg_full_name_dict if msg_name.startswith(prefix)]
 
     def get_enums_by_prefix(self, prefix: str) -> list[str]:
-        return [
-            enum_name for enum_name in self._map_enum_full_name_dict
-            if enum_name.startswith(prefix)
-        ]
+        return [enum_name for enum_name in self._map_enum_full_name_dict if enum_name.startswith(prefix)]

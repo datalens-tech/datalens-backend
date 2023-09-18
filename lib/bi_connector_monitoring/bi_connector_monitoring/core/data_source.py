@@ -15,4 +15,4 @@ class MonitoringDataSource(DataSource):
 
     @property
     def default_title(self) -> str:
-        return ''
+        return ""

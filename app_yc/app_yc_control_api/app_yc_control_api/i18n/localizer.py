@@ -1,22 +1,22 @@
 import os
 
+import app_yc_control_api as package
 import attr
 
-from dl_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
-import app_yc_control_api as package
+from dl_i18n.localizer_base import Translatable as BaseTranslatable
+from dl_i18n.localizer_base import TranslationConfig
 
-
-DOMAIN = f'{package.__name__}'
+DOMAIN = f"{package.__name__}"
 CONFIGS = [
     TranslationConfig(
-        path=os.path.relpath(os.path.join(os.path.dirname(__file__), '../locales')),
+        path=os.path.relpath(os.path.join(os.path.dirname(__file__), "../locales")),
         domain=DOMAIN,
-        locale='en',
+        locale="en",
     ),
     TranslationConfig(
-        path=os.path.relpath(os.path.join(os.path.dirname(__file__), '../locales')),
+        path=os.path.relpath(os.path.join(os.path.dirname(__file__), "../locales")),
         domain=DOMAIN,
-        locale='ru',
+        locale="ru",
     ),
 ]
 
@@ -27,7 +27,7 @@ class Translatable(BaseTranslatable):
 
 
 _ = (
-    Translatable('section_title-db'),
-    Translatable('section_title-partner'),
-    Translatable('section_title-files_and_services'),
+    Translatable("section_title-db"),
+    Translatable("section_title-partner"),
+    Translatable("section_title-files_and_services"),
 )

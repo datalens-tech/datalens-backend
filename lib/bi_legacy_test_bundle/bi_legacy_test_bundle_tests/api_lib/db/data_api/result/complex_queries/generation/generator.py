@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import random
-from typing import Any, Sequence
+from typing import (
+    Any,
+    Sequence,
+)
 
 import attr
 
@@ -71,23 +74,19 @@ class TestSettings:
 
     def serialize(self) -> dict:
         return {
-            'base_dimensions': list(self.base_dimensions),
-            'measure_formulas': list(self.measure_formulas),
-            'filters': {
-                name: {'op': op.name, 'values': values}
-                for name, (op, values) in self.filters.items()
-            },
+            "base_dimensions": list(self.base_dimensions),
+            "measure_formulas": list(self.measure_formulas),
+            "filters": {name: {"op": op.name, "values": values} for name, (op, values) in self.filters.items()},
         }
 
     @classmethod
     def deserialize(cls, data: dict) -> TestSettings:
         return cls(
-            base_dimensions=data['base_dimensions'],
-            measure_formulas=data['measure_formulas'],
+            base_dimensions=data["base_dimensions"],
+            measure_formulas=data["measure_formulas"],
             filters={
-                name: (WhereClauseOperation[params['op']], params['values'])
-                for name, params in data['filters'].items()
-            }
+                name: (WhereClauseOperation[params["op"]], params["values"]) for name, params in data["filters"].items()
+            },
         )
 
 
@@ -99,58 +98,66 @@ class LODTestAutoGenerator:
         return random.random() <= value
 
     def _generate_formula_iteration_generic_func(
-            self, recursion_state: FormulaRecursionState,
-            func_name: str, add_args: Sequence[str] = (),
-            agg_level: bool = False,
-            lod: bool = False,
-            bfb: bool = False,
-            igdim: bool = False,
+        self,
+        recursion_state: FormulaRecursionState,
+        func_name: str,
+        add_args: Sequence[str] = (),
+        agg_level: bool = False,
+        lod: bool = False,
+        bfb: bool = False,
+        igdim: bool = False,
     ) -> tuple[FormulaTemplate, FormulaRecursionState]:
         top_level = recursion_state.top_level
 
         if agg_level:
             recursion_state = recursion_state.pop_agg_level()
 
-        lod_str: str = ''
+        lod_str: str = ""
         if lod and not top_level:
             recursion_state, chosen_dim = recursion_state.pop_dimension()
-            lod_str = f' INCLUDE [{chosen_dim}]'
+            lod_str = f" INCLUDE [{chosen_dim}]"
 
-        bfb_str: str = ''
+        bfb_str: str = ""
         if bfb and recursion_state.available_filters:
             if self._match_probability(self.settings.bfb_probability):
                 recursion_state, bfb_field = recursion_state.pop_bfb_field()
-                bfb_str = f' BEFORE FILTER BY [{bfb_field}]'
+                bfb_str = f" BEFORE FILTER BY [{bfb_field}]"
 
-        add_args_str = (', ' + ', '.join(add_args)) if add_args else ''
+        add_args_str = (", " + ", ".join(add_args)) if add_args else ""
         formula_tmpl = FormulaTemplate(
-            f'{func_name}({{nested_formula}}{add_args_str}{lod_str}{bfb_str})',
-            placeholder='nested_formula',
+            f"{func_name}({{nested_formula}}{add_args_str}{lod_str}{bfb_str})",
+            placeholder="nested_formula",
         )
         return formula_tmpl, recursion_state
 
     def _generate_formula_iteration_agg(
-            self, recursion_state: FormulaRecursionState,
+        self,
+        recursion_state: FormulaRecursionState,
     ) -> tuple[FormulaTemplate, FormulaRecursionState]:
         return self._generate_formula_iteration_generic_func(
             recursion_state=recursion_state,
             func_name=random.choice(self.settings.aggregations),
-            agg_level=True, lod=True, bfb=True,
+            agg_level=True,
+            lod=True,
+            bfb=True,
         )
 
     def _generate_formula_iteration_lookup(
-            self, recursion_state: FormulaRecursionState,
+        self,
+        recursion_state: FormulaRecursionState,
     ) -> tuple[FormulaTemplate, FormulaRecursionState]:
         date_dims = list(set(recursion_state.effective_dims) & self.settings.dates)
         assert date_dims
         return self._generate_formula_iteration_generic_func(
             recursion_state=recursion_state,
-            func_name='AGO', add_args=[f'[{random.choice(date_dims)}]'],
+            func_name="AGO",
+            add_args=[f"[{random.choice(date_dims)}]"],
             bfb=True,
         )
 
     def _generate_formula_iteration(
-            self, recursion_state: FormulaRecursionState,
+        self,
+        recursion_state: FormulaRecursionState,
     ) -> tuple[FormulaTemplate, FormulaRecursionState]:
         date_dims = set(recursion_state.effective_dims) & self.settings.dates
         if date_dims and recursion_state.agg_level > 0 and self._match_probability(self.settings.lookup_probability):
@@ -188,10 +195,7 @@ class LODTestAutoGenerator:
             agg_level=random.randrange(1, len(remaining_dims) + 1),
         )
 
-        measure_formulas = [
-            self.generate_formula(recursion_state=recursion_state)
-            for i in range(formula_cnt)
-        ]
+        measure_formulas = [self.generate_formula(recursion_state=recursion_state) for i in range(formula_cnt)]
 
         test_settings = TestSettings(
             base_dimensions=base_dimensions,

@@ -9,7 +9,7 @@ from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.united_storage_client_aio import UStorageClientAIO
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 async def us_client(loop, core_test_config) -> UStorageClientAIO:
     us_config = core_test_config.get_us_config()
     client = UStorageClientAIO(
@@ -22,13 +22,13 @@ async def us_client(loop, core_test_config) -> UStorageClientAIO:
 
 
 @pytest.mark.asyncio
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 async def test_entry_id(us_client) -> str:
     create_resp = await us_client.create_entry(
-        scope='connection',
-        key=PathEntryLocation(f'remove_me/{shortuuid.uuid()}'),
+        scope="connection",
+        key=PathEntryLocation(f"remove_me/{shortuuid.uuid()}"),
     )
-    entry_id = create_resp['entryId']
+    entry_id = create_resp["entryId"]
     yield entry_id
     lock = await us_client.acquire_lock(entry_id, force=True)
     await us_client.delete_entry(entry_id, lock)

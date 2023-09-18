@@ -1,14 +1,13 @@
-from dl_formula_testing.testcases.functions_string import (
-    DefaultStringFunctionFormulaConnectorTestSuite,
-)
+from dl_formula_testing.testcases.functions_string import DefaultStringFunctionFormulaConnectorTestSuite
 
 from bi_connector_mysql_tests.db.formula.base import (
-    MySQL_5_6TestBase, MySQL_8_0_12TestBase,
+    MySQL_5_6TestBase,
+    MySQL_8_0_12TestBase,
 )
 
 
 class StringFunctionMySQLTestSuite(DefaultStringFunctionFormulaConnectorTestSuite):
-    datetime_str_ending = '.000000'
+    datetime_str_ending = ".000000"
 
 
 class TestStringFunctionMySQL_5_6(MySQL_5_6TestBase, StringFunctionMySQLTestSuite):

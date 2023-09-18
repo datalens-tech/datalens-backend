@@ -1,8 +1,9 @@
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
-from .enums import TextSize
+
 from ..dl_common import DatasetAPIBaseModel
+from .enums import TextSize
 
 
 @ModelDescriptor()

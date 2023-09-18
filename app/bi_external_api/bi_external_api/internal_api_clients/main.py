@@ -1,12 +1,17 @@
 import logging
-from typing import Optional, TypeVar, Type, Generic
+from typing import (
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 
 from bi_external_api.domain.internal import (
-    datasets,
     charts,
     dashboards,
+    datasets,
 )
 from bi_external_api.domain.internal.dl_common import EntryInstance
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts

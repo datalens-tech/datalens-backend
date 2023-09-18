@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import attr
 
-from bi_connector_mysql.core.connection_executors import MySQLConnExecutor, AsyncMySQLConnExecutor
 from bi_connector_mdb_base.core.connection_executors import MDBHostConnExecutorMixin
+from bi_connector_mysql.core.connection_executors import (
+    AsyncMySQLConnExecutor,
+    MySQLConnExecutor,
+)
 
 
 @attr.s(cmp=False, hash=False)

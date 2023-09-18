@@ -4,7 +4,6 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
-
 from dl_connector_bigquery_tests.ext.api.base import BigQueryDataApiTestBase
 
 

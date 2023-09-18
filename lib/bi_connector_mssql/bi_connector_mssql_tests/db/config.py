@@ -1,34 +1,32 @@
 import os
 from typing import ClassVar
 
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
-
-from bi_connector_mssql.formula.constants import MssqlDialect as D
 from dl_testing.containers import get_test_container_hostport
 
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-
+from bi_connector_mssql.formula.constants import MssqlDialect as D
 
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
-    host_us_http=get_test_container_hostport('us', fallback_port=52111).host,
-    port_us_http=get_test_container_hostport('us', fallback_port=52111).port,
-    host_us_pg=get_test_container_hostport('pg-us', fallback_port=52110).host,
-    port_us_pg_5432=get_test_container_hostport('pg-us', fallback_port=52110).port,
-    us_master_token='AC1ofiek8coB',
+    host_us_http=get_test_container_hostport("us", fallback_port=52111).host,
+    port_us_http=get_test_container_hostport("us", fallback_port=52111).port,
+    host_us_pg=get_test_container_hostport("pg-us", fallback_port=52110).host,
+    port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52110).port,
+    us_master_token="AC1ofiek8coB",
 )
 
 COMPOSE_PROJECT_NAME = os.environ.get("COMPOSE_PROJECT_NAME", "bi_connector_mssql")
-MSSQL_CONTAINER_LABEL = 'db-mssql-14'
-INIT_DB_PORT = get_test_container_hostport('init-db', fallback_port=52101).port
+MSSQL_CONTAINER_LABEL = "db-mssql-14"
+INIT_DB_PORT = get_test_container_hostport("init-db", fallback_port=52101).port
 
 
 class CoreConnectionSettings:
-    DB_NAME: ClassVar[str] = 'test_data'
-    HOST: ClassVar[str] = get_test_container_hostport('db-mssql-14', fallback_port=52100).host
-    PORT: ClassVar[int] = get_test_container_hostport('db-mssql-14', fallback_port=52100).port
-    USERNAME: ClassVar[str] = 'datalens'
-    PASSWORD: ClassVar[str] = 'qweRTY123'
+    DB_NAME: ClassVar[str] = "test_data"
+    HOST: ClassVar[str] = get_test_container_hostport("db-mssql-14", fallback_port=52100).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-mssql-14", fallback_port=52100).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qweRTY123"
 
 
 SUBSELECT_QUERY_FULL = r"""
@@ -77,8 +75,8 @@ DB_URLS = {
 }
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=['mssql'],
-    core_connector_whitelist=['mssql'],
+    bi_api_connector_whitelist=["mssql"],
+    core_connector_whitelist=["mssql"],
     core_test_config=CORE_TEST_CONFIG,
-    ext_query_executer_secret_key='_some_test_secret_key_',
+    ext_query_executer_secret_key="_some_test_secret_key_",
 )

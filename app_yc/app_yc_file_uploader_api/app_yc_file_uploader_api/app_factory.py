@@ -1,16 +1,16 @@
-from typing import Sequence, Any
-
-import attr
-
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-
-from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
-from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
-from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
-
-from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
+from typing import (
+    Any,
+    Sequence,
+)
 
 from app_yc_file_uploader_api.app_settings import FileUploaderAPISettingsYC
+import attr
+
+from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
+from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
+from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 
 
 @attr.s(kw_only=True)

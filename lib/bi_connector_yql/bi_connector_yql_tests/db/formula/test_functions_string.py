@@ -1,14 +1,11 @@
-from dl_formula_testing.testcases.functions_string import (
-    DefaultStringFunctionFormulaConnectorTestSuite,
-)
-from bi_connector_yql_tests.db.formula.base import (
-    YQLTestBase,
-)
+from dl_formula_testing.testcases.functions_string import DefaultStringFunctionFormulaConnectorTestSuite
+
+from bi_connector_yql_tests.db.formula.base import YQLTestBase
 
 
 class TestStringFunctionYQL(YQLTestBase, DefaultStringFunctionFormulaConnectorTestSuite):
-    datetime_str_separator = 'T'
-    datetime_str_ending = 'Z'
+    datetime_str_separator = "T"
+    datetime_str_ending = "Z"
     supports_trimming_funcs = False
     supports_regex_extract = False
     supports_regex_extract_nth = False

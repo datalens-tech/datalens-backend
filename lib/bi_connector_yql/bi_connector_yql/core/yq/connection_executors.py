@@ -1,16 +1,19 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Sequence
+from typing import (
+    TYPE_CHECKING,
+    Sequence,
+)
 
 import attr
 
 from bi_cloud_integration.model import IAMServiceAccount
-
+from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+
 from bi_connector_yql.core.yq.adapter import YQAdapter
 from bi_connector_yql.core.yq.target_dto import YQConnTargetDTO
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 
 if TYPE_CHECKING:
     from bi_connector_yql.core.yq.dto import YQConnDTO
@@ -27,7 +30,7 @@ class YQAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[YQAdapter]):
         folder_id = self._conn_dto.folder_id
         key_data_s = self._conn_dto.password
 
-        services_registry = self._services_registry   # Do not use. To be deprecated. Somehow.
+        services_registry = self._services_registry  # Do not use. To be deprecated. Somehow.
         if services_registry is None:
             raise Exception("`services_registry` is not available")
         yc_sr = services_registry.get_installation_specific_service_registry(YCServiceRegistry)
@@ -47,9 +50,9 @@ class YQAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[YQAdapter]):
                 raise Exception("`yc_ts_client` is not available")
             with yc_ts_client:
                 user_sa_iam_token = await yc_ts_client.create_token(
-                    service_account_id=key_data['service_account_id'],
-                    key_id=key_data.get('key_id') or key_data['id'],
-                    private_key=key_data['private_key'],
+                    service_account_id=key_data["service_account_id"],
+                    key_id=key_data.get("key_id") or key_data["id"],
+                    private_key=key_data["private_key"],
                     expiration=3600,
                 )
         else:
@@ -76,15 +79,17 @@ class YQAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[YQAdapter]):
         with yc_fs_client:
             cloud_id = await yc_fs_client.resolve_folder_id_to_cloud_id(folder_id)
 
-        return [YQConnTargetDTO(
-            conn_id=self._conn_dto.conn_id,
-            pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
-            pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-            host=self._conn_dto.host,
-            port=self._conn_dto.port,
-            db_name=self._conn_dto.db_name,
-            username='',
-            password=user_sa_iam_token,
-            cloud_id=cloud_id,
-            folder_id=folder_id,
-        )]
+        return [
+            YQConnTargetDTO(
+                conn_id=self._conn_dto.conn_id,
+                pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
+                pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
+                host=self._conn_dto.host,
+                port=self._conn_dto.port,
+                db_name=self._conn_dto.db_name,
+                username="",
+                password=user_sa_iam_token,
+                cloud_id=cloud_id,
+                folder_id=folder_id,
+            )
+        ]

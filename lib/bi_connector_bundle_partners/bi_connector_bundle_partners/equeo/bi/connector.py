@@ -1,22 +1,25 @@
 from __future__ import annotations
 
-from bi_connector_bundle_partners.equeo.core.connector import (
-    EqueoCoreConnectionDefinition,
-    EqueoTableCoreSourceDefinition,
-    EqueoCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_partners.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_partners.equeo.bi.api_schema.connection import EqueoConnectionSchema
 from bi_connector_bundle_partners.equeo.bi.connection_form.form_config import EqueoConnectionFormFactory
 from bi_connector_bundle_partners.equeo.bi.connection_info import EqueoConnectionInfoProvider
+from bi_connector_bundle_partners.equeo.core.connector import (
+    EqueoCoreConnectionDefinition,
+    EqueoCoreConnector,
+    EqueoTableCoreSourceDefinition,
+)
 
 
 class EqueoTableBiApiSourceDefinition(BiApiSourceDefinition):
@@ -35,10 +38,6 @@ class EqueoBiApiConnectionDefinition(BiApiConnectionDefinition):
 class EqueoBiApiConnector(BiApiConnector):
     core_connector_cls = EqueoCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        EqueoBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        EqueoTableBiApiSourceDefinition,
-    )
+    connection_definitions = (EqueoBiApiConnectionDefinition,)
+    source_definitions = (EqueoTableBiApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

@@ -9,15 +9,14 @@ from typing import (
 
 import attr
 
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
 )
 from dl_core.services_registry.file_uploader_client_factory import GSheetsFileSourceDesc
 from dl_utils.utils import DataKey
-
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 
 LOGGER = logging.getLogger(__name__)
 

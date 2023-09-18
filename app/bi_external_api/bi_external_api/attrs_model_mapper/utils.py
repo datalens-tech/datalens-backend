@@ -1,6 +1,14 @@
 import collections
 import typing
-from typing import Any, Type, Union, Optional, List, Sequence, Literal
+from typing import (
+    Any,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Type,
+    Union,
+)
 
 import attr
 

@@ -9,6 +9,8 @@ from typing import (
 
 from clickhouse_sqlalchemy import types as ch_types
 
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 from dl_constants.enums import BIType
 from dl_core.db.conversion_base import (
     BooleanTypeCaster,
@@ -20,9 +22,6 @@ from dl_core.db.conversion_base import (
     make_int,
     make_native_type,
 )
-
-from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 def make_int_cleanup_spaces(value: Any) -> Optional[int]:

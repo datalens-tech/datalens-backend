@@ -5,4 +5,4 @@ from sentry.conf.server import *
 
 CONF_ROOT = os.path.dirname(__file__)
 
-locals().update(granular_settings.get(path='/etc/sentry/settings'))
+locals().update(granular_settings.get(path="/etc/sentry/settings"))

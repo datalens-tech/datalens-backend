@@ -1,10 +1,9 @@
 from .actions import (  # noqa: F401
-    ChartActionType,
-    ChartActionField,
     ChartAction,
+    ChartActionField,
     ChartActionFieldAdd,
+    ChartActionType,
 )
-
 from .enums import (  # noqa: F401
     DatasetFieldType,
     OnOff,
@@ -14,7 +13,6 @@ from .enums import (  # noqa: F401
     SortDirection,
     VisualizationId,
 )
-
 from .main import (  # noqa: F401
     Chart,
     ChartField,

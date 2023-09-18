@@ -3,15 +3,17 @@ from __future__ import annotations
 import attr
 import pytest
 
-from dl_constants.enums import BIType
-
-from dl_core import exc
 from dl_api_commons.base_models import RequestContextInfo
-from dl_connector_clickhouse.core.clickhouse_base.adapters import AsyncClickHouseAdapter
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from dl_core_testing.database import make_table, C, DbTable
-
 from dl_connector_clickhouse.core.clickhouse.testing.exec_factory import ClickHouseExecutorFactory
+from dl_connector_clickhouse.core.clickhouse_base.adapters import AsyncClickHouseAdapter
+from dl_constants.enums import BIType
+from dl_core import exc
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core_testing.database import (
+    C,
+    DbTable,
+    make_table,
+)
 
 
 class TestAsyncClickHouseAdapter:
@@ -27,10 +29,14 @@ class TestAsyncClickHouseAdapter:
 
     @pytest.fixture()
     def tbl(self, db) -> DbTable:
-        tbl = make_table(db, rows=1000, columns=[
-            C('str_val', BIType.string, vg=lambda rn, **kwargs: str(rn)),
-            C('int_val', BIType.integer, vg=lambda rn, **kwargs: rn),
-        ])
+        tbl = make_table(
+            db,
+            rows=1000,
+            columns=[
+                C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
+                C("int_val", BIType.integer, vg=lambda rn, **kwargs: rn),
+            ],
+        )
         yield tbl
         db.drop_table(tbl.table)
 
@@ -39,11 +45,11 @@ class TestAsyncClickHouseAdapter:
         rci = RequestContextInfo.create_empty()
         dba = AsyncClickHouseAdapter(
             req_ctx_info=rci,
-            target_dto=attr.evolve(conn_target_dto, port='63545'),
+            target_dto=attr.evolve(conn_target_dto, port="63545"),
             default_chunk_size=10,
         )
         with pytest.raises(exc.SourceConnectError):
-            await dba.execute(DBAdapterQuery(query='select 1'))
+            await dba.execute(DBAdapterQuery(query="select 1"))
 
     @pytest.mark.parametrize(
         "pass_db_query_to_user,expected_query",
@@ -80,9 +86,7 @@ class TestAsyncClickHouseAdapter:
             default_chunk_size=10,
         )
         try:
-            res = await dba.execute(DBAdapterQuery(
-                query=f"SELECT * FROM {tbl.db.quote(tbl.name)}"
-            ))
+            res = await dba.execute(DBAdapterQuery(query=f"SELECT * FROM {tbl.db.quote(tbl.name)}"))
 
             all_data = []
             async for chunk in res.raw_chunk_generator:

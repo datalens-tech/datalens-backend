@@ -1,32 +1,28 @@
 import pytest
-
 import sqlalchemy as sa
 
+from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from dl_formula.core.datatype import DataType
+from dl_formula.core.dialect import StandardDialect
+from dl_formula.core.dialect import StandardDialect as D
+from dl_formula.definitions.args import ArgTypeSequence
+from dl_formula.definitions.base import (
+    Function,
+    TranslationVariant,
+)
 from dl_formula.definitions.functions_aggregation import AggregationFunction
+from dl_formula.definitions.registry import OperationRegistry
+from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import FromArgs
 
-from dl_formula.core.datatype import DataType
-from dl_formula.definitions.args import ArgTypeSequence
-
-from dl_formula.definitions.base import (
-    TranslationVariant,
-    Function,
-)
-from dl_formula.core.dialect import StandardDialect as D, StandardDialect
-from dl_formula.definitions.scope import Scope
-from dl_formula.definitions.registry import OperationRegistry
-
 from bi_connector_yql.formula.constants import YqlDialect
-
-from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
-
 
 V = TranslationVariant.make
 
 
 class _TestFunction(AggregationFunction):
     scopes = Function.scopes
-    name = '_test_super_func'
+    name = "_test_super_func"
     variants = [
         V(D.DUMMY | YqlDialect.YQL, sa.func.sum),
     ]
@@ -38,12 +34,12 @@ class _TestFunction(AggregationFunction):
 
 
 class _NonStableFunction(_TestFunction):
-    name = '_test_non_stable_func'
+    name = "_test_non_stable_func"
     scopes = _TestFunction.scopes & ~Scope.STABLE
 
 
 @pytest.mark.parametrize(
-    ('func', 'result'),
+    ("func", "result"),
     [
         (_TestFunction(), True),
         (_NonStableFunction(), False),
@@ -52,13 +48,13 @@ class _NonStableFunction(_TestFunction):
 def test_get_supported_functions(func, result):
     registry = OperationRegistry()
     registry.register(func)
-    sfm = SupportedFunctionsManager(supported_tags=('stable',), operation_registry=registry)
+    sfm = SupportedFunctionsManager(supported_tags=("stable",), operation_registry=registry)
     function_names = [f.name for f in sfm._get_supported_functions(dialect=StandardDialect.DUMMY)]
     assert (func.name in function_names) == result
 
 
 @pytest.mark.parametrize(
-    ('func', 'result'),
+    ("func", "result"),
     [
         (_TestFunction(), True),
         (_NonStableFunction(), False),
@@ -67,6 +63,6 @@ def test_get_supported_functions(func, result):
 def test_get_supported_function_names(func, result):
     registry = OperationRegistry()
     registry.register(func)
-    sfm = SupportedFunctionsManager(supported_tags=('stable',), operation_registry=registry)
+    sfm = SupportedFunctionsManager(supported_tags=("stable",), operation_registry=registry)
     function_names = sfm.get_supported_function_names(dialect=StandardDialect.DUMMY)
     assert (func.name in function_names) == result

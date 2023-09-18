@@ -1,11 +1,17 @@
-from typing import Tuple, List, Any, ClassVar, Optional, Iterable
+from typing import (
+    Any,
+    ClassVar,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+)
 
 import attr
 import grpc
 
 
 class GHeaders(dict):
-
     @property
     def as_tuples(self) -> List[Tuple[str, Any]]:
         return [(k, v) for k, v in self.items()]
@@ -17,13 +23,12 @@ class GHeaders(dict):
 @attr.s(frozen=True)
 class GAuthorizationData:
     """Just a wrapper for authorization header to prevent display in repr()"""
+
     authorization_header: Optional[str] = attr.ib(repr=False)
 
     @classmethod
     def from_invocation_metadata(cls, meta: Iterable[Tuple[str, str]]) -> "GAuthorizationData":
-        return cls(
-            authorization_header=next((val for key, val in meta if key.lower() == "authorization"), None)
-        )
+        return cls(authorization_header=next((val for key, val in meta if key.lower() == "authorization"), None))
 
 
 class GRequestData:

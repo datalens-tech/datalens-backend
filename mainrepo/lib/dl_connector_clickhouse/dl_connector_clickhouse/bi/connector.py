@@ -9,7 +9,6 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-
 from dl_connector_clickhouse.bi.api_schema.connection import ClickHouseConnectionSchema
 from dl_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
 from dl_connector_clickhouse.bi.connection_info import ClickHouseConnectionInfoProvider

@@ -6,8 +6,8 @@ import os
 import aiohttp.web
 import pytest
 
-from dl_constants.enums import FileProcessingStatus
 from bi_file_secure_reader.app import create_app as create_reader_app
+from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.models import DataFile
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str

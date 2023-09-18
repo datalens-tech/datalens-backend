@@ -1,16 +1,28 @@
-from typing import ClassVar, Sequence, Optional, Any
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from dl_constants.enums import BIType
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.domain.internal.charts import DatasetFieldType
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
-from .enums import ControlType, ControlSelectType
-from .tab_item_data import TabItemData
+from dl_constants.enums import BIType
+
 from .. import charts
-from ..dl_common import DatasetAPIBaseModel, IntModelTags
+from ..dl_common import (
+    DatasetAPIBaseModel,
+    IntModelTags,
+)
+from .enums import (
+    ControlSelectType,
+    ControlType,
+)
+from .tab_item_data import TabItemData
 
 
 @attr.s(kw_only=True)
@@ -19,8 +31,8 @@ class CommonGuidedControlSource(DatasetAPIBaseModel):
     defaultValue: Optional[SingleOrMultiString] = attr.ib(default=None)
 
     ignored_keys = {
-        'innerTitle',
-        'showInnerTitle',
+        "innerTitle",
+        "showInnerTitle",
     }
 
 
@@ -42,6 +54,7 @@ class FieldSetCommonControlSourceTextInput:
 #
 #  Dataset based control
 #
+
 
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="elementType")
 @attr.s(kw_only=True, frozen=True)

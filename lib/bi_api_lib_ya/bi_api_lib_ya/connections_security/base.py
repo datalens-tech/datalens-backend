@@ -1,14 +1,22 @@
 from __future__ import annotations
 
 import logging
-from typing import ClassVar, Type
+from typing import (
+    ClassVar,
+    Type,
+)
 
 import attr
 
 from dl_core import exc
-from dl_core.connection_models import ConnDTO, DefaultSQLDTO
-from dl_core.connections_security.base import GenericConnectionSecurityManager, ConnectionSafetyChecker
-
+from dl_core.connection_models import (
+    ConnDTO,
+    DefaultSQLDTO,
+)
+from dl_core.connections_security.base import (
+    ConnectionSafetyChecker,
+    GenericConnectionSecurityManager,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -48,7 +56,7 @@ class InternalConnectionSecurityManager(GenericConnectionSecurityManager):
 
 @attr.s(kw_only=True)
 class MDBConnectionSafetyChecker(ConnectionSafetyChecker):
-    """ MDB hosts """
+    """MDB hosts"""
 
     _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
 
@@ -60,16 +68,17 @@ class MDBConnectionSafetyChecker(ConnectionSafetyChecker):
             mdb_man = MDBDomainManager.from_env()
 
             hosts = conn_dto.get_all_hosts()
-            LOGGER.info('Checking if hosts %r belong to mdb', hosts)
+            LOGGER.info("Checking if hosts %r belong to mdb", hosts)
             if all(mdb_man.host_in_mdb(host) for host in hosts):
-                LOGGER.info('All hosts (%r) look like mdb hosts', hosts)
+                LOGGER.info("All hosts (%r) look like mdb hosts", hosts)
                 return True
             else:
-                LOGGER.info('Hosts (%r) do not belong to mdb (%r)', hosts, mdb_man.settings.mdb_domains)
+                LOGGER.info("Hosts (%r) do not belong to mdb (%r)", hosts, mdb_man.settings.mdb_domains)
 
             if len(set(mdb_man.host_in_mdb(host) for host in hosts)) > 1:
                 raise exc.ConnectionConfigurationError(
-                    'Internal (MDB) hosts and external hosts can not be mixed in multihost configuration')
+                    "Internal (MDB) hosts and external hosts can not be mixed in multihost configuration"
+                )
 
         return False
 

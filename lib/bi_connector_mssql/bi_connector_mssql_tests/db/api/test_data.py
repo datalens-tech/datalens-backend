@@ -1,8 +1,8 @@
 from dl_api_lib_testing.connector.data_api_suites import (
-    DefaultConnectorDataResultTestSuite,
+    DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataRangeTestSuite,
-    DefaultConnectorDataDistinctTestSuite,
+    DefaultConnectorDataResultTestSuite,
 )
 
 from bi_connector_mssql_tests.db.api.base import MSSQLDataApiTestBase

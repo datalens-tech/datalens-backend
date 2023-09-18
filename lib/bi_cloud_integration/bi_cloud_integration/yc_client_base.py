@@ -7,34 +7,45 @@ import itertools
 import logging
 import random
 import time
-import uuid
-from urllib.parse import unquote
 from typing import (
-    Any, Awaitable, Callable, ClassVar, FrozenSet,
-    Iterable, Optional, Tuple, Type, TypeVar, Union,
+    Any,
+    Awaitable,
+    Callable,
+    ClassVar,
+    FrozenSet,
+    Iterable,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
 )
+from urllib.parse import unquote
+import uuid
 
 import attr
 import grpc
 
-from bi_cloud_integration.exc import get_grpc_code, handle_grpc_error
+from bi_cloud_integration.exc import (
+    get_grpc_code,
+    handle_grpc_error,
+)
 from dl_configs.utils import get_root_certificates
 from dl_utils.aio import await_sync
 
-
 LOGGER = logging.getLogger(__name__)
-GRPC_PREFIX = 'grpc://'
-GRPCS_PREFIX = 'grpcs://'
+GRPC_PREFIX = "grpc://"
+GRPCS_PREFIX = "grpcs://"
 
 
 class Unspecified:
-    """ Special class for the `unspecified value` singleton marker """
+    """Special class for the `unspecified value` singleton marker"""
 
 
 UNSPECIFIED = Unspecified()
 
 
-_VAL_TV = TypeVar('_VAL_TV')
+_VAL_TV = TypeVar("_VAL_TV")
 
 
 def get_if_specified(value: Union[_VAL_TV, Unspecified], default: _VAL_TV) -> _VAL_TV:
@@ -71,20 +82,22 @@ class DLYCRetryPolicy(DLYCRetryPolicyBase):
     max_backoff: float = 3
     backoff_multiplier: float = 2
 
-    retryable_status_codes: FrozenSet[grpc.StatusCode] = frozenset((
-        grpc.StatusCode.ABORTED,
-        grpc.StatusCode.CANCELLED,
-        grpc.StatusCode.DEADLINE_EXCEEDED,
-        grpc.StatusCode.UNAVAILABLE,
-        grpc.StatusCode.INTERNAL,
-        grpc.StatusCode.FAILED_PRECONDITION,
-    ))
+    retryable_status_codes: FrozenSet[grpc.StatusCode] = frozenset(
+        (
+            grpc.StatusCode.ABORTED,
+            grpc.StatusCode.CANCELLED,
+            grpc.StatusCode.DEADLINE_EXCEEDED,
+            grpc.StatusCode.UNAVAILABLE,
+            grpc.StatusCode.INTERNAL,
+            grpc.StatusCode.FAILED_PRECONDITION,
+        )
+    )
 
     def gen_exponential_backoff(self) -> Iterable[float]:
         for idx in itertools.count():
             yield min(
                 self.max_backoff,
-                self.initial_backoff * (self.backoff_multiplier ** idx),
+                self.initial_backoff * (self.backoff_multiplier**idx),
             )
 
     def can_retry_err(self, err: grpc.RpcError) -> bool:
@@ -93,7 +106,8 @@ class DLYCRetryPolicy(DLYCRetryPolicyBase):
 
 @attr.s(auto_attribs=True, frozen=True)
 class NoRetryPolicy(DLYCRetryPolicyBase):
-    """ Mostly intended for debug """
+    """Mostly intended for debug"""
+
     call_timeout: float = 15.0
     total_timeout: float = 17.0
     min_timeout: float = 0.1
@@ -114,7 +128,7 @@ class DLYCServiceConfig:
     # TODO: take the defaults from the `dl_configs`
     keepalive_time_msec: int = attr.ib(default=10_000)
     keepalive_timeout_msec: int = attr.ib(default=1000)
-    user_agent: str = attr.ib(default='datalens')
+    user_agent: str = attr.ib(default="datalens")
 
     add_timeout: bool = attr.ib(default=True)
     add_metadata: bool = attr.ib(default=True)
@@ -135,10 +149,10 @@ class DLYCServiceConfig:
         tls = self.tls
         if tls is None:
             if endpoint.startswith(GRPCS_PREFIX):
-                endpoint = endpoint[len(GRPCS_PREFIX):]
+                endpoint = endpoint[len(GRPCS_PREFIX) :]
                 tls = True
             elif endpoint.startswith(GRPC_PREFIX):
-                endpoint = endpoint[len(GRPC_PREFIX):]
+                endpoint = endpoint[len(GRPC_PREFIX) :]
                 tls = False
             else:
                 tls = True
@@ -171,25 +185,26 @@ class WrappedGRPCService:
     # TODO?: use mixins instead, for static checking?
 
     def __init__(
-            self,
-            service_cls: ServiceType, channel: grpc.Channel,
-            dl_yc_client: DLYCClientCommon, service_name: Optional[str] = None):
+        self,
+        service_cls: ServiceType,
+        channel: grpc.Channel,
+        dl_yc_client: DLYCClientCommon,
+        service_name: Optional[str] = None,
+    ):
         self.service_cls = service_cls
         self.channel = channel
         self.dl_yc_client = dl_yc_client
         self.service = service_cls(channel)
         if service_name is None:
-            service_name = getattr(service_cls, '__name__', None) or repr(service_cls)
+            service_name = getattr(service_cls, "__name__", None) or repr(service_cls)
         self.service_name = service_name
 
     def __getattr__(self, key: str) -> WrappedGRPCFunc:
         rpc_call = getattr(self.service, key)
-        return self.dl_yc_client._wrap_call(
-            rpc_call,
-            service_name=self.service_name, call_name=key)
+        return self.dl_yc_client._wrap_call(rpc_call, service_name=self.service_name, call_name=key)
 
 
-_CLS_TV = TypeVar('_CLS_TV', bound='DLYCClientCommon')
+_CLS_TV = TypeVar("_CLS_TV", bound="DLYCClientCommon")
 
 
 # TODO: commonize and apply mdb's grpc client tricks:
@@ -198,7 +213,7 @@ _CLS_TV = TypeVar('_CLS_TV', bound='DLYCClientCommon')
 # https://a.yandex-team.ru/arc/trunk/arcadia/cloud/iam/accessservice/client/python/client.py?rev=r6670095#L143
 @attr.s
 class DLYCClientCommon:
-    """ Common base class for ycloud gRPC API services """
+    """Common base class for ycloud gRPC API services"""
 
     service_config: DLYCServiceConfig = attr.ib()
 
@@ -210,7 +225,9 @@ class DLYCClientCommon:
     metadata: Tuple[Tuple[str, str], ...] = attr.ib(default=())
 
     @staticmethod
-    def normalize_request_id_base(request_id: Optional[str], random_size: int = 3, allow_cut: bool = True) -> Optional[str]:
+    def normalize_request_id_base(
+        request_id: Optional[str], random_size: int = 3, allow_cut: bool = True
+    ) -> Optional[str]:
         if not request_id:
             return None
 
@@ -224,19 +241,20 @@ class DLYCClientCommon:
             else:
                 return uuid_piece
 
-        data = request_id.encode('utf-8')
+        data = request_id.encode("utf-8")
         uuid_size = 16  # bytes
         data_size = uuid_size - random_size
         if len(data) < data_size:
             data_size = len(data)
             random_size = uuid_size - data_size
-        return str(uuid.UUID(bytes=(
-            data[:data_size] +
-            b''.join(
-                chr(random.randrange(255)).encode('iso-8859-1')
-                for _ in range(random_size)
+        return str(
+            uuid.UUID(
+                bytes=(
+                    data[:data_size]
+                    + b"".join(chr(random.randrange(255)).encode("iso-8859-1") for _ in range(random_size))
+                )
             )
-        )))
+        )
 
         return request_id
 
@@ -251,40 +269,44 @@ class DLYCClientCommon:
 
     @classmethod
     def create(
-            cls: Type[_CLS_TV], endpoint: str,
-            channel: Optional[grpc.Channel] = None,
-            request_id: Optional[str] = None,
-            bearer_token: Optional[str] = None,
-            metadata: Tuple[Tuple[str, str], ...] = (),
-            **kwargs: Any) -> _CLS_TV:
+        cls: Type[_CLS_TV],
+        endpoint: str,
+        channel: Optional[grpc.Channel] = None,
+        request_id: Optional[str] = None,
+        bearer_token: Optional[str] = None,
+        metadata: Tuple[Tuple[str, str], ...] = (),
+        **kwargs: Any,
+    ) -> _CLS_TV:
         service_config = DLYCServiceConfig(endpoint=endpoint, **kwargs)
         return cls(
-            service_config=service_config, channel=channel,
-            request_id=request_id, bearer_token=bearer_token, metadata=metadata,
+            service_config=service_config,
+            channel=channel,
+            request_id=request_id,
+            bearer_token=bearer_token,
+            metadata=metadata,
         )
 
     def __attrs_post_init__(self) -> None:
         if self._channel is not None:
             channel_target = self._channel._channel.target()  # type: ignore
             if isinstance(channel_target, bytes):
-                channel_target = channel_target.decode('utf-8')
+                channel_target = channel_target.decode("utf-8")
             endpoint = self.service_config.endpoint
             if endpoint != channel_target:
                 raise ValueError(
                     "Passed channel's endpoint does not match the service config endpoint",
-                    dict(channel_target=channel_target, service_config_endpoint=endpoint))
+                    dict(channel_target=channel_target, service_config_endpoint=endpoint),
+                )
 
     def clone(
-            self: _CLS_TV,
-            request_id: Union[Optional[str], Unspecified] = UNSPECIFIED,
-            bearer_token: Union[Optional[str], Unspecified] = UNSPECIFIED,
+        self: _CLS_TV,
+        request_id: Union[Optional[str], Unspecified] = UNSPECIFIED,
+        bearer_token: Union[Optional[str], Unspecified] = UNSPECIFIED,
     ) -> _CLS_TV:
         return self.__class__(
             service_config=self.service_config,
-
             channel=self._channel,
             logger=self.logger,
-
             request_id=get_if_specified(request_id, default=self.request_id),
             bearer_token=get_if_specified(bearer_token, default=self.bearer_token),
         )
@@ -317,8 +339,7 @@ class DLYCClientCommon:
         handle_grpc_error(err)
 
     def _wrap_call(self, func: Callable, service_name: str, call_name: str) -> WrappedGRPCFunc:
-
-        future_func = getattr(func, 'future', None)
+        future_func = getattr(func, "future", None)
         if future_func is None:
             raise Exception("Only gRPC callables with '.future' are supported here")
 
@@ -326,10 +347,8 @@ class DLYCClientCommon:
         # preserve the `functools.wraps` somehow).
         @functools.wraps(func)
         async def awrapped_call_raw(*args: Any, **kwargs: Any) -> Any:
-            """ Minimal wrapping of grpc future-function into an asyncio future """
-            self.logger.debug(
-                'Calling %s.%s @ %r ...',
-                service_name, call_name, self.service_config.endpoint)
+            """Minimal wrapping of grpc future-function into an asyncio future"""
+            self.logger.debug("Calling %s.%s @ %r ...", service_name, call_name, self.service_config.endpoint)
 
             loop = asyncio.get_event_loop()
             grpc_fut = future_func(*args, **kwargs)
@@ -350,16 +369,16 @@ class DLYCClientCommon:
 
         @functools.wraps(func)
         async def awrapped_call(*args: Any, **kwargs: Any) -> Any:
-            """ Async wrapping with retries and other additions """
+            """Async wrapping with retries and other additions"""
             start_time = time.monotonic()
             max_time = start_time + self.retry_policy.total_timeout
 
             if self.service_config.add_metadata:
-                metadata = kwargs.get('metadata', None) or ()
+                metadata = kwargs.get("metadata", None) or ()
                 metadata = tuple(self._default_metadata) + tuple(metadata)
                 kwargs.update(metadata=metadata)
 
-            add_timeout = self.service_config.add_timeout and 'timeout' not in kwargs
+            add_timeout = self.service_config.add_timeout and "timeout" not in kwargs
 
             for backoff in self.retry_policy.gen_exponential_backoff():
                 attempt_start_time = time.monotonic()
@@ -376,16 +395,13 @@ class DLYCClientCommon:
                     return result
                 except grpc.RpcError as err:
                     now = time.monotonic()
-                    if (
-                            (max_time - now < self.retry_policy.min_timeout)
-                            or not self.retry_policy.can_retry_err(err)
-                    ):
+                    if (max_time - now < self.retry_policy.min_timeout) or not self.retry_policy.can_retry_err(err):
                         self._handle_grpc_error(err)
                         raise
                     sleep_time = backoff - (now - attempt_start_time)
                     self.logger.debug(
-                        "Retrying %s.%s, sleeping for %.3fs, error %r",
-                        service_name, call_name, sleep_time, err)
+                        "Retrying %s.%s, sleeping for %.3fs, error %r", service_name, call_name, sleep_time, err
+                    )
                     if sleep_time > 0:
                         await asyncio.sleep(sleep_time)
 
@@ -401,12 +417,13 @@ class DLYCClientCommon:
         )
 
     def _wrap_service(
-            self, service_cls: Any,  # `ServiceType,` but mypy fails weirdly with it.
-            service_name: Optional[str] = None,
+        self,
+        service_cls: Any,  # `ServiceType,` but mypy fails weirdly with it.
+        service_name: Optional[str] = None,
     ) -> WrappedGRPCService:
         return WrappedGRPCService(
-            service_cls=service_cls, channel=self.channel,
-            dl_yc_client=self, service_name=service_name)
+            service_cls=service_cls, channel=self.channel, dl_yc_client=self, service_name=service_name
+        )
 
     def close(self) -> None:
         channel = self._channel

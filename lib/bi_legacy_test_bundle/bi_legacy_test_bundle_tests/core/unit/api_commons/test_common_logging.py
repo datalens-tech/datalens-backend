@@ -2,22 +2,27 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Dict, Any
+from typing import (
+    Any,
+    Dict,
+)
 
-import flask
-import pytest
 from aiohttp import web
-
+import flask
 from multidict import CIMultiDict
+import pytest
 
-from dl_api_commons import clean_secret_data_in_headers, log_request_start, log_request_end
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons import (
+    clean_secret_data_in_headers,
+    log_request_end,
+    log_request_start,
+)
 from dl_api_commons.aio.middlewares import request_id as aio_request_id
-from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
-
+from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,16 +64,16 @@ def test_headers_cleaning():
 
 
 def test_common_logging_request_start(caplog):
-    caplog.set_level('INFO')
+    caplog.set_level("INFO")
     caplog.clear()
     log_request_start(
         logger=LOGGER,
         method="get",
         full_path="/api/ololo/azaza?param=value",
         headers=(
-            ('Some-Token', "Some_secret_value"),
-            ('User-Agent', 'Python-urllib/2.7'),
-        )
+            ("Some-Token", "Some_secret_value"),
+            ("User-Agent", "Python-urllib/2.7"),
+        ),
     )
     assert len(caplog.records) == 1
 
@@ -84,7 +89,7 @@ def test_common_logging_request_start(caplog):
 
 
 def test_common_logging_request_end(caplog):
-    caplog.set_level('INFO')
+    caplog.set_level("INFO")
     caplog.clear()
     log_request_end(
         logger=LOGGER,
@@ -109,13 +114,13 @@ request_headers = (
     ("X-YaCloud-SubjectToken", "1234567890"),
     ("Plain-Header", "Plain value"),
     ("User-Agent", "Test client"),
-    ("X-Request-Id", "parentreqid1234")
+    ("X-Request-Id", "parentreqid1234"),
 )
 
 
 # TODO FIX: Request ID tests
 def test_common_logging_flask(caplog):
-    caplog.set_level('INFO')
+    caplog.set_level("INFO")
     caplog.clear()
 
     app = flask.Flask(__name__)
@@ -141,8 +146,8 @@ def test_common_logging_flask(caplog):
     records = caplog.records
 
     # FIXME: fix the original stochastic 'Unclosed client session' errors.
-    other_records = [rec for rec in records if rec.name == 'asyncio']
-    records = [rec for rec in records if rec.name != 'asyncio']
+    other_records = [rec for rec in records if rec.name == "asyncio"]
+    records = [rec for rec in records if rec.name != "asyncio"]
     if other_records:
         LOGGER.error("Extraneous asyncio logrecords: %r", other_records)
 
@@ -159,9 +164,7 @@ def test_common_logging_flask(caplog):
         " 'Cookie': 'Session_id=<hidden>; non_secret_cookie=non_secret_val; sessionid2=<hidden>'},"
         f" pid: {os.getpid()}"
     )
-    expected_end_msg = (
-        "Response. method: GET, path: /?a=b, status: 200"
-    )
+    expected_end_msg = "Response. method: GET, path: /?a=b, status: 200"
 
     assert expected_start_msg == records[0].message
     assert expected_end_msg == records[1].message
@@ -171,12 +174,12 @@ def test_common_logging_flask(caplog):
     assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
 
     parent_request_id = records[0].log_context.get("parent_request_id")
-    assert parent_request_id and parent_request_id == 'parentreqid1234'
+    assert parent_request_id and parent_request_id == "parentreqid1234"
 
 
 @pytest.mark.asyncio
 async def test_common_logging_aiohttp(caplog, aiohttp_client):
-    caplog.set_level('INFO')
+    caplog.set_level("INFO")
     caplog.clear()
 
     app = web.Application(
@@ -210,9 +213,7 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
         " 'Cookie': 'Session_id=<hidden>; non_secret_cookie=non_secret_val; sessionid2=<hidden>'},"
         f" pid: {os.getpid()}"
     )
-    expected_end_msg = (
-        "Response. method: GET, path: /?a=b, status: 200"
-    )
+    expected_end_msg = "Response. method: GET, path: /?a=b, status: 200"
 
     # noqa
     req_id_records = [rec for rec in caplog.records if rec.name == aio_request_id.LOGGER.name]
@@ -225,48 +226,42 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
     assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
 
 
-@pytest.mark.parametrize('source, expected_masked', (
-    (None, None),
-    ({}, {}),
+@pytest.mark.parametrize(
+    "source, expected_masked",
     (
-        dict(password='1', a=2),
-        dict(password='<hidden>', a=2),
-    ),
-    (
-        dict(password=1, token=False, cypher_text=5.0, a=2),
-        dict(password='<hidden>', token='<hidden>', cypher_text='<hidden>', a=2),
-    ),
-    (
-        dict(
-            a=dict(
-                a=dict(
-                    token='',
-                    password='',
-                    cypher_text='<hidden>',
-                    sample='asdf'
-                )
-            )
+        (None, None),
+        ({}, {}),
+        (
+            dict(password="1", a=2),
+            dict(password="<hidden>", a=2),
         ),
-        dict(
-            a=dict(
+        (
+            dict(password=1, token=False, cypher_text=5.0, a=2),
+            dict(password="<hidden>", token="<hidden>", cypher_text="<hidden>", a=2),
+        ),
+        (
+            dict(a=dict(a=dict(token="", password="", cypher_text="<hidden>", sample="asdf"))),
+            dict(
                 a=dict(
-                    token='<hidden>',
-                    password='<hidden>',
-                    cypher_text='<hidden>',
-                    sample='asdf',
+                    a=dict(
+                        token="<hidden>",
+                        password="<hidden>",
+                        cypher_text="<hidden>",
+                        sample="asdf",
+                    )
                 )
-            )
+            ),
+        ),
+        (
+            dict(items=[dict(password="asdf"), dict(password="asdf")]),
+            dict(items=[dict(password="<hidden>"), dict(password="<hidden>")]),
+        ),
+        (
+            dict(password=["asdf", "fdsa"]),
+            dict(password=["<hidden>", "<hidden>"]),
         ),
     ),
-    (
-        dict(items=[dict(password='asdf'), dict(password='asdf')]),
-        dict(items=[dict(password='<hidden>'), dict(password='<hidden>')]),
-    ),
-    (
-        dict(password=['asdf', 'fdsa']),
-        dict(password=['<hidden>', '<hidden>']),
-    ),
-))
+)
 def test_mask_sensitive_fields_by_name_recursive(source: Dict[str, Any], expected_masked: Dict[str, Any]):
     actual_masked = mask_sensitive_fields_by_name_in_json_recursive(source)
     assert actual_masked == expected_masked

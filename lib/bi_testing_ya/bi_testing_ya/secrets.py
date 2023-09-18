@@ -34,5 +34,5 @@ def get_secret(secret_id: str, use_ssh_auth: bool = False, yav_token: Optional[s
 
     sec_data = vc.get_version(secret_id)
     # sec_data = {"created_at": ..., "value": {...}}
-    data = sec_data['value']
+    data = sec_data["value"]
     return data

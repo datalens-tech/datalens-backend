@@ -3,8 +3,31 @@ from __future__ import annotations
 import abc
 from typing import Optional
 
-from dl_configs.enums import RequiredService, AppType, RQE_SERVICES
-
+from bi_api_lib_ya.app_settings import (
+    AsyncAppSettings,
+    BaseAppSettings,
+    ControlPlaneAppSettings,
+)
+from bi_api_lib_ya.i18n.localizer import CONFIGS
+from bi_api_lib_ya.services_registry.env_manager_factory import (
+    CloudEnvManagerFactory,
+    DataCloudEnvManagerFactory,
+    IntranetEnvManagerFactory,
+)
+from bi_cloud_integration.sa_creds import (
+    SACredsRetrieverFactory,
+    SACredsSettings,
+)
+from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
+from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFactory
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
+from dl_configs.enums import (
+    RQE_SERVICES,
+    AppType,
+    RequiredService,
+)
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -12,22 +35,6 @@ from dl_core.services_registry.inst_specific_sr import InstallationSpecificServi
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
 from dl_i18n.localizer_base import TranslationConfig
-
-from dl_api_lib.app_common import SRFactoryBuilder
-from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
-
-from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
-from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFactory
-
-from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
-from bi_api_lib_ya.i18n.localizer import CONFIGS
-from bi_api_lib_ya.services_registry.env_manager_factory import (
-    IntranetEnvManagerFactory,
-    CloudEnvManagerFactory,
-    DataCloudEnvManagerFactory,
-)
 
 
 class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
@@ -59,8 +66,8 @@ class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
             )
 
     def _get_inst_specific_sr_factory(
-            self,
-            settings: BaseAppSettings,
+        self,
+        settings: BaseAppSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         if settings.APP_TYPE == AppType.INTRANET:
             return YTServiceRegistryFactory(
@@ -68,22 +75,29 @@ class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
                 dls_api_key=settings.DLS_API_KEY,
             )
         else:
-            sa_creds_settings = SACredsSettings(
-                mode=settings.YC_SA_CREDS_MODE,
-                env_key_data=settings.YC_SA_CREDS_KEY_DATA,
-            ) if settings.YC_SA_CREDS_MODE is not None else None
+            sa_creds_settings = (
+                SACredsSettings(
+                    mode=settings.YC_SA_CREDS_MODE,
+                    env_key_data=settings.YC_SA_CREDS_KEY_DATA,
+                )
+                if settings.YC_SA_CREDS_MODE is not None
+                else None
+            )
 
             return YCServiceRegistryFactory(
                 yc_billing_host=settings.YC_BILLING_HOST if settings.APP_TYPE == AppType.CLOUD else None,
                 yc_api_endpoint_rm=settings.YC_RM_CP_ENDPOINT,
                 yc_as_endpoint=settings.YC_AUTH_SETTINGS.YC_AS_ENDPOINT if settings.YC_AUTH_SETTINGS else None,
-                yc_api_endpoint_iam=settings.YC_AUTH_SETTINGS.YC_API_ENDPOINT_IAM if settings.YC_AUTH_SETTINGS else None,
+                yc_api_endpoint_iam=settings.YC_AUTH_SETTINGS.YC_API_ENDPOINT_IAM
+                if settings.YC_AUTH_SETTINGS
+                else None,
                 yc_ts_endpoint=settings.YC_IAM_TS_ENDPOINT,
                 yc_api_endpoint_mdb=settings.YC_MDB_API_ENDPOINT,
                 sa_creds_retriever_factory=SACredsRetrieverFactory(
-                    sa_creds_settings=sa_creds_settings,
-                    ts_endpoint=settings.YC_IAM_TS_ENDPOINT
-                ) if sa_creds_settings else None,
+                    sa_creds_settings=sa_creds_settings, ts_endpoint=settings.YC_IAM_TS_ENDPOINT
+                )
+                if sa_creds_settings
+                else None,
                 blackbox_name=settings.BLACKBOX_NAME,
             )
 
@@ -97,9 +111,9 @@ class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
 
     def _get_rqe_caches_settings(self, settings: BaseAppSettings) -> Optional[RQECachesSetting]:
         if (
-            settings.APP_TYPE in (AppType.CLOUD, AppType.TESTS) and
-            isinstance(settings, AsyncAppSettings) and
-            settings.RQE_CACHES_ON
+            settings.APP_TYPE in (AppType.CLOUD, AppType.TESTS)
+            and isinstance(settings, AsyncAppSettings)
+            and settings.RQE_CACHES_ON
         ):
             return RQECachesSetting(
                 redis_settings=settings.RQE_CACHES_REDIS,

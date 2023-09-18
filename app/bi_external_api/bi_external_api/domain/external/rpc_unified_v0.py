@@ -1,50 +1,50 @@
 import functools
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.enums import ExtAPIType
-from .common import EntryInfo, Secret, EntryWBRef
+
+from .common import (
+    EntryInfo,
+    EntryWBRef,
+    Secret,
+)
 from .dataset_main import Dataset
 from .object_model import ObjectParent
 from .rpc import (
+    AdviseDatasetFieldsRequest,
+    AdviseDatasetFieldsResponse,
+    ConnectionCreateRequest,
+    ConnectionCreateResponse,
+    ConnectionDeleteRequest,
+    ConnectionDeleteResponse,
+    ConnectionGetRequest,
+    ConnectionGetResponse,
+    ConnectionModifyRequest,
+    ConnectionModifyResponse,
+    ModificationPlan,
     ParticularAPIOperationTranslator,
-    #
+    TrueWorkbookCreateRequest,
+    TrueWorkbookCreateResponse,
+    WorkbookDeleteRequest,
+    WorkbookDeleteResponse,
     WorkbookOpKind,
     WorkbookOpRequest,
     WorkbookOpResponse,
-    #
-    ModificationPlan,
-    #
     WorkbookReadRequest,
     WorkbookReadResponse,
-    #
-    TrueWorkbookCreateResponse,
-    TrueWorkbookCreateRequest,
-    #
     WorkbookWriteRequest,
     WorkbookWriteResponse,
-    #
-    WorkbookDeleteRequest,
-    WorkbookDeleteResponse,
-    #
-    AdviseDatasetFieldsRequest,
-    AdviseDatasetFieldsResponse,
-    #
-    ConnectionGetResponse,
-    ConnectionGetRequest,
-    #
-    ConnectionCreateRequest,
-    ConnectionCreateResponse,
-    #
-    ConnectionModifyRequest,
-    ConnectionModifyResponse,
-    #
-    ConnectionDeleteRequest,
-    ConnectionDeleteResponse,
 )
-from .workbook import WorkBook, ConnectionInstance
+from .workbook import (
+    ConnectionInstance,
+    WorkBook,
+)
 
 UNIFIED_API_TYPES = [ExtAPIType.UNIFIED_DC, ExtAPIType.UNIFIED_NEBIUS_IL]
 
@@ -71,7 +71,7 @@ class UnifiedV0OpResponse:
     kind: ClassVar[WorkbookOpKind]
 
 
-class UnifiedV0CreateWorkbookRequest():
+class UnifiedV0CreateWorkbookRequest:
     pass
 
 
@@ -285,9 +285,7 @@ class UnifiedV0OpAdviseDatasetFieldsResponse(UnifiedV0OpResponse):
 #
 # Translator
 #
-class UnifiedV0APIOperationTranslator(
-    ParticularAPIOperationTranslator[UnifiedV0OpRequest, UnifiedV0OpResponse]
-):
+class UnifiedV0APIOperationTranslator(ParticularAPIOperationTranslator[UnifiedV0OpRequest, UnifiedV0OpResponse]):
     @functools.singledispatchmethod
     def translate_op_rq(self, op_rq: UnifiedV0OpRequest) -> WorkbookOpRequest:
         raise NotImplementedError()
@@ -349,8 +347,7 @@ class UnifiedV0APIOperationTranslator(
 
     @translate_op_rs.register
     def translate_op_rs_wb_delete(self, op_rs: WorkbookDeleteResponse) -> UnifiedV0OpWorkbookDeleteResponse:
-        return UnifiedV0OpWorkbookDeleteResponse(
-        )
+        return UnifiedV0OpWorkbookDeleteResponse()
 
     # Connection get
     @translate_op_rq.register
@@ -392,8 +389,7 @@ class UnifiedV0APIOperationTranslator(
 
     @translate_op_rs.register
     def translate_op_rs_connection_modify(self, op_rs: ConnectionModifyResponse) -> UnifiedV0OpConnectionModifyResponse:
-        return UnifiedV0OpConnectionModifyResponse(
-        )
+        return UnifiedV0OpConnectionModifyResponse()
 
     # Connection delete
     @translate_op_rq.register
@@ -410,8 +406,7 @@ class UnifiedV0APIOperationTranslator(
     # Advise dataset fields
     @translate_op_rq.register
     def translate_op_rq_advise_dataset_fields(
-            self,
-            op_rq: UnifiedV0OpAdviseDatasetFieldsRequest
+        self, op_rq: UnifiedV0OpAdviseDatasetFieldsRequest
     ) -> AdviseDatasetFieldsRequest:
         return AdviseDatasetFieldsRequest(
             connection_ref=EntryWBRef(
@@ -423,8 +418,8 @@ class UnifiedV0APIOperationTranslator(
 
     @translate_op_rs.register
     def translate_op_rs_advise_dataset_fields(
-            self,
-            op_rs: AdviseDatasetFieldsResponse,
+        self,
+        op_rs: AdviseDatasetFieldsResponse,
     ) -> UnifiedV0OpAdviseDatasetFieldsResponse:
         return UnifiedV0OpAdviseDatasetFieldsResponse(
             dataset=op_rs.dataset,

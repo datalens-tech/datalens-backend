@@ -5,15 +5,14 @@ from typing import (
 
 from marshmallow import fields as ma_fields
 
+from dl_connector_chyt.core.us_connection import (
+    BaseConnectionCHYT,
+    ConnectionCHYTToken,
+)
 from dl_core.us_manager.storage_schemas.connection import (
     CacheableConnectionDataSchemaMixin,
     ConnectionBaseDataStorageSchema,
     SubselectConnectionDataSchemaMixin,
-)
-
-from dl_connector_chyt.core.us_connection import (
-    BaseConnectionCHYT,
-    ConnectionCHYTToken,
 )
 
 _CHYT_CONN_DATA_TV = TypeVar("_CHYT_CONN_DATA_TV", bound=BaseConnectionCHYT.DataModel)

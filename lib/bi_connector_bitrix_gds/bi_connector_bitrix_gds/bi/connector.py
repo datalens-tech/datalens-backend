@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from bi_connector_bitrix_gds.core.connector import (
-    BitrixGDSCoreSourceDefinition, BitrixGDSCoreConnectionDefinition, BitrixGDSCoreConnector,
-)
-
-from dl_api_connector.connector import (
-    BiApiSourceDefinition, BiApiConnectionDefinition, BiApiConnector,
-)
 from dl_api_connector.api_schema.source_base import (
-    SQLDataSourceSchema, SQLDataSourceTemplateSchema,
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
+)
+from dl_api_connector.connector import (
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
 
 from bi_connector_bitrix_gds.bi.api_schema.connection import BitrixGDSConnectionSchema
@@ -18,6 +17,11 @@ from bi_connector_bitrix_gds.bi.filter_compiler import BitrixGDSFilterFormulaCom
 from bi_connector_bitrix_gds.bi.i18n.localizer import CONFIGS
 from bi_connector_bitrix_gds.bi.multi_query import BitrixGDSMultiQueryMutatorFactory
 from bi_connector_bitrix_gds.bi.planner import BitrixGDSCompengExecutionPlanner
+from bi_connector_bitrix_gds.core.connector import (
+    BitrixGDSCoreConnectionDefinition,
+    BitrixGDSCoreConnector,
+    BitrixGDSCoreSourceDefinition,
+)
 from bi_connector_bitrix_gds.formula.constants import DIALECT_NAME_BITRIX
 
 
@@ -38,12 +42,8 @@ class BitrixGDSBiApiConnector(BiApiConnector):
     core_connector_cls = BitrixGDSCoreConnector
     formula_dialect_name = DIALECT_NAME_BITRIX
     default_multi_query_mutator_factory_cls = BitrixGDSMultiQueryMutatorFactory
-    connection_definitions = (
-        BitrixGDSBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        BitrixGDSBiApiSourceDefinition,
-    )
+    connection_definitions = (BitrixGDSBiApiConnectionDefinition,)
+    source_definitions = (BitrixGDSBiApiSourceDefinition,)
     legacy_initial_planner_cls = BitrixGDSCompengExecutionPlanner
     is_forkable = False
     is_compeng_executable = True

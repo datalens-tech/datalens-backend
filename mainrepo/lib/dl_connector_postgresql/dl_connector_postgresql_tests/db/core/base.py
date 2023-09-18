@@ -4,14 +4,13 @@ from typing import Generator
 import pytest
 import shortuuid
 
-from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core_testing.database import Db
-from dl_core_testing.testcases.connection import BaseConnectionTestClass
-
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql.testing.connection import make_postgresql_saved_connection
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 import dl_connector_postgresql_tests.db.config as test_config
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.database import Db
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 
 class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):

@@ -3,10 +3,17 @@ import attr
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import dashboards
-from .defaulter import ExtDashChartContainerDefaultWidgetIdDefaulter, ExtDashWidgetTabDefaulter
-from .tab_item import BaseDashboardItemConverter, IntTabItemLayoutItemPair
-from ..converter_exc_composer import ConversionErrHandlingContext
+
 from ...domain.internal.dashboards import Connection
+from ..converter_exc_composer import ConversionErrHandlingContext
+from .defaulter import (
+    ExtDashChartContainerDefaultWidgetIdDefaulter,
+    ExtDashWidgetTabDefaulter,
+)
+from .tab_item import (
+    BaseDashboardItemConverter,
+    IntTabItemLayoutItemPair,
+)
 
 
 @attr.s()
@@ -23,10 +30,7 @@ class DashboardConverter:
         return BaseDashboardItemConverter(wb_context=self._wb_context)
 
     def convert_tab_ext_to_int(
-        self,
-        ext_tab: ext.DashboardTab,
-        *,
-        exc_handling_ctx: ConversionErrHandlingContext
+        self, ext_tab: ext.DashboardTab, *, exc_handling_ctx: ConversionErrHandlingContext
     ) -> dashboards.Tab:
         dashboard_item_converter = self.create_dashboard_item_converter()
 
@@ -34,9 +38,7 @@ class DashboardConverter:
 
         for tab_item in ext_tab.items:
             with exc_handling_ctx.postpone_error_with_path(tab_item.id):
-                tab_item_layout_item_pair_list.append(
-                    dashboard_item_converter.convert_ext_to_int(tab_item)
-                )
+                tab_item_layout_item_pair_list.append(dashboard_item_converter.convert_ext_to_int(tab_item))
 
         connections = [
             Connection(
@@ -54,13 +56,9 @@ class DashboardConverter:
                 default=(),
             ),
             connections=connections,
-            items=[
-                tab_item_layout_item_pair.tab_item
-                for tab_item_layout_item_pair in tab_item_layout_item_pair_list
-            ],
+            items=[tab_item_layout_item_pair.tab_item for tab_item_layout_item_pair in tab_item_layout_item_pair_list],
             layout=[
-                tab_item_layout_item_pair.layout_item
-                for tab_item_layout_item_pair in tab_item_layout_item_pair_list
+                tab_item_layout_item_pair.layout_item for tab_item_layout_item_pair in tab_item_layout_item_pair_list
             ],
         )
 
@@ -70,7 +68,7 @@ class DashboardConverter:
         ext_tab_items = [
             dashboard_item_converter.convert_int_to_ext(
                 tab_item=int_tab_item,
-                layout_item=next(layout_item for layout_item in int_tab.layout if layout_item.i == int_tab_item.id)
+                layout_item=next(layout_item for layout_item in int_tab.layout if layout_item.i == int_tab_item.id),
             )
             for int_tab_item in int_tab.items
         ]
@@ -105,9 +103,4 @@ class DashboardConverter:
         )
 
     def convert_int_to_ext(self, int_dash: dashboards.Dashboard) -> ext.Dashboard:
-        return ext.Dashboard(
-            tabs=[
-                self.convert_tab_int_to_ext(int_tab)
-                for int_tab in int_dash.tabs
-            ]
-        )
+        return ext.Dashboard(tabs=[self.convert_tab_int_to_ext(int_tab) for int_tab in int_dash.tabs])

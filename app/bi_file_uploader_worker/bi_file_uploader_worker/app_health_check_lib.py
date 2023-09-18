@@ -1,20 +1,27 @@
-import attr
 from aiohttp import web
+import attr
 
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
-from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase, DLRequestView
-from dl_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
+from dl_api_commons.aiohttp.aiohttp_wrappers import (
+    DLRequestBase,
+    DLRequestView,
+)
+from dl_api_commons.tenant_resolver import (
+    CommonTenantResolver,
+    TenantResolver,
+)
 from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_core.aio.ping_view import PingView
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
-from dl_task_processor.worker import HealthChecker
-
 from dl_file_uploader_worker_lib.app import FileUploaderWorkerFactory
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from dl_task_processor.worker import HealthChecker
 
 
 class FileUploaderWorkerDLRequest(DLRequestBase):
@@ -61,7 +68,7 @@ class FileUploaderWorkerHealthCheckAppFactory:
 
         app.on_response_prepare.append(req_id_service.on_response_prepare)
 
-        app.router.add_route('get', '/ping', PingView)
-        app.router.add_route('get', '/health_check', HealthCheckView)
+        app.router.add_route("get", "/ping", PingView)
+        app.router.add_route("get", "/health_check", HealthCheckView)
 
         return app

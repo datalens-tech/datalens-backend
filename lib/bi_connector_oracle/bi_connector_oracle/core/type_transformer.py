@@ -2,8 +2,10 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.oracle import base as or_types  # not all data types are imported in init in older SA versions
 
 from dl_constants.enums import BIType
-
-from dl_core.db.conversion_base import TypeTransformer, make_native_type
+from dl_core.db.conversion_base import (
+    TypeTransformer,
+    make_native_type,
+)
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
@@ -14,21 +16,21 @@ class OracleServerTypeTransformer(TypeTransformer):
         # No separate type for integer. Number acts as DECIMAL with customizable precision.
         **{
             make_native_type(CONNECTION_TYPE_ORACLE, t): BIType.integer
-            for t in (
-                sa.Integer,  # pseudo type used if scale == 0
-            )
+            for t in (sa.Integer,)  # pseudo type used if scale == 0
         },
         **{
             make_native_type(CONNECTION_TYPE_ORACLE, t): BIType.float  # type: ignore  # TODO: fix
-            for t in (
-                or_types.NUMBER, or_types.BINARY_FLOAT, or_types.BINARY_DOUBLE
-            )
+            for t in (or_types.NUMBER, or_types.BINARY_FLOAT, or_types.BINARY_DOUBLE)
         },
         **{
             make_native_type(CONNECTION_TYPE_ORACLE, t): BIType.string
             for t in (
-                or_types.CHAR, or_types.VARCHAR, or_types.VARCHAR2,
-                sa.NCHAR, or_types.NVARCHAR, or_types.NVARCHAR2,
+                or_types.CHAR,
+                or_types.VARCHAR,
+                or_types.VARCHAR2,
+                sa.NCHAR,
+                or_types.NVARCHAR,
+                or_types.NVARCHAR2,
             )
         },
         **{

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 CH_QUERY = r"""
 select
     arrayJoin([11, 22, NULL]) as a,
@@ -110,7 +109,7 @@ from (
 # host='ydb-ru.yandex.net', port=2135, db_name='/ru/yql/test/datalens-ydb-integration-test'
 # Source table creation:
 # https://yql.yandex-team.ru/Operations/YOMmqBJKfYhSBOEvZkmM5ChYkHorjfQe_ScjBRHDLLw=
-YDB_QUERY_FULL = r'''
+YDB_QUERY_FULL = r"""
 select
     id,
     MAX('⋯') as some_str,
@@ -304,4 +303,4 @@ from `test_table_h`
 group by id
 order by id
 limit 1000
-'''
+"""

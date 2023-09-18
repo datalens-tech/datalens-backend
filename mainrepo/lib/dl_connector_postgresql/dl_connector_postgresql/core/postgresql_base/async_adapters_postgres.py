@@ -26,6 +26,14 @@ from dateutil import parser as dateutil_parser
 import sqlalchemy as sa
 
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
+    OID_KNOWLEDGE,
+    PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
+    BasePostgresAdapter,
+)
+from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
+from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
+from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 from dl_constants.types import (
     TBIChunksGen,
     TBIDataRow,
@@ -59,15 +67,6 @@ from dl_core.connection_models.common_models import TableIdent
 from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
 from dl_sqlalchemy_postgres import AsyncBIPGDialect
 from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
-
-from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
-    OID_KNOWLEDGE,
-    PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
-    BasePostgresAdapter,
-)
-from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
-from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 
 if TYPE_CHECKING:
     from dl_core.connection_models.common_models import SchemaIdent

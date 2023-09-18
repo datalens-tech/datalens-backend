@@ -1,9 +1,8 @@
-from dl_formula_testing.testcases.functions_math import (
-    DefaultMathFunctionFormulaConnectorTestSuite,
-)
+from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
 
 from bi_connector_mysql_tests.db.formula.base import (
-    MySQL_5_6TestBase, MySQL_8_0_12TestBase,
+    MySQL_5_6TestBase,
+    MySQL_8_0_12TestBase,
 )
 
 

@@ -5,7 +5,7 @@ from bi_connector_bundle_partners.equeo.bi.connection_info import EqueoConnectio
 
 
 class EqueoConnectionFormFactory(PartnersConnectionBaseFormFactory):
-    template_name = 'equeo'
+    template_name = "equeo"
 
     def _title(self) -> str:
         return EqueoConnectionInfoProvider.get_title(self._localizer)

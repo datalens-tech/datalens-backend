@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import attr
 
-from dl_constants.enums import CreateDSFrom
-
 from dl_connector_chyt.core.data_source import (
     BaseCHYTTableDataSource,
     BaseCHYTTableListDataSource,
@@ -11,20 +9,20 @@ from dl_connector_chyt.core.data_source import (
     BaseCHYTTableSubselectDataSource,
     CHYTTokenAuthDataSourceMixin,
 )
+from dl_constants.enums import CreateDSFrom
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
+    SOURCE_TYPE_CHYT_SUBSELECT,
     SOURCE_TYPE_CHYT_TABLE,
     SOURCE_TYPE_CHYT_TABLE_LIST,
     SOURCE_TYPE_CHYT_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
 )
-
 
 
 class CHYTInternalTokenAuthDataSourceMixin(CHYTTokenAuthDataSourceMixin):

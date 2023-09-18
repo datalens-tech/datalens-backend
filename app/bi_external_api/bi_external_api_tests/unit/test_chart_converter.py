@@ -1,27 +1,45 @@
-from typing import Optional, Sequence, ClassVar, Type
+import itertools
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
-import itertools
 import pytest
 import shortuuid
-from dl_constants.enums import WhereClauseOperation
 
-from bi_external_api.converter.converter_ctx import ConverterContext
-
-from dl_constants.enums import BIType, CalcMode, AggregationFunction, FieldType, ManagedBy
 from bi_external_api.attrs_model_mapper import Processor
 from bi_external_api.attrs_model_mapper.field_processor import FieldMeta
 from bi_external_api.converter.charts.chart_converter import BaseChartConverter
-from bi_external_api.converter.charts.utils import ChartActionConverter, convert_field_type_dataset_to_chart
+from bi_external_api.converter.charts.utils import (
+    ChartActionConverter,
+    convert_field_type_dataset_to_chart,
+)
+from bi_external_api.converter.converter_ctx import ConverterContext
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.external import get_external_model_mapper
 from bi_external_api.domain.internal import (
-    charts, datasets,
+    charts,
+    datasets,
 )
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.structs.mappings import FrozenStrMapping
-from .conftest import PG_1_DS, PG_CONN
+from dl_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    FieldType,
+    ManagedBy,
+    WhereClauseOperation,
+)
+
+from .conftest import (
+    PG_1_DS,
+    PG_CONN,
+)
 
 COMMON_WB_CONTEXT = WorkbookContext(
     connections=[PG_CONN],
@@ -38,12 +56,12 @@ class AdHocPack:
 
     @classmethod
     def create(
-            cls,
-            ext_f: ext.DatasetField,
-            data_type: BIType,
-            field_type: FieldType,
-            int_agg: AggregationFunction = AggregationFunction.none,
-            guid_formula: Optional[str] = None,
+        cls,
+        ext_f: ext.DatasetField,
+        data_type: BIType,
+        field_type: FieldType,
+        int_agg: AggregationFunction = AggregationFunction.none,
+        guid_formula: Optional[str] = None,
     ) -> "AdHocPack":
         cs = ext_f.calc_spec
 
@@ -98,8 +116,8 @@ class AdHocPack:
                 autoaggregated=False,
                 managed_by=ManagedBy.user,
                 virtual=False,
-                valid=True
-            )
+                valid=True,
+            ),
         )
 
 
@@ -145,12 +163,12 @@ class ChartTestCase:
 
     @classmethod
     def chart_filter_placeholder(
-            cls,
-            field_id: str,
-            filter_value: list[str],
-            data_type: BIType,
-            field_type: FieldType,
-            filter_operation: charts.FilterOperation
+        cls,
+        field_id: str,
+        filter_value: list[str],
+        data_type: BIType,
+        field_type: FieldType,
+        filter_operation: charts.FilterOperation,
     ) -> charts.FieldFilter:
         return charts.FieldFilter(
             guid=field_id,
@@ -162,10 +180,7 @@ class ChartTestCase:
             data_type=data_type,
             initial_data_type=data_type,
             #
-            filter=charts.Filter(
-                value=charts.FilterValue(filter_value),
-                operation=filter_operation
-            ),
+            filter=charts.Filter(value=charts.FilterValue(filter_value), operation=filter_operation),
             #
             strict=False,
             hidden=False,
@@ -179,9 +194,9 @@ class ChartTestCase:
             aggregation=AggregationFunction.none,
             calc_mode=CalcMode.direct,
             description=f"id='{field_id}'",
-            formula='',
-            avatar_id='the_avatar',
-            source=field_id
+            formula="",
+            avatar_id="the_avatar",
+            source=field_id,
         )
 
     @classmethod
@@ -264,9 +279,7 @@ class ChartTestCase:
 
     @classmethod
     def add_fields_to_ds(
-            cls,
-            ds: datasets.Dataset,
-            f_seq: Sequence[datasets.ResultSchemaFieldFull]
+        cls, ds: datasets.Dataset, f_seq: Sequence[datasets.ResultSchemaFieldFull]
     ) -> datasets.Dataset:
         new_rs = list(itertools.chain(ds.result_schema, f_seq))
 
@@ -277,20 +290,20 @@ class ChartTestCase:
 
     @classmethod
     def normal_pg_1_ds_case(
-            cls,
-            name: str,
-            *,
-            ad_hoc_packs: Sequence[AdHocPack] = (),
-            ext_vis: ext.Visualization,
-            ext_filters: Sequence[ext.ChartFilter] = (),
-            int_vis: charts.Visualization,
-            int_filters: Sequence[charts.FieldFilter] = (),
-            int_sort: Sequence[charts.ChartFieldSort] = (),
-            int_colors: Sequence[charts.ChartField] = (),
-            int_colors_config: Optional[charts.ColorConfig] = None,
-            int_shapes: Sequence[charts.ChartField] = (),
-            int_shapes_config: Optional[charts.ShapeConfig] = None,
-            use_id_formula: bool = False,
+        cls,
+        name: str,
+        *,
+        ad_hoc_packs: Sequence[AdHocPack] = (),
+        ext_vis: ext.Visualization,
+        ext_filters: Sequence[ext.ChartFilter] = (),
+        int_vis: charts.Visualization,
+        int_filters: Sequence[charts.FieldFilter] = (),
+        int_sort: Sequence[charts.ChartFieldSort] = (),
+        int_colors: Sequence[charts.ChartField] = (),
+        int_colors_config: Optional[charts.ColorConfig] = None,
+        int_shapes: Sequence[charts.ChartField] = (),
+        int_shapes_config: Optional[charts.ShapeConfig] = None,
+        use_id_formula: bool = False,
     ):
         ds_inst = PG_1_DS
 
@@ -309,8 +322,7 @@ class ChartTestCase:
             ext_chart=ext.Chart(
                 datasets=[ds_inst.summary.name],
                 ad_hoc_fields=[
-                    ext.AdHocField(field=ahp.ext_ds_field, dataset_name=ds_inst.summary.name)
-                    for ahp in ad_hoc_packs
+                    ext.AdHocField(field=ahp.ext_ds_field, dataset_name=ds_inst.summary.name) for ahp in ad_hoc_packs
                 ],
                 visualization=ext_vis,
                 filters=ext_filters,
@@ -329,7 +341,8 @@ class ChartTestCase:
                         [
                             charts.DatasetFieldPartial(title=rs_field.title, guid=rs_field.guid)
                             for rs_field in ds_inst.dataset.result_schema
-                        ] + [
+                        ]
+                        + [
                             charts.DatasetFieldPartial(guid=upd.field.guid, title=upd.field.title)
                             for upd in int_updates
                         ]
@@ -337,9 +350,7 @@ class ChartTestCase:
                     updates=int_updates,
                 )
             ),
-            map_ds_id_updated_dataset={
-                ds_inst.summary.id: ds_with_applies_actions
-            } if ad_hoc_packs else None,
+            map_ds_id_updated_dataset={ds_inst.summary.id: ds_with_applies_actions} if ad_hoc_packs else None,
             use_id_formula=use_id_formula,
         )
 
@@ -361,9 +372,9 @@ CASES: list[ChartTestCase] = [
                     items=(
                         ChartTestCase.cf_placeholder("date"),
                         ChartTestCase.cf_placeholder("amount_sum"),
-                    )
+                    ),
                 ),
-            )
+            ),
         ),
     ),
     ChartTestCase.normal_pg_1_ds_case(
@@ -378,7 +389,7 @@ CASES: list[ChartTestCase] = [
             ext.ChartFilter(
                 ext.ChartFieldRef(id="date"),
                 operation=ext.ComparisonOperation.EQ,
-                value=ext.MultiStringValue(["2023-06-12T00:00:00.000Z"])
+                value=ext.MultiStringValue(["2023-06-12T00:00:00.000Z"]),
             )
         ],
         int_vis=charts.Visualization(
@@ -389,17 +400,19 @@ CASES: list[ChartTestCase] = [
                     items=(
                         ChartTestCase.cf_placeholder("date"),
                         ChartTestCase.cf_placeholder("amount_sum"),
-                    )
+                    ),
                 ),
-            )
+            ),
         ),
-        int_filters=[ChartTestCase.chart_filter_placeholder(
-            field_id="date",
-            filter_value=["2023-06-12T00:00:00.000Z"],
-            filter_operation=charts.FilterOperation(WhereClauseOperation.EQ),
-            field_type=FieldType.DIMENSION,
-            data_type=BIType.date
-        )]
+        int_filters=[
+            ChartTestCase.chart_filter_placeholder(
+                field_id="date",
+                filter_value=["2023-06-12T00:00:00.000Z"],
+                filter_operation=charts.FilterOperation(WhereClauseOperation.EQ),
+                field_type=FieldType.DIMENSION,
+                data_type=BIType.date,
+            )
+        ],
     ),
     ChartTestCase.normal_pg_1_ds_case(
         "simple_flat_table_with_3_point_gradient",  # region
@@ -413,12 +426,9 @@ CASES: list[ChartTestCase] = [
             id=charts.VisualizationId.flatTable,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.FlatTableColumns,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    )
+                    id=charts.PlaceholderId.FlatTableColumns, items=(ChartTestCase.cf_placeholder("date"),)
                 ),
-            )
+            ),
         ),
         int_colors=[ChartTestCase.cf_placeholder("amount_sum")],
         int_colors_config=charts.ColorConfig(
@@ -434,20 +444,21 @@ CASES: list[ChartTestCase] = [
             columns=[
                 ext.ChartField.create_as_ref("date"),
             ],
-            coloring=ext.MeasureColoring(source=ext.ChartFieldRef("amount_sum"), spec=ext.Gradient3(
-                palette="green-yellow-red", thresholds=ext.Thresholds3(left=10.1, middle=50, right=100),
-            )),
+            coloring=ext.MeasureColoring(
+                source=ext.ChartFieldRef("amount_sum"),
+                spec=ext.Gradient3(
+                    palette="green-yellow-red",
+                    thresholds=ext.Thresholds3(left=10.1, middle=50, right=100),
+                ),
+            ),
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.flatTable,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.FlatTableColumns,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    )
+                    id=charts.PlaceholderId.FlatTableColumns, items=(ChartTestCase.cf_placeholder("date"),)
                 ),
-            )
+            ),
         ),
         int_colors=[ChartTestCase.cf_placeholder("amount_sum")],
         int_colors_config=charts.ColorConfig(
@@ -467,21 +478,21 @@ CASES: list[ChartTestCase] = [
             columns=[
                 ext.ChartField.create_as_ref("date"),
             ],
-            coloring=ext.MeasureColoring(source=ext.ChartFieldRef("amount_sum"), spec=ext.Gradient2(
-                palette="red-green",
-                thresholds=ext.Thresholds2(left=10, right=100),
-            )),
+            coloring=ext.MeasureColoring(
+                source=ext.ChartFieldRef("amount_sum"),
+                spec=ext.Gradient2(
+                    palette="red-green",
+                    thresholds=ext.Thresholds2(left=10, right=100),
+                ),
+            ),
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.flatTable,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.FlatTableColumns,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    )
+                    id=charts.PlaceholderId.FlatTableColumns, items=(ChartTestCase.cf_placeholder("date"),)
                 ),
-            )
+            ),
         ),
         int_colors=[ChartTestCase.cf_placeholder("amount_sum")],
         int_colors_config=charts.ColorConfig(
@@ -514,7 +525,7 @@ CASES: list[ChartTestCase] = [
                         ChartTestCase.cf_placeholder("date"),
                         ChartTestCase.cf_placeholder("amount_sum"),
                         ChartTestCase.cf_placeholder("amount_avg"),
-                    )
+                    ),
                 ),
             ),
         ),
@@ -539,7 +550,7 @@ CASES: list[ChartTestCase] = [
                         ChartTestCase.cf_placeholder("date"),
                         ChartTestCase.cf_placeholder("amount_sum"),
                         ChartTestCase.cf_placeholder("amount_avg"),
-                    )
+                    ),
                 ),
             ),
         ),
@@ -562,7 +573,7 @@ CASES: list[ChartTestCase] = [
                     items=(
                         ChartTestCase.cf_placeholder("date"),
                         ChartTestCase.cf_placeholder("amount_avg"),
-                    )
+                    ),
                 ),
             ),
         ),
@@ -578,12 +589,8 @@ CASES: list[ChartTestCase] = [
         "pivot_table_with_updates_with_sort",  # region
         ad_hoc_packs=[ChartTestCase.ahp_formula_avg_amount("amount_avg")],
         ext_vis=ext.PivotTable(
-            columns=(
-                ext.ChartField.create_as_ref("customer"),
-            ),
-            rows=(
-                ext.ChartField.create_as_ref("position"),
-            ),
+            columns=(ext.ChartField.create_as_ref("customer"),),
+            rows=(ext.ChartField.create_as_ref("position"),),
             measures=(
                 ext.ChartField.create_as_ref("amount_avg"),
                 ext.ChartField.create_as_ref("amount_sum"),
@@ -600,15 +607,11 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.PivotTableColumns,
-                    items=(
-                        ChartTestCase.cf_placeholder("customer"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("customer"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Rows,
-                    items=(
-                        ChartTestCase.cf_placeholder("position"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("position"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
@@ -627,43 +630,31 @@ CASES: list[ChartTestCase] = [
         "pivot_table_with_updates_with_sort_with_coloring",  # region
         ad_hoc_packs=[ChartTestCase.ahp_formula_avg_amount("amount_avg")],
         ext_vis=ext.PivotTable(
-            columns=(
-                ext.ChartField.create_as_ref("customer"),
-            ),
-            rows=(
-                ext.ChartField.create_as_ref("position"),
-            ),
-            measures=(
-                ext.ChartField.create_as_ref("amount_sum"),
-            ),
+            columns=(ext.ChartField.create_as_ref("customer"),),
+            rows=(ext.ChartField.create_as_ref("position"),),
+            measures=(ext.ChartField.create_as_ref("amount_sum"),),
             sort=(
                 ext.ChartSort(
                     source=ext.ChartFieldRef("date"),
                     direction=ext.SortDirection.DESC,
                 ),
             ),
-            coloring=ext.MeasureColoring(source=ext.ChartFieldRef("amount_avg"), spec=ext.Gradient2())
+            coloring=ext.MeasureColoring(source=ext.ChartFieldRef("amount_avg"), spec=ext.Gradient2()),
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.pivotTable,
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.PivotTableColumns,
-                    items=(
-                        ChartTestCase.cf_placeholder("customer"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("customer"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Rows,
-                    items=(
-                        ChartTestCase.cf_placeholder("position"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("position"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
@@ -688,9 +679,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
             ),
         ),
@@ -705,9 +694,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_measure_names(),
-                    ),
+                    items=(ChartTestCase.cf_measure_names(),),
                 ),
             ),
         ),
@@ -722,9 +709,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_measure_values(),
-                    ),
+                    items=(ChartTestCase.cf_measure_values(),),
                 ),
             ),
         ),
@@ -740,9 +725,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("countd"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("countd"),),
                 ),
             ),
         ),
@@ -756,7 +739,7 @@ CASES: list[ChartTestCase] = [
             sort=[
                 ext.ChartSort(source=ext.ChartFieldRef("date"), direction=ext.SortDirection.DESC),
                 ext.ChartSort(source=ext.MeasureNames(), direction=ext.SortDirection.ASC),
-            ]
+            ],
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.column,
@@ -770,9 +753,7 @@ CASES: list[ChartTestCase] = [
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_avg"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_avg"),),
                 ),
             ),
         ),
@@ -796,21 +777,15 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
@@ -828,7 +803,7 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
@@ -836,29 +811,25 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -874,9 +845,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
@@ -904,7 +873,7 @@ CASES: list[ChartTestCase] = [
             sort=[
                 ext.ChartSort(source=ext.ChartFieldRef("date"), direction=ext.SortDirection.DESC),
                 ext.ChartSort(source=ext.MeasureNames(), direction=ext.SortDirection.ASC),
-            ]
+            ],
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.column100p,
@@ -918,9 +887,7 @@ CASES: list[ChartTestCase] = [
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_avg"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_avg"),),
                 ),
             ),
         ),
@@ -944,21 +911,15 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
@@ -976,7 +937,7 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
@@ -984,29 +945,25 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1022,9 +979,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
@@ -1057,9 +1012,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
@@ -1086,25 +1039,24 @@ CASES: list[ChartTestCase] = [
             x=ext.ChartField.create_as_ref("date"),
             y=[ext.ChartField.create_as_ref("amount_sum")],
             y2=[],
-            shaping=ext.DimensionShaping(source=ext.ChartFieldRef("customer"), mounts=[
-                ext.ShapeMount(value="Vasya", shape=ext.FieldShape.dash),
-                ext.ShapeMount(value="Petya", shape=ext.FieldShape.short_dash),
-            ]),
+            shaping=ext.DimensionShaping(
+                source=ext.ChartFieldRef("customer"),
+                mounts=[
+                    ext.ShapeMount(value="Vasya", shape=ext.FieldShape.dash),
+                    ext.ShapeMount(value="Petya", shape=ext.FieldShape.short_dash),
+                ],
+            ),
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.line,
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y2,
@@ -1115,10 +1067,12 @@ CASES: list[ChartTestCase] = [
         int_shapes=[ChartTestCase.cf_placeholder("customer")],
         int_shapes_config=charts.ShapeConfig(
             fieldGuid="customer",
-            mountedShapes=FrozenStrMapping({
-                "Vasya": "Dash",
-                "Petya": "ShortDash",
-            }),
+            mountedShapes=FrozenStrMapping(
+                {
+                    "Vasya": "Dash",
+                    "Petya": "ShortDash",
+                }
+            ),
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1131,35 +1085,31 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.pie,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Dimensions,
-                    items=(
-                        ChartTestCase.cf_placeholder("customer"),
-                    )
+                    id=charts.PlaceholderId.Dimensions, items=(ChartTestCase.cf_placeholder("customer"),)
                 ),
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    )
-                )
+                    id=charts.PlaceholderId.Measures, items=(ChartTestCase.cf_placeholder("amount_sum"),)
+                ),
             ),
         ),
         # int_colors=(),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1172,35 +1122,31 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.pie,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Dimensions,
-                    items=(
-                        ChartTestCase.cf_placeholder("customer"),
-                    )
+                    id=charts.PlaceholderId.Dimensions, items=(ChartTestCase.cf_placeholder("customer"),)
                 ),
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    )
-                )
+                    id=charts.PlaceholderId.Measures, items=(ChartTestCase.cf_placeholder("amount_sum"),)
+                ),
             ),
         ),
         # int_colors=(),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1213,19 +1159,13 @@ CASES: list[ChartTestCase] = [
             id=charts.VisualizationId.treemap,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Dimensions,
-                    items=(
-                        ChartTestCase.cf_placeholder("position"),
-                    )
+                    id=charts.PlaceholderId.Dimensions, items=(ChartTestCase.cf_placeholder("position"),)
                 ),
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    )
-                )
+                    id=charts.PlaceholderId.Measures, items=(ChartTestCase.cf_placeholder("amount_sum"),)
+                ),
             ),
-        )
+        ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
         "tree_dia_with_coloring",  # region
@@ -1241,22 +1181,14 @@ CASES: list[ChartTestCase] = [
             id=charts.VisualizationId.treemap,
             placeholders=(
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Dimensions,
-                    items=(
-                        ChartTestCase.cf_placeholder("position"),
-                    )
+                    id=charts.PlaceholderId.Dimensions, items=(ChartTestCase.cf_placeholder("position"),)
                 ),
                 charts.Placeholder(
-                    id=charts.PlaceholderId.Measures,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    )
-                )
+                    id=charts.PlaceholderId.Measures, items=(ChartTestCase.cf_placeholder("amount_sum"),)
+                ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("position"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("position"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="position",
             coloredByMeasure=False,
@@ -1274,32 +1206,12 @@ CASES: list[ChartTestCase] = [
         int_vis=charts.Visualization(
             id=charts.VisualizationId.scatter,
             placeholders=(
-                charts.Placeholder(
-                    id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("position"),
-                    )
-                ),
-                charts.Placeholder(
-                    id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    )
-                ),
-                charts.Placeholder(
-                    id=charts.PlaceholderId.Points,
-                    items=(
-                        ChartTestCase.cf_placeholder("customer"),
-                    )
-                ),
-                charts.Placeholder(
-                    id=charts.PlaceholderId.Size,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount"),
-                    )
-                ),
+                charts.Placeholder(id=charts.PlaceholderId.X, items=(ChartTestCase.cf_placeholder("position"),)),
+                charts.Placeholder(id=charts.PlaceholderId.Y, items=(ChartTestCase.cf_placeholder("date"),)),
+                charts.Placeholder(id=charts.PlaceholderId.Points, items=(ChartTestCase.cf_placeholder("customer"),)),
+                charts.Placeholder(id=charts.PlaceholderId.Size, items=(ChartTestCase.cf_placeholder("amount"),)),
             ),
-        )
+        ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
         "bars_with_updates_with_sort",  # region
@@ -1310,16 +1222,14 @@ CASES: list[ChartTestCase] = [
             sort=[
                 ext.ChartSort(source=ext.ChartFieldRef("date"), direction=ext.SortDirection.DESC),
                 ext.ChartSort(source=ext.MeasureNames(), direction=ext.SortDirection.ASC),
-            ]
+            ],
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.bar,
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_avg"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_avg"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
@@ -1350,21 +1260,15 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
@@ -1382,7 +1286,7 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
@@ -1390,29 +1294,25 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1420,10 +1320,7 @@ CASES: list[ChartTestCase] = [
         ad_hoc_packs=[ChartTestCase.ahp_formula_avg_amount("amount_avg")],
         ext_vis=ext.BarChart(
             y=[ext.ChartField.create_as_ref("date")],
-            x=[
-                ext.ChartField.create_as_ref("amount_avg"),
-                ext.ChartField.create_as_ref("amount_sum")
-            ],
+            x=[ext.ChartField.create_as_ref("amount_avg"), ext.ChartField.create_as_ref("amount_sum")],
             coloring=ext.DimensionColoring(source=ext.MeasureNames(), palette_id=None),
         ),
         int_vis=charts.Visualization(
@@ -1431,9 +1328,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
@@ -1461,16 +1356,14 @@ CASES: list[ChartTestCase] = [
             sort=[
                 ext.ChartSort(source=ext.ChartFieldRef("date"), direction=ext.SortDirection.DESC),
                 ext.ChartSort(source=ext.MeasureNames(), direction=ext.SortDirection.ASC),
-            ]
+            ],
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.bar100p,
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_avg"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_avg"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
@@ -1501,21 +1394,15 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
@@ -1533,7 +1420,7 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
@@ -1541,29 +1428,25 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1571,10 +1454,7 @@ CASES: list[ChartTestCase] = [
         ad_hoc_packs=[ChartTestCase.ahp_formula_avg_amount("amount_avg")],
         ext_vis=ext.BarChartNormalized(
             y=[ext.ChartField.create_as_ref("date")],
-            x=[
-                ext.ChartField.create_as_ref("amount_avg"),
-                ext.ChartField.create_as_ref("amount_sum")
-            ],
+            x=[ext.ChartField.create_as_ref("amount_avg"), ext.ChartField.create_as_ref("amount_sum")],
             coloring=ext.DimensionColoring(source=ext.MeasureNames(), palette_id=None),
         ),
         int_vis=charts.Visualization(
@@ -1582,9 +1462,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
@@ -1612,22 +1490,18 @@ CASES: list[ChartTestCase] = [
             sort=[
                 ext.ChartSort(source=ext.ChartFieldRef("date"), direction=ext.SortDirection.DESC),
                 ext.ChartSort(source=ext.MeasureNames(), direction=ext.SortDirection.ASC),
-            ]
+            ],
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.area,
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_avg"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_avg"),),
                 ),
             ),
         ),
@@ -1651,21 +1525,15 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
@@ -1683,7 +1551,7 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
@@ -1691,29 +1559,25 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1729,9 +1593,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
@@ -1759,22 +1621,18 @@ CASES: list[ChartTestCase] = [
             sort=[
                 ext.ChartSort(source=ext.ChartFieldRef("date"), direction=ext.SortDirection.DESC),
                 ext.ChartSort(source=ext.MeasureNames(), direction=ext.SortDirection.ASC),
-            ]
+            ],
         ),
         int_vis=charts.Visualization(
             id=charts.VisualizationId.area100p,
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_avg"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_avg"),),
                 ),
             ),
         ),
@@ -1798,21 +1656,15 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
@@ -1830,7 +1682,7 @@ CASES: list[ChartTestCase] = [
                 mounts=[
                     ext.ColorMount(value="Vasya", color_idx=0),
                     ext.ColorMount(value="Petya", color_idx=1),
-                ]
+                ],
             ),
         ),
         int_vis=charts.Visualization(
@@ -1838,29 +1690,25 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
-                    items=(
-                        ChartTestCase.cf_placeholder("amount_sum"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("amount_sum"),),
                 ),
             ),
         ),
-        int_colors=(
-            ChartTestCase.cf_placeholder("customer"),
-        ),
+        int_colors=(ChartTestCase.cf_placeholder("customer"),),
         int_colors_config=charts.ColorConfig(
             fieldGuid="customer",
             coloredByMeasure=False,
-            mountedColors=FrozenStrMapping({
-                "Vasya": "0",
-                "Petya": "1",
-            }),
-            palette="p1"
+            mountedColors=FrozenStrMapping(
+                {
+                    "Vasya": "0",
+                    "Petya": "1",
+                }
+            ),
+            palette="p1",
         ),
     ),  # endregion
     ChartTestCase.normal_pg_1_ds_case(
@@ -1876,9 +1724,7 @@ CASES: list[ChartTestCase] = [
             placeholders=(
                 charts.Placeholder(
                     id=charts.PlaceholderId.X,
-                    items=(
-                        ChartTestCase.cf_placeholder("date"),
-                    ),
+                    items=(ChartTestCase.cf_placeholder("date"),),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Y,
@@ -1935,5 +1781,6 @@ def test_ext_chart_serialization(case: ChartTestCase):
     for alias in chart.visualization.kind_aliases:
         data["visualization"]["kind"] = alias
         assert schema.load(data) == chart
+
 
 # TODO: add cases with guid formulas in ad-hoc fields

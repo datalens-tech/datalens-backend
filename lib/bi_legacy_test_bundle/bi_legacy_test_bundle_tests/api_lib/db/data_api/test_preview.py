@@ -4,200 +4,156 @@ import math
 
 import pytest
 
+from bi_legacy_test_bundle_tests.api_lib.utils import (
+    data_source_settings_from_table,
+    validate_schema,
+)
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
-from bi_legacy_test_bundle_tests.api_lib.utils import validate_schema, data_source_settings_from_table
-
 CASES = [
     {
-        'name': 'simple direct',
-        'fields': [
+        "name": "simple direct",
+        "fields": [
             {
-                'title': 'Discount',
-                'calc_mode': 'direct',
-                'cast': 'float',
-                'source': 'Discount',
+                "title": "Discount",
+                "calc_mode": "direct",
+                "cast": "float",
+                "source": "Discount",
             }
         ],
-        'checks': [
-            (
-                'all rows have 1 value',
-                lambda d: all(len(r) == 1 for r in d)
-            ),
-        ]
+        "checks": [
+            ("all rows have 1 value", lambda d: all(len(r) == 1 for r in d)),
+        ],
     },
     {
-        'name': 'double discount',
-        'fields': [
+        "name": "double discount",
+        "fields": [
             {
-                'title': 'Discount',
-                'calc_mode': 'direct',
-                'cast': 'float',
-                'source': 'Discount',
+                "title": "Discount",
+                "calc_mode": "direct",
+                "cast": "float",
+                "source": "Discount",
             },
             {
-                'title': 'Doubled Discount',
-                'calc_mode': 'formula',
-                'formula': '[Discount] * 2',
-                'cast': 'float',
-            }
+                "title": "Doubled Discount",
+                "calc_mode": "formula",
+                "formula": "[Discount] * 2",
+                "cast": "float",
+            },
         ],
-        'checks': [
-            (
-                'discount is doubled',
-                lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d)
-            )
-        ]
+        "checks": [("discount is doubled", lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d))],
     },
     {
-        'name': 'simple aggregation',
-        'fields': [
+        "name": "simple aggregation",
+        "fields": [
             {
-                'title': 'City',
-                'calc_mode': 'direct',
-                'cast': 'string',
-                'source': 'City',
+                "title": "City",
+                "calc_mode": "direct",
+                "cast": "string",
+                "source": "City",
             },
             {
-                'title': 'Discount',
-                'calc_mode': 'direct',
-                'cast': 'float',
-                'source': 'Discount',
-                'aggregation': 'avg',
+                "title": "Discount",
+                "calc_mode": "direct",
+                "cast": "float",
+                "source": "Discount",
+                "aggregation": "avg",
             },
         ],
-        'checks': [
-            (
-                'cities are unique',
-                lambda d: len([r[0] for r in d]) == len(set(r[0] for r in d)) != 0
-            ),
-            (
-                'avg(discount) are float',
-                lambda d: all(float(r[1]) is not None for r in d)
-            )
-        ]
+        "checks": [
+            ("cities are unique", lambda d: len([r[0] for r in d]) == len(set(r[0] for r in d)) != 0),
+            ("avg(discount) are float", lambda d: all(float(r[1]) is not None for r in d)),
+        ],
     },
     {
-        'name': 'renamed field in formula 1',
-        'fields': [
+        "name": "renamed field in formula 1",
+        "fields": [
             {
-                'title': 'Renamed Discount',
-                'calc_mode': 'direct',
-                'cast': 'float',
-                'source': 'Discount',
+                "title": "Renamed Discount",
+                "calc_mode": "direct",
+                "cast": "float",
+                "source": "Discount",
             },
-            {
-                'title': 'Formula',
-                'calc_mode': 'formula',
-                'cast': 'float',
-                'formula': '[Renamed Discount] * 2'
-            }
+            {"title": "Formula", "calc_mode": "formula", "cast": "float", "formula": "[Renamed Discount] * 2"},
         ],
-        'checks': [
-            (
-                'formula field is correct',
-                lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d)
-            )
-        ]
+        "checks": [("formula field is correct", lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d))],
     },
     {
-        'name': 'only formula',
-        'fields': [
+        "name": "only formula",
+        "fields": [
             {
-                'title': 'Customer Count',
-                'calc_mode': 'direct',
-                'aggregation': 'countunique',
-                'cast': 'string',
-                'source': 'Customer ID',
+                "title": "Customer Count",
+                "calc_mode": "direct",
+                "aggregation": "countunique",
+                "cast": "string",
+                "source": "Customer ID",
             },
             {
-                'title': 'Sales Sum',
-                'calc_mode': 'direct',
-                'aggregation': 'sum',
-                'cast': 'integer',
-                'source': 'Sales',
+                "title": "Sales Sum",
+                "calc_mode": "direct",
+                "aggregation": "sum",
+                "cast": "integer",
+                "source": "Sales",
             },
             {
-                'title': 'Sales per Cust',
-                'calc_mode': 'formula',
-                'cast': 'float',
-                'formula': '[Sales Sum]/[Customer Count]'
-            }
+                "title": "Sales per Cust",
+                "calc_mode": "formula",
+                "cast": "float",
+                "formula": "[Sales Sum]/[Customer Count]",
+            },
         ],
-        'checks': [
-            (
-                'length',
-                lambda d: len(d) == 1
-            )
-        ]
+        "checks": [("length", lambda d: len(d) == 1)],
     },
     {
-        'name': 'formula using hidden field by non-native name',
-        'fields': [
+        "name": "formula using hidden field by non-native name",
+        "fields": [
             {
-                'title': 'Renamed Discount',
-                'calc_mode': 'direct',
-                'cast': 'float',
-                'source': 'Discount',
-                'hidden': True,
+                "title": "Renamed Discount",
+                "calc_mode": "direct",
+                "cast": "float",
+                "source": "Discount",
+                "hidden": True,
             },
+            {"title": "Discount as Formula", "calc_mode": "formula", "cast": "float", "formula": "[Renamed Discount]"},
             {
-                'title': 'Discount as Formula',
-                'calc_mode': 'formula',
-                'cast': 'float',
-                'formula': '[Renamed Discount]'
-            },
-            {
-                'title': 'Double Discount',
-                'calc_mode': 'formula',
-                'cast': 'float',
-                'formula': '[Renamed Discount] * 2.0'
+                "title": "Double Discount",
+                "calc_mode": "formula",
+                "cast": "float",
+                "formula": "[Renamed Discount] * 2.0",
             },
         ],
-        'checks': [
-            (
-                'row length',
-                lambda d: all(len(r) == 2 for r in d)
-            ),
-            (
-                'formula field is correct',
-                lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d)
-            ),
-        ]
+        "checks": [
+            ("row length", lambda d: all(len(r) == 2 for r in d)),
+            ("formula field is correct", lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d)),
+        ],
     },
     {
-        'name': 'formula using parameter',
-        'fields': [
+        "name": "formula using parameter",
+        "fields": [
             {
-                'title': 'Discount',
-                'calc_mode': 'direct',
-                'cast': 'float',
-                'source': 'Discount',
+                "title": "Discount",
+                "calc_mode": "direct",
+                "cast": "float",
+                "source": "Discount",
             },
             {
-                'title': 'Multiplier',
-                'calc_mode': 'parameter',
-                'cast': 'float',
-                'default_value': 2.0,
+                "title": "Multiplier",
+                "calc_mode": "parameter",
+                "cast": "float",
+                "default_value": 2.0,
             },
             {
-                'title': 'Multiplied Discount',
-                'calc_mode': 'formula',
-                'cast': 'float',
-                'formula': '[Discount] * [Multiplier]'
+                "title": "Multiplied Discount",
+                "calc_mode": "formula",
+                "cast": "float",
+                "formula": "[Discount] * [Multiplier]",
             },
         ],
-        'checks': [
-            (
-                'row length',
-                lambda d: all(len(r) == 2 for r in d)
-            ),
-            (
-                'formula field is correct',
-                lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d)
-            ),
-        ]
+        "checks": [
+            ("row length", lambda d: all(len(r) == 2 for r in d)),
+            ("formula field is correct", lambda d: all(float_eq(float(r[0]) * 2, r[1]) for r in d)),
+        ],
     },
 ]
 
@@ -207,29 +163,23 @@ def float_eq(f1, f2):
 
 
 def raise_for_status(response):
-    assert response.status_code < 300, 'Response {}, {}'.format(
-        response.status_code, getattr(response, 'json', 'empty body')
+    assert response.status_code < 300, "Response {}, {}".format(
+        response.status_code, getattr(response, "json", "empty body")
     )
 
 
-@pytest.mark.parametrize('case', CASES, ids=[s['name'] for s in CASES])
+@pytest.mark.parametrize("case", CASES, ids=[s["name"] for s in CASES])
 def test_get_preview(api_v1, data_api_all_v, static_dataset_id, case):
     data_api = data_api_all_v
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
     avatar_id = ds.source_avatars[0].id
     # Remove all existing fields from schema
-    updates = [
-        f.delete()
-        for f in ds.result_schema
-    ]
+    updates = [f.delete() for f in ds.result_schema]
     # Add new ones
-    for f in case['fields'][::-1]:
-        upd = {
-            'action': 'add_field',
-            'field': dict(f, avatar_id=avatar_id) if f.get('formula') is not None else f
-        }
+    for f in case["fields"][::-1]:
+        upd = {"action": "add_field", "field": dict(f, avatar_id=avatar_id) if f.get("formula") is not None else f}
         updates.append(upd)
-    checks = case['checks']
+    checks = case["checks"]
 
     ds = api_v1.apply_updates(dataset=ds, updates=updates).dataset
 
@@ -257,7 +207,7 @@ def test_preview_with_corrupted_source_avatar(client, data_api_v1, static_datase
     dataset_id = static_dataset_id
     response = validate_schema(client, dataset_id)
     dataset_data = response.json
-    del dataset_data['dataset']['source_avatars'][0]['managed_by']
+    del dataset_data["dataset"]["source_avatars"][0]["managed_by"]
 
     response = data_api_v1.get_response_for_dataset_preview(
         dataset_id=None,
@@ -270,7 +220,7 @@ def test_preview_with_corrupted_source(client, data_api_v2, static_dataset_id):
     dataset_id = static_dataset_id
     response = validate_schema(client, dataset_id)
     dataset_data = response.json
-    del dataset_data['dataset']['sources'][0]['managed_by']
+    del dataset_data["dataset"]["sources"][0]["managed_by"]
 
     response = data_api_v2.get_response_for_dataset_preview(
         dataset_id=None,
@@ -284,14 +234,12 @@ def test_preview_multisource_dataset(api_v1, data_api_v2, two_clickhouse_tables,
     table_1, table_2 = two_clickhouse_tables
     connection_id = static_connection_id
     ds = Dataset()
-    ds.sources['source_1'] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_1))
-    ds.sources['source_2'] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_2))
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
-    ds.source_avatars['avatar_2'] = ds.sources['source_2'].avatar()
-    ds.avatar_relations['relation_1'] = ds.source_avatars['avatar_1'].join(
-        ds.source_avatars['avatar_2']
-    ).on(
-        ds.col('int_value') == ds.col('int_value')
+    ds.sources["source_1"] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_1))
+    ds.sources["source_2"] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_2))
+    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+    ds.source_avatars["avatar_2"] = ds.sources["source_2"].avatar()
+    ds.avatar_relations["relation_1"] = (
+        ds.source_avatars["avatar_1"].join(ds.source_avatars["avatar_2"]).on(ds.col("int_value") == ds.col("int_value"))
     )
     ds = api_v1.apply_updates(dataset=ds).dataset
 
@@ -318,8 +266,8 @@ def test_preview_fallback_switcher(api_v1, data_api_all_v, two_clickhouse_tables
     table_1, table_2 = two_clickhouse_tables
     connection_id = static_connection_id
     ds = Dataset()
-    ds.sources['source_1'] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_1))
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
+    ds.sources["source_1"] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_1))
+    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
     ds = api_v1.apply_updates(dataset=ds).dataset
 
     # check not saved
@@ -331,12 +279,10 @@ def test_preview_fallback_switcher(api_v1, data_api_all_v, two_clickhouse_tables
     preview_resp = data_api.get_preview(dataset=ds, limit=7)
     assert len(get_data_rows(preview_resp)) == 7
 
-    ds.sources['source_2'] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_2))
-    ds.source_avatars['avatar_2'] = ds.sources['source_2'].avatar()
-    ds.avatar_relations['relation_1'] = ds.source_avatars['avatar_1'].join(
-        ds.source_avatars['avatar_2']
-    ).on(
-        ds.col('int_value') == ds.col('int_value')
+    ds.sources["source_2"] = ds.source(connection_id=connection_id, **data_source_settings_from_table(table_2))
+    ds.source_avatars["avatar_2"] = ds.sources["source_2"].avatar()
+    ds.avatar_relations["relation_1"] = (
+        ds.source_avatars["avatar_1"].join(ds.source_avatars["avatar_2"]).on(ds.col("int_value") == ds.col("int_value"))
     )
     ds = api_v1.apply_updates(dataset=ds).dataset
 

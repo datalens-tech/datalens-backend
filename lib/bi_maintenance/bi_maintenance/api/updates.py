@@ -23,25 +23,40 @@ Sample usage (replace connection and switch data source to subselect)::
 
 """
 
+from typing import (
+    List,
+    Optional,
+    Sequence,
+)
 import uuid
-from typing import Optional, Sequence, List
 
 import attr
 
-from dl_api_lib.request_model.data import Action, FieldAction, AddUpdateSourceAction, ReplaceConnectionAction, \
-    ReplaceConnection, SourceActionBase, AddField
-from dl_constants.enums import BIType, CalcMode, AggregationFunction, CreateDSFrom, DataSourceRole
-
+from dl_api_lib.dataset.validator import DatasetValidator
+from dl_api_lib.enums import DatasetAction
+from dl_api_lib.request_model.data import (
+    Action,
+    AddField,
+    AddUpdateSourceAction,
+    FieldAction,
+    ReplaceConnection,
+    ReplaceConnectionAction,
+    SourceActionBase,
+)
+from dl_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    CreateDSFrom,
+    DataSourceRole,
+)
+from dl_core.base_models import DefaultConnectionRef
+from dl_core.components.accessor import DatasetComponentAccessor
+from dl_core.data_source.collection import DataSourceCollectionFactory
+from dl_core.fields import ParameterValueConstraint
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
-from dl_core.base_models import DefaultConnectionRef
-from dl_core.fields import ParameterValueConstraint
 from dl_core.values import BIValue
-from dl_core.data_source.collection import DataSourceCollectionFactory
-from dl_core.components.accessor import DatasetComponentAccessor
-
-from dl_api_lib.enums import DatasetAction
-from dl_api_lib.dataset.validator import DatasetValidator
 
 
 def _make_component_id() -> str:
@@ -63,13 +78,14 @@ class SimpleDatasetUpdateGen:
         return self._dataset
 
     def add_field(
-            self, title: str,
-            formula: Optional[str] = None,
-            source: Optional[str] = None,
-            cast: Optional[BIType] = None,
-            aggregation: AggregationFunction = AggregationFunction.none,
-            default_value: Optional[BIValue] = None,
-            value_constraint: Optional[ParameterValueConstraint] = None,
+        self,
+        title: str,
+        formula: Optional[str] = None,
+        source: Optional[str] = None,
+        cast: Optional[BIType] = None,
+        aggregation: AggregationFunction = AggregationFunction.none,
+        default_value: Optional[BIValue] = None,
+        value_constraint: Optional[ParameterValueConstraint] = None,
     ) -> FieldAction:
         if default_value is not None:
             calc_mode = CalcMode.parameter
@@ -82,31 +98,31 @@ class SimpleDatasetUpdateGen:
         title = title or field_id
 
         field_data = {
-            'guid': field_id,
-            'title': title,
-            'source': source or '',
-            'formula': formula or '',
-            'calc_mode': calc_mode,
-            'aggregation': aggregation,
-            'default_value': default_value,
-            'value_constraint': value_constraint,
+            "guid": field_id,
+            "title": title,
+            "source": source or "",
+            "formula": formula or "",
+            "calc_mode": calc_mode,
+            "aggregation": aggregation,
+            "default_value": default_value,
+            "value_constraint": value_constraint,
         }
         if cast is not None:
-            field_data['cast'] = cast
+            field_data["cast"] = cast
 
         action_data = {
-            'action': DatasetAction.add_field,
-            'field': AddField(**field_data),  # type: ignore
+            "action": DatasetAction.add_field,
+            "field": AddField(**field_data),  # type: ignore
         }
         return FieldAction(**action_data)  # type: ignore
 
     def update_source_as_subselect(
-            self,
-            id: str,
-            source_type: CreateDSFrom,
-            subsql: str,
+        self,
+        id: str,
+        source_type: CreateDSFrom,
+        subsql: str,
     ) -> AddUpdateSourceAction:
-        assert source_type.name.endswith('_SUBSELECT'), 'Must be a *_SUBSELECT source type'
+        assert source_type.name.endswith("_SUBSELECT"), "Must be a *_SUBSELECT source type"
 
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=id)
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self._us_manager.get_entry_buffer())
@@ -115,43 +131,40 @@ class SimpleDatasetUpdateGen:
         dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
         assert dsrc is not None
         conn_ref = dsrc.spec.connection_ref
-        assert isinstance(conn_ref, DefaultConnectionRef), 'Origin connection must be a regular connection'
+        assert isinstance(conn_ref, DefaultConnectionRef), "Origin connection must be a regular connection"
 
         source_data = {
-            'id': id,
-            'source_type': source_type,
-            'connection_id': conn_ref.conn_id,
-            'parameters': {
-                'subsql': subsql,
+            "id": id,
+            "source_type": source_type,
+            "connection_id": conn_ref.conn_id,
+            "parameters": {
+                "subsql": subsql,
             },
         }
 
         action_data = {
-            'action': DatasetAction.update_source,
-            'source': source_data,
+            "action": DatasetAction.update_source,
+            "source": source_data,
         }
         return AddUpdateSourceAction(**action_data)  # type: ignore
 
     def replace_connection(self, old_id: str, new_id: str) -> ReplaceConnectionAction:
-        connection_data = {'id': old_id, 'new_id': new_id}
+        connection_data = {"id": old_id, "new_id": new_id}
         action_data = {
-            'action': DatasetAction.replace_connection,
-            'connection': ReplaceConnection(**connection_data),
+            "action": DatasetAction.replace_connection,
+            "connection": ReplaceConnection(**connection_data),
         }
         return ReplaceConnectionAction(**action_data)  # type: ignore
 
     def refresh_source(self, source_id: str) -> SourceActionBase:
         action_data = {
-            'action': DatasetAction.refresh_source,
-            'source': {'id': source_id},
+            "action": DatasetAction.refresh_source,
+            "source": {"id": source_id},
         }
         return SourceActionBase(**action_data)  # type: ignore
 
     def refresh_all_sources(self) -> List[SourceActionBase]:
-        return [
-            self.refresh_source(source_id)
-            for source_id in self._ds_accessor.get_data_source_id_list()
-        ]
+        return [self.refresh_source(source_id) for source_id in self._ds_accessor.get_data_source_id_list()]
 
 
 def update_dataset(dataset: Dataset, updates: Sequence[Action], us_manager: USManagerBase) -> None:

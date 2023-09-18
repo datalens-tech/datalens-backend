@@ -15,7 +15,7 @@ class FileUploaderApiClient(request_executors_base.BaseRequestExecutor):
     async def post_file(self, data: bytes, file_name: str) -> api_wrappers.Resp:
         with aiohttp.MultipartWriter() as multipart_writer:
             payload = multipart_writer.append(data)
-            payload.set_content_disposition('form-data', name='file', filename=file_name)
+            payload.set_content_disposition("form-data", name="file", filename=file_name)
 
         request = api_wrappers.Req(
             method="post",
@@ -25,24 +25,17 @@ class FileUploaderApiClient(request_executors_base.BaseRequestExecutor):
         return await self._request(request)
 
     async def get_file_status(self, file_id: str) -> api_wrappers.Resp:
-        request = api_wrappers.Req(
-            method="get",
-            url=f"/api/v2/files/{file_id}/status",
-            require_ok=False
-        )
+        request = api_wrappers.Req(method="get", url=f"/api/v2/files/{file_id}/status", require_ok=False)
         return await self._request(request)
 
     async def wait_for_file_status(
-        self,
-        file_id: str,
-        timeout_seconds: float = 100,
-        retry_delay_seconds: float = 1
+        self, file_id: str, timeout_seconds: float = 100, retry_delay_seconds: float = 1
     ) -> api_wrappers.Resp:
         deadline = time.time() + timeout_seconds
 
         while True:
             if time.time() > deadline:
-                raise WaitTimeoutError('File upload wait reached timeout')
+                raise WaitTimeoutError("File upload wait reached timeout")
 
             response = await self.get_file_status(file_id=file_id)
             if response.status == 404 or response.json["status"] != "ready":

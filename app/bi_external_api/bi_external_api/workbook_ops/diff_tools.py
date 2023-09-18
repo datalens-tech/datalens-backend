@@ -1,5 +1,12 @@
 import enum
-from typing import Optional, TypeVar, Generic, Iterable, Type, Sequence
+from typing import (
+    Generic,
+    Iterable,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 
@@ -81,19 +88,19 @@ class WorkbookTransitionPlan:
 
     @classmethod
     def _filter_actions(
-            cls,
-            raw: Iterable[EntryInstanceAction[_EXT_WB_INST_TV]],
-            *,
-            kind: Optional[EntryActionKind],
+        cls,
+        raw: Iterable[EntryInstanceAction[_EXT_WB_INST_TV]],
+        *,
+        kind: Optional[EntryActionKind],
     ) -> Iterable[EntryInstanceAction[_EXT_WB_INST_TV]]:
         if kind is None:
             return raw
         return [act for act in raw if act.kind == kind]
 
     def _get_actions(
-            self,
-            clz: Type[_EXT_WB_INST_TV],
-            action_kind: Optional[EntryActionKind],
+        self,
+        clz: Type[_EXT_WB_INST_TV],
+        action_kind: Optional[EntryActionKind],
     ) -> Iterable[EntryInstanceAction[_EXT_WB_INST_TV]]:
         if clz is ext.DatasetInstance:
             # TODO FIX: Use parametrized methods WB CTX to get instances
@@ -106,22 +113,13 @@ class WorkbookTransitionPlan:
         raise AssertionError()
 
     def get_items_to_create(self, clz: Type[_EXT_WB_INST_TV]) -> Iterable[_EXT_WB_INST_TV]:
-        return [
-            act.desired_instance_strict
-            for act in self._get_actions(clz, action_kind=EntryActionKind.create)
-        ]
+        return [act.desired_instance_strict for act in self._get_actions(clz, action_kind=EntryActionKind.create)]
 
     def get_item_names_to_delete(self, clz: Type[_EXT_WB_INST_TV]) -> Iterable[str]:
-        return [
-            act.entry_name
-            for act in self._get_actions(clz, action_kind=EntryActionKind.delete)
-        ]
+        return [act.entry_name for act in self._get_actions(clz, action_kind=EntryActionKind.delete)]
 
     def get_items_to_rewrite(self, clz: Type[_EXT_WB_INST_TV]) -> Iterable[_EXT_WB_INST_TV]:
-        return [
-            act.desired_instance_strict
-            for act in self._get_actions(clz, action_kind=EntryActionKind.modify)
-        ]
+        return [act.desired_instance_strict for act in self._get_actions(clz, action_kind=EntryActionKind.modify)]
 
     def to_external(self) -> ext.ModificationPlan:
         ret: list[ext.EntryOperation] = []
@@ -133,18 +131,20 @@ class WorkbookTransitionPlan:
         entry_action: EntryInstanceAction
 
         for clz in all_instance_types:
-            ret.extend([
-                ext.EntryOperation(
-                    entry_name=entry_action.entry_name,
-                    entry_kind=clz.kind,
-                    operation_kind={
-                        EntryActionKind.create: ext.EntryOperationKind.create,
-                        EntryActionKind.modify: ext.EntryOperationKind.modify,
-                        EntryActionKind.delete: ext.EntryOperationKind.delete,
-                    }[entry_action.kind]
-                )
-                for entry_action in self._get_actions(clz, action_kind=None)
-            ])
+            ret.extend(
+                [
+                    ext.EntryOperation(
+                        entry_name=entry_action.entry_name,
+                        entry_kind=clz.kind,
+                        operation_kind={
+                            EntryActionKind.create: ext.EntryOperationKind.create,
+                            EntryActionKind.modify: ext.EntryOperationKind.modify,
+                            EntryActionKind.delete: ext.EntryOperationKind.delete,
+                        }[entry_action.kind],
+                    )
+                    for entry_action in self._get_actions(clz, action_kind=None)
+                ]
+            )
 
         return ext.ModificationPlan(
             operations=ret,

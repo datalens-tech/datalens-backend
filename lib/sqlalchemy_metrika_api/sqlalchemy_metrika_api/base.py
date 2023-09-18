@@ -1,35 +1,50 @@
 from __future__ import annotations
 
-import re
-import logging
 import datetime
+import logging
+import re
 from urllib.parse import urlencode
 
 import dateutil.parser
-from sqlalchemy import exc, util, pool, Unicode
-from sqlalchemy.engine import default, reflection
-from sqlalchemy.sql import compiler, elements, operators, sqltypes
-
-from sqlalchemy_metrika_api.exceptions import (
-    NotSupportedError, MetrikaApiNoMetricsNorGroupBy,
-    MetrikaApiGroupByNotSupported, MetrikaApiDimensionInCalc
+from sqlalchemy import (
+    Unicode,
+    exc,
+    pool,
+    util,
 )
-from sqlalchemy_metrika_api import metrika_dbapi
-from sqlalchemy_metrika_api import appmetrica_dbapi
-from sqlalchemy_metrika_api.api_info import metrika as metrika_api_info
+from sqlalchemy.engine import (
+    default,
+    reflection,
+)
+from sqlalchemy.sql import (
+    compiler,
+    elements,
+    operators,
+    sqltypes,
+)
+from sqlalchemy_metrika_api import (
+    appmetrica_dbapi,
+    metrika_dbapi,
+)
 from sqlalchemy_metrika_api.api_info import appmetrica as appmetrica_api_info
-
+from sqlalchemy_metrika_api.api_info import metrika as metrika_api_info
+from sqlalchemy_metrika_api.exceptions import (
+    MetrikaApiDimensionInCalc,
+    MetrikaApiGroupByNotSupported,
+    MetrikaApiNoMetricsNorGroupBy,
+    NotSupportedError,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 MAX_LIMIT_VALUE = 10000
-DEFAULT_DATE_PERIOD = 60    # days
+DEFAULT_DATE_PERIOD = 60  # days
 
 
 class MetrikaApiReqPreparer(compiler.IdentifierPreparer):
-    illegal_initial_characters = {'$'}
-    legal_characters = re.compile(r"^[A-Z0-9_:<>\-$]+$", re.I)      # added ":<>-"
+    illegal_initial_characters = {"$"}
+    legal_characters = re.compile(r"^[A-Z0-9_:<>\-$]+$", re.I)  # added ":<>-"
 
     def __init__(self, dialect, **kwargs):
         kwargs.update(initial_quote="'", escape_quote="'")
@@ -70,7 +85,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def check_field_is_date_datetime(self, field_name):
         field_info = self.api_info.fields_by_name.get(field_name)
-        return field_info and field_info['type'] in ('date', 'datetime')
+        return field_info and field_info["type"] in ("date", "datetime")
 
     def visit_column(
         self,
@@ -89,12 +104,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             name = self._truncated_identifier("colident", name)
 
         if add_to_result_map is not None:
-            add_to_result_map(
-                name,
-                orig_name,
-                (column, name, column.key),
-                column.type
-            )
+            add_to_result_map(name, orig_name, (column, name, column.key), column.type)
 
         # Replacing label with real field name
         if name in self._labeled_columns_map:
@@ -111,7 +121,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         return name
 
     def visit_eq_binary(self, binary, operator_, **kw):
-        return self._generate_generic_binary(binary, '==', **kw)    # "==" instead of "="
+        return self._generate_generic_binary(binary, "==", **kw)  # "==" instead of "="
 
     def visit_inv_unary(self, element, operator_, **kw):
         return "NOT(%s)" % self.process(element.element, **kw)
@@ -125,7 +135,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
     def render_literal_value(self, value, type_):
         if isinstance(type_, Unicode):
             assert isinstance(value, str)
-            value = value.replace('\\', '\\\\').replace("'", "\\'")
+            value = value.replace("\\", "\\\\").replace("'", "\\'")
 
             if self.dialect.identifier_preparer._double_percents:
                 value = value.replace("%", "%%")
@@ -136,9 +146,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         if processor:
             return processor(value)
         else:
-            raise NotImplementedError(
-                "Don't know how to literal-quote value %r" % value
-            )
+            raise NotImplementedError("Don't know how to literal-quote value %r" % value)
 
     def visit_bindparam(
         self,
@@ -147,17 +155,14 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         literal_binds=False,
         skip_bind_expression=False,
         _extra_quoting=True,
-        **kwargs
+        **kwargs,
     ):
         if literal_binds or (within_columns_clause and self.ansi_bind_rules):
             if bindparam.value is None and bindparam.callable is None:
                 raise exc.CompileError(
-                    "Bind parameter '%s' without a "
-                    "renderable value not allowed here." % bindparam.key
+                    "Bind parameter '%s' without a " "renderable value not allowed here." % bindparam.key
                 )
-            return self.render_literal_bindparam(
-                bindparam, within_columns_clause=True, **kwargs
-            )
+            return self.render_literal_bindparam(bindparam, within_columns_clause=True, **kwargs)
 
         if bindparam.callable:
             value = bindparam.effective_value
@@ -165,14 +170,13 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             value = bindparam.value
 
         def escape(value: str) -> str:
-            return value.replace('\\', '\\\\').replace("'", "\\'")
+            return value.replace("\\", "\\\\").replace("'", "\\'")
 
         if bindparam.expanding:
             assert not isinstance(value, str)
-            return "({})".format(", ".join(
-                f"'{escape(str(piece))}'" if _extra_quoting else escape(str(piece))
-                for piece in value
-            ))
+            return "({})".format(
+                ", ".join(f"'{escape(str(piece))}'" if _extra_quoting else escape(str(piece)) for piece in value)
+            )
 
         if isinstance(value, list) and len(value) == 1:
             value = value[0]
@@ -188,16 +192,17 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         left_value = binary.left._compiler_dispatch(self, **kw)
         if self.check_field_is_date_datetime(left_value):
             if len(binary.right.clauses) != 2:
-                raise exc.CompileError('Unexpected between arguments count')
+                raise exc.CompileError("Unexpected between arguments count")
             self._extra_select_params.update(
                 date1=binary.right.clauses[0]._compiler_dispatch(self, _extra_quoting=False),
                 date2=binary.right.clauses[1]._compiler_dispatch(self, _extra_quoting=False),
             )
         else:
-            raise NotSupportedError('BETWEEN operator supported only for date/datetime fields. '
-                                    'Requested field: {}'.format(left_value))
+            raise NotSupportedError(
+                "BETWEEN operator supported only for date/datetime fields. " "Requested field: {}".format(left_value)
+            )
 
-        return ''
+        return ""
 
     def visit_not_between_op_binary(self, binary, operator, **kw):
         raise NotSupportedError()
@@ -211,12 +216,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def visit_contains_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = '*%s*' % binary.right.value
+        binary.right.value = "*%s*" % binary.right.value
         return self.visit_like_op_binary(binary, operator, **kw)
 
     def visit_not_contains_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = '*%s*' % binary.right.value
+        binary.right.value = "*%s*" % binary.right.value
         return self.visit_notlike_op_binary(binary, operator, **kw)
 
     def visit_notcontains_op_binary(self, binary, operator, **kw):
@@ -224,12 +229,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def visit_startswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = '%s*' % binary.right.value
+        binary.right.value = "%s*" % binary.right.value
         return self.visit_like_op_binary(binary, operator, **kw)
 
     def visit_not_startswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = '%s*' % binary.right.value
+        binary.right.value = "%s*" % binary.right.value
         return self.visit_notlike_op_binary(binary, operator, **kw)
 
     def visit_notstartsswith_op_binary(self, binary, operator, **kw):
@@ -237,19 +242,19 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def visit_endswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = '*%s' % binary.right.value
+        binary.right.value = "*%s" % binary.right.value
         return self.visit_like_op_binary(binary, operator, **kw)
 
     def visit_not_endswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = '*%s' % binary.right.value
+        binary.right.value = "*%s" % binary.right.value
         return self.visit_notlike_op_binary(binary, operator, **kw)
 
     def visit_notendswith_op_binary(self, binary, operator, **kw):
         return self.visit_not_endswith_op_binary(binary, operator, **kw)
 
     def visit_like_op_binary(self, binary, operator, **kw):
-        return '%s=*%s' % (
+        return "%s=*%s" % (
             binary.left._compiler_dispatch(self, **kw),
             binary.right._compiler_dispatch(self, **kw),
         )
@@ -258,7 +263,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         return self.visit_not_like_op_binary(binary, operator, **kw)
 
     def visit_not_like_op_binary(self, binary, operator, **kw):
-        return '%s!*%s' % (
+        return "%s!*%s" % (
             binary.left._compiler_dispatch(self, **kw),
             binary.right._compiler_dispatch(self, **kw),
         )
@@ -273,9 +278,9 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         raise NotSupportedError()
 
     def _get_clause_name(self, clause, **kwargs):
-        if hasattr(clause, 'name'):
+        if hasattr(clause, "name"):
             return clause.name
-        elif hasattr(clause, 'clause') and hasattr(clause.clause, 'name'):
+        elif hasattr(clause, "clause") and hasattr(clause.clause, "name"):
             return clause.clause.name
         else:
             return clause._compiler_dispatch(self, **kwargs)
@@ -284,22 +289,17 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         clauses = func.clause_expr.element.clauses
         for cla in clauses:
             cla_name = self._get_clause_name(cla, **kwargs)
-            if (cla_name in self.api_info.fields_by_name and
-                    self.api_info.fields_by_name[cla_name]['is_dim']):
-                raise MetrikaApiDimensionInCalc(
-                    'Not able to use dimensions in calculations: "%s"' % cla_name
-                )
+            if cla_name in self.api_info.fields_by_name and self.api_info.fields_by_name[cla_name]["is_dim"]:
+                raise MetrikaApiDimensionInCalc('Not able to use dimensions in calculations: "%s"' % cla_name)
 
-        return ' + '.join([
-            cla._compiler_dispatch(self, **kwargs) for cla in clauses
-        ])
+        return " + ".join([cla._compiler_dispatch(self, **kwargs) for cla in clauses])
 
     def visit_clauselist(self, clauselist, _group_by_clause=False, **kwargs):
         sep = clauselist.operator
         if sep is None:
             sep = " "
         elif sep == operators.comma_op:
-            sep = ","       # instead of ", "
+            sep = ","  # instead of ", "
         else:
             sep = compiler.OPERATORS[clauselist.operator]
 
@@ -307,40 +307,36 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             clauses = []
             for cla in clauselist.clauses:
                 cla_name = self._get_clause_name(cla, **kwargs)
-                if (cla_name in self._labeled_columns_map and
-                        self._labeled_columns_map[cla_name][1] is not None):
+                if cla_name in self._labeled_columns_map and self._labeled_columns_map[cla_name][1] is not None:
                     clauses.append(self._labeled_columns_map[cla_name][1])
                 else:
                     clauses.append(cla)
 
             for cla in clauses:
                 cla_name = self._get_clause_name(cla, **kwargs)
-                if cla_name not in self.api_info.fields_by_name or \
-                        not self.api_info.fields_by_name[cla_name]['is_dim']:
+                if cla_name not in self.api_info.fields_by_name or not self.api_info.fields_by_name[cla_name]["is_dim"]:
                     raise MetrikaApiGroupByNotSupported('Grouping by field "%s" is not possible' % cla_name)
 
-            self._group_by_fields = [
-                name
-                for name in (self._get_clause_name(cla, **kwargs) for cla in clauses)
-                if name
-            ]
+            self._group_by_fields = [name for name in (self._get_clause_name(cla, **kwargs) for cla in clauses) if name]
         else:
             clauses = clauselist.clauses
 
-        return sep.join(
-            s
-            for s in (
-                c._compiler_dispatch(self, **kwargs) for c in clauses
-            )
-            if s
-        )
+        return sep.join(s for s in (c._compiler_dispatch(self, **kwargs) for c in clauses) if s)
 
     def visit_select(self, *args, **kwargs):
         self._flush_tmp_properties()
         return super().visit_select(*args, **kwargs)
 
     def _compose_select_body(
-        self, text, select, compile_state, inner_columns, froms, byfrom, toplevel, kwargs,
+        self,
+        text,
+        select,
+        compile_state,
+        inner_columns,
+        froms,
+        byfrom,
+        toplevel,
+        kwargs,
     ):
         """
         https://tech.yandex.ru/metrika/doc/api2/api_v1/data-docpage/
@@ -358,11 +354,11 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             warn_linting = False
 
         if froms:
-            query_params.update(ids=",".join(
-                [
-                    f._compiler_dispatch(self, asfrom=True, from_linter=from_linter, **kwargs) for f in froms
-                ]
-            ))
+            query_params.update(
+                ids=",".join(
+                    [f._compiler_dispatch(self, asfrom=True, from_linter=from_linter, **kwargs) for f in froms]
+                )
+            )
         else:
             raise NotSupportedError('empty "FROM" clause')
 
@@ -379,13 +375,15 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
         if select._having_criteria:
             having_str = self._generate_delimited_and_list(
-                select._having_criteria, _is_in_filter=True, **kwargs,
+                select._having_criteria,
+                _is_in_filter=True,
+                **kwargs,
             )
             if having_str:
                 filters.append(having_str)
 
         if filters:
-            query_params.update(filters=' AND '.join(filters))
+            query_params.update(filters=" AND ".join(filters))
 
         if select._group_by_clauses:
             # Here only generating self._group_by_fields list.
@@ -396,7 +394,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         metrics_dims_cols = []
         for col in inner_columns:
             col_desc = self.api_info.fields_by_name.get(col)
-            if col_desc and col_desc['is_dim']:
+            if col_desc and col_desc["is_dim"]:
                 metrics_dims_cols.append(col)
             else:
                 metrics_cols.append(col)
@@ -409,12 +407,11 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                 # Hack to be able to get dimensions values
                 # without necessity to specify any unnecessary metric field explicitly.
                 fields_namespace = self.api_info.get_namespace_by_name(self._group_by_fields[0])
-                any_metric = self.api_info.metrics_by_namespace[fields_namespace][0]['name']
+                any_metric = self.api_info.metrics_by_namespace[fields_namespace][0]["name"]
                 metrics_cols.append(any_metric)
             else:
-                raise MetrikaApiNoMetricsNorGroupBy(
-                    'Not found neither metrics to select nor dimensions for group by.')
-        query_params.update(metrics=','.join(metrics_cols))
+                raise MetrikaApiNoMetricsNorGroupBy("Not found neither metrics to select nor dimensions for group by.")
+        query_params.update(metrics=",".join(metrics_cols))
 
         if self._group_by_fields:
             query_params.update(dimensions=",".join(self._group_by_fields))
@@ -436,11 +433,11 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             query_params.update(offset=offset_val)
 
         if select._for_update_arg is not None:
-            raise NotSupportedError('FOR UPDATE')
+            raise NotSupportedError("FOR UPDATE")
 
         query_params.update(self._extra_select_params)
 
-        for date_param in ('date1', 'date2'):
+        for date_param in ("date1", "date2"):
             if date_param in query_params:
                 value = query_params[date_param]
                 if isinstance(value, list):
@@ -453,16 +450,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                 query_params[date_param] = value
 
         today = datetime.date.today()
-        if (
-            not self._date_filter_present and
-            not query_params.get('date1') and
-            not query_params.get('date2')
-        ):
+        if not self._date_filter_present and not query_params.get("date1") and not query_params.get("date2"):
             # TODO: use counter timezone
             dt1 = today - datetime.timedelta(days=DEFAULT_DATE_PERIOD)
             query_params.update(date1=dt1, date2=today)
 
-        if 'date2' in query_params and query_params['date2'] > today:
+        if "date2" in query_params and query_params["date2"] > today:
             query_params.update(date2=today)
 
         return urlencode(query_params)
@@ -480,14 +473,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         within_label_clause=False,
         within_columns_clause=False,
         render_label_as_label=None,
-        **kw
+        **kw,
     ):
         # only render labels within the columns clause
         # or ORDER BY clause of a select.  dialect-specific compilers
         # can modify this behavior.
-        render_label_with_as = (
-            within_columns_clause and not within_label_clause
-        )
+        render_label_with_as = within_columns_clause and not within_label_clause
         render_label_only = render_label_as_label is label
 
         if render_label_only or render_label_with_as:
@@ -506,20 +497,17 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                 )
 
             element_processed = label.element._compiler_dispatch(
-                self,
-                within_columns_clause=True,
-                within_label_clause=True,
-                **kw
+                self, within_columns_clause=True, within_label_clause=True, **kw
             )
 
             def _unwrap_to_column_clause(element):
-                LOGGER.info(f'element {element} {type(element)}')
+                LOGGER.info(f"element {element} {type(element)}")
                 if isinstance(element, elements.ColumnClause):
                     return element
-                if hasattr(element, 'clause'):
+                if hasattr(element, "clause"):
                     return _unwrap_to_column_clause(element.clause)
                 else:
-                    LOGGER.warning('Unable dispatch to ColumnClause')
+                    LOGGER.warning("Unable dispatch to ColumnClause")
                     return None
 
             internal_column_clause = _unwrap_to_column_clause(label.element)
@@ -527,15 +515,13 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
             return element_processed
         else:
-            return label.element._compiler_dispatch(
-                self, within_columns_clause=False, **kw
-            )
+            return label.element._compiler_dispatch(self, within_columns_clause=False, **kw)
 
     def visit_asc_op_unary_modifier(self, unary, modifier, **kw):
         return unary.element._compiler_dispatch(self, **kw)
 
     def visit_desc_op_unary_modifier(self, unary, modifier, **kw):
-        return '-' + unary.element._compiler_dispatch(self, **kw)
+        return "-" + unary.element._compiler_dispatch(self, **kw)
 
     def visit_cast(self, cast, **kwargs):
         param_name = cast.clause._compiler_dispatch(self, **kwargs)
@@ -544,33 +530,35 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         return param_name
 
     def visit_insert(self, *args, **kwargs):
-        raise NotSupportedError('INSERT')
+        raise NotSupportedError("INSERT")
 
     def visit_update(self, *args, **kwargs):
-        raise NotSupportedError('UPDATE')
+        raise NotSupportedError("UPDATE")
 
     def construct_params(
-            self,
-            params=None,
-            _group_number=None,
-            _check=True,
-            extracted_parameters=None,
-            escape_names=True,
+        self,
+        params=None,
+        _group_number=None,
+        _check=True,
+        extracted_parameters=None,
+        escape_names=True,
     ):
         prepared_params = super().construct_params(params, _group_number, _check, extracted_parameters)
         result_cols = []
         for col in self._result_columns:
             field_name = self._labeled_columns_map.get(col[0], (col[0],))[0]
-            result_cols.append(dict(
-                label=col[0],
-                name=field_name,
-                src_key=self.api_info.fields_by_name.get(field_name, {}).get('src_key'),
-            ))
-        prepared_params['__RESULT_COLUMNS__'] = result_cols
+            result_cols.append(
+                dict(
+                    label=col[0],
+                    name=field_name,
+                    src_key=self.api_info.fields_by_name.get(field_name, {}).get("src_key"),
+                )
+            )
+        prepared_params["__RESULT_COLUMNS__"] = result_cols
         prepared_params.update(self._extra_bind_params)
         if self._casts:
-            prepared_params['__CASTS__'] = self._casts
-        LOGGER.info('Metrica query prepared params: %s', prepared_params)
+            prepared_params["__CASTS__"] = self._casts
+        LOGGER.info("Metrica query prepared params: %s", prepared_params)
         return prepared_params
 
 
@@ -594,7 +582,7 @@ class MetrikaApiDialect(default.DefaultDialect):
     supports_views = False
     supports_statement_cache = False
 
-    poolclass = pool.SingletonThreadPool    # pool.NullPool
+    poolclass = pool.SingletonThreadPool  # pool.NullPool
 
     # execution_ctx_cls = MetrikaApiExecutionContext
     statement_compiler = MetrikaApiReqCompiler
@@ -613,11 +601,13 @@ class MetrikaApiDialect(default.DefaultDialect):
 
         columns = []
         for col in metrika_fields:
-            columns.append({
-                "name": col["name"],
-                "type": metrika_dbapi.metrika_types_to_sqla[col["type"]],
-                "nullable": not col["is_dim"],
-            })
+            columns.append(
+                {
+                    "name": col["name"],
+                    "type": metrika_dbapi.metrika_types_to_sqla[col["type"]],
+                    "nullable": not col["is_dim"],
+                }
+            )
         return columns
 
     @classmethod

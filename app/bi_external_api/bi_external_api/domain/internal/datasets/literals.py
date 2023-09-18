@@ -2,8 +2,8 @@ from typing import ClassVar
 
 import attr
 
-from dl_constants.enums import BIType
 from bi_external_api.attrs_model_mapper import ModelDescriptor
+from dl_constants.enums import BIType
 
 
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="type")
@@ -34,5 +34,6 @@ class DefaultValueFloat(DefaultValue):
     type = BIType.float
 
     value: float = attr.ib()
+
 
 # TODO FIX: BI-3712 Support other types of literals

@@ -1,6 +1,5 @@
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.connector.dataset_suite import DefaultConnectorDatasetTestSuite
-
 from dl_connector_snowflake_tests.ext.api.base import SnowFlakeDatasetTestBase
 
 

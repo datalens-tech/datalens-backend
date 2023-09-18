@@ -1,14 +1,27 @@
 import abc
 import logging
-from typing import TypeVar, Any, ClassVar, Type, final, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Type,
+    TypeVar,
+    final,
+)
 
 from bi_external_api.converter.charts.utils import convert_field_type_dataset_to_chart
 from bi_external_api.converter.converter_exc import NotSupportedYet
 from bi_external_api.converter.dash.dash_element_common import BaseDashElementConverter
-from bi_external_api.converter.dash.utils import TabItemControlAccessor, SourceAccessor
+from bi_external_api.converter.dash.utils import (
+    SourceAccessor,
+    TabItemControlAccessor,
+)
 from bi_external_api.converter.utils import convert_enum_by_name_allow_none
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import dashboards, charts
+from bi_external_api.domain.internal import (
+    charts,
+    dashboards,
+)
 from bi_external_api.domain.internal.dashboards import ControlData
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 
@@ -18,8 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseControlElementConverter(
-    BaseDashElementConverter[dashboards.ItemControl, _DASH_ELEMENT_TV],
-    metaclass=abc.ABCMeta
+    BaseDashElementConverter[dashboards.ItemControl, _DASH_ELEMENT_TV], metaclass=abc.ABCMeta
 ):
     TARGET_CLS: ClassVar[Type[_DASH_ELEMENT_TV]]
 
@@ -73,25 +85,22 @@ class BaseControlElementConverter(
     # Control specific conversions
     #
     @abc.abstractmethod
-    def convert_default_value_int_to_ext(
-            self,
-            tab_item: dashboards.ItemControl
-    ) -> Optional[ext.Value]:
+    def convert_default_value_int_to_ext(self, tab_item: dashboards.ItemControl) -> Optional[ext.Value]:
         raise NotImplementedError()
 
     @abc.abstractmethod
     def convert_value_source_dataset_field_ext_to_int(
-            self,
-            dash_element: _DASH_ELEMENT_TV,
-            ext_value_source: ext.ControlValueSourceDatasetField,
+        self,
+        dash_element: _DASH_ELEMENT_TV,
+        ext_value_source: ext.ControlValueSourceDatasetField,
     ) -> dashboards.DatasetControlSource:
         raise NotImplementedError()
 
     # @abc.abstractmethod
     def convert_value_source_manual_ext_to_int(
-            self,
-            dash_element: _DASH_ELEMENT_TV,
-            ext_value_source: ext.ControlValueSourceManual,
+        self,
+        dash_element: _DASH_ELEMENT_TV,
+        ext_value_source: ext.ControlValueSourceManual,
     ) -> dashboards.ManualControlSource:
         raise NotSupportedYet("Manual control value sources are not yet supported")
 
@@ -124,8 +133,8 @@ class BaseControlElementConverter(
 
     @classmethod
     def make_defaults(
-            cls,
-            source: dashboards.CommonGuidedControlSource,
+        cls,
+        source: dashboards.CommonGuidedControlSource,
     ) -> FrozenMappingStrToStrOrStrSeq:
         return SourceAccessor(source).resolve_expected_params_defaults(cls.get_default_internal_operation())
 
@@ -136,10 +145,7 @@ class BaseControlElementConverter(
 
         # Outputs:
         if isinstance(ext_values_source, ext.ControlValueSourceDatasetField):
-            ds_field_source = self.convert_value_source_dataset_field_ext_to_int(
-                dash_element,
-                ext_values_source
-            )
+            ds_field_source = self.convert_value_source_dataset_field_ext_to_int(dash_element, ext_values_source)
             return dashboards.ItemControl(
                 id=id,
                 data=dashboards.DatasetBasedControlData(
@@ -156,10 +162,7 @@ class BaseControlElementConverter(
             )
             return dashboards.ItemControl(
                 id=id,
-                data=dashboards.ManualControlData(
-                    title=control_item_title,
-                    source=manual_source
-                ),
+                data=dashboards.ManualControlData(title=control_item_title, source=manual_source),
                 defaults=self.make_defaults(manual_source),
             )
         else:

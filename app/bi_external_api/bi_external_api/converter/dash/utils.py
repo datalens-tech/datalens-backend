@@ -1,11 +1,22 @@
 from functools import cached_property
-from typing import Sequence, Union, Optional, FrozenSet, ClassVar, TypeVar, Type
+from typing import (
+    ClassVar,
+    FrozenSet,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import attr
 
 from bi_external_api.converter.converter_exc import NotSupportedYet
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import dashboards, charts
+from bi_external_api.domain.internal import (
+    charts,
+    dashboards,
+)
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 
@@ -54,9 +65,9 @@ class SourceAccessor:
         param_name = self.resolve_parameter_name()
         default_value = self.resolve_default_value()
 
-        return FrozenMappingStrToStrOrStrSeq({
-            param_name: ParametersCodec.encode_any_parameter(effective_operation, default_value)
-        })
+        return FrozenMappingStrToStrOrStrSeq(
+            {param_name: ParametersCodec.encode_any_parameter(effective_operation, default_value)}
+        )
 
 
 @attr.s(frozen=True)
@@ -79,10 +90,7 @@ class TabItemControlAccessor:
 class AnyStringValueConverter:
     @classmethod
     def convert_any_string_value_int_to_ext(
-            cls,
-            int_value: Optional[SingleOrMultiString],
-            *,
-            empty_single_string_to_none: bool = False
+        cls, int_value: Optional[SingleOrMultiString], *, empty_single_string_to_none: bool = False
     ) -> Optional[ext.Value]:
         if int_value is None:
             return None
@@ -94,10 +102,7 @@ class AnyStringValueConverter:
 
     @classmethod
     def convert_any_string_value_ext_to_int(
-            cls,
-            ext_value: Optional[ext.Value],
-            *,
-            none_to_empty_string: bool = False
+        cls, ext_value: Optional[ext.Value], *, none_to_empty_string: bool = False
     ) -> Optional[SingleOrMultiString]:
         if ext_value is None:
             return SingleOrMultiString.from_string("") if none_to_empty_string else None
@@ -109,10 +114,12 @@ class AnyStringValueConverter:
 
 
 class ParametersCodec:
-    multi_string_ops: ClassVar[FrozenSet[charts.Operation]] = frozenset({
-        charts.Operation.IN,
-        charts.Operation.NIN,
-    })
+    multi_string_ops: ClassVar[FrozenSet[charts.Operation]] = frozenset(
+        {
+            charts.Operation.IN,
+            charts.Operation.NIN,
+        }
+    )
 
     @classmethod
     def encode_single_param_value(cls, value: str, op: charts.Operation) -> str:
@@ -123,9 +130,9 @@ class ParametersCodec:
 
     @classmethod
     def encode_any_parameter(
-            cls,
-            int_operation: charts.Operation,
-            value: Optional[SingleOrMultiString],
+        cls,
+        int_operation: charts.Operation,
+        value: Optional[SingleOrMultiString],
     ) -> Union[str, Sequence[str]]:
         if value is None:
             return ""
@@ -140,8 +147,7 @@ class ParametersCodec:
             assert not value.is_single, f"Got single string value as arg for multi-string operation: {int_operation}"
 
             return tuple(
-                cls.encode_single_param_value(option_value, int_operation)
-                for option_value in value.as_sequence()
+                cls.encode_single_param_value(option_value, int_operation) for option_value in value.as_sequence()
             )
 
         else:

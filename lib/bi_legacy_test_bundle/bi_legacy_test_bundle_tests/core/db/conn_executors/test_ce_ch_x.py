@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
-    ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
-)
-
 from bi_legacy_test_bundle_tests.core.common_ce_ch import BaseClickHouseTestSet
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
+    ClickHouseAsyncAdapterConnExecutor,
+    ClickHouseSyncAdapterConnExecutor,
+)
 
 
 class TestClickHouseSyncAdapterConnExecutor(BaseClickHouseTestSet):

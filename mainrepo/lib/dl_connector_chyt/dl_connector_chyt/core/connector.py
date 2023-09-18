@@ -1,11 +1,5 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition,
-    CoreConnector,
-    CoreSourceDefinition,
-)
-
 from dl_connector_chyt.core.adapters import CHYTAdapter
 from dl_connector_chyt.core.async_adapters import AsyncCHYTAdapter
 from dl_connector_chyt.core.connection_executors import (
@@ -43,6 +37,11 @@ from dl_connector_chyt.core.storage_schemas.data_source_spec import (
 )
 from dl_connector_chyt.core.type_transformer import CHYTTypeTransformer
 from dl_connector_chyt.core.us_connection import ConnectionCHYTToken
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
+)
 
 
 class CHYTCoreConnectionDefinition(CoreConnectionDefinition):

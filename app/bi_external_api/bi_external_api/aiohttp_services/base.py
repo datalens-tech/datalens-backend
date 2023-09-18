@@ -3,17 +3,24 @@ from __future__ import annotations
 import abc
 import enum
 from functools import cached_property
-from typing import ClassVar, Optional, Any
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
+from aiohttp import web
 import attr
 import yaml
-from aiohttp import web
 
-from dl_api_commons.base_models import TenantDef
-from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResource, DLRequestBase
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
+from dl_api_commons.aiohttp.aiohttp_wrappers import (
+    DLRequestBase,
+    RequiredResource,
+)
+from dl_api_commons.base_models import TenantDef
 
 
 class ExtAPIRequiredResource(RequiredResource):
@@ -36,7 +43,7 @@ class InternalAPIClientsFactory(metaclass=abc.ABCMeta):
 
 
 class ExtAPIRequest(DLRequestBase):
-    KEY_INTERNAL_API_CLIENTS_FACTORY: ClassVar[str] = 'ext_api_internal_api_clients_factory'
+    KEY_INTERNAL_API_CLIENTS_FACTORY: ClassVar[str] = "ext_api_internal_api_clients_factory"
 
     # TODO FIX: Remove this property after all middleware will be switched to grab resources from view object
     @property
@@ -65,7 +72,7 @@ class AppConfig:
     do_add_exc_message: bool = attr.ib()
 
     @classmethod
-    def from_app(cls, app: web.Application) -> 'AppConfig':
+    def from_app(cls, app: web.Application) -> "AppConfig":
         return app[cls._APP_KEY]
 
     def bind(self, app: web.Application) -> None:
@@ -108,9 +115,7 @@ class BaseView(web.View):
     async def get_request_dict(self) -> dict[str, Any]:
         requested_serialization_type = self.req_serialization_type
         effective_serialization_type: SerializationType = (
-            SerializationType.json
-            if requested_serialization_type is None
-            else requested_serialization_type
+            SerializationType.json if requested_serialization_type is None else requested_serialization_type
         )
 
         if effective_serialization_type == SerializationType.json:

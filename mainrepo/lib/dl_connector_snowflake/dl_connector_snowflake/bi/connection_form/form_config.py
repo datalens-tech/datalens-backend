@@ -30,7 +30,6 @@ from dl_api_connector.form_config.models.rows.base import (
 )
 from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_connector_snowflake.bi.connection_info import SnowflakeConnectionInfoProvider
 from dl_connector_snowflake.bi.i18n.localizer import Translatable
 

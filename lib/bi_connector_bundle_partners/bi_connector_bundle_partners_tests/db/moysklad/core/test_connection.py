@@ -1,9 +1,8 @@
 from bi_connector_bundle_partners.moysklad.core.settings import MoySkladConnectorSettings
 from bi_connector_bundle_partners.moysklad.core.us_connection import MoySkladCHConnection
 from bi_connector_bundle_partners_tests.db.base.core.connection import PartnersConnectionTestClass
-from bi_connector_bundle_partners_tests.db.moysklad.core.base import BaseMoySkladTestClass
-
 import bi_connector_bundle_partners_tests.db.config as test_config
+from bi_connector_bundle_partners_tests.db.moysklad.core.base import BaseMoySkladTestClass
 
 
 class TestMoySkladConnection(BaseMoySkladTestClass, PartnersConnectionTestClass[MoySkladCHConnection]):

@@ -1,14 +1,22 @@
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.domain.utils import ensure_tuple
+
+from ..dl_common import (
+    DatasetAPIBaseModel,
+    EntryInstance,
+    EntryScope,
+)
 from .avatars import Avatar
 from .data_source import DataSource
 from .errors import AllComponentErrors
 from .fields import ResultSchemaFieldFull
-from ..dl_common import DatasetAPIBaseModel, EntryInstance, EntryScope
 
 
 @ModelDescriptor()
@@ -26,13 +34,13 @@ class Dataset(DatasetAPIBaseModel):
         return next(f for f in self.result_schema if f.title == title)
 
     ignored_keys = {
-        'rls',
-        'obligatory_filters',
-        'source_features',
-        'preview_enabled',
-        'avatar_relations',
-        'result_schema_aux',
-        'revision_id',
+        "rls",
+        "obligatory_filters",
+        "source_features",
+        "preview_enabled",
+        "avatar_relations",
+        "result_schema_aux",
+        "revision_id",
     }
 
 

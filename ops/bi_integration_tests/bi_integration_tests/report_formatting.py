@@ -1,13 +1,23 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Iterable, Sequence
 import sys
+from typing import (
+    Iterable,
+    Sequence,
+)
 
 import attr
-from bi_testing_ya.api_wrappers import Resp, Req
 
-from bi_integration_tests.steps import StepExecutionException, StepExecutionReport, ScenarioStep
+from bi_integration_tests.steps import (
+    ScenarioStep,
+    StepExecutionException,
+    StepExecutionReport,
+)
+from bi_testing_ya.api_wrappers import (
+    Req,
+    Resp,
+)
 
 
 @attr.s
@@ -44,8 +54,10 @@ class ReportFormatter:
 
     def log_request(self, response: Resp, request: Req):
         report = StepExecutionReport(
-            response=response, step=ScenarioStep(method=request.method, url=request.url),
-            request=request, exception=None
+            response=response,
+            step=ScenarioStep(method=request.method, url=request.url),
+            request=request,
+            exception=None,
         )
         self.row(report.to_short_string())
 

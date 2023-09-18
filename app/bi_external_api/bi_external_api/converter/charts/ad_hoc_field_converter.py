@@ -39,14 +39,14 @@ class AdHocFieldConverter:
             field=DatasetFieldConverter.convert_int_field_to_ext_field(
                 action.field,
                 self._converter_context,
-            )
+            ),
         )
 
     @classmethod
     def post_process_with_validation_results(
-            cls,
-            action: charts.ChartActionFieldAdd,
-            field_after_validation: datasets.ResultSchemaFieldFull,
+        cls,
+        action: charts.ChartActionFieldAdd,
+        field_after_validation: datasets.ResultSchemaFieldFull,
     ) -> charts.ChartActionFieldAdd:
         orig_field = action.field
         fixed_field: charts.ChartActionField

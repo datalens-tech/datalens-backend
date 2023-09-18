@@ -4,12 +4,11 @@ from typing import Optional
 
 import attr
 
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_core.connection_models.dto_defs import (
     ConnDTO,
     DefaultSQLDTO,
 )
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 @attr.s(frozen=True)

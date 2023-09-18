@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_datetime as base
 
 from bi_connector_metrica.formula.constants import MetricaDialect as D
 
-
 DEFINITIONS_DATETIME = [
     # dateadd
     base.FuncDateadd1.for_dialect(D.METRIKAAPI),

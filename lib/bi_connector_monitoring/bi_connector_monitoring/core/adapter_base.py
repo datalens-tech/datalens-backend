@@ -1,22 +1,33 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TYPE_CHECKING
-
 import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+)
 
-import attr
 from aiohttp.client import ClientResponse
+import attr
 
+from dl_app_tools.profiling_base import generic_profiler_async
 from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
 from dl_core.db.native_type import GenericNativeType
 from dl_core.exc import DatabaseQueryError
-from dl_app_tools.profiling_base import generic_profiler_async
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo, DBAdapterQuery
-    from dl_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
     from dl_constants.types import TBIChunksGen
+    from dl_core.connection_executors.models.db_adapter_data import (
+        DBAdapterQuery,
+        RawSchemaInfo,
+    )
+    from dl_core.connection_models import (
+        DBIdent,
+        SchemaIdent,
+        TableDefinition,
+        TableIdent,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -51,14 +62,14 @@ class AsyncBaseSolomonAdapter(AiohttpDBAdapter):
 
     @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
     async def execute(self, dba_query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        with self.wrap_execute_excs(query=dba_query, stage='request'):
+        with self.wrap_execute_excs(query=dba_query, stage="request"):
             resp = await self.run_query(dba_query)
 
         if resp.status != 200:
             data = await resp.json()
             db_exc = self.make_exc(
                 status_code=resp.status,
-                err_body=data['message'],
+                err_body=data["message"],
                 debug_compiled_query=dba_query.debug_compiled_query,
             )
             raise db_exc
@@ -69,7 +80,7 @@ class AsyncBaseSolomonAdapter(AiohttpDBAdapter):
         async def chunk_gen(
             chunk_size: int = dba_query.chunk_size or self._default_chunk_size,
         ) -> TBIChunksGen:
-            data = rd['rows']
+            data = rd["rows"]
             while data:
                 chunk = data[:chunk_size]
                 data = data[chunk_size:]
@@ -77,13 +88,10 @@ class AsyncBaseSolomonAdapter(AiohttpDBAdapter):
 
         return AsyncRawExecutionResult(
             raw_cursor_info=dict(
-                schema=rd['schema'],
-                names=[name for name, _ in rd['schema']],
-                driver_types=[driver_type for _, driver_type in rd['schema']],
-                db_types=[
-                    self._type_name_to_native_type(driver_type)
-                    for _, driver_type in rd['schema']
-                ],
+                schema=rd["schema"],
+                names=[name for name, _ in rd["schema"]],
+                driver_types=[driver_type for _, driver_type in rd["schema"]],
+                db_types=[self._type_name_to_native_type(driver_type) for _, driver_type in rd["schema"]],
             ),
             raw_chunk_generator=chunk_gen(),
         )

@@ -1,22 +1,25 @@
 from __future__ import annotations
 
-from bi_connector_bundle_partners.kontur_market.core.connector import (
-    KonturMarketCoreConnectionDefinition,
-    KonturMarketTableCoreSourceDefinition,
-    KonturMarketCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_partners.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_partners.kontur_market.bi.api_schema.connection import KonturMarketConnectionSchema
 from bi_connector_bundle_partners.kontur_market.bi.connection_form.form_config import KonturMarketConnectionFormFactory
 from bi_connector_bundle_partners.kontur_market.bi.connection_info import KonturMarketConnectionInfoProvider
+from bi_connector_bundle_partners.kontur_market.core.connector import (
+    KonturMarketCoreConnectionDefinition,
+    KonturMarketCoreConnector,
+    KonturMarketTableCoreSourceDefinition,
+)
 
 
 class KonturMarketTableBiApiSourceDefinition(BiApiSourceDefinition):
@@ -35,10 +38,6 @@ class KonturMarketBiApiConnectionDefinition(BiApiConnectionDefinition):
 class KonturMarketBiApiConnector(BiApiConnector):
     core_connector_cls = KonturMarketCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        KonturMarketBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        KonturMarketTableBiApiSourceDefinition,
-    )
+    connection_definitions = (KonturMarketBiApiConnectionDefinition,)
+    source_definitions = (KonturMarketTableBiApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

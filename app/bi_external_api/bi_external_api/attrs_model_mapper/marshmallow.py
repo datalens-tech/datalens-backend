@@ -2,18 +2,26 @@ from __future__ import annotations
 
 import enum
 import json
-from typing import Type, Any, Optional, Iterable
+from typing import (
+    Any,
+    Iterable,
+    Optional,
+    Type,
+)
 
 import attr
+from dynamic_enum import DynamicEnum
 import marshmallow
 from marshmallow import fields
 
-from dynamic_enum import DynamicEnum
-from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
-
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
-from .base import ModelDescriptor, AttribDescriptor
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
+
+from .base import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from .domain import (
     AmmEnumField,
     AmmField,
@@ -26,9 +34,21 @@ from .domain import (
     AmmSchemaRegistry,
     AmmStringMappingField,
 )
-from .marshmallow_base_schemas import BaseSchema, BaseOneOfSchema
-from .marshmallow_fields import FrozenMappingStrToStrOrStrSeqField, SingleOrMultiStringField, FrozenStrMappingField
-from .utils import unwrap_typing_container_with_single_type, is_sequence, CommonAttributeProps, is_str_mapping
+from .marshmallow_base_schemas import (
+    BaseOneOfSchema,
+    BaseSchema,
+)
+from .marshmallow_fields import (
+    FrozenMappingStrToStrOrStrSeqField,
+    FrozenStrMappingField,
+    SingleOrMultiStringField,
+)
+from .utils import (
+    CommonAttributeProps,
+    is_sequence,
+    is_str_mapping,
+    unwrap_typing_container_with_single_type,
+)
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -59,14 +79,16 @@ class GenericSchemaBundle(SchemaBundle):
 class ModelMapperMarshmallow:
     _map_complex_type_schema_bundle: dict[type, SchemaBundle] = attr.ib(factory=dict)
 
-    _map_scalar_type_field_cls: dict[type, Type[marshmallow.fields.Field]] = attr.ib(factory=lambda: {
-        int: fields.Integer,
-        str: fields.String,
-        float: fields.Float,
-        bool: fields.Boolean,
-        FrozenMappingStrToStrOrStrSeq: FrozenMappingStrToStrOrStrSeqField,
-        SingleOrMultiString: SingleOrMultiStringField,
-    })
+    _map_scalar_type_field_cls: dict[type, Type[marshmallow.fields.Field]] = attr.ib(
+        factory=lambda: {
+            int: fields.Integer,
+            str: fields.String,
+            float: fields.Float,
+            bool: fields.Boolean,
+            FrozenMappingStrToStrOrStrSeq: FrozenMappingStrToStrOrStrSeqField,
+            SingleOrMultiString: SingleOrMultiStringField,
+        }
+    )
 
     _map_scalar_type_schema_cls: dict[type, Type[marshmallow.Schema]] = attr.ib(factory=dict)
 
@@ -80,12 +102,12 @@ class ModelMapperMarshmallow:
         )
 
     def create_field_for_type(
-            self,
-            the_type: Any,
-            attrib_descriptor: Optional[AttribDescriptor],
-            ma_attribute_name: Optional[str],
-            is_required: bool,
-            is_optional: bool = False,
+        self,
+        the_type: Any,
+        attrib_descriptor: Optional[AttribDescriptor],
+        ma_attribute_name: Optional[str],
+        is_required: bool,
+        is_optional: bool = False,
     ) -> FieldBundle:
         container_type, effective_type = unwrap_typing_container_with_single_type(the_type)
 
@@ -108,11 +130,7 @@ class ModelMapperMarshmallow:
         )
 
         if container_type is None:
-            return self.create_field_for_unwrapped_type(
-                effective_type,
-                attrib_descriptor,
-                common_props
-            )
+            return self.create_field_for_unwrapped_type(effective_type, attrib_descriptor, common_props)
         elif is_sequence(container_type):
             nested_field_bundle = self.create_field_for_type(
                 effective_type,
@@ -122,7 +140,7 @@ class ModelMapperMarshmallow:
             )
             return FieldBundle(
                 ma_field=fields.List(nested_field_bundle.ma_field, **common_props.to_common_ma_field_kwargs()),
-                amm_field=AmmListField(common_props, nested_field_bundle.amm_field)
+                amm_field=AmmListField(common_props, nested_field_bundle.amm_field),
             )
         elif is_str_mapping(container_type):
             nested_field_bundle = self.create_field_for_type(
@@ -137,7 +155,7 @@ class ModelMapperMarshmallow:
                     values=nested_field_bundle.ma_field,
                     **common_props.to_common_ma_field_kwargs(),
                 ),
-                amm_field=AmmStringMappingField(common_props, nested_field_bundle.amm_field)
+                amm_field=AmmStringMappingField(common_props, nested_field_bundle.amm_field),
             )
 
         else:
@@ -146,16 +164,16 @@ class ModelMapperMarshmallow:
             )
 
     def create_field_for_unwrapped_type(
-            self,
-            the_type: Type,
-            attrib_descriptor: Optional[AttribDescriptor],
-            common_ma_field_kwargs: CommonAttributeProps,
+        self,
+        the_type: Type,
+        attrib_descriptor: Optional[AttribDescriptor],
+        common_ma_field_kwargs: CommonAttributeProps,
     ) -> FieldBundle:
         if attr.has(the_type):
             schema_bundle = self.get_or_create_schema_bundle_for_attrs_class(the_type)
             return FieldBundle(
                 ma_field=fields.Nested(schema_bundle.schema_cls, **common_ma_field_kwargs.to_common_ma_field_kwargs()),
-                amm_field=AmmNestedField(common_ma_field_kwargs, schema_bundle.amm_schema)
+                amm_field=AmmNestedField(common_ma_field_kwargs, schema_bundle.amm_schema),
             )
 
         elif the_type in self._map_scalar_type_schema_cls:
@@ -187,10 +205,7 @@ class ModelMapperMarshmallow:
                 amm_field=AmmEnumField(
                     common_ma_field_kwargs,
                     str,
-                    values=[
-                        str(m.value) if enum_by_value else m.name
-                        for m in the_type
-                    ],
+                    values=[str(m.value) if enum_by_value else m.name for m in the_type],
                 ),
             )
 
@@ -229,8 +244,7 @@ class ModelMapperMarshmallow:
                 the_type_model_descriptor.effective_type_discriminator_aliases,
             )
             parent_schema_bundle.amm_schema.register_sub_schema(
-                the_schema_bundle.amm_schema,
-                the_type_model_descriptor.effective_type_discriminator
+                the_schema_bundle.amm_schema, the_type_model_descriptor.effective_type_discriminator
             )
 
     def link_to_children(self, the_type: Type, generic_bundle: GenericSchemaBundle) -> None:
@@ -294,7 +308,7 @@ class ModelMapperMarshmallow:
 
             abstract_schema_bundle = GenericSchemaBundle(
                 schema_cls=BaseOneOfSchema.generate_new_one_of_schema(type_discriminator_field_name),
-                amm_schema=AmmGenericSchema(clz=target, discriminator_property_name=type_discriminator_field_name)
+                amm_schema=AmmGenericSchema(clz=target, discriminator_property_name=type_discriminator_field_name),
             )
             self.link_to_children(target, abstract_schema_bundle)
 
@@ -311,20 +325,14 @@ class ModelMapperMarshmallow:
             regular_bundle = RegularSchemaBundle(
                 schema_cls=BaseSchema.generate_new_regular_schema(
                     generate_for=target,
-                    field_map={
-                        f_name: f_bundle.ma_field
-                        for f_name, f_bundle in fields_bundle_map.items()
-                    },
+                    field_map={f_name: f_bundle.ma_field for f_name, f_bundle in fields_bundle_map.items()},
                     fields_to_skip_on_none=set(fields_to_skip_on_none),
                 ),
                 amm_schema=AmmRegularSchema(
                     clz=target,
-                    fields={
-                        f_name: f_bundle.amm_field
-                        for f_name, f_bundle in fields_bundle_map.items()
-                    },
+                    fields={f_name: f_bundle.amm_field for f_name, f_bundle in fields_bundle_map.items()},
                     description=target_model_descriptor.description,
-                )
+                ),
             )
             self.link_to_parents(target, regular_bundle)
 
@@ -338,9 +346,9 @@ class ModelMapperMarshmallow:
             self.get_or_create_schema_for_attrs_class(model)
 
     def get_amm_schema_registry(self) -> AmmSchemaRegistry:
-        return AmmSchemaRegistry.from_schemas_collection([
-            bundle.amm_schema for bundle in self._map_complex_type_schema_bundle.values()
-        ])
+        return AmmSchemaRegistry.from_schemas_collection(
+            [bundle.amm_schema for bundle in self._map_complex_type_schema_bundle.values()]
+        )
 
     def dump_external_model_to_str(self, model: Any) -> str:
         try:

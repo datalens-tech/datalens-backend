@@ -1,11 +1,5 @@
 import pytest
 
-from dl_constants.enums import (
-    BIType,
-    RawSQLLevel,
-)
-from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
-
 from dl_connector_snowflake.core.constants import (
     SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
     SOURCE_TYPE_SNOWFLAKE_TABLE,
@@ -21,6 +15,11 @@ from dl_connector_snowflake.core.data_source_spec import (
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_connector_snowflake_tests.ext.config import SAMPLE_TABLE_SIMPLIFIED_SCHEMA
 from dl_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
+from dl_constants.enums import (
+    BIType,
+    RawSQLLevel,
+)
+from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
 
 class TestSnowFlakeTableDataSource(

@@ -14,7 +14,6 @@ import sys
 
 import click
 
-
 _sh_find_unsafe = re.compile(r"[^\w@%+=:,./-]").search
 
 

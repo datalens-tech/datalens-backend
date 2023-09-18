@@ -1,4 +1,7 @@
-from typing import Optional, Sequence
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
@@ -36,13 +39,10 @@ class DatasetConverter:
                     ext.AvatarDef(id=single_source.id, source_id=single_source.id, title=single_source.title),
                 ),
                 root=single_source.id,
-                joins=()
+                joins=(),
             )
 
-            return attr.evolve(
-                ext_dataset,
-                avatars=avatars_config
-            )
+            return attr.evolve(ext_dataset, avatars=avatars_config)
 
         return ext_dataset
 
@@ -62,10 +62,7 @@ class DatasetConverter:
                 if orig_calc_spec.avatar_id is None and self.single_avatar_id is not None:
                     accumulator = attr.evolve(
                         accumulator,
-                        calc_spec=attr.evolve(
-                            accumulator.calc_spec,
-                            avatar_id=self.single_avatar_id
-                        ),
+                        calc_spec=attr.evolve(accumulator.calc_spec, avatar_id=self.single_avatar_id),
                     )
             if accumulator.aggregation is None:
                 accumulator = attr.evolve(accumulator, aggregation=ext.Aggregation.none)
@@ -83,9 +80,9 @@ class DatasetConverter:
         return normalized_ext_dataset
 
     def convert_public_dataset_to_actions(
-            self,
-            dataset: ext.Dataset,
-            generate_direct_fields: bool = False,
+        self,
+        dataset: ext.Dataset,
+        generate_direct_fields: bool = False,
     ) -> Sequence[datasets.Action]:
         """
         Generates actions sequence that should create a dataset from scratch according to public definition.
@@ -103,10 +100,12 @@ class DatasetConverter:
                 title=avatar_def.title,
             )
 
-            actions.append(datasets.ActionAvatarAdd(
-                source_avatar=avatar,
-                disable_fields_update=not generate_direct_fields,
-            ))
+            actions.append(
+                datasets.ActionAvatarAdd(
+                    source_avatar=avatar,
+                    disable_fields_update=not generate_direct_fields,
+                )
+            )
 
         with ConversionErrHandlingContext(current_path=["fields"]).cm() as exc_hdr:
             with exc_hdr.postpone_error_in_current_path():
@@ -122,8 +121,8 @@ class DatasetConverter:
         Converts internal representation of dataset into public dataset definition.
         """
         sources = [
-            convert_internal_datasource_to_external_data_source(dsrc, wb_context=self._wb_context) for dsrc
-            in internal_dataset.sources
+            convert_internal_datasource_to_external_data_source(dsrc, wb_context=self._wb_context)
+            for dsrc in internal_dataset.sources
         ]
 
         fields = tuple(
@@ -131,11 +130,7 @@ class DatasetConverter:
             for int_field in internal_dataset.result_schema
         )
 
-        root_avatar_id = next(
-            int_avatar.id
-            for int_avatar in internal_dataset.source_avatars
-            if int_avatar.is_root
-        )
+        root_avatar_id = next(int_avatar.id for int_avatar in internal_dataset.source_avatars if int_avatar.is_root)
         avatars = tuple(
             ext.AvatarDef(
                 id=int_avatar.id,
@@ -147,11 +142,7 @@ class DatasetConverter:
         # TODO FIX: Add support when models for join conditions will be ready
         assert len(avatars) == 1, "Multi-avatars not yet supported"
 
-        avatars_config = ext.AvatarsConfig(
-            definitions=avatars,
-            joins=(),
-            root=root_avatar_id
-        )
+        avatars_config = ext.AvatarsConfig(definitions=avatars, joins=(), root=root_avatar_id)
 
         return ext.Dataset(
             fields=fields,

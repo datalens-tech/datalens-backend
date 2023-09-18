@@ -3,7 +3,10 @@ from __future__ import annotations
 import attr
 
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import charts, dashboards
+from bi_external_api.domain.internal import (
+    charts,
+    dashboards,
+)
 from bi_external_api.domain.internal.dl_common import IntModelTags
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
 from bi_external_api.workbook_ops.wb_mod_steps.common import BaseWBModStep
@@ -30,9 +33,7 @@ class StepPersistCharts(BaseWBModStep):
             ephemeral_id = int_inst_to_create.summary.id
 
             created_inst_summary = await self.charts_client.create_chart(
-                name=int_inst_to_create.summary.name,
-                workbook_id=self.wb_id,
-                chart=int_inst_to_create.chart
+                name=int_inst_to_create.summary.name, workbook_id=self.wb_id, chart=int_inst_to_create.chart
             )
 
             real_id = created_inst_summary.id
@@ -56,10 +57,7 @@ class StepPersistCharts(BaseWBModStep):
         )
         work_copy_wb_ctx = work_copy_wb_ctx.replace_entries(
             dashboards.DashInstance,
-            [
-                chart_id_remap_processor.process(orig_dash)
-                for orig_dash in work_copy_wb_ctx.dashboards
-            ]
+            [chart_id_remap_processor.process(orig_dash) for orig_dash in work_copy_wb_ctx.dashboards],
         )
 
         # Removing charts

@@ -1,9 +1,16 @@
 import enum
-from typing import ClassVar, Sequence, Optional
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from bi_external_api.attrs_model_mapper.utils import MText
 from bi_external_api.domain.utils import ensure_tuple
 
@@ -72,12 +79,13 @@ class PlainSecret(Secret):
 @ModelDescriptor()
 @attr.s(frozen=True, kw_only=True)
 class NameMapEntry:
-    local_name: str = attr.ib(metadata=AttribDescriptor(
-        description=MText(
-            ru="Имя сущности в рамках воркбука",
-            en="Entity name within a workbook",
-        )
-    ).to_meta()
+    local_name: str = attr.ib(
+        metadata=AttribDescriptor(
+            description=MText(
+                ru="Имя сущности в рамках воркбука",
+                en="Entity name within a workbook",
+            )
+        ).to_meta()
     )
     entry_kind: EntryKind = attr.ib()
     unique_entry_id: Optional[str] = attr.ib(default=None)
@@ -88,5 +96,5 @@ class NameMapEntry:
                 ru="Путь до сущности в навигации",
                 en="Path to entity in navigation",
             )
-        ).to_meta()
+        ).to_meta(),
     )

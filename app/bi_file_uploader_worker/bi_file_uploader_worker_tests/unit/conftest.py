@@ -1,8 +1,11 @@
 import pytest
 
-from dl_api_commons.base_models import TenantCommon, NoAuthData
-from dl_api_commons.client.base import DLCommonAPIClient
 from bi_file_uploader_worker.app_health_check_lib import FileUploaderWorkerHealthCheckAppFactory
+from dl_api_commons.base_models import (
+    NoAuthData,
+    TenantCommon,
+)
+from dl_api_commons.client.base import DLCommonAPIClient
 
 
 @pytest.fixture(scope="function")

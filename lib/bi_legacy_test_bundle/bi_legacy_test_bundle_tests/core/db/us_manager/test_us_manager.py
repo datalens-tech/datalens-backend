@@ -2,22 +2,20 @@ from __future__ import annotations
 
 from typing import Optional
 
-import pytest
 from aiohttp import ClientResponseError
+import pytest
 
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_constants.enums import DataSourceRole
-
 from dl_core import exc
 from dl_core.data_source import DataSource
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 from dl_core_testing.connection import make_connection
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
 
 def make_test_connection(usm: USManagerBase) -> ConnectionClickhouse:
@@ -33,9 +31,7 @@ async def test_us_manager_lock(local_private_usm: AsyncUSManager):
     await usm.save(original_conn)
 
     try:
-        async with usm.locked_entry_cm(
-            original_conn.uuid, ConnectionClickhouse, duration_sec=10
-        ) as locked_conn:
+        async with usm.locked_entry_cm(original_conn.uuid, ConnectionClickhouse, duration_sec=10) as locked_conn:
             reloaded_conn = await usm.get_by_id(original_conn.uuid, ConnectionClickhouse)
             reloaded_conn.data.name = "ololo"
 
@@ -143,8 +139,9 @@ async def test_correct_exception_on_missing_dependency(saved_dataset, local_priv
     dataset = saved_dataset
     lifecycle_manager = us_manager.get_lifecycle_manager(dataset)
     referenced_conn_id_set = set(lifecycle_manager.collect_links().values())
-    assert len(referenced_conn_id_set) == 1, \
-        "Unexpected count of referenced connections in dataset fixture saved_dataset"
+    assert (
+        len(referenced_conn_id_set) == 1
+    ), "Unexpected count of referenced connections in dataset fixture saved_dataset"
     referenced_conn_id = next(iter(referenced_conn_id_set))
 
     # Deleting referenced connection
@@ -153,5 +150,5 @@ async def test_correct_exception_on_missing_dependency(saved_dataset, local_priv
     loaded_dataset = await us_manager.get_by_id(dataset.uuid, Dataset)
     await us_manager.load_dependencies(loaded_dataset)
 
-    with pytest.raises(exc.ReferencedUSEntryNotFound, match=f'.+ {referenced_conn_id} .+'):
+    with pytest.raises(exc.ReferencedUSEntryNotFound, match=f".+ {referenced_conn_id} .+"):
         us_manager.get_loaded_us_connection(referenced_conn_id)

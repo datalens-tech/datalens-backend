@@ -3,7 +3,11 @@ from __future__ import annotations
 import attr
 
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import datasets, charts, dashboards
+from bi_external_api.domain.internal import (
+    charts,
+    dashboards,
+    datasets,
+)
 from bi_external_api.domain.internal.dl_common import IntModelTags
 from bi_external_api.workbook_ops.wb_mod_steps.common import BaseWBModStep
 from bi_external_api.workbook_ops.wb_mod_steps.utils import TaggedStringAttrReplacerProcessor
@@ -58,18 +62,11 @@ class StepPersistDatasets(BaseWBModStep):
             string_replacement_mapping=id_replacement_map,
         )
         work_copy_wb_ctx = work_copy_wb_ctx.replace_entries(
-            charts.ChartInstance,
-            [
-                ds_id_remap_processor.process(orig_chart)
-                for orig_chart in work_copy_wb_ctx.charts
-            ]
+            charts.ChartInstance, [ds_id_remap_processor.process(orig_chart) for orig_chart in work_copy_wb_ctx.charts]
         )
         work_copy_wb_ctx = work_copy_wb_ctx.replace_entries(
             dashboards.DashInstance,
-            [
-                ds_id_remap_processor.process(orig_chart)
-                for orig_chart in work_copy_wb_ctx.dashboards
-            ]
+            [ds_id_remap_processor.process(orig_chart) for orig_chart in work_copy_wb_ctx.dashboards],
         )
 
         # Removing datasets

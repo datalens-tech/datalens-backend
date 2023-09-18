@@ -1,39 +1,63 @@
 import abc
 import asyncio
 import logging
-from typing import Optional, Sequence, Dict, Union, overload, Literal, Callable
+from typing import (
+    Callable,
+    Dict,
+    Literal,
+    Optional,
+    Sequence,
+    Union,
+    overload,
+)
 
 import attr
-import jwt
 import grpc
+import jwt
 
-from bi_cloud_integration.exc import YCBadRequest, YCUnauthenticated, YCPermissionDenied
-from bi_cloud_integration.model import IAMAccount, IAMUserAccount, IAMServiceAccount, IAMResource
-from bi_cloud_integration.yc_as_client import DLASClient
-from bi_cloud_integration.yc_ss_client import DLSSClient
-from dl_constants.api_constants import DLHeaders, DLHeadersCommon
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
-from dl_api_commons.access_control_common import AuthFailureError
-from dl_api_commons.logging import RequestLoggingContextController
-from dl_api_commons.base_models import RequestContextInfo, TenantCommon
-from dl_api_commons.base_models import TenantDef
-from dl_app_tools.profiling_base import generic_profiler_async
-from dl_utils.aio import await_sync
-
+from bi_api_commons_ya_cloud.constants import (
+    DLHeadersYC,
+    YcTokenHeaderMode,
+)
 from bi_api_commons_ya_cloud.error_messages import UserErrorMessages
 from bi_api_commons_ya_cloud.models import (
+    EmbedAuthData,
+    IAMAuthData,
+    TenantDCProject,
     TenantYCFolder,
     TenantYCOrganization,
-    TenantDCProject,
-    IAMAuthData,
-    EmbedAuthData,
 )
 from bi_api_commons_ya_cloud.yc_access_control_model import (
     AuthorizationMode,
-    AuthorizationModeYandexCloud,
     AuthorizationModeDataCloud,
+    AuthorizationModeYandexCloud,
 )
-
+from bi_cloud_integration.exc import (
+    YCBadRequest,
+    YCPermissionDenied,
+    YCUnauthenticated,
+)
+from bi_cloud_integration.model import (
+    IAMAccount,
+    IAMResource,
+    IAMServiceAccount,
+    IAMUserAccount,
+)
+from bi_cloud_integration.yc_as_client import DLASClient
+from bi_cloud_integration.yc_ss_client import DLSSClient
+from dl_api_commons.access_control_common import AuthFailureError
+from dl_api_commons.base_models import (
+    RequestContextInfo,
+    TenantCommon,
+    TenantDef,
+)
+from dl_api_commons.logging import RequestLoggingContextController
+from dl_app_tools.profiling_base import generic_profiler_async
+from dl_constants.api_constants import (
+    DLHeaders,
+    DLHeadersCommon,
+)
+from dl_utils.aio import await_sync
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,10 +93,7 @@ class YCBaseController(metaclass=abc.ABCMeta):
     _request_id: str = attr.ib()  # Assumed that here will be full current request ID
 
     def __attrs_post_init__(self) -> None:
-        self._request_headers = {
-            name.lower(): value
-            for name, value in self._request_headers.items()
-        }
+        self._request_headers = {name.lower(): value for name, value in self._request_headers.items()}
 
     @staticmethod
     def _normalize_header_name(name: Union[str, DLHeaders]) -> str:
@@ -117,6 +138,7 @@ class YCAccessController(YCBaseController):
      * Set instance to request context/unwrap resolved YCAuthContext to request/logging context
      * May be call perform_auxiliary_authorization[_sync]
     """
+
     _as_client: DLASClient = attr.ib()
     # Expected that DLSSClient will be with appropriate IAM-token
     _ss_client: Optional[DLSSClient] = attr.ib()
@@ -137,12 +159,12 @@ class YCAccessController(YCBaseController):
 
         initial_ss_client = self._ss_client
 
-        req_id_normalized_for_iam = DLSSClient.normalize_request_id(self._request_id) or ''
+        req_id_normalized_for_iam = DLSSClient.normalize_request_id(self._request_id) or ""
         self._request_id_normalized_for_iam = req_id_normalized_for_iam
 
         if initial_ss_client and initial_ss_client.request_id != req_id_normalized_for_iam:
             self._ss_client = initial_ss_client.clone(request_id=req_id_normalized_for_iam)
-        LOGGER.debug('YC SS request_id: %r', req_id_normalized_for_iam)
+        LOGGER.debug("YC SS request_id: %r", req_id_normalized_for_iam)
 
     def _get_request_id_for_access_service(self) -> str:
         # Access-service is tolerant to any format of request
@@ -159,8 +181,8 @@ class YCAccessController(YCBaseController):
         try:
             ss_resp = await ss_client.check(cookie_header=secret_cookie_header_value, host=host_header_value)
         except (YCBadRequest, YCUnauthenticated) as err:
-            msg = err.info.internal_details or ''
-            code = 401 if isinstance(err, YCUnauthenticated) or msg.lower().startswith('unauthenticated') else None
+            msg = err.info.internal_details or ""
+            code = 401 if isinstance(err, YCUnauthenticated) or msg.lower().startswith("unauthenticated") else None
             raise AuthFailureError(msg, response_code=code)
         except grpc.RpcError as err:
             details = err.details()  # type: ignore
@@ -196,7 +218,10 @@ class YCAccessController(YCBaseController):
         map_mode_to_token_extractor_order: Dict[YcTokenHeaderMode, Sequence[Callable[[], Optional[str]]]] = {
             YcTokenHeaderMode.EXTERNAL: (get_external_yc_token,),
             YcTokenHeaderMode.INTERNAL: (get_internal_yc_token,),
-            YcTokenHeaderMode.UNIVERSAL: (get_external_yc_token, get_internal_yc_token,),
+            YcTokenHeaderMode.UNIVERSAL: (
+                get_external_yc_token,
+                get_internal_yc_token,
+            ),
         }
         extractor_order = map_mode_to_token_extractor_order[self._yc_token_header_mode]
 
@@ -230,8 +255,7 @@ class YCAccessController(YCBaseController):
                     response_code=401,
                 )
             return await self._resolve_iam_token_by_cookie(
-                secret_cookie_header_value=secret_cookies_header_value,
-                host_header_value=host_header_value
+                secret_cookie_header_value=secret_cookies_header_value, host_header_value=host_header_value
             )
         else:
             raise AuthFailureError(
@@ -264,9 +288,7 @@ class YCAccessController(YCBaseController):
                 org_prefix = TenantYCOrganization.tenant_id_prefix
 
                 if hdr_dl_tenant_id.startswith(org_prefix):
-                    return TenantYCOrganization(
-                        org_id=hdr_dl_tenant_id.removeprefix(org_prefix)
-                    )
+                    return TenantYCOrganization(org_id=hdr_dl_tenant_id.removeprefix(org_prefix))
 
                 else:
                     return TenantYCFolder(folder_id=hdr_dl_tenant_id)
@@ -302,16 +324,11 @@ class YCAccessController(YCBaseController):
         raise AssertionError(f"Unknown authorization mode: {auth_mode!r}", AuthorizationMode)
 
     @generic_profiler_async("yc-auth-aio-authenticate")  # type: ignore  # TODO: fix
-    async def _validate_iam_token(
-            self, iam_token: str
-    ) -> IAMAccount:
+    async def _validate_iam_token(self, iam_token: str) -> IAMAccount:
         try:
-            user = await self._as_client.authenticate(
-                iam_token,
-                request_id=self._get_request_id_for_access_service()
-            )
+            user = await self._as_client.authenticate(iam_token, request_id=self._get_request_id_for_access_service())
         except YCBadRequest as err:
-            LOGGER.info('yc_as BadRequestException: %r', err)
+            LOGGER.info("yc_as BadRequestException: %r", err)
             msg = str(err)
             raise AuthFailureError(
                 internal_message=msg,
@@ -319,7 +336,7 @@ class YCAccessController(YCBaseController):
                 response_code=401,
             )
         except YCUnauthenticated as err:
-            LOGGER.info('yc_as UnauthenticatedException: %r', err)
+            LOGGER.info("yc_as UnauthenticatedException: %r", err)
             msg = str(err)
             raise AuthFailureError(
                 internal_message=msg,
@@ -365,7 +382,7 @@ class YCAccessController(YCBaseController):
                 request_id=self._get_request_id_for_access_service(),
             )
         except YCBadRequest as err:
-            LOGGER.info('yc_as authorize: BadRequestException: %r', err)
+            LOGGER.info("yc_as authorize: BadRequestException: %r", err)
             msg = str(err)
             raise AuthFailureError(
                 internal_message=msg,
@@ -373,7 +390,7 @@ class YCAccessController(YCBaseController):
                 response_code=403,
             )
         except YCPermissionDenied as err:
-            LOGGER.info('yc_as authorize: PermissionDeniedException: %r', err)
+            LOGGER.info("yc_as authorize: PermissionDeniedException: %r", err)
             msg = str(err)
             raise AuthFailureError(
                 internal_message=msg,
@@ -418,9 +435,7 @@ class YCAccessController(YCBaseController):
 
             if not self._skip_tenant_resolution:
                 tenant = await self._resolve_tenant()
-                tenant = self._authorization_mode.ensure_tenant(
-                    tenant
-                )
+                tenant = self._authorization_mode.ensure_tenant(tenant)
                 # MyPy can not figure out that tenant is not None here
                 assert tenant is not None
                 await self._authorize_for_tenant(iam_token, tenant)
@@ -453,7 +468,7 @@ class YCAccessController(YCBaseController):
                 request_id=self._get_request_id_for_access_service(),
             )
         except (YCBadRequest, YCPermissionDenied) as err:
-            LOGGER.info('yc_as auxiliary authorize: %r %r %r', permission, resource_path, err)
+            LOGGER.info("yc_as auxiliary authorize: %r %r %r", permission, resource_path, err)
             raise AuthFailureError(
                 internal_message=str(err),
             )
@@ -535,7 +550,7 @@ class YCEmbedAccessController(YCBaseController):
         ]
         for prefix in known_prefix_list:
             if token.startswith(prefix):
-                return token[len(prefix):]
+                return token[len(prefix) :]
         return token
 
     @generic_profiler_async("yc-auth-aio-full")  # type: ignore  # TODO: fix
@@ -554,7 +569,7 @@ class YCEmbedAccessController(YCBaseController):
 
         jwt_token = self._drop_prefix(embed_token)
         try:
-            jwt_payload = jwt.decode(jwt_token, options={'verify_signature': False})
+            jwt_payload = jwt.decode(jwt_token, options={"verify_signature": False})
         except Exception:  # noqa
             raise AuthFailureError(
                 "Failed to decode jwt token",
@@ -568,7 +583,7 @@ class YCEmbedAccessController(YCBaseController):
                 user_message=UserErrorMessages.no_authentication_data_provided.value,
                 response_code=401,
             )
-        embed_id = jwt_payload.get('embedId')
+        embed_id = jwt_payload.get("embedId")
 
         if embed_id is None:
             raise AuthFailureError(

@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import logging
-from typing import Iterable, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Iterable,
+)
 
 from dl_constants.enums import CreateDSFrom
-
 from dl_core.base_models import SourceFilterSpec
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseFilteredDataSourceBase
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants import (
-    CONNECTION_TYPE_CH_GEO_FILTERED, SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
+    CONNECTION_TYPE_CH_GEO_FILTERED,
+    SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
 )
 
 if TYPE_CHECKING:

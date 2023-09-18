@@ -1,14 +1,25 @@
 from __future__ import annotations
 
-import functools
-import threading
-import uuid
 from concurrent import futures
+import functools
 from http import cookies
+import threading
 from typing import (
-    Any, Callable, ClassVar, Dict, FrozenSet, Iterable,
-    List, Optional, Sequence, Set, Tuple, Type, Union,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    FrozenSet,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Type,
+    Union,
 )
+import uuid
 
 import attr
 import google.protobuf.any_pb2
@@ -16,28 +27,48 @@ import grpc
 import jwt
 import shortuuid
 from yandex.cloud.priv.accessservice.v2 import (
-    access_service_pb2, access_service_pb2_grpc, resource_pb2,
+    access_service_pb2,
+    access_service_pb2_grpc,
+    resource_pb2,
 )
-from yandex.cloud.priv.iam.v1 import iam_token_service_pb2, iam_token_service_pb2_grpc, \
-    service_account_service_pb2_grpc, key_service_pb2_grpc, key_pb2
-from yandex.cloud.priv.iam.v1.key_service_pb2 import CreateKeyRequest, DeleteKeyRequest, CreateKeyResponse
+from yandex.cloud.priv.iam.v1 import (
+    iam_token_service_pb2,
+    iam_token_service_pb2_grpc,
+    key_pb2,
+    key_service_pb2_grpc,
+    service_account_service_pb2_grpc,
+)
+from yandex.cloud.priv.iam.v1.key_service_pb2 import (
+    CreateKeyRequest,
+    CreateKeyResponse,
+    DeleteKeyRequest,
+)
 from yandex.cloud.priv.iam.v1.service_account_pb2 import ServiceAccount
-from yandex.cloud.priv.iam.v1.service_account_service_pb2 import CreateServiceAccountRequest, \
-    DeleteServiceAccountRequest
+from yandex.cloud.priv.iam.v1.service_account_service_pb2 import (
+    CreateServiceAccountRequest,
+    DeleteServiceAccountRequest,
+)
 from yandex.cloud.priv.iam.v1.token import iam_token_pb2
-from yandex.cloud.priv.oauth.v1 import session_service_pb2, session_service_pb2_grpc
+from yandex.cloud.priv.oauth.v1 import (
+    session_service_pb2,
+    session_service_pb2_grpc,
+)
 from yandex.cloud.priv.operation.operation_pb2 import Operation
-from yandex.cloud.priv.resourcemanager.v1 import folder_pb2, folder_service_pb2, folder_service_pb2_grpc, \
-    operation_service_pb2_grpc
+from yandex.cloud.priv.resourcemanager.v1 import (
+    folder_pb2,
+    folder_service_pb2,
+    folder_service_pb2_grpc,
+    operation_service_pb2_grpc,
+)
 
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 
-FAKE_SERVICE_LOCAL_METADATA_IAM_TOKEN = '_fake_service_local_metadata_token_'
-FAKE_FOLDER_ID = 'fake_test_folder_id'
-CLOUD_PREPROD_FOLDER_ID = 'aoevv1b69su5144mlro3'
+FAKE_SERVICE_LOCAL_METADATA_IAM_TOKEN = "_fake_service_local_metadata_token_"
+FAKE_FOLDER_ID = "fake_test_folder_id"
+CLOUD_PREPROD_FOLDER_ID = "aoevv1b69su5144mlro3"
 FOLDER_TO_CLOUD_IDS = {
-    FAKE_FOLDER_ID: 'fake_test_cloud_id',
-    CLOUD_PREPROD_FOLDER_ID: 'aoee4gvsepbo0ah4i2j6',
+    FAKE_FOLDER_ID: "fake_test_cloud_id",
+    CLOUD_PREPROD_FOLDER_ID: "aoee4gvsepbo0ah4i2j6",
 }
 
 
@@ -60,7 +91,7 @@ class IAMMockResource:
 
     @classmethod
     def service_account(cls, service_account_id: str) -> IAMMockResource:
-        return cls(r_type='iam.serviceAccount', id=service_account_id)
+        return cls(r_type="iam.serviceAccount", id=service_account_id)
 
     @classmethod
     def from_grpc(cls, msg: resource_pb2.Resource) -> IAMMockResource:
@@ -114,8 +145,8 @@ class IAMMockUser:
 
     @staticmethod
     def normalize_permission_entry(
-            resource_path: Union[IAMMockResource, Iterable[IAMMockResource]],
-            permissions: Union[str, Iterable[str]],
+        resource_path: Union[IAMMockResource, Iterable[IAMMockResource]],
+        permissions: Union[str, Iterable[str]],
     ) -> Tuple[Tuple[IAMMockResource, ...], FrozenSet[str]]:
         return (
             ((resource_path,) if isinstance(resource_path, IAMMockResource) else tuple(resource_path)),
@@ -123,16 +154,15 @@ class IAMMockUser:
         )
 
     def with_permissions(
-            self,
-            resource_path: Union[IAMMockResource, Iterable[IAMMockResource]],
-            permissions: Union[str, Iterable[str]],
+        self,
+        resource_path: Union[IAMMockResource, Iterable[IAMMockResource]],
+        permissions: Union[str, Iterable[str]],
     ) -> IAMMockUser:
         actual_rp, actual_perms_set = self.normalize_permission_entry(resource_path, permissions)
         assert actual_rp not in self.map_resource_path_permissions
-        return attr.evolve(self, map_resource_path_permissions={
-            **self.map_resource_path_permissions,
-            actual_rp: actual_perms_set
-        })
+        return attr.evolve(
+            self, map_resource_path_permissions={**self.map_resource_path_permissions, actual_rp: actual_perms_set}
+        )
 
     def get_single_iam_token(self) -> str:
         if len(self.iam_tokens) == 1:
@@ -189,9 +219,9 @@ class AuthConfigHolder:
     def make_new_user(self, *permissions) -> IAMMockUser:
         idx = len(self._users)
         user = IAMMockUser(
-            id=f'fake_auto_user_{idx}',
-            iam_tokens=[f'fake_iam_token_{idx}'],
-            cookies=[f'fake_user_cookie_{idx}'],
+            id=f"fake_auto_user_{idx}",
+            iam_tokens=[f"fake_iam_token_{idx}"],
+            cookies=[f"fake_user_cookie_{idx}"],
         )
         for r_path, perm in permissions:
             user = user.with_permissions(r_path, perm)
@@ -227,22 +257,19 @@ class AuthConfigHolder:
 
 
 def with_request_log(func: Callable):
-
     @functools.wraps(func)
     def with_request_log_wrapped(
-            self: Any,
-            request: Any,
-            context: grpc.ServicerContext,
-            *args: Any,
-            **kwargs: Any,
+        self: Any,
+        request: Any,
+        context: grpc.ServicerContext,
+        *args: Any,
+        **kwargs: Any,
     ):
-        auth_config_holder = getattr(self, 'auth_config_holder', None)
+        auth_config_holder = getattr(self, "auth_config_holder", None)
         log_a_request = (
-            auth_config_holder.log_a_request
-            if isinstance(auth_config_holder, AuthConfigHolder)
-            else lambda rr: None
+            auth_config_holder.log_a_request if isinstance(auth_config_holder, AuthConfigHolder) else lambda rr: None
         )
-        name = self.__class__.__name__ + '.' + func.__name__
+        name = self.__class__.__name__ + "." + func.__name__
 
         try:
             result = func(self, request, context, *args, **kwargs)
@@ -261,12 +288,11 @@ class ServiceMockBase:
 
 
 class AccessServiceMock(access_service_pb2_grpc.AccessServiceServicer, ServiceMockBase):
-
     @with_request_log
     def Authenticate(
-            self,
-            request: access_service_pb2.AuthenticateRequest,
-            context: grpc.ServicerContext,
+        self,
+        request: access_service_pb2.AuthenticateRequest,
+        context: grpc.ServicerContext,
     ) -> access_service_pb2.AuthenticateResponse:
         # from celery.contrib import rdb; rdb.set_trace()
         iam_token = request.iam_token
@@ -281,9 +307,9 @@ class AccessServiceMock(access_service_pb2_grpc.AccessServiceServicer, ServiceMo
 
     @with_request_log
     def Authorize(
-            self,
-            request: access_service_pb2.AuthorizeRequest,
-            context: grpc.ServicerContext,
+        self,
+        request: access_service_pb2.AuthorizeRequest,
+        context: grpc.ServicerContext,
     ) -> access_service_pb2.AuthorizeResponse:
         # from celery.contrib import rdb; rdb.set_trace()
 
@@ -300,8 +326,7 @@ class AccessServiceMock(access_service_pb2_grpc.AccessServiceServicer, ServiceMo
 
         if self.auth_config_holder.has_user_permission(user, rp, request.permission):
             return access_service_pb2.AuthorizeResponse(
-                subject=user.to_grpc_subject(),
-                resource_path=[r.to_grpc() for r in rp]
+                subject=user.to_grpc_subject(), resource_path=[r.to_grpc() for r in rp]
             )
 
         context.abort(grpc.StatusCode.PERMISSION_DENIED, "Permission denied!")
@@ -309,12 +334,11 @@ class AccessServiceMock(access_service_pb2_grpc.AccessServiceServicer, ServiceMo
 
 @attr.s
 class SessionServiceMock(session_service_pb2_grpc.SessionServiceServicer, ServiceMockBase):
-
     @with_request_log
     def Check(
-            self,
-            request: session_service_pb2.CheckSessionRequest,
-            context: grpc.ServicerContext,
+        self,
+        request: session_service_pb2.CheckSessionRequest,
+        context: grpc.ServicerContext,
     ) -> session_service_pb2.CreateSessionResponse:
         parser_cookies = cookies.SimpleCookie()
         parser_cookies.load(request.cookie_header)
@@ -340,78 +364,70 @@ class SessionServiceMock(session_service_pb2_grpc.SessionServiceServicer, Servic
                 iam_token=new_iam_token,
                 expires_at=None,
             ),
-            passport_session=None  # session_service_pb2.PassportSession(users=[])
+            passport_session=None,  # session_service_pb2.PassportSession(users=[])
         )
 
 
 @attr.s
 class IamTokenServiceMock(iam_token_service_pb2_grpc.IamTokenServiceServicer, ServiceMockBase):
-
     @with_request_log
     def Create(
-            self,
-            request: iam_token_service_pb2.CreateIamTokenRequest,
-            context: grpc.ServicerContext,
+        self,
+        request: iam_token_service_pb2.CreateIamTokenRequest,
+        context: grpc.ServicerContext,
     ) -> iam_token_service_pb2.CreateIamTokenResponse:
         assert request.jwt
-        service_account_id = jwt.decode(request.jwt, options=dict(verify_signature=False))['iss']
+        service_account_id = jwt.decode(request.jwt, options=dict(verify_signature=False))["iss"]
         user = self.auth_config_holder.find_user_by_id(service_account_id)
         iam_token = user.iam_tokens[0]
         return iam_token_service_pb2.CreateIamTokenResponse(iam_token=iam_token)
 
     @with_request_log
     def CreateForServiceAccount(
-            self,
-            request: iam_token_service_pb2.CreateIamTokenForServiceAccountRequest,
-            context: grpc.ServicerContext,
+        self,
+        request: iam_token_service_pb2.CreateIamTokenForServiceAccountRequest,
+        context: grpc.ServicerContext,
     ) -> iam_token_service_pb2.CreateIamTokenResponse:
         headers = {obj.key: obj.value for obj in context.invocation_metadata()}
-        auth = headers.get('authorization')
-        if auth != 'Bearer ' + FAKE_SERVICE_LOCAL_METADATA_IAM_TOKEN:
-            context.abort(grpc.StatusCode.UNAUTHENTICATED, f"Must have a mockupped service-local-metadata IAM token; {headers=!r}")
+        auth = headers.get("authorization")
+        if auth != "Bearer " + FAKE_SERVICE_LOCAL_METADATA_IAM_TOKEN:
+            context.abort(
+                grpc.StatusCode.UNAUTHENTICATED, f"Must have a mockupped service-local-metadata IAM token; {headers=!r}"
+            )
 
         return iam_token_service_pb2.CreateIamTokenResponse(
-            iam_token=f'fake_impersonation_iam_token_for_service_account_{request.service_account_id}',
+            iam_token=f"fake_impersonation_iam_token_for_service_account_{request.service_account_id}",
         )
 
 
 @attr.s
 class FolderServiceMock(folder_service_pb2_grpc.FolderServiceServicer, ServiceMockBase):
-
     @with_request_log
     def Resolve(
-            self,
-            request: folder_service_pb2.ResolveFoldersRequest,
-            context: grpc.ServicerContext,
+        self,
+        request: folder_service_pb2.ResolveFoldersRequest,
+        context: grpc.ServicerContext,
     ) -> folder_service_pb2.ResolveFoldersResponse:
         if any([folder_id not in FOLDER_TO_CLOUD_IDS.keys() for folder_id in request.folder_ids]):
-            context.abort(grpc.StatusCode.UNIMPLEMENTED,
-                          f"Only folder_id from ({', '.join(FOLDER_TO_CLOUD_IDS.keys())}) are allowed here")
+            context.abort(
+                grpc.StatusCode.UNIMPLEMENTED,
+                f"Only folder_id from ({', '.join(FOLDER_TO_CLOUD_IDS.keys())}) are allowed here",
+            )
 
         return folder_service_pb2.ResolveFoldersResponse(
             resolved_folders=[
-                folder_pb2.ResolvedFolder(cloud_id=FOLDER_TO_CLOUD_IDS[folder_id])
-                for folder_id in request.folder_ids
+                folder_pb2.ResolvedFolder(cloud_id=FOLDER_TO_CLOUD_IDS[folder_id]) for folder_id in request.folder_ids
             ],
         )
 
-    def UpdateAccessBindings(
-            self,
-            request,
-            context
-    ):
+    def UpdateAccessBindings(self, request, context):
         return Operation()
 
 
 @attr.s
 class ServiceAccountServiceMock(service_account_service_pb2_grpc.ServiceAccountServiceServicer, ServiceMockBase):
-
     @with_request_log
-    def Create(
-            self,
-            request: CreateServiceAccountRequest,
-            context: grpc.ServicerContext
-    ) -> Operation:
+    def Create(self, request: CreateServiceAccountRequest, context: grpc.ServicerContext) -> Operation:
         sa = google.protobuf.any_pb2.Any()
         sa_id = str(uuid.uuid4())
         sa_name = request.name
@@ -419,49 +435,28 @@ class ServiceAccountServiceMock(service_account_service_pb2_grpc.ServiceAccountS
         return Operation(response=sa)
 
     @with_request_log
-    def Delete(
-            self,
-            request: DeleteServiceAccountRequest,
-            context: grpc.ServicerContext
-    ) -> Operation:
+    def Delete(self, request: DeleteServiceAccountRequest, context: grpc.ServicerContext) -> Operation:
         return Operation(done=True)
 
 
 @attr.s
 class KeyServiceMock(key_service_pb2_grpc.KeyServiceServicer, ServiceMockBase):
-
     @with_request_log
-    def Create(
-            self,
-            request: CreateKeyRequest,
-            context: grpc.ServicerContext
-    ) -> CreateKeyResponse:
+    def Create(self, request: CreateKeyRequest, context: grpc.ServicerContext) -> CreateKeyResponse:
         key = key_pb2.Key(
-            id=str(uuid.uuid4()),
-            service_account_id=request.service_account_id,
-            public_key='pub',
-            key_algorithm=0
+            id=str(uuid.uuid4()), service_account_id=request.service_account_id, public_key="pub", key_algorithm=0
         )
-        response = CreateKeyResponse(key=key, private_key='priv')
+        response = CreateKeyResponse(key=key, private_key="priv")
         return response
 
     @with_request_log
-    def Delete(
-            self,
-            request: DeleteKeyRequest,
-            context: grpc.ServicerContext
-    ) -> Operation:
+    def Delete(self, request: DeleteKeyRequest, context: grpc.ServicerContext) -> Operation:
         return Operation(done=True)
 
 
 @attr.s
 class OperationServiceMock(operation_service_pb2_grpc.OperationServiceServicer, ServiceMockBase):
-
-    def Get(
-            self,
-            request,
-            context
-    ):
+    def Get(self, request, context):
         return Operation(done=True)
 
 
@@ -475,11 +470,15 @@ class IAMServicesMockFacade:
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
         access_service_pb2_grpc.add_AccessServiceServicer_to_server(AccessServiceMock(auth_config_holder), server)
         session_service_pb2_grpc.add_SessionServiceServicer_to_server(SessionServiceMock(auth_config_holder), server)
-        iam_token_service_pb2_grpc.add_IamTokenServiceServicer_to_server(IamTokenServiceMock(auth_config_holder), server)
+        iam_token_service_pb2_grpc.add_IamTokenServiceServicer_to_server(
+            IamTokenServiceMock(auth_config_holder), server
+        )
         folder_service_pb2_grpc.add_FolderServiceServicer_to_server(FolderServiceMock(auth_config_holder), server)
         service_account_service_pb2_grpc.add_ServiceAccountServiceServicer_to_server(
-            ServiceAccountServiceMock(auth_config_holder), server)
+            ServiceAccountServiceMock(auth_config_holder), server
+        )
         key_service_pb2_grpc.add_KeyServiceServicer_to_server(KeyServiceMock(auth_config_holder), server)
         operation_service_pb2_grpc.add_OperationServiceServicer_to_server(
-            OperationServiceMock(auth_config_holder), server)
+            OperationServiceMock(auth_config_holder), server
+        )
         return server

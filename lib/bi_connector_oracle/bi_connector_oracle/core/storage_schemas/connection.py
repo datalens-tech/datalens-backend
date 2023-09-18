@@ -7,7 +7,7 @@ from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
 
 
 class ConnectionSQLOracleDataStorageSchema(
-        ConnectionSQLDataStorageSchema[ConnectionSQLOracle.DataModel],
+    ConnectionSQLDataStorageSchema[ConnectionSQLOracle.DataModel],
 ):
     TARGET_CLS = ConnectionSQLOracle.DataModel
 

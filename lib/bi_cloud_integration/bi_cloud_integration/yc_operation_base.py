@@ -2,11 +2,24 @@ from __future__ import annotations
 
 import abc
 import time
-from typing import TYPE_CHECKING, Generic, TypeVar, ClassVar, final, Any, Sequence, Type, Optional
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Generic,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    final,
+)
 
 from yandex.cloud.priv.operation import operation_pb2
 
-from bi_cloud_integration.model import Operation, OperationError
+from bi_cloud_integration.model import (
+    Operation,
+    OperationError,
+)
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
 
 if TYPE_CHECKING:
@@ -22,13 +35,13 @@ class OperationConverterBase(Generic[_OP_TYPE_TV], metaclass=abc.ABCMeta):
     def convert_operation(self, grpc_op: operation_pb2.Operation) -> _OP_TYPE_TV:  # type: ignore  # TODO: fix
         op_error: Optional[OperationError]
 
-        if grpc_op.HasField('error'):  # type: ignore  # TODO: fix
+        if grpc_op.HasField("error"):  # type: ignore  # TODO: fix
             op_error = self._convert_error(grpc_op.error)  # type: ignore  # TODO: fix
         else:
             op_error = None
 
         op_response: Any
-        if grpc_op.HasField('response'):  # type: ignore  # TODO: fix
+        if grpc_op.HasField("response"):  # type: ignore  # TODO: fix
             op_response = self._convert_response(grpc_op.response)  # type: ignore  # TODO: fix
         else:
             op_response = None
@@ -48,7 +61,7 @@ class OperationConverterBase(Generic[_OP_TYPE_TV], metaclass=abc.ABCMeta):
         return OperationError(
             code=grpc_status.code,  # type: ignore  # TODO: fix
             message=grpc_status.message,  # type: ignore  # TODO: fix
-            details=self._convert_details(grpc_status.details)  # type: ignore  # TODO: fix
+            details=self._convert_details(grpc_status.details),  # type: ignore  # TODO: fix
         )
 
     @abc.abstractmethod
@@ -91,9 +104,7 @@ class DLGenericOperationService(DLYCSingleServiceClient, Generic[_OP_TYPE_2_TV])
         return NoResponseOpConverter()  # type: ignore  # TODO: fix
 
     def _execute_get_operation_request(self, operation_id: str) -> Any:
-        return self.service.Get(
-            self._create_get_operation_request(operation_id)
-        )
+        return self.service.Get(self._create_get_operation_request(operation_id))
 
     def _create_get_operation_request(self, operation_id: str) -> Any:
         raise NotImplementedError()
@@ -106,12 +117,12 @@ class DLGenericOperationService(DLYCSingleServiceClient, Generic[_OP_TYPE_2_TV])
 
     @final
     def wait_for_operation_sync(
-            self,
-            initial_operation: Optional[_OP_TYPE_2_TV] = None,
-            operation_id: Optional[str] = None,
-            poll_interval: float = 0.1,
-            timeout: float = 60,
-            raise_on_operation_fail: bool = True,
+        self,
+        initial_operation: Optional[_OP_TYPE_2_TV] = None,
+        operation_id: Optional[str] = None,
+        poll_interval: float = 0.1,
+        timeout: float = 60,
+        raise_on_operation_fail: bool = True,
     ) -> _OP_TYPE_2_TV:
         assert initial_operation is not None or operation_id is not None
         start_time = time.monotonic()

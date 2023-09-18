@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Any, Sequence, TypeVar, Type
+from typing import (
+    Any,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 from marshmallow import EXCLUDE
@@ -38,10 +43,10 @@ class ConnectionManager:
         )
 
     async def create_connection(
-            self,
-            conn_inst: ext.ConnectionInstance,
-            *,
-            wb_id: str,
+        self,
+        conn_inst: ext.ConnectionInstance,
+        *,
+        wb_id: str,
     ) -> ext.EntryInfo:
         converter = self.get_connection_converter(conn_inst.name)
 

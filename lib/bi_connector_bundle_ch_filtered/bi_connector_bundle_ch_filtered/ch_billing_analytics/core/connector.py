@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition, CoreSourceDefinition,
-)
-
 from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
-    ClickHouseSyncAdapterConnExecutor,
     ClickHouseAsyncAdapterConnExecutor,
+    ClickHouseSyncAdapterConnExecutor,
+)
+from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreSourceDefinition,
 )
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
-
-from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 from bi_connector_bundle_ch_filtered.base.core.storage_schemas.connection import (
     ConnectionCHFilteredHardcodedDataBaseDataStorageSchema,
@@ -37,7 +36,7 @@ class CHBillingAnalyticsCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = BillingAnalyticsCHConnectionLifecycleManager
-    dialect_string = 'bi_clickhouse'
+    dialect_string = "bi_clickhouse"
     settings_definition = BillingAnalyticsSettingDefinition
 
 
@@ -49,9 +48,5 @@ class CHBillingAnalyticsTableCoreSourceDefinition(CoreSourceDefinition):
 
 
 class CHBillingAnalyticsCoreConnector(ClickHouseCoreConnectorBase):
-    connection_definitions = (
-        CHBillingAnalyticsCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHBillingAnalyticsTableCoreSourceDefinition,
-    )
+    connection_definitions = (CHBillingAnalyticsCoreConnectionDefinition,)
+    source_definitions = (CHBillingAnalyticsTableCoreSourceDefinition,)

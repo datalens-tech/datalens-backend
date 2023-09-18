@@ -7,6 +7,7 @@ import pytest
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
+
 from ..test_acceptance import ConnectionTestingData
 from ..test_acceptance_ya_team import AcceptanceScenatioYaTeam
 
@@ -34,7 +35,6 @@ class TestTrunkAcceptanceScenario(AcceptanceScenatioYaTeam):
             api_type=ExtAPIType.YA_TEAM,
             do_add_exc_message=self._DO_ADD_EXC_MESSAGE,
         )
-
 
     @pytest.fixture()
     def int_api_clients(self, bi_ext_api_int_preprod_int_api_clients) -> InternalAPIClients:

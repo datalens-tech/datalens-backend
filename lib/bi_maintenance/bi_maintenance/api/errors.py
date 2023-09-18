@@ -14,19 +14,24 @@ error_mgr.print_component_refs(phantom_refs)
 
 """
 
-import uuid
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+)
+import uuid
 
 import attr
 
+from dl_api_lib.dataset.component_abstraction import (
+    DatasetComponentAbstraction,
+    DatasetComponentRef,
+)
 from dl_constants.enums import ComponentType
-
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
-
-from dl_api_lib.dataset.component_abstraction import DatasetComponentAbstraction, DatasetComponentRef
-
 
 TACTION = Dict[str, Any]
 
@@ -43,7 +48,8 @@ class ComponentErrorManager:
 
     def __attrs_post_init__(self) -> None:
         self._dca = DatasetComponentAbstraction(
-            dataset=self.dataset, us_entry_buffer=self._us_manager.get_entry_buffer())
+            dataset=self.dataset, us_entry_buffer=self._us_manager.get_entry_buffer()
+        )
 
     @property
     def dataset(self) -> Dataset:
@@ -69,9 +75,9 @@ class ComponentErrorManager:
             by_comp_type[component_ref.component_type].append(component_ref.component_id)
 
         for component_type, component_id_list in sorted(by_comp_type.items(), key=lambda el: el[0].name):
-            print(f'{component_type.name}:')
+            print(f"{component_type.name}:")
             for component_id in sorted(component_id_list):
-                print(f'    {component_id}')
+                print(f"    {component_id}")
 
     def remove_errors_for_refs(self, component_refs: List[DatasetComponentRef]) -> None:
         for component_ref in component_refs:

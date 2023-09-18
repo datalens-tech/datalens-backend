@@ -1,14 +1,21 @@
 from __future__ import annotations
 
 import abc
-from typing import Type, Mapping
+from typing import (
+    Mapping,
+    Type,
+)
 
 import attr
 
 from bi_external_api.converter.converter_ctx import ConverterContext
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import datasets, charts, dashboards
+from bi_external_api.domain.internal import (
+    charts,
+    dashboards,
+    datasets,
+)
 from bi_external_api.domain.internal.dl_common import EntryInstance
 from bi_external_api.exc_tooling import ExcComposer
 from bi_external_api.internal_api_clients.main import InternalAPIClients
@@ -55,9 +62,9 @@ class BaseWBModStep(metaclass=abc.ABCMeta):
     # Helpers
     #
     def _remove_instances_from_wb_ctx_according_plan(
-            self,
-            wb_context: WorkbookContext,
-            clz: Type[EntryInstance],
+        self,
+        wb_context: WorkbookContext,
+        clz: Type[EntryInstance],
     ) -> WorkbookContext:
         map_inst_clz_int_to_ext: Mapping[Type[EntryInstance], Type[ext.EntryInstance]] = {
             datasets.DatasetInstance: ext.DatasetInstance,
@@ -65,10 +72,13 @@ class BaseWBModStep(metaclass=abc.ABCMeta):
             dashboards.DashInstance: ext.DashInstance,
         }
 
-        return wb_context.remove_entries(clz, [
-            wb_context.ref(name=item_name)
-            for item_name in self.plan.get_item_names_to_delete(map_inst_clz_int_to_ext[clz])
-        ])
+        return wb_context.remove_entries(
+            clz,
+            [
+                wb_context.ref(name=item_name)
+                for item_name in self.plan.get_item_names_to_delete(map_inst_clz_int_to_ext[clz])
+            ],
+        )
 
     def _create_modified_wbm_ctx(self, new_working_wb_ctx: WorkbookContext) -> WorkbookModificationContext:
         return self._wbm_ctx.clone(wb_ctx=new_working_wb_ctx)

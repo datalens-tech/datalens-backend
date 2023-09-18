@@ -1,13 +1,16 @@
 import attr
 
-from dl_configs.enums import AppType
-
-from dl_file_uploader_worker_lib.app import FileUploaderWorkerFactory
-
-from dl_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
-from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC, TenantResolverDC
-
+from bi_api_commons_ya_cloud.tenant_resolver import (
+    TenantResolverDC,
+    TenantResolverYC,
+)
 from bi_file_uploader_worker.app_settings import DefaultFileUploaderWorkerSettings
+from dl_api_commons.tenant_resolver import (
+    CommonTenantResolver,
+    TenantResolver,
+)
+from dl_configs.enums import AppType
+from dl_file_uploader_worker_lib.app import FileUploaderWorkerFactory
 
 
 @attr.s(kw_only=True)

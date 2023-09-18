@@ -3,14 +3,23 @@ from __future__ import annotations
 from enum import unique
 from typing import Optional
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_api_commons.base_models import TenantDef
-
+from dl_api_connector.form_config.models.api_schema import (
+    FormActionApiSchema,
+    FormApiSchema,
+    FormFieldApiSchema,
+)
+from dl_api_connector.form_config.models.base import (
+    ConnectionForm,
+    ConnectionFormFactory,
+    ConnectionFormMode,
+)
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    FormFieldName,
+)
 import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
-from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
-from dl_api_connector.form_config.models.common import CommonFieldName, FormFieldName
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_connector_gsheets.bi.connection_info import GSheetsConnectionInfoProvider
 from bi_connector_gsheets.bi.i18n.localizer import Translatable
@@ -18,40 +27,48 @@ from bi_connector_gsheets.bi.i18n.localizer import Translatable
 
 @unique
 class GSheetsFieldName(FormFieldName):
-    url = 'url'
+    url = "url"
 
 
 class GSheetsConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        edit_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=GSheetsFieldName.url, required=True),
-            FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-        ])
+        edit_api_schema = FormActionApiSchema(
+            items=[
+                FormFieldApiSchema(name=GSheetsFieldName.url, required=True),
+                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+            ]
+        )
 
-        create_api_schema = FormActionApiSchema(items=[
-            *edit_api_schema.items,
-            *self._get_top_level_create_api_schema_items(),
-        ])
+        create_api_schema = FormActionApiSchema(
+            items=[
+                *edit_api_schema.items,
+                *self._get_top_level_create_api_schema_items(),
+            ]
+        )
 
-        check_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=GSheetsFieldName.url, required=True),
-            *self._get_top_level_check_api_schema_items(),
-        ])
+        check_api_schema = FormActionApiSchema(
+            items=[
+                FormFieldApiSchema(name=GSheetsFieldName.url, required=True),
+                *self._get_top_level_check_api_schema_items(),
+            ]
+        )
 
         return ConnectionForm(
             title=GSheetsConnectionInfoProvider.get_title(self._localizer),
             rows=[
-                C.CustomizableRow(items=[
-                    C.LabelRowItem(
-                        text=self._localizer.translate(Translatable('field_google-sheets-link')),
-                        help_text=self._localizer.translate(Translatable('label_gsheets-url-hint')),
-                    ),
-                    C.InputRowItem(name=GSheetsFieldName.url, width='l'),
-                ]),
+                C.CustomizableRow(
+                    items=[
+                        C.LabelRowItem(
+                            text=self._localizer.translate(Translatable("field_google-sheets-link")),
+                            help_text=self._localizer.translate(Translatable("label_gsheets-url-hint")),
+                        ),
+                        C.InputRowItem(name=GSheetsFieldName.url, width="l"),
+                    ]
+                ),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             ],
             api_schema=FormApiSchema(

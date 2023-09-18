@@ -17,21 +17,14 @@ async def test_rpc_validation(bi_ext_api_client):
     resp = await bi_ext_api_client.make_request(
         Req(method="POST", url="external_api/v0/workbook/rpc", data_json={}, require_ok=False)
     )
-    assert resp.json == {
-        "kind": "request_scheme_violation",
-        "messages": {
-            "kind": ["Missing data for required field."]
-        }
-    }
+    assert resp.json == {"kind": "request_scheme_violation", "messages": {"kind": ["Missing data for required field."]}}
     assert resp.status == 400
 
 
 @pytest.mark.asyncio
 async def test_error(bi_ext_api_client: WorkbookOpsClient):
     with pytest.raises(WorkbookOperationException) as exc_info:
-        await bi_ext_api_client.read_workbook(ext.WorkbookReadRequest(
-            workbook_id="Non-existing"
-        ))
+        await bi_ext_api_client.read_workbook(ext.WorkbookReadRequest(workbook_id="Non-existing"))
 
     exc: WorkbookOperationException = exc_info.value
     exc_data = exc.data
@@ -46,16 +39,14 @@ async def test_error(bi_ext_api_client: WorkbookOpsClient):
     common_error = exc_data.common_errors[0]
     # assert "Traceback (most recent call last):" in common_error.stacktrace
     assert "Object not found" in common_error.exc_message
-    assert "operation=\'workbook_info_get\'" in common_error.exc_message
+    assert "operation='workbook_info_get'" in common_error.exc_message
 
 
 @pytest.mark.asyncio
 async def test_get_empty_workbook(
-        bi_ext_api_client: WorkbookOpsClient,
-        pseudo_wb_path,
-        pg_connection,  # Just to create WBl
+    bi_ext_api_client: WorkbookOpsClient,
+    pseudo_wb_path,
+    pg_connection,  # Just to create WBl
 ):
-    wb_read_resp = await bi_ext_api_client.read_workbook(ext.WorkbookReadRequest(
-        workbook_id=pseudo_wb_path
-    ))
+    wb_read_resp = await bi_ext_api_client.read_workbook(ext.WorkbookReadRequest(workbook_id=pseudo_wb_path))
     assert wb_read_resp.workbook == ext.WorkBook.create_empty()

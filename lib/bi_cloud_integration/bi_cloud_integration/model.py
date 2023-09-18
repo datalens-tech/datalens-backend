@@ -3,8 +3,13 @@ from __future__ import annotations
 import datetime
 import enum
 import time
+from typing import (
+    Any,
+    Dict,
+    Optional,
+    Sequence,
+)
 import uuid
-from typing import Optional, Any, Sequence, Dict
 
 import attr
 
@@ -99,7 +104,7 @@ class IAMResource:
 
     @classmethod
     def service_account(cls, service_account_id: str) -> IAMResource:
-        return cls(type='iam.serviceAccount', id=service_account_id)
+        return cls(type="iam.serviceAccount", id=service_account_id)
 
     @classmethod
     def organization(cls, organization_id: str) -> IAMResource:

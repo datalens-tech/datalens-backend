@@ -1,17 +1,14 @@
 from __future__ import annotations
 
-
-from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.connector import (
-    CHSMBHeatmapsCoreConnectionDefinition,
-    CHSMBHeatmapsCoreSourceDefinition,
-    CHSMBHeatmapsCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BASE_CONFIGS
@@ -21,6 +18,11 @@ from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connection_form.fo
     CHSMBHeatmapsConnectionFormFactory,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connection_info import CHSMBHeatmapsConnectionInfoProvider
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.connector import (
+    CHSMBHeatmapsCoreConnectionDefinition,
+    CHSMBHeatmapsCoreConnector,
+    CHSMBHeatmapsCoreSourceDefinition,
+)
 
 
 class CHSMBHeatmapsBiApiConnectionDefinition(BiApiConnectionDefinition):
@@ -39,10 +41,6 @@ class CHSMBHeatmapsBiApiSourceDefinition(BiApiSourceDefinition):
 class CHSMBHeatmapsBiApiConnector(BiApiConnector):
     core_connector_cls = CHSMBHeatmapsCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        CHSMBHeatmapsBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        CHSMBHeatmapsBiApiSourceDefinition,
-    )
+    connection_definitions = (CHSMBHeatmapsBiApiConnectionDefinition,)
+    source_definitions = (CHSMBHeatmapsBiApiSourceDefinition,)
     translation_configs = frozenset(BASE_CONFIGS) | frozenset(CONFIGS)

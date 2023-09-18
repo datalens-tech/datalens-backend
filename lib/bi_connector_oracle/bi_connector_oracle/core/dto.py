@@ -2,7 +2,10 @@ import attr
 
 from dl_core.connection_models.dto_defs import DefaultSQLDTO
 
-from bi_connector_oracle.core.constants import OracleDbNameType, CONNECTION_TYPE_ORACLE
+from bi_connector_oracle.core.constants import (
+    CONNECTION_TYPE_ORACLE,
+    OracleDbNameType,
+)
 
 
 @attr.s(frozen=True)

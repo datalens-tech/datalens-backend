@@ -3,12 +3,11 @@ from typing import (
     Type,
 )
 
+from dl_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
+from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
 from dl_core_testing.executors import ExecutorFactoryBase
-
-from dl_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
-from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
 
 
 class ClickHouseExecutorFactory(ExecutorFactoryBase):

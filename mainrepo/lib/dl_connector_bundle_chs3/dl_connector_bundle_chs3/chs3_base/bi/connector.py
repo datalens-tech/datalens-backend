@@ -5,7 +5,6 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-
 from dl_connector_bundle_chs3.chs3_base.bi.api_schema.connection import BaseFileS3ConnectionSchema
 from dl_connector_bundle_chs3.chs3_base.bi.api_schema.source import (
     BaseFileS3DataSourceSchema,

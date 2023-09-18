@@ -1,4 +1,7 @@
-from bi_connector_mysql.bi.connector import MySQLBiApiConnectionDefinition, MySQLBiApiConnector
+from bi_connector_mysql.bi.connector import (
+    MySQLBiApiConnectionDefinition,
+    MySQLBiApiConnector,
+)
 from bi_connector_mysql_mdb.bi.api_schema.connection import MySQLMDBConnectionSchema
 from bi_connector_mysql_mdb.bi.connection_form.form_config import MySQLMDBConnectionFormFactory
 from bi_connector_mysql_mdb.core.connector import MySQLMDBCoreConnector

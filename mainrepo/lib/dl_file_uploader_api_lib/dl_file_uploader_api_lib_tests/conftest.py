@@ -14,6 +14,7 @@ import attr
 import pytest
 import redis.asyncio
 
+from bi_file_secure_reader.app import create_app as create_reader_app
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.base_models import (
     NoAuthData,
@@ -33,6 +34,7 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_core.loader import load_bi_core
@@ -43,7 +45,6 @@ from dl_core_testing.environment import (
     common_pytest_configure,
     prepare_united_storage,
 )
-from bi_file_secure_reader.app import create_app as create_reader_app
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
@@ -66,8 +67,6 @@ from dl_testing.s3_utils import (
     create_s3_client,
 )
 from dl_testing.utils import wait_for_initdb
-
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
 from .config import TestingUSConfig
 

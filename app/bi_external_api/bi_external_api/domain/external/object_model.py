@@ -9,8 +9,8 @@ from bi_external_api.enums import ExtAPIType
 
 class ObjectParentKind(enum.Enum):
     # collection = 'collection'
-    project = 'project'
-    organization = 'organization'
+    project = "project"
+    organization = "organization"
 
 
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="kind")

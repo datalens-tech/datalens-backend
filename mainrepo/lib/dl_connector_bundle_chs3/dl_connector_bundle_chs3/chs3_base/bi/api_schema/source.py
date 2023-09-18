@@ -18,13 +18,12 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
 )
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_constants.enums import (
     BIType,
     FileProcessingStatus,
 )
 from dl_model_tools.schema.base import BaseSchema
-
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
 class RawSchemaColumnSchema(Schema):

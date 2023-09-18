@@ -6,11 +6,7 @@ from bi_connector_mssql.formula_ref.i18n import CONFIGS
 
 
 class MSSQLFormulaRefPlugin(FormulaRefPlugin):
-    any_dialects = frozenset((
-        *MssqlDialect.MSSQLSRV.to_list(),
-    ))
-    compeng_support_dialects = frozenset((
-        *MssqlDialect.MSSQLSRV.to_list(),
-    ))
+    any_dialects = frozenset((*MssqlDialect.MSSQLSRV.to_list(),))
+    compeng_support_dialects = frozenset((*MssqlDialect.MSSQLSRV.to_list(),))
     human_dialects = HUMAN_DIALECTS
     translation_configs = frozenset(CONFIGS)

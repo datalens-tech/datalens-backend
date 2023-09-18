@@ -1,5 +1,9 @@
 import re
-from typing import Any, Dict, Optional
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
 
 from dl_core import exc as exc
 

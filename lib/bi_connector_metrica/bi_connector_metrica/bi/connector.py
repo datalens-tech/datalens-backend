@@ -1,24 +1,36 @@
-from bi_connector_metrica.core.connector import (
-    MetricaApiCoreConnector, AppMetricaApiCoreConnector,
-    MetricaApiCoreConnectionDefinition, AppMetricaApiCoreConnectionDefinition,
-    MetricaApiCoreSourceDefinition, AppMetricaApiCoreSourceDefinition,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
 from dl_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
+    BiApiSourceDefinition,
 )
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
-from bi_connector_metrica.formula.constants import DIALECT_NAME_METRICAAPI
-from bi_connector_metrica.bi.api_schema.connection import ConnectionMetrikaAPISchema, ConnectionAppMetricaAPISchema
-from bi_connector_metrica.bi.connection_form.form_config import (
-    MetricaAPIConnectionFormFactory, AppMetricaAPIConnectionFormFactory,
+from bi_connector_metrica.bi.api_schema.connection import (
+    ConnectionAppMetricaAPISchema,
+    ConnectionMetrikaAPISchema,
 )
-from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
+from bi_connector_metrica.bi.connection_form.form_config import (
+    AppMetricaAPIConnectionFormFactory,
+    MetricaAPIConnectionFormFactory,
+)
+from bi_connector_metrica.bi.connection_info import (
+    AppMetricaConnectionInfoProvider,
+    MetricaConnectionInfoProvider,
+)
 from bi_connector_metrica.bi.filter_compiler import MetricaApiFilterFormulaCompiler
 from bi_connector_metrica.bi.i18n.localizer import CONFIGS
+from bi_connector_metrica.core.connector import (
+    AppMetricaApiCoreConnectionDefinition,
+    AppMetricaApiCoreConnector,
+    AppMetricaApiCoreSourceDefinition,
+    MetricaApiCoreConnectionDefinition,
+    MetricaApiCoreConnector,
+    MetricaApiCoreSourceDefinition,
+)
+from bi_connector_metrica.formula.constants import DIALECT_NAME_METRICAAPI
 
 
 class MetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
@@ -30,7 +42,7 @@ class MetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
 class MetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
     core_conn_def_cls = MetricaApiCoreConnectionDefinition
     api_generic_schema_cls = ConnectionMetrikaAPISchema
-    alias = 'metrica'
+    alias = "metrica"
     info_provider_cls = MetricaConnectionInfoProvider
     form_factory_cls = MetricaAPIConnectionFormFactory
 
@@ -53,7 +65,7 @@ class AppMetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
 class AppMetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
     core_conn_def_cls = AppMetricaApiCoreConnectionDefinition
     api_generic_schema_cls = ConnectionAppMetricaAPISchema
-    alias = 'appmetrica'
+    alias = "appmetrica"
     info_provider_cls = AppMetricaConnectionInfoProvider
     form_factory_cls = AppMetricaAPIConnectionFormFactory
 

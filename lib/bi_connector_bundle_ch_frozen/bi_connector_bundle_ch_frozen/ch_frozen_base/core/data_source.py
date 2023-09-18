@@ -1,21 +1,26 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Optional, Any, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 from dl_constants.enums import CreateDSFrom
-
 from dl_core import exc
 from dl_core.data_source import StandardSQLDataSource
 from dl_core.data_source.sql import SubselectDataSource
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
+from bi_connector_bundle_ch_filtered.base.core.data_source import (
+    ClickHouseFilteredDataSourceBase,
+    ClickHouseTemplatedSubselectDataSource,
+)
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE,
     SOURCE_TYPE_CH_FROZEN_SUBSELECT,
-)
-from bi_connector_bundle_ch_filtered.base.core.data_source import (
-    ClickHouseTemplatedSubselectDataSource,
-    ClickHouseFilteredDataSourceBase,
 )
 
 if TYPE_CHECKING:
@@ -37,7 +42,7 @@ class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, Cli
 
     def _check_db_table_is_allowed(self) -> None:
         if self.db_name != self.connection.db_name or not self._is_allowed_table() and not self._is_allowed_subselect():
-            raise exc.SourceDoesNotExist(db_message='', query='')
+            raise exc.SourceDoesNotExist(db_message="", query="")
 
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
         self._check_db_table_is_allowed()
@@ -46,7 +51,7 @@ class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, Cli
             return super(ClickHouseTemplatedSubselectDataSource, self).get_sql_source(alias)
         if self._is_allowed_table():
             return super(StandardSQLDataSource, self).get_sql_source(alias)
-        raise exc.SourceDoesNotExist(db_message='', query='')
+        raise exc.SourceDoesNotExist(db_message="", query="")
 
     @property
     def spec(self) -> StandardSQLDataSourceSpec:

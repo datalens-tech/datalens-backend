@@ -1,8 +1,13 @@
-from typing import Any, TypeVar, Sequence
+from typing import (
+    Any,
+    Sequence,
+    TypeVar,
+)
 
 import attr
 
 from bi_external_api.domain.utils import ensure_tuple
+
 from .common import DashJSONBuilder
 
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="DashJSONBuilderSingleTab")
@@ -33,11 +38,13 @@ class DashJSONBuilderSingleTab(DashJSONBuilder):
                 id=f"tiid_chart_{idx}",
                 element=dict(
                     kind="charts_container",
-                    tabs=[dict(
-                        id=f"wtid_{chart_name}",
-                        chart_name=chart_name,
-                        **(dict(title=chart_name) if self.fill_defaults else {}),
-                    )],
+                    tabs=[
+                        dict(
+                            id=f"wtid_{chart_name}",
+                            chart_name=chart_name,
+                            **(dict(title=chart_name) if self.fill_defaults else {}),
+                        )
+                    ],
                     hide_title=True,
                     **(dict(default_active_chart_tab_id=f"wtid_{chart_name}") if self.fill_defaults else {}),
                 ),

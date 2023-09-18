@@ -1,21 +1,25 @@
 from __future__ import annotations
 
 import asyncio
-import attr
-from typing import ClassVar, Sequence, Optional
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
+import attr
+
+from bi_api_commons_ya_cloud.models import (
+    TenantDCProject,
+    TenantYCFolder,
+    TenantYCOrganization,
+)
+from bi_cloud_integration.iam_rm_client import DLFolderServiceClient
+from bi_cloud_integration.yc_subjects import DLYCMSClient
+from dl_api_commons.base_models import TenantDef
 from dl_utils.aio import alist
 
-from bi_cloud_integration.iam_rm_client import DLFolderServiceClient
-from bi_cloud_integration.yc_subjects import (
-    DLYCMSClient,
-)
-from dl_api_commons.base_models import TenantDef
-
-from bi_api_commons_ya_cloud.models import TenantYCFolder, TenantYCOrganization, TenantDCProject
-
-
-DEFAULT_DOMAIN = 'yandex.ru'
+DEFAULT_DOMAIN = "yandex.ru"
 
 
 @attr.s
@@ -29,10 +33,10 @@ class SubjectInfo:
 class CloudManagerAPI:
     DEFAULT_DOMAIN: ClassVar[str] = DEFAULT_DOMAIN
     _TYPE_NAME_TO_RLS_TYPE: ClassVar[dict[str, str]] = {
-        'SUBJECT_TYPE_UNSPECIFIED': 'unknown',
-        'USER_ACCOUNT': 'user',
-        'SERVICE_ACCOUNT': 'user',
-        'GROUP': 'group',
+        "SUBJECT_TYPE_UNSPECIFIED": "unknown",
+        "USER_ACCOUNT": "user",
+        "SERVICE_ACCOUNT": "user",
+        "GROUP": "group",
     }
 
     _tenant: TenantDef = attr.ib()
@@ -59,16 +63,21 @@ class CloudManagerAPI:
     ) -> dict[str, SubjectInfo]:
         tenant_kwargs = await self._resolve_tenant_info_kwargs()
         emails = set(subject_emails)
-        subject_chunks = await asyncio.gather(*(
-            alist(self._yc_ms_cli.list_members_by_emails(
-                filter=query,
-                emails=emails,
-                **tenant_kwargs,
-            ))
-            for query in self._yc_ms_cli.make_email_queries_generator(emails)
-        ))
+        subject_chunks = await asyncio.gather(
+            *(
+                alist(
+                    self._yc_ms_cli.list_members_by_emails(
+                        filter=query,
+                        emails=emails,
+                        **tenant_kwargs,
+                    )
+                )
+                for query in self._yc_ms_cli.make_email_queries_generator(emails)
+            )
+        )
         subject_to_info: dict[str, SubjectInfo] = {
-            subj.email or "": SubjectInfo(
+            subj.email
+            or "": SubjectInfo(
                 email=subj.email,
                 subj_id=subj.id,
                 subj_type=self._TYPE_NAME_TO_RLS_TYPE[subj.subject_type],

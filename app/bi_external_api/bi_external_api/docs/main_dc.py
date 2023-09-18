@@ -5,17 +5,18 @@ import attr
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.attrs_model_mapper.utils import MText
 from bi_external_api.attrs_model_mapper_docs.operations_builder import (
-    UserOperationInfo,
     OperationExample,
+    UserOperationInfo,
 )
 from bi_external_api.docs.common import DocsBuilder
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.external import WorkbookIndexItem
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.ext_examples import (
-    CHConnectionBuilder,
     ChartBuilderSingleDataset,
-    SuperStoreLightDSBuilder, DashBuilderSingleTab,
+    CHConnectionBuilder,
+    DashBuilderSingleTab,
+    SuperStoreLightDSBuilder,
 )
 
 
@@ -33,11 +34,12 @@ class DoubleCloudDocsBuilder(DocsBuilder):
         return ext.get_external_model_mapper(ExtAPIType.DC)
 
     def get_sample_dataset(
-            self, *,
-            name: str = None,
-            add_fields: bool = False,
-            conn_name: str,
-            fill_defaults: bool = False,
+        self,
+        *,
+        name: str = None,
+        add_fields: bool = False,
+        conn_name: str,
+        fill_defaults: bool = False,
     ) -> ext.DatasetInstance:
         builder = SuperStoreLightDSBuilder(conn_name=conn_name)
 
@@ -75,7 +77,7 @@ class DoubleCloudDocsBuilder(DocsBuilder):
             ext.ColumnChart(
                 x=[ext.ChartField.create_as_ref("region")],
                 y=[ext.ChartField.create_as_ref("sum_sales")],
-                sort=[ext.ChartSort(source=ext.ChartFieldRef(id="region"), direction=ext.SortDirection.ASC)]
+                sort=[ext.ChartSort(source=ext.ChartFieldRef(id="region"), direction=ext.SortDirection.ASC)],
             )
         ).build_instance(name="chart_cols_sales_per_region")
 
@@ -107,16 +109,10 @@ class DoubleCloudDocsBuilder(DocsBuilder):
         return [
             UserOperationInfo(
                 ext.WorkbookOpKind.wb_read,
-                MText(
-                    ru="Получить конфигурацию воркбука.",
-                    en="Get workbook configuration."
-                ),
+                MText(ru="Получить конфигурацию воркбука.", en="Get workbook configuration."),
                 example_list=[
                     OperationExample(
-                        title=MText(
-                            ru="Пустой воркбук",
-                            en="Empty workbook"
-                        ),
+                        title=MText(ru="Пустой воркбук", en="Empty workbook"),
                         description=MText(
                             ru="TBD",
                             en="Description: TBD",
@@ -124,7 +120,7 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                         rq=ext.DCOpWorkbookGetRequest(workbook_id=WRITE_SAFE_WB_ID),
                         rs=ext.DCOpWorkbookGetResponse(workbook=ext.WorkBook.create_empty()),
                     ),
-                ]
+                ],
             ),
             UserOperationInfo(
                 ext.WorkbookOpKind.wb_create,
@@ -146,27 +142,27 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                             project_id=DEFAULT_PROJECT_ID,
                             workbook_title=WRITE_SAFE_WB_TITLE,
                         ),
-                        rs=ext.DCOpWorkbookCreateResponse(workbook_id=WRITE_SAFE_WB_ID)
+                        rs=ext.DCOpWorkbookCreateResponse(workbook_id=WRITE_SAFE_WB_ID),
                     ),
-                ]
+                ],
             ),
             UserOperationInfo(
                 ext.WorkbookOpKind.wb_modify,
                 MText(
                     ru="Применить конфигурацию воркбука."
-                       " Выполняется сравнение текущего состояния каждого объекта в воркбуке и конфига из запроса."
-                       " Объекты воркбука, отсутствующие в запросе, будут удалены."
-                       "\n\n"
-                       "Свойства объекта, измененные через UI и не поддержанные в API, не будут затронуты."
-                       " Это поведение можно изменить установив флаг `force_rewrite`."
-                       " Тогда все объекты будут переписаны, вне зависимости от наличия изменений в UI.",
+                    " Выполняется сравнение текущего состояния каждого объекта в воркбуке и конфига из запроса."
+                    " Объекты воркбука, отсутствующие в запросе, будут удалены."
+                    "\n\n"
+                    "Свойства объекта, измененные через UI и не поддержанные в API, не будут затронуты."
+                    " Это поведение можно изменить установив флаг `force_rewrite`."
+                    " Тогда все объекты будут переписаны, вне зависимости от наличия изменений в UI.",
                     en="Apply workbook configuration."
-                       " This compares the current status of each object in the workbook with the configuration from the query."
-                       " The object in the workbook not listed in the query will be deleted."
-                       "\n\n"
-                       "The properties of the object edited in the UI and not supported by the API won't be affected."
-                       " This behavior can be changed by using the `force_rewrite` flag."
-                       " This will rewrite all the objects, regardless of changes in the UI.",
+                    " This compares the current status of each object in the workbook with the configuration from the query."
+                    " The object in the workbook not listed in the query will be deleted."
+                    "\n\n"
+                    "The properties of the object edited in the UI and not supported by the API won't be affected."
+                    " This behavior can be changed by using the `force_rewrite` flag."
+                    " This will rewrite all the objects, regardless of changes in the UI.",
                 ),
                 example_list=[
                     OperationExample(
@@ -187,7 +183,7 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                             workbook=self.get_sample_workbook(DEFAULT_CONN_NAME),
                             # TODO FIX: Fill modification plan
                             executed_plan=ext.ModificationPlan(operations=[]),
-                        )
+                        ),
                     ),
                 ],
             ),
@@ -226,10 +222,10 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                             name=DEFAULT_CONN_NAME,
                         ),
                         rs=ext.DCOpConnectionGetResponse(
-                            connection=CHConnectionBuilder(
-                                raw_sql_level=ext.RawSQLLevel.subselect
-                            ).build_instance(DEFAULT_CONN_NAME),
-                        )
+                            connection=CHConnectionBuilder(raw_sql_level=ext.RawSQLLevel.subselect).build_instance(
+                                DEFAULT_CONN_NAME
+                            ),
+                        ),
                     )
                 ],
             ),
@@ -251,14 +247,14 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                         ),
                         rq=ext.DCOpConnectionCreateRequest(
                             workbook_id=WRITE_SAFE_WB_ID,
-                            connection=CHConnectionBuilder(
-                                raw_sql_level=ext.RawSQLLevel.subselect
-                            ).build_instance(DEFAULT_CONN_NAME),
+                            connection=CHConnectionBuilder(raw_sql_level=ext.RawSQLLevel.subselect).build_instance(
+                                DEFAULT_CONN_NAME
+                            ),
                             secret=ext.PlainSecret("My-Str0Ng-pass"),
                         ),
                         rs=ext.DCOpConnectionCreateResponse(
                             ext.EntryInfo(kind=ext.EntryKind.connection, id="66tsr6rmna", name=DEFAULT_CONN_NAME)
-                        )
+                        ),
                     ),
                 ],
             ),
@@ -277,13 +273,12 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                         ),
                         rq=ext.DCOpConnectionModifyRequest(
                             workbook_id=WRITE_SAFE_WB_ID,
-                            connection=CHConnectionBuilder(
-                                raw_sql_level=ext.RawSQLLevel.subselect
-                            ).build_instance(DEFAULT_CONN_NAME),
+                            connection=CHConnectionBuilder(raw_sql_level=ext.RawSQLLevel.subselect).build_instance(
+                                DEFAULT_CONN_NAME
+                            ),
                             secret=ext.PlainSecret("My-Str0Ng-pass"),
                         ),
-                        rs=ext.DCOpConnectionModifyResponse(
-                        )
+                        rs=ext.DCOpConnectionModifyResponse(),
                     ),
                 ],
             ),
@@ -299,14 +294,13 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                         description=MText(
                             ru="TBD",
                             en=f"Delete connection"
-                               f" with name `{DEFAULT_CONN_NAME}` in workbook with ID `{WRITE_SAFE_WB_ID}`",
+                            f" with name `{DEFAULT_CONN_NAME}` in workbook with ID `{WRITE_SAFE_WB_ID}`",
                         ),
                         rq=ext.DCOpConnectionDeleteRequest(
                             workbook_id=WRITE_SAFE_WB_ID,
                             name=DEFAULT_CONN_NAME,
                         ),
-                        rs=ext.DCOpConnectionDeleteResponse(
-                        )
+                        rs=ext.DCOpConnectionDeleteResponse(),
                     )
                 ],
             ),
@@ -314,17 +308,17 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                 ext.WorkbookOpKind.advise_dataset_fields,
                 MText(
                     ru="Составить конфигурацию датасета исходя из схемы источника данных."
-                       " В запросе передается датасет с пустым списком полей."
-                       "\n\n"
-                       "В ответе будет датасет со всеми полями источника данных."
-                       " Для получения схемы используется подключение из поля `connection_ref`."
-                       " ID полей будут сгенерированы из названия колонок, предполагается, что пользователь их перепишет.",
+                    " В запросе передается датасет с пустым списком полей."
+                    "\n\n"
+                    "В ответе будет датасет со всеми полями источника данных."
+                    " Для получения схемы используется подключение из поля `connection_ref`."
+                    " ID полей будут сгенерированы из названия колонок, предполагается, что пользователь их перепишет.",
                     en="Put together a dataset configuration based on the data source schema."
-                       " The query transfers a dataset with a blank fields list."
-                       "\n\n"
-                       "The response will contain a dataset with all the fields at the source."
-                       " To get a schema, use the connection from the `connection_ref` field."
-                       " Field IDs will be generated from column names. We suppose the user will rewrite them.",
+                    " The query transfers a dataset with a blank fields list."
+                    "\n\n"
+                    "The response will contain a dataset with all the fields at the source."
+                    " To get a schema, use the connection from the `connection_ref` field."
+                    " Field IDs will be generated from column names. We suppose the user will rewrite them.",
                 ),
                 example_list=[
                     OperationExample(
@@ -367,12 +361,7 @@ class DoubleCloudDocsBuilder(DocsBuilder):
                             project_id=DEFAULT_PROJECT_ID,
                         ),
                         rs=ext.DCOpWorkbookListResponse(
-                            workbooks=[
-                                WorkbookIndexItem(
-                                    id=WRITE_SAFE_WB_ID,
-                                    title=WRITE_SAFE_WB_TITLE
-                                )
-                            ]
+                            workbooks=[WorkbookIndexItem(id=WRITE_SAFE_WB_ID, title=WRITE_SAFE_WB_TITLE)]
                         ),
                     ),
                 ],

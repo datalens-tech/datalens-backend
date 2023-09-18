@@ -16,6 +16,6 @@ async def test_caches(default_async_service_registry, saved_ch_connection):
     assert initial_ce is ce_wo_changes
 
     # Modifying connection
-    saved_ch_connection.data.host = 'example.com'
+    saved_ch_connection.data.host = "example.com"
     ce_after_connection_change = ce_factory.get_async_conn_executor(saved_ch_connection)
     assert ce_after_connection_change is not initial_ce

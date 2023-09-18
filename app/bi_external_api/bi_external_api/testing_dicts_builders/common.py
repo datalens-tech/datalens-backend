@@ -1,8 +1,14 @@
 import abc
-from typing import TypeVar, Optional, final, Sequence, Any
+from copy import deepcopy
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+    TypeVar,
+    final,
+)
 
 import attr
-from copy import deepcopy
 
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="EntryJSONBuilder")
 

@@ -20,9 +20,5 @@ class CHFrozenCovidCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenCovidCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenCovidCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenCovidCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenCovidCoreConnectionDefinition,)
+    source_definitions = (CHFrozenCovidCoreSourceDefinition,)

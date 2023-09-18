@@ -1,6 +1,8 @@
-from bi_connector_mdb_base.bi.api_schema.connection_mixins import MDBDatabaseSchemaMixin
 from dl_connector_postgresql.bi.api_schema.connection import PostgreSQLConnectionSchema
+
+from bi_connector_mdb_base.bi.api_schema.connection_mixins import MDBDatabaseSchemaMixin
 from bi_connector_postgresql_mdb.core.us_connection import ConnectionPostgreSQLMDB
+
 
 class PostgreSQLMDBConnectionSchema(MDBDatabaseSchemaMixin, PostgreSQLConnectionSchema):
     TARGET_CLS = ConnectionPostgreSQLMDB

@@ -1,7 +1,11 @@
 import abc
 import enum
-from typing import Generic, TypeVar, ClassVar
-from typing import Optional
+from typing import (
+    ClassVar,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
@@ -13,11 +17,11 @@ _VISITOR_RETURN_DATA_TV = TypeVar("_VISITOR_RETURN_DATA_TV")
 
 class ExtFieldVisitor(Generic[_VISITOR_RETURN_DATA_TV], metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def visit_formula_field(self, dsrc: 'FormulaCS') -> _VISITOR_RETURN_DATA_TV:
+    def visit_formula_field(self, dsrc: "FormulaCS") -> _VISITOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def visit_direct_field(self, dsrc: 'DirectCS') -> _VISITOR_RETURN_DATA_TV:
+    def visit_direct_field(self, dsrc: "DirectCS") -> _VISITOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
 
@@ -50,13 +54,13 @@ class FieldType(enum.Enum):
 
 
 class Aggregation(enum.Enum):
-    none = 'none'
-    sum = 'sum'
-    avg = 'avg'
-    min = 'min'
-    max = 'max'
-    count = 'count'
-    countunique = 'countunique'
+    none = "none"
+    sum = "sum"
+    avg = "avg"
+    min = "min"
+    max = "max"
+    count = "count"
+    countunique = "countunique"
 
 
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="kind")

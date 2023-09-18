@@ -1,4 +1,8 @@
-from typing import Sequence, Any, Optional
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+)
 
 import attr
 

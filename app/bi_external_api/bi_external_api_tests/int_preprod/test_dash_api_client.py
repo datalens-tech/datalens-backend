@@ -8,7 +8,7 @@ from dl_testing.utils import skip_outside_devhost
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_get_dash(
-        bi_ext_api_int_preprod_dash_api_client,
+    bi_ext_api_int_preprod_dash_api_client,
 ):
     dash_cli = bi_ext_api_int_preprod_dash_api_client
     dash_inst = await dash_cli.get_dashboard("jl54guud894ab")

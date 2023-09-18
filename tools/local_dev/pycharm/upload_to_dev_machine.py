@@ -3,7 +3,10 @@ import itertools
 import os
 import subprocess
 
-from pycharm.common import SUBMODULE_DEFAULT_EXCLUDES, get_submodules
+from pycharm.common import (
+    SUBMODULE_DEFAULT_EXCLUDES,
+    get_submodules,
+)
 
 
 def main():
@@ -23,8 +26,8 @@ def main():
     print(f"\n\n--- Uploading project to {dev_machine=} ---\n")
 
     dev_machine_escaped = dev_machine
-    if ':' in dev_machine_escaped:
-        dev_machine_escaped = f'[{dev_machine_escaped}]'
+    if ":" in dev_machine_escaped:
+        dev_machine_escaped = f"[{dev_machine_escaped}]"
 
     root = os.path.abspath(os.path.join(__file__, "../../../.."))
     args = [
@@ -32,25 +35,27 @@ def main():
         "-rIc",
         *(["-v"] if debug_mode else []),
         "--include=*/",
-        *list(itertools.chain(
-            *list(
-                itertools.chain(
-                    *[
-                        [
-                            # Exclude files named as in SUBMODULE_DEFAULT_EXCLUDES
-                            f"--exclude={submodule}/{exclude}",
-                            f"--exclude={submodule}/**/{exclude}",
-                            # Exclude folders named as in SUBMODULE_DEFAULT_EXCLUDES
-                            f"--exclude={submodule}/{exclude}/**",
-                            f"--exclude={submodule}/**/{exclude}/**",
-                        ]
-                        for exclude in SUBMODULE_DEFAULT_EXCLUDES
-                    ],
-                    [f"--include={submodule}/**"],
+        *list(
+            itertools.chain(
+                *list(
+                    itertools.chain(
+                        *[
+                            [
+                                # Exclude files named as in SUBMODULE_DEFAULT_EXCLUDES
+                                f"--exclude={submodule}/{exclude}",
+                                f"--exclude={submodule}/**/{exclude}",
+                                # Exclude folders named as in SUBMODULE_DEFAULT_EXCLUDES
+                                f"--exclude={submodule}/{exclude}/**",
+                                f"--exclude={submodule}/**/{exclude}/**",
+                            ]
+                            for exclude in SUBMODULE_DEFAULT_EXCLUDES
+                        ],
+                        [f"--include={submodule}/**"],
+                    )
+                    for submodule in submodule_list
                 )
-                for submodule in submodule_list
             )
-        )),
+        ),
         "--exclude=*",
         "--prune-empty-dirs",
         f"{root}/",
@@ -69,5 +74,5 @@ def main():
     print(f"\nSync finished: {end - start}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -4,23 +4,40 @@ import datetime
 import decimal
 import logging
 import re
-from typing import Optional, Tuple, Type, List
+from typing import (
+    List,
+    Optional,
+    Tuple,
+    Type,
+)
 from urllib.parse import quote_plus
 
+import pyodbc
 import sqlalchemy as sa
 from sqlalchemy import exc as sa_exc
 from sqlalchemy.dialects import mssql as ms_types
-import pyodbc
 
-import dl_core.exc as exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    RawColumnInfo,
+    RawSchemaInfo,
+)
+from dl_core.connection_models import (
+    DBIdent,
+    SATextTableDefinition,
+    SchemaIdent,
+    TableIdent,
+)
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawColumnInfo, RawSchemaInfo
-from dl_core.connection_models import DBIdent, SATextTableDefinition, SchemaIdent, TableIdent
 from dl_core.db.native_type import CommonNativeType
+import dl_core.exc as exc
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
-from bi_connector_mssql.core.exc import CommitOrRollbackFailed, SyncMssqlSourceDoesNotExistError
+from bi_connector_mssql.core.exc import (
+    CommitOrRollbackFailed,
+    SyncMssqlSourceDoesNotExistError,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,18 +45,20 @@ LOGGER = logging.getLogger(__name__)
 class MSSQLDefaultAdapter(BaseClassicAdapter):
     conn_type = CONNECTION_TYPE_MSSQL
 
-    dsn_template = '{dialect}:///?odbc_connect=' + quote_plus(';').join([
-        quote_plus('DRIVER={FreeTDS}'),
-        quote_plus('Server=') + '{host}',
-        quote_plus('Port=') + '{port}',
-        quote_plus('Database=') + '{db_name}',
-        quote_plus('UID=') + '{user}',
-        quote_plus('PWD=') + '{passwd}',
-        quote_plus('TDS_Version=8.0')
-    ])  # {...}s are are left unquoted for future formatting in `get_conn_line`
+    dsn_template = "{dialect}:///?odbc_connect=" + quote_plus(";").join(
+        [
+            quote_plus("DRIVER={FreeTDS}"),
+            quote_plus("Server=") + "{host}",
+            quote_plus("Port=") + "{port}",
+            quote_plus("Database=") + "{db_name}",
+            quote_plus("UID=") + "{user}",
+            quote_plus("PWD=") + "{passwd}",
+            quote_plus("TDS_Version=8.0"),
+        ]
+    )  # {...}s are are left unquoted for future formatting in `get_conn_line`
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        return self.execute(DBAdapterQuery('SELECT @@VERSION', db_name=db_ident.db_name)).get_all()[0][0]
+        return self.execute(DBAdapterQuery("SELECT @@VERSION", db_name=db_ident.db_name)).get_all()[0][0]
 
     _type_code_to_sa = {
         int: ms_types.INTEGER,
@@ -50,8 +69,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         datetime.datetime: ms_types.DATETIME,
     }
 
-    MSSQL_LIST_SOURCES_ALL_SCHEMAS_SQL = \
-        "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;"
+    MSSQL_LIST_SOURCES_ALL_SCHEMAS_SQL = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;"
 
     def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
         if schema_ident.schema_name is not None:
@@ -111,19 +129,20 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         Note that the entire subquery is passed as a string.
         """
         from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+
         # 'select * from (<user_input_text>) as source'
-        select_all = sa.select([sa.literal_column('*')]).select_from(subquery.text)
+        select_all = sa.select([sa.literal_column("*")]).select_from(subquery.text)
         select_all_str = str(select_all)  # Should be straightforward and safe and reliable. Really.
-        sa_query_text = 'exec sp_describe_first_result_set @tsql = :select_all'
+        sa_query_text = "exec sp_describe_first_result_set @tsql = :select_all"
         sa_query = sa.sql.text(sa_query_text)
         sa_query = sa_query.bindparams(
             # TODO?: might need a better `type_` value
-            sa.sql.bindparam('select_all', select_all_str, type_=sa.types.Unicode),
+            sa.sql.bindparam("select_all", select_all_str, type_=sa.types.Unicode),
         )
         dba_query = DBAdapterQuery(query=sa_query)
         query_res = self.execute(dba_query)
         data = [row for chunk in query_res.data_chunks for row in chunk]
-        names = query_res.cursor_info['names']
+        names = query_res.cursor_info["names"]
         if data:
             assert len(names) == len(data[0])
         data = [dict(zip(names, row)) for row in data]
@@ -134,24 +153,24 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
 
         columns = []
         for column_info in data:
-            name = column_info['name']
+            name = column_info["name"]
             if not name:
-                LOGGER.warning('Empty name in mssql subselect schema: %r', column_info)
+                LOGGER.warning("Empty name in mssql subselect schema: %r", column_info)
                 continue
 
-            type_name = column_info['system_type_name']
-            type_name_base = type_name.split('(', 1)[0]
+            type_name = column_info["system_type_name"]
+            type_name_base = type_name.split("(", 1)[0]
 
             sa_type = ischema_names.get(type_name_base)
             if sa_type is None:
-                LOGGER.warning('Unknown/unsupported type in mssql subselect schema: %r', column_info)
+                LOGGER.warning("Unknown/unsupported type in mssql subselect schema: %r", column_info)
                 sa_type = sa.sql.sqltypes.NullType
 
             # NOTE: it is possible to instantiate the `sa_type` here; but for
             # now, there's no known use for that.
 
             # Side note: any `cast()` in mssql tends to make the value nullable.
-            nullable = column_info['is_nullable']
+            nullable = column_info["is_nullable"]
 
             native_type = CommonNativeType.normalize_name_and_create(
                 conn_type=self.conn_type,
@@ -159,19 +178,19 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
                 nullable=nullable,
             )
 
-            columns.append(RawColumnInfo(
-                name=name,
-                title=name,
-                nullable=native_type.nullable,
-                native_type=native_type,
-            ))
+            columns.append(
+                RawColumnInfo(
+                    name=name,
+                    title=name,
+                    nullable=native_type.nullable,
+                    native_type=native_type,
+                )
+            )
 
         return RawSchemaInfo(columns=tuple(columns))
 
     _EXC_CODE_RE = re.compile(
-        r'\(\'[0-9A-Z]+\', [\'\"]\[(?P<state>[0-9A-Z]+)\] '
-        r'\[FreeTDS\][^(]+'
-        r'\((?P<code>\d+)\)'
+        r"\(\'[0-9A-Z]+\', [\'\"]\[(?P<state>[0-9A-Z]+)\] " r"\[FreeTDS\][^(]+" r"\((?P<code>\d+)\)"
     )
     _EXC_CODE_MAP = {
         # [42S22] Invalid column name '.+'. (207)
@@ -188,7 +207,6 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         20006: exc.SourceConnectError,
         # [01000] Unexpected EOF from the server (20017)
         20017: exc.SourceClosedPrematurely,
-
         # ?
         # [23000] The statement terminated. The maximum recursion 100
         #         has been exhausted before statement completion. (530)
@@ -201,9 +219,9 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
 
     _EXC_STATE_MAP = {
         # [08001] Unable to connect to data source (0)
-        '08001': exc.SourceConnectError,
+        "08001": exc.SourceConnectError,
         # [HY000] Could not perform COMMIT or ROLLBACK (0)
-        'HY000': CommitOrRollbackFailed,
+        "HY000": CommitOrRollbackFailed,
     }
 
     EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)
@@ -212,8 +230,8 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
     def get_exc_class(cls, err_msg: str) -> Optional[Type[exc.DatabaseQueryError]]:
         err_match = cls._EXC_CODE_RE.match(err_msg)
         if err_match is not None:
-            code = int(err_match.group('code'))
-            state = err_match.group('state').upper()
+            code = int(err_match.group("code"))
+            state = err_match.group("state").upper()
             if code in cls._EXC_CODE_MAP:
                 return cls._EXC_CODE_MAP[code]
             elif state in cls._EXC_STATE_MAP:
@@ -224,14 +242,11 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
 
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
-            cls,
-            wrapper_exc: Exception,
-            orig_exc: Optional[Exception],
-            debug_compiled_query: Optional[str]
+        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
     ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
-        db_msg = kw['db_message']
+        db_msg = kw["db_message"]
         specific_exc_cls = cls.get_exc_class(db_msg)  # type: ignore  # TODO: fix
         exc_cls = specific_exc_cls if specific_exc_cls is not None else exc_cls
 

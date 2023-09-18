@@ -1,4 +1,3 @@
-
 # Standard exceptions according to dbapi v2 interface
 # https://www.python.org/dev/peps/pep-0249/
 
@@ -48,7 +47,7 @@ class NotSupportedError(DatabaseError):
 
 class MetrikaApiException(DatabaseError):
     def __init__(self, *args, **kwargs):
-        self.orig_exc = kwargs.pop('orig_exc', None)
+        self.orig_exc = kwargs.pop("orig_exc", None)
         super().__init__(*args, **kwargs)
 
 

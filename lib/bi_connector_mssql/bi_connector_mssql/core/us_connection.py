@@ -1,20 +1,30 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar
+from typing import (
+    Callable,
+    ClassVar,
+)
 
 import attr
 
-from dl_i18n.localizer_base import Localizer
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.us_connection_base import ConnectionBase, ClassicConnectionSQL, DataSourceTemplate
+from dl_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+    DataSourceTemplate,
+)
+from dl_i18n.localizer_base import Localizer
 
-from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT
+from bi_connector_mssql.core.constants import (
+    SOURCE_TYPE_MSSQL_SUBSELECT,
+    SOURCE_TYPE_MSSQL_TABLE,
+)
 from bi_connector_mssql.core.dto import MSSQLConnDTO
 
 
 class ConnectionMSSQL(ClassicConnectionSQL):
     has_schema: ClassVar[bool] = True
-    default_schema_name = 'dbo'
+    default_schema_name = "dbo"
     source_type = SOURCE_TYPE_MSSQL_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT))
     allow_dashsql: ClassVar[bool] = True
@@ -39,12 +49,13 @@ class ConnectionMSSQL(ClassicConnectionSQL):
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return self._make_subselect_templates(
             source_type=SOURCE_TYPE_MSSQL_SUBSELECT,
-            field_doc_key='MSSQL_SUBSELECT/subsql',
+            field_doc_key="MSSQL_SUBSELECT/subsql",
             localizer=localizer,
         )
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         if not self.db_name:
             return []

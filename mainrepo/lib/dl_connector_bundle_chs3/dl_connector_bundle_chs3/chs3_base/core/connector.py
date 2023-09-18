@@ -1,5 +1,8 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 
+from dl_connector_bundle_chs3.chs3_base.core.constants import BACKEND_TYPE_CHS3
+from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
+from dl_connector_bundle_chs3.chs3_base.core.type_transformer import FileTypeTransformer
 from dl_core.connections_security.base import (
     ConnSecuritySettings,
     NonUserInputConnectionSafetyChecker,
@@ -9,10 +12,6 @@ from dl_core.connectors.base.connector import (
     CoreConnector,
     CoreSourceDefinition,
 )
-
-from dl_connector_bundle_chs3.chs3_base.core.constants import BACKEND_TYPE_CHS3
-from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
-from dl_connector_bundle_chs3.chs3_base.core.type_transformer import FileTypeTransformer
 
 
 class BaseFileS3CoreConnectionDefinition(CoreConnectionDefinition):

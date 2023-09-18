@@ -2,12 +2,13 @@ from marshmallow import fields as ma_fields
 
 from dl_core.us_manager.storage_schemas.connection import ConnectionBaseDataStorageSchema
 
-from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection
+from bi_connector_metrica.core.us_connection import (
+    AppMetricaApiConnection,
+    MetrikaApiConnection,
+)
 
 
-class ConnectionMetrikaApiDataStorageSchema(
-        ConnectionBaseDataStorageSchema[MetrikaApiConnection.DataModel]
-):
+class ConnectionMetrikaApiDataStorageSchema(ConnectionBaseDataStorageSchema[MetrikaApiConnection.DataModel]):
     TARGET_CLS = MetrikaApiConnection.DataModel
 
     token = ma_fields.String(required=True, allow_none=False)

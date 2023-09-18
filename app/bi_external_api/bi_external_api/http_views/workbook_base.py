@@ -1,24 +1,26 @@
 from functools import cached_property
 from typing import Any
 
-import yaml
 from aiohttp import web
+import yaml
 
-from dl_api_commons.base_models import TenantDef
-from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResource
-from bi_external_api.aiohttp_services.base import BaseView, ExtAPIRequiredResource, SerializationType
+from bi_external_api.aiohttp_services.base import (
+    BaseView,
+    ExtAPIRequiredResource,
+    SerializationType,
+)
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.domain.external import get_external_model_mapper
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
+from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResource
+from dl_api_commons.base_models import TenantDef
 
 
 class BaseWorkbookOpsView(BaseView):
     @classmethod
     def get_required_resources(cls, method_name: str) -> frozenset[RequiredResource]:
-        return super().get_required_resources(method_name).union(
-            {ExtAPIRequiredResource.INT_API_CLIENTS}
-        )
+        return super().get_required_resources(method_name).union({ExtAPIRequiredResource.INT_API_CLIENTS})
 
     def create_workbook_ops_facade(self, tenant_override: TenantDef) -> WorkbookOpsFacade:
         internal_api_clients = self.app_request.internal_api_clients_factory.get_internal_api_clients(tenant_override)

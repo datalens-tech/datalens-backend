@@ -1,14 +1,23 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Optional
+from typing import (
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from bi_api_commons_ya_team.constants import DLCookiesYT
-
 from dl_core.base_models import ConnCacheableDataModelMixin
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.us_connection_base import ConnectionBase, SubselectMixin, ExecutorBasedMixin, DataSourceTemplate
+from dl_core.us_connection_base import (
+    ConnectionBase,
+    DataSourceTemplate,
+    ExecutorBasedMixin,
+    SubselectMixin,
+)
+
 from bi_connector_solomon.core.dto import SolomonConnDTO
 
 
@@ -46,7 +55,8 @@ class SolomonConnection(SubselectMixin, ExecutorBasedMixin, ConnectionBase):
         return False
 
     def get_data_source_templates(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         return []
 

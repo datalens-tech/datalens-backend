@@ -1,22 +1,37 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Optional, Union
+from typing import (
+    Any,
+    Optional,
+    Union,
+)
 
 import attr
 
-from dl_configs.enums import AppType, EnvType
+from bi_cloud_integration.sa_creds import SACredsMode
+from bi_defaults.environments import (
+    CommonExternalInstallation,
+    CommonInstallation,
+)
+from dl_api_lib.app_settings import (
+    AppSettings,
+    ControlApiAppSettings,
+    DataApiAppSettings,
+)
+from dl_configs.enums import (
+    AppType,
+    EnvType,
+)
 from dl_configs.environments import LegacyDefaults
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.loader_env import NOT_SET
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_configs.utils import app_type_env_var_converter, env_type_env_var_converter
-from bi_defaults.environments import CommonInstallation, CommonExternalInstallation
-
-from dl_api_lib.app_settings import AppSettings, DataApiAppSettings, ControlApiAppSettings
-
-from bi_cloud_integration.sa_creds import SACredsMode
+from dl_configs.utils import (
+    app_type_env_var_converter,
+    env_type_env_var_converter,
+)
 
 
 @attr.s(frozen=True)
@@ -59,7 +74,7 @@ class BaseAppSettings(AppSettings):
     # Sentry
     @staticmethod
     def default_sentry_enabled(fallback_cfg: CommonInstallation):  # type: ignore  # TODO: fix
-        if isinstance(fallback_cfg, CommonInstallation) or hasattr(fallback_cfg, 'SENTRY_ENABLED'):
+        if isinstance(fallback_cfg, CommonInstallation) or hasattr(fallback_cfg, "SENTRY_ENABLED"):
             return fallback_cfg.SENTRY_ENABLED
         return NOT_SET
 
@@ -115,7 +130,7 @@ class BaseAppSettings(AppSettings):
     DLS_HOST: Optional[str] = None
     DLS_API_KEY: Optional[str] = None
 
-    DEFAULT_LOCALE: Optional[str] = 'en'
+    DEFAULT_LOCALE: Optional[str] = "en"
 
 
 @attr.s(frozen=True)
@@ -126,22 +141,22 @@ class AsyncAppSettings(BaseAppSettings, DataApiAppSettings):
     @property
     def app_name(self) -> str:
         if self.APP_TYPE == AppType.CLOUD_PUBLIC:
-            return 'bi_public_data_api'
+            return "bi_public_data_api"
         if self.APP_TYPE in (AppType.DATA_CLOUD_EMBED, AppType.CLOUD_EMBED):
-            return 'bi_sec_embeds_data_api'
-        return 'bi_data_api'
+            return "bi_sec_embeds_data_api"
+        return "bi_data_api"
 
     @property
     def jaeger_service_name(self) -> str:
         if self.APP_TYPE == AppType.CLOUD_PUBLIC:
-            return 'bi-public-data-api'
+            return "bi-public-data-api"
         if self.APP_TYPE in (AppType.DATA_CLOUD_EMBED, AppType.CLOUD_EMBED):
-            return 'bi-sec-embeds-data-api'
-        return 'bi-data-api'
+            return "bi-sec-embeds-data-api"
+        return "bi-data-api"
 
     @property
     def app_prefix(self) -> str:
-        return 'p' if self.APP_TYPE == AppType.CLOUD_PUBLIC else 'y'
+        return "p" if self.APP_TYPE == AppType.CLOUD_PUBLIC else "y"
 
 
 @attr.s(frozen=True)
@@ -153,9 +168,7 @@ class ControlPlaneAppSettings(BaseAppSettings, ControlApiAppSettings):
 
     # BlackBox/Passport
     BLACKBOX_RETRY_PARAMS: dict[str, Any] = s_attrib(  # type: ignore  # TODO: fix
-        "BLACKBOX_RETRY_TIMEOUT",
-        env_var_converter=json.loads,
-        missing_factory=dict
+        "BLACKBOX_RETRY_TIMEOUT", env_var_converter=json.loads, missing_factory=dict
     )
     BLACKBOX_TIMEOUT: int = s_attrib("BLACKBOX_TIMEOUT", missing=1)  # type: ignore  # TODO: fix
 
@@ -175,10 +188,7 @@ class CHYTMirroringConfig(SettingsBase):
     # Example: [["hahn", "*user1_clique", "*mirror"], ["hahn", null, "*mirror"]]
     MAP: dict[tuple[str, Optional[str]], str] = s_attrib(  # type: ignore  # TODO: fix
         "MAP",
-        env_var_converter=lambda s: {
-            (mmap_item[0], mmap_item[1]): mmap_item[2]
-            for mmap_item in json.loads(s)
-        },
+        env_var_converter=lambda s: {(mmap_item[0], mmap_item[1]): mmap_item[2] for mmap_item in json.loads(s)},
         missing_factory=dict,
     )
     # Number of seconds to wait for mirror response (for response logging only)
@@ -197,9 +207,7 @@ class AppSettingsInternal(AppSettings):
 @attr.s(frozen=True)
 class ControlApiAppSettingsInternal(AppSettingsInternal):
     BLACKBOX_RETRY_PARAMS: dict[str, Any] = s_attrib(  # type: ignore
-        "BLACKBOX_RETRY_TIMEOUT",
-        env_var_converter=json.loads,
-        missing_factory=dict
+        "BLACKBOX_RETRY_TIMEOUT", env_var_converter=json.loads, missing_factory=dict
     )
     BLACKBOX_TIMEOUT: int = s_attrib("BLACKBOX_TIMEOUT", missing=1)  # type: ignore
 

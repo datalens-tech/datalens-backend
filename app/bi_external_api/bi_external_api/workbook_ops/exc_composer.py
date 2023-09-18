@@ -1,26 +1,34 @@
-import logging
 from collections import defaultdict
 from contextlib import contextmanager
-from typing import Optional, Sequence, Iterator
+import logging
+from typing import (
+    Iterator,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from dl_api_commons.exc import AccessDeniedErr, ExceptionWithData
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
-from bi_external_api.exc_tooling import ExcComposer, SimpleCollectingExcComposer
-from bi_external_api.internal_api_clients.constants import DatasetOpCode
-from bi_external_api.workbook_ops.exc_translator import (
-    CompositeExcTranslator,
+from bi_external_api.exc_tooling import (
+    ExcComposer,
+    SimpleCollectingExcComposer,
 )
+from bi_external_api.internal_api_clients.constants import DatasetOpCode
+from bi_external_api.workbook_ops.exc_translator import CompositeExcTranslator
 from bi_external_api.workbook_ops.private_exceptions import (
-    WorkbookReadErrorInfo,
     WorkbookClusterizationErrorInfo,
-    WorkbookReadPrivateError,
     WorkbookClustezationPrivateError,
     WorkbookReadBasePrivateError,
+    WorkbookReadErrorInfo,
+    WorkbookReadPrivateError,
 )
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
+from dl_api_commons.exc import (
+    AccessDeniedErr,
+    ExceptionWithData,
+)
 from dl_us_client.constants import OpCode as UsOpCode
 
 LOGGER = logging.getLogger(__name__)
@@ -80,6 +88,7 @@ class WorkbookOperationErrorHandler:
     If caught exception is already public - it just pass-throw it.
     Literally - last resort converter to public exception.
     """
+
     _message: str = attr.ib()
     _do_add_exc_message: bool = attr.ib(default=True)
 
@@ -105,12 +114,14 @@ class WorkbookOperationErrorHandler:
     # Helpers
     #
     def last_resort_exc(self) -> WorkbookOperationException:
-        return WorkbookOperationException(ext.ErrWorkbookOp(
-            message=self._message,
-            common_errors=[ext.CommonError(message="Unexpected error occurred")],
-            entry_errors=(),
-            partial_workbook=None,
-        ))
+        return WorkbookOperationException(
+            ext.ErrWorkbookOp(
+                message=self._message,
+                common_errors=[ext.CommonError(message="Unexpected error occurred")],
+                entry_errors=(),
+                partial_workbook=None,
+            )
+        )
 
     def convert_exc(self, entry_name: Optional[str], exc: Exception) -> ext.CommonError:
         msg: str
@@ -144,17 +155,19 @@ class WorkbookOperationErrorHandler:
             return None
 
         for e in exc.data.unexpected_errors:
-            if (
-                isinstance(e, AccessDeniedErr)
-                and e.data.operation in [DatasetOpCode.WORKBOOK_INFO_GET, UsOpCode.WB_INFO_GET]
-            ):
+            if isinstance(e, AccessDeniedErr) and e.data.operation in [
+                DatasetOpCode.WORKBOOK_INFO_GET,
+                UsOpCode.WB_INFO_GET,
+            ]:
                 common_errors = [ext.CommonError(message="No access to workbook")]
-                return WorkbookOperationException(ext.ErrWorkbookOp(
-                    message="No access to workbook",
-                    common_errors=common_errors,
-                    entry_errors=[],
-                    partial_workbook=exc.data.partial_workbook,
-                ))
+                return WorkbookOperationException(
+                    ext.ErrWorkbookOp(
+                        message="No access to workbook",
+                        common_errors=common_errors,
+                        entry_errors=[],
+                        partial_workbook=exc.data.partial_workbook,
+                    )
+                )
 
         return None  # mypy
 
@@ -185,17 +198,11 @@ class WorkbookOperationErrorHandler:
             entry_errors = [
                 ext.EntryError(
                     name=entry_name,
-                    errors=[
-                        self.convert_exc(entry_name, per_entry_exc)
-                        for per_entry_exc in entry_exc_list
-                    ],
+                    errors=[self.convert_exc(entry_name, per_entry_exc) for per_entry_exc in entry_exc_list],
                 )
                 for entry_name, entry_exc_list in map_entry_name_exc.items()
             ]
-            common_errors = [
-                self.convert_exc(None, exc)
-                for exc in main_exc.data.unexpected_errors
-            ]
+            common_errors = [self.convert_exc(None, exc) for exc in main_exc.data.unexpected_errors]
 
             partial_workbook = main_exc.data.partial_workbook
         elif isinstance(main_exc, WorkbookOperationException):
@@ -235,25 +242,18 @@ class WorkbookModificationExcComposer(SimpleCollectingExcComposer[WbErrHandlingC
         composite_translator = CompositeExcTranslator.create(do_add_exc_message=self._do_add_exc_message)
 
         for ctx, exc in self.collected_postponed_errors:
-            map_entry_name_errors[ctx.entry_name].extend(
-                composite_translator.translate_error(exc)
-            )
+            map_entry_name_errors[ctx.entry_name].extend(composite_translator.translate_error(exc))
 
         entry_errors = sorted(
-            [
-                ext.EntryError(name=name, errors=err_list)
-                for name, err_list in map_entry_name_errors.items()
-            ],
-            key=lambda entry_err: entry_err.name
+            [ext.EntryError(name=name, errors=err_list) for name, err_list in map_entry_name_errors.items()],
+            key=lambda entry_err: entry_err.name,
         )
 
         common_errors: list[ext.CommonError] = []
         unexpected_exc = self.collected_unexpected_error
 
         if unexpected_exc is not None:
-            common_errors.extend(
-                composite_translator.translate_error(unexpected_exc)
-            )
+            common_errors.extend(composite_translator.translate_error(unexpected_exc))
 
         exc_data = ext.ErrWorkbookOp(
             message="Error writing workbook",

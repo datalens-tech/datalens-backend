@@ -1,3 +1,4 @@
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 from dl_formula.definitions.scope import Scope
 from dl_formula_ref.categories.aggregation import CATEGORY_AGGREGATION
 from dl_formula_ref.categories.logical import CATEGORY_LOGICAL
@@ -10,8 +11,6 @@ from dl_formula_ref.registry.registry import (
     RefFunctionKey,
 )
 from dl_formula_ref.registry.tools import populate_registry_from_definitions
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 
 def check_function(func_name: str, exp_signature: list, category_name: str) -> None:

@@ -1,17 +1,29 @@
 import pytest
 
-from dl_constants.enums import BIType, RawSQLLevel
-
-from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec, SubselectDataSourceSpec
+from dl_constants.enums import (
+    BIType,
+    RawSQLLevel,
+)
+from dl_core.data_source_spec.sql import (
+    StandardSchemaSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+)
 from dl_core.db import SchemaColumn
-
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass, DataSourceTestByViewClass
+from dl_core_testing.testcases.data_source import (
+    DataSourceTestByViewClass,
+    DefaultDataSourceTestClass,
+)
 
-from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE, SOURCE_TYPE_ORACLE_SUBSELECT
-from bi_connector_oracle.core.data_source import OracleDataSource, OracleSubselectDataSource
+from bi_connector_oracle.core.constants import (
+    SOURCE_TYPE_ORACLE_SUBSELECT,
+    SOURCE_TYPE_ORACLE_TABLE,
+)
+from bi_connector_oracle.core.data_source import (
+    OracleDataSource,
+    OracleSubselectDataSource,
+)
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
-
 from bi_connector_oracle_tests.db.config import SUBSELECT_QUERY_FULL
 from bi_connector_oracle_tests.db.core.base import BaseOracleTestClass
 
@@ -23,22 +35,21 @@ def _update_utype_for_oracle(user_type: BIType) -> BIType:
 
 
 SAMPLE_TABLE_SCHEMA_SUPERSTORE_ORACLIZED = [
-    (name, _update_utype_for_oracle(user_type))
-    for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema
+    (name, _update_utype_for_oracle(user_type)) for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema
 ]
 
 
 class TestOracleTableDataSource(
-        BaseOracleTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionSQLOracle,
-            StandardSchemaSQLDataSourceSpec,
-            OracleDataSource,
-        ],
+    BaseOracleTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionSQLOracle,
+        StandardSchemaSQLDataSourceSpec,
+        OracleDataSource,
+    ],
 ):
     DSRC_CLS = OracleDataSource
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:
         dsrc_spec = StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_TABLE,
@@ -53,18 +64,18 @@ class TestOracleTableDataSource(
 
 
 class TestOracleSubselectDataSource(
-        BaseOracleTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionSQLOracle,
-            SubselectDataSourceSpec,
-            OracleSubselectDataSource,
-        ],
+    BaseOracleTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionSQLOracle,
+        SubselectDataSourceSpec,
+        OracleSubselectDataSource,
+    ],
 ):
     DSRC_CLS = OracleSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
@@ -84,12 +95,11 @@ class TestOracleSubselectByView(
         OracleSubselectDataSource,
     ],
 ):
-
     DSRC_CLS = OracleSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def initial_data_source_spec(self) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
@@ -98,7 +108,7 @@ class TestOracleSubselectByView(
         return dsrc_spec
 
     def postprocess_view_schema(
-            self, view_schema: list[SchemaColumn], cursor_schema: list[SchemaColumn]
+        self, view_schema: list[SchemaColumn], cursor_schema: list[SchemaColumn]
     ) -> list[SchemaColumn]:
         result = super().postprocess_view_schema(view_schema, cursor_schema=cursor_schema)
         if len(view_schema) != len(cursor_schema):
@@ -106,15 +116,11 @@ class TestOracleSubselectByView(
 
         # Actual result seems to depend on the cx_Oracle version too much,
         # and DL uses these equivalently anyway.
-        tnames = ('binary_double', 'binary_float')
+        tnames = ("binary_double", "binary_float")
         for idx, schema_col in enumerate(result):
             if schema_col.native_type.name in tnames:
                 cs_name = cursor_schema[idx].native_type.name
                 if cs_name in tnames:
-                    schema_col = schema_col.clone(
-                        native_type=schema_col.native_type.clone(
-                            name=cs_name
-                        )
-                    )
+                    schema_col = schema_col.clone(native_type=schema_col.native_type.clone(name=cs_name))
                     result[idx] = schema_col
         return result

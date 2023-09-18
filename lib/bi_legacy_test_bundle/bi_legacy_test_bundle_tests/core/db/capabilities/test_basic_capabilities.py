@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-from dl_constants.enums import DataSourceRole, JoinType
-
-from dl_core.dataset_capabilities import DatasetCapabilities
-from dl_core_testing.dataset import get_created_from
-from dl_core_testing.dataset_wrappers import DatasetTestWrapper
-
 from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
 )
+from dl_constants.enums import (
+    DataSourceRole,
+    JoinType,
+)
+from dl_core.dataset_capabilities import DatasetCapabilities
+from dl_core_testing.dataset import get_created_from
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
 
 def test_compatibility_info(db, saved_connection, saved_dataset, default_sync_usm):
@@ -18,16 +19,17 @@ def test_compatibility_info(db, saved_connection, saved_dataset, default_sync_us
     ds_wrapper = DatasetTestWrapper(dataset=dataset, us_manager=default_sync_usm)
     capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=ds_wrapper.dsrc_coll_factory)
 
-    dsrc = ds_wrapper.get_data_source_strict(
-        source_id=dataset.get_single_data_source_id(), role=DataSourceRole.origin)
+    dsrc = ds_wrapper.get_data_source_strict(source_id=dataset.get_single_data_source_id(), role=DataSourceRole.origin)
     dsrc_type = dsrc.spec.source_type
     actual_compat_stypes = capabilities.get_compatible_source_types()
 
     if dsrc_type == SOURCE_TYPE_CH_TABLE:
-        assert actual_compat_stypes == frozenset([
-            dsrc_type,
-            SOURCE_TYPE_CH_SUBSELECT,
-        ])
+        assert actual_compat_stypes == frozenset(
+            [
+                dsrc_type,
+                SOURCE_TYPE_CH_SUBSELECT,
+            ]
+        )
     else:
         assert actual_compat_stypes.issuperset(frozenset([dsrc_type]))
 
@@ -42,7 +44,4 @@ def test_compatibility_info(db, saved_connection, saved_dataset, default_sync_us
 
     assert capabilities.get_effective_connection_id() == connection.uuid
     assert capabilities.get_supported_join_types().issuperset({JoinType.inner, JoinType.left})
-    assert capabilities.source_can_be_added(
-        connection_id=connection.uuid,
-        created_from=get_created_from(db=db)
-    )
+    assert capabilities.source_can_be_added(connection_id=connection.uuid, created_from=get_created_from(db=db))

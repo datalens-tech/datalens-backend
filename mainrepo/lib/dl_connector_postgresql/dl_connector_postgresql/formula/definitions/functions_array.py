@@ -7,6 +7,8 @@ from sqlalchemy.sql.elements import (
 )
 from sqlalchemy.sql.type_api import TypeEngine
 
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
+from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 from dl_formula.definitions.literals import (
@@ -14,9 +16,6 @@ from dl_formula.definitions.literals import (
     un_literal,
 )
 from dl_formula.shortcuts import n
-
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
-from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 
 V = TranslationVariant.make
 

@@ -1,19 +1,22 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Iterable, List
-
 import json
 import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Iterable,
+    List,
+)
 
 import attr
 import grpc
-
 import ydb.dbapi as ydb_dbapi
-import ydb.issues as ydb_cli_err
 from ydb.iam import ServiceAccountCredentials
+import ydb.issues as ydb_cli_err
 
 from dl_constants.enums import ConnectionType
-
 from dl_core import exc
 from dl_core.connection_models import TableIdent
 
@@ -31,23 +34,23 @@ LOGGER = logging.getLogger(__name__)
 @attr.s
 class YDBAdapter(YQLAdapterBase[YDBConnTargetDTO]):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_YDB
-    dsn_template: ClassVar[str] = '{dialect}:///ydb/'  # 'yql:///ydb/'
+    dsn_template: ClassVar[str] = "{dialect}:///ydb/"  # 'yql:///ydb/'
 
     def _make_cloud_creds(self, data_s: str) -> Any:
         data = json.loads(data_s)
         creds = ServiceAccountCredentials(
-            service_account_id=data['service_account_id'],
-            access_key_id=data['id'],
-            private_key=data['private_key'],
+            service_account_id=data["service_account_id"],
+            access_key_id=data["id"],
+            private_key=data["private_key"],
         )
         return creds
 
     def get_connect_args(self) -> dict:
         target_dto = self._target_dto
         is_cloud = target_dto.is_cloud
-        proto = 'grpcs' if is_cloud else 'grpc'
+        proto = "grpcs" if is_cloud else "grpc"
         args = dict(
-            endpoint='{}://{}:{}'.format(
+            endpoint="{}://{}:{}".format(
                 proto,
                 target_dto.host,
                 target_dto.port,
@@ -66,7 +69,7 @@ class YDBAdapter(YQLAdapterBase[YDBConnTargetDTO]):
     EXTRA_EXC_CLS = (ydb_dbapi.Error, ydb_cli_err.Error, grpc.RpcError)
 
     def _list_table_names_i(self, db_name: str, show_dot: bool = False) -> Iterable[str]:
-        assert db_name, 'db_name is required here'
+        assert db_name, "db_name is required here"
         db_engine = self.get_db_engine(db_name)
         connection = db_engine.connect()
         try:
@@ -77,18 +80,18 @@ class YDBAdapter(YQLAdapterBase[YDBConnTargetDTO]):
             queue = [db_name]
             # Relative paths in `select` are also valid (i.e. "... from `some_dir/some_table`"),
             # so, for visual convenience, remove the db prefix.
-            unprefix = db_name.rstrip('/') + '/'
+            unprefix = db_name.rstrip("/") + "/"
             while queue:
                 path = queue.pop(0)
                 resp = driver.scheme_client.async_list_directory(path)
                 res = resp.result()
                 children = [
                     (
-                        '{}/{}'.format(path, child.name),
+                        "{}/{}".format(path, child.name),
                         child,
                     )
                     for child in res.children
-                    if show_dot or not child.name.startswith('.')
+                    if show_dot or not child.name.startswith(".")
                 ]
                 children.sort()
                 for full_path, child in children:
@@ -106,7 +109,7 @@ class YDBAdapter(YQLAdapterBase[YDBConnTargetDTO]):
             for item in result:
                 yield item
         except driver_excs as err:
-            raise exc.DatabaseQueryError(db_message=str(err), query='list_directory()')
+            raise exc.DatabaseQueryError(db_message=str(err), query="list_directory()")
 
     def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
         db_name = schema_ident.db_name

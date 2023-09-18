@@ -5,11 +5,9 @@ from os import path
 from typing import Optional
 
 import attr
-from lxml import etree as et
-
-
 from datalens_local_dev.get_submodules import rel_path_list_for_pycham_upload
 from datalens_local_dev.idea import find_idea_dir
+from lxml import etree as et
 
 
 class DirectoryCls(enum.Enum):
@@ -41,9 +39,7 @@ class DirectoryMarkingManager:
         )
 
     def find_main_content_node(self) -> et.Element:
-        node = self.root.find(
-            "./component[@name='NewModuleRootManager']/content[@url='file://$MODULE_DIR$']"
-        )
+        node = self.root.find("./component[@name='NewModuleRootManager']/content[@url='file://$MODULE_DIR$']")
         if node is None:
             raise ValueError(f"Can not find root content node in {self.get_iml_path()}")
         return node
@@ -53,17 +49,13 @@ class DirectoryMarkingManager:
         return f"file://$MODULE_DIR$/{local_path}"
 
     def get_directory_elem(self, local_path: str) -> Optional[et.Element]:
-        all_elem = self.find_main_content_node().findall(
-            f"./*[@url='{self.url_by_local_path(local_path)}']"
-        )
+        all_elem = self.find_main_content_node().findall(f"./*[@url='{self.url_by_local_path(local_path)}']")
         if len(all_elem) == 1:
             return all_elem[0]
         if len(all_elem) == 0:
             return None
 
-        raise ValueError(
-            f"Unexpected count of directory '{local_path}' = {len(all_elem)}"
-        )
+        raise ValueError(f"Unexpected count of directory '{local_path}' = {len(all_elem)}")
 
     def get_directory_cls(self, local_path: str) -> Optional[DirectoryCls]:
         dir_elem = self.get_directory_elem(local_path)
@@ -71,10 +63,7 @@ class DirectoryMarkingManager:
         if dir_elem is None:
             return None
 
-        if (
-            dir_elem.tag == "sourceFolder"
-            and dir_elem.attrib["isTestSource"] == "false"
-        ):
+        if dir_elem.tag == "sourceFolder" and dir_elem.attrib["isTestSource"] == "false":
             return DirectoryCls.sources_root
         if dir_elem.tag == "excludeFolder":
             return DirectoryCls.exclude
@@ -90,9 +79,7 @@ class DirectoryMarkingManager:
             idx = parent.index(dir_elem)
 
         if cls == DirectoryCls.exclude:
-            new_elem = et.Element(
-                "excludeFolder", dict(url=self.url_by_local_path(local_path))
-            )
+            new_elem = et.Element("excludeFolder", dict(url=self.url_by_local_path(local_path)))
         elif cls == DirectoryCls.sources_root:
             new_elem = et.Element(
                 "sourceFolder",

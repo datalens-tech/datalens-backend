@@ -1,6 +1,7 @@
+import time
+
 import attr
 import pytest
-import time
 
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
@@ -13,8 +14,8 @@ from bi_external_api.domain.internal.dl_common import EntrySummary
 from bi_external_api.internal_api_clients.exc_api import WorkbookNotFound
 from bi_external_api.testings import (
     FlatTableChartBuilder,
-    SingleTabDashboardBuilder,
     PGSubSelectDatasetFactory,
+    SingleTabDashboardBuilder,
 )
 from dl_testing.utils import skip_outside_devhost
 
@@ -23,12 +24,12 @@ from dl_testing.utils import skip_outside_devhost
 @skip_outside_devhost
 @pytest.mark.asyncio
 async def test_wb_ctx_loader(
-        bi_ext_api_int_preprod_charts_api_client,
-        bi_ext_api_int_preprod_dash_api_client,
-        wb_ctx_loader: WorkbookContextLoader,
-        dataset_factory: PGSubSelectDatasetFactory,
-        pg_connection,
-        pseudo_wb_path,
+    bi_ext_api_int_preprod_charts_api_client,
+    bi_ext_api_int_preprod_dash_api_client,
+    wb_ctx_loader: WorkbookContextLoader,
+    dataset_factory: PGSubSelectDatasetFactory,
+    pg_connection,
+    pseudo_wb_path,
 ):
     charts_cli = bi_ext_api_int_preprod_charts_api_client
     dash_api_cli = bi_ext_api_int_preprod_dash_api_client
@@ -40,33 +41,31 @@ async def test_wb_ctx_loader(
     )
 
     # Creating chart
-    chart = (
-        FlatTableChartBuilder(dataset_inst=ds_inst)
-            .dataset_fields_to_columns("num", "txt")
-    ).build_chart()
+    chart = (FlatTableChartBuilder(dataset_inst=ds_inst).dataset_fields_to_columns("num", "txt")).build_chart()
 
     chart_name = "tlb_chart"
     chart_summary = await charts_cli.create_chart(chart, workbook_id=pseudo_wb_path, name=chart_name)
 
     # Creating dashboard
-    dash = (SingleTabDashboardBuilder()
+    dash = (
+        SingleTabDashboardBuilder()
         .tab_id("the_tab_id")
         .tab_title("the_tab_title")
         .item_selector_dataset_based(
-        dash_tab_item_id="s_1",
-        title="TXT",
-        dataset_inst=ds_inst,
-        default_values=['one'],
-        field_id="txt",
-        pp=SingleTabDashboardBuilder.PP(x=0, y=0, w=1, h=1),
-    )
+            dash_tab_item_id="s_1",
+            title="TXT",
+            dataset_inst=ds_inst,
+            default_values=["one"],
+            field_id="txt",
+            pp=SingleTabDashboardBuilder.PP(x=0, y=0, w=1, h=1),
+        )
         .item_widget_single_tab(
-        dash_tab_item_id="wc_1",
-        title="Table num txt",
-        chart_id=chart_summary.id,
-        widget_tab_item_id="wc_1_tid",
-        pp=SingleTabDashboardBuilder.PP(x=0, y=1, w=2, h=2),
-    )
+            dash_tab_item_id="wc_1",
+            title="Table num txt",
+            chart_id=chart_summary.id,
+            widget_tab_item_id="wc_1_tid",
+            pp=SingleTabDashboardBuilder.PP(x=0, y=1, w=2, h=2),
+        )
     ).build_dash()
 
     dash_name = "Main dash"
@@ -128,7 +127,4 @@ async def test_wb_ctx_loader_gather_workbook(pseudo_wb_path, wb_ctx_loader, dash
     assert {dash_inst.summary for dash_inst in wb_ctx.dashboards} == {
         normalize_inst_summary(dash_summary) for dash_summary in dashes_in_hierarchy
     }
-    assert map_id_orig_summary == {
-        dash_summary.id: dash_summary
-        for dash_summary in dashes_in_hierarchy
-    }
+    assert map_id_orig_summary == {dash_summary.id: dash_summary for dash_summary in dashes_in_hierarchy}

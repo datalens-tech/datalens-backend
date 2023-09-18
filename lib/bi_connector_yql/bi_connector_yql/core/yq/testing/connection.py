@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from typing import (
+    Any,
+    Optional,
+)
 import uuid
-from typing import Any, Optional
 
 from dl_constants.enums import RawSQLLevel
-
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.connection import make_conn_key
 
@@ -20,7 +22,7 @@ def make_saved_yq_connection(
     raw_sql_level: RawSQLLevel = RawSQLLevel.off,
     **kwargs: Any,
 ) -> YQConnection:
-    conn_name = 'yq test conn {}'.format(uuid.uuid4())
+    conn_name = "yq test conn {}".format(uuid.uuid4())
     conn = YQConnection.create_from_dict(
         YQConnection.DataModel(
             service_account_id=service_account_id,
@@ -28,11 +30,11 @@ def make_saved_yq_connection(
             password=password,
             raw_sql_level=raw_sql_level,
         ),
-        ds_key=make_conn_key('connections', conn_name),
+        ds_key=make_conn_key("connections", conn_name),
         type_=CONNECTION_TYPE_YQ.name,
-        meta={'title': conn_name, 'state': 'saved'},
+        meta={"title": conn_name, "state": "saved"},
         us_manager=sync_usm,
-        **kwargs
+        **kwargs,
     )
     sync_usm.save(conn)
     return conn

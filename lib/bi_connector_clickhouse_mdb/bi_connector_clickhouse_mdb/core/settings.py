@@ -1,8 +1,10 @@
 import attr
 
-from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
 from dl_configs.settings_loaders.meta_definition import s_attrib
-
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
 

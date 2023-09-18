@@ -1,18 +1,18 @@
-from bi_external_api.enums import ExtAPIType
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.external import (
-    WorkbookOpRequest,
-    WorkBook,
-    DashInstance,
     Dashboard,
     DashboardTab,
     DashboardTabItem,
-    DashTabItemPlacement,
-    WorkbookWriteRequest,
     DashChartsContainer,
+    DashInstance,
+    DashTabItemPlacement,
     WidgetTab,
+    WorkBook,
+    WorkbookOpRequest,
+    WorkbookWriteRequest,
     get_external_model_mapper,
 )
+from bi_external_api.enums import ExtAPIType
 
 
 def test_write_wb_request_deserialize_widget_container_bw_field_name_support():
@@ -31,7 +31,9 @@ def test_write_wb_request_deserialize_widget_container_bw_field_name_support():
                                 kind="widget_container",  # legacy kind name
                                 hide_title=True,
                                 tabs=[
-                                    dict(id="wtid_total_sales_indicator", chart_name="total_sales_indicator", title=None),
+                                    dict(
+                                        id="wtid_total_sales_indicator", chart_name="total_sales_indicator", title=None
+                                    ),
                                 ],
                                 default_active_chart_tab_id="tiid_chart_0",
                             ),
@@ -49,7 +51,11 @@ def test_write_wb_request_deserialize_widget_container_bw_field_name_support():
                                 kind="charts_container",
                                 hide_title=True,
                                 tabs=[
-                                    dict(id="wtid_total_sales_indicator2", chart_name="total_sales_indicator2", title=None),
+                                    dict(
+                                        id="wtid_total_sales_indicator2",
+                                        chart_name="total_sales_indicator2",
+                                        title=None,
+                                    ),
                                 ],
                                 default_widget_id="tiid_chart_1",  # legacy field name
                             ),
@@ -96,7 +102,11 @@ def test_write_wb_request_deserialize_widget_container_bw_field_name_support():
                                         element=DashChartsContainer(
                                             hide_title=True,
                                             tabs=(
-                                                WidgetTab(id="wtid_total_sales_indicator", chart_name="total_sales_indicator", title=None),
+                                                WidgetTab(
+                                                    id="wtid_total_sales_indicator",
+                                                    chart_name="total_sales_indicator",
+                                                    title=None,
+                                                ),
                                             ),
                                             default_active_chart_tab_id="tiid_chart_0",
                                         ),
@@ -114,7 +124,9 @@ def test_write_wb_request_deserialize_widget_container_bw_field_name_support():
                                             hide_title=True,
                                             tabs=(
                                                 WidgetTab(
-                                                    id="wtid_total_sales_indicator2", chart_name="total_sales_indicator2", title=None
+                                                    id="wtid_total_sales_indicator2",
+                                                    chart_name="total_sales_indicator2",
+                                                    title=None,
                                                 ),
                                             ),
                                             default_active_chart_tab_id="tiid_chart_1",

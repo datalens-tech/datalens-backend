@@ -1,30 +1,46 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Sequence, Union
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+    Union,
+)
 
 import attr
 import pytest
+
 from bi_external_api.converter.charts.utils import convert_field_type_dataset_to_chart
-from bi_external_api.converter.converter_exc import CompositeConverterError, WorkbookEntryNotFound
+from bi_external_api.converter.converter_exc import (
+    CompositeConverterError,
+    WorkbookEntryNotFound,
+)
 from bi_external_api.converter.dash import DashboardConverter
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import dashboards, charts
+from bi_external_api.domain.internal import (
+    charts,
+    dashboards,
+)
 from bi_external_api.domain.internal.dashboards import Connection
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 from bi_external_api.testings import FlatTableChartBuilder
 
-from .conftest import PG_1_DS, PG_CONN, WB_ID
+from .conftest import (
+    PG_1_DS,
+    PG_CONN,
+    WB_ID,
+)
 
 FLAT_TABLE_ID = "flat_table_id"
 FLAT_TABLE_NAME = "flat_table_name"
 
 FLAT_TABLE_INST = (
     FlatTableChartBuilder()
-        .dataset_instance(PG_1_DS)
-        .all_dataset_fields_to_columns()
-        .build_chart_instance(id=FLAT_TABLE_ID, name=FLAT_TABLE_NAME, wb_id=WB_ID)
+    .dataset_instance(PG_1_DS)
+    .all_dataset_fields_to_columns()
+    .build_chart_instance(id=FLAT_TABLE_ID, name=FLAT_TABLE_NAME, wb_id=WB_ID)
 )
 
 COMMON_WB_CONTEXT = WorkbookContext(
@@ -54,15 +70,16 @@ class DashTestCase:
 
     @classmethod
     def selector_case(
-            cls, *,
-            name: str,
-            multiselect: bool,
-            field_id: str,
-            ext_default_value: Optional[ext.Value],
-            int_default_value: Optional[SingleOrMultiString],
-            ext_operation: ext.ComparisonOperation = None,
-            int_operation: charts.Operation = None,
-            param_default: Union[str, Sequence[str]],
+        cls,
+        *,
+        name: str,
+        multiselect: bool,
+        field_id: str,
+        ext_default_value: Optional[ext.Value],
+        int_default_value: Optional[SingleOrMultiString],
+        ext_operation: ext.ComparisonOperation = None,
+        int_operation: charts.Operation = None,
+        param_default: Union[str, Sequence[str]],
     ) -> DashTestCase:
         title = f"{field_id.capitalize()} title"
         show_title = True
@@ -95,7 +112,7 @@ class DashTestCase:
             ext_control=ext_control,
             int_control=dashboards.ItemControl(
                 id="--replace-me--",
-                namespace='default',
+                namespace="default",
                 data=dashboards.DatasetBasedControlData(
                     title=title,
                     source=dashboards.DatasetControlSourceSelect(
@@ -107,19 +124,20 @@ class DashTestCase:
                     ),
                 ),
                 defaults=FrozenMappingStrToStrOrStrSeq({field_id: param_default}),
-            )
+            ),
         )
 
     @classmethod
     def text_input_case(
-            cls, *,
-            name: str,
-            field_id: str,
-            ext_default_value: Optional[ext.Value],
-            int_default_value: Optional[SingleOrMultiString],
-            ext_operation: ext.ComparisonOperation = None,
-            int_operation: charts.Operation = None,
-            param_default: Union[str, Sequence[str]],
+        cls,
+        *,
+        name: str,
+        field_id: str,
+        ext_default_value: Optional[ext.Value],
+        int_default_value: Optional[SingleOrMultiString],
+        ext_operation: ext.ComparisonOperation = None,
+        int_operation: charts.Operation = None,
+        param_default: Union[str, Sequence[str]],
     ) -> DashTestCase:
         title = f"{field_id.capitalize()} title"
         show_title = True
@@ -138,7 +156,7 @@ class DashTestCase:
             ),
             int_control=dashboards.ItemControl(
                 id="--replace-me--",
-                namespace='default',
+                namespace="default",
                 data=dashboards.DatasetBasedControlData(
                     title=title,
                     source=dashboards.DatasetControlSourceTextInput(
@@ -154,10 +172,10 @@ class DashTestCase:
 
     @classmethod
     def control_case(
-            cls,
-            name: str,
-            ext_control: ext.DashControl,
-            int_control: dashboards.ItemControl,
+        cls,
+        name: str,
+        ext_control: ext.DashControl,
+        int_control: dashboards.ItemControl,
     ) -> DashTestCase:
         tab_id = "sTa"
         tab_title = "Selector case tab title"
@@ -168,37 +186,37 @@ class DashTestCase:
         return cls(
             name=name,
             ext_dash=ext.Dashboard(
-                tabs=[ext.DashboardTab(
-                    id=tab_id,
-                    title=tab_title,
-                    ignored_connections=[
-                        ext.IgnoredConnection(
-                            from_id="foo",
-                            to_id="bar",
-                        ),
-                    ],
-                    items=[ext.DashboardTabItem(
-                        id=tab_item_id,
-                        placement=ext_item_placement,
-                        element=ext_control
-                    )],
-                )],
+                tabs=[
+                    ext.DashboardTab(
+                        id=tab_id,
+                        title=tab_title,
+                        ignored_connections=[
+                            ext.IgnoredConnection(
+                                from_id="foo",
+                                to_id="bar",
+                            ),
+                        ],
+                        items=[ext.DashboardTabItem(id=tab_item_id, placement=ext_item_placement, element=ext_control)],
+                    )
+                ],
             ),
             int_dash=dashboards.Dashboard(
-                tabs=[dashboards.Tab(
-                    id=tab_id,
-                    title=tab_title,
-                    items=[attr.evolve(int_control, id=tab_item_id)],
-                    layout=[int_item_placement],
-                    connections=[
-                        Connection(
-                            from_="foo",
-                            to="bar",
-                            kind="ignore",
-                        )
-                    ],
-                    aliases=dashboards.Aliases(default=[]),
-                )],
+                tabs=[
+                    dashboards.Tab(
+                        id=tab_id,
+                        title=tab_title,
+                        items=[attr.evolve(int_control, id=tab_item_id)],
+                        layout=[int_item_placement],
+                        connections=[
+                            Connection(
+                                from_="foo",
+                                to="bar",
+                                kind="ignore",
+                            )
+                        ],
+                        aliases=dashboards.Aliases(default=[]),
+                    )
+                ],
             ),
         )
 
@@ -213,37 +231,37 @@ class DashTestCase:
         return cls(
             name=name,
             ext_dash=ext.Dashboard(
-                tabs=[ext.DashboardTab(
-                    id=tab_id,
-                    title=tab_title,
-                    items=[ext.DashboardTabItem(
-                        id=tab_item_id,
-                        placement=ext_item_placement,
-                        element=ext_elem
-                    )],
-                    ignored_connections=[
-                        ext.IgnoredConnection(
-                            from_id="foo",
-                            to_id="bar",
-                        ),
-                    ],
-                )],
+                tabs=[
+                    ext.DashboardTab(
+                        id=tab_id,
+                        title=tab_title,
+                        items=[ext.DashboardTabItem(id=tab_item_id, placement=ext_item_placement, element=ext_elem)],
+                        ignored_connections=[
+                            ext.IgnoredConnection(
+                                from_id="foo",
+                                to_id="bar",
+                            ),
+                        ],
+                    )
+                ],
             ),
             int_dash=dashboards.Dashboard(
-                tabs=[dashboards.Tab(
-                    id=tab_id,
-                    title=tab_title,
-                    items=[attr.evolve(int_item, id=tab_item_id)],
-                    layout=[int_item_placement],
-                    connections=[
-                        Connection(
-                            from_="foo",
-                            to="bar",
-                            kind="ignore",
-                        )
-                    ],
-                    aliases=dashboards.Aliases(default=[]),
-                )],
+                tabs=[
+                    dashboards.Tab(
+                        id=tab_id,
+                        title=tab_title,
+                        items=[attr.evolve(int_item, id=tab_item_id)],
+                        layout=[int_item_placement],
+                        connections=[
+                            Connection(
+                                from_="foo",
+                                to="bar",
+                                kind="ignore",
+                            )
+                        ],
+                        aliases=dashboards.Aliases(default=[]),
+                    )
+                ],
             ),
         )
 
@@ -254,21 +272,28 @@ CASES = [
         ext_dash=ext.Dashboard(
             tabs=(
                 ext.DashboardTab(
-                    id='Ak',
-                    title='Вкладка 1',
+                    id="Ak",
+                    title="Вкладка 1",
                     items=(
                         ext.DashboardTabItem(
                             id="chart_1",
-                            placement=ext.DashTabItemPlacement(h=2, w=8, x=0, y=0, ),
+                            placement=ext.DashTabItemPlacement(
+                                h=2,
+                                w=8,
+                                x=0,
+                                y=0,
+                            ),
                             element=ext.DashChartsContainer(
                                 hide_title=False,
-                                tabs=[ext.WidgetTab(
-                                    id="ma",
-                                    title="tbl",
-                                    chart_name=FLAT_TABLE_INST.summary.name,
-                                )],
+                                tabs=[
+                                    ext.WidgetTab(
+                                        id="ma",
+                                        title="tbl",
+                                        chart_name=FLAT_TABLE_INST.summary.name,
+                                    )
+                                ],
                                 default_active_chart_tab_id="ma",
-                            )
+                            ),
                         ),
                     ),
                     ignored_connections=[
@@ -283,23 +308,23 @@ CASES = [
         int_dash=dashboards.Dashboard(
             tabs=(
                 dashboards.Tab(
-                    id='Ak',
-                    title='Вкладка 1',
+                    id="Ak",
+                    title="Вкладка 1",
                     items=(
                         dashboards.ItemWidget(
-                            id='chart_1',
-                            namespace='default',
+                            id="chart_1",
+                            namespace="default",
                             data=dashboards.TabItemDataWidget(
                                 hideTitle=False,
                                 tabs=(
                                     dashboards.WidgetTabItem(
-                                        id='ma',
-                                        title='tbl',
+                                        id="ma",
+                                        title="tbl",
                                         params=FrozenMappingStrToStrOrStrSeq({}),
                                         chartId=FLAT_TABLE_INST.summary.id,
                                         isDefault=True,
                                         autoHeight=False,
-                                        description='',
+                                        description="",
                                     ),
                                 ),
                             ),
@@ -307,7 +332,7 @@ CASES = [
                     ),
                     layout=(
                         dashboards.LayoutItem(
-                            i='chart_1',
+                            i="chart_1",
                             h=2,
                             w=8,
                             x=0,
@@ -333,21 +358,23 @@ CASES = [
         ext_dash=ext.Dashboard(
             tabs=(
                 ext.DashboardTab(
-                    id='Ak',
-                    title='Вкладка 1',
+                    id="Ak",
+                    title="Вкладка 1",
                     items=(
                         ext.DashboardTabItem(
                             id="g5",
                             placement=ext.DashTabItemPlacement(h=10, w=12, x=0, y=2),
                             element=ext.DashChartsContainer(
                                 hide_title=False,
-                                tabs=[ext.WidgetTab(
-                                    id="ma",
-                                    title="tbl",
-                                    chart_name=FLAT_TABLE_INST.summary.name,
-                                )],
+                                tabs=[
+                                    ext.WidgetTab(
+                                        id="ma",
+                                        title="tbl",
+                                        chart_name=FLAT_TABLE_INST.summary.name,
+                                    )
+                                ],
                                 default_active_chart_tab_id="ma",
-                            )
+                            ),
                         ),
                         ext.DashboardTabItem(
                             id="OK",
@@ -361,7 +388,7 @@ CASES = [
                                 ),
                                 default_value=ext.MultiStringValue(values=["one", "two"]),
                             ),
-                        )
+                        ),
                     ),
                     ignored_connections=[
                         ext.IgnoredConnection(
@@ -375,60 +402,64 @@ CASES = [
         int_dash=dashboards.Dashboard(
             tabs=(
                 dashboards.Tab(
-                    id='Ak',
-                    title='Вкладка 1',
+                    id="Ak",
+                    title="Вкладка 1",
                     items=(
                         dashboards.ItemWidget(
-                            id='g5',
-                            namespace='default',
+                            id="g5",
+                            namespace="default",
                             data=dashboards.TabItemDataWidget(
                                 hideTitle=False,
                                 tabs=(
                                     dashboards.WidgetTabItem(
-                                        id='ma',
-                                        title='tbl',
+                                        id="ma",
+                                        title="tbl",
                                         params=FrozenMappingStrToStrOrStrSeq({}),
                                         chartId=FLAT_TABLE_ID,
                                         isDefault=True,
                                         autoHeight=False,
-                                        description='',
+                                        description="",
                                     ),
                                 ),
                             ),
                         ),
                         dashboards.ItemControl(
-                            id='OK',
-                            namespace='default',
+                            id="OK",
+                            namespace="default",
                             data=dashboards.DatasetBasedControlData(
-                                title='customer title',
+                                title="customer title",
                                 source=dashboards.DatasetControlSourceSelect(
                                     showTitle=True,
                                     multiselectable=True,
-                                    defaultValue=SingleOrMultiString.from_sequence([
-                                        'one',
-                                        'two',
-                                    ]),
-                                    **DashTestCase.ds_source_field_kwargs('customer'),
+                                    defaultValue=SingleOrMultiString.from_sequence(
+                                        [
+                                            "one",
+                                            "two",
+                                        ]
+                                    ),
+                                    **DashTestCase.ds_source_field_kwargs("customer"),
                                 ),
                             ),
-                            defaults=FrozenMappingStrToStrOrStrSeq({
-                                'customer': (
-                                    'one',
-                                    'two',
-                                ),
-                            }),
+                            defaults=FrozenMappingStrToStrOrStrSeq(
+                                {
+                                    "customer": (
+                                        "one",
+                                        "two",
+                                    ),
+                                }
+                            ),
                         ),
                     ),
                     layout=(
                         dashboards.LayoutItem(
-                            i='g5',
+                            i="g5",
                             h=10,
                             w=12,
                             x=0,
                             y=2,
                         ),
                         dashboards.LayoutItem(
-                            i='OK',
+                            i="OK",
                             h=2,
                             w=12,
                             x=0,
@@ -452,7 +483,7 @@ CASES = [
     DashTestCase.selector_case(
         name="selector_single_without_default",  # region
         multiselect=False,
-        field_id='customer',
+        field_id="customer",
         ext_default_value=None,
         int_default_value=None,
         param_default="",
@@ -461,7 +492,7 @@ CASES = [
     DashTestCase.selector_case(
         name="selector_single_with_default",  # region
         multiselect=False,
-        field_id='customer',
+        field_id="customer",
         ext_default_value=ext.SingleStringValue("Vasya"),
         int_default_value=SingleOrMultiString.from_string("Vasya"),
         param_default="Vasya",
@@ -470,7 +501,7 @@ CASES = [
     DashTestCase.selector_case(
         name="selector_single_without_default_custom_operation",  # region
         multiselect=False,
-        field_id='customer',
+        field_id="customer",
         ext_operation=ext.ComparisonOperation.NE,
         int_operation=charts.Operation.NE,
         ext_default_value=None,
@@ -481,7 +512,7 @@ CASES = [
     DashTestCase.selector_case(
         name="selector_single_with_default_custom_operation",  # region
         multiselect=False,
-        field_id='customer',
+        field_id="customer",
         ext_operation=ext.ComparisonOperation.NE,
         int_operation=charts.Operation.NE,
         ext_default_value=ext.SingleStringValue("Vasya"),
@@ -491,7 +522,7 @@ CASES = [
     ),
     DashTestCase.text_input_case(
         name="text_input_without_default",  # region
-        field_id='amount',
+        field_id="amount",
         ext_default_value=None,
         # TODO FIX: BI-3005 WHY IT NOT ACCEPT NULL?!!!! IT even RETURNS NULL when is created via UI
         int_default_value=SingleOrMultiString.from_string(""),
@@ -500,7 +531,7 @@ CASES = [
     ),
     DashTestCase.text_input_case(
         name="text_input_with_default",  # region
-        field_id='amount',
+        field_id="amount",
         ext_default_value=ext.SingleStringValue("1"),
         int_default_value=SingleOrMultiString.from_string("1"),
         param_default="1",
@@ -508,7 +539,7 @@ CASES = [
     ),
     DashTestCase.text_input_case(
         name="text_input_without_default_custom_operation",  # region
-        field_id='amount',
+        field_id="amount",
         ext_operation=ext.ComparisonOperation.GTE,
         int_operation=charts.Operation.GTE,
         ext_default_value=None,
@@ -519,7 +550,7 @@ CASES = [
     ),
     DashTestCase.text_input_case(
         name="selector_single_with_default_custom_operation",  # region
-        field_id='amount',
+        field_id="amount",
         ext_operation=ext.ComparisonOperation.GTE,
         int_operation=charts.Operation.GTE,
         ext_default_value=ext.SingleStringValue("12"),
@@ -540,9 +571,12 @@ CASES = [
         name="selector_multi_with_default",  # region
         multiselect=True,
         field_id="position",
-        ext_default_value=ext.MultiStringValue(('Consumer', 'Home Office')),
-        int_default_value=SingleOrMultiString.from_sequence(('Consumer', 'Home Office')),
-        param_default=('Consumer', 'Home Office',),
+        ext_default_value=ext.MultiStringValue(("Consumer", "Home Office")),
+        int_default_value=SingleOrMultiString.from_sequence(("Consumer", "Home Office")),
+        param_default=(
+            "Consumer",
+            "Home Office",
+        ),
         # endregion
     ),
     DashTestCase.selector_case(
@@ -562,131 +596,141 @@ CASES = [
         field_id="position",
         ext_operation=ext.ComparisonOperation.NIN,
         int_operation=charts.Operation.NIN,
-        ext_default_value=ext.MultiStringValue(('Consumer', 'Home Office')),
-        int_default_value=SingleOrMultiString.from_sequence(('Consumer', 'Home Office')),
-        param_default=('__nin_Consumer', '__nin_Home Office',),
+        ext_default_value=ext.MultiStringValue(("Consumer", "Home Office")),
+        int_default_value=SingleOrMultiString.from_sequence(("Consumer", "Home Office")),
+        param_default=(
+            "__nin_Consumer",
+            "__nin_Home Office",
+        ),
         # endregion
     ),
     DashTestCase.control_case(
         name="selector_date_range_with_default",  # region
         ext_control=ext.DashControlDateRange(
             show_title=True,
-            title='Order Date',
+            title="Order Date",
             source=ext.ControlValueSourceDatasetField(
                 dataset_name=PG_1_DS.summary.name,
-                field_id='date',
+                field_id="date",
             ),
-            default_value=ext.SingleStringValue('__interval___relative_-30d___relative_-0d'),
+            default_value=ext.SingleStringValue("__interval___relative_-30d___relative_-0d"),
         ),
         int_control=dashboards.ItemControl(
-            id='--replace-me--',
-            namespace='default',
+            id="--replace-me--",
+            namespace="default",
             data=dashboards.DatasetBasedControlData(
-                title='Order Date',
+                title="Order Date",
                 source=dashboards.DatasetControlSourceDate(
                     showTitle=True,
-                    defaultValue=SingleOrMultiString(('__interval___relative_-30d___relative_-0d',), is_single=True),
+                    defaultValue=SingleOrMultiString(("__interval___relative_-30d___relative_-0d",), is_single=True),
                     isRange=True,
-                    **DashTestCase.ds_source_field_kwargs('date'),
+                    **DashTestCase.ds_source_field_kwargs("date"),
                 ),
             ),
-            defaults=FrozenMappingStrToStrOrStrSeq({
-                'date': '__interval___relative_-30d___relative_-0d',
-            }),
+            defaults=FrozenMappingStrToStrOrStrSeq(
+                {
+                    "date": "__interval___relative_-30d___relative_-0d",
+                }
+            ),
         ),  # endregion
     ),
     DashTestCase.control_case(
         name="selector_date_range_without_default",  # region
         ext_control=ext.DashControlDateRange(
             show_title=True,
-            title='Order Date',
+            title="Order Date",
             source=ext.ControlValueSourceDatasetField(
                 dataset_name=PG_1_DS.summary.name,
-                field_id='date',
+                field_id="date",
             ),
             default_value=None,
         ),
         int_control=dashboards.ItemControl(
-            id='--replace-me--',
-            namespace='default',
+            id="--replace-me--",
+            namespace="default",
             data=dashboards.DatasetBasedControlData(
-                title='Order Date',
+                title="Order Date",
                 source=dashboards.DatasetControlSourceDate(
                     showTitle=True,
                     # TODO FIX: BI-3005 WHY IT NOT ACCEPT NULL?!!!! IT even RETURNS NULL when is created via UI
                     defaultValue=SingleOrMultiString.from_string(""),
                     isRange=True,
-                    **DashTestCase.ds_source_field_kwargs('date'),
+                    **DashTestCase.ds_source_field_kwargs("date"),
                 ),
             ),
-            defaults=FrozenMappingStrToStrOrStrSeq({
-                'date': '',
-            }),
+            defaults=FrozenMappingStrToStrOrStrSeq(
+                {
+                    "date": "",
+                }
+            ),
         ),  # endregion
     ),
     DashTestCase.control_case(
         name="selector_date_without_default",  # region
         ext_control=ext.DashControlDate(
             show_title=True,
-            title='Order Date',
+            title="Order Date",
             source=ext.ControlValueSourceDatasetField(
                 dataset_name=PG_1_DS.summary.name,
-                field_id='date',
+                field_id="date",
             ),
             default_value=None,
         ),
         int_control=dashboards.ItemControl(
-            id='--replace-me--',
-            namespace='default',
+            id="--replace-me--",
+            namespace="default",
             data=dashboards.DatasetBasedControlData(
-                title='Order Date',
+                title="Order Date",
                 source=dashboards.DatasetControlSourceDate(
                     showTitle=True,
                     # TODO FIX: BI-3005 WHY IT NOT ACCEPT NULL?!!!! IT even RETURNS NULL when is created via UI
                     defaultValue=SingleOrMultiString.from_string(""),
                     isRange=False,
-                    **DashTestCase.ds_source_field_kwargs('date'),
+                    **DashTestCase.ds_source_field_kwargs("date"),
                 ),
             ),
-            defaults=FrozenMappingStrToStrOrStrSeq({
-                'date': '',
-            }),
+            defaults=FrozenMappingStrToStrOrStrSeq(
+                {
+                    "date": "",
+                }
+            ),
         ),  # endregion
     ),
     DashTestCase.control_case(
         name="selector_date_with_default",  # region
         ext_control=ext.DashControlDate(
             show_title=True,
-            title='Order Date',
+            title="Order Date",
             source=ext.ControlValueSourceDatasetField(
                 dataset_name=PG_1_DS.summary.name,
-                field_id='date',
+                field_id="date",
             ),
-            default_value=ext.SingleStringValue('2022-03-01T00:00:00.000Z'),
+            default_value=ext.SingleStringValue("2022-03-01T00:00:00.000Z"),
         ),
         int_control=dashboards.ItemControl(
-            id='--replace-me--',
-            namespace='default',
+            id="--replace-me--",
+            namespace="default",
             data=dashboards.DatasetBasedControlData(
-                title='Order Date',
+                title="Order Date",
                 source=dashboards.DatasetControlSourceDate(
                     showTitle=True,
-                    defaultValue=SingleOrMultiString(('2022-03-01T00:00:00.000Z',), is_single=True),
+                    defaultValue=SingleOrMultiString(("2022-03-01T00:00:00.000Z",), is_single=True),
                     isRange=False,
-                    **DashTestCase.ds_source_field_kwargs('date'),
+                    **DashTestCase.ds_source_field_kwargs("date"),
                 ),
             ),
-            defaults=FrozenMappingStrToStrOrStrSeq({
-                'date': '2022-03-01T00:00:00.000Z',
-            }),
+            defaults=FrozenMappingStrToStrOrStrSeq(
+                {
+                    "date": "2022-03-01T00:00:00.000Z",
+                }
+            ),
         ),  # endregion
     ),
     DashTestCase.single_element_case(
         name="simple_text",  # region
         ext_elem=ext.DashText(text="My favorite text"),
         int_item=dashboards.ItemText(
-            data=dashboards.TabItemDataText(text="My favorite text"),
-            id="whatever"
+            data=dashboards.TabItemDataText(text="My favorite text"), id="whatever"
         ),  # endregion
     ),
     DashTestCase.single_element_case(
@@ -702,7 +746,7 @@ CASES = [
                 size=dashboards.TextSize.m,
                 showInTOC=False,
             ),
-            id="whatever"
+            id="whatever",
         ),  # endregion
     ),
     DashTestCase.single_element_case(
@@ -718,7 +762,7 @@ CASES = [
                 size=dashboards.TextSize.xs,
                 showInTOC=True,
             ),
-            id="whatever"
+            id="whatever",
         ),  # endregion
     ),
 ]
@@ -758,9 +802,9 @@ SAMPLE_EXT_DASH_FOR_DEFAULTER = ext.Dashboard(
                                 id="wt2",
                                 title="Duplicate",
                                 chart_name=FLAT_TABLE_INST.summary.name,
-                            )
-                        ]
-                    )
+                            ),
+                        ],
+                    ),
                 ),
             ),
             ignored_connections=[
@@ -792,11 +836,13 @@ def test_exc_composition():
     def single_chart_wc(wtiid: str, chart_name: str) -> ext.DashChartsContainer:
         return ext.DashChartsContainer(
             hide_title=False,
-            tabs=[ext.WidgetTab(
-                id=wtiid,
-                title=f"The {wtiid}",
-                chart_name=chart_name,
-            )],
+            tabs=[
+                ext.WidgetTab(
+                    id=wtiid,
+                    title=f"The {wtiid}",
+                    chart_name=chart_name,
+                )
+            ],
             default_active_chart_tab_id="wtiid",
         )
 
@@ -849,10 +895,7 @@ def test_exc_composition():
         converter.convert_ext_to_int(dash)
 
     exc: CompositeConverterError = exc_info.value
-    actual_err_path_to_err_type_mapping = {
-        path: type(nested_exc)
-        for path, nested_exc in exc.data.map_path_exc.items()
-    }
+    actual_err_path_to_err_type_mapping = {path: type(nested_exc) for path, nested_exc in exc.data.map_path_exc.items()}
     assert actual_err_path_to_err_type_mapping == {
         ("tabs", "tab_1", "wc_1"): WorkbookEntryNotFound,
         ("tabs", "tab_1", "wc_2"): WorkbookEntryNotFound,

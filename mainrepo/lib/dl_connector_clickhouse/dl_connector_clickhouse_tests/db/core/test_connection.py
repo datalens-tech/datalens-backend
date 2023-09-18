@@ -10,16 +10,15 @@ from typing import (
 import pytest
 
 import dl_configs.utils as bi_configs_utils
-from dl_core.us_connection_base import DataSourceTemplate
-from dl_core_testing.testcases.connection import (
-    DefaultAsyncConnectionTestClass,
-    DefaultConnectionTestClass,
-)
-
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.core.base import (
     BaseClickHouseTestClass,
     BaseSslClickHouseTestClass,
+)
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_core_testing.testcases.connection import (
+    DefaultAsyncConnectionTestClass,
+    DefaultConnectionTestClass,
 )
 
 if TYPE_CHECKING:

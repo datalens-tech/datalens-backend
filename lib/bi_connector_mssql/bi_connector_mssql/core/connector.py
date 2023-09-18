@@ -1,23 +1,31 @@
 import pyodbc
 
-from dl_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
+)
 from dl_core.connectors.sql_base.connector import (
-    SQLTableCoreSourceDefinitionBase,
     SQLSubselectCoreSourceDefinitionBase,
+    SQLTableCoreSourceDefinitionBase,
 )
 
-from bi_connector_mssql.core.constants import (
-    BACKEND_TYPE_MSSQL, CONNECTION_TYPE_MSSQL,
-    SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT,
-)
-from bi_connector_mssql.core.storage_schemas.connection import ConnectionMSSQLDataStorageSchema
 from bi_connector_mssql.core.adapters_mssql import MSSQLDefaultAdapter
+from bi_connector_mssql.core.connection_executors import MSSQLConnExecutor
+from bi_connector_mssql.core.constants import (
+    BACKEND_TYPE_MSSQL,
+    CONNECTION_TYPE_MSSQL,
+    SOURCE_TYPE_MSSQL_SUBSELECT,
+    SOURCE_TYPE_MSSQL_TABLE,
+)
+from bi_connector_mssql.core.data_source import (
+    MSSQLDataSource,
+    MSSQLSubselectDataSource,
+)
+from bi_connector_mssql.core.data_source_migration import MSSQLDataSourceMigrator
+from bi_connector_mssql.core.sa_types import SQLALCHEMY_MSSQL_TYPES
+from bi_connector_mssql.core.storage_schemas.connection import ConnectionMSSQLDataStorageSchema
 from bi_connector_mssql.core.type_transformer import MSSQLServerTypeTransformer
 from bi_connector_mssql.core.us_connection import ConnectionMSSQL
-from bi_connector_mssql.core.data_source import MSSQLDataSource, MSSQLSubselectDataSource
-from bi_connector_mssql.core.connection_executors import MSSQLConnExecutor
-from bi_connector_mssql.core.sa_types import SQLALCHEMY_MSSQL_TYPES
-from bi_connector_mssql.core.data_source_migration import MSSQLDataSourceMigrator
 
 
 class MSSQLCoreConnectionDefinition(CoreConnectionDefinition):
@@ -27,7 +35,7 @@ class MSSQLCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = MSSQLServerTypeTransformer
     sync_conn_executor_cls = MSSQLConnExecutor
     async_conn_executor_cls = MSSQLConnExecutor
-    dialect_string = 'bi_mssql'
+    dialect_string = "bi_mssql"
     data_source_migrator_cls = MSSQLDataSourceMigrator
 
 
@@ -43,9 +51,7 @@ class MSSQLSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
 
 class MSSQLCoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_MSSQL
-    connection_definitions = (
-        MSSQLCoreConnectionDefinition,
-    )
+    connection_definitions = (MSSQLCoreConnectionDefinition,)
     source_definitions = (
         MSSQLTableCoreSourceDefinition,
         MSSQLSubselectCoreSourceDefinition,

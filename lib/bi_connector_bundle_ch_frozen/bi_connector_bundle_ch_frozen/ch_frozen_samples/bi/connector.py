@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.connector import (
-    CHFrozenSamplesCoreSourceDefinition,
-    CHFrozenSamplesCoreConnectionDefinition,
-    CHFrozenSamplesCoreConnector,
-)
-
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.connector import (
-    BaseCHFrozenTableBiApiSourceDefinition,
     BaseCHFrozenBiApiConnectionDefinition,
     BaseCHFrozenBiApiConnector,
+    BaseCHFrozenTableBiApiSourceDefinition,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connection_form.form_config import CHFrozenSamplesFormFactory
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connection_info import CHFrozenSamplesConnectionInfoProvider
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.connector import (
+    CHFrozenSamplesCoreConnectionDefinition,
+    CHFrozenSamplesCoreConnector,
+    CHFrozenSamplesCoreSourceDefinition,
+)
 
 
 class CHFrozenSamplesTableBiApiSourceDefinition(BaseCHFrozenTableBiApiSourceDefinition):
@@ -27,9 +26,5 @@ class CHFrozenSamplesBiApiConnectionDefinition(BaseCHFrozenBiApiConnectionDefini
 
 class CHFrozenSamplesBiApiConnector(BaseCHFrozenBiApiConnector):
     core_connector_cls = CHFrozenSamplesCoreConnector
-    connection_definitions = (
-        CHFrozenSamplesBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenSamplesTableBiApiSourceDefinition,
-    )
+    connection_definitions = (CHFrozenSamplesBiApiConnectionDefinition,)
+    source_definitions = (CHFrozenSamplesTableBiApiSourceDefinition,)

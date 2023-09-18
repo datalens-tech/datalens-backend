@@ -1,11 +1,14 @@
 import re
-from typing import Optional, Dict, Any
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
 
 import dl_core.exc as exc
 
 
 class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):
-
     ERR_RE = re.compile(r".*Invalid\sobject\sname\s'(?P<table>.*)'\.\s\(208\).*")
 
     def __init__(
@@ -36,5 +39,5 @@ class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):
 
 
 class CommitOrRollbackFailed(exc.DatabaseQueryError):
-    err_code = exc.DatabaseQueryError.err_code + ['COMMIT_OR_ROLLBACK_FAILED']
-    default_message = 'Failed to COMMIT or ROLLBACK'
+    err_code = exc.DatabaseQueryError.err_code + ["COMMIT_OR_ROLLBACK_FAILED"]
+    default_message = "Failed to COMMIT or ROLLBACK"

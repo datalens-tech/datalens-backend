@@ -2,20 +2,26 @@ from __future__ import annotations
 
 import abc
 import re
-from typing import TYPE_CHECKING, Optional, Type, ClassVar
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    Optional,
+    Type,
+)
 
 import attr
 
+from dl_connector_chyt.core.adapters import (
+    BaseCHYTAdapter,
+    CHYTConnLineConstructor,
+)
 from dl_core.connection_executors.models.db_adapter_data import RawIndexInfo
-
-from dl_connector_chyt.core.adapters import CHYTConnLineConstructor, BaseCHYTAdapter
-from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
 )
-
+from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 if TYPE_CHECKING:
     from bi_connector_chyt_internal.core.target_dto import (
@@ -35,12 +41,13 @@ class BaseCHYTInternalAdapter(BaseCHYTAdapter, abc.ABC):
     ) -> Optional[RawIndexInfo]:
         yt_cluster = self._target_dto.yt_cluster
         yt_cluster_name_pattern = re.compile(r"^[a-z][a-z-]{1,16}[a-z]$")
-        assert isinstance(yt_cluster, str) and yt_cluster_name_pattern.match(yt_cluster), \
-            f"YT cluster name must be string and matches {yt_cluster_name_pattern.pattern!r}, not {yt_cluster!r}"
+        assert isinstance(yt_cluster, str) and yt_cluster_name_pattern.match(
+            yt_cluster
+        ), f"YT cluster name must be string and matches {yt_cluster_name_pattern.pattern!r}, not {yt_cluster!r}"
         assert isinstance(table_path, str) and table_path.startswith("//"), "Incorrect YT table path"
 
         return await self._fetch_yt_sorting_columns(
-            host=f'{yt_cluster}.yt.yandex.net',
+            host=f"{yt_cluster}.yt.yandex.net",
             table_path=table_path,
             secret_auth_headers=secret_auth_headers,
         )
@@ -52,15 +59,15 @@ class CHYTInternalAdapter(BaseCHYTInternalAdapter):
     _target_dto: CHYTInternalConnTargetDTO = attr.ib()
 
     def _get_yt_proxy_auth_headers(self) -> dict[str, str]:
-        return {'Authorization': f"OAuth {self._target_dto.password}"}
+        return {"Authorization": f"OAuth {self._target_dto.password}"}
 
 
 class CHYTUserAuthConnLineConstructor(CHYTConnLineConstructor):
     def _get_dsn_params(
-            self,
-            safe_db_symbols: tuple[str, ...] = (),
-            db_name: Optional[str] = None,
-            standard_auth: Optional[bool] = True,
+        self,
+        safe_db_symbols: tuple[str, ...] = (),
+        db_name: Optional[str] = None,
+        standard_auth: Optional[bool] = True,
     ) -> dict:
         return super()._get_dsn_params(safe_db_symbols=safe_db_symbols, db_name=db_name, standard_auth=False)
 
@@ -70,7 +77,7 @@ class CHYTUserAuthAdapter(BaseCHYTInternalAdapter):
 
     _target_dto: CHYTUserAuthConnTargetDTO = attr.ib()
 
-    dsn_template = '{dialect}://{host}:{port}/{db_name}'
+    dsn_template = "{dialect}://{host}:{port}/{db_name}"
     conn_line_constructor_type: ClassVar[Type[CHYTUserAuthConnLineConstructor]] = CHYTUserAuthConnLineConstructor
 
     def _get_yt_proxy_auth_headers(self) -> dict[str, str]:

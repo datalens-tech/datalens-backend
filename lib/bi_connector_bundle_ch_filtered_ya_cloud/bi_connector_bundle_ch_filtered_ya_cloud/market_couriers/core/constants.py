@@ -1,6 +1,8 @@
-from dl_constants.enums import CreateDSFrom, ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    CreateDSFrom,
+)
 
+CONNECTION_TYPE_MARKET_COURIERS = ConnectionType.declare("market_couriers")
 
-CONNECTION_TYPE_MARKET_COURIERS = ConnectionType.declare('market_couriers')
-
-SOURCE_TYPE_CH_MARKET_COURIERS_TABLE = CreateDSFrom.declare('CH_MARKET_COURIERS_TABLE')
+SOURCE_TYPE_CH_MARKET_COURIERS_TABLE = CreateDSFrom.declare("CH_MARKET_COURIERS_TABLE")

@@ -4,9 +4,14 @@ import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
-from .tab_items import TabItem
-from ..dl_common import DatasetAPIBaseModel, EntryInstance, EntryScope
+
 from ...utils import ensure_tuple
+from ..dl_common import (
+    DatasetAPIBaseModel,
+    EntryInstance,
+    EntryScope,
+)
+from .tab_items import TabItem
 
 
 @ModelDescriptor()

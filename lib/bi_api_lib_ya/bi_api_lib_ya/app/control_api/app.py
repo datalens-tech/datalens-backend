@@ -5,31 +5,35 @@ from typing import Optional
 
 import flask
 
-from dl_configs.enums import AppType
-from dl_constants.enums import USAuthMode
-
-from dl_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
+from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
+from bi_api_commons_ya_cloud.yc_access_control_model import (
+    AuthorizationModeDataCloud,
+    AuthorizationModeYandexCloud,
+)
+from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from dl_api_lib.app.control_api.app import (
+    ControlApiAppFactory,
+    EnvSetupResult,
+)
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
-
+from dl_configs.enums import AppType
+from dl_constants.enums import USAuthMode
 from dl_core.connection_models import ConnectOptions
 from dl_core.us_connection_base import ExecutorBasedMixin
-
-from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
-from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud, AuthorizationModeDataCloud
-from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
 
 class LegacyControlApiAppFactory(ControlApiAppFactory[ControlPlaneAppSettings], abc.ABC):
     def set_up_environment(
-            self,
-            app: flask.Flask,
-            testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        self,
+        app: flask.Flask,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
         if self._settings.APP_TYPE == AppType.INTRANET:
             from bi_api_commons_ya_team.flask.middlewares import blackbox_auth
+
             blackbox_auth.set_up(app, self._settings.BLACKBOX_RETRY_PARAMS, self._settings.BLACKBOX_TIMEOUT)
             us_auth_mode = USAuthMode.regular
         elif self._settings.APP_TYPE in (AppType.CLOUD, AppType.NEBIUS):
@@ -47,10 +51,11 @@ class LegacyControlApiAppFactory(ControlApiAppFactory[ControlPlaneAppSettings], 
             us_auth_mode = USAuthMode.regular
         elif self._settings.APP_TYPE == AppType.TESTS:
             from dl_core.flask_utils.trust_auth import TrustAuthService
+
             TrustAuthService(
-                fake_user_id='_the_tests_syncapp_user_id_',
-                fake_user_name='_the_tests_syncapp_user_name_',
-                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant
+                fake_user_id="_the_tests_syncapp_user_id_",
+                fake_user_name="_the_tests_syncapp_user_name_",
+                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
             ).set_up(app)
 
             us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override

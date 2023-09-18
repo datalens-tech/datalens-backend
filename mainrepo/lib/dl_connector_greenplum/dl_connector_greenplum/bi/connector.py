@@ -9,7 +9,6 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-
 from dl_connector_greenplum.bi.api_schema.connection import GreenplumConnectionSchema
 from dl_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
 from dl_connector_greenplum.bi.connection_info import GreenplumConnectionInfoProvider

@@ -1,12 +1,20 @@
 import enum
-from typing import Sequence, Optional, Any
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+)
 
 import attr
+
 from bi_external_api.attrs_model_mapper import Processor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.attrs_model_mapper.field_processor import FieldMeta
 from bi_external_api.attrs_model_mapper.utils import unwrap_container_stack_with_single_type
-from bi_external_api.domain.utils import ensure_tuple, ensure_tuple_of_tuples
+from bi_external_api.domain.utils import (
+    ensure_tuple,
+    ensure_tuple_of_tuples,
+)
 
 
 class ModelTags(enum.Enum):
@@ -39,18 +47,13 @@ class BigModel:
 
 INITIAL_INSTANCE = BigModel(
     name="Ololo",
-
-    main_polygon=Polygon(name="always has been", points=[
-        Point(x=2, y=2, name="Edge of the Earth"),
-        Point(x=3, y=3)
-    ]),
+    main_polygon=Polygon(name="always has been", points=[Point(x=2, y=2, name="Edge of the Earth"), Point(x=3, y=3)]),
     optional_point=None,
-
     list_of_lists_of_point=[
         [Point(x=1, y=1)],
         [Point(x=1, y=1), Point(x=2, y=2), Point(x=3, y=3)],
     ],
-    list_of_polygons=[]
+    list_of_polygons=[],
 )
 
 
@@ -116,18 +119,10 @@ def test_change_all_names():
     assert result == attr.evolve(
         INITIAL_INSTANCE,
         name=process_string(INITIAL_INSTANCE.name),
-
         main_polygon=rename_polygon(INITIAL_INSTANCE.main_polygon),
         optional_point=rename_point(INITIAL_INSTANCE.optional_point),
-
-        list_of_lists_of_point=[
-            [rename_point(p) for p in lp]
-            for lp in INITIAL_INSTANCE.list_of_lists_of_point
-        ],
-        list_of_polygons=[
-            rename_polygon(poly)
-            for poly in INITIAL_INSTANCE.list_of_polygons
-        ],
+        list_of_lists_of_point=[[rename_point(p) for p in lp] for lp in INITIAL_INSTANCE.list_of_lists_of_point],
+        list_of_polygons=[rename_polygon(poly) for poly in INITIAL_INSTANCE.list_of_polygons],
     )
 
 
@@ -159,16 +154,8 @@ def test_change_by_tag():
 
     assert result == attr.evolve(
         INITIAL_INSTANCE,
-
         main_polygon=process_polygon(INITIAL_INSTANCE.main_polygon),
         optional_point=process_point(INITIAL_INSTANCE.optional_point),
-
-        list_of_lists_of_point=[
-            [process_point(p) for p in lp]
-            for lp in INITIAL_INSTANCE.list_of_lists_of_point
-        ],
-        list_of_polygons=[
-            process_polygon(poly)
-            for poly in INITIAL_INSTANCE.list_of_polygons
-        ],
+        list_of_lists_of_point=[[process_point(p) for p in lp] for lp in INITIAL_INSTANCE.list_of_lists_of_point],
+        list_of_polygons=[process_polygon(poly) for poly in INITIAL_INSTANCE.list_of_polygons],
     )

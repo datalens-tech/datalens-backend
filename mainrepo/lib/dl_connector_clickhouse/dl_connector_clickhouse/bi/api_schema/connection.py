@@ -7,9 +7,8 @@ from dl_api_connector.api_schema.connection_mixins import (
 )
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
-import dl_core.marshmallow as core_ma_fields
-
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+import dl_core.marshmallow as core_ma_fields
 
 
 class ClickHouseConnectionSchema(

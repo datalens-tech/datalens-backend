@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import os
 from datetime import datetime
+import os
 
 import grpc
 import pytest
@@ -12,6 +12,7 @@ from bi_external_api.grpc_proxy.auth import iam_token_to_grpc_headers
 from bi_external_api.grpc_proxy.client import GrpcClientCtx
 from bi_external_api.grpc_proxy.common import GHeaders
 from bi_external_api.testing_no_deps import DomainScene
+
 from ..test_scenario_grpc import GrpcAcceptanceScenarioDC
 
 ENV_VAR_RUN_ACCEPTANCE_AGAINST_DC_PROD = "DL_EXT_API_TESTS_RUN_ACCEPTANCE_AGAINST_DC_PROD"
@@ -19,7 +20,7 @@ ENV_VAR_RUN_ACCEPTANCE_AGAINST_DC_PROD = "DL_EXT_API_TESTS_RUN_ACCEPTANCE_AGAINS
 
 @pytest.mark.skipif(
     os.environ.get(ENV_VAR_RUN_ACCEPTANCE_AGAINST_DC_PROD) != "1",
-    reason=f"Env var {ENV_VAR_RUN_ACCEPTANCE_AGAINST_DC_PROD!r} != 1"
+    reason=f"Env var {ENV_VAR_RUN_ACCEPTANCE_AGAINST_DC_PROD!r} != 1",
 )
 class TestGRPCAcceptanceScenarioAgainstDeployedProdDoubleCloudExtAPI(GrpcAcceptanceScenarioDC):
     @pytest.fixture()
@@ -53,10 +54,7 @@ class TestGRPCAcceptanceScenarioAgainstDeployedProdDoubleCloudExtAPI(GrpcAccepta
                 raw_sql_level="subselect",
                 cache_ttl_sec=None,
             ),
-            ch_connection_secret=dict(
-                kind="plain",
-                secret=ch_data["password"]
-            ),
+            ch_connection_secret=dict(kind="plain", secret=ch_data["password"]),
         )
 
     @pytest.mark.skip

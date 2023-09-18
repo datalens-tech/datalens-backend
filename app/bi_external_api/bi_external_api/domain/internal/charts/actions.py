@@ -6,14 +6,18 @@ import attr
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.domain.internal.datasets import ResultSchemaField
-from bi_external_api.domain.internal.dl_common import IntModelTags, DatasetAPIBaseModel
+from bi_external_api.domain.internal.dl_common import (
+    DatasetAPIBaseModel,
+    IntModelTags,
+)
 
 
 @enum.unique
 class ChartActionType(enum.Enum):
     """Reduced copy of dataset action"""
-    add_field = 'add_field'
-    clone_field = 'clone_field'
+
+    add_field = "add_field"
+    clone_field = "clone_field"
 
 
 @ModelDescriptor()

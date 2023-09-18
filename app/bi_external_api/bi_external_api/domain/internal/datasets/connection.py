@@ -1,7 +1,12 @@
 import attr
 
 from dl_constants.enums import ConnectionType
-from ..dl_common import EntryInstance, EntryScope, EntrySummary
+
+from ..dl_common import (
+    EntryInstance,
+    EntryScope,
+    EntrySummary,
+)
 
 
 @attr.s(frozen=True, auto_attribs=True)

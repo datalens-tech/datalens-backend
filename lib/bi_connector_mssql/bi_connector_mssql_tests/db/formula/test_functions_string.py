@@ -1,15 +1,12 @@
 import pytest
 
-from bi_connector_mssql_tests.db.formula.base import (
-    MSSQLTestBase,
-)
-from dl_formula_testing.testcases.functions_string import (
-    DefaultStringFunctionFormulaConnectorTestSuite,
-)
+from dl_formula_testing.testcases.functions_string import DefaultStringFunctionFormulaConnectorTestSuite
+
+from bi_connector_mssql_tests.db.formula.base import MSSQLTestBase
 
 
 class TestStringFunctionMSSQL(MSSQLTestBase, DefaultStringFunctionFormulaConnectorTestSuite):
-    datetime_str_ending = ' +00:00'
+    datetime_str_ending = " +00:00"
     supports_regex_extract = False
     supports_regex_extract_nth = False
     supports_regex_replace = False

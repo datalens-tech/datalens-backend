@@ -1,22 +1,30 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, ClassVar
-
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 from dl_api_commons.base_models import TenantDef
-
-import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
-    FormFieldApiSchema,
     FormApiSchema,
+    FormFieldApiSchema,
 )
-from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
+from dl_api_connector.form_config.models.base import (
+    ConnectionForm,
+    ConnectionFormFactory,
+    ConnectionFormMode,
+)
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    MarkdownStr,
+)
+import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
-from dl_api_connector.form_config.models.common import CommonFieldName, MarkdownStr
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
 
 class PartnersConnectionBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
@@ -33,9 +41,9 @@ class PartnersConnectionBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABC
         return None
 
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 
@@ -43,15 +51,15 @@ class PartnersConnectionBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABC
         create_api_schema: Optional[FormActionApiSchema] = None
 
         if (desc_item := self._description()) is not None:
-            rows.append(C.CustomizableRow(items=[
-                C.DescriptionRowItem(text=desc_item)
-            ]))
+            rows.append(C.CustomizableRow(items=[C.DescriptionRowItem(text=desc_item)]))
 
         if self.mode == ConnectionFormMode.create:
-            rows.extend([
-                rc.access_token_input_row(mode=self.mode, label_help_text=self._label_help_text()),
-                rc.auto_create_dash_row(),
-            ])
+            rows.extend(
+                [
+                    rc.access_token_input_row(mode=self.mode, label_help_text=self._label_help_text()),
+                    rc.auto_create_dash_row(),
+                ]
+            )
 
             create_api_schema = FormActionApiSchema(
                 items=[

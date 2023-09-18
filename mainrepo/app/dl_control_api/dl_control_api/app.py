@@ -23,6 +23,8 @@ from dl_configs.settings_loaders.loader_env import (
     load_settings_from_env_with_fallback,
 )
 from dl_constants.enums import ConnectionType
+from dl_control_api import app_version
+from dl_control_api.app_factory import ControlApiAppFactoryOS
 from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
@@ -30,8 +32,6 @@ from dl_core.connectors.settings.registry import (
 from dl_core.flask_utils.sentry import configure_raven_for_flask
 from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
-from dl_control_api import app_version
-from dl_control_api.app_factory import ControlApiAppFactoryOS
 
 
 def create_app(

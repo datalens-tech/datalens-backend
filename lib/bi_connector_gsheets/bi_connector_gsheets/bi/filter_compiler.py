@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class GSheetsFilterFormulaCompiler(MainFilterFormulaCompiler):
-    """ connector-specific customizations point """
+    """connector-specific customizations point"""
 
     def _mangle_date_filter(self, filter_params: FilterParams) -> FilterParams:
         return filter_params  # Disable the datetime mangling

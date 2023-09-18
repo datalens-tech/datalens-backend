@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from datetime import datetime
 import os
+from typing import ClassVar
+
 import pytest
 import pytz
-from datetime import datetime
-from typing import ClassVar
 
 from bi_external_api.domain import external as ext
 from bi_external_api.enums import ExtAPIType
@@ -12,6 +13,7 @@ from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 from bi_external_api_tests.test_acceptance import ConnectionTestingData
 from bi_external_api_tests.test_acceptance_ya_team import AcceptanceScenatioYaTeam
+
 from . import conftest
 
 _DO_LAUNCH = os.environ.get(conftest.ENV_KEY_DO_NOT_SKIP)
@@ -31,8 +33,8 @@ class TestTrunkAcceptanceScenario(AcceptanceScenatioYaTeam):
 
     @pytest.fixture(scope="session")
     def chyt_connection_testing_data(
-            self,
-            env_param_getter,
+        self,
+        env_param_getter,
     ) -> ConnectionTestingData:
         return ConnectionTestingData(
             connection=ext.CHYTConnection(

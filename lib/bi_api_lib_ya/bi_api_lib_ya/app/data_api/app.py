@@ -3,37 +3,43 @@ from __future__ import annotations
 import abc
 from typing import Optional
 
+from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import (
+    YCAuthService,
+    YCEmbedAuthService,
+)
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
+from bi_api_commons_ya_cloud.yc_access_control_model import (
+    AuthorizationModeDataCloud,
+    AuthorizationModeYandexCloud,
+)
+from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
+from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
+from bi_api_lib_ya.app_settings import AsyncAppSettings
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
+from dl_api_lib.app.data_api.app import (
+    DataApiAppFactory,
+    EnvSetupResult,
+)
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import AppType
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_constants.enums import ConnectionType
-
 from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import (
-    public_usm_workaround_middleware,
     public_us_manager_middleware,
+    public_usm_workaround_middleware,
     service_us_manager_middleware,
     us_manager_middleware,
 )
 from dl_core.connection_models import ConnectOptions
 from dl_core.us_connection_base import ExecutorBasedMixin
 
-from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
-from dl_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
-from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib_ya.app_settings import AsyncAppSettings
-
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService, YCEmbedAuthService
-from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
-from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud, AuthorizationModeDataCloud
-from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
-from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
-
 # TODO: remove dependencies on connectors
 from bi_connector_chyt_internal.core.us_connection import BaseConnectionCHYTInternal
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 
 
@@ -43,8 +49,8 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
         return self._settings.APP_TYPE in (AppType.CLOUD_PUBLIC, AppType.CLOUD_EMBED, AppType.DATA_CLOUD_EMBED)
 
     def set_up_environment(
-            self,
-            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        self,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
         # TODO: Move the rest of the env-dependent stuff here
 
@@ -64,8 +70,8 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
                 public_usm_workaround_middleware(
                     us_base_url=self._settings.US_BASE_URL,
                     crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
-                    dataset_id_match_info_code='ds_id',
-                    conn_id_match_info_code='conn_id',
+                    dataset_id_match_info_code="ds_id",
+                    conn_id_match_info_code="conn_id",
                     us_public_token=self._settings.US_PUBLIC_API_TOKEN,  # type: ignore  # TODO: fix
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     tenant_resolver=TenantResolverYC(),
@@ -94,8 +100,8 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
         elif self._settings.APP_TYPE == AppType.TESTS:
             auth_mw_list = [
                 auth_trust_middleware(
-                    fake_user_id='_the_tests_asyncapp_user_id_',
-                    fake_user_name='_the_tests_asyncapp_user_name_',
+                    fake_user_id="_the_tests_asyncapp_user_id_",
+                    fake_user_name="_the_tests_asyncapp_user_name_",
                 )
             ]
         elif self._settings.APP_TYPE == AppType.DATA_CLOUD:
@@ -153,9 +159,7 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
 
         # SR middlewares
 
-        def ydb_is_cloud_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
+        def ydb_is_cloud_mutator(conn_opts: ConnectOptions, conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
             if isinstance(conn_opts, YDBConnectOptions):
                 return conn_opts.clone(is_cloud=True)
             return None
@@ -174,7 +178,7 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
         elif self._settings.APP_TYPE == AppType.CLOUD_PUBLIC:
 
             def public_timeout_conn_opts_mutator(
-                    conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
             ) -> Optional[ConnectOptions]:
                 if self._settings.PUBLIC_CH_QUERY_TIMEOUT is not None:
                     if isinstance(conn, ConnectionClickhouse):
@@ -197,8 +201,9 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
                 ),
             ]
         elif self._settings.APP_TYPE == AppType.INTRANET:
+
             def chyt_mirroring_conn_opts_mutator(
-                    conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
             ) -> Optional[ConnectOptions]:
                 if not isinstance(conn, BaseConnectionCHYTInternal):
                     return None
@@ -208,11 +213,9 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
                     return None
                 conn_dto = conn.get_conn_dto()
                 cluster_name = conn_dto.cluster.lower()  # type: ignore  # TODO: fix
-                mirroring_clique_alias = (
-                    mirroring_config.MAP.get(
-                        (cluster_name, conn_dto.clique_alias)  # type: ignore  # TODO: fix
-                    ) or mirroring_config.MAP.get((cluster_name, None))
-                )
+                mirroring_clique_alias = mirroring_config.MAP.get(
+                    (cluster_name, conn_dto.clique_alias)  # type: ignore  # TODO: fix
+                ) or mirroring_config.MAP.get((cluster_name, None))
                 if not mirroring_clique_alias:
                     return None
                 return conn_opts.clone(
@@ -273,13 +276,13 @@ class LegacyDataApiAppFactory(DataApiAppFactory[AsyncAppSettings], abc.ABC):
         elif self._settings.APP_TYPE in (AppType.DATA_CLOUD_EMBED, AppType.CLOUD_EMBED):
             usm_middleware_list = [
                 us_manager_middleware(embed=True, **common_us_kw),  # type: ignore  # TODO: fix
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw)  # type: ignore  # TODO: fix
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # TODO: fix
             ]
 
         else:
             usm_middleware_list = [
                 us_manager_middleware(**common_us_kw),  # type: ignore  # TODO: fix
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw)  # type: ignore  # TODO: fix
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # TODO: fix
             ]
 
         result = EnvSetupResult(

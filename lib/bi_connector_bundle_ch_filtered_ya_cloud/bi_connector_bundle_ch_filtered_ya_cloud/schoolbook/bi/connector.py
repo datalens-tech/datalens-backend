@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.connector import (
-    CHSchoolbookCoreConnectionDefinition,
-    CHSchoolbookCoreSourceDefinition,
-    CHSchoolbookCoreConnector,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
+    BiApiConnectionDefinition,
+    BiApiConnector,
+    BiApiSourceDefinition,
 )
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BASE_CONFIGS
@@ -20,6 +18,11 @@ from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connection_form.form
     CHSchoolbookConnectionFormFactory,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connection_info import CHSchoolbookConnectionInfoProvider
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.connector import (
+    CHSchoolbookCoreConnectionDefinition,
+    CHSchoolbookCoreConnector,
+    CHSchoolbookCoreSourceDefinition,
+)
 
 
 class CHSchoolbookBiApiConnectionDefinition(BiApiConnectionDefinition):
@@ -38,10 +41,6 @@ class CHSchoolbookBiApiSourceDefinition(BiApiSourceDefinition):
 class CHSchoolbookBiApiConnector(BiApiConnector):
     core_connector_cls = CHSchoolbookCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (
-        CHSchoolbookBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        CHSchoolbookBiApiSourceDefinition,
-    )
+    connection_definitions = (CHSchoolbookBiApiConnectionDefinition,)
+    source_definitions = (CHSchoolbookBiApiSourceDefinition,)
     translation_configs = frozenset(BASE_CONFIGS) | frozenset(CONFIGS)

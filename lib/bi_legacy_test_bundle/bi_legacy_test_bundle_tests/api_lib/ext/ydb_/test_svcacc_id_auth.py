@@ -6,14 +6,18 @@ from bi_legacy_test_bundle_tests.api_lib.utils import get_random_str
 
 
 def test_ydb_sa_authorization_mocked(app, client, request, iam_services_mock, remote_async_adapter_mock):
-    service_account_ids = ["fake_test_service_account_id", "fake_second_test_service_account_id", "fake_third_test_service_account_id"]
+    service_account_ids = [
+        "fake_test_service_account_id",
+        "fake_second_test_service_account_id",
+        "fake_third_test_service_account_id",
+    ]
     conn_params = dict(
         type="ydb",
         name="ydb_test_{}".format(get_random_str()),
-
-        host="ydb-datalens-tests-fake.yandex.net", port=2135, token="",
+        host="ydb-datalens-tests-fake.yandex.net",
+        port=2135,
+        token="",
         db_name="/ru/yql/test/ydb-datalens-tests-fake",
-
         folder_id="fake_test_folder_id",
         service_account_id=service_account_ids[0],
         raw_sql_level="subselect",

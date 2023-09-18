@@ -1,26 +1,30 @@
 import pytest
 
-from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
+from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 
 from bi_connector_metrica.bi.connection_form.form_config import (
-    MetricaAPIConnectionFormFactory, AppMetricaAPIConnectionFormFactory,
+    AppMetricaAPIConnectionFormFactory,
+    MetricaAPIConnectionFormFactory,
 )
 from bi_connector_metrica.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_METRICA_CONFIGS
-from bi_connector_metrica.core.settings import MetricaConnectorSettings, AppmetricaConnectorSettings
+from bi_connector_metrica.core.settings import (
+    AppmetricaConnectorSettings,
+    MetricaConnectorSettings,
+)
 
 
 class MetricaLikeConnectionFormTestBase(ConnectionFormTestBase):
     @pytest.fixture(
         params=(True, False),
-        ids=('auto_dash_True', 'auto_dash_False'),
+        ids=("auto_dash_True", "auto_dash_False"),
     )
     def allow_auto_dash_creation(self, request) -> bool:
         return request.param
 
     @pytest.fixture(
         params=(True, False),
-        ids=('manual_counter_True', 'manual_counter_False'),
+        ids=("manual_counter_True", "manual_counter_False"),
     )
     def allow_counter_manual_input(self, request) -> bool:
         return request.param
@@ -32,9 +36,9 @@ class TestMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
 
     @pytest.fixture
     def connectors_settings(  # noqa
-            self,
-            allow_auto_dash_creation,
-            allow_counter_manual_input,
+        self,
+        allow_auto_dash_creation,
+        allow_counter_manual_input,
     ) -> MetricaConnectorSettings:
         return MetricaConnectorSettings(
             COUNTER_ALLOW_MANUAL_INPUT=allow_counter_manual_input,
@@ -48,9 +52,9 @@ class TestAppMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
 
     @pytest.fixture
     def connectors_settings(  # noqa
-            self,
-            allow_auto_dash_creation,
-            allow_counter_manual_input,
+        self,
+        allow_auto_dash_creation,
+        allow_counter_manual_input,
     ) -> AppmetricaConnectorSettings:
         return AppmetricaConnectorSettings(
             COUNTER_ALLOW_MANUAL_INPUT=allow_counter_manual_input,

@@ -1,6 +1,5 @@
-import dl_formula.definitions.operators_ternary as base
-
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
+import dl_formula.definitions.operators_ternary as base
 
 DEFINITIONS_TERNARY = [
     # between

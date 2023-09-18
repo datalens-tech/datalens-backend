@@ -7,7 +7,6 @@ from dl_api_connector.api_schema.connection_base_fields import (
 )
 from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
 from dl_api_connector.api_schema.extras import FieldExtra
-
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 
 

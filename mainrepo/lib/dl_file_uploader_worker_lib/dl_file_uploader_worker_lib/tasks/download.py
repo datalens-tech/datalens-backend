@@ -13,6 +13,7 @@ from typing import (
 import aiogoogle
 import attr
 
+from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
     BIType,
     FileProcessingStatus,
@@ -52,8 +53,6 @@ from dl_task_processor.task import (
     Success,
     TaskResult,
 )
-
-from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 LOGGER = logging.getLogger(__name__)
 

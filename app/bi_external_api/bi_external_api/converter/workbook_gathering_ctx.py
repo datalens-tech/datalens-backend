@@ -1,15 +1,24 @@
-from typing import Sequence, Type, Iterable, TypeVar
+from typing import (
+    Iterable,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 
 from bi_external_api.converter.id_gathering_processor import IDGatheringProcessor
-from bi_external_api.converter.workbook import WorkbookContext, EntryLoadFailInfo
-from bi_external_api.domain.internal import (
-    datasets as dataset_models,
-    charts as chart_models,
-    dashboards as dash_models,
+from bi_external_api.converter.workbook import (
+    EntryLoadFailInfo,
+    WorkbookContext,
 )
-from bi_external_api.domain.internal.dl_common import EntryInstance, EntrySummary
+from bi_external_api.domain.internal import charts as chart_models
+from bi_external_api.domain.internal import dashboards as dash_models
+from bi_external_api.domain.internal import datasets as dataset_models
+from bi_external_api.domain.internal.dl_common import (
+    EntryInstance,
+    EntrySummary,
+)
 from bi_external_api.domain.utils import ensure_tuple
 
 _INST_TYPE_TV = TypeVar("_INST_TYPE_TV", bound=EntryInstance)
@@ -47,12 +56,14 @@ class NameNormalizer:
                     id=entry_id,
                     workbook_id=self._wb_id,
                     # TODO FIX: Try to extract from exc/hint
-                    name="--unresolved--"
+                    name="--unresolved--",
                 )
-                renamed_lfi.append(EntryLoadFailInfo(
-                    summary=new_summary,
-                    exception=exc,
-                ))
+                renamed_lfi.append(
+                    EntryLoadFailInfo(
+                        summary=new_summary,
+                        exception=exc,
+                    )
+                )
 
         self._renamed_instances = renamed_instances
         self._renamed_lfi = renamed_lfi
@@ -75,10 +86,10 @@ class NameNormalizer:
 
     @classmethod
     def create(
-            cls: Type[_NAME_NORMALIZER_TV],
-            wb_id: str,
-            instances: Sequence[EntryInstance],
-            map_entry_id_load_exc: dict[Type[EntryInstance], dict[str, Exception]]
+        cls: Type[_NAME_NORMALIZER_TV],
+        wb_id: str,
+        instances: Sequence[EntryInstance],
+        map_entry_id_load_exc: dict[Type[EntryInstance], dict[str, Exception]],
     ) -> _NAME_NORMALIZER_TV:
         return cls(
             wb_id=wb_id,
@@ -134,13 +145,16 @@ class WorkbookGatheringContext:
     def build_workbook_context(self) -> tuple[WorkbookContext, dict[str, EntrySummary]]:
         nn = self._get_name_normalizer()
 
-        return WorkbookContext(
-            connections=nn.get_renamed_instances(dataset_models.ConnectionInstance),
-            datasets=nn.get_renamed_instances(dataset_models.DatasetInstance),
-            charts=nn.get_renamed_instances(chart_models.ChartInstance),
-            dashboards=nn.get_renamed_instances(dash_models.DashInstance),
-            load_fail_info_collection=nn.get_renamed_load_fail_info(),
-        ), nn.get_map_new_name_to_original_summary()
+        return (
+            WorkbookContext(
+                connections=nn.get_renamed_instances(dataset_models.ConnectionInstance),
+                datasets=nn.get_renamed_instances(dataset_models.DatasetInstance),
+                charts=nn.get_renamed_instances(chart_models.ChartInstance),
+                dashboards=nn.get_renamed_instances(dash_models.DashInstance),
+                load_fail_info_collection=nn.get_renamed_load_fail_info(),
+            ),
+            nn.get_map_new_name_to_original_summary(),
+        )
 
     def _get_name_normalizer(self) -> NameNormalizer:
         return self.name_normalizer_cls.create(

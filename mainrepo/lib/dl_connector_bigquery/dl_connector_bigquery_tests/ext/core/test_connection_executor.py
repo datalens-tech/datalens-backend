@@ -1,5 +1,7 @@
 import pytest
 
+from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
+from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
 from dl_constants.enums import BIType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.database import (
@@ -12,9 +14,6 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite,
 )
 from dl_testing.regulated_test import RegulatedTestParams
-
-from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
-from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
 
 
 class BigQuerySyncAsyncConnectionExecutorCheckBase(

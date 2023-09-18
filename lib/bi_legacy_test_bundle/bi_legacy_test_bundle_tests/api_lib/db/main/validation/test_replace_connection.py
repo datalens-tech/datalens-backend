@@ -1,20 +1,17 @@
 from __future__ import annotations
 
-import re
 from contextlib import contextmanager
 from http import HTTPStatus
+import re
 
+from bi_legacy_test_bundle_tests.api_lib.utils import _make_dataset_for_replacing as get_dataset_response
+from bi_legacy_test_bundle_tests.api_lib.utils import make_dataset_for_replacing as make_dataset
+from bi_legacy_test_bundle_tests.api_lib.utils import replace_dataset_connection as replace_connection
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_core.united_storage_client import UStorageClientBase
 
-from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_TABLE
-
-from bi_legacy_test_bundle_tests.api_lib.utils import (
-    make_dataset_for_replacing as make_dataset,
-    _make_dataset_for_replacing as get_dataset_response,
-    replace_dataset_connection as replace_connection,
-)
 
 
 def test_ch_to_other_sql(api_v1, data_api_v1, clickhouse_db, mysql_db, static_connection_id, mysql_connection_id):
@@ -45,8 +42,7 @@ def test_ch_to_nonexistent_table(api_v1, clickhouse_db, mysql_db, static_connect
 
     result_schema_len = len(ds.result_schema)
     ds_resp = replace_connection(
-        api_v1, ds=ds, old_connection_id=old_connection_id,
-        new_connection_id=new_connection_id, fail_ok=True
+        api_v1, ds=ds, old_connection_id=old_connection_id, new_connection_id=new_connection_id, fail_ok=True
     )
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     ds = ds_resp.dataset
@@ -55,15 +51,17 @@ def test_ch_to_nonexistent_table(api_v1, clickhouse_db, mysql_db, static_connect
     assert len(ds.result_schema) == result_schema_len  # make sure the fields weren't deleted
 
     ds_resp = replace_connection(
-        api_v1, ds=ds, old_connection_id=new_connection_id,
-        new_connection_id=old_connection_id, fail_ok=True
+        api_v1, ds=ds, old_connection_id=new_connection_id, new_connection_id=old_connection_id, fail_ok=True
     )
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     ds = ds_resp.dataset
-    ds_resp = api_v1.apply_updates(dataset=ds, updates=[
-        ds.sources[0].update(parameters=dict(ds.sources[0].parameters, db_name=clickhouse_db.name)),
-        ds.sources[1].update(parameters=dict(ds.sources[1].parameters, db_name=clickhouse_db.name)),
-    ])
+    ds_resp = api_v1.apply_updates(
+        dataset=ds,
+        updates=[
+            ds.sources[0].update(parameters=dict(ds.sources[0].parameters, db_name=clickhouse_db.name)),
+            ds.sources[1].update(parameters=dict(ds.sources[1].parameters, db_name=clickhouse_db.name)),
+        ],
+    )
     assert ds_resp.status_code == HTTPStatus.OK
     ds = ds_resp.dataset
     assert ds.sources[0].source_type == SOURCE_TYPE_CH_TABLE
@@ -74,11 +72,16 @@ def test_ch_to_nonexistent_table(api_v1, clickhouse_db, mysql_db, static_connect
 
 
 def test_connection_with_only_execute_rights(
-    monkeypatch, api_v1, pg_connection_id, mssql_connection_id, postgres_db, mssql_db,
+    monkeypatch,
+    api_v1,
+    pg_connection_id,
+    mssql_connection_id,
+    postgres_db,
+    mssql_db,
 ):
     def mock_permissions(client: UStorageClientBase, response: UStorageClientBase.ResponseAdapter):
         json = response.json()
-        json['permissions'] = {'execute': True, 'read': False, 'edit': False, 'admin': False}
+        json["permissions"] = {"execute": True, "read": False, "edit": False, "admin": False}
         return json
 
     def unmock_permissions(client: UStorageClientBase, response: UStorageClientBase.ResponseAdapter):
@@ -94,15 +97,29 @@ def test_connection_with_only_execute_rights(
             monkeypatch.setattr(UStorageClientBase, "_get_us_json_from_response", unmock_permissions)
 
     with set_only_execute_permissions_for_us_entries():
-        ds_resp = get_dataset_response(api_v1, old_connection_id=pg_connection_id, old_db=postgres_db,
-                                       new_db=mssql_db,  multitable=True, fail_ok=True,
-                                       old_schema='public', new_schema='dbo')  # default schemas for these connections
+        ds_resp = get_dataset_response(
+            api_v1,
+            old_connection_id=pg_connection_id,
+            old_db=postgres_db,
+            new_db=mssql_db,
+            multitable=True,
+            fail_ok=True,
+            old_schema="public",
+            new_schema="dbo",
+        )  # default schemas for these connections
         assert ds_resp.status_code == HTTPStatus.FORBIDDEN
-        assert re.match(r'No permission read for entry \S+', ds_resp.json['message']) is not None
+        assert re.match(r"No permission read for entry \S+", ds_resp.json["message"]) is not None
 
-    ds_resp = get_dataset_response(api_v1, old_connection_id=pg_connection_id, old_db=postgres_db,
-                                   new_db=mssql_db,  multitable=True, fail_ok=True,
-                                   old_schema='public', new_schema='dbo')  # default schemas for these connections
+    ds_resp = get_dataset_response(
+        api_v1,
+        old_connection_id=pg_connection_id,
+        old_db=postgres_db,
+        new_db=mssql_db,
+        multitable=True,
+        fail_ok=True,
+        old_schema="public",
+        new_schema="dbo",
+    )  # default schemas for these connections
     assert ds_resp.status_code == HTTPStatus.OK
 
     with set_only_execute_permissions_for_us_entries():
@@ -115,7 +132,7 @@ def test_connection_with_only_execute_rights(
         )
 
         assert ds_resp.status_code == HTTPStatus.FORBIDDEN
-        assert re.match(r'No permission read for entry \S+', ds_resp.json['message']) is not None
+        assert re.match(r"No permission read for entry \S+", ds_resp.json["message"]) is not None
 
     ds_resp = replace_connection(
         api_v1,
@@ -130,14 +147,20 @@ def test_connection_with_only_execute_rights(
 
 
 def test_with_different_default_schema_names(
-        api_v1, data_api_v1,
-        postgres_db, mssql_db, pg_connection_id, mssql_connection_id
+    api_v1, data_api_v1, postgres_db, mssql_db, pg_connection_id, mssql_connection_id
 ):
     old_connection_id, new_connection_id = pg_connection_id, mssql_connection_id
     old_db, new_db = postgres_db, mssql_db
 
-    ds = make_dataset(api_v1, old_connection_id=old_connection_id, old_db=old_db, new_db=new_db, multitable=True,
-                      old_schema='public', new_schema='dbo')  # default schemas for these connections
+    ds = make_dataset(
+        api_v1,
+        old_connection_id=old_connection_id,
+        old_db=old_db,
+        new_db=new_db,
+        multitable=True,
+        old_schema="public",
+        new_schema="dbo",
+    )  # default schemas for these connections
 
     ds_resp = replace_connection(
         api_v1, ds=ds, old_connection_id=old_connection_id, new_connection_id=new_connection_id
@@ -151,14 +174,15 @@ def test_with_different_default_schema_names(
     api_v1.save_dataset(dataset=ds)
 
 
-def test_replace_deleted_connection(client, api_v1, data_api_v1, clickhouse_db, mysql_db,
-                                    connection_id, mysql_connection_id):
+def test_replace_deleted_connection(
+    client, api_v1, data_api_v1, clickhouse_db, mysql_db, connection_id, mysql_connection_id
+):
     old_connection_id, new_connection_id = connection_id, mysql_connection_id
     old_db, new_db = clickhouse_db, mysql_db
 
     ds = make_dataset(api_v1, old_connection_id=old_connection_id, old_db=old_db, new_db=new_db, multitable=True)
 
-    client.delete(f'/api/v1/connections/{old_connection_id}')
+    client.delete(f"/api/v1/connections/{old_connection_id}")
 
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
@@ -166,7 +190,7 @@ def test_replace_deleted_connection(client, api_v1, data_api_v1, clickhouse_db, 
     source_id = ds.sources[0].id
     source_errors = ds.component_errors.get_pack(id=source_id).errors
     assert len(source_errors) == 1
-    assert all(re.match(r'Connection for \S+ not found', err.message) for err in source_errors)
+    assert all(re.match(r"Connection for \S+ not found", err.message) for err in source_errors)
 
     ds_resp = replace_connection(
         api_v1, ds=ds, old_connection_id=old_connection_id, new_connection_id=new_connection_id

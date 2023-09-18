@@ -4,6 +4,7 @@ from typing import Any
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import DialectCombo
 from dl_formula.definitions.args import ArgTypeSequence
@@ -20,8 +21,6 @@ from dl_formula.definitions.literals import (
 import dl_formula.definitions.operators_binary as base
 from dl_formula.translation.context import TranslationCtx
 from dl_formula.translation.env import TranslationEnvironment
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make

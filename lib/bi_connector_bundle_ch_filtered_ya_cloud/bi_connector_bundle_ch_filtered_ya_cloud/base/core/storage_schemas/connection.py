@@ -7,7 +7,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import Con
 
 
 class ConnectionCHFilteredSubselectByPuidDataStorageSchema(
-        ConnectionClickhouseFilteredBaseDataStorageSchema[ConnectionCHFilteredSubselectByPuidBase.DataModel],
+    ConnectionClickhouseFilteredBaseDataStorageSchema[ConnectionCHFilteredSubselectByPuidBase.DataModel],
 ):
     TARGET_CLS = ConnectionCHFilteredSubselectByPuidBase.DataModel
 

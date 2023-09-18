@@ -1,26 +1,30 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional,
+)
 
 import attr
 
 # https://a.yandex-team.ru/arc/trunk/arcadia/cloud/bitbucket/private-api/yandex/cloud/priv/oauth/v1/session_service.proto
-from yandex.cloud.priv.oauth.v1 import session_service_pb2, session_service_pb2_grpc
-
-from dl_utils.aio import await_sync
+from yandex.cloud.priv.oauth.v1 import (
+    session_service_pb2,
+    session_service_pb2_grpc,
+)
 
 from bi_cloud_integration.local_metadata import get_yc_service_token_local
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
 from bi_cloud_integration.yc_ts_client import get_yc_service_token
-
+from dl_utils.aio import await_sync
 
 LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
 class DLSSClient(DLYCSingleServiceClient):
-    """ DataLens-specific client for YC Session Service """
+    """DataLens-specific client for YC Session Service"""
 
     service_cls = session_service_pb2_grpc.SessionServiceStub
 
@@ -65,9 +69,9 @@ class DLSSClient(DLYCSingleServiceClient):
         return await_sync(self.check(cookie_header=cookie_header, host=host))
 
     async def ensure_fresh_token(
-            self,
-            sa_key_data: Optional[dict[str, str]] = None,
-            ts_endpoint: Optional[str] = None,
+        self,
+        sa_key_data: Optional[dict[str, str]] = None,
+        ts_endpoint: Optional[str] = None,
     ) -> DLSSClient:
         # TODO: Check current token expiration time and don't fetch new token every time.
         if sa_key_data is not None:

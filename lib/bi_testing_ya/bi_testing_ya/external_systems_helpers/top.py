@@ -1,29 +1,34 @@
 from __future__ import annotations
 
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    TypeVar,
+    Union,
+)
 import uuid
-from typing import Any, Optional, TypeVar, TYPE_CHECKING, Union
 
 import attr
-from bi_cloud_integration.yc_client_base import DLYCServiceConfig
+import grpc
 
 import bi_cloud_integration
-import grpc
-from bi_cloud_integration.yc_as_client import DLASClient
-
 from bi_cloud_integration.iam_rm_client import IAMRMClient
+from bi_cloud_integration.yc_as_client import DLASClient
+from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_testing_ya.cloud_tokens import CloudCredentialsConverter
 from bi_testing_ya.factories import FolderServiceFactory
 
 if TYPE_CHECKING:
     from bi_defaults.environments import (
         CommonExternalInstallation,
-        DataCloudExposedInstallation,
         CommonInternalInstallation,
+        DataCloudExposedInstallation,
         IntegrationTestConfig,
     )
 
 
-_EXT_SYS_HELPER_TV = TypeVar('_EXT_SYS_HELPER_TV', bound='ExternalSystemsHelperBase')
+_EXT_SYS_HELPER_TV = TypeVar("_EXT_SYS_HELPER_TV", bound="ExternalSystemsHelperBase")
 
 
 @attr.s
@@ -49,8 +54,9 @@ class ExternalSystemsHelperInternalInstallation(ExternalSystemsHelperBase):
 
 @attr.s
 class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
-    _ext_sys_requisites: Union[CommonExternalInstallation,
-                               DataCloudExposedInstallation, IntegrationTestConfig] = attr.ib()
+    _ext_sys_requisites: Union[
+        CommonExternalInstallation, DataCloudExposedInstallation, IntegrationTestConfig
+    ] = attr.ib()
 
     _yc_access_service_channel: Optional[grpc.Channel] = attr.ib(init=False, default=None)
     yc_credentials_converter: CloudCredentialsConverter = attr.ib(init=False, default=None)
@@ -89,9 +95,7 @@ class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
     @property
     def yc_access_service_client(self) -> DLASClient:
         return bi_cloud_integration.yc_as_client.DLASClient(
-            service_config=DLYCServiceConfig(
-                endpoint=self.ext_sys_requisites.YC_AS_ENDPOINT
-            )
+            service_config=DLYCServiceConfig(endpoint=self.ext_sys_requisites.YC_AS_ENDPOINT)
         )
 
     def get_iam_rm_client(self, iam_token: str, req_id: Optional[str] = None) -> IAMRMClient:
@@ -99,7 +103,7 @@ class ExternalSystemsHelperCloud(ExternalSystemsHelperBase):
             iam_endpoint=self._ext_sys_requisites.YC_API_ENDPOINT_IAM,
             rm_endpoint=self._ext_sys_requisites.YC_API_ENDPOINT_RM,
             iam_token=iam_token,
-            request_id=req_id or str(uuid.uuid4())
+            request_id=req_id or str(uuid.uuid4()),
         )
 
     def __enter__(self) -> ExternalSystemsHelperCloud:

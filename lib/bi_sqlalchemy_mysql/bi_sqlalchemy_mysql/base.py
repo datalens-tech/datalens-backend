@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+
 import sqlalchemy as sa
 from sqlalchemy.dialects.mysql.mysqldb import MySQLDialect_mysqldb as UPSTREAM
 
@@ -8,19 +9,19 @@ from dl_sqlalchemy_common.base import CompilerPrettyMixin
 
 
 class BIMySQLCompilerBasic(UPSTREAM.statement_compiler):
-    """ Necessary overrides """
+    """Necessary overrides"""
 
     # allow date and datetime literal_binds
     def render_literal_value(self, value, type_):
         type_to_literal = {
-            sa.Date: 'DATE',
-            sa.DateTime: 'TIMESTAMP',
+            sa.Date: "DATE",
+            sa.DateTime: "TIMESTAMP",
         }
 
         value_converters = {
             datetime.date: lambda d: d.isoformat(),
             datetime.datetime: lambda dt: dt.replace(tzinfo=None).isoformat(),
-            str: lambda s: s.removesuffix('+00:00'),
+            str: lambda s: s.removesuffix("+00:00"),
         }
 
         for type_key, type_literal in type_to_literal.items():
@@ -36,7 +37,7 @@ class BIMySQLCompilerBasic(UPSTREAM.statement_compiler):
 
 
 class BIMySQLCompiler(BIMySQLCompilerBasic, UPSTREAM.statement_compiler, CompilerPrettyMixin):
-    """ Added prettification """
+    """Added prettification"""
 
     def limit_clause(self, select, **kw):
         sup = super().limit_clause(select, **kw)
@@ -56,13 +57,9 @@ class BIMySQLCompiler(BIMySQLCompilerBasic, UPSTREAM.statement_compiler, Compile
             join_type = " INNER JOIN "
 
         return self._pretty.join_sql_join(
-            left=self.process(
-                join.left, asfrom=True, from_linter=from_linter, **kwargs
-            ),
+            left=self.process(join.left, asfrom=True, from_linter=from_linter, **kwargs),
             join_type=join_type,
-            right=self.process(
-                join.right, asfrom=True, from_linter=from_linter, **kwargs
-            ),
+            right=self.process(join.right, asfrom=True, from_linter=from_linter, **kwargs),
             onclause=self.process(join.onclause, from_linter=from_linter, **kwargs),
         )
 

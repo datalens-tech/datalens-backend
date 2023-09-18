@@ -15,7 +15,6 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     PredefinedIntervalsRetrier,
     THeaders,
 )
-
 from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 from dl_connector_snowflake.core.exc import SnowflakeGetAccessTokenError
 

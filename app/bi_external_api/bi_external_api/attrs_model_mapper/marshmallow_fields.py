@@ -1,6 +1,12 @@
-from marshmallow import fields, ValidationError
+from marshmallow import (
+    ValidationError,
+    fields,
+)
 
-from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq, FrozenStrMapping
+from bi_external_api.structs.mappings import (
+    FrozenMappingStrToStrOrStrSeq,
+    FrozenStrMapping,
+)
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 
 
@@ -12,10 +18,7 @@ class FrozenMappingStrToStrOrStrSeqField(fields.Field):
 
         assert isinstance(value, FrozenMappingStrToStrOrStrSeq)
 
-        return {
-            d_key: d_value if isinstance(d_value, str) else list(d_value)
-            for d_key, d_value in value.items()
-        }
+        return {d_key: d_value if isinstance(d_value, str) else list(d_value) for d_key, d_value in value.items()}
 
     def _deserialize(self, value, attr, data, **kwargs):  # type: ignore
         try:

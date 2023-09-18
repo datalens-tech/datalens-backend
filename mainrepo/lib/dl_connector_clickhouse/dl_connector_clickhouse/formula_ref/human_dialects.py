@@ -1,7 +1,6 @@
-from dl_formula_ref.texts import StyledDialect
-
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 from dl_connector_clickhouse.formula_ref.i18n import Translatable
+from dl_formula_ref.texts import StyledDialect
 
 HUMAN_DIALECTS = {
     ClickHouseDialect.CLICKHOUSE: StyledDialect(

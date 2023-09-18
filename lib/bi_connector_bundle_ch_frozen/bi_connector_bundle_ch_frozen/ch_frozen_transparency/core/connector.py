@@ -20,9 +20,5 @@ class CHFrozenTransparencyCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition)
 
 
 class CHFrozenTransparencyCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenTransparencyCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenTransparencyCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenTransparencyCoreConnectionDefinition,)
+    source_definitions = (CHFrozenTransparencyCoreSourceDefinition,)

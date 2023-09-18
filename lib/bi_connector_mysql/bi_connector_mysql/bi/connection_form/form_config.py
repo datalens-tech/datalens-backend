@@ -1,17 +1,27 @@
 from __future__ import annotations
 
-from typing import Optional, Sequence
-
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from typing import (
+    Optional,
+    Sequence,
+)
 
 from dl_api_commons.base_models import TenantDef
-
-import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
-from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
+from dl_api_connector.form_config.models.api_schema import (
+    FormActionApiSchema,
+    FormApiSchema,
+    FormFieldApiSchema,
+)
+from dl_api_connector.form_config.models.base import (
+    ConnectionForm,
+    ConnectionFormFactory,
+    ConnectionFormMode,
+)
 from dl_api_connector.form_config.models.common import CommonFieldName
+import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
+
 from bi_connector_mysql.bi.connection_info import MySQLConnectionInfoProvider
 
 
@@ -32,56 +42,58 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
 
     def _get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
         return FormActionApiSchema(
-            items=[
-                *edit_api_schema.items,
-                *self._get_top_level_create_api_schema_items()
-            ],
+            items=[*edit_api_schema.items, *self._get_top_level_create_api_schema_items()],
             conditions=edit_api_schema.conditions.copy(),
         )
 
     def _get_base_check_api_schema(self) -> FormActionApiSchema:
-        return FormActionApiSchema(items=[
-            FormFieldApiSchema(name=CommonFieldName.host, required=True),
-            FormFieldApiSchema(name=CommonFieldName.port, required=True),
-            FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
-            FormFieldApiSchema(name=CommonFieldName.username, required=True),
-            FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
-            *self._get_top_level_check_api_schema_items(),
-        ])
+        return FormActionApiSchema(
+            items=[
+                FormFieldApiSchema(name=CommonFieldName.host, required=True),
+                FormFieldApiSchema(name=CommonFieldName.port, required=True),
+                FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
+                FormFieldApiSchema(name=CommonFieldName.username, required=True),
+                FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+                *self._get_top_level_check_api_schema_items(),
+            ]
+        )
 
     def _get_base_form_config(
-            self, host_section: Sequence[FormRow],
-            username_section: Sequence[FormRow],
-            db_name_section: Sequence[FormRow],
-            create_api_schema: FormActionApiSchema,
-            edit_api_schema: FormActionApiSchema,
-            check_api_schema: FormActionApiSchema,
-            rc: RowConstructor,
+        self,
+        host_section: Sequence[FormRow],
+        username_section: Sequence[FormRow],
+        db_name_section: Sequence[FormRow],
+        create_api_schema: FormActionApiSchema,
+        edit_api_schema: FormActionApiSchema,
+        check_api_schema: FormActionApiSchema,
+        rc: RowConstructor,
     ) -> ConnectionForm:
         return ConnectionForm(
             title=MySQLConnectionInfoProvider.get_title(self._localizer),
-            rows=self._filter_nulls([
-                *host_section,
-                rc.port_row(default_value='3306'),
-                *db_name_section,
-                *username_section,
-                rc.password_row(mode=self.mode),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row(),
-                rc.collapse_advanced_settings_row(),
-                rc.data_export_forbidden_row(),
-            ]),
+            rows=self._filter_nulls(
+                [
+                    *host_section,
+                    rc.port_row(default_value="3306"),
+                    *db_name_section,
+                    *username_section,
+                    rc.password_row(mode=self.mode),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                    rc.raw_sql_level_row(),
+                    rc.collapse_advanced_settings_row(),
+                    rc.data_export_forbidden_row(),
+                ]
+            ),
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
                 check=check_api_schema,
-            )
+            ),
         )
 
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 from dl_formula.core.datatype import DataType
 from dl_formula.parser.factory import get_parser
 from dl_formula.shortcuts import n
@@ -15,8 +16,6 @@ from dl_formula_ref.examples.query import (
     RawQueryContext,
 )
 from dl_formula_ref.examples.query_gen import QueryGenerator
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 if TYPE_CHECKING:
     from dl_formula.core import nodes

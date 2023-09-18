@@ -33,6 +33,13 @@ import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
+    ClickHouseBaseUtils,
+    ClickHouseUtils,
+    get_ch_settings,
+)
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
 from dl_constants.enums import IndexKind
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
@@ -65,25 +72,16 @@ from dl_core.db.native_type import (
 )
 from dl_core.utils import make_url
 
-from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
-    ClickHouseBaseUtils,
-    ClickHouseUtils,
-    get_ch_settings,
-)
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
-
 if TYPE_CHECKING:
+    from dl_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
+        BaseClickHouseConnTargetDTO,
+        ClickHouseConnTargetDTO,
+    )
     from dl_constants.types import TBIChunksGen
     from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
     from dl_core.connection_models.common_models import (
         DBIdent,
         SchemaIdent,
-    )
-
-    from dl_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
-        BaseClickHouseConnTargetDTO,
-        ClickHouseConnTargetDTO,
     )
 
 LOGGER = logging.getLogger(__name__)

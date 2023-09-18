@@ -15,6 +15,7 @@ from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.testing_no_deps import DomainScene
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 from bi_testing_ya.sa_factories import DisposableYCServiceAccountFactory
+
 from ..test_acceptance_dc import AcceptanceScenarioDC
 from ..test_scenario_grpc import GrpcAcceptanceScenarioDC
 
@@ -59,11 +60,7 @@ class TestWorkbookBasicData:
         return "Autotests workbook title"
 
     @pytest.fixture(scope="function")
-    async def meaningful_workbook_id(
-            self,
-            bi_ext_api_dc_preprod_int_api_clients,
-            workbook_meaningful_title
-    ) -> str:
+    async def meaningful_workbook_id(self, bi_ext_api_dc_preprod_int_api_clients, workbook_meaningful_title) -> str:
         cli = bi_ext_api_dc_preprod_int_api_clients.us
 
         wb_id = await cli.create_workbook(workbook_meaningful_title)
@@ -72,30 +69,23 @@ class TestWorkbookBasicData:
 
     @pytest.mark.asyncio
     async def test_get_meaningful_workbook(
-            self,
-            meaningful_workbook_id,
-            workbook_meaningful_title,
-            bi_ext_api_dc_preprod_http_client,
-            dc_rs_project_id
+        self, meaningful_workbook_id, workbook_meaningful_title, bi_ext_api_dc_preprod_http_client, dc_rs_project_id
     ):
-        rs = await bi_ext_api_dc_preprod_http_client.dc_read_workbook(ext.DCOpWorkbookGetRequest(
-            workbook_id=meaningful_workbook_id
-        ))
+        rs = await bi_ext_api_dc_preprod_http_client.dc_read_workbook(
+            ext.DCOpWorkbookGetRequest(workbook_id=meaningful_workbook_id)
+        )
         assert rs == ext.DCOpWorkbookGetResponse(
             workbook=ext.WorkBook.create_empty(),
             id=meaningful_workbook_id,
             title=workbook_meaningful_title,
-            project_id=dc_rs_project_id
+            project_id=dc_rs_project_id,
         )
 
 
 @pytest.mark.asyncio
 async def test_auth_bad_get_workbook(workbook_id, bi_ext_api_dc_preprod_http_client_no_creds):
     cli = bi_ext_api_dc_preprod_http_client_no_creds
-    with pytest.raises(
-            AssertionError,
-            match=f"^GOT UNEXPECTED STATUS CODE 401\n"
-    ):
+    with pytest.raises(AssertionError, match=f"^GOT UNEXPECTED STATUS CODE 401\n"):
         await cli.read_workbook(ext.WorkbookReadRequest(workbook_id=workbook_id))
 
 
@@ -113,11 +103,7 @@ class TestGRPCAcceptanceScenarioAgainstLocalExtAPI(GrpcAcceptanceScenarioDC):
 
     @pytest.fixture()
     def grpc_client_ctx_disposable_sa(
-            self,
-            ext_sys_helpers_per_session,
-            bi_ext_api_grpc_against_dc_preprod,
-            integration_tests_admin_sa,
-            project_id
+        self, ext_sys_helpers_per_session, bi_ext_api_grpc_against_dc_preprod, integration_tests_admin_sa, project_id
     ) -> GrpcClientCtx:
         iam_rm_client = ext_sys_helpers_per_session.get_iam_rm_client(integration_tests_admin_sa.token)
 
@@ -154,10 +140,7 @@ class TestGRPCAcceptanceScenarioAgainstLocalExtAPI(GrpcAcceptanceScenarioDC):
                 raw_sql_level="subselect",
                 cache_ttl_sec=None,
             ),
-            ch_connection_secret=dict(
-                kind="plain",
-                secret=conn_data.secret.secret
-            ),
+            ch_connection_secret=dict(kind="plain", secret=conn_data.secret.secret),
         )
 
 
@@ -174,10 +157,10 @@ class TestGRPCAcceptanceScenarioAgainstDeployedPreprodDoubleCloudExtAPI(GrpcAcce
 
     @pytest.fixture()
     def grpc_client_ctx_disposable_sa(
-            self,
-            integration_tests_folder_id,
-            ext_sys_helpers_per_session,
-            integration_tests_admin_sa,
+        self,
+        integration_tests_folder_id,
+        ext_sys_helpers_per_session,
+        integration_tests_admin_sa,
     ) -> GrpcClientCtx:
         iam_rm_client = ext_sys_helpers_per_session.get_iam_rm_client(integration_tests_admin_sa.token)
         sa_factory = DisposableYCServiceAccountFactory(
@@ -213,8 +196,5 @@ class TestGRPCAcceptanceScenarioAgainstDeployedPreprodDoubleCloudExtAPI(GrpcAcce
                 raw_sql_level="subselect",
                 cache_ttl_sec=None,
             ),
-            ch_connection_secret=dict(
-                kind="plain",
-                secret=conn_data.secret.secret
-            ),
+            ch_connection_secret=dict(kind="plain", secret=conn_data.secret.secret),
         )

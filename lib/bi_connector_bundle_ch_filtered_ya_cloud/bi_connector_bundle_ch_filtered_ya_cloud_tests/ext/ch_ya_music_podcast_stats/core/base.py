@@ -10,38 +10,35 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.con
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.settings import (
     CHYaMusicPodcastStatsConnectorSettings,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.us_connection import (
-    ConnectionClickhouseYaMusicPodcastStats,
-)
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.testing.connection import (
     make_saved_ch_ya_music_podcast_stats_connection,
 )
-
-import bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config as test_config
-from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.base import (
-    BaseClickhouseFilteredSubselectByPuidTestClass, ClickhouseFilteredSubselectByPuidTestClassWithWrongAuth,
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.us_connection import (
+    ConnectionClickhouseYaMusicPodcastStats,
 )
+from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.base import (
+    BaseClickhouseFilteredSubselectByPuidTestClass,
+    ClickhouseFilteredSubselectByPuidTestClassWithWrongAuth,
+)
+import bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config as test_config
 
 
 class BaseClickhouseYaMusicPodcastStatsTestClass(
-        BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseYaMusicPodcastStats]
+    BaseClickhouseFilteredSubselectByPuidTestClass[ConnectionClickhouseYaMusicPodcastStats]
 ):
     conn_type = CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS
     connection_settings = CHYaMusicPodcastStatsConnectorSettings(**test_config.SR_CONNECTION_SETTINGS_PARAMS)
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def saved_connection(
-            self, sync_us_manager: SyncUSManager, connection_creation_params: dict
+        self, sync_us_manager: SyncUSManager, connection_creation_params: dict
     ) -> ConnectionClickhouseYaMusicPodcastStats:
-        conn = make_saved_ch_ya_music_podcast_stats_connection(
-            sync_usm=sync_us_manager,
-            **connection_creation_params
-        )
+        conn = make_saved_ch_ya_music_podcast_stats_connection(sync_usm=sync_us_manager, **connection_creation_params)
         return sync_us_manager.get_by_id(conn.uuid)  # to invoke a lifecycle manager
 
 
 class ClickhouseYaMusicPodcastStatsTestClassWithWrongAuth(
-        BaseClickhouseYaMusicPodcastStatsTestClass,
-        ClickhouseFilteredSubselectByPuidTestClassWithWrongAuth[ConnectionClickhouseYaMusicPodcastStats]
+    BaseClickhouseYaMusicPodcastStatsTestClass,
+    ClickhouseFilteredSubselectByPuidTestClassWithWrongAuth[ConnectionClickhouseYaMusicPodcastStats],
 ):
     pass

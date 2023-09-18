@@ -1,13 +1,16 @@
 import uuid
 
 import pytest
-
-import bi_integration_tests.request_executors.base
-from bi_integration_tests import common, request_executors
-from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
-from dl_testing import utils
-from bi_testing_ya.dlenv import DLEnv
 from test_data.sales_dataset import get_test_csv_file_contents
+
+from bi_integration_tests import (
+    common,
+    request_executors,
+)
+import bi_integration_tests.request_executors.base
+from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
+from bi_testing_ya.dlenv import DLEnv
+from dl_testing import utils
 
 STATUS_TIMEOUT_SECONDS = 10
 STATUS_RETRY_DELAY = 1
@@ -25,17 +28,12 @@ class FileUploaderWaitTimeoutError(Exception):
         DLEnv.internal_preprod,
         DLEnv.internal_prod,
     ],
-    indirect=True
+    indirect=True,
 )
 @utils.skip_outside_devhost
 @pytest.mark.asyncio
 async def test_file_api(
-    dl_env,
-    ext_sys_requisites,
-    two_users_configuration,
-    integration_tests_folder_id,
-    integration_tests_reporter,
-    tenant
+    dl_env, ext_sys_requisites, two_users_configuration, integration_tests_folder_id, integration_tests_reporter, tenant
 ):
     """
     Executes the following steps:
@@ -48,7 +46,7 @@ async def test_file_api(
         7) check dataset data
     """
 
-    file_name = 'test.csv'
+    file_name = "test.csv"
     base_dir = "access_control_tests/test_file_api"
 
     file_uploader_executor = request_executors.FileUploaderApiClient.from_settings(
@@ -56,7 +54,7 @@ async def test_file_api(
         account_creds=two_users_configuration.user_1,
         folder_id=integration_tests_folder_id,
         logger=integration_tests_reporter,
-        tenant=tenant
+        tenant=tenant,
     )
 
     file_status_executor = request_executors.FileUploaderApiClient.from_settings(
@@ -64,7 +62,7 @@ async def test_file_api(
         account_creds=two_users_configuration.user_1,
         folder_id=integration_tests_folder_id,
         logger=integration_tests_reporter,
-        tenant=tenant
+        tenant=tenant,
     )
 
     bi_api_client = BIAPIClient.create_client(
@@ -72,17 +70,15 @@ async def test_file_api(
         account_creds=two_users_configuration.user_1,
         folder_id=integration_tests_folder_id,
         logger=integration_tests_reporter,
-        tenant=tenant
+        tenant=tenant,
     )
-    dataset_executor = common.RequestExecutor(
-        bi_api_client
-    )
+    dataset_executor = common.RequestExecutor(bi_api_client)
 
     file_content = get_test_csv_file_contents()
     # upload file
     response = await file_uploader_executor.post_file(file_content, file_name)
 
-    file_id = response.json['file_id']
+    file_id = response.json["file_id"]
 
     # wait for file upload status
     await file_status_executor.wait_for_file_status(file_id)
@@ -100,10 +96,9 @@ async def test_file_api(
             dir_path=base_dir,
             sources=[
                 bi_integration_tests.request_executors.base.FileConnectionSourceData(
-                    id=conn_source_id,
-                    file_id=file_id,
-                    title="test_title")
-            ]
+                    id=conn_source_id, file_id=file_id, title="test_title"
+                )
+            ],
         )
     )
     connection_id = response.json["id"]
@@ -121,5 +116,5 @@ async def test_file_api(
 
     # check dataset data
     response = await bi_api_client.get_dataset_data(dataset_id)
-    data = response.json['result']['data']['Data']
+    data = response.json["result"]["data"]["Data"]
     assert len(data) == 4

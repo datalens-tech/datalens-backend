@@ -1,15 +1,16 @@
 from marshmallow import fields as ma_fields
 
-from bi_connector_monitoring.core.us_connection import MonitoringConnection
 from dl_core.us_manager.storage_schemas.connection import (
-    ConnectionBaseDataStorageSchema,
     CacheableConnectionDataSchemaMixin,
+    ConnectionBaseDataStorageSchema,
 )
+
+from bi_connector_monitoring.core.us_connection import MonitoringConnection
 
 
 class MonitoringConnectionDataStorageSchema(
-        ConnectionBaseDataStorageSchema[MonitoringConnection.DataModel],
-        CacheableConnectionDataSchemaMixin,
+    ConnectionBaseDataStorageSchema[MonitoringConnection.DataModel],
+    CacheableConnectionDataSchemaMixin,
 ):
     TARGET_CLS = MonitoringConnection.DataModel
 

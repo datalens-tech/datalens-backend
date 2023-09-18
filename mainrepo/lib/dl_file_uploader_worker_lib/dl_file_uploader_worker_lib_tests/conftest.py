@@ -22,6 +22,7 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from dl_core.loader import load_bi_core
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.united_storage_client import USAuthContextMaster
@@ -62,8 +63,6 @@ from dl_testing.s3_utils import (
     create_sync_s3_client,
 )
 from dl_testing.utils import wait_for_initdb
-
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
 from .config import TestingUSConfig
 

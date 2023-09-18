@@ -1,16 +1,26 @@
 from __future__ import annotations
 
 import abc
-from typing import FrozenSet, Optional, Iterable, Type, TypeVar, Sequence, ClassVar
+from typing import (
+    ClassVar,
+    FrozenSet,
+    Iterable,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 import attr
 
-from bi_external_api.domain.internal import (
-    datasets as dataset_models,
-    charts as chart_models,
-    dashboards as dash_models,
+from bi_external_api.domain.internal import charts as chart_models
+from bi_external_api.domain.internal import dashboards as dash_models
+from bi_external_api.domain.internal import datasets as dataset_models
+from bi_external_api.domain.internal.dl_common import (
+    EntryInstance,
+    EntrySummary,
 )
-from bi_external_api.domain.internal.dl_common import EntryInstance, EntrySummary
+
 from . import converter_exc
 from ..internal_api_clients.models import WorkbookBasicInfo
 
@@ -49,9 +59,7 @@ class EntryLoadFailInfo:
 # TODO FIX: MyPy fires next error in case of TypeVar
 #  Type variable "bi_external_api.converter.workbook._ENTRY_CLS_TV" is unbound
 def _collection_converter(raw_seq: Sequence[EntryInstance]) -> Sequence[EntryInstance]:
-    return tuple(
-        sorted((inst for inst in raw_seq), key=lambda inst: inst.summary.name)
-    )
+    return tuple(sorted((inst for inst in raw_seq), key=lambda inst: inst.summary.name))
 
 
 def _load_fail_info_collection_converter(raw_seq: Sequence[EntryLoadFailInfo]) -> Sequence[EntryLoadFailInfo]:
@@ -60,11 +68,13 @@ def _load_fail_info_collection_converter(raw_seq: Sequence[EntryLoadFailInfo]) -
 
 @attr.s(frozen=True, auto_attribs=True)
 class WorkbookContext:
-    _SUPPORTED_INSTANCES: ClassVar[FrozenSet[Type[EntryInstance]]] = frozenset([
-        dataset_models.DatasetInstance,
-        chart_models.ChartInstance,
-        dash_models.DashInstance,
-    ])
+    _SUPPORTED_INSTANCES: ClassVar[FrozenSet[Type[EntryInstance]]] = frozenset(
+        [
+            dataset_models.DatasetInstance,
+            chart_models.ChartInstance,
+            dash_models.DashInstance,
+        ]
+    )
 
     connections: Sequence[dataset_models.ConnectionInstance] = attr.ib(converter=_collection_converter)
     datasets: Sequence[dataset_models.DatasetInstance] = attr.ib(converter=_collection_converter)
@@ -128,9 +138,9 @@ class WorkbookContext:
         return all_summaries
 
     def resolve_entry(
-            self,
-            clz: Type[_ENTRY_CLS_TV],
-            ref: EntryRef,
+        self,
+        clz: Type[_ENTRY_CLS_TV],
+        ref: EntryRef,
     ) -> _ENTRY_CLS_TV:
         load_fail_info = self.resolve_entry_load_fail_info(ref)
         if load_fail_info:
@@ -143,16 +153,14 @@ class WorkbookContext:
             raise converter_exc.WorkbookEntryNotFound(f"{clz.__name__}/{ref} not found in workbook")
 
     def resolve_entry_load_fail_info(self, ref: EntryRef) -> Optional[EntryLoadFailInfo]:
-        return next(
-            (lfi for lfi in self.load_fail_info_collection if ref.match(lfi.summary)),
-            None
-        )
+        return next((lfi for lfi in self.load_fail_info_collection if ref.match(lfi.summary)), None)
 
     def resolve_summary(self, clz: Type[_ENTRY_CLS_TV], ref: EntryRef) -> EntrySummary:
         lfi = self.resolve_entry_load_fail_info(ref)
         if lfi is not None:
-            assert clz.SCOPE == lfi.summary.scope, \
-                f"resolve_summary() called for {clz}, but entry is {lfi.summary.scope}"
+            assert (
+                clz.SCOPE == lfi.summary.scope
+            ), f"resolve_summary() called for {clz}, but entry is {lfi.summary.scope}"
             return lfi.summary
 
         return self.resolve_entry(clz, ref).summary
@@ -205,11 +213,13 @@ class WorkbookContext:
             except StopIteration:
                 try:
                     idx, summary = next(
-                        (idx, load_fail.summary) for idx, load_fail in enumerate(current_load_fail_info_list)
+                        (idx, load_fail.summary)
+                        for idx, load_fail in enumerate(current_load_fail_info_list)
                         if ref.match(load_fail.summary)
                     )
-                    assert summary.scope == clz.SCOPE, \
-                        f"Attempt to replace {clz}/{ref}, but referenced entry has scope {summary.scope}"
+                    assert (
+                        summary.scope == clz.SCOPE
+                    ), f"Attempt to replace {clz}/{ref}, but referenced entry has scope {summary.scope}"
                     current_load_fail_info_list.pop(idx)
                 except StopIteration:
                     raise AssertionError(f"Attempt to remove {clz}/{ref} that does not exist in workbook")
@@ -234,49 +244,45 @@ class WorkbookContext:
                 current_entry_list[idx] = new_inst
             except StopIteration:
                 idx, broken_summary = next(
-                    (idx, load_fail_info.summary) for idx, load_fail_info in enumerate(current_load_fail_info_list)
+                    (idx, load_fail_info.summary)
+                    for idx, load_fail_info in enumerate(current_load_fail_info_list)
                     if ref.match(load_fail_info.summary)
                 )
                 assert new_inst.summary == broken_summary
                 current_load_fail_info_list.pop(idx)
                 current_entry_list.append(new_inst)
 
-        return attr.evolve(self, load_fail_info_collection=current_load_fail_info_list,
-                           **{attr_name: current_entry_list})
+        return attr.evolve(
+            self, load_fail_info_collection=current_load_fail_info_list, **{attr_name: current_entry_list}
+        )
 
     def replace_id(self, clz: Type[EntryInstance], old: str, new: str) -> WorkbookContext:
         attr_name, current_entry_seq = self._get_entry_coll_name_and_value(clz)
         current_entry_list: list[EntryInstance] = list(current_entry_seq)
         ref = self.ref(id=old)
         idx, inst = next((idx, inst) for idx, inst in enumerate(current_entry_list) if ref.match(inst.summary))
-        modified_inst = attr.evolve(
-            inst,
-            summary=attr.evolve(
-                inst.summary,
-                id=new
-            )
-        )
+        modified_inst = attr.evolve(inst, summary=attr.evolve(inst.summary, id=new))
         current_entry_list[idx] = modified_inst
         return attr.evolve(self, **{attr_name: current_entry_list})
 
     def taint_existing_entries(
-            self,
-            clz: Type[EntryInstance],
-            taint_info_seq: Sequence[tuple[EntryRef, Exception]],
+        self,
+        clz: Type[EntryInstance],
+        taint_info_seq: Sequence[tuple[EntryRef, Exception]],
     ) -> WorkbookContext:
         return self.remove_entries(
             clz,
             [ref for ref, _ in taint_info_seq],
-        ).add_tainted_entries([
-            (self.resolve_summary(clz, ref), exc)
-            for ref, exc in taint_info_seq
-        ])
+        ).add_tainted_entries([(self.resolve_summary(clz, ref), exc) for ref, exc in taint_info_seq])
 
     def add_tainted_entries(self, taint_info_seq: Iterable[tuple[EntrySummary, Exception]]) -> WorkbookContext:
-        return attr.evolve(self, load_fail_info_collection=[
-            *self.load_fail_info_collection,
-            *[EntryLoadFailInfo(summary=summary, exception=exc) for summary, exc in taint_info_seq],
-        ])
+        return attr.evolve(
+            self,
+            load_fail_info_collection=[
+                *self.load_fail_info_collection,
+                *[EntryLoadFailInfo(summary=summary, exception=exc) for summary, exc in taint_info_seq],
+            ],
+        )
 
     #
     # Constructors

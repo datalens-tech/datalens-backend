@@ -1,6 +1,14 @@
 import enum
 import functools
-from typing import Any, Type, Union, Collection, Optional, Sequence, Mapping
+from typing import (
+    Any,
+    Collection,
+    Mapping,
+    Optional,
+    Sequence,
+    Type,
+    Union,
+)
 
 import attr
 
@@ -11,8 +19,8 @@ _INDENT = " " * 4
 
 
 def pretty_repr(
-        model: Any,
-        preferred_cls_name_prefixes: Union[Mapping[Any, Optional[str]], Sequence[Any], None] = None,
+    model: Any,
+    preferred_cls_name_prefixes: Union[Mapping[Any, Optional[str]], Sequence[Any], None] = None,
 ) -> str:
     """
     Generates string with prettily-formatted executable code that will create model passed in `model`.
@@ -46,10 +54,7 @@ class Renderer:
     def __attrs_post_init__(self) -> None:
         for module_obj in self._preferred_cls_name_prefixes.keys():
             module_name = module_obj.__name__.split(".")[-1]
-            declared_type_list: list[Type] = [
-                var for var in vars(module_obj).values()
-                if isinstance(var, type)
-            ]
+            declared_type_list: list[Type] = [var for var in vars(module_obj).values() if isinstance(var, type)]
             for declared_type in declared_type_list:
                 preferred_prefix = self._preferred_cls_name_prefixes.get(module_obj)
                 effective_prefix = module_name if preferred_prefix is None else preferred_prefix
@@ -95,37 +100,36 @@ class Renderer:
     def _get_lines_internal_list(self, model: list) -> list[str]:
         return self._get_lines_for_simple_collection(
             model,
-            start="[", end="]",
+            start="[",
+            end="]",
         )
 
     @_get_lines_internal.register
     def _get_lines_internal_tuple(self, model: tuple) -> list[str]:
         return self._get_lines_for_simple_collection(
             model,
-            start="(", end=")",
+            start="(",
+            end=")",
             trailing_comma_required=True,
         )
 
     @_get_lines_internal.register
     def _get_lines_internal_set(self, model: set) -> list[str]:
-        return self._get_lines_for_simple_collection(
-            model,
-            start="{", end="}",
-            empty_override="set()"
-        )
+        return self._get_lines_for_simple_collection(model, start="{", end="}", empty_override="set()")
 
     @_get_lines_internal.register
     def _get_lines_internal_dict(self, model: dict) -> list[str]:
         return self._get_lines_for_simple_collection(
             [_DictItem(key=key, value=value) for key, value in model.items()],
-            start="{", end="}",
+            start="{",
+            end="}",
             inline_single_element=False,
         )
 
     @_get_lines_internal.register
     def _get_lines_internal_frozen_mapping_str_to_str_or_str_seq(
-            self,
-            model: FrozenMappingStrToStrOrStrSeq,
+        self,
+        model: FrozenMappingStrToStrOrStrSeq,
     ) -> list[str]:
         under_hood_dict_lines = self._get_lines_internal(dict(model))
         prefix = f"{self.get_type_str(type(model))}("
@@ -162,12 +166,13 @@ class Renderer:
         return lines
 
     def _get_lines_for_simple_collection(
-            self,
-            model: Collection,
-            start: str, end: str,
-            trailing_comma_required: bool = False,
-            empty_override: Optional[str] = None,
-            inline_single_element: bool = True,
+        self,
+        model: Collection,
+        start: str,
+        end: str,
+        trailing_comma_required: bool = False,
+        empty_override: Optional[str] = None,
+        inline_single_element: bool = True,
     ) -> list[str]:
         if len(model) == 0:
             if empty_override is not None:

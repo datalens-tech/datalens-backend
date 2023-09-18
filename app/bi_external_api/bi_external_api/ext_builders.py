@@ -1,5 +1,11 @@
 import abc
-from typing import TypeVar, Generic, Optional, final, Sequence
+from typing import (
+    Generic,
+    Optional,
+    Sequence,
+    TypeVar,
+    final,
+)
 
 import attr
 

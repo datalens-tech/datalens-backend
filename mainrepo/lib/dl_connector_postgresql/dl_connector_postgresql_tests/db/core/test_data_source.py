@@ -1,5 +1,16 @@
 import pytest
 
+from dl_connector_postgresql.core.postgresql.constants import (
+    SOURCE_TYPE_PG_SUBSELECT,
+    SOURCE_TYPE_PG_TABLE,
+)
+from dl_connector_postgresql.core.postgresql.data_source import (
+    PostgreSQLDataSource,
+    PostgreSQLSubselectDataSource,
+)
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql_tests.db.config import SUBSELECT_QUERY_FULL
+from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 from dl_constants.enums import (
     BIType,
     RawSQLLevel,
@@ -13,18 +24,6 @@ from dl_core_testing.testcases.data_source import (
     DataSourceTestByViewClass,
     DefaultDataSourceTestClass,
 )
-
-from dl_connector_postgresql.core.postgresql.constants import (
-    SOURCE_TYPE_PG_SUBSELECT,
-    SOURCE_TYPE_PG_TABLE,
-)
-from dl_connector_postgresql.core.postgresql.data_source import (
-    PostgreSQLDataSource,
-    PostgreSQLSubselectDataSource,
-)
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from dl_connector_postgresql_tests.db.config import SUBSELECT_QUERY_FULL
-from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 
 
 class TestPostgreSQLTableDataSource(

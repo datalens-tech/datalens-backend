@@ -1,24 +1,36 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, ClassVar
-
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 from dl_api_commons.base_models import TenantDef
-
+from dl_api_connector.form_config.models.api_schema import (
+    FormActionApiSchema,
+    FormApiSchema,
+    FormFieldApiSchema,
+)
+from dl_api_connector.form_config.models.base import (
+    ConnectionForm,
+    ConnectionFormFactory,
+    ConnectionFormMode,
+)
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    OAuthApplication,
+)
 import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_api_connector.form_config.models.api_schema import FormActionApiSchema, FormApiSchema, FormFieldApiSchema
-from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
-from dl_api_connector.form_config.models.common import CommonFieldName, OAuthApplication
 from dl_api_connector.form_config.models.rows.base import FormRow
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import Translatable
 
 
 class ServiceOAuthApplication(OAuthApplication):
-    service_oauth = 'service_oauth'
+    service_oauth = "service_oauth"
 
 
 class ServiceConnectionBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
@@ -33,9 +45,9 @@ class ServiceConnectionBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCM
         raise NotImplementedError
 
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 
@@ -47,9 +59,11 @@ class ServiceConnectionBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCM
         if self.mode == ConnectionFormMode.create:
             rows.append(rc.auto_create_dash_row())
 
-            create_api_schema = FormActionApiSchema(items=[
-                *self._get_top_level_create_api_schema_items(),
-            ])
+            create_api_schema = FormActionApiSchema(
+                items=[
+                    *self._get_top_level_create_api_schema_items(),
+                ]
+            )
 
         return ConnectionForm(
             title=self._title(),
@@ -63,12 +77,12 @@ class ServiceConnectionWithTokenBaseFormFactory(ServiceConnectionBaseFormFactory
     oauth_application: ClassVar[ServiceOAuthApplication] = ServiceOAuthApplication.service_oauth
 
     def _get_token_button_text(self) -> str:
-        return self._localizer.translate(Translatable('button_get-token'))
+        return self._localizer.translate(Translatable("button_get-token"))
 
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 
@@ -76,27 +90,41 @@ class ServiceConnectionWithTokenBaseFormFactory(ServiceConnectionBaseFormFactory
             C.CustomizableRow(items=[C.DescriptionRowItem(text=self._description())]),
             C.OAuthTokenRow(
                 name=CommonFieldName.token,
-                fake_value='******' if self.mode == ConnectionFormMode.edit else None,
+                fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                 application=self.oauth_application,
                 button_text=self._get_token_button_text(),
-            )
+            ),
         ]
         if self.mode == ConnectionFormMode.create:
             rows.append(rc.auto_create_dash_row())
 
-        create_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=CommonFieldName.token, required=True),
-            *self._get_top_level_create_api_schema_items(),
-        ]) if self.mode == ConnectionFormMode.create else None
+        create_api_schema = (
+            FormActionApiSchema(
+                items=[
+                    FormFieldApiSchema(name=CommonFieldName.token, required=True),
+                    *self._get_top_level_create_api_schema_items(),
+                ]
+            )
+            if self.mode == ConnectionFormMode.create
+            else None
+        )
 
-        edit_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=CommonFieldName.token),
-        ]) if self.mode == ConnectionFormMode.edit else None
+        edit_api_schema = (
+            FormActionApiSchema(
+                items=[
+                    FormFieldApiSchema(name=CommonFieldName.token),
+                ]
+            )
+            if self.mode == ConnectionFormMode.edit
+            else None
+        )
 
-        check_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=CommonFieldName.token, required=self.mode == ConnectionFormMode.create),
-            *self._get_top_level_check_api_schema_items(),
-        ])
+        check_api_schema = FormActionApiSchema(
+            items=[
+                FormFieldApiSchema(name=CommonFieldName.token, required=self.mode == ConnectionFormMode.create),
+                *self._get_top_level_check_api_schema_items(),
+            ]
+        )
 
         return ConnectionForm(
             title=self._title(),

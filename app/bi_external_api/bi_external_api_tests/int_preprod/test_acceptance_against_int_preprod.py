@@ -5,12 +5,13 @@ import os
 import aiohttp
 import pytest
 
-from dl_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.testings import WorkbookOpsClient
+from dl_api_commons.base_models import TenantCommon
+
 from ..test_acceptance import ConnectionTestingData
 from ..test_acceptance_ya_team import AcceptanceScenatioYaTeam
 
@@ -19,7 +20,7 @@ ENV_VAR_RUN_ACCEPTANCE_AGAINST_INT_PREPROD = "DL_EXT_API_TESTS_RUN_AGAINST_INT_P
 
 @pytest.mark.skipif(
     os.environ.get(ENV_VAR_RUN_ACCEPTANCE_AGAINST_INT_PREPROD) != "1",
-    reason=f"Env var {ENV_VAR_RUN_ACCEPTANCE_AGAINST_INT_PREPROD!r} != 1"
+    reason=f"Env var {ENV_VAR_RUN_ACCEPTANCE_AGAINST_INT_PREPROD!r} != 1",
 )
 class TestTrunkAcceptanceScenario(AcceptanceScenatioYaTeam):
     """
@@ -27,6 +28,7 @@ class TestTrunkAcceptanceScenario(AcceptanceScenatioYaTeam):
     Skipped by default. Should be un-skipped manually if required.
     Main case - check preprod before updating prod version.
     """
+
     _DO_ADD_EXC_MESSAGE = True
 
     @pytest.fixture

@@ -1,23 +1,31 @@
-import json
 from copy import deepcopy
-from typing import final, Any, Optional, ClassVar
+import json
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    final,
+)
 
 import attr
 import grpc
 import pytest
 
-from bi_external_api.grpc_proxy.client import GrpcClientCtx, VisualizationV1Client
+from bi_external_api.grpc_proxy.client import (
+    GrpcClientCtx,
+    VisualizationV1Client,
+)
 from bi_external_api.testing_dicts_builders.chart import ChartJSONBuilderSingleDataset
-from bi_external_api.testing_dicts_builders.dataset import SampleSuperStoreLightJSONBuilder, BaseDatasetJSONBuilder
+from bi_external_api.testing_dicts_builders.dataset import (
+    BaseDatasetJSONBuilder,
+    SampleSuperStoreLightJSONBuilder,
+)
 from bi_external_api.testing_dicts_builders.reference_wb import build_reference_workbook
 from bi_external_api.testing_no_deps import DomainScene
 from bi_testing_ya.factories import AbstractAsyncTestResourceFactory
 
 
-def assert_operation_status(
-        op: dict[str, Any],
-        status: Optional[str] = None
-) -> None:
+def assert_operation_status(op: dict[str, Any], status: Optional[str] = None) -> None:
     expected_status = status if status is not None else "STATUS_DONE"
     assert op["status"] == expected_status
     assert "error" not in op
@@ -29,18 +37,12 @@ class WorkbookAsyncFactory(AbstractAsyncTestResourceFactory[str, str]):
     project_id: str
     preserve_workbook: bool
 
-    async def _create_resource(
-            self,
-            resource_request: str
-    ) -> str:
+    async def _create_resource(self, resource_request: str) -> str:
         create_wb_result = await self.grpc_client.create_workbook(wb_title=resource_request, project_id=self.project_id)
         wb_id = create_wb_result["resourceId"]
         return wb_id
 
-    async def _close_resource(
-            self,
-            resource: str
-    ) -> None:
+    async def _close_resource(self, resource: str) -> None:
         if not self.preserve_workbook:
             wb_delete_result = await self.grpc_client.delete_workbook(resource)
             assert_operation_status(wb_delete_result)
@@ -91,25 +93,21 @@ class GrpcAcceptanceScenarioDC:
     @final
     @pytest.fixture(scope="function")
     async def workbook_id_factory(
-            self,
-            request: pytest.FixtureRequest,
-            project_id: str,
-            grpc_client: VisualizationV1Client,
+        self,
+        request: pytest.FixtureRequest,
+        project_id: str,
+        grpc_client: VisualizationV1Client,
     ) -> WorkbookAsyncFactory:
         async with WorkbookAsyncFactory(
-                grpc_client=grpc_client,
-                project_id=project_id,
-                preserve_workbook=self.get_mark(request, "ea_preserve_workbook") is not None
+            grpc_client=grpc_client,
+            project_id=project_id,
+            preserve_workbook=self.get_mark(request, "ea_preserve_workbook") is not None,
         ) as f:
             yield f
 
     @final
     @pytest.fixture()
-    async def workbook_id(
-            self,
-            workbook_title: str,
-            workbook_id_factory: WorkbookAsyncFactory
-    ) -> str:
+    async def workbook_id(self, workbook_title: str, workbook_id_factory: WorkbookAsyncFactory) -> str:
         return await workbook_id_factory.create(workbook_title)
 
     @pytest.fixture()
@@ -118,10 +116,10 @@ class GrpcAcceptanceScenarioDC:
 
     @pytest.fixture()
     async def ch_conn_name(
-            self,
-            domain_scene: DomainScene,
-            workbook_id: str,
-            grpc_client: VisualizationV1Client,
+        self,
+        domain_scene: DomainScene,
+        workbook_id: str,
+        grpc_client: VisualizationV1Client,
     ) -> str:
         conn_name = "ch_conn"
 
@@ -140,14 +138,14 @@ class GrpcAcceptanceScenarioDC:
     @classmethod
     def clear_volatile_fields_in_err_response(cls, err: dict[str, Any]) -> dict[str, Any]:
         assert set(err.keys()) == {
-            'message',
-            'common_errors',
-            'entry_errors',
-            'partial_workbook',
-            'request_id',
+            "message",
+            "common_errors",
+            "entry_errors",
+            "partial_workbook",
+            "request_id",
         }
         err = deepcopy(err)
-        assert err['request_id']
+        assert err["request_id"]
 
         for single_err in err["common_errors"]:
             exc_msg = single_err.pop("exc_message")
@@ -168,10 +166,10 @@ class GrpcAcceptanceScenarioDC:
 
     @pytest.mark.asyncio
     async def test_workbook_create_delete(
-            self,
-            workbook_title: str,
-            project_id: str,
-            grpc_client: VisualizationV1Client,
+        self,
+        workbook_title: str,
+        project_id: str,
+        grpc_client: VisualizationV1Client,
     ):
         create_wb_result = await grpc_client.create_workbook(wb_title=workbook_title, project_id=project_id)
         assert_operation_status(create_wb_result)
@@ -201,17 +199,20 @@ class GrpcAcceptanceScenarioDC:
         assert details_json["request_id"], f"No request ID in details: {details_json}"
         assert details_json["message"] == "Workbook was not found"
 
-    @pytest.mark.parametrize("bad_wb_id", [
-        "12345678901234",
-        "#ololo",
-        "__13__",
-        "../../",
-    ])
+    @pytest.mark.parametrize(
+        "bad_wb_id",
+        [
+            "12345678901234",
+            "#ololo",
+            "__13__",
+            "../../",
+        ],
+    )
     @pytest.mark.asyncio
     async def test_bad_workbook_id_format(
-            self,
-            bad_wb_id: str,
-            grpc_client: VisualizationV1Client,
+        self,
+        bad_wb_id: str,
+        grpc_client: VisualizationV1Client,
     ):
         # Ensure workbook was deleted
         with pytest.raises(BaseException) as err_info:
@@ -223,10 +224,10 @@ class GrpcAcceptanceScenarioDC:
 
     @pytest.mark.asyncio
     async def test_connection_create_modify_read_delete(
-            self,
-            grpc_client: VisualizationV1Client,
-            workbook_id: str,
-            domain_scene: DomainScene,
+        self,
+        grpc_client: VisualizationV1Client,
+        workbook_id: str,
+        domain_scene: DomainScene,
     ):
         conn_name = "ch_conn"
 
@@ -285,39 +286,37 @@ class GrpcAcceptanceScenarioDC:
 
         assert err_info.value.code() == grpc.StatusCode.INVALID_ARGUMENT
 
-        assert details_json['message'] == 'Connection get error'
-        assert 'not found in workbook' in details_json['common_errors'][0]['exc_message']
-        assert details_json['request_id']
+        assert details_json["message"] == "Connection get error"
+        assert "not found in workbook" in details_json["common_errors"][0]["exc_message"]
+        assert details_json["request_id"]
 
     @pytest.mark.asyncio
     async def test_advise_dataset_fields(
-            self,
-            grpc_client: VisualizationV1Client,
-            ch_conn_name: str,
-            workbook_id: str,
+        self,
+        grpc_client: VisualizationV1Client,
+        ch_conn_name: str,
+        workbook_id: str,
     ):
         base_ds_builder = SampleSuperStoreLightJSONBuilder(ch_conn_name)
 
         ds_wo_fields = base_ds_builder.build()
         advise_result = await grpc_client.advise_dataset_fields(
-            wb_id=workbook_id,
-            connection_name=ch_conn_name,
-            partial_dataset=ds_wo_fields
+            wb_id=workbook_id, connection_name=ch_conn_name, partial_dataset=ds_wo_fields
         )
 
         expected_fields = base_ds_builder.do_add_default_fields().build()["fields"]
-        expected_fields = [{**f, "title": f['id']} for f in expected_fields]
+        expected_fields = [{**f, "title": f["id"]} for f in expected_fields]
         assert len(expected_fields) != 0
 
         assert advise_result["dataset"]["config"]["fields"] == expected_fields
 
     @pytest.mark.asyncio
     async def test_save_complex_workbook(
-            self,
-            grpc_client: VisualizationV1Client,
-            workbook_id: str,
-            domain_scene: DomainScene,
-            ch_conn_name: str,
+        self,
+        grpc_client: VisualizationV1Client,
+        workbook_id: str,
+        domain_scene: DomainScene,
+        ch_conn_name: str,
     ):
         # Update wb with empty data
         empty_workbook_config = dict(
@@ -334,7 +333,7 @@ class GrpcAcceptanceScenarioDC:
             workbook=domain_scene.get_complex_workbook_dict(
                 conn_name=ch_conn_name,
                 fill_defaults=False,
-            )
+            ),
         )
         assert_operation_status(update_wb_result)
 
@@ -355,10 +354,10 @@ class GrpcAcceptanceScenarioDC:
     @pytest.mark.asyncio
     @pytest.mark.ea_preserve_workbook
     async def test_save_reference_workbook(
-            self,
-            grpc_client: VisualizationV1Client,
-            workbook_id: str,
-            ch_conn_name: str,
+        self,
+        grpc_client: VisualizationV1Client,
+        workbook_id: str,
+        ch_conn_name: str,
     ):
         wb_config = build_reference_workbook(ch_conn_name)
 
@@ -366,53 +365,68 @@ class GrpcAcceptanceScenarioDC:
         assert_operation_status(resp)
 
     # TODO FIX: Check bad field ID in different sections (coloring, etc.)
-    @pytest.mark.parametrize("chart_builder,errors", [
+    @pytest.mark.parametrize(
+        "chart_builder,errors",
         [
-            ChartJSONBuilderSingleDataset().with_visualization({
-                "kind": "indicator",
-                "field": {"source": {"kind": "ref", "id": "unk_field"}},
-            }),
-            [dict(
-                message="Dataset field not found: id='unk_field'",
-                path="visualization.field",
-            )],
-        ],
-        [
-            ChartJSONBuilderSingleDataset().with_visualization({
-                "kind": "indicator",
-                "field": {"source": {"kind": "ref", "id": "my_field"}},
-            }).add_formula_field("my_field", cast="float", formula="sum([trololo])"),
-            [dict(
-                message="Unknown field found in formula: trololo, code: ERR.DS_API.FORMULA.UNKNOWN_FIELD_IN_FORMULA",
-                path="field.my_field",
-            )],
-        ],
-        # Check that title reference in ID formula triggers an error BI-4542
-        [
-            ChartJSONBuilderSingleDataset().with_visualization({
-                "kind": "indicator",
-                "field": {"source": {"kind": "ref", "id": "my_field"}},
-            }).add_formula_field("my_field", cast="float", formula="sum([The Sales])"),
             [
-                dict(
-                    message="Dataset field not found: next fields in ID formula not found in dataset: The Sales",
-                    path="ad_hoc_fields.my_field",
+                ChartJSONBuilderSingleDataset().with_visualization(
+                    {
+                        "kind": "indicator",
+                        "field": {"source": {"kind": "ref", "id": "unk_field"}},
+                    }
                 ),
-                dict(
-                    message="Dataset field not found: id='my_field'",
-                    path='visualization.field'
-                ),
+                [
+                    dict(
+                        message="Dataset field not found: id='unk_field'",
+                        path="visualization.field",
+                    )
+                ],
+            ],
+            [
+                ChartJSONBuilderSingleDataset()
+                .with_visualization(
+                    {
+                        "kind": "indicator",
+                        "field": {"source": {"kind": "ref", "id": "my_field"}},
+                    }
+                )
+                .add_formula_field("my_field", cast="float", formula="sum([trololo])"),
+                [
+                    dict(
+                        message="Unknown field found in formula: trololo, code: ERR.DS_API.FORMULA.UNKNOWN_FIELD_IN_FORMULA",
+                        path="field.my_field",
+                    )
+                ],
+            ],
+            # Check that title reference in ID formula triggers an error BI-4542
+            [
+                ChartJSONBuilderSingleDataset()
+                .with_visualization(
+                    {
+                        "kind": "indicator",
+                        "field": {"source": {"kind": "ref", "id": "my_field"}},
+                    }
+                )
+                .add_formula_field("my_field", cast="float", formula="sum([The Sales])"),
+                [
+                    dict(
+                        message="Dataset field not found: next fields in ID formula not found in dataset: The Sales",
+                        path="ad_hoc_fields.my_field",
+                    ),
+                    dict(message="Dataset field not found: id='my_field'", path="visualization.field"),
+                ],
             ],
         ],
-    ], ids=["unknown_field_indicator", "unknown_field_id_in_ad_hoc", "title_in_ad_hoc_formula_instead_of_id"])
+        ids=["unknown_field_indicator", "unknown_field_id_in_ad_hoc", "title_in_ad_hoc_formula_instead_of_id"],
+    )
     @pytest.mark.asyncio
     async def test_err_unknown_field_in_chart(
-            self,
-            grpc_client: VisualizationV1Client,
-            workbook_id: str,
-            ch_conn_name: str,
-            chart_builder: ChartJSONBuilderSingleDataset,
-            errors: list[dict[str, str]],
+        self,
+        grpc_client: VisualizationV1Client,
+        workbook_id: str,
+        ch_conn_name: str,
+        chart_builder: ChartJSONBuilderSingleDataset,
+        errors: list[dict[str, str]],
     ):
         ds_name = "ds_1"
         ch_name = "ch_1"
@@ -420,75 +434,81 @@ class GrpcAcceptanceScenarioDC:
         workbook = dict(
             datasets=[SampleSuperStoreLightJSONBuilder(ch_conn_name, add_default_fields=True).build_instance(ds_name)],
             dashboards=[],
-            charts=[chart_builder.with_ds_name(ds_name).build_instance(ch_name)]
+            charts=[chart_builder.with_ds_name(ds_name).build_instance(ch_name)],
         )
         with pytest.raises(grpc.RpcError) as err_info:
             await grpc_client.update_workbook(workbook_id, workbook)
 
         details = json.loads(err_info.value.details())
-        assert self.clear_volatile_fields_in_err_response(details)["entry_errors"] == [dict(
-            name=ch_name,
-            errors=errors,
-        )]
+        assert self.clear_volatile_fields_in_err_response(details)["entry_errors"] == [
+            dict(
+                name=ch_name,
+                errors=errors,
+            )
+        ]
 
-    @pytest.mark.parametrize("dataset_builder,errors", [
+    @pytest.mark.parametrize(
+        "dataset_builder,errors",
         [
-            SampleSuperStoreLightJSONBuilder().add_field(
-                BaseDatasetJSONBuilder.field_id_formula("sum([trololo])", cast="float", id="sum_trololo"),
-            ),
-            [dict(
-                message="Dataset field not found: next fields in ID formula not found in dataset: trololo",
-                path="fields.sum_trololo",
-            )],
-            # After removing crunch BI-4542 should be like this
-            # [dict(
-            #     message="Unknown field found in formula: trololo, code: ERR.DS_API.FORMULA.UNKNOWN_FIELD_IN_FORMULA",
-            #     path="field.sum_trololo",
-            # )],
+            [
+                SampleSuperStoreLightJSONBuilder().add_field(
+                    BaseDatasetJSONBuilder.field_id_formula("sum([trololo])", cast="float", id="sum_trololo"),
+                ),
+                [
+                    dict(
+                        message="Dataset field not found: next fields in ID formula not found in dataset: trololo",
+                        path="fields.sum_trololo",
+                    )
+                ],
+                # After removing crunch BI-4542 should be like this
+                # [dict(
+                #     message="Unknown field found in formula: trololo, code: ERR.DS_API.FORMULA.UNKNOWN_FIELD_IN_FORMULA",
+                #     path="field.sum_trololo",
+                # )],
+            ],
+            [
+                SampleSuperStoreLightJSONBuilder(add_default_fields=True).add_field(
+                    BaseDatasetJSONBuilder.field_id_formula("sum([The Sales])", cast="float", id="sum_sales"),
+                ),
+                # Check that title reference in ID formula triggers an error BI-4542
+                [
+                    dict(
+                        message="Dataset field not found: next fields in ID formula not found in dataset: The Sales",
+                        path="fields.sum_sales",
+                    )
+                ],
+            ],
         ],
-        [
-            SampleSuperStoreLightJSONBuilder(add_default_fields=True).add_field(
-                BaseDatasetJSONBuilder.field_id_formula("sum([The Sales])", cast="float", id="sum_sales"),
-            ),
-            # Check that title reference in ID formula triggers an error BI-4542
-            [dict(
-                message="Dataset field not found: next fields in ID formula not found in dataset: The Sales",
-                path="fields.sum_sales",
-            )],
-        ],
-    ], ids=["really_non_existing_id_in_formula", "title_ref_in_id_formula"])
+        ids=["really_non_existing_id_in_formula", "title_ref_in_id_formula"],
+    )
     @pytest.mark.asyncio
     async def test_err_in_dataset(
-            self,
-            grpc_client: VisualizationV1Client,
-            workbook_id: str,
-            ch_conn_name: str,
-            dataset_builder: SampleSuperStoreLightJSONBuilder,
-            errors: list[dict[str, str]],
+        self,
+        grpc_client: VisualizationV1Client,
+        workbook_id: str,
+        ch_conn_name: str,
+        dataset_builder: SampleSuperStoreLightJSONBuilder,
+        errors: list[dict[str, str]],
     ):
         ds_name = "ds_1"
 
         workbook = dict(
-            datasets=[dataset_builder.with_conn_name(ch_conn_name).build_instance(ds_name)],
-            dashboards=[],
-            charts=[]
+            datasets=[dataset_builder.with_conn_name(ch_conn_name).build_instance(ds_name)], dashboards=[], charts=[]
         )
         with pytest.raises(grpc.RpcError) as err_info:
             await grpc_client.update_workbook(workbook_id, workbook)
 
         details = json.loads(err_info.value.details())
-        assert self.clear_volatile_fields_in_err_response(details)["entry_errors"] == [dict(
-            name=ds_name,
-            errors=errors,
-        )]
+        assert self.clear_volatile_fields_in_err_response(details)["entry_errors"] == [
+            dict(
+                name=ds_name,
+                errors=errors,
+            )
+        ]
 
     @pytest.mark.asyncio
     async def test_proxy_errors(
-            self,
-            grpc_client: VisualizationV1Client,
-            project_id: str,
-            workbook_title: str,
-            workbook_id: str
+        self, grpc_client: VisualizationV1Client, project_id: str, workbook_title: str, workbook_id: str
     ):
         # workbook with ID `workbook_id` and title `workbook_title`
         #  already created by fixtures
@@ -502,13 +522,13 @@ class GrpcAcceptanceScenarioDC:
 
     @pytest.mark.asyncio
     async def test_create_conn_missing_secret_to_err(
-            self,
-            caplog,
-            grpc_client: VisualizationV1Client,
-            project_id: str,
-            workbook_title: str,
-            workbook_id: str,
-            domain_scene: DomainScene,
+        self,
+        caplog,
+        grpc_client: VisualizationV1Client,
+        project_id: str,
+        workbook_title: str,
+        workbook_id: str,
+        domain_scene: DomainScene,
     ):
         conn_name = "ch_conn"
 
@@ -525,7 +545,7 @@ class GrpcAcceptanceScenarioDC:
         details = json.loads(err_info.value.details())
 
         assert details
-        assert "No secret for connection" in details['common_errors'][0]['exc_message']
+        assert "No secret for connection" in details["common_errors"][0]["exc_message"]
 
         if self.CHECK_GRPC_LOGS:
             assert "Traceback" in caplog.text
@@ -533,12 +553,12 @@ class GrpcAcceptanceScenarioDC:
 
     @pytest.mark.asyncio
     async def test_proxy_access_denied_error(
-            self,
-            grpc_client: VisualizationV1Client,
-            grpc_client_disposable_sa: VisualizationV1Client,
-            project_id: str,
-            workbook_title: str,
-            workbook_id: str
+        self,
+        grpc_client: VisualizationV1Client,
+        grpc_client_disposable_sa: VisualizationV1Client,
+        project_id: str,
+        workbook_title: str,
+        workbook_id: str,
     ):
         await grpc_client.get_workbook(workbook_id)
         with pytest.raises(grpc.RpcError) as err_info:
@@ -549,25 +569,23 @@ class GrpcAcceptanceScenarioDC:
     @final
     @pytest.fixture()
     async def test_list_workbooks_workbook_title(self):
-        return 'test_list_workbooks_title'
+        return "test_list_workbooks_title"
 
     @final
     @pytest.fixture()
     async def test_list_workbooks_workbook_id(
-            self,
-            test_list_workbooks_workbook_title: str,
-            workbook_id_factory: WorkbookAsyncFactory
+        self, test_list_workbooks_workbook_title: str, workbook_id_factory: WorkbookAsyncFactory
     ) -> str:
         return await workbook_id_factory.create(test_list_workbooks_workbook_title)
 
     @pytest.mark.asyncio
     async def test_list_workbooks(
-            self,
-            grpc_client: VisualizationV1Client,
-            project_id: str,
-            test_list_workbooks_workbook_id: str,
-            test_list_workbooks_workbook_title: str
+        self,
+        grpc_client: VisualizationV1Client,
+        project_id: str,
+        test_list_workbooks_workbook_id: str,
+        test_list_workbooks_workbook_title: str,
     ):
         resp = await grpc_client.list_workbooks(project_id)
-        wb_titles = {wb['title'] for wb in resp['workbooks']}
+        wb_titles = {wb["title"] for wb in resp["workbooks"]}
         assert test_list_workbooks_workbook_title in wb_titles

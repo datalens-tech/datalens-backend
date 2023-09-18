@@ -5,8 +5,6 @@ import logging
 
 import attr
 
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-
 from dl_connector_chyt.core.adapters import (
     BaseCHYTAdapter,
     CHYTAdapter,
@@ -21,6 +19,7 @@ from dl_connector_chyt.core.target_dto import (
     BaseCHYTConnTargetDTO,
     CHYTConnTargetDTO,
 )
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 LOGGER = logging.getLogger(__name__)
 

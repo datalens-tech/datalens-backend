@@ -12,7 +12,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.set
 
 
 class ConnectionClickhouseYaMusicPodcastStats(
-        ConnectionCHFilteredSubselectByPuidBase[CHYaMusicPodcastStatsConnectorSettings]
+    ConnectionCHFilteredSubselectByPuidBase[CHYaMusicPodcastStatsConnectorSettings]
 ):
     source_type = SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,))

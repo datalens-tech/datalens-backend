@@ -4,18 +4,9 @@ from typing import Optional
 
 from data_api import app_version
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
-from dl_api_lib.app.data_api.app import (
-    DataApiAppFactory,
-    EnvSetupResult,
-)
-from dl_api_lib.app_common import SRFactoryBuilder
-from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from dl_api_lib.app_settings import TestAppSettings
-from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
     BaseAppSettings,
@@ -24,6 +15,16 @@ from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
 )
+from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_lib.app.data_api.app import (
+    DataApiAppFactory,
+    EnvSetupResult,
+)
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from dl_api_lib.app_settings import TestAppSettings
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import (
     RQE_SERVICES,
@@ -42,7 +43,6 @@ from dl_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
-from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
 
 
 class DataApiSRFactoryBuilderNebius(SRFactoryBuilder[BaseAppSettings]):

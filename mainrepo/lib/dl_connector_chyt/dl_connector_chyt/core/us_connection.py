@@ -11,6 +11,16 @@ from typing import (
 import attr
 import marshmallow as ma
 
+from dl_connector_chyt.core.conn_options import CHYTConnectOptions
+from dl_connector_chyt.core.constants import (
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+)
+from dl_connector_chyt.core.dto import CHYTDTO
+from dl_connector_chyt.core.settings import CHYTConnectorSettings
+from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 from dl_constants.enums import CreateDSFrom
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
@@ -28,17 +38,6 @@ from dl_core.us_connection_base import (
 from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
-
-from dl_connector_chyt.core.conn_options import CHYTConnectOptions
-from dl_connector_chyt.core.constants import (
-    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
-)
-from dl_connector_chyt.core.dto import CHYTDTO
-from dl_connector_chyt.core.settings import CHYTConnectorSettings
-from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 
 class BaseConnectionCHYT(

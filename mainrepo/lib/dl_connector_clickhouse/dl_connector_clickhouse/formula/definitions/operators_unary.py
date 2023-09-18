@@ -1,9 +1,8 @@
 import sqlalchemy as sa
 
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.operators_unary as base
-
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 V = TranslationVariant.make
 

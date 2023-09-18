@@ -11,6 +11,12 @@ from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.type_transformer import (
+    CH_TYPES_DATE,
+    CH_TYPES_FLOAT,
+    CH_TYPES_INT,
+)
 from dl_constants.enums import ConnectionType
 from dl_core.db.native_type import (
     ClickHouseDateTime64NativeType,
@@ -21,13 +27,6 @@ from dl_core.db.native_type import (
     GenericNativeType,
 )
 from dl_core.db.sa_types_base import make_native_type
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.core.clickhouse_base.type_transformer import (
-    CH_TYPES_DATE,
-    CH_TYPES_FLOAT,
-    CH_TYPES_INT,
-)
 
 
 def _make_ch_type(nt: GenericNativeType, typeobj: TypeEngine) -> TypeEngine:

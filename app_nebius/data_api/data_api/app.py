@@ -7,13 +7,13 @@ from typing import Optional
 from aiohttp import web
 from data_api.app_factory import DataApiAppFactoryNebius
 
+from bi_api_lib_ya.app_settings import AsyncAppSettings
 from dl_api_lib.app_settings import TestAppSettings
 from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_bi_api_lib,
     preload_bi_api_lib,
 )
-from bi_api_lib_ya.app_settings import AsyncAppSettings
 from dl_app_tools.aio_latency_tracking import LatencyTracker
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.env_var_definitions import (

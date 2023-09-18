@@ -1,27 +1,31 @@
-from typing import Optional, Type
+from typing import (
+    Optional,
+    Type,
+)
 
 import attr
 
+from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI
+from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_blackbox_client.client import BlackboxClient
-from bi_cloud_integration.iam_rm_client import DLFolderServiceClient, DLCloudServiceClient
+from bi_cloud_integration.iam_rm_client import (
+    DLCloudServiceClient,
+    DLFolderServiceClient,
+)
+from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
 from bi_cloud_integration.sa_creds import SACredsRetrieverFactory
 from bi_cloud_integration.yc_as_client import DLASClient
+from bi_cloud_integration.yc_billing_client import YCBillingApiClient
 from bi_cloud_integration.yc_subjects import DLYCMSClient
 from bi_cloud_integration.yc_ts_client import DLTSClient
-from bi_cloud_integration.yc_billing_client import YCBillingApiClient
-from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
-
+from bi_service_registry_ya_cloud.iam_subject_resolver import IAMSubjectResolver
 from dl_core.rls import BaseSubjectResolver
 from dl_core.services_registry.inst_specific_sr import (
     InstallationSpecificServiceRegistry,
     InstallationSpecificServiceRegistryFactory,
 )
-from dl_core.utils import FutureRef
 from dl_core.services_registry.top_level import ServicesRegistry
-from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI
-from bi_api_commons_ya_cloud.models import IAMAuthData
-
-from bi_service_registry_ya_cloud.iam_subject_resolver import IAMSubjectResolver
+from dl_core.utils import FutureRef
 
 
 @attr.s
@@ -79,7 +83,7 @@ class YCServiceRegistry(InstallationSpecificServiceRegistry):
     def get_sa_creds_retriever_factory(self) -> SACredsRetrieverFactory:
         if self._sa_creds_retriever_factory is not None:
             return self._sa_creds_retriever_factory
-        raise ValueError('SA creds retriever factory has not been initialized')
+        raise ValueError("SA creds retriever factory has not been initialized")
 
     def get_blackbox_client(self) -> Optional[BlackboxClient]:
         return self._blackbox_client
@@ -132,5 +136,5 @@ class YCServiceRegistryFactory(InstallationSpecificServiceRegistryFactory):
             yc_as_endpoint=self._yc_as_endpoint,
             yc_ts_endpoint=self._yc_ts_endpoint,
             sa_creds_retriever_factory=self._sa_creds_retriever_factory,
-            blackbox_client=BlackboxClient(self._blackbox_name) if self._blackbox_name is not None else None
+            blackbox_client=BlackboxClient(self._blackbox_name) if self._blackbox_name is not None else None,
         )

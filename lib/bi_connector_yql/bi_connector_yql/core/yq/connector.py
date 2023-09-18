@@ -1,21 +1,33 @@
 from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
+)
+from dl_core.data_source_spec.sql import (
+    StandardSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+)
+from dl_core.us_manager.storage_schemas.data_source_spec_base import (
+    SQLDataSourceSpecStorageSchema,
+    SubselectDataSourceSpecStorageSchema,
 )
 
-from bi_connector_yql.core.yq.constants import (
-    BACKEND_TYPE_YQ, CONNECTION_TYPE_YQ, SOURCE_TYPE_YQ_TABLE, SOURCE_TYPE_YQ_SUBSELECT
-)
 from bi_connector_yql.core.yq.adapter import YQAdapter
 from bi_connector_yql.core.yq.connection_executors import YQAsyncAdapterConnExecutor
-from bi_connector_yql.core.yq.data_source import YQSubselectDataSource, YQTableDataSource
+from bi_connector_yql.core.yq.constants import (
+    BACKEND_TYPE_YQ,
+    CONNECTION_TYPE_YQ,
+    SOURCE_TYPE_YQ_SUBSELECT,
+    SOURCE_TYPE_YQ_TABLE,
+)
+from bi_connector_yql.core.yq.data_source import (
+    YQSubselectDataSource,
+    YQTableDataSource,
+)
+from bi_connector_yql.core.yq.settings import YQSettingDefinition
 from bi_connector_yql.core.yq.storage_schemas.connection import YQConnectionDataStorageSchema
 from bi_connector_yql.core.yq.type_transformer import YQTypeTransformer
 from bi_connector_yql.core.yq.us_connection import YQConnection
-from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
-from dl_core.us_manager.storage_schemas.data_source_spec_base import (
-    SQLDataSourceSpecStorageSchema, SubselectDataSourceSpecStorageSchema,
-)
-from bi_connector_yql.core.yq.settings import YQSettingDefinition
 
 
 class YQCoreConnectionDefinition(CoreConnectionDefinition):
@@ -25,7 +37,7 @@ class YQCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = YQTypeTransformer
     sync_conn_executor_cls = YQAsyncAdapterConnExecutor
     async_conn_executor_cls = YQAsyncAdapterConnExecutor
-    dialect_string = 'bi_yq'
+    dialect_string = "bi_yq"
     settings_definition = YQSettingDefinition
 
 
@@ -45,9 +57,7 @@ class YQSubselectCoreSourceDefinition(CoreSourceDefinition):
 
 class YQCoreConnector(CoreConnector):
     backend_type = BACKEND_TYPE_YQ
-    connection_definitions = (
-        YQCoreConnectionDefinition,
-    )
+    connection_definitions = (YQCoreConnectionDefinition,)
     source_definitions = (
         YQTableCoreSourceDefinition,
         YQSubselectCoreSourceDefinition,

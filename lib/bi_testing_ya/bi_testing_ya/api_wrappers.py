@@ -1,20 +1,29 @@
 from __future__ import annotations
 
-import uuid
 import ssl
-from typing import Optional, Dict, Any, Union, AsyncIterable, Mapping
+from typing import (
+    Any,
+    AsyncIterable,
+    Dict,
+    Mapping,
+    Optional,
+    Union,
+)
+import uuid
 
+from aiohttp import (
+    ClientResponse,
+    MultipartWriter,
+)
 import aiohttp.test_utils
 import attr
-from aiohttp import MultipartWriter, ClientResponse
 
+from bi_api_commons_ya_cloud.constants import DLHeadersYC
+from bi_testing_ya.cloud_tokens import AccountCredentials
 from dl_api_commons.base_models import TenantDef
 from dl_api_commons.tracing import get_current_tracing_headers
-from dl_constants.api_constants import DLHeadersCommon
-from bi_api_commons_ya_cloud.constants import DLHeadersYC
 from dl_configs.utils import get_root_certificates_path
-
-from bi_testing_ya.cloud_tokens import AccountCredentials
+from dl_constants.api_constants import DLHeadersCommon
 
 
 @attr.s(frozen=True)
@@ -49,7 +58,9 @@ class HTTPClientWrapper:
         return f"{self.base_url.rstrip('/')}/{url.lstrip('/')}"
 
     async def request(
-        self, method: str, url: str,
+        self,
+        method: str,
+        url: str,
         params: Optional[Mapping[str, str]] = None,
         data: Any = None,
         json: Any = None,
@@ -57,7 +68,8 @@ class HTTPClientWrapper:
         **kwargs: Any,
     ) -> ClientResponse:
         return await self.session.request(
-            method, self._make_url(url),
+            method,
+            self._make_url(url),
             data=data,
             params=params,
             json=json,
@@ -67,13 +79,7 @@ class HTTPClientWrapper:
 
 
 class RequestExecutionException(Exception):
-    def __init__(
-        self,
-        msg: str,
-        content: bytes,
-        status: int,
-        request_id: str
-    ):
+    def __init__(self, msg: str, content: bytes, status: int, request_id: str):
         super().__init__(msg, content)
         self.status = status
         self.request_id = request_id
@@ -89,9 +95,15 @@ class APIClient:
     tenant: Optional[TenantDef] = None
 
     @staticmethod
-    def common_headers(*, folder_id: str, req_id: Optional[str] = None, token: Optional[str] = None,
-                       public_api_key: Optional[str] = None, is_intranet_user: bool = False,
-                       tenant: Optional[TenantDef] = None) -> dict:
+    def common_headers(
+        *,
+        folder_id: str,
+        req_id: Optional[str] = None,
+        token: Optional[str] = None,
+        public_api_key: Optional[str] = None,
+        is_intranet_user: bool = False,
+        tenant: Optional[TenantDef] = None,
+    ) -> dict:
         if public_api_key is not None and token is not None:
             raise ValueError("Public API key and access token (IAM or OAuth) can not be provided simultaneously.")
 
@@ -124,13 +136,18 @@ class APIClient:
         if self.account_credentials:
             token = self.account_credentials.token
             is_intranet_user = self.account_credentials.is_intranet_user
-            return self.common_headers(folder_id=self.folder_id, req_id=req_id,
-                                       token=token, is_intranet_user=is_intranet_user,
-                                       public_api_key=self.public_api_key,
-                                       tenant=self.tenant)
+            return self.common_headers(
+                folder_id=self.folder_id,
+                req_id=req_id,
+                token=token,
+                is_intranet_user=is_intranet_user,
+                public_api_key=self.public_api_key,
+                tenant=self.tenant,
+            )
 
-        return self.common_headers(folder_id=self.folder_id, req_id=req_id, public_api_key=self.public_api_key,
-                                   tenant=self.tenant)
+        return self.common_headers(
+            folder_id=self.folder_id, req_id=req_id, public_api_key=self.public_api_key, tenant=self.tenant
+        )
 
     async def make_request(self, rq: Req) -> Resp:
         if rq.data is not None and rq.data_json is not None:
@@ -138,7 +155,8 @@ class APIClient:
 
         req_id = uuid.uuid4().hex if self.req_id is None else self.req_id
         resp = await self.web_app.request(
-            rq.method, rq.url,
+            rq.method,
+            rq.url,
             headers={
                 **(self.get_local_common_headers(req_id=req_id) if rq.add_common_headers else {}),
                 **(rq.extra_headers if rq.extra_headers else {}),
@@ -146,11 +164,11 @@ class APIClient:
             params=rq.params,  # type: ignore  # TODO: fix
             data=rq.data,
             json=rq.data_json,
-            ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())
+            ssl_context=ssl.create_default_context(cafile=get_root_certificates_path()),
         )
         content = await resp.read()
 
-        if resp.content_type == 'application/json':
+        if resp.content_type == "application/json":
             resp_json = await resp.json()
         else:
             resp_json = None

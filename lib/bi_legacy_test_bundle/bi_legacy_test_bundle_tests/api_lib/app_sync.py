@@ -4,21 +4,20 @@ from typing import Optional
 
 import flask
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_constants.enums import ConnectionType
-
+from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
 from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
 )
-from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_constants.enums import ConnectionType
 
 
 def create_app(
-        app_settings: ControlApiAppSettings,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
-        close_loop_after_request: bool = True,
+    app_settings: ControlApiAppSettings,
+    connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+    testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+    close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = TestingControlApiAppFactoryPrivate(settings=app_settings)
     return mng_app_factory.create_app(

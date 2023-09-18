@@ -1,12 +1,20 @@
-from typing import Optional, ClassVar
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from dl_configs.connectors_data import ConnectorsDataBase
-from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
 from dl_configs.settings_loaders.meta_definition import required
-
-from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from dl_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
+)
 
 from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 
@@ -27,12 +35,14 @@ class ConnectorsDataCHFrozenCovidBase(ConnectorsDataBase):
 
     @classmethod
     def connector_name(cls) -> str:
-        return 'CH_FROZEN_COVID'
+        return "CH_FROZEN_COVID"
 
 
 def ch_frozen_covid_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='CH_FROZEN_COVID', connector_data_class=ConnectorsDataCHFrozenCovidBase,
+        full_cfg,
+        object_like_config_key="CH_FROZEN_COVID",
+        connector_data_class=ConnectorsDataCHFrozenCovidBase,
     )
     if cfg is None:
         return {}

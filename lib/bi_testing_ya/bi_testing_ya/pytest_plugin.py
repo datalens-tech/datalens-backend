@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Generator, Optional, Callable
+from typing import (
+    Any,
+    Callable,
+    Generator,
+    Optional,
+)
 
 import attr
 import jaeger_client
@@ -11,30 +16,34 @@ import pytest
 import yaml
 
 from bi_defaults.environments import (
-    IntegrationTestConfig,
+    CommonExternalInstallation,
     CommonInstallation,
+    DataCloudExposedInstallation,
     DataCloudExposedInstallationTesting,
     InstallationsMap,
-    CommonExternalInstallation,
-    DataCloudExposedInstallation,
-    InternalTestingInstallation,
+    IntegrationTestConfig,
     InternalProductionInstallation,
+    InternalTestingInstallation,
 )
-from dl_testing import shared_testing_constants
-from bi_testing_ya.cloud_tokens import AccountCredentials, ServiceAccountAndKeyData
+from bi_testing_ya.cloud_tokens import (
+    AccountCredentials,
+    ServiceAccountAndKeyData,
+)
 from bi_testing_ya.dlenv import DLEnv
 from bi_testing_ya.external_systems_helpers.top import (
-    ExternalSystemsHelperBase, ExternalSystemsHelperCloud, ExternalSystemsHelperInternalInstallation,
+    ExternalSystemsHelperBase,
+    ExternalSystemsHelperCloud,
+    ExternalSystemsHelperInternalInstallation,
 )
+from bi_testing_ya.secrets import get_secret
+from dl_testing import shared_testing_constants
 from dl_testing.utils import skip_outside_devhost
 
-from bi_testing_ya.secrets import get_secret
 
-
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def dl_env(request: Any) -> DLEnv:
-    actual_param = request.param if hasattr(request, 'param') else DLEnv.cloud_preprod
-    assert isinstance(actual_param, DLEnv), f'Unexpected DLEnv in parameters: {actual_param}'
+    actual_param = request.param if hasattr(request, "param") else DLEnv.cloud_preprod
+    assert isinstance(actual_param, DLEnv), f"Unexpected DLEnv in parameters: {actual_param}"
 
     dl_env_filter_str = shared_testing_constants.DL_ENV_TESTS_FILTER
     if dl_env_filter_str is not None:
@@ -47,6 +56,7 @@ def dl_env(request: Any) -> DLEnv:
 
 
 # Supplementary resources
+
 
 def get_cloud_tokens_caches_dir(dl_env: DLEnv) -> Optional[str]:
     caches_dir = shared_testing_constants.TESTS_CACHES_DIR
@@ -66,26 +76,28 @@ def get_root_certs_file_content() -> bytes:
 # Secrets
 
 
-DATALENS_TEST_DATA_YAV_KEY = 'sec-01d5pcrfv9xceanxj2jwaed4bm'
+DATALENS_TEST_DATA_YAV_KEY = "sec-01d5pcrfv9xceanxj2jwaed4bm"
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 @skip_outside_devhost
 def secret_datalens_test_data(dl_env: DLEnv) -> dict[str, Any]:
     if dl_env == DLEnv.dynamic:
-        with open('secrets/integration_tests.json') as secrets_file:
+        with open("secrets/integration_tests.json") as secrets_file:
             return json.load(secrets_file)
     return get_secret(DATALENS_TEST_DATA_YAV_KEY, use_ssh_auth=True)
 
 
 # CI-safe secrets
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def ci_safe_yav_token() -> Optional[str]:
     """
     YAV token to access CI safe secrets.
     Actually, this token will be available to any user in Arcadia as far as any secret that can be fetched with it.
     """
-    return os.environ.get('YAV_TOKEN')
+    return os.environ.get("YAV_TOKEN")
 
 
 # External systems
@@ -98,19 +110,19 @@ EXT_SYS_REQUISITES_MAP = {
 }
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def ext_sys_requisites(
-        dl_env: DLEnv,
+    dl_env: DLEnv,
 ) -> IntegrationTestConfig | CommonInstallation | DataCloudExposedInstallationTesting:
     if dl_env == DLEnv.dynamic:
         return IntegrationTestConfig.from_env_vars(os.environ.items())  # type: ignore  # FIXME
     return EXT_SYS_REQUISITES_MAP[dl_env]  # type: ignore  # FIXME
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def ext_sys_helpers_factory(
-        dl_env: DLEnv,
-        ext_sys_requisites: IntegrationTestConfig | CommonInstallation | DataCloudExposedInstallationTesting,
+    dl_env: DLEnv,
+    ext_sys_requisites: IntegrationTestConfig | CommonInstallation | DataCloudExposedInstallationTesting,
 ) -> Callable[[], ExternalSystemsHelperBase]:
     cloud_tokens_caches_dir = get_cloud_tokens_caches_dir(dl_env)
     root_certs_file_content = get_root_certs_file_content()
@@ -149,17 +161,17 @@ def ext_sys_helpers_factory(
     return factory
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def ext_sys_helpers_per_session(
-        ext_sys_helpers_factory: Callable[[], ExternalSystemsHelperBase],
+    ext_sys_helpers_factory: Callable[[], ExternalSystemsHelperBase],
 ) -> Generator[ExternalSystemsHelperBase, None, None]:
     with ext_sys_helpers_factory() as ext_helpers:
         yield ext_helpers
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def ext_sys_helpers_per_test(
-        ext_sys_helpers_factory: Callable[[], ExternalSystemsHelperBase],
+    ext_sys_helpers_factory: Callable[[], ExternalSystemsHelperBase],
 ) -> Generator[ExternalSystemsHelperBase, None, None]:
     with ext_sys_helpers_factory() as ext_helpers:
         assert isinstance(ext_helpers, ExternalSystemsHelperCloud)
@@ -168,42 +180,43 @@ def ext_sys_helpers_per_test(
 
 # Test users
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def ext_passport_acct_01_creds(
-        dl_env: DLEnv,
-        secret_datalens_test_data: dict,
-        ext_sys_helpers_per_session: ExternalSystemsHelperBase,
+    dl_env: DLEnv,
+    secret_datalens_test_data: dict,
+    ext_sys_helpers_per_session: ExternalSystemsHelperBase,
 ) -> Optional[AccountCredentials]:
     if dl_env in [DLEnv.internal_preprod, DLEnv.internal_prod, DLEnv.dynamic]:
         return None
 
     assert isinstance(ext_sys_helpers_per_session, ExternalSystemsHelperCloud)
-    user_info = yaml.safe_load(secret_datalens_test_data['TEST_USER_01_INFO'])
+    user_info = yaml.safe_load(secret_datalens_test_data["TEST_USER_01_INFO"])
     account_credentials = ext_sys_helpers_per_session.yc_credentials_converter.get_user_account_credentials(
-        user_oauth_token=user_info['oauth_token'],
+        user_oauth_token=user_info["oauth_token"],
         cache_key="bi_testing_ya.pytest_plugin.test_user_01",
     )
-    account_credentials = attr.evolve(account_credentials, user_name=user_info['username'])
+    account_credentials = attr.evolve(account_credentials, user_name=user_info["username"])
 
     return account_credentials
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def ext_passport_acct_02_creds(
-        dl_env: DLEnv,
-        secret_datalens_test_data: dict,
-        ext_sys_helpers_per_session: ExternalSystemsHelperBase,
+    dl_env: DLEnv,
+    secret_datalens_test_data: dict,
+    ext_sys_helpers_per_session: ExternalSystemsHelperBase,
 ) -> Optional[AccountCredentials]:
     if dl_env in [DLEnv.internal_preprod, DLEnv.internal_prod, DLEnv.dynamic]:
         return None
 
     assert isinstance(ext_sys_helpers_per_session, ExternalSystemsHelperCloud)
-    user_info = yaml.safe_load(secret_datalens_test_data['TEST_USER_02_INFO'])
+    user_info = yaml.safe_load(secret_datalens_test_data["TEST_USER_02_INFO"])
     account_credentials = ext_sys_helpers_per_session.yc_credentials_converter.get_user_account_credentials(
-        user_oauth_token=user_info['oauth_token'],
+        user_oauth_token=user_info["oauth_token"],
         cache_key="bi_testing_ya.pytest_plugin.test_user_02",
     )
-    account_credentials = attr.evolve(account_credentials, user_name=user_info['username'])
+    account_credentials = attr.evolve(account_credentials, user_name=user_info["username"])
 
     return account_credentials
 
@@ -212,11 +225,11 @@ def ext_passport_acct_02_creds(
 def intranet_user_1_creds(dl_env: DLEnv, secret_datalens_test_data: dict) -> Optional[AccountCredentials]:
     if dl_env == DLEnv.dynamic:
         return None
-    user_info = yaml.safe_load(secret_datalens_test_data['TEST_INTRANET_USER_01_INFO'])
+    user_info = yaml.safe_load(secret_datalens_test_data["TEST_INTRANET_USER_01_INFO"])
     account_credentials = AccountCredentials(
-        user_id=user_info['user_id'],
-        user_name=user_info['user_name'],
-        token=user_info['oauth_token'],
+        user_id=user_info["user_id"],
+        user_name=user_info["user_name"],
+        token=user_info["oauth_token"],
         is_intranet_user=True,
     )
 
@@ -227,21 +240,21 @@ def intranet_user_1_creds(dl_env: DLEnv, secret_datalens_test_data: dict) -> Opt
 def intranet_user_2_creds(dl_env: DLEnv, secret_datalens_test_data: dict) -> Optional[AccountCredentials]:
     if dl_env == DLEnv.dynamic:
         return None
-    user_info = yaml.safe_load(secret_datalens_test_data['TEST_INTRANET_USER_02_INFO'])
+    user_info = yaml.safe_load(secret_datalens_test_data["TEST_INTRANET_USER_02_INFO"])
     account_credentials = AccountCredentials(
-        user_id=user_info['user_id'],
-        user_name=user_info['user_name'],
-        token=user_info['oauth_token'],
+        user_id=user_info["user_id"],
+        user_name=user_info["user_name"],
+        token=user_info["oauth_token"],
         is_intranet_user=True,
     )
 
     return account_credentials
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def integration_tests_admin_sa_data(
-        dl_env: DLEnv,
-        secret_datalens_test_data: dict,
+    dl_env: DLEnv,
+    secret_datalens_test_data: dict,
 ) -> Optional[ServiceAccountAndKeyData]:
     if dl_env in [DLEnv.internal_preprod, DLEnv.internal_prod, DLEnv.dynamic]:
         return None
@@ -263,18 +276,18 @@ def integration_tests_admin_sa_data(
     admin_sa_priv_key = secret_datalens_test_data[it_sa_key_secret_entry_key]
 
     return ServiceAccountAndKeyData(
-        sa_id=integration_tests_data['admin_sa_id'],
-        key_id=integration_tests_data['admin_sa_key_id'],
+        sa_id=integration_tests_data["admin_sa_id"],
+        key_id=integration_tests_data["admin_sa_key_id"],
         key_pem_data=admin_sa_priv_key,
     )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def integration_tests_admin_sa(
-        dl_env: DLEnv,
-        secret_datalens_test_data: dict,
-        ext_sys_helpers_per_session: ExternalSystemsHelperBase,
-        integration_tests_admin_sa_data: Optional[ServiceAccountAndKeyData],
+    dl_env: DLEnv,
+    secret_datalens_test_data: dict,
+    ext_sys_helpers_per_session: ExternalSystemsHelperBase,
+    integration_tests_admin_sa_data: Optional[ServiceAccountAndKeyData],
 ) -> Optional[AccountCredentials]:
     if integration_tests_admin_sa_data is None:
         return None
@@ -291,10 +304,10 @@ def integration_tests_admin_sa(
     )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def integration_tests_folder_id(
-        dl_env: DLEnv,
-        secret_datalens_test_data: dict,
+    dl_env: DLEnv,
+    secret_datalens_test_data: dict,
 ) -> str:
     if dl_env in [DLEnv.internal_prod, DLEnv.internal_preprod]:
         # internal installation has single folder
@@ -309,12 +322,13 @@ def integration_tests_folder_id(
     }[dl_env]
 
     integration_tests_data = yaml.safe_load(secret_datalens_test_data[secret_entry_key])
-    return integration_tests_data['folder_id']
+    return integration_tests_data["folder_id"]
 
 
 # Tracing
 
-@pytest.fixture(scope='function', autouse=True)
+
+@pytest.fixture(scope="function", autouse=True)
 def bi_test_root_span(request: Any) -> Generator[opentracing.Span, None, None]:
     tracer = opentracing.global_tracer()
     if tracer.scope_manager.active is not None:
@@ -324,7 +338,7 @@ def bi_test_root_span(request: Any) -> Generator[opentracing.Span, None, None]:
         yield scope.span
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def bi_test_ensure_spans_sent() -> Generator[None, None, None]:
     yield
     tracer = opentracing.global_tracer()

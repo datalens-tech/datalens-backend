@@ -3,31 +3,66 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import time
-from typing import Any, Callable, ClassVar, Generator, List, NamedTuple, Optional, Sequence, Type
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Generator,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_constants.enums import BIType, ConnectionType
-from dl_core import exc
 from dl_api_commons.base_models import RequestContextInfo
+from dl_constants.enums import (
+    BIType,
+    ConnectionType,
+)
+from dl_core import exc
 from dl_core.connection_executors import (
-    AsyncConnExecutorBase, ConnExecutorQuery, ExecutionMode, SyncWrapperForAsyncConnExecutor,
+    AsyncConnExecutorBase,
+    ConnExecutorQuery,
+    ExecutionMode,
+    SyncWrapperForAsyncConnExecutor,
 )
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from dl_core.connection_models import (
-    ConnDTO, ConnectOptions, DBIdent, DefaultSQLDTO, SchemaIdent, TableIdent,
+    ConnDTO,
+    ConnectOptions,
+    DBIdent,
+    DefaultSQLDTO,
+    SchemaIdent,
+    TableIdent,
 )
 from dl_core.connections_security.base import (
-    ConnectionSecurityManager, InsecureConnectionSecurityManager,
+    ConnectionSecurityManager,
+    InsecureConnectionSecurityManager,
 )
-from dl_core.db import SchemaColumn, SchemaInfo
-from dl_core.db.native_type import CommonNativeType, GenericNativeType, norm_native_type
+from dl_core.db import (
+    SchemaColumn,
+    SchemaInfo,
+)
+from dl_core.db.native_type import (
+    CommonNativeType,
+    GenericNativeType,
+    norm_native_type,
+)
 from dl_core.mdb_utils import MDBDomainManagerFactory
-from dl_core_testing.database import C, make_table
-from dl_utils.aio import ContextVarExecutor, await_sync
+from dl_core_testing.database import (
+    C,
+    make_table,
+)
+from dl_utils.aio import (
+    ContextVarExecutor,
+    await_sync,
+)
 
 
 @attr.s(auto_attribs=True)
@@ -82,7 +117,7 @@ class ExecutorBuilder:
 
 # noinspection PyMethodMayBeStatic
 class BaseConnExecutorSupport:
-    """ Base test class for CE tests with no actual tests """
+    """Base test class for CE tests with no actual tests"""
 
     executor_cls: ClassVar[Type[DefaultSqlAlchemyConnExecutor]]
 
@@ -92,10 +127,7 @@ class BaseConnExecutorSupport:
         last_record = 0
         while True:
             next_last_record = len(caplog.records)
-            records = [
-                record
-                for record in caplog.records[last_record:]
-                if record.message.startswith(prefix)]
+            records = [record for record in caplog.records[last_record:] if record.message.startswith(prefix)]
             last_record = next_last_record
             if records:
                 assert len(records) == 1, f"Unexpected amount of matched records: {records}"
@@ -124,11 +156,13 @@ class BaseConnExecutorSupport:
             return ()
 
     @pytest.fixture()
-    def executor_builder(self, loop, conn_dto, conn_hosts_pool,
-                         default_conn_options, query_executor_options) -> ExecutorBuilder:
+    def executor_builder(
+        self, loop, conn_dto, conn_hosts_pool, default_conn_options, query_executor_options
+    ) -> ExecutorBuilder:
         executor_cls = self.executor_cls
 
         with ContextVarExecutor() as pool:
+
             class _Builder(ExecutorBuilder):
                 def _build(self) -> AsyncConnExecutorBase:
                     return executor_cls(
@@ -171,40 +205,42 @@ class BaseConnExecutorSupport:
         wrapper.close()
 
     # Tables fixtures
-    @pytest.fixture(params=['sqla', 'plain_text'])
+    @pytest.fixture(params=["sqla", "plain_text"])
     def select_data_test_set(self, db, request) -> SelectDataTestSet:
-        if request.param == 'plain_text':
-            tbl = make_table(db, rows=10, columns=[
-                C('str_val', BIType.string, vg=lambda rn, **kwargs: str(rn)),
-            ])
+        if request.param == "plain_text":
+            tbl = make_table(
+                db,
+                rows=10,
+                columns=[
+                    C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
+                ],
+            )
             yield SelectDataTestSet(
                 # table=tbl,
                 query=ConnExecutorQuery(
                     query=f"SELECT * FROM {db.quote(tbl.name)} ORDER BY str_val",
                     chunk_size=6,
                 ),
-                expected_data=[
-                    (str(i),) for i in range(10)
-                ]
+                expected_data=[(str(i),) for i in range(10)],
             )
             db.drop_table(tbl.table)
-        elif request.param == 'sqla':
-            tbl = make_table(db, rows=10, columns=[
-                C('str_val', BIType.string, vg=lambda rn, **kwargs: str(rn)),
-            ])
+        elif request.param == "sqla":
+            tbl = make_table(
+                db,
+                rows=10,
+                columns=[
+                    C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
+                ],
+            )
             yield SelectDataTestSet(
                 # table=tbl,
                 query=ConnExecutorQuery(
-                    query=sa.select(
-                        columns=[sa.column('str_val')]
-                    ).select_from(
-                        sa.text(db.quote(tbl.name))
-                    ).order_by(sa.column('str_val')),
+                    query=sa.select(columns=[sa.column("str_val")])
+                    .select_from(sa.text(db.quote(tbl.name)))
+                    .order_by(sa.column("str_val")),
                     chunk_size=6,
                 ),
-                expected_data=[
-                    (str(i),) for i in range(10)
-                ]
+                expected_data=[(str(i),) for i in range(10)],
             )
             db.drop_table(tbl.table)
         else:
@@ -236,11 +272,7 @@ class BaseConnExecutorSupport:
         def to_sa_col(self):
             return sa.Column(self.cn, self.sa_type)
 
-    def column_data_to_schema_info(
-            self,
-            columns_data: Sequence[CD],
-            conn_type_for_nt: ConnectionType
-    ) -> SchemaInfo:
+    def column_data_to_schema_info(self, columns_data: Sequence[CD], conn_type_for_nt: ConnectionType) -> SchemaInfo:
         return SchemaInfo(
             schema=[
                 SchemaColumn(
@@ -248,15 +280,13 @@ class BaseConnExecutorSupport:
                     user_type=cd.ut_bi_type,
                     nullable=cd.ut_nullable,  # to be deprecated
                     native_type=(
-                        cd.nt or
-                        CommonNativeType(
+                        cd.nt
+                        or CommonNativeType(
                             conn_type=conn_type_for_nt,
-                            name=norm_native_type(
-                                cd.nt_name_str
-                                if cd.nt_name_str is not None
-                                else cd.sa_type),
+                            name=norm_native_type(cd.nt_name_str if cd.nt_name_str is not None else cd.sa_type),
                             nullable=cd.ut_nullable,
-                        )),
+                        )
+                    ),
                 )
                 for cd in columns_data
             ],
@@ -269,11 +299,11 @@ class BaseConnExecutorSupport:
         expected_schema_info: SchemaInfo
 
     @pytest.fixture()
-    def all_supported_types_test_case(self) -> 'TypeDiscoveryTestCase':
+    def all_supported_types_test_case(self) -> "TypeDiscoveryTestCase":
         raise NotImplementedError()
 
     @pytest.fixture()
-    def index_test_case(self) -> 'TypeDiscoveryTestCase':
+    def index_test_case(self) -> "TypeDiscoveryTestCase":
         raise pytest.skip("No fixture defined")
 
     # List tables
@@ -291,12 +321,11 @@ class BaseConnExecutorSupport:
 
     @contextlib.contextmanager
     def _get_table_names_test_case(
-            self, db, schema_name: Optional[str] = None,
+        self,
+        db,
+        schema_name: Optional[str] = None,
     ) -> Generator[BaseConnExecutorSupport.ListTableTestCase, None, None]:
-        tbl_lst = [
-            make_table(db, schema=schema_name)
-            for _ in range(3)
-        ]
+        tbl_lst = [make_table(db, schema=schema_name) for _ in range(3)]
         test_case = self.ListTableTestCase(
             target_schema_ident=SchemaIdent(db_name=db.name, schema_name=schema_name),
             expected_table_names=[tbl.name for tbl in tbl_lst],
@@ -321,19 +350,17 @@ class BaseConnExecutorSupport:
         table_ident: TableIdent
         expected_exists: bool
 
-    @pytest.fixture(params=['not_exists', 'exists'])
-    def is_table_exists_test_case(self, request, db) -> 'BaseConnExecutorSupport.TableExistsTestCase':
+    @pytest.fixture(params=["not_exists", "exists"])
+    def is_table_exists_test_case(self, request, db) -> "BaseConnExecutorSupport.TableExistsTestCase":
         param = request.param
-        if param == 'not_exists':
+        if param == "not_exists":
             yield self.TableExistsTestCase(
-                TableIdent(table_name="random_table_name", schema_name=None, db_name=None),
-                False
+                TableIdent(table_name="random_table_name", schema_name=None, db_name=None), False
             )
-        elif param == 'exists':
-            tbl = make_table(db, rows=0, columns=[C('str_val', BIType.integer)])
+        elif param == "exists":
+            tbl = make_table(db, rows=0, columns=[C("str_val", BIType.integer)])
             yield self.TableExistsTestCase(
-                TableIdent(table_name=tbl.name, schema_name=tbl.schema, db_name=tbl.db.name),
-                True
+                TableIdent(table_name=tbl.name, schema_name=tbl.schema, db_name=tbl.db.name), True
             )
             db.drop_table(tbl.table)
         else:
@@ -341,7 +368,7 @@ class BaseConnExecutorSupport:
 
 
 class BaseConnExecutorSet(BaseConnExecutorSupport):
-    """ Base tests for all CE classes """
+    """Base tests for all CE classes"""
 
     # Data selection
     # ################
@@ -358,8 +385,10 @@ class BaseConnExecutorSet(BaseConnExecutorSupport):
             await executor.execute(error_test_set.query)
 
         if error_test_set.expected_message_substring:
-            assert error_test_set.expected_message_substring in exc_info.value.message, \
-                (error_test_set.expected_message_substring, exc_info.value.message)
+            assert error_test_set.expected_message_substring in exc_info.value.message, (
+                error_test_set.expected_message_substring,
+                exc_info.value.message,
+            )
 
     def test_sync_wrapped_execute(self, sync_exec_wrapper, select_data_test_set):
         result = sync_exec_wrapper.execute(select_data_test_set.query)
@@ -371,11 +400,11 @@ class BaseConnExecutorSet(BaseConnExecutorSupport):
 
     @staticmethod
     def _check_type_discovery_test_case(
-            sync_executor: SyncWrapperForAsyncConnExecutor,
-            test_case: 'TypeDiscoveryTestCase',
-            match_schema: bool = True,
-            match_indexes: bool = False,
-            match_all: bool = False
+        sync_executor: SyncWrapperForAsyncConnExecutor,
+        test_case: "TypeDiscoveryTestCase",
+        match_schema: bool = True,
+        match_indexes: bool = False,
+        match_all: bool = False,
     ):
         actual_schema_info = sync_executor.get_table_schema_info(
             test_case.table_ident,
@@ -391,13 +420,15 @@ class BaseConnExecutorSet(BaseConnExecutorSupport):
         self._check_type_discovery_test_case(sync_exec_wrapper, all_supported_types_test_case)
 
     def test_indexes_discovery(self, executor_builder, exec_mode, default_conn_options, index_test_case, loop):
-        ce = executor_builder.with_options(ExecutorOptions(
-            connect_options=attr.evolve(
-                default_conn_options,
-                fetch_table_indexes=True,
-            ),
-            exec_mode=exec_mode,
-        )).build()
+        ce = executor_builder.with_options(
+            ExecutorOptions(
+                connect_options=attr.evolve(
+                    default_conn_options,
+                    fetch_table_indexes=True,
+                ),
+                exec_mode=exec_mode,
+            )
+        ).build()
         sync_ce = SyncWrapperForAsyncConnExecutor(ce, loop=loop)
         self._check_type_discovery_test_case(sync_ce, index_test_case, match_indexes=True, match_schema=False)
 

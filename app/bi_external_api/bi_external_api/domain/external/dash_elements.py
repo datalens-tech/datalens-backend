@@ -1,9 +1,17 @@
 import enum
-from typing import Sequence, Optional, ClassVar, Any
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, MapperBaseModel
+from bi_external_api.attrs_model_mapper import (
+    MapperBaseModel,
+    ModelDescriptor,
+)
 from bi_external_api.domain.utils import ensure_tuple
 
 
@@ -32,6 +40,7 @@ class DashElement:
     """
     Abstract dash element
     """
+
     kind: ClassVar[DashElementKind]
     kind_aliases: ClassVar[tuple[str, ...]] = tuple()
 

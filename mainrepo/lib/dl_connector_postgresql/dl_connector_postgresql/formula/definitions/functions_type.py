@@ -1,6 +1,8 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
+from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import (
@@ -13,9 +15,6 @@ from dl_formula.definitions.common_datetime import ensure_naive_first_arg
 import dl_formula.definitions.functions_type as base
 from dl_formula.definitions.scope import Scope
 from dl_formula.shortcuts import n
-
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
-from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make

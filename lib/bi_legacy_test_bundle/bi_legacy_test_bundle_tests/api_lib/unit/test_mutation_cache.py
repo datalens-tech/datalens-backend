@@ -1,14 +1,14 @@
 from typing import Any
 
-import pytest
 import attr
+import pytest
 
 from dl_api_lib.api_common.update_dataset_mutation_key import UpdateDatasetMutationKey
 from dl_api_lib.request_model.data import FieldAction
 from dl_api_lib.schemas.action import ActionSchema
 
-TEST_DATASET_REVISION_ID = '123'
-TEST_DATASET_ANOTHER_REVISION_ID = '321'
+TEST_DATASET_REVISION_ID = "123"
+TEST_DATASET_ANOTHER_REVISION_ID = "321"
 
 
 def test_empty_mutation_keys():
@@ -35,7 +35,7 @@ def original_mutation_list() -> list[dict[str, Any]]:
                 "guid": "test",
                 "calc_mode": "formula",
             },
-            "debug_info": "merged-update"
+            "debug_info": "merged-update",
         },
         {
             "action": "add_field",
@@ -50,8 +50,8 @@ def original_mutation_list() -> list[dict[str, Any]]:
                 "hidden": False,
                 "guid": "datetime_param2",
                 "cast": "datetime",
-                "default_value": "2022-05-18T12:33:21.000+03:00"
-            }
+                "default_value": "2022-05-18T12:33:21.000+03:00",
+            },
         },
     ]
 
@@ -70,7 +70,7 @@ def original_mutation_shuffle_dicts(original_mutation_list) -> list[FieldAction]
 def original_mutation_shuffle_keys(original_mutation_list) -> list[FieldAction]:
     shuffled = []
     for update in original_mutation_list:
-        update['field'] = {k: v for k, v in list(update['field'].items())[::-1]}
+        update["field"] = {k: v for k, v in list(update["field"].items())[::-1]}
         shuffled.append({k: v for k, v in list(update.items())[::-1]})
     return ActionSchema(many=True).load(shuffled)
 
@@ -90,33 +90,35 @@ def test_reordered_mutation_keys(
 @pytest.fixture
 def mutation_add_one_dict(original_mutation_list) -> list[FieldAction]:
     return ActionSchema(many=True).load(
-        original_mutation_list +
-        [{
-            "action": "add_field",
-            "field": {
-                "calc_mode": "formula",
-                "aggregation": "none",
-                "title": "title-1234d4a0-9309-11ec-9b5b-91d1cff8b10b",
-                "guid": "test",
-                "cast": "integer",
-                "hidden": True,
-                "description": "",
-                "source": "",
-                "formula": "[Profit]*2",
+        original_mutation_list
+        + [
+            {
+                "action": "add_field",
+                "field": {
+                    "calc_mode": "formula",
+                    "aggregation": "none",
+                    "title": "title-1234d4a0-9309-11ec-9b5b-91d1cff8b10b",
+                    "guid": "test",
+                    "cast": "integer",
+                    "hidden": True,
+                    "description": "",
+                    "source": "",
+                    "formula": "[Profit]*2",
+                },
             }
-        }]
+        ]
     )
 
 
 @pytest.fixture
 def mutation_add_one_key(original_mutation_list) -> list[FieldAction]:
-    original_mutation_list[1]['field']['avatar_id'] = '132132'
+    original_mutation_list[1]["field"]["avatar_id"] = "132132"
     return ActionSchema(many=True).load(original_mutation_list)
 
 
 @pytest.fixture
 def mutation_different_value(original_mutation_list) -> list[FieldAction]:
-    original_mutation_list[0]['field']['description'] = 'extra description'
+    original_mutation_list[0]["field"]["description"] = "extra description"
     return ActionSchema(many=True).load(original_mutation_list)
 
 

@@ -15,6 +15,7 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataResultTestSuite,
 )
 from dl_api_lib_testing.data_api_base import DataApiTestParams
+from dl_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
 from dl_constants.enums import (
     BIType,
     WhereClauseOperation,
@@ -28,8 +29,6 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.dataset import data_source_settings_from_table
 from dl_sqlalchemy_postgres.base import CITEXT
-
-from dl_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
 
 
 class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataResultTestSuite):

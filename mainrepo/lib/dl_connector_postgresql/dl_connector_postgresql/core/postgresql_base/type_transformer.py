@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as pg_types
 
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import BIType
 from dl_core.db.conversion_base import (
     TypeTransformer,
@@ -9,8 +10,6 @@ from dl_core.db.conversion_base import (
     make_native_type,
 )
 from dl_sqlalchemy_postgres.base import CITEXT
-
-from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 PG_TYPES_INT = frozenset((pg_types.SMALLINT, pg_types.INTEGER, pg_types.BIGINT))
 PG_TYPES_FLOAT = frozenset((pg_types.REAL, pg_types.DOUBLE_PRECISION, pg_types.NUMERIC))

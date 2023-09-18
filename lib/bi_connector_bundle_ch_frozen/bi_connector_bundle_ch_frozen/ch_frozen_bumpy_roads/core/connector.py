@@ -20,9 +20,5 @@ class CHFrozenBumpyRoadsCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenBumpyRoadsCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenBumpyRoadsCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenBumpyRoadsCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenBumpyRoadsCoreConnectionDefinition,)
+    source_definitions = (CHFrozenBumpyRoadsCoreSourceDefinition,)

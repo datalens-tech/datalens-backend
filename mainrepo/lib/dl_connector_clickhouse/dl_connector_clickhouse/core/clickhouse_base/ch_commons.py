@@ -15,13 +15,6 @@ from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql import ddl as sa_ddl
 from sqlalchemy.sql import schema as sa_schema
 
-from dl_core import exc
-from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from dl_core.db import (
-    SchemaColumn,
-    make_sa_type,
-)
-
 from dl_connector_clickhouse.core.clickhouse_base.exc import (
     CannotInsertNullInOrdinaryColumn,
     CHIncorrectData,
@@ -30,6 +23,12 @@ from dl_connector_clickhouse.core.clickhouse_base.exc import (
     EstimatedExecutionTooLong,
     InvalidSplitSeparator,
     TooManyColumns,
+)
+from dl_core import exc
+from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from dl_core.db import (
+    SchemaColumn,
+    make_sa_type,
 )
 
 if TYPE_CHECKING:

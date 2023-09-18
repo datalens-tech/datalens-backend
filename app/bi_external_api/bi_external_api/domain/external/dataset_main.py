@@ -1,8 +1,14 @@
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from bi_external_api.attrs_model_mapper.utils import MText
 from bi_external_api.domain.external.avatar import AvatarsConfig
 from bi_external_api.domain.external.data_source import DataSource
@@ -14,12 +20,13 @@ from bi_external_api.domain.utils import ensure_tuple
 @attr.s(frozen=True)
 class Dataset:
     fields: Sequence[DatasetField] = attr.ib(converter=ensure_tuple)
-    avatars: Optional[AvatarsConfig] = attr.ib(metadata=AttribDescriptor(
-        description=MText(
-            ru="Конфигурация аватаров (аналог секции `FROM` в SQL)."
+    avatars: Optional[AvatarsConfig] = attr.ib(
+        metadata=AttribDescriptor(
+            description=MText(
+                ru="Конфигурация аватаров (аналог секции `FROM` в SQL)."
                 " Для одного источника данных можно передавать значение `null`,"
                 " тогда аватар создастся автоматически и ID автара будет равен ID источника данных.",
-            en="Avatar configuration (analogous to `FROM` section in SQL)."
+                en="Avatar configuration (analogous to `FROM` section in SQL)."
                 " For a single data source you can send the `null` value,"
                 " in this case, an avatar will be created automatically and its ID will be equal to data source ID.",
             )

@@ -1,15 +1,17 @@
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition, CoreSourceDefinition,
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
+    ClickHouseAsyncAdapterConnExecutor,
+    ClickHouseSyncAdapterConnExecutor,
 )
 from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
-    ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
-)
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-from bi_connector_bundle_partners.base.core.storage_schemas.connection import PartnersCHConnectionDataStorageSchema
-from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreSourceDefinition,
+)
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
+from bi_connector_bundle_partners.base.core.storage_schemas.connection import PartnersCHConnectionDataStorageSchema
 from bi_connector_bundle_partners.equeo.core.constants import (
     CONNECTION_TYPE_EQUEO,
     SOURCE_TYPE_EQUEO_CH_TABLE,
@@ -26,7 +28,7 @@ class EqueoCoreConnectionDefinition(CoreConnectionDefinition):
     type_transformer_cls = ClickHouseTypeTransformer
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
-    dialect_string = 'bi_clickhouse'
+    dialect_string = "bi_clickhouse"
     settings_definition = EqueoSettingDefinition
 
 
@@ -38,9 +40,5 @@ class EqueoTableCoreSourceDefinition(CoreSourceDefinition):
 
 
 class EqueoCoreConnector(ClickHouseCoreConnectorBase):
-    connection_definitions = (
-        EqueoCoreConnectionDefinition,
-    )
-    source_definitions = (
-        EqueoTableCoreSourceDefinition,
-    )
+    connection_definitions = (EqueoCoreConnectionDefinition,)
+    source_definitions = (EqueoTableCoreSourceDefinition,)

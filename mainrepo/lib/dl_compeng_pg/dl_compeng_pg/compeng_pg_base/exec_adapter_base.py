@@ -16,12 +16,11 @@ from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2
 from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql.base import Executable
 
+from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 from dl_constants.enums import BIType
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.db.sa_types import make_sa_type
-
-from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 
 LOGGER = logging.getLogger(__name__)
 

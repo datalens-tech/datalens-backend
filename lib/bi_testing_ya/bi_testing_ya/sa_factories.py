@@ -1,15 +1,20 @@
 from __future__ import annotations
 
 import logging
+from typing import (
+    Callable,
+    List,
+    Optional,
+    Sequence,
+)
 import uuid
-from typing import List, Optional, Sequence, Callable
 
 import attr
 
 from bi_cloud_integration.iam_rm_client import IAMRMClient
 from bi_cloud_integration.model import AccessBindingAction
-from bi_testing_ya.external_systems_helpers.top import ExternalSystemsHelperCloud
 from bi_testing_ya.cloud_tokens import AccountCredentials
+from bi_testing_ya.external_systems_helpers.top import ExternalSystemsHelperCloud
 
 
 @attr.s(kw_only=True)
@@ -23,27 +28,27 @@ class DisposableYCServiceAccountFactory:
 
     def create(self, role_ids: Sequence[str]) -> AccountCredentials:
         assert self.iam_client is not None
-        sa_name = f'integration-test-sa-{uuid.uuid4()}'
-        logging.info(f'Creating sa {sa_name}')
+        sa_name = f"integration-test-sa-{uuid.uuid4()}"
+        logging.info(f"Creating sa {sa_name}")
         sa = self.iam_client.create_svc_acct_sync(self.folder_id, sa_name, "")
-        logging.info(f'Created sa {sa_name} with id {sa.id}')
+        logging.info(f"Created sa {sa_name} with id {sa.id}")
         key = self.iam_client.create_svc_acct_key_sync(sa.id, "")
         key_id = key.svc_acct_key_data.id
-        logging.info(f'Created key with id {key_id}')
+        logging.info(f"Created key with id {key_id}")
         if role_ids:
             self.iam_client.modify_folder_access_bindings_for_svc_acct_sync(
                 svc_acct_id=sa.id,
-                acct_type='serviceAccount',
+                acct_type="serviceAccount",
                 folder_id=self.folder_id,
                 role_ids=role_ids,
                 action=AccessBindingAction.ADD,
             )
             roles = self.iam_client.list_svc_acct_role_ids_on_folder_sync(
                 svc_acct_id=sa.id,
-                acct_type='serviceAccount',
+                acct_type="serviceAccount",
                 folder_id=self.folder_id,
             )
-            logging.info(f'Sa {sa.id} has {roles}')
+            logging.info(f"Sa {sa.id} has {roles}")
         token = self.ext_sys_helpers.yc_credentials_converter.get_service_account_iam_token(
             service_account_id=sa.id,
             key_id=key_id,
@@ -63,13 +68,13 @@ class DisposableYCServiceAccountFactory:
         return credentials
 
     def dispose(self) -> None:
-        logging.info('SA teardown:')
+        logging.info("SA teardown:")
         while len(self._created_sa_cred_list) > 0:
             creds = self._created_sa_cred_list.pop()
             sa_id = creds.user_id
             assert self.iam_client is not None
             self.iam_client.delete_svc_acct_sync(sa_id)
-            logging.info(f'Deleted sa with id={sa_id}')
+            logging.info(f"Deleted sa with id={sa_id}")
 
     def __del__(self) -> None:
         # better to call explicitly asap

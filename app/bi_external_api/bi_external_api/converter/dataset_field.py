@@ -1,18 +1,26 @@
 import re
-from typing import Optional, Sequence, ClassVar
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
-from dl_constants.enums import CalcMode, AggregationFunction, BIType
 from bi_external_api.converter.converter_ctx import ConverterContext
 from bi_external_api.converter.converter_exc import (
-    NotSupportedYet,
     ConstraintViolationError,
-    MissingGuidFormula,
     DatasetFieldNotFound,
+    MissingGuidFormula,
+    NotSupportedYet,
 )
 from bi_external_api.converter.converter_exc_composer import ConversionErrHandlingContext
 from bi_external_api.converter.literal_to_str import DefaultValueConverterExtStringValue
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import datasets
+from dl_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+)
 
 
 class DatasetFieldConverter:
@@ -42,8 +50,7 @@ class DatasetFieldConverter:
     @classmethod
     def _validate_id(cls, field: ext.DatasetField) -> None:
         if not cls._id_re.match(field.id):
-            raise ConstraintViolationError(
-                "Got invalid ID for a field, allowed values: [a-zA-Z0-9_]+")
+            raise ConstraintViolationError("Got invalid ID for a field, allowed values: [a-zA-Z0-9_]+")
 
     @classmethod
     def validate_field(cls, field_def: ext.DatasetField) -> None:
@@ -55,7 +62,7 @@ class DatasetFieldConverter:
                 with err_hdr.postpone_error_with_path(name):
                     fn_validation(field_def)
 
-    FIELD_RE: ClassVar[re.Pattern] = re.compile(r'\[([^]]*)\]')
+    FIELD_RE: ClassVar[re.Pattern] = re.compile(r"\[([^]]*)\]")
 
     # Temporary workaround: BI-4542
     # Should be removed after BI-4543 resolution
@@ -81,7 +88,6 @@ class DatasetFieldConverter:
         cls,
         field_def: ext.DatasetField,
     ) -> datasets.ResultSchemaField:
-
         calc_mode: CalcMode
         formula: str
         guid_formula: Optional[str]
@@ -137,17 +143,13 @@ class DatasetFieldConverter:
             title=field_def.title,
             description=field_def.description or "",  # In internal API we does not accept null-description
             hidden=field_def.hidden,
-
             calc_mode=calc_mode,
             formula=formula,
             guid_formula=guid_formula,
-
             source=field_name,
             avatar_id=avatar_id,
-
             aggregation=cls.convert_agg_ext_to_int(field_def.strict_aggregation),
             cast=cls.convert_data_type_ext_to_int(field_def.cast),
-
             default_value=default_value,
         )
 
@@ -164,10 +166,7 @@ class DatasetFieldConverter:
                     # Should be removed after BI-4543 resolution
                     cls.validate_id_formula_field(ext_field, all_field_ids)
 
-        return [
-            datasets.ActionFieldAdd(field=field, order_index=idx)
-            for idx, field in enumerate(internal_fields)
-        ]
+        return [datasets.ActionFieldAdd(field=field, order_index=idx) for idx, field in enumerate(internal_fields)]
 
     @classmethod
     def convert_int_field_to_ext_field(
@@ -189,9 +188,7 @@ class DatasetFieldConverter:
                     # todo: maybe pull this check up and ensures guid formula all the time
                     raise MissingGuidFormula(f"Formula {int_field.title} missing guid.")
 
-                calc_spec = ext.IDFormulaCS(
-                    formula=int_field.guid_formula
-                )
+                calc_spec = ext.IDFormulaCS(formula=int_field.guid_formula)
             else:
                 calc_spec = ext.FormulaCS(
                     formula=int_field.formula or "",

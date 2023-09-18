@@ -8,4 +8,4 @@ from bi_connector_monitoring_tests.db.api.base import MonitoringConnectionTestBa
 
 class TestMonitoringConnection(MonitoringConnectionTestBase, DefaultConnectorConnectionTestSuite):
     def test_test_connection(self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str) -> None:
-        pytest.skip('won\'t work with fake connection parameters')
+        pytest.skip("won't work with fake connection parameters")

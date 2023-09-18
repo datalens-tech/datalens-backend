@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
+
+from dl_connector_clickhouse.core.clickhouse_base.us_connection import (
+    SubselectParameter,
+    SubselectParameterType,
+)
 
 from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
-from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import (
-    SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE,
-)
+from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import BillingConnectorSettings
-from dl_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
 
 
 class BillingAnalyticsCHConnection(ConnectionCHFilteredHardcodedDataBase[BillingConnectorSettings]):
@@ -28,7 +33,7 @@ class BillingAnalyticsCHConnection(ConnectionCHFilteredHardcodedDataBase[Billing
         assert self.billing_accounts is not None
         return [
             SubselectParameter(
-                name='billing_account_id_list',
+                name="billing_account_id_list",
                 ss_type=SubselectParameterType.list_of_values,
                 values=self.billing_accounts,
             )

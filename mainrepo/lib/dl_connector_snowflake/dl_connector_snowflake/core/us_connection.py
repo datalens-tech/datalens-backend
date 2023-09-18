@@ -12,6 +12,15 @@ import attr
 import marshmallow as ma
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
+from dl_connector_snowflake.auth import SFAuthProvider
+from dl_connector_snowflake.core.constants import (
+    ACCOUNT_NAME_RE,
+    CONNECTION_TYPE_SNOWFLAKE,
+    NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE,
+    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
+)
+from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnectionDataModelBase,
@@ -26,16 +35,6 @@ from dl_core.us_connection_base import (
 )
 from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
-
-from dl_connector_snowflake.auth import SFAuthProvider
-from dl_connector_snowflake.core.constants import (
-    ACCOUNT_NAME_RE,
-    CONNECTION_TYPE_SNOWFLAKE,
-    NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE,
-    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
-    SOURCE_TYPE_SNOWFLAKE_TABLE,
-)
-from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 
 
 class ConnectionSQLSnowFlake(ConnectionSQL):

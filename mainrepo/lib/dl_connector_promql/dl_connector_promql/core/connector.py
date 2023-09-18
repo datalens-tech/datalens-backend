@@ -1,9 +1,3 @@
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition,
-    CoreConnector,
-    CoreSourceDefinition,
-)
-
 from dl_connector_promql.core.adapter import (
     AsyncPromQLAdapter,
     PromQLAdapter,
@@ -21,6 +15,11 @@ from dl_connector_promql.core.data_source import PromQLDataSource
 from dl_connector_promql.core.storage_schemas.connection import PromQLConnectionDataStorageSchema
 from dl_connector_promql.core.type_transformer import PromQLTypeTransformer
 from dl_connector_promql.core.us_connection import PromQLConnection
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
+)
 
 
 class PromQLCoreConnectionDefinition(CoreConnectionDefinition):

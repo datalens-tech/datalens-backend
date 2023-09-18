@@ -2,7 +2,6 @@ import json
 import uuid
 
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
-
 from dl_connector_snowflake_tests.ext.api.base import SnowFlakeConnectionTestBase
 
 

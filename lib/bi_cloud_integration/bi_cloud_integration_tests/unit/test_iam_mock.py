@@ -1,6 +1,9 @@
 import pytest
 
-from bi_cloud_integration.exc import YCUnauthenticated, YCPermissionDenied
+from bi_cloud_integration.exc import (
+    YCPermissionDenied,
+    YCUnauthenticated,
+)
 from bi_cloud_integration.model import IAMResource
 from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_ss_client import DLSSClient
@@ -38,18 +41,10 @@ def test_authorization(iam_services_mock):
     # Note: not the `iam_data.Resource` mock, because this is passed to the usual client interface.
     auth_r = IAMResource(id=resource_id, type=resource_type)
 
-    as_client.authorize_sync(
-        iam_token=the_iam_token,
-        permission=assigned_permission,
-        resource_path=[auth_r]
-    )
+    as_client.authorize_sync(iam_token=the_iam_token, permission=assigned_permission, resource_path=[auth_r])
 
     with pytest.raises(YCPermissionDenied):
-        as_client.authorize_sync(
-            iam_token=the_iam_token,
-            permission=non_assigned_permission,
-            resource_path=[auth_r]
-        )
+        as_client.authorize_sync(iam_token=the_iam_token, permission=non_assigned_permission, resource_path=[auth_r])
 
 
 def test_session_service(iam_services_mock):

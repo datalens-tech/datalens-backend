@@ -1,4 +1,10 @@
-from typing import Any, Optional, TypeVar, Iterable, ClassVar
+from typing import (
+    Any,
+    ClassVar,
+    Iterable,
+    Optional,
+    TypeVar,
+)
 
 import attr
 
@@ -21,11 +27,7 @@ class BaseDatasetJSONBuilder(DatasetJSONBuilder):
 
     @classmethod
     def cs_direct(cls, field_name: str, *, avatar_id: str) -> dict[str, Any]:
-        return {
-            "kind": "direct",
-            "avatar_id": avatar_id,
-            "field_name": field_name
-        }
+        return {"kind": "direct", "avatar_id": avatar_id, "field_name": field_name}
 
     @classmethod
     def cs_id_formula(cls, formula: str) -> dict[str, Any]:
@@ -44,16 +46,17 @@ class BaseDatasetJSONBuilder(DatasetJSONBuilder):
             "description": None,
             "hidden": False,
             "aggregation": "none",
-            "calc_spec": cls.cs_id_formula(formula)
+            "calc_spec": cls.cs_id_formula(formula),
         }
 
     @classmethod
     def field_direct(
-            cls,
-            field_name: str, *,
-            cast: str,
-            avatar_id: str,
-            aggregation: Optional[str] = None,
+        cls,
+        field_name: str,
+        *,
+        cast: str,
+        avatar_id: str,
+        aggregation: Optional[str] = None,
     ) -> dict[str, Any]:
         return {
             "title": f"The {field_name.capitalize()}",
@@ -62,7 +65,7 @@ class BaseDatasetJSONBuilder(DatasetJSONBuilder):
             "description": None,
             "hidden": False,
             "aggregation": aggregation or "none",
-            "calc_spec": cls.cs_direct(field_name, avatar_id=avatar_id)
+            "calc_spec": cls.cs_direct(field_name, avatar_id=avatar_id),
         }
 
     @classmethod
@@ -126,14 +129,18 @@ class BaseDatasetJSONBuilder(DatasetJSONBuilder):
         return dict(
             sources=[effective_source],
             avatars={
-                "definitions": [{
-                    "id": effective_source["id"],
-                    "source_id": effective_source["id"],
-                    "title": effective_source["title"]
-                }],
+                "definitions": [
+                    {
+                        "id": effective_source["id"],
+                        "source_id": effective_source["id"],
+                        "title": effective_source["title"],
+                    }
+                ],
                 "joins": [],
-                "root": effective_source["id"]
-            } if self.fill_defaults else None,
+                "root": effective_source["id"],
+            }
+            if self.fill_defaults
+            else None,
             fields=effective_fields,
         )
 
@@ -149,15 +156,21 @@ class SampleSuperStoreLightJSONBuilder(BaseDatasetJSONBuilder):
 SELECT * FROM format(CSVWithNamesAndTypes,
 $$"category","customer_id","date","order_id","postal_code","profit","region","sales","segment","sub_category"
 "String","String","Date","String","String","Float32","String","Float32","String","String"
-""".lstrip(" \n")
+""".lstrip(
+        " \n"
+    )
 
     SAMPLE_SQL_DATA_LIGHT = """
 Office Supplies,JD-15895,2022-01-01,CA-2022-143805,23223,694.5,South,2104.6,Corporate,Appliances
-""".lstrip(" \n")
+""".lstrip(
+        " \n"
+    )
 
     SAMPLE_SQL_FOOTER = """
 $$)
-""".lstrip(" \n")
+""".lstrip(
+        " \n"
+    )
 
     def with_full_data(self: _DS_BUILDER_SSSL_TV, full_data: bool) -> _DS_BUILDER_SSSL_TV:
         return attr.evolve(self, use_full_data=full_data)
@@ -182,10 +195,12 @@ $$)
 
     def _get_default_source(self) -> dict[str, Any]:
         return self.source_sql(
-            query="".join([
-                self.SAMPLE_SQL_HEADER,
-                SAMPLE_SUPER_STORE_LIGHT_CSV if self._use_full_data else self.SAMPLE_SQL_DATA_LIGHT,
-                self.SAMPLE_SQL_FOOTER,
-            ]),
-            conn_name="whatever"
+            query="".join(
+                [
+                    self.SAMPLE_SQL_HEADER,
+                    SAMPLE_SUPER_STORE_LIGHT_CSV if self._use_full_data else self.SAMPLE_SQL_DATA_LIGHT,
+                    self.SAMPLE_SQL_FOOTER,
+                ]
+            ),
+            conn_name="whatever",
         )

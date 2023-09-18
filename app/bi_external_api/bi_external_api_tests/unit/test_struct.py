@@ -3,7 +3,10 @@ from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 
 def test_FrozenMappingStrToStrOrStrSeq():
     mapping_data = {
-        "avro": ("lancaster", "manchester",),
+        "avro": (
+            "lancaster",
+            "manchester",
+        ),
         "boeing": "B-17 Flying Fortress",
         "tupolev": ("tu-2",),
     }

@@ -3,29 +3,27 @@ from __future__ import annotations
 import asyncio
 import uuid
 
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from dl_constants.enums import FileProcessingStatus
 from dl_core.mdb_utils import MDBDomainManagerFactory
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import DbTable
 
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
-
 
 def make_saved_gsheets_v2_connection(  # type: ignore  # TODO: fix
     sync_usm: SyncUSManager, clickhouse_table: DbTable, filename: str, **kwargs
 ):
+    from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+    from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+    from dl_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseSyncAdapterConnExecutor
+    from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
     from dl_core.connection_executors import (
         ExecutionMode,
         SyncWrapperForAsyncConnExecutor,
     )
     from dl_core.connection_models import TableIdent
     from dl_core.connections_security.base import InsecureConnectionSecurityManager
-
-    from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-    from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-    from dl_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseSyncAdapterConnExecutor
-    from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 
     conn_name = "gsheets_v2 conn %s" % uuid.uuid4()
     engine_config = clickhouse_table.db.engine_config

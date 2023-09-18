@@ -1,12 +1,22 @@
 import abc
 import os.path
-from typing import Type, Sequence, Optional, Any, Union, ClassVar
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Sequence,
+    Type,
+    Union,
+)
 from urllib.parse import urlparse
 
 import attr
 import yaml
 
-from bi_external_api.attrs_model_mapper.utils import Locale, MText
+from bi_external_api.attrs_model_mapper.utils import (
+    Locale,
+    MText,
+)
 
 
 @attr.s()
@@ -100,7 +110,14 @@ class DocText(DocUnit):
 
     def normalize_text_to_sequence(self) -> Sequence[Union[str, DocLink, MText]]:
         txt = self.text
-        if isinstance(txt, (str, MText, DocLink,)):
+        if isinstance(
+            txt,
+            (
+                str,
+                MText,
+                DocLink,
+            ),
+        ):
             return [txt]
         return txt
 
@@ -120,14 +137,11 @@ class DocTableHeader(DocUnit):
     title_list: Sequence[MText] = attr.ib()
 
     def render_md(self, context: RenderContext) -> Sequence[str]:
-        localized_title_list = [
-            context.localized_m_text_strict(m_text)
-            for m_text in self.title_list
-        ]
+        localized_title_list = [context.localized_m_text_strict(m_text) for m_text in self.title_list]
 
         return [
             "|".join([f" {title} " for title in localized_title_list]).rstrip(" "),
-            "|".join(["-" * (len(title) + 2) for title in localized_title_list])
+            "|".join(["-" * (len(title) + 2) for title in localized_title_list]),
         ]
 
 
@@ -139,10 +153,9 @@ class CompositeDocUnit(DocUnit, metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     def render_md(self, context: RenderContext) -> Sequence[str]:
-        child_context = attr.evolve(
-            context,
-            headers_level=context.headers_level + 1
-        ) if self.add_headers_level else context
+        child_context = (
+            attr.evolve(context, headers_level=context.headers_level + 1) if self.add_headers_level else context
+        )
 
         ret: list[str] = []
         for child in self.get_children():
@@ -262,11 +275,13 @@ class FieldLine(DocUnit):
 
     @classmethod
     def get_table_header(self) -> DocTableHeader:
-        return DocTableHeader([
-            MText(ru="Поле", en="Field"),
-            MText(ru="Тип", en="Type"),
-            MText(ru="Описание", en="Description"),
-        ])
+        return DocTableHeader(
+            [
+                MText(ru="Поле", en="Field"),
+                MText(ru="Тип", en="Type"),
+                MText(ru="Описание", en="Description"),
+            ]
+        )
 
     def render_md(self, render_ctx: RenderContext) -> Sequence[str]:
         path = ".".join(f"`{part}`" for part in self.path)
@@ -328,21 +343,9 @@ class RegularClassDoc(ClassDoc):
 
         return [
             self.header,
-            *(
-                [EmptyLine(), discriminator_text, EmptyLine()]
-                if discriminator_text
-                else []
-            ),
-            *(
-                [EmptyLine(), DocText(description), EmptyLine()]
-                if description
-                else []
-            ),
-            *(
-                [FieldLine.get_table_header(), *self.fields]
-                if self.fields
-                else [DocText("**No parameters**")]
-            ),
+            *([EmptyLine(), discriminator_text, EmptyLine()] if discriminator_text else []),
+            *([EmptyLine(), DocText(description), EmptyLine()] if description else []),
+            *([FieldLine.get_table_header(), *self.fields] if self.fields else [DocText("**No parameters**")]),
         ]
 
 
@@ -356,9 +359,7 @@ class GenericClassDoc(ClassDoc):
             self.header,
             DocText([MText("Поле-дискриминатор: ", en="Discriminator field: "), f"`{self.discriminator_field_name}`"]),
             DocText(self.description) if self.description else None,
-            *[
-                obj_doc for discriminator, obj_doc in self.map_discriminator_object_doc.items()
-            ]
+            *[obj_doc for discriminator, obj_doc in self.map_discriminator_object_doc.items()],
         ]
 
 
@@ -376,11 +377,12 @@ class OperationDoc(CompositeDocUnit):
         return [
             self.header,
             DocText(self.description),
-            DocSection(DocHeader("Request"), [
-                self.request
-            ]),
-            DocSection(DocHeader("Response"), [
-                self.response,
-            ]),
+            DocSection(DocHeader("Request"), [self.request]),
+            DocSection(
+                DocHeader("Response"),
+                [
+                    self.response,
+                ],
+            ),
             DocSection(DocHeader("Examples"), self.examples) if self.examples else None,
         ]

@@ -5,10 +5,9 @@ from typing import Optional
 
 import attr
 
+from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from dl_core.connection_models.dto_defs import ConnDTO
 from dl_core.utils import secrepr
-
-from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 
 
 @attr.s(frozen=True)

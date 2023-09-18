@@ -1,8 +1,17 @@
 import enum
-from typing import TypeVar, Type, Optional, Mapping, Sequence
+from typing import (
+    Mapping,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    EntrySummary,
+)
 
 _DST_ENUM_T = TypeVar("_DST_ENUM_T", bound=enum.Enum)
 
@@ -12,8 +21,7 @@ def convert_enum_by_name(subject: enum.Enum, target_cls: Type[_DST_ENUM_T]) -> _
 
 
 def convert_enum_by_name_allow_none(
-        subject: Optional[enum.Enum],
-        target_cls: Type[_DST_ENUM_T]
+    subject: Optional[enum.Enum], target_cls: Type[_DST_ENUM_T]
 ) -> Optional[_DST_ENUM_T]:
     if subject is None:
         return None
@@ -34,7 +42,7 @@ def convert_int_entry_summary_to_name_map_entry(name: str, summary: EntrySummary
         local_name=name,
         entry_kind=convert_entry_scope_to_ext_entry_kind(summary.scope),
         unique_entry_id=summary.id,
-        legacy_location=tuple(summary.workbook_id.split("/") + [summary.name])
+        legacy_location=tuple(summary.workbook_id.split("/") + [summary.name]),
     )
 
 

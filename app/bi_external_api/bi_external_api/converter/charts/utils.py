@@ -1,19 +1,22 @@
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from dl_constants.enums import FieldType
 from bi_external_api.converter.converter_exc import MalformedEntryConfig
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import (
     charts,
     datasets,
 )
+from dl_constants.enums import FieldType
 
 
 def get_malformed_ext_unsuitable_field(
-        bad_field_msg: str,
-        field: Optional[charts.ChartField],
+    bad_field_msg: str,
+    field: Optional[charts.ChartField],
 ) -> MalformedEntryConfig:
     field_str: str
 
@@ -66,20 +69,18 @@ def convert_field_type_dataset_to_chart(rs_field_type: FieldType) -> charts.Data
 class ChartActionConverter:
     @staticmethod
     def convert_actions_add_field_chart_to_dataset(
-            chart_action: charts.ChartActionFieldAdd
+        chart_action: charts.ChartActionFieldAdd,
     ) -> tuple[str, datasets.ActionFieldAdd]:
         field_kwargs = attr.asdict(chart_action.field, recurse=False)
         dataset_id = field_kwargs.pop("datasetId")
 
-        return dataset_id, datasets.ActionFieldAdd(
-            field=datasets.ResultSchemaField(**field_kwargs)
-        )
+        return dataset_id, datasets.ActionFieldAdd(field=datasets.ResultSchemaField(**field_kwargs))
 
     @staticmethod
     def convert_action_add_field_dataset_to_chart(
-            dataset_add_field_action: datasets.ActionFieldAdd,
-            *,
-            dataset_id: str,
+        dataset_add_field_action: datasets.ActionFieldAdd,
+        *,
+        dataset_id: str,
     ) -> charts.ChartActionFieldAdd:
         return charts.ChartActionFieldAdd(
             field=charts.ChartActionField(

@@ -1,11 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Sequence, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from dl_core.aio.web_app_services.redis import RedisConnParams
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+
 from bi_connector_bitrix_gds.core.adapter import BitrixGDSDefaultAdapter
 from bi_connector_bitrix_gds.core.target_dto import BitrixGDSConnTargetDTO
 
@@ -41,17 +46,17 @@ class BitrixGDSAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[BitrixGDSD
             conn_params = attr.asdict(redis_conn_params)
         else:
             conn_params = None
-        return [BitrixGDSConnTargetDTO(
-            conn_id=self._conn_dto.conn_id,
-            pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
-            pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-            portal=self._conn_dto.portal,
-            token=self._conn_dto.token,
-
-            max_execution_time=self._conn_options.max_execution_time,  # type: ignore  # TODO: fix
-            total_timeout=self._conn_options.total_timeout,  # type: ignore  # TODO: fix
-            connect_timeout=self._conn_options.connect_timeout,  # type: ignore  # TODO: fix
-
-            redis_conn_params=conn_params,
-            redis_caches_ttl=caches_ttl,
-        )]
+        return [
+            BitrixGDSConnTargetDTO(
+                conn_id=self._conn_dto.conn_id,
+                pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
+                pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
+                portal=self._conn_dto.portal,
+                token=self._conn_dto.token,
+                max_execution_time=self._conn_options.max_execution_time,  # type: ignore  # TODO: fix
+                total_timeout=self._conn_options.total_timeout,  # type: ignore  # TODO: fix
+                connect_timeout=self._conn_options.connect_timeout,  # type: ignore  # TODO: fix
+                redis_conn_params=conn_params,
+                redis_caches_ttl=caches_ttl,
+            )
+        ]

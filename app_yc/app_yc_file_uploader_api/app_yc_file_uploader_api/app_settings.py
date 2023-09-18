@@ -5,12 +5,11 @@ import attr
 
 from bi_api_lib_ya.app_settings import YCAuthSettings
 from bi_defaults.environments import CommonExternalInstallation
-
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 
 
 def default_yc_auth_settings(cfg: CommonExternalInstallation) -> Optional[YCAuthSettings]:
-    assert isinstance(cfg, CommonExternalInstallation) or hasattr(cfg, 'YC_AUTHORIZE_PERMISSION')
+    assert isinstance(cfg, CommonExternalInstallation) or hasattr(cfg, "YC_AUTHORIZE_PERMISSION")
     return YCAuthSettings(  # type: ignore
         YC_AUTHORIZE_PERMISSION=cfg.YC_AUTHORIZE_PERMISSION,
         YC_AS_ENDPOINT=cfg.YC_AS_ENDPOINT,
@@ -23,8 +22,12 @@ def default_yc_auth_settings(cfg: CommonExternalInstallation) -> Optional[YCAuth
 @attr.s(frozen=True)
 class FileUploaderAPISettingsYC(FileUploaderAPISettings):
     YC_AUTH_SETTINGS: Optional[YCAuthSettings] = s_attrib(  # type: ignore
-        "YC_AUTH_SETTINGS", fallback_factory=default_yc_auth_settings,
+        "YC_AUTH_SETTINGS",
+        fallback_factory=default_yc_auth_settings,
     )
     SA_KEY_DATA: Optional[dict[str, str]] = s_attrib(  # type: ignore
-        "SA_KEY_DATA", sensitive=True, missing=None, env_var_converter=json.loads,
+        "SA_KEY_DATA",
+        sensitive=True,
+        missing=None,
+        env_var_converter=json.loads,
     )

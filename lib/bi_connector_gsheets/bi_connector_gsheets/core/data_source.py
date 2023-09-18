@@ -1,16 +1,27 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import sqlalchemy as sa
 
-from dl_constants.enums import CreateDSFrom, ConnectionType, JoinType
-
-from dl_core.connection_models import TableDefinition, TableIdent
+from dl_constants.enums import (
+    ConnectionType,
+    CreateDSFrom,
+    JoinType,
+)
+from dl_core.connection_models import (
+    TableDefinition,
+    TableIdent,
+)
 from dl_core.data_source.sql import BaseSQLDataSource
 
 from bi_connector_gsheets.core.constants import (
-    CONNECTION_TYPE_GSHEETS, SOURCE_TYPE_GSHEETS,
+    CONNECTION_TYPE_GSHEETS,
+    SOURCE_TYPE_GSHEETS,
 )
 
 
@@ -28,7 +39,7 @@ class GSheetsDataSource(BaseSQLDataSource):
         return source_type == SOURCE_TYPE_GSHEETS
 
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
-        return sa.text('()')  # placeholder, should be cut in the dialect.
+        return sa.text("()")  # placeholder, should be cut in the dialect.
 
     def get_table_definition(self) -> TableDefinition:
-        return TableIdent(db_name=None, schema_name=None, table_name='')
+        return TableIdent(db_name=None, schema_name=None, table_name="")

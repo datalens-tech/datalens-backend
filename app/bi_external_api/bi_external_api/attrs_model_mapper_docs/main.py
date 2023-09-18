@@ -1,31 +1,42 @@
 import os
-from typing import Type, Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
 import yaml
 
 from bi_external_api.attrs_model_mapper.domain import (
-    AmmField,
-    AmmScalarField,
     AmmEnumField,
+    AmmField,
+    AmmGenericSchema,
+    AmmListField,
     AmmNestedField,
     AmmRegularSchema,
-    AmmListField,
-    AmmGenericSchema,
+    AmmScalarField,
 )
-from bi_external_api.attrs_model_mapper.utils import Locale, MText
-from bi_external_api.attrs_model_mapper_docs.domain import AmmOperation, AmmOperationExample
+from bi_external_api.attrs_model_mapper.utils import (
+    Locale,
+    MText,
+)
+from bi_external_api.attrs_model_mapper_docs.domain import (
+    AmmOperation,
+    AmmOperationExample,
+)
 from bi_external_api.attrs_model_mapper_docs.render_units import (
-    DocUnit,
     ClassDoc,
-    FieldLine,
-    RegularClassDoc,
-    GenericClassDoc,
-    OperationDoc,
     DocHeader,
-    RenderContext, OperationExampleDoc,
     DocSection,
     DocText,
+    DocUnit,
+    FieldLine,
+    GenericClassDoc,
+    OperationDoc,
+    OperationExampleDoc,
+    RegularClassDoc,
+    RenderContext,
 )
 from bi_external_api.attrs_model_mapper_docs.writer_utils import DocWriter
 
@@ -48,20 +59,22 @@ class Docs:
             type_text: str
 
             if isinstance(field, AmmEnumField):
-                options = ' / '.join([f"`{val}`" for val in field.values])
+                options = " / ".join([f"`{val}`" for val in field.values])
                 type_text = f"enum/{scalar_type.__name__}[{options}]"
             else:
                 type_text = scalar_type.__name__
 
-            return [(
-                FieldLine(
-                    path,
-                    type_text=type_text,
-                    nullable=cp.allow_none,
-                    required=cp.required,
-                    description=field.common_props.description,
+            return [
+                (
+                    FieldLine(
+                        path,
+                        type_text=type_text,
+                        nullable=cp.allow_none,
+                        required=cp.required,
+                        description=field.common_props.description,
+                    )
                 )
-            )]
+            ]
 
         elif isinstance(field, AmmNestedField):
             nested_schema = field.item
@@ -78,8 +91,9 @@ class Docs:
             if nested_schema_doc_file_path is not None:
                 return [main_line]
 
-            assert isinstance(nested_schema, AmmRegularSchema), \
-                f"Attempt to generate inline field docs for non-regular schema: {nested_schema}"
+            assert isinstance(
+                nested_schema, AmmRegularSchema
+            ), f"Attempt to generate inline field docs for non-regular schema: {nested_schema}"
             return [
                 main_line,
                 *self.field_dict_to_doc_lines(nested_schema.fields, path),
@@ -101,9 +115,9 @@ class Docs:
         raise AssertionError(f"Unexpected type of field: {type(field)}")
 
     def field_dict_to_doc_lines(
-            self,
-            field_dict: dict[str, AmmField],
-            path: Sequence[str],
+        self,
+        field_dict: dict[str, AmmField],
+        path: Sequence[str],
     ) -> Sequence[FieldLine]:
         ret: list[FieldLine] = []
 
@@ -113,11 +127,11 @@ class Docs:
         return ret
 
     def regular_schema_to_object_doc(
-            self,
-            schema: AmmRegularSchema,
-            generate_header: bool = True,
-            discriminator_f_name: Optional[str] = None,
-            discriminator_f_val: Optional[str] = None,
+        self,
+        schema: AmmRegularSchema,
+        generate_header: bool = True,
+        discriminator_f_name: Optional[str] = None,
+        discriminator_f_val: Optional[str] = None,
     ) -> RegularClassDoc:
         return RegularClassDoc(
             header=DocHeader(schema.clz.__name__) if generate_header else None,
@@ -129,10 +143,10 @@ class Docs:
         )
 
     def generic_schema_to_object_doc(
-            self,
-            schema: AmmGenericSchema,
-            # TODO FIX: Make optional when description will be ready in AmmSchema
-            description_override: Optional[MText]
+        self,
+        schema: AmmGenericSchema,
+        # TODO FIX: Make optional when description will be ready in AmmSchema
+        description_override: Optional[MText],
     ) -> GenericClassDoc:
         return GenericClassDoc(
             header=DocHeader(schema.clz.__name__),
@@ -184,10 +198,10 @@ class Docs:
         return file_name
 
     def register_generic_schema(
-            self,
-            generic_schema: AmmGenericSchema,
-            description_override: Optional[MText],
-            file_path: Optional[str] = None,
+        self,
+        generic_schema: AmmGenericSchema,
+        description_override: Optional[MText],
+        file_path: Optional[str] = None,
     ) -> None:
         self.register_file_path_for_type(
             generic_schema.clz,
@@ -198,9 +212,9 @@ class Docs:
         )
 
     def register_regular_schema_as_ref(
-            self,
-            regular_schema: AmmRegularSchema,
-            file_path: Optional[str] = None,
+        self,
+        regular_schema: AmmRegularSchema,
+        file_path: Optional[str] = None,
     ) -> None:
         self.register_file_path_for_type(
             regular_schema.clz,
@@ -210,10 +224,7 @@ class Docs:
         self._dedicated_class_docs.append(doc)
 
     def register_operations(self, operations: Sequence[AmmOperation]) -> None:
-        self._operations.extend([
-            (op, self.operation_to_doc(op))
-            for op in operations
-        ])
+        self._operations.extend([(op, self.operation_to_doc(op)) for op in operations])
 
     def render(self, dir_path: str, locale: Locale) -> None:
         initial_ctx = RenderContext(
@@ -221,10 +232,7 @@ class Docs:
             current_file="",
             locale=locale,
         )
-        doc_writer = DocWriter(
-            initial_ctx,
-            base_dir=dir_path
-        )
+        doc_writer = DocWriter(initial_ctx, base_dir=dir_path)
 
         for class_doc in self._dedicated_class_docs:
             doc_writer.write(
@@ -240,10 +248,12 @@ class Docs:
                 for operation, op_doc in self._operations:
                     rel_file_path = os.path.join("operations", f"{operation.code}.md")
 
-                    root_doc_content.append(DocSection(
-                        header=DocHeader(f"[{operation.code}]({rel_file_path})"),
-                        content=[DocText(operation.description), DocText([])],
-                    ))
+                    root_doc_content.append(
+                        DocSection(
+                            header=DocHeader(f"[{operation.code}]({rel_file_path})"),
+                            content=[DocText(operation.description), DocText([])],
+                        )
+                    )
                     doc_writer.write(op_doc, rel_file_path)
 
                 doc_writer.write(
@@ -265,16 +275,20 @@ class Docs:
         else:
             if self._generate_toc:
                 doc_writer.write_text(
-                    yaml.safe_dump(dict(
-                        title="Configs",
-                        items=[
-                            dict(
-                                # TODO FIX: Extract TOC title somehow more accurate
-                                name=initial_ctx.localize(class_doc.header.value),  # type: ignore
-                                href=self.get_file_path_for_type_strict(class_doc.type)
-                            )
-                            for class_doc in self._dedicated_class_docs
-                        ],
-                    ), default_flow_style=False, sort_keys=False),
+                    yaml.safe_dump(
+                        dict(
+                            title="Configs",
+                            items=[
+                                dict(
+                                    # TODO FIX: Extract TOC title somehow more accurate
+                                    name=initial_ctx.localize(class_doc.header.value),  # type: ignore
+                                    href=self.get_file_path_for_type_strict(class_doc.type),
+                                )
+                                for class_doc in self._dedicated_class_docs
+                            ],
+                        ),
+                        default_flow_style=False,
+                        sort_keys=False,
+                    ),
                     "toc-i.yaml",
                 )

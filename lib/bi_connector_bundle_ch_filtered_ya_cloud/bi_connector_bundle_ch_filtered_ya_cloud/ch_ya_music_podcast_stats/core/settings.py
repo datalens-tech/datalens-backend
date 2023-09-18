@@ -1,12 +1,20 @@
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from dl_configs.connectors_data import ConnectorsDataBase
-from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
 from dl_configs.settings_loaders.meta_definition import required
-
-from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from dl_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
+)
 
 from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
 
@@ -27,12 +35,14 @@ class ConnectorsDataMusicBase(ConnectorsDataBase):
 
     @classmethod
     def connector_name(cls) -> str:
-        return 'CH_YA_MUSIC_PODCAST_STATS'
+        return "CH_YA_MUSIC_PODCAST_STATS"
 
 
 def ch_ya_music_podcast_stats_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='CH_YA_MUSIC_PODCAST_STATS', connector_data_class=ConnectorsDataMusicBase,
+        full_cfg,
+        object_like_config_key="CH_YA_MUSIC_PODCAST_STATS",
+        connector_data_class=ConnectorsDataMusicBase,
     )
     if cfg is None:
         return {}

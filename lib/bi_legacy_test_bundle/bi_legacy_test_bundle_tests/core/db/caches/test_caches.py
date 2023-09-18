@@ -4,34 +4,51 @@ import asyncio
 import datetime
 import logging
 import random
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+)
 import uuid
-from typing import TYPE_CHECKING, Any, Optional
 
 import attr
 import pytest
 import pytz
 import sqlalchemy as sa
 
-from dl_constants.enums import BIType, DataSourceRole, SelectorType
-
-from dl_testing.utils import get_log_record
-from dl_utils.aio import await_sync
-
-from dl_api_commons.reporting.profiler import PROFILING_LOG_NAME, DefaultReportingProfiler
-from dl_core.data_processing.cache.engine import EntityCacheEngineAsync, ResultCacheEntry
-from dl_core.data_processing.cache.primitives import CacheTTLConfig, LocalKeyRepresentation
+from bi_legacy_test_bundle_tests.core.utils import (
+    assert_no_warnings,
+    get_dump_request_profile_records,
+)
+from dl_api_commons.reporting.profiler import (
+    PROFILING_LOG_NAME,
+    DefaultReportingProfiler,
+)
+from dl_constants.enums import (
+    BIType,
+    DataSourceRole,
+    SelectorType,
+)
+from dl_core.data_processing.cache.engine import (
+    EntityCacheEngineAsync,
+    ResultCacheEntry,
+)
+from dl_core.data_processing.cache.primitives import (
+    CacheTTLConfig,
+    LocalKeyRepresentation,
+)
 from dl_core.data_processing.dashsql import DashSQLCachedSelector
 from dl_core.data_processing.selectors.db import DatasetDbDataSelectorAsync
 from dl_core.data_processing.streaming import AsyncChunked
 from dl_core.query.bi_query import BIQuery
 from dl_core.query.expression import ExpressionCtx
 from dl_core.services_registry import ServicesRegistry
-from dl_core_testing.data import DataFetcher
-from dl_core_testing.utils import SROptions
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.data import DataFetcher
 from dl_core_testing.dataset_wrappers import DatasetTestWrapper
-
-from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records, assert_no_warnings
+from dl_core_testing.utils import SROptions
+from dl_testing.utils import get_log_record
+from dl_utils.aio import await_sync
 
 if TYPE_CHECKING:
     from redis.asyncio import Redis
@@ -54,60 +71,79 @@ def pytz_local_now(tz_name):
 class CachePseudoKeyParts:
     ds_id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
     conn_id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
-    conn_revision = attr.ib(factory=lambda: ''.join(random.choice('0123456789ABCDEFabcdef') for _ in range(16)))
-    database_name = attr.ib(factory=lambda: ''.join(random.choice('0123456789ABCDEFabcdef') for _ in range(16)))
+    conn_revision = attr.ib(factory=lambda: "".join(random.choice("0123456789ABCDEFabcdef") for _ in range(16)))
+    database_name = attr.ib(factory=lambda: "".join(random.choice("0123456789ABCDEFabcdef") for _ in range(16)))
 
 
 def make_cache_key(
-        connection_id: str, connection_revision_id: str,
-        db_name: str, compiled_query: str,
+    connection_id: str,
+    connection_revision_id: str,
+    db_name: str,
+    compiled_query: str,
 ) -> LocalKeyRepresentation:
     cache_key = LocalKeyRepresentation()
-    cache_key = cache_key.extend(part_type='connection_id', part_content=connection_id)
-    cache_key = cache_key.extend(part_type='connection_revision_id', part_content=connection_revision_id)
-    cache_key = cache_key.extend(part_type='db_name', part_content=db_name)
-    cache_key = cache_key.extend(part_type='query', part_content=compiled_query)
+    cache_key = cache_key.extend(part_type="connection_id", part_content=connection_id)
+    cache_key = cache_key.extend(part_type="connection_revision_id", part_content=connection_revision_id)
+    cache_key = cache_key.extend(part_type="db_name", part_content=db_name)
+    cache_key = cache_key.extend(part_type="query", part_content=compiled_query)
     return cache_key
 
 
 # @pytest.mark.parametrize("compress_alg", [m for m in CompressAlg])
 @pytest.mark.asyncio
-@pytest.mark.parametrize("compiled_query, compress, data", [
-    ("SELECT some_int, some_float, some_str, some_bool", False, [
-        [1, 1., "aza", False],
-        [None, None, None, True],
-        [2, 2.356, "olo", True]
-    ]),
-    ("SELECT some_datetime, some_date", False, [
-        [datetime.datetime.utcnow(), datetime.date(2016, 12, 1)],
-    ]),
-    ("SELECT some_int, some_float, some_str, some_bool", True, [
-        [1, 1., "aza", False],
-        [None, None, None, True],
-        [2, 2.356, "olo", True]
-    ]),
-    ("SELECT some_datetime, some_date", True, [
-        [datetime.datetime.utcnow(), datetime.date(2016, 12, 1)],
-    ]),
-    # Datetime serialization
-    ("SELECT dt_pytz_geo", True, [[pytz_local_now('Europe/Moscow')]]),
-    ("SELECT dt_std_tz_fixed_offset", True, [
-        [datetime.datetime(2016, 9, 1, 16, 20, 1, tzinfo=datetime.timezone(datetime.timedelta(minutes=-30)))]
-    ]),
-    ("SELECT dt_naive", True, [[datetime.datetime(2016, 9, 1, 16, 20, 1, tzinfo=None)]]),
-])
+@pytest.mark.parametrize(
+    "compiled_query, compress, data",
+    [
+        (
+            "SELECT some_int, some_float, some_str, some_bool",
+            False,
+            [[1, 1.0, "aza", False], [None, None, None, True], [2, 2.356, "olo", True]],
+        ),
+        (
+            "SELECT some_datetime, some_date",
+            False,
+            [
+                [datetime.datetime.utcnow(), datetime.date(2016, 12, 1)],
+            ],
+        ),
+        (
+            "SELECT some_int, some_float, some_str, some_bool",
+            True,
+            [[1, 1.0, "aza", False], [None, None, None, True], [2, 2.356, "olo", True]],
+        ),
+        (
+            "SELECT some_datetime, some_date",
+            True,
+            [
+                [datetime.datetime.utcnow(), datetime.date(2016, 12, 1)],
+            ],
+        ),
+        # Datetime serialization
+        ("SELECT dt_pytz_geo", True, [[pytz_local_now("Europe/Moscow")]]),
+        (
+            "SELECT dt_std_tz_fixed_offset",
+            True,
+            [[datetime.datetime(2016, 9, 1, 16, 20, 1, tzinfo=datetime.timezone(datetime.timedelta(minutes=-30)))]],
+        ),
+        ("SELECT dt_naive", True, [[datetime.datetime(2016, 9, 1, 16, 20, 1, tzinfo=None)]]),
+    ],
+)
 async def test_dataset_proxy_engine(
-        qc_async_redis: Redis,
-        compiled_query, data, compress,
-        # compress_alg,
+    qc_async_redis: Redis,
+    compiled_query,
+    data,
+    compress,
+    # compress_alg,
 ):
     # EntityCacheEngineAsync.DEFAULT_COMPRESS_ALG = compress_alg
 
     ck = CachePseudoKeyParts()
 
     cache_key = make_cache_key(
-        connection_id=ck.conn_id, connection_revision_id=ck.conn_revision,
-        db_name=ck.database_name, compiled_query=compiled_query,
+        connection_id=ck.conn_id,
+        connection_revision_id=ck.conn_revision,
+        db_name=ck.database_name,
+        compiled_query=compiled_query,
     )
 
     dse_a = EntityCacheEngineAsync(entity_id=ck.ds_id, rc=qc_async_redis)
@@ -121,10 +157,13 @@ async def test_dataset_proxy_engine(
 
 
 # noinspection PyProtectedMember
-@pytest.mark.parametrize("single_dt_data", [
-    pytz_local_now('Europe/Moscow'),
-    datetime.datetime(2016, 9, 1, 16, 20, 1, tzinfo=datetime.timezone(datetime.timedelta(minutes=-30))),
-])
+@pytest.mark.parametrize(
+    "single_dt_data",
+    [
+        pytz_local_now("Europe/Moscow"),
+        datetime.datetime(2016, 9, 1, 16, 20, 1, tzinfo=datetime.timezone(datetime.timedelta(minutes=-30))),
+    ],
+)
 def test_offset_preserving(single_dt_data: datetime.datetime):
     result_data = [[single_dt_data]]
     cache_entry = ResultCacheEntry(
@@ -148,24 +187,32 @@ async def test_us_dataset_cache_invalidate_all(qc_async_redis: Redis):
 
     result_map = {
         "SELECT {}".format(i): {
-            'result': [[i, ], ],
+            "result": [
+                [
+                    i,
+                ],
+            ],
         }
         for i in range(0, 100)
     }
 
     for cq, rc in result_map.items():
-        result = rc['result']
+        result = rc["result"]
         cache_key = make_cache_key(
-            connection_id=ck.conn_id, connection_revision_id=ck.conn_revision,
-            db_name=ck.database_name, compiled_query=cq,
+            connection_id=ck.conn_id,
+            connection_revision_id=ck.conn_revision,
+            db_name=ck.database_name,
+            compiled_query=cq,
         )
         await dce._update_cache(local_key_rep=cache_key, result=result)
 
     for cq, rc in result_map.items():
-        result = rc['result']
+        result = rc["result"]
         cache_key = make_cache_key(
-            connection_id=ck.conn_id, connection_revision_id=ck.conn_revision,
-            db_name=ck.database_name, compiled_query=cq,
+            connection_id=ck.conn_id,
+            connection_revision_id=ck.conn_revision,
+            db_name=ck.database_name,
+            compiled_query=cq,
         )
         cached_data = await dce._get_from_cache(local_key_rep=cache_key)
         assert result == cached_data
@@ -174,21 +221,23 @@ async def test_us_dataset_cache_invalidate_all(qc_async_redis: Redis):
 
     for cq in result_map:
         cache_key = make_cache_key(
-            connection_id=ck.conn_id, connection_revision_id=ck.conn_revision,
-            db_name=ck.database_name, compiled_query=cq,
+            connection_id=ck.conn_id,
+            connection_revision_id=ck.conn_revision,
+            db_name=ck.database_name,
+            compiled_query=cq,
         )
         cached_data = await dce._get_from_cache(local_key_rep=cache_key)
         assert cached_data is None
 
 
 def _change_connection(
-        connection: ClassicConnectionSQL,
-        *,
-        us_manager: SyncUSManager,
-        dataset: Optional[Dataset] = None,
-        name_tpl: str = "{} (changed)",
+    connection: ClassicConnectionSQL,
+    *,
+    us_manager: SyncUSManager,
+    dataset: Optional[Dataset] = None,
+    name_tpl: str = "{} (changed)",
 ) -> None:
-    """ Update the connection data to make it end up with different cache keys """
+    """Update the connection data to make it end up with different cache keys"""
     connection.data.name = name_tpl.format(connection.data.name)
     us_manager.save(connection)
 
@@ -205,15 +254,15 @@ def _change_connection(
 @pytest.mark.parametrize("selector_type", [SelectorType.CACHED, SelectorType.CACHED_LAZY])
 @pytest.mark.parametrize("override_ttl_in_conn", [True, False])
 def test_us_dataset_cache_engine_integration(
-        cached_dataset_postgres: Dataset,
-        us_conn_cache_tests_pg,
-        async_service_registry_factory,
-        bi_context,
-        caplog,
-        selector_type,
-        override_ttl_in_conn,
-        default_sync_usm,
-        # compress_alg,
+    cached_dataset_postgres: Dataset,
+    us_conn_cache_tests_pg,
+    async_service_registry_factory,
+    bi_context,
+    caplog,
+    selector_type,
+    override_ttl_in_conn,
+    default_sync_usm,
+    # compress_alg,
 ):
     us_manager = default_sync_usm
     connection = us_conn_cache_tests_pg
@@ -222,11 +271,13 @@ def test_us_dataset_cache_engine_integration(
     ds_wrapper = DatasetTestWrapper(dataset=dataset, us_manager=us_manager)
 
     default_caches_ttl_config = CacheTTLConfig()
-    sr: ServicesRegistry = async_service_registry_factory(SROptions(
-        rci=bi_context,
-        with_caches=True,
-        default_caches_ttl_config=default_caches_ttl_config,
-    ))
+    sr: ServicesRegistry = async_service_registry_factory(
+        SROptions(
+            rci=bi_context,
+            with_caches=True,
+            default_caches_ttl_config=default_caches_ttl_config,
+        )
+    )
 
     # assert reporting_registry
 
@@ -243,7 +294,7 @@ def test_us_dataset_cache_engine_integration(
         rc=sr.get_caches_redis_client(),
     )
     caplog.set_level(logging.INFO, logger=PROFILING_LOG_NAME)
-    caplog.set_level(logging.INFO, logger='dl_core.data_processing.cache')
+    caplog.set_level(logging.INFO, logger="dl_core.data_processing.cache")
     caplog.clear()
 
     data_source = ds_wrapper.get_sql_data_source_strict(
@@ -259,9 +310,9 @@ def test_us_dataset_cache_engine_integration(
     bi_query = BIQuery(
         select_expressions=[
             ExpressionCtx(
-                expression=sa.literal_column('val'),
+                expression=sa.literal_column("val"),
                 avatar_ids=[avatar_id],
-                alias='val',
+                alias="val",
                 user_type=BIType.string,
             ),
         ],
@@ -269,7 +320,9 @@ def test_us_dataset_cache_engine_integration(
 
     # Expect NO CACHE HIT
     data_fetcher = DataFetcher(
-        service_registry=sr, dataset=dataset, selector_type=selector_type,
+        service_registry=sr,
+        dataset=dataset,
+        selector_type=selector_type,
         us_manager=us_manager,
     )
     data_stream = await_sync(data_fetcher.get_data_stream_async(role=role, bi_query=bi_query))
@@ -335,11 +388,11 @@ def test_us_dataset_cache_engine_integration(
 
 # TODO: fixme https://st.yandex-team.ru/BI-4372
 def test_locked_cache(
-        monkeypatch,
-        cached_dataset_postgres: Dataset,
-        async_service_registry_factory,
-        bi_context,
-        default_sync_usm,
+    monkeypatch,
+    cached_dataset_postgres: Dataset,
+    async_service_registry_factory,
+    bi_context,
+    default_sync_usm,
 ):
     """
     Monkeypatch the postgres connector to
@@ -358,26 +411,25 @@ def test_locked_cache(
 
     # ### Monkeypatches ###
 
-    sync_result_iter = [
-        [idx * random_key_int]
-        for idx in range(10)
-    ]
+    sync_result_iter = [[idx * random_key_int] for idx in range(10)]
     state = dict(calls=0)
 
     async def execute_query_context_monkey(*args: Any, **kwargs: Any) -> AsyncChunked:
-        state['calls'] += 1
+        state["calls"] += 1
         await asyncio.sleep(0.5)
         return AsyncChunked.from_chunked_iterable([list(sync_result_iter)])
 
-    monkeypatch.setattr(DatasetDbDataSelectorAsync, 'execute_query_context', execute_query_context_monkey)
+    monkeypatch.setattr(DatasetDbDataSelectorAsync, "execute_query_context", execute_query_context_monkey)
 
     # ### Utils and config ###
 
-    sr: ServicesRegistry = async_service_registry_factory(SROptions(
-        rci=bi_context,
-        with_caches=True,
-        default_caches_ttl_config=CacheTTLConfig(),
-    ))
+    sr: ServicesRegistry = async_service_registry_factory(
+        SROptions(
+            rci=bi_context,
+            with_caches=True,
+            default_caches_ttl_config=CacheTTLConfig(),
+        )
+    )
     reporting = sr.get_reporting_registry()
     assert reporting
 
@@ -395,9 +447,9 @@ def test_locked_cache(
     bi_query = BIQuery(
         select_expressions=[
             ExpressionCtx(
-                expression=sa.literal_column(f'id * {random_key_int}'),
+                expression=sa.literal_column(f"id * {random_key_int}"),
                 avatar_ids=[avatar_id],
-                alias='id',
+                alias="id",
                 user_type=BIType.integer,
             ),
         ],
@@ -420,7 +472,7 @@ def test_locked_cache(
     def _cleanup(invalidate: bool = False) -> None:
         # caplog.clear()
         reporting.clear_records()
-        state['calls'] = 0
+        state["calls"] = 0
         if invalidate:
             _change_connection(connection, dataset=dataset, us_manager=us_manager)
             sync_result_iter[:] = sync_result_iter + sync_result_iter[:3]
@@ -428,20 +480,17 @@ def test_locked_cache(
     # ### Actual testing ###
 
     # Simple single cache miss
-    assert state['calls'] == 0
+    assert state["calls"] == 0
     _, res_data = await_sync(get_one())
-    assert state['calls'] == 1
+    assert state["calls"] == 1
     assert res_data == sync_result_iter
 
     _cleanup(invalidate=True)
 
     # Simultaneous requests
-    assert state['calls'] == 0
-    results = await_sync(asyncio.gather(*(
-        get_one()
-        for _ in range(10)
-    )))
-    assert state['calls'] == 1  # 10 results, 1 db request
+    assert state["calls"] == 0
+    results = await_sync(asyncio.gather(*(get_one() for _ in range(10))))
+    assert state["calls"] == 1  # 10 results, 1 db request
 
     # assert_no_warnings(caplog)
 
@@ -465,11 +514,11 @@ def test_locked_cache(
     _cleanup(invalidate=False)
 
     # One request afterwards should be a cache hit
-    assert state['calls'] == 0
+    assert state["calls"] == 0
     key, res_data = await_sync(get_one())
     assert key == keys[0]
     assert res_data == sync_result_iter
-    assert state['calls'] == 0  # no new db requests
+    assert state["calls"] == 0  # no new db requests
 
     # Ensure logging flag in request log
     rep_profiler.flush_all_query_reports()
@@ -480,11 +529,11 @@ def test_locked_cache(
     _cleanup(invalidate=True)
 
     # After invalidation there should not be a cache hit
-    assert state['calls'] == 0
+    assert state["calls"] == 0
     key, res_data = await_sync(get_one())
     assert key != keys[0]
     assert res_data == sync_result_iter
-    assert state['calls'] == 1
+    assert state["calls"] == 1
 
     # Ensure logging flag in request log
     rep_profiler.flush_all_query_reports()
@@ -494,7 +543,7 @@ def test_locked_cache(
 
 
 def _detuple(value: Any) -> Any:
-    """ Somewhat equivalent to `json.loads(json.dumps(...))` """
+    """Somewhat equivalent to `json.loads(json.dumps(...))`"""
     if isinstance(value, (list, tuple)):
         return [_detuple(item) for item in value]
     if isinstance(value, dict):
@@ -503,30 +552,32 @@ def _detuple(value: Any) -> Any:
 
 
 @pytest.mark.parametrize(
-    ('is_bleeding_edge_user', 'expected'),
+    ("is_bleeding_edge_user", "expected"),
     [
         (True, True),
         (False, False),
     ],
 )
 async def test_dashsql_cache_options(
-        us_conn_cache_tests_pg,
-        async_service_registry_factory,
-        bi_context,
-        is_bleeding_edge_user,
-        expected,
+    us_conn_cache_tests_pg,
+    async_service_registry_factory,
+    bi_context,
+    is_bleeding_edge_user,
+    expected,
 ):
     conn = us_conn_cache_tests_pg
-    sr = async_service_registry_factory(SROptions(
-        rci=bi_context,
-        with_caches=True,
-        cache_save_background=False,
-        default_caches_ttl_config=CacheTTLConfig(),
-    ))
+    sr = async_service_registry_factory(
+        SROptions(
+            rci=bi_context,
+            with_caches=True,
+            cache_save_background=False,
+            default_caches_ttl_config=CacheTTLConfig(),
+        )
+    )
 
     dashsql_selector = DashSQLCachedSelector(
         conn=conn,
-        sql_query='select 1;',
+        sql_query="select 1;",
         params=None,
         db_params={},
         service_registry=sr,
@@ -535,33 +586,35 @@ async def test_dashsql_cache_options(
     cache_opts = dashsql_selector.make_cache_options()
     opt_is_here = False
     for opt in cache_opts.key.key_parts:
-        if opt.part_type == 'is_bleeding_edge_user':
+        if opt.part_type == "is_bleeding_edge_user":
             assert opt.part_content == expected
             opt_is_here = True
     assert opt_is_here
 
 
 # TODO: fixme https://st.yandex-team.ru/BI-4372
-@pytest.mark.parametrize("override_ttl_in_conn", ['ttloverride', ''])
+@pytest.mark.parametrize("override_ttl_in_conn", ["ttloverride", ""])
 async def test_dashsql_cache(
-        us_conn_cache_tests_pg,
-        async_service_registry_factory,
-        bi_context,
-        override_ttl_in_conn,
-        default_sync_usm,
+    us_conn_cache_tests_pg,
+    async_service_registry_factory,
+    bi_context,
+    override_ttl_in_conn,
+    default_sync_usm,
 ):
     us_manager = default_sync_usm
     conn = us_conn_cache_tests_pg
     dashsql_selector_cls = DashSQLCachedSelector
     rndval = random.random()
-    sql_query = f'select unnest(ARRAY[1/2, 3/{rndval}])'
+    sql_query = f"select unnest(ARRAY[1/2, 3/{rndval}])"
 
-    sr = async_service_registry_factory(SROptions(
-        rci=bi_context,
-        with_caches=True,
-        cache_save_background=False,
-        default_caches_ttl_config=CacheTTLConfig(),
-    ))
+    sr = async_service_registry_factory(
+        SROptions(
+            rci=bi_context,
+            with_caches=True,
+            cache_save_background=False,
+            default_caches_ttl_config=CacheTTLConfig(),
+        )
+    )
     reporting = sr.get_reporting_registry()
     assert reporting
     rep_profiler = DefaultReportingProfiler(reporting_registry=sr.get_reporting_registry())

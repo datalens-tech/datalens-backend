@@ -3,7 +3,6 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-
 from dl_connector_snowflake.bi.api_schema.connection import SnowFlakeConnectionSchema
 from dl_connector_snowflake.bi.api_schema.source import (  # type: ignore
     SnowFlakeTableDataSourceSchema,

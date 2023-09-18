@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.connector import (
-    CHFrozenBumpyRoadsCoreSourceDefinition,
-    CHFrozenBumpyRoadsCoreConnectionDefinition,
-    CHFrozenBumpyRoadsCoreConnector,
-)
-
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.connector import (
-    BaseCHFrozenTableBiApiSourceDefinition,
     BaseCHFrozenBiApiConnectionDefinition,
     BaseCHFrozenBiApiConnector,
+    BaseCHFrozenTableBiApiSourceDefinition,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connection_form.form_config import (
     CHFrozenBumpyRoadsFormFactory,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connection_info import (
     CHFrozenBumpyRoadsConnectionInfoProvider,
+)
+from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.connector import (
+    CHFrozenBumpyRoadsCoreConnectionDefinition,
+    CHFrozenBumpyRoadsCoreConnector,
+    CHFrozenBumpyRoadsCoreSourceDefinition,
 )
 
 
@@ -31,9 +30,5 @@ class CHFrozenBumpyRoadsBiApiConnectionDefinition(BaseCHFrozenBiApiConnectionDef
 
 class CHFrozenBumpyRoadsBiApiConnector(BaseCHFrozenBiApiConnector):
     core_connector_cls = CHFrozenBumpyRoadsCoreConnector
-    connection_definitions = (
-        CHFrozenBumpyRoadsBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenBumpyRoadsTableBiApiSourceDefinition,
-    )
+    connection_definitions = (CHFrozenBumpyRoadsBiApiConnectionDefinition,)
+    source_definitions = (CHFrozenBumpyRoadsTableBiApiSourceDefinition,)

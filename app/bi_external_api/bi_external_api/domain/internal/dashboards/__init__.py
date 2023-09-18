@@ -1,18 +1,25 @@
 from .enums import (  # noqa: F401
+    ControlSelectType,
     ControlType,
     TabItemType,
     TextSize,
-    ControlSelectType,
 )
-
+from .main import (  # noqa: F401
+    Aliases,
+    Connection,
+    Dashboard,
+    DashInstance,
+    LayoutItem,
+    Tab,
+)
 from .tab_item_data import (  # noqa: F401
     TabItemData,
-    TabItemDataTitle,
     TabItemDataText,
+    TabItemDataTitle,
 )
-
 from .tab_item_data_control import (  # noqa: F401
     AcceptableDates,
+    CommonGuidedControlSource,
     ControlData,
     DatasetBasedControlData,
     DatasetControlSource,
@@ -21,7 +28,6 @@ from .tab_item_data_control import (  # noqa: F401
     DatasetControlSourceTextInput,
     ExternalControlData,
     ExternalControlSource,
-    CommonGuidedControlSource,
     FieldSetCommonControlSourceDate,
     FieldSetCommonControlSourceSelect,
     FieldSetCommonControlSourceTextInput,
@@ -32,25 +38,14 @@ from .tab_item_data_control import (  # noqa: F401
     ManualControlSourceTextInput,
     SelectorItem,
 )
-
 from .tab_item_data_widget import (  # noqa: F401
-    WidgetTabItem,
     TabItemDataWidget,
+    WidgetTabItem,
 )
-
 from .tab_items import (  # noqa: F401
-    TabItem,
-    ItemTitle,
-    ItemText,
-    ItemWidget,
     ItemControl,
-)
-
-from .main import (  # noqa: F401
-    LayoutItem,
-    Connection,
-    Aliases,
-    Tab,
-    Dashboard,
-    DashInstance,
+    ItemText,
+    ItemTitle,
+    ItemWidget,
+    TabItem,
 )

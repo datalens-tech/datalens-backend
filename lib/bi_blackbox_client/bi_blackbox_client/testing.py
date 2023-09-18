@@ -18,7 +18,8 @@ def update_global_tvm_info(tvm_info: tuple[str, str, str]):  # type: ignore  # T
             return updated_global_tvm_info or tvm_secret_reader.get_tvm_info()
     """
     import bi_blackbox_client.tvm_client as mod
+
     mod.TVM_INFO = tvm_info
     # For e.g. uwsgi subprocesses.
-    os.environ['TVM_INFO'] = ' '.join(tvm_info)
+    os.environ["TVM_INFO"] = " ".join(tvm_info)
     return tvm_info

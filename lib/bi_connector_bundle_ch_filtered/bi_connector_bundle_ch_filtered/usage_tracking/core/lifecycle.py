@@ -1,23 +1,22 @@
 import logging
 
-from dl_app_tools.profiling_base import GenericProfiler
-
-from bi_cloud_integration.exc import YCBadRequest, YCPermissionDenied
-from bi_cloud_integration.model import IAMResource
-
 from bi_api_commons_ya_cloud.models import IAMAuthData
-from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
-from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
+from bi_cloud_integration.exc import (
+    YCBadRequest,
+    YCPermissionDenied,
+)
+from bi_cloud_integration.model import IAMResource
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+from dl_app_tools.profiling_base import GenericProfiler
 from dl_core import exc
+from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 
+from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
 
 LOGGER = logging.getLogger(__name__)
 
 
-class UsageTrackingConnectionLifecycleManager(
-        ConnectionLifecycleManager[UsageTrackingConnection]
-):
+class UsageTrackingConnectionLifecycleManager(ConnectionLifecycleManager[UsageTrackingConnection]):
     ENTRY_CLS = UsageTrackingConnection
 
     async def post_init_async_hook(self) -> None:
@@ -43,7 +42,7 @@ class UsageTrackingConnectionLifecycleManager(
                     resource_path=[resource_path],
                 )
             except (YCBadRequest, YCPermissionDenied) as err:
-                LOGGER.error('yc_as auxiliary authorize: %r %r %r', iam_role, resource_path, err)
-                raise exc.PlatformPermissionRequired(f'User does not have the required role: {iam_role}')
+                LOGGER.error("yc_as auxiliary authorize: %r %r %r", iam_role, resource_path, err)
+                raise exc.PlatformPermissionRequired(f"User does not have the required role: {iam_role}")
 
         self.entry.tenant_id = tenant_id

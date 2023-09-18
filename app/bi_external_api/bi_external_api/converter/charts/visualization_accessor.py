@@ -11,11 +11,7 @@ class InternalVisualizationAccessor:
     vis: charts.Visualization = attr.ib()
 
     def get_single_placeholder_or_none(self, plh_id: charts.PlaceholderId) -> Optional[charts.Placeholder]:
-        filtered_placeholder_list = [
-            ph
-            for ph in self.vis.placeholders
-            if ph.id == plh_id
-        ]
+        filtered_placeholder_list = [ph for ph in self.vis.placeholders if ph.id == plh_id]
         if len(filtered_placeholder_list) == 0:
             return None
         if len(filtered_placeholder_list) != 1:

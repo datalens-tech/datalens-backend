@@ -1,12 +1,11 @@
 import pytest
 
-from dl_core_testing.database import DbTable
-from dl_core_testing.testcases.dataset import DefaultDatasetTestSuite
-from dl_testing.regulated_test import RegulatedTestParams
-
 from dl_connector_bigquery.core.constants import SOURCE_TYPE_BIGQUERY_TABLE
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
+from dl_core_testing.database import DbTable
+from dl_core_testing.testcases.dataset import DefaultDatasetTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
 
 
 class TestBigQueryDataset(BaseBigQueryTestClass, DefaultDatasetTestSuite[ConnectionSQLBigQuery]):

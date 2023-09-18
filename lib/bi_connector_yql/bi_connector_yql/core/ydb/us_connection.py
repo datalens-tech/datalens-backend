@@ -1,22 +1,33 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, ClassVar, Optional
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.connection_models.conn_options import ConnectOptions
+from dl_core.i18n.localizer import Translatable
+from dl_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+    DataSourceTemplate,
+)
+from dl_core.utils import secrepr
+from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
 
 from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
-from dl_core.connection_models.conn_options import ConnectOptions
+from bi_connector_yql.core.ydb.constants import (
+    SOURCE_TYPE_YDB_SUBSELECT,
+    SOURCE_TYPE_YDB_TABLE,
+)
 from bi_connector_yql.core.ydb.dto import YDBConnDTO
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin
-from dl_core.i18n.localizer import Translatable
-from dl_i18n.localizer_base import Localizer
-from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate, ConnectionBase
-from dl_core.utils import secrepr
-
-from bi_connector_yql.core.ydb.constants import SOURCE_TYPE_YDB_TABLE, SOURCE_TYPE_YDB_SUBSELECT
 
 if TYPE_CHECKING:
     from dl_core.connection_models.common_models import TableIdent
@@ -48,12 +59,16 @@ class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):
         def get_secret_keys(cls) -> set[DataKey]:
             return {
                 *super().get_secret_keys(),
-                DataKey(parts=('token',)),
+                DataKey(parts=("token",)),
             }
 
     def get_conn_options(self) -> YDBConnectOptions:
-        return super().get_conn_options().to_subclass(
-            YDBConnectOptions,
+        return (
+            super()
+            .get_conn_options()
+            .to_subclass(
+                YDBConnectOptions,
+            )
         )
 
     def get_conn_dto(self) -> YDBConnDTO:
@@ -73,15 +88,17 @@ class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return [
             DataSourceTemplate(
-                title='YDB table',
-                tab_title=localizer.translate(Translatable('source_templates-tab_title-table')),
+                title="YDB table",
+                tab_title=localizer.translate(Translatable("source_templates-tab_title-table")),
                 source_type=SOURCE_TYPE_YDB_TABLE,
                 parameters=dict(),
                 form=[
                     {
-                        "name": "table_name", "input_type": "text",
-                        "default": "", "required": True,
-                        "title": localizer.translate(Translatable('source_templates-label-ydb_table')),
+                        "name": "table_name",
+                        "input_type": "text",
+                        "default": "",
+                        "required": True,
+                        "title": localizer.translate(Translatable("source_templates-label-ydb_table")),
                         "field_doc_key": "YDB_TABLE/table_name",
                     },
                 ],
@@ -89,21 +106,24 @@ class YDBConnection(YQLConnectionMixin, ClassicConnectionSQL):
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
             ),
         ] + self._make_subselect_templates(
-            title='Subselect over YDB',
+            title="Subselect over YDB",
             source_type=SOURCE_TYPE_YDB_SUBSELECT,
             localizer=localizer,
         )
 
     def get_tables(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-            db_name: Optional[str] = None, schema_name: Optional[str] = None,
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        db_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
     ) -> list[TableIdent]:
         if db_name is None:
             # Only current-database listing is feasible here.
             db_name = self.data.db_name
         return super().get_tables(
             conn_executor_factory=conn_executor_factory,
-            db_name=db_name, schema_name=schema_name,
+            db_name=db_name,
+            schema_name=schema_name,
         )
 
     @property

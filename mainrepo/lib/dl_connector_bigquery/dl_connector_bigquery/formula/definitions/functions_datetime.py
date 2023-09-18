@@ -1,14 +1,13 @@
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
+from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 import dl_formula.core.exc as exc
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import raw_sql
 from dl_formula.definitions.common_datetime import datetime_interval
 import dl_formula.definitions.functions_datetime as base
 from dl_formula.definitions.literals import un_literal
-
-from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
 V = TranslationVariant.make
 

@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar, List, Type, Optional
-
 import logging
+from typing import (
+    TYPE_CHECKING,
+    ClassVar,
+    List,
+    Optional,
+    Type,
+)
 
 import attr
 
-from dl_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
 from bi_cloud_integration.exc import YCUnauthenticated
 from bi_sqlalchemy_yq.errors import YQError
-
 from dl_constants.enums import ConnectionType
-
 from dl_core import exc
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
 from dl_core.connection_models import TableIdent
 
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
@@ -47,10 +50,7 @@ class YQAdapter(YQLAdapterBase[YQConnTargetDTO]):
 
     @classmethod
     def make_exc(
-            cls,
-            wrapper_exc: Exception,
-            orig_exc: Optional[Exception],
-            debug_compiled_query: Optional[str]
+        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
     ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
         if isinstance(wrapper_exc, YCUnauthenticated):
             orig_exc = wrapper_exc

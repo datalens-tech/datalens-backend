@@ -1,34 +1,38 @@
 from __future__ import annotations
 
-from typing import Optional, ClassVar, Any
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from dl_utils.utils import DataKey
-
-from dl_i18n.localizer_base import Localizer
-
 from dl_api_commons.reporting.models import NotificationReportingRecord
+from dl_connector_chyt.core.us_connection import BaseConnectionCHYT
 from dl_core.i18n.localizer import Translatable
 from dl_core.reporting.notifications import get_notification_record
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core.utils import secrepr
+from dl_i18n.localizer_base import Localizer
+from dl_utils.utils import DataKey
 
-from dl_connector_chyt.core.us_connection import BaseConnectionCHYT
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
-
 from bi_connector_chyt_internal.core.constants import (
+    NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE,
+    SOURCE_TYPE_CHYT_SUBSELECT,
     SOURCE_TYPE_CHYT_TABLE,
     SOURCE_TYPE_CHYT_TABLE_LIST,
     SOURCE_TYPE_CHYT_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
-    NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE,
 )
-from bi_connector_chyt_internal.core.dto import CHYTInternalDTO, CHYTUserAuthDTO
+from bi_connector_chyt_internal.core.dto import (
+    CHYTInternalDTO,
+    CHYTUserAuthDTO,
+)
 
 
 class BaseConnectionCHYTInternal(BaseConnectionCHYT):
@@ -65,61 +69,71 @@ class BaseConnectionCHYTInternal(BaseConnectionCHYT):
         )
         return [
             DataSourceTemplate(
-                title='CH over YT',
-                tab_title=localizer.translate(Translatable('source_templates-tab_title-table')),
+                title="CH over YT",
+                tab_title=localizer.translate(Translatable("source_templates-tab_title-table")),
                 source_type=self.chyt_table_source_type,
                 form=[
                     {
-                        "name": "table_name", "input_type": "text",
-                        "default": "", "required": True,
-                        "title": localizer.translate(Translatable('source_templates-label-yt_table')),
+                        "name": "table_name",
+                        "input_type": "text",
+                        "default": "",
+                        "required": True,
+                        "title": localizer.translate(Translatable("source_templates-label-yt_table")),
                         "field_doc_key": self._table_source_field_doc_key,
                     },
                 ],
                 **common,
             ),
             DataSourceTemplate(
-                title='CH over a list of YT tables',
-                tab_title=localizer.translate(Translatable('source_templates-tab_title-concat')),
+                title="CH over a list of YT tables",
+                tab_title=localizer.translate(Translatable("source_templates-tab_title-concat")),
                 source_type=self.chyt_table_list_source_type,
                 form=[
                     {
-                        "name": "table_names", "input_type": "textarea",
-                        "default": "", "required": True,
-                        "title": localizer.translate(Translatable('source_templates-label-yt_table_list')),
+                        "name": "table_names",
+                        "input_type": "textarea",
+                        "default": "",
+                        "required": True,
+                        "title": localizer.translate(Translatable("source_templates-label-yt_table_list")),
                         "field_doc_key": "CHYT_TABLE_LIST/table_names",
                     },
                 ],
                 **common,
             ),
             DataSourceTemplate(
-                title='CH over a range of YT tables',
-                tab_title=localizer.translate(Translatable('source_templates-tab_title-range')),
+                title="CH over a range of YT tables",
+                tab_title=localizer.translate(Translatable("source_templates-tab_title-range")),
                 source_type=self.chyt_table_range_source_type,
                 form=[
                     {
-                        "name": "directory_path", "input_type": "text",
-                        "default": "", "required": True,
-                        "title": localizer.translate(Translatable('source_templates-label-yt_dir')),
+                        "name": "directory_path",
+                        "input_type": "text",
+                        "default": "",
+                        "required": True,
+                        "title": localizer.translate(Translatable("source_templates-label-yt_dir")),
                         "field_doc_key": "CHYT_TABLE_RANGE/directory_path",
                     },
                     {
-                        "name": "range_from", "input_type": "text",
-                        "default": "", "required": False,
-                        "title": localizer.translate(Translatable('source_templates-label-range_from')),
+                        "name": "range_from",
+                        "input_type": "text",
+                        "default": "",
+                        "required": False,
+                        "title": localizer.translate(Translatable("source_templates-label-range_from")),
                     },
                     {
-                        "name": "range_to", "input_type": "text",
-                        "default": "", "required": False,
-                        "title": localizer.translate(Translatable('source_templates-label-range_to')),
+                        "name": "range_to",
+                        "input_type": "text",
+                        "default": "",
+                        "required": False,
+                        "title": localizer.translate(Translatable("source_templates-label-range_to")),
                     },
                 ],
                 **common,
             ),
         ] + self._make_subselect_templates(
-            title='CH over subselect over YT',
+            title="CH over subselect over YT",
             source_type=self.chyt_subselect_source_type,
-            field_doc_key='CHYT_SUBSELECT/subsql',
+            field_doc_key="CHYT_SUBSELECT/subsql",
             localizer=localizer,
         )
 
@@ -128,12 +142,14 @@ class ConnectionCHYTInternalToken(BaseConnectionCHYTInternal):
     allow_cache: ClassVar[bool] = True
 
     source_type = SOURCE_TYPE_CHYT_TABLE  # Essentially, 'default source type', for `replace_connection`.
-    allowed_source_types = frozenset((
-        SOURCE_TYPE_CHYT_TABLE,
-        SOURCE_TYPE_CHYT_TABLE_LIST,
-        SOURCE_TYPE_CHYT_TABLE_RANGE,
-        SOURCE_TYPE_CHYT_SUBSELECT,
-    ))
+    allowed_source_types = frozenset(
+        (
+            SOURCE_TYPE_CHYT_TABLE,
+            SOURCE_TYPE_CHYT_TABLE_LIST,
+            SOURCE_TYPE_CHYT_TABLE_RANGE,
+            SOURCE_TYPE_CHYT_SUBSELECT,
+        )
+    )
 
     chyt_table_source_type = SOURCE_TYPE_CHYT_TABLE
     chyt_table_list_source_type = SOURCE_TYPE_CHYT_TABLE_LIST
@@ -148,7 +164,7 @@ class ConnectionCHYTInternalToken(BaseConnectionCHYTInternal):
         def get_secret_keys(cls) -> set[DataKey]:
             return {
                 *super().get_secret_keys(),
-                DataKey(parts=('token',)),
+                DataKey(parts=("token",)),
             }
 
     @property
@@ -168,12 +184,14 @@ class ConnectionCHYTUserAuth(BaseConnectionCHYTInternal):
     allow_cache: ClassVar[bool] = False  # Just to make this explicit.
 
     source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE  # Essentially, 'default source type', for `replace_connection`.
-    allowed_source_types = frozenset((
-        SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
-        SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
-        SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
-        SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
-    ))
+    allowed_source_types = frozenset(
+        (
+            SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
+            SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
+            SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
+            SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
+        )
+    )
 
     chyt_table_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE
     chyt_table_list_source_type = SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST

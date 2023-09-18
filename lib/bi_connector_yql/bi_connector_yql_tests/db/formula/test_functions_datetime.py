@@ -1,9 +1,6 @@
-from dl_formula_testing.testcases.functions_datetime import (
-    DefaultDateTimeFunctionFormulaConnectorTestSuite,
-)
-from bi_connector_yql_tests.db.formula.base import (
-    YQLTestBase,
-)
+from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
+
+from bi_connector_yql_tests.db.formula.base import YQLTestBase
 
 
 class TestDateTimeFunctionYQL(YQLTestBase, DefaultDateTimeFunctionFormulaConnectorTestSuite):

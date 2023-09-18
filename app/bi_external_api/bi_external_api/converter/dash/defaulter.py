@@ -1,4 +1,7 @@
-from typing import Optional, cast
+from typing import (
+    Optional,
+    cast,
+)
 
 import attr
 
@@ -9,14 +12,10 @@ from bi_external_api.domain import external as ext
 
 @attr.s()
 class ExtDashChartContainerDefaultWidgetIdDefaulter(Processor[ext.DashElement]):
-
     def _should_process(self, meta: FieldMeta) -> bool:
         return issubclass(meta.clz, ext.DashElement)
 
-    def _process_single_object(
-        self, obj: ext.DashElement, meta: FieldMeta
-    ) -> Optional[ext.DashElement]:
-
+    def _process_single_object(self, obj: ext.DashElement, meta: FieldMeta) -> Optional[ext.DashElement]:
         if not isinstance(obj, ext.DashChartsContainer):
             return obj
 
@@ -30,15 +29,10 @@ class ExtDashChartContainerDefaultWidgetIdDefaulter(Processor[ext.DashElement]):
 
 @attr.s()
 class ExtDashWidgetTabDefaulter(Processor[ext.WidgetTab]):
-
     def _should_process(self, meta: FieldMeta) -> bool:
         return issubclass(meta.clz, ext.WidgetTab)
 
-    def _process_single_object(
-        self,
-        obj: ext.WidgetTab,
-        meta: FieldMeta
-    ) -> Optional[ext.WidgetTab]:
+    def _process_single_object(self, obj: ext.WidgetTab, meta: FieldMeta) -> Optional[ext.WidgetTab]:
         if obj.title:
             return obj
 

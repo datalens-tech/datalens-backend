@@ -1,23 +1,38 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Type,
+)
 
-import attr
 from aiohttp import web
+import attr
 
-from dl_api_commons.access_control_common import match_path_prefix, AuthFailureError
-from bi_cloud_integration.yc_as_client import DLASClient, DLYCASCLIHolder
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
+from bi_api_commons_ya_cloud.yc_access_control import (
+    YCAccessController,
+    YCAuthContext,
+    YCEmbedAccessController,
+    YCEmbedContext,
+)
+from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationMode
+from bi_cloud_integration.yc_as_client import (
+    DLASClient,
+    DLYCASCLIHolder,
+)
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ss_client import DLSSClient
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
+from dl_api_commons.access_control_common import (
+    AuthFailureError,
+    match_path_prefix,
+)
 from dl_api_commons.aiohttp import aiohttp_wrappers
-
-from bi_api_commons_ya_cloud.yc_access_control import YCAccessController, YCAuthContext, YCEmbedContext, YCEmbedAccessController
-from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationMode
 
 if TYPE_CHECKING:
     from aiohttp.typedefs import Handler
+
     from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 
 
@@ -110,9 +125,9 @@ class YCAuthService:
         LOGGER.info("Folder ID check-up passed")
 
     async def process_request(
-            self,
-            app_request: DLRequestBase,
-            update_ctx: bool = False,
+        self,
+        app_request: DLRequestBase,
+        update_ctx: bool = False,
     ) -> YCAuthContext:
         yc_as_cli = self.yc_as_cli
         request_id = app_request.temp_rci.request_id
@@ -121,8 +136,7 @@ class YCAuthService:
         yc_as_cli = yc_as_cli.clone(request_id=request_id)
 
         ss_client: Optional[DLSSClient] = (
-            await self.get_ss_client_for_current_request() if self._enable_cookie_auth
-            else None
+            await self.get_ss_client_for_current_request() if self._enable_cookie_auth else None
         )
 
         access_ctrl = YCAccessController(
@@ -182,9 +196,9 @@ class YCEmbedAuthService:
     _authorization_mode: AuthorizationMode = attr.ib()
 
     async def process_request(
-            self,
-            app_request: DLRequestBase,
-            update_ctx: bool = False,
+        self,
+        app_request: DLRequestBase,
+        update_ctx: bool = False,
     ) -> YCEmbedContext:
         request_id = app_request.temp_rci.request_id
         assert request_id is not None, "Request ID is not set in RCI"

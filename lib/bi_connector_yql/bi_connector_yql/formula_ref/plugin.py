@@ -5,7 +5,5 @@ from bi_connector_yql.formula_ref.human_dialects import HUMAN_DIALECTS
 
 
 class YQLFormulaRefPlugin(FormulaRefPlugin):
-    any_dialects = frozenset((
-        *YqlDialect.YDB.to_list(),
-    ))
+    any_dialects = frozenset((*YqlDialect.YDB.to_list(),))
     human_dialects = HUMAN_DIALECTS

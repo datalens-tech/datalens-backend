@@ -9,7 +9,6 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-
 from dl_connector_postgresql.bi.api_schema.connection import PostgreSQLConnectionSchema
 from dl_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
 from dl_connector_postgresql.bi.connection_info import PostgreSQLConnectionInfoProvider

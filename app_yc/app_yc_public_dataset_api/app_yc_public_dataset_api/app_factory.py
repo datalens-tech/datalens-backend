@@ -2,14 +2,43 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
-from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_configs.enums import RequiredService, RQE_SERVICES
-from dl_constants.enums import ConnectionType
+from app_yc_public_dataset_api import app_version
 
+from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
+from bi_api_lib_ya.app_settings import (
+    AsyncAppSettings,
+    BaseAppSettings,
+)
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
+from bi_cloud_integration.sa_creds import (
+    SACredsRetrieverFactory,
+    SACredsSettings,
+)
+from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
+from dl_api_lib.app.data_api.app import (
+    DataApiAppFactory,
+    EnvSetupResult,
+)
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.enums import (
+    RQE_SERVICES,
+    RequiredService,
+)
+from dl_connector_clickhouse.core.clickhouse.us_connection import (
+    ConnectionClickhouse,  # TODO: remove dependency on connector
+)
+from dl_constants.enums import ConnectionType
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
-from dl_core.aio.middlewares.us_manager import public_usm_workaround_middleware, public_us_manager_middleware
+from dl_core.aio.middlewares.us_manager import (
+    public_us_manager_middleware,
+    public_usm_workaround_middleware,
+)
 from dl_core.connection_models import ConnectOptions
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.services_registry.entity_checker import EntityUsageChecker
@@ -18,22 +47,7 @@ from dl_core.services_registry.inst_specific_sr import InstallationSpecificServi
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.us_connection_base import ExecutorBasedMixin
 
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse  # TODO: remove dependency on connector
 from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions  # TODO: remove dependency on connector
-
-from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
-from dl_api_lib.app_common import SRFactoryBuilder
-from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from dl_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
-from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
-from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
-from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
-
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
-
-from app_yc_public_dataset_api import app_version
 
 
 class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
@@ -44,13 +58,17 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
         return CloudEnvManagerFactory(samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS))
 
     def _get_inst_specific_sr_factory(
-            self,
-            settings: BaseAppSettings,
+        self,
+        settings: BaseAppSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
-        sa_creds_settings = SACredsSettings(
-            mode=settings.YC_SA_CREDS_MODE,
-            env_key_data=settings.YC_SA_CREDS_KEY_DATA,
-        ) if settings.YC_SA_CREDS_MODE is not None else None
+        sa_creds_settings = (
+            SACredsSettings(
+                mode=settings.YC_SA_CREDS_MODE,
+                env_key_data=settings.YC_SA_CREDS_KEY_DATA,
+            )
+            if settings.YC_SA_CREDS_MODE is not None
+            else None
+        )
 
         return YCServiceRegistryFactory(
             yc_billing_host=None,
@@ -59,9 +77,10 @@ class PublicDatasetApiSRFactoryBuilderYC(SRFactoryBuilder[BaseAppSettings]):
             yc_api_endpoint_iam=settings.YC_AUTH_SETTINGS.YC_API_ENDPOINT_IAM if settings.YC_AUTH_SETTINGS else None,
             yc_ts_endpoint=settings.YC_IAM_TS_ENDPOINT,
             sa_creds_retriever_factory=SACredsRetrieverFactory(
-                sa_creds_settings=sa_creds_settings,
-                ts_endpoint=settings.YC_IAM_TS_ENDPOINT
-            ) if sa_creds_settings else None,
+                sa_creds_settings=sa_creds_settings, ts_endpoint=settings.YC_IAM_TS_ENDPOINT
+            )
+            if sa_creds_settings
+            else None,
             blackbox_name=settings.BLACKBOX_NAME,
         )
 
@@ -101,8 +120,8 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory[AsyncAppSettings], PublicDa
         return app_version
 
     def set_up_environment(
-            self,
-            connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        self,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
         auth_mw_list: list[AIOHTTPMiddleware]
         sr_middleware_list: list[AIOHTTPMiddleware]
@@ -121,8 +140,8 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory[AsyncAppSettings], PublicDa
             public_usm_workaround_middleware(
                 us_base_url=self._settings.US_BASE_URL,
                 crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
-                dataset_id_match_info_code='ds_id',
-                conn_id_match_info_code='conn_id',
+                dataset_id_match_info_code="ds_id",
+                conn_id_match_info_code="conn_id",
                 us_public_token=self._settings.US_PUBLIC_API_TOKEN,
                 us_master_token=self._settings.US_MASTER_TOKEN,
                 tenant_resolver=TenantResolverYC(),
@@ -131,15 +150,13 @@ class PublicDatasetApiAppFactoryYC(DataApiAppFactory[AsyncAppSettings], PublicDa
 
         # SR middlewares
 
-        def ydb_is_cloud_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
+        def ydb_is_cloud_mutator(conn_opts: ConnectOptions, conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
             if isinstance(conn_opts, YDBConnectOptions):
                 return conn_opts.clone(is_cloud=True)
             return None
 
         def public_timeout_conn_opts_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
+            conn_opts: ConnectOptions, conn: ExecutorBasedMixin
         ) -> Optional[ConnectOptions]:
             if self._settings.PUBLIC_CH_QUERY_TIMEOUT is not None:
                 if isinstance(conn, ConnectionClickhouse):

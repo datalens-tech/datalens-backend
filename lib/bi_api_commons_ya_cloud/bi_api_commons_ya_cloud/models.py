@@ -4,10 +4,16 @@ from typing import ClassVar
 
 import attr
 
-from dl_constants.api_constants import DLHeaders, DLCookies, DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
-
-from dl_api_commons.base_models import TenantDef, AuthData
+from dl_api_commons.base_models import (
+    AuthData,
+    TenantDef,
+)
+from dl_constants.api_constants import (
+    DLCookies,
+    DLHeaders,
+    DLHeadersCommon,
+)
 
 
 @attr.s(frozen=True)
@@ -43,6 +49,7 @@ class TenantDCProject(TenantDef):
      So we leave it as tenant to do not overload logic of US client.
      May be will better if we rename this class in DCTenantDef.
     """
+
     project_id: str = attr.ib()
 
     def get_outbound_tenancy_headers(self) -> dict[DLHeaders, str]:
@@ -66,9 +73,7 @@ class IAMAuthData(AuthData):
 @attr.s()
 class ExternalIAMAuthData(IAMAuthData):
     def get_headers(self) -> dict[DLHeaders, str]:
-        return {
-            DLHeadersCommon.AUTHORIZATION_TOKEN: f"Bearer {self.iam_token}"
-        }
+        return {DLHeadersCommon.AUTHORIZATION_TOKEN: f"Bearer {self.iam_token}"}
 
 
 @attr.s(frozen=True)

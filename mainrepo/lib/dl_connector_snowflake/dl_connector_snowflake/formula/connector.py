@@ -1,10 +1,9 @@
 from snowflake.sqlalchemy.snowdialect import SnowflakeDialect as SASnowflakeDialect
 
-from dl_formula.connectors.base.connector import FormulaConnector
-
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as SnowFlakeDialectNS
 from dl_connector_snowflake.formula.definitions.all import DEFINITIONS
 from dl_connector_snowflake.formula.literal import SnowFlakeLiteralizer
+from dl_formula.connectors.base.connector import FormulaConnector
 
 
 class SnowFlakeFormulaConnector(FormulaConnector):

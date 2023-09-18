@@ -1,10 +1,16 @@
 import contextlib
 import os
-from typing import Iterator, TextIO
+from typing import (
+    Iterator,
+    TextIO,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper_docs.render_units import DocUnit, RenderContext
+from bi_external_api.attrs_model_mapper_docs.render_units import (
+    DocUnit,
+    RenderContext,
+)
 
 
 @attr.s(auto_attribs=True)

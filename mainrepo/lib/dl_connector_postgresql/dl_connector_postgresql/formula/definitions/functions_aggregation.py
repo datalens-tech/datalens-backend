@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.sql import ClauseElement
 
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import (
     quantile_value,
@@ -8,8 +9,6 @@ from dl_formula.definitions.common import (
 )
 import dl_formula.definitions.functions_aggregation as base
 from dl_formula.definitions.literals import un_literal
-
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 V = TranslationVariant.make
 

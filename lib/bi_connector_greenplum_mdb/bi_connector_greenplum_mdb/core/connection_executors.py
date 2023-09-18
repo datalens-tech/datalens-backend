@@ -3,9 +3,10 @@ from __future__ import annotations
 import attr
 
 from dl_connector_postgresql.core.postgresql_base.connection_executors import (
-    PostgresConnExecutor,
     AsyncPostgresConnExecutor,
+    PostgresConnExecutor,
 )
+
 from bi_connector_mdb_base.core.connection_executors import MDBHostConnExecutorMixin
 
 

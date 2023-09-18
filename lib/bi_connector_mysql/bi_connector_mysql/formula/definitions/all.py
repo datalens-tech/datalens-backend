@@ -7,10 +7,9 @@ from bi_connector_mysql.formula.definitions.functions_math import DEFINITIONS_MA
 from bi_connector_mysql.formula.definitions.functions_string import DEFINITIONS_STRING
 from bi_connector_mysql.formula.definitions.functions_type import DEFINITIONS_TYPE
 from bi_connector_mysql.formula.definitions.functions_window import DEFINITIONS_WINDOW
-from bi_connector_mysql.formula.definitions.operators_unary import DEFINITIONS_UNARY
 from bi_connector_mysql.formula.definitions.operators_binary import DEFINITIONS_BINARY
 from bi_connector_mysql.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
-
+from bi_connector_mysql.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
 DEFINITIONS = [
     *DEFINITIONS_COND_BLOCKS,

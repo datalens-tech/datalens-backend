@@ -4,14 +4,13 @@ import logging
 
 import pytest
 
-from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
-
 from bi_testing_ya.sql_queries import (
     CH_QUERY,
     CH_QUERY_FULL,
-    PG_QUERY_FULL,
     ORACLE_QUERY_FULL,
+    PG_QUERY_FULL,
 )
+from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,9 +20,7 @@ async def test_ch_dashsql_result(async_api_local_env_low_level_client, ch_subsel
     data_api_aio = async_api_local_env_low_level_client
     conn_id = ch_subselectable_connection_id
 
-    resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json={"sql_query": CH_QUERY})
+    resp = await data_api_aio.request("post", f"/api/v1/connections/{conn_id}/dashsql", json={"sql_query": CH_QUERY})
     resp_data = await resp.json()
     assert resp.status == 200, resp_data
 
@@ -46,8 +43,8 @@ async def test_ch_dashsql_extended_result(async_api_local_env_low_level_client, 
     conn_id = ch_subselectable_connection_id
 
     resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json={"sql_query": CH_QUERY_FULL})
+        "post", f"/api/v1/connections/{conn_id}/dashsql", json={"sql_query": CH_QUERY_FULL}
+    )
     resp_data = await resp.json()
     assert resp.status == 200, resp_data
 
@@ -57,9 +54,7 @@ async def test_dashsql_disallowed_result(async_api_local_env_low_level_client, s
     data_api_aio = async_api_local_env_low_level_client
     conn_id = static_connection_id
     req_data = {"sql_query": CH_QUERY}
-    resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json=req_data)
+    resp = await data_api_aio.request("post", f"/api/v1/connections/{conn_id}/dashsql", json=req_data)
     resp_data = await resp.json()
     assert resp.status == 400
     assert resp_data
@@ -78,9 +73,7 @@ async def test_dashsql_invalid_params(async_api_local_env_low_level_client, ch_s
             },
         },
     }
-    resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json=req_data)
+    resp = await data_api_aio.request("post", f"/api/v1/connections/{conn_id}/dashsql", json=req_data)
     resp_data = await resp.json()
     assert resp.status == 400
     assert resp_data
@@ -99,9 +92,7 @@ async def test_dashsql_invalid_params_format(async_api_local_env_low_level_clien
             },
         },
     }
-    resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json=req_data)
+    resp = await data_api_aio.request("post", f"/api/v1/connections/{conn_id}/dashsql", json=req_data)
     resp_data = await resp.json()
     assert resp.status == 400
     assert resp_data
@@ -138,10 +129,11 @@ async def test_pg_dashsql_params_cache(async_api_local_env_low_level_client, pg_
     data_api_aio = async_api_local_env_low_level_client
     conn_id = pg_subselectable_connection_id
 
-    query = 'select {{some_string}}::text as res'
+    query = "select {{some_string}}::text as res"
 
     resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
+        "post",
+        f"/api/v1/connections/{conn_id}/dashsql",
         json={
             "sql_query": query,
             "params": {"some_string": {"type_name": "string", "value": "v1"}},
@@ -152,7 +144,8 @@ async def test_pg_dashsql_params_cache(async_api_local_env_low_level_client, pg_
     assert resp_data[1]["data"][0] == "v1"
 
     resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
+        "post",
+        f"/api/v1/connections/{conn_id}/dashsql",
         json={
             "sql_query": query,
             "params": {"some_string": {"type_name": "string", "value": "v2"}},
@@ -169,8 +162,8 @@ async def test_greenplum_dashsql_result(async_api_local_env_low_level_client, gr
     conn_id = greenplum_connection_id
 
     resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json={"sql_query": PG_QUERY_FULL})
+        "post", f"/api/v1/connections/{conn_id}/dashsql", json={"sql_query": PG_QUERY_FULL}
+    )
     resp_data = await resp.json()
     assert resp.status == 200, resp_data
 
@@ -181,35 +174,74 @@ async def test_oracle_dashsql_result(async_api_local_env_low_level_client, oracl
     conn_id = oracle_connection_id
 
     resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json={"sql_query": ORACLE_QUERY_FULL})
+        "post", f"/api/v1/connections/{conn_id}/dashsql", json={"sql_query": ORACLE_QUERY_FULL}
+    )
     resp_data = await resp.json()
     assert resp.status == 200, resp_data
     assert resp_data[0]["event"] == "metadata", resp_data
     assert resp_data[0]["data"]["names"] == [
-        "NUM", "NUM_STR", "NUM_INTEGER", "NUM_NUMBER",
-        "NUM_BINARY_FLOAT", "NUM_BINARY_DOUBLE",
-        "NUM_CHAR", "NUM_VARCHAR", "NUM_VARCHAR2", "NUM_NCHAR", "NUM_NVARCHAR2",
-        "NUM_DATE", "NUM_TIMESTAMP", "NUM_TIMESTAMP_TZ",
+        "NUM",
+        "NUM_STR",
+        "NUM_INTEGER",
+        "NUM_NUMBER",
+        "NUM_BINARY_FLOAT",
+        "NUM_BINARY_DOUBLE",
+        "NUM_CHAR",
+        "NUM_VARCHAR",
+        "NUM_VARCHAR2",
+        "NUM_NCHAR",
+        "NUM_NVARCHAR2",
+        "NUM_DATE",
+        "NUM_TIMESTAMP",
+        "NUM_TIMESTAMP_TZ",
     ]
     assert resp_data[0]["data"]["driver_types"] == [
-        "db_type_number", "db_type_varchar", "db_type_number",
-        "db_type_number", "db_type_binary_float", "db_type_binary_double",
-        "db_type_char", "db_type_varchar", "db_type_varchar",
-        "db_type_nchar", "db_type_nvarchar", "db_type_date",
-        "db_type_timestamp", "db_type_timestamp_tz",
+        "db_type_number",
+        "db_type_varchar",
+        "db_type_number",
+        "db_type_number",
+        "db_type_binary_float",
+        "db_type_binary_double",
+        "db_type_char",
+        "db_type_varchar",
+        "db_type_varchar",
+        "db_type_nchar",
+        "db_type_nvarchar",
+        "db_type_date",
+        "db_type_timestamp",
+        "db_type_timestamp_tz",
     ]
     assert resp_data[0]["data"]["db_types"] == [
-        "integer", "varchar", "integer", "integer",
-        "binary_float", "binary_double",
-        "char", "varchar", "varchar", "nchar", "nvarchar",
-        "date", "timestamp", "timestamp",
+        "integer",
+        "varchar",
+        "integer",
+        "integer",
+        "binary_float",
+        "binary_double",
+        "char",
+        "varchar",
+        "varchar",
+        "nchar",
+        "nvarchar",
+        "date",
+        "timestamp",
+        "timestamp",
     ]
     assert resp_data[0]["data"]["bi_types"] == [
-        "integer", "string", "integer", "integer",
-        "float", "float",
-        "string", "string", "string", "string", "string",
-        "genericdatetime", "genericdatetime", "genericdatetime",
+        "integer",
+        "string",
+        "integer",
+        "integer",
+        "float",
+        "float",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "genericdatetime",
+        "genericdatetime",
+        "genericdatetime",
     ]
 
 
@@ -243,7 +275,9 @@ async def test_oracle_dashsql_params_result(async_api_local_env_low_level_client
     conn_id = oracle_connection_id
 
     resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql",
-        json={"sql_query": ORACLE_QUERY_WITH_PARAMS, "params": DASHSQL_EXAMPLE_PARAMS})
+        "post",
+        f"/api/v1/connections/{conn_id}/dashsql",
+        json={"sql_query": ORACLE_QUERY_WITH_PARAMS, "params": DASHSQL_EXAMPLE_PARAMS},
+    )
     resp_data = await resp.json()
     assert resp.status == 200, resp_data

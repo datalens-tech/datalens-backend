@@ -4,6 +4,4 @@ from bi_connector_mssql.db_testing.engine_wrapper import MSSQLEngineWrapper
 
 
 class MSSQLDbTestingConnector(DbTestingConnector):
-    engine_wrapper_classes = (
-        MSSQLEngineWrapper,
-    )
+    engine_wrapper_classes = (MSSQLEngineWrapper,)

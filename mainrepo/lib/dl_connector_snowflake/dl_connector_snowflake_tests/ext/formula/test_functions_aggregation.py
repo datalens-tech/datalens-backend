@@ -1,6 +1,5 @@
-from dl_formula_testing.testcases.functions_aggregation import DefaultMainAggFunctionFormulaConnectorTestSuite
-
 from dl_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
+from dl_formula_testing.testcases.functions_aggregation import DefaultMainAggFunctionFormulaConnectorTestSuite
 
 
 class TestMainAggFunctionSnowFlake(SnowFlakeTestBase, DefaultMainAggFunctionFormulaConnectorTestSuite):

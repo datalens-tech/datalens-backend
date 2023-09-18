@@ -1,6 +1,5 @@
-from dl_formula_testing.testcases.literals import DefaultLiteralFormulaConnectorTestSuite
-
 from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
+from dl_formula_testing.testcases.literals import DefaultLiteralFormulaConnectorTestSuite
 
 
 class LiteralFunctionClickHouseTestSuite(DefaultLiteralFormulaConnectorTestSuite):

@@ -3,8 +3,11 @@ import datetime
 import sqlalchemy as sa
 import sqlalchemy.dialects.mssql.base as sa_mssql
 
+from dl_formula.connectors.base.literal import (
+    Literal,
+    Literalizer,
+)
 from dl_formula.core.dialect import DialectCombo
-from dl_formula.connectors.base.literal import Literal, Literalizer
 
 
 class MSSQLLiteralizer(Literalizer):

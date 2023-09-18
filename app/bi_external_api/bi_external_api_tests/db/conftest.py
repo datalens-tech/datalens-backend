@@ -22,7 +22,9 @@ def pseudo_wb_path() -> str:
 
 
 @pytest.fixture()
-def pg_connection_def_params(bi_ext_api_test_env,) -> dict:
+def pg_connection_def_params(
+    bi_ext_api_test_env,
+) -> dict:
     env = bi_ext_api_test_env
     return dict(
         type="postgres",
@@ -38,9 +40,9 @@ def pg_connection_def_params(bi_ext_api_test_env,) -> dict:
 
 @pytest.fixture()
 async def pg_connection(
-        pseudo_wb_path,
-        bi_ext_api_test_env_bi_api_control_plane_client,
-        pg_connection_def_params,
+    pseudo_wb_path,
+    bi_ext_api_test_env_bi_api_control_plane_client,
+    pg_connection_def_params,
 ) -> datasets.ConnectionInstance:
     int_api_cli = bi_ext_api_test_env_bi_api_control_plane_client
 
@@ -55,9 +57,9 @@ async def pg_connection(
 
 @pytest.fixture(scope="function")
 def dataset_factory(
-        pseudo_wb_path,
-        bi_ext_api_test_env_bi_api_control_plane_client,
-        pg_connection,
+    pseudo_wb_path,
+    bi_ext_api_test_env_bi_api_control_plane_client,
+    pg_connection,
 ) -> PGSubSelectDatasetFactory:
     return PGSubSelectDatasetFactory(
         wb_id=pseudo_wb_path,

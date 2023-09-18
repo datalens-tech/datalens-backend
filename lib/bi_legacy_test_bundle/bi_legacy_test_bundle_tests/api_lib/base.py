@@ -2,50 +2,49 @@ from __future__ import annotations
 
 import pytest
 
-from dl_constants.enums import ConnectionType
-
+from bi_legacy_test_bundle_tests.api_lib.config import (
+    BI_TEST_CONFIG,
+    DB_PARAMS,
+)
 from dl_api_client.dsmaker.primitives import Dataset
-
-from dl_api_lib_testing.data_api_base import DataApiTestBase
 from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_api_lib_testing.data_api_base import DataApiTestBase
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
-
-from bi_legacy_test_bundle_tests.api_lib.config import BI_TEST_CONFIG, DB_PARAMS
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_constants.enums import ConnectionType
 
 
 class DefaultBiApiTestBase(DataApiTestBase):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
         return BI_TEST_CONFIG
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def environment_readiness(self, enable_all_connectors, initdb_ready) -> None:
         pass
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        host_port, password = DB_PARAMS['clickhouse']
+        host_port, password = DB_PARAMS["clickhouse"]
         return dict(
-            host=host_port.split(':')[0],
-            port=int(host_port.split(':')[1]),
-            username='test_user',
+            host=host_port.split(":")[0],
+            port=int(host_port.split(":")[1]),
+            username="test_user",
             password=password,
         )
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def dataset_params(self) -> dict:
         return dict(
             source_type=SOURCE_TYPE_CH_TABLE.name,
             parameters=dict(
-                db_name='test_data',
-                table_name='sample_superstore',
+                db_name="test_data",
+                table_name="sample_superstore",
             ),
         )
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def dataset_id(self, saved_dataset: Dataset) -> str:
         return saved_dataset.id

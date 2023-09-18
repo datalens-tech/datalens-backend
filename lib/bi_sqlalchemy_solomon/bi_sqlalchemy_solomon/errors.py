@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 class SolomonError(Exception):
-    """ ... """
+    """..."""
 
 
 class Warning(SolomonError):

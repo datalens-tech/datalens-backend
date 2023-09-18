@@ -10,11 +10,13 @@ from bi_external_api.docs.main_dc import DoubleCloudDocsBuilder
 
 
 def get_dc_public_api_root() -> str:
-    return os.path.abspath(os.path.join(
-        os.path.dirname(__file__),
-        "../../../../../..",
-        "cloud/doublecloud/public-api",
-    ))
+    return os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            "../../../../../..",
+            "cloud/doublecloud/public-api",
+        )
+    )
 
 
 def generate_visualization_configs_docs(target_dir: str) -> None:
@@ -26,10 +28,7 @@ def generate_visualization_configs_docs(target_dir: str) -> None:
 
 def get_settings(settings_path: Optional[str] = None) -> dict[str, str]:
     effective_settings_path: str = (
-        os.path.abspath(os.path.join(
-            os.path.dirname(__file__),
-            "../../temp/doc_gen_settings.json"
-        ))
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "../../temp/doc_gen_settings.json"))
         if settings_path is None
         else settings_path
     )
@@ -70,9 +69,9 @@ def dc_docs_visualization_configs(docs_path: str):
 @click.option("--proto-doc-json-path", default=None)
 @click.option("--gen-vis-conf-docs", is_flag=True, default=False)
 def dc_docs_grpc(
-        docs_path: str,
-        proto_doc_json_path: Optional[str],
-        gen_vis_conf_docs: bool,
+    docs_path: str,
+    proto_doc_json_path: Optional[str],
+    gen_vis_conf_docs: bool,
 ):
     if not os.path.exists(docs_path):
         raise ValueError(f"{docs_path} not exists!")
@@ -86,16 +85,17 @@ def dc_docs_grpc(
         effective_proto_doc_json_path = proto_doc_json_path
     else:
         # Default out path of https://a.yandex-team.ru/arc_vcs/cloud/doublecloud/public-api/generate_docs_json.bash
-        effective_proto_doc_json_path = os.path.abspath(os.path.join(
-            get_dc_public_api_root(),
-            "out/dc_api_docs.json",
-        ))
+        effective_proto_doc_json_path = os.path.abspath(
+            os.path.join(
+                get_dc_public_api_root(),
+                "out/dc_api_docs.json",
+            )
+        )
         generate_proto_doc_json()
 
     if not os.path.exists(effective_proto_doc_json_path):
         raise ValueError(
-            "JSON with propo-spec docs not exists."
-            f" May be not generated? Path: {effective_proto_doc_json_path}"
+            "JSON with propo-spec docs not exists." f" May be not generated? Path: {effective_proto_doc_json_path}"
         )
 
     with open(effective_proto_doc_json_path, "r") as proto_doc_json_file:
@@ -112,5 +112,5 @@ def dc_docs_grpc(
         generate_visualization_configs_docs(vis_conf_docs_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

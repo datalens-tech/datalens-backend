@@ -1,12 +1,20 @@
+from typing import (
+    ClassVar,
+    Optional,
+)
+
 import attr
 
-from typing import ClassVar, Optional
-
 from dl_configs.connectors_data import ConnectorsDataBase
-from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
 from dl_configs.settings_loaders.meta_definition import s_attrib
-
-from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from dl_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
+)
 
 
 @attr.s(frozen=True)
@@ -20,12 +28,14 @@ class ConnectorsDataMonitoringBase(ConnectorsDataBase):
 
     @classmethod
     def connector_name(cls) -> str:
-        return 'MONITORING'
+        return "MONITORING"
 
 
 def monitoring_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='MONITORING', connector_data_class=ConnectorsDataMonitoringBase,
+        full_cfg,
+        object_like_config_key="MONITORING",
+        connector_data_class=ConnectorsDataMonitoringBase,
     )
     if cfg is None:
         return {}

@@ -1,32 +1,48 @@
 from typing import Optional
 
 from dl_constants.enums import FieldRole
-
 from dl_core.us_dataset import Dataset
-
-from dl_query_processing.legend.field_legend import Legend, LegendItem, FieldObjSpec, RowRoleSpec
-from dl_query_processing.legend.block_legend import BlockSpec, BlockLegend, BlockLegendMeta
+from dl_query_processing.legend.block_legend import (
+    BlockLegend,
+    BlockLegendMeta,
+    BlockSpec,
+)
+from dl_query_processing.legend.field_legend import (
+    FieldObjSpec,
+    Legend,
+    LegendItem,
+    RowRoleSpec,
+)
+from dl_query_processing.merging.primitives import (
+    MergedQueryDataRow,
+    MergedQueryDataStream,
+    MergedQueryMetaInfo,
+)
 from dl_query_processing.pagination.paginator import QueryPaginator
-from dl_query_processing.merging.primitives import MergedQueryDataStream, MergedQueryDataRow, MergedQueryMetaInfo
 
 
 def _make_legend(dataset: Dataset) -> Legend:
     field = dataset.result_schema[0]
-    legend = Legend(items=[
-        LegendItem(
-            legend_item_id=0,
-            obj=FieldObjSpec(id=field.guid, title=field.title),
-            role_spec=RowRoleSpec(role=FieldRole.row),
-            field_type=field.type, data_type=field.data_type,
-        ),
-    ])
+    legend = Legend(
+        items=[
+            LegendItem(
+                legend_item_id=0,
+                obj=FieldObjSpec(id=field.guid, title=field.title),
+                role_spec=RowRoleSpec(role=FieldRole.row),
+                field_type=field.type,
+                data_type=field.data_type,
+            ),
+        ]
+    )
     return legend
 
 
 def _make_block_legend(
-        dataset: Dataset,
-        block_limit: Optional[int] = None, block_offset: Optional[int] = None,
-        glob_limit: Optional[int] = None, glob_offset: Optional[int] = None,
+    dataset: Dataset,
+    block_limit: Optional[int] = None,
+    block_offset: Optional[int] = None,
+    glob_limit: Optional[int] = None,
+    glob_offset: Optional[int] = None,
 ) -> BlockLegend:
     legend = _make_legend(dataset)
     block_legend = BlockLegend(
@@ -42,7 +58,7 @@ def _make_block_legend(
         meta=BlockLegendMeta(
             limit=glob_limit,
             offset=glob_offset,
-        )
+        ),
     )
     return block_legend
 
@@ -94,32 +110,41 @@ def test_post_paginate_single_block(dataset_id, default_sync_usm):
     legend = _make_legend(dataset)
     legend_item_ids = [item.legend_item_id for item in legend.items]
 
-    rows = [
-        MergedQueryDataRow(data=(), legend_item_ids=())
-        for i in range(10)
-    ]
+    rows = [MergedQueryDataRow(data=(), legend_item_ids=()) for i in range(10)]
     assert len(rows) == 10
 
     stream = MergedQueryDataStream(
-        rows=rows, legend=legend, legend_item_ids=legend_item_ids,
-        meta=MergedQueryMetaInfo(blocks=[], limit=None, offset=None))
+        rows=rows,
+        legend=legend,
+        legend_item_ids=legend_item_ids,
+        meta=MergedQueryMetaInfo(blocks=[], limit=None, offset=None),
+    )
     stream = post_paginator.post_paginate(stream)
     assert len(list(stream.rows)) == 10
 
     stream = MergedQueryDataStream(
-        rows=rows, legend=legend, legend_item_ids=legend_item_ids,
-        meta=MergedQueryMetaInfo(blocks=[], limit=7, offset=None))
+        rows=rows,
+        legend=legend,
+        legend_item_ids=legend_item_ids,
+        meta=MergedQueryMetaInfo(blocks=[], limit=7, offset=None),
+    )
     stream = post_paginator.post_paginate(stream)
     assert len(list(stream.rows)) == 7
 
     stream = MergedQueryDataStream(
-        rows=rows, legend=legend, legend_item_ids=legend_item_ids,
-        meta=MergedQueryMetaInfo(blocks=[], limit=None, offset=2))
+        rows=rows,
+        legend=legend,
+        legend_item_ids=legend_item_ids,
+        meta=MergedQueryMetaInfo(blocks=[], limit=None, offset=2),
+    )
     stream = post_paginator.post_paginate(stream)
     assert len(list(stream.rows)) == 8
 
     stream = MergedQueryDataStream(
-        rows=rows, legend=legend, legend_item_ids=legend_item_ids,
-        meta=MergedQueryMetaInfo(blocks=[], limit=5, offset=2))
+        rows=rows,
+        legend=legend,
+        legend_item_ids=legend_item_ids,
+        meta=MergedQueryMetaInfo(blocks=[], limit=5, offset=2),
+    )
     stream = post_paginator.post_paginate(stream)
     assert len(list(stream.rows)) == 5

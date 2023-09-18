@@ -1,27 +1,33 @@
 import abc
-from typing import Callable, Generic, Optional
+from typing import (
+    Callable,
+    Generic,
+    Optional,
+)
 
 import attr
 
+from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+from dl_connector_clickhouse.core.clickhouse_base.us_connection import (
+    SubselectParameter,
+    SubselectParameterType,
+)
+from dl_core import exc
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import ConnectionBase
+from dl_core.utils import secrepr
 from dl_utils.utils import DataKey
 
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
-
-from dl_core import exc
-from dl_core.utils import secrepr
-from dl_core.us_connection_base import ConnectionBase
-from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-
-from dl_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
 from bi_connector_bundle_ch_filtered.base.core.us_connection import (
-    CH_FILTERED_SETTINGS_TV, ConnectionCHFilteredHardcodedDataBase,
+    CH_FILTERED_SETTINGS_TV,
+    ConnectionCHFilteredHardcodedDataBase,
 )
 
 
 class ConnectionCHFilteredSubselectByPuidBase(
-        ConnectionCHFilteredHardcodedDataBase[CH_FILTERED_SETTINGS_TV],
-        Generic[CH_FILTERED_SETTINGS_TV],
-        metaclass=abc.ABCMeta
+    ConnectionCHFilteredHardcodedDataBase[CH_FILTERED_SETTINGS_TV],
+    Generic[CH_FILTERED_SETTINGS_TV],
+    metaclass=abc.ABCMeta,
 ):
     passport_user_id: Optional[int] = None
 
@@ -33,7 +39,7 @@ class ConnectionCHFilteredSubselectByPuidBase(
         def get_secret_keys(cls) -> set[DataKey]:
             return {
                 *super().get_secret_keys(),
-                DataKey(parts=('token',)),
+                DataKey(parts=("token",)),
             }
 
     def fetch_user_id(self) -> None:
@@ -65,7 +71,7 @@ class ConnectionCHFilteredSubselectByPuidBase(
 
         return [
             SubselectParameter(
-                name='passport_user_id',
+                name="passport_user_id",
                 ss_type=SubselectParameterType.single_value,
                 values=self.passport_user_id,
             )

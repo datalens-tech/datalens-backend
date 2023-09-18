@@ -11,6 +11,11 @@ from typing import (
 import pytest
 
 import dl_configs.utils as bi_configs_utils
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql_tests.db.core.base import (
+    BasePostgreSQLTestClass,
+    BaseSslPostgreSQLTestClass,
+)
 from dl_core.us_connection_base import (
     ConnectionSQL,
     DataSourceTemplate,
@@ -18,12 +23,6 @@ from dl_core.us_connection_base import (
 from dl_core_testing.testcases.connection import (
     DefaultAsyncConnectionTestClass,
     DefaultConnectionTestClass,
-)
-
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from dl_connector_postgresql_tests.db.core.base import (
-    BasePostgreSQLTestClass,
-    BaseSslPostgreSQLTestClass,
 )
 
 if TYPE_CHECKING:

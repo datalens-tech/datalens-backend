@@ -2,39 +2,58 @@ from __future__ import annotations
 
 import abc
 from enum import unique
-from typing import Optional, ClassVar
-
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 from dl_api_commons.base_models import TenantDef
-
+from dl_api_connector.form_config.models.api_schema import (
+    FormActionApiSchema,
+    FormApiSchema,
+    FormFieldApiSchema,
+)
+from dl_api_connector.form_config.models.base import (
+    ConnectionForm,
+    ConnectionFormFactory,
+    ConnectionFormMode,
+)
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    FormFieldName,
+    OAuthApplication,
+)
 import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_api_connector.form_config.models.api_schema import FormActionApiSchema, FormApiSchema, FormFieldApiSchema
-from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
-from dl_api_connector.form_config.models.common import CommonFieldName, FormFieldName, OAuthApplication
 from dl_api_connector.form_config.models.rows.base import FormRow
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_connector_metrica.bi.connection_form.rows import (
+    AccuracyRow,
+    AppMetricaCounterRowItem,
     CounterRow,
     MetricaCounterRowItem,
-    AppMetricaCounterRowItem,
-    AccuracyRow,
 )
-from bi_connector_metrica.bi.connection_info import MetricaConnectionInfoProvider, AppMetricaConnectionInfoProvider
+from bi_connector_metrica.bi.connection_info import (
+    AppMetricaConnectionInfoProvider,
+    MetricaConnectionInfoProvider,
+)
 from bi_connector_metrica.bi.i18n.localizer import Translatable
-from bi_connector_metrica.core.settings import MetricaConnectorSettings, AppmetricaConnectorSettings
+from bi_connector_metrica.core.settings import (
+    AppmetricaConnectorSettings,
+    MetricaConnectorSettings,
+)
 
 
 class MetricaOAuthApplication(OAuthApplication):
-    metrika_api = 'metrika_api'
-    appmetrica_api = 'appmetrica_api'
+    metrika_api = "metrika_api"
+    appmetrica_api = "appmetrica_api"
 
 
 @unique
 class MetricaFieldName(FormFieldName):
-    counter_id = 'counter_id'
-    accuracy = 'accuracy'
+    counter_id = "counter_id"
+    accuracy = "accuracy"
 
 
 class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
@@ -58,9 +77,9 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None
         rc = RowConstructor(localizer=self._localizer)
@@ -68,27 +87,39 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         rows: list[FormRow] = [
             C.OAuthTokenRow(
                 name=CommonFieldName.token,
-                fake_value='******' if self.mode == ConnectionFormMode.edit else None,
+                fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                 application=self.oauth_application,
-                label_text=self._localizer.translate(Translatable('field_oauth-token')),
-                button_text=self._localizer.translate(Translatable('button_get-token')),
+                label_text=self._localizer.translate(Translatable("field_oauth-token")),
+                button_text=self._localizer.translate(Translatable("button_get-token")),
             ),
             self._counter_row(manual_input=self._allow_manual_counter_input(connector_settings)),
             AccuracyRow(name=MetricaFieldName.accuracy),
         ]
 
-        edit_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=MetricaFieldName.counter_id, required=True),
-            FormFieldApiSchema(name=CommonFieldName.token),
-            FormFieldApiSchema(name=MetricaFieldName.accuracy, nullable=True),
-        ]) if self.mode == ConnectionFormMode.edit else None
+        edit_api_schema = (
+            FormActionApiSchema(
+                items=[
+                    FormFieldApiSchema(name=MetricaFieldName.counter_id, required=True),
+                    FormFieldApiSchema(name=CommonFieldName.token),
+                    FormFieldApiSchema(name=MetricaFieldName.accuracy, nullable=True),
+                ]
+            )
+            if self.mode == ConnectionFormMode.edit
+            else None
+        )
 
-        create_api_schema = FormActionApiSchema(items=[
-            FormFieldApiSchema(name=MetricaFieldName.counter_id, required=True),
-            FormFieldApiSchema(name=CommonFieldName.token, required=True),
-            FormFieldApiSchema(name=MetricaFieldName.accuracy, nullable=True),
-            *self._get_top_level_create_api_schema_items(),
-        ]) if self.mode == ConnectionFormMode.create else None
+        create_api_schema = (
+            FormActionApiSchema(
+                items=[
+                    FormFieldApiSchema(name=MetricaFieldName.counter_id, required=True),
+                    FormFieldApiSchema(name=CommonFieldName.token, required=True),
+                    FormFieldApiSchema(name=MetricaFieldName.accuracy, nullable=True),
+                    *self._get_top_level_create_api_schema_items(),
+                ]
+            )
+            if self.mode == ConnectionFormMode.create
+            else None
+        )
 
         if self.mode == ConnectionFormMode.create and self._allow_auto_dash_creation(connector_settings):
             rows.append(rc.auto_create_dash_row())
@@ -102,7 +133,7 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
 
 
 class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
-    template_name = 'metrica_api'
+    template_name = "metrica_api"
     oauth_application = MetricaOAuthApplication.metrika_api
 
     def _title(self) -> str:
@@ -124,7 +155,7 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
 
 
 class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
-    template_name = 'appmetrica_api'
+    template_name = "appmetrica_api"
     oauth_application = MetricaOAuthApplication.appmetrica_api
 
     def _title(self) -> str:

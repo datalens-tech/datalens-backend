@@ -1,12 +1,22 @@
-from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
-from dl_connector_chyt.core.settings import ConnectorsDataCHYTBase, CHYTConnectorSettings
-
-from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from dl_configs.connectors_settings import (
+    ConnectorsConfigType,
+    ConnectorSettingsBase,
+)
+from dl_connector_chyt.core.settings import (
+    CHYTConnectorSettings,
+    ConnectorsDataCHYTBase,
+)
+from dl_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
+)
 
 
 def chyt_internal_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='CHYT', connector_data_class=ConnectorsDataCHYTBase,
+        full_cfg,
+        object_like_config_key="CHYT",
+        connector_data_class=ConnectorsDataCHYTBase,
     )
     if cfg is None:
         return {}
@@ -26,7 +36,9 @@ class CHYTInternalSettingDefinition(ConnectorSettingsDefinition):
 
 def chyt_internal_user_auth_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
     cfg = get_connectors_settings_config(
-        full_cfg, object_like_config_key='CHYT', connector_data_class=ConnectorsDataCHYTBase,
+        full_cfg,
+        object_like_config_key="CHYT",
+        connector_data_class=ConnectorsDataCHYTBase,
     )
     if cfg is None:
         return {}

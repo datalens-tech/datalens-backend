@@ -1,24 +1,27 @@
 from __future__ import annotations
 
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition, CoreSourceDefinition,
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
+    ClickHouseAsyncAdapterConnExecutor,
+    ClickHouseSyncAdapterConnExecutor,
 )
 from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
-    ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
-)
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
-from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
-
-from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants import (
-    CONNECTION_TYPE_MARKET_COURIERS, SOURCE_TYPE_CH_MARKET_COURIERS_TABLE,
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreSourceDefinition,
 )
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+
 from bi_connector_bundle_ch_filtered_ya_cloud.base.core.lifecycle import (
     CHFilteredSubselectByPuidBaseConnectionLifecycleManager,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.base.core.storage_schemas.connection import (
     ConnectionCHFilteredSubselectByPuidDataStorageSchema,
+)
+from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants import (
+    CONNECTION_TYPE_MARKET_COURIERS,
+    SOURCE_TYPE_CH_MARKET_COURIERS_TABLE,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.data_source import ClickHouseMarketCouriersDataSource
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.settings import CHMarketCouriersSettingDefinition
@@ -35,7 +38,7 @@ class CHMarketCouriersCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = ClickHouseSyncAdapterConnExecutor
     async_conn_executor_cls = ClickHouseAsyncAdapterConnExecutor
     lifecycle_manager_cls = CHFilteredSubselectByPuidBaseConnectionLifecycleManager
-    dialect_string = 'bi_clickhouse'
+    dialect_string = "bi_clickhouse"
     settings_definition = CHMarketCouriersSettingDefinition
 
 
@@ -47,9 +50,5 @@ class CHMarketCouriersCoreSourceDefinition(CoreSourceDefinition):
 
 
 class CHMarketCouriersCoreConnector(ClickHouseCoreConnectorBase):
-    connection_definitions = (
-        CHMarketCouriersCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHMarketCouriersCoreSourceDefinition,
-    )
+    connection_definitions = (CHMarketCouriersCoreConnectionDefinition,)
+    source_definitions = (CHMarketCouriersCoreSourceDefinition,)

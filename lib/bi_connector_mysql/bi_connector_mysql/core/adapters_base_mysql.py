@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+from typing import (
+    Any,
+    Dict,
+    Optional,
+)
+
 import attr
 import sqlalchemy.dialects.mysql as sa_mysql
-from typing import Any, Dict, Optional
 
 from dl_core.db.native_type import SATypeSpec
 
@@ -33,15 +38,12 @@ class BaseMySQLAdapter:
         9: sa_mysql.MEDIUMINT,  # MYSQL_TYPE_INT24 -> 'mediumint', ?24-bit int?  # untested
         3: sa_mysql.INTEGER,  # MYSQL_TYPE_LONG -> 'int', 32-bit int  # untested
         8: sa_mysql.BIGINT,  # MYSQL_TYPE_LONGLONG -> 'bigint', 64-bit int
-
         4: sa_mysql.FLOAT,  # MYSQL_TYPE_FLOAT -> 'float', 32-bit float  # untested
         5: sa_mysql.DOUBLE,  # MYSQL_TYPE_DOUBLE -> 'double', 64-bit float
         # ?: sa_mysql.NUMERIC,
         0: sa_mysql.DECIMAL,  # MYSQL_TYPE_DECIMAL -> 'decimal(%d,?)'  # untested
         246: sa_mysql.DECIMAL,  # MYSQL_TYPE_NEWDECIMAL -> 'decimal(%d,%d)'
-
         # 6: NULL  # not in SA
-
         7: sa_mysql.TIMESTAMP,  # MYSQL_TYPE_TIMESTAMP -> 'timestamp'  # untested
         17: sa_mysql.TIMESTAMP,  # MYSQL_TYPE_TIMESTAMP2 -> 'timestamp'  # untested
         10: sa_mysql.DATE,  # MYSQL_TYPE_DATE -> 'date'
@@ -51,14 +53,10 @@ class BaseMySQLAdapter:
         12: sa_mysql.DATETIME,  # MYSQL_TYPE_DATETIME -> 'datetime'
         18: sa_mysql.DATETIME,  # MYSQL_TYPE_DATETIME2 -> 'datetime'  # /**< Internal to MySQL. Not used in protocol */
         13: sa_mysql.YEAR,  # MYSQL_TYPE_YEAR -> 'year'  # untested
-
         16: sa_mysql.BIT,  # MYSQL_TYPE_BIT -> 'bit(%d)'  # untested
-
         # 20: TYPED_ARRAY  # not in SA, /**< Used for replication only */
-
         247: sa_mysql.ENUM,  # MYSQL_TYPE_ENUM -> 'enum'  # untested
         248: sa_mysql.SET,  # MYSQL_TYPE_SET -> 'set'  # untested
-
         15: sa_mysql.VARCHAR,  # MYSQL_TYPE_VARCHAR -> 'varchar(%u)' | 'varchar(%u(bytes))'  # untested
         # MYSQL_TYPE_TINY_BLOB -> 'tinyblob' | 'tinytext' ->
         249: sa_mysql.TINYTEXT,  # or sa_mysql.TINYBLOB  # untested
@@ -72,7 +70,6 @@ class BaseMySQLAdapter:
         254: sa_mysql.CHAR,  # MYSQL_TYPE_STRING -> 'char(%d)' | 'char(%d(bytes)'  # untested
         245: sa_mysql.JSON,  # MYSQL_TYPE_JSON -> 'json'  # untested
         # 255: GEOMETRY  # not in SA
-
         # Another important note: these types don't designate *arrays* by
         # themselves. Might have to look into the data for that.
     }

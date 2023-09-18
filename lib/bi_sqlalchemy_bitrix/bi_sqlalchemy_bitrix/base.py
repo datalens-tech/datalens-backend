@@ -1,20 +1,22 @@
-from typing import Any, Dict
-
 import datetime
-import sqlalchemy as sa
+from typing import (
+    Any,
+    Dict,
+)
 
+import sqlalchemy as sa
 from sqlalchemy.engine import default
 
 
 class BitrixCompiler(sa.sql.compiler.SQLCompiler):
     def visit_label(
-            self,
-            label,
-            add_to_result_map=None,
-            within_label_clause=False,
-            within_columns_clause=False,
-            render_label_as_label=None,
-            **kw,
+        self,
+        label,
+        add_to_result_map=None,
+        within_label_clause=False,
+        within_columns_clause=False,
+        render_label_as_label=None,
+        **kw,
     ):
         # Labels are not supported at all
         return label.element._compiler_dispatch(
@@ -31,13 +33,12 @@ class BitrixCompiler(sa.sql.compiler.SQLCompiler):
 
 
 class BitrixIdentifierPreparer(sa.sql.compiler.IdentifierPreparer):
-
     def __init__(self, *args, **kwargs):
         quote = "`"
         kwargs = {
             **kwargs,
-            'initial_quote': quote,
-            'escape_quote': quote,
+            "initial_quote": quote,
+            "escape_quote": quote,
         }
         super().__init__(*args, **kwargs)
 
@@ -192,9 +193,9 @@ dialect = BitrixDialect
 
 
 def register_dialect(
-        name="bi_bitrix",
-        module="bi_sqlalchemy_bitrix.base",
-        cls="BitrixDialect",
+    name="bi_bitrix",
+    module="bi_sqlalchemy_bitrix.base",
+    cls="BitrixDialect",
 ):
     """
     Make sure the dialect is registered

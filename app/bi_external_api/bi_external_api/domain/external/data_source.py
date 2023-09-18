@@ -1,12 +1,23 @@
 import abc
 import enum
-from typing import Generic, TypeVar, final, Optional, ClassVar, Sequence
+from typing import (
+    ClassVar,
+    Generic,
+    Optional,
+    Sequence,
+    TypeVar,
+    final,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from bi_external_api.domain.utils import ensure_tuple
 from bi_external_api.enums import ExtAPIType
+
 from .model_tags import ExtModelTags
 
 _PROCESSOR_RETURN_DATA_TV = TypeVar("_PROCESSOR_RETURN_DATA_TV")
@@ -14,7 +25,7 @@ _PROCESSOR_RETURN_DATA_TV = TypeVar("_PROCESSOR_RETURN_DATA_TV")
 
 class ExtDataSourceProcessor(Generic[_PROCESSOR_RETURN_DATA_TV], metaclass=abc.ABCMeta):
     @final
-    def process(self, dsrc: 'DataSource') -> _PROCESSOR_RETURN_DATA_TV:
+    def process(self, dsrc: "DataSource") -> _PROCESSOR_RETURN_DATA_TV:
         spec = dsrc.spec
 
         if isinstance(spec, TableDataSourceSpec):
@@ -35,23 +46,23 @@ class ExtDataSourceProcessor(Generic[_PROCESSOR_RETURN_DATA_TV], metaclass=abc.A
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def process_table(self, dsrc: 'TableDataSourceSpec') -> _PROCESSOR_RETURN_DATA_TV:
+    def process_table(self, dsrc: "TableDataSourceSpec") -> _PROCESSOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def process_schematized_table(self, dsrc: 'TableDataSourceSpec') -> _PROCESSOR_RETURN_DATA_TV:
+    def process_schematized_table(self, dsrc: "TableDataSourceSpec") -> _PROCESSOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def process_sub_select(self, dsrc: 'SubSelectDataSourceSpec') -> _PROCESSOR_RETURN_DATA_TV:
+    def process_sub_select(self, dsrc: "SubSelectDataSourceSpec") -> _PROCESSOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def process_chyt_range(self, dsrc: 'CHYTTableRangeDataSourceSpec') -> _PROCESSOR_RETURN_DATA_TV:
+    def process_chyt_range(self, dsrc: "CHYTTableRangeDataSourceSpec") -> _PROCESSOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def process_chyt_list(self, dsrc: 'CHYTTableListDataSourceSpec') -> _PROCESSOR_RETURN_DATA_TV:
+    def process_chyt_list(self, dsrc: "CHYTTableListDataSourceSpec") -> _PROCESSOR_RETURN_DATA_TV:
         raise NotImplementedError()
 
 

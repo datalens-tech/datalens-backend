@@ -1,32 +1,44 @@
 import pytest
 
-from dl_constants.enums import BIType, RawSQLLevel
-
-from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec, SubselectDataSourceSpec
+from dl_constants.enums import (
+    BIType,
+    RawSQLLevel,
+)
+from dl_core.data_source_spec.sql import (
+    StandardSchemaSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+)
 from dl_core.db import SchemaColumn
-
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass, DataSourceTestByViewClass
+from dl_core_testing.testcases.data_source import (
+    DataSourceTestByViewClass,
+    DefaultDataSourceTestClass,
+)
 
-from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT
-from bi_connector_mssql.core.data_source import MSSQLDataSource, MSSQLSubselectDataSource
+from bi_connector_mssql.core.constants import (
+    SOURCE_TYPE_MSSQL_SUBSELECT,
+    SOURCE_TYPE_MSSQL_TABLE,
+)
+from bi_connector_mssql.core.data_source import (
+    MSSQLDataSource,
+    MSSQLSubselectDataSource,
+)
 from bi_connector_mssql.core.us_connection import ConnectionMSSQL
-
 from bi_connector_mssql_tests.db.config import SUBSELECT_QUERY_FULL
 from bi_connector_mssql_tests.db.core.base import BaseMSSQLTestClass
 
 
 class TestMSSQLTableDataSource(
-        BaseMSSQLTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionMSSQL,
-            StandardSchemaSQLDataSourceSpec,
-            MSSQLDataSource,
-        ],
+    BaseMSSQLTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionMSSQL,
+        StandardSchemaSQLDataSourceSpec,
+        MSSQLDataSource,
+    ],
 ):
     DSRC_CLS = MSSQLDataSource
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:
         dsrc_spec = StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_MSSQL_TABLE,
@@ -41,18 +53,18 @@ class TestMSSQLTableDataSource(
 
 
 class TestMSSQLSubselectDataSource(
-        BaseMSSQLTestClass,
-        DefaultDataSourceTestClass[
-            ConnectionMSSQL,
-            SubselectDataSourceSpec,
-            MSSQLSubselectDataSource,
-        ],
+    BaseMSSQLTestClass,
+    DefaultDataSourceTestClass[
+        ConnectionMSSQL,
+        SubselectDataSourceSpec,
+        MSSQLSubselectDataSource,
+    ],
 ):
     DSRC_CLS = MSSQLSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_MSSQL_SUBSELECT,
@@ -61,9 +73,7 @@ class TestMSSQLSubselectDataSource(
         return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
-        remapped_types = {
-            BIType.date: BIType.string
-        }
+        remapped_types = {BIType.date: BIType.string}
         expected_schema = [
             # MSSQL cannot identify dates in sub-queries correctly
             (name, remapped_types.get(user_type, user_type))
@@ -84,7 +94,7 @@ class TestMSSQLSubselectByView(
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope='session')
+    @pytest.fixture(scope="session")
     def initial_data_source_spec(self) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_MSSQL_SUBSELECT,
@@ -97,11 +107,8 @@ class TestMSSQLSubselectByView(
         # (it uses `sp_describe_first_result_set`)
         # but it still manages to make some critical failures,
         # representing date/datetime type as a string type.
-        if schema_col.native_type.name in ('date', 'datetime2', 'datetimeoffset'):
+        if schema_col.native_type.name in ("date", "datetime2", "datetimeoffset"):
             schema_col = schema_col.clone(
-                user_type=BIType.string,
-                native_type=schema_col.native_type.clone(
-                    name='nvarchar'
-                )
+                user_type=BIType.string, native_type=schema_col.native_type.clone(name="nvarchar")
             )
         return schema_col

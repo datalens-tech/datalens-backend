@@ -1,15 +1,22 @@
 import asyncio
 import datetime
-import uuid
 from typing import Any
+import uuid
+
 import attr
 import pytest
 
-from dl_core.fields import BIField, FormulaCalculationSpec, ParameterCalculationSpec
+from dl_core.fields import (
+    BIField,
+    FormulaCalculationSpec,
+    ParameterCalculationSpec,
+)
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.mutation_cache.mutation_key_base import MutationKey
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
-    MemoryCacheEngine, USEntryMutationCache, RedisCacheEngine,
+    MemoryCacheEngine,
+    RedisCacheEngine,
+    USEntryMutationCache,
 )
 from dl_core.values import DateValue
 
@@ -35,7 +42,7 @@ def inmemory_cache_engine():
     return MemoryCacheEngine()
 
 
-@pytest.fixture(params=['redis_cache_engine', 'inmemory_cache_engine'])
+@pytest.fixture(params=["redis_cache_engine", "inmemory_cache_engine"])
 def cache_engine(request):
     return request.getfixturevalue(request.param)
 
@@ -45,20 +52,20 @@ async def test_mutation_cache(saved_dataset, default_sync_usm, cache_engine):
     ds = saved_dataset
     field = BIField.make(
         guid=str(uuid.uuid4()),
-        title='Test field',
-        calc_spec=FormulaCalculationSpec(formula='1', guid_formula='1'),
+        title="Test field",
+        calc_spec=FormulaCalculationSpec(formula="1", guid_formula="1"),
     )
     ds.result_schema.add(field, idx=0)
     field = BIField.make(
         guid=str(uuid.uuid4()),
-        title='Test field',
+        title="Test field",
         calc_spec=ParameterCalculationSpec(default_value=DateValue(value=datetime.date(2022, 4, 25))),
     )
     ds.result_schema.add(field, idx=1)
 
     # Create Cache and mutation key
     cache = USEntryMutationCache(usm=default_sync_usm, cache_engine=cache_engine, default_ttl=1)
-    mutation_key = MutationKeyForTest(value='test_hash')
+    mutation_key = MutationKeyForTest(value="test_hash")
     get_from_cache_params = (Dataset, ds.uuid, ds.revision_id, mutation_key)
 
     # Test no data in cache

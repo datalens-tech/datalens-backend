@@ -1,18 +1,28 @@
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Optional
+from typing import (
+    Callable,
+    ClassVar,
+    Optional,
+)
 
 import attr
 
+from dl_core.base_models import ConnCacheableDataModelMixin
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.connection_models.conn_options import ConnectOptions
+from dl_core.us_connection_base import (
+    ConnectionBase,
+    DataSourceTemplate,
+    ExecutorBasedMixin,
+)
+from dl_core.utils import secrepr
 from dl_utils.utils import DataKey
 
-from dl_core.base_models import ConnCacheableDataModelMixin
-from dl_core.connection_models.conn_options import ConnectOptions
-from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
-from dl_core.utils import secrepr
-
-from bi_connector_bitrix_gds.core.constants import SOURCE_TYPE_BITRIX_GDS, DEFAULT_DB
+from bi_connector_bitrix_gds.core.constants import (
+    DEFAULT_DB,
+    SOURCE_TYPE_BITRIX_GDS,
+)
 from bi_connector_bitrix_gds.core.dto import BitrixGDSConnDTO
 
 
@@ -35,7 +45,7 @@ class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):
         def get_secret_keys(cls) -> set[DataKey]:
             return {
                 *super().get_secret_keys(),
-                DataKey(parts=('token',)),
+                DataKey(parts=("token",)),
             }
 
     @property
@@ -53,27 +63,31 @@ class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):
         )
 
     def get_parameter_combinations(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         return [
             dict(db_name=DEFAULT_DB, table_name=item.table_name)
             for item in self.get_tables(
                 conn_executor_factory=conn_executor_factory,
-                db_name=DEFAULT_DB, schema_name=None,
+                db_name=DEFAULT_DB,
+                schema_name=None,
             )
         ]
 
     def get_data_source_templates(
-            self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         return [
             DataSourceTemplate(
-                title=parameters['table_name'],
+                title=parameters["table_name"],
                 group=[],
                 source_type=SOURCE_TYPE_BITRIX_GDS,
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
                 parameters=parameters,
-            ) for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)
+            )
+            for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)
         ]
 
     @property

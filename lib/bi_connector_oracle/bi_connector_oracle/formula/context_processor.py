@@ -3,15 +3,19 @@ from typing import cast
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from dl_formula.core.datatype import DataType
 from dl_formula.connectors.base.context_processor import BooleanlessContextPostprocessor
+from dl_formula.core.datatype import DataType
 
 
 class OracleContextPostprocessor(BooleanlessContextPostprocessor):
     def booleanize_expression(self, data_type: DataType, expression: ClauseElement) -> ClauseElement:
         if data_type in (
-            DataType.CONST_BOOLEAN, DataType.CONST_INTEGER, DataType.CONST_FLOAT,
-            DataType.BOOLEAN, DataType.INTEGER, DataType.FLOAT
+            DataType.CONST_BOOLEAN,
+            DataType.CONST_INTEGER,
+            DataType.CONST_FLOAT,
+            DataType.BOOLEAN,
+            DataType.INTEGER,
+            DataType.FLOAT,
         ):
             expression = cast(ClauseElement, expression != 0)
         elif data_type in (DataType.CONST_STRING, DataType.STRING):

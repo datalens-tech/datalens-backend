@@ -1,6 +1,9 @@
 import abc
 import enum
-from typing import Mapping, Optional
+from typing import (
+    Mapping,
+    Optional,
+)
 
 import attr
 

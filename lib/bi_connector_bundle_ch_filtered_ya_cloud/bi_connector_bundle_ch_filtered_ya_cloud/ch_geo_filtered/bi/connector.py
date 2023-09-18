@@ -1,19 +1,15 @@
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector import (
-    ClickhouseGeoFilteredCoreConnector,
-    ClickhouseGeoFilteredCoreConnectionDefinition,
-    ClickhouseGeoFilteredTableCoreSourceDefinition,
+from dl_api_connector.api_schema.source_base import (
+    SQLDataSourceSchema,
+    SQLDataSourceTemplateSchema,
 )
-
 from dl_api_connector.connector import (
-    BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
+    BiApiSourceDefinition,
 )
-
-from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
-
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
+from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import CONFIGS
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.api_schema.connection import (
     CHGeoFilteredConnectionSchema,
 )
@@ -23,7 +19,11 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connection_form
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connection_info import (
     CHGeoFilteredConnectionInfoProvider,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import CONFIGS
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector import (
+    ClickhouseGeoFilteredCoreConnectionDefinition,
+    ClickhouseGeoFilteredCoreConnector,
+    ClickhouseGeoFilteredTableCoreSourceDefinition,
+)
 
 
 class ClickhouseGeoFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):

@@ -5,7 +5,6 @@ from bi_sqlalchemy_yq.cursor import Cursor
 
 
 class Connection(object):
-
     pool = None
 
     dl_yq_cli_cls = DLYQClient
@@ -18,9 +17,12 @@ class Connection(object):
         # Ignoring the `username`
         self.cli = self._create_cli(
             cli_cls=(cli_cls or self.dl_yq_cli_cls),
-            host=host, port=port,
-            password=password, database=database,
-            **conn_kwargs)
+            host=host,
+            port=port,
+            password=password,
+            database=database,
+            **conn_kwargs,
+        )
 
     def cursor(self):
         return Cursor(self)
@@ -48,12 +50,12 @@ class Connection(object):
 
     @staticmethod
     def _create_endpoint(host, port):
-        return '%s:%d' % (host, port)
+        return "%s:%d" % (host, port)
 
     @staticmethod
     def _create_cli(cli_cls, host, port, password, database, **conn_kwargs):
         return cli_cls.create(
-            endpoint=f'{host}:{port}',
+            endpoint=f"{host}:{port}",
             bearer_token=password,
             database_name=database,
             # effectively required: cloud_id, folder_id

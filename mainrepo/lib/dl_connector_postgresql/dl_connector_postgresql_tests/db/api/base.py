@@ -4,8 +4,6 @@ from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
-from dl_constants.enums import RawSQLLevel
-
 from dl_connector_postgresql.core.postgresql.constants import (
     CONNECTION_TYPE_POSTGRES,
     SOURCE_TYPE_PG_TABLE,
@@ -15,6 +13,7 @@ from dl_connector_postgresql_tests.db.config import (
     CoreConnectionSettings,
 )
 from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
+from dl_constants.enums import RawSQLLevel
 
 
 class PostgreSQLConnectionTestBase(BasePostgreSQLTestClass, ConnectionTestBase):

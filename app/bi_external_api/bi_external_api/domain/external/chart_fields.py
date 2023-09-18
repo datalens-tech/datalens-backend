@@ -1,10 +1,17 @@
 import enum
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from bi_external_api.attrs_model_mapper.utils import MText
+
 from .model_tags import ExtModelTags
 
 
@@ -27,15 +34,16 @@ class ChartFieldRef(ChartFieldSource):
 
     id: str = attr.ib()
     dataset_name: Optional[str] = attr.ib(
-        kw_only=True, default=None,
+        kw_only=True,
+        default=None,
         metadata=AttribDescriptor(
             tags=frozenset({ExtModelTags.dataset_name}),
             description=MText(
                 ru="Имя датасета, в котором нужно найти поле."
-                   " Если чарт строится по одному датасету, имя можно не указывать.",
+                " Если чарт строится по одному датасету, имя можно не указывать.",
                 en="The dataset name in which you need to find a field."
-                    " If the chart is built from a single dataset, you may skip specifying its name.",
-            )
+                " If the chart is built from a single dataset, you may skip specifying its name.",
+            ),
         ).to_meta(),
     )
 

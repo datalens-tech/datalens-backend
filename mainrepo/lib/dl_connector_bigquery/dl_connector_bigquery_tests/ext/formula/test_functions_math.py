@@ -1,6 +1,5 @@
-from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
-
 from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
+from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
 
 
 class TestMathFunctionBigQuery(BigQueryTestBase, DefaultMathFunctionFormulaConnectorTestSuite):

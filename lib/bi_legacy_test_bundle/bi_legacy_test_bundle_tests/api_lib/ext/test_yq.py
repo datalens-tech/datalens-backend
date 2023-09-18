@@ -4,17 +4,19 @@ import json
 
 import pytest
 
-from dl_api_client.dsmaker.primitives import Dataset
 from bi_cloud_integration.yc_ts_client import get_yc_service_token_sync
-
-from bi_legacy_test_bundle_tests.api_lib.utils import get_random_str, get_result_schema
+from bi_legacy_test_bundle_tests.api_lib.utils import (
+    get_random_str,
+    get_result_schema,
+)
+from dl_api_client.dsmaker.primitives import Dataset
 
 from bi_connector_yql.core.yq.constants import SOURCE_TYPE_YQ_SUBSELECT
 
 
 @pytest.fixture
 def yq_iam_integrated_mock(env_param_getter, iam_services_mock, ext_sys_helpers_per_test):
-    """ Make sure the IAM mock will return a working IAM token for the integrated-tests user """
+    """Make sure the IAM mock will return a working IAM token for the integrated-tests user"""
     key_data_s = env_param_getter.get_str_value("YQ_CLOUD_PREPROD_SVCACC_KEY_DATA")
     key_data = json.loads(key_data_s)
     iam_token = get_yc_service_token_sync(
@@ -72,9 +74,7 @@ def test_yq_cache_ttl_sec_override(client, api_v1, default_sync_usm, yq_conn_id)
     cache_ttl_override = 100500
     req_data = dict(cache_ttl_sec=cache_ttl_override)
     resp = client.put(
-        "/api/v1/connections/{}".format(conn_id),
-        data=json.dumps(req_data),
-        content_type="application/json"
+        "/api/v1/connections/{}".format(conn_id), data=json.dumps(req_data), content_type="application/json"
     )
     assert resp.status_code == 200, resp.json
 
@@ -136,7 +136,11 @@ def test_yq_result(client, data_api_v1, yq_dataset, yq_iam_integrated_mock):
 
 
 def test_yq_sa_authorization_mocked(app, client, request, iam_services_mock, remote_async_adapter_mock):
-    service_account_ids = ["fake_test_service_account_id", "fake_second_test_service_account_id", "fake_third_test_service_account_id"]
+    service_account_ids = [
+        "fake_test_service_account_id",
+        "fake_second_test_service_account_id",
+        "fake_third_test_service_account_id",
+    ]
     conn_params = dict(
         type="yq",
         name="yq_test_{}".format(get_random_str()),

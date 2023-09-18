@@ -1,17 +1,18 @@
 from marshmallow import fields as ma_fields
 
-from bi_connector_yql.core.yq.us_connection import YQConnection
 from dl_core.us_manager.storage_schemas.connection import (
-    ConnectionBaseDataStorageSchema,
     CacheableConnectionDataSchemaMixin,
+    ConnectionBaseDataStorageSchema,
     SubselectConnectionDataSchemaMixin,
 )
 
+from bi_connector_yql.core.yq.us_connection import YQConnection
+
 
 class YQConnectionDataStorageSchema(
-        ConnectionBaseDataStorageSchema[YQConnection.DataModel],
-        CacheableConnectionDataSchemaMixin,
-        SubselectConnectionDataSchemaMixin,
+    ConnectionBaseDataStorageSchema[YQConnection.DataModel],
+    CacheableConnectionDataSchemaMixin,
+    SubselectConnectionDataSchemaMixin,
 ):
     TARGET_CLS = YQConnection.DataModel
 

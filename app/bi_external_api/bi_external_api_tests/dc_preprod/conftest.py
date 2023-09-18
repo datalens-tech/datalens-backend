@@ -1,22 +1,26 @@
-import os
 from datetime import datetime
-from typing import ClassVar, Type
+import os
+from typing import (
+    ClassVar,
+    Type,
+)
 
+from aiochclient.http_clients import aiohttp
 import boto3
 import pytest
 import pytz
 import yaml
-from aiochclient.http_clients import aiohttp
 
-import bi_external_api.grpc_proxy.ext_api_client
-from dl_api_commons.base_models import NoAuthData, TenantCommon
-from dl_api_commons.client.common import CommonInternalAPIClient
-from bi_api_commons_ya_cloud.models import TenantDCProject, IAMAuthData, ExternalIAMAuthData
+from bi_api_commons_ya_cloud.models import (
+    ExternalIAMAuthData,
+    IAMAuthData,
+    TenantDCProject,
+)
 from bi_api_lib_ya.app_settings import YCAuthSettings
-from dl_configs.enums import AppType
 from bi_external_api.app import create_app
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy import server as grpc_proxy
+import bi_external_api.grpc_proxy.ext_api_client
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
 from bi_external_api.internal_api_clients.dash_api import APIClientDashboard
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
@@ -26,7 +30,14 @@ from bi_external_api.settings import ExternalAPISettings
 from bi_external_api.testings import WorkbookOpsClient
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
+from dl_api_commons.base_models import (
+    NoAuthData,
+    TenantCommon,
+)
+from dl_api_commons.client.common import CommonInternalAPIClient
+from dl_configs.enums import AppType
 from dl_testing.env_params.generic import GenericEnvParamGetter
+
 from ..test_acceptance import ConnectionTestingData
 
 
@@ -41,19 +52,20 @@ class DoubleCloudTestingData:
     DL_FRONT_BASE_URL: ClassVar[str] = "https://ui.pp-preprod.bi.yadc.io"
     DL_EXT_API_BASE_URL: ClassVar[str] = "https://api.bi.yadc.io"
 
-    AWS_SECRET_ID_US_MASTER_TOKEN: ClassVar[str] = (
-        "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-us-master-token-2ceSkf"
-    )
+    AWS_SECRET_ID_US_MASTER_TOKEN: ClassVar[
+        str
+    ] = "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-us-master-token-2ceSkf"
+
 
 # Override fixture from `lib/dl_testing`
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def dl_env() -> DLEnv:
     return DLEnv.dc_testing
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def env_param_getter() -> GenericEnvParamGetter:
-    filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
+    filepath = os.path.join(os.path.dirname(__file__), "params.yml")
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
@@ -67,8 +79,10 @@ def dc_rs_us_master_token(env_param_getter: GenericEnvParamGetter) -> str:
         region_name=DoubleCloudTestingData.AWS_REGION,
     ).get_secret_value(
         SecretId=DoubleCloudTestingData.AWS_SECRET_ID_US_MASTER_TOKEN,
-        VersionStage='AWSCURRENT',
-    )['SecretString']
+        VersionStage="AWSCURRENT",
+    )[
+        "SecretString"
+    ]
 
 
 @pytest.fixture(scope="session")
@@ -85,9 +99,9 @@ def dc_rc_user_account(integration_tests_admin_sa, dl_env) -> AccountCredentials
 
 @pytest.fixture(scope="function")
 def bi_ext_api_dc_preprod_int_api_clients(
-        loop,
-        integration_tests_admin_sa,
-        dc_rs_project_id,
+    loop,
+    integration_tests_admin_sa,
+    dc_rs_project_id,
 ) -> InternalAPIClients:
     session = aiohttp.ClientSession()
 
@@ -138,9 +152,10 @@ async def workbook_id(bi_ext_api_dc_preprod_int_api_clients, workbook_name) -> s
 
 @pytest.fixture(scope="function")
 def bi_ext_api_dc_preprod_app(
-        loop, aiohttp_client,
-        ext_sys_requisites,
-        dc_rs_us_master_token,
+    loop,
+    aiohttp_client,
+    ext_sys_requisites,
+    dc_rs_us_master_token,
 ):
     settings = ExternalAPISettings(
         APP_TYPE=AppType.DATA_CLOUD,
@@ -168,9 +183,9 @@ def bi_ext_api_dc_preprod_app_base_url(bi_ext_api_dc_preprod_app) -> str:
 
 @pytest.fixture(scope="function")
 def bi_ext_api_dc_preprod_http_client_no_creds(
-        bi_ext_api_dc_preprod_app_base_url,
-        loop,
-        dc_rs_project_id,
+    bi_ext_api_dc_preprod_app_base_url,
+    loop,
+    dc_rs_project_id,
 ) -> WorkbookOpsClient:
     session = aiohttp.ClientSession()
     yield WorkbookOpsClient(
@@ -184,10 +199,10 @@ def bi_ext_api_dc_preprod_http_client_no_creds(
 
 @pytest.fixture(scope="function")
 def bi_ext_api_dc_preprod_http_client(
-        bi_ext_api_dc_preprod_app_base_url,
-        loop,
-        integration_tests_admin_sa,
-        dc_rs_project_id,
+    bi_ext_api_dc_preprod_app_base_url,
+    loop,
+    integration_tests_admin_sa,
+    dc_rs_project_id,
 ) -> WorkbookOpsClient:
     session = aiohttp.ClientSession()
     yield WorkbookOpsClient(
@@ -201,9 +216,9 @@ def bi_ext_api_dc_preprod_http_client(
 
 @pytest.fixture(scope="function")
 def bi_ext_api_dc_preprod_http_client_true(
-        loop,
-        integration_tests_admin_sa,
-        dc_rs_project_id,
+    loop,
+    integration_tests_admin_sa,
+    dc_rs_project_id,
 ) -> WorkbookOpsClient:
     session = aiohttp.ClientSession()
     yield WorkbookOpsClient(
@@ -217,8 +232,8 @@ def bi_ext_api_dc_preprod_http_client_true(
 
 @pytest.fixture(scope="function")
 def bi_ext_api_grpc_against_dc_preprod(
-        dc_rc_user_account,
-        bi_ext_api_dc_preprod_app_base_url,
+    dc_rc_user_account,
+    bi_ext_api_dc_preprod_app_base_url,
 ):
     ext_api_endpoint = bi_ext_api_dc_preprod_app_base_url
     ext_api_client = bi_external_api.grpc_proxy.ext_api_client.ExtApiClient(

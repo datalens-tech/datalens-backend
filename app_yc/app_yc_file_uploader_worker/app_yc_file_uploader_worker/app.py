@@ -1,24 +1,33 @@
+import asyncio
+import logging
 from typing import List
 
-import logging
-import asyncio
 from aiohttp import web
-
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from dl_core.logging_config import configure_logging
-from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
-from bi_defaults.environments import InstallationsMap, EnvAliasesMap
-from dl_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings
-from dl_task_processor.controller import Cli
-from dl_task_processor.processor import ARQProcessorImpl, TaskProcessor
-from dl_task_processor.state import TaskState, DummyStateImpl
-from dl_task_processor.worker import HealthChecker
-
-from dl_file_uploader_worker_lib.tasks import REGISTRY
-from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
-
 from app_yc_file_uploader_worker.app_factory import FileUploaderWorkerFactoryYC
 
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from dl_core.logging_config import configure_logging
+from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from dl_file_uploader_worker_lib.tasks import REGISTRY
+from dl_task_processor.arq_wrapper import (
+    create_arq_redis_settings,
+    create_redis_pool,
+)
+from dl_task_processor.controller import Cli
+from dl_task_processor.processor import (
+    ARQProcessorImpl,
+    TaskProcessor,
+)
+from dl_task_processor.state import (
+    DummyStateImpl,
+    TaskState,
+)
+from dl_task_processor.worker import HealthChecker
 
 LOGGER = logging.getLogger(__name__)
 
@@ -34,7 +43,7 @@ def run_standalone_worker() -> None:
         default_fallback_cfg_resolver=fallback_resolver,
     )
     worker = FileUploaderWorkerFactoryYC(settings=settings).create_worker()
-    configure_logging(app_name='bi_file_uploader_worker', sentry_dsn=settings.SENTRY_DSN)
+    configure_logging(app_name="bi_file_uploader_worker", sentry_dsn=settings.SENTRY_DSN)
     worker_task = loop.create_task(worker.start())
     try:
         loop.run_forever()
@@ -57,7 +66,7 @@ def run_health_check() -> None:
         FileUploaderWorkerSettings,
         default_fallback_cfg_resolver=fallback_resolver,
     )
-    configure_logging(app_name='bi_file_uploader_worker_health_check', sentry_dsn=settings.SENTRY_DSN)
+    configure_logging(app_name="bi_file_uploader_worker_health_check", sentry_dsn=settings.SENTRY_DSN)
     worker = FileUploaderWorkerFactoryYC(settings=settings).create_worker()
     health_checker = HealthChecker(worker)
     loop.run_until_complete(health_checker.check())
@@ -74,7 +83,7 @@ def run_cli(args: List) -> None:
         FileUploaderWorkerSettings,
         default_fallback_cfg_resolver=fallback_resolver,
     )
-    configure_logging(app_name='bi_file_uploader_cli')
+    configure_logging(app_name="bi_file_uploader_cli")
     redis_pool = loop.run_until_complete(
         create_redis_pool(
             create_arq_redis_settings(settings.REDIS_ARQ),
@@ -100,5 +109,5 @@ async def create_secure_reader_gunicorn_app() -> web.Application:
         raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_standalone_worker()

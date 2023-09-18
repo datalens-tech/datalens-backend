@@ -1,27 +1,36 @@
+from functools import wraps
 import json
 import logging
-from functools import wraps
-from typing import Optional, Any, Callable, Dict
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Optional,
+)
 from uuid import uuid4
 
 import attr
-import grpc
-from google.protobuf import json_format
-from google.protobuf.timestamp_pb2 import Timestamp  # noqa
-
-from bi_external_api.grpc_proxy.common import GRequestData
-from bi_external_api.grpc_proxy.ext_api_client import ExtApiClient, Response, CallError
 from doublecloud.v1.operation_pb2 import Operation
 from doublecloud.visualization.v1 import workbook_pb2 as wb_pb2
 from doublecloud.visualization.v1 import workbook_service_pb2 as ws_pb2
 from doublecloud.visualization.v1.workbook_service_pb2_grpc import WorkbookServiceServicer
+from google.protobuf import json_format
+from google.protobuf.timestamp_pb2 import Timestamp  # noqa
+import grpc
+
+from bi_external_api.grpc_proxy.common import GRequestData
+from bi_external_api.grpc_proxy.ext_api_client import (
+    CallError,
+    ExtApiClient,
+    Response,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 def err_handle(func: Callable) -> Callable:
     @wraps(func)
-    def wrapped(self: 'WorkbookService', request: Any, context: grpc.ServicerContext) -> Callable:  # type: ignore
+    def wrapped(self: "WorkbookService", request: Any, context: grpc.ServicerContext) -> Callable:  # type: ignore
         try:
             return func(self, request, context)
         except CallError as err:
@@ -44,7 +53,7 @@ class WorkbookService(WorkbookServiceServicer):
         return attr.evolve(
             self._ext_api_client,
             request_id=GRequestData.get_request_id(ctx),
-            authorization_header=GRequestData.get_auth_data(ctx).authorization_header
+            authorization_header=GRequestData.get_auth_data(ctx).authorization_header,
         )
 
     def _op(self, params: Optional[dict] = None) -> Operation:  # type: ignore
@@ -84,10 +93,10 @@ class WorkbookService(WorkbookServiceServicer):
     WORKBOOK_ACCESS_DENIED = "No access to workbook"
 
     def _ext_api_error(
-            self,
-            context: grpc.ServicerContext,
-            response: Optional[Response] = None,
-            err: Optional[Exception] = None,
+        self,
+        context: grpc.ServicerContext,
+        response: Optional[Response] = None,
+        err: Optional[Exception] = None,
     ) -> None:
         # aiming for the same structure as in ..
 
@@ -135,9 +144,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def Get(
-            self,
-            request: ws_pb2.GetWorkbookRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.GetWorkbookRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> ws_pb2.GetWorkbookResponse:  # type: ignore
         result = self.get_ext_api_client_for_current_request(context).get_workbook(request.workbook_id)  # type: ignore
 
@@ -149,11 +158,10 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def Create(
-            self,
-            request: ws_pb2.CreateWorkbookRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.CreateWorkbookRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> Operation:  # type: ignore
-
         result = self.get_ext_api_client_for_current_request(context).create_workbook(
             project_id=request.project_id,  # type: ignore
             workbook_title=request.workbook_title,  # type: ignore
@@ -162,9 +170,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def Update(
-            self,
-            request: ws_pb2.UpdateWorkbookRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.UpdateWorkbookRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> Operation:  # type: ignore
         workbook = json_format.MessageToDict(request.workbook.config)  # type: ignore
 
@@ -177,11 +185,10 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def Delete(
-            self,
-            request: ws_pb2.DeleteWorkbookRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.DeleteWorkbookRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> Operation:  # type: ignore
-
         self.get_ext_api_client_for_current_request(context).delete_workbook(
             request.workbook_id,  # type: ignore
         )
@@ -190,11 +197,10 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def GetConnection(
-            self,
-            request: ws_pb2.GetWorkbookConnectionRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.GetWorkbookConnectionRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> ws_pb2.GetWorkbookConnectionResponse:  # type: ignore
-
         result = self.get_ext_api_client_for_current_request(context).get_connection(
             request.workbook_id,  # type: ignore
             request.connection_name,  # type: ignore
@@ -223,9 +229,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def CreateConnection(
-            self,
-            request: ws_pb2.CreateWorkbookConnectionRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.CreateWorkbookConnectionRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> Operation:  # type: ignore
         connection_params = json_format.MessageToDict(request.connection.config)  # type: ignore
         secret = json_format.MessageToDict(request.secret)  # type: ignore
@@ -242,9 +248,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def UpdateConnection(
-            self,
-            request: ws_pb2.UpdateWorkbookConnectionRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.UpdateWorkbookConnectionRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> Operation:  # type: ignore
         connection_params = json_format.MessageToDict(request.connection.config)  # type: ignore
         secret = json_format.MessageToDict(request.secret)  # type: ignore
@@ -261,9 +267,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def DeleteConnection(
-            self,
-            request: ws_pb2.DeleteWorkbookConnectionRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.DeleteWorkbookConnectionRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> Operation:  # type: ignore
         self.get_ext_api_client_for_current_request(context).delete_connection(
             request.workbook_id,  # type: ignore
@@ -274,9 +280,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def AdviseDatasetFields(
-            self,
-            request: ws_pb2.AdviseDatasetFieldsRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.AdviseDatasetFieldsRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> ws_pb2.AdviseDatasetFieldsResponse:  # type: ignore
         pds = json_format.MessageToDict(request.partial_dataset.config)  # type: ignore
 
@@ -292,9 +298,9 @@ class WorkbookService(WorkbookServiceServicer):
 
     @err_handle
     def ListWorkbooks(
-            self,
-            request: ws_pb2.ListWorkbooksRequest,  # type: ignore
-            context: grpc.ServicerContext,
+        self,
+        request: ws_pb2.ListWorkbooksRequest,  # type: ignore
+        context: grpc.ServicerContext,
     ) -> ws_pb2.ListWorkbooksResponse:  # type: ignore
         result = self.get_ext_api_client_for_current_request(context).list_workbooks(
             project_id=request.project_id  # type: ignore

@@ -1,18 +1,38 @@
 import abc
 import enum
-from typing import ClassVar, Sequence, Optional, Generic, TypeVar
+from typing import (
+    ClassVar,
+    Generic,
+    Optional,
+    Sequence,
+    TypeVar,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from bi_external_api.attrs_model_mapper.utils import MText
 from bi_external_api.domain.utils import ensure_tuple
+
 from . import EntryKind
-from .common import EntryRef, EntryInfo, Secret, NameMapEntry
+from ...enums import ExtAPIType
+from .common import (
+    EntryInfo,
+    EntryRef,
+    NameMapEntry,
+    Secret,
+)
 from .connection import ConnectionSecret
 from .dataset_main import Dataset
-from .workbook import WorkBook, WorkbookConnectionsOnly, ConnectionInstance, WorkbookIndexItem
-from ...enums import ExtAPIType
+from .workbook import (
+    ConnectionInstance,
+    WorkBook,
+    WorkbookConnectionsOnly,
+    WorkbookIndexItem,
+)
 
 
 class WorkbookOpKind(enum.Enum):
@@ -84,13 +104,13 @@ class FakeWorkbookCreateRequest(WorkbookOpRequest):
         metadata=AttribDescriptor(
             description=MText(
                 ru="Секреты, используемые в подключениях (пароли/токены)."
-                   " Соответствие секрета подключению определяется по имени."
-                   " Поле не требуется для подключений без секретов,"
-                   " например, для CHYT с пользовательской аутентификацией.",
+                " Соответствие секрета подключению определяется по имени."
+                " Поле не требуется для подключений без секретов,"
+                " например, для CHYT с пользовательской аутентификацией.",
                 en="Secrets used in connections (passwords/tokens)."
-                   " Сorrespondence of the secret to the connection is determined by the name."
-                   " This field is not required for connections that don't use secrets,"
-                   " for example, for CHYT with user authentication.",
+                " Сorrespondence of the secret to the connection is determined by the name."
+                " This field is not required for connections that don't use secrets,"
+                " for example, for CHYT with user authentication.",
             )
         ).to_meta(),
     )

@@ -1,22 +1,32 @@
-from dl_constants.enums import FieldRole, PivotRole
-
-from dl_api_lib.query.formalization.raw_specs import (
-    RawQuerySpecUnion, RawSelectFieldSpec, TitleFieldRef, RawTemplateRoleSpec, RawRoleSpec, PlaceholderRef,
-)
 from dl_api_lib.query.formalization.raw_pivot_specs import (
-    RawPivotSpec, RawPivotLegendItem, RawPivotMeasureRoleSpec, RawDimensionPivotRoleSpec,
+    RawDimensionPivotRoleSpec,
+    RawPivotLegendItem,
+    RawPivotMeasureRoleSpec,
+    RawPivotSpec,
+)
+from dl_api_lib.query.formalization.raw_specs import (
+    PlaceholderRef,
+    RawQuerySpecUnion,
+    RawRoleSpec,
+    RawSelectFieldSpec,
+    RawTemplateRoleSpec,
+    TitleFieldRef,
 )
 from dl_api_lib.request_model.data import PivotDataRequestModel
 from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
+from dl_constants.enums import (
+    FieldRole,
+    PivotRole,
+)
 
 
 def test_simple_totals():
     original_drm = PivotDataRequestModel(
         raw_query_spec_union=RawQuerySpecUnion(
             select_specs=[
-                RawSelectFieldSpec(ref=TitleFieldRef(title='First Dim'), legend_item_id=0),
-                RawSelectFieldSpec(ref=TitleFieldRef(title='Second Dim'), legend_item_id=1),
-                RawSelectFieldSpec(ref=TitleFieldRef(title='First Measure'), legend_item_id=2),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="First Dim"), legend_item_id=0),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="Second Dim"), legend_item_id=1),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="First Measure"), legend_item_id=2),
             ],
         ),
         pivot=RawPivotSpec(
@@ -44,48 +54,52 @@ def test_simple_totals():
     expected_drm = PivotDataRequestModel(
         raw_query_spec_union=RawQuerySpecUnion(
             select_specs=[
-                RawSelectFieldSpec(ref=TitleFieldRef(title='First Dim'), legend_item_id=0, block_id=0),
-                RawSelectFieldSpec(ref=TitleFieldRef(title='Second Dim'), legend_item_id=1, block_id=0),
-                RawSelectFieldSpec(ref=TitleFieldRef(title='First Measure'), legend_item_id=2, block_id=0),
-
+                RawSelectFieldSpec(ref=TitleFieldRef(title="First Dim"), legend_item_id=0, block_id=0),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="Second Dim"), legend_item_id=1, block_id=0),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="First Measure"), legend_item_id=2, block_id=0),
                 RawSelectFieldSpec(
                     ref=PlaceholderRef(),
-                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=''),
-                    legend_item_id=3, block_id=1,
+                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=""),
+                    legend_item_id=3,
+                    block_id=1,
                 ),
-                RawSelectFieldSpec(ref=TitleFieldRef(title='Second Dim'), legend_item_id=4, block_id=1),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="Second Dim"), legend_item_id=4, block_id=1),
                 RawSelectFieldSpec(
-                    ref=TitleFieldRef(title='First Measure'),
+                    ref=TitleFieldRef(title="First Measure"),
                     role_spec=RawRoleSpec(role=FieldRole.total),
-                    legend_item_id=5, block_id=1
+                    legend_item_id=5,
+                    block_id=1,
                 ),
-
                 RawSelectFieldSpec(
                     ref=PlaceholderRef(),
-                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=''),
-                    legend_item_id=6, block_id=2,
+                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=""),
+                    legend_item_id=6,
+                    block_id=2,
                 ),
-                RawSelectFieldSpec(ref=TitleFieldRef(title='First Dim'), legend_item_id=7, block_id=2),
+                RawSelectFieldSpec(ref=TitleFieldRef(title="First Dim"), legend_item_id=7, block_id=2),
                 RawSelectFieldSpec(
-                    ref=TitleFieldRef(title='First Measure'),
+                    ref=TitleFieldRef(title="First Measure"),
                     role_spec=RawRoleSpec(role=FieldRole.total),
-                    legend_item_id=8, block_id=2,
-                ),
-
-                RawSelectFieldSpec(
-                    ref=PlaceholderRef(),
-                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=''),
-                    legend_item_id=9, block_id=3,
+                    legend_item_id=8,
+                    block_id=2,
                 ),
                 RawSelectFieldSpec(
                     ref=PlaceholderRef(),
-                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=''),
-                    legend_item_id=10, block_id=3,
+                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=""),
+                    legend_item_id=9,
+                    block_id=3,
                 ),
                 RawSelectFieldSpec(
-                    ref=TitleFieldRef(title='First Measure'),
+                    ref=PlaceholderRef(),
+                    role_spec=RawTemplateRoleSpec(role=FieldRole.template, template=""),
+                    legend_item_id=10,
+                    block_id=3,
+                ),
+                RawSelectFieldSpec(
+                    ref=TitleFieldRef(title="First Measure"),
                     role_spec=RawRoleSpec(role=FieldRole.total),
-                    legend_item_id=11, block_id=3,
+                    legend_item_id=11,
+                    block_id=3,
                 ),
             ],
         ),
@@ -106,7 +120,7 @@ def test_simple_totals():
             ],
             totals=None,
             with_totals=None,
-        )
+        ),
     )
 
     assert normalized_drm == expected_drm

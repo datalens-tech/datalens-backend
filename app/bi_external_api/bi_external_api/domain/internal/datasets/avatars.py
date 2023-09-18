@@ -3,6 +3,7 @@ from typing import ClassVar
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
+
 from ..dl_common.base import DatasetAPIBaseModel
 
 
@@ -15,7 +16,7 @@ class Avatar(DatasetAPIBaseModel):
     title: str = attr.ib()
 
     ignored_keys: ClassVar[set[str]] = {
-        'valid',
-        'virtual',
-        'managed_by',
+        "valid",
+        "virtual",
+        "managed_by",
     }

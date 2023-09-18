@@ -1,11 +1,21 @@
-from typing import Optional, Any
+from typing import (
+    Any,
+    Optional,
+)
 
 import attr
 
-from dl_constants.enums import CalcMode, AggregationFunction, BIType, FieldType, ManagedBy
 from bi_external_api.attrs_model_mapper import ModelDescriptor
-from .literals import DefaultValue
+from dl_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    FieldType,
+    ManagedBy,
+)
+
 from ..dl_common.base import DatasetAPIBaseModel
+from .literals import DefaultValue
 
 
 @ModelDescriptor()
@@ -27,21 +37,22 @@ class ResultSchemaField(DatasetAPIBaseModel):
 
     # TODO: decide how to represent parameters here
     ignored_keys = {
-        'value_constraint',
+        "value_constraint",
     }
 
     @classmethod
     def adopt_json_before_deserialization(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
         original_default_value = data.get("default_value")
-        normalized_default_value = {
-            "type": data["cast"],
-            "value": original_default_value,
-        } if original_default_value is not None else None
+        normalized_default_value = (
+            {
+                "type": data["cast"],
+                "value": original_default_value,
+            }
+            if original_default_value is not None
+            else None
+        )
 
-        return {
-            **data,
-            "default_value": normalized_default_value
-        }
+        return {**data, "default_value": normalized_default_value}
 
     @classmethod
     def adopt_json_before_sending_to_api(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
@@ -51,10 +62,7 @@ class ResultSchemaField(DatasetAPIBaseModel):
         orig_default_value = data["default_value"]
 
         if orig_default_value is not None:
-            return {
-                **data,
-                "default_value": orig_default_value["value"]
-            }
+            return {**data, "default_value": orig_default_value["value"]}
         else:
             return data
 

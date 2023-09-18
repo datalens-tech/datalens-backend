@@ -1,33 +1,31 @@
 from __future__ import annotations
 
 import datetime
-import uuid
-import json
 from http import HTTPStatus
+import json
+import uuid
 
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
+    NOTIF_TYPE_GSHEETS_V2_STALE_DATA,
+    SOURCE_TYPE_GSHEETS_V2,
+)
+from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
-    WhereClauseOperation,
+    ComponentErrorLevel,
     ComponentType,
     DataSourceRole,
     FileProcessingStatus,
-    ComponentErrorLevel,
+    WhereClauseOperation,
 )
-
 from dl_core import exc
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
-    SOURCE_TYPE_GSHEETS_V2,
-    NOTIF_TYPE_GSHEETS_V2_STALE_DATA,
-)
-from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-
-from dl_api_client.dsmaker.primitives import Dataset
 
 
 def test_authorized(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_id,
+    client,
+    default_sync_usm_per_test,
+    gsheets_v2_connection_id,
 ):
     conn_id = gsheets_v2_connection_id
     usm = default_sync_usm_per_test
@@ -35,10 +33,10 @@ def test_authorized(
     # no token == not authorized
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
     assert conn.authorized is False
-    conn_resp = client.get(f'/api/v1/connections/{conn_id}')
+    conn_resp = client.get(f"/api/v1/connections/{conn_id}")
     assert conn_resp.status_code == 200
-    assert conn_resp.json['authorized'] is False
-    assert conn_resp.json.get('refresh_token') is None
+    assert conn_resp.json["authorized"] is False
+    assert conn_resp.json.get("refresh_token") is None
 
     default_update_data = {
         "refresh_enabled": True,
@@ -60,46 +58,50 @@ def test_authorized(
 
     # add token
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            **default_update_data,
-            "refresh_token": "some_token",
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                **default_update_data,
+                "refresh_token": "some_token",
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
 
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
     assert conn.authorized is True
-    conn_resp = client.get(f'/api/v1/connections/{conn_id}')
+    conn_resp = client.get(f"/api/v1/connections/{conn_id}")
     assert conn_resp.status_code == 200
-    assert conn_resp.json['authorized'] is True
-    assert conn_resp.json.get('refresh_token') is None
+    assert conn_resp.json["authorized"] is True
+    assert conn_resp.json.get("refresh_token") is None
 
     # remove token
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            **default_update_data,
-            "refresh_token": None,
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                **default_update_data,
+                "refresh_token": None,
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
 
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
     assert conn.authorized is False
-    conn_resp = client.get(f'/api/v1/connections/{conn_id}')
+    conn_resp = client.get(f"/api/v1/connections/{conn_id}")
     assert conn_resp.status_code == 200
-    assert conn_resp.json['authorized'] is False
-    assert conn_resp.json.get('refresh_token') is None
+    assert conn_resp.json["authorized"] is False
+    assert conn_resp.json.get("refresh_token") is None
 
 
 # TODO? mb make non-editable fields (spreadsheet_id, sheet_id, first_line_is_header) actually non-editable
 def test_update_gsheets_conn(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_with_raw_schema_id,
+    client,
+    default_sync_usm_per_test,
+    gsheets_v2_connection_with_raw_schema_id,
 ):
     conn_id = gsheets_v2_connection_with_raw_schema_id
     usm = default_sync_usm_per_test
@@ -108,49 +110,53 @@ def test_update_gsheets_conn(
     assert conn.data.sources[0].raw_schema
 
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            "refresh_enabled": True,
-            "sources": [
-                {
-                    "id": conn.data.sources[0].id,
-                    "title": 'renamed source',
-                },
-                {
-                    "id": conn.data.sources[1].id,
-                    "title": conn.data.sources[1].title,
-                },
-                # drop third source
-            ],
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                "refresh_enabled": True,
+                "sources": [
+                    {
+                        "id": conn.data.sources[0].id,
+                        "title": "renamed source",
+                    },
+                    {
+                        "id": conn.data.sources[1].id,
+                        "title": conn.data.sources[1].title,
+                    },
+                    # drop third source
+                ],
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
     conn = usm.get_by_id(conn_id)
     assert len(conn.data.sources) == 2
-    assert conn.data.sources[0].title == 'renamed source'
+    assert conn.data.sources[0].title == "renamed source"
     assert conn.data.sources[0].raw_schema
 
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            "sources": [
-                {
-                    "id": conn.data.sources[0].id,
-                    "title": conn.data.sources[0].title,
-                },
-                {
-                    "id": conn.data.sources[1].id,
-                    "title": conn.data.sources[1].title,
-                },
-                {   # add new source
-                    "id": str(uuid.uuid4()),
-                    "file_id": str(uuid.uuid4()),
-                    "title": "My File 2 - Sheet 2",
-                },
-            ],
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                "sources": [
+                    {
+                        "id": conn.data.sources[0].id,
+                        "title": conn.data.sources[0].title,
+                    },
+                    {
+                        "id": conn.data.sources[1].id,
+                        "title": conn.data.sources[1].title,
+                    },
+                    {  # add new source
+                        "id": str(uuid.uuid4()),
+                        "file_id": str(uuid.uuid4()),
+                        "title": "My File 2 - Sheet 2",
+                    },
+                ],
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
     conn = usm.get_by_id(conn_id)
@@ -165,27 +171,29 @@ def test_update_gsheets_conn(
         "title": "My File 3 - Sheet 1",
     }
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            "sources": [
-                {
-                    "id": conn.data.sources[1].id,
-                    "title": conn.data.sources[1].title,
-                },
-                {
-                    "id": conn.data.sources[2].id,
-                    "title": conn.data.sources[2].title,
-                },
-                new_source,
-            ],
-            "replace_sources": [
-                {
-                    "old_source_id": replaced_source.id,
-                    "new_source_id": new_source['id'],
-                },
-            ]
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                "sources": [
+                    {
+                        "id": conn.data.sources[1].id,
+                        "title": conn.data.sources[1].title,
+                    },
+                    {
+                        "id": conn.data.sources[2].id,
+                        "title": conn.data.sources[2].title,
+                    },
+                    new_source,
+                ],
+                "replace_sources": [
+                    {
+                        "old_source_id": replaced_source.id,
+                        "new_source_id": new_source["id"],
+                    },
+                ],
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
     conn: BaseFileS3Connection = usm.get_by_id(conn_id)
@@ -197,11 +205,7 @@ def test_update_gsheets_conn(
     assert new_replaced_source.file_id != replaced_source.file_id
 
 
-def test_consistency_checks(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_with_raw_schema_id
-):
+def test_consistency_checks(client, default_sync_usm_per_test, gsheets_v2_connection_with_raw_schema_id):
     conn_id = gsheets_v2_connection_with_raw_schema_id
     usm = default_sync_usm_per_test
     conn = usm.get_by_id(conn_id)
@@ -214,33 +218,35 @@ def test_consistency_checks(
         "title": "My File 2",
     }
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            "sources": [
-                {
-                    "id": conn.data.sources[1].id,
-                    "title": conn.data.sources[1].title,
-                },
-                {
-                    "id": conn.data.sources[2].id,
-                    "title": conn.data.sources[2].title,
-                },
-                new_source,
-            ],
-            "replace_sources": [
-                {
-                    "old_source_id": replaced_source_id,
-                    "new_source_id": new_source['id'],
-                },
-            ]
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                "sources": [
+                    {
+                        "id": conn.data.sources[1].id,
+                        "title": conn.data.sources[1].title,
+                    },
+                    {
+                        "id": conn.data.sources[2].id,
+                        "title": conn.data.sources[2].title,
+                    },
+                    new_source,
+                ],
+                "replace_sources": [
+                    {
+                        "old_source_id": replaced_source_id,
+                        "new_source_id": new_source["id"],
+                    },
+                ],
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 400, resp.json
-    details: dict[str, list[str]] = resp.json['details']
+    details: dict[str, list[str]] = resp.json["details"]
     assert details == {
-        'not_configured_not_saved': [new_source['id']],
-        'replaced_not_saved': [replaced_source_id],
+        "not_configured_not_saved": [new_source["id"]],
+        "replaced_not_saved": [replaced_source_id],
     }
 
     # test not unique titles
@@ -250,30 +256,32 @@ def test_consistency_checks(
         "title": conn.data.sources[1].title,
     }
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            "sources": [
-                {
-                    "id": conn.data.sources[1].id,
-                    "title": conn.data.sources[1].title,
-                },
-                new_source,
-            ],
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                "sources": [
+                    {
+                        "id": conn.data.sources[1].id,
+                        "title": conn.data.sources[1].title,
+                    },
+                    new_source,
+                ],
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 400, resp.json
-    err_message: str = resp.json['message']
+    err_message: str = resp.json["message"]
     assert err_message == exc.DataSourceTitleConflict().message
 
 
 def test_update_data(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_with_raw_schema_id,
-        api_v1,
-        data_api_v2,
-        s3_native_from_ch_table,
+    client,
+    default_sync_usm_per_test,
+    gsheets_v2_connection_with_raw_schema_id,
+    api_v1,
+    data_api_v2,
+    s3_native_from_ch_table,
 ):
     conn_id = gsheets_v2_connection_with_raw_schema_id
     usm = default_sync_usm_per_test
@@ -287,15 +295,15 @@ def test_update_data(
     usm.save(conn)
 
     ds = Dataset()
-    ds.sources['source_1'] = ds.source(
+    ds.sources["source_1"] = ds.source(
         source_type=SOURCE_TYPE_GSHEETS_V2,
         connection_id=conn_id,
-        parameters=dict(origin_source_id='source_3_id'),
+        parameters=dict(origin_source_id="source_3_id"),
     )
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
+    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
 
-    ds.result_schema['sum'] = ds.field(formula='SUM([int_value])')
-    ds.result_schema['max'] = ds.field(formula='MAX([int_value])')
+    ds.result_schema["sum"] = ds.field(formula="SUM([int_value])")
+    ds.result_schema["max"] = ds.field(formula="MAX([int_value])")
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.OK, ds_resp.response_errors
     ds = ds_resp.dataset
@@ -305,15 +313,15 @@ def test_update_data(
         result_resp = data_api.get_result(
             dataset=ds,
             fields=[
-                ds.find_field(title='string_value'),
-                ds.find_field(title='sum'),
+                ds.find_field(title="string_value"),
+                ds.find_field(title="sum"),
             ],
             order_by=[
-                ds.find_field(title='string_value'),
-                ds.find_field(title='sum'),
+                ds.find_field(title="string_value"),
+                ds.find_field(title="sum"),
             ],
             filters=[
-                ds.find_field(title='max').filter(op=WhereClauseOperation.LT, values=['8']),
+                ds.find_field(title="max").filter(op=WhereClauseOperation.LT, values=["8"]),
             ],
             fail_ok=True,
         )
@@ -321,37 +329,31 @@ def test_update_data(
 
     resp = make_request_result()
     assert all(
-        notification['locator'] != NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value
-        for notification in resp.json.get('notifications', [])
-    ), resp.json.get('notifications', 'No notifications')
+        notification["locator"] != NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value
+        for notification in resp.json.get("notifications", [])
+    ), resp.json.get("notifications", "No notifications")
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
     assert conn.data.sources[0].data_updated_at == data_updated_at_orig
 
-    data_updated_at = (
-        conn.data.oldest_data_update_time()
-        -
-        datetime.timedelta(minutes=31)
-    )
+    data_updated_at = conn.data.oldest_data_update_time() - datetime.timedelta(minutes=31)
     for src in conn.data.sources:
         src.data_updated_at = data_updated_at
     usm.save(conn)
     resp = make_request_result()
     assert any(
-        notification['locator'] == NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value
-        for notification in resp.json.get('notifications', [])
-    ), resp.json.get('notifications', 'No notifications')
+        notification["locator"] == NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value
+        for notification in resp.json.get("notifications", [])
+    ), resp.json.get("notifications", "No notifications")
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
     assert conn.data.sources[0].data_updated_at != data_updated_at
 
     ds = ds_resp.dataset
     dataset_id = ds.id
-    client.delete('/api/v1/datasets/{}'.format(dataset_id))
+    client.delete("/api/v1/datasets/{}".format(dataset_id))
 
 
 def test_force_update_gsheets_conn_with_file_id(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_with_raw_schema_id
+    client, default_sync_usm_per_test, gsheets_v2_connection_with_raw_schema_id
 ):
     """
     This test is pretty much useless unless we create corresponding records in redis for all test sources
@@ -366,41 +368,43 @@ def test_force_update_gsheets_conn_with_file_id(
     assert conn.data.sources[0].raw_schema
 
     resp = client.put(
-        '/api/v1/connections/{}'.format(conn_id),
-        data=json.dumps({
-            "refresh_enabled": True,
-            "sources": [
-                {
-                    "file_id": 'new_file_id',  # force source update by passing file_id
-                    "id": conn.data.sources[0].id,
-                    "title": conn.data.sources[0].title,
-                },
-                {
-                    "id": conn.data.sources[1].id,
-                    "title": conn.data.sources[1].title,
-                },
-                {
-                    "id": conn.data.sources[2].id,
-                    "title": conn.data.sources[2].title,
-                },
-            ],
-        }),
-        content_type='application/json'
+        "/api/v1/connections/{}".format(conn_id),
+        data=json.dumps(
+            {
+                "refresh_enabled": True,
+                "sources": [
+                    {
+                        "file_id": "new_file_id",  # force source update by passing file_id
+                        "id": conn.data.sources[0].id,
+                        "title": conn.data.sources[0].title,
+                    },
+                    {
+                        "id": conn.data.sources[1].id,
+                        "title": conn.data.sources[1].title,
+                    },
+                    {
+                        "id": conn.data.sources[2].id,
+                        "title": conn.data.sources[2].title,
+                    },
+                ],
+            }
+        ),
+        content_type="application/json",
     )
     assert resp.status_code == 200, resp.json
     conn = usm.get_by_id(conn_id)
     assert len(conn.data.sources) == 3
     assert conn.data.sources[0].raw_schema
-    assert conn.data.sources[0].file_id == 'new_file_id'
+    assert conn.data.sources[0].file_id == "new_file_id"
 
 
 def test_component_errors(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_with_raw_schema_id,
-        api_v1,
-        data_api_v2,
-        s3_native_from_ch_table,
+    client,
+    default_sync_usm_per_test,
+    gsheets_v2_connection_with_raw_schema_id,
+    api_v1,
+    data_api_v2,
+    s3_native_from_ch_table,
 ):
     conn_id = gsheets_v2_connection_with_raw_schema_id
     usm = default_sync_usm_per_test
@@ -409,15 +413,15 @@ def test_component_errors(
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
 
     ds = Dataset()
-    ds.sources['source_1'] = ds.source(
+    ds.sources["source_1"] = ds.source(
         source_type=SOURCE_TYPE_GSHEETS_V2,
         connection_id=conn_id,
-        parameters=dict(origin_source_id='source_3_id'),
+        parameters=dict(origin_source_id="source_3_id"),
     )
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
+    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
 
-    ds.result_schema['sum'] = ds.field(formula='SUM([int_value])')
-    ds.result_schema['max'] = ds.field(formula='MAX([int_value])')
+    ds.result_schema["sum"] = ds.field(formula="SUM([int_value])")
+    ds.result_schema["max"] = ds.field(formula="MAX([int_value])")
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.OK, ds_resp.response_errors
     ds = ds_resp.dataset
@@ -426,9 +430,9 @@ def test_component_errors(
     conn.data.component_errors.add_error(
         id=conn.data.sources[2].id,
         type=ComponentType.data_source,
-        message='Custom error message',
-        code=['FILE', 'CUSTOM_FILE_ERROR'],
-        details={'error': 'details'},
+        message="Custom error message",
+        code=["FILE", "CUSTOM_FILE_ERROR"],
+        details={"error": "details"},
     )
     conn.update_data_source(
         conn.data.sources[2].id,
@@ -443,43 +447,43 @@ def test_component_errors(
     result_resp = data_api.get_result(
         dataset=ds,
         fields=[
-            ds.find_field(title='string_value'),
-            ds.find_field(title='sum'),
+            ds.find_field(title="string_value"),
+            ds.find_field(title="sum"),
         ],
         order_by=[
-            ds.find_field(title='string_value'),
-            ds.find_field(title='sum'),
+            ds.find_field(title="string_value"),
+            ds.find_field(title="sum"),
         ],
         filters=[
-            ds.find_field(title='max').filter(op=WhereClauseOperation.LT, values=['8']),
+            ds.find_field(title="max").filter(op=WhereClauseOperation.LT, values=["8"]),
         ],
         fail_ok=True,
     )
 
     assert result_resp.status_code == 400
-    assert result_resp.json['details'] == {'error': 'details'}
-    assert result_resp.json['message'] == 'Custom error message'
-    assert result_resp.json['code'] == 'ERR.DS_API.SOURCE.FILE.CUSTOM_FILE_ERROR'
+    assert result_resp.json["details"] == {"error": "details"}
+    assert result_resp.json["message"] == "Custom error message"
+    assert result_resp.json["code"] == "ERR.DS_API.SOURCE.FILE.CUSTOM_FILE_ERROR"
 
-    resp = client.get(f'/api/v1/connections/{conn_id}')
+    resp = client.get(f"/api/v1/connections/{conn_id}")
     assert resp.status_code == 200, resp.json
-    assert resp.json['component_errors'], resp.json
-    errors = resp.json['component_errors']['items'][0]['errors']
+    assert resp.json["component_errors"], resp.json
+    errors = resp.json["component_errors"]["items"][0]["errors"]
     assert len(errors) == 1, errors
-    assert errors[0]['code'] == 'ERR.DS_API.SOURCE.FILE.CUSTOM_FILE_ERROR'
+    assert errors[0]["code"] == "ERR.DS_API.SOURCE.FILE.CUSTOM_FILE_ERROR"
 
     ds = ds_resp.dataset
     dataset_id = ds.id
-    client.delete('/api/v1/datasets/{}'.format(dataset_id))
+    client.delete("/api/v1/datasets/{}".format(dataset_id))
 
 
 def test_component_error_warning(
-        client,
-        default_sync_usm_per_test,
-        gsheets_v2_connection_with_raw_schema_id,
-        api_v1,
-        data_api_v2,
-        s3_native_from_ch_table,
+    client,
+    default_sync_usm_per_test,
+    gsheets_v2_connection_with_raw_schema_id,
+    api_v1,
+    data_api_v2,
+    s3_native_from_ch_table,
 ):
     conn_id = gsheets_v2_connection_with_raw_schema_id
     usm = default_sync_usm_per_test
@@ -488,15 +492,15 @@ def test_component_error_warning(
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
 
     ds = Dataset()
-    ds.sources['source_1'] = ds.source(
+    ds.sources["source_1"] = ds.source(
         source_type=SOURCE_TYPE_GSHEETS_V2,
         connection_id=conn_id,
-        parameters=dict(origin_source_id='source_3_id'),
+        parameters=dict(origin_source_id="source_3_id"),
     )
-    ds.source_avatars['avatar_1'] = ds.sources['source_1'].avatar()
+    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
 
-    ds.result_schema['sum'] = ds.field(formula='SUM([int_value])')
-    ds.result_schema['max'] = ds.field(formula='MAX([int_value])')
+    ds.result_schema["sum"] = ds.field(formula="SUM([int_value])")
+    ds.result_schema["max"] = ds.field(formula="MAX([int_value])")
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.OK, ds_resp.response_errors
     ds = ds_resp.dataset
@@ -505,9 +509,9 @@ def test_component_error_warning(
     conn.data.component_errors.add_error(
         id=conn.data.sources[2].id,
         type=ComponentType.data_source,
-        message='Custom error message',
-        code=['FILE', 'CUSTOM_FILE_ERROR'],
-        details={'error': 'details', 'request-id': '637'},
+        message="Custom error message",
+        code=["FILE", "CUSTOM_FILE_ERROR"],
+        details={"error": "details", "request-id": "637"},
         level=ComponentErrorLevel.warning,
     )
     long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=31)
@@ -521,25 +525,25 @@ def test_component_error_warning(
     result_resp = data_api.get_result(
         dataset=ds,
         fields=[
-            ds.find_field(title='string_value'),
-            ds.find_field(title='sum'),
+            ds.find_field(title="string_value"),
+            ds.find_field(title="sum"),
         ],
         order_by=[
-            ds.find_field(title='string_value'),
-            ds.find_field(title='sum'),
+            ds.find_field(title="string_value"),
+            ds.find_field(title="sum"),
         ],
         filters=[
-            ds.find_field(title='max').filter(op=WhereClauseOperation.LT, values=['8']),
+            ds.find_field(title="max").filter(op=WhereClauseOperation.LT, values=["8"]),
         ],
         fail_ok=True,
     )
 
     assert result_resp.status_code == 200, result_resp.json
-    assert len(result_resp.json['notifications']) == 2
-    assert 'Reason: FILE.CUSTOM_FILE_ERROR, Request-ID: 637' in result_resp.json['notifications'][0]['message']
+    assert len(result_resp.json["notifications"]) == 2
+    assert "Reason: FILE.CUSTOM_FILE_ERROR, Request-ID: 637" in result_resp.json["notifications"][0]["message"]
     conn: GSheetsFileS3Connection = usm.get_by_id(conn_id)
     assert conn.data.sources[2].data_updated_at != long_long_ago
 
     ds = ds_resp.dataset
     dataset_id = ds.id
-    client.delete('/api/v1/datasets/{}'.format(dataset_id))
+    client.delete("/api/v1/datasets/{}".format(dataset_id))

@@ -1,31 +1,53 @@
-from typing import Optional, TypeVar, Generic, Type, ClassVar
+from typing import (
+    ClassVar,
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 import attr
 
-from dl_constants.enums import ManagedBy, CreateDSFrom
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
-from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
-from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
+from dl_connector_clickhouse.core.clickhouse.constants import (
+    SOURCE_TYPE_CH_SUBSELECT,
+    SOURCE_TYPE_CH_TABLE,
+)
+from dl_connector_postgresql.core.postgresql.constants import (
+    SOURCE_TYPE_PG_SUBSELECT,
+    SOURCE_TYPE_PG_TABLE,
+)
+from dl_constants.enums import (
+    CreateDSFrom,
+    ManagedBy,
+)
+
 from bi_connector_chyt_internal.core.constants import (
+    SOURCE_TYPE_CHYT_SUBSELECT,
     SOURCE_TYPE_CHYT_TABLE,
     SOURCE_TYPE_CHYT_TABLE_LIST,
     SOURCE_TYPE_CHYT_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_SUBSELECT,
+    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,
     SOURCE_TYPE_CHYT_USER_AUTH_TABLE_RANGE,
-    SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,
 )
 
+from ..dl_common.base import (
+    DatasetAPIBaseModel,
+    IntModelTags,
+)
 from .data_source_parameters import (
     DataSourceParams,
-    DataSourceParamsSQL,
-    DataSourceParamsSchematizedSQL,
-    DataSourceParamsSubSQL,
     DataSourceParamsCHYTTableList,
     DataSourceParamsCHYTTableRange,
+    DataSourceParamsSchematizedSQL,
+    DataSourceParamsSQL,
+    DataSourceParamsSubSQL,
 )
-from ..dl_common.base import DatasetAPIBaseModel, IntModelTags
 
 _PARAMS_T = TypeVar("_PARAMS_T", bound=DataSourceParams)
 _DSRC_T = TypeVar("_DSRC_T", bound="DataSource")
@@ -48,21 +70,21 @@ class DataSource(Generic[_PARAMS_T], DatasetAPIBaseModel):
     valid: Optional[bool] = attr.ib(default=True)
 
     ignored_keys: ClassVar[set[str]] = {
-        'index_info_set',
-        'ref_source_id',
-        'raw_schema',
-        'parameter_hash',
-        'virtual',
+        "index_info_set",
+        "ref_source_id",
+        "raw_schema",
+        "parameter_hash",
+        "virtual",
     }
 
     @classmethod
     def create(
-            cls: Type[_DSRC_T],
-            *,
-            id: str,
-            title: str,
-            connection_id: str,
-            parameters: _PARAMS_T,
+        cls: Type[_DSRC_T],
+        *,
+        id: str,
+        title: str,
+        connection_id: str,
+        parameters: _PARAMS_T,
     ) -> _DSRC_T:
         return cls(
             id=id,
@@ -103,6 +125,7 @@ class DataSourceAnyCHYTTableRange(DataSource):
 
 
 # Non-abstract sources
+
 
 @ModelDescriptor()
 @attr.s(kw_only=True)

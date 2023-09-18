@@ -4,9 +4,7 @@ import aiohttp.pytest_plugin
 import aiohttp.test_utils
 import pytest
 
-pytest_plugins = (  # installs required fixtures for secrets  # TODO: refactor
-    'aiohttp.pytest_plugin',
-)
+pytest_plugins = ("aiohttp.pytest_plugin",)  # installs required fixtures for secrets  # TODO: refactor
 
 try:
     del aiohttp.pytest_plugin.loop

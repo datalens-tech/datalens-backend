@@ -1,29 +1,28 @@
 from typing import ClassVar
 
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
-from bi_connector_mysql.formula.constants import MySQLDialect as D
 from dl_testing.containers import get_test_container_hostport
 
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-
+from bi_connector_mysql.formula.constants import MySQLDialect as D
 
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
-    host_us_http=get_test_container_hostport('us', fallback_port=52011).host,
-    port_us_http=get_test_container_hostport('us', fallback_port=52011).port,
-    host_us_pg=get_test_container_hostport('pg-us', fallback_port=52010).host,
-    port_us_pg_5432=get_test_container_hostport('pg-us', fallback_port=52010).port,
-    us_master_token='AC1ofiek8coB',
-    core_connector_whitelist=['mysql'],
+    host_us_http=get_test_container_hostport("us", fallback_port=52011).host,
+    port_us_http=get_test_container_hostport("us", fallback_port=52011).port,
+    host_us_pg=get_test_container_hostport("pg-us", fallback_port=52010).host,
+    port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52010).port,
+    us_master_token="AC1ofiek8coB",
+    core_connector_whitelist=["mysql"],
 )
 
 
 class CoreConnectionSettings:
-    DB_NAME: ClassVar[str] = 'test_data'
-    HOST: ClassVar[str] = get_test_container_hostport('db-mysql-8-0', fallback_port=52001).host
-    PORT: ClassVar[int] = get_test_container_hostport('db-mysql-8-0', fallback_port=52001).port
-    USERNAME: ClassVar[str] = 'datalens'
-    PASSWORD: ClassVar[str] = 'qwerty'
+    DB_NAME: ClassVar[str] = "test_data"
+    HOST: ClassVar[str] = get_test_container_hostport("db-mysql-8-0", fallback_port=52001).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-mysql-8-0", fallback_port=52001).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
 
 
 SUBSELECT_QUERY_FULL = r"""
@@ -79,8 +78,8 @@ DB_URLS = {
 DB_CORE_URL = DB_URLS[D.MYSQL_8_0_12]
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=['mysql'],
-    core_connector_whitelist=['mysql'],
+    bi_api_connector_whitelist=["mysql"],
+    core_connector_whitelist=["mysql"],
     core_test_config=CORE_TEST_CONFIG,
-    ext_query_executer_secret_key='_some_test_secret_key_',
+    ext_query_executer_secret_key="_some_test_secret_key_",
 )

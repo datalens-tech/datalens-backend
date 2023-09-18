@@ -1,14 +1,29 @@
 import abc
 from contextlib import ExitStack
-from typing import Sequence, TypeVar, Type, Generic, ClassVar, final, Optional
+from typing import (
+    ClassVar,
+    Generic,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    final,
+)
 
 import attr
 
 from bi_external_api.converter.charts.coloring_converters import MeasureColoringSpecConverter
 from bi_external_api.converter.charts.ds_field_resolvers import MultiDatasetFieldResolver
-from bi_external_api.converter.charts.utils import IntVisPack, get_malformed_ext_unsuitable_field, FieldShapeConverter
+from bi_external_api.converter.charts.utils import (
+    FieldShapeConverter,
+    IntVisPack,
+    get_malformed_ext_unsuitable_field,
+)
 from bi_external_api.converter.charts.visualization_accessor import InternalVisualizationAccessor
-from bi_external_api.converter.converter_exc import ConstraintViolationError, NotSupportedYet
+from bi_external_api.converter.converter_exc import (
+    ConstraintViolationError,
+    NotSupportedYet,
+)
 from bi_external_api.converter.converter_exc_composer import ConversionErrHandlingContext
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import charts
@@ -34,9 +49,9 @@ class VisualizationConverter(Generic[_EXT_VIS_T], metaclass=abc.ABCMeta):
 
     @classmethod
     def create(
-            cls: Type[_VIS_CONV_T],
-            dataset_field_resolver: MultiDatasetFieldResolver,
-            err_handling_ctx: ConversionErrHandlingContext,
+        cls: Type[_VIS_CONV_T],
+        dataset_field_resolver: MultiDatasetFieldResolver,
+        err_handling_ctx: ConversionErrHandlingContext,
     ) -> _VIS_CONV_T:
         return cls(
             dataset_field_resolver=dataset_field_resolver,
@@ -80,10 +95,10 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         return self.convert_field_source_ext_to_int(ref.source)
 
     def field_ref_seq_to_placeholder_item_seq(
-            self,
-            ref_seq: Sequence[ext.ChartField],
-            path_elem: str,
-            single_element: bool = False,
+        self,
+        ref_seq: Sequence[ext.ChartField],
+        path_elem: str,
+        single_element: bool = False,
     ) -> Sequence[charts.ChartField]:
         return self.convert_field_source_seq_ext_to_int(
             [ref.source for ref in ref_seq],
@@ -95,10 +110,10 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         return self._dataset_field_resolver.get_int_chart_field_by_ext_cf_source(src)
 
     def convert_field_source_seq_ext_to_int(
-            self,
-            src_seq: Sequence[ext.ChartFieldSource],
-            path_elem: str,
-            single_element: bool = False,
+        self,
+        src_seq: Sequence[ext.ChartFieldSource],
+        path_elem: str,
+        single_element: bool = False,
     ) -> Sequence[charts.ChartField]:
         if single_element:
             assert len(src_seq) == 1
@@ -109,13 +124,9 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
             for idx, src in enumerate(src_seq):
                 with ExitStack() as stack:
                     if single_element:
-                        stack.enter_context(
-                            self._err_handling_ctx.postpone_error_in_current_path()
-                        )
+                        stack.enter_context(self._err_handling_ctx.postpone_error_in_current_path())
                     else:
-                        stack.enter_context(
-                            self._err_handling_ctx.postpone_error_with_path(path_elem=str(idx))
-                        )
+                        stack.enter_context(self._err_handling_ctx.postpone_error_with_path(path_elem=str(idx)))
                     ret.append(self.convert_field_source_ext_to_int(src))
 
         return ret
@@ -124,8 +135,7 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         return self._dataset_field_resolver.get_ext_chart_field_by_int_field(phi)
 
     def placeholder_item_seq_to_ext_field_ref_seq(
-            self,
-            phi_seq: Sequence[charts.ChartField]
+        self, phi_seq: Sequence[charts.ChartField]
     ) -> Sequence[ext.ChartField]:
         return [self.placeholder_item_to_ext_field_ref(phi) for phi in phi_seq]
 
@@ -168,17 +178,12 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         )
 
     def convert_sort_ext_to_int(self, ext_sort: ext.ChartSort) -> charts.ChartFieldSort:
-        chart_field = self.field_ref_to_placeholder_item(
-            ext.ChartField(source=ext_sort.source)
-        )
+        chart_field = self.field_ref_to_placeholder_item(ext.ChartField(source=ext_sort.source))
         int_dir = {
             ext.SortDirection.DESC: charts.SortDirection.DESC,
             ext.SortDirection.ASC: charts.SortDirection.ASC,
         }[ext_sort.direction]
-        return charts.ChartFieldSort(
-            direction=int_dir,
-            **attr.asdict(chart_field, recurse=False)
-        )
+        return charts.ChartFieldSort(direction=int_dir, **attr.asdict(chart_field, recurse=False))
 
     def convert_sort_int_to_ext(self, int_sort: charts.ChartFieldSort) -> ext.ChartSort:
         ext_field = self.placeholder_item_to_ext_field_ref(int_sort)
@@ -192,31 +197,20 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
                 charts.SortDirection.ASC: ext.SortDirection.ASC,
             }[int_dir]
 
-        return ext.ChartSort(
-            source=ext_field.source,
-            direction=ext_dir
-        )
+        return ext.ChartSort(source=ext_field.source, direction=ext_dir)
 
-    def convert_sort_seq_ext_to_int(
-            self,
-            ext_sort_seq: Sequence[ext.ChartSort]
-    ) -> Sequence[charts.ChartFieldSort]:
+    def convert_sort_seq_ext_to_int(self, ext_sort_seq: Sequence[ext.ChartSort]) -> Sequence[charts.ChartFieldSort]:
         return [self.convert_sort_ext_to_int(ext_sort) for ext_sort in ext_sort_seq]
 
-    def convert_sort_seq_int_to_ext(
-            self,
-            int_sort_seq: Sequence[charts.ChartFieldSort]
-    ) -> Sequence[ext.ChartSort]:
+    def convert_sort_seq_int_to_ext(self, int_sort_seq: Sequence[charts.ChartFieldSort]) -> Sequence[ext.ChartSort]:
         return [self.convert_sort_int_to_ext(int_sort) for int_sort in int_sort_seq]
 
     def convert_colors_ext_to_int(
-            self,
-            ext_coloring: ext.FieldColoring,
+        self,
+        ext_coloring: ext.FieldColoring,
     ) -> tuple[Sequence[charts.ChartField], Optional[charts.ColorConfig]]:
         int_color_fields = self.convert_field_source_seq_ext_to_int(
-            [ext_coloring.source],
-            single_element=True,
-            path_elem="source"
+            [ext_coloring.source], single_element=True, path_elem="source"
         )
 
         # Error occurred during color field resolution
@@ -229,10 +223,8 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         config: Optional[charts.ColorConfig]
 
         if isinstance(ext_coloring, ext.DimensionColoring):
-            if (
-                    field.type != charts.DatasetFieldType.DIMENSION
-                    and
-                    not self._dataset_field_resolver.is_measure_names(field)
+            if field.type != charts.DatasetFieldType.DIMENSION and not self._dataset_field_resolver.is_measure_names(
+                field
             ):
                 raise ConstraintViolationError("Dimension coloring can not be applied to non-dimension field")
 
@@ -240,10 +232,7 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
                 fieldGuid=field.guid,
                 coloredByMeasure=False,
                 palette=ext_coloring.palette_id,
-                mountedColors=FrozenStrMapping({
-                    mount.value: str(mount.color_idx)
-                    for mount in ext_coloring.mounts
-                })
+                mountedColors=FrozenStrMapping({mount.value: str(mount.color_idx) for mount in ext_coloring.mounts}),
             )
         elif isinstance(ext_coloring, ext.MeasureColoring):
             if field.type != charts.DatasetFieldType.MEASURE:
@@ -259,9 +248,9 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         return int_color_fields, config
 
     def convert_colors_int_to_ext(
-            self,
-            field: Optional[charts.ChartField],
-            colors_config: Optional[charts.ColorConfig],
+        self,
+        field: Optional[charts.ChartField],
+        colors_config: Optional[charts.ColorConfig],
     ) -> Optional[ext.FieldColoring]:
         if field is None:
             return None
@@ -272,8 +261,7 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         if field_type is charts.DatasetFieldType.DIMENSION or self._dataset_field_resolver.is_measure_names(field):
             if colors_config is not None and colors_config.coloredByMeasure:
                 self._err_handling_ctx.log_warning(
-                    "Got colors_config.coloredByMeasure=True for coloring by dimensions field",
-                    not_for_user=True
+                    "Got colors_config.coloredByMeasure=True for coloring by dimensions field", not_for_user=True
                 )
 
             return ext.DimensionColoring(
@@ -291,8 +279,7 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         elif field_type is charts.DatasetFieldType.MEASURE:
             if colors_config is not None and not colors_config.coloredByMeasure:
                 self._err_handling_ctx.log_warning(
-                    "Got colors_config.coloredByMeasure=False for coloring by measure field",
-                    not_for_user=True
+                    "Got colors_config.coloredByMeasure=False for coloring by measure field", not_for_user=True
                 )
             return ext.MeasureColoring(
                 source=ext_source_field,
@@ -305,10 +292,10 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         )
 
     def convert_color_int_to_ext_validate_type(
-            self,
-            the_type: Type[_F_COLORING_T],
-            field: Optional[charts.ChartField],
-            colors_config: Optional[charts.ColorConfig],
+        self,
+        the_type: Type[_F_COLORING_T],
+        field: Optional[charts.ChartField],
+        colors_config: Optional[charts.ColorConfig],
     ) -> Optional[_F_COLORING_T]:
         ret = self.convert_colors_int_to_ext(field, colors_config)
         if isinstance(ret, the_type) or ret is None:
@@ -320,13 +307,11 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
         )
 
     def convert_dimensions_shapes_ext_to_int(
-            self,
-            ext_shaping: ext.DimensionShaping,
+        self,
+        ext_shaping: ext.DimensionShaping,
     ) -> tuple[Sequence[charts.ChartField], Optional[charts.ShapeConfig]]:
         int_shape_fields = self.convert_field_source_seq_ext_to_int(
-            [ext_shaping.source],
-            single_element=True,
-            path_elem="source"
+            [ext_shaping.source], single_element=True, path_elem="source"
         )
 
         # Error occurred during shapes field resolution
@@ -343,17 +328,14 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
 
         config = charts.ShapeConfig(
             fieldGuid=field.guid,
-            mountedShapes=FrozenStrMapping({
-                mount.value: FieldShapeConverter.ext_to_int(mount.shape)
-                for mount in ext_shaping.mounts
-            }),
+            mountedShapes=FrozenStrMapping(
+                {mount.value: FieldShapeConverter.ext_to_int(mount.shape) for mount in ext_shaping.mounts}
+            ),
         )
         return int_shape_fields, config
 
     def convert_dimensions_shapes_int_to_ext(
-            self,
-            field: Optional[charts.ChartField],
-            int_config: Optional[charts.ShapeConfig]
+        self, field: Optional[charts.ChartField], int_config: Optional[charts.ShapeConfig]
     ) -> Optional[ext.DimensionShaping]:
         if field is None:
             return None
@@ -371,7 +353,9 @@ class VisualizationConverterBase(VisualizationConverter[_EXT_VIS_T], metaclass=a
                 mounts=[
                     ext.ShapeMount(value=value, shape=FieldShapeConverter.int_to_ext(shape_str))
                     for value, shape_str in int_shapes_mounts.items()
-                ] if int_shapes_mounts is not None else (),
+                ]
+                if int_shapes_mounts is not None
+                else (),
             )
         raise get_malformed_ext_unsuitable_field(
             bad_field_msg="Unexpected shape field params",
@@ -479,9 +463,7 @@ class VisConvLinearDiagram(VisualizationConverterBase[ext.LineChart]):
         v_accessor = InternalVisualizationAccessor(int_v_pack.vis_strict)
 
         return ext.LineChart(
-            x=self.placeholder_item_to_ext_field_ref(
-                v_accessor.get_single_placeholder_item(charts.PlaceholderId.X)
-            ),
+            x=self.placeholder_item_to_ext_field_ref(v_accessor.get_single_placeholder_item(charts.PlaceholderId.X)),
             y=self.placeholder_item_seq_to_ext_field_ref_seq(
                 v_accessor.get_single_placeholder(charts.PlaceholderId.Y).items
             ),
@@ -572,7 +554,7 @@ class VisConvBaseColumnDiagram(VisualizationConverterBase, Generic[_COLUMN_VIS_C
                 ext.FieldColoring,
                 int_v_pack.get_single_color_field(),
                 int_v_pack.colors_config,
-            )
+            ),
         )
 
     def _convert_ext_to_int(self, ext_v: _COLUMN_VIS_CLS) -> charts.Visualization:
@@ -625,7 +607,7 @@ class VisConvBaseBarDiagram(VisualizationConverterBase, Generic[_BAR_VIS_CLS]):
                 ext.FieldColoring,
                 int_v_pack.get_single_color_field(),
                 int_v_pack.colors_config,
-            )
+            ),
         )
 
     def _convert_ext_to_int(self, ext_v: _COLUMN_VIS_CLS) -> charts.Visualization:
@@ -678,7 +660,7 @@ class VisConvBaseAreaChart(VisualizationConverterBase, Generic[_AREA_VIS_CLS]):
                 ext.FieldColoring,
                 int_v_pack.get_single_color_field(),
                 int_v_pack.colors_config,
-            )
+            ),
         )
 
     def _convert_ext_to_int(self, ext_v: _AREA_VIS_CLS) -> charts.Visualization:
@@ -745,9 +727,7 @@ class VisConvBaseCircularChart(VisualizationConverterBase, Generic[_CIRCULAR_VIS
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
-                    items=self.field_ref_seq_to_placeholder_item_seq(
-                        [ext_v.measures], path_elem="measures"
-                    ),
+                    items=self.field_ref_seq_to_placeholder_item_seq([ext_v.measures], path_elem="measures"),
                 ),
             ],
         )
@@ -774,12 +754,8 @@ class VisConvScatterPlot(VisualizationConverterBase[ext.ScatterPlot]):
         v_accessor = InternalVisualizationAccessor(int_v_pack.vis_strict)
 
         return ext.ScatterPlot(
-            x=self.placeholder_item_to_ext_field_ref(
-                v_accessor.get_single_placeholder_item(charts.PlaceholderId.X)
-            ),
-            y=self.placeholder_item_to_ext_field_ref(
-                v_accessor.get_single_placeholder_item(charts.PlaceholderId.Y)
-            ),
+            x=self.placeholder_item_to_ext_field_ref(v_accessor.get_single_placeholder_item(charts.PlaceholderId.X)),
+            y=self.placeholder_item_to_ext_field_ref(v_accessor.get_single_placeholder_item(charts.PlaceholderId.Y)),
             points=self.placeholder_item_to_ext_field_ref(
                 v_accessor.get_single_placeholder_item(charts.PlaceholderId.Points)
             ),
@@ -810,24 +786,28 @@ class VisConvScatterPlot(VisualizationConverterBase[ext.ScatterPlot]):
             ),
         ]
         if ext_v.points is not None:
-            placeholders.append(charts.Placeholder(
-                id=charts.PlaceholderId.Points,
-                items=self.field_ref_seq_to_placeholder_item_seq(
-                    [ext_v.points],
-                    path_elem="points",
-                    single_element=True,
-                ),
-            ))
+            placeholders.append(
+                charts.Placeholder(
+                    id=charts.PlaceholderId.Points,
+                    items=self.field_ref_seq_to_placeholder_item_seq(
+                        [ext_v.points],
+                        path_elem="points",
+                        single_element=True,
+                    ),
+                )
+            )
 
         if ext_v.size is not None:
-            placeholders.append(charts.Placeholder(
-                id=charts.PlaceholderId.Size,
-                items=self.field_ref_seq_to_placeholder_item_seq(
-                    [ext_v.size],
-                    path_elem="size",
-                    single_element=True,
-                ),
-            ))
+            placeholders.append(
+                charts.Placeholder(
+                    id=charts.PlaceholderId.Size,
+                    items=self.field_ref_seq_to_placeholder_item_seq(
+                        [ext_v.size],
+                        path_elem="size",
+                        single_element=True,
+                    ),
+                )
+            )
 
         return charts.Visualization(
             id=self.INT_VIS_ID,
@@ -860,10 +840,7 @@ class VisConvTreeMapDiagram(VisualizationConverterBase[ext.TreeMap]):
             placeholders=[
                 charts.Placeholder(
                     id=charts.PlaceholderId.Dimensions,
-                    items=self.field_ref_seq_to_placeholder_item_seq(
-                        ext_v.dimensions,
-                        path_elem="dimensions"
-                    ),
+                    items=self.field_ref_seq_to_placeholder_item_seq(ext_v.dimensions, path_elem="dimensions"),
                 ),
                 charts.Placeholder(
                     id=charts.PlaceholderId.Measures,
@@ -872,7 +849,6 @@ class VisConvTreeMapDiagram(VisualizationConverterBase[ext.TreeMap]):
                         path_elem="measures",
                         single_element=True,
                     ),
-                )
-
-            ]
+                ),
+            ],
         )

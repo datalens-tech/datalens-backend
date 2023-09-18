@@ -3,9 +3,7 @@ import json
 import attr
 
 from bi_api_lib_ya.app_settings import default_yc_auth_settings
-
 from dl_configs.utils import app_type_env_var_converter
-
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 
 
@@ -18,8 +16,12 @@ class DefaultFileUploaderAPISettings(FileUploaderAPISettings):
     )
 
     YC_AUTH_SETTINGS: Optional[YCAuthSettings] = s_attrib(  # type: ignore
-        "YC_AUTH_SETTINGS", fallback_factory=default_yc_auth_settings,
+        "YC_AUTH_SETTINGS",
+        fallback_factory=default_yc_auth_settings,
     )
     SA_KEY_DATA: Optional[dict[str, str]] = s_attrib(  # type: ignore
-        "SA_KEY_DATA", sensitive=True, missing=None, env_var_converter=json.loads,
+        "SA_KEY_DATA",
+        sensitive=True,
+        missing=None,
+        env_var_converter=json.loads,
     )

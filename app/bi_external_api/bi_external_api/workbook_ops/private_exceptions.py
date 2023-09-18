@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import (
+    Optional,
+    TypeVar,
+)
 
 import attr
 
@@ -35,11 +38,13 @@ class WorkbookReadBasePrivateError(ExternalAPIException, ExceptionWithData[_READ
 
 class WorkbookReadPrivateError(WorkbookReadBasePrivateError[WorkbookReadErrorInfo]):
     """Indicates that workbook reading was finished with entry fetch or conversion errors"""
+
     pass
 
 
 class WorkbookClustezationPrivateError(WorkbookReadBasePrivateError[WorkbookClusterizationErrorInfo]):
     """Indicates that workbook clusterization was finished with entry fetch or conversion errors"""
+
     pass
 
 
@@ -53,5 +58,6 @@ class OperationTerminationErrorData:
 
 
 class OperationTerminationError(ExternalAPIException, ExceptionWithData[OperationTerminationErrorData]):
-    """Indicates that execution of operation """
+    """Indicates that execution of operation"""
+
     pass

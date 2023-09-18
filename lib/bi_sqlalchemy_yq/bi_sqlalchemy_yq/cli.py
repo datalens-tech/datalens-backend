@@ -3,25 +3,30 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
+from typing import (
+    Any,
+    AsyncIterable,
+    Optional,
+    Sequence,
+    Tuple,
+)
 import uuid
-from typing import Any, AsyncIterable, Optional, Sequence, Tuple
 
 import attr
-
-import ydb.public.api.protos.draft.fq_pb2 as yqpb
-from ydb.public.api.grpc.draft.fq_v1_pb2_grpc import FederatedQueryServiceStub
-from ydb.public.api.protos.ydb_status_codes_pb2 import StatusIds
-
 from ydb.convert import ResultSet
 from ydb.dbapi.cursor import get_column_type
+from ydb.public.api.grpc.draft.fq_v1_pb2_grpc import FederatedQueryServiceStub
+import ydb.public.api.protos.draft.fq_pb2 as yqpb
+from ydb.public.api.protos.ydb_status_codes_pb2 import StatusIds
 from ydb.table import TableClientSettings
 
-from bi_cloud_integration.yc_client_base import DLYCServiceConfig, DLYCSingleServiceClient
+from bi_cloud_integration.yc_client_base import (
+    DLYCServiceConfig,
+    DLYCSingleServiceClient,
+)
 from bi_cloud_integration.yc_ts_client import get_yc_service_token
-from dl_utils.aio import await_sync
-
 from bi_sqlalchemy_yq.errors import YQError
-
+from dl_utils.aio import await_sync
 
 TColumnDesc = Tuple[str, str]  # name, type_name
 TColumns = Tuple[TColumnDesc, ...]
@@ -43,16 +48,18 @@ class DLYQClient(DLYCSingleServiceClient):
 
     @classmethod
     def create(  # type: ignore  # `Signature of "create" incompatible with supertype "DLYCClientCommon"`
-            cls, endpoint: str,
-            request_id: Optional[str] = None,
-            svc_kwargs: Optional[dict] = None,
-            **kwargs: Any,
+        cls,
+        endpoint: str,
+        request_id: Optional[str] = None,
+        svc_kwargs: Optional[dict] = None,
+        **kwargs: Any,
     ) -> DLYQClient:
         svc_kwargs = dict(svc_kwargs or {})
-        svc_kwargs.setdefault('tls', None)
+        svc_kwargs.setdefault("tls", None)
         service_config = DLYCServiceConfig(endpoint=endpoint, **svc_kwargs)
         return cls(
-            service_config=service_config, request_id=request_id,
+            service_config=service_config,
+            request_id=request_id,
             **kwargs,
         )
 
@@ -67,9 +74,9 @@ class DLYQClient(DLYCSingleServiceClient):
         sup = super()._default_metadata
 
         return sup + (
-            ('x-ydb-auth-ticket', bearer_token),
-            ('x-ydb-database', self.database_name),
-            ('x-ydb-fq-project', f'yandexcloud://{self.folder_id}'),
+            ("x-ydb-auth-ticket", bearer_token),
+            ("x-ydb-database", self.database_name),
+            ("x-ydb-fq-project", f"yandexcloud://{self.folder_id}"),
         )
 
     async def ensure_fresh_token(self, yc_ts_endpoint: str, key_data: dict) -> DLYQClient:
@@ -91,8 +98,9 @@ class DLYQClient(DLYCSingleServiceClient):
         return result
 
     async def create_query(
-        self, query: str,
-        name: str = 'DataLens YQ query',
+        self,
+        query: str,
+        name: str = "DataLens YQ query",
     ) -> str:
         idempotency_key = str(uuid.uuid4())
 
@@ -121,7 +129,7 @@ class DLYQClient(DLYCSingleServiceClient):
         return str(describe_res)
 
     async def query_status(self, query_id: str) -> Tuple[bool, Optional[str], Any]:
-        """ (query_id) -> (is_done, errors) """
+        """(query_id) -> (is_done, errors)"""
         req = yqpb.GetQueryStatusRequest()
         req.query_id = query_id
         resp = await self.service.GetQueryStatus.aio(req)
@@ -159,10 +167,11 @@ class DLYQClient(DLYCSingleServiceClient):
         return status_res
 
     async def get_data(
-            self,
-            query_id: str,
-            offset: int = 0, limit: int = 100,
-            result_set_index: int = 0,
+        self,
+        query_id: str,
+        offset: int = 0,
+        limit: int = 100,
+        result_set_index: int = 0,
     ) -> TResultData:
         req = yqpb.GetResultDataRequest(
             query_id=query_id,
@@ -178,16 +187,9 @@ class DLYQClient(DLYCSingleServiceClient):
 
         rs = ResultSet.from_message(
             data_res.result_set,
-            (
-                TableClientSettings()
-                .with_native_date_in_result_sets(True)
-                .with_native_datetime_in_result_sets(True)
-            ),
+            (TableClientSettings().with_native_date_in_result_sets(True).with_native_datetime_in_result_sets(True)),
         )
-        columns = tuple(
-            (str(col.name), str(get_column_type(col.type)))
-            for col in rs.columns
-        )
+        columns = tuple((str(col.name), str(get_column_type(col.type))) for col in rs.columns)
         rows = rs.rows
         return columns, rows
 
@@ -241,7 +243,6 @@ class DLYQClient(DLYCSingleServiceClient):
                     LOGGER.exception("Error on cleanup of query %r: %r", query_id, exc)
 
     def run_query_get_chunks_sync(self, query: str, chunk_size: int = 1000) -> Sequence[TResultData]:
-
         async def work() -> Sequence[TResultData]:
             chunks_gen = self.run_query_get_chunks(query, chunk_size=chunk_size)
             result = []

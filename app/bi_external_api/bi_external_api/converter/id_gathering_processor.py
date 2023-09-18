@@ -1,19 +1,28 @@
-from typing import ClassVar, Mapping, Optional
+from typing import (
+    ClassVar,
+    Mapping,
+    Optional,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import Processor
 from bi_external_api.attrs_model_mapper.field_processor import FieldMeta
-from bi_external_api.domain.internal.dl_common import IntModelTags, EntryScope
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    IntModelTags,
+)
 
 
 @attr.s()
 class IDGatheringProcessor(Processor[str]):
-    id_map: dict[IntModelTags, set[str]] = attr.ib(factory=lambda: {
-        IntModelTags.chart_id: set(),
-        IntModelTags.dataset_id: set(),
-        IntModelTags.connection_id: set(),
-    })
+    id_map: dict[IntModelTags, set[str]] = attr.ib(
+        factory=lambda: {
+            IntModelTags.chart_id: set(),
+            IntModelTags.dataset_id: set(),
+            IntModelTags.connection_id: set(),
+        }
+    )
 
     map_scope_id_tag: ClassVar[Mapping[EntryScope, IntModelTags]] = {
         EntryScope.widget: IntModelTags.chart_id,

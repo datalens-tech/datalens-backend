@@ -4,14 +4,13 @@ from typing import Generator
 from frozendict import frozendict
 import pytest
 
-from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core_testing.testcases.connection import BaseConnectionTestClass
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 import dl_connector_clickhouse_tests.db.config as test_config
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 
 class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):

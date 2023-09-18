@@ -1,16 +1,37 @@
-from typing import Optional, Sequence, Any
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+)
 
 import attr
 
-from dl_constants.enums import WhereClauseOperation, BIType
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.structs.mappings import FrozenStrMapping
-from .actions import ChartAction
-from .enums import PlaceholderId, DatasetFieldType, VisualizationId, SortDirection
+from dl_constants.enums import (
+    BIType,
+    WhereClauseOperation,
+)
+
+from ...utils import (
+    ensure_tuple,
+    ensure_tuple_of_tuples,
+)
 from ..datasets import ResultSchemaFieldFull
-from ..dl_common import DatasetAPIBaseModel, EntryInstance, IntModelTags, EntryScope
-from ...utils import ensure_tuple, ensure_tuple_of_tuples
+from ..dl_common import (
+    DatasetAPIBaseModel,
+    EntryInstance,
+    EntryScope,
+    IntModelTags,
+)
+from .actions import ChartAction
+from .enums import (
+    DatasetFieldType,
+    PlaceholderId,
+    SortDirection,
+    VisualizationId,
+)
 
 
 @ModelDescriptor()
@@ -126,8 +147,7 @@ class ChartField(DatasetAPIBaseModel):
     # format: string;
     # labelMode: string;
     datasetId: Optional[str] = attr.ib(
-        default=None,
-        metadata=AttribDescriptor(tags=frozenset({IntModelTags.dataset_id})).to_meta()
+        default=None, metadata=AttribDescriptor(tags=frozenset({IntModelTags.dataset_id})).to_meta()
     )
     # dateMode: string;
     # fakeTitle?: string;
@@ -169,10 +189,10 @@ class Visualization(DatasetAPIBaseModel):
     def default_highcharts_id(self) -> Optional[str]:
         # https://a.yandex-team.ru/arcadia/data-ui/datalens/src/ui/units/ql/constants/visualizations.tsx?rev=r9891434#L20
         return {
-            VisualizationId.area100p: 'area',
-            VisualizationId.column100p: 'column',
-            VisualizationId.bar100p: 'bar',
-            VisualizationId.donut: 'pie',
+            VisualizationId.area100p: "area",
+            VisualizationId.column100p: "column",
+            VisualizationId.bar100p: "bar",
+            VisualizationId.donut: "pie",
         }.get(self.id)
 
 
@@ -198,9 +218,9 @@ class Chart(DatasetAPIBaseModel):
     sort: Optional[Sequence[ChartFieldSort]] = attr.ib(default=(), converter=ensure_tuple)  # type: ignore
     filters: Sequence[FieldFilter] = attr.ib(default=(), converter=ensure_tuple)  # type: ignore
 
-    colorsConfig: Optional[ColorConfig] = attr.ib(default=None, metadata=AttribDescriptor(
-        skip_none_on_dump=True
-    ).to_meta())
+    colorsConfig: Optional[ColorConfig] = attr.ib(
+        default=None, metadata=AttribDescriptor(skip_none_on_dump=True).to_meta()
+    )
     shapesConfig: Optional[ShapeConfig] = attr.ib(default=None)
     extraSettings: ExtraSettings = attr.ib(factory=ExtraSettings)
 
@@ -226,10 +246,7 @@ class Chart(DatasetAPIBaseModel):
         # Workaround for accidental int version in charts config
         # May be it can be removed later. Ask FE team later.
         if data.get("version") == 8:
-            return {
-                **data,
-                "version": "8"
-            }
+            return {**data, "version": "8"}
         # In other cases - no any modifications
         return None
 

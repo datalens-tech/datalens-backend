@@ -15,9 +15,6 @@ from typing import (
 import attr
 import sqlalchemy as sa
 
-from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_models.common_models import TableIdent
-
 from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,
     PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
@@ -25,6 +22,8 @@ from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import 
 )
 from dl_connector_postgresql.core.postgresql_base.error_transformer import sync_pg_db_error_transformer
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connection_models.common_models import TableIdent
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo

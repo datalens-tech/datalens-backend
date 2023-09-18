@@ -4,21 +4,22 @@ from os import path
 
 HERE = path.abspath(path.dirname(__file__))
 
-IDEA_DIR = path.abspath(path.join(
-    HERE,
-    "..", "..", "..",
-    ".idea"
-))
+IDEA_DIR = path.abspath(path.join(HERE, "..", "..", "..", ".idea"))
 
-PKGLIST_PATH = path.abspath(path.join(
-    HERE, "..", "requirements", "all_local_packages.lst",
-))
+PKGLIST_PATH = path.abspath(
+    path.join(
+        HERE,
+        "..",
+        "requirements",
+        "all_local_packages.lst",
+    )
+)
 
 
 def get_submodules():
     with open(PKGLIST_PATH) as fobj:
         data = list(fobj)
-    data = [row.split('#', 1)[0].strip() for row in data]
+    data = [row.split("#", 1)[0].strip() for row in data]
     data = [item for item in data if item]
     return data
 

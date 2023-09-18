@@ -1,20 +1,41 @@
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import (
+    Optional,
+    Tuple,
+)
 
 import attr
 import shortuuid
 
-from dl_constants.enums import AggregationFunction, BIType, FieldType, ManagedBy, BinaryJoinOperator
-
-from dl_core.components.ids import AvatarId, FieldId
-from dl_core.components.dependencies.primitives import FieldInterDependencyInfo
-from dl_core.components.dependencies.field_shallow import FieldShallowInterDependencyManager
-from dl_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
+from dl_constants.enums import (
+    AggregationFunction,
+    BinaryJoinOperator,
+    BIType,
+    FieldType,
+    ManagedBy,
+)
 from dl_core.components.dependencies.field_avatar import FieldAvatarDependencyManager
+from dl_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
+from dl_core.components.dependencies.field_shallow import FieldShallowInterDependencyManager
+from dl_core.components.dependencies.primitives import FieldInterDependencyInfo
 from dl_core.components.dependencies.relation_avatar import RelationAvatarDependencyManager
-from dl_core.fields import BIField, ResultSchema, DirectCalculationSpec, FormulaCalculationSpec
-from dl_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect, ConditionPartResultField
+from dl_core.components.ids import (
+    AvatarId,
+    FieldId,
+)
+from dl_core.fields import (
+    BIField,
+    DirectCalculationSpec,
+    FormulaCalculationSpec,
+    ResultSchema,
+)
+from dl_core.multisource import (
+    AvatarRelation,
+    BinaryCondition,
+    ConditionPartDirect,
+    ConditionPartResultField,
+)
 
 
 @attr.s
@@ -24,9 +45,7 @@ class ShallowInfo:
     field_3_id: FieldId = attr.ib(factory=shortuuid.uuid)
     field_4_id: FieldId = attr.ib(factory=shortuuid.uuid)
     shallow: FieldShallowInterDependencyManager = attr.ib(
-        factory=lambda: FieldShallowInterDependencyManager(
-            inter_dep_info=FieldInterDependencyInfo()
-        )
+        factory=lambda: FieldShallowInterDependencyManager(inter_dep_info=FieldInterDependencyInfo())
     )
 
 
@@ -34,12 +53,10 @@ def make_shallow() -> ShallowInfo:
     shallow_info = ShallowInfo()
 
     shallow_info.shallow.set_field_direct_references(
-        dep_field_id=shallow_info.field_1_id,
-        ref_field_ids=[shallow_info.field_2_id, shallow_info.field_3_id]
+        dep_field_id=shallow_info.field_1_id, ref_field_ids=[shallow_info.field_2_id, shallow_info.field_3_id]
     )
     shallow_info.shallow.set_field_direct_references(
-        dep_field_id=shallow_info.field_4_id,
-        ref_field_ids=[shallow_info.field_1_id]
+        dep_field_id=shallow_info.field_4_id, ref_field_ids=[shallow_info.field_1_id]
     )
     return shallow_info
 
@@ -78,7 +95,7 @@ def make_formula_field(field_id: FieldId) -> BIField:
         valid=True,
         managed_by=ManagedBy.user,
         calc_spec=FormulaCalculationSpec(
-            formula='...',
+            formula="...",
         ),
     )
 
@@ -87,12 +104,14 @@ def make_result_schema(shallow_info) -> Tuple[ResultSchema, AvatarId, AvatarId]:
     avatar_1_id = shortuuid.uuid()
     avatar_2_id = shortuuid.uuid()
     return (
-        ResultSchema(fields=[
-            make_formula_field(field_id=shallow_info.field_1_id),
-            make_direct_field(field_id=shallow_info.field_2_id, avatar_id=avatar_1_id),
-            make_direct_field(field_id=shallow_info.field_3_id, avatar_id=avatar_2_id),
-            make_formula_field(field_id=shallow_info.field_4_id),
-        ]),
+        ResultSchema(
+            fields=[
+                make_formula_field(field_id=shallow_info.field_1_id),
+                make_direct_field(field_id=shallow_info.field_2_id, avatar_id=avatar_1_id),
+                make_direct_field(field_id=shallow_info.field_3_id, avatar_id=avatar_2_id),
+                make_formula_field(field_id=shallow_info.field_4_id),
+            ]
+        ),
         avatar_1_id,
         avatar_2_id,
     )
@@ -101,18 +120,12 @@ def make_result_schema(shallow_info) -> Tuple[ResultSchema, AvatarId, AvatarId]:
 def test_shallow_manager():
     shallow_info = make_shallow()
 
-    assert shallow_info.shallow.get_field_direct_references(
-        dep_field_id=shallow_info.field_1_id
-    ) == {
+    assert shallow_info.shallow.get_field_direct_references(dep_field_id=shallow_info.field_1_id) == {
         shallow_info.field_2_id,
         shallow_info.field_3_id,
     }
-    assert shallow_info.shallow.get_field_direct_references(
-        dep_field_id=shallow_info.field_2_id
-    ) == set()
-    assert shallow_info.shallow.get_field_direct_references(
-        dep_field_id=shallow_info.field_4_id
-    ) == {
+    assert shallow_info.shallow.get_field_direct_references(dep_field_id=shallow_info.field_2_id) == set()
+    assert shallow_info.shallow.get_field_direct_references(dep_field_id=shallow_info.field_4_id) == {
         shallow_info.field_1_id,
     }
 
@@ -121,18 +134,12 @@ def test_deep_manager():
     shallow_info = make_shallow()
     deep = FieldDeepInterDependencyManager(shallow=shallow_info.shallow)
 
-    assert deep.get_field_deep_references(
-        dep_field_id=shallow_info.field_1_id
-    ) == {
+    assert deep.get_field_deep_references(dep_field_id=shallow_info.field_1_id) == {
         shallow_info.field_2_id,
         shallow_info.field_3_id,
     }
-    assert deep.get_field_deep_references(
-        dep_field_id=shallow_info.field_2_id
-    ) == set()
-    assert deep.get_field_deep_references(
-        dep_field_id=shallow_info.field_4_id
-    ) == {
+    assert deep.get_field_deep_references(dep_field_id=shallow_info.field_2_id) == set()
+    assert deep.get_field_deep_references(dep_field_id=shallow_info.field_4_id) == {
         shallow_info.field_1_id,
         shallow_info.field_2_id,
         shallow_info.field_3_id,
@@ -148,20 +155,14 @@ def test_field_avatar_manager():
         deep=deep,
     )
 
-    assert field_avatar_mgr.get_field_avatar_references(
-        dep_field_id=shallow_info.field_1_id
-    ) == {
+    assert field_avatar_mgr.get_field_avatar_references(dep_field_id=shallow_info.field_1_id) == {
         avatar_1_id,
         avatar_2_id,
     }
-    assert field_avatar_mgr.get_field_avatar_references(
-        dep_field_id=shallow_info.field_2_id
-    ) == {
+    assert field_avatar_mgr.get_field_avatar_references(dep_field_id=shallow_info.field_2_id) == {
         avatar_1_id,
     }
-    assert field_avatar_mgr.get_field_avatar_references(
-        dep_field_id=shallow_info.field_4_id
-    ) == {
+    assert field_avatar_mgr.get_field_avatar_references(dep_field_id=shallow_info.field_4_id) == {
         avatar_1_id,
         avatar_2_id,
     }
@@ -183,21 +184,25 @@ def test_relation_avatar_manager():
             id=relation_1_id,
             left_avatar_id=avatar_1_id,
             right_avatar_id=avatar_2_id,
-            conditions=[BinaryCondition(
-                operator=BinaryJoinOperator.eq,
-                left_part=ConditionPartDirect(source='col_1'),
-                right_part=ConditionPartDirect(source='col_2'),
-            )]
+            conditions=[
+                BinaryCondition(
+                    operator=BinaryJoinOperator.eq,
+                    left_part=ConditionPartDirect(source="col_1"),
+                    right_part=ConditionPartDirect(source="col_2"),
+                )
+            ],
         ),
         AvatarRelation(
             id=relation_2_id,
             left_avatar_id=avatar_1_id,
             right_avatar_id=avatar_3_id,
-            conditions=[BinaryCondition(
-                operator=BinaryJoinOperator.eq,
-                left_part=ConditionPartResultField(field_id=shallow_info.field_1_id),
-                right_part=ConditionPartDirect(source='col_2'),
-            )]
+            conditions=[
+                BinaryCondition(
+                    operator=BinaryJoinOperator.eq,
+                    left_part=ConditionPartResultField(field_id=shallow_info.field_1_id),
+                    right_part=ConditionPartDirect(source="col_2"),
+                )
+            ],
         ),
     ]
     relation_avatar_mgr = RelationAvatarDependencyManager(
@@ -205,15 +210,11 @@ def test_relation_avatar_manager():
         field_avatar_mgr=field_avatar_mgr,
     )
 
-    assert relation_avatar_mgr.get_relation_avatar_references(
-        relation_id=relation_1_id
-    ) == {
+    assert relation_avatar_mgr.get_relation_avatar_references(relation_id=relation_1_id) == {
         avatar_1_id,
         avatar_2_id,
     }
-    assert relation_avatar_mgr.get_relation_avatar_references(
-        relation_id=relation_2_id
-    ) == {
+    assert relation_avatar_mgr.get_relation_avatar_references(relation_id=relation_2_id) == {
         avatar_1_id,
         avatar_2_id,
         avatar_3_id,

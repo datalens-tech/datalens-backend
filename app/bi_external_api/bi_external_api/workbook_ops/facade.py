@@ -1,10 +1,13 @@
-import re
 from contextlib import contextmanager
-from typing import Type, Sequence, Optional, Iterator
+import re
+from typing import (
+    Iterator,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 from bi_external_api.converter.charts.chart_converter import BaseChartConverter
 from bi_external_api.converter.converter_ctx import ConverterContext
@@ -16,27 +19,37 @@ from bi_external_api.converter.worbook_list.us_wb_list_gather import USWorkbookL
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.external import rpc, ConnectionModifyRequest, ConnectionGetRequest, ConnectionDeleteRequest
+from bi_external_api.domain.external import (
+    ConnectionDeleteRequest,
+    ConnectionGetRequest,
+    ConnectionModifyRequest,
+    rpc,
+)
 from bi_external_api.domain.internal.dl_common import EntryScope
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.workbook_ops import wb_mod_steps
-from bi_external_api.workbook_ops.conn_manager import ConnectionManager, ConnectionSecretsHolder, int_conn_data_to_ext
+from bi_external_api.workbook_ops.conn_manager import (
+    ConnectionManager,
+    ConnectionSecretsHolder,
+    int_conn_data_to_ext,
+)
 from bi_external_api.workbook_ops.exc_composer import (
+    WorkbookClusterizeExcComposer,
+    WorkbookModificationExcComposer,
     WorkbookOperationErrorHandler,
     WorkbookReadExcComposer,
-    WorkbookModificationExcComposer,
-    WorkbookClusterizeExcComposer,
 )
 from bi_external_api.workbook_ops.private_exceptions import (
-    WorkbookReadPrivateError,
     OperationTerminationError,
     OperationTerminationErrorData,
+    WorkbookReadPrivateError,
 )
 from bi_external_api.workbook_ops.wb_accessor import WorkbookAccessor
 from bi_external_api.workbook_ops.wb_diff_calculator import ExtWorkbookDiffCalculator
 from bi_external_api.workbook_ops.wb_mod_steps.utils import TaggedStringAttrSetter
 from bi_external_api.workbook_ops.wb_modification_context import WorkbookModificationContext
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 @attr.s()
@@ -56,10 +69,10 @@ class WorkbookOpsFacade:
 
     @classmethod
     def convert_wb_context_to_ext_wb_instance(
-            cls,
-            wb_ctx: WorkbookContext,
-            converter_ctx: ConverterContext,
-            exc_redux: WorkbookReadExcComposer,
+        cls,
+        wb_ctx: WorkbookContext,
+        converter_ctx: ConverterContext,
+        exc_redux: WorkbookReadExcComposer,
     ) -> ext.WorkBook:
         assert exc_redux.is_opened
 
@@ -73,10 +86,11 @@ class WorkbookOpsFacade:
 
         for ds in wb_ctx.datasets:
             with exc_redux.postponed_error(exc_redux.create_ctx(entry_name=ds.summary.name)):
-                dataset_instances.append(ext.DatasetInstance(
-                    dataset=conv_ds.convert_internal_dataset_to_public_dataset(ds.dataset),
-                    name=ds.summary.name
-                ))
+                dataset_instances.append(
+                    ext.DatasetInstance(
+                        dataset=conv_ds.convert_internal_dataset_to_public_dataset(ds.dataset), name=ds.summary.name
+                    )
+                )
 
         for chart_inst in wb_ctx.charts:
             with exc_redux.postponed_error(exc_redux.create_ctx(entry_name=chart_inst.summary.name)):
@@ -85,17 +99,21 @@ class WorkbookOpsFacade:
                 # With context inside .convert_chart_int_to_ext() such charts was not returned
                 #  by method. Exception with postponed error raised inside.
                 with ConversionErrHandlingContext().cm() as conversion_err_handling_ctx:
-                    charts_instances.append(ext.ChartInstance(
-                        chart=conv_charts.convert_chart_int_to_ext(chart_inst.chart, conversion_err_handling_ctx),
-                        name=chart_inst.summary.name,
-                    ))
+                    charts_instances.append(
+                        ext.ChartInstance(
+                            chart=conv_charts.convert_chart_int_to_ext(chart_inst.chart, conversion_err_handling_ctx),
+                            name=chart_inst.summary.name,
+                        )
+                    )
 
         for dash_inst in wb_ctx.dashboards:
             with exc_redux.postponed_error(exc_redux.create_ctx(entry_name=dash_inst.summary.name)):
-                dash_instances.append(ext.DashInstance(
-                    dashboard=dash_converter.convert_int_to_ext(dash_inst.dash),
-                    name=dash_inst.summary.name,
-                ))
+                dash_instances.append(
+                    ext.DashInstance(
+                        dashboard=dash_converter.convert_int_to_ext(dash_inst.dash),
+                        name=dash_inst.summary.name,
+                    )
+                )
 
         return ext.WorkBook(
             datasets=sorted(dataset_instances, key=lambda ds_inst: ds_inst.name),
@@ -104,9 +122,9 @@ class WorkbookOpsFacade:
         )
 
     async def _load_and_convert_workbook(
-            self,
-            converter_ctx: ConverterContext,
-            wb_id: str,
+        self,
+        converter_ctx: ConverterContext,
+        wb_id: str,
     ) -> tuple[WorkbookContext, ext.WorkBook]:
         with WorkbookReadExcComposer(do_add_exc_message=self._do_add_exc_message) as exc_composer:
             wb_ctx = await self._workbook_ctx_loader.load(wb_id)
@@ -118,13 +136,9 @@ class WorkbookOpsFacade:
             return wb_ctx, wb
 
     async def _clusterize_and_convert_workbook(
-            self,
-            converter_ctx: ConverterContext,
-            dash_id_list: Sequence[str],
-            navigation_path: Optional[str]
+        self, converter_ctx: ConverterContext, dash_id_list: Sequence[str], navigation_path: Optional[str]
     ) -> tuple[WorkbookContext, ext.WorkBook, Sequence[ext.NameMapEntry]]:
-        with WorkbookClusterizeExcComposer(
-                do_add_exc_message=self._do_add_exc_message) as exc_composer:
+        with WorkbookClusterizeExcComposer(do_add_exc_message=self._do_add_exc_message) as exc_composer:
             wb_ctx, name_remap_info = await self._workbook_ctx_loader.gather_workbook_by_dash(
                 dash_id_list=dash_id_list,
                 us_folder_path=navigation_path,
@@ -141,9 +155,7 @@ class WorkbookOpsFacade:
 
     @classmethod
     def get_broken_entries_map(
-            cls,
-            wb_ctx: WorkbookContext,
-            converted_ext_wb: ext.WorkBook
+        cls, wb_ctx: WorkbookContext, converted_ext_wb: ext.WorkBook
     ) -> dict[Type[ext.EntryInstance], set[str]]:
         all_converted_entry_names = WorkbookAccessor(converted_ext_wb).all_names
 
@@ -161,15 +173,13 @@ class WorkbookOpsFacade:
         }
 
     async def ensure_workbook_config(
-            self,
-            wb_id: str,
-            desired_workbook: ext.WorkBook,
-            converter_ctx: ConverterContext,
-            force_rewrite: bool = False,
+        self,
+        wb_id: str,
+        desired_workbook: ext.WorkBook,
+        converter_ctx: ConverterContext,
+        force_rewrite: bool = False,
     ) -> WorkbookModificationContext:
-
-        with WorkbookModificationExcComposer(
-                do_add_exc_message=self._do_add_exc_message) as exc_composer:
+        with WorkbookModificationExcComposer(do_add_exc_message=self._do_add_exc_message) as exc_composer:
             return await self._ensure_workbook_config_internal(
                 wb_id=wb_id,
                 desired_workbook=desired_workbook,
@@ -179,12 +189,12 @@ class WorkbookOpsFacade:
             )
 
     async def _ensure_workbook_config_internal(
-            self,
-            wb_id: str,
-            desired_workbook: ext.WorkBook,
-            exc_composer: WorkbookModificationExcComposer,
-            converter_ctx: ConverterContext,
-            force_rewrite: bool = False,
+        self,
+        wb_id: str,
+        desired_workbook: ext.WorkBook,
+        exc_composer: WorkbookModificationExcComposer,
+        converter_ctx: ConverterContext,
+        force_rewrite: bool = False,
     ) -> WorkbookModificationContext:
         initial_wb_ctx: WorkbookContext
         initial_wb: ext.WorkBook
@@ -207,16 +217,13 @@ class WorkbookOpsFacade:
         conv_ds = DatasetConverter(initial_wb_ctx, converter_ctx)
         normalized_desired_workbook = attr.evolve(
             desired_workbook,
-            datasets=[
-                attr.evolve(ds, dataset=conv_ds.fill_defaults(ds.dataset))
-                for ds in desired_workbook.datasets
-            ]
+            datasets=[attr.evolve(ds, dataset=conv_ds.fill_defaults(ds.dataset)) for ds in desired_workbook.datasets],
         )
 
         wb_diff_calculator = ExtWorkbookDiffCalculator(
             initial_wb,
             do_force_rewrite=force_rewrite,
-            map_inst_clz_broken_entry_name_set=self.get_broken_entries_map(initial_wb_ctx, initial_wb)
+            map_inst_clz_broken_entry_name_set=self.get_broken_entries_map(initial_wb_ctx, initial_wb),
         )
         plan = wb_diff_calculator.get_workbook_transition_plan(normalized_desired_workbook)
 
@@ -247,7 +254,8 @@ class WorkbookOpsFacade:
 
         if exc_composer.is_armed():
             raise OperationTerminationError(
-                OperationTerminationErrorData("Workbook validation failed. Persisting will not be performed."))
+                OperationTerminationErrorData("Workbook validation failed. Persisting will not be performed.")
+            )
 
         # Persisting
         wb_modification_ctx_working_copy = await wb_mod_steps.StepPersistDatasets(
@@ -277,9 +285,7 @@ class WorkbookOpsFacade:
 
     async def create_fake_workbook(self, rq: rpc.FakeWorkbookCreateRequest) -> rpc.FakeWorkbookCreateResponse:
         with WorkbookOperationErrorHandler(message="Workbook creation error").err_handler():
-            await self._internal_api_clients.us.create_folder(
-                rq.workbook_id
-            )
+            await self._internal_api_clients.us.create_folder(rq.workbook_id)
             desired_wb = rq.workbook
             created_entries_info: list[ext.EntryInfo] = []
 
@@ -319,9 +325,9 @@ class WorkbookOpsFacade:
             if secret is None:
                 conn_sec_holder = ConnectionSecretsHolder([])
             else:
-                conn_sec_holder = ConnectionSecretsHolder([
-                    ext.ConnectionSecret(secret=secret, conn_name=rq.connection.name)
-                ])
+                conn_sec_holder = ConnectionSecretsHolder(
+                    [ext.ConnectionSecret(secret=secret, conn_name=rq.connection.name)]
+                )
 
             conn_manager = ConnectionManager(self._internal_api_clients, conn_sec_holder)
             conn_manager.validate_conn(rq.connection)
@@ -333,7 +339,6 @@ class WorkbookOpsFacade:
 
     async def modify_connection(self, rq: ConnectionModifyRequest) -> rpc.ConnectionModifyResponse:
         with WorkbookOperationErrorHandler(message="Connection modification error").err_handler():
-
             wb_ctx = await self._workbook_ctx_loader.load(rq.workbook_id, connections_only=True)
             conn_ref = wb_ctx.resolve_connection_by_name(rq.connection.name)
 
@@ -344,7 +349,8 @@ class WorkbookOpsFacade:
                 conn_sec_holder = ConnectionSecretsHolder([])
             else:
                 conn_sec_holder = ConnectionSecretsHolder(
-                    [ext.ConnectionSecret(secret=secret, conn_name=rq.connection.name)])
+                    [ext.ConnectionSecret(secret=secret, conn_name=rq.connection.name)]
+                )
 
             conn_manager = ConnectionManager(self._internal_api_clients, conn_sec_holder)
             conn_manager.validate_conn(rq.connection)
@@ -357,7 +363,6 @@ class WorkbookOpsFacade:
             return rpc.ConnectionModifyResponse()
 
     async def get_connection(self, rq: ConnectionGetRequest) -> rpc.ConnectionGetResponse:
-
         with WorkbookOperationErrorHandler(message="Connection get error").err_handler():
             wb_ctx = await self._workbook_ctx_loader.load(rq.workbook_id, connections_only=True)
             conn_ref = wb_ctx.resolve_connection_by_name(rq.name)
@@ -414,12 +419,10 @@ class WorkbookOpsFacade:
                 workbook=ext_workbook,
                 id=wb_ctx.wb_basic_info.id,
                 title=wb_ctx.wb_basic_info.title,
-                project_id=wb_ctx.wb_basic_info.project_id
+                project_id=wb_ctx.wb_basic_info.project_id,
             )
         else:
-            return rpc.WorkbookReadResponse(
-                workbook=ext_workbook
-            )
+            return rpc.WorkbookReadResponse(workbook=ext_workbook)
 
     async def delete_workbook(self, rq: rpc.WorkbookDeleteRequest) -> rpc.WorkbookDeleteResponse:
         with self.wb_op_err_handler(message="Workbook deletion error"):
@@ -432,7 +435,7 @@ class WorkbookOpsFacade:
             _, ext_workbook, name_map = await self._clusterize_and_convert_workbook(
                 converter_ctx=ConverterContext(),
                 dash_id_list=rq.dash_id_list,
-                navigation_path=rq.navigation_folder_path
+                navigation_path=rq.navigation_folder_path,
             )
 
         return rpc.WorkbookClusterizeResponse(
@@ -441,8 +444,8 @@ class WorkbookOpsFacade:
         )
 
     async def advise_dataset_fields(
-            self,
-            rq: rpc.AdviseDatasetFieldsRequest,
+        self,
+        rq: rpc.AdviseDatasetFieldsRequest,
     ) -> rpc.AdviseDatasetFieldsResponse:
         with self.wb_op_err_handler(message="Fields generation error"):
             target_conn_ref = rq.connection_ref
@@ -471,11 +474,10 @@ class WorkbookOpsFacade:
             actions = converter.convert_public_dataset_to_actions(
                 dataset=converter.fill_defaults(
                     TaggedStringAttrSetter(
-                        tag=ext.ExtModelTags.connection_name,
-                        value_to_set=real_connection_name
+                        tag=ext.ExtModelTags.connection_name, value_to_set=real_connection_name
                     ).process(rq.partial_dataset)
                 ),
-                generate_direct_fields=True
+                generate_direct_fields=True,
             )
 
             dataset, _ = await self._internal_api_clients.datasets_cp.build_dataset_config_by_actions(actions)
@@ -488,20 +490,16 @@ class WorkbookOpsFacade:
                     attr.evolve(
                         f,
                         # Cutting off IDs suffixes to make results stable
-                        id=re.sub(r"_\w{4}$", "", f.id)
+                        id=re.sub(r"_\w{4}$", "", f.id),
                     )
                     for f in ext_dataset.fields
-                ]
+                ],
             )
 
-            return rpc.AdviseDatasetFieldsResponse(
-                dataset=ext_dataset
-            )
+            return rpc.AdviseDatasetFieldsResponse(dataset=ext_dataset)
 
     async def list_workbooks(self, rq: rpc.WorkbookListRequest) -> rpc.WorkbookListResponse:
         with self.wb_op_err_handler(message="Workbook list"):
-            workbooks = await USWorkbookListGatherer(
-                us_client=self._internal_api_clients.us
-            ).gather_workbooks()
+            workbooks = await USWorkbookListGatherer(us_client=self._internal_api_clients.us).gather_workbooks()
 
             return rpc.WorkbookListResponse(workbooks=workbooks)

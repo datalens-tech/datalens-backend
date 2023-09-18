@@ -5,9 +5,8 @@ from typing import (
 
 from marshmallow import fields as ma_fields
 
-from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
-
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
+from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
 _CH_CONN_DATA_TV = TypeVar("_CH_CONN_DATA_TV", bound=ConnectionClickhouseBase.DataModel)
 

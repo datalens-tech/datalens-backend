@@ -2,10 +2,9 @@ import os
 
 import attr
 
+import dl_connector_clickhouse as package
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 from dl_i18n.localizer_base import TranslationConfig
-
-import dl_connector_clickhouse as package
 
 DOMAIN = f"bi_formula_ref_{package.__name__}"
 

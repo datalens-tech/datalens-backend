@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-import sys
 from os import path
-
-from lxml import etree as ET
-
+import sys
 
 from datalens_local_dev.constants import (
     PKG_ROOT_PATH,
@@ -12,6 +9,7 @@ from datalens_local_dev.constants import (
 )
 from datalens_local_dev.get_submodules import rel_path_list_for_pycham_upload
 from datalens_local_dev.idea import find_idea_dir
+from lxml import etree as ET
 
 
 def main():
@@ -20,9 +18,7 @@ def main():
     tree = ET.parse(deployment_fp, parser)
     server_data_node = tree.find("./component/serverData/paths/serverdata")
     if server_data_node is None:
-        print(
-            "Uploading to dev machine was not initially configured. Please make some dummy mapping with GUI."
-        )
+        print("Uploading to dev machine was not initially configured. Please make some dummy mapping with GUI.")
         sys.exit(-1)
 
     # Cleanup

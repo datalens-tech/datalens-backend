@@ -1,9 +1,19 @@
-from typing import Any, Iterable, TypeVar, Type, Mapping
+from typing import (
+    Any,
+    Iterable,
+    Mapping,
+    Type,
+    TypeVar,
+)
 
 import attr
 
 from bi_external_api.domain import external as ext
-from bi_external_api.workbook_ops.diff_tools import EntryInstanceAction, WorkbookTransitionPlan, ActualInstanceInfo
+from bi_external_api.workbook_ops.diff_tools import (
+    ActualInstanceInfo,
+    EntryInstanceAction,
+    WorkbookTransitionPlan,
+)
 from bi_external_api.workbook_ops.wb_accessor import WorkbookAccessor
 
 _ENTRY_INSTANCE_TV = TypeVar("_ENTRY_INSTANCE_TV", bound=ext.EntryInstance)
@@ -34,14 +44,11 @@ class ExtWorkbookDiffCalculator:
         return WorkbookAccessor(self.wb).get_actual_instances(entry_clz)
 
     def calculate_transition_actions(
-            self,
-            inst_clz: Type[_ENTRY_INSTANCE_TV],
-            desired_set: Iterable[_ENTRY_INSTANCE_TV],
+        self,
+        inst_clz: Type[_ENTRY_INSTANCE_TV],
+        desired_set: Iterable[_ENTRY_INSTANCE_TV],
     ) -> Iterable[EntryInstanceAction[_ENTRY_INSTANCE_TV]]:
-        actual_map = {
-            inst.name: inst
-            for inst in self.get_actual_instances(inst_clz)
-        }
+        actual_map = {inst.name: inst for inst in self.get_actual_instances(inst_clz)}
         actual_broken_entry_name_set = self.map_inst_clz_broken_entry_name_set[inst_clz]
 
         all_actual_names = actual_map.keys() | actual_broken_entry_name_set
@@ -52,11 +59,13 @@ class ExtWorkbookDiffCalculator:
 
         # Collecting instances that appears only in desired set
         for name in desired_map.keys() - all_actual_names:
-            ret.append(EntryInstanceAction(
-                name,
-                actual_instance_info=None,
-                desired_instance=desired_map[name],
-            ))
+            ret.append(
+                EntryInstanceAction(
+                    name,
+                    actual_instance_info=None,
+                    desired_instance=desired_map[name],
+                )
+            )
 
         # Checking instances that appears in both desired & actual set
         for name in desired_map.keys() & all_actual_names:
@@ -79,11 +88,13 @@ class ExtWorkbookDiffCalculator:
                     load_fail_reason="Something went wrong",
                 )
 
-            ret.append(EntryInstanceAction(
-                name,
-                actual_instance_info=actual_instance_to_modify_info,
-                desired_instance=desired_map[name],
-            ))
+            ret.append(
+                EntryInstanceAction(
+                    name,
+                    actual_instance_info=actual_instance_to_modify_info,
+                    desired_instance=desired_map[name],
+                )
+            )
 
         # Collecting instances that appears only in actual set
         for name in all_actual_names - desired_map.keys():
@@ -93,11 +104,13 @@ class ExtWorkbookDiffCalculator:
             else:
                 actual_instance_to_delete = ActualInstanceInfo(instance=None, load_fail_reason="Something went wrong")
 
-            ret.append(EntryInstanceAction(
-                name,
-                actual_instance_info=actual_instance_to_delete,
-                desired_instance=None,
-            ))
+            ret.append(
+                EntryInstanceAction(
+                    name,
+                    actual_instance_info=actual_instance_to_delete,
+                    desired_instance=None,
+                )
+            )
 
         return ret
 
@@ -108,14 +121,8 @@ class ExtWorkbookDiffCalculator:
             ext.DatasetInstance,
             desired_workbook.datasets,
         )
-        charts_transition_actions = self.calculate_transition_actions(
-            ext.ChartInstance,
-            desired_workbook.charts
-        )
-        dash_transition_actions = self.calculate_transition_actions(
-            ext.DashInstance,
-            desired_workbook.dashboards
-        )
+        charts_transition_actions = self.calculate_transition_actions(ext.ChartInstance, desired_workbook.charts)
+        dash_transition_actions = self.calculate_transition_actions(ext.DashInstance, desired_workbook.dashboards)
         return WorkbookTransitionPlan(
             dataset_actions=dataset_transition_actions,
             chart_actions=charts_transition_actions,

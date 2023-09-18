@@ -1,11 +1,15 @@
-from typing import Sequence, Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
+
+from ..utils import ensure_tuple
 from .common import NameMapEntry
 from .workbook import WorkBook
-from ..utils import ensure_tuple
 
 
 @ModelDescriptor()

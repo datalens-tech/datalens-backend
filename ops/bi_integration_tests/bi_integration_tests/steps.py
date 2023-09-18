@@ -1,24 +1,36 @@
 from __future__ import annotations
 
-from typing import Union, Dict, List, Any, Optional, Callable, Set, Sequence
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Union,
+)
 
+from aiohttp import (
+    ClientSession,
+    FormData,
+)
 import attr
-from aiohttp import FormData, ClientSession
-from dl_api_commons.base_models import TenantDef
 
-from bi_testing_ya.api_wrappers import Req, Resp, APIClient, HTTPClientWrapper
+from bi_testing_ya.api_wrappers import (
+    APIClient,
+    HTTPClientWrapper,
+    Req,
+    Resp,
+)
 from bi_testing_ya.cloud_tokens import AccountCredentials
+from dl_api_commons.base_models import TenantDef
 
 _DataType = Union[Dict, List, FormData, bytes, str]
 _Context = Dict[str, Any]
 
 
-def file_form(
-        file_content: bytes,
-        file_content_type: str,
-        file_name: str,
-        other: Optional[Dict[str, str]]
-) -> FormData:
+def file_form(file_content: bytes, file_content_type: str, file_name: str, other: Optional[Dict[str, str]]) -> FormData:
     form_data = FormData()
     form_data.add_field("file", file_content, content_type=file_content_type, filename=file_name)
     if other:
@@ -53,11 +65,7 @@ class StepExecutionReport:
 
 class StepExecutionException(Exception):
     def __init__(
-            self,
-            msg: str,
-            step: ScenarioStep,
-            context: _Context,
-            done_steps: Optional[Sequence[StepExecutionReport]]
+        self, msg: str, step: ScenarioStep, context: _Context, done_steps: Optional[Sequence[StepExecutionReport]]
     ):
         super().__init__(msg)
         self.step = step
@@ -77,20 +85,14 @@ class StepExecutor:
     def __attrs_post_init__(self):
         self._api_client_map = {
             api_code: self._create_api_client(
-                base_url=base_url,
-                folder_id=self.folder_id,
-                user_creds=self.subject_user_creds,
-                tenant=self.tenant
+                base_url=base_url, folder_id=self.folder_id, user_creds=self.subject_user_creds, tenant=self.tenant
             )
             for api_code, base_url in self.base_url_map.items()
         }
 
     @staticmethod
     def _create_api_client(
-            base_url: str,
-            folder_id: str,
-            user_creds: AccountCredentials,
-            tenant: Optional[TenantDef] = None
+        base_url: str, folder_id: str, user_creds: AccountCredentials, tenant: Optional[TenantDef] = None
     ):
         return APIClient(
             HTTPClientWrapper(
@@ -99,21 +101,22 @@ class StepExecutor:
             ),
             folder_id=folder_id,
             account_credentials=user_creds,
-            tenant=tenant
+            tenant=tenant,
         )
 
     async def execute_all_steps(
-            self,
-            steps: Sequence[ScenarioStep],
-            initial_context: Dict[str, Any],
-            handle_responses: bool = False,
-            ignore_step_exceptions: bool = False
+        self,
+        steps: Sequence[ScenarioStep],
+        initial_context: Dict[str, Any],
+        handle_responses: bool = False,
+        ignore_step_exceptions: bool = False,
     ):
         report_list: List[StepExecutionReport] = []
         for step in steps:
             try:
                 report = await self.execute_step(
-                    step, initial_context,
+                    step,
+                    initial_context,
                     handle_responses=handle_responses,
                     ignore_step_exceptions=ignore_step_exceptions,
                 )
@@ -153,11 +156,11 @@ class StepExecutor:
         return request
 
     async def execute_step(
-            self,
-            step: ScenarioStep,
-            context: _Context,
-            handle_responses: bool = False,
-            ignore_step_exceptions: bool = False
+        self,
+        step: ScenarioStep,
+        context: _Context,
+        handle_responses: bool = False,
+        ignore_step_exceptions: bool = False,
     ) -> StepExecutionReport:
         try:
             request = self._prepare_request(step, context)

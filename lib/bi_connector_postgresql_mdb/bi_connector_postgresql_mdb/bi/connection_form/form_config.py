@@ -2,32 +2,32 @@ from __future__ import annotations
 
 from typing import Optional
 
-import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
-from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_api_commons.base_models import TenantDef
-
-from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_api_connector.form_config.models.api_schema import (
-    FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
+    FormFieldApiAction,
+    FormFieldApiActionCondition,
+    FormFieldApiSchema,
     FormFieldConditionalApiAction,
+    FormFieldSelector,
 )
 from dl_api_connector.form_config.models.base import ConnectionForm
 from dl_api_connector.form_config.models.common import CommonFieldName
 from dl_api_connector.form_config.models.rows.base import FormRow
-from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
-
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+
+import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
+from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
 from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings
 
 
 class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, PostgresConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
@@ -47,9 +47,11 @@ class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
                 cloud_tree_selector_row,
                 mdb_cluster_row,
                 mdb_host_row,
-                rc.host_row(display_conditions={
-                    mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
-                }),
+                rc.host_row(
+                    display_conditions={
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
+                    }
+                ),
             ]
             username_section = [
                 mdb_c.MDBUsernameRow(
@@ -63,7 +65,7 @@ class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
                     display_conditions={
                         mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
                     }
-                )
+                ),
             ]
             db_name_section = [
                 mdb_c.MDBDatabaseRow(

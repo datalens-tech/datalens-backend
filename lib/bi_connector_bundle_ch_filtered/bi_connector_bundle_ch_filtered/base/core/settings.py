@@ -1,16 +1,15 @@
-import attr
-
 import json
 
-from dl_constants.enums import RawSQLLevel
+import attr
 
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.settings_loaders.meta_definition import s_attrib
+from dl_constants.enums import RawSQLLevel
 
 
 def normalize_sql_query(sql_query: str) -> str:
     # Only normalize newlines for now:
-    sql_query = '\n{}\n'.format(sql_query.strip('\n'))
+    sql_query = "\n{}\n".format(sql_query.strip("\n"))
     return sql_query
 
 
@@ -18,8 +17,8 @@ def _subselect_templates_env_var_converter(v: str) -> tuple[dict[str, str], ...]
     templates: tuple[dict[str, str], ...] = tuple(json.loads(v))
     for tpl in templates:
         tpl_keys = set(tpl.keys())
-        assert tpl_keys == {'sql_query', 'title'}, f'Unexpected keys for a subselect template: {tpl_keys}'
-        tpl['sql_query'] = normalize_sql_query(tpl['sql_query'])
+        assert tpl_keys == {"sql_query", "title"}, f"Unexpected keys for a subselect template: {tpl_keys}"
+        tpl["sql_query"] = normalize_sql_query(tpl["sql_query"])
 
     return templates
 

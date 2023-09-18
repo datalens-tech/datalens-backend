@@ -2,9 +2,8 @@
 
 import json
 
-import sh
 import pandas as pd
-
+import sh
 
 ACCOUNT = 'abc:service:1561'
 DCS = ['man', 'vla', 'iva', 'myt', 'sas']

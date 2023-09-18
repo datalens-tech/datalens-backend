@@ -4,7 +4,7 @@ from ydb.dbapi.errors import _pretty_issues
 
 
 class YQError(Exception):
-    """ ... """
+    """..."""
 
 
 class Warning(YQError):
@@ -13,7 +13,6 @@ class Warning(YQError):
 
 class Error(YQError):
     def __init__(self, message, issues=None, status=None):
-
         try:
             pretty_issues = _pretty_issues(issues)
         except Exception:

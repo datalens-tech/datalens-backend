@@ -6,13 +6,17 @@ from app_yc_control_api import app_version
 from app_yc_control_api.app_factory import ControlApiAppFactoryYC
 import flask
 
+from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_bi_api_lib,
     preload_bi_api_lib,
 )
-from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
@@ -31,10 +35,6 @@ from dl_core.connectors.settings.registry import (
 from dl_core.flask_utils.sentry import configure_raven_for_flask
 from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
-from bi_defaults.environments import (
-    EnvAliasesMap,
-    InstallationsMap,
-)
 
 
 def register_local_apis() -> None:

@@ -1,10 +1,9 @@
 import sqlalchemy.sql.functions as sa_funcs
 from sqlalchemy_bigquery.base import BigQueryDialect as SABigQueryDialect
 
-from dl_formula.connectors.base.connector import FormulaConnector
-
 from dl_connector_bigquery.formula.constants import BigQueryDialect as BigQueryDialectNS
 from dl_connector_bigquery.formula.definitions.all import DEFINITIONS
+from dl_formula.connectors.base.connector import FormulaConnector
 
 
 class BigQueryFormulaConnector(FormulaConnector):

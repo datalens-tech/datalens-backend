@@ -1,21 +1,28 @@
 from __future__ import annotations
 
-import pytest
 from http import HTTPStatus
 
-from dl_api_client.dsmaker.primitives import IntegerParameterValue, RangeParameterValueConstraint
-from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, add_parameters_to_dataset
+import pytest
+
+from dl_api_client.dsmaker.primitives import (
+    IntegerParameterValue,
+    RangeParameterValueConstraint,
+)
+from dl_api_client.dsmaker.shortcuts.dataset import (
+    add_formulas_to_dataset,
+    add_parameters_to_dataset,
+)
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 
 @pytest.mark.parametrize(
-    ('multiplier', 'expected_status_code'),
+    ("multiplier", "expected_status_code"),
     (
         (None, HTTPStatus.OK),
         (2, HTTPStatus.OK),
         (5, HTTPStatus.OK),
         (-1, HTTPStatus.BAD_REQUEST),
-    )
+    ),
 )
 def test_parameter_in_formula(api_v1, data_api_v2, dataset_id, multiplier, expected_status_code):
     default_multiplier = 1
@@ -24,25 +31,29 @@ def test_parameter_in_formula(api_v1, data_api_v2, dataset_id, multiplier, expec
         api_v1=api_v1,
         dataset_id=dataset_id,
         parameters={
-            'Multiplier': (
+            "Multiplier": (
                 IntegerParameterValue(default_multiplier),
-                RangeParameterValueConstraint(min=IntegerParameterValue(default_multiplier))
+                RangeParameterValueConstraint(min=IntegerParameterValue(default_multiplier)),
             ),
-        }
+        },
     )
-    ds = add_formulas_to_dataset(api_v1=api_v1, dataset=ds, formulas={
-        'Multiplied Quantity': '[Quantity] * [Multiplier]',
-    })
+    ds = add_formulas_to_dataset(
+        api_v1=api_v1,
+        dataset=ds,
+        formulas={
+            "Multiplied Quantity": "[Quantity] * [Multiplier]",
+        },
+    )
 
     result_resp = data_api_v2.get_result(
         dataset=ds,
         fields=[
-            ds.find_field(title='Quantity').as_req_legend_item(),
-            ds.find_field(title='Multiplier').as_req_legend_item(),
-            ds.find_field(title='Multiplied Quantity').as_req_legend_item(),
+            ds.find_field(title="Quantity").as_req_legend_item(),
+            ds.find_field(title="Multiplier").as_req_legend_item(),
+            ds.find_field(title="Multiplied Quantity").as_req_legend_item(),
         ],
         parameters=[
-            ds.find_field(title='Multiplier').parameter_value(multiplier),
+            ds.find_field(title="Multiplier").parameter_value(multiplier),
         ],
         fail_ok=True,
     )
@@ -60,20 +71,24 @@ def test_parameter_no_constraint(api_v1, data_api_v2, dataset_id):
         api_v1=api_v1,
         dataset_id=dataset_id,
         parameters={
-            'Param': (IntegerParameterValue(0), None),
-        }
+            "Param": (IntegerParameterValue(0), None),
+        },
     )
-    ds = add_formulas_to_dataset(api_v1=api_v1, dataset=ds, formulas={
-        'Value': '[Param]',
-    })
+    ds = add_formulas_to_dataset(
+        api_v1=api_v1,
+        dataset=ds,
+        formulas={
+            "Value": "[Param]",
+        },
+    )
 
     result_resp = data_api_v2.get_result(
         dataset=ds,
         fields=[
-            ds.find_field(title='Value').as_req_legend_item(),
+            ds.find_field(title="Value").as_req_legend_item(),
         ],
         parameters=[
-            ds.find_field(title='Param').parameter_value(1),
+            ds.find_field(title="Param").parameter_value(1),
         ],
         limit=1,
         fail_ok=True,

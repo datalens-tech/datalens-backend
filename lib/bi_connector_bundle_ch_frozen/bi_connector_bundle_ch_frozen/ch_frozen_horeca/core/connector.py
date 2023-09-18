@@ -20,9 +20,5 @@ class CHFrozenHorecaCoreSourceDefinition(CHFrozenBaseCoreSourceDefinition):
 
 
 class CHFrozenHorecaCoreConnector(CHFrozenCoreConnector):
-    connection_definitions = (
-        CHFrozenHorecaCoreConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenHorecaCoreSourceDefinition,
-    )
+    connection_definitions = (CHFrozenHorecaCoreConnectionDefinition,)
+    source_definitions = (CHFrozenHorecaCoreSourceDefinition,)

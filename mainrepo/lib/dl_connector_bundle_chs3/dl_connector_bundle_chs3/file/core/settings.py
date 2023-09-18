@@ -3,14 +3,13 @@ from dl_configs.connectors_settings import (
     ConnectorSettingsBase,
 )
 from dl_configs.settings_loaders.meta_definition import required
-from dl_core.connectors.settings.primitives import (
-    ConnectorSettingsDefinition,
-    get_connectors_settings_config,
-)
-
 from dl_connector_bundle_chs3.chs3_base.core.settings import (
     ConnectorsDataFileBase,
     FileS3ConnectorSettings,
+)
+from dl_core.connectors.settings.primitives import (
+    ConnectorSettingsDefinition,
+    get_connectors_settings_config,
 )
 
 

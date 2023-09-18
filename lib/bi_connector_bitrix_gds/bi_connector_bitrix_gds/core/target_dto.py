@@ -1,6 +1,6 @@
-import attr
-
 from typing import Optional
+
+import attr
 
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 from dl_core.utils import secrepr
@@ -11,7 +11,7 @@ def hide_pass(value: Optional[dict]) -> str:
         return repr(value)
     if not value:
         return repr(value)
-    return repr({k: v for k, v in value.items() if k != 'password'})
+    return repr({k: v for k, v in value.items() if k != "password"})
 
 
 @attr.s(frozen=True)

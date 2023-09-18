@@ -3,11 +3,10 @@ import datetime
 import pytest
 import pytz
 
-from dl_formula_testing.testcases.base import FormulaConnectorTestBase
-
 from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_connector_clickhouse_tests.db.config import DB_URLS
+from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 
 class ClickHouseTestBase(FormulaConnectorTestBase):

@@ -28,9 +28,7 @@ class StepPersistDashboards(BaseWBModStep):
             ephemeral_id = int_inst_to_create.summary.id
 
             created_inst_summary = await self.dash_client.create_dashboard(
-                name=int_inst_to_create.summary.name,
-                workbook_id=self.wb_id,
-                dash=int_inst_to_create.dash
+                name=int_inst_to_create.summary.name, workbook_id=self.wb_id, dash=int_inst_to_create.dash
             )
 
             real_id = created_inst_summary.id

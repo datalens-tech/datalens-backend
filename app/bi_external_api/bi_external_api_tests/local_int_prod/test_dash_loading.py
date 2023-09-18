@@ -11,9 +11,7 @@ def get_comma_separated_list_from_env(var_name: str) -> list[str]:
     str_val = os.environ.get(var_name)
     if not str_val:
         return []
-    return [
-        val.strip() for val in str_val.split(",")
-    ]
+    return [val.strip() for val in str_val.split(",")]
 
 
 @pytest.mark.asyncio

@@ -1,39 +1,42 @@
-import os
 from datetime import datetime
-from typing import Any, Type
+import os
+from typing import (
+    Any,
+    Type,
+)
 
 import aiohttp
 import pytest
 import pytz
 import yaml
 
-from dl_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
+from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.internal import (
-    datasets,
-)
-from bi_defaults.environments import InternalTestingInstallation
+from bi_external_api.domain.internal import datasets
 from bi_external_api.domain.internal.dl_common import EntrySummary
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
-from dl_api_commons.client.common import CommonInternalAPIClient
 from bi_external_api.internal_api_clients.dash_api import APIClientDashboard
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
-from bi_external_api.testings import PGSubSelectDatasetFactory, SingleTabDashboardBuilder
+from bi_external_api.testings import (
+    PGSubSelectDatasetFactory,
+    SingleTabDashboardBuilder,
+)
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
-
+from dl_api_commons.base_models import TenantCommon
+from dl_api_commons.client.common import CommonInternalAPIClient
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 from ..test_acceptance import ConnectionTestingData
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def env_param_getter() -> GenericEnvParamGetter:
-    filepath = os.path.join(os.path.dirname(__file__), 'params.yml')
+    filepath = os.path.join(os.path.dirname(__file__), "params.yml")
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
@@ -53,8 +56,8 @@ async def pseudo_wb_path(pseudo_wb_path_value, bi_ext_api_int_preprod_int_api_cl
 
 @pytest.fixture(scope="function")
 def bi_ext_api_int_preprod_int_api_clients(
-        loop,
-        intranet_user_1_creds,
+    loop,
+    intranet_user_1_creds,
 ) -> InternalAPIClients:
     session = aiohttp.ClientSession()
 
@@ -68,14 +71,8 @@ def bi_ext_api_int_preprod_int_api_clients(
         )
 
     yield InternalAPIClients(
-        datasets_cp=cli(
-            APIClientBIBackControlPlane,
-            InternalTestingInstallation.DATALENS_API_LB_MAIN_BASE_URL
-        ),
-        charts=cli(
-            APIClientCharts,
-            "https://charts-beta.yandex-team.ru"
-        ),
+        datasets_cp=cli(APIClientBIBackControlPlane, InternalTestingInstallation.DATALENS_API_LB_MAIN_BASE_URL),
+        charts=cli(APIClientCharts, "https://charts-beta.yandex-team.ru"),
         dash=cli(
             APIClientDashboard,
             "https://api-test.dash.yandex.net",
@@ -100,7 +97,7 @@ def bi_ext_api_int_preprod_charts_api_client(bi_ext_api_int_preprod_int_api_clie
 
 @pytest.fixture(scope="function")
 def bi_ext_api_int_preprod_bi_api_control_plane_client(
-        bi_ext_api_int_preprod_int_api_clients
+    bi_ext_api_int_preprod_int_api_clients,
 ) -> APIClientBIBackControlPlane:
     return bi_ext_api_int_preprod_int_api_clients.datasets_cp
 
@@ -121,29 +118,33 @@ def pg_conn_data(secret_datalens_test_data) -> dict[str, Any]:
 
 @pytest.fixture(scope="function")
 async def pg_connection(
-        pseudo_wb_path,
-        bi_ext_api_int_preprod_bi_api_control_plane_client,
-        pg_conn_data,
+    pseudo_wb_path,
+    bi_ext_api_int_preprod_bi_api_control_plane_client,
+    pg_conn_data,
 ) -> datasets.ConnectionInstance:
     int_api_cli = bi_ext_api_int_preprod_bi_api_control_plane_client
 
-    conn = await int_api_cli.create_connection(wb_id=pseudo_wb_path, name="pg_conn_main", conn_data=dict(
-        type="postgres",
-        host=pg_conn_data["host"],
-        port=pg_conn_data["port"],
-        username=pg_conn_data["username"],
-        password=pg_conn_data["password"],
-        db_name=pg_conn_data["database"],
-        raw_sql_level="subselect",
-        cache_ttl_sec=None,
-    ))
+    conn = await int_api_cli.create_connection(
+        wb_id=pseudo_wb_path,
+        name="pg_conn_main",
+        conn_data=dict(
+            type="postgres",
+            host=pg_conn_data["host"],
+            port=pg_conn_data["port"],
+            username=pg_conn_data["username"],
+            password=pg_conn_data["password"],
+            db_name=pg_conn_data["database"],
+            raw_sql_level="subselect",
+            cache_ttl_sec=None,
+        ),
+    )
 
     yield conn
 
 
 @pytest.fixture(scope="session")
 def chyt_connection_ext_value_and_secret(
-        env_param_getter,
+    env_param_getter,
 ) -> tuple[ext.CHYTConnection, ext.Secret]:
     return ext.CHYTConnection(
         raw_sql_level=ext.RawSQLLevel.subselect,
@@ -194,9 +195,9 @@ def ch_connection_testing_data_int_preprod(secret_datalens_test_data) -> Connect
 
 @pytest.fixture(scope="function")
 def dataset_factory(
-        pseudo_wb_path,
-        bi_ext_api_int_preprod_bi_api_control_plane_client,
-        pg_connection,
+    pseudo_wb_path,
+    bi_ext_api_int_preprod_bi_api_control_plane_client,
+    pg_connection,
 ) -> PGSubSelectDatasetFactory:
     return PGSubSelectDatasetFactory(
         wb_id=pseudo_wb_path,
@@ -219,14 +220,7 @@ async def dashes_in_hierarchy(pseudo_wb_path, bi_ext_api_int_preprod_int_api_cli
     dash_cli = bi_ext_api_int_preprod_int_api_clients.dash_strict
     us_cli = bi_ext_api_int_preprod_int_api_clients.us
 
-    path_set = {
-        "f1",
-        "f1/ff1",
-        "f1/ff2",
-        "f1/ff2/fff1",
-        "f1/ff2/fff2",
-        "f2"
-    }
+    path_set = {"f1", "f1/ff1", "f1/ff2", "f1/ff2/fff1", "f1/ff2/fff2", "f2"}
     dash_summaries: set[EntrySummary] = set()
 
     for idx, sub_path in enumerate(sorted(path_set, key=lambda pp: tuple(pp.split("/")))):

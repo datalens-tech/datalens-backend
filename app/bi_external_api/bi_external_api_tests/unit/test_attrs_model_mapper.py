@@ -1,18 +1,26 @@
 import abc
+from copy import deepcopy
+import enum
+from typing import (
+    ClassVar,
+    List,
+    Optional,
+    Type,
+)
 
 import attr
-import enum
 import marshmallow
-import pytest
-from copy import deepcopy
 from marshmallow import fields
-from typing import List, ClassVar, Type, Optional
+import pytest
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.attrs_model_mapper.marshmallow_fields import FrozenStrMappingField
-from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq, FrozenStrMapping
+from bi_external_api.structs.mappings import (
+    FrozenMappingStrToStrOrStrSeq,
+    FrozenStrMapping,
+)
 
 
 class BioKind(enum.Enum):
@@ -86,12 +94,7 @@ class Flat:
 
 def test_round_trip():
     mapper = ModelMapperMarshmallow()
-    mapper.register_models([
-        Flat,
-        Dog,
-        Cat,
-        Salmon
-    ])
+    mapper.register_models([Flat, Dog, Cat, Salmon])
 
     schema_cls = mapper.get_or_create_schema_for_attrs_class(Flat)
     flat = Flat(
@@ -105,7 +108,7 @@ def test_round_trip():
         owner=Dog(
             max_weight=90,
             bark_level=100500,
-        )
+        ),
     )
 
     schema = schema_cls()
@@ -118,40 +121,42 @@ def test_round_trip():
 @ModelDescriptor()
 @attr.s
 class UnsafeFlat:
-    guard_animal: Optional[Animal] = attr.ib(metadata=AttribDescriptor(
-        skip_none_on_dump=True
-    ).to_meta())
+    guard_animal: Optional[Animal] = attr.ib(metadata=AttribDescriptor(skip_none_on_dump=True).to_meta())
     owner: Bio = attr.ib()
 
 
 def test_dump_with_null_fields():
     mapper = ModelMapperMarshmallow()
-    mapper.register_models([
-        UnsafeFlat,
-        Dog,
-    ])
+    mapper.register_models(
+        [
+            UnsafeFlat,
+            Dog,
+        ]
+    )
     schema_cls = mapper.get_or_create_schema_for_attrs_class(UnsafeFlat)
     flat = UnsafeFlat(
         guard_animal=None,
         owner=Dog(
             max_weight=90,
             bark_level=100500,
-        )
+        ),
     )
 
     schema = schema_cls()
     serialized = schema.dump(flat)
-    assert serialized == {'owner': {'bark_level': 100500, 'kind': 'dog', 'max_weight': 90}}
+    assert serialized == {"owner": {"bark_level": 100500, "kind": "dog", "max_weight": 90}}
 
 
 def test_kind_alias():
     mapper = ModelMapperMarshmallow()
-    mapper.register_models([
-        Flat,
-        Dog,
-        Cat,
-        Salmon,
-    ])
+    mapper.register_models(
+        [
+            Flat,
+            Dog,
+            Cat,
+            Salmon,
+        ]
+    )
     schema_cls = mapper.get_or_create_schema_for_attrs_class(Flat)
     flat = Flat(
         aquarium=[
@@ -164,7 +169,7 @@ def test_kind_alias():
         owner=Dog(
             max_weight=90,
             bark_level=100500,
-        )
+        ),
     )
     schema = schema_cls()
 
@@ -193,9 +198,11 @@ def test_enum_by_value():
         ab: EnumByName = attr.ib()
 
     mapper = ModelMapperMarshmallow()
-    mapper.register_models([
-        Target,
-    ])
+    mapper.register_models(
+        [
+            Target,
+        ]
+    )
 
     schema_cls = mapper.get_or_create_schema_for_attrs_class(Target)
 
@@ -223,23 +230,18 @@ def test_nested_containers():
         list_of_lists_of_lists_of_points: list[list[list[Point]]] = attr.ib()
 
     mapper = ModelMapperMarshmallow()
-    mapper.register_models([
-        Point,
-        Target,
-    ])
+    mapper.register_models(
+        [
+            Point,
+            Target,
+        ]
+    )
 
     schema_cls = mapper.get_or_create_schema_for_attrs_class(Target)
 
     target = Target(
         list_of_lists_of_ints=[[1, 2, 3], [6, 7, 8]],
-        list_of_lists_of_lists_of_points=[
-            [
-                [Point(1, 1)],
-                [Point(2, 2)]
-            ], [
-                [Point(3, 3), Point(4, 4)]
-            ]
-        ]
+        list_of_lists_of_lists_of_points=[[[Point(1, 1)], [Point(2, 2)]], [[Point(3, 3), Point(4, 4)]]],
     )
 
     serialized = schema_cls().dump(target)
@@ -247,12 +249,8 @@ def test_nested_containers():
     assert serialized == dict(
         list_of_lists_of_ints=target.list_of_lists_of_ints,
         list_of_lists_of_lists_of_points=[
-            [
-                [attr.asdict(point) for point in l2]
-                for l2 in l1
-            ]
-            for l1 in target.list_of_lists_of_lists_of_points
-        ]
+            [[attr.asdict(point) for point in l2] for l2 in l1] for l1 in target.list_of_lists_of_lists_of_points
+        ],
     )
 
     restored_target = schema_cls().load(serialized)
@@ -323,7 +321,7 @@ def test_frozen_str_mapping():
         schema_cls().load(dict(m={"avro": None}))
 
     assert exc_pack.value.messages == {
-        "m": {'avro': {'value': ['Field may not be null.']}},
+        "m": {"avro": {"value": ["Field may not be null."]}},
     }
 
 
@@ -422,10 +420,7 @@ class MAListFieldProjection(MAFieldProjection):
 
     @classmethod
     def project(cls, ma_field: fields.List) -> "MAFieldProjection":
-        return cls(
-            item=cls.project_generic(ma_field.inner),
-            **cls.get_default_kwargs(ma_field)
-        )
+        return cls(item=cls.project_generic(ma_field.inner), **cls.get_default_kwargs(ma_field))
 
 
 @attr.s()
@@ -440,15 +435,12 @@ class MAFrozenMappingProjection(MAFieldProjection):
         return cls(
             key_field=cls.project_generic(ma_field.key_field),
             value_field=cls.project_generic(ma_field.value_field),
-            **cls.get_default_kwargs(ma_field)
+            **cls.get_default_kwargs(ma_field),
         )
 
 
 def project_schema(schema: marshmallow.Schema) -> dict[str, MAFieldProjection]:
-    return {
-        name: MAFieldProjection.project_generic(field)
-        for name, field in schema.fields.items()
-    }
+    return {name: MAFieldProjection.project_generic(field) for name, field in schema.fields.items()}
 
 
 @ModelDescriptor()
@@ -501,10 +493,13 @@ class TargetVariousMappings:
     map_str_optional_str: FrozenStrMapping[Optional[str]]
 
 
-@pytest.mark.parametrize("main_cls,extra_cls_list", [
-    [Target1, []],
-    [TargetVariousMappings, []],
-])
+@pytest.mark.parametrize(
+    "main_cls,extra_cls_list",
+    [
+        [Target1, []],
+        [TargetVariousMappings, []],
+    ],
+)
 def test_schema_generation(main_cls: Type, extra_cls_list: list[Type]):
     mapper = ModelMapperMarshmallow()
     mapper.register_models(extra_cls_list)

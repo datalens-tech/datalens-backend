@@ -1,27 +1,33 @@
-from typing import Optional, Any, AsyncGenerator
+from contextlib import asynccontextmanager
 import gzip
 import logging
+from typing import (
+    Any,
+    AsyncGenerator,
+    Optional,
+)
 
-import redis.asyncio
 import attr
-from contextlib import asynccontextmanager
+import redis.asyncio
 from redis_cache_lock.types import TClientACM
 
+from dl_app_tools.profiling_base import GenericProfiler
+from dl_constants.types import TJSONExt
 from dl_core.aio.web_app_services.redis import RedisConnParams
 from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
-from dl_core.serialization import common_dumps, common_loads
-from dl_constants.types import TJSONExt
-from dl_app_tools.profiling_base import GenericProfiler
-
+from dl_core.serialization import (
+    common_dumps,
+    common_loads,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
 def build_local_key_rep(portal: str, table: str, body: dict) -> LocalKeyRepresentation:
     local_key_rep = LocalKeyRepresentation()
-    local_key_rep = local_key_rep.extend(part_type='portal', part_content=portal)
-    local_key_rep = local_key_rep.extend(part_type='table', part_content=table)
-    local_key_rep = local_key_rep.extend(part_type='body', part_content=frozenset(body.items()))
+    local_key_rep = local_key_rep.extend(part_type="portal", part_content=portal)
+    local_key_rep = local_key_rep.extend(part_type="table", part_content=table)
+    local_key_rep = local_key_rep.extend(part_type="body", part_content=frozenset(body.items()))
 
     return local_key_rep
 

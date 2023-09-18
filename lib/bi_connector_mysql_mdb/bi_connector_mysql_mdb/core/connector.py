@@ -1,18 +1,24 @@
-from dl_core.connections_security.base import ConnSecuritySettings
 from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
+from dl_core.connections_security.base import ConnSecuritySettings
+
 from bi_connector_mysql.core.connector import (
     MySQLCoreConnectionDefinition,
-    MySQLTableCoreSourceDefinition,
-    MySQLSubselectCoreSourceDefinition,
     MySQLCoreConnector,
+    MySQLSubselectCoreSourceDefinition,
+    MySQLTableCoreSourceDefinition,
 )
 from bi_connector_mysql.core.dto import MySQLConnDTO
-
-from bi_connector_mysql_mdb.core.data_source import MySQLMDBDataSource, MySQLMDBSubselectDataSource
+from bi_connector_mysql_mdb.core.connection_executors import (
+    AsyncMySQLMDBConnExecutor,
+    MySQLMDBConnExecutor,
+)
+from bi_connector_mysql_mdb.core.data_source import (
+    MySQLMDBDataSource,
+    MySQLMDBSubselectDataSource,
+)
 from bi_connector_mysql_mdb.core.settings import MySQLMDBSettingDefinition
 from bi_connector_mysql_mdb.core.storage_schemas import ConnectionMySQLMDBDataStorageSchema
 from bi_connector_mysql_mdb.core.us_connection import ConnectionMySQLMDB
-from bi_connector_mysql_mdb.core.connection_executors import MySQLMDBConnExecutor, AsyncMySQLMDBConnExecutor
 
 
 class MySQLMDBCoreConnectionDefinition(MySQLCoreConnectionDefinition):
@@ -32,13 +38,13 @@ class MySQLMDBSubselectCoreSourceDefinition(MySQLSubselectCoreSourceDefinition):
 
 
 class MySQLMDBCoreConnector(MySQLCoreConnector):
-    connection_definitions = (
-        MySQLMDBCoreConnectionDefinition,
-    )
+    connection_definitions = (MySQLMDBCoreConnectionDefinition,)
     source_definitions = (
         MySQLMDBTableCoreSourceDefinition,
         MySQLMDBSubselectCoreSourceDefinition,
     )
-    conn_security = frozenset({
-        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({MySQLConnDTO})),
-    })
+    conn_security = frozenset(
+        {
+            ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({MySQLConnDTO})),
+        }
+    )

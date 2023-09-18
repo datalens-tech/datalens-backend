@@ -1,45 +1,50 @@
-import logging
 from http import HTTPStatus
-from typing import Any, Optional
+import logging
+from typing import (
+    Any,
+    Optional,
+)
 
-import pytest
 from aiohttp import web
+import pytest
 
-from bi_cloud_integration.iam_mock import IAMServicesMockFacade
-from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
-from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons_ya_cloud.yc_access_control_model import (
     AuthorizationMode,
     AuthorizationModeDataCloud,
     AuthorizationModeYandexCloud,
 )
-
+from bi_cloud_integration.iam_mock import IAMServicesMockFacade
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.error_handling_outer import (
+    AIOHTTPErrorHandler,
+    ErrorData,
+    ErrorLevel,
+)
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 from dl_api_lib_testing.client import TestClientConverterAiohttpToFlask
 
 from ..test_yc_auth_scenarios import (
-    Scenario_YCAuth_ModeYC_DenyCookieAuth,
     Scenario_YCAuth_ModeDataCloud_DenyCookieAuth,
     Scenario_YCAuth_ModeYC_AllowCookieAuth,
+    Scenario_YCAuth_ModeYC_DenyCookieAuth,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 
 
 def create_yc_auth_enabled_app(
-        authorization_mode: AuthorizationMode,
-        iam_mock: IAMServicesMockFacade,
-        yc_token_header_mode: YcTokenHeaderMode,
-        skip_auth_exact_path: str,
-        skip_auth_prefixed_path: str,
-        dummy_tenant_id: Optional[str] = None,
-        enable_cookie_auth: bool = False,
+    authorization_mode: AuthorizationMode,
+    iam_mock: IAMServicesMockFacade,
+    yc_token_header_mode: YcTokenHeaderMode,
+    skip_auth_exact_path: str,
+    skip_auth_prefixed_path: str,
+    dummy_tenant_id: Optional[str] = None,
+    enable_cookie_auth: bool = False,
 ) -> web.Application:
     async def root(request: web.Request) -> web.StreamResponse:
         dl_request = DLRequestBase.get_for_request(request)
@@ -78,25 +83,27 @@ def create_yc_auth_enabled_app(
                 )
 
     req_id_service = RequestId()
-    app = web.Application(middlewares=[
-        RequestBootstrap(
-            req_id_service=req_id_service,
-            error_handler=DummyErrorHandler(sentry_app_name_tag=None),
-        ).middleware,
-        YCAuthService(
-            authorization_mode=authorization_mode,
-            enable_cookie_auth=enable_cookie_auth,
-            access_service_cfg=iam_mock.service_config,
-            session_service_cfg=iam_mock.service_config,
-            allowed_folder_ids=None,
-            yc_token_header_mode=yc_token_header_mode,
-            skip_path_list=(
-                skip_auth_exact_path,
-                skip_auth_prefixed_path,
-            ),
-        ).middleware,
-        commit_rci_middleware(),
-    ])
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(
+                req_id_service=req_id_service,
+                error_handler=DummyErrorHandler(sentry_app_name_tag=None),
+            ).middleware,
+            YCAuthService(
+                authorization_mode=authorization_mode,
+                enable_cookie_auth=enable_cookie_auth,
+                access_service_cfg=iam_mock.service_config,
+                session_service_cfg=iam_mock.service_config,
+                allowed_folder_ids=None,
+                yc_token_header_mode=yc_token_header_mode,
+                skip_path_list=(
+                    skip_auth_exact_path,
+                    skip_auth_prefixed_path,
+                ),
+            ).middleware,
+            commit_rci_middleware(),
+        ]
+    )
     app.on_response_prepare.append(req_id_service.on_response_prepare)
     app.router.add_get("/auth_ctx", root)
     app.router.add_get(skip_auth_exact_path, no_auth_by_skip_list)
@@ -107,15 +114,15 @@ def create_yc_auth_enabled_app(
 class Test_AIOHTTP_YCAuth_ModeDataCloud_DenyCookieAuth(Scenario_YCAuth_ModeDataCloud_DenyCookieAuth):
     @pytest.fixture()
     async def client(
-            self,
-            iam,
-            yc_token_header_mode,
-            aiohttp_client,
-            project_required_permission,
-            skip_auth_exact_path,
-            skip_auth_prefixed_path,
-            project_id,
-            loop,
+        self,
+        iam,
+        yc_token_header_mode,
+        aiohttp_client,
+        project_required_permission,
+        skip_auth_exact_path,
+        skip_auth_prefixed_path,
+        project_id,
+        loop,
     ) -> Any:
         app = create_yc_auth_enabled_app(
             authorization_mode=AuthorizationModeDataCloud(
@@ -133,15 +140,15 @@ class Test_AIOHTTP_YCAuth_ModeDataCloud_DenyCookieAuth(Scenario_YCAuth_ModeDataC
 class Test_AIOHTTP_YCAuth_ModeYC_DenyCookieAuth(Scenario_YCAuth_ModeYC_DenyCookieAuth):
     @pytest.fixture()
     async def client(
-            self,
-            iam,
-            yc_token_header_mode,
-            aiohttp_client,
-            folder_required_permission,
-            skip_auth_exact_path,
-            skip_auth_prefixed_path,
-            loop,
-            organization_required_permission,
+        self,
+        iam,
+        yc_token_header_mode,
+        aiohttp_client,
+        folder_required_permission,
+        skip_auth_exact_path,
+        skip_auth_prefixed_path,
+        loop,
+        organization_required_permission,
     ) -> Any:
         app = create_yc_auth_enabled_app(
             authorization_mode=AuthorizationModeYandexCloud(
@@ -159,15 +166,15 @@ class Test_AIOHTTP_YCAuth_ModeYC_DenyCookieAuth(Scenario_YCAuth_ModeYC_DenyCooki
 class Test_AIOHTTP_YCAuth_ModeYC_AllowCookieAuth(Scenario_YCAuth_ModeYC_AllowCookieAuth):
     @pytest.fixture()
     async def client(
-            self,
-            iam,
-            yc_token_header_mode,
-            aiohttp_client,
-            folder_required_permission,
-            skip_auth_exact_path,
-            skip_auth_prefixed_path,
-            loop,
-            organization_required_permission,
+        self,
+        iam,
+        yc_token_header_mode,
+        aiohttp_client,
+        folder_required_permission,
+        skip_auth_exact_path,
+        skip_auth_prefixed_path,
+        loop,
+        organization_required_permission,
     ) -> Any:
         app = create_yc_auth_enabled_app(
             authorization_mode=AuthorizationModeYandexCloud(

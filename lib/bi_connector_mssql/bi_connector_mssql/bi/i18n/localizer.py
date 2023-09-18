@@ -2,22 +2,22 @@ import os
 
 import attr
 
-from dl_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
+from dl_i18n.localizer_base import Translatable as BaseTranslatable
+from dl_i18n.localizer_base import TranslationConfig
 
 import bi_connector_mssql as package
 
-
-DOMAIN = f'{package.__name__}'
+DOMAIN = f"{package.__name__}"
 CONFIGS = [
     TranslationConfig(
-        path=os.path.relpath(os.path.join(os.path.dirname(__file__), '../../locales')),
+        path=os.path.relpath(os.path.join(os.path.dirname(__file__), "../../locales")),
         domain=DOMAIN,
-        locale='en',
+        locale="en",
     ),
     TranslationConfig(
-        path=os.path.relpath(os.path.join(os.path.dirname(__file__), '../../locales')),
+        path=os.path.relpath(os.path.join(os.path.dirname(__file__), "../../locales")),
         domain=DOMAIN,
-        locale='ru',
+        locale="ru",
     ),
 ]
 

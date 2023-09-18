@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Sequence, Iterator, TypeVar
+from typing import (
+    Iterator,
+    Sequence,
+    TypeVar,
+)
 
 import attr
 
-from bi_external_api.converter.converter_exc import CompositeConverterError, CompositeConverterErrorData
+from bi_external_api.converter.converter_exc import (
+    CompositeConverterError,
+    CompositeConverterErrorData,
+)
 from bi_external_api.exc_tooling import ExcComposer
 
 
@@ -31,11 +38,7 @@ class ConversionExcComposer(ExcComposer[ConvErrCtx]):
             else:
                 flatten[path] = exc
 
-        return CompositeConverterError(
-            CompositeConverterErrorData(
-                flatten
-            )
-        )
+        return CompositeConverterError(CompositeConverterErrorData(flatten))
 
     def handle_postponed_exc(self, exception: Exception, extra: ConvErrCtx) -> None:
         self._map_path_exc[extra.path] = exception

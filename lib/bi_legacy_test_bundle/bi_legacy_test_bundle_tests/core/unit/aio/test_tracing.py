@@ -1,14 +1,20 @@
 from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import (
+    Callable,
+    Optional,
+)
 
-import pytest
 from aiohttp import web
+import pytest
 
-from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+from dl_api_commons.aio.middlewares.error_handling_outer import (
+    AIOHTTPErrorHandler,
+    ErrorData,
+    ErrorLevel,
+)
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
-
 from dl_core.aio.middlewares.tracing import TracingService
 
 
@@ -33,6 +39,7 @@ class MockErrorHandlingMW(AIOHTTPErrorHandler):
 
 def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]):
     if the_endpoint_code is not None:
+
         class EPView(web.View):
             endpoint_code = the_endpoint_code
 
@@ -41,6 +48,7 @@ def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]):
 
         return EPView
     else:
+
         class NonEPView(web.View):
             async def get(self):
                 return web.json_response(action())
@@ -50,7 +58,7 @@ def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]):
 
 def register_view(app: web.Application, path: str, ep_code: Optional[str]):
     def deco(func: Callable[[], dict]):
-        app.router.add_route('*', path, get_view(ep_code, func))
+        app.router.add_route("*", path, get_view(ep_code, func))
         return func
 
     return deco
@@ -62,17 +70,19 @@ async def test_tracing_scenarios(aiohttp_client):
     At this moment only checks that tracing/error handling middleware doesn't breaks something.
     TODO: Add InMemory reporter to tests tracer to be able to check that spans got correct tags
     """
-    app = web.Application(middlewares=[
-        TracingService().middleware,
-        RequestBootstrap(
-            req_id_service=RequestId(),
-            error_handler=MockErrorHandlingMW(use_sentry=False, sentry_app_name_tag='tests'),
-        ).middleware,
-    ])
+    app = web.Application(
+        middlewares=[
+            TracingService().middleware,
+            RequestBootstrap(
+                req_id_service=RequestId(),
+                error_handler=MockErrorHandlingMW(use_sentry=False, sentry_app_name_tag="tests"),
+            ).middleware,
+        ]
+    )
 
     @register_view(app, "/ok", "ok")
     def ok():
-        return dict(ok='ok')
+        return dict(ok="ok")
 
     @register_view(app, "/err_err", "err")
     def err_err():
@@ -94,7 +104,7 @@ async def test_tracing_scenarios(aiohttp_client):
 
     resp = await client.get("/ok")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == dict(ok='ok')
+    assert resp.status == 200 and resp_json == dict(ok="ok")
 
     resp = await client.get("/err_err")
     resp_json = await resp.json()

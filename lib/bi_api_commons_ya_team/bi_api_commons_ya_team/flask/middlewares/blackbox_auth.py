@@ -8,16 +8,17 @@ import flask
 import requests
 from werkzeug.exceptions import Forbidden
 
-from dl_constants.api_constants import DLHeadersCommon
 from bi_api_commons_ya_team.constants import DLCookiesYT
-from dl_api_commons.access_control_common import match_path_prefix, get_token_from_authorization_header, AuthTokenType
+from bi_api_commons_ya_team.models import YaTeamAuthData
+from bi_blackbox_client.authenticate import authenticate
+from dl_api_commons.access_control_common import (
+    AuthTokenType,
+    get_token_from_authorization_header,
+    match_path_prefix,
+)
 from dl_api_commons.base_models import TenantCommon
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-
-from bi_blackbox_client.authenticate import authenticate
-
-from bi_api_commons_ya_team.models import YaTeamAuthData
-
+from dl_constants.api_constants import DLHeadersCommon
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,10 +34,10 @@ def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
     if should_skip_auth:
         return
 
-    host = flask.request.environ.get('HTTP_HOST')
+    host = flask.request.environ.get("HTTP_HOST")
     if not host:
-        host = flask.current_app.config['SERVER_NAME']
-        host = host.split(':')[0]
+        host = flask.current_app.config["SERVER_NAME"]
+        host = host.split(":")[0]
 
     rci = ReqCtxInfoMiddleware.get_last_resort_rci()
     assert rci, "Can not get any RCI for current request"
@@ -46,10 +47,7 @@ def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
     secret_sessionid2_cookie = flask.request.cookies.get(DLCookiesYT.YA_TEAM_SESSION_ID_2.value, None)
     secret_authorization_header_value = flask.request.headers.get(DLHeadersCommon.AUTHORIZATION_TOKEN.value)
 
-    user_ip = (
-        flask.request.access_route[-2] if len(flask.request.access_route) > 1
-        else flask.request.access_route[0]
-    )
+    user_ip = flask.request.access_route[-2] if len(flask.request.access_route) > 1 else flask.request.access_route[0]
     auth_res = authenticate(
         session_id_cookie=secret_session_id_cookie,
         sessionid2_cookie=secret_sessionid2_cookie,
@@ -61,10 +59,8 @@ def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
         statbox_id=req_id,
     )
 
-    if auth_res['username'] is None:
-        LOGGER.info("Blackbox auth was not passed. Blackbox resp: %s", json.dumps(
-            auth_res.get('blackbox_response')
-        ))
+    if auth_res["username"] is None:
+        LOGGER.info("Blackbox auth was not passed. Blackbox resp: %s", json.dumps(auth_res.get("blackbox_response")))
         raise Forbidden()
 
     auth_data = YaTeamAuthData(
@@ -74,8 +70,8 @@ def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
     )
     temp_rci = ReqCtxInfoMiddleware.get_temp_rci()
     enriched_temp_rci = temp_rci.clone(
-        user_name=auth_res['username'],
-        user_id=auth_res['user_id'],
+        user_name=auth_res["username"],
+        user_id=auth_res["user_id"],
         auth_data=auth_data,
         tenant=TenantCommon(),
     )
@@ -83,21 +79,21 @@ def _check_auth(skip_auth_path_list: tuple[str, ...], timeout: int) -> None:
 
 
 def set_up(
-        app: flask.Flask,
-        retry_params: dict[str, Any],
-        timeout: int,
-        skip_auth_path_list: tuple[str, ...] = (),
+    app: flask.Flask,
+    retry_params: dict[str, Any],
+    timeout: int,
+    skip_auth_path_list: tuple[str, ...] = (),
 ) -> None:
     session = requests.Session()
     adapter = requests.adapters.HTTPAdapter(
         max_retries=requests.packages.urllib3.Retry(
             **dict(
                 retry_params,
-                method_whitelist=('GET', 'POST'),
+                method_whitelist=("GET", "POST"),
             ),
         ),
     )
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
     app.blackbox_requests_session = session
     app.before_request(lambda: _check_auth(skip_auth_path_list=skip_auth_path_list, timeout=timeout))

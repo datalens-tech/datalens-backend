@@ -2,27 +2,45 @@ from __future__ import annotations
 
 import contextlib
 from functools import singledispatchmethod
-from typing import Iterable, Iterator, Sequence, Optional, Type, ClassVar
+from typing import (
+    ClassVar,
+    Iterable,
+    Iterator,
+    Optional,
+    Sequence,
+    Type,
+)
 
 import attr
 import pytest
 from sqlalchemy import Column
 from sqlalchemy.engine.url import URL
 
-from dl_connector_clickhouse.db_testing.engine_wrapper import (
-    ClickhouseDbEngineConfig, ClickHouseEngineWrapper, EngineWrapperBase,
+from bi_external_api.attrs_model_mapper import (
+    Processor,
+    pretty_repr,
 )
-from bi_external_api.attrs_model_mapper import pretty_repr, Processor
 from bi_external_api.attrs_model_mapper.field_processor import FieldMeta
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.external import CommonError, rpc_dc
+from bi_external_api.domain.external import (
+    CommonError,
+    rpc_dc,
+)
 from bi_external_api.domain.internal import dashboards
-from bi_external_api.ext_examples import SuperStoreExtDSBuilder, CHConnectionBuilder
+from bi_external_api.ext_examples import (
+    CHConnectionBuilder,
+    SuperStoreExtDSBuilder,
+)
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.testings import WorkbookOpsClient
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
+from dl_connector_clickhouse.db_testing.engine_wrapper import (
+    ClickhouseDbEngineConfig,
+    ClickHouseEngineWrapper,
+    EngineWrapperBase,
+)
 
 
 def clear_volatile_common_error_data(exc_data: ext.ErrWorkbookOp) -> ext.ErrWorkbookOp:
@@ -39,25 +57,29 @@ def clear_volatile_common_error_data(exc_data: ext.ErrWorkbookOp) -> ext.ErrWork
 
 
 def create_indicator_for_sum_sales(
-        *,
-        name: str,
-        dataset_name: str,
+    *,
+    name: str,
+    dataset_name: str,
 ) -> ext.ChartInstance:
     ad_hoc_field_id = "sum_sales"
 
     return ext.ChartInstance(
         name=name,
         chart=ext.Chart(
-            ad_hoc_fields=[ext.AdHocField(field=ext.DatasetField(
-                id=ad_hoc_field_id,
-                title="Sum Sales",
-                calc_spec=ext.FormulaCS(formula="sum([Sales])"),
-                cast=ext.FieldType.float,
-                description="",
-            ))],
+            ad_hoc_fields=[
+                ext.AdHocField(
+                    field=ext.DatasetField(
+                        id=ad_hoc_field_id,
+                        title="Sum Sales",
+                        calc_spec=ext.FormulaCS(formula="sum([Sales])"),
+                        cast=ext.FieldType.float,
+                        description="",
+                    )
+                )
+            ],
             datasets=[dataset_name],
-            visualization=ext.Indicator(field=ext.ChartField.create_as_ref(id=ad_hoc_field_id))
-        )
+            visualization=ext.Indicator(field=ext.ChartField.create_as_ref(id=ad_hoc_field_id)),
+        ),
     )
 
 
@@ -112,7 +134,7 @@ class DataFiller:
                     database=self.db_data.target_db_name,
                     query=dict(
                         protocol="https",
-                    )
+                    ),
                 ),
                 cluster=None,
             )
@@ -125,6 +147,7 @@ class DataFiller:
     @sample_superstore_sa_columns.register
     def sample_superstore_sa_columns_ch(self, conn: ext.ClickHouseConnection) -> list[Column]:
         from clickhouse_sqlalchemy import types
+
         return [
             Column("Category", types.String),
             Column("City", types.String),
@@ -176,11 +199,7 @@ class DataFiller:
 
         if create_table:
             self.ew.create_table(
-                self.ew.table_from_columns(
-                    table_name=table_name,
-                    schema=schema_name,
-                    columns=expected_columns
-                ),
+                self.ew.table_from_columns(table_name=table_name, schema=schema_name, columns=expected_columns),
             )
 
 
@@ -208,28 +227,27 @@ class AcceptanceScenario:
         return data
 
     async def create_connection(
-            self,
-            api: WorkbookOpsFacade,
-            wb_id: str,
-            conn_t: Type[ext.Connection],
-            name: str,
-            data: ConnectionTestingData,
+        self,
+        api: WorkbookOpsFacade,
+        wb_id: str,
+        conn_t: Type[ext.Connection],
+        name: str,
+        data: ConnectionTestingData,
     ) -> CreatedConnectionTestingData:
         conn_def = data.connection
         assert isinstance(conn_def, conn_t)
 
-        resp = await api.create_connection(ext.ConnectionCreateRequest(
-            workbook_id=wb_id,
-            connection=ext.ConnectionInstance(
-                name=name,
-                connection=conn_def,
-            ),
-            secret=data.secret,
-        ))
-        return CreatedConnectionTestingData(
-            entry_info=resp.connection_info,
-            data=data
+        resp = await api.create_connection(
+            ext.ConnectionCreateRequest(
+                workbook_id=wb_id,
+                connection=ext.ConnectionInstance(
+                    name=name,
+                    connection=conn_def,
+                ),
+                secret=data.secret,
+            )
         )
+        return CreatedConnectionTestingData(entry_info=resp.connection_info, data=data)
 
     @pytest.fixture(scope="session")
     def ch_connection_testing_data_ensured(self, ch_connection_testing_data) -> ConnectionTestingData:
@@ -242,14 +260,14 @@ class AcceptanceScenario:
     @pytest.fixture()
     async def ch_connection(self, api, wb_id: str, ch_connection_testing_data_ensured) -> CreatedConnectionTestingData:
         return await self.create_connection(
-            api, wb_id,
-            ext.ClickHouseConnection,
-            "ch_conn", ch_connection_testing_data_ensured
+            api, wb_id, ext.ClickHouseConnection, "ch_conn", ch_connection_testing_data_ensured
         )
 
-    @pytest.fixture(params=[
-        "ch_connection",
-    ])
+    @pytest.fixture(
+        params=[
+            "ch_connection",
+        ]
+    )
     def conn_td(self, request) -> CreatedConnectionTestingData:
         """
         Dispatching fixture that return any connection
@@ -258,45 +276,47 @@ class AcceptanceScenario:
 
     @pytest.fixture()
     async def broken_dash(
-            self,
-            int_api_clients,
-            wb_id: str,
+        self,
+        int_api_clients,
+        wb_id: str,
     ) -> dashboards.DashInstance:
         dash = dashboards.Dashboard(  # region
             tabs=(
                 dashboards.Tab(
-                    id='Qk',
-                    title='Вкладка 1',
+                    id="Qk",
+                    title="Вкладка 1",
                     items=(
                         dashboards.ItemControl(
-                            id='Wa',
-                            namespace='default',
+                            id="Wa",
+                            namespace="default",
                             data=dashboards.ManualControlData(
-                                title='Test Param',
+                                title="Test Param",
                                 source=dashboards.ManualControlSourceSelect(
                                     showTitle=True,
-                                    fieldName='test_param',
+                                    fieldName="test_param",
                                     multiselectable=False,
                                     acceptableValues=[
                                         dashboards.SelectorItem(
-                                            title='azaza',
-                                            value='azaza',
+                                            title="azaza",
+                                            value="azaza",
                                         ),
                                         dashboards.SelectorItem(
-                                            title='ololo',
-                                            value='ololo',
+                                            title="ololo",
+                                            value="ololo",
                                         ),
                                     ],
                                 ),
                             ),
-                            defaults=FrozenMappingStrToStrOrStrSeq({
-                                'test_param': '',
-                            }),
+                            defaults=FrozenMappingStrToStrOrStrSeq(
+                                {
+                                    "test_param": "",
+                                }
+                            ),
                         ),
                     ),
                     layout=(
                         dashboards.LayoutItem(
-                            i='Wa',
+                            i="Wa",
                             h=2,
                             w=8,
                             x=0,
@@ -339,62 +359,81 @@ class AcceptanceScenario:
         return sorted(cls.get_ext_field_projection(f) for f in all_ext_f)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("ref_factory", [
-        lambda bi_conn, wb_id: ext.EntryIDRef(bi_conn.id),
-        lambda bi_conn, wb_id: ext.EntryWBRef(wb_id=wb_id, entry_name=bi_conn.name),
-    ], ids=["id_ref", "wb_ref"])
+    @pytest.mark.parametrize(
+        "ref_factory",
+        [
+            lambda bi_conn, wb_id: ext.EntryIDRef(bi_conn.id),
+            lambda bi_conn, wb_id: ext.EntryWBRef(wb_id=wb_id, entry_name=bi_conn.name),
+        ],
+        ids=["id_ref", "wb_ref"],
+    )
     async def test_advise_fields_by_conn_id(self, api, conn_td: CreatedConnectionTestingData, wb_id: str, ref_factory):
-        dataset = SuperStoreExtDSBuilder("--replace-me--").set_source_as_table(
-            table_name=conn_td.data.sample_super_store_table_name,
-            db_name=conn_td.data.target_db_name,
-        ).build()
-        expected_dataset = SuperStoreExtDSBuilder("--replace-me--").set_source_as_table(
-            table_name=conn_td.data.sample_super_store_table_name,
-            db_name=conn_td.data.target_db_name,
-        ).do_add_default_fields().build()
+        dataset = (
+            SuperStoreExtDSBuilder("--replace-me--")
+            .set_source_as_table(
+                table_name=conn_td.data.sample_super_store_table_name,
+                db_name=conn_td.data.target_db_name,
+            )
+            .build()
+        )
+        expected_dataset = (
+            SuperStoreExtDSBuilder("--replace-me--")
+            .set_source_as_table(
+                table_name=conn_td.data.sample_super_store_table_name,
+                db_name=conn_td.data.target_db_name,
+            )
+            .do_add_default_fields()
+            .build()
+        )
 
         assert dataset.fields == (), "Builder returns dataset with fields despite of it was not asked"
 
-        resp = await api.advise_dataset_fields(ext.AdviseDatasetFieldsRequest(
-            partial_dataset=dataset,
-            connection_ref=ref_factory(conn_td.entry_info, wb_id),
-        ))
+        resp = await api.advise_dataset_fields(
+            ext.AdviseDatasetFieldsRequest(
+                partial_dataset=dataset,
+                connection_ref=ref_factory(conn_td.entry_info, wb_id),
+            )
+        )
 
-        assert self.get_all_ext_field_projection(
-            resp.dataset.fields
-        ) == self.get_all_ext_field_projection(expected_dataset.fields)
+        assert self.get_all_ext_field_projection(resp.dataset.fields) == self.get_all_ext_field_projection(
+            expected_dataset.fields
+        )
 
     @pytest.mark.asyncio
     async def test_write_default_dataset(self, api, conn_td: CreatedConnectionTestingData, wb_id: str):
-        dataset = SuperStoreExtDSBuilder(
-            conn_td.entry_info.name
-        ).do_add_default_fields().set_source_as_table(
-            table_name=conn_td.data.sample_super_store_table_name,
-            db_name=conn_td.data.target_db_name,
-        ).build_instance("main")
+        dataset = (
+            SuperStoreExtDSBuilder(conn_td.entry_info.name)
+            .do_add_default_fields()
+            .set_source_as_table(
+                table_name=conn_td.data.sample_super_store_table_name,
+                db_name=conn_td.data.target_db_name,
+            )
+            .build_instance("main")
+        )
         wb = ext.WorkBook(datasets=[dataset], charts=[], dashboards=[])
 
         with self.wb_op_exc_pretty_print():
-            await api.write_workbook(
-                ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb)
-            )
+            await api.write_workbook(ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb))
 
-    @pytest.mark.parametrize("f_type,param_default_value,err_text", [
-        (ext.FieldType.string, "ololo", None),
-        (ext.FieldType.integer, "1", None),
-        (ext.FieldType.float, "1.5", None),
-        (ext.FieldType.float, "not_a_float", "not a valid float: not_a_float"),
-    ])
+    @pytest.mark.parametrize(
+        "f_type,param_default_value,err_text",
+        [
+            (ext.FieldType.string, "ololo", None),
+            (ext.FieldType.integer, "1", None),
+            (ext.FieldType.float, "1.5", None),
+            (ext.FieldType.float, "not_a_float", "not a valid float: not_a_float"),
+        ],
+    )
     @pytest.mark.asyncio
     async def test_write_default_dataset_with_parameter(
-            self,
-            api,
-            conn_td: CreatedConnectionTestingData,
-            wb_id: str,
-            # Params
-            f_type: ext.FieldType,
-            param_default_value: str,
-            err_text: Optional[str],
+        self,
+        api,
+        conn_td: CreatedConnectionTestingData,
+        wb_id: str,
+        # Params
+        f_type: ext.FieldType,
+        param_default_value: str,
+        err_text: Optional[str],
     ):
         param_field = ext.DatasetField(
             id="parampampam",
@@ -406,10 +445,15 @@ class AcceptanceScenario:
                 default_value=param_default_value,
             ),
         )
-        dataset = SuperStoreExtDSBuilder(conn_td.entry_info.name).set_source_as_table(
-            table_name=conn_td.data.sample_super_store_table_name,
-            db_name=conn_td.data.target_db_name,
-        ).add_field(param_field).build_instance("main")
+        dataset = (
+            SuperStoreExtDSBuilder(conn_td.entry_info.name)
+            .set_source_as_table(
+                table_name=conn_td.data.sample_super_store_table_name,
+                db_name=conn_td.data.target_db_name,
+            )
+            .add_field(param_field)
+            .build_instance("main")
+        )
         wb = ext.WorkBook(datasets=[dataset], charts=[], dashboards=[])
         write_rq = ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb)
 
@@ -433,9 +477,9 @@ class AcceptanceScenario:
                             path="fields.parampampam",
                             message=f"Constraint violation: {err_text}",
                             exc_message=None,
-                            stacktrace=None
+                            stacktrace=None,
                         )
-                    ]
+                    ],
                 ),
             )
 
@@ -445,65 +489,75 @@ class AcceptanceScenario:
         if sub_sql is None:
             pytest.skip("No SQL for sub-SQL data source was provided in fixture")
 
-        dataset = SuperStoreExtDSBuilder(conn_td.entry_info.name).set_source(
-            ext.DataSource(
-                connection_ref=conn_td.entry_info.name,
-                id="main",
-                title="Subselect",
-                spec=ext.SubSelectDataSourceSpec(
-                    sql=sub_sql,
-                )
-            ),
-        ).do_add_default_fields().build_instance("main")
+        dataset = (
+            SuperStoreExtDSBuilder(conn_td.entry_info.name)
+            .set_source(
+                ext.DataSource(
+                    connection_ref=conn_td.entry_info.name,
+                    id="main",
+                    title="Subselect",
+                    spec=ext.SubSelectDataSourceSpec(
+                        sql=sub_sql,
+                    ),
+                ),
+            )
+            .do_add_default_fields()
+            .build_instance("main")
+        )
         wb = ext.WorkBook(datasets=[dataset], charts=[], dashboards=[])
 
         with self.wb_op_exc_pretty_print():
-            await api.write_workbook(
-                ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb)
-            )
+            await api.write_workbook(ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb))
 
-    @pytest.mark.parametrize("check_id,check_title", [
-        (True, False),
-        (False, True),
-        (True, True),
-    ])
+    @pytest.mark.parametrize(
+        "check_id,check_title",
+        [
+            (True, False),
+            (False, True),
+            (True, True),
+        ],
+    )
     @pytest.mark.asyncio
     async def test_ds_add_field_invalid_id_or_title(
-            self,
-            api,
-            conn_td: CreatedConnectionTestingData,
-            wb_id: str,
-            # params
-            check_id: bool,
-            check_title: bool,
+        self,
+        api,
+        conn_td: CreatedConnectionTestingData,
+        wb_id: str,
+        # params
+        check_id: bool,
+        check_title: bool,
     ):
         builder = SuperStoreExtDSBuilder(conn_td.entry_info.name).set_source_as_table(
             table_name=conn_td.data.sample_super_store_table_name,
             db_name=conn_td.data.target_db_name,
         )
         if check_id:
-            builder = builder.add_field(ext.DatasetField(
-                id="!@#t",
-                title="bad id",
-                description=None,
-                aggregation=ext.Aggregation.none,
-                cast=ext.FieldType.integer,
-                calc_spec=ext.ParameterCS(
-                    default_value="1",
-                ),
-            ))
+            builder = builder.add_field(
+                ext.DatasetField(
+                    id="!@#t",
+                    title="bad id",
+                    description=None,
+                    aggregation=ext.Aggregation.none,
+                    cast=ext.FieldType.integer,
+                    calc_spec=ext.ParameterCS(
+                        default_value="1",
+                    ),
+                )
+            )
 
         if check_title:
-            builder = builder.add_field(ext.DatasetField(
-                id="bad_title",
-                title="very_long_title" * 20,
-                description=None,
-                aggregation=ext.Aggregation.none,
-                cast=ext.FieldType.integer,
-                calc_spec=ext.ParameterCS(
-                    default_value="1",
-                ),
-            ))
+            builder = builder.add_field(
+                ext.DatasetField(
+                    id="bad_title",
+                    title="very_long_title" * 20,
+                    description=None,
+                    aggregation=ext.Aggregation.none,
+                    cast=ext.FieldType.integer,
+                    calc_spec=ext.ParameterCS(
+                        default_value="1",
+                    ),
+                )
+            )
 
         dataset = builder.build_instance("main")
         wb = ext.WorkBook(datasets=[dataset], charts=[], dashboards=[])
@@ -518,8 +572,8 @@ class AcceptanceScenario:
         if check_id:
             expected.append(
                 CommonError(
-                    path='fields.!@#t.attrs.id',
-                    message='Constraint violation: Got invalid ID for a field, allowed values: [a-zA-Z0-9_]+',
+                    path="fields.!@#t.attrs.id",
+                    message="Constraint violation: Got invalid ID for a field, allowed values: [a-zA-Z0-9_]+",
                     exc_message=None,
                     stacktrace=None,
                 ),
@@ -527,8 +581,8 @@ class AcceptanceScenario:
         if check_title:
             expected.append(
                 CommonError(
-                    path='fields.bad_title.attrs.title',
-                    message='Constraint violation: Title exceeds max length of 35 characters',
+                    path="fields.bad_title.attrs.title",
+                    message="Constraint violation: Title exceeds max length of 35 characters",
                     exc_message=None,
                     stacktrace=None,
                 )
@@ -537,41 +591,32 @@ class AcceptanceScenario:
         assert cleared_err_data.entry_errors[0].errors == tuple(expected)
 
     @pytest.mark.asyncio
-    async def test_dataset_add_id_formula(
-            self,
-            api,
-            conn_td: CreatedConnectionTestingData,
-            wb_id: str
-    ):
+    async def test_dataset_add_id_formula(self, api, conn_td: CreatedConnectionTestingData, wb_id: str):
         dataset = (
             SuperStoreExtDSBuilder(conn_td.entry_info.name)
-                .set_source_as_table(
+            .set_source_as_table(
                 table_name=conn_td.data.sample_super_store_table_name,
                 db_name=conn_td.data.target_db_name,
             )
-                .do_add_default_fields()
-                .add_field(
+            .do_add_default_fields()
+            .add_field(
                 ext.DatasetField(
-                    id='profit_sum',
-                    title='Total profit',
+                    id="profit_sum",
+                    title="Total profit",
                     description=None,
                     cast=ext.FieldType.float,
                     aggregation=ext.Aggregation.none,
-                    calc_spec=ext.IDFormulaCS(
-                        formula='SUM([profit])'
-                    )
+                    calc_spec=ext.IDFormulaCS(formula="SUM([profit])"),
                 )
             )
-                .add_field(
+            .add_field(
                 ext.DatasetField(
-                    id='profit_avg',
-                    title='Average profit',
+                    id="profit_avg",
+                    title="Average profit",
                     description=None,
                     cast=ext.FieldType.float,
                     aggregation=ext.Aggregation.none,
-                    calc_spec=ext.FormulaCS(
-                        formula='AVG([Profit])'
-                    )
+                    calc_spec=ext.FormulaCS(formula="AVG([Profit])"),
                 )
             )
         ).build_instance("main")
@@ -579,166 +624,184 @@ class AcceptanceScenario:
         wb = ext.WorkBook(datasets=[dataset], charts=[], dashboards=[])
 
         with self.wb_op_exc_pretty_print():
-            await api.write_workbook(
-                ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb)
-            )
+            await api.write_workbook(ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb))
 
         # Retrieving with title formula
         for use_guid in [None, False]:
-            resp = await api.read_workbook(ext.WorkbookReadRequest(
-                workbook_id=wb_id,
-                use_id_formula=use_guid,
-            ))
+            resp = await api.read_workbook(
+                ext.WorkbookReadRequest(
+                    workbook_id=wb_id,
+                    use_id_formula=use_guid,
+                )
+            )
             actual_workbook = resp.workbook
 
-            fields_by_title = {
-                f.title: f
-                for f in actual_workbook.datasets[0].dataset.fields
-            }
-            assert fields_by_title['Total profit'] == ext.DatasetField(
-                id='profit_sum',
-                title='Total profit',
+            fields_by_title = {f.title: f for f in actual_workbook.datasets[0].dataset.fields}
+            assert fields_by_title["Total profit"] == ext.DatasetField(
+                id="profit_sum",
+                title="Total profit",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
-                calc_spec=ext.FormulaCS(formula='SUM([Profit])')
+                calc_spec=ext.FormulaCS(formula="SUM([Profit])"),
             )
-            assert fields_by_title['Average profit'] == ext.DatasetField(
-                id='profit_avg',
-                title='Average profit',
+            assert fields_by_title["Average profit"] == ext.DatasetField(
+                id="profit_avg",
+                title="Average profit",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
-                calc_spec=ext.FormulaCS(formula='AVG([Profit])')
+                calc_spec=ext.FormulaCS(formula="AVG([Profit])"),
             )
 
         # And now with guid
-        resp = await api.read_workbook(ext.WorkbookReadRequest(
-            workbook_id=wb_id,
-            use_id_formula=True,
-        ))
+        resp = await api.read_workbook(
+            ext.WorkbookReadRequest(
+                workbook_id=wb_id,
+                use_id_formula=True,
+            )
+        )
         actual_workbook = resp.workbook
 
-        fields_by_title = {
-            f.title: f
-            for f in actual_workbook.datasets[0].dataset.fields
-        }
-        assert fields_by_title['Total profit'] == ext.DatasetField(
-            id='profit_sum',
-            title='Total profit',
+        fields_by_title = {f.title: f for f in actual_workbook.datasets[0].dataset.fields}
+        assert fields_by_title["Total profit"] == ext.DatasetField(
+            id="profit_sum",
+            title="Total profit",
             description=None,
             hidden=False,
             cast=ext.FieldType.float,
             aggregation=ext.Aggregation.none,
-            calc_spec=ext.IDFormulaCS(formula='SUM([profit])')
+            calc_spec=ext.IDFormulaCS(formula="SUM([profit])"),
         )
-        assert fields_by_title['Average profit'] == ext.DatasetField(
-            id='profit_avg',
-            title='Average profit',
+        assert fields_by_title["Average profit"] == ext.DatasetField(
+            id="profit_avg",
+            title="Average profit",
             description=None,
             hidden=False,
             cast=ext.FieldType.float,
             aggregation=ext.Aggregation.none,
-            calc_spec=ext.IDFormulaCS(formula='AVG([profit])')
+            calc_spec=ext.IDFormulaCS(formula="AVG([profit])"),
         )
 
     @pytest.mark.asyncio
     async def test_dataset_with_bad_field_produces_common_error(
-            self, api, conn_td: CreatedConnectionTestingData,
-            wb_id: str,
+        self,
+        api,
+        conn_td: CreatedConnectionTestingData,
+        wb_id: str,
     ):
         dataset = (
             SuperStoreExtDSBuilder(conn_td.entry_info.name)
-                .set_source_as_table(
+            .set_source_as_table(
                 table_name=conn_td.data.sample_super_store_table_name,
                 db_name=conn_td.data.target_db_name,
             )
-                .add_field(
+            .add_field(
                 ext.DatasetField(
-                    id='profit_bad',
-                    title='Profit Bad',
+                    id="profit_bad",
+                    title="Profit Bad",
                     description=None,
                     hidden=False,
                     cast=ext.FieldType.float,
                     aggregation=ext.Aggregation.none,
-                    calc_spec=ext.DirectCS(field_name='Profitx', avatar_id='-42', ),
+                    calc_spec=ext.DirectCS(
+                        field_name="Profitx",
+                        avatar_id="-42",
+                    ),
                 ),
             )
-                .build_instance("main")
+            .build_instance("main")
         )
         wb = ext.WorkBook(datasets=[dataset], charts=[], dashboards=[])
 
         with pytest.raises(WorkbookOperationException) as exc_info:
-            await api.write_workbook(
-                ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb)
-            )
+            await api.write_workbook(ext.WorkbookWriteRequest(workbook_id=wb_id, workbook=wb))
 
         cleared_data = clear_volatile_common_error_data(exc_info.value.data)
         assert cleared_data == ext.ErrWorkbookOp(
-            message='Error writing workbook',
+            message="Error writing workbook",
             common_errors=(
                 ext.CommonError(
-                    message='Workbook validation failed. Persisting will not be performed.',
+                    message="Workbook validation failed. Persisting will not be performed.",
                 ),
             ),
             entry_errors=[
-                ext.EntryError(name='main', errors=(
-                    ext.CommonError(
-                        path='field.profit_bad',
-                        message='Unknown referenced source column: Profitx, code: ERR.DS_API.FORMULA.UNKNOWN_SOURCE_COLUMN',
-                        exc_message=None, stacktrace=None
+                ext.EntryError(
+                    name="main",
+                    errors=(
+                        ext.CommonError(
+                            path="field.profit_bad",
+                            message="Unknown referenced source column: Profitx, code: ERR.DS_API.FORMULA.UNKNOWN_SOURCE_COLUMN",
+                            exc_message=None,
+                            stacktrace=None,
+                        ),
                     ),
-                ))
+                )
             ],
             partial_workbook=None,
         )
 
     @pytest.mark.asyncio
     async def test_load_broken_dash(
-            self,
-            wb_id: str,
-            api,
-            broken_dash: dashboards.DashInstance,
+        self,
+        wb_id: str,
+        api,
+        broken_dash: dashboards.DashInstance,
     ):
         with pytest.raises(WorkbookOperationException) as exc_info:
             await api.read_workbook(ext.WorkbookReadRequest(workbook_id=wb_id))
 
         exc: WorkbookOperationException = exc_info.value
-        assert exc.data.entry_errors == (ext.EntryError(
-            name=broken_dash.summary.name,
-            errors=[ext.CommonError(
-                message="Error during handling entry broken_dash: <class 'bi_external_api.converter.converter_exc.NotSupportedYet'>",
-                # Until we rework tests to pytest.mark.parametrize over different props
-                exc_message="Manual selectors are not yet implemented in API" if self._DO_ADD_EXC_MESSAGE else None,
-                stacktrace=None,
-            )]
-        ),)
+        assert exc.data.entry_errors == (
+            ext.EntryError(
+                name=broken_dash.summary.name,
+                errors=[
+                    ext.CommonError(
+                        message="Error during handling entry broken_dash: <class 'bi_external_api.converter.converter_exc.NotSupportedYet'>",
+                        # Until we rework tests to pytest.mark.parametrize over different props
+                        exc_message="Manual selectors are not yet implemented in API"
+                        if self._DO_ADD_EXC_MESSAGE
+                        else None,
+                        stacktrace=None,
+                    )
+                ],
+            ),
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("do_rewrite_dash", [True, False], ids=["rewrite", "remove"])
     async def test_force_rewrite_with_broken_dash(
-            self,
-            wb_id: str,
-            api,
-            broken_dash: dashboards.DashInstance,
-            conn_td: CreatedConnectionTestingData,
-            do_rewrite_dash: bool,
+        self,
+        wb_id: str,
+        api,
+        broken_dash: dashboards.DashInstance,
+        conn_td: CreatedConnectionTestingData,
+        do_rewrite_dash: bool,
     ):
-        dataset = SuperStoreExtDSBuilder(conn_td.entry_info.name).set_source_as_table(
-            table_name=conn_td.data.sample_super_store_table_name,
-            db_name=conn_td.data.target_db_name,
-        ).do_add_default_fields().build_instance("main")
+        dataset = (
+            SuperStoreExtDSBuilder(conn_td.entry_info.name)
+            .set_source_as_table(
+                table_name=conn_td.data.sample_super_store_table_name,
+                db_name=conn_td.data.target_db_name,
+            )
+            .do_add_default_fields()
+            .build_instance("main")
+        )
         chart = create_indicator_for_sum_sales(name="indi", dataset_name=dataset.name)
         dash = ext.DashInstance(
             name=broken_dash.summary.name,
-            dashboard=ext.Dashboard(tabs=[ext.DashboardTab(
-                id="tabId",
-                title="Tab title",
-                items=[],
-                ignored_connections=(),
-            )])
+            dashboard=ext.Dashboard(
+                tabs=[
+                    ext.DashboardTab(
+                        id="tabId",
+                        title="Tab title",
+                        items=[],
+                        ignored_connections=(),
+                    )
+                ]
+            ),
         )
 
         desired_wb = ext.WorkBook(
@@ -748,19 +811,23 @@ class AcceptanceScenario:
         )
 
         with pytest.raises(WorkbookOperationException):
-            await api.write_workbook(ext.WorkbookWriteRequest(
-                workbook_id=wb_id,
-                workbook=desired_wb,
-            ))
+            await api.write_workbook(
+                ext.WorkbookWriteRequest(
+                    workbook_id=wb_id,
+                    workbook=desired_wb,
+                )
+            )
 
         # TODO FIX: Validate error messages
 
         # Trying to rewrite with force
-        write_resp = await api.write_workbook(ext.WorkbookWriteRequest(
-            workbook_id=wb_id,
-            workbook=desired_wb,
-            force_rewrite=True,
-        ))
+        write_resp = await api.write_workbook(
+            ext.WorkbookWriteRequest(
+                workbook_id=wb_id,
+                workbook=desired_wb,
+                force_rewrite=True,
+            )
+        )
 
         assert write_resp
 
@@ -778,9 +845,9 @@ class AcceptanceScenario:
 
     @pytest.mark.asyncio
     async def test_error_missing_dataset(
-            self,
-            wb_id: str,
-            api,
+        self,
+        wb_id: str,
+        api,
     ):
         chart = create_indicator_for_sum_sales(name="indi", dataset_name="ne_dataset")
 
@@ -791,52 +858,57 @@ class AcceptanceScenario:
         )
 
         with pytest.raises(WorkbookOperationException) as exc_info:
-            await api.write_workbook(ext.WorkbookWriteRequest(
-                workbook_id=wb_id,
-                workbook=desired_wb,
-            ))
+            await api.write_workbook(
+                ext.WorkbookWriteRequest(
+                    workbook_id=wb_id,
+                    workbook=desired_wb,
+                )
+            )
 
         cleared_data = clear_volatile_common_error_data(exc_info.value.data)
 
         assert cleared_data == ext.ErrWorkbookOp(
-            message='Error writing workbook',
+            message="Error writing workbook",
             common_errors=(
                 ext.CommonError(
-                    message='Workbook validation failed. Persisting will not be performed.',
+                    message="Workbook validation failed. Persisting will not be performed.",
                 ),
             ),
             entry_errors=(
                 ext.EntryError(
-                    name='indi',
+                    name="indi",
                     # Validation will be aborted on ad-hoc fields resolution,
                     #  so there is no error for visualization field.
                     #  May be it will be fixed later.
                     errors=(
                         ext.CommonError(
-                            path='datasets.ne_dataset',
+                            path="datasets.ne_dataset",
                             message="Referenced entry not found in workbook: DatasetInstance/EntryNameRef(name='ne_dataset') not found in workbook.",
                         ),
                         ext.CommonError(
-                            path='ad_hoc_fields.sum_sales',
+                            path="ad_hoc_fields.sum_sales",
                             message="Referenced entry not found in workbook: DatasetInstance/EntryNameRef(name='ne_dataset') not found in workbook.",
                         ),
-                    )
+                    ),
                 ),
             ),
-            partial_workbook=None
+            partial_workbook=None,
         )
 
 
 async def _test_dc_workbook_create_modify_delete(client: WorkbookOpsClient, *, wb_title: str, project_id: str):
-    resp = await client.dc_create_workbook(rpc_dc.DCOpWorkbookCreateRequest(
-        project_id=project_id,
-        workbook_title=wb_title,
-    ))
+    resp = await client.dc_create_workbook(
+        rpc_dc.DCOpWorkbookCreateRequest(
+            project_id=project_id,
+            workbook_title=wb_title,
+        )
+    )
     wb_id = resp.workbook_id
     assert wb_id
     resp2 = await client.dc_modify_workbook(
-        rpc_dc.DCOpWorkbookModifyRequest(workbook_id=wb_id,
-                                         workbook=ext.WorkBook(datasets=[], charts=[], dashboards=[]))
+        rpc_dc.DCOpWorkbookModifyRequest(
+            workbook_id=wb_id, workbook=ext.WorkBook(datasets=[], charts=[], dashboards=[])
+        )
     )
     assert resp2.executed_plan
     resp3 = await client.dc_read_workbook(

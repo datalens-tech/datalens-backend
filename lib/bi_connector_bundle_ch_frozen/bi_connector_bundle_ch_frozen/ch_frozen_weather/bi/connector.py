@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.connector import (
-    CHFrozenWeatherCoreSourceDefinition,
-    CHFrozenWeatherCoreConnectionDefinition,
-    CHFrozenWeatherCoreConnector,
-)
-
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.connector import (
-    BaseCHFrozenTableBiApiSourceDefinition,
     BaseCHFrozenBiApiConnectionDefinition,
     BaseCHFrozenBiApiConnector,
+    BaseCHFrozenTableBiApiSourceDefinition,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connection_form.form_config import CHFrozenWeatherFormFactory
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connection_info import CHFrozenWeatherConnectionInfoProvider
+from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.connector import (
+    CHFrozenWeatherCoreConnectionDefinition,
+    CHFrozenWeatherCoreConnector,
+    CHFrozenWeatherCoreSourceDefinition,
+)
 
 
 class CHFrozenWeatherTableBiApiSourceDefinition(BaseCHFrozenTableBiApiSourceDefinition):
@@ -27,9 +26,5 @@ class CHFrozenWeatherBiApiConnectionDefinition(BaseCHFrozenBiApiConnectionDefini
 
 class CHFrozenWeatherBiApiConnector(BaseCHFrozenBiApiConnector):
     core_connector_cls = CHFrozenWeatherCoreConnector
-    connection_definitions = (
-        CHFrozenWeatherBiApiConnectionDefinition,
-    )
-    source_definitions = (
-        CHFrozenWeatherTableBiApiSourceDefinition,
-    )
+    connection_definitions = (CHFrozenWeatherBiApiConnectionDefinition,)
+    source_definitions = (CHFrozenWeatherTableBiApiSourceDefinition,)

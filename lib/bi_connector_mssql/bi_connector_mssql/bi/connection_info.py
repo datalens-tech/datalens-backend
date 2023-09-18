@@ -4,4 +4,4 @@ from bi_connector_mssql.bi.i18n.localizer import Translatable
 
 
 class MSSQLConnectionInfoProvider(ConnectionInfoProvider):
-    title_translatable = Translatable('label_connector-mssql')
+    title_translatable = Translatable("label_connector-mssql")

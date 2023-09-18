@@ -1,10 +1,22 @@
 import abc
-from typing import TypeVar, Generic, Optional, Type, Sequence, Any, cast
+from typing import (
+    Any,
+    Generic,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    cast,
+)
 
 import attr
 
 from .base import AttribDescriptor
-from .utils import unwrap_container_stack_with_single_type, is_sequence, is_str_mapping
+from .utils import (
+    is_sequence,
+    is_str_mapping,
+    unwrap_container_stack_with_single_type,
+)
 
 _TARGET_TV = TypeVar("_TARGET_TV")
 _PROCESSING_OBJECT_TV = TypeVar("_PROCESSING_OBJECT_TV")
@@ -20,10 +32,7 @@ class FieldMeta:
     def pop_container(self) -> tuple[Any, "FieldMeta"]:
         if len(self.container_stack) == 0:
             return None, self
-        return self.container_stack[0], attr.evolve(
-            self,
-            container_stack=self.container_stack[1:]
-        )
+        return self.container_stack[0], attr.evolve(self, container_stack=self.container_stack[1:])
 
 
 # TODO FIX: Split into planing & execution
@@ -46,23 +55,17 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _process_single_object(
-        self,
-        obj: _PROCESSING_OBJECT_TV,
-        meta: FieldMeta
-    ) -> Optional[_PROCESSING_OBJECT_TV]:
+    def _process_single_object(self, obj: _PROCESSING_OBJECT_TV, meta: FieldMeta) -> Optional[_PROCESSING_OBJECT_TV]:
         raise NotImplementedError()
 
     @classmethod
     def _create_field_meta(cls, attr_ib: attr.Attribute) -> FieldMeta:
-        container_stack, effective_type = unwrap_container_stack_with_single_type(
-            attr_ib.type
-        )
+        container_stack, effective_type = unwrap_container_stack_with_single_type(attr_ib.type)
         return FieldMeta(
             clz=effective_type,
             attrib_name=attr_ib.name,
             container_stack=container_stack,
-            attrib_descriptor=AttribDescriptor.from_attrib(attr_ib)
+            attrib_descriptor=AttribDescriptor.from_attrib(attr_ib),
         )
 
     @classmethod
@@ -70,10 +73,10 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         return attr_ib.name.removeprefix("_")
 
     def _process_attr_ib_value(
-            self,
-            value: Any,
-            meta: FieldMeta,
-            do_processing: bool,
+        self,
+        value: Any,
+        meta: FieldMeta,
+        do_processing: bool,
     ) -> Any:
         container_type, target_meta = meta.pop_container()
 
@@ -134,9 +137,6 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
                 changes[self._get_changes_key(attr_ib)] = processed_value
 
         if changes:
-            return attr.evolve(
-                target,
-                **changes
-            )
+            return attr.evolve(target, **changes)
         else:
             return target

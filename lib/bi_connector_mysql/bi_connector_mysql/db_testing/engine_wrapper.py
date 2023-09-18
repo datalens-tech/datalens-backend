@@ -3,7 +3,7 @@ from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 
 class MySQLEngineWrapperBase(EngineWrapperBase):
     def count_sql_sessions(self) -> int:
-        cur = self.execute('SHOW PROCESSLIST')
+        cur = self.execute("SHOW PROCESSLIST")
         try:
             lines = cur.fetchall()
             return len(lines)
@@ -12,8 +12,8 @@ class MySQLEngineWrapperBase(EngineWrapperBase):
 
 
 class MySQLEngineWrapper(MySQLEngineWrapperBase):
-    URL_PREFIX = 'mysql'
+    URL_PREFIX = "mysql"
 
 
 class BiMySQLEngineWrapper(MySQLEngineWrapperBase):
-    URL_PREFIX = 'bi_mysql'
+    URL_PREFIX = "bi_mysql"

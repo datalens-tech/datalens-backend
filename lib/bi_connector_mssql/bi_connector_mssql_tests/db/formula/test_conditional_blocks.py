@@ -1,9 +1,6 @@
-from bi_connector_mssql_tests.db.formula.base import (
-    MSSQLTestBase,
-)
-from dl_formula_testing.testcases.conditional_blocks import (
-    DefaultConditionalBlockFormulaConnectorTestSuite,
-)
+from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
+
+from bi_connector_mssql_tests.db.formula.base import MSSQLTestBase
 
 
 class TestConditionalBlockMSSQL(MSSQLTestBase, DefaultConditionalBlockFormulaConnectorTestSuite):

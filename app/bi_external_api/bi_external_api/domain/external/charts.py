@@ -1,14 +1,28 @@
-import enum
 from collections.abc import Sequence
-from typing import Optional, ClassVar
+import enum
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
+from bi_external_api.attrs_model_mapper import (
+    AttribDescriptor,
+    ModelDescriptor,
+)
 from bi_external_api.attrs_model_mapper.utils import MText
 from bi_external_api.domain.utils import ensure_tuple
-from .chart_coloring import FieldColoring, MeasureColoring, DimensionColoring
-from .chart_fields import ChartFieldSource, ChartFieldRef
+
+from .chart_coloring import (
+    DimensionColoring,
+    FieldColoring,
+    MeasureColoring,
+)
+from .chart_fields import (
+    ChartFieldRef,
+    ChartFieldSource,
+)
 from .chart_shape import DimensionShaping
 from .dash_elements_control import MultiStringValue
 from .dataset_field import DatasetField
@@ -39,13 +53,14 @@ class VisualizationType(enum.Enum):
 class AdHocField:
     field: DatasetField = attr.ib()
     dataset_name: Optional[str] = attr.ib(
-        default=None, kw_only=True,
+        default=None,
+        kw_only=True,
         metadata=AttribDescriptor(
             description=MText(
                 ru="Имя датасета, в котором нужно найти поле."
-                   " Если чарт строится по одному датасету, имя можно не указывать.",
+                " Если чарт строится по одному датасету, имя можно не указывать.",
                 en="The dataset name where you need to find a field."
-                   " If the chart is built from a single dataset, you may skip specifying its name.",
+                " If the chart is built from a single dataset, you may skip specifying its name.",
             ),
             tags=frozenset({ExtModelTags.dataset_name}),
         ).to_meta(),
@@ -99,6 +114,7 @@ class Visualization:
     """
     Polymorphic form of visualization
     """
+
     kind: ClassVar[VisualizationType | str]
     kind_aliases: ClassVar[tuple[str, ...]] = tuple()
 
@@ -117,9 +133,9 @@ class Visualization:
 @ModelDescriptor(
     description=MText(
         ru="Показывает, что данный тип визуализации не может управляться через API, только UI."
-           " Нельзя использовать при сохранении воркбуков. Выдается только при чтении.",
+        " Нельзя использовать при сохранении воркбуков. Выдается только при чтении.",
         en="Indicates that visualization can not be managed with API. Only UI."
-           " Will not be accepted by modification method - readonly.",
+        " Will not be accepted by modification method - readonly.",
     ),
 )
 @attr.s(frozen=True)
@@ -390,5 +406,5 @@ class Chart:
                 en="Allows to limit dimension and measure values",
             )
         ).to_meta(),
-        default=()
+        default=(),
     )

@@ -1,24 +1,28 @@
 import enum
-from typing import ClassVar, Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
-from .common import Secret
+
 from ...enums import ExtAPIType
+from .common import Secret
 
 
 class ConnectionKind(enum.Enum):
-    clickhouse = 'clickhouse'
-    postgres = 'postgres'
-    ch_over_yt = 'ch_over_yt'
-    ch_over_yt_user_auth = 'ch_over_yt_user_auth'
+    clickhouse = "clickhouse"
+    postgres = "postgres"
+    ch_over_yt = "ch_over_yt"
+    ch_over_yt_user_auth = "ch_over_yt_user_auth"
 
 
 class RawSQLLevel(enum.Enum):
-    off = 'off'
-    subselect = 'subselect'
-    dashsql = 'dashsql'
+    off = "off"
+    subselect = "subselect"
+    dashsql = "dashsql"
 
 
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="kind")

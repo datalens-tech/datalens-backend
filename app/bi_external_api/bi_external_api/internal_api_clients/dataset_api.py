@@ -1,14 +1,27 @@
 import logging
-from typing import Any, Sequence, Optional, NoReturn, Tuple
+from typing import (
+    Any,
+    NoReturn,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import attr
 
-from dl_api_commons.client.base import Req, Resp
+from bi_external_api.domain.internal import datasets
+from bi_external_api.domain.internal.dl_common import (
+    EntryScope,
+    EntrySummary,
+)
+from bi_external_api.domain.internal.mapper import internal_models_mapper
+from dl_api_commons.client.base import (
+    Req,
+    Resp,
+)
 from dl_api_commons.client.common import CommonInternalAPIClient
 from dl_constants.enums import ConnectionType
-from bi_external_api.domain.internal import datasets
-from bi_external_api.domain.internal.dl_common import EntryScope, EntrySummary
-from bi_external_api.domain.internal.mapper import internal_models_mapper
+
 from . import exc_api
 from .constants import DatasetOpCode
 from .models import WorkbookBackendTOC
@@ -31,17 +44,23 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
             )
 
     async def create_connection(
-            self, *,
-            wb_id: str,
-            name: str,
-            conn_data: dict[str, Any],
+        self,
+        *,
+        wb_id: str,
+        name: str,
+        conn_data: dict[str, Any],
     ) -> datasets.ConnectionInstance:
         op_code = DatasetOpCode.CONNECTION_CREATE
 
-        req = Req(method="POST", url="/api/v1/connections", data_json={
-            **conn_data,
-            **self.get_naming_args(wb_id=wb_id, name=name),
-        }, require_ok=False)
+        req = Req(
+            method="POST",
+            url="/api/v1/connections",
+            data_json={
+                **conn_data,
+                **self.get_naming_args(wb_id=wb_id, name=name),
+            },
+            require_ok=False,
+        )
         resp = await self.make_request(req)
         if resp.status != 200:
             self.raise_from_resp(resp, op_code=op_code)
@@ -50,7 +69,8 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
         return await self.get_connection(conn_id)
 
     async def modify_connection(
-        self, *,
+        self,
+        *,
         wb_id: str,
         name: str,
         conn_id: str,
@@ -58,10 +78,15 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
     ) -> datasets.ConnectionInstance:
         op_code = DatasetOpCode.CONNECTION_MODIFY
 
-        req = Req(method="PUT", url=f"/api/v1/connections/{conn_id}", data_json={
-            **conn_data,
-            "name": name,
-        }, require_ok=False)
+        req = Req(
+            method="PUT",
+            url=f"/api/v1/connections/{conn_id}",
+            data_json={
+                **conn_data,
+                "name": name,
+            },
+            require_ok=False,
+        )
         resp = await self.make_request(req)
         if resp.status != 200:
             self.raise_from_resp(resp, op_code=op_code)
@@ -71,9 +96,7 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
     async def delete_connection(self, conn_id: str) -> None:
         op_code = DatasetOpCode.CONNECTION_DELETE
 
-        resp = await self.make_request(
-            Req(method="DELETE", url=f"/api/v1/connections/{conn_id}", require_ok=False)
-        )
+        resp = await self.make_request(Req(method="DELETE", url=f"/api/v1/connections/{conn_id}", require_ok=False))
         if resp.status != 200:
             self.raise_from_resp(resp, op_code=op_code)
 
@@ -93,7 +116,7 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
             entry_id=conn_id,
             key=resp.json["key"],
             true_workbook=true_workbooks,
-            workbook_id=resp.json["workbook_id"] if true_workbooks else None
+            workbook_id=resp.json["workbook_id"] if true_workbooks else None,
         )
 
         conn_inst = datasets.ConnectionInstance(
@@ -113,9 +136,7 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
 
     @staticmethod
     def load_entries_summary(
-            wb_id: str,
-            entry_scope: EntryScope,
-            js: dict[str, dict[str, Any]]
+        wb_id: str, entry_scope: EntryScope, js: dict[str, dict[str, Any]]
     ) -> frozenset[EntrySummary]:
         return frozenset(
             EntrySummary(
@@ -134,7 +155,7 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
         except Exception:  # noqa
             self.raise_from_resp(resp, op_code=op_code)
 
-        if not isinstance(data, dict) or data.get('code') != 'ERR.DS_API.US.OBJ_NOT_FOUND':
+        if not isinstance(data, dict) or data.get("code") != "ERR.DS_API.US.OBJ_NOT_FOUND":
             self.raise_from_resp(resp, op_code=op_code)
 
         common_data = self.create_exc_data(resp, op_code)
@@ -180,18 +201,16 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
 
     # TODO FIX: Rename
     async def build_dataset_config_by_actions(
-            self,
-            actions: Sequence[datasets.Action],
-            dataset_id: Optional[str] = None,
+        self,
+        actions: Sequence[datasets.Action],
+        dataset_id: Optional[str] = None,
     ) -> tuple[datasets.Dataset, dict[str, Any]]:
         op_code = DatasetOpCode.DATASET_VALIDATE
 
         action_schema = internal_models_mapper.get_or_create_schema_for_attrs_class(datasets.Action)()
         dataset_schema = internal_models_mapper.get_or_create_schema_for_attrs_class(datasets.Dataset)()
 
-        data = dict(
-            updates=action_schema.dump(actions, many=True)
-        )
+        data = dict(updates=action_schema.dump(actions, many=True))
         url: str
 
         if dataset_id is None:
@@ -215,22 +234,26 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
         if resp.status == 400:
             err_code = resp.json.get("code")
 
-            if err_code == 'ERR.DS_API.VALIDATION.ERROR':
+            if err_code == "ERR.DS_API.VALIDATION.ERROR":
                 try:
                     with self.deserialization_err_handler(resp, op_code=op_code):
                         dataset = dataset_schema.load(resp.json["dataset"])
-                    raise exc_api.DatasetValidationError(exc_api.DatasetValidationErrorData(
-                        message="Dataset validation fail",
-                        dataset=dataset,
-                    ))
+                    raise exc_api.DatasetValidationError(
+                        exc_api.DatasetValidationErrorData(
+                            message="Dataset validation fail",
+                            dataset=dataset,
+                        )
+                    )
                 except exc_api.DatasetValidationError:
                     raise
                 except Exception:
                     LOGGER.exception("Exception during preparing exception for 'ERR.DS_API.VALIDATION.ERROR'")
-                    raise exc_api.DatasetValidationError(exc_api.DatasetValidationErrorData(
-                        message="Dataset validation fail. Errors are unavailable.",
-                        dataset=None,
-                    ))
+                    raise exc_api.DatasetValidationError(
+                        exc_api.DatasetValidationErrorData(
+                            message="Dataset validation fail. Errors are unavailable.",
+                            dataset=None,
+                        )
+                    )
 
         self.raise_from_resp(resp, op_code=op_code)
 
@@ -262,7 +285,7 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
             entry_id=id,
             key=resp.json["key"],
             true_workbook=true_workbooks,
-            workbook_id=resp.json["workbook_id"] if true_workbooks else None
+            workbook_id=resp.json["workbook_id"] if true_workbooks else None,
         )
 
         return datasets.DatasetInstance(
@@ -300,11 +323,11 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
 
     # TODO FIX: Try to use Dataset class when all fields will be handled
     async def modify_dataset(
-            self,
-            validation_resp: dict,
-            *,
-            ds_id: str,
-            backend_local_revision_id: Optional[str] = None,
+        self,
+        validation_resp: dict,
+        *,
+        ds_id: str,
+        backend_local_revision_id: Optional[str] = None,
     ) -> None:
         op_code = DatasetOpCode.DATASET_MODIFY
 
@@ -332,8 +355,6 @@ class APIClientBIBackControlPlane(CommonInternalAPIClient):
     async def delete_dataset(self, ds_id: str) -> None:
         op_code = DatasetOpCode.DATASET_REMOVE
 
-        resp = await self.make_request(
-            Req(method="DELETE", url=f"/api/v1/datasets/{ds_id}", require_ok=False)
-        )
+        resp = await self.make_request(Req(method="DELETE", url=f"/api/v1/datasets/{ds_id}", require_ok=False))
         if resp.status != 200:
             self.raise_from_resp(resp, op_code=op_code)

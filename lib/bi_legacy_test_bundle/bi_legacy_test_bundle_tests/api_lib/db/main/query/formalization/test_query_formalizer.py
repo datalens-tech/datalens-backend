@@ -1,15 +1,20 @@
-from dl_constants.enums import FieldRole, BIType, FieldType
-
-from dl_query_processing.enums import SelectValueType
-from dl_query_processing.legend.field_legend import (
-    Legend, LegendItem, FieldObjSpec,
-    RowRoleSpec, TreeRoleSpec,
-)
-from dl_query_processing.legend.block_legend import BlockSpec
-from dl_query_processing.compilation.specs import ArrayPrefixSelectWrapperSpec
-from dl_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
-
 from bi_legacy_test_bundle_tests.api_lib.utils import make_dataset_with_tree
+from dl_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
+from dl_constants.enums import (
+    BIType,
+    FieldRole,
+    FieldType,
+)
+from dl_query_processing.compilation.specs import ArrayPrefixSelectWrapperSpec
+from dl_query_processing.enums import SelectValueType
+from dl_query_processing.legend.block_legend import BlockSpec
+from dl_query_processing.legend.field_legend import (
+    FieldObjSpec,
+    Legend,
+    LegendItem,
+    RowRoleSpec,
+    TreeRoleSpec,
+)
 
 
 def test_tree_in_query_formalizer(api_v1, clickhouse_db, default_sync_usm, connection_id):
@@ -17,8 +22,8 @@ def test_tree_in_query_formalizer(api_v1, clickhouse_db, default_sync_usm, conne
     db = clickhouse_db
     api_ds = make_dataset_with_tree(db=db, api_v1=api_v1, connection_id=connection_id)
     dataset = us_manager.get_by_id(entry_id=api_ds.id)
-    field_int = api_ds.find_field('int_value')
-    field_tree = api_ds.find_field('tree_str_value')
+    field_int = api_ds.find_field("int_value")
+    field_tree = api_ds.find_field("tree_str_value")
     block_spec = BlockSpec(
         block_id=0,
         parent_block_id=None,
@@ -26,19 +31,21 @@ def test_tree_in_query_formalizer(api_v1, clickhouse_db, default_sync_usm, conne
         legend=Legend(
             items=[
                 LegendItem(
-                    legend_item_id=0, data_type=BIType.integer,
+                    legend_item_id=0,
+                    data_type=BIType.integer,
                     obj=FieldObjSpec(id=field_int.id, title=field_int.title),
                     field_type=FieldType.DIMENSION,
                     role_spec=RowRoleSpec(role=FieldRole.row),
                 ),
                 LegendItem(
-                    legend_item_id=1, data_type=BIType.tree_str,
+                    legend_item_id=1,
+                    data_type=BIType.tree_str,
                     obj=FieldObjSpec(id=field_tree.id, title=field_tree.title),
                     field_type=FieldType.DIMENSION,
                     role_spec=TreeRoleSpec(
                         role=FieldRole.tree,
                         level=2,
-                        prefix=['abc'],
+                        prefix=["abc"],
                         dimension_values=[],
                     ),
                 ),

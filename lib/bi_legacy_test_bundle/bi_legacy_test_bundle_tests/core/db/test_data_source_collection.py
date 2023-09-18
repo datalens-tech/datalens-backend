@@ -1,31 +1,36 @@
 from __future__ import annotations
 
+from typing import (
+    Optional,
+    Sequence,
+)
 import uuid
-from typing import Sequence, Optional
-
-from dl_constants.enums import BIType, DataSourceRole, ManagedBy
-
-from dl_core.db.elements import SchemaColumn
-from dl_core.data_source.collection import DataSourceCollection
-from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_constants.enums import (
+    BIType,
+    DataSourceRole,
+    ManagedBy,
+)
+from dl_core.data_source.collection import DataSourceCollection
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.db.elements import SchemaColumn
 
 
 def test_resolve_role(saved_ch_connection, default_sync_usm):
     us_manager = default_sync_usm
     default_raw_schema = (
-        SchemaColumn(title='col1', name='name1', user_type=BIType.integer),
-        SchemaColumn(title='col2', name='name2', user_type=BIType.integer),
+        SchemaColumn(title="col1", name="name1", user_type=BIType.integer),
+        SchemaColumn(title="col2", name="name2", user_type=BIType.integer),
     )
     outdated_raw_schema = default_raw_schema[:1]
-    DEFAULT = '__default__'
+    DEFAULT = "__default__"
 
     def _make_source_spec(
-            db_name: Optional[str] = DEFAULT,
-            table_name: Optional[str] = DEFAULT,
-            raw_schema: Optional[Sequence[SchemaColumn]] = default_raw_schema,
+        db_name: Optional[str] = DEFAULT,
+        table_name: Optional[str] = DEFAULT,
+        raw_schema: Optional[Sequence[SchemaColumn]] = default_raw_schema,
     ) -> StandardSQLDataSourceSpec:
         return StandardSQLDataSourceSpec(
             source_type=SOURCE_TYPE_CH_TABLE,
@@ -39,7 +44,7 @@ def test_resolve_role(saved_ch_connection, default_sync_usm):
     us_entry_buffer = us_manager.get_entry_buffer()
 
     # direct, no sample
-    dsrc_id = '1'
+    dsrc_id = "1"
     mat_coll = DataSourceCollection(
         us_entry_buffer=us_entry_buffer,
         spec=DataSourceCollectionSpec(

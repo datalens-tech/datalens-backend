@@ -33,7 +33,7 @@ def main():
 
 
 def fix_in_root(root: Path):
-    for (path, dirs, items) in os.walk(root):
+    for path, dirs, items in os.walk(root):
         for name in items:
             if name.startswith(("Dockerfile", "docker-compose.")):
                 fn = Path(path) / name
@@ -55,6 +55,7 @@ def fix_cr_images():
     fix_in_root(root / "lib")
     fix_in_root(root / "mainrepo/lib")
     fix_in_root(root / "app")
+
 
 if __name__ == "__main__":
     main()

@@ -1,10 +1,15 @@
 import enum
-from typing import ClassVar, Optional, Sequence
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+)
 
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.domain.utils import ensure_tuple
+
 from .chart_fields import ChartFieldSource
 
 

@@ -13,6 +13,7 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
     RequiredResource,
     RequiredResourceCommon,
 )
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import (
     BIType,
     FileProcessingStatus,
@@ -39,8 +40,6 @@ from dl_file_uploader_lib.redis_model.models.models import (
     UserSourceProperties,
 )
 from dl_file_uploader_task_interface.tasks import ParseFileTask
-
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 LOGGER = logging.getLogger(__name__)
 

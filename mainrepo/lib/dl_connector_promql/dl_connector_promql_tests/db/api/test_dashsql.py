@@ -2,7 +2,6 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
-
 from dl_connector_promql_tests.db.api.base import PromQLConnectionTestBase
 
 

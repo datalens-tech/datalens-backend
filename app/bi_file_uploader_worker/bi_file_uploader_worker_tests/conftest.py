@@ -1,10 +1,8 @@
-import pytest
 import asyncio
 
+import pytest
 
-pytest_plugins = (
-    'aiohttp.pytest_plugin',
-)
+pytest_plugins = ("aiohttp.pytest_plugin",)
 
 
 @pytest.fixture(autouse=True)

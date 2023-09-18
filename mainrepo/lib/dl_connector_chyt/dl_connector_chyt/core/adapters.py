@@ -11,17 +11,6 @@ from typing import (
 from aiochclient.http_clients import aiohttp
 import attr
 
-from dl_constants.enums import IndexKind
-from dl_core import exc
-from dl_core.connection_executors.models.db_adapter_data import RawIndexInfo
-from dl_core.connection_models import TableIdent
-from dl_core.connectors.base.error_transformer import DBExcKWArgs
-from dl_core.utils import (
-    get_current_w3c_tracing_headers,
-    make_url,
-)
-from dl_utils.aio import await_sync
-
 from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from dl_connector_chyt.core.target_dto import (
     BaseCHYTConnTargetDTO,
@@ -36,6 +25,16 @@ from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ensure_db_message,
     get_ch_settings,
 )
+from dl_constants.enums import IndexKind
+from dl_core import exc
+from dl_core.connection_executors.models.db_adapter_data import RawIndexInfo
+from dl_core.connection_models import TableIdent
+from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.utils import (
+    get_current_w3c_tracing_headers,
+    make_url,
+)
+from dl_utils.aio import await_sync
 
 
 class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):

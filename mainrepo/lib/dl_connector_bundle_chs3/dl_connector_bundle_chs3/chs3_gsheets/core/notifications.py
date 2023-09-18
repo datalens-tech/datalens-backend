@@ -1,12 +1,11 @@
 from typing import Optional
 
-from dl_constants.enums import NotificationLevel
-from dl_core.reporting.notifications import BaseNotification
-
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
     NOTIF_TYPE_GSHEETS_V2_DATA_UPDATE_FAILURE,
     NOTIF_TYPE_GSHEETS_V2_STALE_DATA,
 )
+from dl_constants.enums import NotificationLevel
+from dl_core.reporting.notifications import BaseNotification
 
 
 class StaleDataNotification(BaseNotification):

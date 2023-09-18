@@ -6,7 +6,6 @@ from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
-
 from bi_connector_metrica_tests.ext.core.base import BaseMetricaTestClass
 
 
@@ -19,7 +18,7 @@ class TestMetricaConnection(BaseMetricaTestClass, DefaultConnectionTestClass[Met
         pass
 
     def test_make_connection(
-            self, saved_connection: MetrikaApiConnection, conn_default_sync_us_manager: SyncUSManager
+        self, saved_connection: MetrikaApiConnection, conn_default_sync_us_manager: SyncUSManager
     ) -> None:
         conn = saved_connection
         usm = conn_default_sync_us_manager
@@ -32,7 +31,7 @@ class TestMetricaConnection(BaseMetricaTestClass, DefaultConnectionTestClass[Met
         assert isinstance(revision_id_after_save, str)
         assert revision_id_after_save
 
-        conn.data.name = '{} (changed)'.format(conn.data.name)
+        conn.data.name = "{} (changed)".format(conn.data.name)
         usm.save(conn)
         revision_id_after_modify = conn.revision_id
         assert isinstance(revision_id_after_modify, str)
@@ -43,13 +42,17 @@ class TestMetricaConnection(BaseMetricaTestClass, DefaultConnectionTestClass[Met
         assert loaded_conn.revision_id == revision_id_after_modify
 
     def check_data_source_templates(self, conn: MetrikaApiConnection, dsrc_templates: list[DataSourceTemplate]) -> None:
-        expected_templates = sorted([
-            DataSourceTemplate(
-                title=ns.name,
-                group=[],
-                connection_id=conn.uuid,
-                source_type=SOURCE_TYPE_METRICA_API,
-                parameters={'db_name': ns.name},
-            ) for ns in MetrikaApiCounterSource
-        ], key=lambda el: el.title)
+        expected_templates = sorted(
+            [
+                DataSourceTemplate(
+                    title=ns.name,
+                    group=[],
+                    connection_id=conn.uuid,
+                    source_type=SOURCE_TYPE_METRICA_API,
+                    parameters={"db_name": ns.name},
+                )
+                for ns in MetrikaApiCounterSource
+            ],
+            key=lambda el: el.title,
+        )
         assert expected_templates == sorted(dsrc_templates, key=lambda el: el.title)

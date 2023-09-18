@@ -1,8 +1,11 @@
-from dl_formula.core.dialect import DialectNamespace, DialectName, simple_combo
+from dl_formula.core.dialect import (
+    DialectName,
+    DialectNamespace,
+    simple_combo,
+)
 
-
-DIALECT_NAME_YDB = DialectName.declare('YDB')  # YDB ScanQuery connection (YQL dialect)
-DIALECT_NAME_YQ = DialectName.declare('YQ')  # YQ (Yandex Query) (YQL dialect)
+DIALECT_NAME_YDB = DialectName.declare("YDB")  # YDB ScanQuery connection (YQL dialect)
+DIALECT_NAME_YQ = DialectName.declare("YQ")  # YQ (Yandex Query) (YQL dialect)
 
 
 class YqlDialect(DialectNamespace):

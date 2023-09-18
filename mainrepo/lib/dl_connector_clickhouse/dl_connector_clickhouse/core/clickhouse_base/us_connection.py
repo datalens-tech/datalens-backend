@@ -9,6 +9,8 @@ from typing import (
 
 import attr
 
+from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models import ConnectOptions
@@ -16,9 +18,6 @@ from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
 )
-
-from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 
 
 @attr.s

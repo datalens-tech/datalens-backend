@@ -1,19 +1,24 @@
 from contextlib import contextmanager
 from typing import (
+    Any,
+    Generator,
+    List,
     Optional,
-    Generator, Any, Tuple, List,
+    Tuple,
 )
 from uuid import uuid4
 
 import attr
-import grpc
-from google.protobuf import json_format
-from google.protobuf import wrappers_pb2
-
-from bi_external_api.grpc_proxy.common import GHeaders
 from doublecloud.visualization.v1 import workbook_pb2
 from doublecloud.visualization.v1 import workbook_service_pb2 as ws_pb2
 from doublecloud.visualization.v1 import workbook_service_pb2_grpc as ws_grpc_pb2
+from google.protobuf import (
+    json_format,
+    wrappers_pb2,
+)
+import grpc
+
+from bi_external_api.grpc_proxy.common import GHeaders
 
 try:
     from src.proto.grpc.health.v1 import health_pb2  # type: ignore
@@ -43,7 +48,7 @@ class GrpcClientCtx:  # type: ignore
 
     @contextmanager
     def make_channel(
-            self, call_credential: Optional[grpc.ServerCredentials] = None
+        self, call_credential: Optional[grpc.ServerCredentials] = None
     ) -> Generator[grpc.Channel, None, None]:
         creds = [c for c in (self.channel_credentials, call_credential) if c is not None]
         if len(creds) == 0:
@@ -61,17 +66,17 @@ class GrpcClientCtx:  # type: ignore
 
     @contextmanager
     def make_service(
-            self, call_credential: Optional[grpc.ServerCredentials] = None
+        self, call_credential: Optional[grpc.ServerCredentials] = None
     ) -> Generator[ws_grpc_pb2.WorkbookServiceStub, None, None]:
         with self.make_channel(call_credential) as ch:  # type: grpc.Channel
             yield ws_grpc_pb2.WorkbookServiceStub(ch)
 
     async def do_call_raw(
-            self,
-            name: str,
-            msg: Any,
-            headers: Optional[dict] = None,
-            request_id: Optional[str] = None,
+        self,
+        name: str,
+        msg: Any,
+        headers: Optional[dict] = None,
+        request_id: Optional[str] = None,
     ) -> Any:
         request_id = request_id if request_id is not None else uuid4().hex
         headers_ex = {"x-request-id": request_id}
@@ -89,17 +94,17 @@ class GrpcClientCtx:  # type: ignore
             return result
 
     async def do_call(
-            self,
-            name: str,
-            msg: Any,
-            headers: Optional[dict] = None,
-            request_id: Optional[str] = None,
+        self,
+        name: str,
+        msg: Any,
+        headers: Optional[dict] = None,
+        request_id: Optional[str] = None,
     ) -> dict:
         result = await self.do_call_raw(name, msg, headers=headers, request_id=request_id)
         return json_format.MessageToDict(result)
 
     async def get_health_check(
-            self,
+        self,
     ) -> health_pb2.HealthCheckResponse:  # type: ignore
         with self.make_channel() as ch:  # type: grpc.Channel
             request = health_pb2.HealthCheckRequest(service="")
@@ -119,7 +124,10 @@ class VisualizationV1Client:
     async def is_alive(self) -> bool:
         return await self.ctx.is_alive()
 
-    async def get_workbook(self, wb_id: str, ) -> dict:
+    async def get_workbook(
+        self,
+        wb_id: str,
+    ) -> dict:
         msg = ws_pb2.GetWorkbookRequest(workbook_id=wb_id)
         return await self.ctx.do_call("Get", msg)
 
@@ -128,10 +136,10 @@ class VisualizationV1Client:
         return await self.ctx.do_call_raw("Get", msg)
 
     async def create_workbook(
-            self,
-            *,
-            wb_title: str,
-            project_id: str,
+        self,
+        *,
+        wb_title: str,
+        project_id: str,
     ) -> dict:
         msg = ws_pb2.CreateWorkbookRequest(workbook_title=wb_title, project_id=project_id)
         return await self.ctx.do_call("Create", msg)
@@ -157,11 +165,11 @@ class VisualizationV1Client:
         return await self.ctx.do_call("Delete", msg)
 
     async def create_connection(
-            self,
-            wb_id: str,
-            name: str,
-            plain_secret: Optional[str],
-            connection_params: dict,
+        self,
+        wb_id: str,
+        name: str,
+        plain_secret: Optional[str],
+        connection_params: dict,
     ) -> dict:
         secret = None
         if plain_secret:
@@ -181,11 +189,11 @@ class VisualizationV1Client:
         return await self.ctx.do_call("CreateConnection", msg)
 
     async def update_connection(
-            self,
-            wb_id: str,
-            name: str,
-            plain_secret: str,
-            connection_params: dict,
+        self,
+        wb_id: str,
+        name: str,
+        plain_secret: str,
+        connection_params: dict,
     ) -> dict:
         secret = workbook_pb2.Secret(
             plain_secret=workbook_pb2.PlainSecret(secret=plain_secret),
@@ -201,9 +209,9 @@ class VisualizationV1Client:
         return await self.ctx.do_call("UpdateConnection", msg)
 
     async def get_connection(
-            self,
-            wb_id: str,
-            name: str,
+        self,
+        wb_id: str,
+        name: str,
     ) -> dict:
         msg = ws_pb2.GetWorkbookConnectionRequest(
             workbook_id=wb_id,
@@ -212,9 +220,9 @@ class VisualizationV1Client:
         return await self.ctx.do_call("GetConnection", msg)
 
     async def delete_connection(
-            self,
-            wb_id: str,
-            name: str,
+        self,
+        wb_id: str,
+        name: str,
     ) -> dict:
         msg = ws_pb2.DeleteWorkbookConnectionRequest(
             workbook_id=wb_id,
@@ -223,10 +231,10 @@ class VisualizationV1Client:
         return await self.ctx.do_call("DeleteConnection", msg)
 
     async def advise_dataset_fields(
-            self,
-            wb_id: str,
-            connection_name: str,
-            partial_dataset: dict,
+        self,
+        wb_id: str,
+        connection_name: str,
+        partial_dataset: dict,
     ) -> dict:
         ds = workbook_pb2.Dataset()
         ds.config.struct_value.update(partial_dataset)
@@ -238,10 +246,8 @@ class VisualizationV1Client:
         return await self.ctx.do_call("AdviseDatasetFields", msg)
 
     async def list_workbooks(
-            self,
-            project_id: str,
+        self,
+        project_id: str,
     ) -> dict:
-        msg = ws_pb2.ListWorkbooksRequest(
-            project_id=project_id
-        )
+        msg = ws_pb2.ListWorkbooksRequest(project_id=project_id)
         return await self.ctx.do_call("ListWorkbooks", msg)

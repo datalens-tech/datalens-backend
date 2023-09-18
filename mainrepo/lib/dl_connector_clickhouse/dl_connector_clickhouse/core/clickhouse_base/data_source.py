@@ -7,15 +7,14 @@ from typing import (
     ClassVar,
 )
 
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 from dl_constants.enums import JoinType
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
     StandardSQLDataSource,
     SubselectDataSource,
 )
-
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 if TYPE_CHECKING:
     from dl_core import us_connection  # noqa

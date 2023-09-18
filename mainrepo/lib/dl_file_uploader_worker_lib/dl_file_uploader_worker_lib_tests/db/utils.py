@@ -1,14 +1,13 @@
 import uuid
 
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
 )
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core_testing.connection import make_conn_key
-
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
-from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 
 
 async def create_file_connection(us_manager: AsyncUSManager, file_id, source_id, raw_schema, src_title="Source 1"):

@@ -5,7 +5,5 @@ from bi_connector_metrica.formula_ref.human_dialects import HUMAN_DIALECTS
 
 
 class MetricaFormulaRefPlugin(FormulaRefPlugin):
-    any_dialects = frozenset((
-        *MetricaDialect.METRIKAAPI.to_list(),
-    ))
+    any_dialects = frozenset((*MetricaDialect.METRIKAAPI.to_list(),))
     human_dialects = HUMAN_DIALECTS

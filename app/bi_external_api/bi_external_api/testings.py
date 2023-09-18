@@ -1,21 +1,27 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional, ClassVar, TypeVar, Sequence, Type, Union
+from typing import (
+    ClassVar,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import attr
 
-from dl_api_commons.base_models import TenantCommon
-from dl_api_commons.client.base import Req, DLCommonAPIClient
-from dl_constants.enums import CalcMode, AggregationFunction, BIType, FieldType, ManagedBy
 from bi_external_api.converter.charts.utils import convert_field_type_dataset_to_chart
 from bi_external_api.domain import external as ext
-from bi_external_api.domain.external import get_external_model_mapper
-from bi_external_api.domain.external import rpc_dc
+from bi_external_api.domain.external import (
+    get_external_model_mapper,
+    rpc_dc,
+)
 from bi_external_api.domain.internal import (
     charts,
-    datasets,
     dashboards,
+    datasets,
     dl_common,
 )
 from bi_external_api.enums import ExtAPIType
@@ -23,6 +29,18 @@ from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackCont
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
+from dl_api_commons.base_models import TenantCommon
+from dl_api_commons.client.base import (
+    DLCommonAPIClient,
+    Req,
+)
+from dl_constants.enums import (
+    AggregationFunction,
+    BIType,
+    CalcMode,
+    FieldType,
+    ManagedBy,
+)
 
 
 @attr.s(auto_attribs=True)
@@ -64,20 +82,25 @@ class SingleAvatarDatasetBuilder:
                 db_version="12.4",
                 schema_name="public",
                 table_name="fake_schema",
-            )
+            ),
         )
         return self
 
     def df(
-            self, *,
-            id: str, data_type: BIType,
-            src: Optional[str] = None,
-            f_type: Optional[FieldType] = None, aggregation: Optional[AggregationFunction] = None
+        self,
+        *,
+        id: str,
+        data_type: BIType,
+        src: Optional[str] = None,
+        f_type: Optional[FieldType] = None,
+        aggregation: Optional[AggregationFunction] = None,
     ) -> SingleAvatarDatasetBuilder:
         effective_src = id if src is None else src
         effective_agg = AggregationFunction.none if aggregation is None else aggregation
-        effective_f_type = f_type if f_type is not None else (
-            FieldType.MEASURE if effective_agg != AggregationFunction.none else FieldType.DIMENSION
+        effective_f_type = (
+            f_type
+            if f_type is not None
+            else (FieldType.MEASURE if effective_agg != AggregationFunction.none else FieldType.DIMENSION)
         )
 
         field = datasets.ResultSchemaFieldFull(
@@ -104,19 +127,25 @@ class SingleAvatarDatasetBuilder:
             autoaggregated=False,
             managed_by=ManagedBy.user,
             virtual=False,
-            valid=True
+            valid=True,
         )
         self._fields.append(field)
         return self
 
     def ff(
-            self, *,
-            id: str, data_type: BIType, formula: str,
-            f_type: Optional[FieldType] = None, aggregation: Optional[AggregationFunction] = None
+        self,
+        *,
+        id: str,
+        data_type: BIType,
+        formula: str,
+        f_type: Optional[FieldType] = None,
+        aggregation: Optional[AggregationFunction] = None,
     ) -> SingleAvatarDatasetBuilder:
         effective_agg = AggregationFunction.none if aggregation is None else aggregation
-        effective_f_type = f_type if f_type is not None else (
-            FieldType.MEASURE if effective_agg != AggregationFunction.none else FieldType.DIMENSION
+        effective_f_type = (
+            f_type
+            if f_type is not None
+            else (FieldType.MEASURE if effective_agg != AggregationFunction.none else FieldType.DIMENSION)
         )
 
         field = datasets.ResultSchemaFieldFull(
@@ -143,7 +172,7 @@ class SingleAvatarDatasetBuilder:
             autoaggregated=False,
             managed_by=ManagedBy.user,
             virtual=False,
-            valid=True
+            valid=True,
         )
 
         self._fields.append(field)
@@ -209,9 +238,7 @@ class ChartBuilder(metaclass=abc.ABCMeta):
             title=rs_field.title,
             guid=rs_field.guid,
             datasetId=self._dataset_id,
-            type=convert_field_type_dataset_to_chart(
-                rs_field.type
-            ),
+            type=convert_field_type_dataset_to_chart(rs_field.type),
         )
 
     def _chart_extra_formula_field_to_chart_field(self, extra: _ChartExtraFormulaField) -> charts.ChartField:
@@ -224,32 +251,38 @@ class ChartBuilder(metaclass=abc.ABCMeta):
         )
 
     def _get_chart_field_by_id(self, id: str) -> charts.ChartField:
-        extra_field = next(
-            (extra for extra in self._extra_fields if extra.id == id), None
-        )
+        extra_field = next((extra for extra in self._extra_fields if extra.id == id), None)
         if extra_field is not None:
             return self._chart_extra_formula_field_to_chart_field(extra_field)
 
         return self._rs_field_to_chart_field(self._dataset.get_field_by_id(id))
 
     def extra_ff(
-            self: _CHART_BUILDER_TV, *,
-            id: str, title: Optional[str] = None,
-            data_type: BIType, formula: str,
-            f_type: Optional[FieldType] = None, aggregation: Optional[AggregationFunction] = None,
+        self: _CHART_BUILDER_TV,
+        *,
+        id: str,
+        title: Optional[str] = None,
+        data_type: BIType,
+        formula: str,
+        f_type: Optional[FieldType] = None,
+        aggregation: Optional[AggregationFunction] = None,
     ) -> _CHART_BUILDER_TV:
         effective_agg = AggregationFunction.none if aggregation is None else aggregation
-        effective_f_type = f_type if f_type is not None else (
-            FieldType.MEASURE if effective_agg != AggregationFunction.none else FieldType.DIMENSION
+        effective_f_type = (
+            f_type
+            if f_type is not None
+            else (FieldType.MEASURE if effective_agg != AggregationFunction.none else FieldType.DIMENSION)
         )
-        self._extra_fields.append(_ChartExtraFormulaField(
-            id=id,
-            title=id if title is None else title,
-            data_type=data_type,
-            formula=formula,
-            f_type=effective_f_type,
-            aggregation=effective_agg,
-        ))
+        self._extra_fields.append(
+            _ChartExtraFormulaField(
+                id=id,
+                title=id if title is None else title,
+                data_type=data_type,
+                formula=formula,
+                f_type=effective_f_type,
+                aggregation=effective_agg,
+            )
+        )
         return self
 
     def dataset_instance(self: _CHART_BUILDER_TV, dataset_inst: datasets.DatasetInstance) -> _CHART_BUILDER_TV:
@@ -268,7 +301,7 @@ class ChartBuilder(metaclass=abc.ABCMeta):
                 name=name,
                 id=id,
                 workbook_id=wb_id,
-            )
+            ),
         )
 
 
@@ -280,9 +313,7 @@ class FlatTableChartBuilder(ChartBuilder):
     _column_ids: list[str] = attr.ib(factory=list)
 
     def all_dataset_fields_to_columns(self: _FLAT_TABLE_CHART_BUILDER_TV) -> _FLAT_TABLE_CHART_BUILDER_TV:
-        self._column_ids.extend(
-            [rs.guid for rs in self._dataset.result_schema]
-        )
+        self._column_ids.extend([rs.guid for rs in self._dataset.result_schema])
         return self
 
     def dataset_fields_to_columns(self: _FLAT_TABLE_CHART_BUILDER_TV, *col_ids: str) -> _FLAT_TABLE_CHART_BUILDER_TV:
@@ -295,10 +326,7 @@ class FlatTableChartBuilder(ChartBuilder):
             charts.DatasetFieldPartial(title=rs_field.title, guid=rs_field.guid)
             for rs_field in self._dataset.result_schema
         )
-        partials.extend(
-            charts.DatasetFieldPartial(title=extra.title, guid=extra.id)
-            for extra in self._extra_fields
-        )
+        partials.extend(charts.DatasetFieldPartial(title=extra.title, guid=extra.id) for extra in self._extra_fields)
 
         return charts.Chart(
             colors=[],
@@ -351,18 +379,19 @@ class SingleTabDashboardBuilder:
         return self
 
     def item_widget_single_tab(
-            self, *,
-            dash_tab_item_id: str,
-            title: str,
-            pp: PP,
-            #
-            chart_id: str,
-            widget_tab_item_id: str,
+        self,
+        *,
+        dash_tab_item_id: str,
+        title: str,
+        pp: PP,
+        #
+        chart_id: str,
+        widget_tab_item_id: str,
     ) -> SingleTabDashboardBuilder:
         self._items.append(
             dashboards.ItemWidget(
                 id=dash_tab_item_id,
-                namespace='default',
+                namespace="default",
                 data=dashboards.TabItemDataWidget(
                     hideTitle=False,
                     tabs=(
@@ -373,7 +402,7 @@ class SingleTabDashboardBuilder:
                             chartId=chart_id,
                             isDefault=True,
                             autoHeight=False,
-                            description='',
+                            description="",
                         ),
                     ),
                 ),
@@ -383,20 +412,21 @@ class SingleTabDashboardBuilder:
         return self
 
     def item_selector_dataset_based(
-            self, *,
-            dash_tab_item_id: str,
-            title: str,
-            pp: PP,
-            #
-            dataset_inst: datasets.DatasetInstance,
-            field_id: str,
-            default_values: Sequence[str],
+        self,
+        *,
+        dash_tab_item_id: str,
+        title: str,
+        pp: PP,
+        #
+        dataset_inst: datasets.DatasetInstance,
+        field_id: str,
+        default_values: Sequence[str],
     ) -> SingleTabDashboardBuilder:
         field = dataset_inst.dataset.get_field_by_id(field_id)
         self._items.append(
             dashboards.ItemControl(
                 id=dash_tab_item_id,
-                namespace='default',
+                namespace="default",
                 data=dashboards.DatasetBasedControlData(
                     title=title,
                     source=dashboards.DatasetControlSourceSelect(
@@ -409,9 +439,11 @@ class SingleTabDashboardBuilder:
                         defaultValue=SingleOrMultiString.from_sequence(default_values),
                     ),
                 ),
-                defaults=FrozenMappingStrToStrOrStrSeq({
-                    field_id: tuple(default_values),
-                }),
+                defaults=FrozenMappingStrToStrOrStrSeq(
+                    {
+                        field_id: tuple(default_values),
+                    }
+                ),
             ),
         )
         self._add_pp(pp, dash_tab_item_id)
@@ -440,12 +472,14 @@ class PGSubSelectDatasetFactory:
     bi_api_cli: APIClientBIBackControlPlane
     wb_id: str
 
-    async def create_dataset(self, ds_name: str, *, query: str, ) -> datasets.DatasetInstance:
+    async def create_dataset(
+        self,
+        ds_name: str,
+        *,
+        query: str,
+    ) -> datasets.DatasetInstance:
         source = datasets.DataSourcePGSubSQL(
-            id="src",
-            title="SRC",
-            connection_id=self.conn_id,
-            parameters=datasets.DataSourceParamsSubSQL(subsql=query)
+            id="src", title="SRC", connection_id=self.conn_id, parameters=datasets.DataSourceParamsSubSQL(subsql=query)
         )
         avatar = datasets.Avatar(
             is_root=True,
@@ -494,21 +528,18 @@ class WorkbookOpsClient(DLCommonAPIClient):
         # todo: think about better solution instead of this workaround ...
         ext.ConnectionCreateRequest,
         ext.ConnectionModifyRequest,
-
         rpc_dc.DCOpConnectionCreateRequest,
         rpc_dc.DCOpConnectionModifyRequest,
     ]
 
     def __attrs_post_init__(self) -> None:
-        assert isinstance(self._tenant, TenantCommon),\
-            "WorkbookOpsClient should not have stick tenant due API nature."
+        assert isinstance(self._tenant, TenantCommon), "WorkbookOpsClient should not have stick tenant due API nature."
 
     async def _execute_op(
-            self,
-            op_request: ext.WorkbookOpRequest | rpc_dc.DCOpRequest,
-            resp_clz: Type[_RPC_RESP_TV],
+        self,
+        op_request: ext.WorkbookOpRequest | rpc_dc.DCOpRequest,
+        resp_clz: Type[_RPC_RESP_TV],
     ) -> _RPC_RESP_TV:
-
         mapper = get_external_model_mapper(self._api_type)
         if isinstance(op_request, ext.WorkbookOpRequest):
             req_schema = mapper.get_schema_for_attrs_class(ext.WorkbookOpRequest)()
@@ -533,12 +564,14 @@ class WorkbookOpsClient(DLCommonAPIClient):
                     if isinstance(secret_value_obj, ext.PlainSecret):
                         sec_dict["secret"]["secret"] = secret_value_obj.secret
 
-        resp = await self.make_request(Req(
-            method="POST",
-            url="/external_api/v0/workbook/rpc",
-            data_json=req_json,
-            require_ok=False,
-        ))
+        resp = await self.make_request(
+            Req(
+                method="POST",
+                url="/external_api/v0/workbook/rpc",
+                data_json=req_json,
+                require_ok=False,
+            )
+        )
 
         if resp.status == 200:
             app_resp = resp_schema.load(resp.json)
@@ -554,9 +587,7 @@ class WorkbookOpsClient(DLCommonAPIClient):
             except Exception as exc:
                 raise ValueError("Can not deserialize error message", resp.json) from exc
 
-            raise WorkbookOperationException(
-                err_data
-            )
+            raise WorkbookOperationException(err_data)
         else:
             raise AssertionError(f"GOT UNEXPECTED STATUS CODE {resp.status}\n{resp.json}")
 

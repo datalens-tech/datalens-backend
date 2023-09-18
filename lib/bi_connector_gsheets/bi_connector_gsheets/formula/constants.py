@@ -1,7 +1,10 @@
-from dl_formula.core.dialect import DialectNamespace, DialectName, simple_combo
+from dl_formula.core.dialect import (
+    DialectName,
+    DialectNamespace,
+    simple_combo,
+)
 
-
-DIALECT_NAME_GSHEETS = DialectName.declare('GSHEETS')
+DIALECT_NAME_GSHEETS = DialectName.declare("GSHEETS")
 
 
 class GSheetsDialect(DialectNamespace):

@@ -2,21 +2,22 @@ from __future__ import annotations
 
 from typing import Optional
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
-
 from dl_api_commons.base_models import TenantDef
-
-import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
-from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_api_connector.form_config.models.api_schema import (
-    FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
+    FormFieldApiAction,
+    FormFieldApiActionCondition,
+    FormFieldApiSchema,
     FormFieldConditionalApiAction,
+    FormFieldSelector,
 )
 from dl_api_connector.form_config.models.base import ConnectionForm
 from dl_api_connector.form_config.models.common import CommonFieldName
 from dl_api_connector.form_config.models.rows.base import FormRow
-from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
+import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
+from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
 from bi_connector_mysql.bi.connection_form.form_config import MySQLConnectionFormFactory
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_mysql_mdb.core.settings import MysqlConnectorSettings
@@ -24,9 +25,9 @@ from bi_connector_mysql_mdb.core.settings import MysqlConnectorSettings
 
 class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
     def get_form_config(
-            self,
-            connector_settings: Optional[ConnectorSettingsBase],
-            tenant: Optional[TenantDef],
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, MysqlConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
@@ -43,9 +44,11 @@ class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
                 cloud_tree_selector_row,
                 mdb_cluster_row,
                 mdb_host_row,
-                rc.host_row(display_conditions={
-                    mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
-                }),
+                rc.host_row(
+                    display_conditions={
+                        mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
+                    }
+                ),
             ]
             username_section = [
                 mdb_c.MDBUsernameRow(
@@ -59,7 +62,7 @@ class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
                     display_conditions={
                         mdb_c.MDBFormFillRow.Inner.mdb_fill_mode: mdb_c.MDBFormFillRow.Value.manually,
                     }
-                )
+                ),
             ]
             db_name_section = [
                 mdb_c.MDBDatabaseRow(

@@ -1,8 +1,14 @@
-from typing import Optional, ClassVar
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
-from bi_external_api.converter.converter_exc import NotSupportedYet, MalformedEntryConfig
+from bi_external_api.converter.converter_exc import (
+    MalformedEntryConfig,
+    NotSupportedYet,
+)
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import charts
 
@@ -72,9 +78,9 @@ class MeasureColoringSpecConverter:
 
     @classmethod
     def convert_ext_to_int(
-            cls,
-            ext_spec: Optional[ext.MeasureColoringSpec],
-            existing_config: Optional[charts.ColorConfig] = None,
+        cls,
+        ext_spec: Optional[ext.MeasureColoringSpec],
+        existing_config: Optional[charts.ColorConfig] = None,
     ) -> charts.ColorConfig:
         target_int_config: charts.ColorConfig = (
             existing_config
@@ -136,7 +142,9 @@ class MeasureColoringSpecConverter:
                 thresholds=ext.Thresholds2(
                     left=meaning_fields.left_threshold_float_strict,
                     right=meaning_fields.right_threshold_float_strict,
-                ) if meaning_fields.thresholds_mode == cls.THRESHOLD_MODE_MANUAL else None
+                )
+                if meaning_fields.thresholds_mode == cls.THRESHOLD_MODE_MANUAL
+                else None,
             )
         elif gradient_mode == cls.GRAD_MODE_3:
             return ext.Gradient3(
@@ -145,7 +153,9 @@ class MeasureColoringSpecConverter:
                     left=meaning_fields.left_threshold_float_strict,
                     middle=meaning_fields.middle_threshold_float_strict,
                     right=meaning_fields.right_threshold_float_strict,
-                ) if meaning_fields.thresholds_mode == cls.THRESHOLD_MODE_MANUAL else None
+                )
+                if meaning_fields.thresholds_mode == cls.THRESHOLD_MODE_MANUAL
+                else None,
             )
         else:
             raise MalformedEntryConfig(f"Unexpected gradientMode in chart: {gradient_mode!r}")

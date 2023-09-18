@@ -1,12 +1,22 @@
 from __future__ import annotations
 
-from typing import Optional, Iterable, TypedDict, Sequence, TypeVar
+from typing import (
+    Iterable,
+    Optional,
+    Sequence,
+    TypedDict,
+    TypeVar,
+)
 
 import attr
 
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.utils import ensure_tuple
-from bi_external_api.ext_builders import ChartBuilder, DatasetBuilder, DashBuilder
+from bi_external_api.ext_builders import (
+    ChartBuilder,
+    DashBuilder,
+    DatasetBuilder,
+)
 
 
 @attr.s()
@@ -137,278 +147,278 @@ class SuperStoreExtDSBuilder(BaseDatasetBuilder):
     def _default_fields(self, avatar_id: Optional[str] = None) -> list[ext.DatasetField]:
         return [
             ext.DatasetField(
-                id='category',
-                title='Category',
+                id="category",
+                title="Category",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Category',
+                    field_name="Category",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='city',
-                title='City',
+                id="city",
+                title="City",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='City',
+                    field_name="City",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='country',
-                title='Country',
+                id="country",
+                title="Country",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Country',
+                    field_name="Country",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='customer_id',
-                title='Customer ID',
+                id="customer_id",
+                title="Customer ID",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Customer ID',
+                    field_name="Customer ID",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='customer_name',
-                title='Customer Name',
+                id="customer_name",
+                title="Customer Name",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Customer Name',
+                    field_name="Customer Name",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='discount',
-                title='Discount',
+                id="discount",
+                title="Discount",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Discount',
+                    field_name="Discount",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='order_date',
-                title='Order Date',
+                id="order_date",
+                title="Order Date",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.date,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Order Date',
+                    field_name="Order Date",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='order_date_str',
-                title='Order Date Str',
+                id="order_date_str",
+                title="Order Date Str",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Order Date Str',
+                    field_name="Order Date Str",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='order_id',
-                title='Order ID',
+                id="order_id",
+                title="Order ID",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Order ID',
+                    field_name="Order ID",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='postal_code',
-                title='Postal Code',
+                id="postal_code",
+                title="Postal Code",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.integer,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Postal Code',
+                    field_name="Postal Code",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='product_id',
-                title='Product ID',
+                id="product_id",
+                title="Product ID",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Product ID',
+                    field_name="Product ID",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='product_name',
-                title='Product Name',
+                id="product_name",
+                title="Product Name",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Product Name',
+                    field_name="Product Name",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='profit',
-                title='Profit',
+                id="profit",
+                title="Profit",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Profit',
+                    field_name="Profit",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='quantity',
-                title='Quantity',
+                id="quantity",
+                title="Quantity",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.integer,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Quantity',
+                    field_name="Quantity",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='region',
-                title='Region',
+                id="region",
+                title="Region",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Region',
+                    field_name="Region",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='row_id',
-                title='Row ID',
+                id="row_id",
+                title="Row ID",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.integer,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Row ID',
+                    field_name="Row ID",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='sales',
-                title='Sales',
+                id="sales",
+                title="Sales",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Sales',
+                    field_name="Sales",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='segment',
-                title='Segment',
+                id="segment",
+                title="Segment",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Segment',
+                    field_name="Segment",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='ship_date',
-                title='Ship Date',
+                id="ship_date",
+                title="Ship Date",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.date,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Ship Date',
+                    field_name="Ship Date",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='ship_date_str',
-                title='Ship Date Str',
+                id="ship_date_str",
+                title="Ship Date Str",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Ship Date Str',
+                    field_name="Ship Date Str",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='ship_mode',
-                title='Ship Mode',
+                id="ship_mode",
+                title="Ship Mode",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Ship Mode',
+                    field_name="Ship Mode",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='state',
-                title='State',
+                id="state",
+                title="State",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='State',
+                    field_name="State",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='sub-category',
-                title='Sub-Category',
+                id="sub-category",
+                title="Sub-Category",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='Sub-Category',
+                    field_name="Sub-Category",
                     avatar_id=avatar_id,
                 ),
             ),
@@ -431,7 +441,7 @@ class SuperStoreExtDSBuilder(BaseDatasetBuilder):
                 id="main",
                 title="Sample Superstore",
                 connection_ref="--replace-me--",
-                spec=ext.TableDataSourceSpec(table_name=table_name, db_name=db_name)
+                spec=ext.TableDataSourceSpec(table_name=table_name, db_name=db_name),
             )
         )
 
@@ -453,122 +463,122 @@ class SuperStoreLightDSBuilder(BaseDatasetBuilder):
     def _default_fields(self, avatar_id: Optional[str] = None) -> list[ext.DatasetField]:
         return [
             ext.DatasetField(
-                id='category',
-                title='Category',
+                id="category",
+                title="Category",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='category',
+                    field_name="category",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='customer_id',
-                title='Customer ID',
+                id="customer_id",
+                title="Customer ID",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='customer_id',
+                    field_name="customer_id",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='date',
-                title='Date',
+                id="date",
+                title="Date",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.date,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='date',
+                    field_name="date",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='order_id',
-                title='Order ID',
+                id="order_id",
+                title="Order ID",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='order_id',
+                    field_name="order_id",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='postal_code',
-                title='Postal Code',
+                id="postal_code",
+                title="Postal Code",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.integer,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='postal_code',
+                    field_name="postal_code",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='profit',
-                title='Profit',
+                id="profit",
+                title="Profit",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='profit',
+                    field_name="profit",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='region',
-                title='Region',
+                id="region",
+                title="Region",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='region',
+                    field_name="region",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='sales',
-                title='Sales',
+                id="sales",
+                title="Sales",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.float,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='sales',
+                    field_name="sales",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='segment',
-                title='Segment',
+                id="segment",
+                title="Segment",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='segment',
+                    field_name="segment",
                     avatar_id=avatar_id,
                 ),
             ),
             ext.DatasetField(
-                id='sub_category',
-                title='Sub-Category',
+                id="sub_category",
+                title="Sub-Category",
                 description=None,
                 hidden=False,
                 cast=ext.FieldType.string,
                 aggregation=ext.Aggregation.none,
                 calc_spec=ext.DirectCS(
-                    field_name='sub_category',
+                    field_name="sub_category",
                     avatar_id=avatar_id,
                 ),
             ),
@@ -590,7 +600,7 @@ class SuperStoreLightDSBuilder(BaseDatasetBuilder):
                 id="main",
                 title="Sample Superstore",
                 connection_ref="--replace-me--",
-                spec=ext.TableDataSourceSpec(table_name=table_name, db_name=db_name)
+                spec=ext.TableDataSourceSpec(table_name=table_name, db_name=db_name),
             )
         )
 
@@ -901,10 +911,12 @@ class DashBuilderSingleTab(DashBuilder):
             ext.DashboardTabItem(
                 id=f"tiid_chart_{idx}",
                 element=ext.DashChartsContainer(
-                    tabs=[ext.WidgetTab(
-                        id=f"wtid_{chart_name}",
-                        chart_name=chart_name,
-                    )],
+                    tabs=[
+                        ext.WidgetTab(
+                            id=f"wtid_{chart_name}",
+                            chart_name=chart_name,
+                        )
+                    ],
                     hide_title=True,
                 ),
                 placement=ext.DashTabItemPlacement(
@@ -961,20 +973,17 @@ class WorkbookBuilderSingleDatasetSingleDash:
         dataset_inst = dataset_builder.with_fill_defaults(self.fill_defaults).build_instance()
 
         return ext.WorkBook(
-            datasets=[
-                dataset_inst
-            ],
+            datasets=[dataset_inst],
             charts=[
                 (
-                    builder
-                        .with_fill_defaults(self.fill_defaults)
-                        .with_ds_name(dataset_name)
-                        .with_source_dataset(dataset_inst.dataset)
-                        .build_instance()
+                    builder.with_fill_defaults(self.fill_defaults)
+                    .with_ds_name(dataset_name)
+                    .with_source_dataset(dataset_inst.dataset)
+                    .build_instance()
                 )
                 for builder in self.chart_builders
             ],
-            dashboards=[dash_builder.build_instance()]
+            dashboards=[dash_builder.build_instance()],
         )
 
 
@@ -1013,17 +1022,21 @@ class ModificationPlanBuilderWorkbookBased:
             else:
                 op_kind = ext.EntryOperationKind.create
 
-            ops.append(ext.EntryOperation(
-                entry_kind=inst.kind,
-                entry_name=entry_name,
-                operation_kind=op_kind,
-            ))
+            ops.append(
+                ext.EntryOperation(
+                    entry_kind=inst.kind,
+                    entry_name=entry_name,
+                    operation_kind=op_kind,
+                )
+            )
 
         for entry_name in set(self.existing_entry_names) - set(inst.name for inst in all_instances):
-            ops.append(ext.EntryOperation(
-                entry_kind=ext.EntryKind.chart,
-                entry_name=entry_name,
-                operation_kind=ext.EntryOperationKind.delete,
-            ))
+            ops.append(
+                ext.EntryOperation(
+                    entry_kind=ext.EntryKind.chart,
+                    entry_name=entry_name,
+                    operation_kind=ext.EntryOperationKind.delete,
+                )
+            )
 
         return ext.ModificationPlan(ops)
