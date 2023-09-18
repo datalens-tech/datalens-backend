@@ -14,7 +14,7 @@ from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import Us
 from bi_connector_bundle_ch_filtered.usage_tracking.core.testing.connection import make_saved_usage_tracking_connection
 from bi_connector_bundle_ch_filtered.usage_tracking.core.testing.lifecycle import authorize_mock
 from bi_core_testing.testcases.connection import BaseConnectionTestClass
-from bi_core.exc import YCPermissionRequired
+from bi_core.exc import PlatformPermissionRequired
 
 import bi_connector_bundle_ch_filtered_tests.db.config as common_test_config
 import bi_connector_bundle_ch_filtered_tests.db.usage_tracking.config as test_config
@@ -54,7 +54,7 @@ class BaseUsageTrackingTestClass(BaseConnectionTestClass[UsageTrackingConnection
         )
         try:
             return sync_us_manager.get_by_id(conn.uuid)  # to invoke a lifecycle manager
-        except YCPermissionRequired:
+        except PlatformPermissionRequired:
             return conn
 
 

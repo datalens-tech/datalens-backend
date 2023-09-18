@@ -44,6 +44,6 @@ class UsageTrackingConnectionLifecycleManager(
                 )
             except (YCBadRequest, YCPermissionDenied) as err:
                 LOGGER.error('yc_as auxiliary authorize: %r %r %r', iam_role, resource_path, err)
-                raise exc.YCPermissionRequired(f'User does not have the required role: {iam_role}')
+                raise exc.PlatformPermissionRequired(f'User does not have the required role: {iam_role}')
 
         self.entry.tenant_id = tenant_id

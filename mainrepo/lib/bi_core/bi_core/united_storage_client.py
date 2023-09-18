@@ -242,7 +242,7 @@ class UStorageClientBase:
         (403, None, exc.USAccessDeniedException),
         (404, None, exc.USObjectNotFoundException),
         (409, re.compile("The entry already exists"), exc.USAlreadyExistsException),
-        (409, None, exc.USNotCorrectFolderIdException),
+        (409, None, exc.USIncorrectTenantIdException),
         (423, None, exc.USLockUnacquiredException),
         (530, None, exc.USPermissionCheckError),
     ]

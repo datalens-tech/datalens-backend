@@ -277,10 +277,10 @@ class USAlreadyExistsException(USBadRequestException):
     err_code = USBadRequestException.err_code + ["ALREADY_EXISTS"]
 
 
-class USNotCorrectFolderIdException(USReqException):
+class USIncorrectTenantIdException(USReqException):
     @property
     def message(self) -> str:
-        return "Not correct folder_id"
+        return "Incorrect tenant_id"
 
 
 class USInteractionDisabled(USReqException):
@@ -622,8 +622,8 @@ class InvalidColumnError(DLBaseException):
     err_code = DLBaseException.err_code + ["INVALID_COLUMN"]
 
 
-class YCPermissionRequired(DLBaseException):
-    err_code = DLBaseException.err_code + ["CLOUD_PERMISSION_REQUIRED"]
+class PlatformPermissionRequired(DLBaseException):
+    err_code = DLBaseException.err_code + ["PLATFORM_PERMISSION_REQUIRED"]
 
 
 class EntityUsageNotAllowed(DLBaseException):

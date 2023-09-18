@@ -7,10 +7,7 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Dict,
-    FrozenSet,
     Optional,
-    Tuple,
     Type,
 )
 
@@ -37,7 +34,6 @@ EXCEPTION_CODES = {
     bi_query_processing.exc.DatasetError: status.BAD_REQUEST,
     formula_exc.FormulaError: status.BAD_REQUEST,
     common_exc.DatabaseQueryError: status.BAD_REQUEST,
-    common_exc.SourceDoesNotExist: status.BAD_REQUEST,
     common_exc.SourceAccessDenied: status.FORBIDDEN,
     common_exc.DataSourceErrorFromComponentError: status.BAD_REQUEST,
     common_exc.DatabaseUnavailable: status.BAD_REQUEST,
@@ -48,18 +44,11 @@ EXCEPTION_CODES = {
     common_exc.USPermissionCheckError: 530,
     common_exc.USLockUnacquiredException: status.LOCKED,
     common_exc.USBadRequestException: status.BAD_REQUEST,
-    common_exc.USNotCorrectFolderIdException: status.CONFLICT,
+    common_exc.USIncorrectTenantIdException: status.CONFLICT,
     common_exc.QueryConstructorError: status.BAD_REQUEST,
     common_exc.ResultRowCountLimitExceeded: status.BAD_REQUEST,
     common_exc.TableNameNotConfiguredError: status.BAD_REQUEST,
     common_exc.NotAvailableError: status.BAD_REQUEST,
-    common_exc.SourceConnectError: status.BAD_REQUEST,
-    common_exc.SourceHostNotKnownError: status.BAD_REQUEST,
-    common_exc.MaterializationNotFinished: status.BAD_REQUEST,
-    common_exc.SourceTimeout: status.BAD_REQUEST,
-    common_exc.DivisionByZero: status.BAD_REQUEST,
-    common_exc.SubselectNotAllowed: status.BAD_REQUEST,
-    common_exc.DashSQLNotAllowed: status.BAD_REQUEST,
     common_exc.InvalidFieldError: status.BAD_REQUEST,
     common_exc.FieldNotFound: status.BAD_REQUEST,
     common_exc.USPermissionRequired: status.FORBIDDEN,
@@ -70,17 +59,15 @@ EXCEPTION_CODES = {
     bi_query_processing.exc.FilterError: status.BAD_REQUEST,
     exc.UnsupportedForEntityType: status.BAD_REQUEST,
     common_exc.SourceAvatarNotFound: status.BAD_REQUEST,
-    common_exc.UnknownReferencedAvatar: status.BAD_REQUEST,
     common_exc.ReferencedUSEntryNotFound: status.BAD_REQUEST,
     common_exc.ReferencedUSEntryAccessDenied: status.FORBIDDEN,
     common_exc.DataSourceTitleConflict: status.BAD_REQUEST,
     common_exc.DataSourcesInconsistent: status.BAD_REQUEST,
     bi_query_processing.exc.EmptyQuery: status.BAD_REQUEST,
     bi_query_processing.exc.InvalidQueryStructure: status.BAD_REQUEST,
-    common_exc.YCPermissionRequired: status.FORBIDDEN,
+    common_exc.PlatformPermissionRequired: status.FORBIDDEN,
     exc.DatasetRevisionMismatch: status.BAD_REQUEST,
     common_exc.EntityUsageNotAllowed: status.BAD_REQUEST,
-    common_exc.UnexpectedInfOrNan: status.BAD_REQUEST,
     exc.DatasetActionNotAllowedError: status.BAD_REQUEST,
     bi_query_processing.exc.LegendError: status.BAD_REQUEST,
     bi_query_processing.exc.PivotError: status.BAD_REQUEST,
@@ -105,17 +92,17 @@ class BIError:
     """
 
     http_code: Optional[int]
-    application_code_stack: Tuple[str, ...]
+    application_code_stack: tuple[str, ...]
 
     message: str  # treated as safe to display to final user
-    details: Dict
-    debug: Dict
+    details: dict
+    debug: dict
 
     DEFAULT_ERROR_MESSAGE = "Internal Server Error"
 
     @staticmethod
     def get_default_error_code(
-        err: Exception, exc_code_mapping: Optional[Dict[Type[Exception], int]] = None
+        err: Exception, exc_code_mapping: Optional[dict[Type[Exception], int]] = None
     ) -> Optional[int]:
         """
         :param err: Exception to map to HTTP status code
@@ -137,7 +124,7 @@ class BIError:
         cls,
         ex: Exception,
         default_message: Optional[str] = None,
-        exc_code_mapping: Optional[Dict[Type[Exception], int]] = None,
+        exc_code_mapping: Optional[dict[Type[Exception], int]] = None,
     ) -> "BIError":
         """
         Creates BIError from exception
@@ -150,9 +137,9 @@ class BIError:
             default_message = cls.DEFAULT_ERROR_MESSAGE
 
         message: str = default_message
-        details: Dict[str, Any] = {}
-        debug: Dict[str, Any] = {}
-        application_code_stack: Tuple[str, ...] = ()
+        details: dict[str, Any] = {}
+        debug: dict[str, Any] = {}
+        application_code_stack: tuple[str, ...] = ()
         http_code: Optional[int] = cls.get_default_error_code(ex, exc_code_mapping)
 
         if isinstance(ex, common_exc.DLBaseException):
@@ -215,7 +202,7 @@ class RegularAPIErrorSchema(Schema):
 
 class PublicAPIErrorSchema(RegularAPIErrorSchema):
     class Meta(RegularAPIErrorSchema.Meta):
-        PUBLIC_FORWARDED_ERROR_CODES: ClassVar[FrozenSet[Tuple[str, ...]]] = frozenset(
+        PUBLIC_FORWARDED_ERROR_CODES: ClassVar[frozenset[tuple[str, ...]]] = frozenset(
             (tuple(common_exc.MaterializationNotFinished.err_code),)
         )
         PUBLIC_DEFAULT_MESSAGE = "Something went wrong"
