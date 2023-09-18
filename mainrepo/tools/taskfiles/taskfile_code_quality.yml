@@ -25,6 +25,7 @@ vars:
   CHANGED_PYPROJECT_SINGLE_LINE:
     sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --name-only HEAD | grep 'pyproject.toml$' )
 
+  DO_RUFF_FIX: "false"
 
 includes:
   env:
@@ -42,17 +43,19 @@ tasks:
     shell: bash
     vars:
       FIX_FLAG:
-        sh: fix_flag=""; if [ '{{.APPLY_FIX|default false}}' == 'true' ]; then fix_flag="--fix"; fi; echo $fix_flag
+        sh: fix_flag=""; if [ '{{.DO_RUFF_FIX|default false}}' == 'true' ]; then fix_flag="--fix"; fi; echo $fix_flag
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
+        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}     
         ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
+
 
   isort_run:
     deps: [ common_deps ]

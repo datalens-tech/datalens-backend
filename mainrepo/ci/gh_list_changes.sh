@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 BASE_SHA="${1:-trunk}" # If outside PR, defaulting to trunk
 HEAD_SHA="${2:-$(git symbolic-ref --short HEAD)}"  # Default to the current branch
 

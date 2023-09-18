@@ -352,6 +352,31 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
 
+  codestyle_mainrepo_without_ruff:
+    runs-on: [ self-hosted, linux, light ]
+    needs: gh_build_image
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "${{ vars.DL_CI_CR_URI }}/datalens_ci_code_quality:${{ github.sha }}"
+      credentials:
+        username: ${{ secrets.DL_CI_CR_USER }}
+        password: ${{ secrets.DL_CI_CR_TOKEN }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: |
+          task cq:check_dir -- ./mainrepo
+          task cq:check_dir_strict -- ./mainrepo
+        env:
+          VENV_PATH: /venv
+          SKIP_RUFF: true
+
   codestyle_all:
     runs-on: [self-hosted, linux, light]
     needs: gh_build_image
@@ -376,7 +401,7 @@ jobs:
         env:
           VENV_PATH: /venv
 
-  codestyle_changed:
+  codestyle_changed_without_ruff:
     runs-on: [ self-hosted, linux, light ]
     needs: gh_build_image
     container:
@@ -400,7 +425,12 @@ jobs:
       - run: |
           TARGET=$(bash /data/mainrepo/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           echo $TARGET
+      - run: |
+          TARGET=$(bash /data/mainrepo/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          echo $TARGET
           task cq:check_target -- "$TARGET"
           task cq:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
         env:
           VENV_PATH: /venv
+          SKIP_RUFF: true
+          TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
