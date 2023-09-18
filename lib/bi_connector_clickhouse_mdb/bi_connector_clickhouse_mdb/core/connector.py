@@ -7,16 +7,23 @@ from bi_connector_clickhouse.core.clickhouse.connector import (
     ClickHouseCoreConnector,
 )
 from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
+
 from bi_connector_clickhouse_mdb.core.data_source import ClickHouseMDBDataSource, ClickHouseMDBSubselectDataSource
 from bi_connector_clickhouse_mdb.core.settings import ClickHouseMDBSettingDefinition
 from bi_connector_clickhouse_mdb.core.storage_schemas import ConnectionClickhouseMDBDataStorageSchema
 from bi_connector_clickhouse_mdb.core.us_connection import ConnectionClickhouseMDB
+from bi_connector_clickhouse_mdb.core.connection_executors import (
+    SyncClickHouseMDBConnExecutor,
+    AsyncClickHouseMDBConnExecutor,
+)
 
 
 class ClickHouseMDBCoreConnectionDefinition(ClickHouseCoreConnectionDefinition):
     connection_cls = ConnectionClickhouseMDB
     us_storage_schema_cls = ConnectionClickhouseMDBDataStorageSchema
     settings_definition = ClickHouseMDBSettingDefinition
+    sync_conn_executor_cls = SyncClickHouseMDBConnExecutor
+    async_conn_executor_cls = AsyncClickHouseMDBConnExecutor
 
 
 class ClickHouseMDBTableCoreSourceDefinition(ClickHouseTableCoreSourceDefinition):

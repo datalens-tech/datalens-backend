@@ -19,12 +19,11 @@ class MSSQLConnExecutor(DefaultSqlAlchemyConnExecutor[MSSQLDefaultAdapter]):
     async def _make_target_conn_dto_pool(self) -> List[MSSQLConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
         for host in self._conn_hosts_pool:
-            effective_host = await self._mdb_mgr.normalize_mdb_host(host)
             dto_pool.append(MSSQLConnTargetDTO(
                 conn_id=self._conn_dto.conn_id,
                 pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
                 pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                host=effective_host,
+                host=host,
                 port=self._conn_dto.port,
                 db_name=self._conn_dto.db_name,
                 username=self._conn_dto.username,

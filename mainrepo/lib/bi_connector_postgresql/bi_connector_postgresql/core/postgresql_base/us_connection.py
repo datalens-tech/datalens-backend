@@ -9,7 +9,6 @@ from typing import (
 import attr
 
 from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.mdb_utils import MDBDomainManager
 from bi_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
@@ -34,9 +33,7 @@ class ConnectionPostgreSQLBase(ClassicConnectionSQL):
         multihosts: Sequence[str],
     ) -> PGEnforceCollateMode:
         if enforce_collate == PGEnforceCollateMode.auto:
-            mdb_man = MDBDomainManager.from_env()
-            is_mdb = any(mdb_man.host_in_mdb(host) for host in multihosts)
-            enforce_collate = PGEnforceCollateMode.on if is_mdb else PGEnforceCollateMode.off
+            enforce_collate = PGEnforceCollateMode.off
         return enforce_collate
 
     def get_parameter_combinations(

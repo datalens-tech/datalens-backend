@@ -47,9 +47,6 @@ from bi_core.connection_models import (
     SchemaIdent,
 )
 from bi_core.data_processing.cache.primitives import (
-    BIQueryCacheOptions,
-    CacheTTLConfig,
-    CacheTTLInfo,
     DataKeyPart,
     LocalKeyRepresentation,
 )
@@ -58,7 +55,6 @@ from bi_core.db import (
     get_type_transformer,
 )
 from bi_core.i18n.localizer import Translatable
-from bi_core.mdb_utils import MDBDomainManager
 from bi_core.us_entry import (
     BaseAttrsDataModel,
     USEntry,
@@ -552,26 +548,11 @@ class ConnectionSQL(SubselectMixin, ExecutorBasedMixin, ConnectionBase):  # type
 
 class ClassicConnectionSQL(ConnectionSQL):
     @property
-    def password(self):  # type: ignore  # TODO: fix
+    def password(self) -> Optional[str]:
         return self.data.password
 
     def parse_multihosts(self) -> tuple[str, ...]:
         return parse_comma_separated_hosts(self.data.host)
-
-    def validate(self) -> None:
-        try:
-            self.validate_host()
-        except exc.EntryValidationError as err:
-            err.model_field = "host"
-            raise err
-
-    def validate_host(self) -> None:
-        mdb_man = MDBDomainManager.from_env()
-        all_hosts = parse_comma_separated_hosts(self.data.host)
-        if len(set(mdb_man.host_in_mdb(host) for host in all_hosts)) > 1:
-            raise exc.EntryValidationError(
-                "Yandex Cloud databases and external hosts can't be mixed in multihost configuration.",
-            )
 
 
 CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettingsBase)

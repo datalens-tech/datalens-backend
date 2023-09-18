@@ -6,17 +6,21 @@ from bi_connector_greenplum.core.connector import (
     GreenplumTableCoreSourceDefinition,
     GreenplumSubselectCoreSourceDefinition,
 )
+from bi_connector_greenplum.core.dto import GreenplumConnDTO
+
 from bi_connector_greenplum_mdb.core.data_source import GreenplumMDBTableDataSource, GreenplumMDBSubselectDataSource
 from bi_connector_greenplum_mdb.core.us_connection import GreenplumMDBConnection
 from bi_connector_greenplum_mdb.core.storage_schemas import GreenplumMDBConnectionDataStorageSchema
 from bi_connector_greenplum_mdb.core.settings import GreenplumMDBSettingDefinition
-from bi_connector_greenplum.core.dto import GreenplumConnDTO
+from bi_connector_greenplum_mdb.core.connection_executors import GreenplumMDBConnExecutor, AsyncGreenplumMDBConnExecutor
 
 
 class GreenplumMDBCoreConnectionDefinition(GreenplumCoreConnectionDefinition):
     connection_cls = GreenplumMDBConnection
     us_storage_schema_cls = GreenplumMDBConnectionDataStorageSchema
     settings_definition = GreenplumMDBSettingDefinition
+    sync_conn_executor_cls = GreenplumMDBConnExecutor
+    async_conn_executor_cls = AsyncGreenplumMDBConnExecutor
 
 
 class GreenplumMDBTableCoreSourceDefinition(GreenplumTableCoreSourceDefinition):

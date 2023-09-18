@@ -6,17 +6,21 @@ from bi_connector_postgresql.core.postgresql.connector import (
     PostgreSQLTableCoreSourceDefinition,
     PostgreSQLSubselectCoreSourceDefinition,
 )
+from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+
 from bi_connector_postgresql_mdb.core.data_source import PostgreSQLMDBDataSource, PostgreSQLMDBSubselectDataSource
 from bi_connector_postgresql_mdb.core.us_connection import ConnectionPostgreSQLMDB
 from bi_connector_postgresql_mdb.core.storage_schemas import ConnectionPostgreSQLMDBDataStorageSchema
 from bi_connector_postgresql_mdb.core.settings import PostgreSQLMDBSettingDefinition
-from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+from bi_connector_postgresql_mdb.core.connection_executors import PostgresMDBConnExecutor, AsyncPostgresMDBConnExecutor
 
 
 class PostgreSQLMDBCoreConnectionDefinition(PostgreSQLCoreConnectionDefinition):
     connection_cls = ConnectionPostgreSQLMDB
     us_storage_schema_cls = ConnectionPostgreSQLMDBDataStorageSchema
     settings_definition = PostgreSQLMDBSettingDefinition
+    sync_conn_executor_cls = PostgresMDBConnExecutor
+    async_conn_executor_cls = AsyncPostgresMDBConnExecutor
 
 
 class PostgreSQLMDBTableCoreSourceDefinition(PostgreSQLTableCoreSourceDefinition):

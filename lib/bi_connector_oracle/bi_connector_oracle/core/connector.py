@@ -1,5 +1,3 @@
-from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
-from bi_core.connections_security.base import ConnSecuritySettings
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
 from bi_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
@@ -16,7 +14,6 @@ from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
 from bi_connector_oracle.core.storage_schemas.connection import ConnectionSQLOracleDataStorageSchema
 from bi_connector_oracle.core.data_source import OracleDataSource, OracleSubselectDataSource
 from bi_connector_oracle.core.connection_executors import OracleDefaultConnExecutor
-from bi_connector_oracle.core.dto import OracleConnDTO
 from bi_connector_oracle.core.sa_types import SQLALCHEMY_ORACLE_TYPES
 from bi_connector_oracle.core.data_source_migration import OracleDataSourceMigrator
 
@@ -52,7 +49,4 @@ class OracleCoreConnector(CoreConnector):
         OracleSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({OracleDefaultAdapter})
-    conn_security = frozenset({
-        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({OracleConnDTO})),
-    })
     sa_types = SQLALCHEMY_ORACLE_TYPES

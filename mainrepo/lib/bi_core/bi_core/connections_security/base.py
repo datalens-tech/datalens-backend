@@ -73,22 +73,6 @@ class NonUserInputConnectionSafetyChecker(ConnectionSafetyChecker):
         return False
 
 
-@attr.s(kw_only=True)
-class SamplesConnectionSafetyChecker(ConnectionSafetyChecker):
-    """Samples hosts"""
-
-    _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
-
-    _samples_hosts: frozenset[str] = attr.ib()
-
-    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
-        # TODO FIX: dirty hack because we can't get a ClickHouseConnDTO here
-        if hasattr(conn_dto, "multihosts") and all(host in self._samples_hosts for host in conn_dto.multihosts):
-            LOGGER.info("Clickhouse hosts %r are in sample host list", conn_dto.multihosts)
-            return True
-        return False
-
-
 @attr.s
 class GenericConnectionSecurityManager(ConnectionSecurityManager, metaclass=abc.ABCMeta):
     conn_sec_checkers: list[ConnectionSafetyChecker] = attr.ib()

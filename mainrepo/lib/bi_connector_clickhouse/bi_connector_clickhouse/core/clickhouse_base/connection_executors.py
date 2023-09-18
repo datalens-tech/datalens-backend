@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, TypeVar
 
 import attr
 
+from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 from bi_connector_clickhouse.core.clickhouse_base.adapters import (
@@ -14,26 +15,24 @@ from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectO
 from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from bi_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
 
+_BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
+
 
 @attr.s(cmp=False, hash=False)
-class ClickHouseSyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[ClickHouseAdapter]):
-    TARGET_ADAPTER_CLS = ClickHouseAdapter
-
+class BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE_ADAPTER_TV]):
     _conn_dto: ClickHouseConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> list[ClickHouseConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
         for host in self._conn_hosts_pool:
-            # TODO FIX: May be pin host here?
-            effective_host = await self._mdb_mgr.normalize_mdb_host(host)
             dto_pool.append(
                 ClickHouseConnTargetDTO(
                     conn_id=self._conn_dto.conn_id,
                     pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
                     pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
                     protocol=self._conn_dto.protocol,
-                    host=effective_host,
+                    host=host,
                     port=self._conn_dto.port,
                     db_name=self._conn_dto.db_name,
                     cluster_name=self._conn_dto.cluster_name,
@@ -63,5 +62,10 @@ class ClickHouseSyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[ClickHouse
 
 
 @attr.s(cmp=False, hash=False)
-class ClickHouseAsyncAdapterConnExecutor(ClickHouseSyncAdapterConnExecutor):
-    TARGET_ADAPTER_CLS = AsyncClickHouseAdapter  # type: ignore  # TODO: fix
+class ClickHouseSyncAdapterConnExecutor(BaseClickHouseConnExecutor[ClickHouseAdapter]):
+    TARGET_ADAPTER_CLS = ClickHouseAdapter
+
+
+@attr.s(cmp=False, hash=False)
+class ClickHouseAsyncAdapterConnExecutor(BaseClickHouseConnExecutor[AsyncClickHouseAdapter]):
+    TARGET_ADAPTER_CLS = AsyncClickHouseAdapter

@@ -1,7 +1,5 @@
 import pyodbc
 
-from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
-from bi_core.connections_security.base import ConnSecuritySettings
 from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
 from bi_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
@@ -18,7 +16,6 @@ from bi_connector_mssql.core.type_transformer import MSSQLServerTypeTransformer
 from bi_connector_mssql.core.us_connection import ConnectionMSSQL
 from bi_connector_mssql.core.data_source import MSSQLDataSource, MSSQLSubselectDataSource
 from bi_connector_mssql.core.connection_executors import MSSQLConnExecutor
-from bi_connector_mssql.core.dto import MSSQLConnDTO
 from bi_connector_mssql.core.sa_types import SQLALCHEMY_MSSQL_TYPES
 from bi_connector_mssql.core.data_source_migration import MSSQLDataSourceMigrator
 
@@ -54,8 +51,5 @@ class MSSQLCoreConnector(CoreConnector):
         MSSQLSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({MSSQLDefaultAdapter})
-    conn_security = frozenset({
-        ConnSecuritySettings(MDBConnectionSafetyChecker, frozenset({MSSQLConnDTO}))
-    })
     sa_types = SQLALCHEMY_MSSQL_TYPES
     query_fail_exceptions = frozenset({pyodbc.Error})

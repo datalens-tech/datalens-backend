@@ -7,6 +7,8 @@ import logging
 from bi_core import exc
 from bi_api_commons_ya_cloud.models import TenantYCOrganization, TenantYCFolder
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+from bi_connector_mdb_base.core.base_models import MDBConnectOptionsMixin
+from bi_core.connection_models import ConnectOptions
 
 if TYPE_CHECKING:
     from bi_core.us_manager.us_manager import USManagerBase
@@ -17,6 +19,10 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class _MDBConnectOptionsProtocol(MDBConnectOptionsMixin, ConnectOptions):
+    pass
 
 
 class _MDBConnectionProtocol(Protocol):
@@ -32,6 +38,8 @@ class _MDBConnectionProtocol(Protocol):
     def data(self) -> ConnMDBDataModelMixin: ...
 
     def parse_multihosts(self) -> tuple[str, ...]: ...
+
+    def get_conn_options(self) -> _MDBConnectOptionsProtocol: ...
 
     async def validate_new_data(
             self,
@@ -99,3 +107,13 @@ class MDBConnectionMixin:
 
         self.data.is_verified_mdb_org = True
         self.data.mdb_folder_id = cluster_folder_id
+
+    def get_conn_options(self: _MDBConnectionProtocol) -> _MDBConnectOptionsProtocol:
+        use_managed_network = False
+        if self.data.skip_mdb_org_check:
+            LOGGER.info('`skip_mdb_org_check` is True => set `use_managed_network = True`')
+            use_managed_network = True
+        elif self.data.is_verified_mdb_org:
+            LOGGER.info('`is_verified_mdb_org` is True => set `use_managed_network = True`')
+            use_managed_network = True
+        return super().get_conn_options().clone(use_managed_network=use_managed_network)    # type: ignore

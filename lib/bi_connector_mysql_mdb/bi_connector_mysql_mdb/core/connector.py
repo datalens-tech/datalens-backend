@@ -7,16 +7,20 @@ from bi_connector_mysql.core.connector import (
     MySQLCoreConnector,
 )
 from bi_connector_mysql.core.dto import MySQLConnDTO
+
 from bi_connector_mysql_mdb.core.data_source import MySQLMDBDataSource, MySQLMDBSubselectDataSource
 from bi_connector_mysql_mdb.core.settings import MySQLMDBSettingDefinition
 from bi_connector_mysql_mdb.core.storage_schemas import ConnectionMySQLMDBDataStorageSchema
 from bi_connector_mysql_mdb.core.us_connection import ConnectionMySQLMDB
+from bi_connector_mysql_mdb.core.connection_executors import MySQLMDBConnExecutor, AsyncMySQLMDBConnExecutor
 
 
 class MySQLMDBCoreConnectionDefinition(MySQLCoreConnectionDefinition):
     connection_cls = ConnectionMySQLMDB
     us_storage_schema_cls = ConnectionMySQLMDBDataStorageSchema
     settings_definition = MySQLMDBSettingDefinition
+    sync_conn_executor_cls = MySQLMDBConnExecutor
+    async_conn_executor_cls = AsyncMySQLMDBConnExecutor
 
 
 class MySQLMDBTableCoreSourceDefinition(MySQLTableCoreSourceDefinition):

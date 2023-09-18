@@ -4,7 +4,6 @@ import abc
 import contextlib
 import enum
 import logging
-import random
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -42,13 +41,12 @@ from bi_core.db import (
     get_type_transformer,
 )
 from bi_core.exc import UnsupportedNativeTypeError
-from bi_utils.sanitize import make_jsonable
 
 if TYPE_CHECKING:
     from bi_constants.types import TJSONExt
     from bi_core.connections_security.base import ConnectionSecurityManager  # noqa
-    from bi_core.mdb_utils import MDBDomainManager
     from bi_core.services_registry.top_level import ServicesRegistry
+    from bi_core.mdb_utils import MDBDomainManager
 
 
 LOGGER = logging.getLogger(__name__)
@@ -91,7 +89,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
     _req_ctx_info: Optional[RequestContextInfo] = attr.ib()
     _exec_mode: ExecutionMode = attr.ib()
     _sec_mgr: "ConnectionSecurityManager" = attr.ib()
-    _mdb_mgr: "MDBDomainManager" = attr.ib()
+    _mdb_mgr: "MDBDomainManager" = attr.ib()    # TODO: temporary - remove in favor of MDBHostConnExecutorMixin
     _remote_qe_data: Optional[RemoteQueryExecutorData] = attr.ib()
     _services_registry: Optional[ServicesRegistry] = attr.ib(
         kw_only=True, default=None

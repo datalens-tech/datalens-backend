@@ -9,3 +9,8 @@ class ConnMDBDataModelMixin:
     mdb_folder_id: Optional[str] = attr.ib(default=None)
     is_verified_mdb_org: bool = attr.ib(default=False)
     skip_mdb_org_check: bool = attr.ib(default=False)
+
+
+@attr.s(frozen=True, hash=True)
+class MDBConnectOptionsMixin:
+    use_managed_network: bool = attr.ib(default=True)

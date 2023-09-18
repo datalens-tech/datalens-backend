@@ -10,12 +10,12 @@ from bi_core.connections_security.base import (
     ConnectionSecurityManager,
     InsecureConnectionSafetyChecker,
     NonUserInputConnectionSafetyChecker,
-    SamplesConnectionSafetyChecker,
 )
 from bi_api_lib_ya.connections_security.base import (
     CloudConnectionSecurityManager,
     InternalConnectionSecurityManager,
     MDBConnectionSafetyChecker,
+    SamplesConnectionSafetyChecker,
 )
 from bi_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
 

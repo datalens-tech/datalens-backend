@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Dict,
-    List,
     Optional,
     TypeVar,
 )
@@ -24,16 +22,15 @@ _BASE_POSTGRES_ADAPTER_TV = TypeVar("_BASE_POSTGRES_ADAPTER_TV", bound=CommonBas
 class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAPTER_TV]):
     _conn_dto: PostgresConnDTOBase = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> List[PostgresConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[PostgresConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
         for host in self._conn_hosts_pool:
-            effective_host = await self._mdb_mgr.normalize_mdb_host(host)
             dto_pool.append(
                 PostgresConnTargetDTO(
                     conn_id=self._conn_dto.conn_id,
                     pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
                     pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                    host=effective_host,
+                    host=host,
                     port=self._conn_dto.port,
                     db_name=self._conn_dto.db_name,
                     username=self._conn_dto.username,
@@ -45,7 +42,7 @@ class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAP
             )
         return dto_pool
 
-    def mutate_for_dashsql(self, db_params: Optional[Dict[str, str]] = None):  # type: ignore  # TODO: fix
+    def mutate_for_dashsql(self, db_params: Optional[dict[str, str]] = None):  # type: ignore  # TODO: fix
         if db_params:
             # TODO: better exception class for HTTP 4xx response
             raise Exception("No db_params supported here at the moment")

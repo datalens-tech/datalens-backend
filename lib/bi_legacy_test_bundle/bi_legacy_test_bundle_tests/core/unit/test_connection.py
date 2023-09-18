@@ -33,6 +33,7 @@ def test_get_connection_class():
     assert get_connection_class(CONNECTION_TYPE_METRICA_API) is MetrikaApiConnection
 
 
+@pytest.mark.skip("Will be moved to bi_connector_mdb_base package")     # TODO
 @pytest.mark.asyncio
 async def test_managed_network(loop):
     ch_conn_dto_data = dict(

@@ -36,6 +36,9 @@ class CloudConnectionSecurityManager(GenericConnectionSecurityManager):
 
         return False
 
+    # def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
+    #     return any(conn_sec_checker.is_safe_connection(conn_dto) for conn_sec_checker in self.conn_sec_checkers)
+
 
 @attr.s
 class InternalConnectionSecurityManager(GenericConnectionSecurityManager):
@@ -68,4 +71,20 @@ class MDBConnectionSafetyChecker(ConnectionSafetyChecker):
                 raise exc.ConnectionConfigurationError(
                     'Internal (MDB) hosts and external hosts can not be mixed in multihost configuration')
 
+        return False
+
+
+@attr.s(kw_only=True)
+class SamplesConnectionSafetyChecker(ConnectionSafetyChecker):
+    """Samples hosts"""
+
+    _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
+
+    _samples_hosts: frozenset[str] = attr.ib()
+
+    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
+        if isinstance(conn_dto, DefaultSQLDTO) and type(conn_dto) in self._DTO_TYPES:
+            if all(host in self._samples_hosts for host in conn_dto.get_all_hosts()):
+                LOGGER.info("Hosts %r are in sample host list", conn_dto.get_all_hosts())
+                return True
         return False
