@@ -12,7 +12,6 @@ from bi_api_lib.app.control_api.app import (
     EnvSetupResult,
 )
 from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
@@ -23,12 +22,10 @@ from bi_cloud_integration.sa_creds import (
 )
 from bi_configs.enums import RequiredService
 from bi_constants.enums import USAuthMode
-from bi_core.connection_models import ConnectOptions
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.us_connection_base import ExecutorBasedMixin
 from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
 
 
@@ -82,19 +79,6 @@ class ControlApiSRFactoryBuilderNebius(SRFactoryBuilder[ControlPlaneAppSettings]
 
 
 class ControlApiAppFactoryNebius(ControlApiAppFactory[ControlPlaneAppSettings], ControlApiSRFactoryBuilderNebius):
-    def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
-        conn_opts_mutators_factory = super()._get_conn_opts_mutators_factory()
-
-        def set_use_manage_network_false_mutator(
-            conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            return conn_opts.clone(use_managed_network=False)
-
-        if self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-            conn_opts_mutators_factory.add_mutator(set_use_manage_network_false_mutator)
-
-        return conn_opts_mutators_factory
-
     def set_up_environment(
         self,
         app: flask.Flask,

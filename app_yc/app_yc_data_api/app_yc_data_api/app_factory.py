@@ -139,14 +139,6 @@ class DataApiAppFactoryYC(DataApiAppFactory[AsyncAppSettings], DataApiSRFactoryB
                 return conn_opts.clone(is_cloud=True)
             return None
 
-        def ignore_managed_conn_opts_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            if self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-                return conn_opts.clone(use_managed_network=False)
-            return None
-
-        conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
         conn_opts_factory.add_mutator(ydb_is_cloud_mutator)
 
         sr_middleware_list = [

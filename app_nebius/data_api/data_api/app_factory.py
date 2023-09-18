@@ -36,14 +36,12 @@ from bi_core.aio.middlewares.us_manager import (
     service_us_manager_middleware,
     us_manager_middleware,
 )
-from bi_core.connection_models import ConnectOptions
 from bi_core.data_processing.cache.primitives import CacheTTLConfig
 from bi_core.services_registry.entity_checker import EntityUsageChecker
 from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.us_connection_base import ExecutorBasedMixin
 from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
 
 
@@ -148,16 +146,6 @@ class DataApiAppFactoryNebius(DataApiAppFactory[AsyncAppSettings], DataApiSRFact
         auth_mw_list = [yc_auth_service.middleware]
 
         # SR middlewares
-
-        def ignore_managed_conn_opts_mutator(
-            conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            if self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-                return conn_opts.clone(use_managed_network=False)
-            return None
-
-        conn_opts_factory.add_mutator(ignore_managed_conn_opts_mutator)
-
         sr_middleware_list = [
             services_registry_middleware(
                 services_registry_factory=sr_factory,

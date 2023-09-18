@@ -54,9 +54,6 @@ class BaseAppSettings(AppSettings):
     ENV_TYPE: Optional[EnvType] = None
     YC_BILLING_HOST: Optional[str] = s_attrib("YC_BILLING_HOST", fallback_cfg_key="YC_BILLING_HOST", missing=None)  # type: ignore
 
-    # TODO: delete
-    MDB_FORCE_IGNORE_MANAGED_NETWORK: bool = s_attrib("DL_MDB_FORCE_IGNORE_MANAGED_NETWORK", missing=False)  # type: ignore  # TODO: fix
-
     CHYT_MIRRORING: Optional[CHYTMirroringConfig] = s_attrib("DL_CHYT_MIRRORING", enabled_key_name="ON", missing=None)  # type: ignore  # TODO: fix
 
     # Sentry

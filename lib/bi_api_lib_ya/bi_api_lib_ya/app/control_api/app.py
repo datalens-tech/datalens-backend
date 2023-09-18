@@ -22,19 +22,6 @@ from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
 
 class LegacyControlApiAppFactory(ControlApiAppFactory[ControlPlaneAppSettings], abc.ABC):
-    def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
-        conn_opts_mutators_factory = super()._get_conn_opts_mutators_factory()
-
-        def set_use_manage_network_false_mutator(
-                conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
-            return conn_opts.clone(use_managed_network=False)
-
-        if self._settings.APP_TYPE == AppType.CLOUD and self._settings.MDB_FORCE_IGNORE_MANAGED_NETWORK:
-            conn_opts_mutators_factory.add_mutator(set_use_manage_network_false_mutator)
-
-        return conn_opts_mutators_factory
-
     def set_up_environment(
             self,
             app: flask.Flask,
