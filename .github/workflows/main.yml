@@ -151,7 +151,9 @@ jobs:
       - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - name: run bash script with all logic for starting compose and running tests
-        run: bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: |
+          bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
@@ -196,7 +198,9 @@ jobs:
         # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - run: echo "TARGET_PATH=${{ matrix.value }}" "NET_NAME=${{ job.container.network }}" "COMPOSE_PROJECT_NAME=${{ env.compose_prj }}"
       - name: run bash script with all logic for starting compose and running tests
-        run: bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: |
+          bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
@@ -242,6 +246,7 @@ jobs:
       - name: run bash script with all logic for starting compose and running tests
         run: |
           bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1 \
             GOOGLE_API_KEY="${{ secrets.EXT_GOOGLE_API_KEY }}" \
             BITRIX_TOKEN="${{ secrets.EXT_BITRIX_TOKEN }}" \
             BITRIX_PARTNERS_TOKEN="${{ secrets.EXT_BITRIX_PARTNERS_TOKEN }}" \
@@ -289,7 +294,8 @@ jobs:
       - run: echo "TARGET_PATH=${{ matrix.value }}" "NET_NAME=${{ job.container.network }}" "COMPOSE_PROJECT_NAME=${{ env.compose_prj }}"
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+          bash /data/ops/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1
       - name: Stop compose if provided
         if: always()  # yes! always
         run: bash /data/ops/ci/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"

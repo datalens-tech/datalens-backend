@@ -14,6 +14,7 @@ services:
     # Check non-UTC ClickHouse
     environment:
       TZ: "America/New_York"
+
   db-clickhouse-22-10:
     ports:
       - "52204:8123"
@@ -21,14 +22,14 @@ services:
     build:
       context: docker-compose
       dockerfile: Dockerfile.db-clickhouse-22-10
-# TODO: enable in https://st.yandex-team.ru/BI-4738
-#  db-clickhouse-22-10-ssl:
-#    ports:
-#      - "52206:8443"
-#      - "52207:9440"
-#    build:
-#      context: docker-compose
-#      dockerfile: Dockerfile.db-clickhouse-22-10.ssl
+
+  db-clickhouse-22-10-ssl:
+    ports:
+      - "52206:8443"
+      - "52207:9440"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-22-10.ssl
 
   # INFRA
   pg-us:

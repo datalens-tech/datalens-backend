@@ -1,5 +1,3 @@
-# TODO: generate certs in https://st.yandex-team.ru/BI-4738
-# keep certs, remove .arcignore
 .PHONY: gen-certs
 gen-certs:
 	@echo "Generating CA certificate and key..."

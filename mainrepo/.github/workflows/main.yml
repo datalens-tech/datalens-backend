@@ -159,7 +159,9 @@ jobs:
       - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - name: run bash script with all logic for starting compose and running tests
-        run: bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: |
+          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always

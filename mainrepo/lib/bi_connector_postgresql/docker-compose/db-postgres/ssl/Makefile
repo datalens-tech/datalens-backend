@@ -1,5 +1,3 @@
-# TODO: generate certs in https://st.yandex-team.ru/BI-4701
-# keep root.crt, server.crt, server.key in repo, evict all other generated files, remove .arcignore
 .PHONY: gen-certs
 gen-certs:
 	@echo "Generating certificates..."

@@ -1,7 +1,4 @@
-root.crt
 root.csr
 root.key
 root.srl
-server.crt
 server.csr
-server.key

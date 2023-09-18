@@ -1,23 +1,37 @@
+from __future__ import annotations
+
 import asyncio
 import os
-from typing import TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    TypeVar,
+)
 
 import pytest
 
 import bi_configs.utils as bi_configs_utils
-from bi_core.services_registry.top_level import ServicesRegistry
 from bi_core.us_connection_base import (
     ConnectionSQL,
     DataSourceTemplate,
 )
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
-from bi_testing.regulated_test import RegulatedTestParams
+from bi_core_testing.testcases.connection import (
+    DefaultAsyncConnectionTestClass,
+    DefaultConnectionTestClass,
+)
 
 from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from bi_connector_postgresql_tests.db.core.base import (
     BasePostgreSQLTestClass,
     BaseSslPostgreSQLTestClass,
 )
+
+if TYPE_CHECKING:
+    from bi_core.connection_executors import (
+        AsyncConnExecutorBase,
+        SyncConnExecutorBase,
+    )
+
 
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
 
@@ -59,8 +73,7 @@ class TestPostgreSQLConnection(
         # assert pg_partitioned_table + '_01' not in names
 
 
-# TODO: turn on in https://st.yandex-team.ru/BI-4701
-@pytest.mark.skip
+@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslPostgreSQLConnection(
     BaseSslPostgreSQLTestClass,
     DefaultConnectionTestClass[ConnectionPostgreSQL],
@@ -90,36 +103,24 @@ class TestSslPostgreSQLConnection(
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
 
-    def test_connection_test(self, saved_connection: ConnectionPostgreSQL) -> None:
-        super().test_connection_test(saved_connection)
+    def test_connection_test(
+        self,
+        saved_connection: ConnectionPostgreSQL,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    ) -> None:
+        super().test_connection_test(saved_connection, sync_conn_executor_factory)
         self.check_ssl_directory_is_empty()
 
 
-# TODO: turn on in https://st.yandex-team.ru/BI-4701
-@pytest.mark.skip
-class TestSslAsyncPostgreSQLConnection(TestSslPostgreSQLConnection):
-    test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultConnectionTestClass.test_connection_get_data_source_templates: "",  # TODO: FIXME
-        },
-    )
-
-    @pytest.fixture(scope="session")
-    def conn_exec_factory_async_env(self) -> bool:
-        return True
-
+@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
+class TestSslAsyncPostgreSQLConnection(DefaultAsyncConnectionTestClass, TestSslPostgreSQLConnection):
     @pytest.mark.asyncio
     async def test_connection_test(
         self,
         saved_connection: ConnectionPostgreSQL,
-        conn_default_service_registry: ServicesRegistry,
+        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
     ) -> None:
-        # FIXME: standardize this test
-        conn = saved_connection
-        service_registry = conn_default_service_registry
-        conn_executor_factory = service_registry.get_conn_executor_factory()
-        async_conn_executor = conn_executor_factory.get_async_conn_executor(conn)
-        await async_conn_executor.test()
+        await super().test_connection_test(saved_connection, async_conn_executor_factory)
         await asyncio.sleep(0.1)
         self.check_ssl_directory_is_empty()
 
@@ -127,14 +128,8 @@ class TestSslAsyncPostgreSQLConnection(TestSslPostgreSQLConnection):
     async def test_multiple_connection_test(
         self,
         saved_connection: ConnectionPostgreSQL,
-        conn_default_service_registry: ServicesRegistry,
+        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
     ) -> None:
-        # FIXME: standardize this test
-        conn = saved_connection
-        service_registry = conn_default_service_registry
-        conn_executor_factory = service_registry.get_conn_executor_factory()
-        async_conn_executor = conn_executor_factory.get_async_conn_executor(conn)
-        coros = [async_conn_executor.test() for _ in range(10)]
-        await asyncio.gather(*coros)
+        await super().test_multiple_connection_test(saved_connection, async_conn_executor_factory)
         await asyncio.sleep(0.1)
         self.check_ssl_directory_is_empty()

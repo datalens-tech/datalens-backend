@@ -28,23 +28,22 @@ services:
     ports:
      - "52302:5432"
 
-# TODO: enable in https://st.yandex-team.ru/BI-4701
-#  db-postgres-9-4-ssl:
-#    build:
-#      context: docker-compose
-#      dockerfile: Dockerfile.db-postgres-9.4-ssl
-#    environment:
-#      POSTGRES_DB: "test_data"
-#      POSTGRES_USER: "datalens"
-#      POSTGRES_PASSWORD: "qwerty"
-#      PGCTLTIMEOUT: "300"  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
-#    ports:
-#      - "52303:5432"
-#    command: [
-#      "postgres",
-#      "-c",
-#      "config_file=/etc/postgresql/postgresql.conf"
-#    ]
+  db-postgres-9-4-ssl:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-postgres-9.4-ssl
+    environment:
+      POSTGRES_DB: "test_data"
+      POSTGRES_USER: "datalens"
+      POSTGRES_PASSWORD: "qwerty"
+      PGCTLTIMEOUT: "300"  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
+    ports:
+      - "52303:5432"
+    command: [
+      "postgres",
+      "-c",
+      "config_file=/etc/postgresql/postgresql.conf"
+    ]
 
   # INFRA
   pg-us:

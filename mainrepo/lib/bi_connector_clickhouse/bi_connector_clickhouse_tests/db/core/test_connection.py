@@ -1,17 +1,32 @@
+from __future__ import annotations
+
 import asyncio
 import os
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+)
 
 import pytest
 
 import bi_configs.utils as bi_configs_utils
 from bi_core.us_connection_base import DataSourceTemplate
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+from bi_core_testing.testcases.connection import (
+    DefaultAsyncConnectionTestClass,
+    DefaultConnectionTestClass,
+)
 
 from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_clickhouse_tests.db.core.base import (
     BaseClickHouseTestClass,
     BaseSslClickHouseTestClass,
 )
+
+if TYPE_CHECKING:
+    from bi_core.connection_executors import (
+        AsyncConnExecutorBase,
+        SyncConnExecutorBase,
+    )
 
 
 class TestClickHouseConnection(
@@ -42,8 +57,7 @@ class TestClickHouseConnection(
         assert "system" not in tmpl_db_names
 
 
-# TODO: turn on in https://st.yandex-team.ru/BI-4738
-@pytest.mark.skip
+@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslClickHouseConnection(
     BaseSslClickHouseTestClass,
     DefaultConnectionTestClass[ConnectionClickhouse],
@@ -63,27 +77,33 @@ class TestSslClickHouseConnection(
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
 
+    def test_connection_test(
+        self,
+        saved_connection: ConnectionClickhouse,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    ) -> None:
+        super().test_connection_test(saved_connection, sync_conn_executor_factory)
+        self.check_ssl_directory_is_empty()
 
-# TODO: turn on in https://st.yandex-team.ru/BI-4738
-@pytest.mark.skip
-class TestSslAsyncPostgreSQLConnection(TestSslClickHouseConnection):
-    @pytest.fixture(scope="session")
-    def conn_exec_factory_async_env(self) -> bool:
-        return True
+
+@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
+class TestSslAsyncClickHouseConnection(DefaultAsyncConnectionTestClass, TestSslClickHouseConnection):
+    @pytest.mark.asyncio
+    async def test_connection_test(
+        self,
+        saved_connection: ConnectionClickhouse,
+        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
+    ) -> None:
+        await super().test_connection_test(saved_connection, async_conn_executor_factory)
+        await asyncio.sleep(0.1)
+        self.check_ssl_directory_is_empty()
 
     @pytest.mark.asyncio
-    async def test_connection_test(self, saved_connection: ConnectionClickhouse) -> None:
-        conn = saved_connection
-        await conn.async_conn_executor.test()
+    async def test_multiple_connection_test(
+        self,
+        saved_connection: ConnectionClickhouse,
+        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
+    ) -> None:
+        await super().test_multiple_connection_test(saved_connection, async_conn_executor_factory)
         await asyncio.sleep(0.1)
-
-    @pytest.mark.asyncio
-    async def test_multiple_connection_test(self, saved_connection: ConnectionClickhouse) -> None:
-        conn = saved_connection
-        coros = [conn.async_conn_executor.test() for _ in range(10)]
-        await asyncio.gather(*coros)
-        await asyncio.sleep(0.1)
-
-    @pytest.mark.skip
-    def test_connection_get_data_source_templates(self, saved_connection: ConnectionClickhouse) -> None:
-        ...
+        self.check_ssl_directory_is_empty()
