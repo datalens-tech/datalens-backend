@@ -74,4 +74,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_metrica = [
     {path = "bi_connector_metrica/bi"},
+    {path = "bi_connector_metrica/core"},
 ]

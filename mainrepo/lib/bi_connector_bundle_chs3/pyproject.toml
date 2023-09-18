@@ -66,6 +66,10 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_bundle_chs3 = [
+    {path = "bi_connector_bundle_chs3/chs3_base/bi"},
+    {path = "bi_connector_bundle_chs3/chs3_base/core"},
     {path = "bi_connector_bundle_chs3/chs3_gsheets/bi"},
+    {path = "bi_connector_bundle_chs3/chs3_gsheets/core"},
     {path = "bi_connector_bundle_chs3/file/bi"},
+    {path = "bi_connector_bundle_chs3/file/core"},
 ]

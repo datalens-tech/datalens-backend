@@ -66,4 +66,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_gsheets = [
     {path = "bi_connector_gsheets/bi"},
+    {path = "bi_connector_gsheets/core"},
 ]

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-15 14:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_solomon/bi/connection_form/form_config.py:22
+msgid "label_connector-solomon"
+msgstr "Monitoring"
+
 msgid "label_solomon-conn-description"
 msgstr ""
 "Подключение позволяет создавать графики в DataLens по данным сервиса [Yandex "
 "Monitoring (Solomon)]({LINK})"
-
-#: bi_connector_solomon/bi/connection_info.py:8
-msgid "label_connector-solomon"
-msgstr "Monitoring"

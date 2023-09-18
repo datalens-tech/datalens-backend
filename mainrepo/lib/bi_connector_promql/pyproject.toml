@@ -69,4 +69,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_promql = [
     {path = "bi_connector_promql/bi"},
+    {path = "bi_connector_promql/core"},
 ]

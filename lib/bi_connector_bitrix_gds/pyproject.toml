@@ -67,4 +67,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_bitrix_gds = [
     {path = "bi_connector_bitrix_gds/bi"},
+    {path = "bi_connector_bitrix_gds/core"},
 ]

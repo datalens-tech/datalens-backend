@@ -73,6 +73,9 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_bundle_ch_filtered = [
     {path = "bi_connector_bundle_ch_filtered/base/bi"},
+    {path = "bi_connector_bundle_ch_filtered/base/core"},
     {path = "bi_connector_bundle_ch_filtered/ch_billing_analytics/bi"},
+    {path = "bi_connector_bundle_ch_filtered/ch_billing_analytics/core"},
     {path = "bi_connector_bundle_ch_filtered/usage_tracking/bi"},
+    {path = "bi_connector_bundle_ch_filtered/usage_tracking/core"},
 ]

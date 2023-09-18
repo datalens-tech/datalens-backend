@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-15 14:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,16 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_gsheets/bi/connection_form/form_config.py:50
+msgid "label_connector-gsheets"
+msgstr "Google Sheets"
+
 msgid "field_google-sheets-link"
 msgstr "Ссылка"
 
-#: bi_connector_gsheets/bi/connection_form/form_config.py:51
 msgid "label_gsheets-url-hint"
 msgstr ""
 "В Google Sheets  необходимо предоставить доступ \"Anyone with the link\", "
 "затем из адресной строки браузера скопировать ссылку на нужный лист."
-
-#: bi_connector_gsheets/bi/connection_info.py:8
-msgid "label_connector-gsheets"
-msgstr "Google Sheets"

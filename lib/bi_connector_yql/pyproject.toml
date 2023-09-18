@@ -85,4 +85,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_yql = [
     {path = "bi_connector_yql/bi"},
+    {path = "bi_connector_yql/core"},
 ]

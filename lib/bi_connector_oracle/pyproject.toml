@@ -85,6 +85,7 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_oracle = [
     {path = "bi_connector_oracle/bi"},
+    {path = "bi_connector_oracle/core"},
 ]
 bi_formula_ref_bi_connector_oracle = [
     {path = "bi_connector_oracle/formula_ref"},

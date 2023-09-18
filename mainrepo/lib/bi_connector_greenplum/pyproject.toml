@@ -57,4 +57,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_greenplum = [
     {path = "bi_connector_greenplum/bi"},
+    {path = "bi_connector_greenplum/core"},
 ]

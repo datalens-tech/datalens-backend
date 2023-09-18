@@ -78,13 +78,23 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_bundle_ch_frozen = [
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_base/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_base/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_covid/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_covid/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_demo/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_demo/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_dtp/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_dtp/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_gkh/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_gkh/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_horeca/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_horeca/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_samples/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_samples/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_transparency/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_transparency/core"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_weather/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_weather/core"},
 ]

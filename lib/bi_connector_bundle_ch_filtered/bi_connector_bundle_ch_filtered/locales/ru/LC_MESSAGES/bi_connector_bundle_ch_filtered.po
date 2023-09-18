@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-15 14:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_api_lib/connectors/service_base/connection_form/form_config.py:66
 msgid "button_get-token"
 msgstr "Получить токен"
 
-#: bi_connector_bundle_ch_filtered/ch_billing_analytics/bi/connection_form/form_config.py:18
+msgid "label_connector-ch_billing_analytics"
+msgstr "Yandex Cloud Billing"
+
 msgid "cloud-docs-url"
 msgstr "https://cloud.yandex.ru/docs"
 
-#: bi_connector_bundle_ch_filtered/ch_billing_analytics/bi/connection_form/form_config.py:21
 msgid "label_yc-billing-conn-description"
 msgstr ""
 "Это подключение позволит вам просматривать детальную статистику потребления "
@@ -36,10 +35,5 @@ msgstr ""
 "управление доступом в Биллинге читайте в документации в разделе [Управление "
 "доступом]({DOC_LINK})."
 
-#: bi_connector_bundle_ch_filtered/ch_billing_analytics/bi/connection_info.py:9
-msgid "label_connector-ch_billing_analytics"
-msgstr "Yandex Cloud Billing"
-
-#: bi_connector_bundle_ch_filtered/usage_tracking/bi/connection_info.py:8
 msgid "label_connector-usage_tracking"
 msgstr "DataLens Usage Tracking"

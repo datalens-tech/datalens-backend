@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-15 14:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +16,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi/connection_form/form_config.py:30
+msgid "label_connector-ch_geo_filtered"
+msgstr "Geolayer"
+
 msgid "label_ch-geo-filtered-description"
 msgstr ""
 "This is a service connection for interactions datasets with geolayers. You "
 "can set up a connection in [Marketplace](/marketplace)"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi/connection_info.py:7
-msgid "label_connector-ch_geo_filtered"
-msgstr "Geolayer"
+msgid "label_connector-ch_ya_music_podcast_stats"
+msgstr "Podcasts Analytics"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_form/form_config.py:20
-#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_form/form_config.py:20
-#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_form/form_config.py:18
 msgid "cloud-datalens-docs-url"
 msgstr "https://cloud.yandex.com/docs/datalens"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_form/form_config.py:25
 msgid "label_ya-podcasts-conn-description"
 msgstr ""
 "This connection lets you check your podcasts' detailed statistics.\n"
@@ -46,11 +42,9 @@ msgstr ""
 "private any time you'd like. All you need to do is to revoke the issued "
 "token in [Yandex ID]({PASSPORT_LINK})."
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_info.py:8
-msgid "label_connector-ch_ya_music_podcast_stats"
-msgstr "Podcasts Analytics"
+msgid "label_connector-market_couriers"
+msgstr "Market Couriers"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_form/form_config.py:25
 msgid "label_market-couriers-description"
 msgstr ""
 "This connection lets you check statistics about couriers and their completed "
@@ -64,11 +58,9 @@ msgstr ""
 "described in [documentation]({SEC_LINK}). All you need to do is to revoke "
 "the issued token in [Yandex ID]({PASSPORT_LINK})."
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_info.py:8
-msgid "label_connector-market_couriers"
-msgstr "Market Couriers"
+msgid "label_connector-schoolbook_journal"
+msgstr "Yandex.Schoolbook"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_form/form_config.py:23
 msgid "label_schoolbook-journal-description"
 msgstr ""
 "This connection lets you check your detailed statistics about your students' "
@@ -79,16 +71,9 @@ msgstr ""
 "You can make the access to stats private any time you'd like. All you need "
 "to do is to revoke the issued token in [Yandex ID]({PASSPORT_LINK})."
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_info.py:8
-msgid "label_connector-schoolbook_journal"
-msgstr "Yandex.Schoolbook"
-
-#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_form/form_config.py:13
-#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_info.py:8
 msgid "label_connector-smb_heatmaps"
 msgstr "Heatmaps Yandex Direct"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_form/form_config.py:17
 msgid "label_smb-heatmaps-description"
 msgstr ""
 "As a source, the data of the Heat Maps tool will be used, which, according "

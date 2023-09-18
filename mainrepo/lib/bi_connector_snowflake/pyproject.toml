@@ -92,6 +92,7 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_snowflake = [
     {path = "bi_connector_snowflake/bi"},
+    {path = "bi_connector_snowflake/core"},
 ]
 
 [datalens.meta]

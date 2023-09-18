@@ -20,6 +20,10 @@ task <task_name>
 
 - `task gen:antlr`:
   (Re-)generate ANTLR code files for formula
+- `task gen:i18n-po`:
+  Sync/generate `.po` files for package (run it from a package dir)
+- `task gen:i18n-binaries`:
+  Generate binary `.mo` files from `.po` files for package (run it from a package dir)
 
 
 ### Code quality (`cq:`)

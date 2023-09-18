@@ -59,4 +59,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_usage_tracking_ya_team = [
     {path = "bi_connector_usage_tracking_ya_team/bi"},
+    {path = "bi_connector_usage_tracking_ya_team/core"},
 ]

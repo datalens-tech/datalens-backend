@@ -12,6 +12,7 @@ ALL_BAKE_FILES=(
     bake_ci.hcl
     bake_code_gen.hcl
     bake_sources.hcl
+    bake_translations.hcl
 )
 
 FILE_AGS=()

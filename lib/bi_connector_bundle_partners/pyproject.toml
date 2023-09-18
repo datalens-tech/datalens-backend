@@ -66,7 +66,12 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_bundle_partners = [
+    {path = "bi_connector_bundle_partners/base/bi"},
+    {path = "bi_connector_bundle_partners/base/core"},
     {path = "bi_connector_bundle_partners/equeo/bi"},
+    {path = "bi_connector_bundle_partners/equeo/core"},
     {path = "bi_connector_bundle_partners/kontur_market/bi"},
+    {path = "bi_connector_bundle_partners/kontur_market/core"},
     {path = "bi_connector_bundle_partners/moysklad/bi"},
+    {path = "bi_connector_bundle_partners/moysklad/core"},
 ]

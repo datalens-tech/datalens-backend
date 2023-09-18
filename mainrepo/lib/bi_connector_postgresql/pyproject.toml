@@ -84,6 +84,7 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_postgresql = [
     {path = "bi_connector_postgresql/bi"},
+    {path = "bi_connector_postgresql/core"},
 ]
 bi_formula_ref_bi_connector_postgresql = [
     {path = "bi_connector_postgresql/formula_ref"},

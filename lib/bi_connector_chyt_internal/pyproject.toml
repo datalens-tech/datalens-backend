@@ -59,4 +59,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_chyt_internal = [
     {path = "bi_connector_chyt_internal/bi"},
+    {path = "bi_connector_chyt_internal/core"},
 ]

@@ -81,4 +81,5 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_bigquery = [
     {path = "bi_connector_bigquery/bi"},
+    {path = "bi_connector_bigquery/core"},
 ]

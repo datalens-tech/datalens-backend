@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-15 14:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +16,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi/connection_form/form_config.py:30
+msgid "label_connector-ch_geo_filtered"
+msgstr "Геослой"
+
 msgid "label_ch-geo-filtered-description"
 msgstr ""
 "Это служебное подключение для работы датасетов с геослоями. Соединение можно "
 "настроить в [Marketplace](/marketplace)"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi/connection_info.py:7
-msgid "label_connector-ch_geo_filtered"
-msgstr "Геослой"
+msgid "label_connector-ch_ya_music_podcast_stats"
+msgstr "Подкасты Аналитика"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_form/form_config.py:20
-#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_form/form_config.py:20
-#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_form/form_config.py:18
 msgid "cloud-datalens-docs-url"
 msgstr "https://cloud.yandex.ru/docs/datalens"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_form/form_config.py:25
 msgid "label_ya-podcasts-conn-description"
 msgstr ""
 "Это подключение позволит вам просматривать детальную статистику "
@@ -46,11 +42,9 @@ msgstr ""
 "описано в [документации]({SEC_LINK}). Доступ можно в любой момент закрыть, "
 "отозвав выписанный токен в [Яндекс ID]({PASSPORT_LINK})."
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi/connection_info.py:8
-msgid "label_connector-ch_ya_music_podcast_stats"
-msgstr "Подкасты Аналитика"
+msgid "label_connector-market_couriers"
+msgstr "Маркет Курьеры"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_form/form_config.py:25
 msgid "label_market-couriers-description"
 msgstr ""
 "Это подключение позволит вам просматривать статистику о курьерах и "
@@ -64,11 +58,9 @@ msgstr ""
 "описано в [документации]({SEC_LINK}). Доступ можно в любой момент закрыть, "
 "отозвав выписанный токен в [Яндекс ID]({PASSPORT_LINK})."
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi/connection_info.py:8
-msgid "label_connector-market_couriers"
-msgstr "Маркет Курьеры"
+msgid "label_connector-schoolbook_journal"
+msgstr "Яндекс.Учебник"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_form/form_config.py:23
 msgid "label_schoolbook-journal-description"
 msgstr ""
 "Это подключение позволит вам просматривать подробную статистику о работе "
@@ -79,16 +71,9 @@ msgstr ""
 "Доступ можно в любой момент закрыть. Для этого достаточно отозвать токен в "
 "[Яндекс ID]({PASSPORT_LINK})."
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi/connection_info.py:8
-msgid "label_connector-schoolbook_journal"
-msgstr "Яндекс.Учебник"
-
-#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_form/form_config.py:13
-#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_info.py:8
 msgid "label_connector-smb_heatmaps"
 msgstr "Тепловые карты Яндекс Директа"
 
-#: bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi/connection_form/form_config.py:17
 msgid "label_smb-heatmaps-description"
 msgstr ""
 "В качестве источника будут использованы данные инструмента «Тепловые карты», "

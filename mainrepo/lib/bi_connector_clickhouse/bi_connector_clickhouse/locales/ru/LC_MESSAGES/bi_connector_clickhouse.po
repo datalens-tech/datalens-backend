@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-03 10:56+0300\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-15 14:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,16 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bi_connector_clickhouse/bi/connection_form/form_config.py:149
+msgid "label_connector-clickhouse"
+msgstr "ClickHouse"
+
 msgid "field_click-house-port"
 msgstr "Порт HTTP-интерфейса"
 
-#: bi_connector_clickhouse/bi/connection_form/form_config.py:158
 msgid "label_clickhouse-ssl-enabled-tooltip"
 msgstr ""
 "Когда опция включена, при взаимодействии с БД используется протокол HTTPS, "
 "когда выключена — HTTP"
-
-#: bi_connector_clickhouse/bi/connection_info.py:6
-msgid "label_connector-clickhouse"
-msgstr "ClickHouse"

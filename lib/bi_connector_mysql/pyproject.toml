@@ -79,6 +79,7 @@ strict_optional = true
 [datalens.i18n.domains]
 bi_connector_mysql = [
     {path = "bi_connector_mysql/bi"},
+    {path = "bi_connector_mysql/core"},
 ]
 bi_formula_ref_bi_connector_mysql = [
     {path = "bi_connector_mysql/formula_ref"},

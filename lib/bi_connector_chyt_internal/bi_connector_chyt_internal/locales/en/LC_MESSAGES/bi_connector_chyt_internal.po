@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-15 13:44+0000\n"
+"POT-Creation-Date: 2023-09-15 14:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,3 +30,27 @@ msgstr "Cluster"
 
 msgid "label_connector-ch_over_yt_group"
 msgstr "CHYT"
+
+msgid "source_templates-tab_title-table"
+msgstr "Table"
+
+msgid "source_templates-label-yt_table"
+msgstr "Path to a YT table"
+
+msgid "source_templates-tab_title-concat"
+msgstr "Concat"
+
+msgid "source_templates-label-yt_table_list"
+msgstr "Path to YT tables, one per line"
+
+msgid "source_templates-tab_title-range"
+msgstr "Range"
+
+msgid "source_templates-label-yt_dir"
+msgstr "Path to a YT directory"
+
+msgid "source_templates-label-range_from"
+msgstr "Start from"
+
+msgid "source_templates-label-range_to"
+msgstr "End at"

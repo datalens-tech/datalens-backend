@@ -65,4 +65,5 @@ ignore_missing_imports = true
 [datalens.i18n.domains]
 bi_connector_solomon = [
     {path = "bi_connector_solomon/bi"},
+    {path = "bi_connector_solomon/core"},
 ]
