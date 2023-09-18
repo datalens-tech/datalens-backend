@@ -15,26 +15,26 @@ marshmallow = ">=3.19.0"
 redis = ">=4.5.1"
 sqlalchemy = ">=1.4.46, <2.0"
 python = ">=3.10, <3.12"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
 
 [tool.poetry.plugins]
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 bitrix_gds = "bi_connector_bitrix_gds.bi.connector:BitrixGDSBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 bitrix_gds = "bi_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"
 
-[tool.poetry.plugins."bi_formula.connectors"]
+[tool.poetry.plugins."dl_formula.connectors"]
 bitrix_gds = "bi_connector_bitrix_gds.formula.connector:BitrixGDSFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]

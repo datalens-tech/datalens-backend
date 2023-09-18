@@ -5,19 +5,19 @@ from http import HTTPStatus
 
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from bi_constants.enums import (
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_constants.enums import (
     BIType,
     CreateDSFrom,
     WhereClauseOperation,
     DataSourceRole,
     FileProcessingStatus,
 )
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
-from bi_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
-from bi_core.db import SchemaColumn
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
+from dl_core.db import SchemaColumn
 
 
 @pytest.fixture(

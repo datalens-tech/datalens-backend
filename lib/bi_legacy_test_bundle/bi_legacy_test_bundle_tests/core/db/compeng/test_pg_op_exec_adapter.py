@@ -9,13 +9,13 @@ import aiopg.sa
 import asyncpg
 import pytest
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
-from bi_compeng_pg.compeng_aiopg.exec_adapter_aiopg import AiopgExecAdapter
-from bi_compeng_pg.compeng_asyncpg.exec_adapter_asyncpg import AsyncpgExecAdapter
-from bi_core.data_processing.streaming import AsyncChunked
-from bi_core.utils import make_id
+from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
+from dl_compeng_pg.compeng_aiopg.exec_adapter_aiopg import AiopgExecAdapter
+from dl_compeng_pg.compeng_asyncpg.exec_adapter_asyncpg import AsyncpgExecAdapter
+from dl_core.data_processing.streaming import AsyncChunked
+from dl_core.utils import make_id
 
 
 async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> List[Dict[str, Any]]:

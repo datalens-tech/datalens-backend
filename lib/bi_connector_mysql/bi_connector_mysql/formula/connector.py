@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.mysql.base import MySQLDialect as SAMySQLDialect
 
-from bi_formula.connectors.base.connector import FormulaConnector
+from dl_formula.connectors.base.connector import FormulaConnector
 
 from bi_connector_mysql.formula.constants import MySQLDialect as MySQLDialectNS
 from bi_connector_mysql.formula.definitions.all import DEFINITIONS

@@ -1,10 +1,10 @@
-from bi_constants.enums import OrderDirection
+from dl_constants.enums import OrderDirection
 
-from bi_formula.shortcuts import n
+from dl_formula.shortcuts import n
 
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledOrderByFormulaInfo, CompiledQuery
-from bi_query_processing.legacy_pipeline.subqueries.query_tools import copy_and_remap_query
+from dl_query_processing.enums import ExecutionLevel
+from dl_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledOrderByFormulaInfo, CompiledQuery
+from dl_query_processing.legacy_pipeline.subqueries.query_tools import copy_and_remap_query
 
 from bi_legacy_test_bundle_tests.api_lib.unit.query.utils import joined_from_from_avatar_ids
 

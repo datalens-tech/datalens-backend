@@ -12,20 +12,20 @@ readme = "README.md"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
 Flask = ">=2.0.3"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../bi_api_commons_ya_team"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-cloud-integration = {path = "../bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-chyt-internal = {path = "../bi_connector_chyt_internal"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 bi-defaults = {path = "../bi_defaults"}
 yandex-bi-service-registry-ya-cloud = {path = "../bi_service_registry_ya_cloud"}
 yandex-bi-service-registry-ya-team = {path = "../bi_service_registry_ya_team"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

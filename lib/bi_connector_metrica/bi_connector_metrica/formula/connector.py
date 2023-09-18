@@ -1,8 +1,8 @@
 from sqlalchemy_metrika_api.base import MetrikaApiDialect as SAMetrikaApiDialect
 
 from bi_connector_metrica.formula.constants import MetricaDialect as MetricaDialectNS
-from bi_formula.connectors.base.connector import FormulaConnector
-from bi_formula.connectors.base.column import UnprefixedColumnRenderer
+from dl_formula.connectors.base.connector import FormulaConnector
+from dl_formula.connectors.base.column import UnprefixedColumnRenderer
 
 from bi_connector_metrica.formula.definitions.all import DEFINITIONS
 

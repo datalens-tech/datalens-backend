@@ -11,19 +11,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 postgresql_mdb = "bi_connector_postgresql_mdb.bi.connector:PostgreSQLMDBBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 postgresql_mdb = "bi_connector_postgresql_mdb.core.connector:PostgreSQLMDBCoreConnector"
 
 [tool.poetry.group.tests.dependencies]

@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from bi_query_processing.compilation.primitives import (
+from dl_query_processing.compilation.primitives import (
     JoinedFromObject, FromObject, SubqueryFromObject, FromColumn,
 )
 

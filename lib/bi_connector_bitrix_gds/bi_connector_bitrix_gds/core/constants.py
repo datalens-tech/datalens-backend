@@ -1,6 +1,6 @@
 from enum import Enum, unique
 
-from bi_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
+from dl_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
 
 
 BACKEND_TYPE_BITRIX_GDS = SourceBackendType.declare('BITRIX_GDS')

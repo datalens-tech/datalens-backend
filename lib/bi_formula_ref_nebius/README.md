@@ -1,3 +1,3 @@
 # bi_formula_ref_nebius
 
-Nebius-specific environment for `bi_formula_ref`
+Nebius-specific environment for `dl_formula_ref`

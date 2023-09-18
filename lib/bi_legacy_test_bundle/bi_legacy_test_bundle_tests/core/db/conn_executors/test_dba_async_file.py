@@ -6,15 +6,15 @@ import attr
 import pytest
 from aiohttp import ClientTimeout
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core import exc
-from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_connector_bundle_chs3.chs3_base.core.adapter import BaseAsyncFileS3Adapter
-from bi_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
-from bi_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
-from bi_core_testing.database import make_table, C, DbTable
+from dl_core import exc
+from dl_api_commons.base_models import RequestContextInfo
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_connector_bundle_chs3.chs3_base.core.adapter import BaseAsyncFileS3Adapter
+from dl_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
+from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
+from dl_core_testing.database import make_table, C, DbTable
 
 
 def get_smaller_session_timeout(self) -> ClientTimeout:

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, Sequence
 
 import attr
 
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_yql.core.ydb.adapter import YDBAdapter
 from bi_connector_yql.core.ydb.target_dto import YDBConnTargetDTO
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry

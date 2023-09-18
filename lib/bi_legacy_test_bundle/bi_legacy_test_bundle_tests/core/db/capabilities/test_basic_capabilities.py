@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from bi_constants.enums import DataSourceRole, JoinType
+from dl_constants.enums import DataSourceRole, JoinType
 
-from bi_core.dataset_capabilities import DatasetCapabilities
-from bi_core_testing.dataset import get_created_from
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+from dl_core.dataset_capabilities import DatasetCapabilities
+from dl_core_testing.dataset import get_created_from
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
-from bi_connector_clickhouse.core.clickhouse.constants import (
+from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
 )

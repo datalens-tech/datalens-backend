@@ -3,11 +3,11 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import List, Optional
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
-from bi_api_client.dsmaker.primitives import BlockSpec, RootBlockPlacement, AfterBlockPlacement
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import BlockSpec, RootBlockPlacement, AfterBlockPlacement
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 
 def test_identical_blocks(api_v1, data_api_v2, dataset_id):

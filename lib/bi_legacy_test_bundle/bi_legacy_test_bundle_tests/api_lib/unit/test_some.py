@@ -7,13 +7,13 @@ import pytest
 from cryptography import fernet
 
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
-from bi_configs.enums import AppType
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_configs.settings_loaders.fallback_cfg_resolver import (
+from dl_configs.enums import AppType
+from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_configs.settings_loaders.fallback_cfg_resolver import (
     YEnvFallbackConfigResolver,
     YamlFileConfigResolver, ObjectLikeConfig,
 )
-from bi_configs.settings_loaders.loader_env import (
+from dl_configs.settings_loaders.loader_env import (
     EnvSettingsLoader,
 )
 from bi_defaults.environments import (

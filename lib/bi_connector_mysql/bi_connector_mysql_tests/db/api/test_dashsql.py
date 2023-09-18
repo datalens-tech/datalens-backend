@@ -1,8 +1,8 @@
 import pytest
 from aiohttp.test_utils import TestClient
 
-from bi_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
-from bi_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
+from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
+from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
 from bi_connector_mysql_tests.db.api.base import MySQLDashSQLConnectionTest
 from bi_connector_mysql_tests.db.config import QUERY_WITH_PARAMS, SUBSELECT_QUERY_FULL

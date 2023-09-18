@@ -4,10 +4,10 @@ from typing import Any, ClassVar, Optional
 
 import sqlalchemy as sa
 
-from bi_constants.enums import CreateDSFrom, ConnectionType, JoinType
+from dl_constants.enums import CreateDSFrom, ConnectionType, JoinType
 
-from bi_core.connection_models import TableDefinition, TableIdent
-from bi_core.data_source.sql import BaseSQLDataSource
+from dl_core.connection_models import TableDefinition, TableIdent
+from dl_core.data_source.sql import BaseSQLDataSource
 
 from bi_connector_gsheets.core.constants import (
     CONNECTION_TYPE_GSHEETS, SOURCE_TYPE_GSHEETS,

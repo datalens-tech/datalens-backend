@@ -6,12 +6,12 @@ from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.connector import (
     CHSchoolbookCoreConnector,
 )
 
-from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
-from bi_api_connector.connector import (
+from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from dl_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
 
-from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BASE_CONFIGS
 from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import CONFIGS

@@ -1,4 +1,4 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom
+from dl_constants.enums import ConnectionType, CreateDSFrom
 
 
 CONNECTION_TYPE_KONTUR_MARKET = ConnectionType.declare('kontur_market')

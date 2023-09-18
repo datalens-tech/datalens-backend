@@ -4,22 +4,22 @@ from typing import TYPE_CHECKING, Callable, ClassVar, Optional
 
 import attr
 
-from bi_utils.utils import DataKey
+from dl_utils.utils import DataKey
 
 from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
-from bi_core.connection_models.conn_options import ConnectOptions
+from dl_core.connection_models.conn_options import ConnectOptions
 from bi_connector_yql.core.ydb.dto import YDBConnDTO
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin
-from bi_core.i18n.localizer import Translatable
-from bi_i18n.localizer_base import Localizer
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate, ConnectionBase
-from bi_core.utils import secrepr
+from dl_core.i18n.localizer import Translatable
+from dl_i18n.localizer_base import Localizer
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate, ConnectionBase
+from dl_core.utils import secrepr
 
 from bi_connector_yql.core.ydb.constants import SOURCE_TYPE_YDB_TABLE, SOURCE_TYPE_YDB_SUBSELECT
 
 if TYPE_CHECKING:
-    from bi_core.connection_models.common_models import TableIdent
+    from dl_core.connection_models.common_models import TableIdent
 
 
 # TODO: remove

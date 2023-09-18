@@ -5,29 +5,29 @@ import os
 
 from aiohttp import web
 
-from bi_api_lib.app_settings import DataApiAppSettings
-from bi_api_lib.loader import (
+from dl_api_lib.app_settings import DataApiAppSettings
+from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_bi_api_lib,
     preload_bi_api_lib,
 )
-from bi_app_tools.aio_latency_tracking import LatencyTracker
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.env_var_definitions import (
+from dl_app_tools.aio_latency_tracking import LatencyTracker
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
-from bi_configs.settings_loaders.loader_env import (
+from dl_configs.settings_loaders.loader_env import (
     load_connectors_settings_from_env_with_fallback,
     load_settings_from_env_with_fallback,
 )
-from bi_constants.enums import ConnectionType
-from bi_core.connectors.settings.registry import (
+from dl_constants.enums import ConnectionType
+from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
 )
-from bi_core.loader import CoreLibraryConfig
-from bi_core.logging_config import configure_logging
+from dl_core.loader import CoreLibraryConfig
+from dl_core.logging_config import configure_logging
 from dl_data_api.app_factory import DataApiAppFactoryOS
 
 LOGGER = logging.getLogger(__name__)

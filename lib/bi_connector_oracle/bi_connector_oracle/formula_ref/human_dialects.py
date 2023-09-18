@@ -1,4 +1,4 @@
-from bi_formula_ref.texts import StyledDialect
+from dl_formula_ref.texts import StyledDialect
 
 from bi_connector_oracle.formula.constants import OracleDialect
 from bi_connector_oracle.formula_ref.i18n import Translatable

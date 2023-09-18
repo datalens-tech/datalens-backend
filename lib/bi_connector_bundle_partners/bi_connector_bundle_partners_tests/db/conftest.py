@@ -1,4 +1,4 @@
-from bi_core_testing.initialization import initialize_core_test
+from dl_core_testing.initialization import initialize_core_test
 
 from bi_connector_bundle_partners_tests.db.config import CORE_TEST_CONFIG
 

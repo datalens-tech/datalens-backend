@@ -1,6 +1,6 @@
 import attr
 
-from bi_core.connection_models.dto_defs import ConnDTO
+from dl_core.connection_models.dto_defs import ConnDTO
 
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 

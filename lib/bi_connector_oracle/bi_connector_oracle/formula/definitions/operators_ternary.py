@@ -1,4 +1,4 @@
-import bi_formula.definitions.operators_ternary as base
+import dl_formula.definitions.operators_ternary as base
 
 from bi_connector_oracle.formula.constants import OracleDialect as D
 

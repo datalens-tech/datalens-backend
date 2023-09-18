@@ -12,47 +12,47 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 grpcio = ">=1.45.0rc1"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 ydb = ">=3.5.0"
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 ydb = "bi_connector_yql.bi.ydb.connector:YDBBiApiConnector"
 yq = "bi_connector_yql.bi.yq.connector:YQBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 ydb = "bi_connector_yql.core.ydb.connector:YDBCoreConnector"
 yq = "bi_connector_yql.core.yq.connector:YQCoreConnector"
 
-[tool.poetry.plugins."bi_db_testing.connectors"]
+[tool.poetry.plugins."dl_db_testing.connectors"]
 yql = "bi_connector_yql.db_testing.connector:YQLDbTestingConnector"
 
-[tool.poetry.plugins."bi_formula.connectors"]
+[tool.poetry.plugins."dl_formula.connectors"]
 yql = "bi_connector_yql.formula.connector:YQLFormulaConnector"
 
-[tool.poetry.plugins."bi_formula_ref.plugins"]
+[tool.poetry.plugins."dl_formula_ref.plugins"]
 yql = "bi_connector_yql.formula_ref.plugin:YQLFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
-bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 pytest = ">=7.2.2"
+datalens-formula-testing = {path = "../../mainrepo/lib/dl_formula_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

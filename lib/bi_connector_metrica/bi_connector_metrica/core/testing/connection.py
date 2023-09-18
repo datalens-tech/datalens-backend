@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.us_connection import (

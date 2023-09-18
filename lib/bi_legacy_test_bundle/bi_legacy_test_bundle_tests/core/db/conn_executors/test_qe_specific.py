@@ -5,13 +5,13 @@ import secrets
 import attr
 import pytest
 
-from bi_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
-from bi_core.connection_executors.adapters.async_adapters_remote import RemoteAsyncAdapter
-from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_core.connection_executors.models.exc import QueryExecutorException
-from bi_api_commons.base_models import RequestContextInfo
-from bi_app_tools.log.context import log_context
+from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
+from dl_core.connection_executors.adapters.async_adapters_remote import RemoteAsyncAdapter
+from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_executors.models.exc import QueryExecutorException
+from dl_api_commons.base_models import RequestContextInfo
+from dl_app_tools.log.context import log_context
 
 
 class TestsQESpecific:
@@ -104,7 +104,7 @@ class TestsQESpecific:
             print(chunk)
 
         qe_logs = list(filter(
-            lambda r: r.name == "bi_core.connection_executors.remote_query_executor.app_async",
+            lambda r: r.name == "dl_core.connection_executors.remote_query_executor.app_async",
             caplog.records
         ))
         assert qe_logs
@@ -119,7 +119,7 @@ class TestsQESpecific:
 
         # TODO FIX: Move to dedicated test
         cursor_executed_logs = list(
-            filter(lambda r: r.name == "bi_core.connection_executors.adapters.sa_utils", caplog.records)
+            filter(lambda r: r.name == "dl_core.connection_executors.adapters.sa_utils", caplog.records)
         )
 
         assert len(cursor_executed_logs) == 1

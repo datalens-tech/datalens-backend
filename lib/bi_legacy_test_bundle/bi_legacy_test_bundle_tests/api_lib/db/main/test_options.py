@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_constants.enums import AggregationFunction, BIType
+from dl_constants.enums import AggregationFunction, BIType
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
-from bi_api_lib.enums import WhereClauseOperation, BI_TYPE_AGGREGATIONS
+from dl_api_lib.enums import WhereClauseOperation, BI_TYPE_AGGREGATIONS
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table

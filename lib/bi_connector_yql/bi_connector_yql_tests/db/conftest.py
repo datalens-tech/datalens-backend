@@ -1,7 +1,7 @@
-from bi_core_testing.initialization import initialize_core_test
+from dl_core_testing.initialization import initialize_core_test
 
-from bi_formula.loader import load_bi_formula
-from bi_formula_testing.forced_literal import forced_literal_use
+from dl_formula.loader import load_bi_formula
+from dl_formula_testing.forced_literal import forced_literal_use
 
 from bi_connector_yql_tests.db.config import CORE_TEST_CONFIG
 

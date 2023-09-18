@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
+from dl_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
 
 from bi_connector_mysql.formula.constants import DIALECT_NAME_MYSQL
 from bi_connector_mysql.formula.constants import MySQLDialect as D

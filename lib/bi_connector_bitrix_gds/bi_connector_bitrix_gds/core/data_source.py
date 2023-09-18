@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from bi_constants.enums import CreateDSFrom, JoinType
+from dl_constants.enums import CreateDSFrom, JoinType
 
-from bi_core.connection_models import TableDefinition, TableIdent
-from bi_core.data_source.sql import PseudoSQLDataSource
+from dl_core.connection_models import TableDefinition, TableIdent
+from dl_core.data_source.sql import PseudoSQLDataSource
 
 from bi_connector_bitrix_gds.core.constants import CONNECTION_TYPE_BITRIX24, SOURCE_TYPE_BITRIX_GDS
 

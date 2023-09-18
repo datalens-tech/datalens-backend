@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar
 
-from bi_core.us_connection_base import ConnectionSQL
+from dl_core.us_connection_base import ConnectionSQL
 
 from bi_connector_bundle_ch_filtered.testing.connection import CHFilteredConnectionTestClass
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config import EXT_BLACKBOX_USER_UID

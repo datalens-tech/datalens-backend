@@ -1,12 +1,12 @@
-from bi_constants.enums import FieldRole, WhereClauseOperation
+from dl_constants.enums import FieldRole, WhereClauseOperation
 
-from bi_query_processing.base_specs.dimensions import DimensionValueSpec
-from bi_api_lib.query.formalization.raw_specs import (
+from dl_query_processing.base_specs.dimensions import DimensionValueSpec
+from dl_api_lib.query.formalization.raw_specs import (
     RawQuerySpecUnion, RawSelectFieldSpec, TitleFieldRef,
     RawRowRoleSpec, RawTreeRoleSpec,
 )
-from bi_query_processing.legend.field_legend import FilterRoleSpec
-from bi_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
+from dl_query_processing.legend.field_legend import FilterRoleSpec
+from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
 
 from bi_legacy_test_bundle_tests.api_lib.utils import make_dataset_with_tree
 

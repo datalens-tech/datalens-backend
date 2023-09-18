@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from bi_constants.enums import BIType
-from bi_api_connector.dashsql import DefaultDashSQLParamLiteralizer, TValueBase
+from dl_constants.enums import BIType
+from dl_api_connector.dashsql import DefaultDashSQLParamLiteralizer, TValueBase
 
 
 class OracleDashSQLParamLiteralizer(DefaultDashSQLParamLiteralizer):

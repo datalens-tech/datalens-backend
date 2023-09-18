@@ -3,10 +3,10 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from bi_app_tools import log
+from dl_app_tools import log
 from bi_maintenance.core.logging_config import configure_logging_for_shell
 from bi_maintenance.core.us_crawler_base import USEntryCrawler
-from bi_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 
 from bi_maintenance.api.common import MaintenanceEnvironmentManager
 

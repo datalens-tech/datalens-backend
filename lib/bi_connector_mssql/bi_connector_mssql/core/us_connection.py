@@ -4,9 +4,9 @@ from typing import Callable, ClassVar
 
 import attr
 
-from bi_i18n.localizer_base import Localizer
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, ClassicConnectionSQL, DataSourceTemplate
+from dl_i18n.localizer_base import Localizer
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import ConnectionBase, ClassicConnectionSQL, DataSourceTemplate
 
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT
 from bi_connector_mssql.core.dto import MSSQLConnDTO

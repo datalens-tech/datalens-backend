@@ -11,17 +11,17 @@ from typing import ClassVar, Tuple, Optional, ItemsView, Set, TypeAlias, Union
 
 import attr
 
-from bi_configs.environments import LegacyDefaults, LegacyEnvAliasesMap, BaseInstallationsMap
+from dl_configs.environments import LegacyDefaults, LegacyEnvAliasesMap, BaseInstallationsMap
 from bi_defaults import connectors_data as cd
-from bi_configs.connector_availability import (
+from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
     SectionSettings,
     ConnectorSettings,
     TranslatableSettings,
     ConnectorContainerSettings,
 )
-from bi_configs.enums import EnvType, RedisMode
-from bi_constants.api_constants import DLHeadersCommon
+from dl_configs.enums import EnvType, RedisMode
+from dl_constants.api_constants import DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
 

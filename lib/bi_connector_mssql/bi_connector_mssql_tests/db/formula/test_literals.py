@@ -3,7 +3,7 @@ import datetime
 from bi_connector_mssql_tests.db.formula.base import (
     MSSQLTestBase,
 )
-from bi_formula_testing.testcases.literals import (
+from dl_formula_testing.testcases.literals import (
     DefaultLiteralFormulaConnectorTestSuite,
 )
 

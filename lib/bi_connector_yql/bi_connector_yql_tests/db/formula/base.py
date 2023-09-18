@@ -1,10 +1,10 @@
 import pytest
 import sqlalchemy as sa
 
-from bi_formula_testing.testcases.base import (
+from dl_formula_testing.testcases.base import (
     FormulaConnectorTestBase
 )
-from bi_formula_testing.database import Db, FormulaDbDispenser
+from dl_formula_testing.database import Db, FormulaDbDispenser
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 

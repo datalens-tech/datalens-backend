@@ -10,17 +10,17 @@ import json
 import logging
 import urllib.parse
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
-from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
-from bi_core.connection_executors.models.db_adapter_data import (
+from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
+from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
+from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery, RawColumnInfo, RawSchemaInfo,
 )
 from bi_connector_gsheets.core import gozora
-from bi_core.db.native_type import CommonNativeType
-from bi_core.exc import ConnectionConfigurationError, DatabaseQueryError
-from bi_app_tools.profiling_base import generic_profiler_async
+from dl_core.db.native_type import CommonNativeType
+from dl_core.exc import ConnectionConfigurationError, DatabaseQueryError
+from dl_app_tools.profiling_base import generic_profiler_async
 
 from bi_connector_gsheets.core.constants import CONNECTION_TYPE_GSHEETS
 
@@ -28,7 +28,7 @@ from bi_connector_gsheets.core.constants import CONNECTION_TYPE_GSHEETS
 if TYPE_CHECKING:
     from aiohttp.client import ClientResponse
 
-    from bi_core.connection_models import DBIdent, SchemaIdent, TableIdent, TableDefinition
+    from dl_core.connection_models import DBIdent, SchemaIdent, TableIdent, TableDefinition
 
 
 LOGGER = logging.getLogger(__name__)

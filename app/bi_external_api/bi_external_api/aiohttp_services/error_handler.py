@@ -1,6 +1,6 @@
 from aiohttp import web
 
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
 
 
 class ExternalAPIErrorHandler(AIOHTTPErrorHandler):

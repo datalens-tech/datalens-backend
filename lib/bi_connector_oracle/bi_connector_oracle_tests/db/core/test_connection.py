@@ -1,6 +1,6 @@
-from bi_core.us_connection_base import DataSourceTemplate
+from dl_core.us_connection_base import DataSourceTemplate
 
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
 from bi_connector_oracle_tests.db.core.base import BaseOracleTestClass

@@ -3,8 +3,8 @@ from typing import Generator
 
 import pytest
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_mysql.core.us_connection import ConnectionMySQL

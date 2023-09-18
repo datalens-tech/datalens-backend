@@ -4,10 +4,10 @@ from typing import Optional
 
 import flask
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_constants.enums import ConnectionType
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_constants.enums import ConnectionType
 
-from bi_api_lib.app_settings import (
+from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
 )

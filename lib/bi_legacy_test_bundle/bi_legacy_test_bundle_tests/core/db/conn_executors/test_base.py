@@ -6,8 +6,8 @@ from typing import Generator, List
 import attr
 import pytest
 
-from bi_core.connection_models import DBIdent
-from bi_core_testing.database import make_schema
+from dl_core.connection_models import DBIdent
+from dl_core_testing.database import make_schema
 
 from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet
 

@@ -4,8 +4,8 @@ from typing import ClassVar
 
 import attr
 
-from bi_i18n.localizer_base import Localizer
-from bi_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate
+from dl_i18n.localizer_base import Localizer
+from dl_core.us_connection_base import ClassicConnectionSQL, DataSourceTemplate
 
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_TABLE, SOURCE_TYPE_MYSQL_SUBSELECT
 from bi_connector_mysql.core.dto import MySQLConnDTO

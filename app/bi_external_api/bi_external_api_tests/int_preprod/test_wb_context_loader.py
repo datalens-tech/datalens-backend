@@ -16,7 +16,7 @@ from bi_external_api.testings import (
     SingleTabDashboardBuilder,
     PGSubSelectDatasetFactory,
 )
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 
 # TODO FIX: Move this test to db section when charts-api will be available in docker

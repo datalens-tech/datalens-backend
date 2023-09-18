@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from bi_core.connection_executors.remote_query_executor import app_sync as app_sync_mod
+from dl_core.connection_executors.remote_query_executor import app_sync as app_sync_mod
 
 
 app = app_sync_mod.create_sync_app()

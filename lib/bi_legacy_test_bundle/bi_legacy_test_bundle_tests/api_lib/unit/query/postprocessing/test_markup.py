@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_query_processing.postprocessing.postprocessors.markup import MarkupProcessing, MarkupProcessingDC
+from dl_query_processing.postprocessing.postprocessors.markup import MarkupProcessing, MarkupProcessingDC
 
 
 def _test_markup_postprocessing_i(cls, check_nodes=True):

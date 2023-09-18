@@ -6,13 +6,13 @@ from bi_api_commons_ya_cloud.cloud_manager import (
     CloudManagerAPI,
     SubjectInfo,
 )
-from bi_constants.enums import RLSSubjectType
-from bi_core.rls import (
+from dl_constants.enums import RLSSubjectType
+from dl_core.rls import (
     RLS_FAILED_USER_NAME_PREFIX,
     BaseSubjectResolver,
     RLSSubject,
 )
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 
 LOGGER = logging.getLogger(__name__)
 

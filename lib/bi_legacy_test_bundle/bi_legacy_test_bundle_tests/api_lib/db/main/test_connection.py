@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 import random
 
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core import exc as common_exc
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core import exc as common_exc
 
 from bi_legacy_test_bundle_tests.api_lib.conftest import ch_connection_params
-from bi_testing.utils import guids_from_titles
+from dl_testing.utils import guids_from_titles
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 from bi_legacy_test_bundle_tests.api_lib.conftest import _make_dataset
 

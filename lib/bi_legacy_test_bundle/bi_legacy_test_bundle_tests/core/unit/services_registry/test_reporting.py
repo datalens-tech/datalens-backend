@@ -4,18 +4,18 @@ import uuid
 
 import pytest
 
-from bi_constants.api_constants import DLContextKey
-from bi_constants.enums import QueryType, ConnectionType
+from dl_constants.api_constants import DLContextKey
+from dl_constants.enums import QueryType, ConnectionType
 
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.reporting.models import (
+from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.reporting.models import (
     QueryExecutionStartReportingRecord,
     QueryExecutionEndReportingRecord,
     QueryExecutionCacheInfoReportingRecord,
 )
-from bi_api_commons.reporting.records import RequestResultReportingRecord
-from bi_api_commons.reporting.registry import DefaultReportingRegistry
-from bi_api_commons.reporting.profiler import DefaultReportingProfiler
+from dl_api_commons.reporting.records import RequestResultReportingRecord
+from dl_api_commons.reporting.registry import DefaultReportingRegistry
+from dl_api_commons.reporting.profiler import DefaultReportingProfiler
 from bi_api_commons_ya_cloud.models import TenantYCFolder
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL

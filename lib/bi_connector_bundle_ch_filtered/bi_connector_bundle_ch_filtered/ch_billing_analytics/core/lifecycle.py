@@ -1,6 +1,6 @@
-from bi_app_tools.profiling_base import GenericProfiler
+from dl_app_tools.profiling_base import GenericProfiler
 
-from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
+from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.us_connection import BillingAnalyticsCHConnection
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 

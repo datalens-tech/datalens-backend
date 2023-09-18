@@ -3,23 +3,23 @@ from __future__ import annotations
 import attr
 import pytest
 
-from bi_constants.enums import BIType, ConnectionType
+from dl_constants.enums import BIType, ConnectionType
 
-from bi_core.db import SchemaColumn
-from bi_core.db.native_type import GenericNativeType, CommonNativeType, ClickHouseNativeType
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.db import SchemaColumn
+from dl_core.db.native_type import GenericNativeType, CommonNativeType, ClickHouseNativeType
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
-from bi_core.base_models import DefaultConnectionRef
-from bi_core.us_manager.storage_schemas.base import CtxKey
-from bi_core.us_manager.storage_schemas.data_source_spec import GenericDataSourceSpecStorageSchema
-from bi_core import data_source
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, StandardSchemaSQLDataSourceSpec
+from dl_core.base_models import DefaultConnectionRef
+from dl_core.us_manager.storage_schemas.base import CtxKey
+from dl_core.us_manager.storage_schemas.data_source_spec import GenericDataSourceSpecStorageSchema
+from dl_core import data_source
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec, StandardSchemaSQLDataSourceSpec
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
-from bi_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
-from bi_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
+from dl_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource
 
 
 def common_col(

@@ -15,37 +15,37 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.plugins]
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 appmetrica_api = "bi_connector_metrica.bi.connector:AppMetricaApiBiApiConnector"
 metrica_api = "bi_connector_metrica.bi.connector:MetricaApiBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 appmetrica_api = "bi_connector_metrica.core.connector:AppMetricaApiCoreConnector"
 metrica_api = "bi_connector_metrica.core.connector:MetricaApiCoreConnector"
 
-[tool.poetry.plugins."bi_formula.connectors"]
+[tool.poetry.plugins."dl_formula.connectors"]
 metrica = "bi_connector_metrica.formula.connector:MetricaFormulaConnector"
 
-[tool.poetry.plugins."bi_formula_ref.plugins"]
+[tool.poetry.plugins."dl_formula_ref.plugins"]
 metrica = "bi_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
-bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 pytest = ">=7.2.2"
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+datalens-formula-testing = {path = "../../mainrepo/lib/dl_formula_testing"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

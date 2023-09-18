@@ -1,4 +1,4 @@
-from bi_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
+from dl_constants.enums import ConnectionType, SourceBackendType, CreateDSFrom
 
 
 BACKEND_TYPE_GSHEETS = SourceBackendType.declare('GSHEETS')

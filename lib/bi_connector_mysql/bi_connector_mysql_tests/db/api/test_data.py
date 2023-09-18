@@ -1,19 +1,19 @@
 from datetime import datetime
 
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from bi_constants.enums import WhereClauseOperation
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_constants.enums import WhereClauseOperation
 
-from bi_api_lib_testing.connector.data_api_suites import (
+from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataResultTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataPreviewTestSuite,
 )
-from bi_api_lib_testing.data_api_base import DataApiTestParams
+from dl_api_lib_testing.data_api_base import DataApiTestParams
 
 from bi_connector_mysql_tests.db.api.base import MySQLDataApiTestBase
 

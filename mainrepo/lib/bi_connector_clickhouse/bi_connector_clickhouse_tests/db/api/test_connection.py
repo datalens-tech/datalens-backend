@@ -1,7 +1,0 @@
-from bi_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
-
-from bi_connector_clickhouse_tests.db.api.base import ClickHouseConnectionTestBase
-
-
-class TestClickHouseConnection(ClickHouseConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    pass

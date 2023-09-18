@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.operators import (
+from dl_formula_testing.testcases.operators import (
     DefaultOperatorFormulaConnectorTestSuite,
 )
 

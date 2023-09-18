@@ -1,4 +1,4 @@
-import bi_formula.definitions.functions_type as base
+import dl_formula.definitions.functions_type as base
 
 from bi_connector_metrica.formula.constants import MetricaDialect as D
 

@@ -2,7 +2,7 @@ import os
 
 import attr
 
-from bi_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
+from dl_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
 
 import bi_connector_yql as package
 

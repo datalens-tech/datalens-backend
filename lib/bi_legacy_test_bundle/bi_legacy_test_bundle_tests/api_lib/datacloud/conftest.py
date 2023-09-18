@@ -13,23 +13,23 @@ from botocore.client import BaseClient
 
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_configs.enums import AppType, EnvType
+from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_configs.enums import AppType, EnvType
 
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
+from dl_testing.env_params.generic import GenericEnvParamGetter
 
-from bi_core_testing.flask_utils import FlaskTestClient, FlaskTestResponse
+from dl_core_testing.flask_utils import FlaskTestClient, FlaskTestResponse
 
 import bi.app
 from bi import app_async
 from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings, YCAuthSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 
-from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
+from dl_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 
 from bi_legacy_test_bundle_tests.api_lib.config import DB_PARAMS
 

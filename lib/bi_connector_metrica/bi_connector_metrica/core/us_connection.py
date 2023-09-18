@@ -11,21 +11,21 @@ from sqlalchemy_metrika_api import api_client as metrika_api_client
 from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespaces
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
-from bi_constants.enums import BIType, ConnectionType
-from bi_utils.utils import DataKey
+from dl_constants.enums import BIType, ConnectionType
+from dl_utils.utils import DataKey
 
-from bi_core import exc
-from bi_core.db import get_type_transformer, SchemaColumn
-from bi_core.us_connection_base import (
+from dl_core import exc
+from dl_core.db import get_type_transformer, SchemaColumn
+from dl_core.us_connection_base import (
     ConnectionBase, DataSourceTemplate, ExecutorBasedMixin,
 )
-from bi_core.utils import secrepr
+from dl_core.utils import secrepr
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.dto import MetricaAPIConnDTO, AppMetricaAPIConnDTO
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors import SyncConnExecutorBase
+    from dl_core.connection_executors import SyncConnExecutorBase
 
 
 LOGGER = logging.getLogger(__name__)

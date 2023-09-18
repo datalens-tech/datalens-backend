@@ -1,5 +1,5 @@
-import bi_formula.definitions.conditional_blocks as base
-from bi_formula.definitions.base import (
+import dl_formula.definitions.conditional_blocks as base
+from dl_formula.definitions.base import (
     TranslationVariant,
 )
 

@@ -2,8 +2,8 @@ from typing import Protocol
 
 import attr
 
-from bi_core.mdb_utils import MDBDomainManager
-from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+from dl_core.mdb_utils import MDBDomainManager
+from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
 
 
 class _MDBConnectionProtocol(Protocol):

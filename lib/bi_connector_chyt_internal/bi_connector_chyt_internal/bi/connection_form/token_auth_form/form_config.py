@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_api_commons.base_models import TenantDef
-from bi_configs.connectors_settings import ConnectorSettingsBase
+from dl_api_commons.base_models import TenantDef
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
-import bi_api_connector.form_config.models.rows as C
-from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
-from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from bi_api_connector.form_config.models.common import CommonFieldName
-from bi_api_connector.form_config.models.api_schema import FormApiSchema, FormFieldApiSchema, FormActionApiSchema
+import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_api_connector.form_config.models.common import CommonFieldName
+from dl_api_connector.form_config.models.api_schema import FormApiSchema, FormFieldApiSchema, FormActionApiSchema
 
 from bi_connector_chyt_internal.bi.connection_info import CHYTInternalTokenConnectionInfoProvider
 from bi_connector_chyt_internal.bi.connection_form.components import OAuthTokenCHYTRow

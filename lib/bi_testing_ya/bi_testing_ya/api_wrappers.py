@@ -8,11 +8,11 @@ import aiohttp.test_utils
 import attr
 from aiohttp import MultipartWriter, ClientResponse
 
-from bi_api_commons.base_models import TenantDef
-from bi_api_commons.tracing import get_current_tracing_headers
-from bi_constants.api_constants import DLHeadersCommon
+from dl_api_commons.base_models import TenantDef
+from dl_api_commons.tracing import get_current_tracing_headers
+from dl_constants.api_constants import DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
-from bi_configs.utils import get_root_certificates_path
+from dl_configs.utils import get_root_certificates_path
 
 from bi_testing_ya.cloud_tokens import AccountCredentials
 

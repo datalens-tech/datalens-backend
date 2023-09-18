@@ -1,6 +1,6 @@
 import attr
 
-from bi_testing.env_params.getter import EnvParamGetter
+from dl_testing.env_params.getter import EnvParamGetter
 
 from bi_testing_ya.secrets import get_secret
 

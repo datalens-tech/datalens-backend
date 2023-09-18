@@ -5,16 +5,16 @@ from typing import Any, Optional, Union
 
 import attr
 
-from bi_configs.enums import AppType, EnvType
-from bi_configs.environments import LegacyDefaults
-from bi_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
-from bi_configs.settings_loaders.loader_env import NOT_SET
-from bi_configs.settings_loaders.meta_definition import s_attrib
-from bi_configs.settings_loaders.settings_obj_base import SettingsBase
-from bi_configs.utils import app_type_env_var_converter, env_type_env_var_converter
+from dl_configs.enums import AppType, EnvType
+from dl_configs.environments import LegacyDefaults
+from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from dl_configs.settings_loaders.loader_env import NOT_SET
+from dl_configs.settings_loaders.meta_definition import s_attrib
+from dl_configs.settings_loaders.settings_obj_base import SettingsBase
+from dl_configs.utils import app_type_env_var_converter, env_type_env_var_converter
 from bi_defaults.environments import CommonInstallation, CommonExternalInstallation
 
-from bi_api_lib.app_settings import AppSettings, DataApiAppSettings, ControlApiAppSettings
+from dl_api_lib.app_settings import AppSettings, DataApiAppSettings, ControlApiAppSettings
 
 from bi_cloud_integration.sa_creds import SACredsMode
 

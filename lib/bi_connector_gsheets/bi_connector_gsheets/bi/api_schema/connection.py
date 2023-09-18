@@ -4,9 +4,9 @@ from marshmallow import fields as ma_fields
 
 from bi_connector_gsheets.core.us_connection import GSheetsConnection
 
-from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_base_fields import cache_ttl_field
-from bi_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field
+from dl_api_connector.api_schema.extras import FieldExtra
 
 
 class GSheetsConnectionSchema(ConnectionMetaMixin, ConnectionSchema):

@@ -1,6 +1,6 @@
 import attr
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 from ..dl_common import EntryInstance, EntryScope, EntrySummary
 
 

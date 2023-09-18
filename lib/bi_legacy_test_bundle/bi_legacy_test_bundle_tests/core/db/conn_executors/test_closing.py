@@ -1,22 +1,22 @@
 from __future__ import annotations
 
 import pytest
-from bi_core.connections_security.base import InsecureConnectionSecurityManager
+from dl_core.connections_security.base import InsecureConnectionSecurityManager
 
-from bi_utils.aio import ContextVarExecutor
+from dl_utils.aio import ContextVarExecutor
 
-from bi_api_commons.base_models import RequestContextInfo
-from bi_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
-from bi_core.connection_executors.adapters.async_adapters_sync_wrapper import AsyncWrapperForSyncAdapter
-from bi_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
-from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
-from bi_core.services_registry.top_level import DummyServiceRegistry
-from bi_core_testing.connection import make_connection
-from bi_core.us_manager.us_manager_dummy import DummyUSManager
-from bi_core.utils import FutureRef
-from bi_core.mdb_utils import MDBDomainManagerFactory
+from dl_api_commons.base_models import RequestContextInfo
+from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
+from dl_core.connection_executors.adapters.async_adapters_sync_wrapper import AsyncWrapperForSyncAdapter
+from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from dl_core.services_registry.top_level import DummyServiceRegistry
+from dl_core_testing.connection import make_connection
+from dl_core.us_manager.us_manager_dummy import DummyUSManager
+from dl_core.utils import FutureRef
+from dl_core.mdb_utils import MDBDomainManagerFactory
 
 
 class TestClosing:

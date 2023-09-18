@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bi_query_processing.compilation.filter_compiler import MainFilterFormulaCompiler
+from dl_query_processing.compilation.filter_compiler import MainFilterFormulaCompiler
 
 if TYPE_CHECKING:
-    from bi_query_processing.compilation.filter_compiler import FilterParams
+    from dl_query_processing.compilation.filter_compiler import FilterParams
 
 
 class GSheetsFilterFormulaCompiler(MainFilterFormulaCompiler):

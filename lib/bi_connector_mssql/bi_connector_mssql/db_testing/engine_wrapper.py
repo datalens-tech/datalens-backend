@@ -5,7 +5,7 @@ import urllib.parse
 
 from sqlalchemy.engine.url import URL
 
-from bi_db_testing.database.engine_wrapper import EngineWrapperBase
+from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 
 
 class MSSQLEngineWrapper(EngineWrapperBase):

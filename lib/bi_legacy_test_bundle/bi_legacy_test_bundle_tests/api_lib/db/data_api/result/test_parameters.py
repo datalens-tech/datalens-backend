@@ -3,9 +3,9 @@ from __future__ import annotations
 import pytest
 from http import HTTPStatus
 
-from bi_api_client.dsmaker.primitives import IntegerParameterValue, RangeParameterValueConstraint
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, add_parameters_to_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import IntegerParameterValue, RangeParameterValueConstraint
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, add_parameters_to_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 
 @pytest.mark.parametrize(

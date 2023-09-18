@@ -1,6 +1,6 @@
 from enum import unique
 
-from bi_api_connector.form_config.models.common import FormFieldName
+from dl_api_connector.form_config.models.common import FormFieldName
 
 
 @unique

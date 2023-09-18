@@ -1,4 +1,4 @@
-from bi_constants.enums import CreateDSFrom, ConnectionType
+from dl_constants.enums import CreateDSFrom, ConnectionType
 
 
 CONNECTION_TYPE_MARKET_COURIERS = ConnectionType.declare('market_couriers')

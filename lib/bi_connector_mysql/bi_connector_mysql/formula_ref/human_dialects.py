@@ -1,4 +1,4 @@
-from bi_formula_ref.texts import StyledDialect
+from dl_formula_ref.texts import StyledDialect
 
 from bi_connector_mysql.formula.constants import MySQLDialect
 from bi_connector_mysql.formula_ref.i18n import Translatable

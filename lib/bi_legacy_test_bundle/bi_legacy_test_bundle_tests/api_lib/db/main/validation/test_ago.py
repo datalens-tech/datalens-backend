@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 
 def test_ago_errors(api_v1, data_api_v1, dataset_id):

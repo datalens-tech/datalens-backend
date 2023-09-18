@@ -1,0 +1,70 @@
+
+[tool.poetry]
+name = "datalens-api-lib"
+version = "0.0.0"
+description = ""
+authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+packages = [{include = "dl_api_lib"}]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+flask = ">=2.0.3"
+flask-marshmallow = ">=0.14.0"
+flask-restx = ">=1.1.0"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+more-itertools = ">=9.1.0"
+pandas = ">=1.5.3"
+python = ">=3.10, <3.12"
+sentry-sdk = ">=1.15.0"
+sqlalchemy = ">=1.4.46, <2.0"
+werkzeug = ">=2.0.3"
+statcommons = {path = "../statcommons"}
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-utils = {path = "../dl_utils"}
+datalens-constants = {path = "../dl_constants"}
+datalens-compeng-pg = {path = "../dl_compeng_pg"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-task-processor = {path = "../dl_task_processor"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.poetry.scripts]
+bi-core-rqe-async = "dl_core.connection_executors.remote_query_executor.app_async:async_qe_main"
+
+[datalens.meta.mypy]
+targets = ["dl_api_lib"]
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["flask_restx.*", "marshmallow_oneofschema.*"]
+ignore_missing_imports = true
+
+[datalens.i18n.domains]
+dl_api_lib = [
+    {path = "dl_api_lib"},
+]
+
+[datalens_ci]
+skip_test = true

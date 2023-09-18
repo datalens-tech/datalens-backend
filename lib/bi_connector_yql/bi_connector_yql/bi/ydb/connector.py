@@ -1,9 +1,9 @@
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
 )
-from bi_api_connector.api_schema.source_base import (
+from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema, SQLDataSourceTemplateSchema, SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )
 

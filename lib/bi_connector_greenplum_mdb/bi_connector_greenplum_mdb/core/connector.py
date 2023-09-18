@@ -1,12 +1,12 @@
-from bi_core.connections_security.base import ConnSecuritySettings
+from dl_core.connections_security.base import ConnSecuritySettings
 from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
-from bi_connector_greenplum.core.connector import (
+from dl_connector_greenplum.core.connector import (
     GreenplumCoreConnectionDefinition,
     GreenplumCoreConnector,
     GreenplumTableCoreSourceDefinition,
     GreenplumSubselectCoreSourceDefinition,
 )
-from bi_connector_greenplum.core.dto import GreenplumConnDTO
+from dl_connector_greenplum.core.dto import GreenplumConnDTO
 
 from bi_connector_greenplum_mdb.core.data_source import GreenplumMDBTableDataSource, GreenplumMDBSubselectDataSource
 from bi_connector_greenplum_mdb.core.us_connection import GreenplumMDBConnection

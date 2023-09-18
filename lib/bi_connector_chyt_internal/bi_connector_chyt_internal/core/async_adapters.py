@@ -8,9 +8,9 @@ from typing import Optional
 import attr
 from aiohttp import ClientResponse, BasicAuth
 
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
-from bi_connector_chyt.core.async_adapters import AsyncCHYTAdapter
+from dl_connector_chyt.core.async_adapters import AsyncCHYTAdapter
 from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 from bi_connector_chyt_internal.core.constants import (

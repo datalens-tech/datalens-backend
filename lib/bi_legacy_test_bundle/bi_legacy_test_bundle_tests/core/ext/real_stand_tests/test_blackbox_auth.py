@@ -3,11 +3,11 @@ from __future__ import annotations
 import pytest
 from aiohttp import web
 
-from bi_constants.api_constants import DLHeadersCommon
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResourceCommon
+from dl_constants.api_constants import DLHeadersCommon
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResourceCommon
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 
 

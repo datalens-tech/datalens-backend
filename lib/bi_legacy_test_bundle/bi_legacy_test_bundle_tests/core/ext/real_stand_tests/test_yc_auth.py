@@ -12,14 +12,14 @@ from aiohttp import web
 from aiohttp.test_utils import TestClient
 from aiohttp.typedefs import Handler
 
-from bi_api_commons.exc import InvalidHeaderException
-from bi_testing.utils import skip_outside_devhost
-from bi_constants.api_constants import DLHeadersCommon
+from dl_api_commons.exc import InvalidHeaderException
+from dl_testing.utils import skip_outside_devhost
+from dl_constants.api_constants import DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
 
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config

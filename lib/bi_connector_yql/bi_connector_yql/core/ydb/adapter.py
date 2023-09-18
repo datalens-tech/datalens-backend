@@ -12,17 +12,17 @@ import ydb.dbapi as ydb_dbapi
 import ydb.issues as ydb_cli_err
 from ydb.iam import ServiceAccountCredentials
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_core import exc
-from bi_core.connection_models import TableIdent
+from dl_core import exc
+from dl_core.connection_models import TableIdent
 
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 from bi_connector_yql.core.ydb.target_dto import YDBConnTargetDTO
 from bi_connector_yql.core.yql_base.adapter import YQLAdapterBase
 
 if TYPE_CHECKING:
-    from bi_core.connection_models import SchemaIdent
+    from dl_core.connection_models import SchemaIdent
 
 
 LOGGER = logging.getLogger(__name__)

@@ -7,43 +7,43 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from bi_constants.enums import (
+from dl_constants.enums import (
     BIType, BinaryJoinOperator, DataSourceCreatedVia, DataSourceRole, JoinType,
     ManagedBy, SelectorType, WhereClauseOperation, IndexKind, OrderDirection,
 )
-from bi_utils.aio import await_sync, to_sync_iterable
+from dl_utils.aio import await_sync, to_sync_iterable
 
-from bi_core import exc
-from bi_core.base_models import DefaultWhereClause, EntryLocation, PathEntryLocation, WorkbookEntryLocation
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_core.data_processing.cache.utils import SelectorCacheOptionsBuilder
-from bi_core.data_processing.source_builder import SqlSourceBuilder
-from bi_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
-from bi_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
-from bi_core.db import SchemaColumn, IndexInfo
-from bi_core.db.native_type import ClickHouseNativeType
-from bi_core.query.expression import ExpressionCtx, OrderByExpressionCtx, JoinOnExpressionCtx
-from bi_core.query.bi_query import BIQuery
-from bi_core.fields import BIField, ResultSchema
-from bi_core.multisource import BinaryCondition, ConditionPartDirect
-from bi_core_testing.database import make_table, C as TestColumn, make_sample_data
-from bi_core_testing.dataset import make_dataset
-from bi_core_testing.data import DataFetcher
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.local_cache import USEntryBuffer
-from bi_core.us_manager.us_manager import USManagerBase
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.utils import attrs_evolve_to_subclass
-from bi_core.services_registry.top_level import ServicesRegistry
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
+from dl_core import exc
+from dl_core.base_models import DefaultWhereClause, EntryLocation, PathEntryLocation, WorkbookEntryLocation
+from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.data_processing.cache.utils import SelectorCacheOptionsBuilder
+from dl_core.data_processing.source_builder import SqlSourceBuilder
+from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
+from dl_core.db import SchemaColumn, IndexInfo
+from dl_core.db.native_type import ClickHouseNativeType
+from dl_core.query.expression import ExpressionCtx, OrderByExpressionCtx, JoinOnExpressionCtx
+from dl_core.query.bi_query import BIQuery
+from dl_core.fields import BIField, ResultSchema
+from dl_core.multisource import BinaryCondition, ConditionPartDirect
+from dl_core_testing.database import make_table, C as TestColumn, make_sample_data
+from dl_core_testing.dataset import make_dataset
+from dl_core_testing.data import DataFetcher
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_core.us_manager.us_manager import USManagerBase
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.utils import attrs_evolve_to_subclass
+from dl_core.services_registry.top_level import ServicesRegistry
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
 
 from bi_connector_chyt_internal.core.constants import DATA_SOURCE_CREATE_VIA_YT_TO_DL
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 
 from bi_legacy_test_bundle_tests.core.utils import (
     add_source, get_other_db, col, patch_dataset_with_two_sources, simple_groupby,

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.services_registry import DefaultServicesRegistry
+from dl_core.services_registry import DefaultServicesRegistry
 
 
 @pytest.mark.asyncio

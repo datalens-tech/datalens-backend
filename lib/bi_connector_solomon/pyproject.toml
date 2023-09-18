@@ -12,24 +12,24 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 tvmauth = ">=3.4.9"
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.plugins]
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 solomon = "bi_connector_solomon.bi.connector:SolomonBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 solomon = "bi_connector_solomon.core.connector:SolomonCoreConnector"
 
 [tool.poetry.group.tests.dependencies]

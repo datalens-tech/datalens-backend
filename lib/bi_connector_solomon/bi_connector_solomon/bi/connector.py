@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
-from bi_api_connector.api_schema.source_base import (
+from dl_api_connector.api_schema.source_base import (
     SimpleDataSourceSchema,
     SimpleDataSourceTemplateSchema,
 )

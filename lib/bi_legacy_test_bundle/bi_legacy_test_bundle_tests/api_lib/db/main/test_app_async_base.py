@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 import shortuuid
 
-from bi_configs.enums import RequiredService
+from dl_configs.enums import RequiredService
 
 
 @pytest.mark.asyncio

@@ -4,9 +4,9 @@ from http import HTTPStatus
 
 import pytest
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 
 def test_update_id_field(api_v1, static_dataset_id):

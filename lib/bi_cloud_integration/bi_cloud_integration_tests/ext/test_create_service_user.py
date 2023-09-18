@@ -13,7 +13,7 @@ from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ts_client import get_yc_service_token_sync
 from bi_testing_ya.external_systems_helpers.top import ExternalSystemsHelperCloud
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 # TODO FIX: Ask IAM team why there is so big lag in sync with AS
 ACCESS_SERVICE_PERMISSIONS_CHECK_DELAY = 5

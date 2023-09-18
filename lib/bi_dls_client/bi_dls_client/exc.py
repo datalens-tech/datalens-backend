@@ -1,4 +1,4 @@
-from bi_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseException
 
 
 class DLSBadRequest(DLBaseException):

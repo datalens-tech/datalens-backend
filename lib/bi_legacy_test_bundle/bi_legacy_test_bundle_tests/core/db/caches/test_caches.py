@@ -12,32 +12,32 @@ import pytest
 import pytz
 import sqlalchemy as sa
 
-from bi_constants.enums import BIType, DataSourceRole, SelectorType
+from dl_constants.enums import BIType, DataSourceRole, SelectorType
 
-from bi_testing.utils import get_log_record
-from bi_utils.aio import await_sync
+from dl_testing.utils import get_log_record
+from dl_utils.aio import await_sync
 
-from bi_api_commons.reporting.profiler import PROFILING_LOG_NAME, DefaultReportingProfiler
-from bi_core.data_processing.cache.engine import EntityCacheEngineAsync, ResultCacheEntry
-from bi_core.data_processing.cache.primitives import CacheTTLConfig, LocalKeyRepresentation
-from bi_core.data_processing.dashsql import DashSQLCachedSelector
-from bi_core.data_processing.selectors.db import DatasetDbDataSelectorAsync
-from bi_core.data_processing.streaming import AsyncChunked
-from bi_core.query.bi_query import BIQuery
-from bi_core.query.expression import ExpressionCtx
-from bi_core.services_registry import ServicesRegistry
-from bi_core_testing.data import DataFetcher
-from bi_core_testing.utils import SROptions
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+from dl_api_commons.reporting.profiler import PROFILING_LOG_NAME, DefaultReportingProfiler
+from dl_core.data_processing.cache.engine import EntityCacheEngineAsync, ResultCacheEntry
+from dl_core.data_processing.cache.primitives import CacheTTLConfig, LocalKeyRepresentation
+from dl_core.data_processing.dashsql import DashSQLCachedSelector
+from dl_core.data_processing.selectors.db import DatasetDbDataSelectorAsync
+from dl_core.data_processing.streaming import AsyncChunked
+from dl_core.query.bi_query import BIQuery
+from dl_core.query.expression import ExpressionCtx
+from dl_core.services_registry import ServicesRegistry
+from dl_core_testing.data import DataFetcher
+from dl_core_testing.utils import SROptions
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
 from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records, assert_no_warnings
 
 if TYPE_CHECKING:
     from redis.asyncio import Redis
 
-    from bi_core.us_connection_base import ClassicConnectionSQL
-    from bi_core.us_dataset import Dataset
+    from dl_core.us_connection_base import ClassicConnectionSQL
+    from dl_core.us_dataset import Dataset
 
 
 # To use fixture "loop" in each test in module
@@ -243,7 +243,7 @@ def test_us_dataset_cache_engine_integration(
         rc=sr.get_caches_redis_client(),
     )
     caplog.set_level(logging.INFO, logger=PROFILING_LOG_NAME)
-    caplog.set_level(logging.INFO, logger='bi_core.data_processing.cache')
+    caplog.set_level(logging.INFO, logger='dl_core.data_processing.cache')
     caplog.clear()
 
     data_source = ds_wrapper.get_sql_data_source_strict(
@@ -382,7 +382,7 @@ def test_locked_cache(
     assert reporting
 
     # caplog.set_level(logging.INFO, logger=PROFILING_LOG_NAME)
-    # caplog.set_level(logging.DEBUG, logger='bi_core.data_processing.cache')
+    # caplog.set_level(logging.DEBUG, logger='dl_core.data_processing.cache')
     # caplog.clear()
 
     data_source = ds_wrapper.get_sql_data_source_strict(
@@ -590,7 +590,7 @@ async def test_dashsql_cache(
     #     expected_ttl = CacheTTLConfig().ttl_sec_direct
 
     # caplog.set_level(logging.INFO, logger=PROFILING_LOG_NAME)
-    # caplog.set_level(logging.INFO, logger='bi_core.data_processing.cache')
+    # caplog.set_level(logging.INFO, logger='dl_core.data_processing.cache')
     # caplog.clear()
 
     data1 = await req()

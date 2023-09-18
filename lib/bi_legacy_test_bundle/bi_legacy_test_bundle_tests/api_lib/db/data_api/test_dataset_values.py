@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
-from bi_api_client.dsmaker.primitives import Dataset, WhereClause
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from bi_api_client.dsmaker.shortcuts.range_data import get_range_values
+from dl_api_client.dsmaker.primitives import Dataset, WhereClause
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.shortcuts.range_data import get_range_values
 
 
 def test_get_dataset_version_values_distinct(api_v1, data_api_all_v, static_dataset_id):

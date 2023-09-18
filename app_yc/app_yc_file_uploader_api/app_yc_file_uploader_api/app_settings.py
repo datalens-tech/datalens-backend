@@ -6,7 +6,7 @@ import attr
 from bi_api_lib_ya.app_settings import YCAuthSettings
 from bi_defaults.environments import CommonExternalInstallation
 
-from bi_file_uploader_api_lib.settings import FileUploaderAPISettings
+from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 
 
 def default_yc_auth_settings(cfg: CommonExternalInstallation) -> Optional[YCAuthSettings]:

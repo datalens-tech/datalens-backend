@@ -1,4 +1,4 @@
-from bi_formula.core.dialect import DialectNamespace, DialectName, simple_combo
+from dl_formula.core.dialect import DialectNamespace, DialectName, simple_combo
 
 
 DIALECT_NAME_YDB = DialectName.declare('YDB')  # YDB ScanQuery connection (YQL dialect)

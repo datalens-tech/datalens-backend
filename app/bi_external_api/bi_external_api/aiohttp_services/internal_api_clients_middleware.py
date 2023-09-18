@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Optional, AsyncIterator
 import attr
 from aiohttp import web, ClientSession, TCPConnector
 
-from bi_api_commons.base_models import TenantDef, AuthData, TenantCommon
-from bi_constants.api_constants import DLHeadersCommon, DLHeaders
+from dl_api_commons.base_models import TenantDef, AuthData, TenantCommon
+from dl_constants.api_constants import DLHeadersCommon, DLHeaders
 from .base import ExtAPIRequest, ExtAPIRequiredResource, InternalAPIClientsFactory
 from ..internal_api_clients.charts_api import APIClientCharts
 from ..internal_api_clients.dash_api import APIClientDashboard

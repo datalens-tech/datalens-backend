@@ -2,7 +2,7 @@ from typing import Optional
 
 import aiohttp
 import attr
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
 from bi_integration_tests import report_formatting
 from bi_testing_ya import api_wrappers, cloud_tokens

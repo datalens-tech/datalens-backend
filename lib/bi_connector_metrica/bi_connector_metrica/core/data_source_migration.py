@@ -1,4 +1,4 @@
-from bi_core.connectors.sql_base.data_source_migration import DefaultSQLDataSourceMigrator
+from dl_core.connectors.sql_base.data_source_migration import DefaultSQLDataSourceMigrator
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API
 

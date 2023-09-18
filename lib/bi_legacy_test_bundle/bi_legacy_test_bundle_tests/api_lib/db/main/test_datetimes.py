@@ -19,9 +19,9 @@ from typing import Any, List, Optional, Tuple, Union
 import attr
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 
 

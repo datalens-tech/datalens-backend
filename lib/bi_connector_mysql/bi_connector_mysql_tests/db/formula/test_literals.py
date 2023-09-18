@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.literals import (
+from dl_formula_testing.testcases.literals import (
     DefaultLiteralFormulaConnectorTestSuite,
 )
 

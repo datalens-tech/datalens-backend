@@ -5,7 +5,7 @@ from apispec import APISpec
 from bi_external_api.docs.main_dc import DoubleCloudDocsBuilder
 from bi_external_api.docs.main_ya_team import YaTeamDocsBuilder
 from bi_external_api.domain.external import get_external_model_mapper
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 
 def test_ext_domain_model_api_spec_generation_posibility(bi_ext_api_types_all):

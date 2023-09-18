@@ -4,15 +4,15 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector imp
     ClickhouseGeoFilteredTableCoreSourceDefinition,
 )
 
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
 )
 
-from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
-from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.api_schema.connection import (
     CHGeoFilteredConnectionSchema,

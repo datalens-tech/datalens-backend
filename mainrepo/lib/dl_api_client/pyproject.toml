@@ -1,0 +1,48 @@
+
+[tool.poetry]
+name = "datalens-api-client"
+version = "0.0.1"
+description = ""
+authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dl_api_client"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+python = ">=3.10, <3.12"
+datalens-utils = {path = "../dl_utils"}
+datalens-constants = {path = "../dl_constants"}
+datalens-model-tools = {path = "../dl_model_tools"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.meta]
+implicit_dependencies = [
+    "pytest",
+]

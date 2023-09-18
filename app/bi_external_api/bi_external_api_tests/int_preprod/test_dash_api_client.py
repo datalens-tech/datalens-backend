@@ -2,7 +2,7 @@ import pytest
 
 from bi_external_api.attrs_model_mapper import pretty_repr
 from bi_external_api.domain.internal import dashboards
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 
 @skip_outside_devhost

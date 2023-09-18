@@ -1,13 +1,13 @@
-from bi_constants.enums import FieldRole, BIType, FieldType
+from dl_constants.enums import FieldRole, BIType, FieldType
 
-from bi_query_processing.enums import SelectValueType
-from bi_query_processing.legend.field_legend import (
+from dl_query_processing.enums import SelectValueType
+from dl_query_processing.legend.field_legend import (
     Legend, LegendItem, FieldObjSpec,
     RowRoleSpec, TreeRoleSpec,
 )
-from bi_query_processing.legend.block_legend import BlockSpec
-from bi_query_processing.compilation.specs import ArrayPrefixSelectWrapperSpec
-from bi_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
+from dl_query_processing.legend.block_legend import BlockSpec
+from dl_query_processing.compilation.specs import ArrayPrefixSelectWrapperSpec
+from dl_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
 
 from bi_legacy_test_bundle_tests.api_lib.utils import make_dataset_with_tree
 

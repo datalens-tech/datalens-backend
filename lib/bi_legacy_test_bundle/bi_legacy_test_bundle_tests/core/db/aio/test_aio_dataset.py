@@ -8,27 +8,27 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from bi_constants.enums import BIType, DataSourceRole, ManagedBy
+from dl_constants.enums import BIType, DataSourceRole, ManagedBy
 
-from bi_api_commons.reporting.profiler import DefaultReportingProfiler
+from dl_api_commons.reporting.profiler import DefaultReportingProfiler
 
-from bi_core import exc
-from bi_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
-from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from bi_core.data_processing.cache.engine import EntityCacheEngineAsync
-from bi_core.db.elements import SchemaColumn
-from bi_core.query.bi_query import BIQuery
-from bi_core.query.expression import ExpressionCtx, OrderByExpressionCtx
-from bi_core.services_registry import ServicesRegistry
-from bi_core_testing.data import DataFetcher
-from bi_core_testing.database import C, Db, make_table
-from bi_core_testing.utils import SROptions
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.utils import attrs_evolve_to_subclass
-from bi_core.components.editor import DatasetComponentEditor
+from dl_core import exc
+from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_core.data_processing.cache.engine import EntityCacheEngineAsync
+from dl_core.db.elements import SchemaColumn
+from dl_core.query.bi_query import BIQuery
+from dl_core.query.expression import ExpressionCtx, OrderByExpressionCtx
+from dl_core.services_registry import ServicesRegistry
+from dl_core_testing.data import DataFetcher
+from dl_core_testing.database import C, Db, make_table
+from dl_core_testing.utils import SROptions
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.utils import attrs_evolve_to_subclass
+from dl_core.components.editor import DatasetComponentEditor
 
-from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
+from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
 
 from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records, assert_no_warnings
 

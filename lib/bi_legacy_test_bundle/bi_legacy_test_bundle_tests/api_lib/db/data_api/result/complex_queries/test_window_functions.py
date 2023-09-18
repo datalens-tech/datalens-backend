@@ -6,17 +6,17 @@ from typing import Dict, List, Set
 
 import pytest
 
-from bi_constants.enums import OrderDirection, WhereClauseOperation, BIType
+from dl_constants.enums import OrderDirection, WhereClauseOperation, BIType
 
-from bi_core_testing.database import C, make_table
+from dl_core_testing.database import C, make_table
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.data_api import HttpDataApiResponse
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.data_api import HttpDataApiResponse
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.primitives import CompiledMultiQueryBase
+from dl_query_processing.enums import ExecutionLevel
+from dl_query_processing.compilation.primitives import CompiledMultiQueryBase
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
 from bi_legacy_test_bundle_tests.api_lib.db.data_api.result.complex_queries.utils import MultiQueryInterceptor, count_joins

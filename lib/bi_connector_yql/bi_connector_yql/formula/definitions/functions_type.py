@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_type as base
-from bi_formula.definitions.base import (
+import dl_formula.definitions.functions_type as base
+from dl_formula.definitions.base import (
     TranslationVariant,
 )
 

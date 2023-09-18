@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_api_connector.form_config.models.common import MarkdownStr
+from dl_api_connector.form_config.models.common import MarkdownStr
 
 from bi_connector_bundle_partners.base.bi.connection_form.form_config import PartnersConnectionBaseFormFactory
 from bi_connector_bundle_partners.base.bi.i18n.localizer import Translatable

@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.operators_unary as base
-from bi_formula.definitions.base import TranslationVariant
+import dl_formula.definitions.operators_unary as base
+from dl_formula.definitions.base import TranslationVariant
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 

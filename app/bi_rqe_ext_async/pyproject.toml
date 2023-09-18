@@ -9,17 +9,17 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
 gunicorn = ">=20.1.0"
 python = ">=3.10, <3.12"
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [build-system]
 requires = ["poetry-core"]

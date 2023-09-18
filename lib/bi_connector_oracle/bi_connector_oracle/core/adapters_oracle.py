@@ -7,11 +7,11 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_ora  # not all data types are imported in init in older SA versions
 from sqlalchemy.sql.type_api import TypeEngine
 
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, \
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter, \
     ClassicSQLConnLineConstructor
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_core.connection_models import DBIdent, SchemaIdent, TableIdent
-from bi_core.db.native_type import SATypeSpec
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_models import DBIdent, SchemaIdent, TableIdent
+from dl_core.db.native_type import SATypeSpec
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from bi_connector_oracle.core.target_dto import OracleConnTargetDTO
@@ -80,7 +80,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         oracledb.TIMESTAMP: sa_ora.TIMESTAMP,  # e.g. 'TIMESTAMP(9)', 'TIMESTAMP(9) WITH TIME ZONE'
         # # For newer versions of oracledb, just in case.
         # # Listed are all types from 8.1.0,
-        # # Enabled are types listed in `bi_core.db.conversions`.
+        # # Enabled are types listed in `dl_core.db.conversions`.
         # getattr(oracledb, 'DB_TYPE_BFILE', None): sa_ora.NULL,
         getattr(oracledb, 'DB_TYPE_BINARY_DOUBLE', None): sa_ora.BINARY_DOUBLE,
         getattr(oracledb, 'DB_TYPE_BINARY_FLOAT', None): sa_ora.BINARY_FLOAT,

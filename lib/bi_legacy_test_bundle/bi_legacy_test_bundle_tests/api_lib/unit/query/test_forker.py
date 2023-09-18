@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from bi_constants.enums import JoinType
+from dl_constants.enums import JoinType
 
-from bi_formula.shortcuts import n
+from dl_formula.shortcuts import n
 
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.primitives import (
+from dl_query_processing.enums import ExecutionLevel
+from dl_query_processing.compilation.primitives import (
     CompiledFormulaInfo, CompiledJoinOnFormulaInfo, CompiledQuery,
     FromColumn, AvatarFromObject,
 )
-from bi_query_processing.legacy_pipeline.separation.primitives import CompiledMultiLevelQuery, CompiledLevel
-from bi_query_processing.legacy_pipeline.subqueries.forker import QueryForker
+from dl_query_processing.legacy_pipeline.separation.primitives import CompiledMultiLevelQuery, CompiledLevel
+from dl_query_processing.legacy_pipeline.subqueries.forker import QueryForker
 
 from bi_legacy_test_bundle_tests.api_lib.unit.query.utils import joined_from_from_avatar_ids
 

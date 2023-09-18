@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import Callable, ClassVar, Optional, Any, TYPE_CHECKING
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
-from bi_core import exc
-from bi_core.data_source import StandardSQLDataSource
-from bi_core.data_source.sql import SubselectDataSource
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core import exc
+from dl_core.data_source import StandardSQLDataSource
+from dl_core.data_source.sql import SubselectDataSource
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE,
@@ -19,7 +19,7 @@ from bi_connector_bundle_ch_filtered.base.core.data_source import (
 )
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
+    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
 class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, ClickHouseFilteredDataSourceBase):

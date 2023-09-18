@@ -9,11 +9,11 @@ from http import HTTPStatus
 import aiohttp
 import pytest
 
-from bi_constants.enums import FieldRole
+from dl_constants.enums import FieldRole
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_testing.utils import guids_from_titles
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_testing.utils import guids_from_titles
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 

@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from typing import Optional, Sequence
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
-import bi_api_connector.form_config.models.rows as C
-from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from bi_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
-from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
-from bi_api_connector.form_config.models.common import CommonFieldName
-from bi_api_connector.form_config.models.rows.base import FormRow
+import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
+from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
+from dl_api_connector.form_config.models.common import CommonFieldName
+from dl_api_connector.form_config.models.rows.base import FormRow
 from bi_connector_mysql.bi.connection_info import MySQLConnectionInfoProvider
 
 

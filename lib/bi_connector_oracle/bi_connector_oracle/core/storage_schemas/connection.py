@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from bi_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
+from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
 from bi_connector_oracle.core.constants import OracleDbNameType
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle

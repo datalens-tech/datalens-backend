@@ -1,8 +1,8 @@
-from bi_constants.enums import RLSSubjectType
+from dl_constants.enums import RLSSubjectType
 
-from bi_core.rls import RLSSubject
+from dl_core.rls import RLSSubject
 
-from bi_api_lib.utils.rls import FieldRLSSerializer
+from dl_api_lib.utils.rls import FieldRLSSerializer
 
 
 def test_group_names_by_account_type():

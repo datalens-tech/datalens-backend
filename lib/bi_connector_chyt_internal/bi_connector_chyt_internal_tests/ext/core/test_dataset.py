@@ -2,9 +2,9 @@ from typing import Generic, TypeVar
 
 import pytest
 
-from bi_testing.regulated_test import RegulatedTestParams
-from bi_core_testing.testcases.dataset import DefaultDatasetTestSuite
-from bi_core_testing.database import DbTable
+from dl_testing.regulated_test import RegulatedTestParams
+from dl_core_testing.testcases.dataset import DefaultDatasetTestSuite
+from dl_core_testing.database import DbTable
 
 from bi_connector_chyt_internal.core.constants import (
     SOURCE_TYPE_CHYT_TABLE,

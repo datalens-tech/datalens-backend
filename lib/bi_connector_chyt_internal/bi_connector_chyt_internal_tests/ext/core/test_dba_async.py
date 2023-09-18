@@ -10,8 +10,8 @@ from aiohttp import web
 from aiohttp.test_utils import TestClient
 from multidict import CIMultiDict
 
-from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_api_commons.base_models import RequestContextInfo
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from bi_connector_chyt_internal.core.async_adapters import AsyncCHYTInternalAdapter, AsyncCHYTUserAuthAdapter
 from bi_connector_chyt_internal.core.target_dto import CHYTInternalConnTargetDTO, CHYTUserAuthConnTargetDTO
 

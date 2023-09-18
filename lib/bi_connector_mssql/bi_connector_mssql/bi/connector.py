@@ -5,13 +5,13 @@ from bi_connector_mssql.core.connector import (
     MSSQLSubselectCoreSourceDefinition,
 )
 
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiSourceDefinition,
     BiApiConnectionDefinition,
     BiApiConnector,
 )
 
-from bi_api_connector.api_schema.source_base import (
+from dl_api_connector.api_schema.source_base import (
     SchematizedSQLDataSourceSchema, SchematizedSQLDataSourceTemplateSchema,
     SubselectDataSourceSchema, SubselectDataSourceTemplateSchema,
 )

@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
-from bi_api_connector.api_schema.source_base import (
+from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
     SubselectDataSourceSchema,
     SubselectDataSourceTemplateSchema,
 )
 
-from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
-from bi_connector_chyt.bi.api_schema.source import (
+from dl_connector_chyt.bi.api_schema.source import (
     CHYTTableListDataSourceSchema,
     CHYTTableListDataSourceTemplateSchema,
     CHYTTableRangeDataSourceSchema,

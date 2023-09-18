@@ -13,28 +13,28 @@ from http import HTTPStatus
 import shortuuid
 
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTION_TYPE_CH_FROZEN_DEMO
-from bi_constants.enums import (
+from dl_constants.enums import (
     AggregationFunction,
     BIType,
     CalcMode,
 )
 
-from bi_api_lib.enums import DatasetAction
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.data_api import HttpDataApiResponse
-from bi_testing.utils import get_log_record, guids_from_titles
+from dl_api_lib.enums import DatasetAction
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.data_api import HttpDataApiResponse
+from dl_testing.utils import get_log_record, guids_from_titles
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SOURCE, SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
-from bi_connector_clickhouse.core.clickhouse.constants import (
+from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
 )
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_SUBSELECT
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
-from bi_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
-from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
+from dl_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
+from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema, replace_dataset_connection as replace_connection
 

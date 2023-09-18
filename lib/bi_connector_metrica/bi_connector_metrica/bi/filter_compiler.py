@@ -1,4 +1,4 @@
-from bi_query_processing.compilation.filter_compiler import FilterParams, MainFilterFormulaCompiler
+from dl_query_processing.compilation.filter_compiler import FilterParams, MainFilterFormulaCompiler
 
 
 class MetricaApiFilterFormulaCompiler(MainFilterFormulaCompiler):

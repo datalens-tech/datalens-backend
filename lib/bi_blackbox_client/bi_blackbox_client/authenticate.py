@@ -6,7 +6,7 @@ from typing import Optional, Dict
 import aiohttp
 import requests
 
-from bi_api_commons.aiohttp.aiohttp_client import BIAioHTTPClient, PredefinedIntervalsRetrier
+from dl_api_commons.aiohttp.aiohttp_client import BIAioHTTPClient, PredefinedIntervalsRetrier
 
 from bi_blackbox_client.tvm_client import TVM_INFO, get_tvm_headers
 from bi_blackbox_client import exc

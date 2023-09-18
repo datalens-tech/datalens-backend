@@ -7,13 +7,13 @@ from typing import ClassVar, Type
 import attr
 import pytest
 
-from bi_constants.enums import BIType, ConnectionType, IndexKind
+from dl_constants.enums import BIType, ConnectionType, IndexKind
 
-from bi_core import exc
-from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connection_executors import ConnExecutorQuery
-from bi_core.connection_models import ConnDTO, TableIdent
-from bi_core.db import SchemaInfo, IndexInfo
+from dl_core import exc
+from dl_api_commons.base_models import RequestContextInfo
+from dl_core.connection_executors import ConnExecutorQuery
+from dl_core.connection_models import ConnDTO, TableIdent
+from dl_core.db import SchemaInfo, IndexInfo
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import attr
 
-from bi_core.connection_models.dto_defs import DefaultSQLDTO
+from dl_core.connection_models.dto_defs import DefaultSQLDTO
 
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 

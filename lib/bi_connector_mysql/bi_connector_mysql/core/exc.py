@@ -1,7 +1,7 @@
 import re
 from typing import Any, Dict, Optional
 
-from bi_core import exc as exc
+from dl_core import exc as exc
 
 
 class MysqlSourceDoesNotExistError(exc.SourceDoesNotExist):

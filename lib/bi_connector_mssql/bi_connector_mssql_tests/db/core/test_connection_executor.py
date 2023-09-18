@@ -2,11 +2,11 @@ from typing import Optional
 
 import pytest
 
-from bi_testing.regulated_test import RegulatedTestParams
+from dl_testing.regulated_test import RegulatedTestParams
 
-from bi_core.connection_models.common_models import DBIdent
+from dl_core.connection_models.common_models import DBIdent
 
-from bi_core_testing.testcases.connection_executor import (
+from dl_core_testing.testcases.connection_executor import (
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
 )

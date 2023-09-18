@@ -1,6 +1,6 @@
 from typing import TypeVar, Generic, ClassVar, Type
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 from bi_external_api.converter.converter_exc import ConstraintViolationError, NotSupportedYet
 from bi_external_api.domain.internal import datasets
 

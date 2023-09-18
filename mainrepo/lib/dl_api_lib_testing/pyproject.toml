@@ -1,0 +1,50 @@
+
+[tool.poetry]
+name = "datalens-api-lib-testing"
+version = "0.0.1"
+description = ""
+authors = ["Grigorii Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dl_api_lib_testing"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+flask = ">=2.0.3"
+pytest = ">=7.2.2"
+python = ">=3.10, <3.12"
+werkzeug = ">=2.0.3"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-utils = {path = "../dl_utils"}
+datalens-constants = {path = "../dl_constants"}
+datalens-api-client = {path = "../dl_api_client"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-api-lib = {path = "../dl_api_lib"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

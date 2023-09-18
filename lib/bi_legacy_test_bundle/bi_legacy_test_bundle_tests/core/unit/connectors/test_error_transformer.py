@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from sqlalchemy import exc as sa_exc
 
-from bi_core import exc
-import bi_core.connectors.base.error_transformer as error_transformer
-from bi_core.connectors.base.error_transformer import wrapper_exc_is_and_matches_re
+from dl_core import exc
+import dl_core.connectors.base.error_transformer as error_transformer
+from dl_core.connectors.base.error_transformer import wrapper_exc_is_and_matches_re
 
 
 def test_transform_with_custom_rules():

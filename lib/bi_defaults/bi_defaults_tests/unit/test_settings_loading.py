@@ -1,9 +1,9 @@
 import pytest
 
-from bi_configs.environments import LegacyDefaults
+from dl_configs.environments import LegacyDefaults
 from bi_defaults.environments import EnvAliasesMap
 
-from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from bi_defaults.environments import InstallationsMap
 
 

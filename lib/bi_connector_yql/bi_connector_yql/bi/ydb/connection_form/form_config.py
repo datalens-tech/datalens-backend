@@ -7,15 +7,15 @@ import attr
 from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
 from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
 
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
-import bi_api_connector.form_config.models.rows as C
-from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from bi_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
-from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
-from bi_api_connector.form_config.models.common import CommonFieldName, OAuthApplication
-from bi_api_connector.form_config.models.rows.base import FormRow, DisplayConditionsMixin, FormFieldMixin
-from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
+import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_api_connector.form_config.models.api_schema import FormActionApiSchema, FormFieldApiSchema, FormApiSchema
+from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, ConnectionFormMode
+from dl_api_connector.form_config.models.common import CommonFieldName, OAuthApplication
+from dl_api_connector.form_config.models.rows.base import FormRow, DisplayConditionsMixin, FormFieldMixin
+from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
 
 from bi_connector_yql.bi.ydb.connection_info import YDBConnectionInfoProvider
 from bi_connector_yql.core.ydb.settings import YDBConnectorSettings

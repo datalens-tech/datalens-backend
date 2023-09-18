@@ -7,13 +7,13 @@ import pytest
 import yaml
 
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings, ControlPlaneAppSettings
-from bi_configs.settings_loaders.fallback_cfg_resolver import (
+from dl_configs.settings_loaders.fallback_cfg_resolver import (
     ObjectLikeConfig,
     ConstantFallbackConfigResolver,
     YEnvFallbackConfigResolver,
 )
-from bi_configs.settings_loaders.loader_env import EnvSettingsLoader
-from bi_configs.settings_loaders.settings_serializers import defaults_to_yaml
+from dl_configs.settings_loaders.loader_env import EnvSettingsLoader
+from dl_configs.settings_loaders.settings_serializers import defaults_to_yaml
 from bi_defaults.environments import (
     CommonInstallation,
     InstallationsMap,

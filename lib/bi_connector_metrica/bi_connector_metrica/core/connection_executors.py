@@ -6,7 +6,7 @@ from bi_connector_metrica.core.adapters_metrica_x import (
     MetricaAPIDefaultAdapter,
     AppMetricaAPIDefaultAdapter,
 )
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_metrica.core.target_dto import MetricaAPIConnTargetDTO, AppMetricaAPIConnTargetDTO
 from bi_connector_metrica.core.dto import MetricaAPIConnDTO, AppMetricaAPIConnDTO
 

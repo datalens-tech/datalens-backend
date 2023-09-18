@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
-from bi_formula.core.dialect import DialectCombo
-from bi_formula.connectors.base.literal import Literal, Literalizer
+from dl_formula.core.dialect import DialectCombo
+from dl_formula.connectors.base.literal import Literal, Literalizer
 
 
 class OracleLiteralizer(Literalizer):

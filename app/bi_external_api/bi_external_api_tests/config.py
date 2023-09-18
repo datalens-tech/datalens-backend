@@ -3,11 +3,11 @@ from typing import ClassVar, Optional
 
 import attr
 
-from bi_configs.crypto_keys import get_single_key_crypto_keys_config, CryptoKeysConfig
+from dl_configs.crypto_keys import get_single_key_crypto_keys_config, CryptoKeysConfig
 
 
 # TODO FIX: Move to testing & reuse in all other modules
-from bi_testing.containers import get_test_container_hostport
+from dl_testing.containers import get_test_container_hostport
 
 
 @attr.s(auto_attribs=True, kw_only=True)

@@ -5,9 +5,9 @@ from urllib.parse import urlparse
 
 from bi_connector_bitrix_gds.core.us_connection import BitrixGDSConnection
 
-from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_base_fields import cache_ttl_field, secret_string_field
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field, secret_string_field
 
 
 class BitrixPortalValidator(ma_validate.Validator):

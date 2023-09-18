@@ -4,26 +4,26 @@ from typing import Optional
 
 import flask
 
-from bi_api_lib.app.control_api.app import (
+from dl_api_lib.app.control_api.app import (
     ControlApiAppFactory,
     EnvSetupResult,
 )
-from bi_api_lib.app_common import (
+from dl_api_lib.app_common import (
     SRFactoryBuilder,
     StandaloneServiceRegistryFactory,
 )
-from bi_api_lib.app_settings import (
+from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
 )
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_configs.enums import RequiredService
-from bi_constants.enums import USAuthMode
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
-from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from bi_core.services_registry.rqe_caches import RQECachesSetting
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_configs.enums import RequiredService
+from dl_constants.enums import USAuthMode
+from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.services_registry.entity_checker import EntityUsageChecker
+from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
+from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from dl_core.services_registry.rqe_caches import RQECachesSetting
 
 
 class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
@@ -62,7 +62,7 @@ class ControlApiAppFactoryOS(ControlApiAppFactory[ControlApiAppSettings], Contro
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
-        from bi_core.flask_utils.trust_auth import TrustAuthService
+        from dl_core.flask_utils.trust_auth import TrustAuthService
 
         TrustAuthService(
             fake_user_id="_user_id_",

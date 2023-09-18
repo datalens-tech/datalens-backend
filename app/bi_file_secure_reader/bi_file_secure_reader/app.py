@@ -4,7 +4,7 @@ import logging
 from aiohttp import web
 from concurrent.futures import ThreadPoolExecutor
 
-from bi_file_secure_reader_lib.resources import ping, reader
+from dl_file_secure_reader_lib.resources import ping, reader
 
 
 LOGGER = logging.getLogger(__name__)

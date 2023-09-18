@@ -3,14 +3,14 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.constants import (
     CONNECTION_TYPE_SCHOOLBOOK_JOURNAL,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.us_connection import ConnectionClickhouseSchoolbook
-from bi_core_testing.connection import make_conn_key
+from dl_core_testing.connection import make_conn_key
 
 
 def make_saved_schoolbook_journal_connection(

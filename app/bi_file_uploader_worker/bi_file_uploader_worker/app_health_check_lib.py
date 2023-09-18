@@ -1,20 +1,20 @@
 import attr
 from aiohttp import web
 
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase, DLRequestView
-from bi_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
-from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase, DLRequestView
+from dl_api_commons.tenant_resolver import TenantResolver, CommonTenantResolver
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
-from bi_core.aio.ping_view import PingView
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from dl_core.aio.ping_view import PingView
 from bi_defaults.environments import InstallationsMap, EnvAliasesMap
-from bi_task_processor.worker import HealthChecker
+from dl_task_processor.worker import HealthChecker
 
-from bi_file_uploader_worker_lib.app import FileUploaderWorkerFactory
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from dl_file_uploader_worker_lib.app import FileUploaderWorkerFactory
+from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 
 
 class FileUploaderWorkerDLRequest(DLRequestBase):

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 

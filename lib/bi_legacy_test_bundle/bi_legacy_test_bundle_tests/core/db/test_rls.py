@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import RLSSubjectType, RLSPatternType, DataSourceRole
+from dl_constants.enums import RLSSubjectType, RLSPatternType, DataSourceRole
 
-from bi_core.fields import BIField
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+from dl_core.fields import BIField
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
 
 @pytest.fixture()

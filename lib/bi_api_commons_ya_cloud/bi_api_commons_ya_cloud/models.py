@@ -4,10 +4,10 @@ from typing import ClassVar
 
 import attr
 
-from bi_constants.api_constants import DLHeaders, DLCookies, DLHeadersCommon
+from dl_constants.api_constants import DLHeaders, DLCookies, DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
 
-from bi_api_commons.base_models import TenantDef, AuthData
+from dl_api_commons.base_models import TenantDef, AuthData
 
 
 @attr.s(frozen=True)

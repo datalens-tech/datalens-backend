@@ -1,4 +1,4 @@
-from bi_formula.core.dialect import DialectNamespace, DialectName, simple_combo
+from dl_formula.core.dialect import DialectNamespace, DialectName, simple_combo
 
 
 DIALECT_NAME_MSSQLSRV = DialectName.declare('MSSQLSRV')

@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.operators_binary as base
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common_datetime import DAY_USEC
+import dl_formula.definitions.operators_binary as base
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common_datetime import DAY_USEC
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 

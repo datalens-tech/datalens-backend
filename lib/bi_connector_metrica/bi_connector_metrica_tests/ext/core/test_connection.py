@@ -1,8 +1,8 @@
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
-from bi_core.us_connection_base import DataSourceTemplate
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection

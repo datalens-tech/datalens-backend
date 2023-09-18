@@ -4,7 +4,7 @@ from typing import Optional
 
 import attr
 
-from bi_configs.connector_availability import (
+from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
     SectionSettings,
     TranslatableSettings,
@@ -13,7 +13,7 @@ from bi_configs.connector_availability import (
 )
 from bi_defaults.environments import InternalTestingInstallation, DOMAIN_BI_API_LIB_YA
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
 
 CONNECTOR_AVAILABILITY = ConnectorAvailabilityConfigSettings(

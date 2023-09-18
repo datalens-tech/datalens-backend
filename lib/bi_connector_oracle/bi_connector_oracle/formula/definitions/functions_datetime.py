@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
-from bi_formula.core.datatype import DataType
-from bi_formula.definitions.args import ArgTypeSequence
-import bi_formula.definitions.functions_datetime as base
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common import raw_sql
-from bi_formula.definitions.literals import literal, un_literal
-from bi_formula.definitions.common_datetime import (
+from dl_formula.core.datatype import DataType
+from dl_formula.definitions.args import ArgTypeSequence
+import dl_formula.definitions.functions_datetime as base
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common import raw_sql
+from dl_formula.definitions.literals import literal, un_literal
+from dl_formula.definitions.common_datetime import (
     datetime_interval, EPOCH_START_D, EPOCH_START_DOW,
 )
 

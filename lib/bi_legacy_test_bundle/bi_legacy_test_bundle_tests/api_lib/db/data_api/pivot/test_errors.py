@@ -1,12 +1,12 @@
 from http import HTTPStatus
 
-from bi_constants.internal_constants import MEASURE_NAME_TITLE
-from bi_constants.enums import PivotRole, FieldRole
+from dl_constants.internal_constants import MEASURE_NAME_TITLE
+from dl_constants.enums import PivotRole, FieldRole
 
-from bi_api_client.dsmaker.primitives import Dataset, PivotPagination, PivotTotals
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.pivot_utils import get_pivot_response
-from bi_api_lib.pivot.primitives import PivotMeasureSorting, PivotMeasureSortingSettings, PivotHeaderValue
+from dl_api_client.dsmaker.primitives import Dataset, PivotPagination, PivotTotals
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.pivot_utils import get_pivot_response
+from dl_api_lib.pivot.primitives import PivotMeasureSorting, PivotMeasureSortingSettings, PivotHeaderValue
 
 
 def test_multiple_measures_without_measure_name(api_v1, data_api_v2, dataset_id):

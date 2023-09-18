@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import DataSourceRole
+from dl_constants.enums import DataSourceRole
 
-from bi_core.us_dataset import Dataset
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+from dl_core.us_dataset import Dataset
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
 
 # To use fixture "loop" in each test in module

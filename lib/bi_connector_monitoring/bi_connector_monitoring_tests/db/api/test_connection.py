@@ -1,7 +1,7 @@
 import pytest
 
-from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from bi_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
+from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
+from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 
 from bi_connector_monitoring_tests.db.api.base import MonitoringConnectionTestBase
 

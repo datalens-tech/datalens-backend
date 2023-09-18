@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 from sqlalchemy.dialects import mysql as my_types
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.db.conversion_base import TypeTransformer, make_native_type
+from dl_core.db.conversion_base import TypeTransformer, make_native_type
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 

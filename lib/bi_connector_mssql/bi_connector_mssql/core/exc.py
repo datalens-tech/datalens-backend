@@ -1,7 +1,7 @@
 import re
 from typing import Optional, Dict, Any
 
-import bi_core.exc as exc
+import dl_core.exc as exc
 
 
 class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):

@@ -1,8 +1,8 @@
 import sqlalchemy.dialects.mysql as sa_mysql
 from sqlalchemy.types import TypeEngine
 
-from bi_formula.core.datatype import DataType
-from bi_formula.connectors.base.type_constructor import DefaultSATypeConstructor
+from dl_formula.core.datatype import DataType
+from dl_formula.connectors.base.type_constructor import DefaultSATypeConstructor
 
 
 class MySQLTypeConstructor(DefaultSATypeConstructor):

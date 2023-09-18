@@ -4,8 +4,8 @@ from typing import Generator
 import pytest
 
 import bi_connector_oracle_tests.db.config as test_config
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from bi_connector_oracle.core.testing.connection import make_oracle_saved_connection

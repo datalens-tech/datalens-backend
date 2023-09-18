@@ -7,7 +7,7 @@ import attr
 from aiohttp import web
 from marshmallow import ValidationError
 
-from bi_api_commons.base_models import TenantDef, TenantCommon
+from dl_api_commons.base_models import TenantDef, TenantCommon
 from bi_api_commons_ya_cloud.models import TenantDCProject
 from bi_external_api.domain.external import rpc, rpc_dc, errors, ErrWorkbookOp
 from bi_external_api.http_views.workbook_base import BaseWorkbookOpsView

@@ -4,7 +4,7 @@ from typing import Optional
 
 import attr
 
-from bi_core.connection_models.dto_defs import ConnDTO
+from dl_core.connection_models.dto_defs import ConnDTO
 
 from bi_connector_solomon.core.constants import CONNECTION_TYPE_SOLOMON
 

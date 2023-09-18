@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import logging
 
-from bi_constants.enums import BIType, FileProcessingStatus
+from dl_constants.enums import BIType, FileProcessingStatus
 
-from bi_core.base_models import DefaultConnectionRef
-from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
-from bi_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
-from bi_connector_bundle_chs3.file.core.data_source import FileS3DataSource
-from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
-from bi_core.db import SchemaColumn
-from bi_core.db.native_type import ClickHouseNativeType
+from dl_core.base_models import DefaultConnectionRef
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
+from dl_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
+from dl_connector_bundle_chs3.file.core.data_source import FileS3DataSource
+from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
+from dl_core.db import SchemaColumn
+from dl_core.db.native_type import ClickHouseNativeType
 
 LOGGER = logging.getLogger(__name__)
 

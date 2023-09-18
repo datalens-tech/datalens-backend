@@ -7,20 +7,20 @@ import string
 from typing import Callable, List, Optional, Sequence
 import uuid
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1, HttpDatasetApiResponse
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1, HttpDatasetApiResponse
+from dl_api_client.dsmaker.primitives import Dataset
 
-from bi_core_testing.database import C, Db, DbTable, make_table, make_table_with_arrays
-from bi_core_testing.dataset import get_created_from
+from dl_core_testing.database import C, Db, DbTable, make_table, make_table_with_arrays
+from dl_core_testing.dataset import get_created_from
 
-from bi_api_lib.enums import DatasetAction
+from dl_api_lib.enums import DatasetAction
 
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
-from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
+from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
 
 
 METRIKA_SAMPLE_COUNTER_ID = '44147844'

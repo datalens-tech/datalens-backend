@@ -3,11 +3,11 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import Optional
 
-from bi_constants.enums import FieldRole
+from dl_constants.enums import FieldRole
 
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from bi_api_client.dsmaker.api.data_api import HttpDataApiResponse
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.api.data_api import HttpDataApiResponse
 
 
 def test_pagination_single_block_optimization(api_v1, data_api_v2, dataset_id):

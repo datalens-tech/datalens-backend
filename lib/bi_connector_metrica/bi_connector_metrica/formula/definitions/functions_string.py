@@ -1,5 +1,5 @@
-import bi_formula.definitions.functions_string as base
-from bi_formula.definitions.base import TranslationVariant
+import dl_formula.definitions.functions_string as base
+from dl_formula.definitions.base import TranslationVariant
 
 from bi_connector_metrica.formula.constants import MetricaDialect as D
 

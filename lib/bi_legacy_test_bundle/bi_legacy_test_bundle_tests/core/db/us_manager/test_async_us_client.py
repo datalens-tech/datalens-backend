@@ -3,10 +3,10 @@ from __future__ import annotations
 import pytest
 import shortuuid
 
-from bi_core.base_models import PathEntryLocation
-from bi_core.exc import USLockUnacquiredException
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.united_storage_client_aio import UStorageClientAIO
+from dl_core.base_models import PathEntryLocation
+from dl_core.exc import USLockUnacquiredException
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client_aio import UStorageClientAIO
 
 
 @pytest.fixture(scope='function')

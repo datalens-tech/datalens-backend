@@ -3,9 +3,9 @@ import os
 
 from aiohttp import web
 
-from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
-from bi_core.logging_config import configure_logging
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from dl_core.logging_config import configure_logging
 
 from app_yc_file_uploader_api.app_factory import FileUploaderApiAppFactoryYC
 from app_yc_file_uploader_api.app_settings import FileUploaderAPISettingsYC

@@ -2,8 +2,8 @@ from typing import Any
 
 import attr
 
-from bi_api_commons.client.base import Req
-from bi_api_commons.client.common import CommonInternalAPIClient
+from dl_api_commons.client.base import Req
+from dl_api_commons.client.common import CommonInternalAPIClient
 from bi_external_api.domain.internal import charts as chart_mod
 from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
 from bi_external_api.domain.internal.mapper import internal_models_mapper

@@ -1,9 +1,9 @@
 from typing import TypeVar
 
-from bi_core.us_connection_base import ConnectionBase
+from dl_core.us_connection_base import ConnectionBase
 
-from bi_testing.regulated_test import RegulatedTestParams
-from bi_core_testing.testcases.connection_executor import (
+from dl_testing.regulated_test import RegulatedTestParams
+from dl_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite, DefaultAsyncConnectionExecutorTestSuite,
 )
 

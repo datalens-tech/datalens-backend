@@ -4,17 +4,17 @@ import pytest
 
 from bi_cloud_integration.yc_as_client import DLASClient
 
-from bi_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import RequestContextInfo
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
     CONNECTION_TYPE_USAGE_TRACKING,
 )
 from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
 from bi_connector_bundle_ch_filtered.usage_tracking.core.testing.connection import make_saved_usage_tracking_connection
 from bi_connector_bundle_ch_filtered.usage_tracking.core.testing.lifecycle import authorize_mock
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
-from bi_core.exc import PlatformPermissionRequired
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core.exc import PlatformPermissionRequired
 
 import bi_connector_bundle_ch_filtered_tests.db.config as common_test_config
 import bi_connector_bundle_ch_filtered_tests.db.usage_tracking.config as test_config

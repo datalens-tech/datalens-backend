@@ -1,7 +1,7 @@
 import pytest
 
 
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 from bi_connector_bundle_partners.moysklad.core.constants import SOURCE_TYPE_MOYSKLAD_CH_TABLE
 from bi_connector_bundle_partners.moysklad.core.data_source import MoySkladCHDataSource

@@ -4,18 +4,18 @@ import datetime
 import logging
 from typing import Any, Callable, ClassVar, Optional, Tuple, TYPE_CHECKING
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core import exc
+from dl_core import exc
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
-from bi_core.db import SchemaColumn, SchemaInfo
-from bi_core.data_source.sql import PseudoSQLDataSource
+from dl_core.db import SchemaColumn, SchemaInfo
+from dl_core.data_source.sql import PseudoSQLDataSource
 
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-    from bi_core.connection_executors.async_base import AsyncConnExecutorBase
+    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+    from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 
 
 LOGGER = logging.getLogger(__name__)

@@ -3,10 +3,10 @@ from __future__ import annotations
 import uuid
 from http import HTTPStatus
 
-from bi_constants.enums import FieldType
+from dl_constants.enums import FieldType
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 
 def test_result_with_updates(api_v1, data_api_v1, static_dataset_id):

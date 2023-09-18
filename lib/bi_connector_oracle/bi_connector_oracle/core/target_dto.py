@@ -4,12 +4,12 @@ from typing import Type, TypeVar, TYPE_CHECKING
 
 import attr
 
-from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
 
 from bi_connector_oracle.core.constants import OracleDbNameType
 
 if TYPE_CHECKING:
-    from bi_constants.types import TJSONLike
+    from dl_constants.types import TJSONLike
 
 
 _CT_DTO_TV = TypeVar("_CT_DTO_TV", bound='OracleConnTargetDTO')

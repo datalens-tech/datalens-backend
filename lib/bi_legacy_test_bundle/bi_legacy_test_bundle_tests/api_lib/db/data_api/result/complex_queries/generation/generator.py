@@ -5,7 +5,7 @@ from typing import Any, Sequence
 
 import attr
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
 
 @attr.s

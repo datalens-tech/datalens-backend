@@ -5,13 +5,13 @@ from typing import Any
 import attr
 import pytest
 
-from bi_core.fields import BIField, FormulaCalculationSpec, ParameterCalculationSpec
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.mutation_cache.mutation_key_base import MutationKey
-from bi_core.us_manager.mutation_cache.usentry_mutation_cache import (
+from dl_core.fields import BIField, FormulaCalculationSpec, ParameterCalculationSpec
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.mutation_cache.mutation_key_base import MutationKey
+from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
     MemoryCacheEngine, USEntryMutationCache, RedisCacheEngine,
 )
-from bi_core.values import DateValue
+from dl_core.values import DateValue
 
 
 @attr.s(auto_attribs=True, kw_only=True, frozen=True)

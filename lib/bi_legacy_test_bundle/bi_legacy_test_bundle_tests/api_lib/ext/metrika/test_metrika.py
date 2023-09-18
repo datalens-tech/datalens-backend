@@ -5,11 +5,11 @@ import uuid
 
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from bi_api_client.dsmaker.shortcuts.range_data import get_range_values
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.shortcuts.range_data import get_range_values
 
-from bi_constants.enums import AggregationFunction, FieldType
+from dl_constants.enums import AggregationFunction, FieldType
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API
 

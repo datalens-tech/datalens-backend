@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import logging
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
-from bi_core.data_source.sql import StandardSchemaSQLDataSource, SubselectDataSource, BaseSQLDataSource
+from dl_core.data_source.sql import StandardSchemaSQLDataSource, SubselectDataSource, BaseSQLDataSource
 
 from bi_connector_mssql.core.constants import (
     CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT

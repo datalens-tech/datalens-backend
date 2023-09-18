@@ -2,10 +2,10 @@ from typing import Type
 
 import pytest
 
-from bi_core import exc
-from bi_core.connection_executors.common_base import ConnExecutorQuery
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.connection_executors.async_base import AsyncConnExecutorBase
+from dl_core import exc
+from dl_core.connection_executors.common_base import ConnExecutorQuery
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 
 from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken
 

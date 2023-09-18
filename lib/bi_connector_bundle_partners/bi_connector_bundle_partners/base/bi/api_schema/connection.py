@@ -4,11 +4,11 @@ from typing import Dict, Any, ClassVar, Type, TYPE_CHECKING
 
 from marshmallow import ValidationError
 
-from bi_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
+from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 
-from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_base_fields import secret_string_field
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 
 if TYPE_CHECKING:
     from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase

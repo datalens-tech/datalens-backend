@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource, PostgreSQLSubselectDataSource
+from dl_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource, PostgreSQLSubselectDataSource
 
 
 class PostgreSQLMDBDataSource(PostgreSQLDataSource):

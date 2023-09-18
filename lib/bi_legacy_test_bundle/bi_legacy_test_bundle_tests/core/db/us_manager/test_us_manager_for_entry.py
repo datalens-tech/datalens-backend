@@ -4,16 +4,16 @@ from typing import Callable
 
 import pytest
 
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 
-from bi_core.us_entry import USEntry, USMigrationEntry
-from bi_core.us_manager.us_manager import USManagerBase
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_entry import USEntry, USMigrationEntry
+from dl_core.us_manager.us_manager import USManagerBase
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
-from bi_core_testing.connection import make_connection
+from dl_core_testing.connection import make_connection
 
-from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 
 
 class BaseTestUSMForEntry:

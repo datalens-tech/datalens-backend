@@ -1,14 +1,14 @@
 import pytest
 
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
-from bi_core.loader import CoreLibraryConfig
+from dl_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from dl_core.loader import CoreLibraryConfig
 
-from bi_core_testing.initialization import initialize_core_test
+from dl_core_testing.initialization import initialize_core_test
 
-from bi_formula.loader import load_bi_formula
-from bi_formula_testing.forced_literal import forced_literal_use
+from dl_formula.loader import load_bi_formula
+from dl_formula_testing.forced_literal import forced_literal_use
 
-from bi_testing.utils import wait_for_initdb
+from dl_testing.utils import wait_for_initdb
 from bi_connector_mssql_tests.db.config import BI_TEST_CONFIG, CORE_TEST_CONFIG, INIT_DB_PORT
 
 

@@ -15,21 +15,21 @@ python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 ch_billing_analytics = "bi_connector_bundle_ch_filtered.ch_billing_analytics.bi.connector:CHBillingAnalyticsBiApiConnector"
 usage_tracking = "bi_connector_bundle_ch_filtered.usage_tracking.bi.connector:UsageTrackingBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 ch_billing_analytics = "bi_connector_bundle_ch_filtered.ch_billing_analytics.core.connector:CHBillingAnalyticsCoreConnector"
 usage_tracking = "bi_connector_bundle_ch_filtered.usage_tracking.core.connector:UsageTrackingCoreConnector"
 
@@ -37,10 +37,10 @@ usage_tracking = "bi_connector_bundle_ch_filtered.usage_tracking.core.connector:
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
 python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

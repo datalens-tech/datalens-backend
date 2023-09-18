@@ -7,11 +7,11 @@ from typing import TYPE_CHECKING, Any, AsyncIterable, Optional
 import attr
 
 from bi_maintenance.core.us_crawler_base import USEntryCrawler
-from bi_core.us_entry import USMigrationEntry
-from bi_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_entry import USMigrationEntry
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 
 if TYPE_CHECKING:
-    from bi_core.us_entry import USEntry
+    from dl_core.us_entry import USEntry
 
 
 LOGGER = logging.getLogger(__name__)

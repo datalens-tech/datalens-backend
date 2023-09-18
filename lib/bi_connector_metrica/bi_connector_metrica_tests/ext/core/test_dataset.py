@@ -3,20 +3,20 @@ import sqlalchemy as sa
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespaces
 
-from bi_constants.enums import BIType, DataSourceRole
+from dl_constants.enums import BIType, DataSourceRole
 
-from bi_core.dataset_capabilities import DatasetCapabilities
-from bi_core.query.bi_query import BIQuery
-from bi_core.query.expression import ExpressionCtx, OrderByExpressionCtx
-from bi_core.services_registry.top_level import ServicesRegistry
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.dataset_capabilities import DatasetCapabilities
+from dl_core.query.bi_query import BIQuery
+from dl_core.query.expression import ExpressionCtx, OrderByExpressionCtx
+from dl_core.services_registry.top_level import ServicesRegistry
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
-from bi_testing.regulated_test import RegulatedTestParams
-from bi_core_testing.connection import make_saved_connection
-from bi_core_testing.connector import CONNECTION_TYPE_TESTING, SOURCE_TYPE_TESTING
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper
-from bi_core_testing.testcases.dataset import DefaultDatasetTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
+from dl_core_testing.connection import make_saved_connection
+from dl_core_testing.connector import CONNECTION_TYPE_TESTING, SOURCE_TYPE_TESTING
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
+from dl_core_testing.testcases.dataset import DefaultDatasetTestSuite
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API, SOURCE_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection

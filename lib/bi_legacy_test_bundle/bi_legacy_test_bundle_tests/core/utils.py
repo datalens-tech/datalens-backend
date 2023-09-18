@@ -8,32 +8,32 @@ from typing import TYPE_CHECKING, Any, Iterable, List, NamedTuple, Optional, Tup
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ColumnClause
 
-from bi_testing.utils import get_log_record
+from dl_testing.utils import get_log_record
 
-from bi_constants.enums import BinaryJoinOperator, ConnectionType, DataSourceRole, JoinType
+from dl_constants.enums import BinaryJoinOperator, ConnectionType, DataSourceRole, JoinType
 
-from bi_api_commons.reporting.profiler import PROFILING_LOG_NAME, QUERY_PROFILING_ENTRY
-from bi_core.base_models import DefaultConnectionRef
-from bi_core.multisource import BinaryCondition, ConditionPartDirect
-from bi_core_testing.database import Db, DbTable, make_db
-from bi_core.us_connection_base import ClassicConnectionSQL
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.components.editor import DatasetComponentEditor
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
-from bi_core.services_registry.top_level import ServicesRegistry
+from dl_api_commons.reporting.profiler import PROFILING_LOG_NAME, QUERY_PROFILING_ENTRY
+from dl_core.base_models import DefaultConnectionRef
+from dl_core.multisource import BinaryCondition, ConditionPartDirect
+from dl_core_testing.database import Db, DbTable, make_db
+from dl_core.us_connection_base import ClassicConnectionSQL
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.components.editor import DatasetComponentEditor
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper, EditableDatasetTestWrapper
+from dl_core.services_registry.top_level import ServicesRegistry
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL, SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL, SOURCE_TYPE_MYSQL_TABLE
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE, SOURCE_TYPE_ORACLE_TABLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES, SOURCE_TYPE_PG_TABLE
 
 from bi_legacy_test_bundle_tests.core import config
 
 if TYPE_CHECKING:
-    from bi_core.us_connection_base import ConnectionBase
+    from dl_core.us_connection_base import ConnectionBase
 
 
 SOURCE_TYPE_BY_CONN_TYPE = {

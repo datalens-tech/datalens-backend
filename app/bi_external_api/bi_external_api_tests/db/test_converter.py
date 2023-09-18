@@ -1,7 +1,7 @@
 import attr
 import pytest
 
-from bi_constants.enums import CalcMode, AggregationFunction, BIType
+from dl_constants.enums import CalcMode, AggregationFunction, BIType
 from bi_external_api.converter.charts.ad_hoc_field_extra_resolver import AdHocFieldExtraResolver
 from bi_external_api.converter.charts.chart_converter import BaseChartConverter
 from bi_external_api.converter.converter_ctx import ConverterContext

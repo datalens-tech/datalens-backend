@@ -4,7 +4,7 @@ import attr
 import sqlalchemy.dialects.mysql as sa_mysql
 from typing import Any, Dict, Optional
 
-from bi_core.db.native_type import SATypeSpec
+from dl_core.db.native_type import SATypeSpec
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 

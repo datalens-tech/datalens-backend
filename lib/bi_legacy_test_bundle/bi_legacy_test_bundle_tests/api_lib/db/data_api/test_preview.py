@@ -4,8 +4,8 @@ import math
 
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 from bi_legacy_test_bundle_tests.api_lib.utils import validate_schema, data_source_settings_from_table
 

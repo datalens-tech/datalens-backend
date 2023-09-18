@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bi_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import RequestContextInfo
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_usage_tracking_ya_team.core.us_connection import UsageTrackingYaTeamConnection
 from bi_connector_usage_tracking_ya_team.core.testing.connection import make_saved_usage_tracking_ya_team_connection

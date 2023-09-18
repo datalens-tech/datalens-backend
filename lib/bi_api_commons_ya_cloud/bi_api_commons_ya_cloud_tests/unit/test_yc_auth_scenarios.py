@@ -5,12 +5,12 @@ from typing import Dict, Any, ClassVar, Callable, Generator, Union
 import pytest
 import shortuuid
 
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon
+from dl_constants.api_constants import DLHeaders, DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
 
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 
-from bi_api_commons.error_messages import UserErrorMessages
+from dl_api_commons.error_messages import UserErrorMessages
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade, IAMMockUser, IAMMockResource
 

@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
-from bi_api_lib_testing.data_api_base import DataApiTestBase
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.data_api_base import DataApiTestBase
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 from bi_legacy_test_bundle_tests.api_lib.config import BI_TEST_CONFIG, DB_PARAMS
 

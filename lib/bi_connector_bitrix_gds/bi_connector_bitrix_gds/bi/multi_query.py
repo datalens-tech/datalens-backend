@@ -2,19 +2,19 @@ from typing import ClassVar
 
 import attr
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.fields import ResultSchema
+from dl_core.fields import ResultSchema
 
-import bi_formula.core.nodes as formula_nodes
+import dl_formula.core.nodes as formula_nodes
 
-from bi_query_processing.enums import ExecutionLevel
-from bi_query_processing.compilation.primitives import CompiledFormulaInfo
-from bi_query_processing.multi_query.splitters.query_fork import QueryForkQuerySplitter
-from bi_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
-from bi_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
-from bi_query_processing.multi_query.mutators.splitter_based import SplitterMultiQueryMutator
-from bi_query_processing.multi_query.factory import MultiQueryMutatorFactoryBase
+from dl_query_processing.enums import ExecutionLevel
+from dl_query_processing.compilation.primitives import CompiledFormulaInfo
+from dl_query_processing.multi_query.splitters.query_fork import QueryForkQuerySplitter
+from dl_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
+from dl_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
+from dl_query_processing.multi_query.mutators.splitter_based import SplitterMultiQueryMutator
+from dl_query_processing.multi_query.factory import MultiQueryMutatorFactoryBase
 
 
 @attr.s

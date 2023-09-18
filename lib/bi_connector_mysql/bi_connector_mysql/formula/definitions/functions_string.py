@@ -1,10 +1,10 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_string as base
-from bi_formula.definitions.base import (
+import dl_formula.definitions.functions_string as base
+from dl_formula.definitions.base import (
     TranslationVariant, TranslationVariantWrapped,
 )
-from bi_formula.shortcuts import n
+from dl_formula.shortcuts import n
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 

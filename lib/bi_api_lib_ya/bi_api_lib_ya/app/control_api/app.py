@@ -5,16 +5,16 @@ from typing import Optional
 
 import flask
 
-from bi_configs.enums import AppType
-from bi_constants.enums import USAuthMode
+from dl_configs.enums import AppType
+from dl_constants.enums import USAuthMode
 
-from bi_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import ControlApiAppTestingsSettings
+from dl_api_lib.app.control_api.app import ControlApiAppFactory, EnvSetupResult
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 
-from bi_core.connection_models import ConnectOptions
-from bi_core.us_connection_base import ExecutorBasedMixin
+from dl_core.connection_models import ConnectOptions
+from dl_core.us_connection_base import ExecutorBasedMixin
 
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud, AuthorizationModeDataCloud
@@ -46,7 +46,7 @@ class LegacyControlApiAppFactory(ControlApiAppFactory[ControlPlaneAppSettings], 
             ).set_up(app)
             us_auth_mode = USAuthMode.regular
         elif self._settings.APP_TYPE == AppType.TESTS:
-            from bi_core.flask_utils.trust_auth import TrustAuthService
+            from dl_core.flask_utils.trust_auth import TrustAuthService
             TrustAuthService(
                 fake_user_id='_the_tests_syncapp_user_id_',
                 fake_user_name='_the_tests_syncapp_user_name_',

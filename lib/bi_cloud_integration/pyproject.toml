@@ -18,13 +18,13 @@ python = ">=3.10, <3.12"
 shortuuid = ">=1.0.11"
 yandex-yc-apis-proto-stubs = {path = "../../lib/yc_apis_proto_stubs"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 
 [tool.poetry.group.tests.dependencies]
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
 
 [[tool.mypy.overrides]]
 module = "grpc.*"

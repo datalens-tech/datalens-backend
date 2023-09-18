@@ -4,7 +4,7 @@ import logging
 
 import pytest
 
-from bi_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
+from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
 from bi_testing_ya.sql_queries import (
     CH_QUERY,

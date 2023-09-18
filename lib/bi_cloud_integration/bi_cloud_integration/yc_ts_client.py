@@ -11,7 +11,7 @@ from yandex.cloud.priv.iam.v1.iam_token_service_pb2 import (
 )
 from yandex.cloud.priv.iam.v1.iam_token_service_pb2_grpc import IamTokenServiceStub
 
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 
 from bi_cloud_integration.local_metadata import get_yc_service_token_local
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient, DLYCRetryPolicy

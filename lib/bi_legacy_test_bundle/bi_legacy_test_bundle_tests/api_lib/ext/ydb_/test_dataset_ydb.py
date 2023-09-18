@@ -4,7 +4,7 @@ import json
 import pytest
 
 from bi_testing_ya.sql_queries import YDB_QUERY_FULL
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 

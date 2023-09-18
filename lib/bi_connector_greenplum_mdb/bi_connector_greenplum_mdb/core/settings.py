@@ -1,9 +1,9 @@
 import attr
 
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
-from bi_configs.settings_loaders.meta_definition import s_attrib
+from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_configs.settings_loaders.meta_definition import s_attrib
 
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition
+from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
 
 @attr.s(frozen=True)

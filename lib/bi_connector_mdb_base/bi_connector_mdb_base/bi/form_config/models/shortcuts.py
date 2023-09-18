@@ -1,8 +1,8 @@
 from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
 from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_api_connector.form_config.models.common import CommonFieldName
+from dl_api_connector.form_config.models.common import CommonFieldName
 
 
 def get_db_host_section(db_type: ConnectionType) -> tuple[

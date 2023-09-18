@@ -4,13 +4,13 @@ from typing import Callable, ClassVar, Optional
 
 import attr
 
-from bi_utils.utils import DataKey
+from dl_utils.utils import DataKey
 
-from bi_core.base_models import ConnCacheableDataModelMixin
-from bi_core.connection_models.conn_options import ConnectOptions
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
-from bi_core.utils import secrepr
+from dl_core.base_models import ConnCacheableDataModelMixin
+from dl_core.connection_models.conn_options import ConnectOptions
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
+from dl_core.utils import secrepr
 
 from bi_connector_bitrix_gds.core.constants import SOURCE_TYPE_BITRIX_GDS, DEFAULT_DB
 from bi_connector_bitrix_gds.core.dto import BitrixGDSConnDTO

@@ -2,13 +2,13 @@ import sqlalchemy as sa
 
 import ydb.sqlalchemy as ydb_sa
 
-from bi_formula.definitions.common import quantile_value
-from bi_formula.definitions.literals import un_literal
-import bi_formula.definitions.functions_aggregation as base
-from bi_formula.definitions.base import (
+from dl_formula.definitions.common import quantile_value
+from dl_formula.definitions.literals import un_literal
+import dl_formula.definitions.functions_aggregation as base
+from dl_formula.definitions.base import (
     TranslationVariant, TranslationVariantWrapped,
 )
-from bi_formula.shortcuts import n
+from dl_formula.shortcuts import n
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 

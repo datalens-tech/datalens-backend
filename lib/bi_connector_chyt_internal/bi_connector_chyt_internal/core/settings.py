@@ -1,7 +1,7 @@
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
-from bi_connector_chyt.core.settings import ConnectorsDataCHYTBase, CHYTConnectorSettings
+from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_connector_chyt.core.settings import ConnectorsDataCHYTBase, CHYTConnectorSettings
 
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 
 
 def chyt_internal_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from bi_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
-from bi_core.connectors.base.connector import (
+from dl_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+from dl_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
 )
 

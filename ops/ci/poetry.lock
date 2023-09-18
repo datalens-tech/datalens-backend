@@ -716,13 +716,13 @@ develop = false
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-defaults = {path = "../bi_defaults"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 pytest = ">=7.2.2"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 yandex-bi-cloud-integration = {path = "../bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-service-registry-ya-cloud = {path = "../bi_service_registry_ya_cloud"}
 yandex-bi-testing-ya = {path = "../bi_testing_ya"}
 
@@ -742,18 +742,18 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 bi-defaults = {path = "../bi_defaults"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 Flask = ">=2.0.3"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../bi_api_commons_ya_team"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 yandex-bi-cloud-integration = {path = "../bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-chyt-internal = {path = "../bi_connector_chyt_internal"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-service-registry-ya-cloud = {path = "../bi_service_registry_ya_cloud"}
 yandex-bi-service-registry-ya-team = {path = "../bi_service_registry_ya_team"}
 
@@ -773,38 +773,15 @@ develop = false
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_clickhouse_mdb"
-
-[[package]]
-name = "bi-connector-greenplum"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_greenplum"
 
 [[package]]
 name = "bi-connector-greenplum-mdb"
@@ -817,13 +794,13 @@ develop = false
 
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
@@ -840,12 +817,12 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 marshmallow = ">=3.19.0"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 
 [package.source]
@@ -864,11 +841,11 @@ develop = false
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 
 [package.source]
@@ -887,12 +864,12 @@ develop = false
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 
 [package.source]
 type = "directory"
@@ -910,17 +887,17 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 marshmallow = ">=3.19.0"
 tvmauth = ">=3.4.9"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
@@ -937,18 +914,18 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-chyt = {path = "../../mainrepo/lib/dl_connector_chyt"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 yandex-bi-api-commons-ya-cloud = {path = "../bi_api_commons_ya_cloud"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle-partners = {path = "../bi_connector_bundle_partners"}
-yandex-bi-connector-chyt = {path = "../../mainrepo/lib/bi_connector_chyt"}
 yandex-bi-connector-monitoring = {path = "../bi_connector_monitoring"}
 yandex-bi-connector-usage-tracking-ya-team = {path = "../bi_connector_usage_tracking_ya_team"}
 yandex-bi-connector-yql = {path = "../bi_connector_yql"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 
 [package.source]
 type = "directory"
@@ -967,6 +944,13 @@ develop = false
 aiohttp = ">=3.8.1"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-us-client = {path = "../../mainrepo/lib/dl_us_client"}
 docker = ">=6.0.1"
 dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 grpcio-health-checking = ">=1.44.0"
@@ -974,15 +958,8 @@ grpcio-reflection = ">=1.44.0"
 gunicorn = ">=20.1.0"
 pyyaml = ">=5.3.1"
 sentry-sdk = ">=1.15.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
-yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
 yandex-dc-public-api-proto-stubs = {path = "../../lib/dc_public_api_proto_stubs"}
 
 [package.source]
@@ -999,31 +976,13 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-file-secure-reader-lib = {path = "../../mainrepo/lib/bi_file_secure_reader_lib"}
+datalens-file-secure-reader-lib = {path = "../../mainrepo/lib/dl_file_secure_reader_lib"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 
 [package.source]
 type = "directory"
 url = "../../app/bi_file_secure_reader"
-
-[[package]]
-name = "bi-file-secure-reader-lib"
-version = "0.1.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-certifi = ">=2022.12.7"
-openpyxl = ">=3.0.10"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_file_secure_reader_lib"
 
 [[package]]
 name = "bi-file-uploader"
@@ -1041,8 +1000,13 @@ aiohttp = ">=3.8.1"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
 bi-defaults = {path = "../../lib/bi_defaults"}
-bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
-bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-api-lib = {path = "../../mainrepo/lib/dl_file_uploader_api_lib"}
+datalens-file-uploader-lib = {path = "../../mainrepo/lib/dl_file_uploader_lib"}
+datalens-file-uploader-task-interface = {path = "../../mainrepo/lib/dl_file_uploader_task_interface"}
+datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 docker = ">=6.0.1"
 gunicorn = ">=20.1.0"
@@ -1050,38 +1014,10 @@ marshmallow = ">=3.19.0"
 sentry-sdk = ">=1.15.0"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-file-uploader-api-lib = {path = "../../mainrepo/lib/bi_file_uploader_api_lib"}
-yandex-bi-file-uploader-lib = {path = "../../mainrepo/lib/bi_file_uploader_lib"}
 
 [package.source]
 type = "directory"
 url = "../../app/bi_file_uploader"
-
-[[package]]
-name = "bi-file-uploader-task-interface"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-bi-task-processor = {path = "../bi_task_processor"}
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_file_uploader_task_interface"
 
 [[package]]
 name = "bi-file-uploader-worker"
@@ -1096,14 +1032,14 @@ develop = false
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 bi-defaults = {path = "../../lib/bi_defaults"}
-bi-file-secure-reader-lib = {path = "../../mainrepo/lib/bi_file_secure_reader_lib"}
-bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
-bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-secure-reader-lib = {path = "../../mainrepo/lib/dl_file_secure_reader_lib"}
+datalens-file-uploader-task-interface = {path = "../../mainrepo/lib/dl_file_uploader_task_interface"}
+datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
+datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = "==20.1.0"
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
 
 [package.source]
 type = "directory"
@@ -1120,11 +1056,11 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
 yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 
 [package.source]
 type = "directory"
@@ -1141,7 +1077,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
 
 [package.source]
 type = "directory"
@@ -1158,50 +1094,18 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_formula_ref_ya"
-
-[[package]]
-name = "bi-formula-testing"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_formula_testing"
-
-[[package]]
-name = "bi-i18n"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_i18n"
 
 [[package]]
 name = "bi-maintenance"
@@ -1216,43 +1120,23 @@ develop = false
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 pygments = ">=2.4.0"
 pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 tabulate = ">=0.9.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_maintenance"
-
-[[package]]
-name = "bi-task-processor"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_task_processor"
 
 [[package]]
 name = "billiard"
@@ -2071,6 +1955,1058 @@ url = "https://pypi.yandex-team.ru/simple"
 reference = "ya"
 
 [[package]]
+name = "datalens-api-client"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-constants = {path = "../dl_constants"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-utils = {path = "../dl_utils"}
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_api_client"
+
+[[package]]
+name = "datalens-api-commons"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-utils = {path = "../dl_utils"}
+flask = ">=2.0.3"
+ipdb = ">=0.13.13"
+marshmallow = ">=3.19.0"
+multidict = ">=4.0"
+opentracing = ">=2.4.0"
+raven = ">=6.10.0"
+sentry-sdk = ">=1.15.0"
+typing-extensions = ">=4.5.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_api_commons"
+
+[[package]]
+name = "datalens-api-connector"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-formula = {path = "../dl_formula"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-query-processing = {path = "../dl_query_processing"}
+dynamic-enum = {path = "../dynamic_enum"}
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_api_connector"
+
+[[package]]
+name = "datalens-api-lib"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-compeng-pg = {path = "../dl_compeng_pg"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-formula = {path = "../dl_formula"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-task-processor = {path = "../dl_task_processor"}
+datalens-utils = {path = "../dl_utils"}
+flask = ">=2.0.3"
+flask-marshmallow = ">=0.14.0"
+flask-restx = ">=1.1.0"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+more-itertools = ">=9.1.0"
+pandas = ">=1.5.3"
+sentry-sdk = ">=1.15.0"
+sqlalchemy = ">=1.4.46, <2.0"
+statcommons = {path = "../statcommons"}
+werkzeug = ">=2.0.3"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_api_lib"
+
+[[package]]
+name = "datalens-api-lib-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-api-client = {path = "../dl_api_client"}
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-api-lib = {path = "../dl_api_lib"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-utils = {path = "../dl_utils"}
+flask = ">=2.0.3"
+pytest = ">=7.2.2"
+werkzeug = ">=2.0.3"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_api_lib_testing"
+
+[[package]]
+name = "datalens-app-tools"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-utils = {path = "../dl_utils"}
+opentracing = ">=2.4.0"
+six = ">=1.9.0"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_app_tools"
+
+[[package]]
+name = "datalens-compeng-pg"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiopg = ">=1.4.0"
+asyncpg = ">=0.27.0"
+attrs = ">=22.2.0"
+datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_compeng_pg"
+
+[[package]]
+name = "datalens-configs"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+cryptography = ">=3.3.2"
+datalens-constants = {path = "../dl_constants"}
+datalens-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
+pyyaml = ">=5.3.1"
+typeguard = ">=2.13.3"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_configs"
+
+[[package]]
+name = "datalens-connector-bigquery"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-testing = {path = "../dl_testing"}
+datalens-utils = {path = "../dl_utils"}
+google-api-core = ">=2.11.1"
+google-auth = ">=2.21.0"
+marshmallow = ">=3.19.0"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_bigquery"
+
+[[package]]
+name = "datalens-connector-bundle-chs3"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-task-processor = {path = "../dl_task_processor"}
+datalens-testing = {path = "../dl_testing"}
+datalens-utils = {path = "../dl_utils"}
+marshmallow = ">=3.19.0"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+xxhash = ">=3.2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_bundle_chs3"
+
+[[package]]
+name = "datalens-connector-chyt"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiochclient = ">=2.2.0"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
+datalens-utils = {path = "../dl_utils"}
+marshmallow = ">=3.19.0"
+sqlalchemy = ">=1.4.46, <2.0"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_chyt"
+
+[[package]]
+name = "datalens-connector-clickhouse"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_clickhouse"
+
+[[package]]
+name = "datalens-connector-greenplum"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-i18n = {path = "../dl_i18n"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_greenplum"
+
+[[package]]
+name = "datalens-connector-postgresql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+asyncpg = ">=0.27.0"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+marshmallow = ">=3.19.0"
+psycopg2-binary = ">=2.9.6"
+python-dateutil = ">=2.8.2"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_postgresql"
+
+[[package]]
+name = "datalens-connector-promql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
+marshmallow = ">=3.19.0"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_promql"
+
+[[package]]
+name = "datalens-connector-snowflake"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-testing = {path = "../dl_testing"}
+datalens-utils = {path = "../dl_utils"}
+marshmallow = ">=3.19.0"
+requests = ">=2.28.2"
+snowflake-connector-python = ">=2.9.0"
+snowflake-sqlalchemy = ">=1.4.6"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_connector_snowflake"
+
+[[package]]
+name = "datalens-constants"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+dynamic-enum = {path = "../dynamic_enum"}
+typing-extensions = ">=4.5.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_constants"
+
+[[package]]
+name = "datalens-core"
+version = "12.99.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiobotocore = ">=2.4.2"
+aiodns = ">=3.0.0"
+aiohttp = ">=3.8.1"
+anyascii = ">=0.3.2"
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+botocore = ">=1.27.59,<1.27.60"
+cryptography = ">=3.3.2"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+datalens-task-processor = {path = "../dl_task_processor"}
+datalens-utils = {path = "../dl_utils"}
+dnspython = ">=2.2.1"
+Flask = ">=2.0.3"
+grpcio = ">=1.45.0rc1"
+jaeger-client = ">=4.8.0"
+lz4 = ">=4.3.2"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+multidict = ">=4.0"
+opentracing = ">=2.4.0"
+python-dateutil = ">=2.8.2"
+pytz = ">=2022.7.1"
+pyyaml = ">=5.3.1"
+raven = ">=6.10.0"
+redis = ">=4.5.1"
+redis_cache_lock = {path = "../redis-cache-lock"}
+requests = ">=2.28.2"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+statcommons = {path = "../statcommons"}
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+typing-extensions = ">=4.5.0"
+uwsgi = ">=2.0.21"
+Werkzeug = ">=2.0.3"
+xxhash = ">=3.2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_core"
+
+[[package]]
+name = "datalens-core-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-testing = {path = "../dl_testing"}
+datalens-utils = {path = "../dl_utils"}
+Flask = ">=2.0.3"
+marshmallow = ">=3.19.0"
+psycopg2-binary = ">=2.9.6"
+pytest = ">=7.2.2"
+requests = ">=2.28.2"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+statcommons = {path = "../statcommons"}
+uwsgi = ">=2.0.21"
+Werkzeug = ">=2.0.3"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_core_testing"
+
+[[package]]
+name = "datalens-db-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+frozendict = ">=2.3.8"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_db_testing"
+
+[[package]]
+name = "datalens-file-secure-reader-lib"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+certifi = ">=2022.12.7"
+openpyxl = ">=3.0.10"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_file_secure_reader_lib"
+
+[[package]]
+name = "datalens-file-uploader-api-lib"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiogoogle = ">=5.2.0"
+aiohttp = ">=3.8.1"
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}
+datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+datalens-task-processor = {path = "../dl_task_processor"}
+gunicorn = ">=20.1.0"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+redis = ">=4.5.1"
+sentry-sdk = ">=1.15.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_file_uploader_api_lib"
+
+[[package]]
+name = "datalens-file-uploader-lib"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiobotocore = ">=2.4.2"
+aiogoogle = ">=5.2.0"
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+botocore = ">=1.27.59,<1.27.60"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-utils = {path = "../dl_utils"}
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+redis = ">=4.5.1"
+ujson = ">=1.35"
+yarl = ">=1.8.2"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_file_uploader_lib"
+
+[[package]]
+name = "datalens-file-uploader-task-interface"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-configs = {path = "../dl_configs"}
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+datalens-core = {path = "../dl_core"}
+datalens-task-processor = {path = "../dl_task_processor"}
+datalens-utils = {path = "../dl_utils"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_file_uploader_task_interface"
+
+[[package]]
+name = "datalens-file-uploader-worker-lib"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiogoogle = ">=5.2.0"
+aiohttp = ">=3.8.1"
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+botocore = ">=1.27.59,<1.27.60"
+cchardet = ">=2.1.7"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}
+datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+datalens-task-processor = {path = "../dl_task_processor"}
+datalens-utils = {path = "../dl_utils"}
+redis = ">=4.5.1"
+shortuuid = ">=1.0.11"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_file_uploader_worker_lib"
+
+[[package]]
+name = "datalens-formula"
+version = "7.47.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+antlr4-python3-runtime = ">=4.11.1"
+attrs = ">=22.2.0"
+ciso8601 = ">=2.2.0"
+dynamic-enum = {path = "../dynamic_enum"}
+graphviz = ">=0.17"
+jinja2 = ">=3.1.2"
+pytz = ">=2022.7.1"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_formula"
+
+[[package]]
+name = "datalens-formula-ref"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-formula = {path = "../dl_formula"}
+jinja2 = ">=3.1.2"
+sqlalchemy = ">=1.4.46, <2.0"
+tabulate = ">=0.9.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_formula_ref"
+
+[[package]]
+name = "datalens-formula-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_formula_testing"
+
+[[package]]
+name = "datalens-i18n"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_i18n"
+
+[[package]]
+name = "datalens-model-tools"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+dynamic-enum = {path = "../dynamic_enum"}
+marshmallow = ">=3.19.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_model_tools"
+
+[[package]]
+name = "datalens-package-boilerplate"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_package_boilerplate"
+
+[[package]]
+name = "datalens-query-processing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+ciso8601 = ">=2.2.0"
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-formula = {path = "../dl_formula"}
+datalens-utils = {path = "../dl_utils"}
+pytz = ">=2022.7.1"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_query_processing"
+
+[[package]]
+name = "datalens-sqlalchemy-chyt"
+version = "0.7"
+description = "BI CHYT SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+sqlalchemy = ">=1.4.46, <2.0"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_chyt"
+
+[[package]]
+name = "datalens-sqlalchemy-clickhouse"
+version = "0.3"
+description = "BI ClickHouse SQLAlchemy Dialect Customizations"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+sqlalchemy = ">=1.4.46, <2.0"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"
+
+[[package]]
+name = "datalens-sqlalchemy-common"
+version = "0.2"
+description = "BI SQLAlchemy dialects common additions"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_common"
+
+[[package]]
+name = "datalens-sqlalchemy-mssql"
+version = "0.3"
+description = "BI MSSQL SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+pyodbc = ">=4.0.35"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_mssql"
+
+[[package]]
+name = "datalens-sqlalchemy-oracle"
+version = "0.3"
+description = "BI Oracle SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+oracledb = ">=1.3.1"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_oracle"
+
+[[package]]
+name = "datalens-sqlalchemy-postgres"
+version = "0.3"
+description = "BI PostgreSQL SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+asyncpg = ">=0.27.0"
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+psycopg2-binary = ">=2.9.6"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_postgres"
+
+[[package]]
+name = "datalens-sqlalchemy-promql"
+version = "0.1"
+description = "BI PromQL SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+requests = ">=2.28.2"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_sqlalchemy_promql"
+
+[[package]]
+name = "datalens-task-processor"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-configs = {path = "../dl_configs"}
+datalens-utils = {path = "../dl_utils"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_task_processor"
+
+[[package]]
+name = "datalens-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+aiobotocore = ">=2.4.2"
+attrs = ">=22.2.0"
+datalens-utils = {path = "../dl_utils"}
+psycopg2-binary = ">=2.9.6"
+pytest = ">=7.2.2"
+python-dotenv = ">=1.0.0"
+pyyaml = ">=5.3.1"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_testing"
+
+[[package]]
+name = "datalens-us-client"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_us_client"
+
+[[package]]
+name = "datalens-utils"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+async-timeout = ">=4.0.2"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_utils"
+
+[[package]]
 name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
@@ -2155,21 +3091,21 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-connector-greenplum = {path = "../../lib/bi_connector_greenplum"}
 blinker = ">=1.5"
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
 dl-version = {path = "../../lib/dl_version"}
 Flask = ">=2.0.3"
 raven = ">=6.10.0"
-yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
 
 [package.source]
 type = "directory"
@@ -2185,19 +3121,19 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-connector-greenplum = {path = "../../lib/bi_connector_greenplum"}
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
 dl-version = {path = "../../lib/dl_version"}
 gunicorn = ">=20.1.0"
-yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
 
 [package.source]
 type = "directory"
@@ -4221,30 +5157,30 @@ bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 blinker = ">=1.5"
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 raven = ">=6.10.0"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 
@@ -4265,31 +5201,31 @@ develop = false
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 gunicorn = ">=20.1.0"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 
@@ -6154,14 +7090,14 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
@@ -7530,12 +8466,31 @@ bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 bi-defaults = {path = "../../lib/bi_defaults"}
-bi-file-uploader-task-interface = {path = "../../mainrepo/lib/bi_file_uploader_task_interface"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
-bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
 blinker = ">=1.5"
 certifi = ">=2022.12.7"
 certifi-yandex = ">=2021.10.08"
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-task-interface = {path = "../../mainrepo/lib/dl_file_uploader_task_interface"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
+datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 Flask = ">=2.0.3"
 flask-marshmallow = ">=0.14.0"
@@ -7561,97 +8516,28 @@ statcommons = {path = "../../mainrepo/lib/statcommons"}
 statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 tabulate = ">=0.9.0"
 Werkzeug = ">=2.0.3"
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-bundle-ch-filtered-ya-cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle-partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
 url = "../../app/bi_api"
-
-[[package]]
-name = "yandex-bi-api-client"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_api_client"
-
-[[package]]
-name = "yandex-bi-api-commons"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-flask = ">=2.0.3"
-ipdb = ">=0.13.13"
-marshmallow = ">=3.19.0"
-multidict = ">=4.0"
-opentracing = ">=2.4.0"
-raven = ">=6.10.0"
-sentry-sdk = ">=1.15.0"
-typing-extensions = ">=4.5.0"
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_api_commons"
 
 [[package]]
 name = "yandex-bi-api-commons-ya-cloud"
@@ -7665,10 +8551,10 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 Flask = ">=2.0.3"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 
 [package.source]
 type = "directory"
@@ -7686,136 +8572,16 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 Flask = ">=2.0.3"
 requests = ">=2.28.2"
 Werkzeug = ">=2.0.3"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_api_commons_ya_team"
-
-[[package]]
-name = "yandex-bi-api-connector"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-dynamic-enum = {path = "../dynamic_enum"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-query-processing = {path = "../bi_query_processing"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_api_connector"
-
-[[package]]
-name = "yandex-bi-api-lib"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-bi-task-processor = {path = "../bi_task_processor"}
-flask = ">=2.0.3"
-flask-marshmallow = ">=0.14.0"
-flask-restx = ">=1.1.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-more-itertools = ">=9.1.0"
-pandas = ">=1.5.3"
-sentry-sdk = ">=1.15.0"
-sqlalchemy = ">=1.4.46, <2.0"
-statcommons = {path = "../statcommons"}
-werkzeug = ">=2.0.3"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-compeng-pg = {path = "../bi_compeng_pg"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
-yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-query-processing = {path = "../bi_query_processing"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_api_lib"
-
-[[package]]
-name = "yandex-bi-api-lib-testing"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-flask = ">=2.0.3"
-pytest = ">=7.2.2"
-werkzeug = ">=2.0.3"
-yandex-bi-api-client = {path = "../bi_api_client"}
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-api-lib = {path = "../bi_api_lib"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-core-testing = {path = "../bi_core_testing"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_api_lib_testing"
-
-[[package]]
-name = "yandex-bi-app-tools"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-opentracing = ">=2.4.0"
-six = ">=1.9.0"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_app_tools"
 
 [[package]]
 name = "yandex-bi-blackbox-client"
@@ -7831,12 +8597,12 @@ aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 bi-defaults = {path = "../bi_defaults"}
 blackbox = ">=0.72"
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 requests = ">=2.28.2"
 tvm2 = ">=5.0"
 tvmauth = ">=3.4.9"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 
 [package.source]
 type = "directory"
@@ -7855,96 +8621,19 @@ develop = false
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 certifi-yandex = ">=2021.10.08"
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 googleapis-common-protos = ">=1.59.1"
 grpcio = ">=1.45.0rc1"
 pyjwt = ">=2.3.0"
 shortuuid = ">=1.0.11"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 yandex-yc-apis-proto-stubs = {path = "../../lib/yc_apis_proto_stubs"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_cloud_integration"
-
-[[package]]
-name = "yandex-bi-compeng-pg"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiopg = ">=1.4.0"
-asyncpg = ">=0.27.0"
-attrs = ">=22.2.0"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-connector-postgresql = {path = "../bi_connector_postgresql"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-sqlalchemy-postgres = {path = "../bi_sqlalchemy_postgres"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_compeng_pg"
-
-[[package]]
-name = "yandex-bi-configs"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-cryptography = ">=3.3.2"
-dynamic-enum = {path = "../dynamic_enum"}
-pyyaml = ">=5.3.1"
-typeguard = ">=2.13.3"
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_configs"
-
-[[package]]
-name = "yandex-bi-connector-bigquery"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-google-api-core = ">=2.11.1"
-google-auth = ">=2.21.0"
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-testing = {path = "../bi_testing"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_bigquery"
 
 [[package]]
 name = "yandex-bi-connector-bitrix-gds"
@@ -7957,20 +8646,20 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 marshmallow = ">=3.19.0"
 redis = ">=4.5.1"
 redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
@@ -7987,17 +8676,17 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 
 [package.source]
@@ -8014,14 +8703,14 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 
 [package.source]
@@ -8038,50 +8727,17 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_bundle_ch_frozen"
-
-[[package]]
-name = "yandex-bi-connector-bundle-chs3"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-bi-file-uploader-task-interface = {path = "../bi_file_uploader_task_interface"}
-bi-i18n = {path = "../bi_i18n"}
-bi-task-processor = {path = "../bi_task_processor"}
-marshmallow = ">=3.19.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-xxhash = ">=3.2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-core-testing = {path = "../bi_core_testing"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-testing = {path = "../bi_testing"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_bundle_chs3"
 
 [[package]]
 name = "yandex-bi-connector-bundle-partners"
@@ -8093,48 +8749,18 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 marshmallow = ">=3.19.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_bundle_partners"
-
-[[package]]
-name = "yandex-bi-connector-chyt"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiochclient = ">=2.2.0"
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-sqlalchemy-chyt = {path = "../bi_sqlalchemy_chyt"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_chyt"
 
 [[package]]
 name = "yandex-bi-connector-chyt-internal"
@@ -8148,49 +8774,20 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-connector-chyt = {path = "../../mainrepo/lib/dl_connector_chyt"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 marshmallow = ">=3.19.0"
 pytest-asyncio = ">=0.20.3"
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-connector-chyt = {path = "../../mainrepo/lib/bi_connector_chyt"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_chyt_internal"
-
-[[package]]
-name = "yandex-bi-connector-clickhouse"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-core-testing = {path = "../bi_core_testing"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-formula-ref = {path = "../bi_formula_ref"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_clickhouse"
 
 [[package]]
 name = "yandex-bi-connector-gsheets"
@@ -8204,18 +8801,18 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
 
 [package.source]
 type = "directory"
@@ -8232,19 +8829,19 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
@@ -8262,14 +8859,14 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 marshmallow = ">=3.19.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 
 [package.source]
@@ -8288,18 +8885,18 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 pyodbc = ">=4.0.35"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 
 [package.source]
 type = "directory"
@@ -8317,18 +8914,18 @@ develop = false
 [package.dependencies]
 aiomysql = ">=0.1.1"
 attrs = ">=22.2.0"
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 mysqlclient = ">=1.4.6"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
 
 [package.source]
@@ -8347,115 +8944,23 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-sqlalchemy-oracle = {path = "../../mainrepo/lib/dl_sqlalchemy_oracle"}
 marshmallow = ">=3.19.0"
 oracledb = ">=1.3.1"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
-yandex-bi-sqlalchemy-oracle = {path = "../../mainrepo/lib/bi_sqlalchemy_oracle"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_oracle"
-
-[[package]]
-name = "yandex-bi-connector-postgresql"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-asyncpg = ">=0.27.0"
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-marshmallow = ">=3.19.0"
-psycopg2-binary = ">=2.9.6"
-python-dateutil = ">=2.8.2"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-core-testing = {path = "../bi_core_testing"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-formula-ref = {path = "../bi_formula_ref"}
-yandex-bi-sqlalchemy-postgres = {path = "../bi_sqlalchemy_postgres"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_postgresql"
-
-[[package]]
-name = "yandex-bi-connector-promql"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-sqlalchemy-promql = {path = "../bi_sqlalchemy_promql"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_promql"
-
-[[package]]
-name = "yandex-bi-connector-snowflake"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-marshmallow = ">=3.19.0"
-requests = ">=2.28.2"
-snowflake-connector-python = ">=2.9.0"
-snowflake-sqlalchemy = ">=1.4.6"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-api-connector = {path = "../bi_api_connector"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-testing = {path = "../bi_testing"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_connector_snowflake"
 
 [[package]]
 name = "yandex-bi-connector-usage-tracking-ya-team"
@@ -8467,13 +8972,13 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 
 [package.source]
 type = "directory"
@@ -8492,20 +8997,20 @@ develop = false
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
 grpcio = ">=1.45.0rc1"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 ydb = ">=3.5.0"
@@ -8513,23 +9018,6 @@ ydb = ">=3.5.0"
 [package.source]
 type = "directory"
 url = "../../lib/bi_connector_yql"
-
-[[package]]
-name = "yandex-bi-constants"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-dynamic-enum = {path = "../dynamic_enum"}
-typing-extensions = ">=4.5.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_constants"
 
 [[package]]
 name = "yandex-bi-control-api-yc"
@@ -8549,131 +9037,40 @@ bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
 blinker = ">=1.5"
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 raven = ">=6.10.0"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 
 [package.source]
 type = "directory"
 url = "../../app_yc/app_yc_control_api"
-
-[[package]]
-name = "yandex-bi-core"
-version = "12.99.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiobotocore = ">=2.4.2"
-aiodns = ">=3.0.0"
-aiohttp = ">=3.8.1"
-anyascii = ">=0.3.2"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-bi-i18n = {path = "../bi_i18n"}
-bi-task-processor = {path = "../bi_task_processor"}
-botocore = ">=1.27.59,<1.27.60"
-cryptography = ">=3.3.2"
-dnspython = ">=2.2.1"
-Flask = ">=2.0.3"
-grpcio = ">=1.45.0rc1"
-jaeger-client = ">=4.8.0"
-lz4 = ">=4.3.2"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-multidict = ">=4.0"
-opentracing = ">=2.4.0"
-python-dateutil = ">=2.8.2"
-pytz = ">=2022.7.1"
-pyyaml = ">=5.3.1"
-raven = ">=6.10.0"
-redis = ">=4.5.1"
-redis_cache_lock = {path = "../redis-cache-lock"}
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-statcommons = {path = "../statcommons"}
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-typing-extensions = ">=4.5.0"
-uwsgi = ">=2.0.21"
-Werkzeug = ">=2.0.3"
-xxhash = ">=3.2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-model-tools = {path = "../bi_model_tools"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../bi_sqlalchemy_clickhouse"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_core"
-
-[[package]]
-name = "yandex-bi-core-testing"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-Flask = ">=2.0.3"
-marshmallow = ">=3.19.0"
-psycopg2-binary = ">=2.9.6"
-pytest = ">=7.2.2"
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-statcommons = {path = "../statcommons"}
-uwsgi = ">=2.0.21"
-Werkzeug = ">=2.0.3"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-db-testing = {path = "../bi_db_testing"}
-yandex-bi-testing = {path = "../bi_testing"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_core_testing"
 
 [[package]]
 name = "yandex-bi-data-api-sec-embeds-yc"
@@ -8692,34 +9089,34 @@ bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 
@@ -8744,60 +9141,41 @@ bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 
 [package.source]
 type = "directory"
 url = "../../app_yc/app_yc_data_api"
-
-[[package]]
-name = "yandex-bi-db-testing"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-frozendict = ">=2.3.8"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_db_testing"
 
 [[package]]
 name = "yandex-bi-dls-client"
@@ -8810,46 +9188,14 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 requests = ">=2.28.2"
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_dls_client"
-
-[[package]]
-name = "yandex-bi-file-uploader-api-lib"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiogoogle = ">=5.2.0"
-aiohttp = ">=3.8.1"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-bi-file-uploader-task-interface = {path = "../bi_file_uploader_task_interface"}
-bi-task-processor = {path = "../bi_task_processor"}
-gunicorn = ">=20.1.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-redis = ">=4.5.1"
-sentry-sdk = ">=1.15.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-file-uploader-lib = {path = "../bi_file_uploader_lib"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_file_uploader_api_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-api-yc"
@@ -8867,83 +9213,19 @@ aiohttp = ">=3.8.1"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
 bi-defaults = {path = "../../lib/bi_defaults"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-api-lib = {path = "../../mainrepo/lib/dl_file_uploader_api_lib"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 docker = ">=6.0.1"
 gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
 sentry-sdk = ">=1.15.0"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-file-uploader-api-lib = {path = "../../mainrepo/lib/bi_file_uploader_api_lib"}
 
 [package.source]
 type = "directory"
 url = "../../app_yc/app_yc_file_uploader_api"
-
-[[package]]
-name = "yandex-bi-file-uploader-lib"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiobotocore = ">=2.4.2"
-aiogoogle = ">=5.2.0"
-aiohttp = ">=3.8.1"
-attrs = ">=22.2.0"
-botocore = ">=1.27.59,<1.27.60"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-redis = ">=4.5.1"
-ujson = ">=1.35"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-connector-bundle-chs3 = {path = "../bi_connector_bundle_chs3"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-utils = {path = "../bi_utils"}
-yarl = ">=1.8.2"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_file_uploader_lib"
-
-[[package]]
-name = "yandex-bi-file-uploader-worker-lib"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiogoogle = ">=5.2.0"
-aiohttp = ">=3.8.1"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-bi-file-uploader-task-interface = {path = "../bi_file_uploader_task_interface"}
-bi-task-processor = {path = "../bi_task_processor"}
-botocore = ">=1.27.59,<1.27.60"
-cchardet = ">=2.1.7"
-redis = ">=4.5.1"
-shortuuid = ">=1.0.11"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-configs = {path = "../bi_configs"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-file-uploader-lib = {path = "../bi_file_uploader_lib"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_file_uploader_worker_lib"
 
 [[package]]
 name = "yandex-bi-file-uploader-worker-yc"
@@ -8958,57 +9240,14 @@ develop = false
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 bi-defaults = {path = "../../lib/bi_defaults"}
-bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
+datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
 
 [package.source]
 type = "directory"
 url = "../../app_yc/app_yc_file_uploader_worker"
-
-[[package]]
-name = "yandex-bi-formula"
-version = "7.47.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-antlr4-python3-runtime = ">=4.11.1"
-attrs = ">=22.2.0"
-ciso8601 = ">=2.2.0"
-dynamic-enum = {path = "../dynamic_enum"}
-graphviz = ">=0.17"
-jinja2 = ">=3.1.2"
-pytz = ">=2022.7.1"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_formula"
-
-[[package]]
-name = "yandex-bi-formula-ref"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-jinja2 = ">=3.1.2"
-sqlalchemy = ">=1.4.46, <2.0"
-tabulate = ">=0.9.0"
-yandex-bi-formula = {path = "../bi_formula"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_formula_ref"
 
 [[package]]
 name = "yandex-bi-integration-tests"
@@ -9021,6 +9260,8 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-us-client = {path = "../../mainrepo/lib/dl_us_client"}
 pandas = ">=1.5.3"
 pytest-asyncio = ">=0.20.3"
 pyyaml = ">=5.3.1"
@@ -9028,9 +9269,7 @@ shortuuid = ">=1.0.11"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
 
 [package.source]
 type = "directory"
@@ -9047,45 +9286,11 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_legacy_test_bundle"
-
-[[package]]
-name = "yandex-bi-model-tools"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-dynamic-enum = {path = "../dynamic_enum"}
-marshmallow = ">=3.19.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_model_tools"
-
-[[package]]
-name = "yandex-bi-package-boilerplate"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_package_boilerplate"
 
 [[package]]
 name = "yandex-bi-public-dataset-api-yc"
@@ -9103,63 +9308,40 @@ bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-defaults = {path = "../../lib/bi_defaults"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
 yandex-bi-connector-bundle_ch_filtered_ya_cloud = {path = "../../lib/bi_connector_bundle_ch_filtered_ya_cloud"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
 yandex-bi-sqlalchemy-bitrix = {path = "../../lib/bi_sqlalchemy_bitrix"}
-yandex-bi-sqlalchemy-chyt = {path = "../../mainrepo/lib/bi_sqlalchemy_chyt"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-mssql = {path = "../../mainrepo/lib/bi_sqlalchemy_mssql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-sqlalchemy-postgres = {path = "../../mainrepo/lib/bi_sqlalchemy_postgres"}
-yandex-bi-sqlalchemy-promql = {path = "../../mainrepo/lib/bi_sqlalchemy_promql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 
 [package.source]
 type = "directory"
 url = "../../app_yc/app_yc_public_dataset_api"
-
-[[package]]
-name = "yandex-bi-query-processing"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-ciso8601 = ">=2.2.0"
-pytz = ">=2022.7.1"
-yandex-bi-app-tools = {path = "../bi_app_tools"}
-yandex-bi-constants = {path = "../bi_constants"}
-yandex-bi-core = {path = "../bi_core"}
-yandex-bi-formula = {path = "../bi_formula"}
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_query_processing"
 
 [[package]]
 name = "yandex-bi-rqe-ext-async"
@@ -9171,16 +9353,16 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 gunicorn = ">=20.1.0"
 yandex-bi-connector-bitrix-gds = {path = "../../lib/bi_connector_bitrix_gds"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
@@ -9196,20 +9378,20 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 uwsgi = ">=2.0.21"
-yandex-bi-connector-bigquery = {path = "../../mainrepo/lib/bi_connector_bigquery"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
-yandex-bi-connector-promql = {path = "../../mainrepo/lib/bi_connector_promql"}
-yandex-bi-connector-snowflake = {path = "../../mainrepo/lib/bi_connector_snowflake"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
@@ -9225,17 +9407,17 @@ files = []
 develop = false
 
 [package.dependencies]
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 uwsgi = ">=2.0.21"
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 
 [package.source]
 type = "directory"
@@ -9252,14 +9434,14 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-blackbox-client = {path = "../../lib/bi_blackbox_client"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 
 [package.source]
 type = "directory"
@@ -9276,7 +9458,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 
 [package.source]
@@ -9300,77 +9482,6 @@ type = "directory"
 url = "../../lib/bi_sqlalchemy_bitrix"
 
 [[package]]
-name = "yandex-bi-sqlalchemy-chyt"
-version = "0.7"
-description = "BI CHYT SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../bi_sqlalchemy_common"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_chyt"
-
-[[package]]
-name = "yandex-bi-sqlalchemy-clickhouse"
-version = "0.3"
-description = "BI ClickHouse SQLAlchemy Dialect Customizations"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-yandex-bi-sqlalchemy-common = {path = "../bi_sqlalchemy_common"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"
-
-[[package]]
-name = "yandex-bi-sqlalchemy-common"
-version = "0.2"
-description = "BI SQLAlchemy dialects common additions"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_common"
-
-[[package]]
-name = "yandex-bi-sqlalchemy-mssql"
-version = "0.3"
-description = "BI MSSQL SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-pyodbc = ">=4.0.35"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-sqlalchemy-common = {path = "../bi_sqlalchemy_common"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_mssql"
-
-[[package]]
 name = "yandex-bi-sqlalchemy-mysql"
 version = "0.3"
 description = "BI MySQL SQLAlchemy Dialect"
@@ -9380,67 +9491,13 @@ files = []
 develop = false
 
 [package.dependencies]
+datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 mysqlclient = ">=1.4.6"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-sqlalchemy-common = {path = "../../mainrepo/lib/bi_sqlalchemy_common"}
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_sqlalchemy_mysql"
-
-[[package]]
-name = "yandex-bi-sqlalchemy-oracle"
-version = "0.3"
-description = "BI Oracle SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-oracledb = ">=1.3.1"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-sqlalchemy-common = {path = "../bi_sqlalchemy_common"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_oracle"
-
-[[package]]
-name = "yandex-bi-sqlalchemy-postgres"
-version = "0.3"
-description = "BI PostgreSQL SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-asyncpg = ">=0.27.0"
-psycopg2-binary = ">=2.9.6"
-sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-sqlalchemy-common = {path = "../bi_sqlalchemy_common"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_postgres"
-
-[[package]]
-name = "yandex-bi-sqlalchemy-promql"
-version = "0.1"
-description = "BI PromQL SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_sqlalchemy_promql"
 
 [[package]]
 name = "yandex-bi-sqlalchemy-solomon"
@@ -9478,28 +9535,6 @@ type = "directory"
 url = "../../lib/bi_sqlalchemy_yq"
 
 [[package]]
-name = "yandex-bi-testing"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-aiobotocore = ">=2.4.2"
-attrs = ">=22.2.0"
-psycopg2-binary = ">=2.9.6"
-pytest = ">=7.2.2"
-python-dotenv = ">=1.0.0"
-pyyaml = ">=5.3.1"
-yandex-bi-utils = {path = "../bi_utils"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_testing"
-
-[[package]]
 name = "yandex-bi-testing-dc"
 version = "0.0.1"
 description = ""
@@ -9510,7 +9545,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 
 [package.source]
 type = "directory"
@@ -9527,7 +9562,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
 
 [package.source]
 type = "directory"
@@ -9547,57 +9582,22 @@ aiohttp = "==3.8.5"
 attrs = ">=22.2.0"
 bi-defaults = {path = "../bi_defaults"}
 certifi-yandex = ">=2021.10.08"
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
 jaeger-client = ">=4.8.0"
 opentracing = ">=2.4.0"
 pytest = ">=7.2.2"
 pyyaml = ">=5.3.1"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
 yandex-passport-vault-client = ">=1.5.2"
 
 [package.source]
 type = "directory"
 url = "../../lib/bi_testing_ya"
-
-[[package]]
-name = "yandex-bi-us-client"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-yandex-bi-api-commons = {path = "../bi_api_commons"}
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_us_client"
-
-[[package]]
-name = "yandex-bi-utils"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-async-timeout = ">=4.0.2"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/bi_utils"
 
 [[package]]
 name = "yandex-dc-public-api-proto-stubs"
@@ -9860,4 +9860,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "fb1a97bb82b7a4fa733198292f2e9a3b74ce2992d3e02fda11a440180a3f824c"
+content-hash = "605385f8e8303417af897014b6fee40a601feac364d8f8e2388731fe7629fa4f"

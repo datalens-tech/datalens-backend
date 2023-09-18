@@ -1,7 +1,7 @@
 from marshmallow import fields as ma_fields
 
 from bi_connector_monitoring.core.us_connection import MonitoringConnection
-from bi_core.us_manager.storage_schemas.connection import (
+from dl_core.us_manager.storage_schemas.connection import (
     ConnectionBaseDataStorageSchema,
     CacheableConnectionDataSchemaMixin,
 )

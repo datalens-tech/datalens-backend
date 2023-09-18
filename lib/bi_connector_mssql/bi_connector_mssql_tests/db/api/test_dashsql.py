@@ -1,7 +1,7 @@
 import pytest
 from aiohttp.test_utils import TestClient
 
-from bi_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
+from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
 
 from bi_connector_mssql_tests.db.api.base import MSSQLDashSQLConnectionTest
 from bi_connector_mssql_tests.db.config import SUBSELECT_QUERY_FULL

@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.misc_funcs import (
+from dl_formula_testing.testcases.misc_funcs import (
     DefaultMiscFunctionalityConnectorTestSuite,
 )
 

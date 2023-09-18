@@ -4,10 +4,10 @@ from typing import Callable, ClassVar, Optional
 
 import attr
 
-from bi_core.base_models import ConnCacheableDataModelMixin
-from bi_core.connection_models.conn_options import ConnectOptions
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
+from dl_core.base_models import ConnCacheableDataModelMixin
+from dl_core.connection_models.conn_options import ConnectOptions
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import ConnectionBase, DataSourceTemplate, ExecutorBasedMixin
 
 from bi_connector_gsheets.core.constants import SOURCE_TYPE_GSHEETS
 from bi_connector_gsheets.core.dto import GSheetsConnDTO

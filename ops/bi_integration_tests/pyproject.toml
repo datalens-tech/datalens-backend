@@ -18,17 +18,17 @@ shortuuid = ">=1.0.11"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
+datalens-us-client = {path = "../../mainrepo/lib/dl_us_client"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
 
 [tool.poetry.group.tests.dependencies]
 pandas = ">=1.5.3"
 pytest-asyncio = ">=0.20.3"
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
 bi-defaults = {path = "../../lib/bi_defaults"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
 
 [build-system]
 requires = ["poetry-core"]

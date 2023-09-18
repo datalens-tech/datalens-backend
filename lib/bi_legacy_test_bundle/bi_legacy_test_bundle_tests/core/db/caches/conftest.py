@@ -3,13 +3,13 @@ from __future__ import annotations
 import pytest
 from sqlalchemy.engine.url import make_url
 
-from bi_constants.enums import BIType, RawSQLLevel
+from dl_constants.enums import BIType, RawSQLLevel
 
-from bi_core_testing.connection import make_saved_connection
-from bi_core_testing.database import make_db, make_table, C
-from bi_core_testing.dataset import make_dataset
+from dl_core_testing.connection import make_saved_connection
+from dl_core_testing.database import make_db, make_table, C
+from dl_core_testing.dataset import make_dataset
 
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 @pytest.fixture(scope='session')

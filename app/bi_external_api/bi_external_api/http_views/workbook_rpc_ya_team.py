@@ -1,4 +1,4 @@
-from bi_api_commons.base_models import TenantDef, TenantCommon
+from dl_api_commons.base_models import TenantDef, TenantCommon
 from bi_external_api.domain.external import rpc, rpc_ya_team
 from bi_external_api.http_views.workbook_rpc import WorkbookRPCView
 

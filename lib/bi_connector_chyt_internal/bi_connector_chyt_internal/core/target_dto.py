@@ -2,7 +2,7 @@ from typing import Type, Optional, TypeVar
 
 import attr
 
-from bi_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO
+from dl_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO
 
 
 _CT_DTO_TV = TypeVar("_CT_DTO_TV", bound='BaseCHYTInternalConnTargetDTO')

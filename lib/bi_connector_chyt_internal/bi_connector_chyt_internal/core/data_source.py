@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import attr
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
-from bi_connector_chyt.core.data_source import (
+from dl_connector_chyt.core.data_source import (
     BaseCHYTTableDataSource,
     BaseCHYTTableListDataSource,
     BaseCHYTTableRangeDataSource,

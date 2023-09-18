@@ -1,7 +1,7 @@
 import pytest
 
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core_testing.testcases.data_source import SQLDataSourceTestClass
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core_testing.testcases.data_source import SQLDataSourceTestClass
 
 from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
     SOURCE_TYPE_CH_USAGE_TRACKING_TABLE,

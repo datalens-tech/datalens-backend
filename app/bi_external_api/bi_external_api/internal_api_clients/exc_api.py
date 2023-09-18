@@ -2,7 +2,7 @@ from typing import Optional
 
 import attr
 
-from bi_api_commons.exc import NotFoundErr, ExceptionWithData
+from dl_api_commons.exc import NotFoundErr, ExceptionWithData
 from bi_external_api.domain.internal import datasets
 from bi_external_api.exc_defs import ExternalAPIException
 

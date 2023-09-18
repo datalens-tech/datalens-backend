@@ -16,8 +16,8 @@ attrs = ">=22.2.0"
 flask = ">=2.0.3"
 python = ">=3.10, <3.12"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

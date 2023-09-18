@@ -1,6 +1,6 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, NotificationType
+from dl_constants.enums import ConnectionType, CreateDSFrom, DataSourceCreatedVia, NotificationType
 
-from bi_connector_chyt.core.constants import BACKEND_TYPE_CHYT as BASE_BACKEND_TYPE_CHYT
+from dl_connector_chyt.core.constants import BACKEND_TYPE_CHYT as BASE_BACKEND_TYPE_CHYT
 
 
 BACKEND_TYPE_CHYT = BASE_BACKEND_TYPE_CHYT

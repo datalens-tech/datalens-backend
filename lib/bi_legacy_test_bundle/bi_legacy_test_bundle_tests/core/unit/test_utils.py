@@ -5,7 +5,7 @@ from typing import Any
 
 import pytest
 
-from bi_core.utils import validate_hostname_or_ip_address, secrepr
+from dl_core.utils import validate_hostname_or_ip_address, secrepr
 
 
 @pytest.mark.parametrize("host,valid", (

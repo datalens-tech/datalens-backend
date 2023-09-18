@@ -9,11 +9,11 @@ import attr
 import pytest
 
 import clickhouse_sqlalchemy.types as ch_types
-from bi_constants.enums import DataSourceRole, BIType, FileProcessingStatus
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from bi_core.db import SchemaColumn
-from bi_core.services_registry.file_uploader_client_factory import (
+from dl_constants.enums import DataSourceRole, BIType, FileProcessingStatus
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+from dl_core.db import SchemaColumn
+from dl_core.services_registry.file_uploader_client_factory import (
     FileUploaderClientFactory,
     FileUploaderClient,
     FileSourceDesc,
@@ -21,8 +21,8 @@ from bi_core.services_registry.file_uploader_client_factory import (
     SourceInternalParams,
     GSheetsFileSourceDesc,
 )
-from bi_core_testing.database import C, make_sample_data, make_table
-from bi_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
+from dl_core_testing.database import C, make_sample_data, make_table
+from dl_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
 from bi_legacy_test_bundle_tests.api_lib.utils import make_connection_get_id
 
 

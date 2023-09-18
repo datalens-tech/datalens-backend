@@ -2,7 +2,7 @@ from typing import Optional
 
 import attr
 
-from bi_connector_chyt.core.dto import BaseCHYTDTO
+from dl_connector_chyt.core.dto import BaseCHYTDTO
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,

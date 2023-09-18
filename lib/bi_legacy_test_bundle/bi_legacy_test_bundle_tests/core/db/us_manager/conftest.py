@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
 @pytest.fixture(scope='function')

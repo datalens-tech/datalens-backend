@@ -12,12 +12,12 @@ from sqlalchemy import exc as sa_exc
 from sqlalchemy.dialects import mssql as ms_types
 import pyodbc
 
-import bi_core.exc as exc
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from bi_core.connectors.base.error_transformer import DBExcKWArgs
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawColumnInfo, RawSchemaInfo
-from bi_core.connection_models import DBIdent, SATextTableDefinition, SchemaIdent, TableIdent
-from bi_core.db.native_type import CommonNativeType
+import dl_core.exc as exc
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery, RawColumnInfo, RawSchemaInfo
+from dl_core.connection_models import DBIdent, SATextTableDefinition, SchemaIdent, TableIdent
+from dl_core.db.native_type import CommonNativeType
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mssql.core.exc import CommitOrRollbackFailed, SyncMssqlSourceDoesNotExistError
@@ -110,7 +110,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
 
         Note that the entire subquery is passed as a string.
         """
-        from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+        from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
         # 'select * from (<user_input_text>) as source'
         select_all = sa.select([sa.literal_column('*')]).select_from(subquery.text)
         select_all_str = str(select_all)  # Should be straightforward and safe and reliable. Really.

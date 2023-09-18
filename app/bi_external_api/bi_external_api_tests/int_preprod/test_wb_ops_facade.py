@@ -10,7 +10,7 @@ from bi_external_api.domain.internal import datasets
 from bi_external_api.domain.internal.dl_common import EntrySummary
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
 from bi_external_api.workbook_ops.wb_mod_steps.utils import TaggedStringAttrSetter
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 
 def create_default_ext_dashboard(pg_connection: datasets.ConnectionInstance) -> ext.WorkBook:

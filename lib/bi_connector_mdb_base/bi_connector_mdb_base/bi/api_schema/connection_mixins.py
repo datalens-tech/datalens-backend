@@ -3,7 +3,7 @@ from __future__ import annotations
 import marshmallow
 from marshmallow import fields as ma_fields
 
-from bi_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.extras import FieldExtra
 
 
 class MDBDatabaseSchemaMixin(marshmallow.Schema):

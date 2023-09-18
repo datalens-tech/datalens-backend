@@ -6,7 +6,7 @@ import attr
 
 from bi_api_commons_ya_team.constants import DLCookiesYT
 
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_solomon.core.adapter import AsyncSolomonAdapter
 from bi_connector_solomon.core.target_dto import SolomonConnTargetDTO
 

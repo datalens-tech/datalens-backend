@@ -1,8 +1,8 @@
 """
 Usage:
 
-from bi_core.maintenance.helpers import get_sync_usm, get_dataset
-from bi_api_lib.maintenance.data_access import get_result_data, make_query_spec_union
+from dl_core.maintenance.helpers import get_sync_usm, get_dataset
+from dl_api_lib.maintenance.data_access import get_result_data, make_query_spec_union
 
 ds = get_dataset('hfu4hg98wh48', is_async_env=True)
 raw_query_spec_union = make_query_spec_union(select=['My Field', 'fd83956d-8da7-4908-b376-ffc11576583a'])
@@ -16,33 +16,33 @@ from typing import Iterable, Union, Optional
 
 import tabulate
 
-from bi_constants.enums import PivotRole
+from dl_constants.enums import PivotRole
 
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.reporting.registry import DefaultReportingRegistry, ReportingRegistry
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager import USManagerBase
+from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.reporting.registry import DefaultReportingRegistry, ReportingRegistry
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager import USManagerBase
 
-from bi_api_lib.dataset.view import DatasetView
-from bi_api_lib.query.formalization.raw_specs import (
+from dl_api_lib.dataset.view import DatasetView
+from dl_api_lib.query.formalization.raw_specs import (
     IdOrTitleFieldRef, RawSelectFieldSpec, RawQuerySpecUnion,
 )
-from bi_api_lib.query.formalization.raw_pivot_specs import (
+from dl_api_lib.query.formalization.raw_pivot_specs import (
     RawPivotLegendItem, RawPivotSpec, RawDimensionPivotRoleSpec, RawPivotMeasureRoleSpec,
 )
-from bi_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
-from bi_query_processing.legend.block_legend import BlockSpec
-from bi_api_lib.query.formalization.block_formalizer import BlockFormalizer
-from bi_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
-from bi_query_processing.postprocessing.primitives import PostprocessedQueryUnion, PostprocessedQueryBlock
-from bi_query_processing.postprocessing.postprocessor import DataPostprocessor
-from bi_query_processing.merging.merger import DataStreamMerger
-from bi_api_lib.api_common.data_serialization import (
+from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
+from dl_query_processing.legend.block_legend import BlockSpec
+from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
+from dl_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
+from dl_query_processing.postprocessing.primitives import PostprocessedQueryUnion, PostprocessedQueryBlock
+from dl_query_processing.postprocessing.postprocessor import DataPostprocessor
+from dl_query_processing.merging.merger import DataStreamMerger
+from dl_api_lib.api_common.data_serialization import (
     DataRequestResponseSerializer, PivotDataRequestResponseSerializer,
 )
-from bi_api_lib.request_model.normalization.drm_normalizer_pivot import PivotSpecNormalizer
-from bi_query_processing.merging.primitives import MergedQueryDataStream
-from bi_api_lib.pivot.pandas.transformer import PdPivotTransformer
+from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotSpecNormalizer
+from dl_query_processing.merging.primitives import MergedQueryDataStream
+from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
 
 
 def get_ds_view(

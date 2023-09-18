@@ -3,14 +3,14 @@ from __future__ import annotations
 import uuid
 from typing import Sequence, Optional
 
-from bi_constants.enums import BIType, DataSourceRole, ManagedBy
+from dl_constants.enums import BIType, DataSourceRole, ManagedBy
 
-from bi_core.db.elements import SchemaColumn
-from bi_core.data_source.collection import DataSourceCollection
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.data_source_spec.collection import DataSourceCollectionSpec
+from dl_core.db.elements import SchemaColumn
+from dl_core.data_source.collection import DataSourceCollection
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 
 def test_resolve_role(saved_ch_connection, default_sync_usm):

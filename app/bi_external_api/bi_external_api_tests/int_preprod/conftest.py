@@ -7,7 +7,7 @@ import pytest
 import pytz
 import yaml
 
-from bi_api_commons.base_models import TenantCommon
+from dl_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.domain import external as ext
@@ -18,7 +18,7 @@ from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.domain.internal.dl_common import EntrySummary
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
-from bi_api_commons.client.common import CommonInternalAPIClient
+from dl_api_commons.client.common import CommonInternalAPIClient
 from bi_external_api.internal_api_clients.dash_api import APIClientDashboard
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
 from bi_external_api.internal_api_clients.main import InternalAPIClients
@@ -26,7 +26,7 @@ from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.testings import PGSubSelectDatasetFactory, SingleTabDashboardBuilder
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 
 from ..test_acceptance import ConnectionTestingData
 

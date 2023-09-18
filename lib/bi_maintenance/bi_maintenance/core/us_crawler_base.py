@@ -10,12 +10,12 @@ from typing import Any, AsyncGenerator, AsyncIterable, ClassVar, Optional, Seque
 import attr
 import shortuuid
 
-from bi_api_commons.logging import extra_with_evt_code, format_dict
-from bi_api_commons.base_models import TenantDef
-from bi_core.us_entry import USEntry, USMigrationEntry
+from dl_api_commons.logging import extra_with_evt_code, format_dict
+from dl_api_commons.base_models import TenantDef
+from dl_core.us_entry import USEntry, USMigrationEntry
 from bi_maintenance.diff_utils import get_pre_save_top_level_dict, get_diff_text
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_utils.task_runner import TaskRunner, ConcurrentTaskRunner
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_utils.task_runner import TaskRunner, ConcurrentTaskRunner
 
 LOGGER = logging.getLogger(__name__)
 

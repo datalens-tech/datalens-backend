@@ -1,15 +1,15 @@
 import logging
 
-from bi_app_tools.profiling_base import GenericProfiler
+from dl_app_tools.profiling_base import GenericProfiler
 
 from bi_cloud_integration.exc import YCBadRequest, YCPermissionDenied
 from bi_cloud_integration.model import IAMResource
 
 from bi_api_commons_ya_cloud.models import IAMAuthData
-from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
+from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
-from bi_core import exc
+from dl_core import exc
 
 
 LOGGER = logging.getLogger(__name__)

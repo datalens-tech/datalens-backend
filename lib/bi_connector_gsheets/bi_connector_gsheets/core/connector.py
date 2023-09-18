@@ -1,8 +1,8 @@
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_core.data_source_spec.sql import SQLDataSourceSpecBase
-from bi_core.us_manager.storage_schemas.data_source_spec_base import BaseSQLDataSourceSpecStorageSchema
-from bi_core.connectors.base.connector import (
+from dl_core.data_source_spec.sql import SQLDataSourceSpecBase
+from dl_core.us_manager.storage_schemas.data_source_spec_base import BaseSQLDataSourceSpecStorageSchema
+from dl_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
 

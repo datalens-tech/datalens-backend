@@ -6,7 +6,7 @@ from typing import (
 
 import attr
 import requests
-from bi_api_commons.base_models import AuthData
+from dl_api_commons.base_models import AuthData
 
 from bi_external_api.testing_dicts_builders.chart import ChartJSONBuilderSingleDataset
 from bi_external_api.testing_dicts_builders.dash import DashJSONBuilderSingleTab

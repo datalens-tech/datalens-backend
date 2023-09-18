@@ -10,46 +10,46 @@ import aiohttp.pytest_plugin
 from flask import Flask, current_app
 import pytest
 
-from bi_api_commons.reporting.registry import DefaultReportingRegistry
-from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
-from bi_task_processor.processor import DummyTaskProcessorFactory
+from dl_api_commons.reporting.registry import DefaultReportingRegistry
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_task_processor.processor import DummyTaskProcessorFactory
 from statcommons.logs import LOGMUTATORS
 
-from bi_constants.enums import ProcessorType
+from dl_constants.enums import ProcessorType
 
-from bi_configs import env_var_definitions
-from bi_configs.rqe import RQEBaseURL, RQEConfig
+from dl_configs import env_var_definitions
+from dl_configs.rqe import RQEBaseURL, RQEConfig
 
-from bi_testing.utils import wait_for_initdb
+from dl_testing.utils import wait_for_initdb
 
-from bi_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_bi_db_testing
 
-from bi_app_tools import log
+from dl_app_tools import log
 
-from bi_api_commons.base_models import RequestContextInfo, TenantCommon
-from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
+from dl_api_commons.base_models import RequestContextInfo, TenantCommon
+from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 
-from bi_core.connections_security.base import InsecureConnectionSecurityManager
-from bi_core.logging_config import add_log_context_scoped
-from bi_core.services_registry.cache_engine_factory import DefaultCacheEngineFactory
-from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
-from bi_core.services_registry import DefaultServicesRegistry, ServicesRegistry
-from bi_core_testing.database import CoreDbDispenser, CoreReInitableDbDispenser, Db, make_db_config
-from bi_core_testing.environment import common_pytest_configure, restart_container_by_label
-from bi_core_testing.fixture_server_runner import WSGIRunner
-from bi_core_testing.utils import SROptions
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.utils import FutureRef
-from bi_core.loader import load_bi_core, CoreLibraryConfig
-from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
-from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
-from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
+from dl_core.connections_security.base import InsecureConnectionSecurityManager
+from dl_core.logging_config import add_log_context_scoped
+from dl_core.services_registry.cache_engine_factory import DefaultCacheEngineFactory
+from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from dl_core.services_registry import DefaultServicesRegistry, ServicesRegistry
+from dl_core_testing.database import CoreDbDispenser, CoreReInitableDbDispenser, Db, make_db_config
+from dl_core_testing.environment import common_pytest_configure, restart_container_by_label
+from dl_core_testing.fixture_server_runner import WSGIRunner
+from dl_core_testing.utils import SROptions
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.utils import FutureRef
+from dl_core.loader import load_bi_core, CoreLibraryConfig
+from dl_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
+from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
+from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
 import bi_legacy_test_bundle_tests.core.config as tests_config_mod
@@ -254,7 +254,7 @@ async def pg_compeng_data_processor(loop, compeng_pg_dsn, compeng_type):
 def make_sync_rqe_netloc_subprocess(tests_config) -> RQEBaseURL:
     assert tests_config.EXT_QUERY_EXECUTER_SECRET_KEY, 'must be nonempty'
     runner_cm = WSGIRunner(
-        module='bi_core.bin.query_executor_sync',
+        module='dl_core.bin.query_executor_sync',
         callable='app',
         ping_path='/ping',
         env=dict(

@@ -4,9 +4,9 @@ import re
 from contextlib import contextmanager
 from http import HTTPStatus
 
-from bi_core.united_storage_client import UStorageClientBase
+from dl_core.united_storage_client import UStorageClientBase
 
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_TABLE
 

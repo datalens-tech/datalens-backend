@@ -3,13 +3,13 @@ import datetime
 import pytest
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API
 from bi_connector_metrica.core.data_source import MetrikaApiDataSource
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
 
-from bi_core_testing.testcases.data_source import BaseDataSourceTestClass
+from dl_core_testing.testcases.data_source import BaseDataSourceTestClass
 from bi_connector_metrica_tests.ext.core.base import BaseMetricaTestClass
 
 

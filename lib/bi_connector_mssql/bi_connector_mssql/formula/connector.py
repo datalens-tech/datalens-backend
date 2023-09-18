@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.mssql.base import MSDialect
 
-from bi_formula.connectors.base.connector import FormulaConnector
+from dl_formula.connectors.base.connector import FormulaConnector
 
 from bi_connector_mssql.formula.constants import MssqlDialect
 from bi_connector_mssql.formula.definitions.all import DEFINITIONS

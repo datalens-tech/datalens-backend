@@ -1,16 +1,16 @@
-from bi_formula.core.dialect import StandardDialect as D
-from bi_formula.definitions.scope import Scope
+from dl_formula.core.dialect import StandardDialect as D
+from dl_formula.definitions.scope import Scope
 
-from bi_formula_ref.paths import FuncPathTemplate, CatPathTemplate
-from bi_formula_ref.audience import DEFAULT_AUDIENCE
-from bi_formula_ref.config import (
+from dl_formula_ref.paths import FuncPathTemplate, CatPathTemplate
+from dl_formula_ref.audience import DEFAULT_AUDIENCE
+from dl_formula_ref.config import (
     RefDocGeneratorConfig, FuncDocConfigVersion, FuncDocTemplateConfig
 )
 
-from bi_connector_clickhouse.formula.constants import ClickHouseDialect
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 from bi_connector_mysql.formula.constants import MySQLDialect
 from bi_connector_mssql.formula.constants import MssqlDialect
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect
 
 
 DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(

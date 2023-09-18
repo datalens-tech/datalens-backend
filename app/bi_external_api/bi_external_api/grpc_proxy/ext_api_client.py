@@ -7,7 +7,7 @@ from typing import (
 import attr
 import requests
 
-from bi_constants.api_constants import DLHeadersCommon
+from dl_constants.api_constants import DLHeadersCommon
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.domain.external import get_external_model_mapper
 from bi_external_api.enums import ExtAPIType

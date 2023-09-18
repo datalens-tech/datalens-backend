@@ -1,6 +1,6 @@
 import pytest
 
-from bi_api_commons.client.common import Req
+from dl_api_commons.client.common import Req
 
 
 @pytest.mark.asyncio

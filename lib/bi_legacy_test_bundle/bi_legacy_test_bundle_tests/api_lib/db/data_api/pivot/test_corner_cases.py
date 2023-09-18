@@ -3,14 +3,14 @@ from http import HTTPStatus
 from typing import Any
 
 
-from bi_constants.internal_constants import MEASURE_NAME_TITLE, DIMENSION_NAME_TITLE
-from bi_constants.enums import PivotRole, OrderDirection
+from dl_constants.internal_constants import MEASURE_NAME_TITLE, DIMENSION_NAME_TITLE
+from dl_constants.enums import PivotRole, OrderDirection
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.data_abstraction.pivot import PivotDataAbstraction
-from bi_api_client.dsmaker.shortcuts.result_data import get_regular_result_data
-from bi_api_client.dsmaker.pivot_utils import get_all_measure_cells, check_pivot_response
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.data_abstraction.pivot import PivotDataAbstraction
+from dl_api_client.dsmaker.shortcuts.result_data import get_regular_result_data
+from dl_api_client.dsmaker.pivot_utils import get_all_measure_cells, check_pivot_response
 
 
 def test_pivot_with_markup(api_v1, data_api_v2, dataset_id):

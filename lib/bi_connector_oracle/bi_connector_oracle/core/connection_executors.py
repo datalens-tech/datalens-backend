@@ -5,7 +5,7 @@ from typing import List
 import attr
 
 from bi_connector_oracle.core.adapters_oracle import OracleDefaultAdapter
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_oracle.core.target_dto import OracleConnTargetDTO
 from bi_connector_oracle.core.dto import OracleConnDTO
 

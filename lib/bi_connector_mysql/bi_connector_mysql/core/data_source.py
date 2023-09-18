@@ -3,9 +3,9 @@ from __future__ import annotations
 import logging
 from typing import ClassVar, FrozenSet
 
-from bi_constants.enums import CreateDSFrom, JoinType
+from dl_constants.enums import CreateDSFrom, JoinType
 
-from bi_core.data_source.sql import StandardSQLDataSource, SubselectDataSource, BaseSQLDataSource
+from dl_core.data_source.sql import StandardSQLDataSource, SubselectDataSource, BaseSQLDataSource
 
 from bi_connector_mysql.core.constants import (
     CONNECTION_TYPE_MYSQL, SOURCE_TYPE_MYSQL_TABLE, SOURCE_TYPE_MYSQL_SUBSELECT,

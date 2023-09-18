@@ -4,7 +4,7 @@ import datetime
 import decimal
 import json
 
-from bi_core.serialization import RedisDatalensDataJSONEncoder, RedisDatalensDataJSONDecoder
+from dl_core.serialization import RedisDatalensDataJSONEncoder, RedisDatalensDataJSONDecoder
 
 
 SAMPLE_DATA = dict(

@@ -4,20 +4,20 @@ from typing import Type
 import aiohttp
 import pytest
 
-from bi_api_commons.base_models import TenantCommon
+from dl_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.charts_api import APIClientCharts
-from bi_api_commons.client.common import CommonInternalAPIClient
+from dl_api_commons.client.common import CommonInternalAPIClient
 from bi_external_api.internal_api_clients.dash_api import APIClientDashboard
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 from bi_external_api.workbook_ops.facade import WorkbookOpsFacade
 
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 
 ENV_KEY_DO_NOT_SKIP = "BI_EXT_API_TEST_DO_NOT_SKIP"
 ENV_KEY_YT_TOKEN = "BI_EXT_API_TESTS_MAIN_YT_TOKEN"

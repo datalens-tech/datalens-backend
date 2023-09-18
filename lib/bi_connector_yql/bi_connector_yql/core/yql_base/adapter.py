@@ -8,16 +8,16 @@ import logging
 import attr
 import sqlalchemy as sa
 
-from bi_core import exc
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from bi_core.connection_models import TableIdent
+from dl_core import exc
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connection_models import TableIdent
 
 if TYPE_CHECKING:
-    from bi_core.connectors.base.error_transformer import DBExcKWArgs
-    from bi_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO  # noqa: F401
-    from bi_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
-    from bi_core.connection_models import DBIdent
-    from bi_core.db.native_type import SATypeSpec
+    from dl_core.connectors.base.error_transformer import DBExcKWArgs
+    from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO  # noqa: F401
+    from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
+    from dl_core.connection_models import DBIdent
+    from dl_core.db.native_type import SATypeSpec
 
 
 LOGGER = logging.getLogger(__name__)

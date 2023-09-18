@@ -1,13 +1,13 @@
-from bi_constants.enums import FieldRole, PivotRole
+from dl_constants.enums import FieldRole, PivotRole
 
-from bi_api_lib.query.formalization.raw_specs import (
+from dl_api_lib.query.formalization.raw_specs import (
     RawQuerySpecUnion, RawSelectFieldSpec, TitleFieldRef, RawTemplateRoleSpec, RawRoleSpec, PlaceholderRef,
 )
-from bi_api_lib.query.formalization.raw_pivot_specs import (
+from dl_api_lib.query.formalization.raw_pivot_specs import (
     RawPivotSpec, RawPivotLegendItem, RawPivotMeasureRoleSpec, RawDimensionPivotRoleSpec,
 )
-from bi_api_lib.request_model.data import PivotDataRequestModel
-from bi_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
+from dl_api_lib.request_model.data import PivotDataRequestModel
+from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
 
 
 def test_simple_totals():

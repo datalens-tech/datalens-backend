@@ -1,4 +1,4 @@
-from bi_connector_chyt.core.type_transformer import (
+from dl_connector_chyt.core.type_transformer import (
     CHYTTypeTransformer,
     make_chyt_native_to_user_map,
     make_chyt_user_to_native_map,

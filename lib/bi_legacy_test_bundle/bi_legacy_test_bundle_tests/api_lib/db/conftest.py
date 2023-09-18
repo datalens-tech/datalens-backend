@@ -5,20 +5,20 @@ from typing import Tuple
 
 import pytest
 
-from bi_api_lib.enums import USPermissionKind
+from dl_api_lib.enums import USPermissionKind
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.united_storage_client import UStorageClientBase
-from bi_core_testing.database import (
+from dl_core.united_storage_client import UStorageClientBase
+from dl_core_testing.database import (
     C, Db, DbTable, make_table, CoreReInitableDbDispenser,
 )
-from bi_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
+from dl_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
 from bi_legacy_test_bundle_tests.api_lib.conftest import (  # noqa

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants import (
     CONNECTION_TYPE_MARKET_COURIERS,

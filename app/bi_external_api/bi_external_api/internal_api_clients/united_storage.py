@@ -3,15 +3,15 @@ from typing import Any, Optional
 
 import attr
 
-from bi_api_commons.base_models import AuthData
-from bi_api_commons.client.base import Req
-from bi_api_commons.client.common import CommonInternalAPIClient
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
-from bi_constants.enums import ConnectionType
+from dl_api_commons.base_models import AuthData
+from dl_api_commons.client.base import Req
+from dl_api_commons.client.common import CommonInternalAPIClient
+from dl_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
+from dl_constants.enums import ConnectionType
 from bi_external_api.domain.internal.datasets import BIConnectionSummary
 from bi_external_api.domain.internal.dl_common import EntrySummary, EntryScope
-from bi_us_client.constants import OpCode as UsOpCode
-from bi_us_client.us_workbook_cmd_client import USWorkbookCommandClient
+from dl_us_client.constants import OpCode as UsOpCode
+from dl_us_client.us_workbook_cmd_client import USWorkbookCommandClient
 from .base import CollectionPagedContentsProvider
 from .exc_api import InvalidIDFormatError
 from .models import WorkbookBackendTOC, CollectionContentsPage, CollectionInfo, WorkbookInCollectionInfo, \

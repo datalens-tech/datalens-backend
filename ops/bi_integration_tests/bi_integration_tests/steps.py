@@ -4,7 +4,7 @@ from typing import Union, Dict, List, Any, Optional, Callable, Set, Sequence
 
 import attr
 from aiohttp import FormData, ClientSession
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
 from bi_testing_ya.api_wrappers import Req, Resp, APIClient, HTTPClientWrapper
 from bi_testing_ya.cloud_tokens import AccountCredentials

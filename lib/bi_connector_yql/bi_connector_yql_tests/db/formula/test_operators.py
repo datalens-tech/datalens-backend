@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 
-from bi_formula_testing.testcases.operators import (
+from dl_formula_testing.testcases.operators import (
     DefaultOperatorFormulaConnectorTestSuite,
 )
-from bi_formula_testing.evaluator import DbEvaluator
+from dl_formula_testing.evaluator import DbEvaluator
 from bi_connector_yql_tests.db.formula.base import (
     YQLTestBase,
 )

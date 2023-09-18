@@ -24,15 +24,15 @@ bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
 yandex-dc-public-api-proto-stubs = {path = "../../lib/dc_public_api_proto_stubs"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 bi-defaults = {path = "../../lib/bi_defaults"}
-yandex-bi-model-tools = {path = "../../mainrepo/lib/bi_model_tools"}
-yandex-bi-us-client = {path = "../../mainrepo/lib/bi_us_client"}
 dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-us-client = {path = "../../mainrepo/lib/dl_us_client"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -40,11 +40,11 @@ pytest-asyncio = ">=0.20.3"
 uwsgi = ">=2.0.21"
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 yandex-bi-api = {path = "../../app/bi_api"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

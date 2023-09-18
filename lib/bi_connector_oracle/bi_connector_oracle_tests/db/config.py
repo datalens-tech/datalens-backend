@@ -1,10 +1,10 @@
 import os
 from typing import ClassVar
 
-from bi_core_testing.configuration import DefaultCoreTestConfiguration
+from dl_core_testing.configuration import DefaultCoreTestConfiguration
 
 from bi_connector_oracle.formula.constants import OracleDialect as D
-from bi_testing.containers import get_test_container_hostport
+from dl_testing.containers import get_test_container_hostport
 
 
 # Infra settings

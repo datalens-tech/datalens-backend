@@ -5,7 +5,7 @@ from typing import Generator
 
 import pytest
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import (
     CONNECTION_TYPE_CH_BILLING_ANALYTICS,
 )
@@ -16,7 +16,7 @@ from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.lifecycle import 
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.testing.connection import (
     make_saved_ch_billing_analytics_connection,
 )
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 import bi_connector_bundle_ch_filtered_tests.db.config as common_test_config
 import bi_connector_bundle_ch_filtered_tests.db.ch_billing_analytics.config as test_config

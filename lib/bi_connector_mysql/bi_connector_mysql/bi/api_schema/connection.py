@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from bi_connector_mysql.core.us_connection import ConnectionMySQL
 
-from bi_api_connector.api_schema.connection_base import ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
-from bi_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
+from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
+from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 
 
 class MySQLConnectionSchema(

@@ -1,5 +1,5 @@
-import bi_formula.definitions.operators_unary as base
-from bi_formula.definitions.base import TranslationVariant
+import dl_formula.definitions.operators_unary as base
+from dl_formula.definitions.base import TranslationVariant
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 

@@ -6,7 +6,7 @@ from typing import Any, Callable, Optional, Sequence
 
 from yandex.cloud.priv.accessservice.v2 import access_service_pb2, access_service_pb2_grpc, resource_pb2
 
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 from bi_cloud_integration.exc import grpc_exc_handler
 from bi_cloud_integration.model import IAMServiceAccount, IAMUserAccount, IAMAccount, IAMResource
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient

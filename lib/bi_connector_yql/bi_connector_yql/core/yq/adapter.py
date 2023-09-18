@@ -6,22 +6,22 @@ import logging
 
 import attr
 
-from bi_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
 from bi_cloud_integration.exc import YCUnauthenticated
 from bi_sqlalchemy_yq.errors import YQError
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_core import exc
-from bi_core.connection_models import TableIdent
+from dl_core import exc
+from dl_core.connection_models import TableIdent
 
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.target_dto import YQConnTargetDTO
 from bi_connector_yql.core.yql_base.adapter import YQLAdapterBase
 
 if TYPE_CHECKING:
-    from bi_core.connection_models import SchemaIdent
-    from bi_core.connectors.base.error_transformer import DBExcKWArgs
+    from dl_core.connection_models import SchemaIdent
+    from dl_core.connectors.base.error_transformer import DBExcKWArgs
 
 
 LOGGER = logging.getLogger(__name__)

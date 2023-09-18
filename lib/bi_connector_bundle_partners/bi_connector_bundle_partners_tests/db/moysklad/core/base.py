@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_partners.moysklad.core.constants import CONNECTION_TYPE_MOYSKLAD
 from bi_connector_bundle_partners.moysklad.core.settings import MoySkladConnectorSettings

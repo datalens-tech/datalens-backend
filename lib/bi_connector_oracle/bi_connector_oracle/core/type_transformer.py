@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 from sqlalchemy.dialects.oracle import base as or_types  # not all data types are imported in init in older SA versions
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.db.conversion_base import TypeTransformer, make_native_type
+from dl_core.db.conversion_base import TypeTransformer, make_native_type
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 

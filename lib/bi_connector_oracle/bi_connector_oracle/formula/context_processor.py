@@ -3,8 +3,8 @@ from typing import cast
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from bi_formula.core.datatype import DataType
-from bi_formula.connectors.base.context_processor import BooleanlessContextPostprocessor
+from dl_formula.core.datatype import DataType
+from dl_formula.connectors.base.context_processor import BooleanlessContextPostprocessor
 
 
 class OracleContextPostprocessor(BooleanlessContextPostprocessor):

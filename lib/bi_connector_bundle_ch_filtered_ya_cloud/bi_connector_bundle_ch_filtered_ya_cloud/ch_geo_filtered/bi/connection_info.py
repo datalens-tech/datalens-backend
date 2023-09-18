@@ -1,4 +1,4 @@
-from bi_api_connector.connection_info import ConnectionInfoProvider
+from dl_api_connector.connection_info import ConnectionInfoProvider
 
 from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import Translatable
 

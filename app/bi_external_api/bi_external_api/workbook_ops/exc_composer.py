@@ -5,7 +5,7 @@ from typing import Optional, Sequence, Iterator
 
 import attr
 
-from bi_api_commons.exc import AccessDeniedErr, ExceptionWithData
+from dl_api_commons.exc import AccessDeniedErr, ExceptionWithData
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.exc_tooling import ExcComposer, SimpleCollectingExcComposer
@@ -21,7 +21,7 @@ from bi_external_api.workbook_ops.private_exceptions import (
     WorkbookReadBasePrivateError,
 )
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
-from bi_us_client.constants import OpCode as UsOpCode
+from dl_us_client.constants import OpCode as UsOpCode
 
 LOGGER = logging.getLogger(__name__)
 

@@ -16,42 +16,42 @@ mysqlclient = ">=1.4.6"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 mysql = "bi_connector_mysql.bi.connector:MySQLBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 mysql = "bi_connector_mysql.core.connector:MySQLCoreConnector"
 
-[tool.poetry.plugins."bi_db_testing.connectors"]
+[tool.poetry.plugins."dl_db_testing.connectors"]
 mysql = "bi_connector_mysql.db_testing.connector:MySQLDbTestingConnector"
 
-[tool.poetry.plugins."bi_formula.connectors"]
+[tool.poetry.plugins."dl_formula.connectors"]
 mysql = "bi_connector_mysql.formula.connector:MySQLFormulaConnector"
 
-[tool.poetry.plugins."bi_formula_ref.plugins"]
+[tool.poetry.plugins."dl_formula_ref.plugins"]
 mysql = "bi_connector_mysql.formula_ref.plugin:MySQLFormulaRefPlugin"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 mysqlclient = ">=1.4.6"
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-formula-testing = {path = "../../mainrepo/lib/dl_formula_testing"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

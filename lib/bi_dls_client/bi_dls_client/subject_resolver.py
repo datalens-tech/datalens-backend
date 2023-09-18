@@ -1,9 +1,9 @@
 import attr
 import logging
 
-from bi_constants.enums import RLSSubjectType
-from bi_core.rls import BaseSubjectResolver, RLSSubject, RLS_FAILED_USER_NAME_PREFIX
-from bi_core.exc import RLSSubjectNotFound
+from dl_constants.enums import RLSSubjectType
+from dl_core.rls import BaseSubjectResolver, RLSSubject, RLS_FAILED_USER_NAME_PREFIX
+from dl_core.exc import RLSSubjectNotFound
 
 from bi_dls_client.dls_client import DLSClient
 from bi_dls_client.exc import DLSSubjectNotFound

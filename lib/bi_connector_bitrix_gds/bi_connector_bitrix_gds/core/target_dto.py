@@ -2,8 +2,8 @@ import attr
 
 from typing import Optional
 
-from bi_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
-from bi_core.utils import secrepr
+from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
+from dl_core.utils import secrepr
 
 
 def hide_pass(value: Optional[dict]) -> str:

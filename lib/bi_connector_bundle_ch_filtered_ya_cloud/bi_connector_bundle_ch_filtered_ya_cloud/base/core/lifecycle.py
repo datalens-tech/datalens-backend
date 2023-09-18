@@ -1,4 +1,4 @@
-from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
+from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import ConnectionCHFilteredSubselectByPuidBase
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 

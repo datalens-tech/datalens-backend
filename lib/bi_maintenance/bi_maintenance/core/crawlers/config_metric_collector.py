@@ -1,5 +1,5 @@
 """
-See: bi_core/maintenance/README.md
+See: dl_core/maintenance/README.md
 +
 crawler.print_stats()  # chars=False)
 
@@ -16,8 +16,8 @@ from typing import Any, AsyncIterable, Generic, Sequence, TypeVar, Union, Option
 import attr
 
 from bi_maintenance.core.us_crawler_base import USEntryCrawler
-from bi_core.us_entry import USEntry, USMigrationEntry
-from bi_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_entry import USEntry, USMigrationEntry
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 
 DEFAULT_QUANTILE_SETTINGS = (1000, [100, 750, 900, 950, 999])
 

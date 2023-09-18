@@ -4,10 +4,10 @@ from typing import Optional
 
 import attr
 
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
+from dl_constants.api_constants import DLHeaders, DLHeadersCommon, DLCookies
 from bi_api_commons_ya_team.constants import DLCookiesYT
 
-from bi_api_commons.base_models import AuthData
+from dl_api_commons.base_models import AuthData
 
 
 @attr.s(frozen=True)

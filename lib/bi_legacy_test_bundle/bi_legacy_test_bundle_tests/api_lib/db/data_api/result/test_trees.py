@@ -5,15 +5,15 @@ from collections import OrderedDict
 from http import HTTPStatus
 from typing import Any, Callable, Tuple, OrderedDict as OrderedDictTyping, Sequence, Union
 
-from bi_constants.enums import BIType, FieldRole
+from dl_constants.enums import BIType, FieldRole
 
-from bi_api_client.dsmaker.primitives import Dataset, ResultField, OrderedField
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from bi_api_client.dsmaker.shortcuts.tree import make_request_legend_items_for_tree_branches
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
+from dl_api_client.dsmaker.primitives import Dataset, ResultField, OrderedField
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.shortcuts.tree import make_request_legend_items_for_tree_branches
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 
-from bi_core_testing.database import make_table, C, Db
+from dl_core_testing.database import make_table, C, Db
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
 

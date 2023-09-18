@@ -3,9 +3,9 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.constants import (
     CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS,
@@ -13,7 +13,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.con
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.us_connection import (
     ConnectionClickhouseYaMusicPodcastStats,
 )
-from bi_core_testing.connection import make_conn_key
+from dl_core_testing.connection import make_conn_key
 
 
 def make_saved_ch_ya_music_podcast_stats_connection(

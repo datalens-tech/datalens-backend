@@ -12,13 +12,13 @@ from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ss_client import DLSSClient
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 
-from bi_api_commons.access_control_common import match_path_prefix, AuthFailureError
-from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
+from dl_api_commons.access_control_common import match_path_prefix, AuthFailureError
+from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 
 from bi_api_commons_ya_cloud.yc_access_control import YCAccessController
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationMode
 
-from bi_api_lib.app.control_api.resources import handle_auth_error
+from dl_api_lib.app.control_api.resources import handle_auth_error
 
 
 LOGGER = logging.getLogger(__name__)

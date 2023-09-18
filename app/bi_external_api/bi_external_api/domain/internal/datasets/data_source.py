@@ -2,10 +2,10 @@ from typing import Optional, TypeVar, Generic, Type, ClassVar
 
 import attr
 
-from bi_constants.enums import ManagedBy, CreateDSFrom
+from dl_constants.enums import ManagedBy, CreateDSFrom
 from bi_external_api.attrs_model_mapper import ModelDescriptor, AttribDescriptor
-from bi_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
+from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT
 from bi_connector_chyt_internal.core.constants import (
     SOURCE_TYPE_CHYT_TABLE,
     SOURCE_TYPE_CHYT_TABLE_LIST,

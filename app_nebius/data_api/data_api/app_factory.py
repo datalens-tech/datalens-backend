@@ -4,18 +4,18 @@ from typing import Optional
 
 from data_api import app_version
 
-from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
-from bi_api_lib.app.data_api.app import (
+from dl_api_lib.app.data_api.app import (
     DataApiAppFactory,
     EnvSetupResult,
 )
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app_settings import TestAppSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from dl_api_lib.app_settings import TestAppSettings
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
     BaseAppSettings,
@@ -24,24 +24,24 @@ from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
 )
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.enums import (
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.enums import (
     RQE_SERVICES,
     RequiredService,
 )
-from bi_constants.api_constants import YcTokenHeaderMode
-from bi_constants.enums import ConnectionType
-from bi_core.aio.middlewares.services_registry import services_registry_middleware
-from bi_core.aio.middlewares.us_manager import (
+from dl_constants.api_constants import YcTokenHeaderMode
+from dl_constants.enums import ConnectionType
+from dl_core.aio.middlewares.services_registry import services_registry_middleware
+from dl_core.aio.middlewares.us_manager import (
     service_us_manager_middleware,
     us_manager_middleware,
 )
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory import CloudEnvManagerFactory
-from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
-from bi_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.services_registry.entity_checker import EntityUsageChecker
+from dl_core.services_registry.env_manager_factory import CloudEnvManagerFactory
+from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
+from dl_core.services_registry.rqe_caches import RQECachesSetting
 from bi_service_registry_nebius.nebius_service_registry import NebiusServiceRegistryFactory
 
 

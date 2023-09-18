@@ -3,8 +3,8 @@ from __future__ import annotations
 import os
 from typing import Optional
 
-from bi_core_testing.configuration import DefaultCoreTestConfiguration
-from bi_testing.containers import get_test_container_hostport as _get_test_container_hostport
+from dl_core_testing.configuration import DefaultCoreTestConfiguration
+from dl_testing.containers import get_test_container_hostport as _get_test_container_hostport
 
 from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
 

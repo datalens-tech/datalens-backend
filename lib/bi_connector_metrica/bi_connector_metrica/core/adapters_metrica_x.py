@@ -7,10 +7,10 @@ import sqlalchemy as sa
 from sqlalchemy.engine import Engine
 from sqlalchemy_metrika_api import exceptions as sqla_metrika_exc  # type: ignore
 
-from bi_core import exc
-from bi_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
-from bi_core.connectors.base.error_transformer import DBExcKWArgs
-from bi_core.connection_models import DBIdent
+from dl_core import exc
+from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
+from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connection_models import DBIdent
 
 from bi_connector_metrica.core.exc import MetricaAPIDatabaseQueryError
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API

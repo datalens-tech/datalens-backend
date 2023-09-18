@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.functions_window import (
+from dl_formula_testing.testcases.functions_window import (
     DefaultWindowFunctionFormulaConnectorTestSuite,
 )
 from bi_connector_mysql_tests.db.formula.base import (

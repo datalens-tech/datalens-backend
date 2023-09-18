@@ -2,8 +2,8 @@ from typing import Any
 
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_string as base
-from bi_formula.definitions.base import TranslationVariant
+import dl_formula.definitions.functions_string as base
+from dl_formula.definitions.base import TranslationVariant
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 

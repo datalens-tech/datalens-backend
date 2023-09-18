@@ -7,16 +7,16 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.testing.conne
     make_saved_ch_geo_filtered_connection,
 )
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from bi_api_lib_testing.connection_base import ConnectionTestBase
-from bi_api_lib_testing.dataset_base import DatasetTestBase
-from bi_api_lib_testing.data_api_base import StandardizedDataApiTestBase
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.connection_base import ConnectionTestBase
+from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 
-from bi_core.exc import USReqException
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.database import DbTable
+from dl_core.exc import USReqException
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.database import DbTable
 
-from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
+from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.config import BI_TEST_CONFIG
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.ch_geo_filtered.core.base import BaseCHGeoFilteredClass
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.ch_geo_filtered.config import (

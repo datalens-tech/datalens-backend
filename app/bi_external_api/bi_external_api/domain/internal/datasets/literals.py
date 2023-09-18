@@ -2,7 +2,7 @@ from typing import ClassVar
 
 import attr
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 
 

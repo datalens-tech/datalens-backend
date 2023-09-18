@@ -2,9 +2,9 @@ import os
 
 import pytest
 
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 
-from bi_core_testing.initialization import initialize_core_test
+from dl_core_testing.initialization import initialize_core_test
 
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config import CORE_TEST_CONFIG
 

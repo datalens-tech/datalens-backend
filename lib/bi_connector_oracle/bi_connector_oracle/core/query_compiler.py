@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-from bi_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.connectors.base.query_compiler import QueryCompiler
 
 
 class OracleQueryCompiler(QueryCompiler):

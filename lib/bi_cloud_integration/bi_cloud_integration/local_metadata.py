@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 
 import aiohttp
 
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 
 
 LOGGER = logging.getLogger(__name__)

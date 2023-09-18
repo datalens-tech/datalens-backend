@@ -4,18 +4,18 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.dialects.oracle import base as or_types  # not all data types are imported in init in older SA versions
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core import exc
+from dl_core import exc
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from bi_connector_oracle.core.constants import OracleDbNameType
 from bi_connector_oracle.core.connection_executors import OracleDefaultConnExecutor
 from bi_connector_oracle.core.dto import OracleConnDTO
-from bi_core.connection_executors import ConnExecutorQuery
-from bi_core.connection_models import ConnDTO, TableIdent
+from dl_core.connection_executors import ConnExecutorQuery
+from dl_core.connection_models import ConnDTO, TableIdent
 
-from bi_core_testing.database import make_table, C
+from dl_core_testing.database import make_table, C
 
 from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet, SelectDataTestSet, ErrorTestSet
 

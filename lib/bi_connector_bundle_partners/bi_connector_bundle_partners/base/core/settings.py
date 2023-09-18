@@ -5,8 +5,8 @@ from typing import Optional
 
 import attr
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.settings_loaders.meta_definition import s_attrib
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.settings_loaders.meta_definition import s_attrib
 
 
 @attr.s(frozen=True)

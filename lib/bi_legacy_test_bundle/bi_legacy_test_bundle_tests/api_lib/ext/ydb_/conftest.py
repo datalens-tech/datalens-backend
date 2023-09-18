@@ -4,7 +4,7 @@ import pytest
 import ydb
 from collections import OrderedDict
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_random_str
 from bi_legacy_test_bundle_tests.api_lib.config import get_test_container_hostport

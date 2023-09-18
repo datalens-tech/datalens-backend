@@ -1,8 +1,8 @@
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from bi_core_testing.configuration import DefaultCoreTestConfiguration
-from bi_testing.containers import get_test_container_hostport
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_core_testing.configuration import DefaultCoreTestConfiguration
+from dl_testing.containers import get_test_container_hostport
 
 
 # Infra settings

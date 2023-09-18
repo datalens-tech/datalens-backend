@@ -4,13 +4,13 @@ from typing import Sequence
 
 import attr
 
-from bi_core.mdb_utils import MDBDomainManager
-from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
+from dl_core.mdb_utils import MDBDomainManager
+from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from bi_connector_mdb_base.core.us_connection import MDBConnectionMixin
 from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
 from bi_cloud_integration.mdb import MDBPostgreSQLClusterServiceClient
 
-from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 
 
 class ConnectionPostgreSQLMDB(MDBConnectionMixin, ConnectionPostgreSQL):

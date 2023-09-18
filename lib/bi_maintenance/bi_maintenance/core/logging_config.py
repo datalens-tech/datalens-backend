@@ -4,8 +4,8 @@ from typing import Optional
 
 import shortuuid
 
-from bi_app_tools import log
-from bi_core.logging_config import configure_logging, logcfg_process_stream_human_readable
+from dl_app_tools import log
+from dl_core.logging_config import configure_logging, logcfg_process_stream_human_readable
 
 
 def configure_logging_for_shell(app_name: str = 'ad_hoc_operation', for_development: Optional[bool] = None) -> None:

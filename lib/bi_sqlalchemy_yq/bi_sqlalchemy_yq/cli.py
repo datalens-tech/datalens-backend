@@ -18,7 +18,7 @@ from ydb.table import TableClientSettings
 
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig, DLYCSingleServiceClient
 from bi_cloud_integration.yc_ts_client import get_yc_service_token
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 
 from bi_sqlalchemy_yq.errors import YQError
 

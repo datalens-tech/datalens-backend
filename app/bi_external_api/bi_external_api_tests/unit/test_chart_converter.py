@@ -4,11 +4,11 @@ import attr
 import itertools
 import pytest
 import shortuuid
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
 from bi_external_api.converter.converter_ctx import ConverterContext
 
-from bi_constants.enums import BIType, CalcMode, AggregationFunction, FieldType, ManagedBy
+from dl_constants.enums import BIType, CalcMode, AggregationFunction, FieldType, ManagedBy
 from bi_external_api.attrs_model_mapper import Processor
 from bi_external_api.attrs_model_mapper.field_processor import FieldMeta
 from bi_external_api.converter.charts.chart_converter import BaseChartConverter

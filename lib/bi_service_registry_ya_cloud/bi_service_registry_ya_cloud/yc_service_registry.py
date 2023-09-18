@@ -11,13 +11,13 @@ from bi_cloud_integration.yc_ts_client import DLTSClient
 from bi_cloud_integration.yc_billing_client import YCBillingApiClient
 from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
 
-from bi_core.rls import BaseSubjectResolver
-from bi_core.services_registry.inst_specific_sr import (
+from dl_core.rls import BaseSubjectResolver
+from dl_core.services_registry.inst_specific_sr import (
     InstallationSpecificServiceRegistry,
     InstallationSpecificServiceRegistryFactory,
 )
-from bi_core.utils import FutureRef
-from bi_core.services_registry.top_level import ServicesRegistry
+from dl_core.utils import FutureRef
+from dl_core.services_registry.top_level import ServicesRegistry
 from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI
 from bi_api_commons_ya_cloud.models import IAMAuthData
 

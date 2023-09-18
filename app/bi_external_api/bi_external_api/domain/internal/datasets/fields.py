@@ -2,7 +2,7 @@ from typing import Optional, Any
 
 import attr
 
-from bi_constants.enums import CalcMode, AggregationFunction, BIType, FieldType, ManagedBy
+from dl_constants.enums import CalcMode, AggregationFunction, BIType, FieldType, ManagedBy
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from .literals import DefaultValue
 from ..dl_common.base import DatasetAPIBaseModel

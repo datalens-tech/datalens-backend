@@ -1,0 +1,85 @@
+
+[tool.poetry]
+name = "datalens-connector-bigquery"
+version = "0.0.1"
+description = ""
+authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dl_connector_bigquery"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+google-api-core = ">=2.11.1"
+google-auth = ">=2.21.0"
+marshmallow = ">=3.19.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-utils = {path = "../dl_utils"}
+datalens-constants = {path = "../dl_constants"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-testing = {path = "../dl_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-db-testing = {path = "../dl_db_testing"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_api_lib.connectors"]
+bigquery = "dl_connector_bigquery.bi.connector:BigQueryBiApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+bigquery = "dl_connector_bigquery.core.connector:BigQueryCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+bigquery = "dl_connector_bigquery.db_testing.connector:BigQueryDbTestingConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+bigquery = "dl_connector_bigquery.formula.connector:BigQueryFormulaConnector"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-api-lib = {path = "../dl_api_lib"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_connector_bigquery_tests/ext", "dl_connector_bigquery_tests/unit"]
+
+
+
+[datalens.pytest.unit]
+root_dir = "dl_connector_bigquery_tests/unit"
+skip_compose = "true"
+
+#[datalens.pytest.ext]
+#root_dir = "dl_connector_bigquery_tests/ext"
+#skip_compose = "true"
+#labels = ["ext"]
+
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+dl_connector_bigquery = [
+    {path = "dl_connector_bigquery/bi"},
+    {path = "dl_connector_bigquery/core"},
+]

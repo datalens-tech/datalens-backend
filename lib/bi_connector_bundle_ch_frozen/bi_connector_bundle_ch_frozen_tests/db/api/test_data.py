@@ -1,4 +1,4 @@
-from bi_api_lib_testing.connector.data_api_suites import (
+from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataPreviewTestSuite, DefaultConnectorDataResultTestSuite,
 )
 

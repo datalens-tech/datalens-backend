@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 
-from bi_formula.definitions.literals import un_literal
-from bi_formula.definitions.common import quantile_value, within_group
-import bi_formula.definitions.functions_aggregation as base
-from bi_formula.definitions.base import (
+from dl_formula.definitions.literals import un_literal
+from dl_formula.definitions.common import quantile_value, within_group
+import dl_formula.definitions.functions_aggregation as base
+from dl_formula.definitions.base import (
     TranslationVariant,
 )
 

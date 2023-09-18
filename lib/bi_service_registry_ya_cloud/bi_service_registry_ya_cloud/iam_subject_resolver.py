@@ -2,14 +2,14 @@ import logging
 
 import attr
 
-from bi_constants.enums import RLSSubjectType
-from bi_core.rls import (
+from dl_constants.enums import RLSSubjectType
+from dl_core.rls import (
     BaseSubjectResolver,
     RLS_FAILED_USER_NAME_PREFIX,
     RLSSubject,
 )
 
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 
 from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI, SubjectInfo
 

@@ -7,7 +7,7 @@ import attr
 
 from bi_cloud_integration.model import IAMServiceAccount
 
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_yql.core.yq.adapter import YQAdapter
 from bi_connector_yql.core.yq.target_dto import YQConnTargetDTO
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry

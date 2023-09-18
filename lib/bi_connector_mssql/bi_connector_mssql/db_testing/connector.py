@@ -1,4 +1,4 @@
-from bi_db_testing.connectors.base.connector import DbTestingConnector
+from dl_db_testing.connectors.base.connector import DbTestingConnector
 
 from bi_connector_mssql.db_testing.engine_wrapper import MSSQLEngineWrapper
 

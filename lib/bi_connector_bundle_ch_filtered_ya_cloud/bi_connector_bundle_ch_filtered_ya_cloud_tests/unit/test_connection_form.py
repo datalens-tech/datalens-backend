@@ -1,5 +1,5 @@
-from bi_api_lib_testing.connection_form_base import ConnectionFormTestBase
-from bi_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
+from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
+from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 
 from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_BUNDLE_CH_FILTERED_CONFIGS
 from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import (

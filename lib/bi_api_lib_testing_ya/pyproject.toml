@@ -12,16 +12,16 @@ readme = "README.md"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
 pytest = ">=7.2.2"
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
 yandex-bi-cloud-integration = {path = "../bi_cloud_integration"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 bi-defaults = {path = "../bi_defaults"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-service-registry-ya-cloud = {path = "../bi_service_registry_ya_cloud"}
 yandex-bi-testing-ya = {path = "../bi_testing_ya"}
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 
 [tool.poetry.group.tests.dependencies]
 

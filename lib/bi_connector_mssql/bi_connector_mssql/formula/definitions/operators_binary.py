@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.mssql as sa_mssqlsrv
 
-import bi_formula.definitions.operators_binary as base
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common_datetime import DAY_SEC
+import dl_formula.definitions.operators_binary as base
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common_datetime import DAY_SEC
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 

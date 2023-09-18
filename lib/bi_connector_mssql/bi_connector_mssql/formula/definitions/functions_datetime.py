@@ -3,11 +3,11 @@ from __future__ import annotations
 import sqlalchemy as sa
 from sqlalchemy.sql import ClauseElement
 
-import bi_formula.definitions.functions_datetime as base
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common import raw_sql
-from bi_formula.definitions.literals import un_literal
-from bi_formula.definitions.common_datetime import (
+import dl_formula.definitions.functions_datetime as base
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common import raw_sql
+from dl_formula.definitions.literals import un_literal
+from dl_formula.definitions.common_datetime import (
     EPOCH_START_S, EPOCH_START_DOW
 )
 

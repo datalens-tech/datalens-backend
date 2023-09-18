@@ -1,21 +1,21 @@
-from bi_constants.enums import JoinType, OrderDirection
+from dl_constants.enums import JoinType, OrderDirection
 
-import bi_formula.core.fork_nodes as formula_fork_nodes
-from bi_formula.core.index import NodeHierarchyIndex
-from bi_formula.shortcuts import n
+import dl_formula.core.fork_nodes as formula_fork_nodes
+from dl_formula.core.index import NodeHierarchyIndex
+from dl_formula.shortcuts import n
 
-from bi_query_processing.enums import ExecutionLevel, QueryPart
-from bi_query_processing.compilation.primitives import (
+from dl_query_processing.enums import ExecutionLevel, QueryPart
+from dl_query_processing.compilation.primitives import (
     FromColumn, AvatarFromObject, SubqueryFromObject, JoinedFromObject,
     CompiledFormulaInfo, CompiledOrderByFormulaInfo, CompiledJoinOnFormulaInfo,
     CompiledQuery, CompiledMultiQuery,
 )
-from bi_query_processing.multi_query.splitters.mask_based import (
+from dl_query_processing.multi_query.splitters.mask_based import (
     MultiQuerySplitter, QuerySplitMask, AliasedFormulaSplitMask, AddFormulaInfo, SubqueryType,
 )
-from bi_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
-from bi_query_processing.multi_query.mutators.splitter_based import SplitterMultiQueryMutator
-from bi_query_processing.utils.name_gen import PrefixedIdGen
+from dl_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
+from dl_query_processing.multi_query.mutators.splitter_based import SplitterMultiQueryMutator
+from dl_query_processing.utils.name_gen import PrefixedIdGen
 
 
 class MyMultiQuerySplitter(MultiQuerySplitter):

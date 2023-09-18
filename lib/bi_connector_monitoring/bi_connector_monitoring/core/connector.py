@@ -1,5 +1,5 @@
-from bi_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
-from bi_core.connectors.base.connector import (
+from dl_core.connections_security.base import NonUserInputConnectionSafetyChecker, ConnSecuritySettings
+from dl_core.connectors.base.connector import (
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,

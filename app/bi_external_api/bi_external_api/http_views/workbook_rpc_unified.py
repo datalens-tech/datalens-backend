@@ -2,7 +2,7 @@ import logging
 
 from bi_external_api.workbook_ops.public_exceptions import WorkbookOperationException
 
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 from bi_api_commons_ya_cloud.models import TenantYCOrganization
 from bi_external_api.domain.external import rpc, rpc_unified_v0, object_model, errors
 from bi_external_api.internal_api_clients.exc_api import NotFoundErr, InvalidIDFormatError

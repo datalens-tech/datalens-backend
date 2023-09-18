@@ -2,25 +2,25 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.us_connection import get_connection_class
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_core.us_connection import get_connection_class
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
 from bi_connector_mssql.core.us_connection import ConnectionMSSQL
 from bi_connector_mysql.core.us_connection import ConnectionMySQL
-from bi_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
-from bi_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseAsyncAdapterConnExecutor
-from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
-from bi_core.connection_executors import ExecutionMode
-from bi_core.connections_security.base import InsecureConnectionSecurityManager
-from bi_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseAsyncAdapterConnExecutor
+from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
+from dl_core.connection_executors import ExecutionMode
+from dl_core.connections_security.base import InsecureConnectionSecurityManager
+from dl_core.mdb_utils import MDBDomainManagerFactory, MDBDomainManagerSettings
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API
 
 

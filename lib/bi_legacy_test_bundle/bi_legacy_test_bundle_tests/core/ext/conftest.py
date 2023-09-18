@@ -4,11 +4,11 @@ import os
 
 import pytest
 
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 from bi_testing_ya.tvm_info import TvmSecretReader
 
 from bi_blackbox_client.testing import update_global_tvm_info
-from bi_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
+from dl_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
 
 import bi_legacy_test_bundle_tests.core.config as tests_config_mod
 from bi_legacy_test_bundle_tests.core.conftest import (  # noqa: F401

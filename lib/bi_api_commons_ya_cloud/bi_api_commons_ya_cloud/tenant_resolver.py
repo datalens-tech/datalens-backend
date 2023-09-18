@@ -1,7 +1,7 @@
 from typing import Optional
 
-from bi_api_commons.base_models import TenantDef
-from bi_api_commons.tenant_resolver import TenantResolver
+from dl_api_commons.base_models import TenantDef
+from dl_api_commons.tenant_resolver import TenantResolver
 
 from bi_api_commons_ya_cloud.models import TenantYCFolder, TenantYCOrganization, TenantDCProject
 

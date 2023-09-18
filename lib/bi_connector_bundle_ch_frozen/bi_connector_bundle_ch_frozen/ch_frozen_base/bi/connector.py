@@ -6,12 +6,12 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
     CHFrozenCoreConnector,
 )
 
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiConnectionDefinition, BiApiConnector, BiApiSourceDefinition,
 )
-from bi_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
+from dl_api_connector.api_schema.source_base import SQLDataSourceSchema, SQLDataSourceTemplateSchema
 
-from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.api_schema.connection import BaseClickHouseFrozenConnectionSchema
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.i18n.localizer import CONFIGS

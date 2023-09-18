@@ -17,16 +17,16 @@ pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 tabulate = ">=0.9.0"
 bi-defaults = {path = "../../lib/bi_defaults"}
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-query-processing = {path = "../../mainrepo/lib/bi_query_processing"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
+datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

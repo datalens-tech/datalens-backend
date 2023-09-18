@@ -6,9 +6,9 @@ import attr
 
 from bi_api_commons_ya_team.constants import DLCookiesYT
 
-from bi_core.base_models import ConnCacheableDataModelMixin
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import ConnectionBase, SubselectMixin, ExecutorBasedMixin, DataSourceTemplate
+from dl_core.base_models import ConnCacheableDataModelMixin
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import ConnectionBase, SubselectMixin, ExecutorBasedMixin, DataSourceTemplate
 from bi_connector_solomon.core.dto import SolomonConnDTO
 
 

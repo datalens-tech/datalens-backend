@@ -12,18 +12,18 @@ from werkzeug.serving import make_server
 
 import bi.app
 from bi_api_commons_ya_cloud.models import IAMAuthData
-from bi_api_commons.base_models import TenantCommon, NoAuthData
-from bi_api_lib.app_settings import ControlApiAppTestingsSettings
+from dl_api_commons.base_models import TenantCommon, NoAuthData
+from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from bi_api_lib_testing_ya.configuration import CONNECTOR_WHITELIST
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings, YCAuthSettings
-from bi_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_configs.enums import AppType, EnvType
-from bi_configs.rqe import RQEBaseURL, RQEConfig
-from bi_constants.enums import USAuthMode
-from bi_core.loader import CoreLibraryConfig
-from bi_core_testing.environment import common_pytest_configure, prepare_united_storage
-from bi_core_testing.fixture_server_runner import WSGIRunner
+from dl_api_lib.loader import ApiLibraryConfig, preload_bi_api_lib, load_bi_api_lib
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_configs.enums import AppType, EnvType
+from dl_configs.rqe import RQEBaseURL, RQEConfig
+from dl_constants.enums import USAuthMode
+from dl_core.loader import CoreLibraryConfig
+from dl_core_testing.environment import common_pytest_configure, prepare_united_storage
+from dl_core_testing.fixture_server_runner import WSGIRunner
 from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.app import create_app
 from bi_external_api.domain import external as ext
@@ -80,7 +80,7 @@ def bi_ext_api_dc_test_env() -> DockerComposeEnvBiExtApi:
 @pytest.fixture(scope='session')
 def sync_rqe_netloc_subprocess(bi_ext_api_test_env) -> RQEBaseURL:
     with WSGIRunner(
-            module='bi_core.bin.query_executor_sync',
+            module='dl_core.bin.query_executor_sync',
             callable='app',
             ping_path='/ping',
             env=dict(

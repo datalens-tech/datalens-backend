@@ -10,16 +10,16 @@ from aiohttp.web import HTTPBadRequest
 from datetime import datetime
 from urllib.parse import urljoin
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_core.exc import DatabaseQueryError
+from dl_core.exc import DatabaseQueryError
 
 from bi_connector_monitoring.core.constants import CONNECTION_TYPE_MONITORING
 from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 
 if TYPE_CHECKING:
     from bi_connector_monitoring.core.target_dto import MonitoringConnTargetDTO
-    from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+    from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
 
 LOGGER = logging.getLogger(__name__)

@@ -8,12 +8,12 @@ import attr
 import sqlalchemy as sa
 from sqlalchemy.sql import ClauseElement
 
-import bi_formula.definitions.functions_datetime as base
-from bi_formula.core.datatype import DataType
-from bi_formula.definitions.args import ArgTypeSequence
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common_datetime import datetime_interval
-from bi_formula.definitions.literals import un_literal
+import dl_formula.definitions.functions_datetime as base
+from dl_formula.core.datatype import DataType
+from dl_formula.definitions.args import ArgTypeSequence
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common_datetime import datetime_interval
+from dl_formula.definitions.literals import un_literal
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 

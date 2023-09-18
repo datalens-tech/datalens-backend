@@ -2,8 +2,8 @@ from typing import Generic, TypeVar
 
 import attr
 
-from bi_testing.regulated_test import RegulatedTestParams
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_testing.regulated_test import RegulatedTestParams
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 

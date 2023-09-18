@@ -5,11 +5,11 @@ from typing import Callable, Optional
 import pytest
 from aiohttp import web
 
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
 
-from bi_core.aio.middlewares.tracing import TracingService
+from dl_core.aio.middlewares.tracing import TracingService
 
 
 class MockError(Exception):

@@ -14,10 +14,10 @@ import pytest
 import sentry_sdk
 from aiohttp import web, ClientSession, ClientConnectorError
 
-from bi_constants.api_constants import DLHeadersCommon
+from dl_constants.api_constants import DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
-from bi_api_commons.logging_sentry import cleanup_common_secret_data
-from bi_core.flask_utils.sentry import configure_raven_for_flask
+from dl_api_commons.logging_sentry import cleanup_common_secret_data
+from dl_core.flask_utils.sentry import configure_raven_for_flask
 from bi_testing_ya.api_wrappers import HTTPClientWrapper
 
 
@@ -220,7 +220,7 @@ def run_flask_server(sentry_dsn: str, host: str, port: int):
     """
     import flask
     from werkzeug.serving import make_server
-    from bi_core.logging_config import configure_logging
+    from dl_core.logging_config import configure_logging
 
     app = flask.Flask(__name__)
     configure_raven_for_flask(app, sentry_dsn=sentry_dsn)
@@ -244,7 +244,7 @@ def run_flask_server(sentry_dsn: str, host: str, port: int):
         try:
             raise ValueError()
         except ValueError:
-            logging.getLogger("bi_core.us_connection").exception("Got exception")
+            logging.getLogger("dl_core.us_connection").exception("Got exception")
         return flask.jsonify({"secret": secret_var})
 
     app.add_url_rule("/ping", view_func=ping)

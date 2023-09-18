@@ -3,9 +3,9 @@ from typing import Any, Sequence, Optional, NoReturn, Tuple
 
 import attr
 
-from bi_api_commons.client.base import Req, Resp
-from bi_api_commons.client.common import CommonInternalAPIClient
-from bi_constants.enums import ConnectionType
+from dl_api_commons.client.base import Req, Resp
+from dl_api_commons.client.common import CommonInternalAPIClient
+from dl_constants.enums import ConnectionType
 from bi_external_api.domain.internal import datasets
 from bi_external_api.domain.internal.dl_common import EntryScope, EntrySummary
 from bi_external_api.domain.internal.mapper import internal_models_mapper

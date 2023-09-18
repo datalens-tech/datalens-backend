@@ -1,6 +1,6 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 
-from bi_core.connectors.base.connector import (
+from dl_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
 
@@ -22,13 +22,13 @@ from bi_connector_chyt_internal.core.data_source import (
     CHYTUserAuthTableSubselectDataSource,
 )
 from bi_connector_chyt_internal.core.async_adapters import AsyncCHYTInternalAdapter, AsyncCHYTUserAuthAdapter
-from bi_connector_chyt.core.data_source_spec import (
+from dl_connector_chyt.core.data_source_spec import (
     CHYTTableDataSourceSpec,
     CHYTTableListDataSourceSpec,
     CHYTTableRangeDataSourceSpec,
     CHYTSubselectDataSourceSpec,
 )
-from bi_connector_chyt.core.storage_schemas.data_source_spec import (
+from dl_connector_chyt.core.storage_schemas.data_source_spec import (
     CHYTTableDataSourceSpecStorageSchema,
     CHYTTableListDataSourceSpecStorageSchema,
     CHYTTableRangeDataSourceSpecStorageSchema,

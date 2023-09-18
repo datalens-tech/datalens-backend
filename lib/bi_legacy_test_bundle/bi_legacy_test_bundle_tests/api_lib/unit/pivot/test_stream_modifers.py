@@ -1,13 +1,13 @@
-from bi_constants.enums import PivotRole, PivotItemType, FieldRole, FieldType, BIType
+from dl_constants.enums import PivotRole, PivotItemType, FieldRole, FieldType, BIType
 
-from bi_query_processing.legend.field_legend import Legend, LegendItem, RowRoleSpec, FieldObjSpec
-from bi_api_lib.query.formalization.pivot_legend import (
+from dl_query_processing.legend.field_legend import Legend, LegendItem, RowRoleSpec, FieldObjSpec
+from dl_api_lib.query.formalization.pivot_legend import (
     PivotLegend, PivotLegendItem, PivotMeasureRoleSpec, PivotDimensionRoleSpec, PivotAnnotationRoleSpec,
 )
-from bi_api_lib.pivot.primitives import DataCell as DC, DataCellVector as DV, MeasureNameValue as MNV
-from bi_api_lib.pivot.stream_modifiers import DataCellConverter, MeasureDataTransposer, TransposedDataRow
-from bi_api_lib.pivot.hashable_packing import JsonHashableValuePacker, JsonWrapper as JW
-from bi_query_processing.merging.primitives import MergedQueryDataRow
+from dl_api_lib.pivot.primitives import DataCell as DC, DataCellVector as DV, MeasureNameValue as MNV
+from dl_api_lib.pivot.stream_modifiers import DataCellConverter, MeasureDataTransposer, TransposedDataRow
+from dl_api_lib.pivot.hashable_packing import JsonHashableValuePacker, JsonWrapper as JW
+from dl_query_processing.merging.primitives import MergedQueryDataRow
 
 
 def test_data_cell_converter():

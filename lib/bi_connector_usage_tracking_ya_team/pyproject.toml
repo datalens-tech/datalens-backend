@@ -11,18 +11,18 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.bi.connector:UsageTrackingYaTeamBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.core.connector:UsageTrackingYaTeamCoreConnector"
 
 [tool.poetry.group.tests.dependencies]

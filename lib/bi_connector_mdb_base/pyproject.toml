@@ -13,12 +13,12 @@ readme = "README.md"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
 marshmallow = ">=3.19.0"
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

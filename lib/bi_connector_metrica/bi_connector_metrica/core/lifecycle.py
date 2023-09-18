@@ -4,8 +4,8 @@ import logging
 
 from sqlalchemy_metrika_api.exceptions import MetrikaApiAccessDeniedException
 
-from bi_core import exc
-from bi_core.connectors.base.lifecycle import ConnectionLifecycleManager
+from dl_core import exc
+from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from bi_connector_metrica.core.us_connection import MetrikaBaseMixin
 
 

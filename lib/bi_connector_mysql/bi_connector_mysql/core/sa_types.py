@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sqlalchemy.dialects import mysql as my_types
 
-from bi_core.db.sa_types_base import (
+from dl_core.db.sa_types_base import (
     make_native_type, simple_instantiator, lengthed_instantiator,
 )
 

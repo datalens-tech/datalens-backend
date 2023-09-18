@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from bi_core.connectors.base.query_compiler import QueryCompiler, SectionAliasMode
+from dl_core.connectors.base.query_compiler import QueryCompiler, SectionAliasMode
 
 
 class MySQLQueryCompiler(QueryCompiler):

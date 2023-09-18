@@ -4,7 +4,7 @@ from typing import Optional
 
 import attr
 
-from bi_connector_chyt.core.conn_options import CHYTConnectOptions
+from dl_connector_chyt.core.conn_options import CHYTConnectOptions
 
 
 @attr.s(frozen=True, hash=True)

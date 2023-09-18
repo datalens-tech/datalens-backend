@@ -1,7 +1,7 @@
 import pytest
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.us_connection import YQConnection

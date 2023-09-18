@@ -1,11 +1,11 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.mssql as sa_mssqlsrv
 
-from bi_formula.core.datatype import DataType
-from bi_formula.definitions.args import ArgTypeSequence
-from bi_formula.definitions.type_strategy import ParamsFromArgs
-import bi_formula.definitions.functions_math as base
-from bi_formula.definitions.base import TranslationVariant
+from dl_formula.core.datatype import DataType
+from dl_formula.definitions.args import ArgTypeSequence
+from dl_formula.definitions.type_strategy import ParamsFromArgs
+import dl_formula.definitions.functions_math as base
+from dl_formula.definitions.base import TranslationVariant
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 

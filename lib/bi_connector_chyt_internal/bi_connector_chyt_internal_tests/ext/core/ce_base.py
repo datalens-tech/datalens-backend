@@ -4,13 +4,13 @@ import pytest
 import shortuuid
 from sqlalchemy.types import TypeEngine
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.connection_models.common_models import DBIdent, TableIdent
-from bi_core.us_connection_base import ConnectionBase
+from dl_core.connection_models.common_models import DBIdent, TableIdent
+from dl_core.us_connection_base import ConnectionBase
 
-from bi_core_testing.database import DbTable
-from bi_core_testing.testcases.connection_executor import DefaultSyncAsyncConnectionExecutorCheckBase
+from dl_core_testing.database import DbTable
+from dl_core_testing.testcases.connection_executor import DefaultSyncAsyncConnectionExecutorCheckBase
 
 
 _CONN_TV = TypeVar('_CONN_TV', bound=ConnectionBase)

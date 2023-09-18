@@ -3,7 +3,7 @@ import os
 import attr
 
 import bi_api_lib_ya as package
-from bi_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
+from dl_i18n.localizer_base import Translatable as BaseTranslatable, TranslationConfig
 
 
 DOMAIN = f'{package.__name__}'

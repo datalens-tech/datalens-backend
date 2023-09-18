@@ -1,4 +1,4 @@
-from bi_core.connectors.base.connector import (
+from dl_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreConnector, CoreSourceDefinition,
 )
 
@@ -11,8 +11,8 @@ from bi_connector_yql.core.yq.data_source import YQSubselectDataSource, YQTableD
 from bi_connector_yql.core.yq.storage_schemas.connection import YQConnectionDataStorageSchema
 from bi_connector_yql.core.yq.type_transformer import YQTypeTransformer
 from bi_connector_yql.core.yq.us_connection import YQConnection
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
-from bi_core.us_manager.storage_schemas.data_source_spec_base import (
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import (
     SQLDataSourceSpecStorageSchema, SubselectDataSourceSpecStorageSchema,
 )
 from bi_connector_yql.core.yq.settings import YQSettingDefinition

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_constants.enums import AggregationFunction, CalcMode, FieldType
+from dl_constants.enums import AggregationFunction, CalcMode, FieldType
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 
 def test_auto_aggregation_with_explicit_aggregation(api_v1, static_dataset_id):

@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.functions_type_conversion import (
+from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
@@ -11,8 +11,8 @@ from bi_formula_testing.testcases.functions_type_conversion import (
 from bi_connector_yql_tests.db.formula.base import (
     YQLTestBase,
 )
-from bi_formula_testing.util import to_str
-from bi_formula_testing.evaluator import DbEvaluator
+from dl_formula_testing.util import to_str
+from dl_formula_testing.evaluator import DbEvaluator
 
 
 # STR

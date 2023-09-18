@@ -3,8 +3,8 @@ from typing import Callable
 import attr
 from pytest import MonkeyPatch
 
-from bi_query_processing.compilation.primitives import CompiledMultiQueryBase
-from bi_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
+from dl_query_processing.compilation.primitives import CompiledMultiQueryBase
+from dl_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 
 
 @attr.s

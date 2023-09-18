@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Optional, Type, ClassVar
 
 import attr
 
-from bi_core.connection_executors.models.db_adapter_data import RawIndexInfo
+from dl_core.connection_executors.models.db_adapter_data import RawIndexInfo
 
-from bi_connector_chyt.core.adapters import CHYTConnLineConstructor, BaseCHYTAdapter
+from dl_connector_chyt.core.adapters import CHYTConnLineConstructor, BaseCHYTAdapter
 from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
 from bi_connector_chyt_internal.core.constants import (

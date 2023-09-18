@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from bi_connector_chyt.core.storage_schemas.connection import ConnectionCHYTBaseDataStorageSchema
+from dl_connector_chyt.core.storage_schemas.connection import ConnectionCHYTBaseDataStorageSchema
 from bi_connector_chyt_internal.core.us_connection import (
     BaseConnectionCHYTInternal,
     ConnectionCHYTInternalToken,

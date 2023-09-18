@@ -8,7 +8,7 @@ import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 import ydb
 
-from bi_db_testing.database.engine_wrapper import EngineWrapperBase
+from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 
 
 def _not_impl(*args: Any) -> Any:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 from bi_legacy_test_bundle_tests.api_lib.utils import replace_dataset_connection as replace_connection
 

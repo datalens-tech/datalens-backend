@@ -5,15 +5,15 @@ from http import HTTPStatus
 
 import pytest
 
-import bi_query_processing.exc
-from bi_api_lib import exc
-from bi_constants.enums import TopLevelComponentId
+import dl_query_processing.exc
+from dl_api_lib import exc
+from dl_constants.enums import TopLevelComponentId
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 
-from bi_core.constants import DatasetConstraints
-from bi_core_testing.database import make_table, C
+from dl_core.constants import DatasetConstraints
+from dl_core_testing.database import make_table, C
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
 
@@ -63,7 +63,7 @@ def test_dataset_field_limit_add_formula(
     ds_resp = api_v1.save_dataset(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     assert ds_resp.bi_status_code == 'ERR.DS_API.' + '.'.join(
-        bi_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
+        dl_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
 
     # remove one field and confirm that result schema is ok
     ds_resp = api_v1.apply_updates(dataset=ds, updates=[ds.find_field(title='formula_0').delete()])
@@ -87,7 +87,7 @@ def test_dataset_field_limit_add_formula(
         ds.result_schema[f'formula_stage_2_soft_{i}'] = ds.field(formula=f'[int_value] + {i}')
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.bi_status_code == 'ERR.DS_API.' + '.'.join(
-        bi_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
+        dl_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
 
 
 def test_dataset_field_limit_add_source(
@@ -130,7 +130,7 @@ def test_dataset_field_limit_add_source(
     ds_resp = api_v1.save_dataset(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     assert ds_resp.bi_status_code == 'ERR.DS_API.' + '.'.join(
-        bi_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
+        dl_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
 
     # remove one avatar and confirm that the result schema is ok
     ds_resp = api_v1.apply_updates(dataset=ds, updates=[
@@ -147,7 +147,7 @@ def test_dataset_field_limit_add_source(
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     assert ds_resp.bi_status_code == 'ERR.DS_API.' + '.'.join(
-        bi_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
+        dl_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
 
 
 def test_dataset_field_limit_refresh_source(
@@ -192,7 +192,7 @@ def test_dataset_field_limit_refresh_source(
     ds_resp = api_v1.save_dataset(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     assert ds_resp.bi_status_code == 'ERR.DS_API.' + '.'.join(
-        bi_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
+        dl_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
 
     # remove last column from the table, refresh source and confirm that result schema is ok
     make_table(
@@ -222,4 +222,4 @@ def test_dataset_field_limit_refresh_source(
     ds_resp = api_v1.apply_updates(dataset=ds, updates=[ds.sources['source_1'].refresh()], fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.BAD_REQUEST
     assert ds_resp.bi_status_code == 'ERR.DS_API.' + '.'.join(
-        bi_query_processing.exc.DatasetTooManyFieldsFatal.err_code)
+        dl_query_processing.exc.DatasetTooManyFieldsFatal.err_code)

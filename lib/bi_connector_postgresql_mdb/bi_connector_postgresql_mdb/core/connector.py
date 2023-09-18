@@ -1,12 +1,12 @@
-from bi_core.connections_security.base import ConnSecuritySettings
+from dl_core.connections_security.base import ConnSecuritySettings
 from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
-from bi_connector_postgresql.core.postgresql.connector import (
+from dl_connector_postgresql.core.postgresql.connector import (
     PostgreSQLCoreConnectionDefinition,
     PostgreSQLCoreConnector,
     PostgreSQLTableCoreSourceDefinition,
     PostgreSQLSubselectCoreSourceDefinition,
 )
-from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 
 from bi_connector_postgresql_mdb.core.data_source import PostgreSQLMDBDataSource, PostgreSQLMDBSubselectDataSource
 from bi_connector_postgresql_mdb.core.us_connection import ConnectionPostgreSQLMDB

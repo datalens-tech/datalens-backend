@@ -2,8 +2,8 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_oracle
 from sqlalchemy.types import TypeEngine
 
-from bi_formula.core.datatype import DataType
-from bi_formula.connectors.base.type_constructor import DefaultSATypeConstructor
+from dl_formula.core.datatype import DataType
+from dl_formula.connectors.base.type_constructor import DefaultSATypeConstructor
 
 
 class OracleTypeConstructor(DefaultSATypeConstructor):

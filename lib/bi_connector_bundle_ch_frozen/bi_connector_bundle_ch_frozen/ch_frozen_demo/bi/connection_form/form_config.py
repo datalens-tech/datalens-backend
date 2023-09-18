@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_api_connector.form_config.models.base import FormUIOverride
+from dl_api_connector.form_config.models.base import FormUIOverride
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.connection_form.form_config import CHFrozenBaseFormFactory
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connection_info import CHFrozenDemoConnectionInfoProvider

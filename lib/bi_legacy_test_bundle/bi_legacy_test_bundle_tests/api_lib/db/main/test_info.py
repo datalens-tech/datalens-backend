@@ -4,12 +4,12 @@ import itertools
 
 import pytest
 
-from bi_constants.enums import AggregationFunction, BIType, ConnectionType
+from dl_constants.enums import AggregationFunction, BIType, ConnectionType
 
-from bi_api_connector.form_config.models.base import ConnectionFormMode
+from dl_api_connector.form_config.models.base import ConnectionFormMode
 
-from bi_api_lib.enums import BI_TYPE_AGGREGATIONS
-from bi_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
+from dl_api_lib.enums import BI_TYPE_AGGREGATIONS
+from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 

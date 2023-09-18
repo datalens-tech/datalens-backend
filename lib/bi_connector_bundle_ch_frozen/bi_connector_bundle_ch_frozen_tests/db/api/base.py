@@ -3,9 +3,9 @@ from typing import Generator
 
 import pytest
 
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
+from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
 from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
@@ -31,14 +31,14 @@ from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.settings import C
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.constants import CONNECTION_TYPE_CH_FROZEN_WEATHER
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.settings import CHFrozenWeatherConnectorSettings
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.database import DbTable
-from bi_core_testing.testcases.service_base import ServiceFixtureTextClass
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.database import DbTable
+from dl_core_testing.testcases.service_base import ServiceFixtureTextClass
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from bi_api_lib_testing.connection_base import ConnectionTestBase
-from bi_api_lib_testing.dataset_base import DatasetTestBase
-from bi_api_lib_testing.data_api_base import StandardizedDataApiTestBase
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.connection_base import ConnectionTestBase
+from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 
 from bi_connector_bundle_ch_frozen_tests.db.config import (
     BI_TEST_CONFIG, CONNECTION_PARAMS, CORE_TEST_CONFIG, DB_CORE_URL, SR_CONNECTION_SETTINGS_PARAMS

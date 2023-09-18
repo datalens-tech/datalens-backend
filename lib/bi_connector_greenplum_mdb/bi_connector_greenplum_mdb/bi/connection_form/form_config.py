@@ -2,23 +2,23 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
 import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
 from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
 
-from bi_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from bi_api_connector.form_config.models.api_schema import (
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_api_connector.form_config.models.api_schema import (
     FormFieldApiAction, FormFieldApiSchema, FormFieldApiActionCondition, FormFieldSelector,
     FormFieldConditionalApiAction,
 )
-from bi_api_connector.form_config.models.base import ConnectionForm
-from bi_api_connector.form_config.models.rows.base import FormRow
+from dl_api_connector.form_config.models.base import ConnectionForm
+from dl_api_connector.form_config.models.rows.base import FormRow
 
-from bi_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
-from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
+from dl_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
+from dl_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
 
 

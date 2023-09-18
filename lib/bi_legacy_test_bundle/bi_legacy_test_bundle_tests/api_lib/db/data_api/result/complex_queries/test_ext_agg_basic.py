@@ -7,15 +7,15 @@ from typing import Any, Dict, Iterable, List, Tuple
 
 import pytest
 
-from bi_constants.enums import WhereClauseOperation, BIType
+from dl_constants.enums import WhereClauseOperation, BIType
 
-from bi_core_testing.database import C, make_table
-from bi_api_client.dsmaker.primitives import ResultField, Dataset
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, create_basic_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_regular_result_data, get_data_rows
+from dl_core_testing.database import C, make_table
+from dl_api_client.dsmaker.primitives import ResultField, Dataset
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, create_basic_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_regular_result_data, get_data_rows
 
-from bi_query_processing.compilation.primitives import CompiledMultiQueryBase
-from bi_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
+from dl_query_processing.compilation.primitives import CompiledMultiQueryBase
+from dl_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 

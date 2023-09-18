@@ -15,32 +15,32 @@ marshmallow = ">=3.19.0"
 oracledb = ">=1.3.1"
 python = ">=3.10, <3.12"
 sqlalchemy = ">=1.4.46, <2.0"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-db-testing = {path = "../../mainrepo/lib/bi_db_testing"}
-yandex-bi-formula = {path = "../../mainrepo/lib/bi_formula"}
-yandex-bi-formula-ref = {path = "../../mainrepo/lib/bi_formula_ref"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
-yandex-bi-sqlalchemy-oracle = {path = "../../mainrepo/lib/bi_sqlalchemy_oracle"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-formula-ref = {path = "../../mainrepo/lib/dl_formula_ref"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-formula = {path = "../../mainrepo/lib/dl_formula"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-sqlalchemy-oracle = {path = "../../mainrepo/lib/dl_sqlalchemy_oracle"}
+datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 oracle = "bi_connector_oracle.bi.connector:OracleBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 oracle = "bi_connector_oracle.core.connector:OracleCoreConnector"
 
-[tool.poetry.plugins."bi_db_testing.connectors"]
+[tool.poetry.plugins."dl_db_testing.connectors"]
 oracle = "bi_connector_oracle.db_testing.connector:OracleDbTestingConnector"
 
-[tool.poetry.plugins."bi_formula.connectors"]
+[tool.poetry.plugins."dl_formula.connectors"]
 oracle = "bi_connector_oracle.formula.connector:OracleFormulaConnector"
 
-[tool.poetry.plugins."bi_formula_ref.plugins"]
+[tool.poetry.plugins."dl_formula_ref.plugins"]
 oracle = "bi_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
 
 [tool.poetry.group]
@@ -48,10 +48,10 @@ oracle = "bi_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
 oracledb = ">=1.3.1"
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-bi-formula-testing = {path = "../../mainrepo/lib/bi_formula_testing"}
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-formula-testing = {path = "../../mainrepo/lib/dl_formula_testing"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

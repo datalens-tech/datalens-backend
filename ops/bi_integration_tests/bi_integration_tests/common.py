@@ -5,7 +5,7 @@ import uuid
 from typing import Dict, Optional, List
 
 import attr
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
 from bi_dls_client.dls_client import DLSClient
 from bi_integration_tests.constants import SOURCE_TYPE_FILE_S3_TABLE_STR

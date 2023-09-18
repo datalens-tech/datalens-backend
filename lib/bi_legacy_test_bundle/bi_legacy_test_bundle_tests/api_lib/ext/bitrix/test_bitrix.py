@@ -4,9 +4,9 @@ import json
 
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_testing.utils import guids_from_titles
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_testing.utils import guids_from_titles
 
 from bi_connector_bitrix_gds.bi.api_schema.connection import BitrixPortalValidator
 

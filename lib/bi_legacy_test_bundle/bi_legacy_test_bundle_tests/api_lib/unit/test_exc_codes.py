@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
+from dl_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
-import bi_core.exc
-import bi_formula.core.exc
+import dl_core.exc
+import dl_formula.core.exc
 
-import bi_query_processing.exc
+import dl_query_processing.exc
 
 
 def exc_cls_to_code(exc_cls):
@@ -29,28 +29,28 @@ def exc_cls_to_code(exc_cls):
 # https://bb.yandex-team.ru/projects/CLOUD/repos/docs/browse/ru/datalens/troubleshooting/errors/all.md?useDefaultHandler=true
 # https://bb.yandex-team.ru/projects/CLOUD/repos/docs/browse/ru/datalens/troubleshooting/errors
 STABILIZED_CODES = (
-    (bi_core.exc.CannotParseDateTime, 'ERR.DS_API.DB.CANNOT_PARSE.DATETIME'),
-    (bi_core.exc.CannotParseNumber, 'ERR.DS_API.DB.CANNOT_PARSE.NUMBER'),
-    (bi_core.exc.ColumnDoesNotExist, 'ERR.DS_API.DB.COLUMN_DOES_NOT_EXIST'),
-    (bi_core.exc.DatabaseQueryError, 'ERR.DS_API.DB'),
-    (bi_core.exc.DatabaseUnavailable, 'ERR.DS_API.DATABASE_UNAVAILABLE'),
-    (bi_core.exc.DbMemoryLimitExceeded, 'ERR.DS_API.DB.MEMORY_LIMIT_EXCEEDED'),
-    (bi_core.exc.InvalidQuery, 'ERR.DS_API.DB.INVALID_QUERY'),
-    (bi_core.exc.JoinColumnTypeMismatch, 'ERR.DS_API.DB.JOIN_COLUMN_TYPE_MISMATCH'),
-    (bi_core.exc.MaterializationNotFinished, 'ERR.DS_API.DB.MATERIALIZATION_NOT_FINISHED'),
-    (bi_core.exc.ResultRowCountLimitExceeded, 'ERR.DS_API.ROW_COUNT_LIMIT'),
-    (bi_core.exc.SourceDoesNotExist, 'ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST'),
-    (bi_core.exc.UnexpectedInfOrNan, 'ERR.DS_API.DB.UNEXPECTED_INF_OR_NAN'),
-    (bi_core.exc.TableNameNotConfiguredError, 'ERR.DS_API.SOURCE_CONFIG.TABLE_NOT_CONFIGURED'),
-    (bi_core.exc.USBadRequestException, 'ERR.DS_API.US.BAD_REQUEST'),
-    (bi_core.exc.USAlreadyExistsException, 'ERR.DS_API.US.BAD_REQUEST.ALREADY_EXISTS'),
-    (bi_core.exc.USObjectNotFoundException, 'ERR.DS_API.US.OBJ_NOT_FOUND'),
-    (bi_query_processing.exc.DLFormulaError, 'ERR.DS_API.FORMULA'),
-    (bi_core.exc.FieldNotFound, 'ERR.DS_API.FIELD.NOT_FOUND'),
-    (bi_query_processing.exc.FilterValueError, 'ERR.DS_API.FILTER.INVALID_VALUE'),
-    (bi_formula.core.exc.DoubleAggregationError, 'ERR.DS_API.VALIDATION.AGG.DOUBLE'),
-    (bi_formula.core.exc.InconsistentAggregationError, 'ERR.DS_API.VALIDATION.AGG.INCONSISTENT'),
-    (bi_formula.core.exc.WindowFunctionWOAggregationError, 'ERR.DS_API.VALIDATION.WIN_FUNC.NO_AGG'),
+    (dl_core.exc.CannotParseDateTime, 'ERR.DS_API.DB.CANNOT_PARSE.DATETIME'),
+    (dl_core.exc.CannotParseNumber, 'ERR.DS_API.DB.CANNOT_PARSE.NUMBER'),
+    (dl_core.exc.ColumnDoesNotExist, 'ERR.DS_API.DB.COLUMN_DOES_NOT_EXIST'),
+    (dl_core.exc.DatabaseQueryError, 'ERR.DS_API.DB'),
+    (dl_core.exc.DatabaseUnavailable, 'ERR.DS_API.DATABASE_UNAVAILABLE'),
+    (dl_core.exc.DbMemoryLimitExceeded, 'ERR.DS_API.DB.MEMORY_LIMIT_EXCEEDED'),
+    (dl_core.exc.InvalidQuery, 'ERR.DS_API.DB.INVALID_QUERY'),
+    (dl_core.exc.JoinColumnTypeMismatch, 'ERR.DS_API.DB.JOIN_COLUMN_TYPE_MISMATCH'),
+    (dl_core.exc.MaterializationNotFinished, 'ERR.DS_API.DB.MATERIALIZATION_NOT_FINISHED'),
+    (dl_core.exc.ResultRowCountLimitExceeded, 'ERR.DS_API.ROW_COUNT_LIMIT'),
+    (dl_core.exc.SourceDoesNotExist, 'ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST'),
+    (dl_core.exc.UnexpectedInfOrNan, 'ERR.DS_API.DB.UNEXPECTED_INF_OR_NAN'),
+    (dl_core.exc.TableNameNotConfiguredError, 'ERR.DS_API.SOURCE_CONFIG.TABLE_NOT_CONFIGURED'),
+    (dl_core.exc.USBadRequestException, 'ERR.DS_API.US.BAD_REQUEST'),
+    (dl_core.exc.USAlreadyExistsException, 'ERR.DS_API.US.BAD_REQUEST.ALREADY_EXISTS'),
+    (dl_core.exc.USObjectNotFoundException, 'ERR.DS_API.US.OBJ_NOT_FOUND'),
+    (dl_query_processing.exc.DLFormulaError, 'ERR.DS_API.FORMULA'),
+    (dl_core.exc.FieldNotFound, 'ERR.DS_API.FIELD.NOT_FOUND'),
+    (dl_query_processing.exc.FilterValueError, 'ERR.DS_API.FILTER.INVALID_VALUE'),
+    (dl_formula.core.exc.DoubleAggregationError, 'ERR.DS_API.VALIDATION.AGG.DOUBLE'),
+    (dl_formula.core.exc.InconsistentAggregationError, 'ERR.DS_API.VALIDATION.AGG.INCONSISTENT'),
+    (dl_formula.core.exc.WindowFunctionWOAggregationError, 'ERR.DS_API.VALIDATION.WIN_FUNC.NO_AGG'),
 )
 
 

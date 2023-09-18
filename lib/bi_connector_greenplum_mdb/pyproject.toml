@@ -11,19 +11,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-bi-connector-greenplum = {path = "../../mainrepo/lib/bi_connector_greenplum"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 greenplum_mdb = "bi_connector_greenplum_mdb.bi.connector:GreenplumMDBBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 greenplum_mdb = "bi_connector_greenplum_mdb.core.connector:GreenplumMDBCoreConnector"
 
 [tool.poetry.group.tests.dependencies]

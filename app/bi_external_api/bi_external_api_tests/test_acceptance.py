@@ -9,7 +9,7 @@ import pytest
 from sqlalchemy import Column
 from sqlalchemy.engine.url import URL
 
-from bi_connector_clickhouse.db_testing.engine_wrapper import (
+from dl_connector_clickhouse.db_testing.engine_wrapper import (
     ClickhouseDbEngineConfig, ClickHouseEngineWrapper, EngineWrapperBase,
 )
 from bi_external_api.attrs_model_mapper import pretty_repr, Processor

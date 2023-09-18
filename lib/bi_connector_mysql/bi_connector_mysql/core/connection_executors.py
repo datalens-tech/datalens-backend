@@ -4,12 +4,12 @@ from typing import List, Sequence, TypeVar
 
 import attr
 
-from bi_core.connection_models.conn_options import ConnectOptions
+from dl_core.connection_models.conn_options import ConnectOptions
 from bi_connector_mysql.core.dto import MySQLConnDTO
 from bi_connector_mysql.core.adapters_mysql import MySQLAdapter
 from bi_connector_mysql.core.async_adapters_mysql import AsyncMySQLAdapter
-from bi_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
 

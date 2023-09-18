@@ -3,7 +3,7 @@ from typing import Optional
 
 import attr
 
-from bi_app_tools.profiling_base import generic_profiler, generic_profiler_async
+from dl_app_tools.profiling_base import generic_profiler, generic_profiler_async
 
 from bi_blackbox_client.authenticate import authenticate, authenticate_async
 

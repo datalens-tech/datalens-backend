@@ -1,4 +1,4 @@
-from bi_core.components.ids import ID_VALID_SYMBOLS, ID_LENGTH, make_readable_field_id
+from dl_core.components.ids import ID_VALID_SYMBOLS, ID_LENGTH, make_readable_field_id
 
 
 def test_make_readable_field_id():

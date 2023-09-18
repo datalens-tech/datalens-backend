@@ -8,40 +8,40 @@ import pytest
 import sqlalchemy as sa
 
 import bi_legacy_test_bundle_tests.core.config as tests_config_mod
-from bi_configs.settings_submodels import S3Settings
-from bi_constants.enums import (
+from dl_configs.settings_submodels import S3Settings
+from dl_constants.enums import (
     ConnectionType,
     RawSQLLevel,
 )
-from bi_core import exc
+from dl_core import exc
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
-from bi_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
-from bi_connector_bundle_chs3.file.core.testing.connection import make_saved_file_connection
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
+from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
+from dl_connector_bundle_chs3.file.core.testing.connection import make_saved_file_connection
 from bi_connector_chyt_internal.core.constants import DATA_SOURCE_CREATE_VIA_YT_TO_DL
-from bi_core_testing.connection import make_saved_connection
-from bi_core_testing.connector import CONNECTION_TYPE_TESTING
-from bi_core_testing.database import (
+from dl_core_testing.connection import make_saved_connection
+from dl_core_testing.connector import CONNECTION_TYPE_TESTING
+from dl_core_testing.database import (
     Db, DbTable, make_table, make_multiple_db_tables, make_schema,
     make_view_from_table, CoreReInitableDbDispenser, make_db_config,
 )
-from bi_core_testing.dataset import make_dataset
-from bi_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
-from bi_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_testing.s3_utils import create_s3_client, create_s3_bucket, s3_tbl_func_maker
+from dl_core_testing.dataset import make_dataset
+from dl_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
+from dl_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_testing.s3_utils import create_s3_client, create_s3_bucket, s3_tbl_func_maker
 from bi_testing_ya.sql_queries import CH_QUERY_FULL
 from clickhouse_sqlalchemy import types as ch_types
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2, SOURCE_TYPE_GSHEETS_V2
-from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2, SOURCE_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE, SOURCE_TYPE_FILE_S3_TABLE
 
 from bi_legacy_test_bundle_tests.core.conftest import clear_logging_context, loaded_libraries  # noqa: F401
 

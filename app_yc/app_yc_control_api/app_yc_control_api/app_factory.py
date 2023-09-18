@@ -5,18 +5,18 @@ from typing import Optional
 import flask
 
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from bi_configs.enums import RequiredService
-from bi_constants.enums import USAuthMode
+from dl_configs.enums import RequiredService
+from dl_constants.enums import USAuthMode
 
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from bi_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.services_registry.entity_checker import EntityUsageChecker
+from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from dl_core.services_registry.rqe_caches import RQECachesSetting
 
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
-from bi_api_lib.app_settings import ControlApiAppTestingsSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app.control_api.app import EnvSetupResult, ControlApiAppFactory
+from dl_api_lib.app_settings import ControlApiAppTestingsSettings
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 
@@ -24,7 +24,7 @@ from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
-from bi_i18n.localizer_base import TranslationConfig
+from dl_i18n.localizer_base import TranslationConfig
 
 from app_yc_control_api.i18n.localizer import CONFIGS
 

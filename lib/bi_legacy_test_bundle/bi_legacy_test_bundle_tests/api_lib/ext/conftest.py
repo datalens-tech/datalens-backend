@@ -5,10 +5,10 @@ import os
 
 import pytest
 
-from bi_core.connection_executors.adapters.async_adapters_remote import RemoteAsyncAdapter
-from bi_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
+from dl_core.connection_executors.adapters.async_adapters_remote import RemoteAsyncAdapter
+from dl_core_testing.environment import common_pytest_configure, prepare_united_storage_from_config
 
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 from bi_testing_ya.tvm_info import TvmSecretReader
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod

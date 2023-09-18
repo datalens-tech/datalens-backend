@@ -21,12 +21,12 @@ pyyaml = ">=5.3.1"
 yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-passport-vault-client = ">=1.5.2"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
 bi-defaults = {path = "../bi_defaults"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
-yandex-bi-utils = {path = "../../mainrepo/lib/bi_utils"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-utils = {path = "../../mainrepo/lib/dl_utils"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 
 [tool.poetry.group.tests.dependencies]
 

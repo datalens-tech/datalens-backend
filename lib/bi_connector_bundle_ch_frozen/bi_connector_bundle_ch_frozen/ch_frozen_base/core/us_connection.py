@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from bi_i18n.localizer_base import Localizer
-from bi_core.us_connection_base import DataSourceTemplate
+from dl_i18n.localizer_base import Localizer
+from dl_core.us_connection_base import DataSourceTemplate
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
-from bi_connector_clickhouse.core.clickhouse.constants import (
+from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_TABLE,
     SOURCE_TYPE_CH_SUBSELECT,
 )

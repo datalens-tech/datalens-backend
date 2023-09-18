@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from bi_core.us_connection_base import HiddenDatabaseNameMixin
+from dl_core.us_connection_base import HiddenDatabaseNameMixin
 
 from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
-from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from bi_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
+from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from dl_connector_clickhouse.core.clickhouse_base.us_connection import SubselectParameter, SubselectParameterType
 from bi_connector_usage_tracking_ya_team.core.constants import (
     SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,
 )

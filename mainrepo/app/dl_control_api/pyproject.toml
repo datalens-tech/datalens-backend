@@ -9,22 +9,22 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-bi-connector-greenplum = {path = "../../lib/bi_connector_greenplum"}
 python = ">=3.10, <3.12"
 Flask = ">=2.0.3"
 blinker = ">=1.5"
 raven = ">=6.10.0"
-yandex-bi-connector-postgresql = {path = "../../lib/bi_connector_postgresql"}
-yandex-bi-api-lib = {path = "../../lib/bi_api_lib"}
-yandex-bi-app-tools = {path = "../../lib/bi_app_tools"}
-yandex-bi-connector-clickhouse = {path = "../../lib/bi_connector_clickhouse"}
-yandex-bi-core = {path = "../../lib/bi_core"}
-yandex-bi-model-tools = {path = "../../lib/bi_model_tools"}
-yandex-bi-sqlalchemy-clickhouse = {path = "../../lib/bi_sqlalchemy_clickhouse"}
-yandex-bi-sqlalchemy-common = {path = "../../lib/bi_sqlalchemy_common"}
-yandex-bi-sqlalchemy-postgres = {path = "../../lib/bi_sqlalchemy_postgres"}
-yandex-bi-utils = {path = "../../lib/bi_utils"}
 dl-version = {path = "../../lib/dl_version"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
 
 [build-system]
 requires = ["poetry-core"]

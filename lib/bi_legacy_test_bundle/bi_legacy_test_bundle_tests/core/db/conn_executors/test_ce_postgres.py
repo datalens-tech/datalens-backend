@@ -9,14 +9,14 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as pg_types
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.connection_models import ConnDTO, TableIdent, SATextTableDefinition
-from bi_core.db import IndexInfo, SchemaInfo
+from dl_core.connection_models import ConnDTO, TableIdent, SATextTableDefinition
+from dl_core.db import IndexInfo, SchemaInfo
 
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from bi_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor
-from bi_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor
+from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 
 from bi_legacy_test_bundle_tests.core.db.conn_executors.test_base import BaseConnExecutorSet, \
     BaseSchemaSupportedExecutorSet

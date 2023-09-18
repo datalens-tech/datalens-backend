@@ -2,7 +2,7 @@ from typing import Sequence, Optional
 
 import attr
 
-from bi_constants.enums import FieldType
+from dl_constants.enums import FieldType
 from bi_external_api.converter.converter_exc import MalformedEntryConfig
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import (

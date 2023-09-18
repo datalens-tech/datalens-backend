@@ -8,22 +8,22 @@ from typing import List
 import pytest
 import sqlalchemy as sa
 
-from bi_constants.enums import BIType, DataSourceRole, ProcessorType, QueryType
+from dl_constants.enums import BIType, DataSourceRole, ProcessorType, QueryType
 
-from bi_api_commons.reporting.models import QueryExecutionStartReportingRecord
-from bi_api_commons.reporting.profiler import PROFILING_LOG_NAME, DefaultReportingProfiler
-from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
-from bi_core.data_processing.cache.primitives import DataKeyPart, LocalKeyRepresentation
-from bi_core.data_processing.processing.operation import BaseOp, CalcOp, DownloadOp, UploadOp
-from bi_core.data_processing.stream_base import DataRequestMetaInfo, DataStreamAsync
-from bi_core.data_processing.streaming import AsyncChunked
-from bi_core.query.bi_query import BIQuery
-from bi_core.query.expression import ExpressionCtx
-from bi_core.services_registry import ServicesRegistry
-from bi_core_testing.utils import SROptions
-from bi_core_testing.dataset_wrappers import DatasetTestWrapper
+from dl_api_commons.reporting.models import QueryExecutionStartReportingRecord
+from dl_api_commons.reporting.profiler import PROFILING_LOG_NAME, DefaultReportingProfiler
+from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
+from dl_core.data_processing.cache.primitives import DataKeyPart, LocalKeyRepresentation
+from dl_core.data_processing.processing.operation import BaseOp, CalcOp, DownloadOp, UploadOp
+from dl_core.data_processing.stream_base import DataRequestMetaInfo, DataStreamAsync
+from dl_core.data_processing.streaming import AsyncChunked
+from dl_core.query.bi_query import BIQuery
+from dl_core.query.expression import ExpressionCtx
+from dl_core.services_registry import ServicesRegistry
+from dl_core_testing.utils import SROptions
+from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 from bi_legacy_test_bundle_tests.core.utils import get_dump_request_profile_records
 

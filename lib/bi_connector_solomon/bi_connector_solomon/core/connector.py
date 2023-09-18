@@ -1,4 +1,4 @@
-from bi_core.connectors.base.connector import (
+from dl_core.connectors.base.connector import (
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,

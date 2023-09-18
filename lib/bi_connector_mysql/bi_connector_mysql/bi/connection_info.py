@@ -1,4 +1,4 @@
-from bi_api_connector.connection_info import ConnectionInfoProvider
+from dl_api_connector.connection_info import ConnectionInfoProvider
 
 from bi_connector_mysql.bi.i18n.localizer import Translatable
 

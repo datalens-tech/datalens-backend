@@ -1,6 +1,6 @@
 import attr
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 from bi_external_api.converter.charts.ds_field_resolvers import MultiDatasetFieldResolver
 from bi_external_api.converter.converter_exc import MalformedEntryConfig
 from bi_external_api.domain import external as ext

@@ -5,10 +5,10 @@ from marshmallow import fields as ma_fields
 from bi_connector_oracle.core.constants import OracleDbNameType
 from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
 
-from bi_api_connector.api_schema.connection_base import ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
-from bi_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
-from bi_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
+from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
+from dl_api_connector.api_schema.extras import FieldExtra
 
 
 class OracleConnectionSchema(ConnectionMetaMixin, RawSQLLevelMixin,

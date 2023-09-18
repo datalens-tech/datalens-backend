@@ -2,11 +2,11 @@ from typing import ClassVar, Optional
 
 import attr
 
-from bi_configs.connectors_data import ConnectorsDataBase
-from bi_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
-from bi_configs.settings_loaders.meta_definition import required, s_attrib
+from dl_configs.connectors_data import ConnectorsDataBase
+from dl_configs.connectors_settings import ConnectorsConfigType, ConnectorSettingsBase
+from dl_configs.settings_loaders.meta_definition import required, s_attrib
 
-from bi_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
+from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition, get_connectors_settings_config
 
 from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
 

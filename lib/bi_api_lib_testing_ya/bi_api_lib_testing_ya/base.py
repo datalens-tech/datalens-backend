@@ -3,17 +3,17 @@ from typing import Any, ClassVar, Generator, Type
 
 import pytest
 
-from bi_configs.enums import AppType, EnvType
-from bi_configs.rqe import RQEConfig
+from dl_configs.enums import AppType, EnvType
+from dl_configs.rqe import RQEConfig
 
-from bi_core.utils import attrs_evolve_to_subclass
+from dl_core.utils import attrs_evolve_to_subclass
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings, YCAuthSettings
-from bi_api_lib.app.control_api.app import ControlApiAppFactory
+from dl_api_lib.app.control_api.app import ControlApiAppFactory
 
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 
-from bi_api_lib_testing.base import BiApiTestBase
+from dl_api_lib_testing.base import BiApiTestBase
 from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
 from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
 

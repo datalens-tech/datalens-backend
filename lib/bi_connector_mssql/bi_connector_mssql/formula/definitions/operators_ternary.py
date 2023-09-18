@@ -1,4 +1,4 @@
-import bi_formula.definitions.operators_ternary as base
+import dl_formula.definitions.operators_ternary as base
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 

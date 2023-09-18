@@ -11,15 +11,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-api-connector = {path = "../../mainrepo/lib/bi_api_connector"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-bi-i18n = {path = "../../mainrepo/lib/bi_i18n"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
-[tool.poetry.plugins."bi_api_lib.connectors"]
+[tool.poetry.plugins."dl_api_lib.connectors"]
 ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connector:CHFrozenBumpyRoadsBiApiConnector"
 ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.bi.connector:CHFrozenCovidBiApiConnector"
 ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connector:CHFrozenDemoBiApiConnector"
@@ -30,7 +30,7 @@ ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connecto
 ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.bi.connector:CHFrozenTransparencyBiApiConnector"
 ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connector:CHFrozenWeatherBiApiConnector"
 
-[tool.poetry.plugins."bi_core.connectors"]
+[tool.poetry.plugins."dl_core.connectors"]
 ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.connector:CHFrozenBumpyRoadsCoreConnector"
 ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.core.connector:CHFrozenCovidCoreConnector"
 ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.core.connector:CHFrozenDemoCoreConnector"
@@ -44,9 +44,9 @@ ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.core.connec
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

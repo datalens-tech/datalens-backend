@@ -20,13 +20,13 @@ from bi_defaults.environments import (
     InternalTestingInstallation,
     InternalProductionInstallation,
 )
-from bi_testing import shared_testing_constants
+from dl_testing import shared_testing_constants
 from bi_testing_ya.cloud_tokens import AccountCredentials, ServiceAccountAndKeyData
 from bi_testing_ya.dlenv import DLEnv
 from bi_testing_ya.external_systems_helpers.top import (
     ExternalSystemsHelperBase, ExternalSystemsHelperCloud, ExternalSystemsHelperInternalInstallation,
 )
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 from bi_testing_ya.secrets import get_secret
 

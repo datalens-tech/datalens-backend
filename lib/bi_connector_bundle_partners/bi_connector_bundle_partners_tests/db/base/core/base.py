@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 
 import pytest
 
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 

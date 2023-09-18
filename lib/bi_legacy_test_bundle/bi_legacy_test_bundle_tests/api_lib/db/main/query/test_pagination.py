@@ -1,13 +1,13 @@
 from typing import Optional
 
-from bi_constants.enums import FieldRole
+from dl_constants.enums import FieldRole
 
-from bi_core.us_dataset import Dataset
+from dl_core.us_dataset import Dataset
 
-from bi_query_processing.legend.field_legend import Legend, LegendItem, FieldObjSpec, RowRoleSpec
-from bi_query_processing.legend.block_legend import BlockSpec, BlockLegend, BlockLegendMeta
-from bi_query_processing.pagination.paginator import QueryPaginator
-from bi_query_processing.merging.primitives import MergedQueryDataStream, MergedQueryDataRow, MergedQueryMetaInfo
+from dl_query_processing.legend.field_legend import Legend, LegendItem, FieldObjSpec, RowRoleSpec
+from dl_query_processing.legend.block_legend import BlockSpec, BlockLegend, BlockLegendMeta
+from dl_query_processing.pagination.paginator import QueryPaginator
+from dl_query_processing.merging.primitives import MergedQueryDataStream, MergedQueryDataRow, MergedQueryMetaInfo
 
 
 def _make_legend(dataset: Dataset) -> Legend:

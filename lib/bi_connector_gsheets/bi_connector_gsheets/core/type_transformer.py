@@ -1,9 +1,9 @@
 import datetime
 from typing import Optional
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.db.conversion_base import TypeCaster, TypeTransformer, make_native_type
+from dl_core.db.conversion_base import TypeCaster, TypeTransformer, make_native_type
 
 from bi_connector_gsheets.core.constants import CONNECTION_TYPE_GSHEETS
 

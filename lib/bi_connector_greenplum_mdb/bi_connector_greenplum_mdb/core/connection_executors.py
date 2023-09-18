@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import attr
 
-from bi_connector_postgresql.core.postgresql_base.connection_executors import (
+from dl_connector_postgresql.core.postgresql_base.connection_executors import (
     PostgresConnExecutor,
     AsyncPostgresConnExecutor,
 )

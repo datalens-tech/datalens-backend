@@ -1,6 +1,6 @@
 import attr
 
-from bi_core.connection_models.dto_defs import DefaultSQLDTO
+from dl_core.connection_models.dto_defs import DefaultSQLDTO
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 

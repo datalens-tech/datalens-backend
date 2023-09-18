@@ -2,11 +2,11 @@ from typing import NoReturn
 
 import pytest
 
-from bi_constants.enums import BIType, FieldType
+from dl_constants.enums import BIType, FieldType
 from bi_external_api.domain.internal import datasets
 from bi_external_api.testings import SingleAvatarDatasetBuilder
 
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 @pytest.fixture(scope="session")

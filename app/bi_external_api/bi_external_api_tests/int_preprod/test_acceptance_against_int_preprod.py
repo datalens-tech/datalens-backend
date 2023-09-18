@@ -5,7 +5,7 @@ import os
 import aiohttp
 import pytest
 
-from bi_api_commons.base_models import TenantCommon
+from dl_api_commons.base_models import TenantCommon
 from bi_api_commons_ya_team.models import YaTeamAuthData
 from bi_defaults.environments import InternalTestingInstallation
 from bi_external_api.enums import ExtAPIType

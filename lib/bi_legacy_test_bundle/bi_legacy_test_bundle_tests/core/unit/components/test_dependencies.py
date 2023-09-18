@@ -5,16 +5,16 @@ from typing import Optional, Tuple
 import attr
 import shortuuid
 
-from bi_constants.enums import AggregationFunction, BIType, FieldType, ManagedBy, BinaryJoinOperator
+from dl_constants.enums import AggregationFunction, BIType, FieldType, ManagedBy, BinaryJoinOperator
 
-from bi_core.components.ids import AvatarId, FieldId
-from bi_core.components.dependencies.primitives import FieldInterDependencyInfo
-from bi_core.components.dependencies.field_shallow import FieldShallowInterDependencyManager
-from bi_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
-from bi_core.components.dependencies.field_avatar import FieldAvatarDependencyManager
-from bi_core.components.dependencies.relation_avatar import RelationAvatarDependencyManager
-from bi_core.fields import BIField, ResultSchema, DirectCalculationSpec, FormulaCalculationSpec
-from bi_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect, ConditionPartResultField
+from dl_core.components.ids import AvatarId, FieldId
+from dl_core.components.dependencies.primitives import FieldInterDependencyInfo
+from dl_core.components.dependencies.field_shallow import FieldShallowInterDependencyManager
+from dl_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
+from dl_core.components.dependencies.field_avatar import FieldAvatarDependencyManager
+from dl_core.components.dependencies.relation_avatar import RelationAvatarDependencyManager
+from dl_core.fields import BIField, ResultSchema, DirectCalculationSpec, FormulaCalculationSpec
+from dl_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect, ConditionPartResultField
 
 
 @attr.s

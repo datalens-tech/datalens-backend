@@ -1,6 +1,6 @@
-from bi_constants.enums import NotificationLevel
+from dl_constants.enums import NotificationLevel
 
-from bi_core.reporting.notifications import BaseNotification
+from dl_core.reporting.notifications import BaseNotification
 
 from bi_connector_chyt_internal.core.constants import NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE
 

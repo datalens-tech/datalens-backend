@@ -12,25 +12,25 @@ from pymysql.err import OperationalError, ProgrammingError
 from typing import Any, AsyncIterator, Optional, Type, TypeVar
 
 from bi_connector_mysql.core.adapters_base_mysql import BaseMySQLAdapter
-from bi_core.connection_executors.adapters.async_adapters_base import (
+from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncCache, AsyncDirectDBAdapter, AsyncRawExecutionResult,
 )
-from bi_core.connection_executors.adapters.mixins import (
+from dl_core.connection_executors.adapters.mixins import (
     WithAsyncGetDBVersion, WithMinimalCursorInfo, WithDatabaseNameOverride, WithNoneRowConverters,
 )
-from bi_core.connection_executors.adapters.sa_utils import compile_query_for_debug
-from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
+from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
+from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
 from bi_connector_mysql.core.error_transformer import async_mysql_db_error_transformer
 from bi_connector_mysql.core.utils import compile_mysql_query
 from bi_connector_mysql.core.target_dto import MySQLConnTargetDTO
-from bi_core.connection_executors.models.db_adapter_data import (
+from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery, ExecutionStep, ExecutionStepCursorInfo, ExecutionStepDataChunk, RawSchemaInfo
 )
-from bi_core.connection_models import DBIdent, SchemaIdent, TableDefinition, TableIdent
-from bi_app_tools.profiling_base import generic_profiler_async
-from bi_constants.types import TBIChunksGen
-from bi_configs.utils import get_root_certificates_path
+from dl_core.connection_models import DBIdent, SchemaIdent, TableDefinition, TableIdent
+from dl_app_tools.profiling_base import generic_profiler_async
+from dl_constants.types import TBIChunksGen
+from dl_configs.utils import get_root_certificates_path
 
 from bi_sqlalchemy_mysql.base import BIMySQLDialect
 

@@ -11,14 +11,14 @@ from bi_cloud_integration.exc import YCBadRequest, YCUnauthenticated, YCPermissi
 from bi_cloud_integration.model import IAMAccount, IAMUserAccount, IAMServiceAccount, IAMResource
 from bi_cloud_integration.yc_as_client import DLASClient
 from bi_cloud_integration.yc_ss_client import DLSSClient
-from bi_constants.api_constants import DLHeaders, DLHeadersCommon
+from dl_constants.api_constants import DLHeaders, DLHeadersCommon
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode, DLHeadersYC
-from bi_api_commons.access_control_common import AuthFailureError
-from bi_api_commons.logging import RequestLoggingContextController
-from bi_api_commons.base_models import RequestContextInfo, TenantCommon
-from bi_api_commons.base_models import TenantDef
-from bi_app_tools.profiling_base import generic_profiler_async
-from bi_utils.aio import await_sync
+from dl_api_commons.access_control_common import AuthFailureError
+from dl_api_commons.logging import RequestLoggingContextController
+from dl_api_commons.base_models import RequestContextInfo, TenantCommon
+from dl_api_commons.base_models import TenantDef
+from dl_app_tools.profiling_base import generic_profiler_async
+from dl_utils.aio import await_sync
 
 from bi_api_commons_ya_cloud.error_messages import UserErrorMessages
 from bi_api_commons_ya_cloud.models import (

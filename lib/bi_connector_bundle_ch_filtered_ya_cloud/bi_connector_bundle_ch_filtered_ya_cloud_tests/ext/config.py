@@ -2,8 +2,8 @@ from typing import ClassVar
 
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
-from bi_core_testing.configuration import DefaultCoreTestConfiguration
-from bi_testing.containers import get_test_container_hostport
+from dl_core_testing.configuration import DefaultCoreTestConfiguration
+from dl_testing.containers import get_test_container_hostport
 
 
 # Infra settings

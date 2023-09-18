@@ -1,4 +1,4 @@
-from bi_core.exc import DatabaseQueryError
+from dl_core.exc import DatabaseQueryError
 
 
 class MetricaAPIDatabaseQueryError(DatabaseQueryError):

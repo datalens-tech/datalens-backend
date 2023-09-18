@@ -6,8 +6,8 @@ from typing import Sequence, Dict, List, Any, Iterable, Optional
 import attr
 import yaml
 
-from bi_core.us_entry import USMigrationEntry, USEntry
-from bi_core.us_manager.us_manager import USManagerBase
+from dl_core.us_entry import USMigrationEntry, USEntry
+from dl_core.us_manager.us_manager import USManagerBase
 
 
 @attr.s(frozen=True, auto_attribs=True)

@@ -1,20 +1,20 @@
 import pytest
 
-import bi_query_processing.exc
-from bi_constants.enums import BIType, FieldType, PivotRole, PivotItemType
+import dl_query_processing.exc
+from dl_constants.enums import BIType, FieldType, PivotRole, PivotItemType
 
-from bi_api_lib.query.formalization.pivot_legend import (
+from dl_api_lib.query.formalization.pivot_legend import (
     PivotLegend, PivotLegendItem, PivotMeasureRoleSpec, PivotDimensionRoleSpec,
 )
-from bi_query_processing.legend.field_legend import (
+from dl_query_processing.legend.field_legend import (
     Legend, LegendItem, FieldObjSpec, MeasureNameObjSpec,
 )
-from bi_api_lib.pivot.primitives import (
+from dl_api_lib.pivot.primitives import (
     DataCell as DC, DataCellVector as DV, DataRow, MeasureNameValue as MNV, PivotHeader
 )
-from bi_api_lib.pivot.table import PivotTable
-from bi_api_lib.pivot.pandas.transformer import PdPivotTransformer
-from bi_query_processing.merging.primitives import MergedQueryDataRow
+from dl_api_lib.pivot.table import PivotTable
+from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
+from dl_query_processing.merging.primitives import MergedQueryDataRow
 
 
 def test_pivot_empty_data():
@@ -132,7 +132,7 @@ def test_pivot_duplicate_dimension_values():
     )
 
     transformer = PdPivotTransformer(legend=legend, pivot_legend=pivot_legend)
-    with pytest.raises(bi_query_processing.exc.PivotDuplicateDimensionValue):
+    with pytest.raises(dl_query_processing.exc.PivotDuplicateDimensionValue):
         transformer.pivot(data)
 
 

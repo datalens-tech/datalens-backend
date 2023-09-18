@@ -2,7 +2,7 @@ import os
 
 import attr
 
-from bi_i18n.localizer_base import TranslationConfig, Translatable as BaseTranslatable
+from dl_i18n.localizer_base import TranslationConfig, Translatable as BaseTranslatable
 
 import bi_connector_oracle as package
 

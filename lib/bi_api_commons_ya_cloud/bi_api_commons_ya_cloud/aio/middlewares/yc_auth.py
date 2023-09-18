@@ -6,19 +6,19 @@ from typing import TYPE_CHECKING, Optional, Type
 import attr
 from aiohttp import web
 
-from bi_api_commons.access_control_common import match_path_prefix, AuthFailureError
+from dl_api_commons.access_control_common import match_path_prefix, AuthFailureError
 from bi_cloud_integration.yc_as_client import DLASClient, DLYCASCLIHolder
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_cloud_integration.yc_ss_client import DLSSClient
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-from bi_api_commons.aiohttp import aiohttp_wrappers
+from dl_api_commons.aiohttp import aiohttp_wrappers
 
 from bi_api_commons_ya_cloud.yc_access_control import YCAccessController, YCAuthContext, YCEmbedContext, YCEmbedAccessController
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationMode
 
 if TYPE_CHECKING:
     from aiohttp.typedefs import Handler
-    from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+    from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 
 
 LOGGER = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 import re
 from typing import Optional, Sequence, ClassVar
 
-from bi_constants.enums import CalcMode, AggregationFunction, BIType
+from dl_constants.enums import CalcMode, AggregationFunction, BIType
 from bi_external_api.converter.converter_ctx import ConverterContext
 from bi_external_api.converter.converter_exc import (
     NotSupportedYet,

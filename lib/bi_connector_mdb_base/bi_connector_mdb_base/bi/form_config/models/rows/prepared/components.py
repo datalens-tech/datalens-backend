@@ -2,10 +2,10 @@ from enum import Enum
 
 import attr
 
-from bi_api_connector.form_config.models.common import remap
-from bi_api_connector.form_config.models.rows.base import DisplayConditionsMixin, FormFieldMixin
-from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
-from bi_constants.enums import ConnectionType
+from dl_api_connector.form_config.models.common import remap
+from dl_api_connector.form_config.models.rows.base import DisplayConditionsMixin, FormFieldMixin
+from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
+from dl_constants.enums import ConnectionType
 
 
 @attr.s(kw_only=True, frozen=True)

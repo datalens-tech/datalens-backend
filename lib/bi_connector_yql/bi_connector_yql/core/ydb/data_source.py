@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
 from bi_connector_yql.core.yql_base.data_source import YQLDataSourceMixin
-from bi_core.data_source.sql import StandardSQLDataSource, SubselectDataSource, require_table_name
-from bi_core.utils import sa_plain_text
+from dl_core.data_source.sql import StandardSQLDataSource, SubselectDataSource, require_table_name
+from dl_core.utils import sa_plain_text
 
 from bi_connector_yql.core.ydb.constants import (
     CONNECTION_TYPE_YDB, SOURCE_TYPE_YDB_TABLE, SOURCE_TYPE_YDB_SUBSELECT

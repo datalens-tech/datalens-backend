@@ -3,12 +3,12 @@ from __future__ import annotations
 import logging
 from typing import Any, Optional
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
-from bi_core.data_source.sql import (
+from dl_core.data_source.sql import (
     BaseSQLDataSource, StandardSchemaSQLDataSource, SubselectDataSource, require_table_name,
 )
-from bi_core.utils import sa_plain_text
+from dl_core.utils import sa_plain_text
 
 from bi_connector_oracle.core.constants import (
     CONNECTION_TYPE_ORACLE, SOURCE_TYPE_ORACLE_TABLE, SOURCE_TYPE_ORACLE_SUBSELECT,

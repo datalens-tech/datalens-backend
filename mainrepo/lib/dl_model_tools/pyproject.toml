@@ -1,0 +1,42 @@
+
+[tool.poetry]
+name = "datalens-model-tools"
+version = "0.0.1"
+description = ""
+authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dl_model_tools"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+python = ">=3.10, <3.12"
+dynamic-enum = {path = "../dynamic_enum"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[[tool.mypy.overrides]]
+module = "dl_model_tools.contrib.enum_field"
+ignore_errors = true
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_model_tools_tests/unit"]
+
+
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

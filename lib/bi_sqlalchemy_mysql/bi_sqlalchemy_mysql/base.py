@@ -4,7 +4,7 @@ import datetime
 import sqlalchemy as sa
 from sqlalchemy.dialects.mysql.mysqldb import MySQLDialect_mysqldb as UPSTREAM
 
-from bi_sqlalchemy_common.base import CompilerPrettyMixin
+from dl_sqlalchemy_common.base import CompilerPrettyMixin
 
 
 class BIMySQLCompilerBasic(UPSTREAM.statement_compiler):

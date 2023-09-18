@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import attr
 
-from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseAsyncAdapterConnExecutor,
     ClickHouseSyncAdapterConnExecutor,
 )

@@ -4,7 +4,7 @@ from typing import Dict, Optional
 import attr
 
 import bi_integration_tests.request_executors.base as request_executors_base
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 from bi_integration_tests.request_executors.base import ConnectionData
 from bi_integration_tests.report_formatting import ReportFormatter
 

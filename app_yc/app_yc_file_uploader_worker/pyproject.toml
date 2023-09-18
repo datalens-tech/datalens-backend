@@ -13,9 +13,9 @@ aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 dl-version-ya = {path = "../../lib/dl_version_ya"}
 bi-defaults = {path = "../../lib/bi_defaults"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
-bi-task-processor = {path = "../../mainrepo/lib/bi_task_processor"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
+datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
 
 [build-system]
 requires = ["poetry-core"]

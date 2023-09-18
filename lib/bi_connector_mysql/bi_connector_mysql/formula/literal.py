@@ -3,8 +3,8 @@ import datetime
 import sqlalchemy as sa
 import sqlalchemy.dialects.mysql.base as sa_mysql
 
-from bi_formula.core.dialect import DialectCombo
-from bi_formula.connectors.base.literal import Literal, Literalizer
+from dl_formula.core.dialect import DialectCombo
+from dl_formula.connectors.base.literal import Literal, Literalizer
 
 
 class MySQLLiteralizer(Literalizer):

@@ -1,6 +1,6 @@
 import enum
 
-from bi_constants.api_constants import DLHeaders
+from dl_constants.api_constants import DLHeaders
 
 
 class DLHeadersYC(DLHeaders):

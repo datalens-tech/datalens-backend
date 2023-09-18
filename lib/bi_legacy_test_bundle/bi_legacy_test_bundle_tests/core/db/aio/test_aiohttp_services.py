@@ -7,15 +7,15 @@ import redis.asyncio
 from aiohttp import web
 import pytest
 
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 
-from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
-from bi_core.aio.middlewares.us_manager import service_us_manager_middleware
-from bi_core.aio.web_app_services.redis import SingleHostSimpleRedisService
-from bi_constants.enums import RedisInstanceKind
+from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
+from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
+from dl_core.aio.web_app_services.redis import SingleHostSimpleRedisService
+from dl_constants.enums import RedisInstanceKind
 
 
 @pytest.mark.asyncio

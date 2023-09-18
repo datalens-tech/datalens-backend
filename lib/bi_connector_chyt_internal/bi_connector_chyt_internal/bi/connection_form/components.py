@@ -4,15 +4,15 @@ import attr
 from enum import unique
 from typing import Optional
 
-import bi_api_connector.form_config.models.rows as C
-from bi_api_connector.form_config.models.rows.base import DisplayConditionsMixin, FormFieldMixin
-from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
-from bi_api_connector.form_config.models.common import remap_skip_if_null
-from bi_api_connector.form_config.models.common import FormFieldName
+import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows.base import DisplayConditionsMixin, FormFieldMixin
+from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
+from dl_api_connector.form_config.models.common import remap_skip_if_null
+from dl_api_connector.form_config.models.common import FormFieldName
 from bi_connector_chyt_internal.bi.i18n.localizer import Translatable
-from bi_api_connector.form_config.models.base import ConnectionFormMode
+from dl_api_connector.form_config.models.base import ConnectionFormMode
 
-from bi_i18n.localizer_base import Localizer
+from dl_i18n.localizer_base import Localizer
 
 
 @attr.s(kw_only=True, frozen=True)

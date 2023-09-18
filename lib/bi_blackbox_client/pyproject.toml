@@ -17,10 +17,10 @@ python = ">=3.10, <3.12"
 requests = ">=2.28.2"
 tvm2 = ">=5.0"
 tvmauth = ">=3.4.9"
-yandex-bi-api-commons = {path = "../../mainrepo/lib/bi_api_commons"}
-yandex-bi-app-tools = {path = "../../mainrepo/lib/bi_app_tools"}
-yandex-bi-configs = {path = "../../mainrepo/lib/bi_configs"}
 bi-defaults = {path = "../bi_defaults"}
+datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
+datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
+datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

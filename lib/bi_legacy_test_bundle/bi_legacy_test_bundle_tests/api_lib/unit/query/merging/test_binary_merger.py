@@ -1,9 +1,9 @@
-from bi_query_processing.legend.block_legend import (
+from dl_query_processing.legend.block_legend import (
     AfterBlockPlacement, DimensionValueSpec,
     DispersedAfterBlockPlacement, DimensionSpec,
 )
-from bi_query_processing.merging.primitives import MergedQueryDataRow
-from bi_query_processing.merging.binary_merger import (
+from dl_query_processing.merging.primitives import MergedQueryDataRow
+from dl_query_processing.merging.binary_merger import (
     AfterBinaryStreamMerger, DispersedAfterBinaryStreamMerger,
 )
 

@@ -3,10 +3,10 @@ from typing import Optional
 import sqlalchemy
 import pymysql
 
-import bi_core.connectors.base.error_transformer as error_transformer
-from bi_core.connectors.base.error_transformer import ExcMatchCondition
-import bi_core.exc as exc
-from bi_core.connectors.base.error_transformer import wrapper_exc_is_and_matches_re, DbErrorTransformer, ErrorTransformerRule as Rule
+import dl_core.connectors.base.error_transformer as error_transformer
+from dl_core.connectors.base.error_transformer import ExcMatchCondition
+import dl_core.exc as exc
+from dl_core.connectors.base.error_transformer import wrapper_exc_is_and_matches_re, DbErrorTransformer, ErrorTransformerRule as Rule
 from bi_connector_mysql.core.exc import MysqlSourceDoesNotExistError
 
 

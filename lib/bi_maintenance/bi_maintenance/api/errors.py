@@ -1,8 +1,8 @@
 """
 Sample usage (remove phantom errors from dataset):
 
-from bi_core.maintenance.helpers import get_dataset, get_sync_usm
-from bi_api_lib.maintenance.errors import ComponentErrorManager
+from dl_core.maintenance.helpers import get_dataset, get_sync_usm
+from dl_api_lib.maintenance.errors import ComponentErrorManager
 
 us_manager = get_sync_usm()
 ds = get_dataset('hfu4hg98wh48', is_async_env=False)
@@ -20,12 +20,12 @@ from typing import Any, Dict, List, Optional
 
 import attr
 
-from bi_constants.enums import ComponentType
+from dl_constants.enums import ComponentType
 
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager import USManagerBase
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager import USManagerBase
 
-from bi_api_lib.dataset.component_abstraction import DatasetComponentAbstraction, DatasetComponentRef
+from dl_api_lib.dataset.component_abstraction import DatasetComponentAbstraction, DatasetComponentRef
 
 
 TACTION = Dict[str, Any]

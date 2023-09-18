@@ -5,9 +5,9 @@ from typing import ClassVar, Type
 
 import attr
 
-from bi_core import exc
-from bi_core.connection_models import ConnDTO, DefaultSQLDTO
-from bi_core.connections_security.base import GenericConnectionSecurityManager, ConnectionSafetyChecker
+from dl_core import exc
+from dl_core.connection_models import ConnDTO, DefaultSQLDTO
+from dl_core.connections_security.base import GenericConnectionSecurityManager, ConnectionSafetyChecker
 
 
 LOGGER = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class CloudConnectionSecurityManager(GenericConnectionSecurityManager):
     #  Generalize code with .is_safe_connection() after checking if logic is fully compatible
     def is_internal_connection(self, conn_dto: ConnDTO) -> bool:
         # TODO FIX: Move on top after moving MDB utils in dedicated module (right now will cause import loop)
-        from bi_core.mdb_utils import MDBDomainManager
+        from dl_core.mdb_utils import MDBDomainManager
 
         mdb_man = MDBDomainManager.from_env()
 
@@ -55,7 +55,7 @@ class MDBConnectionSafetyChecker(ConnectionSafetyChecker):
     def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
         if isinstance(conn_dto, DefaultSQLDTO) and type(conn_dto) in self._DTO_TYPES:
             # TODO FIX: Move on top after moving MDB utils in dedicated module (right now will cause import loop)
-            from bi_core.mdb_utils import MDBDomainManager
+            from dl_core.mdb_utils import MDBDomainManager
 
             mdb_man = MDBDomainManager.from_env()
 

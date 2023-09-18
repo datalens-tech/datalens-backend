@@ -4,9 +4,9 @@ from typing import List
 
 import attr
 
-from bi_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import RequestContextInfo
 
-from bi_core.connections_security.base import (
+from dl_core.connections_security.base import (
     ConnectionSecurityManager,
     InsecureConnectionSafetyChecker,
     NonUserInputConnectionSafetyChecker,
@@ -17,7 +17,7 @@ from bi_api_lib_ya.connections_security.base import (
     MDBConnectionSafetyChecker,
     SamplesConnectionSafetyChecker,
 )
-from bi_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
+from dl_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
 
 
 class IntranetEnvManagerFactory(DefaultEnvManagerFactory):

@@ -3,12 +3,12 @@ from __future__ import annotations
 import abc
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
-from bi_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import TenantDef
 
-import bi_api_connector.form_config.models.rows as C
-from bi_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, FormUIOverride
+import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.base import ConnectionFormFactory, ConnectionForm, FormUIOverride
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.i18n.localizer import Translatable
 

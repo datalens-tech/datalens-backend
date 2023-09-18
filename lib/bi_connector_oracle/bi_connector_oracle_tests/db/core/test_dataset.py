@@ -3,8 +3,8 @@ from bi_connector_oracle.core.us_connection import ConnectionSQLOracle
 
 from bi_connector_oracle_tests.db.core.base import BaseOracleTestClass
 
-from bi_testing.regulated_test import RegulatedTestParams
-from bi_core_testing.testcases.dataset import DefaultDatasetTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
+from dl_core_testing.testcases.dataset import DefaultDatasetTestSuite
 
 
 class TestOracleDataset(BaseOracleTestClass, DefaultDatasetTestSuite[ConnectionSQLOracle]):

@@ -1,8 +1,8 @@
 """
 Sample usage (replace connection and switch data source to subselect)::
 
-    from bi_core.maintenance.helpers import get_sync_usm, get_dataset
-    from bi_api_lib.maintenance.updates import SimpleDatasetUpdateGen, update_dataset
+    from dl_core.maintenance.helpers import get_sync_usm, get_dataset
+    from dl_api_lib.maintenance.updates import SimpleDatasetUpdateGen, update_dataset
     from bi_connector_chyt_internal.core.constants import SOURCE_TYPE_CHYT_SUBSELECT
 
     subsql = 'SELECT * FROM my_table'
@@ -28,20 +28,20 @@ from typing import Optional, Sequence, List
 
 import attr
 
-from bi_api_lib.request_model.data import Action, FieldAction, AddUpdateSourceAction, ReplaceConnectionAction, \
+from dl_api_lib.request_model.data import Action, FieldAction, AddUpdateSourceAction, ReplaceConnectionAction, \
     ReplaceConnection, SourceActionBase, AddField
-from bi_constants.enums import BIType, CalcMode, AggregationFunction, CreateDSFrom, DataSourceRole
+from dl_constants.enums import BIType, CalcMode, AggregationFunction, CreateDSFrom, DataSourceRole
 
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager import USManagerBase
-from bi_core.base_models import DefaultConnectionRef
-from bi_core.fields import ParameterValueConstraint
-from bi_core.values import BIValue
-from bi_core.data_source.collection import DataSourceCollectionFactory
-from bi_core.components.accessor import DatasetComponentAccessor
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager import USManagerBase
+from dl_core.base_models import DefaultConnectionRef
+from dl_core.fields import ParameterValueConstraint
+from dl_core.values import BIValue
+from dl_core.data_source.collection import DataSourceCollectionFactory
+from dl_core.components.accessor import DatasetComponentAccessor
 
-from bi_api_lib.enums import DatasetAction
-from bi_api_lib.dataset.validator import DatasetValidator
+from dl_api_lib.enums import DatasetAction
+from dl_api_lib.dataset.validator import DatasetValidator
 
 
 def _make_component_id() -> str:

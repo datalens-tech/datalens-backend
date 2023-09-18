@@ -2,13 +2,13 @@ import pytest
 import shortuuid
 from cryptography import fernet
 
-from bi_configs.crypto_keys import CryptoKeysConfig
-from bi_core.base_models import PathEntryLocation
+from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_core.base_models import PathEntryLocation
 from bi_maintenance.core.crawlers.crypto_keys_rotation import RotateCryptoKeyInConnection
-from bi_core.us_entry import USMigrationEntry
-from bi_core.us_manager.crypto.main import CryptoController
-from bi_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
-from bi_utils.aio import await_sync
+from dl_core.us_entry import USMigrationEntry
+from dl_core.us_manager.crypto.main import CryptoController
+from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
+from dl_utils.aio import await_sync
 
 _CRYPTO_KEYS_CONFIG = CryptoKeysConfig(
     map_id_key=dict(

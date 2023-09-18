@@ -6,12 +6,12 @@ from typing import Any, Callable, Optional
 
 import pytest
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
-from bi_api_client.dsmaker.primitives import Dataset, WhereClause
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, create_basic_dataset
-from bi_api_client.dsmaker.shortcuts.range_data import get_range_values
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset, WhereClause
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, create_basic_dataset
+from dl_api_client.dsmaker.shortcuts.range_data import get_range_values
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_core.exc import DatabaseQueryError
+from dl_core.exc import DatabaseQueryError
 from bi_blackbox_client.tvm import TvmCliSingleton, TvmDestination, TvmDestinationSet
 
 

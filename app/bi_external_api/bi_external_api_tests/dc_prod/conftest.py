@@ -7,7 +7,7 @@ import requests
 
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
 @pytest.fixture(scope='session')
@@ -16,7 +16,7 @@ def env_param_getter() -> GenericEnvParamGetter:
     return GenericEnvParamGetter.from_yaml_file(filepath)
 
 
-# Override fixture from `lib/bi_testing`
+# Override fixture from `lib/dl_testing`
 @pytest.fixture(scope='session')
 def dl_env() -> DLEnv:
     return DLEnv.dc_prod

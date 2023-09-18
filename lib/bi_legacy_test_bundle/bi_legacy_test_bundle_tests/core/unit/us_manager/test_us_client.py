@@ -3,15 +3,15 @@ from __future__ import annotations
 import pytest
 from aiohttp import web
 
-from bi_core.base_models import PathEntryLocation
-from bi_core.exc import USBadRequestException
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.united_storage_client_aio import UStorageClientAIO
+from dl_core.base_models import PathEntryLocation
+from dl_core.exc import USBadRequestException
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client_aio import UStorageClientAIO
 
 
 @pytest.mark.asyncio
 async def test_fields_masking(aiohttp_client, caplog):
-    caplog.set_level('INFO', logger='bi_core.united_storage_client')
+    caplog.set_level('INFO', logger='dl_core.united_storage_client')
 
     @web.middleware
     async def always_400_mw(request, handler):

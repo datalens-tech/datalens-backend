@@ -4,14 +4,14 @@ from bi_connector_gsheets.core.connector import (
     GSheetsCoreSourceDefinition, GSheetsCoreConnectionDefinition, GSheetsCoreConnector,
 )
 
-from bi_api_connector.connector import (
+from dl_api_connector.connector import (
     BiApiSourceDefinition, BiApiConnectionDefinition, BiApiConnector,
 )
-from bi_api_connector.api_schema.source_base import (
+from dl_api_connector.api_schema.source_base import (
     SimpleDataSourceSchema, SimpleDataSourceTemplateSchema,
 )
 
-from bi_query_processing.multi_query.factory import SimpleFieldSplitterMultiQueryMutatorFactory
+from dl_query_processing.multi_query.factory import SimpleFieldSplitterMultiQueryMutatorFactory
 
 from bi_connector_gsheets.bi.api_schema.connection import GSheetsConnectionSchema
 from bi_connector_gsheets.bi.connection_form.form_config import GSheetsConnectionFormFactory

@@ -4,18 +4,18 @@ import logging
 import asyncio
 from aiohttp import web
 
-from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from bi_core.logging_config import configure_logging
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_core.logging_config import configure_logging
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from bi_defaults.environments import InstallationsMap, EnvAliasesMap
-from bi_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings
-from bi_task_processor.controller import Cli
-from bi_task_processor.processor import ARQProcessorImpl, TaskProcessor
-from bi_task_processor.state import TaskState, DummyStateImpl
-from bi_task_processor.worker import HealthChecker
+from dl_task_processor.arq_wrapper import create_redis_pool, create_arq_redis_settings
+from dl_task_processor.controller import Cli
+from dl_task_processor.processor import ARQProcessorImpl, TaskProcessor
+from dl_task_processor.state import TaskState, DummyStateImpl
+from dl_task_processor.worker import HealthChecker
 
-from bi_file_uploader_worker_lib.tasks import REGISTRY
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from dl_file_uploader_worker_lib.tasks import REGISTRY
+from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 
 from app_yc_file_uploader_worker.app_factory import FileUploaderWorkerFactoryYC
 

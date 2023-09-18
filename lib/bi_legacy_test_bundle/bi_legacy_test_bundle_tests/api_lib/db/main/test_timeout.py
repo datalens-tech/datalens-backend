@@ -3,11 +3,11 @@ import asyncio
 import pytest
 from aiohttp import web
 
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 
-from bi_api_lib.aio.middlewares.error_handling_outer import DatasetAPIErrorHandler
+from dl_api_lib.aio.middlewares.error_handling_outer import DatasetAPIErrorHandler
 
 
 @pytest.mark.asyncio

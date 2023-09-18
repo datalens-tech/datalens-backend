@@ -2,7 +2,7 @@ from typing import Sequence, Optional
 
 import attr
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 from bi_external_api.converter.charts.utils import convert_field_type_dataset_to_chart, ChartActionConverter
 from bi_external_api.converter.converter_exc import DatasetFieldNotFound
 from bi_external_api.converter.workbook import WorkbookContext

@@ -1,6 +1,6 @@
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
-from bi_core.connectors.base.connector import (
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+from dl_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
 

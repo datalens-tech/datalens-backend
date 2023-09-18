@@ -2,9 +2,9 @@ from typing import Optional
 
 import attr
 
-from bi_api_connector.form_config.models.common import remap_skip_if_null
-from bi_api_connector.form_config.models.rows.base import FormFieldMixin
-from bi_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
+from dl_api_connector.form_config.models.common import remap_skip_if_null
+from dl_api_connector.form_config.models.rows.base import FormFieldMixin
+from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow, DisabledMixin
 
 
 @attr.s(kw_only=True, frozen=True)

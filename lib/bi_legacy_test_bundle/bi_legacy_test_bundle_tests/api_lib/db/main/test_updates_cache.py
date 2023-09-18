@@ -3,15 +3,15 @@ from __future__ import annotations
 import redis.asyncio
 import pytest
 
-from bi_api_lib.api_common.update_dataset_mutation_key import UpdateDatasetMutationKey
-from bi_api_lib.schemas.action import UpdateFieldActionSchema, AddFieldActionSchema
-from bi_core.us_dataset import Dataset as UsDataset
-from bi_core.us_manager.mutation_cache.usentry_mutation_cache import (
+from dl_api_lib.api_common.update_dataset_mutation_key import UpdateDatasetMutationKey
+from dl_api_lib.schemas.action import UpdateFieldActionSchema, AddFieldActionSchema
+from dl_core.us_dataset import Dataset as UsDataset
+from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
     RedisCacheEngine, USEntryMutationCache, USEntryMutationCacheKey
 )
-from bi_core.components.editor import DatasetComponentEditor
-from bi_api_client.dsmaker.primitives import Dataset, DateParameterValue
-from bi_api_client.dsmaker.shortcuts.dataset import add_parameters_to_dataset
+from dl_core.components.editor import DatasetComponentEditor
+from dl_api_client.dsmaker.primitives import Dataset, DateParameterValue
+from dl_api_client.dsmaker.shortcuts.dataset import add_parameters_to_dataset
 
 field_index = 6  # Field index using for tests, contains datetime value
 

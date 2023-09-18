@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import ClassVar, FrozenSet
 
-from bi_constants.enums import JoinType
+from dl_constants.enums import JoinType
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 from bi_connector_usage_tracking_ya_team.core.constants import (

@@ -3,14 +3,14 @@ from typing import Any, AsyncIterable, Callable, Dict, Tuple, Optional
 
 import attr
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 
 from bi_maintenance.core.us_crawler_base import USEntryCrawler
-from bi_core.us_entry import USEntry, USMigrationEntry
-from bi_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_entry import USEntry, USMigrationEntry
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 
-from bi_utils.task_runner import TaskRunner, ImmediateTaskRunner
+from dl_utils.task_runner import TaskRunner, ImmediateTaskRunner
 
 from bi_maintenance.api.crawler_runner import run_crawler
 

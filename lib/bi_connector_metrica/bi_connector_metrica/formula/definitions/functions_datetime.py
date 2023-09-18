@@ -1,4 +1,4 @@
-import bi_formula.definitions.functions_datetime as base
+import dl_formula.definitions.functions_datetime as base
 
 from bi_connector_metrica.formula.constants import MetricaDialect as D
 

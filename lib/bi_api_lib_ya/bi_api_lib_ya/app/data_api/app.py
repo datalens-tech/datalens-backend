@@ -3,28 +3,28 @@ from __future__ import annotations
 import abc
 from typing import Optional
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.enums import AppType
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.enums import AppType
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-from bi_constants.enums import ConnectionType
+from dl_constants.enums import ConnectionType
 
-from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from bi_core.aio.middlewares.services_registry import services_registry_middleware
-from bi_core.aio.middlewares.us_manager import (
+from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_core.aio.middlewares.services_registry import services_registry_middleware
+from dl_core.aio.middlewares.us_manager import (
     public_usm_workaround_middleware,
     public_us_manager_middleware,
     service_us_manager_middleware,
     us_manager_middleware,
 )
-from bi_core.connection_models import ConnectOptions
-from bi_core.us_connection_base import ExecutorBasedMixin
+from dl_core.connection_models import ConnectOptions
+from dl_core.us_connection_base import ExecutorBasedMixin
 
-from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
-from bi_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
+from dl_api_lib.app.data_api.app import DataApiAppFactory, EnvSetupResult
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from bi_api_lib_ya.app_settings import AsyncAppSettings
 
-from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService, YCEmbedAuthService
 from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud, AuthorizationModeDataCloud
@@ -33,7 +33,7 @@ from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_m
 
 # TODO: remove dependencies on connectors
 from bi_connector_chyt_internal.core.us_connection import BaseConnectionCHYTInternal
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 
 

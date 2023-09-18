@@ -1,0 +1,64 @@
+
+[tool.poetry]
+name = "datalens-api-connector"
+version = "0.0.1"
+description = ""
+authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dl_api_connector"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+python = ">=3.10, <3.12"
+dynamic-enum = {path = "../dynamic_enum"}
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-constants = {path = "../dl_constants"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-core = {path = "../dl_core"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-model-tools = {path = "../dl_model_tools"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_api_connector_tests/unit"]
+
+
+
+[datalens.pytest.unit]
+root_dir = "dl_api_connector_tests/unit"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["marshmallow_oneofschema.*"]
+ignore_missing_imports = true
+
+[datalens.i18n.domains]
+dl_api_connector = [
+    {path = "dl_api_connector"},
+]
+
+[datalens.meta]
+implicit_dependencies = [
+    "pytest",
+]

@@ -1,13 +1,13 @@
 import attr
 from typing import Optional
 
-from bi_core.services_registry.inst_specific_sr import (
+from dl_core.services_registry.inst_specific_sr import (
     InstallationSpecificServiceRegistry,
     InstallationSpecificServiceRegistryFactory,
 )
-from bi_core.rls import BaseSubjectResolver
-from bi_core.utils import FutureRef
-from bi_core.services_registry.top_level import ServicesRegistry
+from dl_core.rls import BaseSubjectResolver
+from dl_core.utils import FutureRef
+from dl_core.services_registry.top_level import ServicesRegistry
 
 from bi_dls_client.dls_client import DLSClient
 from bi_dls_client.subject_resolver import DLSSubjectResolver

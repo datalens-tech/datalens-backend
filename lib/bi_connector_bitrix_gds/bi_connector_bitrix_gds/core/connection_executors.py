@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Sequence, Optional
 
 import attr
 
-from bi_core.aio.web_app_services.redis import RedisConnParams
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.aio.web_app_services.redis import RedisConnParams
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_bitrix_gds.core.adapter import BitrixGDSDefaultAdapter
 from bi_connector_bitrix_gds.core.target_dto import BitrixGDSConnTargetDTO
 

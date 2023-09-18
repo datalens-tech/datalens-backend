@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from bi_constants.enums import BIType
-from bi_core.db import get_type_transformer
-from bi_core.db.native_type import CommonNativeType
+from dl_constants.enums import BIType
+from dl_core.db import get_type_transformer
+from dl_core.db.native_type import CommonNativeType
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,

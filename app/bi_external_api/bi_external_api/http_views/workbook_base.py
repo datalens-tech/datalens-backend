@@ -4,8 +4,8 @@ from typing import Any
 import yaml
 from aiohttp import web
 
-from bi_api_commons.base_models import TenantDef
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResource
+from dl_api_commons.base_models import TenantDef
+from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResource
 from bi_external_api.aiohttp_services.base import BaseView, ExtAPIRequiredResource, SerializationType
 from bi_external_api.attrs_model_mapper.marshmallow import ModelMapperMarshmallow
 from bi_external_api.converter.workbook_ctx_loader import WorkbookContextLoader

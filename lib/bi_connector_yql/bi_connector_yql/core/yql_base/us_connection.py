@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from bi_connector_yql.core.yql_base.utils import validate_service_account_id
-from bi_core.us_connection_base import ConnectionBase
+from dl_core.us_connection_base import ConnectionBase
 
 
 class YQLConnectionMixin(ConnectionBase):

@@ -8,11 +8,11 @@ import time
 from aiohttp import web
 from aiohttp.test_utils import TestClient
 
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResourceCommon, RequiredResource
-from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from bi_core.aio.middlewares.csrf import CSRFMiddleware, generate_csrf_token
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView, RequiredResourceCommon, RequiredResource
+from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_core.aio.middlewares.csrf import CSRFMiddleware, generate_csrf_token
 
 
 _SAMPLE_YANDEXUID = _SAMPLE_USER_ID = '123'

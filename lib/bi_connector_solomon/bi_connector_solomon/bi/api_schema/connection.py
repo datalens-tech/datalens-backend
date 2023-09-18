@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from bi_connector_solomon.core.us_connection import SolomonConnection
 
-from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_base_fields import cache_ttl_field
-from bi_api_connector.api_schema.connection_sql import DBHostField
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field
+from dl_api_connector.api_schema.connection_sql import DBHostField
 
 
 class SolomonConnectionSchema(ConnectionMetaMixin, ConnectionSchema):

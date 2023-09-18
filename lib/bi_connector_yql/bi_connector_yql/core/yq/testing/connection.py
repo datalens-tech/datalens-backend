@@ -3,10 +3,10 @@ from __future__ import annotations
 import uuid
 from typing import Any, Optional
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.connection import make_conn_key
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.connection import make_conn_key
 
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.us_connection import YQConnection

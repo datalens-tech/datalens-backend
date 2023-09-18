@@ -1,7 +1,7 @@
 from bi_connector_mssql.core.us_connection import ConnectionMSSQL
 from bi_connector_mssql_tests.db.core.base import BaseMSSQLTestClass
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
-from bi_core.us_connection_base import DataSourceTemplate
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_core.us_connection_base import DataSourceTemplate
 
 
 class TestMSSQLConnection(

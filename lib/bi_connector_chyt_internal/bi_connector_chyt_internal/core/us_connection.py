@@ -4,17 +4,17 @@ from typing import Optional, ClassVar, Any
 
 import attr
 
-from bi_utils.utils import DataKey
+from dl_utils.utils import DataKey
 
-from bi_i18n.localizer_base import Localizer
+from dl_i18n.localizer_base import Localizer
 
-from bi_api_commons.reporting.models import NotificationReportingRecord
-from bi_core.i18n.localizer import Translatable
-from bi_core.reporting.notifications import get_notification_record
-from bi_core.us_connection_base import DataSourceTemplate
-from bi_core.utils import secrepr
+from dl_api_commons.reporting.models import NotificationReportingRecord
+from dl_core.i18n.localizer import Translatable
+from dl_core.reporting.notifications import get_notification_record
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_core.utils import secrepr
 
-from bi_connector_chyt.core.us_connection import BaseConnectionCHYT
+from dl_connector_chyt.core.us_connection import BaseConnectionCHYT
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
 
 from bi_connector_chyt_internal.core.constants import (

@@ -3,15 +3,15 @@ from __future__ import annotations
 import attr
 import pytest
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core import exc
-from bi_api_commons.base_models import RequestContextInfo
-from bi_connector_clickhouse.core.clickhouse_base.adapters import AsyncClickHouseAdapter
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_core_testing.database import make_table, C, DbTable
+from dl_core import exc
+from dl_api_commons.base_models import RequestContextInfo
+from dl_connector_clickhouse.core.clickhouse_base.adapters import AsyncClickHouseAdapter
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core_testing.database import make_table, C, DbTable
 
-from bi_connector_clickhouse.core.clickhouse.testing.exec_factory import ClickHouseExecutorFactory
+from dl_connector_clickhouse.core.clickhouse.testing.exec_factory import ClickHouseExecutorFactory
 
 
 class TestAsyncClickHouseAdapter:

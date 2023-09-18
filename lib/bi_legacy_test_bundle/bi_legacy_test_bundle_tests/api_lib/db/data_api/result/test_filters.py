@@ -4,12 +4,12 @@ import json
 from http import HTTPStatus
 from typing import Any, Callable, Set
 
-from bi_constants.enums import WhereClauseOperation, BIType
+from dl_constants.enums import WhereClauseOperation, BIType
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
-from bi_core_testing.database import make_table_with_arrays, C
+from dl_core_testing.database import make_table_with_arrays, C
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
 

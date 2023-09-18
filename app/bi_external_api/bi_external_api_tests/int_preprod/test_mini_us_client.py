@@ -1,6 +1,6 @@
 import pytest
 
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 
 @skip_outside_devhost

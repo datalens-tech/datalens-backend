@@ -1,4 +1,4 @@
-from bi_formula_testing.testcases.functions_aggregation import (
+from dl_formula_testing.testcases.functions_aggregation import (
     DefaultMainAggFunctionFormulaConnectorTestSuite,
 )
 

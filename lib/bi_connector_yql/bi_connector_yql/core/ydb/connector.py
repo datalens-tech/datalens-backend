@@ -1,12 +1,12 @@
 from ydb.sqlalchemy import register_dialect as yql_register_dialect
 
 from bi_api_lib_ya.connections_security.base import MDBConnectionSafetyChecker
-from bi_core.connections_security.base import ConnSecuritySettings
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
-from bi_core.us_manager.storage_schemas.data_source_spec_base import (
+from dl_core.connections_security.base import ConnSecuritySettings
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec, SubselectDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import (
     SubselectDataSourceSpecStorageSchema, SQLDataSourceSpecStorageSchema,
 )
-from bi_core.connectors.base.connector import (
+from dl_core.connectors.base.connector import (
     CoreConnector, CoreConnectionDefinition, CoreSourceDefinition,
 )
 

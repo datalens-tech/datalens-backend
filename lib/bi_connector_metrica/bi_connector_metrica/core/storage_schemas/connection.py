@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from bi_core.us_manager.storage_schemas.connection import ConnectionBaseDataStorageSchema
+from dl_core.us_manager.storage_schemas.connection import ConnectionBaseDataStorageSchema
 
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection
 

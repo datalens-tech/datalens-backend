@@ -1,12 +1,12 @@
 import pytest
 
-from bi_constants.enums import BIType, RawSQLLevel
+from dl_constants.enums import BIType, RawSQLLevel
 
-from bi_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec, SubselectDataSourceSpec
-from bi_core.db import SchemaColumn
+from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec, SubselectDataSourceSpec
+from dl_core.db import SchemaColumn
 
-from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from bi_core_testing.testcases.data_source import DefaultDataSourceTestClass, DataSourceTestByViewClass
+from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass, DataSourceTestByViewClass
 
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT
 from bi_connector_mssql.core.data_source import MSSQLDataSource, MSSQLSubselectDataSource

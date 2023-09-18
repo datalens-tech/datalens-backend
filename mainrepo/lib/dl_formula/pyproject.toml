@@ -1,0 +1,92 @@
+
+[tool.poetry]
+name = "datalens-formula"
+version = "7.47.0"
+description = ""
+authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+packages = [{include = "dl_formula"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+antlr4-python3-runtime = ">=4.11.1"
+attrs = ">=22.2.0"
+ciso8601 = ">=2.2.0"
+graphviz = ">=0.17"
+jinja2 = ">=3.1.2"
+python = ">=3.10, <3.12"
+pytz = ">=2022.7.1"
+sqlalchemy = ">=1.4.46, <2.0"
+dynamic-enum = {path = "../dynamic_enum"}
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+mysqlclient = ">=1.4.6"
+oracledb = ">=1.3.1"
+psycopg2-binary = ">=2.9.6"
+pyodbc = ">=4.0.35"
+python-dateutil = ">=2.8.2"
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+
+
+[[tool.mypy.overrides]]
+module = "ciso8601"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "ydb"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "sqlalchemy"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "clickhouse_sqlalchemy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "graphviz.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytest.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytz.tzinfo.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "sqlalchemy_metrika_api.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "dl_formula.parser.antlr.gen.DataLensLexer,dl_formula.parser.antlr.gen.DataLensParser,dl_formula.parser.antlr.gen.DataLensVisitor"
+ignore_errors = true
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_formula_tests/unit"]
+
+
+
+[tool.poetry.scripts]
+bi-formula-cli = "dl_formula.scripts.formula_cli:main"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

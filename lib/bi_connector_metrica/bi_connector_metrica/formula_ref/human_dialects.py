@@ -1,4 +1,4 @@
-from bi_formula_ref.texts import StyledDialect
+from dl_formula_ref.texts import StyledDialect
 
 from bi_connector_metrica.formula.constants import MetricaDialect
 

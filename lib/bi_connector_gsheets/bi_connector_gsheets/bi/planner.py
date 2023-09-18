@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
-from bi_query_processing.legacy_pipeline.planning.planner import PrefilterAndCompengExecutionPlanner
+from dl_query_processing.legacy_pipeline.planning.planner import PrefilterAndCompengExecutionPlanner
 
 if TYPE_CHECKING:
-    from bi_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledQuery
+    from dl_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledQuery
 
 
 class GSheetsCompengExecutionPlanner(PrefilterAndCompengExecutionPlanner):

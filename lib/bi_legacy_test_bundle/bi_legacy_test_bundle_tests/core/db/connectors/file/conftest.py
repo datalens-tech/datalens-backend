@@ -3,12 +3,12 @@ from __future__ import annotations
 import uuid
 import pytest
 
-from bi_constants.enums import FileProcessingStatus
+from dl_constants.enums import FileProcessingStatus
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
-from bi_connector_bundle_chs3.file.core.us_connection import FileS3Connection
-from bi_core_testing.connection import make_conn_key
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
+from dl_core_testing.connection import make_conn_key
 
 
 @pytest.fixture(scope='function')

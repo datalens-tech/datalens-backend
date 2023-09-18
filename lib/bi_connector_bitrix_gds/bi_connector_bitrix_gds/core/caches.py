@@ -7,11 +7,11 @@ import attr
 from contextlib import asynccontextmanager
 from redis_cache_lock.types import TClientACM
 
-from bi_core.aio.web_app_services.redis import RedisConnParams
-from bi_core.data_processing.cache.primitives import LocalKeyRepresentation
-from bi_core.serialization import common_dumps, common_loads
-from bi_constants.types import TJSONExt
-from bi_app_tools.profiling_base import GenericProfiler
+from dl_core.aio.web_app_services.redis import RedisConnParams
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
+from dl_core.serialization import common_dumps, common_loads
+from dl_constants.types import TJSONExt
+from dl_app_tools.profiling_base import GenericProfiler
 
 
 LOGGER = logging.getLogger(__name__)

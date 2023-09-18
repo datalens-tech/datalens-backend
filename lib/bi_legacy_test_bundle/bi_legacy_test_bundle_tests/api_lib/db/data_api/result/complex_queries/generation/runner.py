@@ -7,10 +7,10 @@ from typing import Optional
 import attr
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 from bi_legacy_test_bundle_tests.api_lib.db.data_api.result.complex_queries.generation.generator import TestSettings
 

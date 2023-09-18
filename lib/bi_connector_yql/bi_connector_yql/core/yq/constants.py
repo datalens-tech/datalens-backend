@@ -1,4 +1,4 @@
-from bi_constants.enums import SourceBackendType, CreateDSFrom, ConnectionType
+from dl_constants.enums import SourceBackendType, CreateDSFrom, ConnectionType
 
 
 BACKEND_TYPE_YQ = SourceBackendType.declare('YQ')

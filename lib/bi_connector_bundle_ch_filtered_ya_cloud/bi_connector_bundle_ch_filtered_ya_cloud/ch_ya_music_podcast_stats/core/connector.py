@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from bi_core.connectors.base.connector import (
+from dl_core.connectors.base.connector import (
     CoreConnectionDefinition, CoreSourceDefinition,
 )
-from bi_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
-from bi_connector_clickhouse.core.clickhouse_base.connection_executors import (
+from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
     ClickHouseSyncAdapterConnExecutor, ClickHouseAsyncAdapterConnExecutor,
 )
-from bi_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.constants import (
     CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS, SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,

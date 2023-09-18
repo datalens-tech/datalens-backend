@@ -5,27 +5,27 @@ from aiohttp import web
 
 import pytest
 
-from bi_constants.enums import ProcessorType, RedisInstanceKind
+from dl_constants.enums import ProcessorType, RedisInstanceKind
 
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
-from bi_api_commons.base_models import RequestContextInfo
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
+from dl_api_commons.base_models import RequestContextInfo
 
-from bi_core.aio.aiohttp_wrappers_data_core import DLRequestDataCoreView, DLRequestDataCore
-from bi_core.aio.middlewares.services_registry import services_registry_middleware
-from bi_core.aio.middlewares.us_manager import service_us_manager_middleware
-from bi_core.aio.web_app_services.redis import SingleHostSimpleRedisService
-from bi_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
-from bi_core.aio.web_app_services.data_processing.factory import make_compeng_service
-from bi_core.connections_security.base import ConnectionSecurityManager, InsecureConnectionSecurityManager
-from bi_core.services_registry.sr_factories import DefaultSRFactory
-from bi_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
-from bi_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
-from bi_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
-from bi_core.us_dataset import Dataset
-from bi_core.mdb_utils import MDBDomainManagerSettings
+from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCoreView, DLRequestDataCore
+from dl_core.aio.middlewares.services_registry import services_registry_middleware
+from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
+from dl_core.aio.web_app_services.redis import SingleHostSimpleRedisService
+from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
+from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
+from dl_core.connections_security.base import ConnectionSecurityManager, InsecureConnectionSecurityManager
+from dl_core.services_registry.sr_factories import DefaultSRFactory
+from dl_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
+from dl_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
+from dl_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
+from dl_core.us_dataset import Dataset
+from dl_core.mdb_utils import MDBDomainManagerSettings
 
 
 # TODO?: move to unit tests (with fake `qc_redis_url`)

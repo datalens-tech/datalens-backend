@@ -6,11 +6,11 @@ from datetime import datetime
 import pytest
 from multidict import CIMultiDict
 
-from bi_constants.api_constants import DLContextKey, DLHeadersCommon
-from bi_api_commons.base_models import RequestContextInfo, TenantCommon, NoAuthData
-from bi_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from bi_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from bi_core.connection_executors.qe_serializer.schemas_common import DBAdapterScopedRCISchema, DBAdapterQueryStrSchema
+from dl_constants.api_constants import DLContextKey, DLHeadersCommon
+from dl_api_commons.base_models import RequestContextInfo, TenantCommon, NoAuthData
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from dl_core.connection_executors.qe_serializer.schemas_common import DBAdapterScopedRCISchema, DBAdapterQueryStrSchema
 
 
 # Full RCI is used in test-cases to prevent extra work when scope of DBAdapterScopedRCI will be extended

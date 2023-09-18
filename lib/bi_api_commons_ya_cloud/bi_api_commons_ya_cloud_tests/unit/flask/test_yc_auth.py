@@ -7,10 +7,10 @@ import pytest
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-from bi_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-from bi_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
-from bi_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
-from bi_api_commons.flask.middlewares.request_id import RequestIDService
+from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
+from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
+from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
+from dl_api_commons.flask.middlewares.request_id import RequestIDService
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons_ya_cloud.yc_access_control_model import (

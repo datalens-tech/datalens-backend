@@ -1,4 +1,4 @@
-# TODO: Move to bi_i18n
+# TODO: Move to dl_i18n
 
 import os
 from typing import Dict
@@ -6,11 +6,11 @@ from typing import Dict
 import attr
 import pytest
 
-from bi_i18n.exc import (
+from dl_i18n.exc import (
     UnknownDomain,
     UnknownLocale,
 )
-from bi_i18n.localizer_base import (
+from dl_i18n.localizer_base import (
     Translatable as BaseTranslatable,
     TranslationConfig,
     LocalizerLoader,

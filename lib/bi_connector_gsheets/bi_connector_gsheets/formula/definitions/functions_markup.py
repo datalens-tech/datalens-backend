@@ -1,4 +1,4 @@
-import bi_formula.definitions.functions_markup as base
+import dl_formula.definitions.functions_markup as base
 
 from bi_connector_gsheets.formula.constants import GSheetsDialect as D
 

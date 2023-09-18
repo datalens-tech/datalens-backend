@@ -8,7 +8,7 @@ import attr
 # https://a.yandex-team.ru/arc/trunk/arcadia/cloud/bitbucket/private-api/yandex/cloud/priv/oauth/v1/session_service.proto
 from yandex.cloud.priv.oauth.v1 import session_service_pb2, session_service_pb2_grpc
 
-from bi_utils.aio import await_sync
+from dl_utils.aio import await_sync
 
 from bi_cloud_integration.local_metadata import get_yc_service_token_local
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient

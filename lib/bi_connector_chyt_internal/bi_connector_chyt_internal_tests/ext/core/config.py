@@ -1,4 +1,4 @@
-from bi_constants.enums import BIType, RawSQLLevel
+from dl_constants.enums import BIType, RawSQLLevel
 
 DEFAULT_CONFIG = dict(
     alias="*chyt_datalens_back",

@@ -8,7 +8,7 @@ from bi_external_api import exc_defs
 from bi_external_api.converter.workbook import WorkbookContext
 from bi_external_api.domain import external as ext
 from bi_external_api.exc_defs import ExternalAPIException
-from bi_api_commons.exc import ExceptionWithData
+from dl_api_commons.exc import ExceptionWithData
 
 
 @attr.s()

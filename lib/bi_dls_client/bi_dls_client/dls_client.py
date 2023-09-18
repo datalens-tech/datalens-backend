@@ -10,13 +10,13 @@ from typing import (
 )
 from urllib.parse import urljoin
 
-from bi_api_commons.base_models import RequestContextInfo
-from bi_api_commons.headers import INTERNAL_HEADER_PROFILING_STACK
-from bi_api_commons.utils import stringify_dl_headers
-from bi_app_tools.profiling_base import GenericProfiler
-from bi_constants.enums import RLSSubjectType
-from bi_core.rls import RLSSubject
-from bi_core.utils import get_retriable_requests_session  # todo: move to bi api commons
+from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.headers import INTERNAL_HEADER_PROFILING_STACK
+from dl_api_commons.utils import stringify_dl_headers
+from dl_app_tools.profiling_base import GenericProfiler
+from dl_constants.enums import RLSSubjectType
+from dl_core.rls import RLSSubject
+from dl_core.utils import get_retriable_requests_session  # todo: move to bi api commons
 from requests import (
     Response,
     Session,

@@ -1,15 +1,15 @@
 import os
 
-from bi_api_lib.query.registry import register_multi_query_mutator_factory_cls
-from bi_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.formula.constants import ClickHouseDialect
+from dl_api_lib.query.registry import register_multi_query_mutator_factory_cls
+from dl_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 # FIXME: Remove connectors
 from bi_connector_mysql.core.constants import BACKEND_TYPE_MYSQL
 from bi_connector_mysql.formula.constants import MySQLDialect
-from bi_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
-from bi_query_processing.multi_query.factory import DefaultNativeWFMultiQueryMutatorFactory
+from dl_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect
+from dl_query_processing.multi_query.factory import DefaultNativeWFMultiQueryMutatorFactory
 
 
 def register_for_connectors_with_native_wf() -> None:

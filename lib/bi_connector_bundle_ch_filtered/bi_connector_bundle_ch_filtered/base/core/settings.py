@@ -2,10 +2,10 @@ import attr
 
 import json
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.settings_loaders.meta_definition import s_attrib
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.settings_loaders.meta_definition import s_attrib
 
 
 def normalize_sql_query(sql_query: str) -> str:

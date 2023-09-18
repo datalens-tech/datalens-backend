@@ -9,7 +9,7 @@ import marshmallow
 from marshmallow import fields
 
 from dynamic_enum import DynamicEnum
-from bi_model_tools.schema.dynamic_enum_field import DynamicEnumField
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString

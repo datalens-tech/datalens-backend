@@ -2,10 +2,10 @@ from marshmallow import fields as ma_fields
 
 from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 
-from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
-from bi_api_connector.api_schema.connection_base_fields import cache_ttl_field, secret_string_field
-from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionSchema, ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field, secret_string_field
+from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin, DataExportForbiddenMixin
 
 
 class CHYTConnectionBaseSchema(ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin, ConnectionSchema):

@@ -5,8 +5,8 @@ from typing import ClassVar, Generic, TypeVar
 from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 
-from bi_core.us_connection_base import DataSourceTemplate
-from bi_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 import bi_connector_bundle_partners_tests.db.config as test_config
 

@@ -7,43 +7,43 @@ import pytest
 
 from clickhouse_sqlalchemy.drivers.native.base import ClickHouseDialect
 
-from bi_constants.enums import (
+from dl_constants.enums import (
     AggregationFunction, BIType, BinaryJoinOperator, FieldType
 )
 
-from bi_core.db import SchemaColumn
-from bi_core.db.native_type import ClickHouseNativeType
-from bi_core.fields import BIField, DirectCalculationSpec, FormulaCalculationSpec
-from bi_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect
-from bi_core.query.expression import ExpressionCtx
+from dl_core.db import SchemaColumn
+from dl_core.db.native_type import ClickHouseNativeType
+from dl_core.fields import BIField, DirectCalculationSpec, FormulaCalculationSpec
+from dl_core.multisource import AvatarRelation, BinaryCondition, ConditionPartDirect
+from dl_core.query.expression import ExpressionCtx
 
-import bi_formula.core.exc as formula_exc
-from bi_formula.core.dialect import from_name_and_version
-from bi_formula.core.message_ctx import FormulaErrorCtx
-from bi_formula.inspect.env import InspectionEnvironment
-from bi_formula.parser.factory import get_parser
-from bi_formula.definitions.scope import Scope
+import dl_formula.core.exc as formula_exc
+from dl_formula.core.dialect import from_name_and_version
+from dl_formula.core.message_ctx import FormulaErrorCtx
+from dl_formula.inspect.env import InspectionEnvironment
+from dl_formula.parser.factory import get_parser
+from dl_formula.definitions.scope import Scope
 
-from bi_query_processing.compilation.specs import FilterFieldSpec
-from bi_query_processing.compilation.formula_compiler import FormulaCompiler
-from bi_query_processing.column_registry import ColumnRegistry
-from bi_query_processing.compilation.primitives import (
+from dl_query_processing.compilation.specs import FilterFieldSpec
+from dl_query_processing.compilation.formula_compiler import FormulaCompiler
+from dl_query_processing.column_registry import ColumnRegistry
+from dl_query_processing.compilation.primitives import (
     CompiledFormulaInfo, CompiledQuery,
     JoinedFromObject, AvatarFromObject, FromColumn,
 )
-from bi_query_processing.compilation.filter_compiler import MainFilterFormulaCompiler
-from bi_query_processing.legacy_pipeline.planning.primitives import (
+from dl_query_processing.compilation.filter_compiler import MainFilterFormulaCompiler
+from dl_query_processing.legacy_pipeline.planning.primitives import (
     ExecutionLevel, PlannedFormula, LevelPlan, SlicingPlan, TOP_SLICER_CONFIG,
 )
-from bi_query_processing.legacy_pipeline.separation.primitives import CompiledMultiLevelQuery, CompiledLevel
-from bi_query_processing.translation.flat_translator import FlatQueryTranslator
-from bi_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
+from dl_query_processing.legacy_pipeline.separation.primitives import CompiledMultiLevelQuery, CompiledLevel
+from dl_query_processing.translation.flat_translator import FlatQueryTranslator
+from dl_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 
-from bi_api_lib.enums import WhereClauseOperation
+from dl_api_lib.enums import WhereClauseOperation
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
-from bi_connector_postgresql.formula.constants import PostgreSQLDialect
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect
 
 
 def new_id() -> str:

@@ -3,9 +3,9 @@ from __future__ import annotations
 import logging
 from typing import Iterable, TYPE_CHECKING
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
-from bi_core.base_models import SourceFilterSpec
+from dl_core.base_models import SourceFilterSpec
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseFilteredDataSourceBase
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants import (
@@ -13,7 +13,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants imp
 )
 
 if TYPE_CHECKING:
-    from bi_core.services_registry.top_level import ServicesRegistry
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)

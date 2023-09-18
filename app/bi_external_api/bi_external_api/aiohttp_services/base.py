@@ -9,8 +9,8 @@ import attr
 import yaml
 from aiohttp import web
 
-from bi_api_commons.base_models import TenantDef
-from bi_api_commons.aiohttp.aiohttp_wrappers import RequiredResource, DLRequestBase
+from dl_api_commons.base_models import TenantDef
+from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResource, DLRequestBase
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.internal_api_clients.main import InternalAPIClients
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient

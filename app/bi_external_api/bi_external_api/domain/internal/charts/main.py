@@ -2,7 +2,7 @@ from typing import Optional, Sequence, Any
 
 import attr
 
-from bi_constants.enums import WhereClauseOperation, BIType
+from dl_constants.enums import WhereClauseOperation, BIType
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.structs.mappings import FrozenStrMapping

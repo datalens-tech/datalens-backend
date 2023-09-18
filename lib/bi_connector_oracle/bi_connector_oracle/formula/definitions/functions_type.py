@@ -1,11 +1,11 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_oracle
 
-import bi_formula.definitions.functions_type as base
-from bi_formula.definitions.base import (
+import dl_formula.definitions.functions_type as base
+from dl_formula.definitions.base import (
     TranslationVariant,
 )
-from bi_formula.definitions.common_datetime import EPOCH_START_D, DAY_SEC
+from dl_formula.definitions.common_datetime import EPOCH_START_D, DAY_SEC
 
 from bi_connector_oracle.formula.constants import OracleDialect as D
 

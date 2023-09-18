@@ -1,0 +1,101 @@
+
+[tool.poetry]
+name = "datalens-core"
+version = "12.99.0"
+description = ""
+authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>"]
+packages = [{include = "dl_core"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+Flask = ">=2.0.3"
+Werkzeug = ">=2.0.3"
+aiobotocore = ">=2.4.2"
+aiodns = ">=3.0.0"
+aiohttp = ">=3.8.1"
+anyascii = ">=0.3.2"
+arq = ">=0.25.0"
+attrs = ">=22.2.0"
+botocore = ">=1.27.59,<1.27.60"
+cryptography = ">=3.3.2"
+dnspython = ">=2.2.1"
+flask = ">=2.0.3"
+grpcio = ">=1.45.0rc1"
+jaeger-client = ">=4.8.0"
+lz4 = ">=4.3.2"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+multidict = ">=4.0"
+opentracing = ">=2.4.0"
+python = ">=3.10, <3.12"
+python-dateutil = ">=2.8.2"
+pytz = ">=2022.7.1"
+pyyaml = ">=5.3.1"
+raven = ">=6.10.0"
+redis = ">=4.5.1"
+requests = ">=2.28.2"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+typing-extensions = ">=4.5.0"
+uwsgi = ">=2.0.21"
+werkzeug = ">=2.0.3"
+xxhash = ">=3.2.0"
+# Check if really required
+statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+redis_cache_lock = {path = "../redis-cache-lock"}
+statcommons = {path = "../statcommons"}
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-utils = {path = "../dl_utils"}
+datalens-constants = {path = "../dl_constants"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+datalens-configs = {path = "../dl_configs"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-model-tools = {path = "../dl_model_tools"}
+datalens-task-processor = {path = "../dl_task_processor"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+datalens-testing = {path = "../dl_testing"}
+datalens-core-testing = {path = "../dl_core_testing"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_core_tests/unit", "dl_core_tests/db"]
+timeout = 600
+
+[datalens.pytest.unit]
+root_dir = "dl_core_tests/"
+target_path = "unit"
+skip_compose = "true"
+
+[datalens.pytest.db]
+root_dir = "dl_core_tests/"
+target_path = "db"
+labels = ["fat"]
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["aiodns.*", "aiogoogle.*", "anyascii.*", "lz4.*", "marshmallow_oneofschema.*", "raven.*"]
+ignore_missing_imports = true
+
+[datalens.i18n.domains]
+dl_core = [
+    {path = "dl_core"},
+]

@@ -3,8 +3,8 @@ from __future__ import annotations
 import uuid
 import json
 
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_core import exc
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_core import exc
 
 
 def test_update_file_conn(

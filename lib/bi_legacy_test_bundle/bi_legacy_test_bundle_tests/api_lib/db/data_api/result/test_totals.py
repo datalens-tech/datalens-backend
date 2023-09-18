@@ -8,12 +8,12 @@ from typing import Dict, List, NamedTuple, Union
 
 import pytest
 
-from bi_constants.enums import WhereClauseOperation, FieldRole
+from dl_constants.enums import WhereClauseOperation, FieldRole
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1, SyncHttpDataApiV1_5
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV1, SyncHttpDataApiV1_5
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 
 class TotalsTestEnv(NamedTuple):

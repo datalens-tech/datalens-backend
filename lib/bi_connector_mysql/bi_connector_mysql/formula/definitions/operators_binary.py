@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.operators_binary as base
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common import raw_sql
-from bi_formula.definitions.common_datetime import DAY_SEC, DAY_USEC
+import dl_formula.definitions.operators_binary as base
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common import raw_sql
+from dl_formula.definitions.common_datetime import DAY_SEC, DAY_USEC
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 

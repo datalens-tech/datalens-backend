@@ -1,6 +1,6 @@
 import pytest
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
 from bi_legacy_test_bundle_tests.api_lib.db.data_api.result.complex_queries.generation.generator import (
     AutoGeneratorSettings, TestSettings, LODTestAutoGenerator,

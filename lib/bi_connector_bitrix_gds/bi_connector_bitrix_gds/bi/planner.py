@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, ClassVar
 
-from bi_query_processing.legacy_pipeline.planning.planner import PrefilterAndCompengExecutionPlanner
+from dl_query_processing.legacy_pipeline.planning.planner import PrefilterAndCompengExecutionPlanner
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-import bi_formula.core.nodes as formula_nodes
+import dl_formula.core.nodes as formula_nodes
 
 if TYPE_CHECKING:
-    from bi_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledQuery
+    from dl_query_processing.compilation.primitives import CompiledFormulaInfo, CompiledQuery
 
 
 class BitrixGDSCompengExecutionPlanner(PrefilterAndCompengExecutionPlanner):

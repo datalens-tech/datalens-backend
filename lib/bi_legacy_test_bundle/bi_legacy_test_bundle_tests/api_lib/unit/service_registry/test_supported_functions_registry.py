@@ -2,23 +2,23 @@ import pytest
 
 import sqlalchemy as sa
 
-from bi_formula.definitions.functions_aggregation import AggregationFunction
-from bi_formula.definitions.type_strategy import FromArgs
+from dl_formula.definitions.functions_aggregation import AggregationFunction
+from dl_formula.definitions.type_strategy import FromArgs
 
-from bi_formula.core.datatype import DataType
-from bi_formula.definitions.args import ArgTypeSequence
+from dl_formula.core.datatype import DataType
+from dl_formula.definitions.args import ArgTypeSequence
 
-from bi_formula.definitions.base import (
+from dl_formula.definitions.base import (
     TranslationVariant,
     Function,
 )
-from bi_formula.core.dialect import StandardDialect as D, StandardDialect
-from bi_formula.definitions.scope import Scope
-from bi_formula.definitions.registry import OperationRegistry
+from dl_formula.core.dialect import StandardDialect as D, StandardDialect
+from dl_formula.definitions.scope import Scope
+from dl_formula.definitions.registry import OperationRegistry
 
 from bi_connector_yql.formula.constants import YqlDialect
 
-from bi_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 
 
 V = TranslationVariant.make

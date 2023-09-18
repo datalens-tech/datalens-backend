@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 
-import bi_core.exc as exc
-import bi_core.connectors.base.error_transformer as error_transformer
-from bi_core.connectors.base.error_transformer import (
+import dl_core.exc as exc
+import dl_core.connectors.base.error_transformer as error_transformer
+from dl_core.connectors.base.error_transformer import (
     orig_exc_is,
     DbErrorTransformer,
     ErrorTransformerRule as Rule,

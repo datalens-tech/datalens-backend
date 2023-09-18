@@ -1,12 +1,12 @@
 import pytest
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from bi_core_testing.testcases.data_source import DefaultDataSourceTestClass
+from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
 from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 
-from bi_connector_chyt.core.data_source_spec import CHYTSubselectDataSourceSpec
+from dl_connector_chyt.core.data_source_spec import CHYTSubselectDataSourceSpec
 from bi_connector_chyt_internal.core.constants import (
     SOURCE_TYPE_CHYT_SUBSELECT,
     SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT,

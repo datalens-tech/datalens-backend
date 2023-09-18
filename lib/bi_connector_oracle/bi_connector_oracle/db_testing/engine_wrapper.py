@@ -3,7 +3,7 @@ from typing import Any, Optional, Sequence
 
 import sqlalchemy as sa
 
-from bi_db_testing.database.engine_wrapper import EngineWrapperBase
+from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 
 
 class OracleEngineWrapper(EngineWrapperBase):

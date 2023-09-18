@@ -12,7 +12,7 @@ from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
 from bi_integration_tests.sales_table import upload_data_from_df
 from bi_testing_ya.api_wrappers import Req, Resp
 from bi_testing_ya.dlenv import DLEnv
-from bi_testing.utils import skip_outside_devhost, guids_from_titles
+from dl_testing.utils import skip_outside_devhost, guids_from_titles
 from test_data.sales_dataset import read_superstore_csv_as_pandas_df, INDEX_COLUMN, VALUE_COLUMNS
 
 BASE_CLOUD_DIRECTORY = 'window_function_tests'

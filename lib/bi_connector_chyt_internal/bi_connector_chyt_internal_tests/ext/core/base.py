@@ -6,18 +6,18 @@ from typing import Generic, Generator, TypeVar
 import pytest
 from multidict import CIMultiDict
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import RequestContextInfo
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_chyt_internal.core.us_connection import ConnectionCHYTInternalToken, ConnectionCHYTUserAuth
 from bi_connector_chyt_internal.core.testing.connection import (
     make_saved_chyt_connection, make_saved_chyt_user_auth_connection
 )
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
-from bi_core_testing.database import Db, DbTable, make_table, C
-from bi_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core_testing.database import Db, DbTable, make_table, C
+from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,

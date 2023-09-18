@@ -7,11 +7,11 @@ from aiohttp import web
 
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_api_commons_ya_cloud.yc_access_control_model import (
@@ -20,7 +20,7 @@ from bi_api_commons_ya_cloud.yc_access_control_model import (
     AuthorizationModeYandexCloud,
 )
 
-from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask
+from dl_api_lib_testing.client import TestClientConverterAiohttpToFlask
 
 from ..test_yc_auth_scenarios import (
     Scenario_YCAuth_ModeYC_DenyCookieAuth,

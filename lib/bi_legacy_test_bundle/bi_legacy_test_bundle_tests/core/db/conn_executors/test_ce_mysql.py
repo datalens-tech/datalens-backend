@@ -3,15 +3,15 @@ from __future__ import annotations
 import pytest
 from sqlalchemy.dialects import mysql as my_types
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_mysql.core.connection_executors import MySQLConnExecutor
 from bi_connector_mysql.core.dto import MySQLConnDTO
-from bi_core.connection_executors.common_base import ConnExecutorQuery, ExecutionMode
-from bi_core.connection_models import ConnDTO, TableIdent
+from dl_core.connection_executors.common_base import ConnExecutorQuery, ExecutionMode
+from dl_core.connection_models import ConnDTO, TableIdent
 
-from bi_core_testing.database import Db, make_table, C
+from dl_core_testing.database import Db, make_table, C
 
 from bi_legacy_test_bundle_tests.core.common_ce import SelectDataTestSet, BaseConnExecutorSet
 

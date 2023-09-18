@@ -1,4 +1,4 @@
-from bi_formula_ref.plugins.base.plugin import FormulaRefPlugin
+from dl_formula_ref.plugins.base.plugin import FormulaRefPlugin
 
 from bi_formula_ref_dc.config import DOC_GEN_CONFIG_DC
 from bi_formula_ref_dc.constants import CONFIG_VERSION_DC

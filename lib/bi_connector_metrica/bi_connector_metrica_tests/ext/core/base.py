@@ -5,16 +5,16 @@ from typing import TypeVar
 import pytest
 import sqlalchemy_metrika_api
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection, AppMetricaApiConnection
 from bi_connector_metrica.core.testing.connection import (
     make_saved_metrika_api_connection, make_saved_appmetrica_api_connection
 )
 
-from bi_core_testing.database import Db, CoreDbConfig
-from bi_core_testing.engine_wrapper import TestingEngineWrapper
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core_testing.database import Db, CoreDbConfig
+from dl_core_testing.engine_wrapper import TestingEngineWrapper
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 import bi_connector_metrica_tests.ext.config as common_test_config
 import bi_connector_metrica_tests.ext.core.config as test_config

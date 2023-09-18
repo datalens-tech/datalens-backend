@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from http import HTTPStatus
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 
 def test_dataset_with_many_formula_fields(api_v1, dataset_id):

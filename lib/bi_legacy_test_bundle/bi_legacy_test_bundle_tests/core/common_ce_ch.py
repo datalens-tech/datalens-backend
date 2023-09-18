@@ -7,19 +7,19 @@ import shortuuid
 import sqlalchemy as sa
 from clickhouse_sqlalchemy import types as ch_types
 
-from bi_constants.enums import BIType, IndexKind
+from dl_constants.enums import BIType, IndexKind
 
-from bi_core import exc
-from bi_core.connection_executors import ConnExecutorQuery
-from bi_core.connection_models import ConnDTO, TableIdent
-from bi_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from bi_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
-from bi_core.db import SchemaInfo, IndexInfo
-from bi_core.db.native_type import (
+from dl_core import exc
+from dl_core.connection_executors import ConnExecutorQuery
+from dl_core.connection_models import ConnDTO, TableIdent
+from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
+from dl_core.db import SchemaInfo, IndexInfo
+from dl_core.db.native_type import (
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64WithTZNativeType,
 )
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_legacy_test_bundle_tests.core.common_ce import BaseConnExecutorSet, ErrorTestSet
 
 

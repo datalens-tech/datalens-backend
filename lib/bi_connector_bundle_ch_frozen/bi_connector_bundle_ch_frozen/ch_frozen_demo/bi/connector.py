@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_api_connector.api_schema.source_base import SubselectDataSourceSchema, SubselectDataSourceTemplateSchema
+from dl_api_connector.api_schema.source_base import SubselectDataSourceSchema, SubselectDataSourceTemplateSchema
 
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.connector import (
     CHFrozenDemoCoreSourceDefinition,

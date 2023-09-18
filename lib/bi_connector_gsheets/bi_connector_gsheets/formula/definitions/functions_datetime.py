@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import bi_formula.definitions.functions_datetime as base
+import dl_formula.definitions.functions_datetime as base
 
 from bi_connector_gsheets.formula.constants import GSheetsDialect as D
 

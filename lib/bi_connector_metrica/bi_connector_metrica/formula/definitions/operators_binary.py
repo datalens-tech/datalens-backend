@@ -1,4 +1,4 @@
-import bi_formula.definitions.operators_binary as base
+import dl_formula.definitions.operators_binary as base
 
 from bi_connector_metrica.formula.constants import MetricaDialect as D
 

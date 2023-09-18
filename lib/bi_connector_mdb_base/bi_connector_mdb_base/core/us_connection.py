@@ -4,16 +4,16 @@ from typing import Optional, ClassVar, Type, Protocol, TYPE_CHECKING
 import os
 import logging
 
-from bi_core import exc
+from dl_core import exc
 from bi_api_commons_ya_cloud.models import TenantYCOrganization, TenantYCFolder
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 from bi_connector_mdb_base.core.base_models import MDBConnectOptionsMixin
-from bi_core.connection_models import ConnectOptions
+from dl_core.connection_models import ConnectOptions
 
 if TYPE_CHECKING:
-    from bi_core.us_manager.us_manager import USManagerBase
-    from bi_core.services_registry.top_level import ServicesRegistry
-    from bi_core.us_connection_base import ConnectionBase
+    from dl_core.us_manager.us_manager import USManagerBase
+    from dl_core.services_registry.top_level import ServicesRegistry
+    from dl_core.us_connection_base import ConnectionBase
     from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
     from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
 

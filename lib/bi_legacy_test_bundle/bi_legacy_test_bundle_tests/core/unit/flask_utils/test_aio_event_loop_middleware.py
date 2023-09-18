@@ -6,7 +6,7 @@ import threading
 
 import flask
 
-from bi_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
+from dl_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
 
 
 def test_simulation(loop):

@@ -2,15 +2,15 @@ from typing import Callable, Generic, TypeVar
 
 import pytest
 
-from bi_core.exc import SourceDoesNotExist
+from dl_core.exc import SourceDoesNotExist
 
-from bi_core_testing.testcases.data_source import BaseDataSourceTestClass
+from dl_core_testing.testcases.data_source import BaseDataSourceTestClass
 from bi_connector_bundle_partners.base.core.data_source import PartnersCHDataSourceBase
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
-from bi_core.services_registry.top_level import ServicesRegistry
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.services_registry.top_level import ServicesRegistry
 
 import bi_connector_bundle_partners_tests.db.config as test_config
 

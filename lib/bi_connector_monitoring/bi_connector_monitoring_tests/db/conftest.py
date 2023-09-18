@@ -1,7 +1,7 @@
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
-from bi_core.loader import CoreLibraryConfig
+from dl_api_lib.loader import ApiLibraryConfig, load_bi_api_lib
+from dl_core.loader import CoreLibraryConfig
 
-from bi_core_testing.initialization import initialize_core_test
+from dl_core_testing.initialization import initialize_core_test
 
 from bi_connector_monitoring_tests.db.config import BI_TEST_CONFIG, CORE_TEST_CONFIG
 

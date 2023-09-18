@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 
 import pytest
 
-from bi_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import ConnectionCHFilteredSubselectByPuidBase
 
 import bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config as test_config

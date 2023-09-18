@@ -3,16 +3,16 @@ from __future__ import annotations
 from marshmallow import fields as ma_fields
 from sqlalchemy_metrika_api.exceptions import MetrikaApiAccessDeniedException
 
-from bi_api_lib import exc
-from bi_api_lib.api_decorators import schematic_request
-from bi_api_lib.app.control_api.resources.base import BIResource
-from bi_api_lib.app.control_api.resources.connections import ns
-from bi_api_lib.enums import USPermissionKind
-from bi_api_lib.utils import need_permission_on_entry
-from bi_app_tools.profiling_base import generic_profiler
-from bi_core.exc import ConnectionConfigurationError
-from bi_core.us_connection_base import ConnectionBase
-from bi_model_tools.schema.base import BaseSchema
+from dl_api_lib import exc
+from dl_api_lib.api_decorators import schematic_request
+from dl_api_lib.app.control_api.resources.base import BIResource
+from dl_api_lib.app.control_api.resources.connections import ns
+from dl_api_lib.enums import USPermissionKind
+from dl_api_lib.utils import need_permission_on_entry
+from dl_app_tools.profiling_base import generic_profiler
+from dl_core.exc import ConnectionConfigurationError
+from dl_core.us_connection_base import ConnectionBase
+from dl_model_tools.schema.base import BaseSchema
 
 from bi_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,

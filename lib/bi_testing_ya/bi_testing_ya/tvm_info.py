@@ -2,7 +2,7 @@ from typing import ClassVar
 
 import attr
 
-from bi_testing.env_params.getter import EnvParamGetter
+from dl_testing.env_params.getter import EnvParamGetter
 
 
 @attr.s

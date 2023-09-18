@@ -1,4 +1,4 @@
-from bi_constants.enums import ConnectionType, CreateDSFrom
+from dl_constants.enums import ConnectionType, CreateDSFrom
 
 
 CONNECTION_TYPE_EQUEO = ConnectionType.declare('equeo')

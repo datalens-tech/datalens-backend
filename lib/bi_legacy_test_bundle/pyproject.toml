@@ -12,7 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
-yandex-bi-constants = {path = "../../mainrepo/lib/bi_constants"}
+datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 
 [tool.poetry.group.tests.dependencies]
 # common
@@ -27,12 +27,6 @@ yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_
 yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
-yandex-bi-connector-postgresql = {path = "../../mainrepo/lib/bi_connector_postgresql"}
-yandex-bi-compeng-pg = {path = "../../mainrepo/lib/bi_compeng_pg"}
-yandex-bi-connector-bundle-chs3 = {path = "../../mainrepo/lib/bi_connector_bundle_chs3"}
-yandex-bi-connector-clickhouse = {path = "../../mainrepo/lib/bi_connector_clickhouse"}
-yandex-bi-core = {path = "../../mainrepo/lib/bi_core"}
-yandex-bi-core-testing = {path = "../../mainrepo/lib/bi_core_testing"}
 yandex-bi-maintenance = {path = "../bi_maintenance"}
 # api_lib
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
@@ -40,16 +34,22 @@ pytest-lazy-fixture = ">=0.6.3"
 responses = ">=0.23.1"
 uwsgi = ">=2.0.21"
 yandex-bi-testing-ya = {path = "../../lib/bi_testing_ya"}
-yandex-bi-api-lib = {path = "../../mainrepo/lib/bi_api_lib"}
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
-yandex-bi-api-client = {path = "../../mainrepo/lib/bi_api_client"}
-yandex-bi-api-lib-testing = {path = "../../mainrepo/lib/bi_api_lib_testing"}
-yandex-bi-file-uploader-worker-lib = {path = "../../mainrepo/lib/bi_file_uploader_worker_lib"}
-yandex-bi-testing = {path = "../../mainrepo/lib/bi_testing"}
 bi-api-lib-testing-ya = {path = "../../lib/bi_api_lib_testing_ya"}
 bi-defaults = {path = "../bi_defaults"}
 yandex-bi-connector-oracle = {path = "../bi_connector_oracle"}
 yandex-bi-connector-mssql = {path = "../bi_connector_mssql"}
+datalens-api-lib-testing = {path = "../../mainrepo/lib/dl_api_lib_testing"}
+datalens-compeng-pg = {path = "../../mainrepo/lib/dl_compeng_pg"}
+datalens-api-client = {path = "../../mainrepo/lib/dl_api_client"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-testing = {path = "../../mainrepo/lib/dl_testing"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -124,7 +124,7 @@ compose_file_base = "docker-compose.api_lib.bitrix"
 labels = ["ext"]
 
 [tool.poetry.scripts]
-bi-core-rqe-async = "bi_core.connection_executors.remote_query_executor.app_async:async_qe_main"
+bi-core-rqe-async = "dl_core.connection_executors.remote_query_executor.app_async:async_qe_main"
 
 [tool.mypy]
 warn_unused_configs = true

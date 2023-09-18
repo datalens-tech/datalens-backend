@@ -18,8 +18,8 @@ import attr
 import grpc
 
 from bi_cloud_integration.exc import get_grpc_code, handle_grpc_error
-from bi_configs.utils import get_root_certificates
-from bi_utils.aio import await_sync
+from dl_configs.utils import get_root_certificates
+from dl_utils.aio import await_sync
 
 
 LOGGER = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ class DLYCServiceConfig:
     tls: bool = attr.ib(default=None)  # `None` effectively defaults to `True` unless specified in the `endpoint`
     retry_policy: DLYCRetryPolicyBase = attr.ib(factory=DLYCRetryPolicy)
 
-    # TODO: take the defaults from the `bi_configs`
+    # TODO: take the defaults from the `dl_configs`
     keepalive_time_msec: int = attr.ib(default=10_000)
     keepalive_timeout_msec: int = attr.ib(default=1000)
     user_agent: str = attr.ib(default='datalens')

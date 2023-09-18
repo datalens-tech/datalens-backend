@@ -1,10 +1,10 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_type as base
-from bi_formula.definitions.base import (
+import dl_formula.definitions.functions_type as base
+from dl_formula.definitions.base import (
     TranslationVariant,
 )
-from bi_formula.definitions.common_datetime import EPOCH_START_S
+from dl_formula.definitions.common_datetime import EPOCH_START_S
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 

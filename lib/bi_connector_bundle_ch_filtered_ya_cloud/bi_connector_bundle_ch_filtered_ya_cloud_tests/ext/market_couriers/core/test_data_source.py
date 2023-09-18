@@ -1,6 +1,6 @@
 import pytest
 
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants import (
     SOURCE_TYPE_CH_MARKET_COURIERS_TABLE,
@@ -11,7 +11,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.us_connection
 from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.data_source import (
     ClickHouseMarketCouriersDataSource
 )
-from bi_core_testing.testcases.data_source import SQLDataSourceTestClass
+from dl_core_testing.testcases.data_source import SQLDataSourceTestClass
 
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.market_couriers.core.base import BaseMarketCouriersTestClass
 

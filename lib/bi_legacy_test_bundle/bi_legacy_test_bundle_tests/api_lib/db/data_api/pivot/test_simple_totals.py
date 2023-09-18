@@ -1,9 +1,9 @@
-from bi_constants.internal_constants import MEASURE_NAME_TITLE, DIMENSION_NAME_TITLE
-from bi_constants.enums import PivotRole
+from dl_constants.internal_constants import MEASURE_NAME_TITLE, DIMENSION_NAME_TITLE
+from dl_constants.enums import PivotRole
 
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.pivot_utils import check_pivot_response
-from bi_api_client.dsmaker.primitives import PivotTotals
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.pivot_utils import check_pivot_response
+from dl_api_client.dsmaker.primitives import PivotTotals
 
 
 def test_main_totals(api_v1, data_api_v2, dataset_id):

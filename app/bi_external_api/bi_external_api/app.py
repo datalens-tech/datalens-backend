@@ -4,24 +4,24 @@ from typing import Sequence, Any, Type
 
 from aiohttp import web
 
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeDataCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 
-from bi_configs.enums import AppType
-from bi_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
-from bi_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
-from bi_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
+from dl_configs.enums import AppType
+from dl_configs.env_var_definitions import use_jaeger_tracer, jaeger_service_name_env_aware
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 
-from bi_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from bi_core.aio.middlewares.tracing import TracingService
-from bi_core.aio.ping_view import PingView
-from bi_core.logging_config import configure_logging
+from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_core.aio.middlewares.tracing import TracingService
+from dl_core.aio.ping_view import PingView
+from dl_core.logging_config import configure_logging
 from bi_defaults.environments import InstallationsMap, EnvAliasesMap
 
 from bi_external_api.aiohttp_services.base import ExtAPIRequest, AppConfig
@@ -103,7 +103,7 @@ def create_app(settings: ExternalAPISettings) -> web.Application:
         ).middleware,
         *auth_mw_list,
         commit_rci_middleware(),
-        # TODO FIX: Add when json_body_middleware will be moved to bi_core
+        # TODO FIX: Add when json_body_middleware will be moved to dl_core
         # json_body_middleware(),
         InternalAPIClientsMiddleware(
             dataset_api_base_url=settings.DATASET_CONTROL_PLANE_API_BASE_URL,

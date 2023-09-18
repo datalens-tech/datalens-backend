@@ -4,8 +4,8 @@ from http import HTTPStatus
 
 import pytest
 
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from bi_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
 
 def test_zero_division_in_compeng(api_v1, data_api_v2, dataset_id):

@@ -16,7 +16,7 @@ def init_sentry(secret_sentry_dsn: Optional[str]) -> None:
         from sentry_sdk.integrations.logging import LoggingIntegration
         from sentry_sdk.integrations.threading import ThreadingIntegration
 
-        from bi_api_commons.logging_sentry import cleanup_common_secret_data
+        from dl_api_commons.logging_sentry import cleanup_common_secret_data
 
         sentry_sdk.init(
             dsn=secret_sentry_dsn,

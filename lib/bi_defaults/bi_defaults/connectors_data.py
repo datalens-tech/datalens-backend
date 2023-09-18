@@ -17,16 +17,16 @@ from bi_connector_bundle_ch_frozen.ch_frozen_horeca.core.settings import Connect
 from bi_connector_bundle_ch_frozen.ch_frozen_samples.core.settings import ConnectorsDataCHFrozenSamplesBase
 from bi_connector_bundle_ch_frozen.ch_frozen_transparency.core.settings import ConnectorsDataCHFrozenTransparencyBase
 from bi_connector_bundle_ch_frozen.ch_frozen_weather.core.settings import ConnectorsDataCHFrozenWeatherBase
-from bi_connector_bundle_chs3.chs3_base.core.settings import ConnectorsDataFileBase
+from dl_connector_bundle_chs3.chs3_base.core.settings import ConnectorsDataFileBase
 from bi_connector_bundle_partners.equeo.core.settings import ConnectorsDataEqueoBase
 from bi_connector_bundle_partners.kontur_market.core.settings import ConnectorsDataKonturMarketBase
 from bi_connector_bundle_partners.moysklad.core.settings import ConnectorsDataMoyskladBase
-from bi_connector_chyt.core.settings import ConnectorsDataCHYTBase
+from dl_connector_chyt.core.settings import ConnectorsDataCHYTBase
 from bi_connector_monitoring.core.settings import ConnectorsDataMonitoringBase
 from bi_connector_usage_tracking_ya_team.core.settings import ConnectorsDataUsageTrackingYaTeamBase
 from bi_connector_yql.core.yq.settings import ConnectorsDataYQBase
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
 
 CH_DATALENS_EXT_DATA_HOSTS: tuple[str, ...] = (

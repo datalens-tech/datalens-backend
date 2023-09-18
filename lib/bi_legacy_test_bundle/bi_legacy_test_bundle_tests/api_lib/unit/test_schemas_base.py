@@ -5,9 +5,9 @@ from typing import Dict, Any, Set
 import pytest
 from marshmallow import fields, ValidationError
 
-from bi_api_connector.api_schema.extras import FieldExtra, CreateMode, EditMode
-from bi_api_connector.api_schema.top_level import BaseTopLevelSchema
-from bi_testing.utils import get_log_record
+from dl_api_connector.api_schema.extras import FieldExtra, CreateMode, EditMode
+from dl_api_connector.api_schema.top_level import BaseTopLevelSchema
+from dl_testing.utils import get_log_record
 
 
 def test_allowed_unknown_fields(caplog):

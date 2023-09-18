@@ -5,21 +5,21 @@ from typing import TYPE_CHECKING, FrozenSet, Optional, Sequence
 import attr
 import pytest
 
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouseBase
-from bi_api_commons.base_models import RequestContextInfo
-from bi_core.services_registry.entity_checker import EntityUsageChecker
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouseBase
+from dl_api_commons.base_models import RequestContextInfo
+from dl_core.services_registry.entity_checker import EntityUsageChecker
 from bi_api_lib_ya.services_registry.env_manager_factory import IntranetEnvManagerFactory
-from bi_core.services_registry.sr_factories import DefaultSRFactory
-from bi_core.services_registry.typing import ConnectOptionsFactory
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.us_dataset import Dataset
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.exc import EntityUsageNotAllowed
-from bi_core.mdb_utils import MDBDomainManagerSettings
+from dl_core.services_registry.sr_factories import DefaultSRFactory
+from dl_core.services_registry.typing import ConnectOptionsFactory
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_dataset import Dataset
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.exc import EntityUsageNotAllowed
+from dl_core.mdb_utils import MDBDomainManagerSettings
 
 if TYPE_CHECKING:
-    from bi_core.us_connection_base import ConnectionBase
-    from bi_core.us_manager.us_manager import USManagerBase
+    from dl_core.us_connection_base import ConnectionBase
+    from dl_core.us_manager.us_manager import USManagerBase
 
 
 def _rci(user_name: str) -> RequestContextInfo:

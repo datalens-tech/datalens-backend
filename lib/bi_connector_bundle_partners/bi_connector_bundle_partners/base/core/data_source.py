@@ -3,12 +3,12 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, ClassVar, Iterable
 
-from bi_core import exc
-from bi_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
+from dl_core import exc
+from dl_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 
 if TYPE_CHECKING:
-    from bi_core.services_registry.top_level import ServicesRegistry
-    from bi_core.base_models import SourceFilterSpec
+    from dl_core.services_registry.top_level import ServicesRegistry
+    from dl_core.base_models import SourceFilterSpec
 
 
 class PartnersCHDataSourceBase(ClickHouseDataSourceBase, metaclass=abc.ABCMeta):

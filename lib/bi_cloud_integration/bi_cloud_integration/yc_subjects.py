@@ -10,7 +10,7 @@ from yandex.cloud.priv.oauth.v1 import claim_service_pb2, claim_service_pb2_grpc
 
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
 
-from bi_utils.utils import join_in_chunks
+from dl_utils.utils import join_in_chunks
 
 
 @attr.s(auto_attribs=True, frozen=True)

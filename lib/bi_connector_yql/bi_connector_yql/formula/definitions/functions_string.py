@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 import ydb.sqlalchemy as ydb_sa
 
-import bi_formula.definitions.functions_string as base
-from bi_formula.definitions.base import TranslationVariant
-from bi_formula.definitions.common import ifnotnull, make_binary_chain
+import dl_formula.definitions.functions_string as base
+from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common import ifnotnull, make_binary_chain
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 

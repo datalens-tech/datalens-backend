@@ -5,9 +5,9 @@ from typing import Optional, ClassVar, TypeVar, Sequence, Type, Union
 
 import attr
 
-from bi_api_commons.base_models import TenantCommon
-from bi_api_commons.client.base import Req, DLCommonAPIClient
-from bi_constants.enums import CalcMode, AggregationFunction, BIType, FieldType, ManagedBy
+from dl_api_commons.base_models import TenantCommon
+from dl_api_commons.client.base import Req, DLCommonAPIClient
+from dl_constants.enums import CalcMode, AggregationFunction, BIType, FieldType, ManagedBy
 from bi_external_api.converter.charts.utils import convert_field_type_dataset_to_chart
 from bi_external_api.domain import external as ext
 from bi_external_api.domain.external import get_external_model_mapper

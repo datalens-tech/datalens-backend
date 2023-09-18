@@ -1,12 +1,12 @@
 import pytest
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_constants.enums import ConnectionType
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_constants.enums import ConnectionType
 
 from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
 from bi_api_lib_testing_ya.connection_base import ConnectionTestPrivateBase
 
-from bi_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
+from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from bi_connector_bundle_ch_filtered_tests.db.config import BI_TEST_CONFIG
 from bi_connector_bundle_ch_filtered_tests.db.ch_billing_analytics.core.base import BaseCHBillingAnalyticsTestClass
 from bi_connector_bundle_ch_filtered_tests.db.ch_billing_analytics.config import SR_CONNECTION_SETTINGS

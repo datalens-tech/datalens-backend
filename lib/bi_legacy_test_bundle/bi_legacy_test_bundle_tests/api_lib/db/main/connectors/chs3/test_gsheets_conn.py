@@ -5,7 +5,7 @@ import uuid
 import json
 from http import HTTPStatus
 
-from bi_constants.enums import (
+from dl_constants.enums import (
     WhereClauseOperation,
     ComponentType,
     DataSourceRole,
@@ -13,15 +13,15 @@ from bi_constants.enums import (
     ComponentErrorLevel,
 )
 
-from bi_core import exc
-from bi_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import (
+from dl_core import exc
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
     SOURCE_TYPE_GSHEETS_V2,
     NOTIF_TYPE_GSHEETS_V2_STALE_DATA,
 )
-from bi_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 
 def test_authorized(

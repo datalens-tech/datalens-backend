@@ -6,7 +6,7 @@ from typing import Generator
 
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
 import bi_connector_gsheets.core.gozora
 from bi_connector_gsheets.core.us_connection import GSheetsConnectOptions, GSheetsConnection

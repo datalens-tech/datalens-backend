@@ -1,7 +1,7 @@
 import pytest
 
 
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 from bi_connector_bundle_partners.kontur_market.core.constants import SOURCE_TYPE_KONTUR_MARKET_CH_TABLE
 from bi_connector_bundle_partners.kontur_market.core.data_source import KonturMarketCHDataSource

@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_window as base
-from bi_formula.definitions.base import TranslationVariant
+import dl_formula.definitions.functions_window as base
+from dl_formula.definitions.base import TranslationVariant
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 

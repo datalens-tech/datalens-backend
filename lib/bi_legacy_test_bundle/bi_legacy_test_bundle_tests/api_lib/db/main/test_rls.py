@@ -9,23 +9,23 @@ import pytest
 import responses
 
 from bi_cloud_integration.yc_subjects import SubjectInfo, DLYCMSClient
-from bi_constants.enums import RLSSubjectType
+from dl_constants.enums import RLSSubjectType
 
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.us_dataset import Dataset
-from bi_core.rls import RLS, RLSEntry, RLSSubject, RLSPatternType
-from bi_api_commons.base_models import RequestContextInfo
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_dataset import Dataset
+from dl_core.rls import RLS, RLSEntry, RLSSubject, RLSPatternType
+from dl_api_commons.base_models import RequestContextInfo
 from bi_api_commons_ya_cloud.cloud_manager import CloudManagerAPI
 from bi_api_commons_ya_cloud.models import TenantYCOrganization
 
-from bi_api_lib.utils.rls import FieldRLSSerializer
+from dl_api_lib.utils.rls import FieldRLSSerializer
 from bi_service_registry_ya_cloud.iam_subject_resolver import IAMSubjectResolver
 from bi_dls_client.dls_client import DLSClient
-from bi_api_lib.dataset.view import DatasetView
-from bi_api_lib.query.formalization.raw_specs import IdFieldRef, RawSelectFieldSpec, RawQuerySpecUnion
-from bi_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
-from bi_api_lib.query.formalization.block_formalizer import BlockFormalizer
-from bi_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
+from dl_api_lib.dataset.view import DatasetView
+from dl_api_lib.query.formalization.raw_specs import IdFieldRef, RawSelectFieldSpec, RawQuerySpecUnion
+from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
+from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
+from dl_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
 
 from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistry
 

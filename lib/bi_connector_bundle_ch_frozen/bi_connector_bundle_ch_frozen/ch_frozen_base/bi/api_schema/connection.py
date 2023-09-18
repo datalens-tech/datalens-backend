@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from marshmallow import fields
 
-from bi_constants.enums import RawSQLLevel
+from dl_constants.enums import RawSQLLevel
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.us_connection import ConnectionClickhouseFrozenBase
 
-from bi_api_connector.api_schema.connection_base import ConnectionSchema
-from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
+from dl_api_connector.api_schema.connection_base import ConnectionSchema
+from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
 
 
 class BaseClickHouseFrozenConnectionSchema(ConnectionSchema, RawSQLLevelMixin):

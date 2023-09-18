@@ -9,15 +9,15 @@ dump_entry_data(entry)
 
 import json
 
-from bi_core.us_entry import USMigrationEntry, USEntry
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_entry import USMigrationEntry, USEntry
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 try:
     from bi_maintenance.api.common import MaintenanceEnvironmentManager  # type: ignore  # TODO: fix
 except ImportError:
     # Most likely will lead to errors
     from bi_maintenance.core.common import MaintenanceEnvironmentManagerBase as MaintenanceEnvironmentManager
 
-from bi_core.us_dataset import Dataset
+from dl_core.us_dataset import Dataset
 
 
 def get_migration_entry(entry_id: str) -> USMigrationEntry:

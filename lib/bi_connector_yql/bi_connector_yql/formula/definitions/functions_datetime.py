@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
-import bi_formula.definitions.functions_datetime as base
-from bi_formula.definitions.base import (
+import dl_formula.definitions.functions_datetime as base
+from dl_formula.definitions.base import (
     TranslationVariant, TranslationVariantWrapped,
 )
-from bi_formula.definitions.common_datetime import (
+from dl_formula.definitions.common_datetime import (
     date_add_yql, datetime_add_yql, YQL_INTERVAL_FUNCS,
 )
 

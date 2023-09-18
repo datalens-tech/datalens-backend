@@ -3,12 +3,12 @@ from __future__ import annotations
 import uuid
 from typing import Optional
 
-from bi_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants import (
     CONNECTION_TYPE_CH_GEO_FILTERED,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.us_connection import ConnectionClickhouseGeoFiltered
-from bi_core_testing.connection import make_conn_key
+from dl_core_testing.connection import make_conn_key
 
 
 def make_saved_ch_geo_filtered_connection(

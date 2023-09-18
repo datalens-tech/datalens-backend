@@ -1,4 +1,4 @@
-import bi_formula.definitions.operators_unary as base
+import dl_formula.definitions.operators_unary as base
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 

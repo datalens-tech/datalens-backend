@@ -4,16 +4,16 @@ from typing import Callable, ClassVar, Optional
 
 import attr
 
-from bi_utils.utils import DataKey
+from dl_utils.utils import DataKey
 
-from bi_core.base_models import ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
-from bi_core.connection_models.conn_options import ConnectOptions
-from bi_i18n.localizer_base import Localizer
-from bi_core.connection_executors.sync_base import SyncConnExecutorBase
-from bi_core.us_connection_base import (
+from dl_core.base_models import ConnCacheableDataModelMixin, ConnSubselectDataModelMixin
+from dl_core.connection_models.conn_options import ConnectOptions
+from dl_i18n.localizer_base import Localizer
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.us_connection_base import (
     ConnectionBase, DataSourceTemplate, ExecutorBasedMixin, SubselectMixin, ConnectionHardcodedDataMixin,
 )
-from bi_core.utils import secrepr
+from dl_core.utils import secrepr
 
 from bi_connector_yql.core.yq.constants import SOURCE_TYPE_YQ_TABLE, SOURCE_TYPE_YQ_SUBSELECT
 from bi_connector_yql.core.yq.dto import YQConnDTO

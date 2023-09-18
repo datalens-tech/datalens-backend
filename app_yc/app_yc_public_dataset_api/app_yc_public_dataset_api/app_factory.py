@@ -4,33 +4,33 @@ from typing import Optional
 
 from bi_api_commons_ya_cloud.tenant_resolver import TenantResolverYC
 from bi_cloud_integration.sa_creds import SACredsSettings, SACredsRetrieverFactory
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_configs.enums import RequiredService, RQE_SERVICES
-from bi_constants.enums import ConnectionType
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.enums import RequiredService, RQE_SERVICES
+from dl_constants.enums import ConnectionType
 
-from bi_core.aio.middlewares.services_registry import services_registry_middleware
-from bi_core.aio.middlewares.us_manager import public_usm_workaround_middleware, public_us_manager_middleware
-from bi_core.connection_models import ConnectOptions
-from bi_core.data_processing.cache.primitives import CacheTTLConfig
-from bi_core.services_registry.entity_checker import EntityUsageChecker
-from bi_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from bi_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
-from bi_core.services_registry.rqe_caches import RQECachesSetting
-from bi_core.us_connection_base import ExecutorBasedMixin
+from dl_core.aio.middlewares.services_registry import services_registry_middleware
+from dl_core.aio.middlewares.us_manager import public_usm_workaround_middleware, public_us_manager_middleware
+from dl_core.connection_models import ConnectOptions
+from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.services_registry.entity_checker import EntityUsageChecker
+from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
+from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
+from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.us_connection_base import ExecutorBasedMixin
 
-from bi_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse  # TODO: remove dependency on connector
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse  # TODO: remove dependency on connector
 from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions  # TODO: remove dependency on connector
 
-from bi_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
-from bi_api_lib.app_common import SRFactoryBuilder
-from bi_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from bi_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
+from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
+from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
+from dl_api_lib.app.data_api.app import EnvSetupResult, DataApiAppFactory
 from bi_api_lib_ya.app_settings import BaseAppSettings, AsyncAppSettings
 from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 
-from bi_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 
 from app_yc_public_dataset_api import app_version

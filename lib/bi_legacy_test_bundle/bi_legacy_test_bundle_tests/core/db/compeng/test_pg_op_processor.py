@@ -7,21 +7,21 @@ from typing import ClassVar, Type
 import pytest
 import sqlalchemy as sa
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
-from bi_core.data_processing.processing.operation import (
+from dl_core.data_processing.processing.operation import (
     UploadOp, DownloadOp, CalcOp
 )
-from bi_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProcessor
-from bi_compeng_pg.compeng_aiopg.processor_aiopg import AiopgOperationProcessor
-from bi_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
-from bi_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
-from bi_compeng_pg.compeng_aiopg.pool_aiopg import AiopgPoolWrapper
-from bi_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
-from bi_core.data_processing.streaming import AsyncChunked
-from bi_core.data_processing.stream_base import DataStreamAsync, DataRequestMetaInfo
-from bi_core.query.expression import ExpressionCtx, OrderByExpressionCtx
-from bi_core.query.bi_query import BIQuery
+from dl_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProcessor
+from dl_compeng_pg.compeng_aiopg.processor_aiopg import AiopgOperationProcessor
+from dl_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
+from dl_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
+from dl_compeng_pg.compeng_aiopg.pool_aiopg import AiopgPoolWrapper
+from dl_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
+from dl_core.data_processing.streaming import AsyncChunked
+from dl_core.data_processing.stream_base import DataStreamAsync, DataRequestMetaInfo
+from dl_core.query.expression import ExpressionCtx, OrderByExpressionCtx
+from dl_core.query.bi_query import BIQuery
 
 
 class PGOpRunnerTestBase:

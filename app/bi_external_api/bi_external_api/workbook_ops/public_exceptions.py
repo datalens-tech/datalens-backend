@@ -2,7 +2,7 @@ from typing import TypeVar
 
 from bi_external_api.domain import external as ext
 from bi_external_api.exc_defs import ExternalAPIException
-from bi_api_commons.exc import ExceptionWithData
+from dl_api_commons.exc import ExceptionWithData
 
 _PUB_EXC_DATA_TV = TypeVar("_PUB_EXC_DATA_TV")
 

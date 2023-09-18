@@ -10,24 +10,24 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
-from bi_constants.enums import BIType, ConnectionType
-from bi_core import exc
-from bi_api_commons.base_models import RequestContextInfo
-from bi_core.connection_executors import (
+from dl_constants.enums import BIType, ConnectionType
+from dl_core import exc
+from dl_api_commons.base_models import RequestContextInfo
+from dl_core.connection_executors import (
     AsyncConnExecutorBase, ConnExecutorQuery, ExecutionMode, SyncWrapperForAsyncConnExecutor,
 )
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from bi_core.connection_models import (
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_models import (
     ConnDTO, ConnectOptions, DBIdent, DefaultSQLDTO, SchemaIdent, TableIdent,
 )
-from bi_core.connections_security.base import (
+from dl_core.connections_security.base import (
     ConnectionSecurityManager, InsecureConnectionSecurityManager,
 )
-from bi_core.db import SchemaColumn, SchemaInfo
-from bi_core.db.native_type import CommonNativeType, GenericNativeType, norm_native_type
-from bi_core.mdb_utils import MDBDomainManagerFactory
-from bi_core_testing.database import C, make_table
-from bi_utils.aio import ContextVarExecutor, await_sync
+from dl_core.db import SchemaColumn, SchemaInfo
+from dl_core.db.native_type import CommonNativeType, GenericNativeType, norm_native_type
+from dl_core.mdb_utils import MDBDomainManagerFactory
+from dl_core_testing.database import C, make_table
+from dl_utils.aio import ContextVarExecutor, await_sync
 
 
 @attr.s(auto_attribs=True)

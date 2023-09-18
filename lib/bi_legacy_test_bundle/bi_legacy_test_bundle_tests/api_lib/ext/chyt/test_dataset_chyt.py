@@ -8,13 +8,13 @@ from typing import ClassVar
 
 import pytest
 
-from bi_constants.enums import CreateDSFrom
+from dl_constants.enums import CreateDSFrom
 
-from bi_api_client.dsmaker.primitives import Dataset
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
 
-from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
+from dl_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_result_schema
 

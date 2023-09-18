@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import pytest
 
-from bi_core.db.native_type import (
+from dl_core.db.native_type import (
     GenericNativeType, CommonNativeType, LengthedNativeType,
     ClickHouseNativeType, ClickHouseDateTimeWithTZNativeType,
     ClickHouseDateTime64NativeType, ClickHouseDateTime64WithTZNativeType,
 )
-from bi_core.db.native_type_schema import OneOfNativeTypeSchema
+from dl_core.db.native_type_schema import OneOfNativeTypeSchema
 
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 SAMPLE_NATIVE_TYPES = (

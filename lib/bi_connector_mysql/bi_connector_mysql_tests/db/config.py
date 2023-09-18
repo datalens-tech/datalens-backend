@@ -1,10 +1,10 @@
 from typing import ClassVar
 
-from bi_core_testing.configuration import DefaultCoreTestConfiguration
+from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from bi_connector_mysql.formula.constants import MySQLDialect as D
-from bi_testing.containers import get_test_container_hostport
+from dl_testing.containers import get_test_container_hostport
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 
 
 # Infra settings

@@ -8,10 +8,10 @@ import logging
 import aiohttp
 import attr
 
-from bi_core import exc
-from bi_core.utils import raise_for_status_and_hide_secret_headers
+from dl_core import exc
+from dl_core.utils import raise_for_status_and_hide_secret_headers
 
-from bi_connector_chyt.core.connection_executors import BaseCHYTAdapterConnExecutor
+from dl_connector_chyt.core.connection_executors import BaseCHYTAdapterConnExecutor
 from bi_connector_chyt_internal.core.async_adapters import AsyncCHYTInternalAdapter, AsyncCHYTUserAuthAdapter
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
 from bi_connector_chyt_internal.core.dto import CHYTInternalBaseDTO, CHYTInternalDTO, CHYTUserAuthDTO

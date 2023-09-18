@@ -9,11 +9,11 @@ import yaml
 from aiochclient.http_clients import aiohttp
 
 import bi_external_api.grpc_proxy.ext_api_client
-from bi_api_commons.base_models import NoAuthData, TenantCommon
-from bi_api_commons.client.common import CommonInternalAPIClient
+from dl_api_commons.base_models import NoAuthData, TenantCommon
+from dl_api_commons.client.common import CommonInternalAPIClient
 from bi_api_commons_ya_cloud.models import TenantDCProject, IAMAuthData, ExternalIAMAuthData
 from bi_api_lib_ya.app_settings import YCAuthSettings
-from bi_configs.enums import AppType
+from dl_configs.enums import AppType
 from bi_external_api.app import create_app
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy import server as grpc_proxy
@@ -26,7 +26,7 @@ from bi_external_api.settings import ExternalAPISettings
 from bi_external_api.testings import WorkbookOpsClient
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
-from bi_testing.env_params.generic import GenericEnvParamGetter
+from dl_testing.env_params.generic import GenericEnvParamGetter
 from ..test_acceptance import ConnectionTestingData
 
 
@@ -45,7 +45,7 @@ class DoubleCloudTestingData:
         "arn:aws:secretsmanager:eu-central-1:177770737270:secret:dl-preprod-frk-pp-us-master-token-2ceSkf"
     )
 
-# Override fixture from `lib/bi_testing`
+# Override fixture from `lib/dl_testing`
 @pytest.fixture(scope='session')
 def dl_env() -> DLEnv:
     return DLEnv.dc_testing

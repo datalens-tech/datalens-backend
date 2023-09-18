@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from bi_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
+from dl_constants.exc import GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX
 
-from bi_api_lib.error_handling import BIError, RegularAPIErrorSchema, PublicAPIErrorSchema
+from dl_api_lib.error_handling import BIError, RegularAPIErrorSchema, PublicAPIErrorSchema
 
-from bi_core import exc as common_exc
+from dl_core import exc as common_exc
 
 
 def test_status_code_mapping():

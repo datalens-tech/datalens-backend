@@ -6,13 +6,13 @@ import pytest
 from aiohttp import web
 from multidict import CIMultiDict
 
-from bi_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from bi_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
-from bi_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from bi_api_commons.aio.middlewares.request_id import RequestId
-from bi_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
+from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.error_handling_outer import AIOHTTPErrorHandler, ErrorData, ErrorLevel
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 
-from bi_core.aio.web_app_services.server_header import ServerHeader
+from dl_core.aio.web_app_services.server_header import ServerHeader
 
 
 @pytest.mark.asyncio
@@ -148,7 +148,7 @@ async def test_commit_rci_middleware(caplog, aiohttp_client):
 @pytest.mark.asyncio
 async def test_error_handling_middleware(caplog, aiohttp_client):
     caplog.set_level("INFO")
-    log_name = 'bi_api_commons.aio.middlewares.error_handling_outer'
+    log_name = 'dl_api_commons.aio.middlewares.error_handling_outer'
 
     class MyException(Exception):
         def __init__(self, msg: str, level: str, status_code: int):

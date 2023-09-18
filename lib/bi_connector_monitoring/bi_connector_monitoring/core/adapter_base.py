@@ -7,16 +7,16 @@ import logging
 import attr
 from aiohttp.client import ClientResponse
 
-from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
-from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
-from bi_core.db.native_type import GenericNativeType
-from bi_core.exc import DatabaseQueryError
-from bi_app_tools.profiling_base import generic_profiler_async
+from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
+from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
+from dl_core.db.native_type import GenericNativeType
+from dl_core.exc import DatabaseQueryError
+from dl_app_tools.profiling_base import generic_profiler_async
 
 if TYPE_CHECKING:
-    from bi_core.connection_executors.models.db_adapter_data import RawSchemaInfo, DBAdapterQuery
-    from bi_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
-    from bi_constants.types import TBIChunksGen
+    from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo, DBAdapterQuery
+    from dl_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
+    from dl_constants.types import TBIChunksGen
 
 
 LOGGER = logging.getLogger(__name__)

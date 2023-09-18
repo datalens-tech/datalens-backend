@@ -12,25 +12,25 @@ from redis_cache_lock.types import TClientACM
 from redis_cache_lock.utils import wrap_generate_func
 from sqlalchemy.sql.elements import TypeCoerce
 
-from bi_constants.enums import ConnectionType
-from bi_core.connectors.base.error_handling import ETBasedExceptionMaker
+from dl_constants.enums import ConnectionType
+from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
 from bi_connector_bitrix_gds.core.error_transformer import bitrix_error_transformer
-from bi_core.db.native_type import CommonNativeType
+from dl_core.db.native_type import CommonNativeType
 
-from bi_core.aio.web_app_services.redis import RedisConnParams
+from dl_core.aio.web_app_services.redis import RedisConnParams
 from bi_connector_bitrix_gds.core.tables import BITRIX_TABLES_MAP, CRM_DYNAMIC_ITEMS_TABLE, SMART_PROCESS_TABLE_PREFIX
 from bi_connector_bitrix_gds.core.caches import (
     get_redis_cli_acm_from_params, build_local_key_rep, bitrix_cache_serializer, bitrix_cache_deserializer,
 )
-from bi_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
-from bi_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
-from bi_core.connection_executors.models.db_adapter_data import (
+from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
+from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
+from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery, RawSchemaInfo, RawColumnInfo,
 )
-from bi_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
-from bi_core.data_processing.cache.engine import RedisCacheLockWrapped
-from bi_core.exc import DatabaseQueryError
-from bi_app_tools.profiling_base import generic_profiler_async
+from dl_core.connection_models import TableIdent, TableDefinition, SchemaIdent, DBIdent
+from dl_core.data_processing.cache.engine import RedisCacheLockWrapped
+from dl_core.exc import DatabaseQueryError
+from dl_app_tools.profiling_base import generic_profiler_async
 
 from bi_connector_bitrix_gds.core.constants import CONNECTION_TYPE_BITRIX24, DEFAULT_DB
 

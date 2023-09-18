@@ -5,19 +5,19 @@ import abc
 import logging
 
 import sqlalchemy as sa
-from bi_connector_clickhouse.core.clickhouse_base.data_source import (
+from dl_connector_clickhouse.core.clickhouse_base.data_source import (
     ActualClickHouseBaseMixin, ClickHouseDataSourceBase, CommonClickHouseSubselectDataSource,
 )
 
-from bi_core import exc
-from bi_core.base_models import SourceFilterSpec
-from bi_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core import exc
+from dl_core.base_models import SourceFilterSpec
+from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 
 
 if TYPE_CHECKING:
-    from bi_core.db import SchemaColumn, SchemaInfo  # noqa
-    from bi_core import us_connection  # noqa
-    from bi_core.services_registry import ServicesRegistry
+    from dl_core.db import SchemaColumn, SchemaInfo  # noqa
+    from dl_core import us_connection  # noqa
+    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)

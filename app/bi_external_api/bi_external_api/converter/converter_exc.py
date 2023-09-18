@@ -3,7 +3,7 @@ from collections.abc import Sequence
 import attr
 
 from bi_external_api.exc_defs import ExternalAPIException
-from bi_api_commons.exc import ExceptionWithData
+from dl_api_commons.exc import ExceptionWithData
 
 
 @attr.s()

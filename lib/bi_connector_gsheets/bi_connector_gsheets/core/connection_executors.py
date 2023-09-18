@@ -2,7 +2,7 @@ from typing import List
 
 import attr
 
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_gsheets.core.adapter import GSheetsDefaultAdapter
 from bi_connector_gsheets.core.target_dto import GSheetsConnTargetDTO
 

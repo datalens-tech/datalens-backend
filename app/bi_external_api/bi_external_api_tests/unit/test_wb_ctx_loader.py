@@ -2,11 +2,11 @@ import pytest
 from aiohttp import web
 from aiohttp.web_response import json_response
 
-import bi_api_commons.exc
-from bi_api_commons.base_models import TenantCommon, NoAuthData
+import dl_api_commons.exc
+from dl_api_commons.base_models import TenantCommon, NoAuthData
 from bi_external_api.internal_api_clients import exc_api
 from bi_external_api.internal_api_clients.dataset_api import APIClientBIBackControlPlane
-from bi_testing.utils import skip_outside_devhost
+from dl_testing.utils import skip_outside_devhost
 
 
 async def _cause_empty_404(request):
@@ -35,7 +35,7 @@ async def test_get_workbook_backend_toc_bad_404(aiohttp_client, intranet_user_1_
         auth_data=NoAuthData(),
     )
 
-    with pytest.raises(bi_api_commons.exc.NotFoundErr) as exc:
+    with pytest.raises(dl_api_commons.exc.NotFoundErr) as exc:
         await api_control_plane.get_workbook_backend_toc("wb_id")
 
     assert not isinstance(exc.value, exc_api.WorkbookNotFound)

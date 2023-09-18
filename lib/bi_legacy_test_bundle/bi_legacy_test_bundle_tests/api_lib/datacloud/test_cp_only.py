@@ -5,9 +5,9 @@ import pytest
 import shortuuid
 
 from bi_testing_ya.dlenv import DLEnv
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
 
 @pytest.mark.parametrize("dl_env", [DLEnv.dc_testing], indirect=True)

@@ -9,12 +9,12 @@ import opentracing
 import pytest
 import requests
 
-from bi_configs.env_var_definitions import use_jaeger_tracer
-from bi_configs.rqe import RQEBaseURL
+from dl_configs.env_var_definitions import use_jaeger_tracer
+from dl_configs.rqe import RQEBaseURL
 
-from bi_core.connection_executors.models.common import RemoteQueryExecutorData
-from bi_core.connection_executors.remote_query_executor.app_async import create_async_qe_app
-from bi_core.connection_executors.remote_query_executor.app_sync import create_sync_app
+from dl_core.connection_executors.models.common import RemoteQueryExecutorData
+from dl_core.connection_executors.remote_query_executor.app_async import create_async_qe_app
+from dl_core.connection_executors.remote_query_executor.app_sync import create_sync_app
 
 
 @pytest.fixture(scope='function')
@@ -48,7 +48,7 @@ def run_flask(host: str, port: int, hmac_key: bytes, init_jaeger_tracer: bool):
     import sys
     import jaeger_client
 
-    from bi_core.logging_config import setup_jaeger_client
+    from dl_core.logging_config import setup_jaeger_client
 
     app = create_sync_app(
         hmac_key=hmac_key,

@@ -1,10 +1,10 @@
 import attr
 import pytest
 
-from bi_configs.connectors_settings import ConnectorSettingsBase
-from bi_constants.enums import ConnectionType
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_constants.enums import ConnectionType
 
-from bi_api_lib.app.data_api.app import EnvSetupResult as DataApiEnvSetupResult
+from dl_api_lib.app.data_api.app import EnvSetupResult as DataApiEnvSetupResult
 from bi_api_lib_testing_ya.app import TestingDataApiAppFactoryPrivate
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 

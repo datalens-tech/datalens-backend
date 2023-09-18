@@ -4,13 +4,13 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.dialects import mssql as ms_types
 
-from bi_constants.enums import BIType
+from dl_constants.enums import BIType
 
 from bi_connector_mssql.core.connection_executors import MSSQLConnExecutor
 from bi_connector_mssql.core.dto import MSSQLConnDTO
-from bi_core import exc
-from bi_core.connection_executors.async_base import ConnExecutorQuery
-from bi_core.connection_models import ConnDTO, TableIdent
+from dl_core import exc
+from dl_core.connection_executors.async_base import ConnExecutorQuery
+from dl_core.connection_models import ConnDTO, TableIdent
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 

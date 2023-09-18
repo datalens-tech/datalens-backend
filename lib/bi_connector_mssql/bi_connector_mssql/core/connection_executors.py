@@ -6,7 +6,7 @@ import attr
 
 from bi_connector_mssql.core.dto import MSSQLConnDTO
 from bi_connector_mssql.core.adapters_mssql import MSSQLDefaultAdapter
-from bi_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 from bi_connector_mssql.core.target_dto import MSSQLConnTargetDTO
 
 

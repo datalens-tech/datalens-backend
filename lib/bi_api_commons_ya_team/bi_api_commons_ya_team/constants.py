@@ -1,4 +1,4 @@
-from bi_constants.api_constants import DLCookies
+from dl_constants.api_constants import DLCookies
 
 
 class DLCookiesYT(DLCookies):

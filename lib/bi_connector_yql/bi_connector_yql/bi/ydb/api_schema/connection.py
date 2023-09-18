@@ -4,11 +4,11 @@ from marshmallow import fields as ma_fields
 
 from bi_connector_yql.core.ydb.us_connection import YDBConnection
 
-from bi_api_connector.api_schema.extras import FieldExtra
-from bi_api_connector.api_schema.connection_base import ConnectionSchema
-from bi_api_connector.api_schema.connection_base_fields import cache_ttl_field, secret_string_field
-from bi_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
-from bi_api_connector.api_schema.connection_sql import DBHostField
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.connection_base import ConnectionSchema
+from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field, secret_string_field
+from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
+from dl_api_connector.api_schema.connection_sql import DBHostField
 from bi_connector_mdb_base.bi.api_schema.connection_mixins import MDBDatabaseSchemaMixin
 
 

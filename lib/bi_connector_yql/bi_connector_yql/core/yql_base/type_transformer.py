@@ -6,12 +6,12 @@ import sqlalchemy as sa
 
 import ydb.sqlalchemy as ydb_sa
 
-from bi_constants.enums import BIType, ConnectionType
+from dl_constants.enums import BIType, ConnectionType
 
-from bi_core.db.conversion_base import TypeTransformer, make_native_type
+from dl_core.db.conversion_base import TypeTransformer, make_native_type
 
 if TYPE_CHECKING:
-    from bi_core.db.native_type import SATypeSpec
+    from dl_core.db.native_type import SATypeSpec
 
 
 class YQLTypeTransformerBase(TypeTransformer):

@@ -17,22 +17,22 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa
 from pytest_lazyfixture import lazy_fixture
 
-from bi_api_commons.logging_config import add_log_context
+from dl_api_commons.logging_config import add_log_context
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.settings import CHFrozenDemoConnectorSettings
-from bi_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
-from bi_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from bi_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
-from bi_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
-from bi_connector_chyt.core.settings import CHYTConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
+from dl_connector_chyt.core.settings import CHYTConnectorSettings
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
     DATA_SOURCE_CREATE_VIA_YT_TO_DL,
 )
-from bi_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from bi_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
-from bi_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
+from dl_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API
 from bi_connector_metrica.core.settings import MetricaConnectorSettings, AppmetricaConnectorSettings
@@ -43,66 +43,66 @@ from bi_connector_yql.core.ydb.settings import YDBConnectorSettings
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.settings import YQConnectorSettings
 
-from bi_constants.enums import ConnectionType, RawSQLLevel
+from dl_constants.enums import ConnectionType, RawSQLLevel
 
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
-from bi_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
-from bi_api_lib.app_settings import (
+from dl_api_lib.loader import ApiLibraryConfig, load_bi_api_lib, preload_bi_api_lib
+from dl_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
     MDBSettings,
 )
 from bi_api_lib_ya.app_settings import AsyncAppSettings, ControlPlaneAppSettings, YCAuthSettings
-from bi_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from bi_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
-from bi_api_lib.service_registry.service_registry import BiApiServiceRegistry, DefaultBiApiServiceRegistry
-from bi_configs import env_var_definitions
-from bi_configs.crypto_keys import get_dummy_crypto_keys_config
-from bi_configs.enums import AppType, EnvType
-from bi_configs.rqe import RQEConfig
-from bi_configs.settings_submodels import S3Settings, GoogleAppSettings
-from bi_core.loader import CoreLibraryConfig
+from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
+from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry, DefaultBiApiServiceRegistry
+from dl_configs import env_var_definitions
+from dl_configs.crypto_keys import get_dummy_crypto_keys_config
+from dl_configs.enums import AppType, EnvType
+from dl_configs.rqe import RQEConfig
+from dl_configs.settings_submodels import S3Settings, GoogleAppSettings
+from dl_core.loader import CoreLibraryConfig
 
-from bi_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_bi_db_testing
 
-from bi_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from bi_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from bi_api_client.dsmaker.api.data_api import SyncHttpDataApiV1, SyncHttpDataApiV1_5, SyncHttpDataApiV2
+from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV1, SyncHttpDataApiV1_5, SyncHttpDataApiV2
 
-from bi_api_commons.base_models import RequestContextInfo, TenantCommon
-from bi_api_commons.reporting.registry import DefaultReportingRegistry
+from dl_api_commons.base_models import RequestContextInfo, TenantCommon
+from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from bi_api_commons_ya_cloud.models import TenantYCFolder
-from bi_core.components.ids import FieldIdGeneratorType
-from bi_core.connections_security.base import InsecureConnectionSecurityManager
+from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.connections_security.base import InsecureConnectionSecurityManager
 from bi_connector_bundle_ch_frozen.ch_frozen_base.core.us_connection import ConnectionClickhouseFrozenBase
-from bi_core.mdb_utils import MDBDomainManagerFactory
-from bi_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
-from bi_core_testing.connection import make_saved_connection
-from bi_core_testing.database import (
+from dl_core.mdb_utils import MDBDomainManagerFactory
+from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from dl_core_testing.connection import make_saved_connection
+from dl_core_testing.database import (
     Db, CoreDbDispenser, CoreReInitableDbDispenser,
     make_table, make_table_with_arrays, make_db_config,
 )
-from bi_core_testing.environment import common_pytest_configure, restart_container_by_label
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
-from bi_core.us_manager.us_manager import USManagerBase
-from bi_core.us_manager.us_manager_async import AsyncUSManager
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core_testing.configuration import CoreTestEnvironmentConfigurationBase
-from bi_core.utils import FutureRef
-from bi_task_processor.processor import LocalTaskProcessorFactory, DummyTaskProcessorFactory
-from bi_testing.s3_utils import create_s3_client, create_s3_bucket
-from bi_testing.utils import wait_for_initdb
+from dl_core_testing.environment import common_pytest_configure, restart_container_by_label
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
+from dl_core.us_manager.us_manager import USManagerBase
+from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
+from dl_core.utils import FutureRef
+from dl_task_processor.processor import LocalTaskProcessorFactory, DummyTaskProcessorFactory
+from dl_testing.s3_utils import create_s3_client, create_s3_bucket
+from dl_testing.utils import wait_for_initdb
 from statcommons.logs import LOGMUTATORS
 
 from bi_api_lib_ya.query_registry import register_for_connectors_with_native_wf
 
-from bi_file_uploader_worker_lib.app import FileUploaderContextFab
-from bi_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
-from bi_file_uploader_worker_lib.tasks import REGISTRY as FILE_UPLOADER_WORKER_TASK_REGISTRY
+from dl_file_uploader_worker_lib.app import FileUploaderContextFab
+from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings, SecureReader
+from dl_file_uploader_worker_lib.tasks import REGISTRY as FILE_UPLOADER_WORKER_TASK_REGISTRY
 
-from bi_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
-from bi_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker
-from bi_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
+from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.app import RQEConfigurationMaker, RedisSettingMaker
+from dl_api_lib_testing.client import TestClientConverterAiohttpToFlask, WrappedAioSyncApiClient, FlaskSyncApiClient
 from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate, CONNECTOR_AVAILABILITY
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 
@@ -110,7 +110,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.constants import CONNECTI
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistry
 
@@ -482,7 +482,7 @@ def default_async_usm_per_test(bi_context, default_service_registry_async_env_pe
 
 @pytest.fixture(scope='function')
 def client(app, loop):
-    from bi_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
+    from dl_core_testing.flask_utils import FlaskTestResponse, FlaskTestClient
 
     class TestClient(FlaskTestClient):
         def get_default_headers(self) -> Dict[str, Optional[str]]:

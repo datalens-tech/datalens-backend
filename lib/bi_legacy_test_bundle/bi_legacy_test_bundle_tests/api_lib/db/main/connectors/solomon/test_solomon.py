@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from bi_core_testing.flask_utils import FlaskTestClient
+from dl_core_testing.flask_utils import FlaskTestClient
 
 
 def test_create_solomon_connection(client: FlaskTestClient, solomon_connection_params):

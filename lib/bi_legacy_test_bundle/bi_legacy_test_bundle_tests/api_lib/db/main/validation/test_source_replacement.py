@@ -3,9 +3,9 @@ from __future__ import annotations
 import uuid
 from http import HTTPStatus
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 
-from bi_core_testing.database import make_table, C as TestColumn
+from dl_core_testing.database import make_table, C as TestColumn
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
 

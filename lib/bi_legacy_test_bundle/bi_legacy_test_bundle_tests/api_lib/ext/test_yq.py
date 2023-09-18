@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from bi_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import Dataset
 from bi_cloud_integration.yc_ts_client import get_yc_service_token_sync
 
 from bi_legacy_test_bundle_tests.api_lib.utils import get_random_str, get_result_schema

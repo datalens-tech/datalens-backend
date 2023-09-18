@@ -1,5 +1,5 @@
-from bi_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
-from bi_core.connectors.sql_base.connector import (
+from dl_core.connectors.base.connector import CoreConnectionDefinition, CoreConnector
+from dl_core.connectors.sql_base.connector import (
     SQLTableCoreSourceDefinitionBase,
     SQLSubselectCoreSourceDefinitionBase,
 )

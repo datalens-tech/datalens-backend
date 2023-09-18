@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from bi_core.data_source.sql import DataSource
+from dl_core.data_source.sql import DataSource
 
 from bi_connector_monitoring.core.constants import CONNECTION_TYPE_MONITORING
 

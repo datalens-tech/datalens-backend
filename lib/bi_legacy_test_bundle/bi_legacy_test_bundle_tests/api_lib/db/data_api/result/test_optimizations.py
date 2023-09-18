@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from bi_constants.enums import WhereClauseOperation
+from dl_constants.enums import WhereClauseOperation
 
-from bi_api_client.dsmaker.primitives import StringParameterValue
-from bi_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, add_parameters_to_dataset
+from dl_api_client.dsmaker.primitives import StringParameterValue
+from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset, add_parameters_to_dataset
 
 
 def test_ignore_constant_filter(api_v1, data_api_v2, dataset_id):

@@ -4,13 +4,13 @@ from typing import Any, Optional, TYPE_CHECKING
 
 import attr
 
-from bi_api_commons.base_models import RequestContextInfo
-from bi_core.united_storage_client import USAuthContextMaster
-from bi_core.us_manager.us_manager_sync import SyncUSManager
-from bi_core.us_manager.us_manager_async import AsyncUSManager
+from dl_api_commons.base_models import RequestContextInfo
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 
 if TYPE_CHECKING:
-    from bi_core.services_registry.sr_factories import SRFactory
+    from dl_core.services_registry.sr_factories import SRFactory
 
 
 @attr.s
