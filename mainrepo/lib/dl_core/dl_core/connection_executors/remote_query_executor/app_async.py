@@ -40,7 +40,6 @@ from dl_core.connection_executors.qe_serializer import (
     ActionSerializer,
     ResponseTypes,
 )
-from dl_app_tools.utils import register_sa_dialects
 from dl_core.connection_executors.qe_serializer import dba_actions as act
 from dl_core.connection_executors.remote_query_executor.commons import (
     DEFAULT_CHUNK_SIZE,
@@ -260,7 +259,6 @@ def async_qe_main() -> None:
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware("bi-rqe-async"),
     )
-    register_sa_dialects()
     load_bi_core()
     try:
         parser = argparse.ArgumentParser(description="Process some integers.")

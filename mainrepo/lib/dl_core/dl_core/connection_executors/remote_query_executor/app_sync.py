@@ -32,7 +32,6 @@ from dl_core.connection_executors.qe_serializer import (
     ActionSerializer,
     ResponseTypes,
 )
-from dl_app_tools.utils import register_sa_dialects
 from dl_core.connection_executors.qe_serializer import dba_actions as act
 from dl_core.connection_executors.remote_query_executor.commons import (
     DEFAULT_CHUNK_SIZE,
@@ -239,7 +238,6 @@ def create_sync_app(hmac_key: Optional[bytes] = None) -> flask.Flask:
     assert isinstance(hmac_key, bytes)
     # Can't check `hmc_key` for nonemptiness here because this happens on import.
 
-    register_sa_dialects()
     load_bi_core()
 
     app = flask.Flask(__name__)
