@@ -245,7 +245,7 @@ def _change_connection(
         # TODO FIX: Remove after full implementation of https://st.yandex-team.ru/BI-1230
         #  Connection that was modified on previous step was already loaded in USM cache, so we need to flush it
         assert us_manager is not None
-        us_manager._vacuum()
+        us_manager._loaded_entries.clear()
         us_manager.load_dependencies(dataset)
 
 

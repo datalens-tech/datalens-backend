@@ -379,7 +379,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
                 )
 
         if not field.valid:
-            # FIXME: Temporarily disabled raising because of BI-2714
+            # FIXME: BI-2714 Investigate if/why this error is happening and return the raise
             # raise exc.InvalidFieldError(
             LOGGER.error(f"Field {field.title!r} ({field_id}) is invalid " f"and cannot be selected. Error ignored.")
 

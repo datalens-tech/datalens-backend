@@ -25,7 +25,7 @@ class CryptoKeysConfig(SettingsBase):
     def _default_actual_key_id(self):
         if len(self.map_id_key) == 1:
             return next(iter(self.map_id_key.keys()))
-        # TODO FIX: https://st.yandex-team.ru/BI-2497 Integrate with env loader exceptions handling
+        # TODO FIX: Integrate with env loader exceptions handling
         raise ValueError("Missing actual_key_id (acceptable only in single key case)")
 
     def __attrs_post_init__(self):
@@ -37,12 +37,12 @@ class CryptoKeysConfig(SettingsBase):
         try:
             actual_key_id = json_value["actual_key_id"]
         except KeyError as exc:
-            # TODO FIX: https://st.yandex-team.ru/BI-2497 Integrate with env loader exceptions handling
+            # TODO FIX: Integrate with env loader exceptions handling
             raise ValueError(f"Crypto keys config missing key {exc!r}")
         try:
             map_id_key = json_value["keys"]
         except KeyError as exc:
-            # TODO FIX: https://st.yandex-team.ru/BI-2497 Integrate with env loader exceptions handling
+            # TODO FIX: Integrate with env loader exceptions handling
             raise ValueError(f"Crypto keys config missing key {exc!r}")
         return CryptoKeysConfig(
             actual_key_id=actual_key_id,

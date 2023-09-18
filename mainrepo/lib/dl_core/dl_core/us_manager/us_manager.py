@@ -513,14 +513,6 @@ class USManagerBase:
             pass
         return set()
 
-    def _vacuum(self):  # type: ignore  # TODO: fix
-        """
-        Clear loaded entries map.
-        For tests use only!
-        # TODO FIX: Remove after full implementation of https://st.yandex-team.ru/BI-1230
-        """
-        self._loaded_entries.clear()
-
     def get_services_registry(self) -> ServicesRegistry:
         if self._services_registry is not None:
             return self._services_registry

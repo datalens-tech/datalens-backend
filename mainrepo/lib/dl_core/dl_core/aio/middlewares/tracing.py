@@ -38,7 +38,7 @@ class TracingService:
         with tracer.start_active_span(operation_name, child_of=span_context) as scope:
             span = scope.span
             span.set_tag(opentracing.tags.SPAN_KIND, opentracing.tags.SPAN_KIND_RPC_SERVER)
-            # TODO FIX: BI-1967 consider move to request ID middleware
+            # TODO FIX: consider move to request ID middleware
             span.set_tag(opentracing.tags.HTTP_METHOD, request.method)
             span.set_tag(opentracing.tags.HTTP_URL, str(request.url))
 

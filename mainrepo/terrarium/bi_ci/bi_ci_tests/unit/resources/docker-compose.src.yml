@@ -47,7 +47,6 @@ services:
       - POSTGRES_DB=common_test
       - POSTGRES_USER=datalens
       - POSTGRES_PASSWORD=qwerty
-      - PGCTLTIMEOUT=300  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
     ports:
      - "50313:5432"
 
@@ -58,7 +57,6 @@ services:
       - POSTGRES_DB=common_test
       - POSTGRES_USER=datalens
       - POSTGRES_PASSWORD=qwerty
-      - PGCTLTIMEOUT=300  # https://st.yandex-team.ru/DEVTOOLSSUPPORT-2799
     ports:
      - "50318:5432"
 

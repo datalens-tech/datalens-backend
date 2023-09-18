@@ -211,7 +211,6 @@ class ConnectionInfoMetadataSources(BIResource):
 
         return {
             "sources": _dump_source_templates(source_templates),
-            # Partially stabilized feature. See https://st.yandex-team.ru/BI-1603
             "freeform_sources": _dump_source_templates(source_template_templates),
         }
 
@@ -250,7 +249,6 @@ class ConnectionInfoSources(BIResource):
             source_templates = source_templates[:limit]
         return {
             "sources": _dump_source_templates(source_templates),
-            # Partially stabilized feature. See https://st.yandex-team.ru/BI-1603
             "freeform_sources": _dump_source_templates(source_template_templates),
         }
 

@@ -26,8 +26,6 @@ def skip_outside_devhost(func):
     """
     Not all tests can run in just any environment (particularly in autotests).
     So put those under an environment flag.
-    Details:
-    https://st.yandex-team.ru/DEVTOOLSSUPPORT-2022
     """
     if RUN_DEVHOST_TESTS:
         return func

@@ -385,7 +385,7 @@ class EnvSettingsLoader:
         if typing.get_origin(the_type) == Union:
             unwrapped_types = typing.get_args(the_type)
             if ignore_none:
-                # TODO FIX: https://st.yandex-team.ru/BI-2497 try to not use noqa: E721
+                # TODO FIX: try to not use noqa: E721
                 # (to consider: `not issubclass(arg_type, type(None))`
                 unwrapped_types = [argtype for argtype in unwrapped_types if argtype is not type(None)]  # noqa: E721
             return frozenset(unwrapped_types)

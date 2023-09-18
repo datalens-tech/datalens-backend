@@ -205,7 +205,7 @@ class DatasetVersionItem(DatasetResource):
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()  # FIXME
-        # TODO FIX: BI-2718 determine desired behaviour in case of workbooks
+        # TODO FIX: determine desired behaviour in case of workbooks
         ds_dict["key"] = ds.raw_us_key
 
         dl_loc = ds.entry_key

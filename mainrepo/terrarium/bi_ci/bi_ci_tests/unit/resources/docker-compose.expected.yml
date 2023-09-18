@@ -22,14 +22,12 @@ services:
     - POSTGRES_DB=common_test
     - POSTGRES_USER=datalens
     - POSTGRES_PASSWORD=qwerty
-    - PGCTLTIMEOUT=300
     image: some.cr.example/datalens/postgres@sha256:094358a1a64da927d5c26dcac9dad022cf0db840b6b627b143e5e4fd9adf982b
   db-postgres-fresh:
     environment:
     - POSTGRES_DB=common_test
     - POSTGRES_USER=datalens
     - POSTGRES_PASSWORD=qwerty
-    - PGCTLTIMEOUT=300
     image: some.cr.example/datalens/postgres@sha256:3335d0494b62ae52f0c18a1e4176a83991c9d3727fe67d8b1907b569de2f6175
   init-db:
     build:

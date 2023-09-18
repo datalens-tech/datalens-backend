@@ -1,4 +1,3 @@
-# TODO FIX: https://st.yandex-team.ru/BI-2497 Try to use test-classed for subject classed scoping
 # Commented due to attr.resolve_types() does not work with classes declared in non-global context
 # from __future__ import annotations
 import enum
@@ -308,7 +307,7 @@ def test_ignore():
 
 
 def test_sensitive_simple():
-    # TODO FIX: https://st.yandex-team.ru/BI-2497 add loading report check when be ready
+    # TODO FIX: add loading report check when it's ready
     @attr.s
     class Nested(SettingsBase):
         a: int = s_attrib("a", sensitive=True)
