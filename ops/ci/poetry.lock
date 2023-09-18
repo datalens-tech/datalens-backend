@@ -2426,6 +2426,36 @@ type = "directory"
 url = "../../mainrepo/lib/dl_constants"
 
 [[package]]
+name = "datalens-control-api"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+blinker = ">=1.5"
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
+datalens-version = {path = "../../lib/dl_version"}
+Flask = ">=2.0.3"
+raven = ">=6.10.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/app/dl_control_api"
+
+[[package]]
 name = "datalens-core"
 version = "12.99.0"
 description = ""
@@ -2515,6 +2545,34 @@ Werkzeug = ">=2.0.3"
 [package.source]
 type = "directory"
 url = "../../mainrepo/lib/dl_core_testing"
+
+[[package]]
+name = "datalens-data-api"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
+datalens-version = {path = "../../lib/dl_version"}
+gunicorn = ">=20.1.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/app/dl_data_api"
 
 [[package]]
 name = "datalens-db-testing"
@@ -3007,6 +3065,32 @@ type = "directory"
 url = "../../mainrepo/lib/dl_utils"
 
 [[package]]
+name = "datalens-version"
+version = "0.2013.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/dl_version"
+
+[[package]]
+name = "datalens-version-ya"
+version = "0.2013.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "../../lib/dl_version_ya"
+
+[[package]]
 name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
@@ -3080,90 +3164,6 @@ bcrypt = ["bcrypt"]
 type = "legacy"
 url = "https://pypi.yandex-team.ru/simple"
 reference = "ya"
-
-[[package]]
-name = "datalens-control-api"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-blinker = ">=1.5"
-datalens-api-lib = {path = "../../lib/dl_api_lib"}
-datalens-app-tools = {path = "../../lib/dl_app_tools"}
-datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
-datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
-datalens-core = {path = "../../lib/dl_core"}
-datalens-model-tools = {path = "../../lib/dl_model_tools"}
-datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
-datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
-datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../../lib/dl_utils"}
-datalens-version = {path = "../../lib/dl_version"}
-Flask = ">=2.0.3"
-raven = ">=6.10.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/app/dl_control_api"
-
-[[package]]
-name = "datalens-data-api"
-version = "0.0.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-datalens-api-lib = {path = "../../lib/dl_api_lib"}
-datalens-app-tools = {path = "../../lib/dl_app_tools"}
-datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
-datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
-datalens-core = {path = "../../lib/dl_core"}
-datalens-model-tools = {path = "../../lib/dl_model_tools"}
-datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
-datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
-datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../../lib/dl_utils"}
-datalens-version = {path = "../../lib/dl_version"}
-gunicorn = ">=20.1.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/app/dl_data_api"
-
-[[package]]
-name = "datalens-version"
-version = "0.2012.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/dl_version"
-
-[[package]]
-name = "datalens-version-ya"
-version = "0.2012.0"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.source]
-type = "directory"
-url = "../../lib/dl_version_ya"
 
 [[package]]
 name = "dnspython"
@@ -3785,6 +3785,7 @@ files = [
     {file = "greenlet-2.0.2-cp27-cp27m-win32.whl", hash = "sha256:6c3acb79b0bfd4fe733dff8bc62695283b57949ebcca05ae5c129eb606ff2d74"},
     {file = "greenlet-2.0.2-cp27-cp27m-win_amd64.whl", hash = "sha256:283737e0da3f08bd637b5ad058507e578dd462db259f7f6e4c5c365ba4ee9343"},
     {file = "greenlet-2.0.2-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:d27ec7509b9c18b6d73f2f5ede2622441de812e7b1a80bbd446cb0633bd3d5ae"},
+    {file = "greenlet-2.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:d967650d3f56af314b72df7089d96cda1083a7fc2da05b375d2bc48c82ab3f3c"},
     {file = "greenlet-2.0.2-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:30bcf80dda7f15ac77ba5af2b961bdd9dbc77fd4ac6105cee85b0d0a5fcf74df"},
     {file = "greenlet-2.0.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:26fbfce90728d82bc9e6c38ea4d038cba20b7faf8a0ca53a9c07b67318d46088"},
     {file = "greenlet-2.0.2-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:9190f09060ea4debddd24665d6804b995a9c122ef5917ab26e1566dcc712ceeb"},
@@ -3793,6 +3794,7 @@ files = [
     {file = "greenlet-2.0.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:76ae285c8104046b3a7f06b42f29c7b73f77683df18c49ab5af7983994c2dd91"},
     {file = "greenlet-2.0.2-cp310-cp310-win_amd64.whl", hash = "sha256:2d4686f195e32d36b4d7cf2d166857dbd0ee9f3d20ae349b6bf8afc8485b3645"},
     {file = "greenlet-2.0.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:c4302695ad8027363e96311df24ee28978162cdcdd2006476c43970b384a244c"},
+    {file = "greenlet-2.0.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:d4606a527e30548153be1a9f155f4e283d109ffba663a15856089fb55f933e47"},
     {file = "greenlet-2.0.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c48f54ef8e05f04d6eff74b8233f6063cb1ed960243eacc474ee73a2ea8573ca"},
     {file = "greenlet-2.0.2-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:a1846f1b999e78e13837c93c778dcfc3365902cfb8d1bdb7dd73ead37059f0d0"},
     {file = "greenlet-2.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3a06ad5312349fec0ab944664b01d26f8d1f05009566339ac6f63f56589bc1a2"},
@@ -3822,6 +3824,7 @@ files = [
     {file = "greenlet-2.0.2-cp37-cp37m-win32.whl", hash = "sha256:3f6ea9bd35eb450837a3d80e77b517ea5bc56b4647f5502cd28de13675ee12f7"},
     {file = "greenlet-2.0.2-cp37-cp37m-win_amd64.whl", hash = "sha256:7492e2b7bd7c9b9916388d9df23fa49d9b88ac0640db0a5b4ecc2b653bf451e3"},
     {file = "greenlet-2.0.2-cp38-cp38-macosx_10_15_x86_64.whl", hash = "sha256:b864ba53912b6c3ab6bcb2beb19f19edd01a6bfcbdfe1f37ddd1778abfe75a30"},
+    {file = "greenlet-2.0.2-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:1087300cf9700bbf455b1b97e24db18f2f77b55302a68272c56209d5587c12d1"},
     {file = "greenlet-2.0.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:ba2956617f1c42598a308a84c6cf021a90ff3862eddafd20c3333d50f0edb45b"},
     {file = "greenlet-2.0.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fc3a569657468b6f3fb60587e48356fe512c1754ca05a564f11366ac9e306526"},
     {file = "greenlet-2.0.2-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:8eab883b3b2a38cc1e050819ef06a7e6344d4a990d24d45bc6f2cf959045a45b"},
@@ -3830,6 +3833,7 @@ files = [
     {file = "greenlet-2.0.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:b0ef99cdbe2b682b9ccbb964743a6aca37905fda5e0452e5ee239b1654d37f2a"},
     {file = "greenlet-2.0.2-cp38-cp38-win32.whl", hash = "sha256:b80f600eddddce72320dbbc8e3784d16bd3fb7b517e82476d8da921f27d4b249"},
     {file = "greenlet-2.0.2-cp38-cp38-win_amd64.whl", hash = "sha256:4d2e11331fc0c02b6e84b0d28ece3a36e0548ee1a1ce9ddde03752d9b79bba40"},
+    {file = "greenlet-2.0.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:8512a0c38cfd4e66a858ddd1b17705587900dd760c6003998e9472b77b56d417"},
     {file = "greenlet-2.0.2-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:88d9ab96491d38a5ab7c56dd7a3cc37d83336ecc564e4e8816dbed12e5aaefc8"},
     {file = "greenlet-2.0.2-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:561091a7be172ab497a3527602d467e2b3fbe75f9e783d8b8ce403fa414f71a6"},
     {file = "greenlet-2.0.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:971ce5e14dc5e73715755d0ca2975ac88cfdaefcaab078a284fea6cfabf866df"},
@@ -5172,6 +5176,7 @@ datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 raven = ">=6.10.0"
+service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
@@ -5216,6 +5221,7 @@ datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
 gunicorn = ">=20.1.0"
+service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
@@ -9860,4 +9866,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "605385f8e8303417af897014b6fee40a601feac364d8f8e2388731fe7629fa4f"
+content-hash = "1c894a933217871d0163e5000a9ecf3e3aa80d360f5efb98ddb76587b633f742"

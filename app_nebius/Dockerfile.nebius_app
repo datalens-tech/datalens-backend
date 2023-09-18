@@ -7,6 +7,8 @@ ENV APP_NAME=$APP_NAME
 # Libs & metapkg
 COPY --from=bake_ctx_src_lib / /src
 
+RUN apt-get update && apt-get install -y gunicorn
+
 # Sources copy
 RUN mkdir -p /src/app_nebius
 
