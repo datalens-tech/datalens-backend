@@ -65,6 +65,10 @@ spec:
               path: "/ping"
             initialDelaySeconds: 60
             periodSeconds: 10
+          volumeMounts:
+            {{- include "cert-internal_vol-mount" . | indent 12 }}
+      volumes:
+        {{- include "cert-internal_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"

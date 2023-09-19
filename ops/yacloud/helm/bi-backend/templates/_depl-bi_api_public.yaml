@@ -115,6 +115,8 @@ spec:
             periodSeconds: 10
           securityContext:
             {{- include "security-context-data-api" . | indent 12}}
+          volumeMounts:
+            {{- include "cert-bundle_vol-mount" . | indent 12 }}
         - name: postgres
           image: "{{ .Values.docker_images_info.docker_repo }}/postgres:12"
           imagePullPolicy: "IfNotPresent"
@@ -159,6 +161,8 @@ spec:
             periodSeconds: 10
           securityContext:
             {{- include "security-context-common" . | indent 12}}
+          volumeMounts:
+            {{- include "cert-internal_vol-mount" . | indent 12 }}
         {{ end }}
       volumes:
         - name: init-scripts
@@ -173,6 +177,8 @@ spec:
           configMap:
             name: compeng-init
             defaultMode: 0777
+        {{- include "cert-internal_vol" . | indent 8 }}
+        {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"

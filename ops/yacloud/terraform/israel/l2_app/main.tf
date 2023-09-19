@@ -39,7 +39,7 @@ module "main" {
       dedicated     = true
     }
     rest = {
-      size          = 6
+      size          = 8
       cores         = 2
       core_fraction = 100
       memory        = 8

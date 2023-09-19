@@ -80,12 +80,15 @@ spec:
           securityContext:
             {{- include "security-context-common" . | indent 12}}
           {{ end }}
+          volumeMounts:
+            {{- include "cert-bundle_vol-mount" . | indent 12 }}
       volumes:
         - name: init-scripts
           configMap:
             name: "{{ .Release.Name }}-init-scripts"
         - name: app-secrets
           emptyDir: {}
+        {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"
@@ -171,6 +174,8 @@ spec:
           securityContext:
             {{- include "security-context-common" . | indent 12}}
           {{ end }}
+          volumeMounts:
+            {{- include "cert-bundle_vol-mount" . | indent 12 }}
       volumes:
         - name: init-scripts
           configMap:
@@ -180,6 +185,7 @@ spec:
         - name: selfsign-cert
           configMap:
             name: nginx-data-v2
+        {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"
@@ -234,6 +240,10 @@ spec:
               path: "/reader/ping"
             initialDelaySeconds: 10
             periodSeconds: 10
+          volumeMounts:
+            {{- include "cert-bundle_vol-mount" . | indent 12 }}
+      volumes:
+        {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"

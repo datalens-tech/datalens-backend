@@ -1,0 +1,28 @@
+{{- define "cert-internal_vol-mount" }}
+- mountPath: /etc/ssl/certs
+  name: cert-internal
+{{ end }}
+
+{{- define "cert-internal_vol" }}
+- name: cert-internal
+  secret:
+    secretName: cert-internal
+    items:
+      - key: data
+        path: ca-certificates.crt
+{{ end }}
+
+
+{{- define "cert-bundle_vol-mount" }}
+- mountPath: /etc/ssl/certs
+  name: cert-bundle
+{{ end }}
+
+{{- define "cert-bundle_vol" }}
+- name: cert-bundle
+  secret:
+    secretName: cert-bundle
+    items:
+      - key: data
+        path: ca-certificates.crt
+{{ end }}

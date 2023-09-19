@@ -132,6 +132,8 @@ spec:
             periodSeconds: 10
           securityContext:
             {{- include "security-context-data-api" . | indent 12}}
+          volumeMounts:
+            {{- include "cert-bundle_vol-mount" . | indent 12 }}
         {{ if .Values.enabled_features.network_policy}}
         - name: rqe-int-sync
           image: "{{ .Values.docker_images_info.rqe_int_sync.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
@@ -162,10 +164,9 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           securityContext:
-            {{- include "security-context-data-api" . | indent 12}}
+            {{- include "security-context-data-api" . | indent 12 }}
           volumeMounts:
-            - mountPath: /etc/ssl/certs
-              name: internal-cert
+            {{- include "cert-internal_vol-mount" . | indent 12 }}
         {{ end }}
       volumes:
         - name: init-scripts
@@ -173,12 +174,8 @@ spec:
             name: "{{ .Release.Name }}-init-scripts"
         - name: app-secrets
           emptyDir: {}
-        - name: internal-cert
-          secret:
-            secretName: yc-internal-ca-cert
-            items:
-              - key: cert
-                path: ca-certificates.crt
+        {{- include "cert-internal_vol" . | indent 8 }}
+        {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"
@@ -322,6 +319,8 @@ spec:
             periodSeconds: 10
           securityContext:
             {{- include "security-context-data-api" . | indent 12}}
+          volumeMounts:
+            {{- include "cert-bundle_vol-mount" . | indent 12 }}
         - name: postgres
           image: "{{ .Values.docker_images_info.docker_repo }}/postgres:12"
           imagePullPolicy: "IfNotPresent"
@@ -367,6 +366,8 @@ spec:
             periodSeconds: 10
           securityContext:
             {{- include "security-context-common" . | indent 12}}
+          volumeMounts:
+            {{- include "cert-internal_vol-mount" . | indent 12 }}
         {{ end }}
       volumes:
         - name: init-scripts
@@ -381,6 +382,8 @@ spec:
           configMap:
             name: compeng-init
             defaultMode: 0777
+        {{- include "cert-internal_vol" . | indent 8 }}
+        {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"
