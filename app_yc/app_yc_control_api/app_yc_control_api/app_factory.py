@@ -14,20 +14,24 @@ from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
 )
+from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 from dl_api_lib.app.control_api.app import (
     ControlApiAppFactory,
     EnvSetupResult,
 )
 from dl_api_lib.app_common import SRFactoryBuilder
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.enums import RequiredService
 from dl_constants.enums import USAuthMode
+from dl_core.connection_models import ConnectOptions
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_i18n.localizer_base import TranslationConfig
 
 
@@ -88,6 +92,17 @@ class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):
 
 
 class ControlApiAppFactoryYC(ControlApiAppFactory[ControlPlaneAppSettings], ControlApiSRFactoryBuilderYC):
+    def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
+        conn_opts_mutators_factory = super()._get_conn_opts_mutators_factory()
+
+        def ydb_is_cloud_mutator(conn_opts: ConnectOptions, conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
+            if isinstance(conn_opts, YDBConnectOptions):
+                return conn_opts.clone(is_cloud=True)
+            return None
+
+        conn_opts_mutators_factory.add_mutator(ydb_is_cloud_mutator)
+        return conn_opts_mutators_factory
+
     def set_up_environment(
         self,
         app: flask.Flask,
