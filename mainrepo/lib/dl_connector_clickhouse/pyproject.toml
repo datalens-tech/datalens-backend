@@ -83,6 +83,6 @@ dl_connector_clickhouse = [
     {path = "dl_connector_clickhouse/bi"},
     {path = "dl_connector_clickhouse/core"},
 ]
-bi_formula_ref_dl_connector_clickhouse = [
+dl_formula_ref_dl_connector_clickhouse = [
     {path = "dl_connector_clickhouse/formula_ref"},
 ]

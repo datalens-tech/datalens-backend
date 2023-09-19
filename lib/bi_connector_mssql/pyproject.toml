@@ -90,6 +90,6 @@ bi_connector_mssql = [
     {path = "bi_connector_mssql/bi"},
     {path = "bi_connector_mssql/core"},
 ]
-bi_formula_ref_bi_connector_mssql = [
+dl_formula_ref_bi_connector_mssql = [
     {path = "bi_connector_mssql/formula_ref"},
 ]

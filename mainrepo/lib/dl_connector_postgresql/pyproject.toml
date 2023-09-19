@@ -86,6 +86,6 @@ dl_connector_postgresql = [
     {path = "dl_connector_postgresql/bi"},
     {path = "dl_connector_postgresql/core"},
 ]
-bi_formula_ref_dl_connector_postgresql = [
+dl_formula_ref_dl_connector_postgresql = [
     {path = "dl_connector_postgresql/formula_ref"},
 ]
