@@ -34,8 +34,6 @@ services:
     environment:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
-      DLS_ENABLED: "false"
-      DISABLE_DLS: "true"
       MASTER_TOKEN: *c-us-master-token
     ports:
       - "51911:80"

@@ -154,7 +154,6 @@ services:
     ports:
       - 50509:5432
 
-  # TODO: Multitenancy & DLS integration
   us:
     build:
       context: ../testenv_common_private/images
@@ -163,12 +162,7 @@ services:
       - 50500:80
     depends_on:
       - pg-us
-    #      - dls
     environment:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
-      DLS_ENABLED: "false"
-      DISABLE_DLS: "true"
-      #      DLS_ENDPOINT: "http://dls"
-      #      DLS_API_KEY: *c-dls-api-key
       MASTER_TOKEN: *c-us-master-token
