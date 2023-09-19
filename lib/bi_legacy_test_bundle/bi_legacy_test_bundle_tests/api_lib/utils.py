@@ -169,6 +169,7 @@ def get_field_by_title(result_schema: List[dict], title) -> dict:
 
 
 def data_source_settings_from_table(table: DbTable):
+    # TODO: Remove in favor of the one from `dl_api_lib_testing.helpers.data_source`
     source_type = get_created_from(db=table.db)
     data = {  # this still requires connection_id to be defined
         "source_type": source_type,

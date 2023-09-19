@@ -17,10 +17,6 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
     def dataset_params(self) -> dict:
         raise NotImplementedError
 
-    @pytest.fixture(scope="function")
-    def dataset_api(self, control_api_sync_client: SyncHttpClientBase) -> SyncHttpDatasetApiV1:
-        return SyncHttpDatasetApiV1(client=control_api_sync_client)
-
     def make_basic_dataset(
         self,
         dataset_api: SyncHttpDatasetApiV1,

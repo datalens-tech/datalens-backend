@@ -2,37 +2,50 @@ from __future__ import annotations
 
 import pytest
 
-from bi_legacy_test_bundle_tests.api_lib.config import (
-    BI_TEST_CONFIG,
-    DB_PARAMS,
-)
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import DataApiTestBase
+from dl_api_lib_tests.db.config import (
+    BI_TEST_CONFIG,
+    DB_CORE_URL,
+    CoreConnectionSettings,
+)
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_constants.enums import ConnectionType
+from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
 
-class DefaultBiApiTestBase(DataApiTestBase):
+class DefaultApiTestBase(DataApiTestBase, ConnectionTestBase):
+    """The knowledge that this is a ClickHouse connector should not go beyond this class"""
+
+    bi_compeng_pg_on = True
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
         return BI_TEST_CONFIG
 
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        return DB_CORE_URL
+
+    @pytest.fixture(scope="class")
+    def engine_config(self, db_url: str, engine_params: dict) -> ClickhouseDbEngineConfig:
+        return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
+
     @pytest.fixture(scope="function")
-    def environment_readiness(self, enable_all_connectors, initdb_ready) -> None:
+    def environment_readiness(self, enable_all_connectors) -> None:
         pass
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        host_port, password = DB_PARAMS["clickhouse"]
         return dict(
-            host=host_port.split(":")[0],
-            port=int(host_port.split(":")[1]),
-            username="test_user",
-            password=password,
+            db_name=CoreConnectionSettings.DB_NAME,
+            host=CoreConnectionSettings.HOST,
+            port=CoreConnectionSettings.PORT,
+            username=CoreConnectionSettings.USERNAME,
+            password=CoreConnectionSettings.PASSWORD,
         )
 
     @pytest.fixture(scope="session")

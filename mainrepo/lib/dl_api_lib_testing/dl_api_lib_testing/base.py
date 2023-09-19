@@ -12,6 +12,7 @@ from flask.app import Flask
 from flask.testing import FlaskClient
 import pytest
 
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_commons.base_models import TenantCommon
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
@@ -169,3 +170,7 @@ class BiApiTestBase(abc.ABC):
     @pytest.fixture(scope="function")
     def control_api_sync_client(self, client: FlaskClient) -> SyncHttpClientBase:
         return FlaskSyncApiClient(int_wclient=client)
+
+    @pytest.fixture(scope="function")
+    def dataset_api(self, control_api_sync_client: SyncHttpClientBase) -> SyncHttpDatasetApiV1:
+        return SyncHttpDatasetApiV1(client=control_api_sync_client)
