@@ -6,17 +6,17 @@ dl_repo:
   package_types:
     - type: terrarium  # Repository tools
       root_path: terrarium
-      boilerplate_path: lib/bi_package_boilerplate  # FIXME: move the boilerplate inside mainrepo
+      boilerplate_path: lib/dl_package_boilerplate  # FIXME: move the boilerplate inside mainrepo
 
     - type: lib  # Main libraries
       root_path: lib
-      boilerplate_path: lib/bi_package_boilerplate
+      boilerplate_path: lib/dl_package_boilerplate
       tags:
         - main_dependency_group
 
     - type: app  # Apps
       root_path: app
-      boilerplate_path: lib/bi_package_boilerplate
+      boilerplate_path: lib/dl_package_boilerplate
       tags:
         - main_dependency_group
         - own_dependency_group

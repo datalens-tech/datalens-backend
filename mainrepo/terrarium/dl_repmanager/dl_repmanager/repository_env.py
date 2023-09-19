@@ -11,11 +11,11 @@ The file should have a structure similar to this:
       package_types:
         - type: lib
           root_path: lib
-          boilerplate_path: lib/bi_package_boilerplate
+          boilerplate_path: lib/dl_package_boilerplate
 
         - type: app
           root_path: app
-          boilerplate_path: lib/bi_package_boilerplate
+          boilerplate_path: lib/dl_package_boilerplate
           tags:
             - own_dependency_group
 
