@@ -53,7 +53,7 @@ def create_app(
     )
 
 
-def create_gunicorn_app() -> flask.Flask:
+def _create_gunicorn_app() -> flask.Flask:
     preload_bi_api_lib()
     fallback_resolver = YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
@@ -91,4 +91,4 @@ def create_gunicorn_app() -> flask.Flask:
     return app
 
 
-app = create_gunicorn_app()
+create_gunicorn_app = _create_gunicorn_app()
