@@ -10,6 +10,10 @@ from bi_defaults.environments import (
 )
 from bi_file_uploader_worker.app_factory import DefaultFileUploaderWorkerFactory
 from bi_file_uploader_worker.app_settings import DefaultFileUploaderWorkerSettings
+from dl_api_commons.sentry_config import (
+    SentryConfig,
+    configure_sentry,
+)
 from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_core.logging_config import configure_logging
@@ -49,7 +53,11 @@ def run_standalone_worker() -> None:
     loop = asyncio.get_event_loop()
     settings = load_settings()
     worker = DefaultFileUploaderWorkerFactory(settings=settings).create_worker()
-    configure_logging(app_name="bi_file_uploader_worker", sentry_dsn=settings.SENTRY_DSN)
+    configure_logging(
+        app_name="bi_file_uploader_worker",
+    )
+    if settings.SENTRY_DSN is not None:
+        configure_sentry(SentryConfig(dsn=settings.SENTRY_DSN))
     worker_task = loop.create_task(worker.start())
     try:
         loop.run_forever()
@@ -65,7 +73,11 @@ def run_standalone_worker() -> None:
 def run_health_check() -> None:
     loop = asyncio.get_event_loop()
     settings = load_settings()
-    configure_logging(app_name="bi_file_uploader_worker_health_check", sentry_dsn=settings.SENTRY_DSN)
+    configure_logging(
+        app_name="bi_file_uploader_worker_health_check",
+    )
+    if settings.SENTRY_DSN is not None:
+        configure_sentry(SentryConfig(dsn=settings.SENTRY_DSN))
     worker = DefaultFileUploaderWorkerFactory(settings=settings).create_worker()
     health_checker = HealthChecker(worker)
     loop.run_until_complete(health_checker.check())

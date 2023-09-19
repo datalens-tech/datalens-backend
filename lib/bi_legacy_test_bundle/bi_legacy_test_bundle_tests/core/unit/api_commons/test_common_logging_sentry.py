@@ -21,8 +21,12 @@ import sentry_sdk
 from bi_api_commons_ya_cloud.constants import DLHeadersYC
 from bi_testing_ya.api_wrappers import HTTPClientWrapper
 from dl_api_commons.logging_sentry import cleanup_common_secret_data
+from dl_api_commons.sentry_config import (
+    SentryConfig,
+    configure_sentry_for_aiohttp,
+    hook_configure_configure_sentry_for_flask,
+)
 from dl_constants.api_constants import DLHeadersCommon
-from dl_core.flask_utils.sentry import configure_raven_for_flask
 
 
 @attr.s
@@ -99,7 +103,6 @@ SECRET_VAR_NAMES = [
     "check_session_request",  # by var content
 ]
 
-
 S3_TBL_FUNC_MASKED = """select * from s3(<hidden>
     'Native',
     'c1 String, c2 Int64'
@@ -109,7 +112,6 @@ join (select c3, c4 from s3(<hidden>
     'c3 String, c2 Int64'
 )) as t2 on t1.c2 = t2.c4
 """
-
 
 PARTIALLY_MASKED_VARS = {
     "s3_query_with_keys": {repr(S3_TBL_FUNC_MASKED)},
@@ -162,33 +164,10 @@ def run_aiohttp_server(sentry_dsn: str, host: str, port: int):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    import sentry_sdk
-    from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-    from sentry_sdk.integrations.argv import ArgvIntegration
-    from sentry_sdk.integrations.atexit import AtexitIntegration
-    from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-    from sentry_sdk.integrations.logging import LoggingIntegration
-    from sentry_sdk.integrations.modules import ModulesIntegration
-    from sentry_sdk.integrations.stdlib import StdlibIntegration
-    from sentry_sdk.integrations.threading import ThreadingIntegration
-
-    # from sentry_sdk.integrations.logging import LoggingIntegration
-    sentry_sdk.init(
-        dsn=sentry_dsn,
-        default_integrations=False,
-        before_send=cleanup_common_secret_data,
-        integrations=[
-            # # Default
-            AtexitIntegration(),
-            ExcepthookIntegration(),
-            StdlibIntegration(),
-            ModulesIntegration(),
-            ArgvIntegration(),
-            LoggingIntegration(event_level=logging.WARNING),
-            ThreadingIntegration(),
-            #  # Custom
-            AioHttpIntegration(),
-        ],
+    configure_sentry_for_aiohttp(
+        SentryConfig(
+            dsn=sentry_dsn,
+        )
     )
 
     app = web.Application()
@@ -223,16 +202,7 @@ def run_flask_server(sentry_dsn: str, host: str, port: int):
     import flask
     from werkzeug.serving import make_server
 
-    from dl_core.logging_config import configure_logging
-
     app = flask.Flask(__name__)
-    configure_raven_for_flask(app, sentry_dsn=sentry_dsn)
-    configure_logging(
-        "flask_raven_sentry_client",
-        app_prefix="tst_1",
-        sentry_dsn=sentry_dsn,
-        for_development=False,
-    )
 
     def fail_on_any():
         secret_var = 123  # noqa
@@ -253,6 +223,8 @@ def run_flask_server(sentry_dsn: str, host: str, port: int):
     app.add_url_rule("/ping", view_func=ping)
     app.add_url_rule("/the_exception", view_func=fail_on_any)
     app.add_url_rule("/the_ok_but_error_in_logs", view_func=the_ok_but_error_in_logs)
+
+    hook_configure_configure_sentry_for_flask(app, SentryConfig(dsn=sentry_dsn))
 
     server = make_server(
         app=app,

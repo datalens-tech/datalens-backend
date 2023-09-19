@@ -4,7 +4,7 @@ import logging
 import re
 from typing import Any
 
-from raven.processors import Processor
+import attr
 
 from dl_api_commons import clean_secret_data_in_headers
 
@@ -131,8 +131,3 @@ def cleanup_common_secret_data(
         log.error(f"Unexpected type of request section in outgoing Sentry event: {type(secret_original_req_section)}")
 
     return event
-
-
-class SecretsCleanupProcessor(Processor):
-    def get_data(self, data: dict, **kwargs: Any) -> dict:
-        return cleanup_common_secret_data(data, {})

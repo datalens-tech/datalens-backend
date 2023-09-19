@@ -1,5 +1,4 @@
 import abc
-import logging
 from typing import (
     Generic,
     Type,
@@ -14,6 +13,10 @@ from dl_api_commons.aio.middlewares.cors import cors_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_commons.sentry_config import (
+    SentryConfig,
+    configure_sentry_for_aiohttp,
+)
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.aio.metrics_view import MetricsView
 from dl_core.aio.middlewares.csrf import CSRFMiddleware
@@ -48,35 +51,11 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         raise NotImplementedError()
 
     def set_up_sentry(self, secret_sentry_dsn: str, release: str) -> None:
-        import sentry_sdk
-        from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-        from sentry_sdk.integrations.argv import ArgvIntegration
-        from sentry_sdk.integrations.atexit import AtexitIntegration
-        from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-        from sentry_sdk.integrations.logging import LoggingIntegration
-        from sentry_sdk.integrations.modules import ModulesIntegration
-        from sentry_sdk.integrations.stdlib import StdlibIntegration
-        from sentry_sdk.integrations.threading import ThreadingIntegration
-
-        from dl_api_commons.logging_sentry import cleanup_common_secret_data
-
-        sentry_sdk.init(
-            dsn=secret_sentry_dsn,
-            default_integrations=False,
-            before_send=cleanup_common_secret_data,
-            integrations=[
-                # # Default
-                AtexitIntegration(),
-                ExcepthookIntegration(),
-                StdlibIntegration(),
-                ModulesIntegration(),
-                ArgvIntegration(),
-                LoggingIntegration(event_level=logging.WARNING),
-                ThreadingIntegration(),
-                #  # Custom
-                AioHttpIntegration(),
-            ],
-            release=release,
+        configure_sentry_for_aiohttp(
+            SentryConfig(
+                dsn=secret_sentry_dsn,
+                release=release,
+            )
         )
 
     def create_app(self, app_version: str) -> web.Application:

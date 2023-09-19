@@ -15,6 +15,10 @@ from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_api_commons.sentry_config import (
+    SentryConfig,
+    configure_sentry_for_aiohttp,
+)
 from dl_api_lib.aio.aiohttp_wrappers import (
     AppWrapper,
     DSAPIRequest,
@@ -179,36 +183,11 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/preview", DatasetPreviewViewV2)
 
     def set_up_sentry(self) -> None:
-        import sentry_sdk
-        from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-        from sentry_sdk.integrations.argv import ArgvIntegration
-        from sentry_sdk.integrations.atexit import AtexitIntegration
-        from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-        from sentry_sdk.integrations.logging import LoggingIntegration
-        from sentry_sdk.integrations.modules import ModulesIntegration
-        from sentry_sdk.integrations.stdlib import StdlibIntegration
-        from sentry_sdk.integrations.threading import ThreadingIntegration
-
-        from dl_api_commons.logging_sentry import cleanup_common_secret_data
-
-        sentry_sdk.init(
-            dsn=self._settings.SENTRY_DSN,
-            default_integrations=False,
-            before_send=cleanup_common_secret_data,
-            integrations=[
-                # # Default
-                AtexitIntegration(),
-                ExcepthookIntegration(),
-                # DedupeIntegration(),
-                StdlibIntegration(),
-                ModulesIntegration(),
-                ArgvIntegration(),
-                LoggingIntegration(event_level=logging.WARNING),
-                ThreadingIntegration(),
-                #  # Custom
-                AioHttpIntegration(),
-            ],
-            release=self.get_app_version(),
+        configure_sentry_for_aiohttp(
+            SentryConfig(
+                dsn=self._settings.SENTRY_DSN,
+                release=self.get_app_version(),
+            )
         )
 
     def create_app(

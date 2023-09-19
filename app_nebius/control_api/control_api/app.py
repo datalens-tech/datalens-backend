@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Optional
 
-from control_api import app_version
 from control_api.app_factory import ControlApiAppFactoryNebius
 import flask
 
@@ -10,6 +9,10 @@ from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
 from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
+)
+from dl_api_commons.sentry_config import (
+    SentryConfig,
+    hook_configure_configure_sentry_for_flask,
 )
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.loader import (
@@ -32,7 +35,6 @@ from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
 )
-from dl_core.flask_utils.sentry import configure_raven_for_flask
 from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
 
@@ -80,13 +82,11 @@ def create_gunicorn_app() -> flask.Flask:
         app,
         app_name="control_api",
         app_prefix="a",
-        sentry_dsn=actual_sentry_dsn,
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware("control_api"),
     )
-
-    # Sentry in the flask app: 'BadRequest' / 'InternalServerError' / ..., 'in werkzeug/exceptions.py'.
-    configure_raven_for_flask(app, actual_sentry_dsn, release=app_version)
+    if actual_sentry_dsn is not None:
+        hook_configure_configure_sentry_for_flask(app, SentryConfig(dsn=actual_sentry_dsn))
 
     return app
 

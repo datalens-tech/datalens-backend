@@ -13,6 +13,10 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from dl_api_commons.sentry_config import (
+    SentryConfig,
+    hook_configure_configure_sentry_for_flask,
+)
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.loader import (
     ApiLibraryConfig,
@@ -34,7 +38,6 @@ from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
 )
-from dl_core.flask_utils.sentry import configure_raven_for_flask
 from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
 
@@ -92,13 +95,11 @@ def create_uwsgi_app():  # type: ignore  # TODO: fix
         uwsgi_app,
         app_name="bi_api_app",
         app_prefix="a",
-        sentry_dsn=actual_sentry_dsn,
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware("bi-api-app"),
     )
-
-    # Sentry in the flask app: 'BadRequest' / 'InternalServerError' / ..., 'in werkzeug/exceptions.py'.
-    configure_raven_for_flask(uwsgi_app, actual_sentry_dsn, release=app_version)
+    if actual_sentry_dsn is not None:
+        hook_configure_configure_sentry_for_flask(app, SentryConfig(dsn=actual_sentry_dsn, release=app_version))
 
     return uwsgi_app
 

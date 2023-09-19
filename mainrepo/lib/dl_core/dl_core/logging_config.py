@@ -61,7 +61,6 @@ class StdoutFormatter(logging.Formatter):
 
 def _make_logging_config(
     for_development: bool,
-    sentry_dsn: Optional[str] = None,
     logcfg_processors: Optional[Sequence[Callable]] = None,
 ) -> dict:
     """
@@ -97,9 +96,6 @@ def _make_logging_config(
         common_handlers = base["root"]["handlers"]  # type: ignore  # TODO: fix
         # ^ ['debug_log', 'fast_log', 'event_log']
 
-        if sentry_dsn:
-            common_handlers += ["sentry"]
-
         default_handlers = ["stream"] + common_handlers  # everything to stdout
         logging_config = {
             **base,
@@ -113,19 +109,6 @@ def _make_logging_config(
             },
             "handlers": {
                 **(base.get("handlers") or {}),  # type: ignore  # TODO: fix
-                **(
-                    {}
-                    if not sentry_dsn
-                    else {
-                        "sentry": {  # type: ignore  # TODO: fix
-                            "class": "raven.handlers.logging.SentryHandler",
-                            "processors": ("dl_api_commons.logging_sentry.SecretsCleanupProcessor",),
-                            "level": "ERROR",
-                            "formatter": "verbose",
-                            "dsn": sentry_dsn,
-                        }
-                    }
-                ),
             },
             "loggers": {
                 **(base.get("loggers") or {}),  # type: ignore  # TODO: fix
@@ -226,7 +209,6 @@ def configure_logging(  # type: ignore  # TODO: fix
     app_name,
     for_development: Optional[bool] = None,
     app_prefix: Optional[str] = None,
-    sentry_dsn: Optional[str] = None,
     logcfg_processors: Optional[Sequence[Callable]] = None,
     use_jaeger_tracer: bool = False,
     jaeger_service_name: Optional[str] = None,
@@ -248,7 +230,6 @@ def configure_logging(  # type: ignore  # TODO: fix
 
     cfg = _make_logging_config(
         for_development=for_development,
-        sentry_dsn=sentry_dsn,
         logcfg_processors=logcfg_processors,
     )
     statcommons.log_config.configure_logging(app_name=app_name, cfg=cfg)
