@@ -36,6 +36,7 @@ from dl_core.connection_executors.sync_base import (
 )
 from dl_core.db import SchemaInfo
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TBIDataTable
     from dl_core.connection_models.common_models import (

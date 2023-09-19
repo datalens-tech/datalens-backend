@@ -11,6 +11,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.con
     SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

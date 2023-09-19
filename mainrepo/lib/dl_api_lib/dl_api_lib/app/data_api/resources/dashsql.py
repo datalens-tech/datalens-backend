@@ -49,6 +49,7 @@ from dl_core.us_connection_base import (
 )
 from dl_query_processing.utils.datetime import parse_datetime
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
     from dl_core.data_processing.dashsql import (

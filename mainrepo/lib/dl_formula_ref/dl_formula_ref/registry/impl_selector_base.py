@@ -6,6 +6,7 @@ from typing import (
     List,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula_ref.registry.base import FunctionDocRegistryItem
     from dl_formula_ref.registry.env import GenerationEnvironment

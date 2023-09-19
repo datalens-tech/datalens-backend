@@ -23,6 +23,7 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.constants import (
     SOURCE_TYPE_CH_FROZEN_SUBSELECT,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 

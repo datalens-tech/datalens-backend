@@ -13,6 +13,7 @@ from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 
 from ..services_registry.sr_factories import SRFactory
 
+
 if TYPE_CHECKING:
     from dl_core.services_registry import ServicesRegistry  # noqa
 

@@ -23,6 +23,7 @@ from dl_task_processor.arq_wrapper import (
 from dl_task_processor.context import BaseContextFabric
 from dl_task_processor.executor import ExecutorFabric
 
+
 CONTEXT_KEY = "bi_context"
 
 

@@ -15,6 +15,7 @@ from dl_formula.core import (
 )
 from dl_formula.shortcuts import n
 
+
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ClauseElement
 

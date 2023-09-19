@@ -14,6 +14,7 @@ from bi_connector_mysql_tests.db.formula.base import (
     MySQL_8_0_12TestBase,
 )
 
+
 # STR
 
 

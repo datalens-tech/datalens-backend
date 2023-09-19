@@ -18,6 +18,7 @@ from dl_query_processing.multi_query.factory import (
     MultiQueryMutatorFactoryBase,
 )
 
+
 _FILTER_FORMULA_COMPILER_BY_BACKEND: dict[SourceBackendType, Type[FilterFormulaCompiler]] = {}
 _DEFAULT_FILTER_FORMULA_COMPILER = MainFilterFormulaCompiler
 

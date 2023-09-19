@@ -18,6 +18,7 @@ from dl_api_commons.base_models import TenantCommon
 from dl_api_commons.client.common import CommonInternalAPIClient
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
+
 ENV_KEY_DO_NOT_SKIP = "BI_EXT_API_TEST_DO_NOT_SKIP"
 ENV_KEY_YT_TOKEN = "BI_EXT_API_TESTS_MAIN_YT_TOKEN"
 ENV_KET_API_TOKEN = "BI_EXT_API_TESTS_MAIN_STAT_TOKEN"

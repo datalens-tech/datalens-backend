@@ -9,6 +9,7 @@ from typing_extensions import final
 
 from dl_constants.types import TJSONLike
 
+
 GLOBAL_ERR_PREFIX = "ERR"
 DEFAULT_ERR_CODE_API_PREFIX = "DS_API"
 CODE_OK = "OK"

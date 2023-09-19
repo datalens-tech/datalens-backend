@@ -24,6 +24,7 @@ from dl_api_commons.aio.async_wrapper_for_sync_generator import (
     JobState,
 )
 
+
 pytestmark = pytest.mark.asyncio  # TODO: should work through conftest?
 
 

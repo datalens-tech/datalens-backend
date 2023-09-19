@@ -7,6 +7,7 @@ from typing import (
 
 from dl_query_processing.legacy_pipeline.planning.planner import PrefilterAndCompengExecutionPlanner
 
+
 if TYPE_CHECKING:
     from dl_query_processing.compilation.primitives import (
         CompiledFormulaInfo,

@@ -17,6 +17,7 @@ from dl_api_lib.pivot.primitives import (
 )
 from dl_constants.enums import PivotRole
 
+
 if TYPE_CHECKING:
     from dl_api_lib.pivot.base.data_frame import PivotDataFrame
     from dl_api_lib.pivot.base.paginator import PivotPaginator

@@ -13,6 +13,7 @@ from dl_i18n.exc import (
     UnknownLocale,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

@@ -44,6 +44,7 @@ from dl_formula.definitions.type_strategy import (
 from dl_formula.shortcuts import n
 from dl_formula.utils.datetime import make_datetimetz_value
 
+
 if TYPE_CHECKING:
     from dl_formula.core.dialect import DialectCombo
     from dl_formula.translation.context import TranslationCtx

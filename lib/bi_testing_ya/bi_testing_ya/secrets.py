@@ -3,6 +3,7 @@ from __future__ import annotations
 from os import environ
 from typing import Optional
 
+
 try:
     from library.python.vault_client.instances import Production as VaultClient  # type: ignore  # noqa
 except ImportError:

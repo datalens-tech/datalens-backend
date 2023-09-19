@@ -9,6 +9,7 @@ import dl_formula as package
 from dl_formula.connectors.base.connector import FormulaConnector
 from dl_formula.connectors.registration import CONN_REG_FORMULA
 
+
 _CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 

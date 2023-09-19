@@ -26,6 +26,7 @@ from dl_core.db.native_type import (
     SATypeSpec,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

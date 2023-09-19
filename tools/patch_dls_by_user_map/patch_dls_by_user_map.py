@@ -10,6 +10,7 @@ from requests.adapters import (
     Retry,
 )
 
+
 logging.basicConfig(level=logging.INFO)
 
 

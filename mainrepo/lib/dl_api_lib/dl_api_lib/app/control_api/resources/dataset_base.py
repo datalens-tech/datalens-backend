@@ -62,6 +62,7 @@ from dl_formula.core.dialect import (
     from_name_and_version,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 DEFAULT_DATABASE_DIALECT = StandardDialect.DUMMY

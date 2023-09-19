@@ -8,6 +8,7 @@ import dl_formula.definitions.functions_math as base
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

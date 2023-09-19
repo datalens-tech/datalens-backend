@@ -17,6 +17,7 @@ from bi_connector_chyt_internal_tests.ext.core.base import (
 )
 from bi_connector_chyt_internal_tests.ext.core.ce_base import CHYTCommonSyncAsyncConnectionExecutorCheckBase
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

@@ -14,6 +14,7 @@ from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyCon
 from bi_connector_bitrix_gds.core.adapter import BitrixGDSDefaultAdapter
 from bi_connector_bitrix_gds.core.target_dto import BitrixGDSConnTargetDTO
 
+
 if TYPE_CHECKING:
     from bi_connector_bitrix_gds.core.dto import BitrixGDSConnDTO
 

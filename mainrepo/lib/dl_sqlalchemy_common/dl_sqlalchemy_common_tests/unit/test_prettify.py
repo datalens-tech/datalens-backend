@@ -15,6 +15,7 @@ from sqlalchemy.sql import (
     table,
 )
 
+
 # Reference:
 # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/test/sql/test_compiler.py#L107
 

@@ -59,6 +59,7 @@ from dl_query_processing.legend.field_legend import (
 )
 from dl_utils.utils import enum_not_none
 
+
 DATA_TYPES_SUPPORTING_TREE = frozenset(
     {
         BIType.tree_str,

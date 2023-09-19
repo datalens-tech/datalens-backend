@@ -19,6 +19,7 @@ from dl_core.query.bi_query import BIQuery
 from dl_core.query.expression import ExpressionCtx
 from dl_core.us_connection_base import ClassicConnectionSQL
 
+
 if TYPE_CHECKING:
     from dl_core.connections_security.base import ConnectionSecurityManager
     from dl_core.us_connection_base import ConnectionBase

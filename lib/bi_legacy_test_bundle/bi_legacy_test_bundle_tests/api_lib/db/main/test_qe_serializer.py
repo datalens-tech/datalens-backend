@@ -26,6 +26,7 @@ from dl_core.connection_executors.qe_serializer.serializer import ActionSerializ
 from dl_core_testing.executors import ExecutorFactoryBase
 from dl_formula.definitions.common import within_group
 
+
 SUPPORTED_ADAPTER_CLS: frozenset[Type[CommonBaseDirectAdapter]] = frozenset(
     {
         ClickHouseAdapter,

@@ -82,6 +82,7 @@ from dl_query_processing.postprocessing.primitives import (
 )
 from dl_utils.task_runner import ConcurrentTaskRunner
 
+
 if TYPE_CHECKING:
     from dl_api_lib.query.formalization.raw_specs import RawQuerySpecUnion
 

@@ -10,6 +10,7 @@ from dl_formula.definitions.literals import un_literal
 
 from bi_connector_oracle.formula.constants import OracleDialect as D
 
+
 V = TranslationVariant.make
 
 

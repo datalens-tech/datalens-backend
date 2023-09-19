@@ -21,6 +21,7 @@ from dl_constants.enums import (
 from dl_core.backend_types import get_backend_type
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
 

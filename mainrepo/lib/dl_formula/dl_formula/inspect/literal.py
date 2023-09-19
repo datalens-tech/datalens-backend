@@ -5,6 +5,7 @@ from typing import Union
 from dl_formula.core.datatype import DataType
 import dl_formula.core.nodes as nodes
 
+
 _TYPE_BY_CLS = {
     nodes.LiteralBoolean: DataType.CONST_BOOLEAN,
     nodes.LiteralDate: DataType.CONST_DATE,

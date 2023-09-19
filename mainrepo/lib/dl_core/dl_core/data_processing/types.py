@@ -6,5 +6,6 @@ from dl_constants.types import (
 )
 from dl_core.data_processing.streaming import AsyncChunkedBase
 
+
 TValuesChunkStream = AsyncChunkedBase[TBIDataRow]  # wrapper of async iterable of chunks of rows
 TJSONExtChunkStream = AsyncChunkedBase[TJSONExt]  # wrapper of async iterable of chunks of jsonables

@@ -10,6 +10,7 @@ from typing import (
 
 from dl_formula.core.datatype import DataType
 
+
 if TYPE_CHECKING:
     import dl_formula_ref.registry.base as _registry_base
     from dl_formula_ref.registry.env import GenerationEnvironment

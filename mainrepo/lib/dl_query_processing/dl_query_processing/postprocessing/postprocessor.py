@@ -29,6 +29,7 @@ from dl_query_processing.postprocessing.primitives import (
     PostprocessedQueryMetaInfo,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

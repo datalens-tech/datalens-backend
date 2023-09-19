@@ -11,6 +11,7 @@ import attr
 from .common import DatasetJSONBuilder
 from .dataset_data import SAMPLE_SUPER_STORE_LIGHT_CSV
 
+
 _DS_BUILDER_TV = TypeVar("_DS_BUILDER_TV", bound="BaseDatasetJSONBuilder")
 
 

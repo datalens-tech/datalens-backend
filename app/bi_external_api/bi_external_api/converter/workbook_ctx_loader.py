@@ -39,6 +39,7 @@ from bi_external_api.internal_api_clients.models import (
     WorkbookBasicInfo,
 )
 
+
 _INST_TYPE_TV = TypeVar("_INST_TYPE_TV", bound=EntryInstance)
 
 

@@ -17,6 +17,7 @@ from dl_formula.definitions.type_strategy import FromArgs
 
 from bi_connector_yql.formula.constants import YqlDialect
 
+
 V = TranslationVariant.make
 
 

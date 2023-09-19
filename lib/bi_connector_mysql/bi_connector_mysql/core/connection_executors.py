@@ -17,6 +17,7 @@ from bi_connector_mysql.core.async_adapters_mysql import AsyncMySQLAdapter
 from bi_connector_mysql.core.dto import MySQLConnDTO
 from bi_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
+
 _BASE_MYSQL_ADAPTER_TV = TypeVar("_BASE_MYSQL_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 

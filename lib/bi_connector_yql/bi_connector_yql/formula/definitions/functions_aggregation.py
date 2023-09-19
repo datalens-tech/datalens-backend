@@ -12,6 +12,7 @@ from dl_formula.shortcuts import n
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

@@ -13,6 +13,7 @@ from bi_external_api.converter.charts.chart_converter import BaseChartConverter
 from bi_external_api.converter.main import DatasetConverter
 from bi_external_api.domain import external as ext
 
+
 _INSTANCE_TV = TypeVar("_INSTANCE_TV", bound=ext.EntryInstance)
 _DATA_TV = TypeVar("_DATA_TV")
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="EntryBuilder")

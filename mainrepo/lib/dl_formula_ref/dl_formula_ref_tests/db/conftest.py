@@ -16,6 +16,7 @@ from dl_formula_testing.database import (
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_testing.containers import get_test_container_hostport
 
+
 ALL_DB_CONFIGURATIONS = {
     ClickHouseDialect.CLICKHOUSE_22_10: (
         f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-clickhouse-22-10", fallback_port=51110).as_pair()}/datalens_test'

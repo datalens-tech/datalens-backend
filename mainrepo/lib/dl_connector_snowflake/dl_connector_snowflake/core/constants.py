@@ -5,6 +5,7 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 
+
 BACKEND_TYPE_SNOWFLAKE = SourceBackendType.declare("SNOWFLAKE")
 
 CONNECTION_TYPE_SNOWFLAKE = ConnectionType.declare("snowflake")  # FIXME: Move the declaration here

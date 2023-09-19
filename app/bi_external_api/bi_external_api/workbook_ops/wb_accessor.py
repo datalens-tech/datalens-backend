@@ -9,6 +9,7 @@ import attr
 
 from bi_external_api.domain import external as ext
 
+
 _ENTRY_INSTANCE_TV = TypeVar("_ENTRY_INSTANCE_TV", bound=ext.EntryInstance)
 
 

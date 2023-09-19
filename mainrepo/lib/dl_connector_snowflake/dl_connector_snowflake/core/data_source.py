@@ -33,6 +33,7 @@ from dl_core.data_source.sql import (
 from dl_core.db import SchemaInfo
 from dl_core.utils import sa_plain_text
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 

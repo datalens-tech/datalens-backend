@@ -11,6 +11,7 @@ import attr
 
 from bi_connector_bitrix_gds.core.constants import BitrixGDSTableType
 
+
 CRM_DEAL = [
     {"name": "ID", "type": "integer"},
     {"name": "DATE_CREATE", "type": "datetime"},

@@ -14,6 +14,7 @@ from typing import (
 from dl_core.db.elements import SchemaColumn
 from dl_core.raw_data_streaming.stream import DataStreamBase
 
+
 LOGGER = logging.getLogger(__name__)
 
 

@@ -14,6 +14,7 @@ from typing import (
 import attr
 from sqlalchemy import sql as sasql
 
+
 if TYPE_CHECKING:
     from dl_constants.enums import IndexKind
     from dl_constants.types import TJSONExt

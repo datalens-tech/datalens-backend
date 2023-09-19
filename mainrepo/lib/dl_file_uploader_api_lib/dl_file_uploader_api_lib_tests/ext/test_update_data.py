@@ -19,6 +19,7 @@ from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
 from dl_file_uploader_lib import exc
 from dl_testing.s3_utils import s3_file_exists
 
+
 LOGGER = logging.getLogger(__name__)
 
 

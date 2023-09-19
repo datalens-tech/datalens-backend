@@ -6,6 +6,7 @@ from typing import (
     Set,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula.core.dialect import DialectCombo
     import dl_formula_ref.registry.base as _registry_base

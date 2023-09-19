@@ -20,6 +20,7 @@ from bi_external_api.enums import ExtAPIType
 
 from .model_tags import ExtModelTags
 
+
 _PROCESSOR_RETURN_DATA_TV = TypeVar("_PROCESSOR_RETURN_DATA_TV")
 
 

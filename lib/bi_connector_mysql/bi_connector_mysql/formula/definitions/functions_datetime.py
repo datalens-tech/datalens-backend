@@ -22,6 +22,7 @@ from dl_formula.definitions.literals import un_literal
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 
+
 V = TranslationVariant.make
 
 

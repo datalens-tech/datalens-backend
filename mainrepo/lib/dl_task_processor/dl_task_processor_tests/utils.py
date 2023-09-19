@@ -32,6 +32,7 @@ from dl_task_processor.task import (
 )
 from dl_utils.aio import ContextVarExecutor
 
+
 LOGGER = logging.getLogger(__name__)
 
 BROKEN_MARK = "mark_broken_task"

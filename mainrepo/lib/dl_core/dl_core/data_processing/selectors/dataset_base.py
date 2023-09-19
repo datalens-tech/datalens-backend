@@ -33,6 +33,7 @@ from dl_core.query.bi_query import QueryAndResultInfo
 from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_core.utils import make_id
 
+
 if TYPE_CHECKING:
     from dl_api_commons.reporting.registry import ReportingRegistry
     from dl_core.data_processing.cache.primitives import LocalKeyRepresentation

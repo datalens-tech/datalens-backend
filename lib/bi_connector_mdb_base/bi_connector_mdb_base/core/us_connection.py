@@ -20,6 +20,7 @@ from dl_core.connection_models import ConnectOptions
 
 from bi_connector_mdb_base.core.base_models import MDBConnectOptionsMixin
 
+
 if TYPE_CHECKING:
     from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
     from dl_core.services_registry.top_level import ServicesRegistry

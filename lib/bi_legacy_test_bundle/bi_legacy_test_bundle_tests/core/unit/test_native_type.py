@@ -18,6 +18,7 @@ from dl_core.db.native_type_schema import OneOfNativeTypeSchema
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
+
 SAMPLE_NATIVE_TYPES = (
     GenericNativeType(conn_type=CONNECTION_TYPE_MYSQL, name="tinyblob"),
     CommonNativeType(conn_type=CONNECTION_TYPE_POSTGRES, name="double_precision", nullable=True),

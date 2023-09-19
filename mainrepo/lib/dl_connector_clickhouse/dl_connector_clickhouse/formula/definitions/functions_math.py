@@ -10,6 +10,7 @@ from dl_formula.definitions.base import (
 import dl_formula.definitions.functions_math as base
 from dl_formula.shortcuts import n
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

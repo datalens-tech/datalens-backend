@@ -16,6 +16,7 @@ from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 from dl_formula_testing.util import to_str
 
+
 SAMPLE_DATA_ARRAYS_LENGTH = 4
 
 

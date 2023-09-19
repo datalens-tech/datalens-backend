@@ -10,6 +10,7 @@ from typing import (
 
 import attr
 
+
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="EntryJSONBuilder")
 
 

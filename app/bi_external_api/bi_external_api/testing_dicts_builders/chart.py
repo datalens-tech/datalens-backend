@@ -13,6 +13,7 @@ from bi_external_api.domain.utils import ensure_tuple
 from .common import ChartJSONBuilder
 from .dataset import BaseDatasetJSONBuilder
 
+
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="ChartJSONBuilderSingleDataset")
 
 

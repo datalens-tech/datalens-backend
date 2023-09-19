@@ -1,6 +1,7 @@
 from dl_constants.enums import BIType
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 
+
 TABLE_SPEC_SAMPLE_SUPERSTORE = FixtureTableSpec(
     csv_name="sample_superstore.csv",
     table_schema=(

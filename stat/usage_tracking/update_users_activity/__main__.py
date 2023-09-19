@@ -13,6 +13,7 @@ from qb2.api.v1 import extractors as qe
 from qb2.api.v1 import resources as qr
 from qb2.api.v1 import typing
 
+
 TABLE_SCHEMA = dict(
     user_id=typing.String,
     last_event_time=typing.Int64,

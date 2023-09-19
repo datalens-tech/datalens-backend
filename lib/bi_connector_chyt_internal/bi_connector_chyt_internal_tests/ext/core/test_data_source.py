@@ -22,6 +22,7 @@ from bi_connector_chyt_internal_tests.ext.core.base import (
     BaseCHYTUserAuthTestClass,
 )
 
+
 SAMPLE_TABLE_SCHEMA_SUPERSTORE_CHYTIZED = [
     (name, user_type if user_type != BIType.date else BIType.string)
     for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema

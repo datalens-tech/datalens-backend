@@ -8,6 +8,7 @@ from dl_formula.parser.factory import (
 )
 from dl_formula_testing.forced_literal import forced_literal_use  # noqa
 
+
 PARSERS = (ParserType.antlr_py,)
 
 

@@ -16,6 +16,7 @@ from typing import Optional
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport as _get_test_container_hostport
 
+
 DOCKER_COMPOSE_FILE_NAME = "docker-compose.core.yml"
 
 

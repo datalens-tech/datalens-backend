@@ -28,6 +28,7 @@ from bi_connector_oracle.core.constants import (
 )
 from bi_connector_oracle.core.dto import OracleConnDTO
 
+
 # noinspection PyMethodMayBeStatic
 
 

@@ -16,6 +16,7 @@ from bi_sqlalchemy_yq.errors import (
     YQError,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

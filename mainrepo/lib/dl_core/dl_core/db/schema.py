@@ -7,6 +7,7 @@ from typing import (
 
 from dl_core.db.elements import SchemaColumn
 
+
 SAMPLE_ID_COLUMN_NAME = "__dl_sample_id"  # TODO: Move somewhere else - it has to do with sampling, not schemas
 
 

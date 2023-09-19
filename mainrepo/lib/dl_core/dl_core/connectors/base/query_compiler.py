@@ -23,6 +23,7 @@ from dl_constants.enums import OrderDirection
 from dl_core import exc
 from dl_core.query.expression import ExpressionCtx
 
+
 if TYPE_CHECKING:
     from sqlalchemy.engine.default import DefaultDialect
     from sqlalchemy.sql.elements import ClauseElement

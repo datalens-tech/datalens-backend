@@ -17,6 +17,7 @@ from bi_connector_mssql.core.connection_executors import MSSQLConnExecutor
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mssql.core.dto import MSSQLConnDTO
 
+
 # noinspection PyMethodMayBeStatic
 
 

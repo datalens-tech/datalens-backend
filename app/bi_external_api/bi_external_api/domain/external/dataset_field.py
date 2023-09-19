@@ -12,6 +12,7 @@ import attr
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.enums import ExtAPIType
 
+
 _VISITOR_RETURN_DATA_TV = TypeVar("_VISITOR_RETURN_DATA_TV")
 
 

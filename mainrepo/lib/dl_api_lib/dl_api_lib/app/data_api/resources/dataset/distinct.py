@@ -20,6 +20,7 @@ import dl_api_lib.schemas.main
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 
+
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

@@ -9,6 +9,7 @@ import gitchronicler
 import hjson
 import requests
 
+
 CONFIG_FILENAME = '.release.hjson'
 CONFIG_KEY = '_x_bi_cloud_preprod_build_conf_ids'
 TEAMCITY_URL = 'https://teamcity.yandex-team.ru/app/rest/buildQueue'

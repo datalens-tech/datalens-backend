@@ -49,6 +49,7 @@ from .data_source_parameters import (
     DataSourceParamsSubSQL,
 )
 
+
 _PARAMS_T = TypeVar("_PARAMS_T", bound=DataSourceParams)
 _DSRC_T = TypeVar("_DSRC_T", bound="DataSource")
 

@@ -31,6 +31,7 @@ from bi_connector_monitoring.core.settings import ConnectorsDataMonitoringBase
 from bi_connector_usage_tracking_ya_team.core.settings import ConnectorsDataUsageTrackingYaTeamBase
 from bi_connector_yql.core.yq.settings import ConnectorsDataYQBase
 
+
 CH_DATALENS_EXT_DATA_HOSTS: tuple[str, ...] = (
     # https://yc.yandex-team.ru/folders/foohfkkb5s0vc4a9ui3g/managed-clickhouse/cluster/mdbd60phvp3hvq7d3sq6
     "sas-t2pl126yki67ztly.db.yandex.net",

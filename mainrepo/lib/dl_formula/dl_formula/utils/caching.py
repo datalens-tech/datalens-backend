@@ -17,6 +17,7 @@ from typing import (
     TypeVar,
 )
 
+
 _FUNC = Callable[..., Any]
 _QUALIFIER_VALUE_TV = TypeVar("_QUALIFIER_VALUE_TV")
 

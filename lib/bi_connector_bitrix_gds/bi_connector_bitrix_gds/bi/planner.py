@@ -10,6 +10,7 @@ from dl_constants.enums import BIType
 import dl_formula.core.nodes as formula_nodes
 from dl_query_processing.legacy_pipeline.planning.planner import PrefilterAndCompengExecutionPlanner
 
+
 if TYPE_CHECKING:
     from dl_query_processing.compilation.primitives import (
         CompiledFormulaInfo,

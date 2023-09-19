@@ -24,6 +24,7 @@ from dl_api_commons.flask.middlewares.logging_context import RequestLoggingConte
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
 from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
 
+
 LOGGER = logging.getLogger(__name__)
 
 _EXPECTED_MASKED_HEADERS = (

@@ -24,6 +24,7 @@ from dl_query_processing.multi_query.splitters.mask_based import (
 )
 from dl_query_processing.utils.name_gen import PrefixedIdGen
 
+
 _JOIN_TYPE_MAP = {
     formula_fork_nodes.JoinType.inner: JoinType.inner,
     formula_fork_nodes.JoinType.left: JoinType.left,

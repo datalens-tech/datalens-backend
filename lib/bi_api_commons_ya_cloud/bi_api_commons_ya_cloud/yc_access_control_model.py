@@ -15,6 +15,7 @@ from bi_api_commons_ya_cloud.models import (
 )
 from dl_api_commons.base_models import TenantDef
 
+
 _AUTH_OBJ_TV = TypeVar("_AUTH_OBJ_TV")
 
 

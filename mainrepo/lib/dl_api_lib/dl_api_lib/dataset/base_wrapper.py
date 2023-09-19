@@ -89,6 +89,7 @@ from dl_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
 from dl_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 from dl_query_processing.translation.primitives import TranslatedMultiQueryBase
 
+
 if TYPE_CHECKING:
     from dl_core.components.ids import FieldIdGenerator
     from dl_core.db.elements import SchemaColumn

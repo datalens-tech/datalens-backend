@@ -19,6 +19,7 @@ from dl_core.exc import DatabaseQueryError
 from bi_connector_monitoring.core.adapter_base import AsyncBaseSolomonAdapter
 from bi_connector_monitoring.core.constants import CONNECTION_TYPE_MONITORING
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 

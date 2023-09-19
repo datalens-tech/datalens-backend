@@ -1,5 +1,6 @@
 from bi_connector_usage_tracking_ya_team.core.settings import UsageTrackingYaTeamConnectionSettings
 
+
 SR_CONNECTION_TABLE_NAME = "sample"
 SR_CONNECTION_SETTINGS = UsageTrackingYaTeamConnectionSettings(
     DB_NAME="test_data",

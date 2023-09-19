@@ -19,6 +19,7 @@ from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
 from bi_cloud_integration.yc_ts_client import get_yc_service_token
 from dl_utils.aio import await_sync
 
+
 LOGGER = logging.getLogger(__name__)
 
 

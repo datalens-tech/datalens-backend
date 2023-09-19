@@ -18,6 +18,7 @@ from dl_db_testing.database.base import (
 )
 from dl_utils.wait import wait_for
 
+
 _DB_CONFIG_TV = TypeVar("_DB_CONFIG_TV", bound=DbConfig)
 _DB_TV = TypeVar("_DB_TV", bound=DbBase)
 

@@ -23,6 +23,7 @@ from dl_formula_ref.examples.utils import (
 )
 from dl_formula_ref.i18n.registry import get_localizer
 
+
 if TYPE_CHECKING:
     from dl_formula_ref.examples.config import ExampleConfig
     from dl_formula_ref.examples.data_table import DataTable

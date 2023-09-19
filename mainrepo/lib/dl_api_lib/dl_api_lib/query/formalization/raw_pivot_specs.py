@@ -14,6 +14,7 @@ from dl_constants.enums import (
     PivotRole,
 )
 
+
 _PIVOT_ROLE_SPEC_TV = TypeVar("_PIVOT_ROLE_SPEC_TV", bound="RawPivotRoleSpec")
 
 

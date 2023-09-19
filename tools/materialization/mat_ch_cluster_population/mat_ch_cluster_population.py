@@ -21,6 +21,7 @@ from clickhouse_driver.errors import (
 import psycopg2
 import psycopg2.extras
 
+
 try:
     from library.python.vault_client.instances import Production as VaultClient
 except ImportError:  # not Tier0 build

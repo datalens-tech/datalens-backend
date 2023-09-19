@@ -14,6 +14,7 @@ from bi_sqlalchemy_yq.errors import (
     Warning,
 )
 
+
 __all__ = (
     "connect",
     "Connection",

@@ -37,6 +37,7 @@ from dl_constants.enums import (
 )
 import dl_query_processing.exc as exc
 
+
 if TYPE_CHECKING:
     from dl_api_lib.pivot.primitives import (
         PivotHeader,

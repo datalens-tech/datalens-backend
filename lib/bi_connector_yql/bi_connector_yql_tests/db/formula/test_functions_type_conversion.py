@@ -13,6 +13,7 @@ from dl_formula_testing.util import to_str
 
 from bi_connector_yql_tests.db.formula.base import YQLTestBase
 
+
 # STR
 
 

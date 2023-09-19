@@ -10,6 +10,7 @@ from bi_connector_bundle_ch_filtered_tests.db.config import (
     CORE_TEST_CONFIG,
 )
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dl_constants.enums import BIType
 
+
 _BI_TO_YQL = {
     BIType.string: "String",
     BIType.integer: "Int64",

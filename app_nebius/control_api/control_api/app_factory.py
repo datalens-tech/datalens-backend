@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Optional
 
-from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 from control_api.i18n.localizer import CONFIGS
 import flask
 
@@ -33,6 +32,8 @@ from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_i18n.localizer_base import TranslationConfig
+
+from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 
 
 class ControlApiSRFactoryBuilderNebius(SRFactoryBuilder[ControlPlaneAppSettings]):

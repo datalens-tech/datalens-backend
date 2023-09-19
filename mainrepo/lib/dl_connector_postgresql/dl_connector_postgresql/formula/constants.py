@@ -4,6 +4,7 @@ from dl_formula.core.dialect import (
     simple_combo,
 )
 
+
 DIALECT_NAME_POSTGRESQL = DialectName.declare("POSTGRESQL")
 DIALECT_NAME_COMPENG = DialectName.declare("COMPENG")  # computation engine (PostgreSQL-based)
 

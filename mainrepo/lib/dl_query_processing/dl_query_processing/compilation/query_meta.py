@@ -14,6 +14,7 @@ from dl_query_processing.enums import (
     QueryType,
 )
 
+
 _QUERY_META_TV = TypeVar("_QUERY_META_TV", bound="QueryMetaInfo")
 
 

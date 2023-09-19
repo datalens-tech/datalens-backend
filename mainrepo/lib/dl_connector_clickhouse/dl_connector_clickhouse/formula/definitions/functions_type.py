@@ -23,6 +23,7 @@ from dl_formula.definitions.scope import Scope
 from dl_formula.shortcuts import n
 from dl_formula.translation.context import TranslationCtx
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

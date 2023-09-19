@@ -34,6 +34,7 @@ from dl_query_processing.enums import (
 )
 from dl_query_processing.postprocessing.primitives import PostprocessedValue
 
+
 FilterArgType = Union[str, int, float, None]
 
 

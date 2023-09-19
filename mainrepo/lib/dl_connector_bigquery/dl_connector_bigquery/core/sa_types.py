@@ -6,6 +6,7 @@ from dl_core.db.sa_types_base import (
     simple_instantiator,
 )
 
+
 SQLALCHEMY_BIGQUERY_TYPES = {
     make_native_type(CT_BQ, bq_types.DATE): simple_instantiator(bq_types.DATE),
     make_native_type(CT_BQ, bq_types.DATETIME): simple_instantiator(bq_types.DATE),

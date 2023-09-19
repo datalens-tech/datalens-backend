@@ -12,6 +12,7 @@ from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 import bi_connector_bundle_partners_tests.db.config as test_config
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=PartnersCHConnectionBase)
 
 

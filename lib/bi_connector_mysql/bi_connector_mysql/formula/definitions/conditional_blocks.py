@@ -5,6 +5,7 @@ import dl_formula.definitions.conditional_blocks as base
 
 from bi_connector_mysql.formula.constants import MySQLDialect as D
 
+
 V = TranslationVariant.make
 
 

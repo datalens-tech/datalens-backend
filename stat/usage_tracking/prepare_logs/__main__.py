@@ -27,6 +27,7 @@ from qb2.api.v1.typing import (
     String,
 )
 
+
 PLAINLY_PROJECTED_FIELDS_SCHEMA = dict(
     dash_id=String,
     dash_tab_id=String,

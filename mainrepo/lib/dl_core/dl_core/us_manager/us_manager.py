@@ -64,6 +64,7 @@ from dl_core.us_manager.us_entry_serializer import (
 from dl_core.us_manager.utils.fake_us_client import FakeUSClient
 from dl_utils.utils import AddressableData
 
+
 if TYPE_CHECKING:
     from dl_core.lifecycle.base import EntryLifecycleManager
     from dl_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase

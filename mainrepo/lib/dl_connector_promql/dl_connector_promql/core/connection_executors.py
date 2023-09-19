@@ -14,6 +14,7 @@ from dl_connector_promql.core.adapter import (
 from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
+
 if TYPE_CHECKING:
     from dl_connector_promql.core.dto import PromQLConnDTO
 

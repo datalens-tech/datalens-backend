@@ -5,6 +5,7 @@ import logging
 import redis
 from redis.asyncio.lock import Lock as RedisLock
 
+
 LOGGER = logging.getLogger(__name__)
 
 

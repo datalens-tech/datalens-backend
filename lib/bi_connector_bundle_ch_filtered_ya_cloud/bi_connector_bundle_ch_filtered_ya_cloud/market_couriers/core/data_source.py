@@ -11,6 +11,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.core.constants imp
     SOURCE_TYPE_CH_MARKET_COURIERS_TABLE,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

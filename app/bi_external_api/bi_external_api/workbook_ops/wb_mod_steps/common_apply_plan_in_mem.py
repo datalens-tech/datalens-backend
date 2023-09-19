@@ -23,6 +23,7 @@ from bi_external_api.workbook_ops.exc_composer import WbErrHandlingCtx
 from bi_external_api.workbook_ops.wb_mod_steps.common import BaseWBModStep
 from bi_external_api.workbook_ops.wb_modification_context import WorkbookModificationContext
 
+
 _EXT_INST_TV = TypeVar("_EXT_INST_TV", bound=ext.EntryInstance)
 _INT_INST_TV = TypeVar("_INT_INST_TV", bound=dl_common.EntryInstance)
 _CONVERSION_ARTIFACT_TV = TypeVar("_CONVERSION_ARTIFACT_TV")

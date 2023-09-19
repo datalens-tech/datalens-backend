@@ -12,6 +12,7 @@ from dl_core.db.conversion_base import (
 )
 from dl_core.db.elements import GenericNativeType
 
+
 CH_TYPES_INT = frozenset(
     (
         ch_types.Int,

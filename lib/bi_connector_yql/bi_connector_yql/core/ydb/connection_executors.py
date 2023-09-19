@@ -14,6 +14,7 @@ from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyCon
 from bi_connector_yql.core.ydb.adapter import YDBAdapter
 from bi_connector_yql.core.ydb.target_dto import YDBConnTargetDTO
 
+
 if TYPE_CHECKING:
     from bi_connector_yql.core.ydb.dto import YDBConnDTO  # type: ignore  # TODO: fix
 

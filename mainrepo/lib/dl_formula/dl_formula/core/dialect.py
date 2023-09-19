@@ -19,6 +19,7 @@ from dynamic_enum import (
     DynamicEnum,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

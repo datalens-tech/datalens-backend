@@ -16,6 +16,7 @@ from bi_external_api.workbook_ops.diff_tools import (
 )
 from bi_external_api.workbook_ops.wb_accessor import WorkbookAccessor
 
+
 _ENTRY_INSTANCE_TV = TypeVar("_ENTRY_INSTANCE_TV", bound=ext.EntryInstance)
 
 

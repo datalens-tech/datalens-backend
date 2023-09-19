@@ -15,6 +15,7 @@ from typing import (
     Type,
 )
 
+
 if TYPE_CHECKING:
     from argparse import ArgumentParser
 

@@ -53,6 +53,7 @@ from dl_query_processing.enums import (
     QueryType,
 )
 
+
 _COMPILED_FLA_TV = TypeVar("_COMPILED_FLA_TV", bound=CompiledFormulaInfo)
 
 

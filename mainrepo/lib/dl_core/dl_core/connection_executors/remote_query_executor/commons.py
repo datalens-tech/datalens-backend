@@ -7,6 +7,7 @@ from typing import (
 
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 
+
 DEFAULT_CHUNK_SIZE: int = 1_000
 
 SUPPORTED_ADAPTER_CLS: Set[Type[CommonBaseDirectAdapter]] = set()

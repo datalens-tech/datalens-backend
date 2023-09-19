@@ -7,6 +7,7 @@ from dl_core.db.conversion_base import (
     make_native_type,
 )
 
+
 SNOW_TYPES_INT = frozenset(
     (
         ssa.BIGINT,

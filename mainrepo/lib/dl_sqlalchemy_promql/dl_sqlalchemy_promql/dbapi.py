@@ -14,6 +14,7 @@ from dl_sqlalchemy_promql.errors import (
     Warning,
 )
 
+
 __all__ = (
     "connect",
     "Connection",

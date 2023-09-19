@@ -7,6 +7,7 @@ from dl_formula.definitions.base import (
 )
 import dl_formula.definitions.conditional_blocks as base
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

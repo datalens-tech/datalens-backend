@@ -53,6 +53,7 @@ from typing import (
     TypeVar,
 )
 
+
 _ANY_TV = TypeVar("_ANY_TV")
 _DYNAMIC_ENUM_TV = TypeVar("_DYNAMIC_ENUM_TV", bound="DynamicEnum")
 

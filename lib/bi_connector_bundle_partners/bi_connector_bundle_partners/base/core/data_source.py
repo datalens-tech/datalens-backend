@@ -10,6 +10,7 @@ from typing import (
 from dl_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 from dl_core import exc
 
+
 if TYPE_CHECKING:
     from dl_core.base_models import SourceFilterSpec
     from dl_core.services_registry.top_level import ServicesRegistry

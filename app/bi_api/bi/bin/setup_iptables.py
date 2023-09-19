@@ -8,6 +8,7 @@ import sys
 
 import requests
 
+
 DEBUG = False
 USER_NAME = "www-data" if len(sys.argv) == 1 else sys.argv[1]
 CHAIN_NAME = "check_www_data_user"

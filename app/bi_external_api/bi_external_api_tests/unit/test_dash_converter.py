@@ -33,6 +33,7 @@ from .conftest import (
     WB_ID,
 )
 
+
 FLAT_TABLE_ID = "flat_table_id"
 FLAT_TABLE_NAME = "flat_table_name"
 

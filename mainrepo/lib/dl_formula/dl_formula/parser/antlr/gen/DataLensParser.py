@@ -17,6 +17,7 @@ from antlr4 import (
     TokenStream,
 )
 
+
 if sys.version_info[1] > 5:
     from typing import TextIO
 else:

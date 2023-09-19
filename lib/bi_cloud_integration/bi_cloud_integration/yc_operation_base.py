@@ -22,6 +22,7 @@ from bi_cloud_integration.model import (
 )
 from bi_cloud_integration.yc_client_base import DLYCSingleServiceClient
 
+
 if TYPE_CHECKING:
     from google.rpc import status_pb2
 

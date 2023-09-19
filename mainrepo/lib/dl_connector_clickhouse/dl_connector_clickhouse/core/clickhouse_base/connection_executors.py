@@ -17,6 +17,7 @@ from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseCo
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
+
 _BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 

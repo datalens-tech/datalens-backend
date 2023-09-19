@@ -6,6 +6,7 @@ from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula_ref.registry.dialect_base import DialectExtractorBase
 
+
 if TYPE_CHECKING:
     import dl_formula_ref.registry.base as _registry_base
     from dl_formula_ref.registry.env import GenerationEnvironment

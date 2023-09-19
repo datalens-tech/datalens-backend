@@ -55,6 +55,7 @@ from bi_connector_chyt_internal.core.dto import (
     CHYTUserAuthDTO,
 )
 
+
 TEST_TABLE = "//home/yandexbi/datalens-back/bi_test_data/bi_398"
 TEST_DATA = [
     (0, 1036, "2018-11-26", 1, 1029),

@@ -26,6 +26,7 @@ from dl_query_processing.compilation.primitives import (
 from dl_query_processing.enums import ExecutionLevel
 import dl_query_processing.exc
 
+
 LOGGER = logging.getLogger(__name__)
 
 

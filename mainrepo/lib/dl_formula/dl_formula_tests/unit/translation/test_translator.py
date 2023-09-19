@@ -34,6 +34,7 @@ from dl_formula.translation.translator import (
     translate_and_compile,
 )
 
+
 FIELD_TYPES = {
     "f1": DataType.FLOAT,
     "n1": DataType.INTEGER,

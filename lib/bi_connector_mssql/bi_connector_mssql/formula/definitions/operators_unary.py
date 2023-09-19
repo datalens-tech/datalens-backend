@@ -5,6 +5,7 @@ import dl_formula.definitions.operators_unary as base
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 
+
 V = TranslationVariant.make
 
 

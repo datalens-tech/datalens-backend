@@ -21,6 +21,7 @@ from dynamic_enum import DynamicEnum
 from bi_external_api.attrs_model_mapper.utils import MText
 from bi_external_api.enums import ExtAPIType
 
+
 _CLS_T = TypeVar("_CLS_T", bound=type)
 _DESCRIPTOR_T = TypeVar("_DESCRIPTOR_T", bound="BaseClassDescriptor")
 

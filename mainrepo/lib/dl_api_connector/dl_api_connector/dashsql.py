@@ -6,6 +6,7 @@ from sqlalchemy.types import TypeEngine
 from dl_constants.enums import BIType
 from dl_core.exc import DashSQLError
 
+
 TValueBase = str | list[str] | tuple[str, ...]
 
 BI_TYPE_TO_SA_TYPE: dict[BIType, TypeEngine] = {

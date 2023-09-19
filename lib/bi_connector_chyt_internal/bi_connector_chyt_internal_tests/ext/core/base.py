@@ -37,6 +37,7 @@ from bi_connector_chyt_internal.core.us_connection import (
 import bi_connector_chyt_internal_tests.ext.config as common_test_config
 import bi_connector_chyt_internal_tests.ext.core.config as test_config
 
+
 _CONN_TV = TypeVar("_CONN_TV", ConnectionCHYTInternalToken, ConnectionCHYTUserAuth)
 
 

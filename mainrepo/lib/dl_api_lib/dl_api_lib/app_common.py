@@ -49,6 +49,7 @@ from dl_i18n.localizer_base import (
 )
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
+
 if TYPE_CHECKING:
     from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 

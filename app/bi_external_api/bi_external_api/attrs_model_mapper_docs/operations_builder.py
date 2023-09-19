@@ -20,6 +20,7 @@ from bi_external_api.attrs_model_mapper_docs.domain import (
     AmmOperationExample,
 )
 
+
 _OPERATION_KIND_ENUM_TV = TypeVar("_OPERATION_KIND_ENUM_TV", bound=enum.Enum)
 
 

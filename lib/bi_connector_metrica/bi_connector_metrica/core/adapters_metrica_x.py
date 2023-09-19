@@ -32,6 +32,7 @@ from bi_connector_metrica.core.target_dto import (
     MetricaAPIConnTargetDTO,
 )
 
+
 _M_CONN_T_DTO_TV = TypeVar("_M_CONN_T_DTO_TV", bound=MetricaAPIConnTargetDTO)
 
 

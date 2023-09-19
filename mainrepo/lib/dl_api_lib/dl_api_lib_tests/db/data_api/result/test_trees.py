@@ -31,6 +31,7 @@ from dl_core_testing.database import (
     make_table,
 )
 
+
 TREE_DATA = [
     # / Company
     {"id": 10, "dept": ["Company"], "salary": 0, "is_person": 0},

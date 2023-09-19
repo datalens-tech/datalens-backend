@@ -28,6 +28,7 @@ from yt.wrapper import (
 )
 from yt.wrapper.schema import Int64
 
+
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 

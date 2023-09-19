@@ -33,6 +33,7 @@ from dl_file_uploader_api_lib.views import sources as sources_views
 from dl_file_uploader_lib.settings_utils import init_redis_service
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
+
 _TSettings = TypeVar("_TSettings", bound=FileUploaderAPISettings)
 
 

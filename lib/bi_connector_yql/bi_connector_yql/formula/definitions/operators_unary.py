@@ -3,6 +3,7 @@ import dl_formula.definitions.operators_unary as base
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 
+
 V = TranslationVariant.make
 
 

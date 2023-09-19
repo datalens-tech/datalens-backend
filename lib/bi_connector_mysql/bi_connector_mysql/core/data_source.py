@@ -23,6 +23,7 @@ from bi_connector_mysql.core.constants import (
 )
 from bi_connector_mysql.core.query_compiler import MySQLQueryCompiler
 
+
 LOGGER = logging.getLogger(__name__)
 
 

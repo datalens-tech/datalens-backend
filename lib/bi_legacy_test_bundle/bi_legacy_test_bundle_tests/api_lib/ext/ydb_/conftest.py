@@ -11,6 +11,7 @@ from dl_api_client.dsmaker.primitives import Dataset
 
 from bi_connector_yql.core.ydb.constants import SOURCE_TYPE_YDB_TABLE
 
+
 YDB_CONNECTION_PARAMS_BASE = {
     "name": "ydb_test_{}".format(get_random_str()),
     "type": "ydb",

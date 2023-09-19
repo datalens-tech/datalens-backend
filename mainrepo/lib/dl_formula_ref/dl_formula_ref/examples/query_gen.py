@@ -21,6 +21,7 @@ from dl_formula_ref.examples.query import (
     RawQueryContext,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula.parser.base import FormulaParser
 

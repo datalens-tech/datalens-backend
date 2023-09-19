@@ -37,6 +37,7 @@ from dl_query_processing.legacy_pipeline.slicing.primitives import (
     SlicedQuery,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 _COMPILED_FORMULA_TV = TypeVar("_COMPILED_FORMULA_TV", bound=CompiledFormulaInfo)

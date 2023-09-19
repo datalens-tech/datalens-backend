@@ -14,7 +14,6 @@ from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
 )
-from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 from dl_api_lib.app.control_api.app import (
     ControlApiAppFactory,
@@ -33,6 +32,8 @@ from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_i18n.localizer_base import TranslationConfig
+
+from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions
 
 
 class ControlApiSRFactoryBuilderYC(SRFactoryBuilder[ControlPlaneAppSettings]):

@@ -19,6 +19,7 @@ from bi_connector_mysql.formula.constants import MySQLDialect
 from bi_connector_oracle.formula.constants import OracleDialect
 from bi_connector_yql.formula.constants import YqlDialect
 
+
 DOC_GEN_CONFIG_YC = RefDocGeneratorConfig(
     func_doc_configs={
         FuncDocConfigVersion.overview_shortcut: FuncDocTemplateConfig(

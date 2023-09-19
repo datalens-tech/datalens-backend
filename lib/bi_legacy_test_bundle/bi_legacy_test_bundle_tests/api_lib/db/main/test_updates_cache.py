@@ -21,6 +21,7 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
     USEntryMutationCacheKey,
 )
 
+
 field_index = 6  # Field index using for tests, contains datetime value
 
 

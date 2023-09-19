@@ -14,6 +14,7 @@ import subprocess
 
 import click
 
+
 LOGGER = logging.getLogger("changelog_gatherer")
 
 

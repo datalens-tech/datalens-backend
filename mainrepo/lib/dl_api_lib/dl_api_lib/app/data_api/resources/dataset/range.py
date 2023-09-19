@@ -32,6 +32,7 @@ from dl_query_processing.postprocessing.primitives import PostprocessedQuery
 from dl_query_processing.translation.primitives import DetailedType
 from dl_utils.utils import enum_not_none
 
+
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

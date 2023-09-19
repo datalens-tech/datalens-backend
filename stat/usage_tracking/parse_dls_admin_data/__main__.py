@@ -10,6 +10,7 @@ from nile.api.v1 import clusters
 from nile.api.v1 import filters as nf
 from qb2.api.v1 import typing
 
+
 TABLE_SCHEMA = dict(
     entry_id=typing.String,
     puid=typing.UInt64,

@@ -3,6 +3,7 @@ from dl_constants.enums import (
     RawSQLLevel,
 )
 
+
 DEFAULT_CONFIG = dict(
     alias="*chyt_datalens_back",
     cluster="hahn",

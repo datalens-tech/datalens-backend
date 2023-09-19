@@ -22,6 +22,7 @@ from dl_core.data_processing.processing.db_base.exec_adapter_base import Process
 from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.db.sa_types import make_sa_type
 
+
 LOGGER = logging.getLogger(__name__)
 
 _CONN_TV = TypeVar("_CONN_TV")

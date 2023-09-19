@@ -4,6 +4,7 @@ from dl_constants.enums import (
     NotificationType,
 )
 
+
 CONNECTION_TYPE_GSHEETS_V2 = ConnectionType.declare("gsheets_v2")
 SOURCE_TYPE_GSHEETS_V2 = CreateDSFrom.declare("GSHEETS_V2")
 

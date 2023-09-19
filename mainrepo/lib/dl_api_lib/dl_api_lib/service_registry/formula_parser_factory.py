@@ -14,6 +14,7 @@ from dl_formula.parser.factory import (
     get_parser,
 )
 
+
 _DEFAULT_PARSER_TYPE = ParserType.antlr_py
 
 LOGGER = logging.getLogger(__name__)

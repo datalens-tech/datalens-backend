@@ -27,6 +27,7 @@ from bi_connector_solomon.core.tvm import (
     get_solomon_tvm_destination,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 

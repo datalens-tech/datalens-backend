@@ -11,6 +11,7 @@ from dl_formula.definitions.base import (
 )
 from dl_formula.definitions.type_strategy import FromArgs
 
+
 VW = TranslationVariantWrapped.make
 
 

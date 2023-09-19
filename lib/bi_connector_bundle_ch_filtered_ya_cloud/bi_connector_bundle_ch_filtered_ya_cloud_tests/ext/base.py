@@ -12,6 +12,7 @@ from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from bi_connector_bundle_ch_filtered_ya_cloud.base.core.us_connection import ConnectionCHFilteredSubselectByPuidBase
 import bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config as test_config
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionCHFilteredSubselectByPuidBase)
 
 

@@ -26,6 +26,7 @@ from dl_core import exc as common_exc
 from dl_formula.core import exc as formula_exc
 import dl_query_processing.exc
 
+
 LOGGER = logging.getLogger(__name__)
 
 status = http.HTTPStatus

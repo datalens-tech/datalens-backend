@@ -31,6 +31,7 @@ from dl_formula_ref.registry.note import (
 from dl_formula_ref.registry.signature_base import FunctionSignatureCollection
 from dl_formula_ref.registry.text import ParameterizedText
 
+
 TOP_NOTE_LEVELS: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]] = [
     (NoteType.REGULAR, NoteLevel.alert),
     (NoteType.REGULAR, NoteLevel.warning),

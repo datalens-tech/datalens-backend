@@ -24,6 +24,7 @@ from dl_query_processing.postprocessing.postprocessors.geo import (
 from dl_query_processing.postprocessing.postprocessors.markup import postprocess_markup
 from dl_query_processing.postprocessing.primitives import PostprocessedData
 
+
 if TYPE_CHECKING:
     from dl_query_processing.compilation.primitives import DetailedType  # type: ignore  # TODO: fix
 

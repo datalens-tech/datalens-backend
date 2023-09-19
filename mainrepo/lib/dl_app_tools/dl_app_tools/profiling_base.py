@@ -27,6 +27,7 @@ import opentracing
 
 from dl_utils.utils import get_type_full_name
 
+
 LOGGER = logging.getLogger(__name__)
 
 

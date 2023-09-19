@@ -20,6 +20,7 @@ from dl_task_processor_tests.utils import (
     SomeTaskInterface,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 DEFAULT_REQ_ID = "reqid-123"
 

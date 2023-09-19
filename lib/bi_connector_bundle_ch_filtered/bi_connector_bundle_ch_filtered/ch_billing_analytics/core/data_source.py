@@ -13,6 +13,7 @@ from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.constants import 
     SOURCE_TYPE_CH_BILLING_ANALYTICS_TABLE,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

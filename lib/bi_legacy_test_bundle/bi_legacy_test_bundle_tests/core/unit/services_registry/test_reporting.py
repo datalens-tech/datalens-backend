@@ -23,6 +23,7 @@ from dl_constants.enums import (
 from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 
+
 _QID = "some_qid_1234"
 
 _DEFAULT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(

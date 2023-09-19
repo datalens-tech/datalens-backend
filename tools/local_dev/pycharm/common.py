@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from os import path
 
+
 HERE = path.abspath(path.dirname(__file__))
 
 IDEA_DIR = path.abspath(path.join(HERE, "..", "..", "..", ".idea"))

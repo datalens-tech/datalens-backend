@@ -10,6 +10,7 @@ from bi_external_api.domain.utils import ensure_tuple
 
 from .common import DashJSONBuilder
 
+
 _BUILDER_TV = TypeVar("_BUILDER_TV", bound="DashJSONBuilderSingleTab")
 
 

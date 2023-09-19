@@ -72,6 +72,7 @@ from dl_testing.utils import wait_for_initdb
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
+
 LOGGER = logging.getLogger(__name__)
 
 

@@ -19,6 +19,7 @@ from dl_api_commons.logging_config import add_log_context
 import dl_app_tools.log.context as log_context
 from dl_app_tools.log.format import JsonFormatter
 
+
 # Same check as in `dl_app_tools.log.format.JsonFormatter`
 
 IS_DEPLOY = "DEPLOY_BOX_ID" in os.environ

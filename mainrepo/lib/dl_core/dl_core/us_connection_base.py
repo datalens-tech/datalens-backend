@@ -67,6 +67,7 @@ from dl_i18n.localizer_base import Localizer
 from dl_utils.aio import await_sync
 from dl_utils.utils import DataKey
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors import SyncConnExecutorBase
     from dl_core.connection_models.common_models import TableIdent

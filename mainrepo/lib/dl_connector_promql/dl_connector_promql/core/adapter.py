@@ -32,6 +32,7 @@ from dl_core.db.native_type import GenericNativeType
 from dl_core.exc import DatabaseQueryError
 from dl_core.utils import make_url
 
+
 if TYPE_CHECKING:
     from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
     from dl_constants.types import TBIChunksGen

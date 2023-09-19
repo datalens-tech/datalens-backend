@@ -26,6 +26,7 @@ from dl_formula_ref.examples.utils import (
     make_key_for_example,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula.core.dialect import DialectCombo
     from dl_formula_testing.database import Db

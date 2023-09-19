@@ -13,6 +13,7 @@ from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyCon
 from bi_connector_solomon.core.adapter import AsyncSolomonAdapter
 from bi_connector_solomon.core.target_dto import SolomonConnTargetDTO
 
+
 if TYPE_CHECKING:
     from bi_connector_solomon.core.dto import SolomonConnDTO
 

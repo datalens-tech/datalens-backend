@@ -11,6 +11,7 @@ from dl_core.db.native_type import (
     LengthedNativeType,
 )
 
+
 if TYPE_CHECKING:
     from sqlalchemy.types import TypeEngine
 

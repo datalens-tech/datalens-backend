@@ -46,6 +46,7 @@ from dl_formula.definitions.type_strategy import (
     ParamsEmpty,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula.definitions.type_strategy import (
         TypeParamsStrategy,

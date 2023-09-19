@@ -39,6 +39,7 @@ from bi_connector_mssql.core.exc import (
     SyncMssqlSourceDoesNotExistError,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

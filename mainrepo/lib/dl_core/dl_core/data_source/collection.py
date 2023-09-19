@@ -36,6 +36,7 @@ from dl_core.db import SchemaColumn
 from dl_core.enums import RoleReason
 import dl_core.exc as exc
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
     from dl_core.us_connection_base import ConnectionBase

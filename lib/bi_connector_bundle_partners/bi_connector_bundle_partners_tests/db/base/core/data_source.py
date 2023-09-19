@@ -16,6 +16,7 @@ from bi_connector_bundle_partners.base.core.data_source import PartnersCHDataSou
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 import bi_connector_bundle_partners_tests.db.config as test_config
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=PartnersCHConnectionBase)
 _DSRC_SPEC_TV = TypeVar("_DSRC_SPEC_TV", bound=StandardSQLDataSourceSpec)
 _DSRC_TV = TypeVar("_DSRC_TV", bound=PartnersCHDataSourceBase)

@@ -6,6 +6,7 @@ from dl_constants.enums import (
     NotificationType,
 )
 
+
 BACKEND_TYPE_CHYT = BASE_BACKEND_TYPE_CHYT
 
 # Token connection

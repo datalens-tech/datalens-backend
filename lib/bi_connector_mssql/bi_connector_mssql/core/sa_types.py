@@ -7,6 +7,7 @@ from dl_core.db.sa_types_base import (
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 
+
 SQLALCHEMY_MSSQL_BASE_TYPES = (
     ms_types.TINYINT,
     ms_types.SMALLINT,

@@ -6,6 +6,7 @@ from typing import (
     Optional,
 )
 
+
 if TYPE_CHECKING:
     from dl_api_lib.pivot.base.data_frame import PivotDataFrame
 

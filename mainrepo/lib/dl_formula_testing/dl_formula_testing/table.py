@@ -10,6 +10,7 @@ from dl_formula.connectors.base.type_constructor import get_type_constructor
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import DialectCombo
 
+
 DAY = datetime.timedelta(days=1)
 START_DATE = datetime.date(2014, 10, 5)
 START_DATETIME = datetime.datetime(2014, 10, 5)

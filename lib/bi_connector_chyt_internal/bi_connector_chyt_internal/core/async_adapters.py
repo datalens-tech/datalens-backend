@@ -25,6 +25,7 @@ from bi_connector_chyt_internal.core.target_dto import (
 )
 from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
+
 LOGGER = logging.getLogger(__name__)
 
 

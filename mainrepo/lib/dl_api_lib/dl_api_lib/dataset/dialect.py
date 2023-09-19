@@ -5,6 +5,7 @@ from typing import Dict
 from dl_constants.enums import SourceBackendType
 from dl_formula.core.dialect import DialectName
 
+
 _DIALECT_NAMES_FROM_SA: Dict[SourceBackendType, DialectName] = {}
 
 

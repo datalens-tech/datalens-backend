@@ -6,6 +6,7 @@ import attr
 
 from dl_constants.types import TBIDataValue
 
+
 CellValue = Union[TBIDataValue, dict]
 
 

@@ -17,6 +17,7 @@ from dl_file_uploader_lib.redis_model.base import (
 )
 from dl_file_uploader_lib.redis_model.models import models
 
+
 STATUS_CODES = {
     exc.CannotUpdateDataError: HTTPStatus.BAD_REQUEST,
     exc.DocumentNotFound: HTTPStatus.BAD_REQUEST,

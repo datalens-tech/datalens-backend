@@ -19,6 +19,7 @@ from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
+
 PROFILE_REQUESTS = os.environ.get("PROFILE_REQUESTS", "")
 PROFILE_REQ_CLASSES = {v for v in set(os.environ.get("PROFILE_REQ_CLASSES", "").split(",")) if v}
 PROFILE_REQ_METHODS = {v for v in set(os.environ.get("PROFILE_REQ_METHODS", "").lower().split(",")) if v}

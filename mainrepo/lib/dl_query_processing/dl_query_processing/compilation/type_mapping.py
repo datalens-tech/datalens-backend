@@ -3,6 +3,7 @@ from __future__ import annotations
 from dl_constants.enums import BIType
 from dl_formula.core.datatype import DataType
 
+
 BI_TO_FORMULA_TYPES = {
     BIType.integer: DataType.INTEGER,
     BIType.float: DataType.FLOAT,

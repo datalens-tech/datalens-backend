@@ -19,6 +19,7 @@ from .collection import (
     DataSourceCollectionFactory,
 )
 
+
 __all__ = (
     "DataSource",
     "DbInfo",

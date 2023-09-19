@@ -22,6 +22,7 @@ from dl_core.base_models import (
 )
 from dl_utils.utils import DotDict
 
+
 if TYPE_CHECKING:
     from dl_core.us_manager.us_manager import USManagerBase
     from dl_core.us_manager.us_manager_sync import SyncUSManager

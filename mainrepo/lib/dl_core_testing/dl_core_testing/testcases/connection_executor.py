@@ -33,6 +33,7 @@ from dl_core_testing.database import (
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_testing.regulated_test import RegulatedTestCase
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.async_base import AsyncConnExecutorBase
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase

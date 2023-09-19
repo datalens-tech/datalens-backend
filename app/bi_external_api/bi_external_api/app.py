@@ -49,6 +49,7 @@ from dl_core.aio.middlewares.tracing import TracingService
 from dl_core.aio.ping_view import PingView
 from dl_core.logging_config import configure_logging
 
+
 LOGGER = logging.getLogger(__name__)
 
 

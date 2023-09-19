@@ -16,6 +16,7 @@ from dl_api_commons.base_models import TenantDef
 
 from .workbook_rpc import WorkbookRPCView
 
+
 LOGGER = logging.getLogger(__name__)
 
 

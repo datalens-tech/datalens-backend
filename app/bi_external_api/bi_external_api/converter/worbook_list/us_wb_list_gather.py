@@ -9,6 +9,7 @@ from bi_external_api.converter.worbook_list.list_gatherer import (
 from bi_external_api.domain.external.workbook import WorkbookIndexItem
 from bi_external_api.internal_api_clients.united_storage import MiniUSClient
 
+
 DEFAULT_US_QUERY_PAGE_SIZE: int = 1000
 
 

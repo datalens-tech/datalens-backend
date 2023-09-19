@@ -15,6 +15,7 @@ from dl_core.db.sa_types_base import (
     typed_instantiator,
 )
 
+
 SQLALCHEMY_POSTGRES_BASE_TYPES = (
     *PG_TYPES_INT,
     *PG_TYPES_FLOAT,

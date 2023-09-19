@@ -10,6 +10,7 @@ from dl_testing.env_params.generic import GenericEnvParamGetter
 
 from bi_connector_chyt_internal_tests.ext.config import CORE_TEST_CONFIG
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # installs required fixtures for secrets  # TODO: refactor
 
 try:

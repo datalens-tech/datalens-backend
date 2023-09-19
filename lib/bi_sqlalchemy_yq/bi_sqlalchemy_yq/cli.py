@@ -28,6 +28,7 @@ from bi_cloud_integration.yc_ts_client import get_yc_service_token
 from bi_sqlalchemy_yq.errors import YQError
 from dl_utils.aio import await_sync
 
+
 TColumnDesc = Tuple[str, str]  # name, type_name
 TColumns = Tuple[TColumnDesc, ...]
 TResultData = Tuple[TColumns, Sequence[dict]]

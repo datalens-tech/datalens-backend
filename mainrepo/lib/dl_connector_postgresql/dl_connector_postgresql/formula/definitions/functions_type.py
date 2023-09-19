@@ -16,6 +16,7 @@ import dl_formula.definitions.functions_type as base
 from dl_formula.definitions.scope import Scope
 from dl_formula.shortcuts import n
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

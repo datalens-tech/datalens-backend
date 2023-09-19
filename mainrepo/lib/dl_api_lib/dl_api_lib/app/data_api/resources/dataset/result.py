@@ -45,6 +45,7 @@ from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_query_processing.postprocessing.primitives import PostprocessedRow
 from dl_utils.utils import exc_catch_awrap
 
+
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

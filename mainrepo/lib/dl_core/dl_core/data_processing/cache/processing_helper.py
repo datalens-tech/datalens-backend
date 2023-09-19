@@ -16,6 +16,7 @@ import attr
 
 from dl_core.data_processing.streaming import AsyncChunked
 
+
 if TYPE_CHECKING:
     from dl_core.data_processing.cache.engine import (
         EntityCacheEngineAsync,

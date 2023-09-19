@@ -8,6 +8,7 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.mysql
 import sqlalchemy.sql.sqltypes
 
+
 TEST_VALUES = [datetime.date(2020, 1, 1)] + [
     datetime.datetime(2020, idx1 + 1, idx2 + 1, 3, 4, 5, us).replace(tzinfo=tzinfo)
     for idx1, us in enumerate((0, 123356))

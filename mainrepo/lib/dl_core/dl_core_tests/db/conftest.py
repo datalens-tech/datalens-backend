@@ -1,6 +1,7 @@
 from dl_core_testing.initialization import initialize_core_test
 from dl_core_tests.db.config import CORE_TEST_CONFIG
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 

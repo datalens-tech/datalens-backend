@@ -5,6 +5,7 @@ from typing import Type
 from dl_constants.enums import CreateDSFrom
 from dl_core.data_source_spec.base import DataSourceSpec
 
+
 _DSRC_SPEC_CLASSES: dict[CreateDSFrom, Type[DataSourceSpec]] = {}
 
 

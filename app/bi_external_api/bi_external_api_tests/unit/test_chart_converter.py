@@ -41,6 +41,7 @@ from .conftest import (
     PG_CONN,
 )
 
+
 COMMON_WB_CONTEXT = WorkbookContext(
     connections=[PG_CONN],
     datasets=[PG_1_DS],

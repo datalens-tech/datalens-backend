@@ -25,6 +25,7 @@ from dl_formula.core.nodes import FormulaItem
 from dl_formula.core.position import Position
 from dl_formula.definitions.scope import Scope
 
+
 ContextFlags = int  # bitwise combination of ContextFlag values
 
 

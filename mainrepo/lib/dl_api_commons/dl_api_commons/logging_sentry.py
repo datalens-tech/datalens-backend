@@ -8,6 +8,7 @@ from raven.processors import Processor
 
 from dl_api_commons import clean_secret_data_in_headers
 
+
 log = logging.getLogger()
 
 SECRET_VAR_RE = re.compile(

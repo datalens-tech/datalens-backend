@@ -11,6 +11,7 @@ from bi_legacy_test_bundle_tests.api_lib.utils import (
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 
+
 CASES = [
     {
         "name": "simple direct",

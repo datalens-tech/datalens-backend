@@ -21,6 +21,7 @@ from dl_core.data_processing.stream_base import (
     DataStreamAsync,
 )
 
+
 COMPENG_SUPPORTED_JOIN_TYPES = frozenset(
     {
         JoinType.inner,

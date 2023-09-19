@@ -8,6 +8,7 @@ from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Ru
 from dl_core.connectors.base.error_transformer import wrapper_exc_is
 import dl_core.exc as exc
 
+
 big_query_db_error_transformer: DbErrorTransformer = ChainedDbErrorTransformer(
     [Rule(when=wrapper_exc_is(wrapper_exc_cls=ga_exc.Forbidden), then_raise=exc.UserQueryAccessDenied)]
 )

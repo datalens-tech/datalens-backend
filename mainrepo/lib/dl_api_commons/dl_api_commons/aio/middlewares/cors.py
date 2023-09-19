@@ -8,6 +8,7 @@ from aiohttp.typedefs import Handler
 
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 
+
 ALL_METHODS = ("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT")
 
 

@@ -24,6 +24,7 @@ from bi_external_api.domain.internal.dl_common import (
 from . import converter_exc
 from ..internal_api_clients.models import WorkbookBasicInfo
 
+
 _ENTRY_CLS_TV = TypeVar("_ENTRY_CLS_TV", bound=EntryInstance)
 
 

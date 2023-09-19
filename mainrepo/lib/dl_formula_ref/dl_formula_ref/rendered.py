@@ -11,6 +11,7 @@ from typing import (
 
 import attr
 
+
 if TYPE_CHECKING:
     from dl_formula.core.dialect import DialectCombo
     from dl_formula_ref.audience import Audience

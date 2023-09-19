@@ -45,6 +45,7 @@ from dl_query_processing.legacy_pipeline.planning.primitives import (
     TaggedSlicerConfiguration,
 )
 
+
 if TYPE_CHECKING:
     from dl_query_processing.compilation.primitives import (
         CompiledFormulaInfo,

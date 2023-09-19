@@ -10,6 +10,7 @@ from dl_core.db.sa_types_base import (
 
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 
+
 SQLALCHEMY_MYSQL_BASE_TYPES = (
     my_types.TINYINT,
     my_types.SMALLINT,

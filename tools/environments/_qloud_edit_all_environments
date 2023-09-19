@@ -11,6 +11,7 @@ import sys
 import hjson
 import requests
 
+
 token = hjson.load(open(os.path.expanduser('~/.release.hjson')))['oauth_token']
 
 auth_headers = {"Authorization": "OAuth {}".format(token)}

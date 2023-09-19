@@ -31,6 +31,7 @@ from dl_core_testing.dataset_wrappers import (
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_testing.regulated_test import RegulatedTestCase
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

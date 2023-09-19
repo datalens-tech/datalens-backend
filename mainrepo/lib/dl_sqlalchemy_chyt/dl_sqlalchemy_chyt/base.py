@@ -5,6 +5,7 @@ import sqlalchemy as sa
 import dl_sqlalchemy_chyt.types as chyt_types
 from dl_sqlalchemy_clickhouse.base import BIClickHouseDialect as UPSTREAM
 
+
 quote_identifier = UPSTREAM().identifier_preparer.quote
 
 

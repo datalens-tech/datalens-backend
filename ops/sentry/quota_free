@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import sh
 
+
 ACCOUNT = 'abc:service:1561'
 DCS = ['man', 'vla', 'iva', 'myt', 'sas']
 COL_ORDER = ['dc', 'slug', 'vcpu', 'memory', 'hdd', 'hdd_bw', 'ssd', 'ssd_bw']

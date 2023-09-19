@@ -7,6 +7,7 @@ from bi_blackbox_client.tvm import (
 )
 from dl_core.exc import DatabaseQueryError
 
+
 SOLOMON_TVM_MAP = {
     "https://solomon.yandex.net": TvmDestination.SolomonProd,
     "https://solomon-prestable.yandex.net": TvmDestination.SolomonPre,

@@ -1,6 +1,7 @@
 import json
 import sys
 
+
 input_files = sys.argv[1].split(",")
 output_file = sys.argv[2]
 replace_map: dict[str, str] = json.loads(sys.argv[3])

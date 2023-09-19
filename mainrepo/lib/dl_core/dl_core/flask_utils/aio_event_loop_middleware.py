@@ -10,6 +10,7 @@ import attr
 
 from dl_api_commons.flask.middlewares.wsgi_middleware import FlaskWSGIMiddleware
 
+
 if TYPE_CHECKING:
     from dl_api_commons.flask.types import (
         WSGIEnviron,

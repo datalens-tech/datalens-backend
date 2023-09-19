@@ -9,6 +9,7 @@ from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core import exc
 
+
 if TYPE_CHECKING:
     from dl_core.services_registry import ServicesRegistry
 

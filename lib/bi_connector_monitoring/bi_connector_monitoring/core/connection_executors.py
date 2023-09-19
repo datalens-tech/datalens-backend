@@ -14,6 +14,7 @@ from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyCon
 from bi_connector_monitoring.core.adapter import AsyncMonitoringAdapter
 from bi_connector_monitoring.core.target_dto import MonitoringConnTargetDTO
 
+
 if TYPE_CHECKING:
     from bi_connector_monitoring.core.dto import MonitoringConnDTO
 

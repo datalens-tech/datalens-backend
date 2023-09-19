@@ -11,6 +11,7 @@ from dl_formula_testing.testcases.functions_type_conversion import (
 
 from bi_connector_oracle_tests.db.formula.base import OracleTestBase
 
+
 # STR
 
 

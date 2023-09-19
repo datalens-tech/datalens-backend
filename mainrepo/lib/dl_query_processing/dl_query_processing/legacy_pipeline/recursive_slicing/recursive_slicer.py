@@ -20,6 +20,7 @@ from dl_query_processing.legacy_pipeline.separation.primitives import (
 from dl_query_processing.legacy_pipeline.separation.separator import QuerySeparator
 from dl_query_processing.legacy_pipeline.slicing.query_slicer import QuerySlicerBase
 
+
 LOGGER = logging.getLogger(__name__)
 
 

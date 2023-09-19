@@ -10,6 +10,7 @@ from dl_formula.definitions.common import make_binary_chain
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

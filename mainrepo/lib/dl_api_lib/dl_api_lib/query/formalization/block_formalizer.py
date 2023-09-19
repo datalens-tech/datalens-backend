@@ -47,6 +47,7 @@ from dl_query_processing.legend.field_legend import (
     TreeRoleSpec,
 )
 
+
 _VAL_TV = TypeVar("_VAL_TV")
 
 

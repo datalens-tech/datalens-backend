@@ -13,6 +13,7 @@ import time
 from clickhouse_driver import connect as connect_ch
 import requests
 
+
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 

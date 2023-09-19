@@ -63,6 +63,7 @@ from yandex.cloud.priv.resourcemanager.v1 import (
 
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 
+
 FAKE_SERVICE_LOCAL_METADATA_IAM_TOKEN = "_fake_service_local_metadata_token_"
 FAKE_FOLDER_ID = "fake_test_folder_id"
 CLOUD_PREPROD_FOLDER_ID = "aoevv1b69su5144mlro3"

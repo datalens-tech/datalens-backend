@@ -12,6 +12,7 @@ from nile.api.v1 import extractors as ne
 from nile.api.v1 import filters as nf
 from qb2.api.v1 import typing
 
+
 PLAINLY_PROJECTED_FIELDS = [
     "dash_id",
     "dash_tab_id",

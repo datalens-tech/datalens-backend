@@ -8,6 +8,7 @@ from antlr4 import (
     PredictionContextCache,
 )
 
+
 if sys.version_info[1] > 5:
     from typing import TextIO
 else:

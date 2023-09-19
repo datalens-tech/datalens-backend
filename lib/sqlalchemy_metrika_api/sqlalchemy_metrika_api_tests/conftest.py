@@ -7,6 +7,7 @@ import pytest
 import sqlalchemy
 import sqlalchemy_metrika_api
 
+
 METRIKA_SAMPLE_COUNTER_ID = "44147844"
 APPMETRICA_SAMPLE_COUNTER_ID = "1111"
 

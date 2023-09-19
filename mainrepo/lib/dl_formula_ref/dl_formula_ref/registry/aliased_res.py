@@ -12,6 +12,7 @@ import attr
 
 from dl_i18n.localizer_base import Translatable
 
+
 _RES_TV = TypeVar("_RES_TV", bound="AliasedResource")
 
 

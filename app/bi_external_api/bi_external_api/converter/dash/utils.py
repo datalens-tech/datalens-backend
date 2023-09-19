@@ -20,6 +20,7 @@ from bi_external_api.domain.internal import (
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 
+
 _SOURCE_TV = TypeVar("_SOURCE_TV")
 
 

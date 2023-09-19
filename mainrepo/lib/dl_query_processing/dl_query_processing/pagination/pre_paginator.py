@@ -5,6 +5,7 @@ from typing import (
 
 from dl_query_processing.legend.block_legend import BlockLegend
 
+
 _VAL_TV = TypeVar("_VAL_TV")
 
 

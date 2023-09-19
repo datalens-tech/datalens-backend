@@ -9,6 +9,7 @@ import attr
 
 import dl_core.exc as exc
 
+
 if TYPE_CHECKING:
     from dl_core.base_models import ObligatoryFilter
     from dl_core.data_source_spec.collection import DataSourceCollectionSpecBase

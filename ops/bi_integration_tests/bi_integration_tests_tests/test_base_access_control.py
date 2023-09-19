@@ -18,6 +18,7 @@ from bi_integration_tests.steps import (
 from bi_testing_ya.dlenv import DLEnv
 from dl_testing.utils import skip_outside_devhost
 
+
 tag_init = "tag_init"
 tag_cleanup = "tag_cleanup"
 

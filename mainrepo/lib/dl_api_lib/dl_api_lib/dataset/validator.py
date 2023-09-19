@@ -102,6 +102,7 @@ import dl_query_processing.exc
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_utils.utils import enum_not_none
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 

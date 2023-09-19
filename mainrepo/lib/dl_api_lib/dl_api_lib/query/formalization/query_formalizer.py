@@ -70,6 +70,7 @@ from dl_query_processing.legend.field_legend import (
     TreeRoleSpec,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
     from dl_query_processing.compilation.query_meta import QueryMetaInfo

@@ -17,6 +17,7 @@ from dl_core_testing.database import (
 )
 import dl_query_processing.exc
 
+
 TEST_FIELD_LIMIT_SOFT = 10
 TEST_FIELD_LIMIT_HARD = 15
 

@@ -10,6 +10,7 @@ from typing import (
 
 import attr
 
+
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 

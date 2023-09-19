@@ -16,6 +16,7 @@ from bi_external_api_tests.test_acceptance_ya_team import AcceptanceScenatioYaTe
 
 from . import conftest
 
+
 _DO_LAUNCH = os.environ.get(conftest.ENV_KEY_DO_NOT_SKIP)
 
 

@@ -12,6 +12,7 @@ from dl_core.connection_executors.models.connection_target_dto_base import BaseS
 
 from bi_connector_oracle.core.constants import OracleDbNameType
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
 

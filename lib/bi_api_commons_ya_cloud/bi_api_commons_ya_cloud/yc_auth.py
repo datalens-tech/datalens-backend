@@ -8,6 +8,7 @@ from bi_cloud_integration.yc_client_base import (
     DLYCServiceConfig,
 )
 
+
 AS_DEFAULT_TIMEOUT_SEC = 2
 AS_DEFAULT_RETRIES_COUNT = 7
 AS_DEFAULT_KEEPALIVE_TIME_MSEC = 10 * 1000  # ms

@@ -7,6 +7,7 @@ from dl_formula.definitions.common import raw_sql
 from dl_formula.definitions.common_datetime import DAY_SEC
 import dl_formula.definitions.operators_binary as base
 
+
 V = TranslationVariant.make
 
 

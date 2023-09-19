@@ -19,6 +19,7 @@ from dl_core.db.conversion_base import (
     make_native_type,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.db.native_type import SATypeSpec
 

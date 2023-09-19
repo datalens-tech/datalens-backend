@@ -27,6 +27,7 @@ from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfig
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_core.logging_config import configure_logging
 
+
 try:
     from src.proto.grpc.health.v1 import health_pb2  # type: ignore
     from src.proto.grpc.health.v1 import health_pb2_grpc  # type: ignore
@@ -35,6 +36,7 @@ except ImportError:
     from grpc_health.v1 import health_pb2_grpc  # type: ignore
 
 from grpc_reflection.v1alpha import reflection
+
 
 LOGGER = logging.getLogger(__name__)
 

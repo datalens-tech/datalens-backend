@@ -57,6 +57,7 @@ from dl_formula_ref.texts import (
     DialectStyle,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula_ref.registry.example_base import DataExampleRendererConfig
 

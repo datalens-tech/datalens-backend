@@ -10,6 +10,7 @@ import sh
 from bi_cloud_integration.model import IAMResource
 from bi_cloud_integration.yc_as_client import DLASClient
 
+
 REQUEST_ID = "testscript_fake_request"
 FOLDER_ID = "aoevv1b69su5144mlro3"  # datalens-dev back
 

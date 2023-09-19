@@ -10,6 +10,7 @@ from dl_formula.definitions.common import (
 import dl_formula.definitions.functions_aggregation as base
 from dl_formula.definitions.literals import un_literal
 
+
 V = TranslationVariant.make
 
 

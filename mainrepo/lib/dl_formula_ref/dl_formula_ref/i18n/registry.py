@@ -10,6 +10,7 @@ from dl_i18n.localizer_base import (
     TranslationConfig,
 )
 
+
 _LOCALIZATION_CONFIGS: set[TranslationConfig] = set()
 
 DOMAIN = f"{package.__name__}_{package.__name__}"

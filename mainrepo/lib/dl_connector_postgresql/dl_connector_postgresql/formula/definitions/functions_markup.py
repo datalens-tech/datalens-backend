@@ -1,6 +1,7 @@
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 import dl_formula.definitions.functions_markup as base
 
+
 DEFINITIONS_MARKUP = [
     # +
     base.BinaryPlusMarkup.for_dialect(D.POSTGRESQL),

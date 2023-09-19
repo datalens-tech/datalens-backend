@@ -16,6 +16,7 @@ from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawEx
 from dl_core.db.native_type import GenericNativeType
 from dl_core.exc import DatabaseQueryError
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TBIChunksGen
     from dl_core.connection_executors.models.db_adapter_data import (

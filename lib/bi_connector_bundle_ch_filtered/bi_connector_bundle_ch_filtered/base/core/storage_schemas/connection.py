@@ -12,6 +12,7 @@ from bi_connector_bundle_ch_filtered.base.core.us_connection import (
     ConnectionClickhouseFilteredBase,
 )
 
+
 _CH_FILTERED_CONN_DATA_TV = TypeVar("_CH_FILTERED_CONN_DATA_TV", bound=ConnectionClickhouseFilteredBase.DataModel)
 
 

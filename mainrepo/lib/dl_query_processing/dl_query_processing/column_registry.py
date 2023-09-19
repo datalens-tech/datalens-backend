@@ -24,6 +24,7 @@ import dl_formula.core.nodes as formula_nodes
 from dl_formula.inspect.expression import used_fields
 from dl_query_processing.compilation.type_mapping import BI_TO_FORMULA_TYPES
 
+
 LOGGER = logging.getLogger(__name__)
 
 

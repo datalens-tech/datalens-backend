@@ -12,6 +12,7 @@ from bi_integration_tests.request_executors.bi_api_client import BIAPIClient
 from bi_testing_ya.dlenv import DLEnv
 from dl_testing import utils
 
+
 STATUS_TIMEOUT_SECONDS = 10
 STATUS_RETRY_DELAY = 1
 

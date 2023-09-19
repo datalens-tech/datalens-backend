@@ -12,6 +12,7 @@ from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import dashboards
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 
+
 _TAB_ITEM_TV = TypeVar("_TAB_ITEM_TV", bound=dashboards.TabItem)
 _DASH_ELEMENT_TV = TypeVar("_DASH_ELEMENT_TV", bound=ext.DashElement)
 

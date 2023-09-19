@@ -14,6 +14,7 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
 )
 from dl_api_lib.aio import aiohttp_wrappers
 
+
 _METHOD_REQ_RESOURCES_ATTR_NAME = "__dl_required_resources__"
 
 

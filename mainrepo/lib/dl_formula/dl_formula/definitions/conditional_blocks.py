@@ -22,6 +22,7 @@ from dl_formula.definitions.type_strategy import (
     IfTypeStrategy,
 )
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

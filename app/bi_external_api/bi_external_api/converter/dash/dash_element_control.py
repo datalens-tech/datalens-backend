@@ -25,6 +25,7 @@ from bi_external_api.domain.internal import (
 from bi_external_api.domain.internal.dashboards import ControlData
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 
+
 _DASH_ELEMENT_TV = TypeVar("_DASH_ELEMENT_TV", bound=ext.DashControlGuided)
 
 logger = logging.getLogger(__name__)

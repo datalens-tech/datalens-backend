@@ -10,6 +10,7 @@ from dl_core.data_source.sql import BaseSQLDataSource
 
 from bi_connector_yql.core.yql_base.query_compiler import YQLQueryCompiler
 
+
 if TYPE_CHECKING:
     from dl_core.connectors.base.query_compiler import QueryCompiler
 

@@ -9,6 +9,7 @@ from sqlalchemy.types import TypeEngine
 
 from dl_core.db.native_type import GenericNativeType
 
+
 SQLALCHEMY_TYPES: dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] = {}
 
 

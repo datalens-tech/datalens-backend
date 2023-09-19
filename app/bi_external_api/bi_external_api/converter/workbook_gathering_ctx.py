@@ -21,6 +21,7 @@ from bi_external_api.domain.internal.dl_common import (
 )
 from bi_external_api.domain.utils import ensure_tuple
 
+
 _INST_TYPE_TV = TypeVar("_INST_TYPE_TV", bound=EntryInstance)
 _NAME_NORMALIZER_TV = TypeVar("_NAME_NORMALIZER_TV", bound="NameNormalizer")
 

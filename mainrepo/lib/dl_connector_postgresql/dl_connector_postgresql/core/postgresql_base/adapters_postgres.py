@@ -25,6 +25,7 @@ from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_models.common_models import TableIdent
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
     from dl_core.connection_models.common_models import SchemaIdent

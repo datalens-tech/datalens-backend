@@ -15,6 +15,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.constants imp
     SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
 

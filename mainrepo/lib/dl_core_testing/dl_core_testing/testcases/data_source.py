@@ -38,6 +38,7 @@ from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import Db
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 

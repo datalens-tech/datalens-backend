@@ -19,6 +19,7 @@ from bi_cloud_integration.yc_subjects import DLYCMSClient
 from dl_api_commons.base_models import TenantDef
 from dl_utils.aio import alist
 
+
 DEFAULT_DOMAIN = "yandex.ru"
 
 

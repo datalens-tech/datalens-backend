@@ -11,6 +11,7 @@ import attr
 from dl_formula_ref.i18n.registry import get_localizer
 from dl_formula_ref.texts import FUNCTION_CATEGORY_TAG
 
+
 if TYPE_CHECKING:
     import dl_formula_ref.registry.base as _registry_base
 

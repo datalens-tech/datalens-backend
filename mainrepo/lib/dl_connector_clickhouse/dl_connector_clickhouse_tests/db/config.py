@@ -6,6 +6,7 @@ from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
 
+
 # Infra settings
 SSL_CA_FILENAME = "marsnet_ca.crt"
 

@@ -19,6 +19,7 @@ from dl_constants.enums import (
     CalcMode,
 )
 
+
 PG_CONN_NAME_PLACEHOLDER = "--PG_CONN_NAME--"
 
 

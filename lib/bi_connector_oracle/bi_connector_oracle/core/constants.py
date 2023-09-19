@@ -9,6 +9,7 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 
+
 BACKEND_TYPE_ORACLE = SourceBackendType.declare("ORACLE")
 CONNECTION_TYPE_ORACLE = ConnectionType.declare("oracle")
 SOURCE_TYPE_ORACLE_TABLE = CreateDSFrom.declare("ORACLE_TABLE")

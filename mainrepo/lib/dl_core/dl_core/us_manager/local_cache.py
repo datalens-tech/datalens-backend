@@ -18,6 +18,7 @@ from dl_core.us_manager.broken_link import (
     BrokenUSLinkErrorKind,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.us_entry import USEntry
 

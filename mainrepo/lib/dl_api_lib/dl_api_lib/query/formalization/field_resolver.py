@@ -14,6 +14,7 @@ from dl_api_lib.query.formalization.raw_specs import (
 )
 import dl_core.exc
 
+
 if TYPE_CHECKING:
     from dl_api_lib.query.formalization.raw_specs import FieldRef
     from dl_core.components.ids import FieldId

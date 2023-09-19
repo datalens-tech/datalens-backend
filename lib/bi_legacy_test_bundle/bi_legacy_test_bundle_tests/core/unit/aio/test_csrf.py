@@ -26,6 +26,7 @@ from dl_core.aio.middlewares.csrf import (
     generate_csrf_token,
 )
 
+
 _SAMPLE_YANDEXUID = _SAMPLE_USER_ID = "123"
 _SAMPLE_TIMESTAMP = 1
 _VALID_CSRF_SECRET = "valid_secret"

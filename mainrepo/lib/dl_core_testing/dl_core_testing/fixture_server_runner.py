@@ -18,6 +18,7 @@ import attr
 import requests
 from statcommons.log_config import deconfigure_logging
 
+
 LOGGER = logging.getLogger()
 
 _RUNNER_TV = TypeVar("_RUNNER_TV")

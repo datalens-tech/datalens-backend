@@ -33,6 +33,7 @@ from dl_core_testing.dataset import get_created_from
 from bi_connector_mssql.core.constants import SOURCE_TYPE_MSSQL_TABLE
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
 
+
 METRIKA_SAMPLE_COUNTER_ID = "44147844"
 APPMETRICA_SAMPLE_COUNTER_ID = "1111"
 

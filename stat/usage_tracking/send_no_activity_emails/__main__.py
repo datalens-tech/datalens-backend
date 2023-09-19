@@ -28,6 +28,7 @@ from yt.wrapper import (
     yt_dataclass,
 )
 
+
 DEFAULT_TEMPLATE = "datalens.user.no-activity"
 NOTIFY_SEND_URL = "https://notify.cloud.yandex.net/v1/send"
 SERVICE_ACCOUNT_ERROR_CODE = "USER_SETTINGS_4XX_ERROR"

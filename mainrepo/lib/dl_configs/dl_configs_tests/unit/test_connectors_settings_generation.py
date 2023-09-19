@@ -9,6 +9,7 @@ from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_constants.enums import ConnectionType
 
+
 CONNECTION_TYPE_APPALLING = ConnectionType.declare("appalling")
 CONNECTION_TYPE_EMPTY_YET_COOL = ConnectionType.declare("empty_yet_cool")
 CONNECTION_TYPE_FANTASTIC = ConnectionType.declare("fantastic")

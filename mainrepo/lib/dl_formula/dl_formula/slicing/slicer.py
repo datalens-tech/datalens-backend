@@ -60,6 +60,7 @@ from dl_formula.slicing.schema import (
     SliceSchema,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

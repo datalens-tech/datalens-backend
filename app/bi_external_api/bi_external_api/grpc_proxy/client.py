@@ -20,6 +20,7 @@ import grpc
 
 from bi_external_api.grpc_proxy.common import GHeaders
 
+
 try:
     from src.proto.grpc.health.v1 import health_pb2  # type: ignore
     from src.proto.grpc.health.v1 import health_pb2_grpc  # type: ignore

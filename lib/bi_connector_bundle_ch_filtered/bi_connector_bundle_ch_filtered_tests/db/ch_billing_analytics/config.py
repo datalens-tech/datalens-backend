@@ -2,6 +2,7 @@ from dl_testing.containers import get_test_container_hostport
 
 from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.settings import BillingConnectorSettings
 
+
 SR_CONNECTION_TABLE_NAME = "sample"
 SR_CONNECTION_SETTINGS = BillingConnectorSettings(
     DB_NAME="test_data",

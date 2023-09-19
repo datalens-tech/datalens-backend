@@ -10,6 +10,7 @@ from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
     SOURCE_TYPE_CH_USAGE_TRACKING_TABLE,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

@@ -50,6 +50,7 @@ from dl_core_testing.utils import SROptions
 from dl_testing.utils import get_log_record
 from dl_utils.aio import await_sync
 
+
 if TYPE_CHECKING:
     from redis.asyncio import Redis
 

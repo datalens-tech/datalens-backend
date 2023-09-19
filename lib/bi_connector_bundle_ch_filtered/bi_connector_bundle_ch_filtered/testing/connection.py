@@ -12,6 +12,7 @@ from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
 
 

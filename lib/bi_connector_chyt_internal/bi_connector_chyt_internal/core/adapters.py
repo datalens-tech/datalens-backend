@@ -23,6 +23,7 @@ from bi_connector_chyt_internal.core.constants import (
 )
 from bi_connector_chyt_internal.core.utils import get_chyt_user_auth_headers
 
+
 if TYPE_CHECKING:
     from bi_connector_chyt_internal.core.target_dto import (
         BaseCHYTInternalConnTargetDTO,

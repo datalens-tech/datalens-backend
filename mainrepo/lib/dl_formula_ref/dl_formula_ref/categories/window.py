@@ -6,6 +6,7 @@ from dl_formula_ref.registry.aliased_res import (
 )
 from dl_formula_ref.registry.base import FunctionDocCategory
 
+
 _ = get_gettext()
 
 CATEGORY_WINDOW = FunctionDocCategory(

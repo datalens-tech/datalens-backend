@@ -13,6 +13,7 @@ from bi_external_api.domain.internal.dl_common import (
     EntrySummary,
 )
 
+
 _DST_ENUM_T = TypeVar("_DST_ENUM_T", bound=enum.Enum)
 
 

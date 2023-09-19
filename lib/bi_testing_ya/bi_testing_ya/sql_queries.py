@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 CH_QUERY = r"""
 select
     arrayJoin([11, 22, NULL]) as a,

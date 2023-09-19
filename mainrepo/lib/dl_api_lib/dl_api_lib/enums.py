@@ -16,6 +16,7 @@ from dl_constants.enums import (
 )
 from dl_constants.enums import AggregationFunction as ag
 
+
 W = WhereClauseOperation
 _FILT_MINIMAL = frozenset((W.EQ, W.NE, W.IN, W.NIN))
 _FILT_EQNEQ = frozenset((W.EQ, W.NE))

@@ -25,6 +25,7 @@ from dl_core_testing.testcases.connection import (
     DefaultConnectionTestClass,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors import (
         AsyncConnExecutorBase,

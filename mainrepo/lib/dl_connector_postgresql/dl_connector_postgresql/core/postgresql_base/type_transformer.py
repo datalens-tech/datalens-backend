@@ -11,6 +11,7 @@ from dl_core.db.conversion_base import (
 )
 from dl_sqlalchemy_postgres.base import CITEXT
 
+
 PG_TYPES_INT = frozenset((pg_types.SMALLINT, pg_types.INTEGER, pg_types.BIGINT))
 PG_TYPES_FLOAT = frozenset((pg_types.REAL, pg_types.DOUBLE_PRECISION, pg_types.NUMERIC))
 PG_TYPES_STRING = frozenset((pg_types.CHAR, pg_types.VARCHAR, pg_types.TEXT, CITEXT))

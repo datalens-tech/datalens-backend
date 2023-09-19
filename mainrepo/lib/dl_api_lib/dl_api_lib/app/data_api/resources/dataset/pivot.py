@@ -24,6 +24,7 @@ from dl_app_tools.profiling_base import (
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_utils.utils import exc_catch_awrap
 
+
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

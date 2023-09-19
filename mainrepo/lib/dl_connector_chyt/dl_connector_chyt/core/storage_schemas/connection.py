@@ -15,6 +15,7 @@ from dl_core.us_manager.storage_schemas.connection import (
     SubselectConnectionDataSchemaMixin,
 )
 
+
 _CHYT_CONN_DATA_TV = TypeVar("_CHYT_CONN_DATA_TV", bound=BaseConnectionCHYT.DataModel)
 
 

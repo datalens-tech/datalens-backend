@@ -2,6 +2,7 @@ from dl_connector_postgresql.formula.constants import PostgreSQLDialect
 from dl_connector_postgresql.formula_ref.i18n import Translatable
 from dl_formula_ref.texts import StyledDialect
 
+
 HUMAN_DIALECTS = {
     PostgreSQLDialect.POSTGRESQL: StyledDialect(
         "`PostgreSQL`",

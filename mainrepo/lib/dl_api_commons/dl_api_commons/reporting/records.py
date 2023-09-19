@@ -6,6 +6,7 @@ from typing import (
 
 import attr
 
+
 _RR_TV = TypeVar("_RR_TV", bound="ReportingRecord")
 
 

@@ -58,6 +58,7 @@ from bi_connector_mysql.core.error_transformer import async_mysql_db_error_trans
 from bi_connector_mysql.core.target_dto import MySQLConnTargetDTO
 from bi_connector_mysql.core.utils import compile_mysql_query
 
+
 LOGGER = logging.getLogger(__name__)
 
 _DBA_ASYNC_MYSQL_TV = TypeVar("_DBA_ASYNC_MYSQL_TV", bound="AsyncMySQLAdapter")

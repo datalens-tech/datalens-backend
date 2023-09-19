@@ -7,6 +7,7 @@ from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 from dl_formula.definitions.literals import un_literal
 
+
 V = TranslationVariant.make
 
 

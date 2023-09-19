@@ -21,6 +21,7 @@ import dl_formula.definitions.functions_window as base
 from dl_formula.translation.context import TranslationCtx
 from dl_formula.translation.env import TranslationEnvironment
 
+
 V = TranslationVariant.make
 
 SUPPORTED_DIALECTS = D.and_above(D.CLICKHOUSE_22_10)

@@ -25,6 +25,7 @@ from dl_api_commons.flask.middlewares.logging_context import RequestLoggingConte
 from dl_api_commons.flask.middlewares.wsgi_middleware import FlaskWSGIMiddleware
 from dl_api_commons.logging_tracing import OpenTracingLoggingContextController
 
+
 if TYPE_CHECKING:
     from dl_api_commons.flask.types import (
         WSGIEnviron,

@@ -29,6 +29,7 @@ from dl_core.data_processing.streaming import (
 )
 from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TBIDataValue
 

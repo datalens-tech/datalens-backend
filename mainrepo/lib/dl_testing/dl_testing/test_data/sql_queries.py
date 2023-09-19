@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 DASHSQL_EXAMPLE_PARAMS = {
     "some_string": {"type_name": "string", "value": "some\\:string\nwith\\stuff"},
     "some_integer": {"type_name": "integer", "value": "562949953421312"},

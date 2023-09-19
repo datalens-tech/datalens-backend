@@ -18,6 +18,7 @@ from bi_connector_gsheets.core.us_connection import (
     GSheetsConnectOptions,
 )
 
+
 GSHEETS_EXAMPLE_URL = (
     "https://docs.google.com/spreadsheets/d/1zRPTxxLOQ08n0_MReIBbouAbPFw6pJ4ibNSVdFkZ3gs/edit?usp=sharing"
 )

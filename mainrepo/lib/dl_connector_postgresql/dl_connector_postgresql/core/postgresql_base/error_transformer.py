@@ -17,6 +17,7 @@ from dl_core.connectors.base.error_transformer import (
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
 
+
 sync_pg_db_error_transformer: DbErrorTransformer = ChainedDbErrorTransformer(
     [
         Rule(

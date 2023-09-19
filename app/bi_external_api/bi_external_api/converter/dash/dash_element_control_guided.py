@@ -17,6 +17,7 @@ from bi_external_api.domain.internal import (
 )
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 
+
 _SELECTOR_TV = TypeVar("_SELECTOR_TV", bound=ext.DashControlGuided)
 
 

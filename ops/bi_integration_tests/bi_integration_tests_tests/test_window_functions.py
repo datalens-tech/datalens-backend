@@ -36,6 +36,7 @@ from dl_testing.utils import (
     skip_outside_devhost,
 )
 
+
 BASE_CLOUD_DIRECTORY = "window_function_tests"
 
 logging.basicConfig()

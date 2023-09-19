@@ -16,6 +16,7 @@ from dl_api_lib.pivot.primitives import (
 from dl_api_lib.query.formalization.pivot_legend import PivotLegend
 from dl_query_processing.postprocessing.primitives import PostprocessedValue
 
+
 if TYPE_CHECKING:
     from dl_api_lib.pivot.base.facade import TableDataFacade
     from dl_api_lib.pivot.hashable_packing import HashableValuePackerBase

@@ -12,6 +12,7 @@ from bi_external_api.converter.converter_exc import (
 from bi_external_api.domain.internal import datasets
 from dl_constants.enums import BIType
 
+
 _DEFAULT_VALUE_TV = TypeVar("_DEFAULT_VALUE_TV", bound=datasets.DefaultValue)
 _DEFAULT_VALUE_CODEC_TV = TypeVar("_DEFAULT_VALUE_CODEC_TV", bound="DefaultValueToStringCodec")
 

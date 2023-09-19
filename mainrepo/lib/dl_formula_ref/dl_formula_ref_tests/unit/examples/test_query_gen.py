@@ -17,6 +17,7 @@ from dl_formula_ref.examples.query import (
 )
 from dl_formula_ref.examples.query_gen import QueryGenerator
 
+
 if TYPE_CHECKING:
     from dl_formula.core import nodes
 

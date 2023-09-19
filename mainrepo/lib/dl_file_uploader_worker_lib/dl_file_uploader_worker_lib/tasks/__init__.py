@@ -12,6 +12,7 @@ from .excel import ProcessExcelTask
 from .parse import ParseFileTask
 from .save import SaveSourceTask
 
+
 REGISTRY: TaskRegistry = TaskRegistry.create(
     [
         DownloadGSheetTask,

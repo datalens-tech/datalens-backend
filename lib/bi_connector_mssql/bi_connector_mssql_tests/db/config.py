@@ -7,6 +7,7 @@ from dl_testing.containers import get_test_container_hostport
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 
+
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_http=get_test_container_hostport("us", fallback_port=52111).host,

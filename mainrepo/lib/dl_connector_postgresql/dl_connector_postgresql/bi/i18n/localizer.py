@@ -6,6 +6,7 @@ import dl_connector_postgresql as package
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 from dl_i18n.localizer_base import TranslationConfig
 
+
 DOMAIN = f"{package.__name__}"
 CONFIGS = [
     TranslationConfig(

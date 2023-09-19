@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from dl_query_processing.compilation.filter_compiler import MainFilterFormulaCompiler
 
+
 if TYPE_CHECKING:
     from dl_query_processing.compilation.filter_compiler import FilterParams
 

@@ -12,6 +12,7 @@ from dl_core.db import SchemaInfo
 
 from bi_connector_solomon.core.constants import CONNECTION_TYPE_SOLOMON
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 

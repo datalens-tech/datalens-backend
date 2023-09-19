@@ -15,6 +15,7 @@ import attr
 from bi_external_api.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
 
+
 _INDENT = " " * 4
 
 

@@ -12,6 +12,7 @@ from dl_formula.definitions.literals import (
 )
 from dl_formula.shortcuts import n
 
+
 V = TranslationVariant.make
 
 

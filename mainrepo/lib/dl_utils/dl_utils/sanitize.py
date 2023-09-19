@@ -19,6 +19,7 @@ from typing import (
 )
 import uuid
 
+
 CHAR_CLASSES = {
     "H": set(string.hexdigits.upper()),
     "h": set(string.hexdigits.lower()),

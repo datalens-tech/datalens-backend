@@ -35,6 +35,7 @@ from dl_core.db.native_type import (
 )
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
+
 LOGGER = logging.getLogger(__name__)
 
 

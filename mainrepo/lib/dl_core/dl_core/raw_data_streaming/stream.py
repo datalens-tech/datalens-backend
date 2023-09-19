@@ -9,6 +9,7 @@ from typing import (
     Union,
 )
 
+
 _ITER_TV = TypeVar("_ITER_TV")
 
 

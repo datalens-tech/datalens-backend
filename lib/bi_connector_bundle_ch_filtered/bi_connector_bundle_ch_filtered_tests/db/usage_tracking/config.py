@@ -7,6 +7,7 @@ from dl_testing.containers import get_test_container_hostport
 
 from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import UsageTrackingConnectionSettings
 
+
 SR_CONNECTION_TABLE_NAME = "sample"
 SR_CONNECTION_SETTINGS = UsageTrackingConnectionSettings(
     DB_NAME="test_data",

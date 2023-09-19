@@ -31,6 +31,7 @@ from dl_constants.enums import (
 )
 from dl_i18n.localizer_base import Localizer
 
+
 LOGGER = logging.getLogger(__name__)
 
 

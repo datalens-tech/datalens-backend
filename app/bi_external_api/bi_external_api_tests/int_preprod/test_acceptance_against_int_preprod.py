@@ -15,6 +15,7 @@ from dl_api_commons.base_models import TenantCommon
 from ..test_acceptance import ConnectionTestingData
 from ..test_acceptance_ya_team import AcceptanceScenatioYaTeam
 
+
 ENV_VAR_RUN_ACCEPTANCE_AGAINST_INT_PREPROD = "DL_EXT_API_TESTS_RUN_AGAINST_INT_PREPROD"
 
 

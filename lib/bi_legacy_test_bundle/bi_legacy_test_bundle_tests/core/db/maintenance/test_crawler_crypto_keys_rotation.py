@@ -10,6 +10,7 @@ from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
 from dl_utils.aio import await_sync
 
+
 _CRYPTO_KEYS_CONFIG = CryptoKeysConfig(
     map_id_key=dict(
         old=fernet.Fernet.generate_key().decode("ascii"),

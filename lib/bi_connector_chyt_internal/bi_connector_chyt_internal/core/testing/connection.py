@@ -24,6 +24,7 @@ from bi_connector_chyt_internal.core.us_connection import (
     ConnectionCHYTUserAuth,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.us_connection_base import ConnectionBase
 

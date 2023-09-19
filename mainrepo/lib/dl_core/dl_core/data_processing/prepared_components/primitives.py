@@ -17,6 +17,7 @@ from dl_constants.enums import (
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.query.bi_query import SqlSourceType
 
+
 if TYPE_CHECKING:
     from dl_core.base_models import ConnectionRef
     import dl_core.data_source

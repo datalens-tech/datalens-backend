@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+
 REPLACE_MAP = {
     "registry.yandex.net/statinfra/redis@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337": "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337",
     "registry.yandex.net/statinfra/zookeeper@sha256:ad460bd234a3166cb37e14a1526d677052f7c42e1d1dccd040ca3e24ed1bec1f": "zookeeper:3.4@sha256:d2b1ea8db9241d31daed9b1b90e22b62d9ffb14e29d355d0d0c8d0a87819d929",

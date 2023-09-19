@@ -17,6 +17,7 @@ from dl_configs.connector_availability import (
     TranslatableSettings,
 )
 
+
 CONNECTOR_AVAILABILITY = ConnectorAvailabilityConfigSettings(
     sections=[
         SectionSettings(

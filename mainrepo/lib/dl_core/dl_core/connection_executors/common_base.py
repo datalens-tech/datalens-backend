@@ -42,6 +42,7 @@ from dl_core.db import (
 )
 from dl_core.exc import UnsupportedNativeTypeError
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TJSONExt
     from dl_core.connections_security.base import ConnectionSecurityManager  # noqa

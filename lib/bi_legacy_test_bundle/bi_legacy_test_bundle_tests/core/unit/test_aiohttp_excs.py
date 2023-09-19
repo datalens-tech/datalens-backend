@@ -11,6 +11,7 @@ import aiohttp.connector
 import aiohttp.web
 import pytest
 
+
 FAKE_URL = "http://127.0.0.2:62345/"
 
 

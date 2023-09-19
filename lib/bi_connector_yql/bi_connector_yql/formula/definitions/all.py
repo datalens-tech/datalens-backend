@@ -10,6 +10,7 @@ from bi_connector_yql.formula.definitions.operators_binary import DEFINITIONS_BI
 from bi_connector_yql.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from bi_connector_yql.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
+
 DEFINITIONS = [
     *DEFINITIONS_COND_BLOCKS,
     *DEFINITIONS_AGG,

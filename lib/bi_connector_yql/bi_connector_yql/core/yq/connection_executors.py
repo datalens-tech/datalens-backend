@@ -15,6 +15,7 @@ from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyCon
 from bi_connector_yql.core.yq.adapter import YQAdapter
 from bi_connector_yql.core.yq.target_dto import YQConnTargetDTO
 
+
 if TYPE_CHECKING:
     from bi_connector_yql.core.yq.dto import YQConnDTO
 

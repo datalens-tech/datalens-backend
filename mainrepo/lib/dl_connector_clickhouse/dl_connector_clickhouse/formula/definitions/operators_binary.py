@@ -22,6 +22,7 @@ import dl_formula.definitions.operators_binary as base
 from dl_formula.translation.context import TranslationCtx
 from dl_formula.translation.env import TranslationEnvironment
 
+
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

@@ -9,6 +9,7 @@ from dl_constants.enums import (
     CalcMode,
 )
 
+
 # FIXME: This is practically a dummy. Add tests please
 
 

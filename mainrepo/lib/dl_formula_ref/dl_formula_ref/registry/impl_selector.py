@@ -13,6 +13,7 @@ from dl_formula_ref.registry.arg_extractor import INFINITE_ARG_COUNT
 from dl_formula_ref.registry.impl_selector_base import ImplementationSelectorBase
 from dl_formula_ref.registry.impl_spec import FunctionImplementationSpec
 
+
 if TYPE_CHECKING:
     from dl_formula_ref.registry.base import FunctionDocRegistryItem
     from dl_formula_ref.registry.env import GenerationEnvironment

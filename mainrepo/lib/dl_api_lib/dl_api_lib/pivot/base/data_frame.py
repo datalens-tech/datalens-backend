@@ -20,6 +20,7 @@ from dl_constants.enums import (
     PivotHeaderRole,
 )
 
+
 if TYPE_CHECKING:
     from dl_api_lib.pivot.primitives import (
         MeasureValues,

@@ -25,6 +25,7 @@ from dl_core.us_connection_base import (
     ExecutorBasedMixin,
 )
 
+
 if TYPE_CHECKING:
     from sqlalchemy.engine.default import DefaultDialect
     from sqlalchemy.sql import Select

@@ -8,6 +8,7 @@ import pytest
 
 from dl_file_secure_reader_lib.app import create_app
 
+
 try:
     del aiohttp.pytest_plugin.loop
 except AttributeError:

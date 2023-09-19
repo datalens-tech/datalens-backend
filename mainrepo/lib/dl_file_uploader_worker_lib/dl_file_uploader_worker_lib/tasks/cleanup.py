@@ -34,6 +34,7 @@ from dl_task_processor.task import (
     TaskResult,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

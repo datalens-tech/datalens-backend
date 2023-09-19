@@ -35,6 +35,7 @@ from dl_constants.enums import (
 )
 import dl_query_processing.exc
 
+
 if TYPE_CHECKING:
     from dl_api_lib.query.formalization.raw_pivot_specs import RawPivotLegendItem
     from dl_api_lib.query.formalization.raw_specs import RawSelectFieldSpec

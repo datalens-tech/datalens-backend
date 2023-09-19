@@ -10,6 +10,7 @@ from bi_legacy_test_bundle_tests.api_lib.db.data_api.result.complex_queries.gene
 )
 from dl_constants.enums import WhereClauseOperation
 
+
 GENERATED_TESTS = [
     {
         "base_dimensions": ["Category"],

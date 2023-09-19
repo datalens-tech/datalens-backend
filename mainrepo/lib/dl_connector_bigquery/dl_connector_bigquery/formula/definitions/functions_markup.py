@@ -1,6 +1,7 @@
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 import dl_formula.definitions.functions_markup as base
 
+
 DEFINITIONS_MARKUP = [
     # +
     base.BinaryPlusMarkup.for_dialect(D.BIGQUERY),

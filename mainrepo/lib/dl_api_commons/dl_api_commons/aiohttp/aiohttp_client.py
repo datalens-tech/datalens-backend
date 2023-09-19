@@ -24,6 +24,7 @@ import attr
 
 from dl_configs.utils import get_root_certificates_path
 
+
 LOGGER = logging.getLogger(__name__)
 
 

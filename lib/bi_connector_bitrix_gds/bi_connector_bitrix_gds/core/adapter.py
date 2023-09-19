@@ -56,6 +56,7 @@ from bi_connector_bitrix_gds.core.tables import (
     SMART_PROCESS_TABLE_PREFIX,
 )
 
+
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import Label
 

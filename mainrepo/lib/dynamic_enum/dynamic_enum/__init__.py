@@ -3,6 +3,7 @@ from .dynamic_enum import (
     DynamicEnum,
 )
 
+
 __all__ = (
     "AutoEnumValue",
     "DynamicEnum",

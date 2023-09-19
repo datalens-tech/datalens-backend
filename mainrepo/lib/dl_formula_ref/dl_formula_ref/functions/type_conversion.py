@@ -20,6 +20,7 @@ from dl_formula_ref.registry.note import (
 )
 from dl_i18n.localizer_base import Translatable
 
+
 _ = get_gettext()
 
 

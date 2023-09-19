@@ -9,6 +9,7 @@ from dl_core.serialization import (
     RedisDatalensDataJSONEncoder,
 )
 
+
 SAMPLE_DATA = dict(
     some_dt=datetime.datetime(
         2019, 6, 17, 7, 1, 41, 79585, tzinfo=datetime.timezone(datetime.timedelta(seconds=-1320))

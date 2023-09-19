@@ -19,6 +19,7 @@ from dl_constants.enums import (
 from dl_core.db.native_type import GenericNativeType
 from dl_utils.utils import get_type_full_name
 
+
 _SchemaColumn = namedtuple(
     "_SchemaColumn",
     (

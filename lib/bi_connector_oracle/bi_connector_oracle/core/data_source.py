@@ -22,6 +22,7 @@ from bi_connector_oracle.core.constants import (
 )
 from bi_connector_oracle.core.query_compiler import OracleQueryCompiler
 
+
 LOGGER = logging.getLogger(__name__)
 
 

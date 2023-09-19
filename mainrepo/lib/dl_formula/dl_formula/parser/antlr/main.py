@@ -18,6 +18,7 @@ from dl_formula.parser.base import (
 )
 from dl_formula.utils.caching import multi_cached_with_errors
 
+
 try:
     from dl_formula.parser.antlr.gen.DataLensLexer import DataLensLexer
     from dl_formula.parser.antlr.gen.DataLensParser import DataLensParser

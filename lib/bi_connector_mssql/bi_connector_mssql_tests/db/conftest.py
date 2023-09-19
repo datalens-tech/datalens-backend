@@ -16,6 +16,7 @@ from bi_connector_mssql_tests.db.config import (
     INIT_DB_PORT,
 )
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 

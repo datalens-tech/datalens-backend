@@ -9,6 +9,7 @@ from dl_connector_promql_tests.db.config import (
 from dl_core.loader import CoreLibraryConfig
 from dl_core_testing.initialization import initialize_core_test
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 

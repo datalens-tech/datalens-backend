@@ -26,6 +26,7 @@ from dl_query_processing.legacy_pipeline.slicing.primitives import (
     SliceFormulaSlice,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

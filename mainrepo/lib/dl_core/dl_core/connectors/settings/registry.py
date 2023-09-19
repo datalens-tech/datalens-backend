@@ -6,6 +6,7 @@ from dl_configs.connectors_settings import (
 )
 from dl_constants.enums import ConnectionType
 
+
 CONNECTORS_SETTINGS_CLASSES: dict[ConnectionType, Type[ConnectorSettingsBase]] = {}
 CONNECTORS_SETTINGS_FALLBACKS: dict[ConnectionType, SettingsFallbackType] = {}
 

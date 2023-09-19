@@ -23,6 +23,7 @@ from bi_api_commons_ya_cloud.constants import DLHeadersYC
 from bi_cloud_integration.exc import YCBillingAPIError
 from bi_cloud_integration.local_metadata import get_yc_service_token_local
 
+
 if TYPE_CHECKING:
     from aiohttp.web_request import Request
 

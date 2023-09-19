@@ -18,6 +18,7 @@ import attr
 from frozendict import frozendict
 from tomlkit import inline_table
 
+
 _CLONABLE_TV = TypeVar("_CLONABLE_TV", bound="_Clonable")
 
 

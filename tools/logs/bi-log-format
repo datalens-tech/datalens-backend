@@ -14,6 +14,7 @@ from typing import (
 )
 import urllib.parse
 
+
 TD_THRESHOLD = float(os.environ.get("TVS_TD") or 0.04)
 ENABLE_COLORS = True
 TERM_COLORS = dict(

@@ -13,6 +13,7 @@ import attr
 from bi_cloud_integration.iam_rm_client import DLFolderServiceClient
 from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 
+
 if TYPE_CHECKING:
     from bi_testing_ya.cloud_tokens import AccountCredentials
 

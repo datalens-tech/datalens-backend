@@ -16,6 +16,7 @@ from .components import (
     SelectRowItem,
 )
 
+
 __all__ = (
     "CustomizableRow",
     "HiddenRowItem",

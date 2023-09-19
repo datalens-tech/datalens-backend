@@ -17,6 +17,7 @@ from dl_formula.connectors.base.literal import (
 )
 from dl_formula.core.dialect import DialectCombo
 
+
 PG_SMALLINT_MIN = -32768
 PG_SMALLINT_MAX = 32767
 PG_INTEGER_MIN = -2147483648

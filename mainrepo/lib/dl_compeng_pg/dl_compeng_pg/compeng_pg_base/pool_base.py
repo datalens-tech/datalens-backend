@@ -8,6 +8,7 @@ from typing import (
     TypeVar,
 )
 
+
 _POOL_WRAPPER_TV = TypeVar("_POOL_WRAPPER_TV", bound="BasePgPoolWrapper")
 
 DEFAULT_POOL_MIN_SIZE = 10

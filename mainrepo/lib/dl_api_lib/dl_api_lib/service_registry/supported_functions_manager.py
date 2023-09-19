@@ -30,6 +30,7 @@ from dl_query_processing.compilation.filter_compiler import FilterFormulaCompile
 from dl_query_processing.compilation.formula_compiler import FormulaCompiler
 from dl_utils.func_tools import method_lru
 
+
 _FUNCTION_TAG_TO_SCOPE_MAP: dict[str, Scope] = {
     "stable": Scope.STABLE,
 }

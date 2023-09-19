@@ -67,6 +67,7 @@ from bi_connector_oracle.core.constants import (
     SOURCE_TYPE_ORACLE_TABLE,
 )
 
+
 if TYPE_CHECKING:
     from dl_core.us_connection_base import ConnectionBase
 

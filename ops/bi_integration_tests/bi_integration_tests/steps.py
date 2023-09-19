@@ -26,6 +26,7 @@ from bi_testing_ya.api_wrappers import (
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from dl_api_commons.base_models import TenantDef
 
+
 _DataType = Union[Dict, List, FormData, bytes, str]
 _Context = Dict[str, Any]
 

@@ -29,6 +29,7 @@ from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import charts
 from bi_external_api.structs.mappings import FrozenStrMapping
 
+
 _VIS_CONV_T = TypeVar("_VIS_CONV_T", bound="VisualizationConverter")
 
 _EXT_VIS_T = TypeVar("_EXT_VIS_T", bound=ext.Visualization)

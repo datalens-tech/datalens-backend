@@ -6,6 +6,7 @@ from typing import Optional
 import attr
 import yaml
 
+
 _CONTAINER_HOST_FROM_COMPOSE_MARKER = "from_compose"
 _APPLIB_PATH_RE = re.compile(r".+\/(?:app|lib|site-packages)\/[^\/]+\/")
 

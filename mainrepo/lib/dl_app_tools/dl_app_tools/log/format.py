@@ -8,6 +8,7 @@ import os
 
 from .context import get_log_context
 
+
 IS_DEPLOY = "DEPLOY_BOX_ID" in os.environ
 
 # To catch the 'extra'-added attributes.

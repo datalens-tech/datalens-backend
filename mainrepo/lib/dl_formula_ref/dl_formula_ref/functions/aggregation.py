@@ -11,6 +11,7 @@ from dl_formula_ref.registry.example import (
     SimpleExample,
 )
 
+
 _ = get_gettext()
 
 _SOURCE_INT_FLOAT_1 = ExampleSource(

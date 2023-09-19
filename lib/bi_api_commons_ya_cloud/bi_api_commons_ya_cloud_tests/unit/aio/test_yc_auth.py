@@ -34,6 +34,7 @@ from ..test_yc_auth_scenarios import (
     Scenario_YCAuth_ModeYC_DenyCookieAuth,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

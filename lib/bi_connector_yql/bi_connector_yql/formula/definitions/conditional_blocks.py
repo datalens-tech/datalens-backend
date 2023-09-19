@@ -5,6 +5,7 @@ import dl_formula.definitions.conditional_blocks as base
 
 from bi_connector_yql.formula.constants import YqlDialect as D
 
+
 V = TranslationVariant.make
 
 

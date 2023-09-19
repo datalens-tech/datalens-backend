@@ -3,6 +3,7 @@ from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
 
+
 _ = get_gettext()
 
 

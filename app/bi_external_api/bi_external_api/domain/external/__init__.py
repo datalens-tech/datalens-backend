@@ -225,6 +225,7 @@ from .workbook import (
     WorkbookIndexItem,
 )
 
+
 _all_models = [
     AvatarDef,
     AvatarsConfig,

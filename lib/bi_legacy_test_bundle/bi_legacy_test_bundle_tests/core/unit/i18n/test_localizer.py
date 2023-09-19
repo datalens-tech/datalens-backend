@@ -14,6 +14,7 @@ from dl_i18n.localizer_base import LocalizerLoader
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 from dl_i18n.localizer_base import TranslationConfig
 
+
 PATH = os.path.join(os.path.dirname(__file__), "locales")
 
 

@@ -45,6 +45,7 @@ from dl_core.loader import load_bi_core
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
 from dl_core.utils import get_eqe_secret_key
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.adapters_base import DBAdapterQueryResult
 

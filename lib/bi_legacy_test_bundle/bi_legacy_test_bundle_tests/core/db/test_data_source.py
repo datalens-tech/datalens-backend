@@ -6,6 +6,7 @@ from dl_constants.enums import DataSourceRole
 from dl_core.us_dataset import Dataset
 from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 
+
 # To use fixture "loop" in each test in module
 #  Cause: if any other test before will use it default loop for thread will be set to None
 pytestmark = pytest.mark.usefixtures("loop")

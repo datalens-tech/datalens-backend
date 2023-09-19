@@ -19,6 +19,7 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     PredefinedIntervalsRetrier,
 )
 
+
 OAUTH_SCOPES = ("stat:all",)
 NO_AUTH_RESULT = dict(
     user_id=None,

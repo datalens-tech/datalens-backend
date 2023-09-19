@@ -6,6 +6,7 @@ from bi_sqlalchemy_gsheets.base import (
     register_dialect,
 )
 
+
 __all__ = (
     "GSheetsDialect",
     "dialect",

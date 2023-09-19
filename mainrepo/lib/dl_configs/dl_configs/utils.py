@@ -11,6 +11,7 @@ from dl_configs.enums import (
 )
 from dl_constants.enums import ConnectionType
 
+
 ROOT_CERTIFICATES_FILENAME = "/etc/ssl/certs/ca-certificates.crt"
 TEMP_ROOT_CERTIFICATES_FOLDER_PATH = "/tmp/ssl/certs/"
 

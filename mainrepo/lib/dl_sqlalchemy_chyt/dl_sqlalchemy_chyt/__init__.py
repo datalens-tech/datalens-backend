@@ -8,6 +8,7 @@ from .base import (
     CHYTTableSubselect,
 )
 
+
 __all__ = (
     "CHYTTableExpression",
     "CHYTTablesConcat",

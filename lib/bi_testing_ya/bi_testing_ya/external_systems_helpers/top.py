@@ -19,6 +19,7 @@ from bi_cloud_integration.yc_client_base import DLYCServiceConfig
 from bi_testing_ya.cloud_tokens import CloudCredentialsConverter
 from bi_testing_ya.factories import FolderServiceFactory
 
+
 if TYPE_CHECKING:
     from bi_defaults.environments import (
         CommonExternalInstallation,

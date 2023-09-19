@@ -33,6 +33,7 @@ from dl_core.data_processing.processing.operation import (
 from dl_core.data_processing.processing.processor import OperationProcessorAsyncBase
 from dl_core.data_processing.stream_base import AbstractStream
 
+
 _ADAPTER_TV = TypeVar("_ADAPTER_TV", bound=PostgreSQLExecAdapterAsync)
 _POOL_TV = TypeVar("_POOL_TV", bound=BasePgPoolWrapper)
 _CONN_TV = TypeVar("_CONN_TV")

@@ -9,6 +9,7 @@ from dl_formula.definitions.type_strategy import ParamsFromArgs
 
 from bi_connector_mssql.formula.constants import MssqlDialect as D
 
+
 V = TranslationVariant.make
 
 

@@ -12,6 +12,7 @@ import opentracing
 
 from dl_api_commons.logging import RequestLoggingContextController
 
+
 LOGGER = logging.getLogger(__name__)
 
 

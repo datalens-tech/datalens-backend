@@ -9,6 +9,7 @@ from sqlalchemy.dialects import registry
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy_metrika_api import exceptions
 
+
 registry.register("metrika_api", "sqlalchemy_metrika_api.base", "MetrikaApiDialect")
 registry.register("appmetrica_api", "sqlalchemy_metrika_api.base", "AppMetricaApiDialect")
 

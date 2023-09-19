@@ -22,6 +22,7 @@ from dl_formula_ref.registry.scopes import SCOPES_DEFAULT
 from dl_formula_ref.registry.signature_gen import DefaultSignatureGenerator
 from dl_formula_ref.registry.text import ParameterizedText
 
+
 if TYPE_CHECKING:
     import dl_formula_ref.registry.arg_base as _arg_base
     from dl_formula_ref.registry.dialect_base import DialectExtractorBase

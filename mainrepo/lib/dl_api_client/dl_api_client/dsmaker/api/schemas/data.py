@@ -49,6 +49,7 @@ from dl_constants.enums import (
     WhereClauseOperation,
 )
 
+
 _ROLE_SPEC_TV = TypeVar("_ROLE_SPEC_TV", bound=RoleSpec)
 
 

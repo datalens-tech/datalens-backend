@@ -10,6 +10,7 @@ from typing import (
 
 import attr
 
+
 if TYPE_CHECKING:
     from dl_constants.enums import BIType
     from dl_constants.types import TBIDataRow

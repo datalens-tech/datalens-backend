@@ -15,6 +15,7 @@ from bi_external_api.grpc_proxy.common import (
     GRequestData,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

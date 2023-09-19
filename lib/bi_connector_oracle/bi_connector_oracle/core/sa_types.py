@@ -11,6 +11,7 @@ from dl_core.db.sa_types_base import (
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
+
 SQLALCHEMY_ORACLE_BASE_TYPES = (
     or_types.NUMBER,
     or_types.BINARY_FLOAT,

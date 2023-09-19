@@ -4,6 +4,7 @@ from dl_formula.core.dialect import (
     simple_combo,
 )
 
+
 DIALECT_NAME_SNOWFLAKE = DialectName.declare("SNOWFLAKE")
 
 

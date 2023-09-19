@@ -22,6 +22,7 @@ from dl_formula_ref.texts import (
     FROM_ARGS,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula.core.datatype import DataType
     from dl_formula_ref.registry.arg_base import FuncArg

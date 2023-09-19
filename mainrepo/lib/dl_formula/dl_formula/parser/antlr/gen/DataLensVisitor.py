@@ -1,5 +1,6 @@
 from antlr4 import ParseTreeVisitor
 
+
 if __name__ is not None and "." in __name__:
     from .DataLensParser import DataLensParser
 else:

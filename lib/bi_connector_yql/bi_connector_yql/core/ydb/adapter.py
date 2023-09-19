@@ -24,6 +24,7 @@ from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 from bi_connector_yql.core.ydb.target_dto import YDBConnTargetDTO
 from bi_connector_yql.core.yql_base.adapter import YQLAdapterBase
 
+
 if TYPE_CHECKING:
     from dl_core.connection_models import SchemaIdent
 

@@ -11,6 +11,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.constants import
     SOURCE_TYPE_CH_SMB_HEATMAPS_TABLE,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

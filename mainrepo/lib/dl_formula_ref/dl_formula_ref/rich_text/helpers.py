@@ -10,6 +10,7 @@ from dl_formula_ref.texts import (
     HUMAN_DATA_TYPES,
 )
 
+
 HIDDEN_TYPES = {
     DataType.DATETIME,
     DataType.CONST_DATETIME,

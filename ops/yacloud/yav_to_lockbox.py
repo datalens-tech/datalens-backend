@@ -3,6 +3,7 @@ import os
 
 import requests
 
+
 YAV_ENDPOINT = "https://vault-api.passport.yandex.net"
 
 YC_PROFILE = os.environ["YC_PROFILE"]

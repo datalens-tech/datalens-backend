@@ -44,6 +44,7 @@ from dl_query_processing.enums import (
     SelectValueType,
 )
 
+
 _COMPILED_FORMULA_INFO_TV = TypeVar("_COMPILED_FORMULA_INFO_TV", bound=CompiledFormulaInfo)
 
 

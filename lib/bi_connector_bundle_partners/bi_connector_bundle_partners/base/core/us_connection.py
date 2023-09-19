@@ -31,6 +31,7 @@ from dl_core.utils import parse_comma_separated_hosts
 
 from bi_connector_bundle_partners.base.core.settings import PartnerConnectorSettingsBase
 
+
 if TYPE_CHECKING:
     from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
     from dl_core.us_manager.us_manager_sync import SyncUSManager

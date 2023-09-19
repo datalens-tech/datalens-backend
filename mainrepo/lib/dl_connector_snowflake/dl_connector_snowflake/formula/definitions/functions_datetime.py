@@ -5,6 +5,7 @@ from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import raw_sql
 import dl_formula.definitions.functions_datetime as base
 
+
 V = TranslationVariant.make
 
 

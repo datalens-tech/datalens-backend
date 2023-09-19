@@ -3,6 +3,7 @@
 
 from statcommons.tools import qloud_juggler
 
+
 _IGNORED_NOTIFICATIONS = set((
 ))
 

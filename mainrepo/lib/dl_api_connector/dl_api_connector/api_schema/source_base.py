@@ -38,6 +38,7 @@ from dl_core.multisource import (
 from dl_model_tools.schema.base import BaseSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
+
 if TYPE_CHECKING:
     from dl_core.multisource import ConditionPart
 

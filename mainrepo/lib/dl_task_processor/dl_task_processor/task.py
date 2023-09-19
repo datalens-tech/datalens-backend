@@ -16,6 +16,7 @@ import attr
 
 from dl_task_processor.context import BaseContext
 
+
 TaskName = NewType("TaskName", str)
 
 

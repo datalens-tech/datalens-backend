@@ -15,6 +15,7 @@ from typing import (
 
 import attr
 
+
 LOGGER = logging.getLogger(__name__)
 
 _EXC_COMPOSER_TV = TypeVar("_EXC_COMPOSER_TV", bound="ExcComposer")

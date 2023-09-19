@@ -18,6 +18,7 @@ from dl_constants.types import TBIDataValue
 from dl_core.data_processing.types import TValuesChunkStream
 from dl_core.utils import make_id
 
+
 if TYPE_CHECKING:
     from dl_constants.enums import BIType
     from dl_core.data_processing.cache.primitives import LocalKeyRepresentation

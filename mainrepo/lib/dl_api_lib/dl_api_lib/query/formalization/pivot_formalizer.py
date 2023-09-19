@@ -37,6 +37,7 @@ from dl_query_processing.legend.field_legend import (
     MeasureNameObjSpec,
 )
 
+
 DIMENSION_ROLES = {PivotRole.pivot_row, PivotRole.pivot_column}
 MEASURE_ROLES = {PivotRole.pivot_measure}
 ANNOTATION_ROLES = {PivotRole.pivot_annotation}

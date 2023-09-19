@@ -22,6 +22,7 @@ from dl_core.components.ids import (
 from dl_query_processing.compilation.query_meta import QueryMetaInfo
 from dl_query_processing.enums import SelectValueType
 
+
 FilterArgType = Union[str, int, float, None]
 
 _QUERY_ITEM_SPEC_TV = TypeVar("_QUERY_ITEM_SPEC_TV", bound="QueryItemSpec")

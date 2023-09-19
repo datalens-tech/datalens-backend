@@ -22,6 +22,7 @@ from dl_file_uploader_task_interface.tasks import (
 )
 from dl_task_processor.processor import TaskProcessor
 
+
 LOGGER = logging.getLogger(__name__)
 
 

@@ -9,6 +9,7 @@ from dl_formula_ref.generator import (
 )
 from dl_formula_ref.loader import load_formula_ref
 
+
 parser = argparse.ArgumentParser(prog="Example data management tool")
 subparsers = parser.add_subparsers(title="command", dest="command")
 

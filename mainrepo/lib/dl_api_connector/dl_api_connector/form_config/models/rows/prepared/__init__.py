@@ -4,6 +4,7 @@ from .components import (
     OAuthTokenRow,
 )
 
+
 __all__ = (
     "OAuthTokenRow",
     "CacheTTLRow",

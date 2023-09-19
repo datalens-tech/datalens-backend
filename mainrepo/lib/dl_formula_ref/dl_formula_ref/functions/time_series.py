@@ -4,6 +4,7 @@ from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
 from dl_formula_ref.registry.note import Note
 
+
 _ = get_gettext()
 
 

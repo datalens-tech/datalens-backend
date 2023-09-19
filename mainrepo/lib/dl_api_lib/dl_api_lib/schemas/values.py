@@ -40,6 +40,7 @@ from dl_core.values import (
 from dl_model_tools.schema.base import DefaultSchema
 from dl_utils.schemas import OneOfSchemaWithDumpLoadHooks
 
+
 VALUE_TYPE_CONTEXT_KEY = "bi_value_type"
 
 

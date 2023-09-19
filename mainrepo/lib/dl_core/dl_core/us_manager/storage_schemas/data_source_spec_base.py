@@ -24,6 +24,7 @@ from dl_core.us_manager.storage_schemas.index_info import DataSourceIndexInfoSto
 from dl_core.us_manager.storage_schemas.raw_schema import DataSourceRawSchemaEntryStorageSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
+
 _DSRC_TOPLEVEL_PARAMS = ("connection_id", "created_from", "raw_schema")
 
 

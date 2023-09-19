@@ -14,6 +14,7 @@ from dl_formula_ref.registry.note_extr_base import NoteExtractorBase
 from dl_formula_ref.registry.text import ParameterizedText
 from dl_formula_ref.texts import CONST_TYPE_NOTE
 
+
 if TYPE_CHECKING:
     import dl_formula_ref.registry.base as _registry_base
     from dl_formula_ref.registry.env import GenerationEnvironment

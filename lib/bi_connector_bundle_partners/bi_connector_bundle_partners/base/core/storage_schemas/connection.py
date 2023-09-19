@@ -6,6 +6,7 @@ from dl_connector_clickhouse.core.clickhouse_base.storage_schemas.connection imp
 
 from bi_connector_bundle_partners.base.core.us_connection import PartnersCHConnectionBase
 
+
 _CH_PARTNER_CONN_DATA_TV = TypeVar("_CH_PARTNER_CONN_DATA_TV", bound=PartnersCHConnectionBase.DataModel)
 
 

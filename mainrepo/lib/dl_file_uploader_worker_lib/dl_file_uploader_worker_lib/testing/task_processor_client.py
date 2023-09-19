@@ -25,6 +25,7 @@ from dl_task_processor.worker import (
     ArqWorkerTestWrapper,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

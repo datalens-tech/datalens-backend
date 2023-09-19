@@ -91,6 +91,7 @@ from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 
+
 # To use fixture "loop" in each test in module
 #  Cause: if any other test before will use it default loop for thread will be set to None
 pytestmark = pytest.mark.usefixtures("loop")

@@ -14,6 +14,7 @@ import attr
 
 from bi_external_api.structs.mappings import FrozenStrMapping
 
+
 Locale = Union[Literal["ru"], Literal["en"]]
 
 

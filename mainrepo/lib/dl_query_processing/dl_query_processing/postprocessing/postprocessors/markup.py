@@ -12,6 +12,7 @@ from typing import (
     Union,
 )
 
+
 _NODE_TV = TypeVar("_NODE_TV")
 NodeActual = Union[_NODE_TV, str]  # what can act as a node
 NodeInput = Union[_NODE_TV, str]  # what can be passed to node-builders

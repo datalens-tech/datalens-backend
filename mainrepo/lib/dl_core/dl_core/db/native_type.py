@@ -14,6 +14,7 @@ from sqlalchemy.types import TypeEngine
 
 from dl_constants.enums import ConnectionType
 
+
 SATypeSpec = Union[Type[TypeEngine], TypeEngine, str, None]
 
 

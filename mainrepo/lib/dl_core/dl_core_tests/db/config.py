@@ -3,6 +3,7 @@ from typing import ClassVar
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
 
+
 # Infra settings
 CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_http=get_test_container_hostport("us", fallback_port=50300).host,

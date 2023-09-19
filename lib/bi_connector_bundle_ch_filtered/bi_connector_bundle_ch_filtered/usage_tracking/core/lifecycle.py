@@ -13,6 +13,7 @@ from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 
 from bi_connector_bundle_ch_filtered.usage_tracking.core.us_connection import UsageTrackingConnection
 
+
 LOGGER = logging.getLogger(__name__)
 
 

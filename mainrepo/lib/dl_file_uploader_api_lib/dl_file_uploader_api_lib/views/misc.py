@@ -19,6 +19,7 @@ from dl_file_uploader_task_interface.tasks import (
     RenameTenantFilesTask,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

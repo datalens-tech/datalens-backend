@@ -9,6 +9,7 @@ from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 
 from bi_connector_metrica.core.us_connection import MetrikaBaseMixin
 
+
 LOGGER = logging.getLogger(__name__)
 
 

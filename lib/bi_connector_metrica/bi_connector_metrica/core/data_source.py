@@ -25,6 +25,7 @@ from bi_connector_metrica.core.constants import (
 )
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
 
+
 if TYPE_CHECKING:
     from dl_core.connection_executors.async_base import AsyncConnExecutorBase
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase

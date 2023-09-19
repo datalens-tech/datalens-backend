@@ -13,6 +13,7 @@ import attr
 
 from dl_task_processor.arq_wrapper import create_redis_pool
 
+
 LOGGER = logging.getLogger(__name__)
 
 

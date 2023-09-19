@@ -22,6 +22,7 @@ from dl_formula.core.position import (
 from dl_formula.parser.base import resolve_function_capabilities
 from dl_formula.utils.datetime import make_datetime_value
 
+
 try:
     from dl_formula.parser.antlr.gen.DataLensParser import DataLensParser
     from dl_formula.parser.antlr.gen.DataLensVisitor import DataLensVisitor

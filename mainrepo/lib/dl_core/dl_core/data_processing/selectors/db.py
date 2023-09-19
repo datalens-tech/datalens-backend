@@ -19,6 +19,7 @@ from dl_core.data_processing.streaming import (
 import dl_core.exc as exc
 from dl_core.us_connection_base import ExecutorBasedMixin
 
+
 if TYPE_CHECKING:
     from dl_constants.types import TBIDataValue
     from dl_core.data_processing.selectors.base import BIQueryExecutionContext

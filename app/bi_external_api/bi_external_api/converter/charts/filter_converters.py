@@ -6,6 +6,7 @@ from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import charts
 from dl_constants.enums import WhereClauseOperation
 
+
 operation_map_ext_int: dict[ext.ComparisonOperation, WhereClauseOperation] = {
     ext.ComparisonOperation.IN: WhereClauseOperation.IN,
     ext.ComparisonOperation.NIN: WhereClauseOperation.NIN,

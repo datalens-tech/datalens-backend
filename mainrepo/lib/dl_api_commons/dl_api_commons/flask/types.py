@@ -7,6 +7,7 @@ from typing import (
     Tuple,
 )
 
+
 WSGIEnviron = Dict[str, Any]
 WSGIStartResponse = Callable[[str, List[Tuple[str, str]], Any], Any]
 WSGIReturn = Iterable[bytes]

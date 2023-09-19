@@ -10,6 +10,7 @@ from bi_legacy_test_bundle_tests.core.fixtures_ce import (  # noqa: F401
     sync_remote_query_executor,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

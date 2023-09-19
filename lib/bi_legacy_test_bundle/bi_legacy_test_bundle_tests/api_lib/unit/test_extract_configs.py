@@ -24,6 +24,7 @@ from dl_configs.settings_loaders.fallback_cfg_resolver import (
 from dl_configs.settings_loaders.loader_env import EnvSettingsLoader
 from dl_configs.settings_loaders.settings_serializers import defaults_to_yaml
 
+
 SEC_REDIS_PASSWORD = "someRedisPassowrd"
 
 

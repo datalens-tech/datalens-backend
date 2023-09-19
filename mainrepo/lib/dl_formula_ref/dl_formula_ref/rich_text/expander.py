@@ -51,6 +51,7 @@ from dl_formula_ref.texts import (
 )
 from dl_i18n.localizer_base import Translatable
 
+
 _MACRO_CHOICES = "|".join(("ref", "link", "text", "table", "dialects", "arg", "argn", "type", "macro", "category"))
 # 3 kinds of macros:
 #     {type: single_value}

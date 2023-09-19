@@ -13,6 +13,7 @@ from dl_formula.definitions.literals import (
     un_literal,
 )
 
+
 V = TranslationVariant.make
 
 

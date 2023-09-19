@@ -15,6 +15,7 @@ from dl_configs.connectors_settings import (
 )
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 
+
 _CONN_DATA_TV = TypeVar("_CONN_DATA_TV", bound=ConnectorsDataBase)
 
 

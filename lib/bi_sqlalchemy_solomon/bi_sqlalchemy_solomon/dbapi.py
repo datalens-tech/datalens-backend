@@ -13,6 +13,7 @@ from bi_sqlalchemy_solomon.errors import (
     Warning,
 )
 
+
 __all__ = (
     "connect",
     "DatabaseError",

@@ -5,6 +5,7 @@ import dl_db_testing as package
 from dl_db_testing.connector_registration import CONN_REG_DB_TESTING
 from dl_db_testing.connectors.base.connector import DbTestingConnector
 
+
 _CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 

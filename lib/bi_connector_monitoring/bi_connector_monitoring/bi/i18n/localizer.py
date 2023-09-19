@@ -7,6 +7,7 @@ from dl_i18n.localizer_base import TranslationConfig
 
 import bi_connector_monitoring as package
 
+
 DOMAIN = f"{package.__name__}"
 CONFIGS = [
     TranslationConfig(

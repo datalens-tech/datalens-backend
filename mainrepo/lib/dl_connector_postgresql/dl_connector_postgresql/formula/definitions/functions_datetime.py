@@ -19,6 +19,7 @@ import dl_formula.definitions.functions_datetime as base
 from dl_formula.definitions.literals import un_literal
 from dl_formula.shortcuts import n
 
+
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx
 

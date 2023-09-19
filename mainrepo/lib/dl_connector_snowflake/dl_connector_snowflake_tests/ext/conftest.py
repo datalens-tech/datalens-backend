@@ -17,6 +17,7 @@ from dl_formula.loader import load_bi_formula
 from dl_formula_testing.forced_literal import forced_literal_use
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 

@@ -18,6 +18,7 @@ from dl_formula.translation.type_strategy import (
     TypeStrategy,
 )
 
+
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx
 

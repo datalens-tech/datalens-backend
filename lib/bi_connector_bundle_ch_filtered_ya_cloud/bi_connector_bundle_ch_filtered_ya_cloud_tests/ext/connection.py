@@ -10,6 +10,7 @@ from dl_core.us_connection_base import ConnectionSQL
 from bi_connector_bundle_ch_filtered.testing.connection import CHFilteredConnectionTestClass
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config import EXT_BLACKBOX_USER_UID
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
 
 

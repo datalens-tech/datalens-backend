@@ -12,6 +12,7 @@ from bi_testing_ya.sql_queries import (
 )
 from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
+
 LOGGER = logging.getLogger(__name__)
 
 

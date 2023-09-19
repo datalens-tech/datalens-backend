@@ -29,6 +29,7 @@ from bi_connector_yql.core.ydb.constants import (
 from bi_connector_yql.core.ydb.dto import YDBConnDTO
 from bi_connector_yql.core.yql_base.us_connection import YQLConnectionMixin
 
+
 if TYPE_CHECKING:
     from dl_core.connection_models.common_models import TableIdent
 

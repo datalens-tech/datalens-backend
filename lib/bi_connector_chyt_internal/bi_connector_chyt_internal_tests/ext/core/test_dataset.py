@@ -30,6 +30,7 @@ from bi_connector_chyt_internal_tests.ext.core.config import (
     SUBSELECT_DSRC_PARAMS,
 )
 
+
 _CONN_TV = TypeVar("_CONN_TV", ConnectionCHYTInternalToken, ConnectionCHYTUserAuth)
 
 

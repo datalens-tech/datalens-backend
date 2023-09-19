@@ -33,6 +33,7 @@ from dl_constants.enums import PivotRole
 import dl_query_processing.exc
 from dl_query_processing.merging.primitives import MergedQueryDataRow
 
+
 if TYPE_CHECKING:
     from dl_api_lib.pivot.base.facade import TableDataFacade
     from dl_api_lib.pivot.stream_modifiers import TransposedDataRow

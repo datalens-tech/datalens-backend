@@ -57,6 +57,7 @@ from dl_query_processing.legacy_pipeline.subqueries.query_tools import (
 )
 from dl_query_processing.legacy_pipeline.subqueries.sanitizer import MultiQuerySanitizer
 
+
 if TYPE_CHECKING:
     from dl_query_processing.compilation.primitives import (
         CompiledFormulaInfo,

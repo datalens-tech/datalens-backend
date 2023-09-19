@@ -27,6 +27,7 @@ from dl_constants.enums import RLSSubjectType
 from dl_core.rls import RLSSubject
 from dl_core.utils import get_retriable_requests_session  # todo: move to bi api commons
 
+
 LOGGER = logging.getLogger(__name__)
 
 ST_DLS_TO_RLS = {

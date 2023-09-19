@@ -12,6 +12,7 @@ import dl_formula.core.exc as formula_exc
 from dl_formula.core.message_ctx import FormulaErrorCtx
 import dl_query_processing.exc
 
+
 FEATURE_ERROR_CODE = formula_exc.TranslationError.default_code + ("FEATURE_UNAVAILABLE",)
 
 

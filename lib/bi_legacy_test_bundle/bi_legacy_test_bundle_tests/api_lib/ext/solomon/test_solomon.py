@@ -5,6 +5,7 @@ import logging
 from multidict import CIMultiDict
 import pytest
 
+
 LOGGER = logging.getLogger(__name__)
 
 

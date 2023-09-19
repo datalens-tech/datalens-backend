@@ -177,6 +177,7 @@ from bi_connector_yql.core.ydb.settings import YDBConnectorSettings
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.settings import YQConnectorSettings
 
+
 pytest_plugins = (
     "aiohttp.pytest_plugin",
     "bi_testing_ya.pytest_plugin",

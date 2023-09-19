@@ -34,6 +34,7 @@ from dl_constants.enums import (
     PivotRole,
 )
 
+
 if TYPE_CHECKING:
     from dl_api_lib.query.formalization.pivot_legend import PivotLegend
     from dl_query_processing.legend.field_legend import Legend

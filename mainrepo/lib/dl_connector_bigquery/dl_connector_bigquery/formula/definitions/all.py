@@ -10,6 +10,7 @@ from dl_connector_bigquery.formula.definitions.operators_binary import DEFINITIO
 from dl_connector_bigquery.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_bigquery.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
+
 DEFINITIONS = [
     *DEFINITIONS_COND_BLOCKS,
     *DEFINITIONS_AGG,

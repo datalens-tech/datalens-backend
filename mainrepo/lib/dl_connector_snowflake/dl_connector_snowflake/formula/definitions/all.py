@@ -10,6 +10,7 @@ from dl_connector_snowflake.formula.definitions.operators_binary import DEFINITI
 from dl_connector_snowflake.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_snowflake.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
+
 DEFINITIONS = [
     *DEFINITIONS_UNARY,
     *DEFINITIONS_BINARY,

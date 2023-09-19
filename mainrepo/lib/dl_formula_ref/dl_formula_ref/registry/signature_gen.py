@@ -29,6 +29,7 @@ from dl_formula_ref.texts import (
     SIGNATURE_TITLE_STANDARD,
 )
 
+
 if TYPE_CHECKING:
     import dl_formula_ref.registry.arg_base as _arg_base
     import dl_formula_ref.registry.base as _registry_base

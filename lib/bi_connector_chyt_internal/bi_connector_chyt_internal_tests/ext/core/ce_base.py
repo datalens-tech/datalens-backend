@@ -18,6 +18,7 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.database import DbTable
 from dl_core_testing.testcases.connection_executor import DefaultSyncAsyncConnectionExecutorCheckBase
 
+
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

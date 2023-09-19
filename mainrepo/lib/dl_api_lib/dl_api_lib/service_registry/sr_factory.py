@@ -24,6 +24,7 @@ from dl_i18n.localizer_base import (
     LocalizerFactory,
 )
 
+
 if TYPE_CHECKING:
     from dl_api_commons.base_models import RequestContextInfo
 

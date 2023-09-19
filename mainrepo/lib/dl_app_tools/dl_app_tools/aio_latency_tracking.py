@@ -6,6 +6,7 @@ import math
 import time
 from typing import Optional
 
+
 LOGGER = logging.getLogger(__name__)
 
 

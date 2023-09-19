@@ -22,6 +22,7 @@ from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
 from bi_connector_yql.core.yq.target_dto import YQConnTargetDTO
 from bi_connector_yql.core.yql_base.adapter import YQLAdapterBase
 
+
 if TYPE_CHECKING:
     from dl_core.connection_models import SchemaIdent
     from dl_core.connectors.base.error_transformer import DBExcKWArgs

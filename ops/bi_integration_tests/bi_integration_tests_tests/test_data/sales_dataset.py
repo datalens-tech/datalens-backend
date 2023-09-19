@@ -3,6 +3,7 @@ import pkgutil
 
 import pandas as pd
 
+
 INDEX_COLUMN = "Row ID"
 VALUE_COLUMNS = ["Region", "Category", "Sales", "Order Date"]
 

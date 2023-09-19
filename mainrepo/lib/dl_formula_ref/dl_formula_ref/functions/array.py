@@ -14,6 +14,7 @@ from dl_formula_ref.registry.impl_selector import ArgAwareImplementationSelector
 from dl_formula_ref.registry.naming import CategoryPostfixNamingProvider
 from dl_formula_ref.registry.note import Note
 
+
 _ = get_gettext()
 
 _EXAMPLE_SOURCE_UNNEST = ExampleSource(

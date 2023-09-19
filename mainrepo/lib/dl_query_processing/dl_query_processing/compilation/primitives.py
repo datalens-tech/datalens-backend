@@ -28,6 +28,7 @@ from dl_query_processing.enums import (
     QueryPart,
 )
 
+
 _COMPILED_FLA_TV = TypeVar("_COMPILED_FLA_TV", bound="CompiledFormulaInfo")
 
 

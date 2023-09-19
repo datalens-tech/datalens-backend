@@ -5,6 +5,7 @@ from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
 
+
 V = TranslationVariant.make
 
 

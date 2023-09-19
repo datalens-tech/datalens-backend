@@ -15,6 +15,7 @@ from bi_external_api.testing_no_deps import DomainScene
 
 from ..test_scenario_grpc import GrpcAcceptanceScenarioDC
 
+
 ENV_VAR_RUN_ACCEPTANCE_AGAINST_DC_PROD = "DL_EXT_API_TESTS_RUN_ACCEPTANCE_AGAINST_DC_PROD"
 
 

@@ -16,6 +16,7 @@ from dl_formula_ref.paths import (
 from bi_connector_mssql.formula.constants import MssqlDialect
 from bi_connector_mysql.formula.constants import MySQLDialect
 
+
 DOC_GEN_CONFIG_DC = RefDocGeneratorConfig(
     func_doc_configs={
         FuncDocConfigVersion.overview_shortcut: FuncDocTemplateConfig(

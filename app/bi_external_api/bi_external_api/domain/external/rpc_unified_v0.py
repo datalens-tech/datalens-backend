@@ -46,6 +46,7 @@ from .workbook import (
     WorkBook,
 )
 
+
 UNIFIED_API_TYPES = [ExtAPIType.UNIFIED_DC, ExtAPIType.UNIFIED_NEBIUS_IL]
 
 

@@ -65,6 +65,7 @@ from .config import (
     TestingUSConfig,
 )
 
+
 pytest_plugins = (
     "aiohttp.pytest_plugin",
     "bi_testing_ya.pytest_plugin",

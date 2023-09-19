@@ -25,6 +25,7 @@ from bi_external_api.grpc_proxy.ext_api_client import (
     Response,
 )
 
+
 LOGGER = logging.getLogger(__name__)
 
 

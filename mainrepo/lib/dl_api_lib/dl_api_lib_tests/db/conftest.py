@@ -10,6 +10,7 @@ from dl_core.loader import CoreLibraryConfig
 from dl_core_testing.initialization import initialize_core_test
 from dl_formula.loader import load_bi_formula
 
+
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
 
 

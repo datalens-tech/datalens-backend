@@ -9,6 +9,7 @@ import attr
 
 from dl_constants.exc import DLBaseException
 
+
 _EXC_DATA_TV = TypeVar("_EXC_DATA_TV")
 
 
