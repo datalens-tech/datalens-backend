@@ -16,6 +16,12 @@ terraform {
   required_version = ">= 0.73"
 }
 
+module "constants" {
+  source = "../../_constants/v1"
+
+  env_name = var.env_name
+}
+
 locals {
   clickhouse_transfer_user   = var.clickhouse_properties.transfer_user
   clickhouse_log_devops_user = "devops"

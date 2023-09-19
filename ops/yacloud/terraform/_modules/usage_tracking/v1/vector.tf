@@ -4,6 +4,16 @@ locals {
     podValuesChecksumAnnotation = true
     podAnnotations              = { "prometheus.io/scrape" = "true" }
 
+    securityContext = {
+      allowPrivilegeEscalation = false
+      runAsNonRoot             = true
+      runAsUser                = 1000
+
+      capabilities = {
+        drop = ["all"]
+      }
+    }
+
     customConfig = {
       data_dir = "/vector-data-dir"
       api      = { enabled = false }

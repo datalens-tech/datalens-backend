@@ -8,7 +8,9 @@ locals {
 locals {
   backend_kafka_vector_setting = {
     version = "0.16.3"
-    k8s_ns  = "vector"
+    k8s_ns  = "logging"
+
+    data_dir = "/vector-data-dir"
 
     config = {
       type = "kafka"
@@ -45,8 +47,6 @@ locals {
 }
 
 locals {
-
-
   v_k8s_logs_agent_values = {
     role                        = "Agent"
     podValuesChecksumAnnotation = true
@@ -64,8 +64,17 @@ locals {
       },
     ]
 
+    securityContext = {
+      allowPrivilegeEscalation = false
+
+      capabilities = {
+        drop = ["all"]
+        add  = ["dac_override"]
+      }
+    }
+
     customConfig = {
-      data_dir = "/vector-data-dir"
+      data_dir = local.backend_kafka_vector_setting.data_dir
       api      = { enabled = false }
       sources = {
         k8s_logs         = { type = "kubernetes_logs" }
@@ -96,8 +105,18 @@ locals {
     podValuesChecksumAnnotation = true
     podAnnotations              = { "prometheus.io/scrape" = "true" }
 
+    securityContext = {
+      allowPrivilegeEscalation = false
+      runAsNonRoot             = true
+      runAsUser                = 1000
+
+      capabilities = {
+        drop = ["all"]
+      }
+    }
+
     customConfig = {
-      data_dir = "/vector-data-dir"
+      data_dir = local.backend_kafka_vector_setting.data_dir
       api      = { enabled = false }
       sources = {
         internal_metrics = {
@@ -252,6 +271,67 @@ resource "helm_release" "vector-log-parser" {
 
   values = [
     yamlencode(local.v_log_parser_values)
+  ]
+}
+
+resource "kubernetes_network_policy" "allow-system" {
+  count  = module.constants.env_data.k8s_use_cilium ? 1 : 0
+
+  metadata {
+    name      = "allow-system"
+    namespace = local.backend_kafka_vector_setting.k8s_ns
+  }
+
+  spec {
+    policy_types = ["Egress"]
+    pod_selector {}
+
+    egress {
+      ports {
+        port     = "53"
+        protocol = "UDP"
+      }
+      ports {
+        port     = "443"
+        protocol = "TCP"
+      }
+    }
+  }
+
+  depends_on = [
+    kubernetes_namespace.vector_ns,
+  ]
+}
+
+resource "kubernetes_network_policy" "allow-kafka" {
+  count  = module.constants.env_data.k8s_use_cilium ? 1 : 0
+
+  metadata {
+    name      = "allow-kafka"
+    namespace = local.backend_kafka_vector_setting.k8s_ns
+  }
+
+  spec {
+    policy_types = ["Ingress", "Egress"]
+    pod_selector {}
+
+    egress {
+      ports {
+        port     = "9091"
+        protocol = "TCP"
+      }
+    }
+
+    ingress {
+      ports {
+        port     = "9091"
+        protocol = "TCP"
+      }
+    }
+  }
+
+  depends_on = [
+    kubernetes_namespace.vector_ns,
   ]
 }
 
