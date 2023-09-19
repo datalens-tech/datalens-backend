@@ -7,6 +7,10 @@ from control_api.app_factory import ControlApiAppFactoryNebius
 import flask
 
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_defaults.environments import (
+    EnvAliasesMap,
+    InstallationsMap,
+)
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.loader import (
     ApiLibraryConfig,
@@ -18,6 +22,7 @@ from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
+from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import (
     load_connectors_settings_from_env_with_fallback,
     load_settings_from_env_with_fallback,
@@ -28,6 +33,7 @@ from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_FALLBACKS,
 )
 from dl_core.flask_utils.sentry import configure_raven_for_flask
+from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
 
 
@@ -47,11 +53,24 @@ def create_app(
 
 def create_gunicorn_app() -> flask.Flask:
     preload_bi_api_lib()
-    settings = load_settings_from_env_with_fallback(ControlPlaneAppSettings)
-    load_bi_api_lib(ApiLibraryConfig(api_connector_ep_names=settings.CONNECTOR_WHITELIST))
+    fallback_resolver = YEnvFallbackConfigResolver(
+        installation_map=InstallationsMap,
+        env_map=EnvAliasesMap,
+    )
+    settings = load_settings_from_env_with_fallback(
+        ControlPlaneAppSettings,
+        default_fallback_cfg_resolver=fallback_resolver,
+    )
+    load_bi_api_lib(
+        ApiLibraryConfig(
+            api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
+            core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+        )
+    )
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
+        fallback_cfg_resolver=fallback_resolver,
     )
     app = create_app(settings, connectors_settings)
 

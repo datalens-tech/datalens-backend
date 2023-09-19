@@ -32,4 +32,4 @@ RUN update-ca-certificates
 EXPOSE 8080
 WORKDIR /src/app_nebius/$APP_NAME
 
-ENTRYPOINT ["gunicorn $APP_NAME.app:create_gunicorn_app --config '/src/app_nebius/gunicorn/gunicorn_config.py' "]
+ENTRYPOINT gunicorn $APP_NAME.app:create_gunicorn_app --config /src/app_nebius/gunicorn/gunicorn_config.py

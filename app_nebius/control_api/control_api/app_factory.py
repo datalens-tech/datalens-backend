@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from control_api.i18n.localizer import CONFIGS
 import flask
 
 from bi_api_commons_ya_cloud.flask.middlewares.yc_auth import FlaskYCAuthService
@@ -27,6 +28,7 @@ from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_i18n.localizer_base import TranslationConfig
 
 
 class ControlApiSRFactoryBuilderNebius(SRFactoryBuilder[ControlPlaneAppSettings]):
@@ -55,6 +57,7 @@ class ControlApiSRFactoryBuilderNebius(SRFactoryBuilder[ControlPlaneAppSettings]
             yc_as_endpoint=settings.YC_AUTH_SETTINGS.YC_AS_ENDPOINT if settings.YC_AUTH_SETTINGS else None,
             yc_api_endpoint_iam=settings.YC_AUTH_SETTINGS.YC_API_ENDPOINT_IAM if settings.YC_AUTH_SETTINGS else None,
             yc_ts_endpoint=settings.YC_IAM_TS_ENDPOINT,
+            yc_api_endpoint_mdb=settings.YC_MDB_API_ENDPOINT,
             sa_creds_retriever_factory=SACredsRetrieverFactory(
                 sa_creds_settings=sa_creds_settings, ts_endpoint=settings.YC_IAM_TS_ENDPOINT
             )
@@ -76,6 +79,12 @@ class ControlApiSRFactoryBuilderNebius(SRFactoryBuilder[ControlPlaneAppSettings]
 
     def _get_connector_availability(self, settings: ControlPlaneAppSettings) -> Optional[ConnectorAvailabilityConfig]:
         return settings.CONNECTOR_AVAILABILITY
+
+    @property
+    def _extra_translation_configs(self) -> set[TranslationConfig]:
+        configs = super()._extra_translation_configs
+        configs.update(CONFIGS)
+        return configs
 
 
 class ControlApiAppFactoryNebius(ControlApiAppFactory[ControlPlaneAppSettings], ControlApiSRFactoryBuilderNebius):

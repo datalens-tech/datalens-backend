@@ -5,12 +5,14 @@ from typing import Optional
 from data_api import app_version
 
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
+from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode
 from bi_api_commons_ya_cloud.yc_access_control_model import AuthorizationModeYandexCloud
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
     BaseAppSettings,
 )
+from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
@@ -23,26 +25,27 @@ from dl_api_lib.app.data_api.app import (
 )
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from dl_api_lib.app_settings import TestAppSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import (
     RQE_SERVICES,
     RequiredService,
 )
-from dl_constants.api_constants import YcTokenHeaderMode
 from dl_constants.enums import ConnectionType
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import (
     service_us_manager_middleware,
     us_manager_middleware,
 )
+from dl_core.connection_models import ConnectOptions
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.services_registry.entity_checker import EntityUsageChecker
-from dl_core.services_registry.env_manager_factory import CloudEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.us_connection_base import ExecutorBasedMixin
+
+from bi_connector_yql.core.ydb.us_connection import YDBConnectOptions  # TODO: remove dependency on connector
 
 
 class DataApiSRFactoryBuilderNebius(SRFactoryBuilder[BaseAppSettings]):
@@ -117,7 +120,6 @@ class DataApiAppFactoryNebius(DataApiAppFactory[AsyncAppSettings], DataApiSRFact
     def set_up_environment(
         self,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        test_setting: Optional[TestAppSettings] = None,
     ) -> EnvSetupResult:
         auth_mw_list: list[AIOHTTPMiddleware]
         sr_middleware_list: list[AIOHTTPMiddleware]
@@ -146,6 +148,14 @@ class DataApiAppFactoryNebius(DataApiAppFactory[AsyncAppSettings], DataApiSRFact
         auth_mw_list = [yc_auth_service.middleware]
 
         # SR middlewares
+
+        def ydb_is_cloud_mutator(conn_opts: ConnectOptions, conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
+            if isinstance(conn_opts, YDBConnectOptions):
+                return conn_opts.clone(is_cloud=True)
+            return None
+
+        conn_opts_factory.add_mutator(ydb_is_cloud_mutator)
+
         sr_middleware_list = [
             services_registry_middleware(
                 services_registry_factory=sr_factory,
