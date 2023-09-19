@@ -12,9 +12,7 @@
     "app_yc_file_uploader_api",
     "app_bi_file_uploader_worker",
     "app_yc_file_uploader_worker",
-    "",
     "app_nebius_control_api",
-    "",
     "app_nebius_data_api"
   ]
 }
