@@ -2,6 +2,7 @@ from typing import Optional
 
 import attr
 
+from dl_configs.connectors_settings import ConnectorsConfigType
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import GoogleAppSettings
@@ -22,6 +23,11 @@ class FileUploaderConnectorsSettings(SettingsBase):
     FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore
 
 
+def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -> FileUploaderConnectorsSettings:
+    settings = file_s3_settings_fallback(full_cfg)
+    return FileUploaderConnectorsSettings(**settings)
+
+
 @attr.s(frozen=True)
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore
@@ -35,7 +41,7 @@ class FileUploaderWorkerSettings(FileUploaderBaseSettings):
 
     CONNECTORS: Optional[FileUploaderConnectorsSettings] = s_attrib(  # type: ignore
         "CONNECTORS",
-        fallback_factory=file_s3_settings_fallback,
+        fallback_factory=file_uploader_connectors_settings_fallback,
     )
 
     GSHEETS_APP: GoogleAppSettings = s_attrib(  # type: ignore
