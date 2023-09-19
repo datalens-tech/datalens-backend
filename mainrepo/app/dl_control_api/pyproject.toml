@@ -20,7 +20,6 @@ datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
 datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
 datalens-core = {path = "../../lib/dl_core"}
 datalens-app-tools = {path = "../../lib/dl_app_tools"}
 datalens-model-tools = {path = "../../lib/dl_model_tools"}
