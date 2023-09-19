@@ -91,4 +91,4 @@ def _create_gunicorn_app() -> flask.Flask:
     return app
 
 
-create_gunicorn_app = _create_gunicorn_app()
+gunicorn_app = _create_gunicorn_app()

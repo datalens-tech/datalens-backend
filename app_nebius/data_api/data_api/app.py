@@ -49,7 +49,7 @@ def create_app(
     )
 
 
-async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
+async def gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     preload_bi_api_lib()
     fallback_resolver = YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
@@ -93,7 +93,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
 def main() -> None:
     host = os.environ["APP_HOST"]
     port = int(os.environ["APP_PORT"])
-    app_coro = create_gunicorn_app()
+    app_coro = gunicorn_app()
     web.run_app(app_coro, host=host, port=port)
 
 
