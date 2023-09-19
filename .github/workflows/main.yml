@@ -377,7 +377,7 @@ jobs:
           VENV_PATH: /venv
           SKIP_RUFF: true
 
-  codestyle_all:
+  codestyle_all_without_ruff:
     runs-on: [self-hosted, linux, light]
     needs: gh_build_image
     container:
@@ -400,6 +400,7 @@ jobs:
           task cq:check_dir_strict -- .
         env:
           VENV_PATH: /venv
+          SKIP_RUFF: true
 
   codestyle_changed_without_ruff:
     runs-on: [ self-hosted, linux, light ]
