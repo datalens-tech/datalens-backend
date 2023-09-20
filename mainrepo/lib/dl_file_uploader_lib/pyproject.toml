@@ -3,9 +3,9 @@
 name = "datalens-file-uploader-lib"
 version = "0.0.1"
 description = ""
-authors = ["Aleksei Konstantinov <konstasa@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_file_uploader_lib"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

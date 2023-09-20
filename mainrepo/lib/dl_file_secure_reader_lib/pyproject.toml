@@ -3,9 +3,9 @@
 name = "datalens-file-secure-reader-lib"
 version = "0.1.0"
 description = ""
-authors = ["Sergey Borodin <seray@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_file_secure_reader_lib"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

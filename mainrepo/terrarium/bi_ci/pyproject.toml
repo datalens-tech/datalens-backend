@@ -38,8 +38,8 @@ ignore_missing_imports = true
 name = "bi-ci"
 version = "0.1.0"
 description = ""
-authors = ["Valentin Gologuzov <vgol@double.cloud>"]
-license = "MIT"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+license = "Apache 2.0"
 packages = [{include = "bi_ci"}]
 
 [tool.poetry.dependencies]

@@ -3,9 +3,9 @@
 name = "datalens-configs"
 version = "0.0.1"
 description = ""
-authors = ["Konstantin Chupin <kchupin@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_configs"}]
-license = "MIT"
+license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]

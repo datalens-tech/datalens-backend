@@ -3,9 +3,9 @@
 name = "datalens-api-commons"
 version = "0.0.1"
 description = ""
-authors = ["Aleksandr Ushakov <alex-ushakov@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_api_commons"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

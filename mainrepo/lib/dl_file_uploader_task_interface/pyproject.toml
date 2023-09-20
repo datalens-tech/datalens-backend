@@ -3,9 +3,9 @@
 name = "datalens-file-uploader-task-interface"
 version = "0.0.0"
 description = ""
-authors = ["Andrey Snytin <asnytin@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_file_uploader_task_interface"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.rst"
 
 

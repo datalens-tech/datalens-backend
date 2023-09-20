@@ -3,9 +3,9 @@
 name = "datalens-version"
 version = "0.2031.0"
 description = ""
-authors = ["Package Author <bipackageauthor@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_version"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

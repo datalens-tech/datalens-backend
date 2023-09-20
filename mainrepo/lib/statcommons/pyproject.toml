@@ -3,9 +3,9 @@
 name = "statcommons"
 version = "0.28.0"
 description = "Possibly-statbox-api-related common utils and helpers and reusables."
-authors = ["Anton Vasilyev <hhell@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "statcommons"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

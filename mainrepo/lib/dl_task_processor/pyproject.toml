@@ -3,9 +3,9 @@
 name = "datalens-task-processor"
 version = "0.0.0"
 description = ""
-authors = ["Max Zuev <thenno@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_task_processor"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.rst"
 
 

@@ -3,7 +3,10 @@
 name = "redis_cache_lock"
 version = "0.0.1"
 description = ""
-authors = ["HoverHell <hoverhell@gmail.com>"]
+authors = [
+    "HoverHell <hoverhell@gmail.com>",
+    "DataLens Team <datalens-opensource@yandex-team.ru>",
+]
 packages = [{include = "redis_cache_lock"}]
 license = "MIT"
 readme = "README.rst"

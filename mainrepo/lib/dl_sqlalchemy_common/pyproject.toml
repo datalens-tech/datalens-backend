@@ -3,9 +3,9 @@
 name = "datalens-sqlalchemy-common"
 version = "0.2"
 description = "BI SQLAlchemy dialects common additions"
-authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_sqlalchemy_common"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.rst"
 
 

@@ -3,9 +3,9 @@
 name = "datalens-connector-bundle-chs3"
 version = "0.0.1"
 description = ""
-authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_connector_bundle_chs3"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

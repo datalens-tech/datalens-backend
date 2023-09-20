@@ -3,9 +3,9 @@
 name = "datalens-formula"
 version = "7.47.0"
 description = ""
-authors = ["Grigory Statsenko <gstatsenko@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_formula"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

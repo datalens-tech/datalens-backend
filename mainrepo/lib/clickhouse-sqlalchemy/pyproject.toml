@@ -3,7 +3,10 @@
 name = "statinfra-clickhouse-sqlalchemy"
 version = "0.1.3.14"
 description = "Simple ClickHouse SQLAlchemy Dialect"
-authors = ["Konstantin Lebedev, Dmitry Fedorov <missing@localhost>"]
+authors = [
+    "Konstantin Lebedev <kostyan.lebedev@gmail.com>",
+    "DataLens Team <datalens-opensource@yandex-team.ru>",
+]
 packages = [{include = "clickhouse_sqlalchemy"}]
 license = "MIT"
 readme = "README.rst"

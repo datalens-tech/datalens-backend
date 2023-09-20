@@ -3,9 +3,9 @@
 name = "datalens-compeng-pg"
 version = "0.0.1"
 description = ""
-authors = ["Grigorii Statsenko <gstatsenko@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_compeng_pg"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 

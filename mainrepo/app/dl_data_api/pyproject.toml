@@ -3,9 +3,9 @@
 name = "datalens-data-api"
 version = "0.0.0"
 description = ""
-authors = ["Dmitry Fedorov <dmifedorov@yandex-team.ru>", "Aleksei Konstantinov konstasa@yandex-team.ru"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_data_api"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]

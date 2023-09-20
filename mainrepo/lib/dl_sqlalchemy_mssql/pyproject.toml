@@ -3,9 +3,9 @@
 name = "datalens-sqlalchemy-mssql"
 version = "0.3"
 description = "BI MSSQL SQLAlchemy Dialect"
-authors = ["Datalens Backendovich <robot-datalens-back@yandex-team.ru>"]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_sqlalchemy_mssql"}]
-license = "MIT"
+license = "Apache 2.0"
 readme = "README.rst"
 
 
