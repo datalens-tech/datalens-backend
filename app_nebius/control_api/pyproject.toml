@@ -16,7 +16,6 @@ yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch_frozen"}
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
 yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
@@ -24,6 +23,7 @@ yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}

@@ -5151,6 +5151,7 @@ develop = false
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 blinker = ">=1.5"
 datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
@@ -5174,7 +5175,6 @@ yandex-bi-connector-bundle_ch_frozen = {path = "../../lib/bi_connector_bundle_ch
 yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_partners"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
@@ -5198,6 +5198,7 @@ develop = false
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
+bi-connector-mysql-mdb = {path = "../../lib/bi_connector_mysql_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
@@ -5221,7 +5222,6 @@ yandex-bi-connector-bundle_partners = {path = "../../lib/bi_connector_bundle_par
 yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
-yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
 yandex-bi-sqlalchemy-mysql = {path = "../../lib/bi_sqlalchemy_mysql"}
