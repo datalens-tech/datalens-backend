@@ -77,7 +77,7 @@ def create_uwsgi_app() -> flask.Flask:
     )
     if actual_sentry_dsn is not None:
         hook_configure_configure_sentry_for_flask(
-            app,
+            uwsgi_app,
             SentryConfig(dsn=actual_sentry_dsn, release=app_version),
         )
 
