@@ -99,7 +99,7 @@ def create_uwsgi_app():  # type: ignore  # TODO: fix
         jaeger_service_name=jaeger_service_name_env_aware("bi-api-app"),
     )
     if actual_sentry_dsn is not None:
-        hook_configure_configure_sentry_for_flask(app, SentryConfig(dsn=actual_sentry_dsn, release=app_version))
+        hook_configure_configure_sentry_for_flask(uwsgi_app, SentryConfig(dsn=actual_sentry_dsn, release=app_version))
 
     return uwsgi_app
 
