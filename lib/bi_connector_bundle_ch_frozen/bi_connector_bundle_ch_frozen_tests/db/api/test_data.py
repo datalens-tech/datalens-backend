@@ -7,6 +7,7 @@ from bi_connector_bundle_ch_frozen_tests.db.api.base import (
     CHFrozenDataApiSubselectTestBase,
     CHFrozenDataApiTestBase,
 )
+from dl_testing.regulated_test import RegulatedTestParams
 
 
 class TestCHFrozenPreview(CHFrozenDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
@@ -14,7 +15,11 @@ class TestCHFrozenPreview(CHFrozenDataApiTestBase, DefaultConnectorDataPreviewTe
 
 
 class TestCHFrozenResult(CHFrozenDataApiTestBase, DefaultConnectorDataResultTestSuite):
-    pass
+    test_params = RegulatedTestParams(
+        mark_features_skipped={
+            DefaultConnectorDataResultTestSuite.array_support: "Frozen connectors doesn't support creating new tables",
+        }
+    )
 
 
 class TestCHFrozenSubselectPreview(CHFrozenDataApiSubselectTestBase, DefaultConnectorDataPreviewTestSuite):
@@ -22,4 +27,8 @@ class TestCHFrozenSubselectPreview(CHFrozenDataApiSubselectTestBase, DefaultConn
 
 
 class TestCHFrozenSubselectResult(CHFrozenDataApiSubselectTestBase, DefaultConnectorDataResultTestSuite):
-    pass
+    test_params = RegulatedTestParams(
+        mark_features_skipped={
+            DefaultConnectorDataResultTestSuite.array_support: "Frozen connectors doesn't support creating new tables",
+        }
+    )

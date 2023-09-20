@@ -4,9 +4,10 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.dashsql_base import DashSQLTestBase
+from dl_testing.regulated_test import RegulatedTestCase
 
 
-class DefaultDashSQLTestSuite(DashSQLTestBase, metaclass=abc.ABCMeta):
+class DefaultDashSQLTestSuite(DashSQLTestBase, RegulatedTestCase, metaclass=abc.ABCMeta):
     @pytest.mark.asyncio
     async def test_basic_select(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str) -> None:
         resp = await self.get_dashsql_response(

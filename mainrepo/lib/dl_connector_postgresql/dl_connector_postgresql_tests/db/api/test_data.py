@@ -32,8 +32,6 @@ from dl_sqlalchemy_postgres.base import CITEXT
 
 
 class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataResultTestSuite):
-    do_test_arrays = True
-
     def test_isnull(
         self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
     ) -> None:

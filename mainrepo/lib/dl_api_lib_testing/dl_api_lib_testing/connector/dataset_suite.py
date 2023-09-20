@@ -2,9 +2,10 @@ import abc
 
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_testing.regulated_test import RegulatedTestCase
 
 
-class DefaultConnectorDatasetTestSuite(DatasetTestBase, metaclass=abc.ABCMeta):
+class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metaclass=abc.ABCMeta):
     def check_basic_dataset(self, ds: Dataset) -> None:
         """Additional dataset checks can be defined here"""
         assert ds.id

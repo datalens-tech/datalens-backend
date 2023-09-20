@@ -9,7 +9,7 @@ from dl_connector_clickhouse_tests.db.api.base import ClickHouseDataApiTestBase
 
 
 class TestClickHouseDataResult(ClickHouseDataApiTestBase, DefaultConnectorDataResultTestSuite):
-    do_test_arrays = True
+    pass
 
 
 class TestClickHouseDataGroupBy(ClickHouseDataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):

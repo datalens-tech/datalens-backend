@@ -2,9 +2,10 @@ import json
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connection_base import ConnectionTestBase
+from dl_testing.regulated_test import RegulatedTestCase
 
 
-class DefaultConnectorConnectionTestSuite(ConnectionTestBase):
+class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase):
     def test_create_connection(self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str) -> None:
         assert saved_connection_id
         resp = control_api_sync_client.get(

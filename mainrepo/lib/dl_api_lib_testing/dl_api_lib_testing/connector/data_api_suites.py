@@ -24,10 +24,14 @@ from dl_core_testing.database import (
     Db,
     make_table,
 )
+from dl_testing.regulated_test import (
+    Feature,
+    for_features,
+)
 
 
 class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
-    do_test_arrays: ClassVar[bool] = False
+    array_support = Feature("Connector supports arrays")
 
     def test_basic_result(
         self,
@@ -53,6 +57,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
 
         assert pytest.approx(total_sum_1) == total_sum_2
 
+    @for_features(array_support)
     def test_array_contains_filter(
         self,
         db: Db,
@@ -61,9 +66,6 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
         dataset_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
-        if not self.do_test_arrays:
-            pytest.skip("do_test_arrays = False")
-
         columns = [
             C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
             C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
@@ -120,6 +122,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
             ("array_float_value", "none_value", False),
         ),
     )
+    @for_features(array_support)
     def test_array_contains_field(
         self,
         db: Db,
@@ -131,9 +134,6 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
         filter_field_title: str,
         is_numeric: bool,
     ) -> None:
-        if not self.do_test_arrays:
-            pytest.skip("do_test_arrays = False")
-
         columns = [
             C("int_value", BIType.integer, vg=lambda rn, **kwargs: 3),
             C("str_value", BIType.string, vg=lambda rn, **kwargs: "3"),
