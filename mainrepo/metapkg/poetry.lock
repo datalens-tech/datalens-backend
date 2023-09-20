@@ -482,6 +482,17 @@ jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
 uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
+name = "blinker"
+version = "1.6.2"
+description = "Fast, simple object-to-object and broadcast signaling"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "blinker-1.6.2-py3-none-any.whl", hash = "sha256:c3d739772abb7bc2860abf5f2ec284223d9ad5c76da018234f6f50d6f31ab1f0"},
+    {file = "blinker-1.6.2.tar.gz", hash = "sha256:4afd3de66ef3a9f8067559fb7a1cbe555c17dcbe15971b05d1b625c3e7abe213"},
+]
+
+[[package]]
 name = "boto3"
 version = "1.24.59"
 description = "The AWS SDK for Python"
@@ -1410,6 +1421,35 @@ type = "directory"
 url = "../lib/dl_constants"
 
 [[package]]
+name = "datalens-control-api"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+blinker = ">=1.5"
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
+datalens-version = {path = "../../lib/dl_version"}
+Flask = ">=2.0.3"
+raven = ">=6.10.0"
+
+[package.source]
+type = "directory"
+url = "../app/dl_control_api"
+
+[[package]]
 name = "datalens-core"
 version = "12.99.0"
 description = ""
@@ -1499,6 +1539,33 @@ Werkzeug = ">=2.0.3"
 [package.source]
 type = "directory"
 url = "../lib/dl_core_testing"
+
+[[package]]
+name = "datalens-data-api"
+version = "0.0.0"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-core = {path = "../../lib/dl_core"}
+datalens-model-tools = {path = "../../lib/dl_model_tools"}
+datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../../lib/dl_utils"}
+datalens-version = {path = "../../lib/dl_version"}
+gunicorn = ">=20.1.0"
+
+[package.source]
+type = "directory"
+url = "../app/dl_data_api"
 
 [[package]]
 name = "datalens-db-testing"
@@ -1992,7 +2059,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "datalens-version"
-version = "0.2027.0"
+version = "0.2031.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -5606,4 +5673,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "7b8fc8bdbdf1af67a19ad3bd794bbf01118369d840ff65f77b35baa47be2e9a4"
+content-hash = "5800128118fdcf87826d4bb764406ccc0a0f82c8ad4fb44d9160ed2539863e13"

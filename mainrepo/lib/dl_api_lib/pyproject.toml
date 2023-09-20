@@ -39,7 +39,7 @@ datalens-task-processor = {path = "../dl_task_processor"}
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-datalens-compeng-pg = {path = "../../mainrepo/lib/dl_compeng_pg"}
+datalens-compeng-pg = {path = "../dl_compeng_pg"}
 datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
 datalens-testing = {path = "../dl_testing"}
