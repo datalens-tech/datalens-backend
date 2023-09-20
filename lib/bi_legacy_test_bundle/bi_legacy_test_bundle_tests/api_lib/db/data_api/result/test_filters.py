@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 import json
-from typing import (
-    Any,
-    Callable,
-)
+from typing import Callable
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
 from dl_api_client.dsmaker.primitives import Dataset
@@ -165,52 +162,3 @@ def test_array_startswith_filter(api_v1, data_api_v1, clickhouse_db, connection_
     check_filter("array_int_value", filter_value=[3, 2, 1, 0])
     check_filter("array_float_value", filter_value=[0.03, 0.02, 0.01, 0.0])
     check_filter("array_str_value", filter_value=["3", "2", "1", "0"])
-
-
-def test_array_contains_filter(api_v1, data_api_v1, clickhouse_db, connection_id):
-    data_api = data_api_v1
-    db = clickhouse_db
-    columns = [
-        C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
-        C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
-        C("array_str_value", BIType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
-        C("array_float_value", BIType.array_float, vg=lambda rn, **kwargs: [i / 100.0 for i in reversed(range(rn))]),
-    ]
-    db_table = make_table_with_arrays(db, columns=columns)
-    ds = Dataset()
-    ds.sources["source_1"] = ds.source(connection_id=connection_id, **data_source_settings_from_table(db_table))
-    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds = api_v1.save_dataset(ds).dataset
-
-    def check_filter(field_title: str, filter_value: Any, not_: bool = False) -> None:
-        result_resp = data_api.get_result(
-            dataset=ds,
-            fields=[
-                ds.find_field(title="int_value"),
-                ds.find_field(title=field_title),
-            ],
-            where=[
-                ds.find_field(title=field_title).filter(
-                    op=WhereClauseOperation.CONTAINS if not not_ else WhereClauseOperation.NOTCONTAINS,
-                    values=[str(filter_value)],
-                ),
-            ],
-            fail_ok=True,
-        )
-        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
-        data_rows = get_data_rows(result_resp)
-        assert data_rows
-        for row in data_rows:
-            result_array = json.loads(row[1])
-            if not not_:
-                assert filter_value in result_array
-            else:
-                assert filter_value not in result_array
-
-    check_filter("array_int_value", filter_value=3)
-    check_filter("array_int_value", filter_value=3, not_=True)
-    check_filter("array_float_value", filter_value=0.03)
-    check_filter("array_float_value", filter_value=0.03, not_=True)
-    check_filter("array_str_value", filter_value="3")
-    check_filter("array_str_value", filter_value="3", not_=True)

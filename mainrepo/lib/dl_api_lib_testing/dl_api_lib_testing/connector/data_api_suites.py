@@ -1,9 +1,6 @@
 import datetime
 import json
-from typing import (
-    Any,
-    ClassVar,
-)
+from typing import Any
 
 import pytest
 
@@ -26,11 +23,12 @@ from dl_core_testing.database import (
 )
 from dl_testing.regulated_test import (
     Feature,
+    RegulatedTestCase,
     for_features,
 )
 
 
-class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
+class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     array_support = Feature("Connector supports arrays")
 
     def test_basic_result(
@@ -57,14 +55,14 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
 
         assert pytest.approx(total_sum_1) == total_sum_2
 
-    @for_features(array_support)
-    def test_array_contains_filter(
+    def _test_contains(
         self,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
         dataset_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
+        filter_op: WhereClauseOperation,
     ) -> None:
         columns = [
             C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
@@ -93,23 +91,53 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
                 ],
                 filters=[
                     ds.find_field(title=field_title).filter(
-                        op=WhereClauseOperation.CONTAINS,
+                        op=filter_op,
                         values=[filter_value],
                     ),
                 ],
-                fail_ok=True,
             )
-            assert result_resp.status_code == 200, result_resp.json
+
             data_rows = get_data_rows(result_resp)
             assert data_rows, repr(filter_value)
             for row in data_rows:
                 result_array = json.loads(row[1])
-                assert filter_value in result_array
+                if filter_op == WhereClauseOperation.CONTAINS:
+                    assert filter_value in result_array
+                elif filter_op == WhereClauseOperation.NOTCONTAINS:
+                    assert filter_value not in result_array
+                else:
+                    raise ValueError(f"Unknown operation {filter_op}")
 
         check_filter("array_int_value", 3)
         check_filter("array_str_value", "3")
         check_filter("array_float_value", 0.03)
         check_filter("array_str_value", None)
+
+    @for_features(array_support)
+    def test_array_contains_filter(
+        self,
+        db: Db,
+        saved_connection_id: str,
+        dataset_params: dict,
+        dataset_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        self._test_contains(
+            db, saved_connection_id, dataset_params, dataset_api, data_api, WhereClauseOperation.CONTAINS
+        )
+
+    @for_features(array_support)
+    def test_array_not_contains_filter(
+        self,
+        db: Db,
+        saved_connection_id: str,
+        dataset_params: dict,
+        dataset_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        self._test_contains(
+            db, saved_connection_id, dataset_params, dataset_api, data_api, WhereClauseOperation.NOTCONTAINS
+        )
 
     @pytest.mark.parametrize(
         "field_title,filter_field_title,is_numeric",
@@ -247,7 +275,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
         assert all("2" in value for value in values)
 
 
-class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase):
+class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     def test_complex_result(
         self,
         saved_dataset: Dataset,
@@ -266,7 +294,7 @@ class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase):
         assert len(grouped_rows) > min_row_cnt
 
 
-class DefaultConnectorDataRangeTestSuite(StandardizedDataApiTestBase):
+class DefaultConnectorDataRangeTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     def test_basic_range(
         self,
         saved_dataset: Dataset,
@@ -281,7 +309,7 @@ class DefaultConnectorDataRangeTestSuite(StandardizedDataApiTestBase):
         assert max_val > min_val
 
 
-class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase):
+class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     def test_basic_distinct(
         self,
         saved_dataset: Dataset,
@@ -345,7 +373,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase):
         assert len(data_rows) == 1
 
 
-class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase):
+class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     def test_basic_distinct(
         self,
         saved_dataset: Dataset,

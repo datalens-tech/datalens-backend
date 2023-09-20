@@ -1,5 +1,3 @@
-from http import HTTPStatus
-
 import pytest
 import sqlalchemy as sa
 
@@ -29,9 +27,16 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.dataset import data_source_settings_from_table
 from dl_sqlalchemy_postgres.base import CITEXT
+from dl_testing.regulated_test import RegulatedTestParams
 
 
 class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataResultTestSuite):
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultConnectorDataResultTestSuite.test_array_not_contains_filter: "BI-4951",  # TODO: FIXME
+        }
+    )
+
     def test_isnull(
         self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
     ) -> None:
@@ -54,9 +59,8 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
                     values=[False],
                 ),
             ],
-            fail_ok=True,
         )
-        assert result_resp.status_code == 200, result_resp.json
+
         data_rows = get_data_rows(result_resp)
         assert data_rows
 
@@ -85,7 +89,7 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
                 ds.find_field(title="col3").filter(WhereClauseOperation.IN, values=["2"]),
             ],
         )
-        assert result_resp.status_code == 200, result_resp.json
+
         data_rows = get_data_rows(result_resp)
         assert data_rows == [["var1", "str2", "2"]]
 
@@ -127,7 +131,7 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
                 ds.find_field(title="citext_value"),
             ],
         )
-        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
         data_rows = get_data_rows(result_resp)
         assert len(data_rows) == 3
         assert list(sorted(data_rows)) == [["var1"], ["var2"], ["var3"]]
@@ -167,9 +171,8 @@ class TestPostgreSQLDataDistinct(PostgreSQLDataApiTestBase, DefaultConnectorData
                     values=[str(lower_bound)],
                 ),
             ],
-            fail_ok=True,
         )
-        assert distinct_resp.status_code == 200, distinct_resp.json
+
         data_rows = get_data_rows(distinct_resp)
         assert data_rows
         assert all(int(row[0]) >= lower_bound for row in data_rows)

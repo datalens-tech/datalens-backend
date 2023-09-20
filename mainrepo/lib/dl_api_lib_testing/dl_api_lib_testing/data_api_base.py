@@ -41,7 +41,6 @@ from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core_testing.database import DbTable
-from dl_testing.regulated_test import RegulatedTestCase
 
 
 class DataApiTestParams(NamedTuple):
@@ -145,7 +144,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
         return SyncHttpDataApiV2(client=data_api_sync_client)
 
 
-class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, RegulatedTestCase, metaclass=abc.ABCMeta):
+class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=abc.ABCMeta):
     @pytest.fixture(scope="class")
     def data_api_test_params(self) -> DataApiTestParams:
         # This default is defined for the sample table
