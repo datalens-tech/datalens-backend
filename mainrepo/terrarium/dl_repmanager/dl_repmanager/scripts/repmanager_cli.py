@@ -1,14 +1,3 @@
-"""
-Tool for management and analysis of bi packages
-
-Examples:
-
-    python tools/local_dev/bi_package.py init-lib --package-name bi_connector_clickhouse
-
-    python tools/local_dev/bi_package.py move-code --old-import-name bi_core.connectors.clickhouse --new-import-name bi_connector_clickhouse.core
-
-"""
-
 from __future__ import annotations
 
 import argparse
