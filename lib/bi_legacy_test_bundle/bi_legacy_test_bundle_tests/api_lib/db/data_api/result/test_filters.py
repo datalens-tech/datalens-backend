@@ -5,7 +5,6 @@ import json
 from typing import (
     Any,
     Callable,
-    Set,
 )
 
 from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_table
@@ -19,61 +18,6 @@ from dl_core_testing.database import (
     C,
     make_table_with_arrays,
 )
-
-
-def test_get_result_with_formula_in_where(api_v1, data_api_v1, dataset_id):
-    data_api = data_api_v1
-    ds = api_v1.load_dataset(dataset=Dataset(id=dataset_id)).dataset
-
-    ds.result_schema["Discount Percentage"] = ds.field(formula="[Discount] * 100")
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds = api_v1.save_dataset(ds).dataset
-
-    result_resp = data_api.get_result(
-        dataset=ds,
-        fields=[
-            ds.find_field(title="Discount Percentage"),
-        ],
-        where=[
-            ds.find_field(title="Discount Percentage").filter(WhereClauseOperation.GT, [30]),
-        ],
-        fail_ok=True,
-    )
-    assert result_resp.status_code == HTTPStatus.OK, result_resp.json
-    data_rows = get_data_rows(result_resp)
-    assert data_rows
-    assert all(float(row[0]) > 30 for row in data_rows)
-
-
-def test_get_result_with_string_filter_operations_for_integer(api_v1, data_api_v1, dataset_id):
-    data_api = data_api_v1
-    ds = api_v1.load_dataset(dataset=Dataset(id=dataset_id)).dataset
-
-    ds.result_schema["Int Measure"] = ds.field(formula="COUNT()")
-    ds_resp = api_v1.apply_updates(dataset=ds)
-    ds = ds_resp.dataset
-    options = ds_resp.json["options"]
-    int_options = next(dt for dt in options["data_types"]["items"] if dt["type"] == "integer")
-    assert "ICONTAINS" in int_options["filter_operations"]
-
-    ds = api_v1.save_dataset(ds).dataset
-
-    result_resp = data_api.get_result(
-        dataset=ds,
-        fields=[
-            ds.find_field(title="Int Measure"),
-            ds.find_field(title="City"),
-        ],
-        where=[
-            ds.find_field(title="Int Measure").filter(WhereClauseOperation.ICONTAINS, ["2"]),
-        ],
-        fail_ok=True,
-    )
-    assert result_resp.status_code == HTTPStatus.OK, result_resp.json
-    data_rows = get_data_rows(result_resp)
-    values: Set[str] = {row[0] for row in data_rows}
-    assert len(values) > 1  # we just need to make sure there are several different values
-    assert all("2" in value for value in values)
 
 
 def test_filter_from_different_avatar(connection_id, api_v1, data_api_v1, two_clickhouse_tables):

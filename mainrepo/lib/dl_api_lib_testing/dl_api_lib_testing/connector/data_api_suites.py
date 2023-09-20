@@ -204,6 +204,48 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase):
         assert result_resp.status_code == 200, result_resp.json
         assert get_data_rows(result_resp)
 
+    def test_get_result_with_formula_in_where(
+        self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
+    ) -> None:
+        ds = saved_dataset
+        ds.result_schema["Summable Percentage"] = ds.field(formula=f"[{data_api_test_params.summable_field}] * 100")
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="Summable Percentage"),
+            ],
+            filters=[
+                ds.find_field(title="Summable Percentage").filter(WhereClauseOperation.GT, [30]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == 200, result_resp.json
+        data_rows = get_data_rows(result_resp)
+        assert data_rows
+        assert all(float(row[0]) > 30 for row in data_rows)
+
+    def test_get_result_with_string_filter_operations_for_numbers(
+        self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
+    ) -> None:
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title=data_api_test_params.summable_field),
+            ],
+            filters=[
+                ds.find_field(title=data_api_test_params.summable_field).filter(WhereClauseOperation.ICONTAINS, ["2"]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == 200, result_resp.json
+
+        data_rows = get_data_rows(result_resp)
+        values: set[str] = {row[0] for row in data_rows}
+        assert len(values) > 1  # we just need to make sure there are several different values
+        assert all("2" in value for value in values)
+
 
 class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase):
     def test_complex_result(

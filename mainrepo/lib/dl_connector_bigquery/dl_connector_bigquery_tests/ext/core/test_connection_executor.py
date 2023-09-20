@@ -22,7 +22,7 @@ class BigQuerySyncAsyncConnectionExecutorCheckBase(
 ):
     test_params = RegulatedTestParams(
         mark_tests_skipped={
-            DefaultAsyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: "Need to earn to detect this error",  # TODO: FIXME
+            DefaultAsyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: "Need to learn to detect this error",  # TODO: FIXME
             DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: "Not implemented",
         },
     )
