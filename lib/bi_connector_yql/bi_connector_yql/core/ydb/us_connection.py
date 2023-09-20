@@ -11,7 +11,6 @@ import attr
 
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models.conn_options import ConnectOptions
-from dl_core.i18n.localizer import Translatable
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
@@ -22,6 +21,7 @@ from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
 
 from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
+from bi_connector_yql.bi.yql_base.i18n.localizer import Translatable
 from bi_connector_yql.core.ydb.constants import (
     SOURCE_TYPE_YDB_SUBSELECT,
     SOURCE_TYPE_YDB_TABLE,

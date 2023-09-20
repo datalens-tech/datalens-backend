@@ -11,6 +11,7 @@ from typing import (
 import attr
 import marshmallow as ma
 
+from dl_connector_chyt.bi.i18n.localizer import Translatable
 from dl_connector_chyt.core.conn_options import CHYTConnectOptions
 from dl_connector_chyt.core.constants import (
     SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
@@ -27,7 +28,6 @@ from dl_core.base_models import (
     ConnSubselectDataModelMixin,
 )
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.i18n.localizer import Translatable
 from dl_core.us_connection_base import (
     ConnectionBase,
     ConnectionHardcodedDataMixin,
