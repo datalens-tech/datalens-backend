@@ -5158,6 +5158,7 @@ develop = false
 
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 blinker = ">=1.5"
@@ -5205,6 +5206,7 @@ develop = false
 
 [package.dependencies]
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}

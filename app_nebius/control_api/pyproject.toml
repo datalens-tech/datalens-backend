@@ -23,6 +23,7 @@ yandex-bi-sqlalchemy-solomon = {path = "../../lib/bi_sqlalchemy_solomon"}
 yandex-bi-sqlalchemy-yq = {path = "../../lib/bi_sqlalchemy_yq"}
 bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
+bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
 yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
 yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
 datalens-sqlalchemy-postgres = {path = "../../mainrepo/lib/dl_sqlalchemy_postgres"}
@@ -30,7 +31,6 @@ datalens-sqlalchemy-common = {path = "../../mainrepo/lib/dl_sqlalchemy_common"}
 datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
 datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
 datalens-sqlalchemy-clickhouse = {path = "../../mainrepo/lib/dl_sqlalchemy_clickhouse"}
-datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
 datalens-sqlalchemy-chyt = {path = "../../mainrepo/lib/dl_sqlalchemy_chyt"}
 datalens-sqlalchemy-mssql = {path = "../../mainrepo/lib/dl_sqlalchemy_mssql"}
 datalens-sqlalchemy-promql = {path = "../../mainrepo/lib/dl_sqlalchemy_promql"}
