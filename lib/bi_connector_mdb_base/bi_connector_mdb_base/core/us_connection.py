@@ -75,6 +75,9 @@ class MDBConnectionMixin:
     ) -> None:
         await super().validate_new_data(changes=changes, original_version=original_version)  # type: ignore
 
+        if self.data.mdb_cluster_id == "":
+            self.data.mdb_cluster_id = None
+
         if self.data.mdb_cluster_id is None:
             return
 
@@ -101,6 +104,8 @@ class MDBConnectionMixin:
 
         # Temporary flag    # TODO: remove raise_on_check_fail flag
         raise_on_check_fail = os.environ.get("MDB_ORG_CHECK_ENABLED", "0") == "1"
+        if raise_on_check_fail and original_version is None:
+            self.data.skip_mdb_org_check = True
 
         if cluster_org_id != current_org_id:
             LOGGER.info(

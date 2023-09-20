@@ -96,7 +96,6 @@ class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
                 required=True,
             )
             edit_api_schema.items.append(mdb_cluster_row_api_sch)
-            check_api_schema.items.append(mdb_cluster_row_api_sch)
 
             mdb_cluster_row_api_sch_cond = FormFieldApiActionCondition(
                 when=FormFieldSelector(name=mdb_c.MDBFormFillRow.Inner.mdb_fill_mode),
@@ -109,7 +108,10 @@ class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
                 ],
             )
             edit_api_schema.conditions.append(mdb_cluster_row_api_sch_cond)
-            check_api_schema.conditions.append(mdb_cluster_row_api_sch_cond)
+
+            # Right now the condition as above doesn't not work in check action (looks like frontend problem).
+            # So we always send mdb_cluster_id to API and process its empty value in `validate_new_data`
+            check_api_schema.items.append(FormFieldApiSchema(name=mdb_cluster_row.name))
 
         create_api_schema = self._get_base_create_api_schema(edit_api_schema)
 
