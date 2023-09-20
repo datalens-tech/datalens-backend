@@ -1,9 +1,17 @@
 import json
+from typing import Optional
 
 import attr
 
-from bi_api_lib_ya.app_settings import default_yc_auth_settings
-from dl_configs.utils import app_type_env_var_converter
+from bi_api_lib_ya.app_settings import (
+    YCAuthSettings,
+    default_yc_auth_settings,
+)
+from bi_defaults.yenv_type import (
+    AppType,
+    app_type_env_var_converter,
+)
+from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 
 

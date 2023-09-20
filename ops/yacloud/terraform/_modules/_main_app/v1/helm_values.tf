@@ -46,6 +46,7 @@ resource "local_file" "helm_values_bi_back" {
           iam_ts      = var.iam_ts_host
         }
         iam_basic_permission      = var.iam_basic_permission
+        jaeger_svc_name_suffix    = var.jaeger_svc_name_suffix
         secure_reader_socket_path = var.secure_reader_socket_path
         mdb = {
           managed_network_enabled = var.mdb_settings.managed_network_enabled,

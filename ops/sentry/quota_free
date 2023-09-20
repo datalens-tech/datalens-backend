@@ -83,7 +83,7 @@ def parse_output(output):
 
 def main():
     data = {
-        dc: getattr(sh, 'ya')(
+        dc: sh.ya(
             'tool', 'yp-util',
             'account', 'explain',
             ACCOUNT,

@@ -12,6 +12,7 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from bi_maintenance.core.common import MaintenanceEnvironmentManagerBase
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.loader import (
@@ -19,7 +20,6 @@ from dl_api_lib.loader import (
     load_bi_api_lib,
     preload_bi_api_lib,
 )
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import (
     load_connectors_settings_from_env_with_fallback,
     load_settings_from_env_with_fallback,

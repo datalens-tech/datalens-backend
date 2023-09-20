@@ -227,7 +227,7 @@ def test_get_robot_key(
     ctrl = iam_rm_client
     svc_acct = svc_acct_per_test
 
-    created_key = ctrl.create_svc_acct_key_sync(svc_acct.id, f"test key").svc_acct_key_data
+    created_key = ctrl.create_svc_acct_key_sync(svc_acct.id, "test key").svc_acct_key_data
     fetched_key = ctrl.get_svc_acct_key_sync(created_key.id)
 
     assert fetched_key == created_key
@@ -264,8 +264,8 @@ def test_delete_robot_key(
     ctrl = iam_rm_client
     svc_acct = svc_acct_per_test
 
-    key_to_preserve = ctrl.create_svc_acct_key_sync(svc_acct.id, f"test key to preserve").svc_acct_key_data
-    key_to_delete = ctrl.create_svc_acct_key_sync(svc_acct.id, f"test key to delete").svc_acct_key_data
+    key_to_preserve = ctrl.create_svc_acct_key_sync(svc_acct.id, "test key to preserve").svc_acct_key_data
+    key_to_delete = ctrl.create_svc_acct_key_sync(svc_acct.id, "test key to delete").svc_acct_key_data
 
     ctrl.delete_svc_acct_key_sync(key_to_delete.id)
 

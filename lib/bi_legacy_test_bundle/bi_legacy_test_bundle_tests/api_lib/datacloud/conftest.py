@@ -25,6 +25,7 @@ from bi_api_lib_ya.app_settings import (
     ControlPlaneAppSettings,
     YCAuthSettings,
 )
+from bi_defaults.yenv_type import AppType
 from bi_legacy_test_bundle_tests.api_lib.config import DB_PARAMS
 from bi_testing_ya.cloud_tokens import AccountCredentials
 from bi_testing_ya.dlenv import DLEnv
@@ -37,10 +38,6 @@ from dl_api_lib_testing.client import (
     WrappedAioSyncApiClient,
 )
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_configs.enums import (
-    AppType,
-    EnvType,
-)
 from dl_core_testing.flask_utils import (
     FlaskTestClient,
     FlaskTestResponse,
@@ -133,7 +130,6 @@ def dc_rs_cp_app_settings(
     return ControlPlaneAppSettings(
         CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
         APP_TYPE=AppType.DATA_CLOUD,
-        ENV_TYPE=EnvType.dc_any,
         US_BASE_URL=dc_rs_us_base_url,
         US_MASTER_TOKEN=dc_rs_us_master_token,
         YC_AUTH_SETTINGS=YCAuthSettings(

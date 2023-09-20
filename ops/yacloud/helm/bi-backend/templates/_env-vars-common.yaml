@@ -23,6 +23,8 @@
   value: "0"
 - name: DL_USE_JAEGER_TRACER
   value: "1"
+- name: DL_JAEGER_TRACER_SERVICE_NAME_SUFFIX
+  value: {{ .Values.jaeger_svc_name_suffix | default "" | quote}}
 - name: YC_SA_CREDS_MODE
   value: {{ .Values.sa_creds_mode | default "local_metadata" }}
 {{ end }}

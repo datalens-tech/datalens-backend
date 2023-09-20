@@ -350,6 +350,7 @@
 "iam_basic_permission": "datalens.instances.use"
 "ipv4_deny": "5.45.192.0/18,5.255.192.0/18,10.208.0.0/12,37.9.64.0/18,37.140.128.0/18,45.87.132.0/24,77.88.0.0/18,87.250.224.0/19,93.158.128.0/19,93.158.160.0/20,95.108.128.0/17,100.43.64.0/19,141.8.128.0/18,172.24.0.0/13,178.154.128.0/19,178.154.160.0/19,199.21.96.0/22,199.36.240.0/22,213.180.192.0/19,127.0.0.1/32,169.254.0.0/16"
 "ipv6_deny": "2620:10f:d000::/44,2a02:6b8::/32,2a0e:fd80::/32,::1/128"
+"jaeger_svc_name_suffix": "-testing"
 "mdb":
   "cname_domains": ".rw.mdb.cloud-preprod.yandex.net,.rw.mdb.yandexcloud.net"
   "domains": ".mdb.cloud-preprod.yandex.net,.mdb.yandexcloud.net"
@@ -428,4 +429,3 @@
 "secure_reader_socket_path": "/var/sockets/reader.sock"
 "tls_to_backends": true
 "use_internal_ca": true
-

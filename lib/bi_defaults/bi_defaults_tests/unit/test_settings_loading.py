@@ -4,8 +4,8 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from dl_configs.environments import LegacyDefaults
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 
 
 @pytest.mark.parametrize(

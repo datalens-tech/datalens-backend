@@ -82,6 +82,11 @@ variable "iam_basic_permission" {
   type = string
 }
 
+variable "jaeger_svc_name_suffix" {
+  type    = string
+  default = ""
+}
+
 variable "rm_host" {
   type = string
 }

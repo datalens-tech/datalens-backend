@@ -4,12 +4,12 @@ from bi_api_commons_ya_cloud.tenant_resolver import (
     TenantResolverDC,
     TenantResolverYC,
 )
+from bi_defaults.yenv_type import AppType
 from bi_file_uploader_worker.app_settings import DefaultFileUploaderWorkerSettings
 from dl_api_commons.tenant_resolver import (
     CommonTenantResolver,
     TenantResolver,
 )
-from dl_configs.enums import AppType
 from dl_file_uploader_worker_lib.app import FileUploaderWorkerFactory
 
 

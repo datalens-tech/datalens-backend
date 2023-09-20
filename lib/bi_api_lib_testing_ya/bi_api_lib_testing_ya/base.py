@@ -15,13 +15,10 @@ from bi_api_lib_ya.app_settings import (
     YCAuthSettings,
 )
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
+from bi_defaults.yenv_type import AppType
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib_testing.base import BiApiTestBase
-from dl_configs.enums import (
-    AppType,
-    EnvType,
-)
 from dl_configs.rqe import RQEConfig
 from dl_core.utils import attrs_evolve_to_subclass
 
@@ -49,7 +46,6 @@ class BiApiTestPrivateBase(BiApiTestBase, abc.ABC):
             ControlPlaneAppSettings,
             base_settings,
             APP_TYPE=AppType.TESTS,
-            ENV_TYPE=EnvType.development,
             DLS_HOST=bi_test_config.dls_host,
             DLS_API_KEY=bi_test_config.dls_key,
             YC_AUTH_SETTINGS=YCAuthSettings(

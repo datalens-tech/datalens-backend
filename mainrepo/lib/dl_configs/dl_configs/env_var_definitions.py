@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from .env_var_reader import get_from_env
-from .utils import jaeger_service_suffix_env_var_converter
+from dl_configs.env_var_reader import get_from_env
 
 
 def use_jaeger_tracer() -> bool:
@@ -9,12 +8,4 @@ def use_jaeger_tracer() -> bool:
 
 
 def jaeger_service_name_env_aware(service_name: str) -> str:
-    return service_name + get_from_env(
-        "YENV_TYPE",
-        jaeger_service_suffix_env_var_converter,
-        "",  # Empty suffix if YENV_TYPE is not specified
-    )
-
-
-def do_data_source_indexes_fetch() -> bool:
-    return get_from_env("DL_DO_DS_IDX_FETCH", lambda s: bool(int(s)), default=False)
+    return service_name + get_from_env("DL_JAEGER_TRACER_SERVICE_NAME_SUFFIX", str, "")

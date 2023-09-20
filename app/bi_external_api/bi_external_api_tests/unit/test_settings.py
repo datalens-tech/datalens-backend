@@ -2,9 +2,9 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.settings import ExternalAPISettings
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_testing.utils import override_env_cm
 

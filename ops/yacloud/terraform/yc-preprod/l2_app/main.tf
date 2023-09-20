@@ -207,6 +207,8 @@ module "main" {
 
   iam_basic_permission = "datalens.instances.use"
 
+  jaeger_svc_name_suffix = "-testing"
+
   secure_reader_socket_path = "/var/sockets/reader.sock"
 
   mdb_settings = {

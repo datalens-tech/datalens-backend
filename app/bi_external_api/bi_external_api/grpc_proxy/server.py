@@ -17,13 +17,13 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy.common_interceptor import RequestBootstrapInterceptor
 from bi_external_api.grpc_proxy.ext_api_client import ExtApiClient
 from bi_external_api.grpc_proxy.workbook_service import WorkbookService
 from bi_external_api.settings import GrpcProxySettings
 from bi_external_api.utils import init_sentry
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_core.logging_config import configure_logging
 

@@ -5,10 +5,6 @@ from typing import (
     TypeVar,
 )
 
-from dl_configs.enums import (
-    AppType,
-    EnvType,
-)
 from dl_constants.enums import ConnectionType
 
 
@@ -45,48 +41,6 @@ def get_temp_root_certificates_folder_path() -> str:
 
 def split_by_comma(s: str) -> tuple[str, ...]:
     return tuple(entry.strip() for entry in s.split(",") if entry)
-
-
-def app_type_env_var_converter(env_value: str) -> AppType:
-    return {
-        "testing": AppType.CLOUD,
-        "production": AppType.CLOUD,
-        "testing-public": AppType.CLOUD_PUBLIC,
-        "production-public": AppType.CLOUD_PUBLIC,
-        "testing-sec-embeds": AppType.CLOUD_EMBED,
-        "production-sec-embeds": AppType.CLOUD_EMBED,
-        "int-testing": AppType.INTRANET,
-        "int-production": AppType.INTRANET,
-        "datacloud": AppType.DATA_CLOUD,
-        "israel": AppType.NEBIUS,
-        "nemax": AppType.NEBIUS,
-        "tests": AppType.TESTS,
-        "development": AppType.TESTS,
-        "datacloud-sec-embeds": AppType.DATA_CLOUD_EMBED,
-    }[env_value.lower()]
-
-
-def env_type_env_var_converter(env_value: str) -> EnvType:
-    return {
-        "testing": EnvType.yc_testing,
-        "production": EnvType.yc_production,
-        "testing-public": EnvType.yc_testing,
-        "production-public": EnvType.yc_production,
-        "testing-sec-embeds": EnvType.yc_testing,
-        "production-sec-embeds": EnvType.yc_production,
-        "int-testing": EnvType.int_testing,
-        "int-production": EnvType.int_production,
-        "datacloud": EnvType.dc_any,
-        "israel": EnvType.israel,
-        "nemax": EnvType.nemax,
-        "tests": EnvType.development,
-        "development": EnvType.development,
-        "datacloud-sec-embeds": EnvType.dc_any,
-    }[env_value.lower()]
-
-
-def jaeger_service_suffix_env_var_converter(env_value: str) -> str:
-    return "-testing" if env_value.lower() in ("testing", "testing-public", "testing-sec-embeds", "int-testing") else ""
 
 
 def conn_type_set_env_var_converter(s: str) -> set[ConnectionType]:

@@ -14,9 +14,9 @@ from bi_api_lib_ya.app_settings import (
     YCAuthSettings,
 )
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
+from bi_defaults.yenv_type import AppType
 from dl_api_lib.app.data_api.app import DataApiAppFactory
 from dl_api_lib_testing.data_api_base import DataApiTestBase
-from dl_configs.enums import AppType
 from dl_configs.rqe import RQEConfig
 from dl_core.utils import attrs_evolve_to_subclass
 

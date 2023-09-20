@@ -17,6 +17,10 @@ from bi_defaults.environments import (
     ExternalTestingInstallation,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import (
+    AppType,
+    YEnvFallbackConfigResolver,
+)
 from dl_api_lib.app_settings import (
     CachesTTLSettings,
     MDBSettings,
@@ -24,15 +28,11 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_configs.enums import (
-    AppType,
-    RedisMode,
-)
+from dl_configs.enums import RedisMode
 from dl_configs.rqe import (
     RQEBaseURL,
     RQEConfig,
 )
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import (
     EnvSettingsLoader,
     load_connectors_settings_from_env_with_fallback,

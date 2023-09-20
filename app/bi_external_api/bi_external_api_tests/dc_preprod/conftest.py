@@ -17,6 +17,7 @@ from bi_api_commons_ya_cloud.models import (
     TenantDCProject,
 )
 from bi_api_lib_ya.app_settings import YCAuthSettings
+from bi_defaults.yenv_type import AppType
 from bi_external_api.app import create_app
 from bi_external_api.enums import ExtAPIType
 from bi_external_api.grpc_proxy import server as grpc_proxy
@@ -35,7 +36,6 @@ from dl_api_commons.base_models import (
     TenantCommon,
 )
 from dl_api_commons.client.common import CommonInternalAPIClient
-from dl_configs.enums import AppType
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 from ..test_acceptance import ConnectionTestingData

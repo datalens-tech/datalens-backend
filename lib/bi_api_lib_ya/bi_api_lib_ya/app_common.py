@@ -18,6 +18,7 @@ from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
     SACredsSettings,
 )
+from bi_defaults.yenv_type import AppType
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistryFactory
 from bi_service_registry_ya_team.yt_service_registry import YTServiceRegistryFactory
 from dl_api_lib.app_common import SRFactoryBuilder
@@ -25,7 +26,6 @@ from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 from dl_configs.enums import (
     RQE_SERVICES,
-    AppType,
     RequiredService,
 )
 from dl_core.data_processing.cache.primitives import CacheTTLConfig

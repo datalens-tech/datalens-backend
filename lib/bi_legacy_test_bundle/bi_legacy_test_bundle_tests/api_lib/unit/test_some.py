@@ -16,12 +16,14 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import (
+    AppType,
+    YEnvFallbackConfigResolver,
+)
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_configs.enums import AppType
 from dl_configs.settings_loaders.fallback_cfg_resolver import (
     ObjectLikeConfig,
     YamlFileConfigResolver,
-    YEnvFallbackConfigResolver,
 )
 from dl_configs.settings_loaders.loader_env import EnvSettingsLoader
 

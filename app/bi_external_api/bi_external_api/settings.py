@@ -6,10 +6,12 @@ from bi_api_lib_ya.app_settings import (
     YCAuthSettings,
     default_yc_auth_settings,
 )
+from bi_defaults.yenv_type import (
+    AppType,
+    app_type_env_var_converter,
+)
 from bi_external_api.enums import ExtAPIType
-from dl_configs.enums import AppType
 from dl_configs.settings_loaders.meta_definition import s_attrib
-from dl_configs.utils import app_type_env_var_converter
 
 
 def ext_api_type_env_var_converter(env_value: str) -> ExtAPIType:

@@ -8,13 +8,13 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from bi_file_uploader_worker.app_factory import DefaultFileUploaderWorkerFactory
 from bi_file_uploader_worker.app_settings import DefaultFileUploaderWorkerSettings
 from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry,
 )
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_core.logging_config import configure_logging
 from dl_file_uploader_worker_lib.tasks import REGISTRY

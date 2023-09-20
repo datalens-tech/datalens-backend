@@ -14,24 +14,20 @@ from bi_defaults.environments import (
     CommonExternalInstallation,
     CommonInstallation,
 )
+from bi_defaults.yenv_type import (
+    AppType,
+    app_type_env_var_converter,
+)
 from dl_api_lib.app_settings import (
     AppSettings,
     ControlApiAppSettings,
     DataApiAppSettings,
-)
-from dl_configs.enums import (
-    AppType,
-    EnvType,
 )
 from dl_configs.environments import LegacyDefaults
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.loader_env import NOT_SET
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_configs.utils import (
-    app_type_env_var_converter,
-    env_type_env_var_converter,
-)
 
 
 @attr.s(frozen=True)
@@ -66,7 +62,6 @@ class BaseAppSettings(AppSettings):
         is_app_cfg_type=True,
         env_var_converter=app_type_env_var_converter,
     )
-    ENV_TYPE: Optional[EnvType] = None
     YC_BILLING_HOST: Optional[str] = s_attrib("YC_BILLING_HOST", fallback_cfg_key="YC_BILLING_HOST", missing=None)  # type: ignore
 
     CHYT_MIRRORING: Optional[CHYTMirroringConfig] = s_attrib("DL_CHYT_MIRRORING", enabled_key_name="ON", missing=None)  # type: ignore  # TODO: fix
@@ -161,11 +156,6 @@ class AsyncAppSettings(BaseAppSettings, DataApiAppSettings):
 
 @attr.s(frozen=True)
 class ControlPlaneAppSettings(BaseAppSettings, ControlApiAppSettings):
-    ENV_TYPE: Optional[EnvType] = s_attrib(  # type: ignore
-        "YENV_TYPE",
-        env_var_converter=env_type_env_var_converter,
-    )
-
     # BlackBox/Passport
     BLACKBOX_RETRY_PARAMS: dict[str, Any] = s_attrib(  # type: ignore  # TODO: fix
         "BLACKBOX_RETRY_TIMEOUT", env_var_converter=json.loads, missing_factory=dict

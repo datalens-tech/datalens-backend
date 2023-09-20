@@ -148,7 +148,7 @@ class Renderer:
     def _get_lines_for_attrs_object(self, model: Any) -> list[str]:
         the_type = type(model)
         lines: list[str] = [f"{self.get_type_str(the_type)}("]
-        for field_name, field in attr.fields_dict(the_type).items():
+        for field_name, _field in attr.fields_dict(the_type).items():
             nested_lines = self._get_lines_internal(getattr(model, field_name))
             assert len(nested_lines) > 0
 

@@ -5,6 +5,7 @@ import attr
 
 from bi_api_lib_ya.app_settings import YCAuthSettings
 from bi_defaults.environments import CommonExternalInstallation
+from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 
 

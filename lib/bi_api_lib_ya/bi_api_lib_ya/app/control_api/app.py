@@ -12,16 +12,13 @@ from bi_api_commons_ya_cloud.yc_access_control_model import (
 )
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_lib_ya.app_settings import ControlPlaneAppSettings
+from bi_defaults.yenv_type import AppType
 from dl_api_lib.app.control_api.app import (
     ControlApiAppFactory,
     EnvSetupResult,
 )
-from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
-from dl_configs.enums import AppType
 from dl_constants.enums import USAuthMode
-from dl_core.connection_models import ConnectOptions
-from dl_core.us_connection_base import ExecutorBasedMixin
 
 
 class LegacyControlApiAppFactory(ControlApiAppFactory[ControlPlaneAppSettings], abc.ABC):

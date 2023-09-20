@@ -35,6 +35,7 @@ from bi_api_lib_ya.app_settings import (
     YCAuthSettings,
 )
 from bi_api_lib_ya.query_registry import register_for_connectors_with_native_wf
+from bi_defaults.yenv_type import AppType
 from bi_legacy_test_bundle_tests.api_lib.app_async import create_app as create_app_async
 from bi_legacy_test_bundle_tests.api_lib.app_sync import create_app as create_app_sync
 import bi_legacy_test_bundle_tests.api_lib.config as tests_config_mod
@@ -85,10 +86,6 @@ from dl_api_lib_testing.client import (
 from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
 from dl_configs import env_var_definitions
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
-from dl_configs.enums import (
-    AppType,
-    EnvType,
-)
 from dl_configs.rqe import RQEConfig
 from dl_configs.settings_submodels import (
     GoogleAppSettings,
@@ -274,7 +271,6 @@ def app(
     us_config = core_test_config.get_us_config()
     settings = ControlPlaneAppSettings(
         CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(CONNECTOR_AVAILABILITY),
-        ENV_TYPE=EnvType.development,
         APP_TYPE=AppType.TESTS,
         US_BASE_URL=us_config.us_host,
         US_MASTER_TOKEN=us_config.us_master_token,

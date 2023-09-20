@@ -23,12 +23,12 @@ envs = (  # qloud_environment_address, shortened_explicit_environment_name, full
     ('datalens.bi.production', 'ext-prod', 'ext-production'),
 )
 
-for qloud_env, envname, envname2 in envs:
+for qloud_env, _envname, _envname2 in envs:
     resp = requests.get(qloud_url + '/api/v1/environment/dump/' + qloud_env, headers=auth_headers)
     resp.raise_for_status()
     envdump = resp.json()
     envdump_orig = copy.deepcopy(envdump)
-    for cfg in envdump['components']:
+    for _cfg in envdump['components']:
 
         # # Example: ensure a secret.
         # secrets = cfg['secrets']

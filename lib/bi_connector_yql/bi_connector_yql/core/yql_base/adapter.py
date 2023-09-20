@@ -117,7 +117,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
         try:
-            message = getattr(wrapper_exc, "message")
+            message = wrapper_exc.message
         except Exception:
             pass
         else:

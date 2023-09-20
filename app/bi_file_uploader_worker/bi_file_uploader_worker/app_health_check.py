@@ -7,12 +7,12 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from bi_file_uploader_worker.app_health_check_lib import FileUploaderWorkerHealthCheckAppFactory
 from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry_for_aiohttp,
 )
-from dl_configs.settings_loaders.fallback_cfg_resolver import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback_legacy
 from dl_core.logging_config import configure_logging
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings

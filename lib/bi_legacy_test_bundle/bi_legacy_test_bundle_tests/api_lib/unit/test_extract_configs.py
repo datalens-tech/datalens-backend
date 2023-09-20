@@ -16,10 +16,10 @@ from bi_defaults.environments import (
     EnvAliasesMap,
     InstallationsMap,
 )
+from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from dl_configs.settings_loaders.fallback_cfg_resolver import (
     ConstantFallbackConfigResolver,
     ObjectLikeConfig,
-    YEnvFallbackConfigResolver,
 )
 from dl_configs.settings_loaders.loader_env import EnvSettingsLoader
 from dl_configs.settings_loaders.settings_serializers import defaults_to_yaml
@@ -34,7 +34,7 @@ def test_dump_defaults_to_yaml() -> None:
     Just copy-paste it from test's output
     """
     config = defaults_to_yaml(InstallationsMap.int_testing)
-    for i in range(15):
+    for _i in range(15):
         print("\n")
     print("---")
     print(config)

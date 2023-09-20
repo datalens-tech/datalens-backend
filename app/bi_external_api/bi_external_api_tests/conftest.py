@@ -22,6 +22,7 @@ from bi_api_lib_ya.app_settings import (
     YCAuthSettings,
 )
 from bi_defaults.environments import InternalTestingInstallation
+from bi_defaults.yenv_type import AppType
 from bi_external_api.app import create_app
 from bi_external_api.domain import external as ext
 from bi_external_api.enums import ExtAPIType
@@ -42,10 +43,6 @@ from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_bi_api_lib,
     preload_bi_api_lib,
-)
-from dl_configs.enums import (
-    AppType,
-    EnvType,
 )
 from dl_configs.rqe import (
     RQEBaseURL,
@@ -177,7 +174,6 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
             InternalTestingInstallation.CONNECTOR_AVAILABILITY
         ),
         APP_TYPE=AppType.TESTS,
-        ENV_TYPE=EnvType.development,
         US_BASE_URL=us_config.base_url,
         US_MASTER_TOKEN=us_config.master_token,
         CRYPTO_KEYS_CONFIG=us_config.crypto_keys_config,

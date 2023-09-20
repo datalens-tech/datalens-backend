@@ -31,10 +31,7 @@ from dl_configs.connector_availability import (
     SectionSettings,
     TranslatableSettings,
 )
-from dl_configs.enums import (
-    EnvType,
-    RedisMode,
-)
+from dl_configs.enums import RedisMode
 from dl_configs.environments import (
     BaseInstallationsMap,
     LegacyDefaults,
@@ -49,7 +46,7 @@ DOMAIN_CHYT_INTERNAL = "bi_connector_chyt_internal"
 
 
 class InstallationBase(LegacyDefaults):
-    ENV_TYPE: ClassVar[EnvType]
+    pass
 
 
 class IAMAwareInstallation:
@@ -81,8 +78,6 @@ class DataCloudInstallation(
     CSRFAwareInstallation,
     InstallationBase,
 ):
-    ENV_TYPE: ClassVar[EnvType] = EnvType.dc_any
-
     CORS_ALLOWED_HEADERS: ClassVar[tuple[str, ...]] = (
         DLHeadersCommon.CONTENT_TYPE,
         DLHeadersCommon.REQUEST_ID,
@@ -154,8 +149,6 @@ class CommonInstallation(
     InstallationBase,
 ):
     """Everything that is statically defined for YaTeam and YaCloud installations"""
-
-    ENV_TYPE: ClassVar[EnvType]
 
     US_BASE_URL: ClassVar[str]
 
@@ -249,8 +242,6 @@ class CommonInternalInstallation(
 
 class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInternalInstallation):
     """datalens-preprod.yandex-team.ru"""
-
-    ENV_TYPE: ClassVar[EnvType] = EnvType.int_testing
 
     US_BASE_URL: ClassVar[str] = "https://united-storage-beta.yandex-team.ru"
 
@@ -380,8 +371,6 @@ class InternalTestingInstallation(cd.ConnectorsDataFileIntTesting, CommonInterna
 
 class InternalProductionInstallation(cd.ConnectorsDataFileIntProduction, CommonInternalInstallation):
     """datalens.yandex-team.ru"""
-
-    ENV_TYPE: ClassVar[EnvType] = EnvType.int_production
 
     US_BASE_URL: ClassVar[str] = "https://united-storage.yandex-team.ru"
 
@@ -693,8 +682,6 @@ class ExternalTestingInstallation(
         "smb_heatmaps",
     ]
 
-    ENV_TYPE: ClassVar[EnvType] = EnvType.yc_testing
-
     US_BASE_URL: ClassVar[str] = "https://us-dl.private-api.ycp.cloud-preprod.yandex.net"
 
     DATALENS_API_LB_MAIN_BASE_URL: ClassVar[str] = "https://back.datalens.cloud-preprod.yandex.net"
@@ -769,8 +756,6 @@ class ExternalProductionInstallation(
     CommonExternalInstallation,
 ):
     """datalens.yandex.ru"""
-
-    ENV_TYPE: ClassVar[EnvType] = EnvType.yc_production
 
     US_BASE_URL: ClassVar[str] = "https://us.datalens-front.cloud.yandex.net"
 
@@ -979,8 +964,6 @@ class NebiusInstallation(InstallationBase):
 
 
 class IsraelInstallation(NebiusInstallation):
-    ENV_TYPE: ClassVar[EnvType] = EnvType.israel
-
     # IAMAwareInstallation:
     YC_API_ENDPOINT_IAM: ClassVar[str] = "iam.private-api.yandexcloud.co.il:14283"
     YC_API_ENDPOINT_RM: ClassVar[str] = "rm.private-api.yandexcloud.co.il:14284"
@@ -1029,8 +1012,6 @@ class IsraelInstallation(NebiusInstallation):
 
 
 class NemaxInstallation(NebiusInstallation):
-    ENV_TYPE: ClassVar[EnvType] = EnvType.nemax
-
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
         uncategorized=[
             ConnectorSettings(conn_type="clickhouse"),

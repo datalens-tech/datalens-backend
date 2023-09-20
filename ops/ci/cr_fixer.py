@@ -34,7 +34,7 @@ def main():
 
 
 def fix_in_root(root: Path):
-    for path, dirs, items in os.walk(root):
+    for path, _dirs, items in os.walk(root):
         for name in items:
             if name.startswith(("Dockerfile", "docker-compose.")):
                 fn = Path(path) / name

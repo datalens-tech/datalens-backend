@@ -8,9 +8,9 @@ from bi_api_commons_ya_cloud.yc_access_control_model import (
 )
 from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
+from bi_defaults.yenv_type import AppType
 from bi_file_uploader.app_settings import DefaultFileUploaderAPISettings
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
-from dl_configs.enums import AppType
 from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_core.aio.middlewares.csrf import CSRFMiddleware
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
