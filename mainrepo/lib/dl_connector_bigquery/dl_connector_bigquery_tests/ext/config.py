@@ -10,12 +10,12 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=51609).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=51609).port,
     us_master_token="AC1ofiek8coB",
+    core_connector_ep_names=["bigquery"],
 )
 
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=["bigquery"],
-    core_connector_whitelist=["bigquery"],
+    api_connector_ep_names=["bigquery"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )

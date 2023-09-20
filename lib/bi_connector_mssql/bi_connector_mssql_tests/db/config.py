@@ -15,6 +15,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=52110).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52110).port,
     us_master_token="AC1ofiek8coB",
+    core_connector_ep_names=["mssql"],
 )
 
 COMPOSE_PROJECT_NAME = os.environ.get("COMPOSE_PROJECT_NAME", "bi_connector_mssql")
@@ -76,8 +77,7 @@ DB_URLS = {
 }
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=["mssql"],
-    core_connector_whitelist=["mssql"],
+    api_connector_ep_names=["mssql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )

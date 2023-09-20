@@ -54,6 +54,7 @@ from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core.utils import FutureRef
+from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from dl_core_testing.database import (
     CoreDbDispenser,
     CoreReInitableDbDispenser,
@@ -95,9 +96,9 @@ EXT_TEST_BLACKBOX_NAME = "Test"
 
 
 @pytest.fixture(scope="session", autouse=True)
-def loaded_libraries(core_test_config) -> None:
+def loaded_libraries(core_test_config: CoreTestEnvironmentConfigurationBase) -> None:
     load_bi_db_testing()
-    load_bi_core(CoreLibraryConfig(core_connector_ep_names=core_test_config.core_connector_whitelist))
+    load_bi_core(core_lib_config=core_test_config.get_core_library_config())
 
 
 @pytest.fixture

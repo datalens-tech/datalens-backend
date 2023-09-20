@@ -97,7 +97,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=50309).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=50309).port,
     us_master_token=DOCKER_COMPOSE.US_MASTER_TOKEN,
-    core_connector_whitelist=CONNECTOR_WHITELIST,
+    core_connector_ep_names=CONNECTOR_WHITELIST,
 )
 
 EXT_QUERY_EXECUTER_SECRET_KEY = "_tests_eqe_secret_key_"

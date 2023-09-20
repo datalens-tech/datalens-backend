@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional
+from typing import (
+    Collection,
+    Optional,
+)
 
 import attr
 
@@ -51,8 +54,7 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
     port_us_pg_5432: int = attr.ib(kw_only=True)
     us_master_token: str = attr.ib(kw_only=True)
     fernet_key: str = attr.ib(kw_only=True, default=DEFAULT_FERNET_KEY)
-    core_library_config: CoreLibraryConfig = attr.ib(kw_only=True, default=CoreLibraryConfig())
-    core_connector_whitelist: Optional[list[str]] = attr.ib(kw_only=True, default=None)
+    core_connector_ep_names: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
 
     def get_us_config(self) -> UnitedStorageConfiguration:
         return UnitedStorageConfiguration(
@@ -65,4 +67,6 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
         return get_single_key_crypto_keys_config(key_id="0", key_value=self.fernet_key)
 
     def get_core_library_config(self) -> CoreLibraryConfig:
-        return self.core_library_config
+        return CoreLibraryConfig(
+            core_connector_ep_names=self.core_connector_ep_names,
+        )

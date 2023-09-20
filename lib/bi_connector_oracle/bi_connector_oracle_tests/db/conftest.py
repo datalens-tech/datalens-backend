@@ -1,12 +1,11 @@
 import pytest
 
-from dl_core_testing.initialization import initialize_core_test
-from dl_formula.loader import load_bi_formula
+from dl_api_lib_testing.initialization import initialize_api_lib_test
 from dl_formula_testing.forced_literal import forced_literal_use
 from dl_testing.utils import wait_for_initdb
 
 from bi_connector_oracle_tests.db.config import (
-    CORE_TEST_CONFIG,
+    BI_TEST_CONFIG,
     INIT_DB_PORT,
 )
 
@@ -15,9 +14,7 @@ pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest
 
 
 def pytest_configure(config):  # noqa
-    print("initialize core tests")
-    initialize_core_test(pytest_config=config, core_test_config=CORE_TEST_CONFIG)
-    load_bi_formula()
+    initialize_api_lib_test(pytest_config=config, api_test_config=BI_TEST_CONFIG)
 
 
 @pytest.fixture(scope="session")

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 
 from bi_defaults.environments import (
@@ -132,8 +130,6 @@ CONNECTOR_WHITELIST = [
 @attr.s(kw_only=True)
 class BiApiTestEnvironmentConfigurationPrivate(BiApiTestEnvironmentConfiguration):
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(default=CONNECTOR_AVAILABILITY)
-    bi_api_connector_whitelist: Optional[list[str]] = attr.ib(default=CONNECTOR_WHITELIST)
-    core_connector_whitelist: Optional[list[str]] = attr.ib(default=CONNECTOR_WHITELIST)
 
     dls_host: str = attr.ib(default=InternalTestingInstallation.DATALENS_API_LB_DLS_BASE_URL)
     dls_key: str = attr.ib(default="_tests_dls_api_key_")

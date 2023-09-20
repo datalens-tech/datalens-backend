@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import (
+    Collection,
+    Optional,
+)
 
 import attr
 
+from dl_api_lib.loader import ApiLibraryConfig
 from dl_configs.connector_availability import ConnectorAvailabilityConfigSettings
 from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 
@@ -29,5 +33,10 @@ class BiApiTestEnvironmentConfiguration:
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(
         factory=ConnectorAvailabilityConfigSettings,
     )
-    bi_api_connector_whitelist: Optional[list[str]] = attr.ib(factory=list)
-    core_connector_whitelist: Optional[list[str]] = attr.ib(factory=list)
+    api_connector_ep_names: Optional[Collection[str]] = attr.ib(default=None)
+
+    def get_api_library_config(self) -> ApiLibraryConfig:
+        return ApiLibraryConfig(
+            api_connector_ep_names=self.api_connector_ep_names,
+            core_lib_config=self.core_test_config.get_core_library_config(),
+        )

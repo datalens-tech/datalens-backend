@@ -14,7 +14,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=52310).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52310).port,
     us_master_token="AC1ofiek8coB",
-    core_connector_whitelist=["postgresql"],
+    core_connector_ep_names=["postgresql"],
 )
 
 
@@ -116,8 +116,7 @@ DB_CORE_URL = DB_URLS[D.POSTGRESQL_9_4]
 DB_CORE_SSL_URL = "bi_postgresql://datalens:qwerty@localhost:52303/test_data"
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=["postgresql"],
-    core_connector_whitelist=["postgresql"],
+    api_connector_ep_names=["postgresql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )

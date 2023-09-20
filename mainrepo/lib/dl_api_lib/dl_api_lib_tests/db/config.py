@@ -12,7 +12,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("db-postgres", fallback_port=52509).host,
     port_us_pg_5432=get_test_container_hostport("db-postgres", fallback_port=52509).port,
     us_master_token="AC1ofiek8coB",
-    core_connector_whitelist=["clickhouse", "postgresql"],
+    core_connector_ep_names=["clickhouse", "postgresql"],
 )
 
 
@@ -31,8 +31,7 @@ DB_URLS = {
 DB_CORE_URL = DB_URLS[D.CLICKHOUSE_22_10]
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=["clickhouse", "postgresql"],
-    core_connector_whitelist=["clickhouse", "postgresql"],
+    api_connector_ep_names=["clickhouse", "postgresql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
     bi_compeng_pg_url=(

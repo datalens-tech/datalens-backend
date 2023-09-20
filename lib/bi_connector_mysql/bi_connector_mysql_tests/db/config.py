@@ -14,7 +14,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=52010).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52010).port,
     us_master_token="AC1ofiek8coB",
-    core_connector_whitelist=["mysql"],
+    core_connector_ep_names=["mysql"],
 )
 
 
@@ -79,8 +79,7 @@ DB_URLS = {
 DB_CORE_URL = DB_URLS[D.MYSQL_8_0_12]
 
 BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
-    bi_api_connector_whitelist=["mysql"],
-    core_connector_whitelist=["mysql"],
+    api_connector_ep_names=["mysql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )
