@@ -6,9 +6,9 @@ from typing import (
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.registry.aliased_res import (
     AliasedLinkResource,
-    AliasedResourceRegistry,
     AliasedTableResource,
     AliasedTextResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.arg_base import FuncArg
 from dl_formula_ref.rich_text.elements import (
@@ -76,7 +76,7 @@ def test_expand_macro_ext_macro():
 
 
 def test_expand_macro_text():
-    resources = AliasedResourceRegistry(
+    resources = SimpleAliasedResourceRegistry(
         resources={
             "my_text": AliasedTextResource(body="Some {text: nested_text} Text"),
             "nested_text": AliasedTextResource(body="Nested"),
@@ -100,7 +100,7 @@ def test_expand_macro_text():
 
 
 def test_expand_macro_link():
-    resources = AliasedResourceRegistry(
+    resources = SimpleAliasedResourceRegistry(
         resources={
             "my_link": AliasedLinkResource(url="http://some.url"),
         }
@@ -118,7 +118,7 @@ def test_expand_macro_link():
 
 
 def test_expand_macro_table():
-    resources = AliasedResourceRegistry(
+    resources = SimpleAliasedResourceRegistry(
         resources={
             "my_table": AliasedTableResource(table_body=[["Some {text: nested_text} Text", "Something"]]),
             "nested_text": AliasedTextResource(body="Nested"),

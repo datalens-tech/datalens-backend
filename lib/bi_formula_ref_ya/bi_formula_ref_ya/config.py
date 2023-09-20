@@ -33,7 +33,7 @@ DOC_GEN_CONFIG_YC = RefDocGeneratorConfig(
     doc_avail_filename="function-ref/availability.md",
     function_scopes={
         Audience(name="internal"): Scope.DOCUMENTED | Scope.STABLE | Scope.UNSTABLE,
-        Audience(name="external"): Scope.DOCUMENTED | Scope.STABLE,
+        Audience(name="external", default=True): Scope.DOCUMENTED | Scope.STABLE,
     },
     block_conditions={"ycloud": True},
     supported_dialects=frozenset(

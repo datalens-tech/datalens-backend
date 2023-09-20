@@ -1,7 +1,7 @@
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry,
     AliasedTextResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocCategory
 
@@ -25,7 +25,7 @@ CATEGORY_TIME_SERIES = FunctionDocCategory(
         "missing.\n"
         "{text:time_series_syntax}\n"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         resources={
             "time_series_syntax": AliasedTextResource(
                 body=_(

@@ -12,7 +12,10 @@ import attr
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import get_dialect_from_str
-from dl_formula_ref.registry.aliased_res import AliasedResourceRegistry
+from dl_formula_ref.registry.aliased_res import (
+    AliasedResourceRegistryBase,
+    SimpleAliasedResourceRegistry,
+)
 from dl_formula_ref.registry.arg_base import FuncArg
 from dl_formula_ref.rich_text.elements import (
     AudienceBlock,
@@ -79,7 +82,7 @@ BLOCK_TAG_RE = re.compile(r"\{\s*(?P<tag_name>" + _BLOCK_MACRO_CHOICES + r")(\s+
 
 @attr.s
 class MacroExpander:
-    _resources: AliasedResourceRegistry = attr.ib(kw_only=True, factory=AliasedResourceRegistry)
+    _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
     _func_link_provider: Optional[Callable[[str, Optional[str]], Tuple[str, str]]] = attr.ib(kw_only=True, default=None)
     _cat_link_provider: Optional[Callable[[str, Optional[str]], Tuple[str, str]]] = attr.ib(kw_only=True, default=None)
     _args: Optional[List[FuncArg]] = attr.ib(kw_only=True, default=None)

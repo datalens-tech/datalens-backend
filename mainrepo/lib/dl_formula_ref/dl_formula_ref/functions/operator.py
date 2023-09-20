@@ -1,8 +1,8 @@
 from dl_formula_ref.categories.operator import CATEGORY_OPERATOR
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry,
     AliasedTableResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
@@ -199,7 +199,7 @@ FUNCTION_OP_PLUS = FunctionDocRegistryItem(
         "\n"
         "Changing the order of arguments does not affect the result."
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         {
             "desc_by_type": AliasedTableResource(
                 table_body=[
@@ -269,7 +269,7 @@ FUNCTION_OP_MINUS = FunctionDocRegistryItem(
         "\n"
         "{table: desc_by_type}"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         {
             "desc_by_type": AliasedTableResource(
                 table_body=[

@@ -1,3 +1,5 @@
+from typing import MutableMapping
+
 import attr
 
 from dl_formula.core.datatype import DataType
@@ -9,8 +11,10 @@ from dl_formula.definitions.functions_type import (
 from dl_formula_ref.categories.type_conversion import CATEGORY_TYPE_CONVERSION
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry,
+    AliasedResource,
+    AliasedResourceRegistryBase,
     AliasedTableResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
@@ -90,7 +94,7 @@ FUNCTION_FLOAT = FunctionDocRegistryItem(
         "\n"
         "{table: conversion}"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         resources={
             "conversion": AliasedTableResource(
                 table_body=[
@@ -126,7 +130,7 @@ FUNCTION_INT = FunctionDocRegistryItem(
         "\n"
         "{table: conversion}"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         resources={
             "conversion": AliasedTableResource(
                 table_body=[
@@ -163,7 +167,7 @@ FUNCTION_BOOL = FunctionDocRegistryItem(
         "\n"
         "{table:conversion}"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         resources={
             "conversion": AliasedTableResource(
                 table_body=[
@@ -311,18 +315,9 @@ def register_db_cast_extension(extension: DbCastExtension) -> None:
     _DB_CAST_TYPE_COMMENTS.update(extension.type_comments)
 
 
-FUNCTION_DB_CAST = FunctionDocRegistryItem(
-    name="db_cast",
-    category=CATEGORY_TYPE_CONVERSION,
-    description=_(
-        "Converts the {arg:0} expression to database's native type {arg:1}.\n"
-        "\n"
-        "The following type casts are supported:\n"
-        "\n"
-        "{table:supported_native_types}\n"
-    ),
-    resources=AliasedResourceRegistry(
-        resources={
+class DbCastWhiteListAliasedResourceRegistry(AliasedResourceRegistryBase):
+    def get_resources(self) -> MutableMapping[str, AliasedResource]:
+        resources = {
             "supported_native_types": AliasedTableResource(
                 table_body=[
                     [
@@ -349,7 +344,23 @@ FUNCTION_DB_CAST = FunctionDocRegistryItem(
                 ]
             ),
         }
+        return resources
+
+
+FUNCTION_DB_CAST = FunctionDocRegistryItem(
+    name="db_cast",
+    category=CATEGORY_TYPE_CONVERSION,
+    description=_(
+        "Converts the {arg:0} expression to database's native type {arg:1}.\n"
+        "\n"
+        "The following type casts are supported:\n"
+        "\n"
+        "{table:supported_native_types}\n"
     ),
+    # Using a custom resource registry here
+    # because it needs to read from global maps
+    # that are filled from plugins after import time
+    resources=DbCastWhiteListAliasedResourceRegistry(),
     examples=[
         SimpleExample('DB_CAST([float_value], "Decimal", 10, 5)'),
         SimpleExample('DB_CAST([float_value], "double precision")'),

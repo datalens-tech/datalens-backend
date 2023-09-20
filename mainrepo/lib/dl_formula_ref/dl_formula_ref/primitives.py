@@ -19,7 +19,7 @@ import attr
 
 from dl_formula.core.dialect import DialectCombo
 from dl_formula_ref.audience import Audience
-from dl_formula_ref.registry.aliased_res import AliasedResourceRegistry
+from dl_formula_ref.registry.aliased_res import AliasedResourceRegistryBase
 from dl_formula_ref.registry.arg_base import FuncArg
 from dl_formula_ref.registry.base import FunctionDocCategory
 from dl_formula_ref.registry.example_base import ExampleBase
@@ -54,7 +54,7 @@ class RawFunc:
     _notes: List[ParameterizedNote] = attr.ib(kw_only=True)
     _return_type: ParameterizedText = attr.ib(kw_only=True)
     _category: FunctionDocCategory = attr.ib(kw_only=True)
-    _resources: AliasedResourceRegistry = attr.ib(kw_only=True)
+    _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True)
     _examples: Sequence[ExampleBase] = attr.ib(kw_only=True)
     _dialects: Set[DialectCombo] = attr.ib(kw_only=True)
 
@@ -71,7 +71,7 @@ class RawFunc:
         return self._category
 
     @property
-    def resources(self) -> AliasedResourceRegistry:
+    def resources(self) -> AliasedResourceRegistryBase:
         return self._resources
 
     @property

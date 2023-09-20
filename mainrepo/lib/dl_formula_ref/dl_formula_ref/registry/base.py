@@ -11,7 +11,10 @@ from typing import (
 import attr
 
 from dl_formula.core.dialect import DialectCombo
-from dl_formula_ref.registry.aliased_res import AliasedResourceRegistry
+from dl_formula_ref.registry.aliased_res import (
+    AliasedResourceRegistryBase,
+    SimpleAliasedResourceRegistry,
+)
 from dl_formula_ref.registry.arg_extractor import DefaultArgumentExtractor
 from dl_formula_ref.registry.dialect_extractor import DefaultDialectExtractor
 from dl_formula_ref.registry.impl_selector import DefaultImplementationSelector
@@ -45,7 +48,7 @@ class FunctionDocCategory:
     _name: str = attr.ib(kw_only=True)
     _description: str = attr.ib(kw_only=True)
     _keywords: str = attr.ib(kw_only=True)
-    _resources: AliasedResourceRegistry = attr.ib(kw_only=True, factory=AliasedResourceRegistry)
+    _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
 
     @property
     def name(self) -> str:
@@ -60,7 +63,7 @@ class FunctionDocCategory:
         return self._keywords
 
     @property
-    def resources(self) -> AliasedResourceRegistry:
+    def resources(self) -> AliasedResourceRegistryBase:
         return self._resources
 
 
@@ -75,7 +78,7 @@ class FunctionDocRegistryItem:
     _examples: Sequence[ExampleBase] = attr.ib(kw_only=True, factory=list)
     _impl_selector: ImplementationSelectorBase = attr.ib(kw_only=True, factory=DefaultImplementationSelector)
     _signature_gen: _signature_base.SignatureGeneratorBase = attr.ib(kw_only=True, factory=DefaultSignatureGenerator)
-    _resources: AliasedResourceRegistry = attr.ib(kw_only=True, factory=AliasedResourceRegistry)
+    _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
     _arg_extractor: _arg_base.ArgumentExtractorBase = attr.ib(kw_only=True, factory=DefaultArgumentExtractor)
     _note_extractor: _note_extr_base.NoteExtractorBase = attr.ib(kw_only=True, factory=DefaultNoteExtractor)
     _return_type_extractor: _return_base.ReturnTypeExtractorBase = attr.ib(
@@ -115,11 +118,11 @@ class FunctionDocRegistryItem:
         return self._description
 
     @property
-    def resources(self) -> AliasedResourceRegistry:
+    def resources(self) -> AliasedResourceRegistryBase:
         return self._resources
 
     @property
-    def all_resources(self) -> AliasedResourceRegistry:
+    def all_resources(self) -> AliasedResourceRegistryBase:
         return self._category.resources + self._resources
 
     def get_explicit_notes(self, env: GenerationEnvironment) -> List[Note]:

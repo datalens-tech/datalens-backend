@@ -8,9 +8,9 @@ from dl_formula_ref.examples.config import (
 )
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry,
     AliasedTableResource,
     AliasedTextResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import (
@@ -116,7 +116,7 @@ def _make_rank_examples(func: str) -> List[DataExample]:
     return examples
 
 
-_RANK_RESOURCES = AliasedResourceRegistry(
+_RANK_RESOURCES = SimpleAliasedResourceRegistry(
     resources={
         "rank_direction_description": AliasedTextResource(
             body=_(
@@ -429,7 +429,7 @@ def _make_rfunc_examples(func: str) -> List[DataExample]:
     return examples
 
 
-_RFUNC_RESOURCES = AliasedResourceRegistry(
+_RFUNC_RESOURCES = SimpleAliasedResourceRegistry(
     resources={
         "rwindow_description_table": AliasedTableResource(
             table_body=[
@@ -641,7 +641,7 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
     return examples
 
 
-_MFUNC_RESOURCES = AliasedResourceRegistry(
+_MFUNC_RESOURCES = SimpleAliasedResourceRegistry(
     resources={
         "mwindow_description_table": AliasedTableResource(
             table_body=[

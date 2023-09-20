@@ -1,7 +1,7 @@
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry,
     AliasedTextResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocCategory
 
@@ -20,7 +20,7 @@ CATEGORY_AGGREGATION = FunctionDocCategory(
         "{text:agg_syntax}\n"
         "{text:agg_usage_restrictions}"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         resources={
             "agg_syntax": AliasedTextResource(
                 body=_(

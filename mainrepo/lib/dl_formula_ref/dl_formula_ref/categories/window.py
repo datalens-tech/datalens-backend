@@ -1,8 +1,8 @@
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedResourceRegistry,
     AliasedTableResource,
     AliasedTextResource,
+    SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocCategory
 
@@ -27,7 +27,7 @@ CATEGORY_WINDOW = FunctionDocCategory(
         "{text:agg_as_window}\n"
         "{text:window_examples}\n"
     ),
-    resources=AliasedResourceRegistry(
+    resources=SimpleAliasedResourceRegistry(
         resources={
             "window_usage_restrictions": AliasedTextResource(
                 body=_(

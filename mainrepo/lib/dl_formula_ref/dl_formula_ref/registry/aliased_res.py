@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import abc
 from collections import ChainMap
 from typing import (
     Any,
+    ItemsView,
     Iterable,
     MutableMapping,
     TypeVar,
@@ -38,20 +40,22 @@ class AliasedTableResource(AliasedResource):
 
 
 @attr.s(frozen=True)
-class AliasedResourceRegistry:
-    _resources: MutableMapping[str, AliasedResource] = attr.ib(factory=dict)
+class AliasedResourceRegistryBase(abc.ABC):
+    @abc.abstractmethod
+    def get_resources(self) -> MutableMapping[str, AliasedResource]:
+        raise NotImplementedError
 
     def __getitem__(self, item: str) -> AliasedResource:
-        return self._resources[item]
+        return self.get_resources()[item]
 
-    def __add__(self, other: AliasedResourceRegistry) -> AliasedResourceRegistry:
-        return AliasedResourceRegistry(resources=ChainMap(self._resources, other._resources))
+    def __add__(self, other: AliasedResourceRegistryBase) -> AliasedResourceRegistryBase:
+        return CompoundAliasedResourceRegistry(nested_registries=(self, other))
 
-    def items(self) -> Iterable[tuple[str, AliasedResource]]:
-        return self._resources.items()
+    def items(self) -> ItemsView[str, AliasedResource]:
+        return self.get_resources().items()
 
     def keys(self) -> Iterable[str]:
-        return self._resources.keys()
+        return self.get_resources().keys()
 
     def get_link(self, alias: str) -> AliasedLinkResource:
         res = self[alias]
@@ -67,3 +71,19 @@ class AliasedResourceRegistry:
         res = self[alias]
         assert isinstance(res, AliasedTableResource)
         return res
+
+
+@attr.s(frozen=True)
+class CompoundAliasedResourceRegistry(AliasedResourceRegistryBase):
+    _nested_registries: tuple[AliasedResourceRegistryBase, ...] = attr.ib(default=())
+
+    def get_resources(self) -> MutableMapping[str, AliasedResource]:
+        return ChainMap(*(res_reg.get_resources() for res_reg in self._nested_registries))
+
+
+@attr.s(frozen=True)
+class SimpleAliasedResourceRegistry(AliasedResourceRegistryBase):
+    _resources: MutableMapping[str, AliasedResource] = attr.ib(factory=dict)
+
+    def get_resources(self) -> MutableMapping[str, AliasedResource]:
+        return self._resources

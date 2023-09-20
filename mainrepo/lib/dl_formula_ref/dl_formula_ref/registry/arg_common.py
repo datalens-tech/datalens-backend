@@ -7,8 +7,10 @@ from typing import (
     Optional,
     Sequence,
     Union,
+    cast,
 )
 
+from dl_formula.core.datatype import DataType
 from dl_formula.definitions.type_strategy import (
     DynamicIndexStrategy,
     Fixed,
@@ -24,7 +26,6 @@ from dl_formula_ref.texts import (
 
 
 if TYPE_CHECKING:
-    from dl_formula.core.datatype import DataType
     from dl_formula_ref.registry.arg_base import FuncArg
     import dl_formula_ref.registry.base as _registry_base
     from dl_formula_ref.registry.env import GenerationEnvironment
@@ -115,6 +116,17 @@ class TypeStrategyInspector:
                     note = ParameterizedText(text=COMMON_TYPE_NOTE, params=dict(args=common_type_args_str))
 
         else:
-            ret_type_str = ParameterizedText(text=DEPENDS_ON_ARGS)
+            resolved_ret_type = False
+            if all(isinstance(ret_type_strat, Fixed) for ret_type_strat in strategies):
+                # All are `Fixed`. Let's inspect the types that they return
+                ret_types = {cast(Fixed, ret_type_strat).type.non_const_type for ret_type_strat in strategies}
+                ret_types = ret_types - {DataType.NULL}  # ignore NULL
+                if len(ret_types) == 1:
+                    # We still have just one possible return type (with NULL ignored)
+                    ret_type_str = ParameterizedText(text=type_macro(next(iter(ret_types))))
+                    resolved_ret_type = True
+
+            if not resolved_ret_type:
+                ret_type_str = ParameterizedText(text=DEPENDS_ON_ARGS)
 
         return TypeInfo(ret_type_str=ret_type_str, arg_note=note)
