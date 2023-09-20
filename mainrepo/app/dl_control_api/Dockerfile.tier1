@@ -1,4 +1,6 @@
 #syntax=docker/dockerfile:1.4
+# Docker file for old CI processes
+# TODO: just delete it
 FROM bake_ctx_base_img
 
 ENV APP_DIR="mainrepo/app/dl_control_api"
@@ -20,7 +22,7 @@ COPY /README.md /src/$APP_DIR/README.md
 WORKDIR /src/ops/ci
 RUN poetry export --only app_bi_os_control_api --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
+RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
 RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat requirements.txt | grep certifi-yandex)"; exit 0
 
 EXPOSE 8080

@@ -1,9 +1,7 @@
 #syntax=docker/dockerfile:1.4
-# Docker file for old CI processes
-# TODO: just delete it
 FROM bake_ctx_base_img
 
-ENV APP_DIR="mainrepo/app/dl_data_api"
+ENV APP_DIR="app/dl_data_api"
 
 RUN mkdir -p /code
 COPY /etc /etc
@@ -15,6 +13,7 @@ COPY docker/gunicorn_config.py ${GUNICORN_CONFIG}
 
 # Libs & metapkg
 COPY --from=bake_ctx_src_lib / /src
+COPY --from=bake_ctx_metapkg / /src
 
 # Sources copy
 RUN mkdir -p /src/$APP_DIR
@@ -23,11 +22,9 @@ COPY /dl_data_api /src/$APP_DIR/dl_data_api
 COPY /README.md /src/$APP_DIR/README.md
 
 # Installation
-WORKDIR /src/ops/ci
-RUN poetry export --only app_bi_os_data_api --without-hashes --format=requirements.txt > requirements.txt
+WORKDIR /src/metapkg
+RUN poetry export --only app_dl_os_data_api --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed -r docker_image_base_ci/requirements_conflicting.txt
-RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignore-installed --force-reinstall "$(cat requirements.txt | grep certifi-yandex)"; exit 0
 
 EXPOSE 8080
 

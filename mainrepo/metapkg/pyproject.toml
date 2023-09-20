@@ -341,3 +341,9 @@ secretstorage = {ignore = true}
 tzdata = {ignore = true}
 xattr = {ignore = true}
 appnope = {ignore = true}
+
+[tool.poetry.group.app_dl_os_control_api.dependencies]
+datalens-control-api = {path = "../app/dl_control_api"}
+
+[tool.poetry.group.app_dl_os_data_api.dependencies]
+datalens-data-api = {path = "../app/dl_data_api"}
