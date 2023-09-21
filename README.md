@@ -17,10 +17,6 @@ See [mainrepo README](mainrepo/README.md) for other environment tasks.
 
 ### Generation (`gen-ya:`)
 
-- `task gen-ya:i18n-po`:
-  Sync/generate `.po` files for package (run it from a package dir)
-- `task gen-ya:i18n-binaries`:
-  Generate binary `.mo` files from `.po` files for package (run it from a package dir)
 - `task gen-ya:formula-ref -- <config_version>`:
   Generate formula reference for all supported locales for the given `config_version`.
   Resulting doc files are placed in `artifacts/generated_docs`
