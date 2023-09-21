@@ -52,29 +52,6 @@ def _get_index_for_type(dataset: Dataset, type: BIType) -> int:
     return i
 
 
-def test_get_preview_immediately(client, api_v1, data_api_v1, connection_id):
-    ds = Dataset()
-    ds.sources["source_1"] = ds.source(
-        source_type=SOURCE_TYPE_CH_TABLE,
-        connection_id=connection_id,
-        parameters=dict(
-            db_name="test_data",
-            table_name="sample_superstore",
-        ),
-    )
-    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds_resp = api_v1.save_dataset(dataset=ds)
-    assert ds_resp.status_code == HTTPStatus.OK
-    ds = ds_resp.dataset
-    dataset_id = ds.id
-
-    preview_resp = data_api_v1.get_response_for_dataset_preview(
-        dataset_id=dataset_id,
-    )
-    assert preview_resp.status_code == HTTPStatus.OK, preview_resp.json
-
-
 def test_create_dataset_from_oracle(client, api_v1, oracle_connection_id, oracle_table):
     ds = Dataset()
     ds.sources["source_1"] = ds.source(
@@ -148,12 +125,6 @@ def test_get_dataset_with_deleted_connection(api_v1, client, dataset_id, connect
     orig_data["options"].pop("supported_functions")
     new_data["options"].pop("supported_functions")
     assert orig_data["options"] == new_data["options"]
-
-
-def test_get_one_dataset(client, dataset_id):
-    ds = client.get("/api/v1/datasets/{}/versions/draft".format(dataset_id)).json
-    assert ds["is_favorite"] is False
-    assert ds["permissions"] == {"admin": True, "edit": True, "execute": True, "read": True}
 
 
 def test_get_dataset_fields(client, data_api_v1, dataset_id):
@@ -310,13 +281,6 @@ def test_get_preview_with_sum_of_ints(api_v1, data_api_v1, static_dataset_id):
 
     preview_data = data_api_v1.get_preview(dataset=ds).data
     assert "." not in preview_data["Data"][0][i]
-
-
-def test_delete_dataset(client, dataset_id):
-    response = client.delete(
-        "/api/v1/datasets/{}".format(dataset_id),
-    )
-    assert response.status_code == 200
 
 
 def test_aggregation_sum(api_v1, data_api_v1, static_dataset_id):

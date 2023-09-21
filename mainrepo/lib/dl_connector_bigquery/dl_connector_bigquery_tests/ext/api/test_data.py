@@ -1,6 +1,7 @@
 from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
+    DefaultConnectorDataPreviewTestSuite,
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
@@ -25,4 +26,8 @@ class TestBigQueryDataRange(BigQueryDataApiTestBase, DefaultConnectorDataRangeTe
 
 
 class TestBigQueryDataDistinct(BigQueryDataApiTestBase, DefaultConnectorDataDistinctTestSuite):
+    pass
+
+
+class TestBigQueryDataPreview(BigQueryDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass

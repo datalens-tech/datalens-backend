@@ -1,6 +1,7 @@
 from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
+    DefaultConnectorDataPreviewTestSuite,
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
@@ -26,4 +27,8 @@ class TestMSSQLDataRange(MSSQLDataApiTestBase, DefaultConnectorDataRangeTestSuit
 
 
 class TestMSSQLDataDistinct(MSSQLDataApiTestBase, DefaultConnectorDataDistinctTestSuite):
+    pass
+
+
+class TestMSSQLDataPreview(MSSQLDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass

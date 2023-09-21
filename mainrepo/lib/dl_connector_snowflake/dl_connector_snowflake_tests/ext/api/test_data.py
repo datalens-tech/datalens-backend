@@ -1,5 +1,7 @@
 from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataDistinctTestSuite,
+    DefaultConnectorDataGroupByFormulaTestSuite,
+    DefaultConnectorDataPreviewTestSuite,
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
@@ -20,4 +22,12 @@ class TestSnowFlakeDataRange(SnowFlakeDataApiTestBase, DefaultConnectorDataRange
 
 
 class TestSnowFlakeDataDistinct(SnowFlakeDataApiTestBase, DefaultConnectorDataDistinctTestSuite):
+    pass
+
+
+class TestSnowFlakeDataGroupBy(SnowFlakeDataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):
+    pass
+
+
+class TestSnowFlakeDataPreview(SnowFlakeDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass

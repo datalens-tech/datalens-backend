@@ -167,7 +167,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
 
     def delete_dataset(self, dataset_id: str, fail_ok: bool = False) -> None:
         response = self._request(
-            f"/api/v1/datasets/{dataset_id}/versions/draft",
+            f"/api/v1/datasets/{dataset_id}",
             method="delete",
         )
         if not fail_ok:

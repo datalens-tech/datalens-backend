@@ -1,10 +1,10 @@
 import abc
+from typing import Generator
 
 import pytest
 import shortuuid
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_core.base_models import PathEntryLocation
@@ -40,13 +40,14 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
         dataset_api: SyncHttpDatasetApiV1,
         saved_connection_id: str,
         dataset_params: dict,
-    ) -> Dataset:
+    ) -> Generator[Dataset, None, None]:
         ds = self.make_basic_dataset(
             dataset_api=dataset_api,
             connection_id=saved_connection_id,
             dataset_params=dataset_params,
         )
-        return ds
+        yield ds
+        dataset_api.delete_dataset(dataset_id=ds.id, fail_ok=False)
 
     def test_invalid_dataset_id(
         self,
