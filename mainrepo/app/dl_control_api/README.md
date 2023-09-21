@@ -1,1 +1,1 @@
-# bi-api (Open Source)
+# datalens-api (Open Source)

@@ -1,4 +1,4 @@
-# BI formula reference
+# Formula reference
 
 Package to generate BI docs source
 
