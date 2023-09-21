@@ -14,6 +14,7 @@ from dl_repmanager.package_meta_reader import (
     PackageMetaReader,
 )
 from dl_repmanager.repository_env import RepoEnvironment
+from dl_repmanager.primitives import MetaPackageSpec
 
 
 log = getLogger()
@@ -32,19 +33,18 @@ class PyPrjEditor:
     def package_meta_io_factory(self) -> PackageMetaIOFactory:
         return PackageMetaIOFactory(fs_editor=self.repository_env.fs_editor)
 
-    @cached_property
-    def meta_project_reader(self) -> PackageMetaReader:
-        toml_path = self.base_path / "ops/ci/pyproject.toml"
+    def _get_meta_project_reader(self, metapackage_name: str) -> PackageMetaReader:
+        toml_path = self.repository_env.get_metapackage_spec(metapackage_name=metapackage_name).toml_path
         with self.package_meta_io_factory.package_meta_reader(toml_path) as reader:
             return reader
 
-    def update_mypy_common(self) -> None:
-        data = self.meta_project_reader.get_mypy_common()
+    def update_mypy_common(self, metapackage_name: str) -> None:
+        data = self._get_meta_project_reader(metapackage_name=metapackage_name).get_mypy_common()
         for pi in self.package_index.list_package_infos():
-            with self.package_meta_io_factory.package_meta_writer(pi.abs_path / "pyproject.toml") as pmw:
+            with self.package_meta_io_factory.package_meta_writer(pi.toml_path) as pmw:
                 log.debug(f"Checking {pi.abs_path}")
                 pmw.update_mypy_common(data)
 
-            log.debug(f"pyproject-fmt {str(pi.abs_path / 'pyproject.toml')}")
+            log.debug(f"pyproject-fmt {str(pi.toml_path)}")
             subprocess.run(f"pyproject-fmt {str(pi.abs_path)}", shell=True)
             (pi.abs_path / "mypy.ini").unlink(missing_ok=True)
