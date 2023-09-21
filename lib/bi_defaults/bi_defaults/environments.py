@@ -959,7 +959,10 @@ class ExternalProductionInstallation(
     ]
 
 
-class NebiusInstallation(InstallationBase):
+class NebiusInstallation(
+    InstallationBase,
+    CommonInstallation,  # TODO: delete me, required only due to half-broken dl_file_uploader settings
+):
     """Base class for all white-lable installations"""
 
 
