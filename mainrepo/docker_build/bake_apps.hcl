@@ -1,4 +1,4 @@
-target "app_os_control_api" {
+target "dl_control_api" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_focal_db"
@@ -9,7 +9,7 @@ target "app_os_control_api" {
   dockerfile = "Dockerfile"
 }
 
-target "app_os_data_api" {
+target "dl_data_api" {
   pull     = false
   contexts = {
     bake_ctx_base_img = "target:base_focal_db"
