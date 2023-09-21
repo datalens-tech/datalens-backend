@@ -27,6 +27,10 @@ from dl_formula_ref.paths import (
 )
 from dl_formula_ref.primitives import RawFunc
 from dl_formula_ref.reference import FuncReference
+from dl_formula_ref.registry.aliased_res import (
+    AliasedResourceRegistryBase,
+    SimpleAliasedResourceRegistry,
+)
 from dl_formula_ref.registry.note import (
     CrosslinkNote,
     ParameterizedNote,
@@ -115,6 +119,7 @@ class FuncRenderer:
     _rt_renderer: MdRichTextRenderer = attr.ib(init=False, factory=MdRichTextRenderer)
     _block_conditions: Mapping[str, bool] = attr.ib(kw_only=True, factory=dict)
     _rt_env: RichTextRenderEnvironment = attr.ib(kw_only=True)
+    _resource_overrides: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
 
     @_rt_env.default
     def _rt_env_default(self) -> RichTextRenderEnvironment:
@@ -134,8 +139,9 @@ class FuncRenderer:
             ).format()
         translation_callable = get_localizer(self._locale).translate
         relative_path_renderer = self._path_renderer.child(context_path)
+        resources = self._resource_overrides + raw_func.resources
         expander = MacroExpander(
-            resources=raw_func.resources,
+            resources=resources,
             args=raw_func.args,
             translation_callable=translation_callable,
             func_link_provider=relative_path_renderer.get_func_link,

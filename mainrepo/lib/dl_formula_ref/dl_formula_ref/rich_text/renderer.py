@@ -24,7 +24,6 @@ from dl_formula_ref.rich_text.elements import (
     TermTextElement,
 )
 from dl_formula_ref.rich_text.helpers import escape_cell
-from dl_i18n.localizer_base import Translatable
 
 
 @attr.s

@@ -25,6 +25,10 @@ from dl_formula_ref.paths import (
     CatPathTemplate,
     FuncPathTemplate,
 )
+from dl_formula_ref.registry.aliased_res import (
+    AliasedResourceRegistryBase,
+    SimpleAliasedResourceRegistry,
+)
 
 
 class FuncDocTemplateConfig(NamedTuple):
@@ -70,6 +74,8 @@ class RefDocGeneratorConfig:
     supported_locales: frozenset[str] = attr.ib(kw_only=True, default=frozenset({"en"}))
     supported_dialects: frozenset[DialectCombo] = attr.ib(kw_only=True, default=frozenset({D.DUMMY}))
     default_example_dialect: DialectCombo = attr.ib(kw_only=True, default=D.DUMMY)
+
+    resource_overrides: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
 
     def clone(self, **kwargs: Any) -> RefDocGeneratorConfig:
         return attr.evolve(self, **kwargs)

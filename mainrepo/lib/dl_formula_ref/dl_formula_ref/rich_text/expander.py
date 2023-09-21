@@ -88,7 +88,10 @@ class MacroExpander:
     _args: Optional[List[FuncArg]] = attr.ib(kw_only=True, default=None)
     _translation_callable: Callable[[str | Translatable], str] = attr.ib(kw_only=True, default=lambda s: s)
 
-    def _get_raw_link_url_by_alias(self, alias: str) -> str:
+    def _get_raw_link_url_by_alias(self, alias: str) -> Optional[str]:
+        if alias not in self._resources:
+            return None
+
         return self._resources.get_link(alias).url
 
     def _get_raw_text_body_by_alias(self, alias: str) -> str:
@@ -264,14 +267,16 @@ class MacroExpander:
         return LinkTextElement(text=text, url=url)
 
     @expand_macro.register
-    def expand_macro_link(self, macro: LinkMacro) -> LinkTextElement:
+    def expand_macro_link(self, macro: LinkMacro) -> BaseTextElement:
         text: str = macro.arg
         if macro.second_arg is not None:
             text = self._translate_text(macro.second_arg)
-        return LinkTextElement(
-            text=text,
-            url=self._translate_text(self._get_raw_link_url_by_alias(macro.arg)),
-        )
+
+        url = self._get_raw_link_url_by_alias(macro.arg)
+        if url is None:
+            return RichText(text=text)
+
+        return LinkTextElement(text=text, url=self._translate_text(url))
 
     @expand_macro.register
     def expand_macro_text(self, macro: TextMacro) -> RichText:

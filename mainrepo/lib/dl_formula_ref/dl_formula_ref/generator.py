@@ -133,6 +133,7 @@ class ReferenceDocGenerator:
                 ),
                 block_conditions=self._gen_config.block_conditions,
                 path_renderer=path_renderer,
+                resource_overrides=self._gen_config.resource_overrides,
             )
         return self._renderers_by_tmpl[key]
 

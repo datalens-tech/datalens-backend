@@ -12,6 +12,10 @@ from dl_formula_ref.paths import (
     CatPathTemplate,
     FuncPathTemplate,
 )
+from dl_formula_ref.registry.aliased_res import (
+    AliasedLinkResource,
+    SimpleAliasedResourceRegistry,
+)
 
 from bi_connector_metrica.formula.constants import MetricaDialect
 from bi_connector_mssql.formula.constants import MssqlDialect
@@ -50,4 +54,12 @@ DOC_GEN_CONFIG_YC = RefDocGeneratorConfig(
     ),
     supported_locales=frozenset({"en", "ru"}),
     default_example_dialect=ClickHouseDialect.CLICKHOUSE_22_10,
+    resource_overrides=SimpleAliasedResourceRegistry(
+        resources={
+            "field_concept_link": AliasedLinkResource(url="../concepts/dataset/data-model.md#field"),
+            "chart_aggregation_link": AliasedLinkResource(
+                url="../concepts/aggregation-tutorial.md#aggregation-in-charts",
+            ),
+        },
+    ),
 )
