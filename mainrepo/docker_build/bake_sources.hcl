@@ -35,3 +35,12 @@ target "dl_src_metapkg" {
     { cmd = "copy", ctx = "metapkg", target_path = "metapkg" },
   ])
 }
+
+target "dl_src_app" {
+  contexts = {
+    app = "${DL_B_PROJECT_ROOT}/app"
+  }
+  dockerfile-inline = dl_dockerfile_prepare_src([
+    { cmd = "copy", ctx = "app", target_path = "app" },
+  ])
+}
