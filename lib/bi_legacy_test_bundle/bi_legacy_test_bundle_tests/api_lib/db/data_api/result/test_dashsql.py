@@ -8,7 +8,6 @@ from bi_testing_ya.sql_queries import (
     CH_QUERY,
     CH_QUERY_FULL,
     ORACLE_QUERY_FULL,
-    PG_QUERY_FULL,
 )
 from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
@@ -155,18 +154,6 @@ async def test_pg_dashsql_params_cache(async_api_local_env_low_level_client, pg_
     resp_data = await resp.json()
     assert resp.status == 200, resp_data
     assert resp_data[1]["data"][0] == "v2"
-
-
-@pytest.mark.asyncio
-async def test_greenplum_dashsql_result(async_api_local_env_low_level_client, greenplum_connection_id):
-    data_api_aio = async_api_local_env_low_level_client
-    conn_id = greenplum_connection_id
-
-    resp = await data_api_aio.request(
-        "post", f"/api/v1/connections/{conn_id}/dashsql", json={"sql_query": PG_QUERY_FULL}
-    )
-    resp_data = await resp.json()
-    assert resp.status == 200, resp_data
 
 
 @pytest.mark.asyncio

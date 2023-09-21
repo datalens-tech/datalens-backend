@@ -23,7 +23,6 @@ from dl_api_client.dsmaker.primitives import (
 )
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
-from dl_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
 from dl_constants.enums import WhereClauseOperation
 from dl_testing.utils import guids_from_titles
 
@@ -876,35 +875,6 @@ def test_pg_median(api_v1, data_api_v1, postgres_table_fresh, pg_fresh_connectio
 
 def test_oracle_median(api_v1, data_api_v1, oracle_table, oracle_connection_id):
     _test_db_median(api_v1, data_api_v1, oracle_table, oracle_connection_id)
-
-
-def test_greenplum_dataset_result(client, api_v1, data_api_v1, postgres_table, greenplum_connection_id):
-    ds = Dataset()
-    data_source_settings = data_source_settings_from_table(table=postgres_table)
-    data_source_settings.update(
-        source_type=SOURCE_TYPE_GP_TABLE,
-        connection_id=greenplum_connection_id,
-    )
-    ds.sources["source_1"] = ds.source(**data_source_settings)
-    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds_resp = api_v1.save_dataset(dataset=ds)
-    assert ds_resp.status_code == 200
-    ds = ds_resp.dataset
-
-    dataset_id = ds.id
-
-    result_schema = get_result_schema(client, dataset_id)
-
-    req_data = {
-        "updates": [],
-        "columns": [x["guid"] for x in result_schema],
-        "group_by": [result_schema[i]["guid"] for i in range(1, len(result_schema))],
-    }
-
-    r = data_api_v1.get_response_for_dataset_result(dataset_id=dataset_id, raw_body=req_data)
-
-    assert r.status_code == 200
 
 
 def test_get_dataset_version_result_array_fields(client, api_v1, data_api_v1, connection_id):

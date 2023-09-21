@@ -44,41 +44,6 @@ limit 10
 """
 
 
-# results in 7 rows, which is checked in a bi_core subselect test
-PG_QUERY_FULL = r"""
-with base as (
-    select generate_series(0, 6) as number
-)
-select
-    number,
-    'test' || number::text as str,
-    number::bool as num_bool,
-    number::text::bytea as num_bytea,
-    number::char as num_char,
-    -- number::name as num_name,
-    number::int8 as num_int8,
-    number::int2 as num_int2,
-    number::int4 as num_int4,
-    number::text as num_text,
-    number::oid as num_oid,
-    number::text::json as num_json,
-    -- number::text::jsonb as num_jsonb, -- tests-pg too old
-    number::float4 as num_float4,
-    number::float8 as num_float8,
-    number::numeric as num_numeric,
-    (number || ' second')::interval as num_interval,
-    number::varchar(12) as num_varchar,
-    ('2020-01-0' || (number + 1))::date as num_date,
-    ('00:01:0' || number)::time as num_time,
-    ('2020-01-01T00:00:0' || number)::timestamp as num_timestamp,
-    ('2020-01-01T00:00:0' || number)::timestamptz as num_timestamptz,
-    ARRAY[number, 2, 3] as num_array,
-    'nan'::double precision + number as some_nan
-from base
-limit 10
-"""
-
-
 ORACLE_QUERY_FULL = r"""
 select
     num,

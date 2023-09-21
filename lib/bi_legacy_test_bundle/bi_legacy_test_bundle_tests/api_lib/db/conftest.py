@@ -279,41 +279,6 @@ def oracle_connection_id(app, client, request):
     return make_connection_get_id(connection_params=conn_params, client=client, request=request)
 
 
-@pytest.fixture(scope="function")
-def greenplum_connection_id(app, client, request, pg_connection_params):
-    db_params = DB_PARAMS["pg"]  # TODO: switch to greenplum
-    conn_params = {
-        "name": "greenplum_test_{}".format(get_random_str()),
-        "type": "greenplum",
-        "host": db_params.host.split(":")[0],
-        "port": int(db_params.host.split(":")[1]),
-        "db_name": "datalens",
-        "username": "datalens",
-        "password": db_params.password,
-        "raw_sql_level": "dashsql",  # NOTE: allowing by default
-    }
-    return make_connection_get_id(connection_params=conn_params, client=client, request=request)
-
-
-@pytest.fixture
-def promql_connection_params():
-    db_params = DB_PARAMS["prometheus"]
-    return {
-        "type": "promql",
-        "dir_path": "tests/connections",
-        "name": "prometheus_{}".format(get_random_str()),
-        "host": db_params.host.split(":")[0],
-        "port": int(db_params.host.split(":")[1]),
-        "username": "admin",
-        "password": db_params.password,
-    }
-
-
-@pytest.fixture(scope="function")
-def promql_subselectable_connection_id(app, client, request, promql_connection_params):
-    return make_connection_get_id(connection_params=promql_connection_params, client=client, request=request)
-
-
 @pytest.fixture
 def mock_permissions_for_us_entries(monkeypatch):
     @contextlib.contextmanager

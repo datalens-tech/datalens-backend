@@ -98,7 +98,6 @@ from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
 from dl_connector_chyt.core.settings import CHYTConnectorSettings
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import (
     ConnectionType,
@@ -155,7 +154,6 @@ from bi_connector_chyt_internal.core.constants import (
     DATA_SOURCE_CREATE_VIA_YT_TO_DL,
 )
 from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
-from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
 from bi_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
     CONNECTION_TYPE_METRICA_API,
@@ -394,7 +392,6 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
         CONNECTION_TYPE_CH_OVER_YT: CHYTConnectorSettings(),
         CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: CHYTConnectorSettings(),
         CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(),
-        CONNECTION_TYPE_GREENPLUM: GreenplumConnectorSettings(),
         CONNECTION_TYPE_MYSQL: MysqlConnectorSettings(),
         CONNECTION_TYPE_POSTGRES: PostgresConnectorSettings(),
         CONNECTION_TYPE_YQ: YQConnectorSettings(

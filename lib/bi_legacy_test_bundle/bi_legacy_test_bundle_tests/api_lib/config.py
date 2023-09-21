@@ -86,10 +86,6 @@ DB_PARAMS = {
         # ENV key: ORACLE_PASSWORD_DECRYPT
         "qwerty",
     ),
-    "prometheus": (
-        f'{get_test_container_hostport("db-prometheus", fallback_port=50518).as_pair()}',
-        "admin",
-    ),
 }
 
 

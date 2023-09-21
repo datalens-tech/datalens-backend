@@ -21,7 +21,6 @@ from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
 )
-from dl_connector_greenplum.core.constants import SOURCE_TYPE_GP_TABLE
 from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_SUBSELECT,
     SOURCE_TYPE_PG_TABLE,
@@ -817,25 +816,6 @@ def test_index_fetching_pg(api_v1, pg_connection_id, postgres_db):
     api_v1.save_dataset(ds)
     ds = api_v1.load_dataset(ds).dataset
     assert ds.sources[source_id].index_info_set is None
-
-
-def test_create_dataset_from_greenplum(client, api_v1, greenplum_connection_id):
-    ds = Dataset()
-    ds.sources["source_1"] = ds.source(
-        source_type=SOURCE_TYPE_GP_TABLE,
-        connection_id=greenplum_connection_id,
-        parameters=dict(
-            table_name="supersample",
-        ),
-    )
-    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds_resp = api_v1.save_dataset(dataset=ds)
-    assert ds_resp.status_code == 200
-    ds = ds_resp.dataset
-    dataset_id = ds.id
-
-    client.delete("/api/v1/datasets/{}".format(dataset_id))
 
 
 def test_replace_connection_clickhouse_to_frozen_preconfigured_subselect_source(

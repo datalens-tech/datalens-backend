@@ -299,48 +299,6 @@ def test_connection_tester_existing_ch_connection(client, connection_id):
     assert r.status_code == 400
 
 
-def test_create_greenplum_conn(client, pg_connection_params):
-    params = pg_connection_params
-    params.update(type="greenplum", cache_ttl_sec=None)
-    resp = client.post("/api/v1/connections", data=json.dumps(params), content_type="application/json")
-    assert resp.status_code == 200
-    conn_id = resp.json["id"]
-
-    resp = client.get(f"/api/v1/connections/{conn_id}")
-    assert resp.status_code == 200
-    conn = resp.json
-    assert conn["db_type"] == "greenplum"
-    assert conn["cache_ttl_sec"] is None
-
-    params.pop("name")
-    params.pop("type")
-    resp = client.post(
-        f"/api/v1/connections/test_connection/{conn_id}", data=json.dumps(params), content_type="application/json"
-    )
-    assert resp.status_code == 200
-
-    params.update(port=999)
-    resp = client.post(
-        f"/api/v1/connections/test_connection/{conn_id}", data=json.dumps(params), content_type="application/json"
-    )
-    assert resp.status_code == 400
-
-
-def test_test_connection_params_greenplum(client, pg_connection_params):
-    params = pg_connection_params
-    params.update(type="greenplum", cache_ttl_sec=None)
-    resp = client.post(
-        "/api/v1/connections/test_connection_params", data=json.dumps(params), content_type="application/json"
-    )
-    assert resp.status_code == 200
-
-    params.update(port=999)
-    resp = client.post(
-        "/api/v1/connections/test_connection_params", data=json.dumps(params), content_type="application/json"
-    )
-    assert resp.status_code == 400
-
-
 def test_delete_connection_with_unknown_type(client, connection_id, default_sync_usm_per_test):
     usm = default_sync_usm_per_test
     us_client = usm._us_client

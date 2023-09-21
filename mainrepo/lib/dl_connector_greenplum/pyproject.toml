@@ -41,7 +41,9 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
+[datalens.pytest.db]
+root_dir = "dl_connector_greenplum_tests/"
+target_path = "db"
 
 [datalens.pytest.unit]
 root_dir = "dl_connector_greenplum_tests/"
