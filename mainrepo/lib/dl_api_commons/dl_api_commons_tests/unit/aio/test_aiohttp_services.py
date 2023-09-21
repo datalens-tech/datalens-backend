@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
-
 from aiohttp import web
 from multidict import CIMultiDict
 import pytest
@@ -14,8 +12,8 @@ from dl_api_commons.aio.middlewares.error_handling_outer import (
 )
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aio.server_header import ServerHeader
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
-from dl_core.aio.web_app_services.server_header import ServerHeader
 
 
 @pytest.mark.asyncio
@@ -222,7 +220,7 @@ async def test_error_handling_middleware(caplog, aiohttp_client):
 
     client = await aiohttp_client(app)
 
-    async def get_status_and_body(url) -> Tuple[int, dict]:
+    async def get_status_and_body(url) -> tuple[int, dict]:
         resp = await client.get(url)
         return resp.status, await resp.json()
 

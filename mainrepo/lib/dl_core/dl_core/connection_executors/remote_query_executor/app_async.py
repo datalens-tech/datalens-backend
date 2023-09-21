@@ -17,12 +17,12 @@ from aiohttp.typedefs import Handler
 
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aio.server_header import ServerHeader
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
-from dl_core.aio.web_app_services.server_header import ServerHeader
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncDBAdapter,
