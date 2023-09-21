@@ -37,5 +37,5 @@ jobs:
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - run: |
           cd docker_build
-          ./run-project-bake "${BAKE_TARGET_CONTROL_API_APP}" --push --set "${BAKE_TARGET_CONTROL_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_CONTROL_API}:latest"
-          ./run-project-bake "${BAKE_TARGET_DATA_API_APP}" --push --set "${BAKE_TARGET_DATA_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_DATA_API}:latest"
+          ./run-project-bake "${BAKE_TARGET_CONTROL_API_APP}" --push --set "${BAKE_TARGET_CONTROL_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_CONTROL_API}:latest" --set "${BAKE_TARGET_CONTROL_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_CONTROL_API}:$(git rev-parse HEAD)"
+          ./run-project-bake "${BAKE_TARGET_DATA_API_APP}" --push --set "${BAKE_TARGET_DATA_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_DATA_API}:latest" --set "${BAKE_TARGET_DATA_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_DATA_API}:$(git rev-parse HEAD)"
