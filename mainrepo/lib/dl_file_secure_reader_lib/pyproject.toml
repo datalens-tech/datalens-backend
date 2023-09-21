@@ -30,12 +30,6 @@ testpaths = ["dl_file_secure_reader_lib_tests/db"]
 
 
 
-[[tool.poetry.source]]
-name = "ya"
-url = "https://pypi.yandex-team.ru/simple/"
-priority = "default"
-
-
 [datalens.pytest.db]
 root_dir = "dl_file_secure_reader_lib_tests/"
 target_path = "db"

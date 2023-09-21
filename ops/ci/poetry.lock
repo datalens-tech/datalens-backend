@@ -3061,7 +3061,7 @@ url = "../../mainrepo/lib/dl_utils"
 
 [[package]]
 name = "datalens-version"
-version = "0.2031.0"
+version = "0.2032.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -3074,7 +3074,7 @@ url = "../../mainrepo/lib/dl_version"
 
 [[package]]
 name = "datalens-version-ya"
-version = "0.2031.0"
+version = "0.2032.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"

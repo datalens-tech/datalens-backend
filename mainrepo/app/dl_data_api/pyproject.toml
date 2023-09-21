@@ -37,11 +37,6 @@ testpaths = []
 [datalens_ci]
 skip_test = true
 
-[[tool.poetry.source]]
-name = "ya"
-url = "https://pypi.yandex-team.ru/simple/"
-priority = "default"
-
 [tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
