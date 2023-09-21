@@ -31,10 +31,10 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
-
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+root_dir = "dl_api_client_tests/"
+target_path = "unit"
+skip_compose = "true"
 
 [tool.mypy]
 warn_unused_configs = true

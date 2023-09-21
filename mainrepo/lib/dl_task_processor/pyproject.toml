@@ -33,10 +33,17 @@ requires = [
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"
-testpaths = ["dl_task_processor_tests/db", "dl_task_processor_tests/unit"]
+testpaths = []
 asyncio_mode = "auto"
 
+[datalens.pytest.unit]
+root_dir = "dl_task_processor_tests/"
+target_path = "unit"
+skip_compose = "true"
 
+[datalens.pytest.db]
+root_dir = "dl_task_processor_tests/"
+target_path = "db"
 
 [tool.mypy]
 warn_unused_configs = true

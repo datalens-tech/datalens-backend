@@ -33,9 +33,16 @@ requires = [
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"
-testpaths = ["dl_formula_ref_tests/db", "dl_formula_ref_tests/unit"]
+testpaths = []
 
+[datalens.pytest.unit]
+root_dir = "dl_formula_ref_tests/"
+target_path = "unit"
+skip_compose = "true"
 
+[datalens.pytest.db]
+root_dir = "dl_formula_ref_tests/"
+target_path = "db"
 
 [tool.poetry.scripts]
 bi-formula-ref-doc = "dl_formula_ref.scripts.formula_doc:main"

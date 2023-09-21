@@ -52,12 +52,12 @@ testpaths = ["dl_connector_promql_tests/unit"]
 
 
 [datalens.pytest.db]
-root_dir = "dl_connector_promql_tests/db"
-target_path = "."
+root_dir = "dl_connector_promql_tests/"
+target_path = "db"
 
 [datalens.pytest.unit]
-root_dir = "dl_connector_promql_tests/unit"
-target_path = "."
+root_dir = "dl_connector_promql_tests/"
+target_path = "unit"
 skip_compose = "true"
 
 [tool.mypy]
