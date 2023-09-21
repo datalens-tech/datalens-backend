@@ -82,14 +82,14 @@ skip_compose = "true"
 
 [datalens.pytest.core_db_part_1]
 root_dir = "bi_legacy_test_bundle_tests/core/db/"
-target_path = "aio caches capabilities common compeng"
+target_path = "aio caches capabilities compeng"
 compose_file_base = "docker-compose.core"
 labels = ["fat"]
 # todo: add "required_services" and run only them before starting tests with docker compose
 
 [datalens.pytest.core_db_part_2]
 root_dir = "bi_legacy_test_bundle_tests/core/db/"
-target_path = "connectors data_processing maintenance services_registry us_manager"
+target_path = "connectors maintenance services_registry us_manager"
 compose_file_base = "docker-compose.core"
 labels = ["fat"]
 
