@@ -69,7 +69,7 @@
   "frozen_connectors": true
   "mutation_caches": true
   "network_policy": true
-  "rootless_mode": false
+  "rootless_mode": true
   "rqe_caches": false
   "service_connectors": false
 "endpoints":
@@ -100,6 +100,7 @@
 "iam_basic_permission": "datalens.instances.use"
 "ipv4_deny": "127.0.0.1/32,169.254.0.0/16,10.0.0.0/16,10.1.0.0/16,10.2.0.0/16"
 "ipv6_deny": "2a13:5947:1f::3a1/128,::1/128,2a13:5947:10:0:9010:45::/112,2a13:5947:11:0:9010:45::/112,2a13:5947:12:0:9010:45::/112"
+"jaeger_svc_name_suffix": ""
 "mdb":
   "cname_domains": ".rw.mdb.nemax.nebius.cloud"
   "domains": ".mdb.nemax.nebius.cloud"

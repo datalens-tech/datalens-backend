@@ -4,11 +4,11 @@ app:
 docker_images_info:
   bi_api:
     repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
-    tag: "0.2001.0"
+    tag: "0.2032.0"
   control_api:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/nebius-control-api
   data_api:
-    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-api
+    repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/nebius-data-api
   rqe_int_sync:
     repo: cr.nemax.nebius.cloud/crnct6nddg9f0oicma93/bi-rqe-int-sync
   rqe_ext_async:
@@ -41,7 +41,7 @@ scaling:
   public_dataset_api:
     desired: 0
   rqe_dataset_api:
-    desired: 6
+    desired: 3
 #  file_uploader_api:
 #    desired: 2
 #  file_uploader_worker:
