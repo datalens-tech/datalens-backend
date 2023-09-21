@@ -33,6 +33,14 @@ resource "yandex_vpc_security_group" "k8s_main" {
   }
 
   ingress {
+    protocol          = "TCP"
+    description       = "Allow ipv6 traffic from ALB"
+    security_group_id = var.alb_security_group_id
+    from_port         = 0
+    to_port           = 65535
+  }
+
+  ingress {
     protocol       = "TCP"
     description    = "Allows health checks from a range of load balancer addresses. It is necessary for the operation of a fault-tolerant cluster and load balancer services."
     v4_cidr_blocks = var.healthchecks_cidrs.v4
