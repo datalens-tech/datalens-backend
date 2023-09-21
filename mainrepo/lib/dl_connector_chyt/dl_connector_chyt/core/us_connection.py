@@ -12,7 +12,7 @@ from typing import (
 import attr
 import marshmallow as ma
 
-from dl_connector_chyt.bi.i18n.localizer import Translatable
+from dl_connector_chyt.api.i18n.localizer import Translatable
 from dl_connector_chyt.core.conn_options import CHYTConnectOptions
 from dl_connector_chyt.core.constants import (
     SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,

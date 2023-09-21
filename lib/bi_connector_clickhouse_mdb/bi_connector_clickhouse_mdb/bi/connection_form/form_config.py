@@ -16,7 +16,7 @@ import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_connector_clickhouse.bi.connection_form.form_config import ClickHouseConnectionFormFactory
+from dl_connector_clickhouse.api.connection_form.form_config import ClickHouseConnectionFormFactory
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings

@@ -10,7 +10,7 @@ from dl_api_commons.base_models import TenantDef
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_connector_postgresql.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
+from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
 
 from bi_connector_postgresql_mdb.bi.connection_form.form_config import PostgreSQLMDBConnectionFormFactory
 from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings

@@ -29,7 +29,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-chyt = "dl_connector_chyt.bi.connector:CHYTBiApiConnector"
+chyt = "dl_connector_chyt.api.connector:CHYTBiApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 chyt = "dl_connector_chyt.core.connector:CHYTCoreConnector"
@@ -64,6 +64,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 dl_connector_chyt = [
-    {path = "dl_connector_chyt/bi"},
+    {path = "dl_connector_chyt/api"},
     {path = "dl_connector_chyt/core"},
 ]

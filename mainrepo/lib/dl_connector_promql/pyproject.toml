@@ -26,7 +26,7 @@ datalens-app-tools = {path = "../dl_app_tools"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-promql = "dl_connector_promql.bi.connector:PromQLBiApiConnector"
+promql = "dl_connector_promql.api.connector:PromQLBiApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 promql = "dl_connector_promql.core.connector:PromQLCoreConnector"
@@ -68,6 +68,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 dl_connector_promql = [
-    {path = "dl_connector_promql/bi"},
+    {path = "dl_connector_promql/api"},
     {path = "dl_connector_promql/core"},
 ]

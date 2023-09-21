@@ -1,4 +1,4 @@
-from dl_connector_postgresql.bi.connector import (
+from dl_connector_postgresql.api.connector import (
     PostgreSQLBiApiConnectionDefinition,
     PostgreSQLBiApiConnector,
 )

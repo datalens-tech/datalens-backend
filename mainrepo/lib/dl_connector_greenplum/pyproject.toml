@@ -22,7 +22,7 @@ datalens-core = {path = "../dl_core"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-greenplum = "dl_connector_greenplum.bi.connector:GreenplumBiApiConnector"
+greenplum = "dl_connector_greenplum.api.connector:GreenplumBiApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 greenplum = "dl_connector_greenplum.core.connector:GreenplumCoreConnector"
@@ -58,6 +58,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 dl_connector_greenplum = [
-    {path = "dl_connector_greenplum/bi"},
+    {path = "dl_connector_greenplum/api"},
     {path = "dl_connector_greenplum/core"},
 ]

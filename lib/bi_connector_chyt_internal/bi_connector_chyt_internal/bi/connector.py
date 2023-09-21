@@ -11,7 +11,7 @@ from dl_api_connector.connector import (
     BiApiConnector,
     BiApiSourceDefinition,
 )
-from dl_connector_chyt.bi.api_schema.source import (
+from dl_connector_chyt.api.api_schema.source import (
     CHYTTableListDataSourceSchema,
     CHYTTableListDataSourceTemplateSchema,
     CHYTTableRangeDataSourceSchema,

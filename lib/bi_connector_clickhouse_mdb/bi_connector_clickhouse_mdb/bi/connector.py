@@ -1,4 +1,4 @@
-from dl_connector_clickhouse.bi.connector import (
+from dl_connector_clickhouse.api.connector import (
     ClickHouseBiApiConnectionDefinition,
     ClickHouseBiApiConnector,
 )

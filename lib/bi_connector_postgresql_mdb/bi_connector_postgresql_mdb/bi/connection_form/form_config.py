@@ -15,7 +15,7 @@ from dl_api_connector.form_config.models.common import CommonFieldName
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_connector_postgresql.bi.connection_form.form_config import PostgreSQLConnectionFormFactory
+from dl_connector_postgresql.api.connection_form.form_config import PostgreSQLConnectionFormFactory
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c

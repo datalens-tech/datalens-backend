@@ -1,4 +1,4 @@
-from dl_connector_greenplum.bi.connector import (
+from dl_connector_greenplum.api.connector import (
     GreenplumBiApiConnectionDefinition,
     GreenplumBiApiConnector,
 )

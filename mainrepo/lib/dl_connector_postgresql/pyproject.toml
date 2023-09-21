@@ -32,7 +32,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-postgresql = "dl_connector_postgresql.bi.connector:PostgreSQLBiApiConnector"
+postgresql = "dl_connector_postgresql.api.connector:PostgreSQLBiApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 postgresql = "dl_connector_postgresql.core.postgresql.connector:PostgreSQLCoreConnector"
@@ -83,7 +83,7 @@ strict_optional = true
 
 [datalens.i18n.domains]
 dl_connector_postgresql = [
-    {path = "dl_connector_postgresql/bi"},
+    {path = "dl_connector_postgresql/api"},
     {path = "dl_connector_postgresql/core"},
 ]
 dl_formula_ref_dl_connector_postgresql = [

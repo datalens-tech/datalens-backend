@@ -14,7 +14,7 @@ from dl_api_connector.form_config.models.base import ConnectionForm
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_connector_greenplum.bi.connection_form.form_config import GreenplumConnectionFormFactory
+from dl_connector_greenplum.api.connection_form.form_config import GreenplumConnectionFormFactory
 from dl_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 
 from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
