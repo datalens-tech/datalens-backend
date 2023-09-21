@@ -9,5 +9,5 @@ source /venv/bin/activate
 pip install --no-input poetry==1.5.0
 
 cd /src/metapkg
-poetry install --no-root --without=dev --without=ci
-
+poetry export --without=dev --without=ci --without-hashes --format=requirements.txt > requirements.txt
+pip install -r requirements.txt

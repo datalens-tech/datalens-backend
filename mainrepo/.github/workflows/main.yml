@@ -6,17 +6,11 @@ concurrency:
 
 on:
   pull_request:
-#  push:
-#    paths:
-#      - lib/**
-#      - utils/**
-#      - ops/ci/**
-#      - '.github/workflows/main.yml'
   workflow_dispatch:
     inputs:
       test_targets:
         default: ""
-        description: "Comma separated list to run pytest on, e.g.: `lib/bi_constants,lib/bi_utils`. "
+        description: "Comma separated list to run pytest on, e.g.: `lib/dl_api_lib,lib/dl_core`. "
       run_mypy_only:
         type: boolean
         default: false
