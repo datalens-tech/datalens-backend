@@ -959,14 +959,14 @@ class ExternalProductionInstallation(
     ]
 
 
-class NebiusInstallation(
-    InstallationBase,
-    CommonInstallation,  # TODO: delete me, required only due to half-broken dl_file_uploader settings
-):
+class NebiusInstallation(InstallationBase):
     """Base class for all white-lable installations"""
 
 
-class IsraelInstallation(NebiusInstallation):
+class IsraelInstallation(
+    NebiusInstallation,
+    CommonInstallation  # TODO: delete me, required only due to half-broken dl_file_uploader settings
+):
     # IAMAwareInstallation:
     YC_API_ENDPOINT_IAM: ClassVar[str] = "iam.private-api.yandexcloud.co.il:14283"
     YC_API_ENDPOINT_RM: ClassVar[str] = "rm.private-api.yandexcloud.co.il:14284"
@@ -1014,7 +1014,10 @@ class IsraelInstallation(NebiusInstallation):
     ]
 
 
-class NemaxInstallation(NebiusInstallation):
+class NemaxInstallation(
+    NebiusInstallation,
+    CommonInstallation  # TODO: delete me, required only due to half-broken dl_file_uploader settings
+):
     CONNECTOR_AVAILABILITY: ClassVar[ConnectorAvailabilityConfigSettings] = ConnectorAvailabilityConfigSettings(
         uncategorized=[
             ConnectorSettings(conn_type="clickhouse"),
