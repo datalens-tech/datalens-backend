@@ -34,6 +34,7 @@ module "k8s" {
   }
 
   k8s_audit_security_stream = module.constants.env_data.k8s_audit_security_stream
+  alb_security_group_id     = yandex_vpc_security_group.allow_all.id
 
   providers = {
     yandex = yandex

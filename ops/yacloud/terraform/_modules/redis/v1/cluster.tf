@@ -27,4 +27,8 @@ resource "yandex_mdb_redis_cluster" "this" {
   maintenance_window {
     type = "ANYTIME"
   }
+
+  lifecycle {
+    ignore_changes = [host[0].replica_priority]
+  }
 }

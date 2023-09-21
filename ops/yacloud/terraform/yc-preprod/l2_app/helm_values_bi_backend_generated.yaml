@@ -139,7 +139,8 @@
       "port": 443
       "service_name": "file-uploader-api"
     "request_timeout": "305s"
-    "security_groups": []
+    "security_groups":
+    - "c64oovp4hl3k10tf7c6a"
     "subnets":
     - "buct4cp7lc8p0p2rht5l"
     - "bltpp0md5jja3tr5tt9b"

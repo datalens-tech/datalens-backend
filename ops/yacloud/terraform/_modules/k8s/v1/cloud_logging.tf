@@ -7,4 +7,8 @@ resource "ycp_logging_group" "mk8s-audit-logs" {
   retention_period = "72h0m0s"
 
   data_stream      = var.k8s_audit_security_stream
+
+  lifecycle {
+    ignore_changes = [cold_retention_period]
+  }
 }

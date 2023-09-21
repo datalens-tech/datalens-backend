@@ -11,6 +11,13 @@ resource "yandex_vpc_security_group" "k8s_main" {
   }
 
   ingress {
+    protocol          = "TCP"
+    description       = "Allow ipv6 health checks from L7 (ALB)"
+    port              = 10501
+    security_group_id = var.alb_security_group_id
+  }
+
+  ingress {
     protocol       = "TCP"
     description    = "Allow health checks from L7 (ALB)"
     v4_cidr_blocks = var.v4_cidrs

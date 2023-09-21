@@ -399,6 +399,11 @@ module "main" {
     "man-c4i8hlp8hp0qkmfo.db.yandex.net",
   ]
 
+  alb_controller_helm = {
+    repository = "oci://cr.cloud.yandex.net/yc-marketplace/yandex-cloud/yc-alb-ingress"
+    version    = "v0.1.23"
+  }
+
   integration_tests_enabled                       = true
   integration_tests_pg_cluster_resource_preset_id = "b1.nano"
   integration_tests_sa_secrets_lockbox_id         = "fc3f89dd2iujolljp3ed"

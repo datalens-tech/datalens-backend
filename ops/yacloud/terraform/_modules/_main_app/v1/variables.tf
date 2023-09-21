@@ -254,3 +254,14 @@ variable "nat_config" {
 
   nullable = true
 }
+
+variable "alb_controller_helm" {
+  type = object({
+    repository = string
+    version    = string
+  })
+  default = {
+    repository = "oci://cr.yandex/yc"
+    version    = "v0.1.3"
+  }
+}

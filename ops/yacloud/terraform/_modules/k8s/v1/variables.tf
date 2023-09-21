@@ -102,3 +102,7 @@ variable "k8s_audit_security_stream" {
   description = "YDS stream for K8S audit logs."
   default     = null
 }
+
+variable "alb_security_group_id" {
+  type = string
+}

@@ -35,3 +35,11 @@ variable "use_internal_ca" {
 variable "internal_cert" {
   type = string
 }
+
+variable "helm_repository" {
+  type = string
+}
+
+variable "helm_version" {
+  type = string
+}

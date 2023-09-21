@@ -1,6 +1,5 @@
 locals {
   chart_name         = "yc-alb-ingress-controller"
-  controller_version = "v0.1.3"
 
   sa_key = {
     id                 = yandex_iam_service_account_key.this.id
@@ -20,9 +19,9 @@ resource "kubernetes_namespace" "this" {
 
 resource "helm_release" "this" {
   name       = local.chart_name
-  repository = "oci://cr.yandex/yc"
+  repository = var.helm_repository
   chart      = "yc-alb-ingress-controller-chart"
-  version    = local.controller_version
+  version    = var.helm_version
 
   timeout   = 240
   namespace = var.k8s_namespace
@@ -34,8 +33,19 @@ resource "helm_release" "this" {
       saKeySecretKey           = jsonencode(local.sa_key)
       endpoint                 = var.cloud_api_endpoint
       internalRootCaSecretName = var.use_internal_ca ? local.yc_alb_internal_ca_secret_name : null
+      daemonsetTolerations = [
+        // Schedule even if host is dedicated for special needs
+        {
+          key      = "dedicated"
+          operator = "Exists"
+          effect   = "NoSchedule"
+        }
+      ]
     })
   ]
 
-  depends_on = [kubernetes_namespace.this]
+  depends_on = [
+    kubernetes_namespace.this,
+    kubernetes_secret.yc_alb_internal_ca,
+  ]
 }

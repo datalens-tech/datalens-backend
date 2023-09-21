@@ -7,5 +7,8 @@ resource "kubernetes_secret" "yc_alb_internal_ca" {
     name      = local.yc_alb_internal_ca_secret_name
     namespace = var.k8s_namespace
   }
-  data = { "internal-root-ca.pem" = var.internal_cert }
+  data = {
+    "internal-root-ca"     = var.internal_cert
+    "internal-root-ca.pem" = var.internal_cert
+  }
 }

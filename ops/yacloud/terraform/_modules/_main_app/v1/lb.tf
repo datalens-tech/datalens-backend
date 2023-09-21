@@ -10,6 +10,8 @@ module "yc-ingress-controller" {
   cloud_api_endpoint = module.constants.env_data.cloud_api_endpoint
   use_internal_ca    = module.constants.use_internal_ca
   internal_cert      = module.infra_data.internal_cert
+  helm_repository    = var.alb_controller_helm.repository
+  helm_version       = var.alb_controller_helm.version
 
   depends_on = [yandex_kubernetes_node_group.this]
 }
@@ -191,7 +193,7 @@ locals {
         name            = "upload"
         ingress_group   = "upload"
         subnets         = module.constants.env_data.subnet_ids
-        security_groups = []
+        security_groups = [module.infra_data.secgroup_allow_all.id]
         idle_timeout    = "305s"
         request_timeout = "305s"
         ipv4_address    = try(ycp_vpc_address.upload_lb_v4[0].external_ipv4_address[0].address, null)
