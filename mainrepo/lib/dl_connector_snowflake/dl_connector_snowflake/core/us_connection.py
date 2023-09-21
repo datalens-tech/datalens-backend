@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 import re
 from typing import (
+    TYPE_CHECKING,
     Callable,
     ClassVar,
     Optional,
@@ -37,6 +38,10 @@ from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
 
 
+if TYPE_CHECKING:
+    from dl_core.services_registry import ServicesRegistry
+
+
 class ConnectionSQLSnowFlake(ConnectionSQL):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
     has_schema: ClassVar[bool] = True
@@ -67,6 +72,7 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
 
     async def validate_new_data(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:

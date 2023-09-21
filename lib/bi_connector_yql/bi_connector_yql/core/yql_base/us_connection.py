@@ -1,10 +1,17 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 from dl_core.us_connection_base import ConnectionBase
 
 from bi_connector_yql.core.yql_base.utils import validate_service_account_id
+
+
+if TYPE_CHECKING:
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 class YQLConnectionMixin(ConnectionBase):
@@ -12,10 +19,13 @@ class YQLConnectionMixin(ConnectionBase):
 
     async def validate_new_data(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
-        await super().validate_new_data(changes=changes, original_version=original_version)
+        await super().validate_new_data(
+            services_registry=services_registry, changes=changes, original_version=original_version
+        )
         svcacc_id = self.data.service_account_id
         if not svcacc_id:
             return  # no svcacc id, nothing to check

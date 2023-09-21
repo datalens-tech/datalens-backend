@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from bi_cloud_integration.mdb import MDBClusterServiceBaseClient
     from dl_core.services_registry.top_level import ServicesRegistry
     from dl_core.us_connection_base import ConnectionBase
-    from dl_core.us_manager.us_manager import USManagerBase
 
     from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
 
@@ -38,14 +37,7 @@ class _MDBConnectOptionsProtocol(MDBConnectOptionsMixin, ConnectOptions):
 
 
 class _MDBConnectionProtocol(Protocol):
-    _us_manager: USManagerBase
-    _service_registry: ServicesRegistry
-
     MDB_CLIENT_CLS: ClassVar[Type[MDBClusterServiceBaseClient]]
-
-    @property
-    def us_manager(self) -> USManagerBase:
-        ...
 
     @property
     def data(self) -> ConnMDBDataModelMixin:
@@ -59,6 +51,7 @@ class _MDBConnectionProtocol(Protocol):
 
     async def validate_new_data(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
@@ -70,10 +63,15 @@ class MDBConnectionMixin:
 
     async def validate_new_data(
         self: _MDBConnectionProtocol,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
-        await super().validate_new_data(changes=changes, original_version=original_version)  # type: ignore
+        await super().validate_new_data(  # type: ignore
+            services_registry=services_registry,
+            changes=changes,
+            original_version=original_version,
+        )
 
         if self.data.mdb_cluster_id == "":
             self.data.mdb_cluster_id = None
@@ -81,7 +79,6 @@ class MDBConnectionMixin:
         if self.data.mdb_cluster_id is None:
             return
 
-        services_registry = self.us_manager.get_services_registry()
         issr = services_registry.get_installation_specific_service_registry(YCServiceRegistry)
         cli_mdb = await issr.get_mdb_client(self.MDB_CLIENT_CLS)
         cli_folder_service = await issr.get_yc_folder_service_user_client()
@@ -92,7 +89,7 @@ class MDBConnectionMixin:
         cluster_cloud_id = await cli_folder_service.resolve_folder_id_to_cloud_id(cluster_folder_id)
         cluster_org_id = await cli_cloud_service.resolve_cloud_id_to_org_id(cluster_cloud_id)
 
-        tenant = self._us_manager.bi_context.tenant
+        tenant = services_registry.rci.tenant
         current_org_id: str
         if isinstance(tenant, TenantYCOrganization):
             current_org_id = tenant.org_id

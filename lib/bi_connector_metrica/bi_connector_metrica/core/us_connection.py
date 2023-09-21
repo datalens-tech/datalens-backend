@@ -45,6 +45,7 @@ from bi_connector_metrica.core.dto import (
 
 if TYPE_CHECKING:
     from dl_core.connection_executors import SyncConnExecutorBase
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -94,10 +95,12 @@ class MetrikaBaseMixin(ConnectionBase):
 
     async def validate_new_data(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
         await super().validate_new_data(  # type: ignore  # TODO: fix  # mixin
+            services_registry=services_registry,
             changes=changes,
             original_version=original_version,
         )

@@ -67,7 +67,9 @@ class ConnectionParamsTester(BIResource):
         except MValidationError as err:
             return err.messages, 400
 
-        conn.validate_new_data_sync()
+        conn.validate_new_data_sync(
+            services_registry=service_registry,
+        )
 
         try:
             conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)
@@ -85,6 +87,7 @@ class ConnectionTester(BIResource):
         service_registry = self.get_service_registry()
         conn = usm.get_by_id(connection_id, expected_type=ConnectionBase)
         conn_orig = usm.clone_entry_instance(conn)
+        assert isinstance(conn_orig, ConnectionBase)  # for typing
         need_permission_on_entry(conn, USPermissionKind.read)
 
         body_json = dict(request.json)
@@ -103,7 +106,7 @@ class ConnectionTester(BIResource):
         except MValidationError as err:
             return err.messages, 400
 
-        conn.validate_new_data_sync(changes=changes, original_version=conn_orig)
+        conn.validate_new_data_sync(services_registry=service_registry, changes=changes, original_version=conn_orig)
 
         try:
             conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)
@@ -133,7 +136,7 @@ class ConnectionsList(BIResource):
         except MValidationError as e:
             return e.messages, 400
 
-        conn.validate_new_data_sync()
+        conn.validate_new_data_sync(services_registry=self.get_service_registry())
 
         us_manager.save(conn)
 
@@ -173,6 +176,7 @@ class ConnectionItem(BIResource):
         with us_manager.get_locked_entry_cm(ConnectionBase, connection_id) as conn:  # type: ignore  # TODO: fix
             need_permission_on_entry(conn, USPermissionKind.edit)
             conn_orig = us_manager.clone_entry_instance(conn)
+            assert isinstance(conn_orig, ConnectionBase)  # for typing
             schema_ctx = self.get_schema_ctx(schema_operations_mode=EditMode.edit, editable_object=None)
 
             schema_cls = GenericConnectionSchema(context=schema_ctx).get_edit_schema_cls(conn)
@@ -183,7 +187,11 @@ class ConnectionItem(BIResource):
                 schema.update_object(conn, changes)
             except MValidationError as e:
                 return e.messages, 400
-            conn.validate_new_data_sync(changes=changes, original_version=conn_orig)
+            conn.validate_new_data_sync(
+                services_registry=self.get_service_registry(),
+                changes=changes,
+                original_version=conn_orig,
+            )
             us_manager.save(conn)
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 import logging
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     ClassVar,
@@ -39,6 +40,10 @@ from dl_core.utils import (
     make_user_auth_headers,
     parse_comma_separated_hosts,
 )
+
+
+if TYPE_CHECKING:
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -250,6 +255,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
 
     async def validate_new_data(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:

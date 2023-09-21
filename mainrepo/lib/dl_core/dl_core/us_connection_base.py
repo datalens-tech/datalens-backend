@@ -28,10 +28,7 @@ from dl_constants.enums import (
     DataSourceRole,
     RawSQLLevel,
 )
-from dl_core import (
-    connection_models,
-    exc,
-)
+from dl_core import connection_models
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnectionDataModelBase,
@@ -71,6 +68,7 @@ from dl_utils.utils import DataKey
 if TYPE_CHECKING:
     from dl_core.connection_executors import SyncConnExecutorBase
     from dl_core.connection_models.common_models import TableIdent
+    from dl_core.services_registry import ServicesRegistry
     from dl_core.us_manager.us_manager import USManagerBase
     from dl_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -340,6 +338,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     async def validate_new_data(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
@@ -347,12 +346,14 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     def validate_new_data_sync(
         self,
+        services_registry: ServicesRegistry,
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
         """Convenience wrapper"""
         return await_sync(
             self.validate_new_data(
+                services_registry=services_registry,
                 changes=changes,
                 original_version=original_version,
             )
