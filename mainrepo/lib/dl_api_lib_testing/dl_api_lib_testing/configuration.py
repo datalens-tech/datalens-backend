@@ -13,7 +13,7 @@ from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 
 
 @attr.s(kw_only=True)
-class BiApiTestEnvironmentConfiguration:
+class ApiTestEnvironmentConfiguration:
     core_test_config: CoreTestEnvironmentConfigurationBase = attr.ib()
 
     ext_query_executer_secret_key: str = attr.ib()

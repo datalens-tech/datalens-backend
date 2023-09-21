@@ -17,8 +17,8 @@ from bi_defaults.environments import (
 from bi_defaults.yenv_type import YEnvFallbackConfigResolver
 from dl_api_lib.loader import (
     ApiLibraryConfig,
-    load_bi_api_lib,
-    preload_bi_api_lib,
+    load_api_lib,
+    preload_api_lib,
 )
 from dl_app_tools.aio_latency_tracking import LatencyTracker
 from dl_configs.connectors_settings import ConnectorSettingsBase
@@ -58,7 +58,7 @@ def create_app(
 
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
-    preload_bi_api_lib()
+    preload_api_lib()
     fallback_resolver = YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
         env_map=EnvAliasesMap,
@@ -67,7 +67,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
         AsyncAppSettings,
         fallback_cfg_resolver=fallback_resolver,
     )
-    load_bi_api_lib(
+    load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
             core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),

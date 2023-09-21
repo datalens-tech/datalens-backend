@@ -24,7 +24,7 @@ from dl_core.aio.middlewares.master_key import master_key_middleware
 from dl_core.aio.middlewares.tracing import TracingService
 from dl_core.aio.ping_view import PingView
 from dl_core.aio.web_app_services.s3 import S3Service
-from dl_core.loader import load_bi_core
+from dl_core.loader import load_core_lib
 from dl_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
@@ -59,7 +59,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         )
 
     def create_app(self, app_version: str) -> web.Application:
-        load_bi_core()
+        load_core_lib()
 
         if (secret_sentry_dsn := self._settings.SENTRY_DSN) is not None:
             self.set_up_sentry(secret_sentry_dsn, app_version)

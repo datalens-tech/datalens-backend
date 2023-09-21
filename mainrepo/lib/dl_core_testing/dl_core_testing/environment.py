@@ -9,7 +9,7 @@ import requests
 
 from dl_core.logging_config import setup_jaeger_client
 from dl_core_testing.configuration import UnitedStorageConfiguration
-from dl_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_db_testing_lib
 from dl_utils.wait import wait_for
 
 
@@ -119,7 +119,7 @@ def common_pytest_configure(
     use_jaeger_tracer: bool = False,
     tracing_service_name: str = "tests",
 ) -> None:
-    load_bi_db_testing()
+    load_db_testing_lib()
 
     if use_jaeger_tracer:
         setup_jaeger_client(tracing_service_name)

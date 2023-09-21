@@ -41,8 +41,8 @@ from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import (
     ApiLibraryConfig,
-    load_bi_api_lib,
-    preload_bi_api_lib,
+    load_api_lib,
+    preload_api_lib,
 )
 from dl_configs.rqe import (
     RQEBaseURL,
@@ -168,7 +168,7 @@ def bi_ext_api_dc_test_env_us_config(bi_ext_api_dc_test_env) -> TestingUSConfig:
 
 
 def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock):
-    preload_bi_api_lib()
+    preload_api_lib()
     settings = ControlPlaneAppSettings(
         CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
             InternalTestingInstallation.CONNECTOR_AVAILABILITY
@@ -193,7 +193,7 @@ def _make_control_plane_app(us_config, rqe_config_subprocess, iam_services_mock)
         CORE_CONNECTOR_WHITELIST=CONNECTOR_WHITELIST,
     )
 
-    load_bi_api_lib(
+    load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
             core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),

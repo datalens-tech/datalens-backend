@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
@@ -10,7 +10,7 @@ from dl_connector_snowflake.core.constants import (
     CONNECTION_TYPE_SNOWFLAKE,
     SOURCE_TYPE_SNOWFLAKE_TABLE,
 )
-from dl_connector_snowflake_tests.ext.config import BI_TEST_CONFIG
+from dl_connector_snowflake_tests.ext.config import API_TEST_CONFIG
 from dl_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
 
 
@@ -18,8 +18,8 @@ class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
 
     @pytest.fixture(scope="class")
-    def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
-        return BI_TEST_CONFIG
+    def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
+        return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
     def connection_params_native(self, sf_secrets) -> dict:

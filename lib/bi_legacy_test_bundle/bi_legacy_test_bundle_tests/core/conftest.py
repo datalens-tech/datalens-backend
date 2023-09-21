@@ -37,7 +37,7 @@ from dl_core.aio.web_app_services.data_processing.factory import make_compeng_se
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
 from dl_core.loader import (
     CoreLibraryConfig,
-    load_bi_core,
+    load_core_lib,
 )
 from dl_core.logging_config import add_log_context_scoped
 from dl_core.mdb_utils import (
@@ -67,7 +67,7 @@ from dl_core_testing.environment import (
 )
 from dl_core_testing.fixture_server_runner import WSGIRunner
 from dl_core_testing.utils import SROptions
-from dl_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_db_testing_lib
 from dl_task_processor.processor import DummyTaskProcessorFactory
 from dl_testing.utils import wait_for_initdb
 
@@ -97,8 +97,8 @@ EXT_TEST_BLACKBOX_NAME = "Test"
 
 @pytest.fixture(scope="session", autouse=True)
 def loaded_libraries(core_test_config: CoreTestEnvironmentConfigurationBase) -> None:
-    load_bi_db_testing()
-    load_bi_core(core_lib_config=core_test_config.get_core_library_config())
+    load_db_testing_lib()
+    load_core_lib(core_lib_config=core_test_config.get_core_library_config())
 
 
 @pytest.fixture

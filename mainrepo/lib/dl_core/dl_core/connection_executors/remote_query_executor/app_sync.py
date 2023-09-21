@@ -41,7 +41,7 @@ from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_h
 from dl_core.enums import RQEEventType
 from dl_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
 from dl_core.flask_utils.tracing import TracingMiddleware
-from dl_core.loader import load_bi_core
+from dl_core.loader import load_core_lib
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
 from dl_core.utils import get_eqe_secret_key
 
@@ -239,7 +239,7 @@ def create_sync_app(hmac_key: Optional[bytes] = None) -> flask.Flask:
     assert isinstance(hmac_key, bytes)
     # Can't check `hmc_key` for nonemptiness here because this happens on import.
 
-    load_bi_core()
+    load_core_lib()
 
     app = flask.Flask(__name__)
     TracingMiddleware(

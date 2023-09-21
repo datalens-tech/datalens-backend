@@ -48,7 +48,7 @@ from dl_core.connection_executors.remote_query_executor.commons import (
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_executors.remote_query_executor.error_handler_rqe import RQEErrorHandler
 from dl_core.enums import RQEEventType
-from dl_core.loader import load_bi_core
+from dl_core.loader import load_core_lib
 from dl_core.logging_config import configure_logging
 from dl_core.utils import get_eqe_secret_key
 from dl_utils.aio import ContextVarExecutor
@@ -260,7 +260,7 @@ def async_qe_main() -> None:
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware("bi-rqe-async"),
     )
-    load_bi_core()
+    load_core_lib()
     try:
         parser = argparse.ArgumentParser(description="Process some integers.")
         parser.add_argument("--host", type=str)

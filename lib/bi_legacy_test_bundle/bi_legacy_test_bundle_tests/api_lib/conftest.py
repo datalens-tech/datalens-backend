@@ -27,7 +27,7 @@ from statcommons.logs import LOGMUTATORS
 from bi_api_commons_ya_cloud.models import TenantYCFolder
 from bi_api_lib_testing_ya.configuration import (
     CONNECTOR_AVAILABILITY,
-    BiApiTestEnvironmentConfigurationPrivate,
+    ApiTestEnvironmentConfigurationPrivate,
 )
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
@@ -66,8 +66,8 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import (
     ApiLibraryConfig,
-    load_bi_api_lib,
-    preload_bi_api_lib,
+    load_api_lib,
+    preload_api_lib,
 )
 from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from dl_api_lib.service_registry.service_registry import (
@@ -83,7 +83,7 @@ from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
     WrappedAioSyncApiClient,
 )
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs import env_var_definitions
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.rqe import RQEConfig
@@ -128,7 +128,7 @@ from dl_core_testing.environment import (
     common_pytest_configure,
     restart_container_by_label,
 )
-from dl_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_db_testing_lib
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import (
     FileUploaderWorkerSettings,
@@ -201,15 +201,15 @@ def pytest_configure(config):  # noqa
 
 
 @pytest.fixture(scope="session")
-def bi_test_config() -> BiApiTestEnvironmentConfigurationPrivate:
-    return tests_config_mod.BI_TEST_CONFIG
+def bi_test_config() -> ApiTestEnvironmentConfigurationPrivate:
+    return tests_config_mod.API_TEST_CONFIG
 
 
 @pytest.fixture(scope="session", autouse=True)
-def loaded_libraries(bi_test_config: BiApiTestEnvironmentConfigurationPrivate) -> None:
-    preload_bi_api_lib()
-    load_bi_api_lib(api_lib_config=bi_test_config.get_api_library_config())
-    load_bi_db_testing()
+def loaded_libraries(bi_test_config: ApiTestEnvironmentConfigurationPrivate) -> None:
+    preload_api_lib()
+    load_api_lib(api_lib_config=bi_test_config.get_api_library_config())
+    load_db_testing_lib()
 
 
 @pytest.fixture
@@ -222,7 +222,7 @@ def loop(event_loop):
 
 
 @pytest.fixture(scope="session")
-def core_test_config(bi_test_config: BiApiTestEnvironmentConfiguration) -> CoreTestEnvironmentConfigurationBase:
+def core_test_config(bi_test_config: ApiTestEnvironmentConfiguration) -> CoreTestEnvironmentConfigurationBase:
     return bi_test_config.core_test_config
 
 
@@ -251,7 +251,7 @@ def initdb_ready():
 
 @pytest.fixture(scope="function")
 def app(
-    bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
+    bi_test_config: ApiTestEnvironmentConfigurationPrivate,
     initdb_ready,
     rqe_config_subprocess,
     iam_services_mock,
@@ -403,7 +403,7 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
 
 
 def make_sync_services_registry(
-    bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
+    bi_test_config: ApiTestEnvironmentConfigurationPrivate,
     rci: RequestContextInfo,
     async_env: bool,
     rqe_config,

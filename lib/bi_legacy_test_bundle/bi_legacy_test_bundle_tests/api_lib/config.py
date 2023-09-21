@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import Optional
 
-from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
+from bi_api_lib_testing_ya.configuration import ApiTestEnvironmentConfigurationPrivate
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport as _get_test_container_hostport
 
@@ -183,7 +183,7 @@ _CONNECTOR_WHITELIST = [
     "smb_heatmaps",
     "ch_geo_filtered",
 ]
-BI_TEST_CONFIG = BiApiTestEnvironmentConfigurationPrivate(
+API_TEST_CONFIG = ApiTestEnvironmentConfigurationPrivate(
     core_test_config=DefaultCoreTestConfiguration(
         host_us_http=get_test_container_hostport("us", fallback_port=50500).host,
         port_us_http=get_test_container_hostport("us", fallback_port=50500).port,

@@ -1,6 +1,6 @@
 import pytest
 
-from dl_formula.loader import load_bi_formula
+from dl_formula.loader import load_formula_lib
 from dl_formula.parser.base import FormulaParser
 from dl_formula.parser.factory import (
     ParserType,
@@ -24,4 +24,4 @@ def parser(request) -> FormulaParser:
 
 @pytest.fixture(scope="session", autouse=True)
 def loaded_bi_libraries() -> None:
-    load_bi_formula()
+    load_formula_lib()

@@ -24,7 +24,7 @@ def preload_bi_core() -> None:
     load_all_connectors()
 
 
-def load_bi_core(core_lib_config: CoreLibraryConfig = CoreLibraryConfig()) -> None:
+def load_core_lib(core_lib_config: CoreLibraryConfig = CoreLibraryConfig()) -> None:
     """Initialize the library"""
     register_all_connectors(connector_ep_names=core_lib_config.core_connector_ep_names)
     register_all_data_processor_plugins()

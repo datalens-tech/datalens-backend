@@ -8,7 +8,7 @@ import pytest
 
 from bi_api_lib_testing_ya.app import TestingDataApiAppFactoryPrivate
 from bi_api_lib_testing_ya.base import BiApiTestPrivateBase
-from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
+from bi_api_lib_testing_ya.configuration import ApiTestEnvironmentConfigurationPrivate
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
     YCAuthSettings,
@@ -27,7 +27,7 @@ class DataApiTestPrivateBase(DataApiTestBase, BiApiTestPrivateBase, metaclass=ab
     @pytest.fixture(scope="function")
     def data_api_app_settings(  # type: ignore[override]
         self,
-        bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
+        bi_test_config: ApiTestEnvironmentConfigurationPrivate,
         rqe_config_subprocess: RQEConfig,
         iam_services_mock: IAMServicesMockFacade,
     ) -> AsyncAppSettings:

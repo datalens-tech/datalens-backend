@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
@@ -30,7 +30,7 @@ DB_URLS = {
 }
 DB_CORE_URL = DB_URLS[D.CLICKHOUSE_22_10]
 
-BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
+API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["clickhouse", "postgresql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",

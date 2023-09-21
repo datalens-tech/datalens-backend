@@ -22,14 +22,14 @@ from dl_api_lib.app_settings import (
     MDBSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib.loader import preload_bi_api_lib
+from dl_api_lib.loader import preload_api_lib
 from dl_api_lib_testing.app import (
     RedisSettingMaker,
     RQEConfigurationMaker,
     TestingControlApiAppFactory,
 )
 from dl_api_lib_testing.client import FlaskSyncApiClient
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
@@ -51,17 +51,17 @@ class BiApiTestBase(abc.ABC):
 
     @pytest.fixture(scope="function", autouse=True)
     def preload(self):
-        preload_bi_api_lib()
+        preload_api_lib()
 
     @pytest.fixture(scope="class")
     @abc.abstractmethod
-    def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
+    def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
         raise NotImplementedError
 
     @pytest.fixture(scope="class")
     def core_test_config(
         self,
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: ApiTestEnvironmentConfiguration,
     ) -> CoreTestEnvironmentConfigurationBase:
         return bi_test_config.core_test_config
 
@@ -83,7 +83,7 @@ class BiApiTestBase(abc.ABC):
     @pytest.fixture(scope="function")
     def rqe_config_subprocess(
         self,
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: ApiTestEnvironmentConfiguration,
     ) -> Generator[RQEConfig, None, None]:
         with RQEConfigurationMaker(bi_test_config=bi_test_config).rqe_config_subprocess_cm() as rqe_config:
             yield rqe_config
@@ -91,7 +91,7 @@ class BiApiTestBase(abc.ABC):
     @classmethod
     def create_control_api_settings(
         cls,
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
     ) -> ControlApiAppSettings:
         core_test_config = bi_test_config.core_test_config
@@ -123,7 +123,7 @@ class BiApiTestBase(abc.ABC):
     @pytest.fixture(scope="function")
     def control_api_app_settings(
         self,
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
     ) -> ControlApiAppSettings:
         return self.create_control_api_settings(

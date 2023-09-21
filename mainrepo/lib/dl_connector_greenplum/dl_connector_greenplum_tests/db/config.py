@@ -1,4 +1,4 @@
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
 
@@ -15,7 +15,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
 
 DB_CORE_URL = f'bi_postgresql://datalens:qwerty@{get_test_container_hostport("db-postgres-13", fallback_port=52301).as_pair()}/test_data'
 
-BI_TEST_CONFIG = BiApiTestEnvironmentConfiguration(
+API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["greenplum"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",

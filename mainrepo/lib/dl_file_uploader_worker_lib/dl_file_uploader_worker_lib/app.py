@@ -14,7 +14,7 @@ from dl_api_commons.tenant_resolver import (
 )
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.s3 import S3Service
-from dl_core.loader import load_bi_core
+from dl_core.loader import load_core_lib
 from dl_file_uploader_lib.settings_utils import init_redis_service
 from dl_file_uploader_task_interface.context import (
     FileUploaderTaskContext,
@@ -51,7 +51,7 @@ class FileUploaderContextFab(BaseContextFabric):
     _tenant_resolver: TenantResolver = attr.ib(factory=lambda: CommonTenantResolver())
 
     async def make(self) -> FileUploaderTaskContext:
-        load_bi_core()
+        load_core_lib()
 
         redis_service = init_redis_service(self._settings)
         s3_service = S3Service(

@@ -1,11 +1,11 @@
 from pytest import Config
 from statcommons.logs import LOGMUTATORS
 
-from dl_core.loader import load_bi_core
+from dl_core.loader import load_core_lib
 from dl_core.logging_config import add_log_context_scoped
 from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from dl_core_testing.environment import prepare_united_storage_from_config
-from dl_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_db_testing_lib
 
 
 def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnvironmentConfigurationBase) -> None:
@@ -22,5 +22,5 @@ def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnviro
     prepare_united_storage_from_config(core_test_config.get_us_config())
 
     # Initialize this and other libraries
-    load_bi_db_testing()
-    load_bi_core(core_lib_config=core_test_config.get_core_library_config())
+    load_db_testing_lib()
+    load_core_lib(core_lib_config=core_test_config.get_core_library_config())

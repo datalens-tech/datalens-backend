@@ -3,11 +3,11 @@ from __future__ import annotations
 import pytest
 
 from dl_api_client.dsmaker.primitives import Dataset
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import DataApiTestBase
 from dl_api_lib_tests.db.config import (
-    BI_TEST_CONFIG,
+    API_TEST_CONFIG,
     DB_CORE_URL,
     CoreConnectionSettings,
 )
@@ -23,8 +23,8 @@ class DefaultApiTestBase(DataApiTestBase, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
     @pytest.fixture(scope="class")
-    def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
-        return BI_TEST_CONFIG
+    def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
+        return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

@@ -29,7 +29,7 @@ from dl_formula.definitions.registry import OPERATION_REGISTRY
 import dl_formula.dot
 import dl_formula.inspect.expression
 import dl_formula.inspect.function
-from dl_formula.loader import load_bi_formula
+from dl_formula.loader import load_formula_lib
 from dl_formula.parser.factory import get_parser
 from dl_formula.slicing.schema import (
     AggregateFunctionLevelBoundary,
@@ -379,7 +379,7 @@ class FormulaCliTool:
 
 
 def main():
-    load_bi_formula()
+    load_formula_lib()
     FormulaCliTool.run(parser.parse_args())
 
 

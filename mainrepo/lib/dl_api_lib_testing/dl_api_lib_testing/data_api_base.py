@@ -34,7 +34,7 @@ from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
     WrappedAioSyncApiClient,
 )
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.dataset_base import DatasetTestBase
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
@@ -67,7 +67,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
     @classmethod
     def create_data_api_settings(
         cls,
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
     ) -> DataApiAppSettings:
         core_test_config = bi_test_config.core_test_config
@@ -98,7 +98,7 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
     @pytest.fixture(scope="function")
     def data_api_app_settings(
         self,
-        bi_test_config: BiApiTestEnvironmentConfiguration,
+        bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
     ) -> DataApiAppSettings:
         return self.create_data_api_settings(

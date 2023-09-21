@@ -1,6 +1,6 @@
 import pytest
 
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
@@ -9,7 +9,7 @@ from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_TABLE,
 )
 from dl_connector_greenplum_tests.db.config import (
-    BI_TEST_CONFIG,
+    API_TEST_CONFIG,
     CONNECTION_PARAMS,
     CORE_TEST_CONFIG,
     DB_CORE_URL,
@@ -29,8 +29,8 @@ class GreenplumConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
         return DB_CORE_URL
 
     @pytest.fixture(scope="class")
-    def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
-        return BI_TEST_CONFIG
+    def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
+        return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:

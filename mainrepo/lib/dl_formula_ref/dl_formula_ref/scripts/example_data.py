@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 
-from dl_db_testing.loader import load_bi_db_testing
+from dl_db_testing.loader import load_db_testing_lib
 from dl_formula_ref.generator import (
     ConfigVersion,
     ReferenceDocGenerator,
@@ -45,7 +45,7 @@ class ExampleDataTool:
 
 def main():
     load_formula_ref()
-    load_bi_db_testing()
+    load_db_testing_lib()
     ExampleDataTool.run(parser.parse_args())
 
 

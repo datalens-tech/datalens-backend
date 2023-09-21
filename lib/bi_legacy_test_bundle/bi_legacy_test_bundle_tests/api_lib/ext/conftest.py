@@ -18,7 +18,7 @@ from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
 def pytest_configure(config):  # noqa
-    bi_test_config = tests_config_mod.BI_TEST_CONFIG
+    bi_test_config = tests_config_mod.API_TEST_CONFIG
     common_pytest_configure()  # make sure the CH dialect is available.
     prepare_united_storage_from_config(us_config=bi_test_config.core_test_config.get_us_config())
 

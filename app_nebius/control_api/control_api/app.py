@@ -18,8 +18,8 @@ from dl_api_commons.sentry_config import (
 from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.loader import (
     ApiLibraryConfig,
-    load_bi_api_lib,
-    preload_bi_api_lib,
+    load_api_lib,
+    preload_api_lib,
 )
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.env_var_definitions import (
@@ -54,7 +54,7 @@ def create_app(
 
 
 def _create_gunicorn_app() -> flask.Flask:
-    preload_bi_api_lib()
+    preload_api_lib()
     fallback_resolver = YEnvFallbackConfigResolver(
         installation_map=InstallationsMap,
         env_map=EnvAliasesMap,
@@ -63,7 +63,7 @@ def _create_gunicorn_app() -> flask.Flask:
         ControlPlaneAppSettings,
         default_fallback_cfg_resolver=fallback_resolver,
     )
-    load_bi_api_lib(
+    load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
             core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),

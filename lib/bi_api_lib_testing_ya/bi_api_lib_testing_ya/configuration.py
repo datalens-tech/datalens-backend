@@ -6,7 +6,7 @@ from bi_defaults.environments import (
     DOMAIN_BI_API_LIB_YA,
     InternalTestingInstallation,
 )
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
     ConnectorContainerSettings,
@@ -128,7 +128,7 @@ CONNECTOR_WHITELIST = [
 
 
 @attr.s(kw_only=True)
-class BiApiTestEnvironmentConfigurationPrivate(BiApiTestEnvironmentConfiguration):
+class ApiTestEnvironmentConfigurationPrivate(ApiTestEnvironmentConfiguration):
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(default=CONNECTOR_AVAILABILITY)
 
     dls_host: str = attr.ib(default=InternalTestingInstallation.DATALENS_API_LB_DLS_BASE_URL)

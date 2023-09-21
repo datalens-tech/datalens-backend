@@ -9,7 +9,7 @@ from typing import (
 import pytest
 
 from bi_api_lib_testing_ya.app import TestingControlApiAppFactoryPrivate
-from bi_api_lib_testing_ya.configuration import BiApiTestEnvironmentConfigurationPrivate
+from bi_api_lib_testing_ya.configuration import ApiTestEnvironmentConfigurationPrivate
 from bi_api_lib_ya.app_settings import (
     ControlPlaneAppSettings,
     YCAuthSettings,
@@ -33,7 +33,7 @@ class BiApiTestPrivateBase(BiApiTestBase, abc.ABC):
     @pytest.fixture(scope="function")
     def control_api_app_settings(  # type: ignore[override]
         self,
-        bi_test_config: BiApiTestEnvironmentConfigurationPrivate,
+        bi_test_config: ApiTestEnvironmentConfigurationPrivate,
         rqe_config_subprocess: RQEConfig,
         iam_services_mock: IAMServicesMockFacade,
     ) -> ControlPlaneAppSettings:

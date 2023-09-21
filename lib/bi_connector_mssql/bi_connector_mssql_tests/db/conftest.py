@@ -5,7 +5,7 @@ from dl_formula_testing.forced_literal import forced_literal_use
 from dl_testing.utils import wait_for_initdb
 
 from bi_connector_mssql_tests.db.config import (
-    BI_TEST_CONFIG,
+    API_TEST_CONFIG,
     INIT_DB_PORT,
 )
 
@@ -14,7 +14,7 @@ pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest
 
 
 def pytest_configure(config):  # noqa
-    initialize_api_lib_test(pytest_config=config, api_test_config=BI_TEST_CONFIG)
+    initialize_api_lib_test(pytest_config=config, api_test_config=API_TEST_CONFIG)
 
 
 @pytest.fixture(scope="session")

@@ -23,7 +23,7 @@ from dl_api_lib.app_settings import (
     DataApiAppSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import (
     RedisMode,
@@ -53,7 +53,7 @@ from dl_core_testing.fixture_server_runner import WSGIRunner
 
 @attr.s
 class RQEConfigurationMaker:
-    bi_test_config: BiApiTestEnvironmentConfiguration = attr.ib(kw_only=True)
+    bi_test_config: ApiTestEnvironmentConfiguration = attr.ib(kw_only=True)
 
     @contextlib.contextmanager
     def sync_rqe_netloc_subprocess_cm(self) -> Generator[RQEBaseURL, None, None]:
@@ -95,7 +95,7 @@ class RQEConfigurationMaker:
 
 @attr.s
 class RedisSettingMaker:
-    bi_test_config: BiApiTestEnvironmentConfiguration = attr.ib(kw_only=True)
+    bi_test_config: ApiTestEnvironmentConfiguration = attr.ib(kw_only=True)
 
     def get_redis_settings(self, db: int) -> RedisSettings:
         return RedisSettings(  # type: ignore  # TODO: fix compatibility of models using `s_attrib` with mypy

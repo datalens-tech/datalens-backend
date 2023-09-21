@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 
-from dl_api_lib_testing.configuration import BiApiTestEnvironmentConfiguration
+from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
@@ -20,7 +20,7 @@ from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.ch_geo_filtered.config im
     DOWNLOADABLE_CONNECTION_PARAMS,
 )
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.ch_geo_filtered.core.base import BaseCHGeoFilteredClass
-from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.config import BI_TEST_CONFIG
+from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.config import API_TEST_CONFIG
 
 
 class CHGeoFilteredConnectionTestBase(BaseCHGeoFilteredClass, ConnectionTestBase):
@@ -31,8 +31,8 @@ class CHGeoFilteredConnectionTestBase(BaseCHGeoFilteredClass, ConnectionTestBase
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
     @pytest.fixture(scope="class")
-    def bi_test_config(self) -> BiApiTestEnvironmentConfiguration:
-        return BI_TEST_CONFIG
+    def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
+        return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
     def connection_params(self, sample_table: DbTable) -> dict:
