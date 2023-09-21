@@ -6,24 +6,17 @@ from typing import (
     TypeVar,
 )
 
-from dl_core.us_connection_base import ConnectionSQL
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
-from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_bundle_ch_filtered.base.core.settings import ServiceConnectorSettingsBase
+from bi_connector_bundle_ch_filtered.base.core.us_connection import ConnectionCHFilteredHardcodedDataBase
 
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
+_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionCHFilteredHardcodedDataBase)
 
 
 class CHFilteredConnectionTestClass(DefaultConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
     sr_connection_settings: ClassVar[ServiceConnectorSettingsBase]
-
-    test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultConnectionTestClass.test_connection_get_data_source_templates: "",  # TODO: FIXME
-        },
-    )
 
     def check_saved_connection(self, conn: _CONN_TV, params: dict) -> None:
         assert conn.uuid is not None

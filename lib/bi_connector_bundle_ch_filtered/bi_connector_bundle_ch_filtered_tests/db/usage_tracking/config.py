@@ -10,6 +10,7 @@ from bi_connector_bundle_ch_filtered.usage_tracking.core.settings import UsageTr
 
 SR_CONNECTION_TABLE_NAME = "sample"
 SR_CONNECTION_SETTINGS = UsageTrackingConnectionSettings(
+    SECURE=False,
     DB_NAME="test_data",
     HOST=get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).host,
     PORT=get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).port,

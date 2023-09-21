@@ -5,8 +5,8 @@ from typing import (
 
 import attr
 
+from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
-from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_chyt_internal.core.us_connection import (
     ConnectionCHYTInternalToken,
@@ -22,12 +22,10 @@ _CONN_TV = TypeVar("_CONN_TV", ConnectionCHYTInternalToken, ConnectionCHYTUserAu
 
 
 class CHYTConnectionTestCase(DefaultConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
-    test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultConnectionTestClass.test_connection_get_data_source_templates: "",  # TODO: FIXME
-        },
-    )
     do_check_data_export_flag = True
+
+    def check_data_source_templates(self, conn: _CONN_TV, dsrc_templates: list[DataSourceTemplate]) -> None:
+        assert not dsrc_templates
 
     def check_saved_connection(self, conn: _CONN_TV, params: dict) -> None:
         assert conn.uuid is not None

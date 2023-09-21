@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.constants import (
+    SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,
+)
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.settings import (
     CHYaMusicPodcastStatsConnectorSettings,
 )
@@ -21,6 +24,7 @@ class TestClickhouseYaMusicPodcastStatsConnection(
     BaseClickhouseYaMusicPodcastStatsTestClass,
     BaseClickhouseFilteredSubselectByPuidConnectionTestClass[ConnectionClickhouseYaMusicPodcastStats],
 ):
+    source_type = SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE
     sr_connection_settings = CHYaMusicPodcastStatsConnectorSettings(**SR_CONNECTION_SETTINGS_PARAMS)
 
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.constants import SOURCE_TYPE_CH_SMB_HEATMAPS_TABLE
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.settings import SMBHeatmapsConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.us_connection import ConnectionClickhouseSMBHeatmaps
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config import SR_CONNECTION_SETTINGS_PARAMS
@@ -17,6 +18,7 @@ class TestSMBHeatmapsConnection(
     BaseSMBHeatmapsTestClass,
     BaseClickhouseFilteredSubselectByPuidConnectionTestClass[ConnectionClickhouseSMBHeatmaps],
 ):
+    source_type = SOURCE_TYPE_CH_SMB_HEATMAPS_TABLE
     sr_connection_settings = SMBHeatmapsConnectorSettings(**SR_CONNECTION_SETTINGS_PARAMS)
 
 

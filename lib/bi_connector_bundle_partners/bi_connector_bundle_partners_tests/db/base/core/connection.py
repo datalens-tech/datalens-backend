@@ -6,6 +6,7 @@ from typing import (
     TypeVar,
 )
 
+from dl_constants.enums import SourceBackendType
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
@@ -18,7 +19,18 @@ _CONN_TV = TypeVar("_CONN_TV", bound=PartnersCHConnectionBase)
 
 
 class PartnersConnectionTestClass(DefaultConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
+    source_type: ClassVar[SourceBackendType]
     sr_connection_settings: ClassVar[ServiceConnectorSettingsBase]
+
+    def check_data_source_templates(self, conn: _CONN_TV, dsrc_templates: list[DataSourceTemplate]) -> None:
+        expected_template = DataSourceTemplate(
+            title=test_config.TABLE_NAME,
+            group=[],
+            connection_id=conn.uuid,
+            source_type=self.source_type,
+            parameters=dict(db_name=None, table_name=test_config.TABLE_NAME),
+        )
+        assert [expected_template] == dsrc_templates
 
     def check_saved_connection(self, conn: _CONN_TV, params: dict) -> None:
         hardcoded_dto_fields = (
@@ -42,6 +54,3 @@ class PartnersConnectionTestClass(DefaultConnectionTestClass[_CONN_TV], Generic[
 
         assert conn.data.db_name == test_config.DB_NAME
         assert conn_dto.db_name == test_config.DB_NAME
-
-    def check_data_source_templates(self, conn: _CONN_TV, dsrc_templates: list[DataSourceTemplate]) -> None:
-        pass  # TODO

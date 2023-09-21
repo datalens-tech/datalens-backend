@@ -27,9 +27,11 @@ DB_CORE_URL = f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-cl
 # https://yav.yandex-team.ru/secret/sec-01ep4vyqmaby5an11a395fqfsv
 EXT_BLACKBOX_USER_UID = 4057746070
 
+SR_CONNECTION_DB_NAME = "test_data"
 SR_CONNECTION_TABLE_NAME = "sample"
 SR_CONNECTION_SETTINGS_PARAMS = dict(
-    DB_NAME="test_data",
+    SECURE=False,
+    DB_NAME=SR_CONNECTION_DB_NAME,
     HOST=get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).host,
     PORT=get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).port,
     USERNAME="datalens",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.constants import SOURCE_TYPE_CH_SCHOOLBOOK_TABLE
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.settings import SchoolbookConnectorSettings
 from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.core.us_connection import ConnectionClickhouseSchoolbook
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.ext.config import SR_CONNECTION_SETTINGS_PARAMS
@@ -17,6 +18,7 @@ class TestSchoolbookConnection(
     BaseSchoolbookTestClass,
     BaseClickhouseFilteredSubselectByPuidConnectionTestClass[ConnectionClickhouseSchoolbook],
 ):
+    source_type = SOURCE_TYPE_CH_SCHOOLBOOK_TABLE
     sr_connection_settings = SchoolbookConnectorSettings(**SR_CONNECTION_SETTINGS_PARAMS)
 
 

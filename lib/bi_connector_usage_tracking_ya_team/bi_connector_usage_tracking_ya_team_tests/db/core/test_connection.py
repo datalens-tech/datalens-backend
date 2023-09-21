@@ -1,21 +1,31 @@
 from __future__ import annotations
 
+from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
-from dl_testing.regulated_test import RegulatedTestParams
 
+from bi_connector_usage_tracking_ya_team.core.constants import SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE
 from bi_connector_usage_tracking_ya_team.core.us_connection import UsageTrackingYaTeamConnection
 from bi_connector_usage_tracking_ya_team_tests.db.core.base import BaseUsageTrackingYaTeamTestClass
-from bi_connector_usage_tracking_ya_team_tests.db.core.config import SR_CONNECTION_SETTINGS
+from bi_connector_usage_tracking_ya_team_tests.db.core.config import (
+    SR_CONNECTION_SETTINGS,
+    SR_CONNECTION_TABLE_NAME,
+)
 
 
 class TestUsageTrackingYaTeamConnection(
     BaseUsageTrackingYaTeamTestClass, DefaultConnectionTestClass[UsageTrackingYaTeamConnection]
 ):
-    test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultConnectionTestClass.test_connection_get_data_source_templates: "",  # TODO: FIXME
-        },
-    )
+    def check_data_source_templates(
+        self, conn: UsageTrackingYaTeamConnection, dsrc_templates: list[DataSourceTemplate]
+    ) -> None:
+        expected_template = DataSourceTemplate(
+            title=SR_CONNECTION_TABLE_NAME,
+            group=[],
+            connection_id=conn.uuid,
+            source_type=SOURCE_TYPE_CH_USAGE_TRACKING_YA_TEAM_TABLE,
+            parameters=dict(db_name=None, table_name=SR_CONNECTION_TABLE_NAME),
+        )
+        assert [expected_template] == dsrc_templates
 
     def check_saved_connection(self, conn: UsageTrackingYaTeamConnection, params: dict) -> None:
         assert conn.uuid is not None

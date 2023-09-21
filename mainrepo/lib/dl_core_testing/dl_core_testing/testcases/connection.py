@@ -111,9 +111,9 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
         # if test is unsuccessful, an exception is raised by the connection
         conn.test(conn_executor_factory=sync_conn_executor_factory_for_conn)
 
+    @abc.abstractmethod
     def check_data_source_templates(self, conn: _CONN_TV, dsrc_templates: list[DataSourceTemplate]) -> None:
-        # Not abstract because the template test may be disabled,
-        # and this method doesn't require implementation in this case.
+        # In case of disabled templates, explicitly assert `not dsrc_templates`
         raise NotImplementedError
 
     def test_connection_get_data_source_templates(
