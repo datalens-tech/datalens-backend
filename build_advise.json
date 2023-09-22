@@ -1,6 +1,6 @@
 {
   "bake_targets": [
-    "app_os_control_api",
-    "app_os_data_api"
+    "app_yc_file_uploader_api",
+    "app_yc_file_uploader_worker"
   ]
 }
