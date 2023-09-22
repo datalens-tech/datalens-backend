@@ -275,7 +275,7 @@ resource "helm_release" "vector-log-parser" {
 }
 
 resource "kubernetes_network_policy" "allow-system" {
-  count  = module.constants.env_data.k8s_use_cilium ? 1 : 0
+  count = module.constants.env_data.k8s_use_cilium ? 1 : 0
 
   metadata {
     name      = "allow-system"
@@ -304,7 +304,7 @@ resource "kubernetes_network_policy" "allow-system" {
 }
 
 resource "kubernetes_network_policy" "allow-kafka" {
-  count  = module.constants.env_data.k8s_use_cilium ? 1 : 0
+  count = module.constants.env_data.k8s_use_cilium ? 1 : 0
 
   metadata {
     name      = "allow-kafka"

@@ -26,7 +26,7 @@ locals {
     password = yandex_mdb_postgresql_user.integration_tests.password
   })
   service_accounts_data = jsondecode(
-    [ for e in data.yandex_lockbox_secret_version.sa_secrets.entries : e.text_value ][0]
+    [for e in data.yandex_lockbox_secret_version.sa_secrets.entries : e.text_value][0]
   )
 
   integration_tests_secrets_content = jsonencode(

@@ -1,5 +1,5 @@
 locals {
-  chart_name         = "yc-alb-ingress-controller"
+  chart_name = "yc-alb-ingress-controller"
 
   sa_key = {
     id                 = yandex_iam_service_account_key.this.id

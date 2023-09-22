@@ -1,5 +1,5 @@
 variable "jaeger_collector_netloc" {
-  type = string
+  type        = string
   description = "Jaeger collector netloc"
 }
 

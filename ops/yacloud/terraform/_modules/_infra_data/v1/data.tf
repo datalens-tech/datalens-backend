@@ -20,7 +20,7 @@ data "local_file" "cert_bundle" {
 
 locals {
   internal_cert_path = "${path.module}/../../_constants/v1/internal_certs/${var.env_name}.crt"
-  cert_bundle_path = "${path.module}/../../_constants/v1/cert_bundles/${var.env_name}.crt"
+  cert_bundle_path   = "${path.module}/../../_constants/v1/cert_bundles/${var.env_name}.crt"
   preferrable_address = (
     module.constants.env_data.k8s_use_ext_v6 ?
     "[${data.yandex_kubernetes_cluster.this.master[0].external_v6_address}]" :

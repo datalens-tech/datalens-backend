@@ -2,7 +2,7 @@ locals {
   helm_values = merge(
     {
       integration_tests_secret_id = yandex_lockbox_secret.integration_tests.id
-      backendBalancer             = {
+      backendBalancer = {
         host = "https://${var.back_lb_fqdn}"
       },
       dls_enabled = var.dls_enabled,
@@ -18,8 +18,8 @@ locals {
         iam_as       = var.iam_as_host
         iam_ts       = var.iam_ts_host
       },
-      cloud_api_endpoint     = var.cloud_api_endpoint
-      use_internal_ca        = var.use_internal_ca
+      cloud_api_endpoint = var.cloud_api_endpoint
+      use_internal_ca    = var.use_internal_ca
     },
     var.upload_fqdn == null ? {} : {
       uploadBalancer = {

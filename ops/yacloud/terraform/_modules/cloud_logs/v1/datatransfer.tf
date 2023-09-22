@@ -5,12 +5,12 @@ resource "ycp_datatransfer_endpoint" "logs-source" {
 
   settings {
     yds_source {
-      backup_mode = "NO_BACKUP"
-      database = yandex_ydb_database_serverless.logs-stream-db.database_path
+      backup_mode        = "NO_BACKUP"
+      database           = yandex_ydb_database_serverless.logs-stream-db.database_path
       service_account_id = yandex_iam_service_account.logs-sa.id
-      stream = "logs-stream"
-      endpoint = "yds.serverless.cloud-preprod.yandex.net"
-      line_splitter = "LINE_SPLITTER_UNSPECIFIED"
+      stream             = "logs-stream"
+      endpoint           = "yds.serverless.cloud-preprod.yandex.net"
+      line_splitter      = "LINE_SPLITTER_UNSPECIFIED"
       parser {
         cloud_logging_parser {}
       }
@@ -43,10 +43,10 @@ resource "ycp_datatransfer_endpoint" "logs-receiver" {
 
 resource "ycp_datatransfer_transfer" "logs-transfer" {
   folder_id = var.folder_id
-  name       = "logs-transfer"
-  source_id  = ycp_datatransfer_endpoint.logs-source.id
-  target_id  = ycp_datatransfer_endpoint.logs-receiver.id
-  type       = "INCREMENT_ONLY"
+  name      = "logs-transfer"
+  source_id = ycp_datatransfer_endpoint.logs-source.id
+  target_id = ycp_datatransfer_endpoint.logs-receiver.id
+  type      = "INCREMENT_ONLY"
   runtime {
     yc_runtime {
       flavor            = "SMALL"

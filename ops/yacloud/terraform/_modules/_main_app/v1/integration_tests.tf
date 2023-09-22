@@ -27,9 +27,9 @@ module "integration_tests" {
   use_internal_ca = module.constants.use_internal_ca
   dls_enabled     = module.constants.env_data.apps_to_run.dls
 
-  eso_sa_key                 = module.secrets.eso_sa_key
-  db_clusters_folder_id      = module.constants.env_data.folder_id
-  bi_api_secret_id           = (
+  eso_sa_key            = module.secrets.eso_sa_key
+  db_clusters_folder_id = module.constants.env_data.folder_id
+  bi_api_secret_id = (
     var.tf_managed_secrets ?
     yandex_lockbox_secret.app_secret["bi_api"].id : var.secrets_map["bi_backend_bi_api_secret_id"]
   )
@@ -41,5 +41,5 @@ module "integration_tests" {
 
   us_lb_main_base_url = var.us_host
 
-  sa_secrets_lockbox_id =  var.integration_tests_sa_secrets_lockbox_id
+  sa_secrets_lockbox_id = var.integration_tests_sa_secrets_lockbox_id
 }

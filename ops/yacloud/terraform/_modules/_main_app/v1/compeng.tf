@@ -31,14 +31,14 @@ lc_numeric = 'C.UTF-8'
 lc_time = 'C.UTF-8'
 default_text_search_config = 'pg_catalog.english'
 EOF
-    "pg_hba.conf" = <<EOF
+    "pg_hba.conf"     = <<EOF
 host    all             all             127.0.0.1/32            trust
 host    all             all             ::1/128                 trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
 local   all             postgres                                peer    map=anyauth
 EOF
-    "pg_ident.conf" = <<EOF
+    "pg_ident.conf"   = <<EOF
 anyauth    root    postgres
 anyauth    www-data    postgres
 anyauth    postgres    postgres

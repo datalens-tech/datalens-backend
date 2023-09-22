@@ -2,7 +2,7 @@ locals {
   folder_id = yandex_resourcemanager_folder.integration-tests.id
 
   sa_secrets = {
-    for sa in (var.sa_data_list) : sa.name_suffix => module.service_account[sa.name_suffix].sa_data
+    for sa in(var.sa_data_list) : sa.name_suffix => module.service_account[sa.name_suffix].sa_data
   }
 
   integration_tests_secrets_content = jsonencode({

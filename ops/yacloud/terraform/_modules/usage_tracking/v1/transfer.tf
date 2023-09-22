@@ -33,7 +33,7 @@ resource "ycp_datatransfer_endpoint" "kafka_usage_tracking_source" {
         sasl {
           mechanism = "KAFKA_MECHANISM_SHA512"
           user      = var.kafka_properties.transfer_user
-          password  { raw = local.kafka_user_transfer_password }
+          password { raw = local.kafka_user_transfer_password }
         }
       }
       connection {

@@ -1,7 +1,7 @@
 resource "yandex_iam_service_account" "integration-tests-sa" {
-  name               = "integration-tests-${var.sa_name}"
-  folder_id          = var.folder_id
-  description        = "DataLens backend integration tests service account"
+  name        = "integration-tests-${var.sa_name}"
+  folder_id   = var.folder_id
+  description = "DataLens backend integration tests service account"
 
   lifecycle {
     prevent_destroy = true

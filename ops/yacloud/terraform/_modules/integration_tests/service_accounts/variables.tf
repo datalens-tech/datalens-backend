@@ -4,7 +4,7 @@ variable "cloud_id" {
 
 variable "sa_data_list" {
   type = list(object({
-    name_suffix = string
+    name_suffix  = string
     folder_roles = list(string)
   }))
 }

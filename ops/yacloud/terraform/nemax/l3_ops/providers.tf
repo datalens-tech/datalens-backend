@@ -46,7 +46,7 @@ provider "ytr" {
   solomon_token      = var.iam_token
   solomon_endpoint   = "https://solomon.nemax.nebiuscloud.net"
   solomon_token_type = "Bearer"
-  juggler_endpoint   = "https://api.juggler.nemax.nebiuscloud.net"  # https://st.yandex-team.ru/JUGGLER-5774
+  juggler_endpoint   = "https://api.juggler.nemax.nebiuscloud.net" # https://st.yandex-team.ru/JUGGLER-5774
   juggler_token_type = "Bearer"
   juggler_token      = var.iam_token
 }

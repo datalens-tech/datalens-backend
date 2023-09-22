@@ -11,6 +11,6 @@ variable "bastion_enabled" {
 }
 
 variable "config_path" {
-  type = string
+  type    = string
   default = "~/.config/ycp/config.yaml"
 }

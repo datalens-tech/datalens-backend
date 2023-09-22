@@ -27,7 +27,7 @@ resource "helm_release" "this" {
   ]
 
   set {
-    name = "trigger"
+    name  = "trigger"
     value = filemd5("${path.module}/fluentbit/templates/config-map.yaml")
   }
 }

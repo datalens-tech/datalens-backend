@@ -63,11 +63,11 @@ variable "data" {
       secret_ids = {
         kafka_passwords = "fc3fj14hndj3cao08nak"
       }
-      ycp_profile        = "yc-preprod"
-      ycp_environment    = "preprod"
-      k8s_use_ext_v6     = true
-      k8s_use_cilium     = true
-      k8s_use_bastion    = true
+      ycp_profile     = "yc-preprod"
+      ycp_environment = "preprod"
+      k8s_use_ext_v6  = true
+      k8s_use_cilium  = true
+      k8s_use_bastion = true
       bastion_cidr = [
         "2a02:6b8:c03:501:0:fca0::/112",
         "2a02:6b8:c0e:501:0:fca0::/112",
@@ -110,12 +110,12 @@ variable "data" {
       secret_ids = {
         kafka_passwords = "bcn78c2ahhevf6m4ephk"
       }
-      ycp_profile        = "israel"
-      ycp_environment    = "israel"
-      k8s_use_ext_v6     = true
-      k8s_use_cilium     = false
-      k8s_use_bastion    = false
-      bastion_cidr       = []
+      ycp_profile               = "israel"
+      ycp_environment           = "israel"
+      k8s_use_ext_v6            = true
+      k8s_use_cilium            = false
+      k8s_use_bastion           = false
+      bastion_cidr              = []
       bastion_endpoint_suffix   = "k8s.bastion.yandexcloud.co.il"
       k8s_audit_security_stream = null
       apps_to_run = {
@@ -144,19 +144,19 @@ variable "data" {
         "dmailb60og22fl8hjvh2",
         "f8u60b2emiajalnhsrlp",
       ]
-      cloud_api_endpoint = "api.nemax.nebius.cloud:443"
-      core_dns_zone_id   = "yc.datalens.backend"
-      public_dns_zone_id = "b3q7shgiq8cdlsvocefc"
-      cookie_dns_zone_id = "yc.datalens.backend_cookie"
-      s3_endpoint        = "storage-internal.nemax.nebius.cloud"
-      main_zone_idx      = 1
-      secret_ids = {}
-      ycp_profile        = "nemax"
-      ycp_environment    = "nemax"
-      k8s_use_ext_v6     = true
-      k8s_use_cilium     = true
-      k8s_use_bastion    = false
-      bastion_cidr       = []
+      cloud_api_endpoint        = "api.nemax.nebius.cloud:443"
+      core_dns_zone_id          = "yc.datalens.backend"
+      public_dns_zone_id        = "b3q7shgiq8cdlsvocefc"
+      cookie_dns_zone_id        = "yc.datalens.backend_cookie"
+      s3_endpoint               = "storage-internal.nemax.nebius.cloud"
+      main_zone_idx             = 1
+      secret_ids                = {}
+      ycp_profile               = "nemax"
+      ycp_environment           = "nemax"
+      k8s_use_ext_v6            = true
+      k8s_use_cilium            = true
+      k8s_use_bastion           = false
+      bastion_cidr              = []
       bastion_endpoint_suffix   = "k8s.bastion.nemax.nebiuscloud.net"
       k8s_audit_security_stream = null
       apps_to_run = {

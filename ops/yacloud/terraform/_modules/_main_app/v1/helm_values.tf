@@ -38,12 +38,12 @@ resource "local_file" "helm_values_bi_back" {
         crypto_key_version     = var.crypto_key_version
         crypto_key_version_old = var.crypto_key_version_old
         endpoints = {
-          us_host     = var.us_host
-          rm_host     = var.rm_host
-          iam_api     = var.iam_api_host
-          iam_as      = var.iam_as_host
-          iam_ss      = var.iam_ss_host
-          iam_ts      = var.iam_ts_host
+          us_host = var.us_host
+          rm_host = var.rm_host
+          iam_api = var.iam_api_host
+          iam_as  = var.iam_as_host
+          iam_ss  = var.iam_ss_host
+          iam_ts  = var.iam_ts_host
         }
         iam_basic_permission      = var.iam_basic_permission
         jaeger_svc_name_suffix    = var.jaeger_svc_name_suffix
