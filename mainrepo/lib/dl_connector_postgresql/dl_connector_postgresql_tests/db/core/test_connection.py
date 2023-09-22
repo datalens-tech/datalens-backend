@@ -1,16 +1,10 @@
 from __future__ import annotations
 
-import asyncio
 import os
-from typing import (
-    TYPE_CHECKING,
-    Callable,
-    TypeVar,
-)
+from typing import TypeVar
 
 import pytest
 
-import dl_configs.utils as bi_configs_utils
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_connector_postgresql_tests.db.core.base import (
     BasePostgreSQLTestClass,
@@ -20,17 +14,7 @@ from dl_core.us_connection_base import (
     ConnectionSQL,
     DataSourceTemplate,
 )
-from dl_core_testing.testcases.connection import (
-    DefaultAsyncConnectionTestClass,
-    DefaultConnectionTestClass,
-)
-
-
-if TYPE_CHECKING:
-    from dl_core.connection_executors import (
-        AsyncConnExecutorBase,
-        SyncConnExecutorBase,
-    )
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
@@ -78,16 +62,6 @@ class TestSslPostgreSQLConnection(
     BaseSslPostgreSQLTestClass,
     DefaultConnectionTestClass[ConnectionPostgreSQL],
 ):
-    def check_ssl_directory_is_empty(self) -> None:
-        assert not os.listdir(bi_configs_utils.get_temp_root_certificates_folder_path())
-
-    @pytest.fixture(autouse=True)
-    def clear_ssl_folder(self):
-        folder_path = bi_configs_utils.get_temp_root_certificates_folder_path()
-        for filename in os.listdir(folder_path):
-            file_path = os.path.join(folder_path, filename)
-            os.unlink(file_path)
-
     def check_saved_connection(self, conn: ConnectionPostgreSQL, params: dict) -> None:
         assert conn.uuid is not None
         assert conn.data.db_name == params["db_name"]
@@ -102,34 +76,3 @@ class TestSslPostgreSQLConnection(
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
-
-    def test_connection_test(
-        self,
-        saved_connection: ConnectionPostgreSQL,
-        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
-    ) -> None:
-        super().test_connection_test(saved_connection, sync_conn_executor_factory)
-        self.check_ssl_directory_is_empty()
-
-
-@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
-class TestSslAsyncPostgreSQLConnection(DefaultAsyncConnectionTestClass, TestSslPostgreSQLConnection):
-    @pytest.mark.asyncio
-    async def test_connection_test(
-        self,
-        saved_connection: ConnectionPostgreSQL,
-        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
-    ) -> None:
-        await super().test_connection_test(saved_connection, async_conn_executor_factory)
-        await asyncio.sleep(0.1)
-        self.check_ssl_directory_is_empty()
-
-    @pytest.mark.asyncio
-    async def test_multiple_connection_test(
-        self,
-        saved_connection: ConnectionPostgreSQL,
-        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
-    ) -> None:
-        await super().test_multiple_connection_test(saved_connection, async_conn_executor_factory)
-        await asyncio.sleep(0.1)
-        self.check_ssl_directory_is_empty()

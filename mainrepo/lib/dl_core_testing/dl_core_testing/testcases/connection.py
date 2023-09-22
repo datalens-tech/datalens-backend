@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-import asyncio
 from typing import (
     TYPE_CHECKING,
     Callable,
@@ -146,28 +145,3 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
         loaded_conn = us_manager.get_by_id(conn.uuid)
         assert loaded_conn.data.data_export_forbidden is True
         assert loaded_conn.data_export_forbidden is True
-
-
-class DefaultAsyncConnectionTestClass(DefaultConnectionTestClass[_CONN_TV], Generic[_CONN_TV], metaclass=abc.ABCMeta):
-    @pytest.fixture(scope="session")
-    def conn_exec_factory_async_env(self) -> bool:
-        return True
-
-    @pytest.mark.asyncio
-    async def test_connection_test(
-        self,
-        saved_connection: _CONN_TV,
-        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
-    ) -> None:
-        async_conn_executor = async_conn_executor_factory()
-        await async_conn_executor.test()
-
-    @pytest.mark.asyncio
-    async def test_multiple_connection_test(
-        self,
-        saved_connection: _CONN_TV,
-        async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
-    ) -> None:
-        async_conn_executor = async_conn_executor_factory()
-        coros = [async_conn_executor.test() for _ in range(10)]
-        await asyncio.gather(*coros)

@@ -1,9 +1,11 @@
 import asyncio
+import os
 from typing import Generator
 
 from frozendict import frozendict
 import pytest
 
+import dl_configs.utils as bi_configs_utils
 from dl_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
@@ -56,6 +58,17 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
 
 
 class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
+    @pytest.fixture(autouse=True)
+    def clear_ssl_folder(self):
+        folder_path = bi_configs_utils.get_temp_root_certificates_folder_path()
+
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            os.unlink(file_path)
+
+    def check_ssl_directory_is_empty(self) -> None:
+        assert not os.listdir(bi_configs_utils.get_temp_root_certificates_folder_path())
+
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL

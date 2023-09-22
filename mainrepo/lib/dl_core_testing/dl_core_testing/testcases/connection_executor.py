@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import contextlib
 from typing import (
     TYPE_CHECKING,
+    AsyncGenerator,
     Callable,
     Generator,
     Generic,
@@ -47,15 +49,19 @@ class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass
     def sync_connection_executor(
         self,
         sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
-    ) -> SyncConnExecutorBase:
-        return sync_conn_executor_factory()
+    ) -> Generator[SyncConnExecutorBase, None, None]:
+        sync_conn_executor = sync_conn_executor_factory()
+        yield sync_conn_executor_factory()
+        sync_conn_executor.close()
 
     @pytest.fixture(scope="function")
-    def async_connection_executor(
+    async def async_connection_executor(
         self,
         async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
-    ) -> AsyncConnExecutorBase:
-        return async_conn_executor_factory()
+    ) -> AsyncGenerator[AsyncConnExecutorBase, None, None]:
+        async_conn_executor = async_conn_executor_factory()
+        yield async_conn_executor_factory()
+        await async_conn_executor.close()
 
 
 class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
@@ -208,6 +214,10 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
 
     async def test_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         await async_connection_executor.test()
+
+    async def test_multiple_connection_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
+        coros = (async_connection_executor.test() for _ in range(10))
+        await asyncio.gather(*coros)
 
     async def test_table_exists(
         self,
