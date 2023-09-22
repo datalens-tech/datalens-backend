@@ -12,7 +12,8 @@ target "base_translations" {
 target "update-po" {
   pull = false
   args = {
-    PACKAGE_NAME = ".." # need to pass via --set flag
+    PACKAGE_NAME       = ".." # need to pass via --set flag
+    MSGID_BUGS_ADDRESS = "datalens-opensource@yandex-team.ru"
   }
   contexts = {
     bake_ctx_base_img = "target:base_translations"

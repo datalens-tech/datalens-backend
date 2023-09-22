@@ -3,6 +3,7 @@ FROM bake_ctx_base_img as build
 
 ARG PACKAGE_NAME
 ARG LOCALES_DIR=generated_locales
+ARG MSGID_BUGS_ADDRESS
 
 WORKDIR /src
 COPY --from=src . .
@@ -23,7 +24,7 @@ RUN for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \
     export SCAN_PATHS="$(echo $domain_pair | cut -d "=" -f 2 | sed 's/;/ /g')" ; \
     # Do the rest (extract raw .po, iterate over locales, merge the .po) \
     # Use `sh -c` here because $SCAN_PATH is a space-separated list that needs to be passes as separate args
-    sh -c "pybabel extract --no-location --keyword=Translatable -F babel_.ini -o $DOMAIN_NAME.po $SCAN_PATHS" ; \
+    sh -c "pybabel extract --no-location --keyword=Translatable --msgid-bugs-address $MSGID_BUGS_ADDRESS -F babel_.ini -o $DOMAIN_NAME.po $SCAN_PATHS" ; \
     for locale in $(ls $PACKAGE_NAME/locales/) ; do \
     mkdir -p $LOCALES_DIR/$locale/LC_MESSAGES ; \
     msgmerge $PACKAGE_NAME/locales/$locale/LC_MESSAGES/$DOMAIN_NAME.po $DOMAIN_NAME.po > $LOCALES_DIR/$locale/LC_MESSAGES/$DOMAIN_NAME.po; \
