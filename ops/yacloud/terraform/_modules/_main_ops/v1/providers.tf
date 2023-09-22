@@ -10,6 +10,12 @@ terraform {
     yandex = {
       source = "yandex-cloud/yandex"
     }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+    }
+    kubectl = {
+      source = "gavinbunney/kubectl"
+    }
   }
   required_version = ">= 0.13"
 }
@@ -26,4 +32,11 @@ provider "kubernetes" {
   host                   = local.k8s_endpoint
   cluster_ca_certificate = local.k8s_ca
   token                  = data.yandex_client_config.client.iam_token
+}
+
+provider "kubectl" {
+  host                   = local.k8s_endpoint
+  cluster_ca_certificate = local.k8s_ca
+  token                  = data.yandex_client_config.client.iam_token
+  load_config_file       = false
 }
