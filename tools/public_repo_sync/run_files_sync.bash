@@ -82,7 +82,18 @@ else
     read -p 'Are you sure that YOU WANT TO CREATE PR to repo (type "YES")?: ' -r
     echo
     if [[ ${REPLY} == "YES" ]]; then
+      # Set impersonated user
+      git config user.name 'DataLens Team'
+      git config user.email 'datalens-opensource@yandex-team.ru'
+
+      # Commit
       git commit -m "${COMM_MSG}"
+
+      # Reset impersonated user
+      git config --unset user.name
+      git config --unset user.email
+
+      # push & create PR
       git push --set-upstream origin "${PR_BRANCH}"
       PR_URL=$(gh pr create -f)
     else
