@@ -77,9 +77,19 @@ else
     PR_BRANCH="sync-pr/$(date +"%Y-%m-%dT%H-%M-%S")"
 
     git checkout -b "${PR_BRANCH}"
-    git commit -m "${COMM_MSG}"
-    git push --set-upstream origin "${PR_BRANCH}"
-    PR_URL=$(gh pr create -f)
+    git diff HEAD
+
+    read -p 'Are you sure that YOU WANT TO CREATE PR to repo (type "YES")?: ' -r
+    echo
+    if [[ ${REPLY} == "YES" ]]; then
+      git commit -m "${COMM_MSG}"
+      git push --set-upstream origin "${PR_BRANCH}"
+      PR_URL=$(gh pr create -f)
+    else
+      echo "ABORTING"
+      git reset --hard
+      exit
+    fi
   else
     git commit -m "${COMM_MSG}"
     git push
