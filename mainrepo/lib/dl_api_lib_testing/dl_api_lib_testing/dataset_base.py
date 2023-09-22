@@ -19,7 +19,7 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
 
     def make_basic_dataset(
         self,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         connection_id: str,
         dataset_params: dict,
     ) -> Dataset:
@@ -30,28 +30,28 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
         )
 
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-        ds = dataset_api.apply_updates(dataset=ds, fail_ok=False).dataset
-        ds = dataset_api.save_dataset(dataset=ds).dataset
+        ds = control_api.apply_updates(dataset=ds, fail_ok=False).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
         return ds
 
     @pytest.fixture(scope="function")
     def saved_dataset(
         self,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         saved_connection_id: str,
         dataset_params: dict,
     ) -> Generator[Dataset, None, None]:
         ds = self.make_basic_dataset(
-            dataset_api=dataset_api,
+            control_api=control_api,
             connection_id=saved_connection_id,
             dataset_params=dataset_params,
         )
         yield ds
-        dataset_api.delete_dataset(dataset_id=ds.id, fail_ok=False)
+        control_api.delete_dataset(dataset_id=ds.id, fail_ok=False)
 
     def test_invalid_dataset_id(
         self,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         saved_connection_id: str,
         dataset_params: dict,
         conn_default_sync_us_manager: SyncUSManager,
@@ -62,17 +62,17 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
         dash = us_client.create_entry(scope="dash", key=path)
         dash_id = dash["entryId"]
         ds = self.make_basic_dataset(
-            dataset_api=dataset_api,
+            control_api=control_api,
             connection_id=saved_connection_id,
             dataset_params=dataset_params,
         )
         dataset_id = ds.id
 
-        resp = dataset_api.client.get("/api/v1/datasets/{}/versions/draft".format(dataset_id))
+        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(dataset_id))
         assert resp.status_code == 200
 
-        resp = dataset_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_connection_id))
+        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_connection_id))
         assert resp.status_code == 404
 
-        resp = dataset_api.client.get("/api/v1/datasets/{}/versions/draft".format(dash_id))
+        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(dash_id))
         assert resp.status_code == 404

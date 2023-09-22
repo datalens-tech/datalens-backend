@@ -28,7 +28,7 @@ class TestMySQLDataResult(MySQLDataApiTestBase, DefaultConnectorDataResultTestSu
     def test_datetime_filter_with_zulu_timezone(
         self,
         saved_dataset: Dataset,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api_test_params: DataApiTestParams,
         data_api: SyncHttpDataApiV2,
     ) -> None:
@@ -70,13 +70,13 @@ class TestMySQLDataPreview(MySQLDataApiTestBase, DefaultConnectorDataPreviewTest
     def test_percent_char(
         self,
         saved_dataset: Dataset,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api_test_params: DataApiTestParams,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         ds = saved_dataset
         ds.result_schema["Test"] = ds.field(formula=f'CONCAT([{data_api_test_params.two_dims[0]}], "%")')
-        ds = dataset_api.apply_updates(dataset=ds).dataset
+        ds = control_api.apply_updates(dataset=ds).dataset
 
         preview_resp = data_api.get_preview(dataset=ds)
         assert preview_resp.status_code == 200

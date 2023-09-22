@@ -68,7 +68,7 @@ TREE_DATA = [
 ]
 
 
-def make_tree_dataset(db: Db, connection_id: str, api_v1: SyncHttpDatasetApiV1) -> Dataset:
+def make_tree_dataset(db: Db, connection_id: str, control_api: SyncHttpDatasetApiV1) -> Dataset:
     columns = [
         C("id", BIType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["id"]),
         C("dept", BIType.array_str, vg=lambda rn, **kwargs: TREE_DATA[rn]["dept"]),
@@ -81,8 +81,8 @@ def make_tree_dataset(db: Db, connection_id: str, api_v1: SyncHttpDatasetApiV1) 
     ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
     ds.result_schema["dept_tree"] = ds.field(formula="TREE([dept])")
     ds.result_schema["person_count"] = ds.field(formula="COUNT_IF(BOOL([is_person]))")
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds = api_v1.save_dataset(ds).dataset
+    ds = control_api.apply_updates(dataset=ds).dataset
+    ds = control_api.save_dataset(ds).dataset
     return ds
 
 
@@ -123,9 +123,9 @@ def get_tree(
 
 
 class TestResultWithTrees(DefaultApiTestBase):
-    def test_simple_tree(self, dataset_api, data_api, db, saved_connection_id):
+    def test_simple_tree(self, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
 
         tree = get_tree(
             [
@@ -209,9 +209,9 @@ class TestResultWithTrees(DefaultApiTestBase):
             ): (2,),
         }
 
-    def test_simple_tree_with_order_by(self, dataset_api, data_api, db, saved_connection_id):
+    def test_simple_tree_with_order_by(self, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
 
         # Order by measure
         tree = get_tree(
@@ -277,13 +277,13 @@ class TestResultWithTrees(DefaultApiTestBase):
 
     def test_simple_tree_with_order_by_and_rsum(
         self,
-        dataset_api,
+        control_api,
         data_api,
         db,
         saved_connection_id,
     ):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
         ds.result_schema["rsum_measure"] = ds.field(formula="RSUM([person_count])")
 
         # Order by measure
@@ -356,9 +356,9 @@ class TestResultWithTrees(DefaultApiTestBase):
             )
         )
 
-    def test_tree_and_totals_incompatibility_error(self, dataset_api, data_api, db, saved_connection_id):
+    def test_tree_and_totals_incompatibility_error(self, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
 
         result_resp = data_api.get_result(
             dataset=ds,
@@ -376,9 +376,9 @@ class TestResultWithTrees(DefaultApiTestBase):
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST
         assert result_resp.bi_status_code == "ERR.DS_API.BLOCK.ITEM_COMPATIBILITY"
 
-    def test_multiple_trees_error(self, dataset_api, data_api, db, saved_connection_id):
+    def test_multiple_trees_error(self, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
 
         ds.result_schema["dept_tree_2"] = ds.field(formula="TREE([dept])")
 
@@ -404,9 +404,9 @@ class TestResultWithTrees(DefaultApiTestBase):
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST
         assert result_resp.bi_status_code == "ERR.DS_API.TREE.MULTIPLE"
 
-    def test_invalid_data_type_for_tree_error(self, dataset_api, data_api, db, saved_connection_id):
+    def test_invalid_data_type_for_tree_error(self, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
 
         result_resp = data_api.get_result(
             dataset=ds,
@@ -424,9 +424,9 @@ class TestResultWithTrees(DefaultApiTestBase):
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST
         assert result_resp.bi_status_code == "ERR.DS_API.LEGEND.ROLE_DATA_TYPE_MISMATCH"
 
-    def test_invalid_legend_item_reference_error(self, dataset_api, data_api, db, saved_connection_id):
+    def test_invalid_legend_item_reference_error(self, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
-        ds = make_tree_dataset(db=db, connection_id=connection_id, api_v1=dataset_api)
+        ds = make_tree_dataset(db=db, connection_id=connection_id, control_api=control_api)
 
         result_resp = data_api.get_result(
             dataset=ds,

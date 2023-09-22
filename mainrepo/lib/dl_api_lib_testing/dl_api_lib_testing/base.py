@@ -172,5 +172,5 @@ class BiApiTestBase(abc.ABC):
         return FlaskSyncApiClient(int_wclient=client)
 
     @pytest.fixture(scope="function")
-    def dataset_api(self, control_api_sync_client: SyncHttpClientBase) -> SyncHttpDatasetApiV1:
+    def control_api(self, control_api_sync_client: SyncHttpClientBase) -> SyncHttpDatasetApiV1:
         return SyncHttpDatasetApiV1(client=control_api_sync_client)

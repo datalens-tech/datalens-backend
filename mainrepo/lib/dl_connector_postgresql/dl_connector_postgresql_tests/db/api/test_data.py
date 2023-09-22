@@ -69,12 +69,12 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         db_table = make_pg_table_with_enums(db)
         params = self.get_dataset_params(dataset_params, db_table)
-        ds = self.make_basic_dataset(dataset_api, connection_id=saved_connection_id, dataset_params=params)
+        ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
         result_resp = data_api.get_result(
             dataset=ds,
@@ -99,7 +99,7 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
 
     def test_pg_citext_column(
         self,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
         saved_connection_id: str,
@@ -122,8 +122,8 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
             connection_id=saved_connection_id, **data_source_settings_from_table(db_table)
         )
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-        ds = dataset_api.apply_updates(dataset=ds).dataset
-        ds = dataset_api.save_dataset(ds).dataset
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(ds).dataset
 
         result_resp = data_api.get_result(
             dataset=ds,
@@ -151,7 +151,7 @@ class TestPostgreSQLDataDistinct(PostgreSQLDataApiTestBase, DefaultConnectorData
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         columns = [
@@ -159,7 +159,7 @@ class TestPostgreSQLDataDistinct(PostgreSQLDataApiTestBase, DefaultConnectorData
         ]
         db_table = make_table(db, columns=columns)
         params = self.get_dataset_params(dataset_params, db_table)
-        ds = self.make_basic_dataset(dataset_api, connection_id=saved_connection_id, dataset_params=params)
+        ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
         lower_bound = 10000002879
         distinct_resp = data_api.get_distinct(

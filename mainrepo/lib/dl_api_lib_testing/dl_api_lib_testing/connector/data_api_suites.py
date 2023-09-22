@@ -60,7 +60,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         filter_op: WhereClauseOperation,
     ) -> None:
@@ -80,7 +80,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         ]
         db_table = make_table(db, columns=columns)
         params = self.get_dataset_params(dataset_params, db_table)
-        ds = self.make_basic_dataset(dataset_api, connection_id=saved_connection_id, dataset_params=params)
+        ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
         def check_filter(field_title: str, filter_value: Any) -> None:
             result_resp = data_api.get_result(
@@ -119,11 +119,11 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         self._test_contains(
-            db, saved_connection_id, dataset_params, dataset_api, data_api, WhereClauseOperation.CONTAINS
+            db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.CONTAINS
         )
 
     @for_features(array_support)
@@ -132,11 +132,11 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         self._test_contains(
-            db, saved_connection_id, dataset_params, dataset_api, data_api, WhereClauseOperation.NOTCONTAINS
+            db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.NOTCONTAINS
         )
 
     @pytest.mark.parametrize(
@@ -156,7 +156,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         field_title: str,
         filter_field_title: str,
@@ -177,7 +177,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         ]
         db_table = make_table(db, columns=columns)
         params = self.get_dataset_params(dataset_params, db_table)
-        ds = self.make_basic_dataset(dataset_api, connection_id=saved_connection_id, dataset_params=params)
+        ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
         filter_name = filter_field_title + "_ff"
         ds.result_schema["concat_const"] = ds.field(formula="CONCAT('3', '')")
@@ -330,7 +330,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
-        dataset_api: SyncHttpDatasetApiV1,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         columns = [
@@ -342,7 +342,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
         ]
         db_table = make_table(db, columns=columns, data=data)
         params = self.get_dataset_params(dataset_params, db_table)
-        ds = self.make_basic_dataset(dataset_api, connection_id=saved_connection_id, dataset_params=params)
+        ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
         distinct_resp = data_api.get_distinct(
             dataset=ds,

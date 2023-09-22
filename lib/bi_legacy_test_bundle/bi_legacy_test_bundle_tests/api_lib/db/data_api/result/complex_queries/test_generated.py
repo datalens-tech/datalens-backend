@@ -81,7 +81,7 @@ GENERATED_TESTS = [
 
 @pytest.mark.parametrize("raw_test_settings", GENERATED_TESTS)
 def test_pre_generated(api_v1, data_api_v2, dataset_id, raw_test_settings):
-    test_runner = PreGeneratedLODTestRunner(dataset_api=api_v1, data_api=data_api_v2, dataset_id=dataset_id)
+    test_runner = PreGeneratedLODTestRunner(control_api=api_v1, data_api=data_api_v2, dataset_id=dataset_id)
     test_runner.run_test(
         test_settings=TestSettings.deserialize(raw_test_settings),
     )
@@ -117,5 +117,5 @@ def test_new_auto_generated(api_v1, data_api_v2, dataset_id):
     auto_gen = LODTestAutoGenerator(settings=autogen_settings)
     setting_list = auto_gen.generate_setting_list(100)
 
-    test_runner = PreGeneratedLODTestRunner(dataset_api=api_v1, data_api=data_api_v2, dataset_id=dataset_id)
+    test_runner = PreGeneratedLODTestRunner(control_api=api_v1, data_api=data_api_v2, dataset_id=dataset_id)
     test_runner.run_test_list(setting_list, ignore_400_error=False)

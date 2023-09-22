@@ -21,7 +21,7 @@ class Error400(Exception):
 @attr.s
 class PreGeneratedLODTestRunner:
     dataset_id: str = attr.ib(kw_only=True)
-    dataset_api: SyncHttpDatasetApiV1 = attr.ib(kw_only=True)
+    control_api: SyncHttpDatasetApiV1 = attr.ib(kw_only=True)
     data_api: SyncHttpDataApiV2 = attr.ib(kw_only=True)
 
     def get_measure_data(
@@ -65,7 +65,7 @@ class PreGeneratedLODTestRunner:
         return result
 
     def run_test(self, test_settings: TestSettings, ignore_400_error: bool = False) -> None:
-        ds = self.dataset_api.load_dataset(Dataset(id=self.dataset_id)).dataset
+        ds = self.control_api.load_dataset(Dataset(id=self.dataset_id)).dataset
         measure_fields = [
             (f"Measure {measure_idx}", measure_formula)
             for measure_idx, measure_formula in enumerate(test_settings.measure_formulas)
