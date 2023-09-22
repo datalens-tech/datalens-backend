@@ -60,12 +60,7 @@ git reset --hard origin/"${DEST_TARGET_BRANCH}"
 find "${DST}" -not -path "${DST}/.git/*" -not -path "${DST}/.git" -delete
 
 # Copy all files added to git
-cd "${SRC}"
-git ls-files -m -c | rsync -avqz --files-from=- . ${DST}
-
-# Cleanup
-cd ${DST}
-# TODO FIX: Realize what we need to cleanup before push
+MAIN_REPO_COPY_DEST_DIR="${DST}" bash "${HERE}/dump_main_repo_with_cleanup.bash"
 
 # Commit
 git add .

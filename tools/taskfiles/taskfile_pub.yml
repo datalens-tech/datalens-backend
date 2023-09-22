@@ -44,3 +44,7 @@ tasks:
         --scoped-metapkg-path ./mainrepo/metapkg
         --remove-private-pypi
         ../lib
+
+  dump-cleanup-mainrepo-dir-to-custom-dir:
+    dir: .
+    cmd: bash public_repo_sync/dump_main_repo_with_cleanup.bash
