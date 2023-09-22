@@ -2,7 +2,7 @@
 
 set -x
 
-BASE_SHA="${1:-trunk}" # If outside PR, defaulting to trunk
+BASE_SHA="${1:-main}" # If outside PR, defaulting to main
 HEAD_SHA="${2:-$(git symbolic-ref --short HEAD)}"  # Default to the current branch
 
 
