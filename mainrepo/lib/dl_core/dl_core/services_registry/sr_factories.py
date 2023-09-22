@@ -23,10 +23,6 @@ from typing_extensions import final
 from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_configs.enums import RequiredService
 from dl_constants.enums import ProcessorType
-from dl_core.mdb_utils import (
-    MDBDomainManagerFactory,
-    MDBDomainManagerSettings,
-)
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.file_uploader_client_factory import (
     FileUploaderClientFactory,
@@ -99,7 +95,6 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
     connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = attr.ib(factory=dict)
     file_uploader_settings: Optional[FileUploaderSettings] = attr.ib(default=None)
     redis_pool_settings: Optional[ArqRedisSettings] = attr.ib(default=None)
-    mdb_domain_manager_settings: MDBDomainManagerSettings = attr.ib(factory=MDBDomainManagerSettings)
     force_non_rqe_mode: bool = attr.ib(default=False)
     rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
     required_services: set[RequiredService] = attr.ib(factory=set)
@@ -121,8 +116,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
         return DefaultConnExecutorFactory(
             async_env=self.async_env,
             tpe=None,
-            conn_sec_mgr=self.env_manager_factory.make_security_manager(request_context_info),
-            mdb_mgr=self.env_manager_factory.make_mdb_domain_manager(self.mdb_domain_manager_settings),
+            conn_sec_mgr=self.env_manager_factory.make_security_manager(),
             rqe_config=self.rqe_config,
             services_registry_ref=sr_ref,  # type: ignore  # TODO: fix
             is_bleeding_edge_user=is_bleeding_edge_user,
@@ -177,11 +171,6 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
                 redis_pool_settings=self.redis_pool_settings,
             )
             if self.redis_pool_settings
-            else None,
-            mdb_domain_manager_factory=MDBDomainManagerFactory(
-                settings=self.mdb_domain_manager_settings,
-            )
-            if self.mdb_domain_manager_settings
             else None,
             rqe_caches_settings=self.rqe_caches_settings,
             required_services=self.required_services,

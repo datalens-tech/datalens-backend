@@ -21,10 +21,7 @@ from dl_api_client.dsmaker.api.data_api import (
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib.app.data_api.app import DataApiAppFactory
-from dl_api_lib.app_settings import (
-    DataApiAppSettings,
-    MDBSettings,
-)
+from dl_api_lib.app_settings import DataApiAppSettings
 from dl_api_lib_testing.app import (
     RedisSettingMaker,
     TestingDataApiAppFactory,
@@ -92,7 +89,6 @@ class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
             FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
-            MDB=MDBSettings(),
         )  # type: ignore
 
     @pytest.fixture(scope="function")

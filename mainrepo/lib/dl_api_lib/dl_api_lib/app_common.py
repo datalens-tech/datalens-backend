@@ -28,7 +28,6 @@ from dl_constants.enums import (
     RLSSubjectType,
 )
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
-from dl_core.mdb_utils import MDBDomainManagerSettings
 from dl_core.rls import (
     RLS_FAILED_USER_NAME_PREFIX,
     BaseSubjectResolver,
@@ -148,13 +147,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             else None
         )
 
-        mdb_domain_manager_settings = MDBDomainManagerSettings(
-            managed_network_enabled=settings.MDB.MANAGED_NETWORK_ENABLED,
-            mdb_domains=settings.MDB.DOMAINS,
-            mdb_cname_domains=settings.MDB.CNAME_DOMAINS,
-            renaming_map=settings.MDB.MANAGED_NETWORK_REMAP,
-        )
-
         required_services: set[RequiredService] = set(self._get_required_services(settings))
         if settings.BI_COMPENG_PG_ON:
             required_services.add(RequiredService.POSTGRES)
@@ -179,7 +171,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             field_id_generator_type=settings.FIELD_ID_GENERATOR_TYPE,
             file_uploader_settings=file_uploader_settings,
             redis_pool_settings=create_arq_redis_settings(settings.REDIS_ARQ) if settings.REDIS_ARQ else None,
-            mdb_domain_manager_settings=mdb_domain_manager_settings,
             rqe_caches_settings=self._get_rqe_caches_settings(settings),
             supported_functions_manager=supported_functions_manager,
             required_services=required_services,

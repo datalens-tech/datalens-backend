@@ -13,7 +13,6 @@ from dl_core.connections_security.base import InsecureConnectionSecurityManager
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.trust_auth import TrustAuthService
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
-from dl_core.mdb_utils import MDBDomainManagerFactory
 from dl_core.services_registry import (
     DefaultServicesRegistry,
     ServicesRegistry,
@@ -41,13 +40,11 @@ def test_integration(saved_connection, rqe_config_subprocess, caplog, core_test_
                     async_env=False,
                     services_registry_ref=sr_fut_ref,
                     conn_sec_mgr=InsecureConnectionSecurityManager(),
-                    mdb_mgr=MDBDomainManagerFactory().get_manager(),
                     rqe_config=rqe_config_subprocess,
                     tpe=None,
                 ),
                 reporting_registry=DefaultReportingRegistry(rci=request_context_info),
                 mutations_cache_factory=None,
-                mdb_domain_manager_factory=MDBDomainManagerFactory(),
             )
             sr_fut_ref.fulfill(sr)
             return sr

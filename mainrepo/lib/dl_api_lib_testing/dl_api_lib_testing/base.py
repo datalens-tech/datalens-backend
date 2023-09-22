@@ -19,7 +19,6 @@ from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
-    MDBSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import preload_api_lib
@@ -116,7 +115,6 @@ class BiApiTestBase(abc.ABC):
             REDIS_ARQ=redis_setting_maker.get_redis_settings_arq(),
             FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
-            MDB=MDBSettings(),
         )
         return settings
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from typing import (
     Any,
     ClassVar,
@@ -33,16 +32,6 @@ class CachesTTLSettings(SettingsBase):
     OTHER: Optional[int] = s_attrib("SEC_OTHER")  # type: ignore
 
 
-@attr.s(frozen=True)
-class MDBSettings(SettingsBase):
-    DOMAINS: tuple[str, ...] = s_attrib("DOMAINS", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore  # TODO: fix
-    CNAME_DOMAINS: tuple[str, ...] = s_attrib("CNAME_DOMAINS", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
-    MANAGED_NETWORK_ENABLED: bool = s_attrib("MANAGED_NETWORK_ENABLED", missing=True)  # type: ignore
-    MANAGED_NETWORK_REMAP: dict[str, str] = s_attrib(  # type: ignore
-        "MANAGED_NETWORK_REMAP", missing_factory=dict, env_var_converter=json.loads
-    )
-
-
 def _list_to_tuple(value: Any) -> Any:
     if isinstance(value, list):
         return tuple(value)
@@ -56,8 +45,6 @@ class AppSettings:
         env_var_converter=split_by_comma,
         missing=(),
     )
-
-    MDB: MDBSettings = s_attrib("MDB", missing_factory=MDBSettings)  # type: ignore
 
     SENTRY_ENABLED: bool = s_attrib("DL_SENTRY_ENABLED", missing=False)  # type: ignore
     SENTRY_DSN: Optional[str] = s_attrib("DL_SENTRY_DSN", missing=None)  # type: ignore

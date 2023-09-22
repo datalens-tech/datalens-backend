@@ -16,12 +16,21 @@ from dl_core.connection_models import ConnDTO
 LOGGER = logging.getLogger(__name__)
 
 
+@attr.s
+class DBDomainManager:
+    async def normalize_db_host(self, original_host: str) -> str:
+        return original_host
+
+
+@attr.s
 class ConnectionSecurityManager(metaclass=abc.ABCMeta):
     """
     This class performs security checks against connection executions.
     Assumed that instance of this class will be created on each request.
     Individual checks should be performed in context of instance fields that are representing current request context.
     """
+
+    db_domain_manager: DBDomainManager = attr.ib(factory=DBDomainManager)
 
     @abc.abstractmethod
     def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
@@ -74,7 +83,7 @@ class NonUserInputConnectionSafetyChecker(ConnectionSafetyChecker):
         return False
 
 
-@attr.s
+@attr.s(kw_only=True)
 class GenericConnectionSecurityManager(ConnectionSecurityManager, metaclass=abc.ABCMeta):
     conn_sec_checkers: list[ConnectionSafetyChecker] = attr.ib()
 
@@ -82,7 +91,7 @@ class GenericConnectionSecurityManager(ConnectionSecurityManager, metaclass=abc.
         return any(conn_sec_checker.is_safe_connection(conn_dto) for conn_sec_checker in self.conn_sec_checkers)
 
 
-@attr.s
+@attr.s(kw_only=True)
 class InsecureConnectionSecurityManager(GenericConnectionSecurityManager):
     conn_sec_checkers: list[ConnectionSafetyChecker] = attr.ib(default=[InsecureConnectionSafetyChecker()])
 

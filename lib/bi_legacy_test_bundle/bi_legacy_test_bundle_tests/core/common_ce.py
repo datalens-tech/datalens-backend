@@ -54,7 +54,6 @@ from dl_core.db.native_type import (
     GenericNativeType,
     norm_native_type,
 )
-from dl_core.mdb_utils import MDBDomainManagerFactory
 from dl_core_testing.database import (
     C,
     make_table,
@@ -175,7 +174,6 @@ class BaseConnExecutorSupport:
                         exec_mode=self.options.exec_mode or ExecutionMode.DIRECT,
                         remote_qe_data=query_executor_options,
                         sec_mgr=self.options.sec_mgr or InsecureConnectionSecurityManager(),
-                        mdb_mgr=MDBDomainManagerFactory().get_manager(),
                         host_fail_callback=self.options.host_fail_callback,
                     )
 

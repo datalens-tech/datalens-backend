@@ -28,6 +28,7 @@ from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.loader_env import NOT_SET
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
+from dl_configs.utils import split_by_comma
 
 
 @attr.s(frozen=True)
@@ -56,6 +57,16 @@ def default_yc_auth_settings(
 
 
 @attr.s(frozen=True)
+class MDBSettings(SettingsBase):
+    DOMAINS: tuple[str, ...] = s_attrib("DOMAINS", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore  # TODO: fix
+    CNAME_DOMAINS: tuple[str, ...] = s_attrib("CNAME_DOMAINS", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
+    MANAGED_NETWORK_ENABLED: bool = s_attrib("MANAGED_NETWORK_ENABLED", missing=True)  # type: ignore
+    MANAGED_NETWORK_REMAP: dict[str, str] = s_attrib(  # type: ignore
+        "MANAGED_NETWORK_REMAP", missing_factory=dict, env_var_converter=json.loads
+    )
+
+
+@attr.s(frozen=True)
 class BaseAppSettings(AppSettings):
     APP_TYPE: AppType = s_attrib(  # type: ignore
         "YENV_TYPE",
@@ -65,6 +76,8 @@ class BaseAppSettings(AppSettings):
     YC_BILLING_HOST: Optional[str] = s_attrib("YC_BILLING_HOST", fallback_cfg_key="YC_BILLING_HOST", missing=None)  # type: ignore
 
     CHYT_MIRRORING: Optional[CHYTMirroringConfig] = s_attrib("DL_CHYT_MIRRORING", enabled_key_name="ON", missing=None)  # type: ignore  # TODO: fix
+
+    MDB: MDBSettings = s_attrib("MDB", missing_factory=MDBSettings)  # type: ignore
 
     # Sentry
     @staticmethod

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Optional,
+    Sequence,
     TypeVar,
 )
 
@@ -9,6 +10,7 @@ import attr
 
 from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
 from dl_connector_postgresql.core.postgresql_base.async_adapters_postgres import AsyncPostgresAdapter
+from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_connector_postgresql.core.postgresql_base.dto import PostgresConnDTOBase
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
@@ -22,8 +24,21 @@ _BASE_POSTGRES_ADAPTER_TV = TypeVar("_BASE_POSTGRES_ADAPTER_TV", bound=CommonBas
 class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAPTER_TV]):
     _conn_dto: PostgresConnDTOBase = attr.ib()
 
+    def _get_effective_enforce_collate(
+        self,
+        enforce_collate: PGEnforceCollateMode,
+        multihosts: Sequence[str],
+    ) -> PGEnforceCollateMode:
+        if enforce_collate == PGEnforceCollateMode.auto:
+            enforce_collate = PGEnforceCollateMode.off
+        return enforce_collate
+
     async def _make_target_conn_dto_pool(self) -> list[PostgresConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
+        effective_enforce_collate = self._get_effective_enforce_collate(
+            enforce_collate=self._conn_dto.enforce_collate,
+            multihosts=self._conn_dto.multihosts,
+        )
         for host in self._conn_hosts_pool:
             dto_pool.append(
                 PostgresConnTargetDTO(
@@ -35,7 +50,7 @@ class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAP
                     db_name=self._conn_dto.db_name,
                     username=self._conn_dto.username,
                     password=self._conn_dto.password,
-                    enforce_collate=self._conn_dto.enforce_collate,
+                    enforce_collate=effective_enforce_collate,
                     ssl_enable=self._conn_dto.ssl_enable,
                     ssl_ca=self._conn_dto.ssl_ca,
                 )

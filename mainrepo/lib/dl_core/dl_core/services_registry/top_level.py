@@ -46,7 +46,6 @@ if TYPE_CHECKING:
     from dl_configs.connectors_settings import ConnectorSettingsBase
     from dl_constants.enums import ConnectionType
     from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
-    from dl_core.mdb_utils import MDBDomainManagerFactory
     from dl_core.services_registry.compute_executor import ComputeExecutor
     from dl_core.services_registry.file_uploader_client_factory import FileUploaderClientFactory
     from dl_core.us_manager.local_cache import USEntryBuffer
@@ -144,10 +143,6 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_mdb_domain_manager_factory(self) -> MDBDomainManagerFactory:
-        pass
-
-    @abc.abstractmethod
     def get_rqe_caches_settings(self) -> Optional[RQECachesSetting]:
         pass
 
@@ -178,7 +173,6 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
     _connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = attr.ib(default=None)
     _file_uploader_client_factory: Optional[FileUploaderClientFactory] = attr.ib(default=None)
     _task_processor_factory: Optional[TaskProcessorFactory] = attr.ib(default=None)
-    _mdb_domain_manager_factory: Optional[MDBDomainManagerFactory] = attr.ib(default=None)
     _rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
     _required_services: set[RequiredService] = attr.ib(factory=set)
     _inst_specific_sr: Optional[InstallationSpecificServiceRegistry] = attr.ib(default=None)
@@ -274,11 +268,6 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
         if self._task_processor_factory is not None:
             return self._task_processor_factory
         raise ValueError("TaskProcessorFactory hasn't been initialized.")
-
-    def get_mdb_domain_manager_factory(self) -> MDBDomainManagerFactory:
-        if self._mdb_domain_manager_factory is not None:
-            return self._mdb_domain_manager_factory
-        raise ValueError("MDB domain manager factory has not been initialized")
 
     def get_installation_specific_service_registry(self, issr_cls: Type[_ISSR_T]) -> _ISSR_T:
         if isinstance(self._inst_specific_sr, issr_cls):
@@ -379,9 +368,6 @@ class DummyServiceRegistry(ServicesRegistry):
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_task_processor_factory(self) -> TaskProcessorFactory:
-        raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
-
-    def get_mdb_domain_manager_factory(self) -> MDBDomainManagerFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_rqe_caches_settings(self) -> Optional[RQECachesSetting]:

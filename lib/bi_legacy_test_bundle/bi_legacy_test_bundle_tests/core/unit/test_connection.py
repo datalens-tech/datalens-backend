@@ -11,10 +11,6 @@ from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_PO
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_core.connection_executors import ExecutionMode
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.mdb_utils import (
-    MDBDomainManagerFactory,
-    MDBDomainManagerSettings,
-)
 from dl_core.us_connection import get_connection_class
 
 from bi_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API
@@ -61,14 +57,14 @@ async def test_managed_network(loop):
         exec_mode=ExecutionMode.DIRECT,
         remote_qe_data=None,
         sec_mgr=InsecureConnectionSecurityManager(),
-        mdb_mgr=MDBDomainManagerFactory(
-            settings=MDBDomainManagerSettings(
-                managed_network_enabled=True,
-                mdb_domains=(".mdb.cloud-preprod.yandex.net",),
-                mdb_cname_domains=tuple(),
-                renaming_map={".mdb.cloud-preprod.yandex.net": ".db.yandex.net"},
-            )
-        ).get_manager(),
+        # mdb_mgr=MDBDomainManagerFactory(
+        #     settings=LegacyMDBDomainManagerSettings(
+        #         managed_network_enabled=True,
+        #         mdb_domains=(".mdb.cloud-preprod.yandex.net",),
+        #         mdb_cname_domains=tuple(),
+        #         renaming_map={".mdb.cloud-preprod.yandex.net": ".db.yandex.net"},
+        #     )
+        # ).get_manager(),
         host_fail_callback=lambda: None,
     )
 

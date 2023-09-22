@@ -9,5 +9,5 @@ from dl_core.services_registry.env_manager_factory import DefaultEnvManagerFacto
 
 
 class TestEnvManagerFactory(DefaultEnvManagerFactory):
-    def make_security_manager(self, request_context_info: RequestContextInfo) -> ConnectionSecurityManager:
+    def make_security_manager(self) -> ConnectionSecurityManager:
         return InsecureConnectionSecurityManager()

@@ -32,6 +32,7 @@ from bi_api_lib_testing_ya.configuration import (
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
     ControlPlaneAppSettings,
+    MDBSettings,
     YCAuthSettings,
 )
 from bi_api_lib_ya.query_registry import register_for_connectors_with_native_wf
@@ -59,13 +60,9 @@ from dl_api_commons.base_models import (
 )
 from dl_api_commons.logging_config import add_log_context
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
-from dl_api_lib.app_settings import (
-    ControlApiAppTestingsSettings,
-    MDBSettings,
-)
+from dl_api_lib.app_settings import ControlApiAppTestingsSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import (
-    ApiLibraryConfig,
     load_api_lib,
     preload_api_lib,
 )
@@ -105,8 +102,6 @@ from dl_constants.enums import (
 )
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.loader import CoreLibraryConfig
-from dl_core.mdb_utils import MDBDomainManagerFactory
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
@@ -420,13 +415,11 @@ def make_sync_services_registry(
             services_registry_ref=sr_future_ref,
             rqe_config=rqe_config,
             conn_sec_mgr=InsecureConnectionSecurityManager(),
-            mdb_mgr=MDBDomainManagerFactory().get_manager(),
             tpe=None,
         ),
         caches_redis_client_factory=None,  # TODO: should actually probably add one (but with a random key prefix)
         dataset_validator_factory=DefaultDatasetValidatorFactory(),
         mutations_cache_factory=DefaultUSEntryMutationCacheFactory(),
-        mdb_domain_manager_factory=MDBDomainManagerFactory(),
         task_processor_factory=LocalTaskProcessorFactory(
             context_fab=FileUploaderContextFab(file_uploader_worker_settings),
             registry=FILE_UPLOADER_WORKER_TASK_REGISTRY,

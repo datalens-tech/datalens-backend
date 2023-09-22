@@ -41,7 +41,6 @@ from dl_utils.aio import ContextVarExecutor
 if TYPE_CHECKING:
     from dl_core.connection_executors.common_base import ConnExecutorBase
     from dl_core.connections_security.base import ConnectionSecurityManager
-    from dl_core.mdb_utils import MDBDomainManager
     from dl_core.services_registry.typing import (
         ConnectOptionsFactory,
         ConnectOptionsMutator,
@@ -58,7 +57,6 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     rqe_config: Optional[RQEConfig] = attr.ib()
     tpe: Optional[ContextVarExecutor] = attr.ib()
     conn_sec_mgr: ConnectionSecurityManager = attr.ib()
-    mdb_mgr: MDBDomainManager = attr.ib()
 
     is_bleeding_edge_user: bool = attr.ib(default=False)
     conn_cls_whitelist: Optional[FrozenSet[Type[ExecutorBasedMixin]]] = attr.ib(default=None)
@@ -169,7 +167,6 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
                 tpe=self.tpe if with_tpe else None,
                 exec_mode=recipe.exec_mode,
                 sec_mgr=self.conn_sec_mgr,
-                mdb_mgr=self.mdb_mgr,
                 conn_hosts_pool=recipe.conn_hosts_pool,
                 host_fail_callback=_conn_host_fail_callback_func,
                 services_registry=self._services_registry_ref.ref,  # Do not use. To be deprecated. Somehow.

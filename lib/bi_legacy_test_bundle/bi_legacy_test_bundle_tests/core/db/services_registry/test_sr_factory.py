@@ -10,11 +10,11 @@ from typing import (
 import attr
 import pytest
 
+from bi_api_lib_ya.connections_security.base import MDBDomainManagerSettings
 from bi_api_lib_ya.services_registry.env_manager_factory import IntranetEnvManagerFactory
 from dl_api_commons.base_models import RequestContextInfo
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouseBase
 from dl_core.exc import EntityUsageNotAllowed
-from dl_core.mdb_utils import MDBDomainManagerSettings
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.typing import ConnectOptionsFactory
@@ -54,8 +54,7 @@ async def usm_factory(rqe_config_subprocess, core_test_config):
             conn_cls_whitelist=conn_cls_whitelist,
             connect_options_factory=connect_options_factory,
             entity_usage_checker=entity_usage_checker,
-            env_manager_factory=IntranetEnvManagerFactory(),
-            mdb_domain_manager_settings=MDBDomainManagerSettings(),
+            env_manager_factory=IntranetEnvManagerFactory(mdb_domain_manager_settings=MDBDomainManagerSettings()),
         )
         usm = AsyncUSManager(
             us_base_url=us_config.us_host,

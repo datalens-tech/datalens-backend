@@ -8,6 +8,7 @@ from bi_api_lib_ya.app_settings import (
     BaseAppSettings,
     ControlPlaneAppSettings,
 )
+from bi_api_lib_ya.connections_security.base import MDBDomainManagerSettings
 from bi_api_lib_ya.i18n.localizer import CONFIGS
 from bi_api_lib_ya.services_registry.env_manager_factory import (
     CloudEnvManagerFactory,
@@ -52,16 +53,36 @@ class LegacySRFactoryBuilder(SRFactoryBuilder[BaseAppSettings], abc.ABC):
 
     def _get_env_manager_factory(self, settings: BaseAppSettings) -> EnvManagerFactory:
         if settings.APP_TYPE == AppType.INTRANET:
-            return IntranetEnvManagerFactory()
+            mdb_domain_manager_settings = MDBDomainManagerSettings(
+                managed_network_enabled=settings.MDB.MANAGED_NETWORK_ENABLED,
+                mdb_domains=settings.MDB.DOMAINS,
+                mdb_cname_domains=settings.MDB.CNAME_DOMAINS,
+                renaming_map=settings.MDB.MANAGED_NETWORK_REMAP,
+            )
+            return IntranetEnvManagerFactory(mdb_domain_manager_settings=mdb_domain_manager_settings)
         elif settings.APP_TYPE == AppType.TESTS:
             # TODO FIX: BI-2517 switch to normal DataCloud mode
             return TestEnvManagerFactory()
         elif settings.APP_TYPE == AppType.DATA_CLOUD:
+            mdb_domain_manager_settings = MDBDomainManagerSettings(
+                managed_network_enabled=settings.MDB.MANAGED_NETWORK_ENABLED,
+                mdb_domains=settings.MDB.DOMAINS,
+                mdb_cname_domains=settings.MDB.CNAME_DOMAINS,
+                renaming_map=settings.MDB.MANAGED_NETWORK_REMAP,
+            )
             return DataCloudEnvManagerFactory(
+                mdb_domain_manager_settings=mdb_domain_manager_settings,
                 samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS),
             )
         else:
+            mdb_domain_manager_settings = MDBDomainManagerSettings(
+                managed_network_enabled=settings.MDB.MANAGED_NETWORK_ENABLED,
+                mdb_domains=settings.MDB.DOMAINS,
+                mdb_cname_domains=settings.MDB.CNAME_DOMAINS,
+                renaming_map=settings.MDB.MANAGED_NETWORK_REMAP,
+            )
             return CloudEnvManagerFactory(
+                mdb_domain_manager_settings=mdb_domain_manager_settings,
                 samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS),
             )
 

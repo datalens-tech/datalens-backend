@@ -16,10 +16,6 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.mdb_utils import (
-    MDBDomainManager,
-    MDBDomainManagerSettings,
-)
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.top_level import (
@@ -85,7 +81,6 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             ),
             conn_exec_factory=DefaultConnExecutorFactory(
                 async_env=conn_exec_factory_async_env,
-                mdb_mgr=MDBDomainManager(settings=MDBDomainManagerSettings()),
                 force_non_rqe_mode=True,
                 rqe_config=RQEConfig.get_default(),  # Not used because RQE is disabled
                 services_registry_ref=sr_future_ref,

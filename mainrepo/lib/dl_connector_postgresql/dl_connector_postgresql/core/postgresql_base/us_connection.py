@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Callable,
     Optional,
-    Sequence,
 )
 
 import attr
@@ -25,15 +24,6 @@ class ConnectionPostgreSQLBase(ClassicConnectionSQL):
         enforce_collate: PGEnforceCollateMode = attr.ib(default=PGEnforceCollateMode.auto)
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
-
-    @staticmethod
-    def _get_effective_enforce_collate(
-        enforce_collate: PGEnforceCollateMode,
-        multihosts: Sequence[str],
-    ) -> PGEnforceCollateMode:
-        if enforce_collate == PGEnforceCollateMode.auto:
-            enforce_collate = PGEnforceCollateMode.off
-        return enforce_collate
 
     def get_parameter_combinations(
         self,

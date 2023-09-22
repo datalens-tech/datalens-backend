@@ -20,20 +20,15 @@ class GreenplumConnection(ConnectionPostgreSQLBase):
     is_always_user_source: ClassVar[bool] = True
 
     def get_conn_dto(self) -> GreenplumConnDTO:
-        multihosts = self.parse_multihosts()
-        enforce_collate = self._get_effective_enforce_collate(
-            enforce_collate=self.data.enforce_collate,
-            multihosts=multihosts,
-        )
         return GreenplumConnDTO(
             conn_id=self.uuid,
             host=self.data.host,
-            multihosts=multihosts,  # type: ignore  # TODO: fix
+            multihosts=self.parse_multihosts(),  # type: ignore  # TODO: fix
             port=self.data.port,
             db_name=self.data.db_name,
             username=self.data.username,
             password=self.password,
-            enforce_collate=enforce_collate,
+            enforce_collate=self.data.enforce_collate,
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

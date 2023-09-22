@@ -10,6 +10,7 @@ import pytest
 
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
+    MDBSettings,
     YCAuthSettings,
 )
 from bi_defaults.environments import (
@@ -23,7 +24,6 @@ from bi_defaults.yenv_type import (
 )
 from dl_api_lib.app_settings import (
     CachesTTLSettings,
-    MDBSettings,
     RedisSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig

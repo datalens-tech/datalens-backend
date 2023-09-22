@@ -37,10 +37,6 @@ from dl_core.aio.web_app_services.data_processing.factory import make_compeng_se
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
 from dl_core.loader import load_core_lib
 from dl_core.logging_config import add_log_context_scoped
-from dl_core.mdb_utils import (
-    MDBDomainManagerFactory,
-    MDBDomainManagerSettings,
-)
 from dl_core.services_registry import (
     DefaultServicesRegistry,
     ServicesRegistry,
@@ -362,7 +358,6 @@ def async_service_registry_factory(
                 services_registry_ref=sr_future_ref,
                 rqe_config=rqe_config_subprocess,
                 conn_sec_mgr=InsecureConnectionSecurityManager(),
-                mdb_mgr=MDBDomainManagerFactory().get_manager(),
                 tpe=None,
             ),
             caches_redis_client_factory=(lambda _: qc_async_redis) if opts.with_caches else None,
@@ -375,7 +370,6 @@ def async_service_registry_factory(
                 cache_save_background=opts.cache_save_background,
             ),
             reporting_registry=reporting_registry,
-            mdb_domain_manager_factory=MDBDomainManagerFactory(),
             task_processor_factory=DummyTaskProcessorFactory(),
         )
         sr_future_ref.fulfill(new_sr)
@@ -399,14 +393,6 @@ def sync_service_registry_factory(
     def sync_sr_factory(opts: SROptions):
         sr_future_ref: FutureRef[DefaultServicesRegistry] = FutureRef()
         reporting_registry = DefaultReportingRegistry(rci=opts.rci)
-        mdb_domain_mgr_factory = MDBDomainManagerFactory(
-            settings=MDBDomainManagerSettings(
-                managed_network_enabled=True,
-                mdb_domains=(".mdb.cloud-preprod.yandex.net",),
-                mdb_cname_domains=tuple(),
-                renaming_map={".mdb.cloud-preprod.yandex.net": ".db.yandex.net"},
-            )
-        )
         new_sr = DefaultServicesRegistry(
             rci=opts.rci,
             reporting_registry=reporting_registry,
@@ -415,7 +401,6 @@ def sync_service_registry_factory(
                 services_registry_ref=sr_future_ref,
                 rqe_config=rqe_config_subprocess,
                 conn_sec_mgr=InsecureConnectionSecurityManager(),
-                mdb_mgr=mdb_domain_mgr_factory.get_manager(),
                 tpe=None,
             ),
             caches_redis_client_factory=None,
@@ -423,7 +408,6 @@ def sync_service_registry_factory(
             mutations_cache_factory=None,
             data_processor_service_factory=None,
             connectors_settings=connectors_settings,
-            mdb_domain_manager_factory=mdb_domain_mgr_factory,
             task_processor_factory=DummyTaskProcessorFactory(),
         )
         sr_future_ref.fulfill(new_sr)

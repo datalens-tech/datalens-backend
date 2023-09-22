@@ -33,7 +33,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class _MDBConnectOptionsProtocol(MDBConnectOptionsMixin, ConnectOptions):
-    pass
+    ...
 
 
 class _MDBConnectionProtocol(Protocol):

@@ -8,7 +8,6 @@ from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
-from dl_api_commons.base_models import RequestContextInfo
 from dl_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
 from dl_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
@@ -28,7 +27,6 @@ from dl_core.connections_security.base import (
     ConnectionSecurityManager,
     InsecureConnectionSecurityManager,
 )
-from dl_core.mdb_utils import MDBDomainManagerSettings
 from dl_core.services_registry.env_manager_factory import DefaultEnvManagerFactory
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.us_dataset import Dataset
@@ -44,7 +42,7 @@ async def test_integration_conn_executor_factory(
     caplog.set_level("INFO")
 
     class CustomTestEnvManagerFactory(DefaultEnvManagerFactory):
-        def make_security_manager(self, request_context_info: RequestContextInfo) -> ConnectionSecurityManager:
+        def make_security_manager(self) -> ConnectionSecurityManager:
             return InsecureConnectionSecurityManager()
 
     us_config = core_test_config.get_us_config()
@@ -59,7 +57,6 @@ async def test_integration_conn_executor_factory(
                     async_env=True,
                     rqe_config=rqe_config_subprocess,
                     env_manager_factory=CustomTestEnvManagerFactory(),
-                    mdb_domain_manager_settings=MDBDomainManagerSettings(),
                 )
             ),
             service_us_manager_middleware(
@@ -96,7 +93,7 @@ async def test_integration_redis_not_configured_case(aiohttp_client, rqe_config_
     caplog.set_level("INFO")
 
     class CustomTestEnvManagerFactory(DefaultEnvManagerFactory):
-        def make_security_manager(self, request_context_info: RequestContextInfo) -> ConnectionSecurityManager:
+        def make_security_manager(self) -> ConnectionSecurityManager:
             return InsecureConnectionSecurityManager()
 
     app = web.Application(
@@ -110,7 +107,6 @@ async def test_integration_redis_not_configured_case(aiohttp_client, rqe_config_
                     async_env=True,
                     rqe_config=rqe_config_subprocess,
                     env_manager_factory=CustomTestEnvManagerFactory(),
-                    mdb_domain_manager_settings=MDBDomainManagerSettings(),
                 ),
                 use_query_cache=False,
             ),
@@ -133,7 +129,7 @@ async def test_integration_redis_configured_case(aiohttp_client, rqe_config_subp
     caplog.set_level("INFO")
 
     class CustomTestEnvManagerFactory(DefaultEnvManagerFactory):
-        def make_security_manager(self, request_context_info: RequestContextInfo) -> ConnectionSecurityManager:
+        def make_security_manager(self) -> ConnectionSecurityManager:
             return InsecureConnectionSecurityManager()
 
     app = web.Application(
@@ -147,7 +143,6 @@ async def test_integration_redis_configured_case(aiohttp_client, rqe_config_subp
                     async_env=True,
                     rqe_config=rqe_config_subprocess,
                     env_manager_factory=CustomTestEnvManagerFactory(),
-                    mdb_domain_manager_settings=MDBDomainManagerSettings(),
                 )
             ),
         ]
@@ -185,7 +180,7 @@ async def test_integration_compeng_configured_case(
     caplog.set_level("INFO")
 
     class CustomTestEnvManagerFactory(DefaultEnvManagerFactory):
-        def make_security_manager(self, request_context_info: RequestContextInfo) -> ConnectionSecurityManager:
+        def make_security_manager(self) -> ConnectionSecurityManager:
             return InsecureConnectionSecurityManager()
 
     us_config = core_test_config.get_us_config()
@@ -200,7 +195,6 @@ async def test_integration_compeng_configured_case(
                     async_env=True,
                     rqe_config=rqe_config_subprocess,
                     env_manager_factory=CustomTestEnvManagerFactory(),
-                    mdb_domain_manager_settings=MDBDomainManagerSettings(),
                 ),
             ),
             service_us_manager_middleware(

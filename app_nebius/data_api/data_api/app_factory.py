@@ -12,6 +12,7 @@ from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
     BaseAppSettings,
 )
+from bi_api_lib_ya.connections_security.base import MDBDomainManagerSettings
 from bi_api_lib_ya.services_registry.env_manager_factory import CloudEnvManagerFactory
 from bi_cloud_integration.sa_creds import (
     SACredsRetrieverFactory,
@@ -53,7 +54,16 @@ class DataApiSRFactoryBuilderNebius(SRFactoryBuilder[BaseAppSettings]):
         return set(RQE_SERVICES)
 
     def _get_env_manager_factory(self, settings: BaseAppSettings) -> EnvManagerFactory:
-        return CloudEnvManagerFactory(samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS))
+        mdb_domain_manager_settings = MDBDomainManagerSettings(
+            managed_network_enabled=settings.MDB.MANAGED_NETWORK_ENABLED,
+            mdb_domains=settings.MDB.DOMAINS,
+            mdb_cname_domains=settings.MDB.CNAME_DOMAINS,
+            renaming_map=settings.MDB.MANAGED_NETWORK_REMAP,
+        )
+        return CloudEnvManagerFactory(
+            mdb_domain_manager_settings=mdb_domain_manager_settings,
+            samples_ch_hosts=list(settings.SAMPLES_CH_HOSTS),
+        )
 
     def _get_inst_specific_sr_factory(
         self,

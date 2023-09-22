@@ -6,7 +6,6 @@ import uuid
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from dl_constants.enums import FileProcessingStatus
-from dl_core.mdb_utils import MDBDomainManagerFactory
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import DbTable
 
@@ -44,7 +43,6 @@ def make_saved_gsheets_v2_connection(  # type: ignore  # TODO: fix
             req_ctx_info=None,
             exec_mode=ExecutionMode.DIRECT,
             sec_mgr=InsecureConnectionSecurityManager(),
-            mdb_mgr=MDBDomainManagerFactory().get_manager(),
             remote_qe_data=None,
             tpe=None,
             conn_hosts_pool=clickhouse_table.db.get_conn_hosts(),

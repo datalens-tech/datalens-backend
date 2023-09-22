@@ -9,7 +9,6 @@ from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 from dl_core.connection_executors.adapters.async_adapters_sync_wrapper import AsyncWrapperForSyncAdapter
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.mdb_utils import MDBDomainManagerFactory
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.us_manager.us_manager_dummy import DummyUSManager
@@ -73,7 +72,6 @@ class TestClosing:
             async_env=True,
             services_registry_ref=FutureRef().fulfilled(DummyServiceRegistry(bi_context)),
             conn_sec_mgr=InsecureConnectionSecurityManager(),
-            mdb_mgr=MDBDomainManagerFactory().get_manager(),
             rqe_config=rqe_config_subprocess,
             tpe=None,
         )
@@ -93,7 +91,6 @@ class TestClosing:
             async_env=False,
             services_registry_ref=FutureRef().fulfilled(DummyServiceRegistry(bi_context)),
             conn_sec_mgr=InsecureConnectionSecurityManager(),
-            mdb_mgr=MDBDomainManagerFactory().get_manager(),
             rqe_config=rqe_config_subprocess,
             tpe=None,
         )
