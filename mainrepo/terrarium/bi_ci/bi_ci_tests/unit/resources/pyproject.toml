@@ -2,8 +2,8 @@
 name = "datalens-local-dev-2"
 version = "0.1.0"
 description = ""
-authors = ["Valentin Gologuzov <vgol@double.cloud>"]
-license = "MIT"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+license = "Apache 2.0"
 readme = "README.md"
 packages = [{include = "datalens_local_dev"}]
 
