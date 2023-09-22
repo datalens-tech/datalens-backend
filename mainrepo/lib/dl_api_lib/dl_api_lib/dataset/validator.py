@@ -211,7 +211,7 @@ class DatasetValidator(DatasetBaseWrapper):
         )
         LOGGER.info(f"Going to apply action {action.name}", extra=extra)
 
-        # TODO: ManagedBy не передаётся ни в одной схеме. Зачем тут эта проверка?
+        # TODO: ManagedBy is not present in any schema. Why is this check needed here?
         if by is not None and (item_data.managed_by or ManagedBy.user) != by:
             raise exc.DLValidationFatal(f"Item cannot be managed by {by.name}")
 

@@ -124,7 +124,7 @@ class C:
     _vg: Callable[[int, datetime.datetime], Any] = attr.ib(default=None)
 
     DEFAULT_VALUE_GENERATORS = {
-        BIType.string: lambda rn, **kwargs: f"str_значение_{rn}",
+        BIType.string: lambda rn, **kwargs: f"str_value_{rn}",
         BIType.integer: lambda rn, **kwargs: rn,
         BIType.float: lambda rn, **kwargs: rn + (rn / 10),
         BIType.date: lambda rn, ts, **kwargs: ts.date() + datetime.timedelta(days=rn),
