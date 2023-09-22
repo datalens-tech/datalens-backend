@@ -293,26 +293,6 @@ target "app_bi_file_uploader_worker" {
   dockerfile = "Dockerfile.tier1"
 }
 
-target "app_os_control_api" {
-  pull     = false
-  contexts = {
-    bake_ctx_base_img = "target:base_focal_db_tier_1"
-    bake_ctx_src_lib  = "target:src_lib"
-  }
-  context    = "${PROJECT_ROOT}/mainrepo/app/dl_control_api"
-  dockerfile = "Dockerfile.tier1"
-}
-
-target "app_os_data_api" {
-  pull     = false
-  contexts = {
-    bake_ctx_base_img = "target:base_focal_db_tier_1"
-    bake_ctx_src_lib  = "target:src_lib"
-  }
-  context    = "${PROJECT_ROOT}/mainrepo/app/dl_data_api"
-  dockerfile = "Dockerfile.tier1"
-}
-
 target "integration_tests" {
   pull     = false
   contexts = {
