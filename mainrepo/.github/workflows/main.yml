@@ -75,7 +75,7 @@ jobs:
         fetch-depth: 0
     - run: git config --global --add safe.directory .
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-    - run: git fetch origin trunk
+    - run: git fetch origin main
     - name: Get packages affected by changes in the current commit
       id: get_affected
       run: |
