@@ -28,4 +28,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
-ENTRYPOINT ["/etc/service/bi_api/run"]
+ENTRYPOINT ["/etc/service/dl_api/run"]

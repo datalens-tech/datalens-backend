@@ -28,7 +28,7 @@ from dl_configs.settings_loaders.loader_env import (
 )
 from dl_constants.enums import ConnectionType
 from dl_control_api import app_version
-from dl_control_api.app_factory import ControlApiAppFactoryOS
+from dl_control_api.app_factory import StandaloneControlApiAppFactory
 from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
@@ -43,7 +43,7 @@ def create_app(
     testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     close_loop_after_request: bool = True,
 ) -> flask.Flask:
-    mng_app_factory = ControlApiAppFactoryOS(settings=app_settings)
+    mng_app_factory = StandaloneControlApiAppFactory(settings=app_settings)
     return mng_app_factory.create_app(
         connectors_settings=connectors_settings,
         testing_app_settings=testing_app_settings,
@@ -70,10 +70,10 @@ def create_uwsgi_app() -> flask.Flask:
 
     hook_configure_logging(
         uwsgi_app,
-        app_name="bi_api_app",
+        app_name="dl_api_app",
         app_prefix="a",
         use_jaeger_tracer=use_jaeger_tracer(),
-        jaeger_service_name=jaeger_service_name_env_aware("bi-api-app"),
+        jaeger_service_name=jaeger_service_name_env_aware("dl-api-app"),
     )
     if actual_sentry_dsn is not None:
         hook_configure_configure_sentry_for_flask(

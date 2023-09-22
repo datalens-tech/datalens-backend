@@ -13,4 +13,4 @@ UWSGI_STATS=/tmp/uwsgi_stats.sock
 HTTP_BIND="${HTTP_BIND_ADDR}:${HTTP_BIND_PORT}"
 
 export BI_API_UWSGI_WORKERS_COUNT UWSGI_STATS HTTP_BIND
-exec uwsgi --ini=/code/app/uwsgi/uwsgi-bi-api.ini
+exec uwsgi --ini=/code/app/uwsgi/uwsgi-dl-api.ini

@@ -1,1 +1,1 @@
-# datalens-api (Open Source)
+# datalens-control-api

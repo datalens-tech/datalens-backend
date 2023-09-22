@@ -31,4 +31,4 @@ RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignor
 
 EXPOSE 8080
 
-ENTRYPOINT ["/etc/service/bi_api/run"]
+ENTRYPOINT ["/etc/service/dl_api/run"]

@@ -29,7 +29,7 @@ from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_data_api import app_version
 
 
-class DataApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
+class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
     def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
         return set()
 
@@ -58,7 +58,7 @@ class DataApiSRFactoryBuilderOS(SRFactoryBuilder[AppSettings]):
         return None
 
 
-class DataApiAppFactoryOS(DataApiAppFactory[DataApiAppSettings], DataApiSRFactoryBuilderOS):
+class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], StandaloneDataApiSRFactoryBuilder):
     @property
     def _is_public(self) -> bool:
         return False

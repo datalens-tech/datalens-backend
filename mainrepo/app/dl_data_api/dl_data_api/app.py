@@ -28,7 +28,7 @@ from dl_core.connectors.settings.registry import (
 )
 from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import configure_logging
-from dl_data_api.app_factory import DataApiAppFactoryOS
+from dl_data_api.app_factory import StandaloneDataApiAppFactory
 
 
 LOGGER = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ def create_app(
     setting: DataApiAppSettings,
     connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
 ) -> web.Application:
-    data_api_app_factory = DataApiAppFactoryOS(settings=setting)
+    data_api_app_factory = StandaloneDataApiAppFactory(settings=setting)
     return data_api_app_factory.create_app(
         connectors_settings=connectors_settings,
     )

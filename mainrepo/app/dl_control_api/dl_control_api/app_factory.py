@@ -26,7 +26,7 @@ from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 
 
-class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
+class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSettings]):
     def _get_required_services(self, settings: ControlApiAppSettings) -> set[RequiredService]:
         return set()
 
@@ -55,7 +55,7 @@ class ControlApiSRFactoryBuilderOS(SRFactoryBuilder[ControlApiAppSettings]):
         return settings.CONNECTOR_AVAILABILITY
 
 
-class ControlApiAppFactoryOS(ControlApiAppFactory[ControlApiAppSettings], ControlApiSRFactoryBuilderOS):
+class StandaloneControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], StandaloneControlApiSRFactoryBuilder):
     def set_up_environment(
         self,
         app: flask.Flask,
