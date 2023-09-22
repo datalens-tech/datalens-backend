@@ -7,6 +7,8 @@ tasks:
     cmds:
       - "[ -z $PUB_SYNC_TARGET_REPO_DIR ]  # Should be set in particular task. Not in .env"
       - "[ ! -z $PUB_SYNC_TARGET_REPO_DIR_PREPUBLIC ]"
+      - "[ ! -z $PUB_SYNC_TARGET_REPO_DIR_PUBLIC ]"
+      - "gh --version  # Check that GitHub CLI is installed"
 
   prepublic-file-sync:
     deps: [ validate-dotenv ]

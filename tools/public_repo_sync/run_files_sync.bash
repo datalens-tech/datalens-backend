@@ -27,7 +27,7 @@ if (( "${STRICT_MODE}" )); then
       echo "Git repo is dirty!"
       exit 255
   fi
-  COMM_MSG="Initial commit"
+  COMM_MSG="Sync ${PRIV_COMMIT}"
 else
   MR_GIT_DIFF_STAT=$(git diff --stat HEAD -- .)
   COMM_MSG="Sync ${PRIV_BRANCH_REF} ${PRIV_COMMIT}"
@@ -51,15 +51,10 @@ fi
 
 # Preparing target repo
 cd "${DST}"
-if (( "${STRICT_MODE}" )); then
-  echo "Not yet implemented"
-  exit 255
-else
-  git reset --hard
-  git checkout "${DEST_TARGET_BRANCH}"
-  git fetch
-  git reset --hard origin/"${DEST_TARGET_BRANCH}"
-fi
+git reset --hard
+git checkout "${DEST_TARGET_BRANCH}"
+git fetch
+git reset --hard origin/"${DEST_TARGET_BRANCH}"
 
 # Remove all content from repo
 find "${DST}" -not -path "${DST}/.git/*" -not -path "${DST}/.git" -delete
@@ -75,12 +70,16 @@ cd ${DST}
 # Commit
 git add .
 
-if (( "${STRICT_MODE}" )); then
-  echo "Not yet implemented"
-  exit 255
+if [[ $(git diff --stat HEAD) = '' ]]; then
+    echo "No changes detected"
 else
-  if [[ $(git diff --stat HEAD) = '' ]]; then
-      echo "No changes detected"
+  if (( "${STRICT_MODE}" )); then
+    PR_BRANCH="sync-pr/$(date +"%Y-%m-%dT%H-%M-%S")"
+
+    git checkout -b "${PR_BRANCH}"
+    git commit -m "${COMM_MSG}"
+    git push --set-upstream origin "${PR_BRANCH}"
+    PR_URL=$(gh pr create -f)
   else
     git commit -m "${COMM_MSG}"
     git push
