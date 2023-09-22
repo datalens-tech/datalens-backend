@@ -10,6 +10,8 @@ SRC="${PROJECT_ROOT}/mainrepo"
 STRICT_MODE=${STRICT_MODE:-1}
 TARGET_BRANCH=${TARGET_BRANCH:-trunk}
 
+DEST_TARGET_BRANCH=${DEST_TARGET_BRANCH:-trunk}
+
 PRIV_COMMIT=$(git rev-parse HEAD)
 PRIV_BRANCH_REF=$(git rev-parse --abbrev-ref HEAD)
 
@@ -54,9 +56,9 @@ if (( "${STRICT_MODE}" )); then
   exit 255
 else
   git reset --hard
-  git checkout trunk
+  git checkout "${DEST_TARGET_BRANCH}"
   git fetch
-  git reset --hard origin/trunk
+  git reset --hard origin/"${DEST_TARGET_BRANCH}"
 fi
 
 # Remove all content from repo

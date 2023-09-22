@@ -19,6 +19,18 @@ tasks:
       #  So we substitute it in shell...
       - PUB_SYNC_TARGET_REPO_DIR=${PUB_SYNC_TARGET_REPO_DIR_PREPUBLIC} bash "public_repo_sync/run_files_sync.bash"
 
+  public-file-sync:
+    deps: [ validate-dotenv ]
+    dir: .
+    dotenv: [ "./.env" ]
+    env:
+      STRICT_MODE: "1"
+      DEST_TARGET_BRANCH: "main"
+    cmds:
+      # Did not find a way to substitute env var in `env` section with value from .env file
+      #  So we substitute it in shell...
+      - PUB_SYNC_TARGET_REPO_DIR=${PUB_SYNC_TARGET_REPO_DIR_PUBLIC} bash "public_repo_sync/run_files_sync.bash"
+
   sync-pub-metapkg:
     dir: ..
     dotenv:
