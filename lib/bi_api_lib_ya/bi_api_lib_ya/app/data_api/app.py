@@ -17,6 +17,7 @@ from bi_api_commons_ya_cloud.yc_auth import make_default_yc_auth_service_config
 from bi_api_commons_ya_team.aio.middlewares.blackbox_auth import blackbox_auth_middleware
 from bi_api_lib_ya.app_settings import AsyncAppSettings
 from bi_defaults.yenv_type import AppType
+from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_lib.aio.middlewares.public_api_key_middleware import public_api_key_middleware
 from dl_api_lib.app.data_api.app import (
@@ -27,7 +28,6 @@ from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_constants.enums import ConnectionType
-from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import (
     public_us_manager_middleware,

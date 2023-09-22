@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_lib.app.data_api.app import (
     DataApiAppFactory,
@@ -17,7 +18,6 @@ from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
 from dl_constants.enums import ConnectionType
-from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
 from dl_core.data_processing.cache.primitives import CacheTTLConfig

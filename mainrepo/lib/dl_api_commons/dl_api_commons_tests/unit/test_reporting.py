@@ -4,7 +4,6 @@ import uuid
 
 import pytest
 
-from bi_api_commons_ya_cloud.models import TenantYCFolder
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.models import (
     QueryExecutionCacheInfoReportingRecord,
@@ -20,8 +19,9 @@ from dl_constants.enums import (
     QueryType,
 )
 
-from bi_connector_chyt_internal.core.constants import CONNECTION_TYPE_CH_OVER_YT
-from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
+
+CONNECTION_TYPE_CHYT_TEST = ConnectionType.declare('chyt_test')
+CONNECTION_TYPE_TEST = ConnectionType.declare('test')
 
 
 _QID = "some_qid_1234"
@@ -30,7 +30,7 @@ _DEFAULT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
     query_id=_QID,
     timestamp=0,
     dataset_id="ds_123",
-    connection_type=CONNECTION_TYPE_MYSQL,
+    connection_type=CONNECTION_TYPE_TEST,
     conn_reporting_data={
         "connection_id": "conn_123",
         "host": "8.8.8.8",
@@ -42,7 +42,7 @@ _DEFAULT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
 _DEFAULT_REPORT_FIELDS_FROM_START = dict(
     dataset_id="ds_123",
     connection_id="conn_123",
-    connection_type="mysql",
+    connection_type=CONNECTION_TYPE_TEST.name,
     host="8.8.8.8",
     query_type=QueryType.external.name,
     query="SELECT 1",
@@ -52,7 +52,7 @@ _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
     query_id=_QID,
     timestamp=0,
     dataset_id="ds_123",
-    connection_type=CONNECTION_TYPE_CH_OVER_YT,
+    connection_type=CONNECTION_TYPE_CHYT_TEST,
     conn_reporting_data={
         "connection_id": "conn_123",
         "cluster": "my_cluster",
@@ -65,7 +65,7 @@ _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
 _CHYT_REPORT_FIELDS_FROM_START = dict(
     dataset_id="ds_123",
     connection_id="conn_123",
-    connection_type=CONNECTION_TYPE_CH_OVER_YT.name,
+    connection_type=CONNECTION_TYPE_CHYT_TEST.name,
     cluster="my_cluster",
     clique_alias="*ch_my_clique",
     query_type=QueryType.external.name,
@@ -79,7 +79,7 @@ _CHYT_REPORT_FIELDS_FROM_START = dict(
         RequestContextInfo.create_empty(),
         RequestContextInfo.create(
             endpoint_code="ololo",
-            tenant=TenantYCFolder(folder_id="folderid123"),
+            tenant=None,
             user_name="user_name_123",
             user_id="uid_113",
             x_dl_context={k.value: str(uuid.uuid4()) for k in DLContextKey},

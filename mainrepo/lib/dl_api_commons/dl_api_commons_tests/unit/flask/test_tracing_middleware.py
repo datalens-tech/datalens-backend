@@ -3,7 +3,7 @@ from __future__ import annotations
 import flask
 
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
-from dl_core.flask_utils.tracing import TracingMiddleware
+from dl_api_commons.flask.middlewares.tracing import TracingMiddleware
 
 
 def test_app(caplog, loop):

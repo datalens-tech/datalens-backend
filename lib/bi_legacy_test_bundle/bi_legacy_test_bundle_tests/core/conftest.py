@@ -35,10 +35,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 from dl_constants.enums import ProcessorType
 from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.loader import (
-    CoreLibraryConfig,
-    load_core_lib,
-)
+from dl_core.loader import load_core_lib
 from dl_core.logging_config import add_log_context_scoped
 from dl_core.mdb_utils import (
     MDBDomainManagerFactory,

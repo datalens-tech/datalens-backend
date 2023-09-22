@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import flask
 
+from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventLoopMiddleware
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
@@ -9,7 +10,6 @@ from dl_api_commons.flask.middlewares.request_id import RequestIDService
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from dl_constants.enums import USAuthMode
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.trust_auth import TrustAuthService
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware

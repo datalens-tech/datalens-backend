@@ -15,7 +15,7 @@ from dl_api_commons.aio.middlewares.error_handling_outer import (
 )
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
-from dl_core.aio.middlewares.tracing import TracingService
+from dl_api_commons.aio.middlewares.tracing import TracingService
 
 
 class MockError(Exception):

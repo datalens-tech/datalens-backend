@@ -18,9 +18,11 @@ from werkzeug.exceptions import (
     HTTPException,
 )
 
+from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventLoopMiddleware
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
+from dl_api_commons.flask.middlewares.tracing import TracingMiddleware
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
@@ -39,8 +41,6 @@ from dl_core.connection_executors.remote_query_executor.commons import (
 )
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.enums import RQEEventType
-from dl_core.flask_utils.aio_event_loop_middleware import AIOEventLoopMiddleware
-from dl_core.flask_utils.tracing import TracingMiddleware
 from dl_core.loader import load_core_lib
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
 from dl_core.utils import get_eqe_secret_key

@@ -15,6 +15,7 @@ import pytest
 import redis.asyncio
 
 from bi_file_secure_reader.app import create_app as create_reader_app
+from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.base_models import (
     NoAuthData,
@@ -36,7 +37,6 @@ from dl_configs.settings_submodels import (
 )
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from dl_constants.api_constants import DLHeadersCommon
-from dl_core.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_core.loader import load_core_lib
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.united_storage_client import USAuthContextMaster

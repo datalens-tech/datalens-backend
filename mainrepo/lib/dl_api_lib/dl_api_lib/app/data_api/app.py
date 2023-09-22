@@ -14,6 +14,7 @@ import attr
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
+from dl_api_commons.aio.middlewares.tracing import TracingService
 from dl_api_commons.aio.server_header import ServerHeader
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.sentry_config import (
@@ -65,7 +66,6 @@ from dl_constants.enums import (
     ProcessorType,
     RedisInstanceKind,
 )
-from dl_core.aio.middlewares.tracing import TracingService
 from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.aio.web_app_services.redis import (
     RedisSentinelService,
