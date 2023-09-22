@@ -1,18 +1,6 @@
 {
   "bake_targets": [
-    "app_bi_api",
-    "app_yc_control_api",
-    "app_yc_data_api",
-    "app_yc_data_api_sec_embeds",
-    "app_yc_public_dataset_api",
-    "app_bi_rqe_ext_async",
-    "app_bi_rqe_ext_sync",
-    "app_bi_rqe_int_sync",
-    "app_bi_file_uploader",
-    "app_yc_file_uploader_api",
-    "app_bi_file_uploader_worker",
-    "app_yc_file_uploader_worker",
-    "app_nebius_data_api",
-    "app_nebius_control_api"
+    "app_os_control_api",
+    "app_os_data_api"
   ]
 }
