@@ -6,7 +6,6 @@ description = "Possibly-statbox-api-related common utils and helpers and reusabl
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "statcommons"}]
 license = "Apache 2.0"
-readme = "README.md"
 
 
 [tool.poetry.dependencies]
