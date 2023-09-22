@@ -20,12 +20,8 @@ def exc_cls_to_code(exc_cls):
     return ".".join((GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX) + tuple(exc_cls_code))
 
 
-# Error codes referenced in the frontend code:
-# https://github.yandex-team.ru/data-ui/datalens/blob/52c9d4f52bda30b458c6dd3bfdbba4d2440d8b0c/src/i18n/keysets/ru.json#L2097-L2122
-# https://github.yandex-team.ru/data-ui/datalens/blob/64163ae3657d1ecd2651316d29d26a652e21a10f/src/shared/constants/error-codes.ts
-# ... and in docs:
-# https://bb.yandex-team.ru/projects/CLOUD/repos/docs/browse/ru/datalens/troubleshooting/errors/all.md?useDefaultHandler=true
-# https://bb.yandex-team.ru/projects/CLOUD/repos/docs/browse/ru/datalens/troubleshooting/errors
+# Error codes referenced in docs:
+# https://cloud.yandex.ru/docs/datalens/troubleshooting/errors/all
 STABILIZED_CODES = (
     (dl_core.exc.CannotParseDateTime, "ERR.DS_API.DB.CANNOT_PARSE.DATETIME"),
     (dl_core.exc.CannotParseNumber, "ERR.DS_API.DB.CANNOT_PARSE.NUMBER"),

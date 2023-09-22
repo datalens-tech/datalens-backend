@@ -60,7 +60,7 @@ class ConnectionParamsTester(BIResource):
         service_registry = self.get_service_registry()
         schema = GenericConnectionSchema(context=self.get_schema_ctx(schema_operations_mode=CreateMode.test))
         body_json = dict(request.json)
-        body_json["name"] = "mocked_name"  # FIXME: https://st.yandex-team.ru/BI-4639
+        body_json["name"] = "mocked_name"  # FIXME: BI-4639
         try:
             conn: ConnectionBase = schema.load(body_json)
             conn_type = body_json.get("type")

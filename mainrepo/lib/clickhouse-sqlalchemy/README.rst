@@ -1,11 +1,6 @@
 
 Heavy-fork of the upstream https://github.com/xzkostyan/clickhouse-sqlalchemy
 
-Build and release: https://sandbox.yandex-team.ru/scheduler/22564/view
-
-pypi: https://pypi.yandex-team.ru/dashboard/repositories/default/packages/statinfra-clickhouse-sqlalchemy/
-
-
 ClickHouse SQLAlchemy
 =====================
 
