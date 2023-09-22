@@ -11,11 +11,11 @@ from tomlkit import parse
 example test spec:
 
 [datalens.pytest.unit]
-root_dir = "bi_core_tests/"
+root_dir = "dl_core_tests/"
 target_path = "unit"
 
 [datalens.pytest.db_part_1]
-root_dir = "bi_core_tests/db/"
+root_dir = "dl_core_tests/db/"
 target_path = "aio caches capabilities common"
 labels = ["fat"]
 """

@@ -30,6 +30,10 @@ from dl_data_api import app_version
 
 
 class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
+    @property
+    def _is_async_env(self) -> bool:
+        return True
+
     def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
         return set()
 

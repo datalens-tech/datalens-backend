@@ -12,13 +12,13 @@ from aiohttp import web
 from aiohttp.test_utils import TestClient
 import pytest
 
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.aio.middlewares.csrf import (
     CSRFMiddleware,
     generate_csrf_token,
 )
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
     DLRequestView,
     RequiredResource,

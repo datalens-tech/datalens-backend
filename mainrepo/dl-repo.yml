@@ -6,7 +6,7 @@ dl_repo:
   package_types:
     - type: terrarium  # Repository tools
       root_path: terrarium
-      boilerplate_path: lib/dl_package_boilerplate  # FIXME: move the boilerplate inside mainrepo
+      boilerplate_path: lib/dl_package_boilerplate
 
     - type: lib  # Main libraries
       root_path: lib

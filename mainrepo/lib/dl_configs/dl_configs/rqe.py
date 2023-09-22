@@ -60,7 +60,7 @@ def rqe_config_from_env(env: Optional[SDict] = None, add_dummy_hmac_if_missing: 
 
     if env is None:
         actual_env = dict(os.environ)
-        # TODO FIX: BI-2497 remove this costyl when configs loading in tests import time will be eliminated (mostly uWSGI apps instantiation)
+        # TODO FIX: BI-2497 remove this kludge when configs loading in tests import time will be eliminated (mostly uWSGI apps instantiation)
         if add_dummy_hmac_if_missing and hmac_env_key not in actual_env:
             actual_env[hmac_env_key] = ""
     else:

@@ -42,7 +42,7 @@ class ConnectionSecurityManager(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def is_internal_connection(self, conn_dto: ConnDTO) -> bool:
         """
-        Mostly costyl for dl_core/data_processing/selectors/utils.py:get_query_type()
+        Mostly a kludge for dl_core/data_processing/selectors/utils.py:get_query_type()
         Potentially it's behaviour should be same as .is_safe_connection() (TBD: check it),
          but we need exactly the same data to determine if connection is internal.
         """

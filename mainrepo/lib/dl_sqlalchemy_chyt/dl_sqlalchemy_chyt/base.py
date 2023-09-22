@@ -31,7 +31,7 @@ class CHYTTableExpression(sa.sql.elements.TextClause):
     def __init__(self, text, alias=None, **kwargs):
         if alias:
             text = "{} as {}".format(text, self._quote_identifier(alias))
-        text = text.replace(":", r"\:")  # see also: bi_core.utils.sa_plain_text
+        text = text.replace(":", r"\:")  # see also: dl_core.utils.sa_plain_text
         super(CHYTTableExpression, self).__init__(text, **kwargs)
 
 
