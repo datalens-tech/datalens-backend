@@ -136,7 +136,7 @@ class ArqWorkerTestWrapper:
         await checker.wait_for_ok(20)
         return self._worker
 
-    async def stop(self):
+    async def stop(self) -> None:
         assert self._task is not None, "Arq worker has not been run"
         try:
             await self._worker.stop()

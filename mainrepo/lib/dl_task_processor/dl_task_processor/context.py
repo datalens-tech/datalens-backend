@@ -9,8 +9,10 @@ class BaseContext(metaclass=abc.ABCMeta):
 
 
 class BaseContextFabric(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
     async def make(self) -> BaseContext:
         pass
 
-    async def tear_down(self, inst: BaseContext):
+    @abc.abstractmethod
+    async def tear_down(self, inst: BaseContext) -> None:
         pass

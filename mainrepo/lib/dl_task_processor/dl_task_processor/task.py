@@ -3,7 +3,6 @@ from collections.abc import Iterable
 import enum
 from typing import (
     ClassVar,
-    Dict,
     Generic,
     NewType,
     Optional,
@@ -20,7 +19,7 @@ from dl_task_processor.context import BaseContext
 TaskName = NewType("TaskName", str)
 
 
-_BASE_ID_TYPE = TypeVar("_BASE_ID_TYPE", bound="BaseID")
+_BASE_ID_TYPE = TypeVar("_BASE_ID_TYPE", bound="_BaseID")
 
 
 @attr.s(frozen=True)
@@ -52,7 +51,7 @@ class RunID(_BaseID):
 class TaskInstance:
     instance_id: InstanceID = attr.ib()
     name: TaskName = attr.ib()
-    params: Dict = attr.ib()
+    params: dict = attr.ib()
     attempt: int = attr.ib(default=0)
     request_id: Optional[str] = attr.ib(default=None)
 
@@ -60,11 +59,11 @@ class TaskInstance:
 class BaseTaskMeta(metaclass=abc.ABCMeta):
     name: ClassVar[TaskName]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # lets trick typing
         pass
 
-    def get_params(self, with_name=False) -> Dict:
+    def get_params(self, with_name: bool = False) -> dict:
         if with_name:
             return dict(
                 {"name": self.name},
@@ -72,7 +71,7 @@ class BaseTaskMeta(metaclass=abc.ABCMeta):
             )
         return attr.asdict(self)
 
-    def make_id(self):
+    def make_id(self) -> str:
         params = sorted(attr.asdict(self).items())
         serialized_params = "||".join(f"{k}|{v}" for k, v in params)
         return f"{self.name}||{serialized_params}"
@@ -82,7 +81,7 @@ class BaseTaskMeta(metaclass=abc.ABCMeta):
     # but we have to extract it to the top level
     # now we can use it only in cli
     @classmethod
-    def get_schema(cls) -> Iterable[Dict]:
+    def get_schema(cls) -> Iterable[dict]:
         attr_schema = attr.fields(cls)
         return [
             {
@@ -120,7 +119,7 @@ class Retry(TaskResult):
 
 @attr.s
 class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metaclass=abc.ABCMeta):
-    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]] = None
+    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]]
     meta: _BASE_TASK_META_TV = attr.ib()
     _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()
@@ -133,7 +132,7 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
         instance_id: InstanceID,
         run_id: RunID,
         ctx: _BASE_TASK_CONTEXT_TV,
-        params: Dict,
+        params: dict,
         request_id: Optional[str] = None,
     ) -> "BaseExecutorTask":
         return cls(
@@ -155,7 +154,7 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
 
 @attr.s
 class TaskRegistry:
-    _tasks: Dict[TaskName, BaseExecutorTask] = attr.ib()
+    _tasks: dict[TaskName, BaseExecutorTask] = attr.ib()
 
     @classmethod
     def create(cls, tasks: Iterable[Type[BaseExecutorTask]]) -> "TaskRegistry":

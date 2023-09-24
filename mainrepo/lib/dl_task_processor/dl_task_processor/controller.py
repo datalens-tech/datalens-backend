@@ -86,8 +86,8 @@ class InstanceController:
     _processor: TaskProcessor = attr.ib()
 
     async def schedule(self, task: BaseTaskMeta) -> TaskInstance:
-        task = await self._processor.schedule(task)
-        return task
+        scheduled_task = await self._processor.schedule(task)
+        return scheduled_task
 
     async def get(self, name: TaskName) -> TaskInstance:
         raise NotImplementedError()
