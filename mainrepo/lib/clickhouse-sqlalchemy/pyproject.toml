@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "statinfra-clickhouse-sqlalchemy"
+name = "clickhouse-sqlalchemy"
 version = "0.1.3.14"
 description = "Simple ClickHouse SQLAlchemy Dialect"
 authors = [

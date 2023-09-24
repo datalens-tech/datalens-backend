@@ -1837,6 +1837,26 @@ url = "https://pypi.yandex-team.ru/simple"
 reference = "ya"
 
 [[package]]
+name = "clickhouse-sqlalchemy"
+version = "0.1.3.14"
+description = "Simple ClickHouse SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+clickhouse-driver = ">=0.2.5"
+dill = ">=0.3.6"
+pytz = ">=2022.7.1"
+requests = ">=2.28.2"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../../mainrepo/lib/clickhouse-sqlalchemy"
+
+[[package]]
 name = "clize"
 version = "5.0.0"
 description = "Turn functions into command-line interfaces"
@@ -2210,6 +2230,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-configs = {path = "../dl_configs"}
@@ -2224,7 +2245,6 @@ datalens-task-processor = {path = "../dl_task_processor"}
 datalens-testing = {path = "../dl_testing"}
 datalens-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 xxhash = ">=3.2.0"
 
 [package.source]
@@ -2243,6 +2263,7 @@ develop = false
 [package.dependencies]
 aiochclient = ">=2.2.0"
 attrs = ">=22.2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-configs = {path = "../dl_configs"}
@@ -2255,7 +2276,6 @@ datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 datalens-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -2272,6 +2292,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-configs = {path = "../dl_configs"}
@@ -2284,7 +2305,6 @@ datalens-formula-ref = {path = "../dl_formula_ref"}
 datalens-i18n = {path = "../dl_i18n"}
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -2469,6 +2489,7 @@ anyascii = ">=0.3.2"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
 botocore = ">=1.27.59,<1.27.60"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 cryptography = ">=3.3.2"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-app-tools = {path = "../dl_app_tools"}
@@ -2498,7 +2519,6 @@ requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 statcommons = {path = "../statcommons"}
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 typing-extensions = ">=4.5.0"
 uwsgi = ">=2.0.21"
 Werkzeug = ">=2.0.3"
@@ -2710,6 +2730,7 @@ arq = ">=0.25.0"
 attrs = ">=22.2.0"
 botocore = ">=1.27.59,<1.27.60"
 cchardet = ">=2.1.7"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-app-tools = {path = "../dl_app_tools"}
 datalens-configs = {path = "../dl_configs"}
@@ -2721,7 +2742,6 @@ datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
 redis = ">=4.5.1"
 shortuuid = ">=1.0.11"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -2869,10 +2889,10 @@ files = []
 develop = false
 
 [package.dependencies]
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -2888,9 +2908,9 @@ files = []
 develop = false
 
 [package.dependencies]
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -7551,26 +7571,6 @@ type = "directory"
 url = "../../mainrepo/lib/statcommons"
 
 [[package]]
-name = "statinfra-clickhouse-sqlalchemy"
-version = "0.1.3.14"
-description = "Simple ClickHouse SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-clickhouse-driver = ">=0.2.5"
-dill = ">=0.3.6"
-pytz = ">=2022.7.1"
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../../mainrepo/lib/clickhouse-sqlalchemy"
-
-[[package]]
 name = "tabulate"
 version = "0.9.0"
 description = "Pretty-print tabular data"
@@ -8471,6 +8471,7 @@ bi-maintenance = {path = "../../lib/bi_maintenance"}
 blinker = ">=1.5"
 certifi = ">=2022.12.7"
 certifi-yandex = ">=2021.10.08"
+clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
@@ -8514,7 +8515,6 @@ SQLAlchemy = ">=1.4.46, <2.0"
 sqlalchemy-gsheets = {path = "../../lib/bi_sqlalchemy_gsheets"}
 sqlalchemy-metrika-api = {path = "../../lib/sqlalchemy_metrika_api"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
-statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 tabulate = ">=0.9.0"
 Werkzeug = ">=2.0.3"
 yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
@@ -9863,4 +9863,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "2f22248c760662f93cb2636d89463216300b6e4db47e8278341bfcdf2273c501"
+content-hash = "51f1cc6a2c44198a7b626d096defd18d79b339e0bca2486ed715a5667e099d91"

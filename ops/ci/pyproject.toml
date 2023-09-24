@@ -152,7 +152,7 @@ bi-formula-ref-ya = {path = "../../lib/bi_formula_ref_ya"}
 bi-formula-ref-dc = {path = "../../lib/bi_formula_ref_dc"}
 bi-formula-ref-nebius = {path = "../../lib/bi_formula_ref_nebius"}
 bi-defaults = {path = "../../lib/bi_defaults"}
-statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
+clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 dynamic-enum = {path = "../../mainrepo/lib/dynamic_enum"}
 redis_cache_lock = {path = "../../mainrepo/lib/redis-cache-lock"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}

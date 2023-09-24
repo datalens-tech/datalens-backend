@@ -875,6 +875,26 @@ numpy = ["numpy (>=1.12.0)", "pandas (>=0.24.0)"]
 zstd = ["clickhouse-cityhash (>=1.0.2.1)", "zstd"]
 
 [[package]]
+name = "clickhouse-sqlalchemy"
+version = "0.1.3.14"
+description = "Simple ClickHouse SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+clickhouse-driver = ">=0.2.5"
+dill = ">=0.3.6"
+pytz = ">=2022.7.1"
+requests = ">=2.28.2"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/clickhouse-sqlalchemy"
+
+[[package]]
 name = "clize"
 version = "5.0.0"
 description = "Turn functions into command-line interfaces"
@@ -1208,6 +1228,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-configs = {path = "../dl_configs"}
@@ -1222,7 +1243,6 @@ datalens-task-processor = {path = "../dl_task_processor"}
 datalens-testing = {path = "../dl_testing"}
 datalens-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 xxhash = ">=3.2.0"
 
 [package.source]
@@ -1241,6 +1261,7 @@ develop = false
 [package.dependencies]
 aiochclient = ">=2.2.0"
 attrs = ">=22.2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-configs = {path = "../dl_configs"}
@@ -1253,7 +1274,6 @@ datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 datalens-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -1270,6 +1290,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-configs = {path = "../dl_configs"}
@@ -1282,7 +1303,6 @@ datalens-formula-ref = {path = "../dl_formula_ref"}
 datalens-i18n = {path = "../dl_i18n"}
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -1467,6 +1487,7 @@ anyascii = ">=0.3.2"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
 botocore = ">=1.27.59,<1.27.60"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 cryptography = ">=3.3.2"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-app-tools = {path = "../dl_app_tools"}
@@ -1496,7 +1517,6 @@ requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 statcommons = {path = "../statcommons"}
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 typing-extensions = ">=4.5.0"
 uwsgi = ">=2.0.21"
 Werkzeug = ">=2.0.3"
@@ -1708,6 +1728,7 @@ arq = ">=0.25.0"
 attrs = ">=22.2.0"
 botocore = ">=1.27.59,<1.27.60"
 cchardet = ">=2.1.7"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-app-tools = {path = "../dl_app_tools"}
 datalens-configs = {path = "../dl_configs"}
@@ -1719,7 +1740,6 @@ datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
 redis = ">=4.5.1"
 shortuuid = ">=1.0.11"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -1867,10 +1887,10 @@ files = []
 develop = false
 
 [package.dependencies]
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -1886,9 +1906,9 @@ files = []
 develop = false
 
 [package.dependencies]
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 sqlalchemy = ">=1.4.46, <2.0"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 
 [package.source]
 type = "directory"
@@ -2061,7 +2081,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "datalens-version"
-version = "0.2032.0"
+version = "0.2037.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -4995,26 +5015,6 @@ type = "directory"
 url = "../lib/statcommons"
 
 [[package]]
-name = "statinfra-clickhouse-sqlalchemy"
-version = "0.1.3.14"
-description = "Simple ClickHouse SQLAlchemy Dialect"
-optional = false
-python-versions = ">=3.10, <3.12"
-files = []
-develop = false
-
-[package.dependencies]
-clickhouse-driver = ">=0.2.5"
-dill = ">=0.3.6"
-pytz = ">=2022.7.1"
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../lib/clickhouse-sqlalchemy"
-
-[[package]]
 name = "tabulate"
 version = "0.9.0"
 description = "Pretty-print tabular data"
@@ -5675,4 +5675,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "5800128118fdcf87826d4bb764406ccc0a0f82c8ad4fb44d9160ed2539863e13"
+content-hash = "6a875dd8df815e32a3b6db069d5664e13a1c0b10f677613be9935cbde069441d"

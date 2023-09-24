@@ -19,7 +19,7 @@ cchardet = ">=2.1.7"
 python = ">=3.10, <3.12"
 redis = ">=4.5.1"
 shortuuid = ">=1.0.11"
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-utils = {path = "../dl_utils"}

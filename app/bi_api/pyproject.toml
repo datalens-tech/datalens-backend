@@ -59,7 +59,7 @@ bi-connector-greenplum-mdb = {path = "../../lib/bi_connector_greenplum_mdb"}
 bi-connector-postgresql-mdb = {path = "../../lib/bi_connector_postgresql_mdb"}
 bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
 bi-connector-clickhouse-mdb = {path = "../../lib/bi_connector_clickhouse_mdb"}
-statinfra-clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
+clickhouse-sqlalchemy = {path = "../../mainrepo/lib/clickhouse-sqlalchemy"}
 statcommons = {path = "../../mainrepo/lib/statcommons"}
 bi-maintenance = {path = "../../lib/bi_maintenance"}
 bi-defaults = {path = "../../lib/bi_defaults"}

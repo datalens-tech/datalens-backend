@@ -43,7 +43,7 @@ uwsgi = ">=2.0.21"
 werkzeug = ">=2.0.3"
 xxhash = ">=3.2.0"
 # Check if really required
-statinfra-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 redis_cache_lock = {path = "../redis-cache-lock"}
 statcommons = {path = "../statcommons"}
 datalens-api-commons = {path = "../dl_api_commons"}

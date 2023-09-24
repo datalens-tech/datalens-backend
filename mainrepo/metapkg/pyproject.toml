@@ -83,7 +83,7 @@ boto3 = ">=1.24.59"  # TODO FIX: This is used in tests in some packages. Try to 
 #
 # All apps should be listed here. This group is installed for CI & local development
 #
-statinfra-clickhouse-sqlalchemy = {path = "../lib/clickhouse-sqlalchemy"}
+clickhouse-sqlalchemy = {path = "../lib/clickhouse-sqlalchemy"}
 dynamic-enum = {path = "../lib/dynamic_enum"}
 redis_cache_lock = {path = "../lib/redis-cache-lock"}
 statcommons = {path = "../lib/statcommons"}
