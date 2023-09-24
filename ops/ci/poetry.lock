@@ -2435,6 +2435,7 @@ develop = false
 blinker = ">=1.5"
 datalens-api-lib = {path = "../../lib/dl_api_lib"}
 datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-core = {path = "../../lib/dl_core"}
@@ -2554,6 +2555,7 @@ develop = false
 [package.dependencies]
 datalens-api-lib = {path = "../../lib/dl_api_lib"}
 datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-core = {path = "../../lib/dl_core"}
@@ -3061,7 +3063,7 @@ url = "../../mainrepo/lib/dl_utils"
 
 [[package]]
 name = "datalens-version"
-version = "0.2032.0"
+version = "0.2037.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -3074,7 +3076,7 @@ url = "../../mainrepo/lib/dl_version"
 
 [[package]]
 name = "datalens-version-ya"
-version = "0.2032.0"
+version = "0.2037.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"

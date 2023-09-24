@@ -14,7 +14,6 @@ import attr
 import pytest
 import redis.asyncio
 
-from bi_file_secure_reader.app import create_app as create_reader_app
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.base_models import (
@@ -45,6 +44,7 @@ from dl_core_testing.environment import (
     common_pytest_configure,
     prepare_united_storage,
 )
+from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
