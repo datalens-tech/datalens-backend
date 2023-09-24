@@ -20,8 +20,8 @@ from dl_constants.enums import (
 )
 
 
-CONNECTION_TYPE_CHYT_TEST = ConnectionType.declare('chyt_test')
-CONNECTION_TYPE_TEST = ConnectionType.declare('test')
+CONNECTION_TYPE_CHYT_TEST = ConnectionType.declare("chyt_test")
+CONNECTION_TYPE_TEST = ConnectionType.declare("test")
 
 
 _QID = "some_qid_1234"

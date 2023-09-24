@@ -14,7 +14,10 @@ from dl_api_commons.tenant_resolver import (
 )
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.s3 import S3Service
-from dl_core.loader import load_core_lib
+from dl_core.loader import (
+    CoreLibraryConfig,
+    load_core_lib,
+)
 from dl_file_uploader_lib.settings_utils import init_redis_service
 from dl_file_uploader_task_interface.context import (
     FileUploaderTaskContext,
@@ -51,7 +54,8 @@ class FileUploaderContextFab(BaseContextFabric):
     _tenant_resolver: TenantResolver = attr.ib(factory=lambda: CommonTenantResolver())
 
     async def make(self) -> FileUploaderTaskContext:
-        load_core_lib()
+        core_conn_whitelist = ["clickhouse", "file", "gsheets_v2"]
+        load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=core_conn_whitelist))
 
         redis_service = init_redis_service(self._settings)
         s3_service = S3Service(
