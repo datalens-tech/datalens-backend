@@ -30,6 +30,7 @@ from dl_api_connector.form_config.models.rows.prepared.base import (
     PreparedRow,
 )
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from bi_connector_mdb_base.bi.form_config.models.common import MDBFieldName
 from bi_connector_mdb_base.bi.form_config.models.rows.prepared import components as mdb_components
