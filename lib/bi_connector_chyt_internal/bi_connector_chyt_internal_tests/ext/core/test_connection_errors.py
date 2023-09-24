@@ -2,7 +2,7 @@ from typing import Type
 
 import pytest
 
-from dl_core import exc
+from dl_connector_chyt.core import exc
 from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase

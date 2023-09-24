@@ -5,13 +5,13 @@ import aiohttp.pytest_plugin
 import aiohttp.test_utils
 import pytest
 
-from dl_core_testing.initialization import initialize_core_test
+from dl_api_lib_testing.initialization import initialize_api_lib_test
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
-from bi_connector_chyt_internal_tests.ext.config import CORE_TEST_CONFIG
+from bi_connector_chyt_internal_tests.ext.config import BI_TEST_CONFIG
 
 
-pytest_plugins = ("aiohttp.pytest_plugin",)  # installs required fixtures for secrets  # TODO: refactor
+pytest_plugins = ("aiohttp.pytest_plugin",)
 
 try:
     del aiohttp.pytest_plugin.loop
@@ -20,7 +20,7 @@ except AttributeError:
 
 
 def pytest_configure(config):  # noqa
-    initialize_core_test(pytest_config=config, core_test_config=CORE_TEST_CONFIG)
+    initialize_api_lib_test(pytest_config=config, api_test_config=BI_TEST_CONFIG)
 
 
 @pytest.fixture
