@@ -265,3 +265,8 @@ variable "alb_controller_helm" {
     version    = "v0.1.3"
   }
 }
+
+variable "aw_service_account_id" {
+  type    = string
+  default = null
+}

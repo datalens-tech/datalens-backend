@@ -182,6 +182,8 @@ module "main" {
   setup_nat  = false
   nat_config = null
 
+  aw_service_account_id = "ee8jsmrbc5nlno025ogc"
+
   providers = {
     yandex = yandex
     ycp    = ycp

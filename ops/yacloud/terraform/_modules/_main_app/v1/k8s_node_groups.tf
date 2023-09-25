@@ -72,7 +72,3 @@ resource "yandex_kubernetes_node_group" "this" {
   node_taints = each.value.dedicated ? ["dedicated=${local.map_node_group_key_node_group_discriminator[each.key]}:NoSchedule"] : []
 
 }
-
-resource "yandex_container_registry" "datalens" {
-  name = "datalens"
-}
