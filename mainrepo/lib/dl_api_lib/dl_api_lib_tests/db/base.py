@@ -6,6 +6,7 @@ from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import DataApiTestBase
+from dl_api_lib_testing.dataset_base import DatasetTestBase
 from dl_api_lib_tests.db.config import (
     API_TEST_CONFIG,
     DB_CORE_URL,
@@ -16,7 +17,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
 
-class DefaultApiTestBase(DataApiTestBase, ConnectionTestBase):
+class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
     """The knowledge that this is a ClickHouse connector should not go beyond this class"""
 
     bi_compeng_pg_on = True
@@ -48,13 +49,13 @@ class DefaultApiTestBase(DataApiTestBase, ConnectionTestBase):
             password=CoreConnectionSettings.PASSWORD,
         )
 
-    @pytest.fixture(scope="session")
-    def dataset_params(self) -> dict:
+    @pytest.fixture(scope="class")
+    def dataset_params(self, sample_table) -> dict:
         return dict(
             source_type=SOURCE_TYPE_CH_TABLE.name,
             parameters=dict(
-                db_name="test_data",
-                table_name="sample_superstore",
+                db_name=sample_table.db.name,
+                table_name=sample_table.name,
             ),
         )
 

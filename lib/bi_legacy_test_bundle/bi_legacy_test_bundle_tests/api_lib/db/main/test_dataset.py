@@ -7,7 +7,6 @@ import copy
 from http import HTTPStatus
 import json
 import math
-import random
 import uuid
 
 import shortuuid
@@ -68,43 +67,6 @@ def test_create_dataset_from_oracle(client, api_v1, oracle_connection_id, oracle
     ds = ds_resp.dataset
     dataset_id = ds.id
     client.delete("/api/v1/datasets/{}".format(dataset_id))
-
-
-def test_create_entity_with_existing_name(client, api_v1, connection_id):
-    name = "double_test__{}".format(random.randint(0, 10000000))
-
-    first_ds = Dataset(name=name)
-    first_ds.sources["source_1"] = first_ds.source(
-        source_type=SOURCE_TYPE_CH_TABLE,
-        connection_id=connection_id,
-        parameters=dict(
-            db_name="test_data",
-            table_name="SampleLite",
-        ),
-    )
-    first_ds.source_avatars["avatar_1"] = first_ds.sources["source_1"].avatar()
-    first_ds = api_v1.apply_updates(dataset=first_ds).dataset
-    ds_resp = api_v1.save_dataset(dataset=first_ds)
-    assert ds_resp.status_code == 200
-    first_ds = ds_resp.dataset
-
-    second_ds = Dataset(name=name)
-    second_ds.sources["source_1"] = second_ds.source(
-        source_type=SOURCE_TYPE_CH_TABLE,
-        connection_id=connection_id,
-        parameters=dict(
-            db_name="test_data",
-            table_name="SampleLite",
-        ),
-    )
-    second_ds.source_avatars["avatar_1"] = second_ds.sources["source_1"].avatar()
-    second_ds = api_v1.apply_updates(dataset=second_ds, fail_ok=True).dataset
-    ds_resp = api_v1.save_dataset(dataset=second_ds, fail_ok=True)
-    assert ds_resp.status_code == 400
-    assert ds_resp.json["message"] == "The entry already exists"
-    assert ds_resp.json["code"] == "ERR.DS_API.US.BAD_REQUEST.ALREADY_EXISTS"
-
-    client.delete("/api/v1/datasets/{}".format(first_ds.id))
 
 
 def test_get_dataset_with_deleted_connection(api_v1, client, dataset_id, connection_id):
