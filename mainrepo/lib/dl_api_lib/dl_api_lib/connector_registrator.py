@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source import (
     register_source_template_api_schema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_api_lib.connection_forms.registry import register_connection_form_factory_cls
 from dl_api_lib.connection_info import register_connector_info_provider_cls
@@ -25,9 +25,9 @@ from dl_api_lib.query.registry import (
 from dl_api_lib.schemas.connection import register_sub_schema_class
 
 
-class BiApiConnectorRegistrator:
+class ApiConnectorRegistrator:
     @classmethod
-    def register_source_definition(cls, source_def: Type[BiApiSourceDefinition]) -> None:
+    def register_source_definition(cls, source_def: Type[ApiSourceDefinition]) -> None:
         register_source_api_schema(
             source_type=source_def.core_source_def_cls.source_type,
             schema_cls=source_def.api_schema_cls,
@@ -38,7 +38,7 @@ class BiApiConnectorRegistrator:
         )
 
     @classmethod
-    def register_connection_definition(cls, conn_def: Type[BiApiConnectionDefinition]) -> None:
+    def register_connection_definition(cls, conn_def: Type[ApiConnectionDefinition]) -> None:
         conn_type = conn_def.core_conn_def_cls.conn_type
         register_connector_info_provider_cls(conn_type=conn_type, info_provider_cls=conn_def.info_provider_cls)
         register_connector_alias(conn_type=conn_type, alias=conn_def.alias)
@@ -47,7 +47,7 @@ class BiApiConnectorRegistrator:
             register_connection_form_factory_cls(conn_type=conn_type, factory_cls=conn_def.form_factory_cls)
 
     @classmethod
-    def register_connector(cls, connector: Type[BiApiConnector]) -> None:
+    def register_connector(cls, connector: Type[ApiConnector]) -> None:
         # backend_type-related stuff - TODO: Move to a separate entity
         backend_type = connector.core_connector_cls.backend_type
         register_dialect_name(backend_type=backend_type, dialect_name=connector.formula_dialect_name)
@@ -77,4 +77,4 @@ class BiApiConnectorRegistrator:
             register_compeng_dialect(connector.compeng_dialect)
 
 
-CONN_REG_BI_API = BiApiConnectorRegistrator
+CONN_REG_BI_API = ApiConnectorRegistrator

@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
@@ -22,22 +22,22 @@ from bi_connector_bundle_partners.moysklad.core.connector import (
 )
 
 
-class MoySkladTableBiApiSourceDefinition(BiApiSourceDefinition):
+class MoySkladTableApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = MoySkladTableCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class MoySkladBiApiConnectionDefinition(BiApiConnectionDefinition):
+class MoySkladApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = MoySkladCoreConnectionDefinition
     api_generic_schema_cls = MoySkladConnectionSchema
     form_factory_cls = MoySkladConnectionFormFactory
     info_provider_cls = MoySkladConnectionInfoProvider
 
 
-class MoySkladBiApiConnector(BiApiConnector):
+class MoySkladApiConnector(ApiConnector):
     core_connector_cls = MoySkladCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (MoySkladBiApiConnectionDefinition,)
-    source_definitions = (MoySkladTableBiApiSourceDefinition,)
+    connection_definitions = (MoySkladApiConnectionDefinition,)
+    source_definitions = (MoySkladTableApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

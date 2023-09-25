@@ -21,7 +21,7 @@ datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-postgresql_mdb = "bi_connector_postgresql_mdb.bi.connector:PostgreSQLMDBBiApiConnector"
+postgresql_mdb = "bi_connector_postgresql_mdb.bi.connector:PostgreSQLMDBApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 postgresql_mdb = "bi_connector_postgresql_mdb.core.connector:PostgreSQLMDBCoreConnector"

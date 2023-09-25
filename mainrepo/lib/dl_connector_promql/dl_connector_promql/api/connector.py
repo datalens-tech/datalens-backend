@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SimpleDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_promql.api.api_schema.connection import PromQLConnectionSchema
 from dl_connector_promql.api.connection_form.form_config import PromQLConnectionFormFactory
@@ -20,21 +20,21 @@ from dl_connector_promql.core.connector import (
 )
 
 
-class PromQLBiApiConnectionDefinition(BiApiConnectionDefinition):
+class PromQLApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = PromQLCoreConnectionDefinition
     api_generic_schema_cls = PromQLConnectionSchema
     form_factory_cls = PromQLConnectionFormFactory
     info_provider_cls = PromQLConnectionInfoProvider
 
 
-class PromQLBiApiSourceDefinition(BiApiSourceDefinition):
+class PromQLApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = PromQLCoreSourceDefinition
     api_schema_cls = SimpleDataSourceSchema
     template_api_schema_cls = SimpleDataSourceTemplateSchema
 
 
-class PromQLBiApiConnector(BiApiConnector):
+class PromQLApiConnector(ApiConnector):
     core_connector_cls = PromQLCoreConnector
-    connection_definitions = (PromQLBiApiConnectionDefinition,)
-    source_definitions = (PromQLBiApiSourceDefinition,)
+    connection_definitions = (PromQLApiConnectionDefinition,)
+    source_definitions = (PromQLApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

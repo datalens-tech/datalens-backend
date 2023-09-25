@@ -26,7 +26,7 @@ from dl_api_lib_testing.app import (
     RedisSettingMaker,
     TestingDataApiAppFactory,
 )
-from dl_api_lib_testing.base import BiApiTestBase
+from dl_api_lib_testing.base import ApiTestBase
 from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
     WrappedAioSyncApiClient,
@@ -48,7 +48,7 @@ class DataApiTestParams(NamedTuple):
     date_field: str
 
 
-class DataApiTestBase(BiApiTestBase, metaclass=abc.ABCMeta):
+class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactory
     mutation_caches_on: ClassVar[bool] = True
     data_caches_on: ClassVar[bool] = True

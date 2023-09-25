@@ -17,7 +17,7 @@ from dl_api_lib.query.registry import (
     get_multi_query_mutator_factory,
     is_compeng_enabled,
 )
-from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_constants.enums import (
     DataSourceRole,
     SourceBackendType,
@@ -135,8 +135,8 @@ class DatasetBaseWrapper:
         self._ds = ds
         self._us_manager = us_manager
         service_registry = self._us_manager.get_services_registry()
-        assert isinstance(service_registry, BiApiServiceRegistry)
-        self._service_registry: BiApiServiceRegistry = service_registry
+        assert isinstance(service_registry, ApiServiceRegistry)
+        self._service_registry: ApiServiceRegistry = service_registry
         self._ds_accessor = DatasetComponentAccessor(dataset=ds)
         self._ds_editor = DatasetComponentEditor(dataset=ds)
         self._dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self._us_manager.get_entry_buffer())

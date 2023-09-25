@@ -7,7 +7,7 @@ from typing import (
 import pytest
 
 from bi_api_lib_testing_ya.app import TestingDataApiAppFactoryPrivate
-from bi_api_lib_testing_ya.base import BiApiTestPrivateBase
+from bi_api_lib_testing_ya.base import ApiTestPrivateBase
 from bi_api_lib_testing_ya.configuration import ApiTestEnvironmentConfigurationPrivate
 from bi_api_lib_ya.app_settings import (
     AsyncAppSettings,
@@ -21,7 +21,7 @@ from dl_configs.rqe import RQEConfig
 from dl_core.utils import attrs_evolve_to_subclass
 
 
-class DataApiTestPrivateBase(DataApiTestBase, BiApiTestPrivateBase, metaclass=abc.ABCMeta):
+class DataApiTestPrivateBase(DataApiTestBase, ApiTestPrivateBase, metaclass=abc.ABCMeta):
     data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactoryPrivate
 
     @pytest.fixture(scope="function")

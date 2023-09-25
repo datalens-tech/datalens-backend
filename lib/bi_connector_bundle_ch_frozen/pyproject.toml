@@ -20,15 +20,15 @@ datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connector:CHFrozenBumpyRoadsBiApiConnector"
-ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.bi.connector:CHFrozenCovidBiApiConnector"
-ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connector:CHFrozenDemoBiApiConnector"
-ch_frozen_dtp = "bi_connector_bundle_ch_frozen.ch_frozen_dtp.bi.connector:CHFrozenDTPBiApiConnector"
-ch_frozen_gkh = "bi_connector_bundle_ch_frozen.ch_frozen_gkh.bi.connector:CHFrozenGKHBiApiConnector"
-ch_frozen_horeca = "bi_connector_bundle_ch_frozen.ch_frozen_horeca.bi.connector:CHFrozenHorecaBiApiConnector"
-ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connector:CHFrozenSamplesBiApiConnector"
-ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.bi.connector:CHFrozenTransparencyBiApiConnector"
-ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connector:CHFrozenWeatherBiApiConnector"
+ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connector:CHFrozenBumpyRoadsApiConnector"
+ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.bi.connector:CHFrozenCovidApiConnector"
+ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connector:CHFrozenDemoApiConnector"
+ch_frozen_dtp = "bi_connector_bundle_ch_frozen.ch_frozen_dtp.bi.connector:CHFrozenDTPApiConnector"
+ch_frozen_gkh = "bi_connector_bundle_ch_frozen.ch_frozen_gkh.bi.connector:CHFrozenGKHApiConnector"
+ch_frozen_horeca = "bi_connector_bundle_ch_frozen.ch_frozen_horeca.bi.connector:CHFrozenHorecaApiConnector"
+ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connector:CHFrozenSamplesApiConnector"
+ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.bi.connector:CHFrozenTransparencyApiConnector"
+ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connector:CHFrozenWeatherApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.connector:CHFrozenBumpyRoadsCoreConnector"

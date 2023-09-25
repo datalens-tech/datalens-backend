@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_greenplum.api.api_schema.connection import GreenplumConnectionSchema
 from dl_connector_greenplum.api.connection_form.form_config import GreenplumConnectionFormFactory
@@ -22,31 +22,31 @@ from dl_connector_greenplum.core.connector import (
 from dl_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
 
 
-class GreenplumBiApiTableSourceDefinition(BiApiSourceDefinition):
+class GreenplumApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = GreenplumTableCoreSourceDefinition
     api_schema_cls = SchematizedSQLDataSourceSchema
     template_api_schema_cls = SchematizedSQLDataSourceTemplateSchema
 
 
-class GreenplumBiApiSubselectSourceDefinition(BiApiSourceDefinition):
+class GreenplumApiSubselectSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = GreenplumSubselectCoreSourceDefinition
     api_schema_cls = SubselectDataSourceSchema
     template_api_schema_cls = SubselectDataSourceTemplateSchema
 
 
-class GreenplumBiApiConnectionDefinition(BiApiConnectionDefinition):
+class GreenplumApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = GreenplumCoreConnectionDefinition
     api_generic_schema_cls = GreenplumConnectionSchema
     info_provider_cls = GreenplumConnectionInfoProvider
     form_factory_cls = GreenplumConnectionFormFactory
 
 
-class GreenplumBiApiConnector(BiApiConnector):
+class GreenplumApiConnector(ApiConnector):
     core_connector_cls = GreenplumCoreConnector
-    connection_definitions = (GreenplumBiApiConnectionDefinition,)
+    connection_definitions = (GreenplumApiConnectionDefinition,)
     source_definitions = (
-        GreenplumBiApiTableSourceDefinition,
-        GreenplumBiApiSubselectSourceDefinition,
+        GreenplumApiTableSourceDefinition,
+        GreenplumApiSubselectSourceDefinition,
     )
     formula_dialect_name = DIALECT_NAME_POSTGRESQL
     translation_configs = frozenset(CONFIGS)

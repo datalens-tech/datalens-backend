@@ -23,11 +23,11 @@ datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connector:ClickhouseGeoFilteredBiApiConnector"
-ch_ya_music_podcast_stats = "bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.bi.connector:CHYaMusicPodcastStatsBiApiConnector"
-market_couriers = "bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.bi.connector:CHMarketCouriersBiApiConnector"
-schoolbook = "bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connector:CHSchoolbookBiApiConnector"
-smb_heatmaps = "bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connector:CHSMBHeatmapsBiApiConnector"
+ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connector:ClickhouseGeoFilteredApiConnector"
+ch_ya_music_podcast_stats = "bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.bi.connector:CHYaMusicPodcastStatsApiConnector"
+market_couriers = "bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.bi.connector:CHMarketCouriersApiConnector"
+schoolbook = "bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connector:CHSchoolbookApiConnector"
+smb_heatmaps = "bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connector:CHSMBHeatmapsApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector:ClickhouseGeoFilteredCoreConnector"

@@ -29,7 +29,7 @@ datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-bitrix_gds = "bi_connector_bitrix_gds.bi.connector:BitrixGDSBiApiConnector"
+bitrix_gds = "bi_connector_bitrix_gds.bi.connector:BitrixGDSApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 bitrix_gds = "bi_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"

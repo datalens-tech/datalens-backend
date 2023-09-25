@@ -32,7 +32,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-postgresql = "dl_connector_postgresql.api.connector:PostgreSQLBiApiConnector"
+postgresql = "dl_connector_postgresql.api.connector:PostgreSQLApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 postgresql = "dl_connector_postgresql.core.postgresql.connector:PostgreSQLCoreConnector"

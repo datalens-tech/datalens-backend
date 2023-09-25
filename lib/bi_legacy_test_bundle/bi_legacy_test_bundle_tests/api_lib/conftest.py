@@ -68,8 +68,8 @@ from dl_api_lib.loader import (
 )
 from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from dl_api_lib.service_registry.service_registry import (
-    BiApiServiceRegistry,
-    DefaultBiApiServiceRegistry,
+    ApiServiceRegistry,
+    DefaultApiServiceRegistry,
 )
 from dl_api_lib_testing.app import (
     RedisSettingMaker,
@@ -397,11 +397,11 @@ def make_sync_services_registry(
     async_env: bool,
     rqe_config,
     file_uploader_worker_settings: Optional[FileUploaderWorkerSettings] = None,
-) -> DefaultBiApiServiceRegistry:
-    sr_future_ref: FutureRef[DefaultBiApiServiceRegistry] = FutureRef()
+) -> DefaultApiServiceRegistry:
+    sr_future_ref: FutureRef[DefaultApiServiceRegistry] = FutureRef()
     reporting_registry = DefaultReportingRegistry(rci=rci)
 
-    new_sr = DefaultBiApiServiceRegistry(
+    new_sr = DefaultApiServiceRegistry(
         rci=rci,
         reporting_registry=reporting_registry,
         conn_exec_factory=DefaultConnExecutorFactory(
@@ -433,7 +433,7 @@ def make_sync_services_registry(
 @pytest.fixture(scope="session")
 def default_service_registry(
     bi_test_config, bi_context, rqe_config_subprocess, file_uploader_worker_settings
-) -> BiApiServiceRegistry:
+) -> ApiServiceRegistry:
     sr = make_sync_services_registry(
         bi_test_config,
         bi_context,
@@ -460,7 +460,7 @@ def default_sync_usm(bi_context, default_service_registry, core_test_config):
 @pytest.fixture(scope="function")
 def default_service_registry_per_test(
     bi_test_config, bi_context, rqe_config_subprocess, file_uploader_worker_settings
-) -> BiApiServiceRegistry:
+) -> ApiServiceRegistry:
     sr = make_sync_services_registry(
         bi_test_config,
         bi_context,
@@ -475,7 +475,7 @@ def default_service_registry_per_test(
 @pytest.fixture(scope="function")
 def default_service_registry_async_env_per_test(
     bi_test_config, bi_context, loop, rqe_config_subprocess, file_uploader_worker_settings
-) -> BiApiServiceRegistry:
+) -> ApiServiceRegistry:
     sr = make_sync_services_registry(
         bi_test_config,
         bi_context,

@@ -26,7 +26,7 @@ datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-chyt_internal = "bi_connector_chyt_internal.bi.connector:CHYTInternalBiApiConnector"
+chyt_internal = "bi_connector_chyt_internal.bi.connector:CHYTInternalApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 chyt_internal = "bi_connector_chyt_internal.core.connector:CHYTInternalCoreConnector"

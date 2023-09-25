@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
@@ -29,22 +29,22 @@ from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.con
 )
 
 
-class CHYaMusicPodcastStatsBiApiConnectionDefinition(BiApiConnectionDefinition):
+class CHYaMusicPodcastStatsApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = CHYaMusicPodcastStatsCoreConnectionDefinition
     api_generic_schema_cls = CHYaMusicPodcastStatsConnectionSchema
     info_provider_cls = CHYaMusicPodcastStatsConnectionInfoProvider
     form_factory_cls = CHYaMusicPodcastStatsConnectionFormFactory
 
 
-class CHYaMusicPodcastStatsBiApiSourceDefinition(BiApiSourceDefinition):
+class CHYaMusicPodcastStatsApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = CHYaMusicPodcastStatsTableCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class CHYaMusicPodcastStatsBiApiConnector(BiApiConnector):
+class CHYaMusicPodcastStatsApiConnector(ApiConnector):
     core_connector_cls = CHYaMusicPodcastStatsCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (CHYaMusicPodcastStatsBiApiConnectionDefinition,)
-    source_definitions = (CHYaMusicPodcastStatsBiApiSourceDefinition,)
+    connection_definitions = (CHYaMusicPodcastStatsApiConnectionDefinition,)
+    source_definitions = (CHYaMusicPodcastStatsApiSourceDefinition,)
     translation_configs = frozenset(BASE_CONFIGS) | frozenset(CONFIGS)

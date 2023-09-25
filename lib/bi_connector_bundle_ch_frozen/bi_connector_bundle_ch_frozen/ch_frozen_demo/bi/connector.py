@@ -6,9 +6,9 @@ from dl_api_connector.api_schema.source_base import (
 )
 
 from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.connector import (
-    BaseCHFrozenBiApiConnectionDefinition,
-    BaseCHFrozenBiApiConnector,
-    BaseCHFrozenTableBiApiSourceDefinition,
+    BaseCHFrozenApiConnectionDefinition,
+    BaseCHFrozenApiConnector,
+    BaseCHFrozenTableApiSourceDefinition,
 )
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connection_form.form_config import CHFrozenDemoFormFactory
 from bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connection_info import CHFrozenDemoConnectionInfoProvider
@@ -20,26 +20,26 @@ from bi_connector_bundle_ch_frozen.ch_frozen_demo.core.connector import (
 )
 
 
-class CHFrozenDemoTableBiApiSourceDefinition(BaseCHFrozenTableBiApiSourceDefinition):
+class CHFrozenDemoTableApiSourceDefinition(BaseCHFrozenTableApiSourceDefinition):
     core_source_def_cls = CHFrozenDemoCoreSourceDefinition
 
 
-class CHFrozenDemoBiApiSubselectSourceDefinition(BaseCHFrozenTableBiApiSourceDefinition):
+class CHFrozenDemoApiSubselectSourceDefinition(BaseCHFrozenTableApiSourceDefinition):
     core_source_def_cls = CHFrozenDemoCoreSubselectSourceDefinition  # type: ignore
     api_schema_cls = SubselectDataSourceSchema  # type: ignore
     template_api_schema_cls = SubselectDataSourceTemplateSchema  # type: ignore
 
 
-class CHFrozenDemoBiApiConnectionDefinition(BaseCHFrozenBiApiConnectionDefinition):
+class CHFrozenDemoApiConnectionDefinition(BaseCHFrozenApiConnectionDefinition):
     core_conn_def_cls = CHFrozenDemoCoreConnectionDefinition
     form_factory_cls = CHFrozenDemoFormFactory
     info_provider_cls = CHFrozenDemoConnectionInfoProvider
 
 
-class CHFrozenDemoBiApiConnector(BaseCHFrozenBiApiConnector):
+class CHFrozenDemoApiConnector(BaseCHFrozenApiConnector):
     core_connector_cls = CHFrozenDemoCoreConnector
-    connection_definitions = (CHFrozenDemoBiApiConnectionDefinition,)
+    connection_definitions = (CHFrozenDemoApiConnectionDefinition,)
     source_definitions = (  # type: ignore
-        CHFrozenDemoTableBiApiSourceDefinition,
-        CHFrozenDemoBiApiSubselectSourceDefinition,
+        CHFrozenDemoTableApiSourceDefinition,
+        CHFrozenDemoApiSubselectSourceDefinition,
     )

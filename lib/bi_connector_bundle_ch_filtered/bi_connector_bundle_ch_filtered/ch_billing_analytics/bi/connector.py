@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
@@ -28,22 +28,22 @@ from bi_connector_bundle_ch_filtered.ch_billing_analytics.core.connector import 
 )
 
 
-class CHBillingAnalyticsBiApiConnectionDefinition(BiApiConnectionDefinition):
+class CHBillingAnalyticsApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = CHBillingAnalyticsCoreConnectionDefinition
     api_generic_schema_cls = CHBillingAnalyticsConnectionSchema
     info_provider_cls = CHBillingAnalyticsConnectionInfoProvider
     form_factory_cls = CHBillingAnalyticsConnectionFormFactory
 
 
-class CHBillingAnalyticsBiApiSourceDefinition(BiApiSourceDefinition):
+class CHBillingAnalyticsApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = CHBillingAnalyticsTableCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class CHBillingAnalyticsBiApiConnector(BiApiConnector):
+class CHBillingAnalyticsApiConnector(ApiConnector):
     core_connector_cls = CHBillingAnalyticsCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (CHBillingAnalyticsBiApiConnectionDefinition,)
-    source_definitions = (CHBillingAnalyticsBiApiSourceDefinition,)
+    connection_definitions = (CHBillingAnalyticsApiConnectionDefinition,)
+    source_definitions = (CHBillingAnalyticsApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

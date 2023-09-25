@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
@@ -22,22 +22,22 @@ from bi_connector_usage_tracking_ya_team.core.connector import (
 )
 
 
-class UsageTrackingYaTeamBiApiConnectionDefinition(BiApiConnectionDefinition):
+class UsageTrackingYaTeamApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = UsageTrackingYaTeamCoreConnectionDefinition
     api_generic_schema_cls = UsageTrackingYaTeamConnectionSchema
     info_provider_cls = UsageTrackingYaTeamConnectionInfoProvider
     form_factory_cls = UsageTrackingYaTeamConnectionFormFactory
 
 
-class UsageTrackingYaTeamBiApiSourceDefinition(BiApiSourceDefinition):
+class UsageTrackingYaTeamApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = UsageTrackingYaTeamCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class UsageTrackingYaTeamBiApiConnector(BiApiConnector):
+class UsageTrackingYaTeamApiConnector(ApiConnector):
     core_connector_cls = UsageTrackingYaTeamCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (UsageTrackingYaTeamBiApiConnectionDefinition,)
-    source_definitions = (UsageTrackingYaTeamBiApiSourceDefinition,)
+    connection_definitions = (UsageTrackingYaTeamApiConnectionDefinition,)
+    source_definitions = (UsageTrackingYaTeamApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

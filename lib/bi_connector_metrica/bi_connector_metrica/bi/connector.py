@@ -3,9 +3,9 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 
 from bi_connector_metrica.bi.api_schema.connection import (
@@ -33,13 +33,13 @@ from bi_connector_metrica.core.connector import (
 from bi_connector_metrica.formula.constants import DIALECT_NAME_METRICAAPI
 
 
-class MetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
+class MetricaApiFilteredApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = MetricaApiCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class MetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
+class MetricaApiApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = MetricaApiCoreConnectionDefinition
     api_generic_schema_cls = ConnectionMetrikaAPISchema
     alias = "metrica"
@@ -47,22 +47,22 @@ class MetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
     form_factory_cls = MetricaAPIConnectionFormFactory
 
 
-class MetricaApiBiApiConnector(BiApiConnector):
+class MetricaApiApiConnector(ApiConnector):
     core_connector_cls = MetricaApiCoreConnector
-    connection_definitions = (MetricaApiBiApiConnectionDefinition,)
-    source_definitions = (MetricaApiFilteredBiApiTableSourceDefinition,)
+    connection_definitions = (MetricaApiApiConnectionDefinition,)
+    source_definitions = (MetricaApiFilteredApiTableSourceDefinition,)
     filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
     formula_dialect_name = DIALECT_NAME_METRICAAPI
     translation_configs = frozenset(CONFIGS)
 
 
-class AppMetricaApiFilteredBiApiTableSourceDefinition(BiApiSourceDefinition):
+class AppMetricaApiFilteredApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = AppMetricaApiCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class AppMetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
+class AppMetricaApiApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = AppMetricaApiCoreConnectionDefinition
     api_generic_schema_cls = ConnectionAppMetricaAPISchema
     alias = "appmetrica"
@@ -70,10 +70,10 @@ class AppMetricaApiBiApiConnectionDefinition(BiApiConnectionDefinition):
     form_factory_cls = AppMetricaAPIConnectionFormFactory
 
 
-class AppMetricaApiBiApiConnector(BiApiConnector):
+class AppMetricaApiApiConnector(ApiConnector):
     core_connector_cls = AppMetricaApiCoreConnector
-    connection_definitions = (AppMetricaApiBiApiConnectionDefinition,)
-    source_definitions = (AppMetricaApiFilteredBiApiTableSourceDefinition,)
+    connection_definitions = (AppMetricaApiApiConnectionDefinition,)
+    source_definitions = (AppMetricaApiFilteredApiTableSourceDefinition,)
     filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
     formula_dialect_name = DIALECT_NAME_METRICAAPI
     translation_configs = frozenset(CONFIGS)

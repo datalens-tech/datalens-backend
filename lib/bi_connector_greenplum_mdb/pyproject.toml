@@ -21,7 +21,7 @@ datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-greenplum_mdb = "bi_connector_greenplum_mdb.bi.connector:GreenplumMDBBiApiConnector"
+greenplum_mdb = "bi_connector_greenplum_mdb.bi.connector:GreenplumMDBApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 greenplum_mdb = "bi_connector_greenplum_mdb.core.connector:GreenplumMDBCoreConnector"

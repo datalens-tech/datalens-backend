@@ -19,7 +19,7 @@ from dl_api_lib.i18n.registry import (
     LOCALIZATION_CONFIGS,
     register_translation_configs,
 )
-from dl_api_lib.service_registry.sr_factory import DefaultBiApiSRFactory
+from dl_api_lib.service_registry.sr_factory import DefaultApiSRFactory
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
@@ -135,7 +135,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         settings: TSettings,
         conn_opts_factory: ConnOptionsMutatorsFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-    ) -> DefaultBiApiSRFactory:
+    ) -> DefaultApiSRFactory:
         supported_functions_manager = SupportedFunctionsManager(supported_tags=settings.FORMULA_SUPPORTED_FUNC_TAGS)
 
         file_uploader_settings = (
@@ -158,7 +158,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             localization_factory.get_for_locale(locale=settings.DEFAULT_LOCALE) if settings.DEFAULT_LOCALE else None
         )
 
-        sr_factory = DefaultBiApiSRFactory(
+        sr_factory = DefaultApiSRFactory(
             async_env=self._is_async_env,
             rqe_config=settings.RQE_CONFIG,
             default_cache_ttl_config=self._get_default_cache_ttl_settings(settings),

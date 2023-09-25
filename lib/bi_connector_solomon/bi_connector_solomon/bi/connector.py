@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SimpleDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 
 from bi_connector_solomon.bi.api_schema.connection import SolomonConnectionSchema
@@ -21,21 +21,21 @@ from bi_connector_solomon.core.connector import (
 )
 
 
-class SolomonBiApiConnectionDefinition(BiApiConnectionDefinition):
+class SolomonApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = SolomonCoreConnectionDefinition
     api_generic_schema_cls = SolomonConnectionSchema
     form_factory_cls = SolomonConnectionFormFactory
     info_provider_cls = SolomonConnectionInfoProvider
 
 
-class SolomonBiApiSourceDefinition(BiApiSourceDefinition):
+class SolomonApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = SolomonCoreSourceDefinition
     api_schema_cls = SimpleDataSourceSchema
     template_api_schema_cls = SimpleDataSourceTemplateSchema
 
 
-class SolomonBiApiConnector(BiApiConnector):
+class SolomonApiConnector(ApiConnector):
     core_connector_cls = SolomonCoreConnector
-    connection_definitions = (SolomonBiApiConnectionDefinition,)
-    source_definitions = (SolomonBiApiSourceDefinition,)
+    connection_definitions = (SolomonApiConnectionDefinition,)
+    source_definitions = (SolomonApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

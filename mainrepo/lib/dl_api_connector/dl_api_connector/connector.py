@@ -37,13 +37,13 @@ from dl_query_processing.multi_query.factory import (
 )
 
 
-class BiApiSourceDefinition(abc.ABC):
+class ApiSourceDefinition(abc.ABC):
     core_source_def_cls: ClassVar[Type[CoreSourceDefinition]]
     api_schema_cls: ClassVar[Type[DataSourceBaseSchema]] = DataSourceBaseSchema
     template_api_schema_cls: ClassVar[Type[DataSourceTemplateBaseSchema]] = DataSourceTemplateBaseSchema
 
 
-class BiApiConnectionDefinition(abc.ABC):
+class ApiConnectionDefinition(abc.ABC):
     core_conn_def_cls: ClassVar[Type[CoreConnectionDefinition]]
     api_generic_schema_cls: ClassVar[Type[ConnectionSchema]]
     alias: ClassVar[Optional[str]] = None
@@ -51,7 +51,7 @@ class BiApiConnectionDefinition(abc.ABC):
     form_factory_cls: ClassVar[Optional[Type[ConnectionFormFactory]]] = None
 
 
-class BiApiConnector(abc.ABC):
+class ApiConnector(abc.ABC):
     # backend_type-bound properties - TODO: move to a separate entity
     formula_dialect_name: ClassVar[DialectName] = DialectName.DUMMY
     default_multi_query_mutator_factory_cls: ClassVar[
@@ -63,7 +63,7 @@ class BiApiConnector(abc.ABC):
     dashsql_literalizer_cls: ClassVar[Type[DashSQLParamLiteralizer]] = DefaultDashSQLParamLiteralizer
     # others
     core_connector_cls: ClassVar[Type[CoreConnector]]
-    connection_definitions: ClassVar[Tuple[Type[BiApiConnectionDefinition], ...]] = ()
-    source_definitions: ClassVar[Tuple[Type[BiApiSourceDefinition], ...]] = ()
+    connection_definitions: ClassVar[Tuple[Type[ApiConnectionDefinition], ...]] = ()
+    source_definitions: ClassVar[Tuple[Type[ApiSourceDefinition], ...]] = ()
     translation_configs: ClassVar[frozenset[TranslationConfig]] = frozenset()
     compeng_dialect: Optional[DialectCombo] = None

@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 
@@ -20,20 +20,20 @@ from bi_connector_bundle_ch_frozen.ch_frozen_base.core.connector import (
 )
 
 
-class BaseCHFrozenTableBiApiSourceDefinition(BiApiSourceDefinition):
+class BaseCHFrozenTableApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = CHFrozenBaseCoreSourceDefinition
     api_schema_cls = SQLDataSourceSchema
     template_api_schema_cls = SQLDataSourceTemplateSchema
 
 
-class BaseCHFrozenBiApiConnectionDefinition(BiApiConnectionDefinition):
+class BaseCHFrozenApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = CHFrozenBaseCoreConnectionDefinition
     api_generic_schema_cls = BaseClickHouseFrozenConnectionSchema
 
 
-class BaseCHFrozenBiApiConnector(BiApiConnector):
+class BaseCHFrozenApiConnector(ApiConnector):
     core_connector_cls = CHFrozenCoreConnector
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    connection_definitions = (BaseCHFrozenBiApiConnectionDefinition,)
-    source_definitions = (BaseCHFrozenTableBiApiSourceDefinition,)
+    connection_definitions = (BaseCHFrozenApiConnectionDefinition,)
+    source_definitions = (BaseCHFrozenTableApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

@@ -29,7 +29,7 @@ datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-oracle = "bi_connector_oracle.bi.connector:OracleBiApiConnector"
+oracle = "bi_connector_oracle.bi.connector:OracleApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 oracle = "bi_connector_oracle.core.connector:OracleCoreConnector"

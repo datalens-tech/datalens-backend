@@ -1,6 +1,6 @@
 from dl_connector_clickhouse.api.connector import (
-    ClickHouseBiApiConnectionDefinition,
-    ClickHouseBiApiConnector,
+    ClickHouseApiConnectionDefinition,
+    ClickHouseApiConnector,
 )
 
 from bi_connector_clickhouse_mdb.bi.api_schema.connection import ClickHouseMDBConnectionSchema
@@ -8,11 +8,11 @@ from bi_connector_clickhouse_mdb.bi.connection_form.form_config import ClickHous
 from bi_connector_clickhouse_mdb.core.connector import ClickHouseMDBCoreConnector
 
 
-class ClickHouseMDBBiApiConnectionDefinition(ClickHouseBiApiConnectionDefinition):
+class ClickHouseMDBApiConnectionDefinition(ClickHouseApiConnectionDefinition):
     api_generic_schema_cls = ClickHouseMDBConnectionSchema
     form_factory_cls = ClickHouseMDBConnectionFormFactory
 
 
-class ClickHouseMDBBiApiConnector(ClickHouseBiApiConnector):
+class ClickHouseMDBApiConnector(ClickHouseApiConnector):
     core_connector_cls = ClickHouseMDBCoreConnector
-    connection_definitions = (ClickHouseMDBBiApiConnectionDefinition,)
+    connection_definitions = (ClickHouseMDBApiConnectionDefinition,)

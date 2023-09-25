@@ -28,7 +28,7 @@ datalens-query-processing = {path = "../../mainrepo/lib/dl_query_processing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-gsheets = "bi_connector_gsheets.bi.connector:GSheetsBiApiConnector"
+gsheets = "bi_connector_gsheets.bi.connector:GSheetsApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 gsheets = "bi_connector_gsheets.core.connector:GSheetsCoreConnector"

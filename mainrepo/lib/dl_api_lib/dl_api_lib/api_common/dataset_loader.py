@@ -11,7 +11,7 @@ import attr
 
 from dl_api_lib import exc
 from dl_api_lib.dataset.utils import allow_rls_for_dataset
-from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_api_lib.utils.rls import FieldRLSSerializer
 from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.exc import (
@@ -56,7 +56,7 @@ EMPTY_DS_UPDATE_INFO = DatasetUpdateInfo(
 
 @attr.s
 class DatasetApiLoader:
-    _service_registry: BiApiServiceRegistry = attr.ib(kw_only=True)
+    _service_registry: ApiServiceRegistry = attr.ib(kw_only=True)
 
     def update_dataset_from_body(
         self,

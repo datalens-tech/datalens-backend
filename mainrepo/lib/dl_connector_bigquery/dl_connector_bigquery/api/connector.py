@@ -3,9 +3,9 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_bigquery.api.api_schema.connection import BigQueryConnectionSchema
 from dl_connector_bigquery.api.api_schema.source import (
@@ -24,31 +24,31 @@ from dl_connector_bigquery.core.connector import (
 from dl_connector_bigquery.formula.constants import DIALECT_NAME_BIGQUERY
 
 
-class BigQueryBiApiTableSourceDefinition(BiApiSourceDefinition):
+class BigQueryApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = BigQueryCoreTableSourceDefinition
     api_schema_cls = BigQueryTableDataSourceSchema
     template_api_schema_cls = BigQueryTableDataSourceTemplateSchema
 
 
-class BigQueryBiApiSubselectSourceDefinition(BiApiSourceDefinition):
+class BigQueryApiSubselectSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = BigQueryCoreSubselectSourceDefinition
     api_schema_cls = SubselectDataSourceSchema
     template_api_schema_cls = SubselectDataSourceTemplateSchema
 
 
-class BigQueryBiApiConnectionDefinition(BiApiConnectionDefinition):
+class BigQueryApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = BigQueryCoreConnectionDefinition
     api_generic_schema_cls = BigQueryConnectionSchema
     info_provider_cls = BigQueryConnectionInfoProvider
     form_factory_cls = BigQueryConnectionFormFactory
 
 
-class BigQueryBiApiConnector(BiApiConnector):
+class BigQueryApiConnector(ApiConnector):
     core_connector_cls = BigQueryCoreConnector
     source_definitions = (
-        BigQueryBiApiTableSourceDefinition,
-        BigQueryBiApiSubselectSourceDefinition,
+        BigQueryApiTableSourceDefinition,
+        BigQueryApiSubselectSourceDefinition,
     )
-    connection_definitions = (BigQueryBiApiConnectionDefinition,)
+    connection_definitions = (BigQueryApiConnectionDefinition,)
     formula_dialect_name = DIALECT_NAME_BIGQUERY
     translation_configs = frozenset(CONFIGS)

@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SimpleDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_query_processing.multi_query.factory import SimpleFieldSplitterMultiQueryMutatorFactory
 
@@ -24,24 +24,24 @@ from bi_connector_gsheets.core.connector import (
 from bi_connector_gsheets.formula.constants import DIALECT_NAME_GSHEETS
 
 
-class GSheetsBiApiSourceDefinition(BiApiSourceDefinition):
+class GSheetsApiSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = GSheetsCoreSourceDefinition
     api_schema_cls = SimpleDataSourceSchema
     template_api_schema_cls = SimpleDataSourceTemplateSchema
 
 
-class GSheetsBiApiConnectionDefinition(BiApiConnectionDefinition):
+class GSheetsApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = GSheetsCoreConnectionDefinition
     api_generic_schema_cls = GSheetsConnectionSchema
     form_factory_cls = GSheetsConnectionFormFactory
     info_provider_cls = GSheetsConnectionInfoProvider
 
 
-class GSheetsBiApiConnector(BiApiConnector):
+class GSheetsApiConnector(ApiConnector):
     core_connector_cls = GSheetsCoreConnector
     formula_dialect_name = DIALECT_NAME_GSHEETS
-    connection_definitions = (GSheetsBiApiConnectionDefinition,)
-    source_definitions = (GSheetsBiApiSourceDefinition,)
+    connection_definitions = (GSheetsApiConnectionDefinition,)
+    source_definitions = (GSheetsApiSourceDefinition,)
     default_multi_query_mutator_factory_cls = SimpleFieldSplitterMultiQueryMutatorFactory
     is_forkable = False
     is_compeng_executable = True

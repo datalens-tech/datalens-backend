@@ -12,7 +12,7 @@ import attr
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
-from dl_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import DefaultApiServiceRegistry
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.services_registry.sr_factories import DefaultSRFactory
@@ -30,8 +30,8 @@ if TYPE_CHECKING:
 
 
 @attr.s
-class DefaultBiApiSRFactory(DefaultSRFactory[DefaultBiApiServiceRegistry]):
-    service_registry_cls = DefaultBiApiServiceRegistry
+class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
+    service_registry_cls = DefaultApiServiceRegistry
     _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
     _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
     _field_id_generator_type: FieldIdGeneratorType = attr.ib(kw_only=True, default=FieldIdGeneratorType.readable)

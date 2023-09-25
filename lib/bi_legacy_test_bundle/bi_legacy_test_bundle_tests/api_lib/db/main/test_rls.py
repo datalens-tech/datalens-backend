@@ -32,7 +32,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawQuerySpecUnion,
     RawSelectFieldSpec,
 )
-from dl_api_lib.service_registry.service_registry import DefaultBiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import DefaultApiServiceRegistry
 from dl_api_lib.utils.rls import FieldRLSSerializer
 from dl_constants.enums import RLSSubjectType
 from dl_core.rls import (
@@ -167,7 +167,7 @@ def dls_subjects_mock(app, dls_subjects_data, us_host, monkeypatch, bi_test_conf
             YTServiceRegistry
         ).get_subject_resolver()
 
-    monkeypatch.setattr(DefaultBiApiServiceRegistry, "get_subject_resolver", get_subject_resolver)
+    monkeypatch.setattr(DefaultApiServiceRegistry, "get_subject_resolver", get_subject_resolver)
 
     dls_subjects_url = f'{app.config["DLS_HOST"]}/_dls/batch/render_subjects_by_login/'
 

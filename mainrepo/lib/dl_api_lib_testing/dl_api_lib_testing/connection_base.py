@@ -10,7 +10,7 @@ import uuid
 import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from dl_api_lib_testing.base import BiApiTestBase
+from dl_api_lib_testing.base import ApiTestBase
 from dl_constants.enums import ConnectionType
 from dl_core_testing.database import (
     Db,
@@ -21,7 +21,7 @@ from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.service_base import DbServiceFixtureTextClass
 
 
-class ConnectionTestBase(BiApiTestBase, DbServiceFixtureTextClass):
+class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     conn_type: ClassVar[ConnectionType]
 
     db_table_dispenser = DbCsvTableDispenser()

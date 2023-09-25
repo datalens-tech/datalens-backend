@@ -30,7 +30,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-bigquery = "dl_connector_bigquery.api.connector:BigQueryBiApiConnector"
+bigquery = "dl_connector_bigquery.api.connector:BigQueryApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 bigquery = "dl_connector_bigquery.core.connector:BigQueryCoreConnector"

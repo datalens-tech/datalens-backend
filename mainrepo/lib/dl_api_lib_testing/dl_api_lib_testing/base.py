@@ -40,7 +40,7 @@ from dl_core_testing.flask_utils import (
 )
 
 
-class BiApiTestBase(abc.ABC):
+class ApiTestBase(abc.ABC):
     """
     Base class defining the basic fixtures of bi-api tests
     """

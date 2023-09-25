@@ -5,9 +5,9 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
-    BiApiConnectionDefinition,
-    BiApiConnector,
-    BiApiSourceDefinition,
+    ApiConnectionDefinition,
+    ApiConnector,
+    ApiSourceDefinition,
 )
 from dl_connector_postgresql.api.api_schema.connection import PostgreSQLConnectionSchema
 from dl_connector_postgresql.api.connection_form.form_config import PostgreSQLConnectionFormFactory
@@ -25,31 +25,31 @@ from dl_connector_postgresql.formula.constants import (
 )
 
 
-class PostgreSQLBiApiTableSourceDefinition(BiApiSourceDefinition):
+class PostgreSQLApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = PostgreSQLTableCoreSourceDefinition
     api_schema_cls = SchematizedSQLDataSourceSchema
     template_api_schema_cls = SchematizedSQLDataSourceTemplateSchema
 
 
-class PostgreSQLBiApiSubselectSourceDefinition(BiApiSourceDefinition):
+class PostgreSQLApiSubselectSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = PostgreSQLSubselectCoreSourceDefinition
     api_schema_cls = SubselectDataSourceSchema
     template_api_schema_cls = SubselectDataSourceTemplateSchema
 
 
-class PostgreSQLBiApiConnectionDefinition(BiApiConnectionDefinition):
+class PostgreSQLApiConnectionDefinition(ApiConnectionDefinition):
     core_conn_def_cls = PostgreSQLCoreConnectionDefinition
     api_generic_schema_cls = PostgreSQLConnectionSchema
     info_provider_cls = PostgreSQLConnectionInfoProvider
     form_factory_cls = PostgreSQLConnectionFormFactory
 
 
-class PostgreSQLBiApiConnector(BiApiConnector):
+class PostgreSQLApiConnector(ApiConnector):
     core_connector_cls = PostgreSQLCoreConnector
-    connection_definitions = (PostgreSQLBiApiConnectionDefinition,)
+    connection_definitions = (PostgreSQLApiConnectionDefinition,)
     source_definitions = (
-        PostgreSQLBiApiTableSourceDefinition,
-        PostgreSQLBiApiSubselectSourceDefinition,
+        PostgreSQLApiTableSourceDefinition,
+        PostgreSQLApiSubselectSourceDefinition,
     )
     formula_dialect_name = DIALECT_NAME_POSTGRESQL
     translation_configs = frozenset(CONFIGS)

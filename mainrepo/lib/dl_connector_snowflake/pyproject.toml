@@ -31,7 +31,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-snowflake = "dl_connector_snowflake.api.connector:SnowFlakeBiApiConnector"
+snowflake = "dl_connector_snowflake.api.connector:SnowFlakeApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 snowflake = "dl_connector_snowflake.core.connector:SnowFlakeCoreConnector"

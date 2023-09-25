@@ -21,9 +21,9 @@ datalens-core = {path = "../../mainrepo/lib/dl_core"}
 datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-equeo = "bi_connector_bundle_partners.equeo.bi.connector:EqueoBiApiConnector"
-kontur_market = "bi_connector_bundle_partners.kontur_market.bi.connector:KonturMarketBiApiConnector"
-moysklad = "bi_connector_bundle_partners.moysklad.bi.connector:MoySkladBiApiConnector"
+equeo = "bi_connector_bundle_partners.equeo.bi.connector:EqueoApiConnector"
+kontur_market = "bi_connector_bundle_partners.kontur_market.bi.connector:KonturMarketApiConnector"
+moysklad = "bi_connector_bundle_partners.moysklad.bi.connector:MoySkladApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 equeo = "bi_connector_bundle_partners.equeo.core.connector:EqueoCoreConnector"

@@ -21,7 +21,7 @@ datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-mysql_mdb = "bi_connector_mysql_mdb.bi.connector:MySQLMDBBiApiConnector"
+mysql_mdb = "bi_connector_mysql_mdb.bi.connector:MySQLMDBApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 mysql_mdb = "bi_connector_mysql_mdb.core.connector:MySQLMDBCoreConnector"

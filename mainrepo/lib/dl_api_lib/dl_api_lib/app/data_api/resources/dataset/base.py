@@ -50,7 +50,7 @@ from dl_api_lib.request_model.data import (
     DataRequestModel,
     FieldAction,
 )
-from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import GenericProfiler
 from dl_constants.enums import DataSourceRole
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -259,7 +259,7 @@ class DatasetDataBaseView(BaseView):
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
         services_registry = self.dl_request.services_registry
-        assert isinstance(services_registry, BiApiServiceRegistry)
+        assert isinstance(services_registry, ApiServiceRegistry)
         loader = DatasetApiLoader(service_registry=services_registry)
 
         with GenericProfiler("dataset-prepare"):
@@ -285,7 +285,7 @@ class DatasetDataBaseView(BaseView):
             await us_manager.load_dependencies(self.dataset)
 
             services_registry = self.dl_request.services_registry
-            assert isinstance(services_registry, BiApiServiceRegistry)
+            assert isinstance(services_registry, ApiServiceRegistry)
 
             await self.check_for_notifications(services_registry, us_manager)
 
@@ -300,9 +300,7 @@ class DatasetDataBaseView(BaseView):
 
         return update_info
 
-    async def check_for_notifications(
-        self, services_registry: BiApiServiceRegistry, us_manager: AsyncUSManager
-    ) -> None:
+    async def check_for_notifications(self, services_registry: ApiServiceRegistry, us_manager: AsyncUSManager) -> None:
         ds_lc_manager = us_manager.get_lifecycle_manager(self.dataset)
         for conn_id in ds_lc_manager.collect_links().values():
             try:

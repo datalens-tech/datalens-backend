@@ -15,7 +15,7 @@ from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 from dl_api_connector.api_schema.extras import OperationsMode
 from dl_api_lib import api_decorators
 from dl_api_lib.schemas.tools import prepare_schema_context
-from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -117,9 +117,9 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         return USManagerFlaskMiddleware.get_request_service_us_manager()
 
     @classmethod
-    def get_service_registry(cls) -> BiApiServiceRegistry:
+    def get_service_registry(cls) -> ApiServiceRegistry:
         service_registry = cls.get_us_manager().get_services_registry()
-        assert isinstance(service_registry, BiApiServiceRegistry)
+        assert isinstance(service_registry, ApiServiceRegistry)
         return service_registry
 
     profile_methods = ("get", "post", "delete", "put", "patch", "options", "head")

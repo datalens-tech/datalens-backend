@@ -28,7 +28,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-clickhouse = "dl_connector_clickhouse.api.connector:ClickHouseBiApiConnector"
+clickhouse = "dl_connector_clickhouse.api.connector:ClickHouseApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 clickhouse = "dl_connector_clickhouse.core.clickhouse.connector:ClickHouseCoreConnector"

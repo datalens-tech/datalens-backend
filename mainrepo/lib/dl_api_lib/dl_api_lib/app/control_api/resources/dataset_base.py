@@ -28,7 +28,7 @@ from dl_api_lib.query.registry import (
     get_compeng_dialect,
     is_compeng_executable,
 )
-from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
+from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_api_lib.utils.rls import FieldRLSSerializer
 from dl_constants.enums import (
     AggregationFunction,
@@ -186,7 +186,7 @@ class DatasetResource(BIResource):
     def dump_option_data(
         cls,
         dataset: Dataset,
-        service_registry: BiApiServiceRegistry,
+        service_registry: ApiServiceRegistry,
         us_entry_buffer: USEntryBuffer,
     ) -> dict:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)

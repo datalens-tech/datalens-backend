@@ -32,8 +32,8 @@ datalens-task-processor = {path = "../dl_task_processor"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-file = "dl_connector_bundle_chs3.file.api.connector:FileS3BiApiConnector"
-gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.api.connector:GSheetsFileS3BiApiConnector"
+file = "dl_connector_bundle_chs3.file.api.connector:FileS3ApiConnector"
+gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.api.connector:GSheetsFileS3ApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 file = "dl_connector_bundle_chs3.file.core.connector:FileS3CoreConnector"

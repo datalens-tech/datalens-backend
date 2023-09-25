@@ -29,7 +29,7 @@ if TYPE_CHECKING:
 
 
 @attr.s
-class BiApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
+class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_formula_parser_factory(self) -> FormulaParserFactory:
         raise NotImplementedError
@@ -60,7 +60,7 @@ class BiApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
 
 
 @attr.s
-class DefaultBiApiServiceRegistry(DefaultServicesRegistry, BiApiServiceRegistry):  # noqa
+class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
     _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
     _formula_parser_factory: Optional[FormulaParserFactory] = attr.ib(kw_only=True)
     _dataset_validator_factory: Optional["DatasetValidatorFactory"] = attr.ib(kw_only=True)

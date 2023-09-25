@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dl_connector_bundle_chs3.chs3_base.api.connector import (
-    BaseFileS3BiApiConnectionDefinition,
-    BaseFileS3BiApiConnector,
-    BaseFileS3TableBiApiSourceDefinition,
+    BaseFileS3ApiConnectionDefinition,
+    BaseFileS3ApiConnector,
+    BaseFileS3TableApiSourceDefinition,
 )
 from dl_connector_bundle_chs3.chs3_gsheets.api.api_schema.connection import GSheetsFileS3ConnectionSchema
 from dl_connector_bundle_chs3.chs3_gsheets.api.connection_info import GSheetsFileS3ConnectionInfoProvider
@@ -14,17 +14,17 @@ from dl_connector_bundle_chs3.chs3_gsheets.core.connector import (
 )
 
 
-class GSheetsFileS3TableBiApiSourceDefinition(BaseFileS3TableBiApiSourceDefinition):
+class GSheetsFileS3TableApiSourceDefinition(BaseFileS3TableApiSourceDefinition):
     core_source_def_cls = GSheetsFileS3TableCoreSourceDefinition
 
 
-class GSheetsFileS3BiApiConnectionDefinition(BaseFileS3BiApiConnectionDefinition):
+class GSheetsFileS3ApiConnectionDefinition(BaseFileS3ApiConnectionDefinition):
     core_conn_def_cls = GSheetsFileS3CoreConnectionDefinition
     api_generic_schema_cls = GSheetsFileS3ConnectionSchema
     info_provider_cls = GSheetsFileS3ConnectionInfoProvider
 
 
-class GSheetsFileS3BiApiConnector(BaseFileS3BiApiConnector):
+class GSheetsFileS3ApiConnector(BaseFileS3ApiConnector):
     core_connector_cls = GSheetsFileS3CoreConnector
-    connection_definitions = (GSheetsFileS3BiApiConnectionDefinition,)
-    source_definitions = (GSheetsFileS3TableBiApiSourceDefinition,)
+    connection_definitions = (GSheetsFileS3ApiConnectionDefinition,)
+    source_definitions = (GSheetsFileS3TableApiSourceDefinition,)
