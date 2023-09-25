@@ -16,7 +16,6 @@ from bi_connector_gsheets.bi.connection_form.form_config import GSheetsConnectio
 from bi_connector_gsheets.bi.connection_info import GSheetsConnectionInfoProvider
 from bi_connector_gsheets.bi.filter_compiler import GSheetsFilterFormulaCompiler
 from bi_connector_gsheets.bi.i18n.localizer import CONFIGS
-from bi_connector_gsheets.bi.planner import GSheetsCompengExecutionPlanner
 from bi_connector_gsheets.core.connector import (
     GSheetsCoreConnectionDefinition,
     GSheetsCoreConnector,
@@ -44,7 +43,6 @@ class GSheetsBiApiConnector(BiApiConnector):
     connection_definitions = (GSheetsBiApiConnectionDefinition,)
     source_definitions = (GSheetsBiApiSourceDefinition,)
     default_multi_query_mutator_factory_cls = SimpleFieldSplitterMultiQueryMutatorFactory
-    legacy_initial_planner_cls = GSheetsCompengExecutionPlanner
     is_forkable = False
     is_compeng_executable = True
     filter_formula_compiler_cls = GSheetsFilterFormulaCompiler

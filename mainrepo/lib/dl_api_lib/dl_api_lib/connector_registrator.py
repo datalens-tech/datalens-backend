@@ -18,7 +18,6 @@ from dl_api_lib.i18n.registry import register_translation_configs
 from dl_api_lib.query.registry import (
     register_compeng_dialect,
     register_filter_formula_compiler_cls,
-    register_initial_planner_cls,
     register_is_compeng_executable,
     register_is_forkable_source,
     register_multi_query_mutator_factory_cls,
@@ -57,7 +56,6 @@ class BiApiConnectorRegistrator:
             dialects=(None,),
             factory_cls=connector.default_multi_query_mutator_factory_cls,
         )
-        register_initial_planner_cls(backend_type=backend_type, planner_cls=connector.legacy_initial_planner_cls)
         register_is_forkable_source(backend_type=backend_type, is_forkable=connector.is_forkable)
         register_is_compeng_executable(backend_type=backend_type, is_compeng_executable=connector.is_compeng_executable)
         register_filter_formula_compiler_cls(

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from itertools import chain
 import logging
-import os
 from typing import (
     TYPE_CHECKING,
     ClassVar,
@@ -15,10 +14,8 @@ from dl_api_lib.query.formalization.query_formalizer import SimpleQuerySpecForma
 from dl_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
 from dl_api_lib.query.registry import (
     get_compeng_dialect,
-    get_initial_planner_cls,
     get_multi_query_mutator_factory,
     is_compeng_enabled,
-    is_forkable_source,
 )
 from dl_api_lib.service_registry.service_registry import BiApiServiceRegistry
 from dl_constants.enums import (
@@ -70,19 +67,10 @@ from dl_query_processing.compilation.query_mutator import (
 )
 from dl_query_processing.compilation.specs import QuerySpec
 from dl_query_processing.enums import (
-    ExecutionLevel,
     QueryType,
     SelectValueType,
 )
 import dl_query_processing.exc
-from dl_query_processing.legacy_pipeline.planning.planner import NestedLevelTagExecutionPlanner
-from dl_query_processing.legacy_pipeline.recursive_slicing.recursive_slicer import RecursiveQuerySlicer
-from dl_query_processing.legacy_pipeline.separation.separator import QuerySeparator
-from dl_query_processing.legacy_pipeline.slicing.query_slicer import (
-    DefaultQuerySlicer,
-    QuerySlicerBase,
-)
-from dl_query_processing.legacy_pipeline.subqueries.forker import QueryForker
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_query_processing.legend.field_legend import Legend
 from dl_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
@@ -179,7 +167,6 @@ class DatasetBaseWrapper:
         self._id_validator = FieldIdValidator()
 
         self._debug_mode = debug_mode
-        self._new_subquery_mode = os.environ.get("NEW_SUBQUERY_MODE", "1") != "0"  # FIXME: This is very temporary
 
     @property
     def query_spec(self) -> QuerySpec:
@@ -234,42 +221,6 @@ class DatasetBaseWrapper:
             filter_compiler=self.make_filter_compiler(),
         )
 
-    def make_query_slicer(self) -> QuerySlicerBase:
-        assert self.inspect_env is not None
-        return DefaultQuerySlicer(inspect_env=self.inspect_env, debug_mode=self._debug_mode)
-
-    def make_query_separator(self) -> QuerySeparator:
-        return QuerySeparator(verbose_logging=self._verbose_logging)
-
-    def make_recursive_slicer(self) -> RecursiveQuerySlicer:
-        planner_kwargs = dict(
-            ds=self._ds,
-            inspect_env=self.inspect_env,
-            verbose_logging=self._verbose_logging,
-        )
-        backend_type = self.get_backend_type()
-        planner_cls = get_initial_planner_cls(backend_type=backend_type)
-        initial_planner = planner_cls(**planner_kwargs)  # type: ignore  # TODO: fix
-        secondary_planners_by_level_type = {
-            ExecutionLevel.source_db: [],
-            ExecutionLevel.compeng: [
-                NestedLevelTagExecutionPlanner(level_type=ExecutionLevel.compeng, **planner_kwargs),  # type: ignore  # TODO: fix
-            ],
-        }
-        # TODO: another set() in the registry
-        if is_forkable_source(backend_type=backend_type):
-            secondary_planners_by_level_type[ExecutionLevel.source_db] = [
-                NestedLevelTagExecutionPlanner(level_type=ExecutionLevel.source_db, **planner_kwargs),  # type: ignore  # TODO: fix
-            ]
-
-        return RecursiveQuerySlicer(
-            initial_planner=initial_planner,
-            query_slicer=self.make_query_slicer(),
-            query_separator=self.make_query_separator(),
-            secondary_planners_by_level_type=secondary_planners_by_level_type,  # type: ignore  # TODO: fix
-            verbose_logging=self._verbose_logging,
-        )
-
     def make_query_mutators(self) -> Sequence[QueryMutator]:
         return [
             OptimizingQueryMutator(
@@ -279,7 +230,7 @@ class DatasetBaseWrapper:
             ExtendedAggregationQueryMutator(
                 allow_empty_dimensions_for_forks=self._validation_mode,
                 allow_arbitrary_toplevel_lod_dimensions=self._validation_mode,
-                new_subquery_mode=self._new_subquery_mode,
+                new_subquery_mode=True,
             ),
         ]
 
@@ -292,9 +243,6 @@ class DatasetBaseWrapper:
         )
         mutators = factory.get_mutators()
         return mutators
-
-    def make_query_forker(self) -> QueryForker:
-        return QueryForker(verbose_logging=self._verbose_logging)
 
     def make_multi_query_translator(self) -> MultiLevelQueryTranslator:
         assert self.inspect_env is not None
@@ -396,27 +344,7 @@ class DatasetBaseWrapper:
         except KeyError:
             raise FieldNotFound(f"Field {field_id} not found in dataset")
 
-    def process_compiled_query_legacy(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
-        # FIXME: This version of the query-processing pipeline is being deprecated
-        #  and will be removed after the new one is fully implemented
-        try:
-            # Apply whole-query mutations
-            for mutator in self.make_query_mutators():
-                compiled_query = mutator.mutate_query(compiled_query=compiled_query)
-
-            # Slice query
-            recursive_slicer = self.make_recursive_slicer()
-            compiled_multi_query = recursive_slicer.slice_query_recursively(compiled_query=compiled_query)
-
-            # Fork subqueries.
-            query_forker = self.make_query_forker()
-            compiled_multi_query = query_forker.scan_and_fork_multi_query(compiled_multi_query=compiled_multi_query)
-        except formula_exc.FormulaError as err:
-            raise dl_query_processing.exc.FormulaHandlingError(*err.errors)
-
-        return compiled_multi_query
-
-    def process_compiled_query_new(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
+    def process_compiled_query(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
         try:
             # Apply whole-query mutations
             for mutator in self.make_query_mutators():
@@ -434,11 +362,6 @@ class DatasetBaseWrapper:
             raise dl_query_processing.exc.FormulaHandlingError(*err.errors)
 
         return compiled_multi_query
-
-    def process_compiled_query(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
-        if self._new_subquery_mode:
-            return self.process_compiled_query_new(compiled_query=compiled_query)
-        return self.process_compiled_query_legacy(compiled_query=compiled_query)
 
     def compile_and_translate_query(self, query_spec: QuerySpec) -> TranslatedMultiQueryBase:
         try:

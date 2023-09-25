@@ -16,7 +16,6 @@ from bi_connector_bitrix_gds.bi.connection_info import BitrixGDSConnectionInfoPr
 from bi_connector_bitrix_gds.bi.filter_compiler import BitrixGDSFilterFormulaCompiler
 from bi_connector_bitrix_gds.bi.i18n.localizer import CONFIGS
 from bi_connector_bitrix_gds.bi.multi_query import BitrixGDSMultiQueryMutatorFactory
-from bi_connector_bitrix_gds.bi.planner import BitrixGDSCompengExecutionPlanner
 from bi_connector_bitrix_gds.core.connector import (
     BitrixGDSCoreConnectionDefinition,
     BitrixGDSCoreConnector,
@@ -44,7 +43,6 @@ class BitrixGDSBiApiConnector(BiApiConnector):
     default_multi_query_mutator_factory_cls = BitrixGDSMultiQueryMutatorFactory
     connection_definitions = (BitrixGDSBiApiConnectionDefinition,)
     source_definitions = (BitrixGDSBiApiSourceDefinition,)
-    legacy_initial_planner_cls = BitrixGDSCompengExecutionPlanner
     is_forkable = False
     is_compeng_executable = True
     filter_formula_compiler_cls = BitrixGDSFilterFormulaCompiler

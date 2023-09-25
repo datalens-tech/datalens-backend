@@ -31,10 +31,6 @@ from dl_query_processing.compilation.filter_compiler import (
     FilterFormulaCompiler,
     MainFilterFormulaCompiler,
 )
-from dl_query_processing.legacy_pipeline.planning.planner import (
-    ExecutionPlanner,
-    WindowToCompengExecutionPlanner,
-)
 from dl_query_processing.multi_query.factory import (
     DefaultMultiQueryMutatorFactory,
     MultiQueryMutatorFactoryBase,
@@ -61,9 +57,6 @@ class BiApiConnector(abc.ABC):
     default_multi_query_mutator_factory_cls: ClassVar[
         Type[MultiQueryMutatorFactoryBase]
     ] = DefaultMultiQueryMutatorFactory
-    legacy_initial_planner_cls: ClassVar[
-        Type[ExecutionPlanner]
-    ] = WindowToCompengExecutionPlanner  # TODO: Remove with old LODs
     is_forkable: ClassVar[bool] = True
     is_compeng_executable: ClassVar[bool] = False
     filter_formula_compiler_cls: ClassVar[Type[FilterFormulaCompiler]] = MainFilterFormulaCompiler

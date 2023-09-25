@@ -23,7 +23,6 @@ from dl_formula.inspect.expression import (
     get_toplevel_dimension_set,
     is_window_expression,
 )
-from dl_formula.mutation.bfb import NormalizeBeforeFilterByMutation
 from dl_formula.mutation.general import (
     OptimizeConstAndOrMutation,
     OptimizeConstComparisonMutation,
@@ -39,7 +38,6 @@ from dl_formula.mutation.mutation import (
     FormulaMutation,
     apply_mutations,
 )
-from dl_formula.mutation.tagging import FunctionLevelTagMutation
 from dl_formula.mutation.window import WindowFunctionToQueryForkMutation
 from dl_formula.validation.aggregation import AggregationChecker
 from dl_formula.validation.env import ValidationEnvironment
@@ -342,14 +340,11 @@ class ExtendedAggregationQueryMutator(QueryMutator):
             contains_lookup_functions(node=formula.formula_obj) for formula in compiled_query.all_formulas
         )
 
-        will_mutate_winfuncs = False
-        if self._new_subquery_mode:
-            inspect_env = InspectionEnvironment()
-            has_winfuncs = any(
-                is_window_expression(node=formula.formula_obj, env=inspect_env)
-                for formula in compiled_query.all_formulas
-            )
-            will_mutate_winfuncs = has_winfuncs
+        inspect_env = InspectionEnvironment()
+        has_winfuncs = any(
+            is_window_expression(node=formula.formula_obj, env=inspect_env) for formula in compiled_query.all_formulas
+        )
+        will_mutate_winfuncs = has_winfuncs
 
         fork_mutators: List[AtomicQueryMutatorBase] = []
 
@@ -386,25 +381,7 @@ class ExtendedAggregationQueryMutator(QueryMutator):
             ]
 
         atomic_mutators: list[AtomicQueryMutatorBase]
-        if not self._new_subquery_mode:
-            atomic_mutators = [
-                # BFB clause preparation
-                DefaultAtomicQueryMutator(
-                    mutations=[
-                        NormalizeBeforeFilterByMutation(available_filter_field_ids=filter_ids),
-                    ]
-                ),
-                # Fork mutations
-                *fork_mutators,
-                # Tagging must be done strictly after the previous mutations have been applied to all nodes,
-                DefaultAtomicQueryMutator(
-                    mutations=[
-                        FunctionLevelTagMutation(),
-                    ]
-                ),
-            ]
-        else:
-            atomic_mutators = fork_mutators
+        atomic_mutators = fork_mutators
 
         for mutator in atomic_mutators:
             if mutator.match_query(compiled_query):

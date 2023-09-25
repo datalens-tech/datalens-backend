@@ -11,7 +11,6 @@ import uuid
 from clickhouse_sqlalchemy.drivers.native.base import ClickHouseDialect
 import pytest
 
-from dl_api_lib.enums import WhereClauseOperation
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect
@@ -20,6 +19,7 @@ from dl_constants.enums import (
     BinaryJoinOperator,
     BIType,
     FieldType,
+    WhereClauseOperation,
 )
 from dl_core.db import SchemaColumn
 from dl_core.db.native_type import ClickHouseNativeType
@@ -46,22 +46,13 @@ from dl_query_processing.compilation.formula_compiler import FormulaCompiler
 from dl_query_processing.compilation.primitives import (
     AvatarFromObject,
     CompiledFormulaInfo,
+    CompiledMultiQuery,
     CompiledQuery,
     FromColumn,
     JoinedFromObject,
 )
 from dl_query_processing.compilation.specs import FilterFieldSpec
-from dl_query_processing.legacy_pipeline.planning.primitives import (
-    TOP_SLICER_CONFIG,
-    ExecutionLevel,
-    LevelPlan,
-    PlannedFormula,
-    SlicingPlan,
-)
-from dl_query_processing.legacy_pipeline.separation.primitives import (
-    CompiledLevel,
-    CompiledMultiLevelQuery,
-)
+from dl_query_processing.enums import ExecutionLevel
 from dl_query_processing.translation.flat_translator import FlatQueryTranslator
 from dl_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
 
@@ -70,30 +61,12 @@ def new_id() -> str:
     return str(uuid.uuid4())
 
 
-SINGLE_LEVEL_PLAN = LevelPlan(
-    level_types=[
-        ExecutionLevel.source_db,
-    ],
-)
-SINGLE_LEVEL_SLICING_PLAN = SlicingPlan(
-    slicer_configs=(TOP_SLICER_CONFIG,),
-)
-
 _TYPE_NAME_TO_USER_TYPE = {
     "Int32": BIType.integer,
     "String": BIType.string,
     "Date": BIType.date,
     "Datetime": BIType.genericdatetime,
 }
-
-
-class SimplePlannedFormula(PlannedFormula):
-    def __init__(self, formula: CompiledFormulaInfo) -> None:
-        super().__init__(
-            formula=formula,
-            level_plan=SINGLE_LEVEL_PLAN,
-            slicing_plan=SINGLE_LEVEL_SLICING_PLAN,
-        )
 
 
 def _make_ch_column(name: str, type_name: str, source_id: str) -> SchemaColumn:
@@ -207,7 +180,7 @@ class CompilerTestBase:
         self.prepare()
         return self
 
-    def _prepare_formula_as_query(self, comp_formula: CompiledFormulaInfo) -> CompiledMultiLevelQuery:
+    def _prepare_formula_as_query(self, comp_formula: CompiledFormulaInfo) -> CompiledMultiQuery:
         joined_from = JoinedFromObject(
             froms=[
                 AvatarFromObject(
@@ -219,23 +192,18 @@ class CompilerTestBase:
                 ),
             ],
         )
-        compiled_multi_query = CompiledMultiLevelQuery(
-            levels=[
-                CompiledLevel(
-                    queries=[
-                        CompiledQuery(
-                            id="1",
-                            joined_from=joined_from,
-                            select=[comp_formula],
-                            group_by=[],
-                            order_by=[],
-                            filters=[],
-                            join_on=[],
-                            limit=None,
-                            offset=None,
-                            level_type=ExecutionLevel.source_db,
-                        )
-                    ],
+        compiled_multi_query = CompiledMultiQuery(
+            queries=[
+                CompiledQuery(
+                    id="1",
+                    joined_from=joined_from,
+                    select=[comp_formula],
+                    group_by=[],
+                    order_by=[],
+                    filters=[],
+                    join_on=[],
+                    limit=None,
+                    offset=None,
                     level_type=ExecutionLevel.source_db,
                 )
             ],

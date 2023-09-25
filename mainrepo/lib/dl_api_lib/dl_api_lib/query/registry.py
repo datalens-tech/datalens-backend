@@ -11,8 +11,6 @@ from dl_query_processing.compilation.filter_compiler import (
     FilterFormulaCompiler,
     MainFilterFormulaCompiler,
 )
-from dl_query_processing.legacy_pipeline.planning import planner
-from dl_query_processing.legacy_pipeline.planning.planner import ExecutionPlanner
 from dl_query_processing.multi_query.factory import (
     DefaultMultiQueryMutatorFactory,
     MultiQueryMutatorFactoryBase,
@@ -35,21 +33,6 @@ def register_filter_formula_compiler_cls(
         assert _FILTER_FORMULA_COMPILER_BY_BACKEND[backend_type] is filter_compiler_cls
     except KeyError:
         _FILTER_FORMULA_COMPILER_BY_BACKEND[backend_type] = filter_compiler_cls
-
-
-_PLANNERS_BY_BACKEND: dict[SourceBackendType, Type[ExecutionPlanner]] = {}
-_DEFAULT_PLANNER: Type[ExecutionPlanner] = planner.WindowToCompengExecutionPlanner
-
-
-def get_initial_planner_cls(backend_type: SourceBackendType) -> Type[ExecutionPlanner]:
-    return _PLANNERS_BY_BACKEND.get(backend_type, _DEFAULT_PLANNER)
-
-
-def register_initial_planner_cls(backend_type: SourceBackendType, planner_cls: Type[ExecutionPlanner]) -> None:
-    try:
-        assert _PLANNERS_BY_BACKEND[backend_type] is planner_cls
-    except KeyError:
-        _PLANNERS_BY_BACKEND[backend_type] = planner_cls
 
 
 _IS_FORKABLE_BACKEND_TYPE: dict[SourceBackendType, bool] = {}
