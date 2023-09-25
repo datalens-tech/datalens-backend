@@ -1,4 +1,3 @@
-from bi_legacy_test_bundle_tests.api_lib.unit.query.utils import joined_from_from_avatar_ids
 from dl_constants.enums import JoinType
 from dl_formula.shortcuts import n
 from dl_query_processing.compilation.primitives import (
@@ -14,6 +13,7 @@ from dl_query_processing.legacy_pipeline.separation.primitives import (
     CompiledMultiLevelQuery,
 )
 from dl_query_processing.legacy_pipeline.subqueries.sanitizer import MultiQuerySanitizer
+from dl_query_processing_tests.unit.utils import joined_from_from_avatar_ids
 
 
 def test_simple_select_sanitizing():

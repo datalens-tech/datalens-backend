@@ -26,6 +26,7 @@ datalens-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+datalens-testing = {path = "../dl_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
