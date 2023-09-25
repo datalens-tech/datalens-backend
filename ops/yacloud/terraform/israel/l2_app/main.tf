@@ -53,7 +53,7 @@ module "main" {
     rqe_caches         = false
     mutation_caches    = true
     network_policy     = module.constants.env_data.k8s_use_cilium
-    rootless_mode      = false
+    rootless_mode      = true
   }
 
   app_resources = {
@@ -77,6 +77,10 @@ module "main" {
       cpu = "1"
       ram = "4Gi"
     }
+    rqe_dataset_api = {
+      cpu = "250m"
+      ram = "500Mi"
+    }
   }
 
 
@@ -86,6 +90,7 @@ module "main" {
     file_uploader_api    = "rest"
     file_uploader_worker = "rest"
     external_api         = "rest"
+    rqe_dataset_api      = "bi_api"
   }
 
   secrets_map = {

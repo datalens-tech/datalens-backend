@@ -78,7 +78,8 @@
       "port": 443
       "service_name": "file-uploader-api"
     "request_timeout": "305s"
-    "security_groups": []
+    "security_groups":
+    - "ccm8ptghogavdkha9gkr"
     "subnets":
     - "ddk2rck6hasf82hj7tqv"
     - "dqpt7i3npraj4o3nu8lf"
@@ -99,6 +100,9 @@
   "file_uploader_worker":
     "cpu": "1"
     "ram": "2Gi"
+  "rqe_dataset_api":
+    "cpu": "250m"
+    "ram": "500Mi"
 "app_tls_port": 8443
 "apps_to_run":
   "bi_api": true
@@ -116,8 +120,8 @@
   "caches": true
   "frozen_connectors": true
   "mutation_caches": true
-  "network_policy": false
-  "rootless_mode": false
+  "network_policy": true
+  "rootless_mode": true
   "rqe_caches": false
   "service_connectors": false
 "endpoints":
@@ -158,8 +162,9 @@
   "username": "samples_user_ro"
 "host_allow": ""
 "iam_basic_permission": "datalens.instances.use"
-"ipv4_deny": ""
-"ipv6_deny": ""
+"ipv4_deny": "127.0.0.1/32,169.254.0.0/16,172.16.0.0/24,172.17.0.0/24,172.18.0.0/24"
+"ipv6_deny": "2a11:f740:1:1::3e5/128,2a11:f740:1:1::41b/128,::1/128,2a11:f740:1:0:9000:45::/112,2a11:f740:1:4000:9000:45::/112,2a11:f740:1:8000:9000:45::/112"
+"jaeger_svc_name_suffix": ""
 "mdb":
   "cname_domains": ".rw.mdb.cloudil.com,.rw.mdb.il.nebius.cloud"
   "domains": ".mdb.cloudil.com,.mdb.il.nebius.cloud"
@@ -184,6 +189,9 @@
     "node_selector": "israel-rest"
     "taint_toleration": "israel-rest"
   "node_selector_key": "datalens.cloud.yandex.net/ng_discriminator"
+  "rqe_dataset_api":
+    "node_selector": "israel-bi_api"
+    "taint_toleration": "israel-bi_api"
   "taint_toleration_key": "dedicated"
 "redis_caches":
   "cluster_name": "caches"

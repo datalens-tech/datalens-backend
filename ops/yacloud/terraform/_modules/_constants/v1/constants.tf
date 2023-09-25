@@ -113,7 +113,7 @@ variable "data" {
       ycp_profile               = "israel"
       ycp_environment           = "israel"
       k8s_use_ext_v6            = true
-      k8s_use_cilium            = false
+      k8s_use_cilium            = true
       k8s_use_bastion           = false
       bastion_cidr              = []
       bastion_endpoint_suffix   = "k8s.bastion.yandexcloud.co.il"

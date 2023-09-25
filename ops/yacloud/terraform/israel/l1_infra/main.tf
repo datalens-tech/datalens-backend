@@ -57,7 +57,7 @@ module "main" {
   env_name   = "israel"
   yc_profile = "israel"
 
-  k8s_version        = "1.22"
+  k8s_version        = "1.24"
   k8s_cluster_region = "il1"
 
   setup_logbroker = false

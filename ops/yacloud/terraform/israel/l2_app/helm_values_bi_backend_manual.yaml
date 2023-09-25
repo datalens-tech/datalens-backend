@@ -4,17 +4,23 @@ app:
 docker_images_info:
   bi_api:
     repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api  # CLOUD-122905
-    tag: "0.2001.0"
+    tag: "0.2032.0"
   control_api:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/nebius-control-api
   data_api:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-api
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/nebius-data-api
+  rqe_int_sync:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-rqe-int-sync
+  rqe_ext_async:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-rqe-ext-async
+  rqe_ext_sync:
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-rqe-ext-sync
   file_uploader_api:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader
-    tag: "0.115.0"
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/yc-file-uploader-api
+    tag: "0.2036.0"
   file_uploader_worker:
-    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-file-uploader-worker
-    tag: "0.140.0"
+    repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/yc-file-uploader-worker
+    tag: "0.2034.0"
   external_api:
     repo: cr.cloudil.com/crlfgqo1pse5j9udsk53/bi-external-api-tier-1
     tag: "0.78.0"
