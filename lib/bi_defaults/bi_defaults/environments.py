@@ -963,7 +963,7 @@ class NebiusInstallation(InstallationBase):
     """Base class for all white-lable installations"""
 
 
-class IsraelInstallation(NebiusInstallation, CommonExternalInstallation):
+class IsraelInstallation(NebiusInstallation):
     # IAMAwareInstallation:
     YC_API_ENDPOINT_IAM: ClassVar[str] = "iam.private-api.yandexcloud.co.il:14283"
     YC_API_ENDPOINT_RM: ClassVar[str] = "rm.private-api.yandexcloud.co.il:14284"
