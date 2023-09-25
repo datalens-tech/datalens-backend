@@ -1,22 +1,16 @@
-import attr
-
 from dl_configs.connectors_settings import (
     ConnectorsConfigType,
     ConnectorSettingsBase,
 )
-from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
-
-@attr.s(frozen=True)
-class MysqlConnectorSettings(ConnectorSettingsBase):
-    USE_MDB_CLUSTER_PICKER: bool = s_attrib("USE_MDB_CLUSTER_PICKER", missing=False)  # type: ignore
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 
 def mysql_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
-    return dict(MYSQL=MysqlConnectorSettings())
+    return dict(MYSQL=MDBConnectorSettings())
 
 
 class MySQLMDBSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = MysqlConnectorSettings
+    settings_class = MDBConnectorSettings
     fallback = mysql_settings_fallback

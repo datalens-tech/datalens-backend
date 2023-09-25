@@ -12,8 +12,8 @@ from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
 
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 from bi_connector_postgresql_mdb.bi.connection_form.form_config import PostgreSQLMDBConnectionFormFactory
-from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings
 
 
 class TestPostgresMDBConnectionForm(ConnectionFormTestBase):
@@ -25,7 +25,7 @@ class TestPostgresMDBConnectionForm(ConnectionFormTestBase):
         ids=("with_mdb", "no_mdb"),
     )
     def connectors_settings(self, request) -> Optional[ConnectorSettingsBase]:
-        return PostgresConnectorSettings(USE_MDB_CLUSTER_PICKER=request.param)
+        return MDBConnectorSettings(USE_MDB_CLUSTER_PICKER=request.param)
 
     @pytest.fixture(
         params=(TenantYCFolder(folder_id="some_folder_id"), TenantYCOrganization(org_id="some_org_id")),

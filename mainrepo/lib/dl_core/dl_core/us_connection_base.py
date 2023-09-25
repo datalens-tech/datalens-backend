@@ -105,14 +105,14 @@ _CB_TV = TypeVar("_CB_TV", bound="ConnectionBase")
 class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     dir_name: ClassVar[str] = ""  # type: ignore  # TODO: fix
     scope: ClassVar[str] = "connection"  # type: ignore  # TODO: fix
+
+    conn_type: ConnectionType
     source_type: ClassVar[Optional[CreateDSFrom]] = None
     allowed_source_types: ClassVar[Optional[frozenset[CreateDSFrom]]] = None
     allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
     is_always_user_source: ClassVar[bool] = False
-
-    conn_type: ConnectionType = None  # type: ignore  # TODO: fix
 
     _preview_conn = None
 
@@ -183,14 +183,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         if cls.source_type is not None:
             return frozenset((cls.source_type,))
         return frozenset()
-
-    # TODO FIX: Remove after all connections will be upgraded to V7 and migrations to V7 will be removed
-    @classmethod
-    def _class_generator(cls, us_resp):  # type: ignore  # TODO: fix
-        from dl_core.us_connection import get_connection_class
-
-        conn_type = ConnectionType(us_resp["type"])
-        return get_connection_class(conn_type)
 
     @property
     def conn_ref(self) -> Optional[ConnectionRef]:

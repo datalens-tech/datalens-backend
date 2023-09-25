@@ -148,7 +148,6 @@ from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT_USER_AUTH,
     DATA_SOURCE_CREATE_VIA_YT_TO_DL,
 )
-from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
 from bi_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
     CONNECTION_TYPE_METRICA_API,
@@ -159,9 +158,7 @@ from bi_connector_metrica.core.settings import (
 )
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
-from bi_connector_mysql_mdb.core.settings import MysqlConnectorSettings
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
-from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings
 from bi_connector_yql.core.ydb.constants import CONNECTION_TYPE_YDB
 from bi_connector_yql.core.ydb.settings import YDBConnectorSettings
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
@@ -386,9 +383,6 @@ def connectors_settings(clickhouse_db, partner_keys_private_dl, partner_keys_pri
         ),
         CONNECTION_TYPE_CH_OVER_YT: CHYTConnectorSettings(),
         CONNECTION_TYPE_CH_OVER_YT_USER_AUTH: CHYTConnectorSettings(),
-        CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(),
-        CONNECTION_TYPE_MYSQL: MysqlConnectorSettings(),
-        CONNECTION_TYPE_POSTGRES: PostgresConnectorSettings(),
         CONNECTION_TYPE_YQ: YQConnectorSettings(
             HOST="grpcs://grpc.yandex-query.cloud-preprod.yandex.net",
             PORT=2135,

@@ -56,10 +56,6 @@ class USEntry:
     _us_manager: Optional[USManagerBase]
 
     @classmethod
-    def _class_generator(cls, us_resp):  # type: ignore  # TODO: fix
-        return cls
-
-    @classmethod
     def create_from_dict(
         cls: Type[_USENTRY_TV],
         data_dict: Union[dict, BaseAttrsDataModel],

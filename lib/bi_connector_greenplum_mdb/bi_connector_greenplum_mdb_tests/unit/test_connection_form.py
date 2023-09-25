@@ -13,7 +13,7 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_greenplum.api.i18n.localizer import CONFIGS as BI_CONNECTOR_GREENPLUM_CONFIGS
 
 from bi_connector_greenplum_mdb.bi.connection_form.form_config import GreenplumMDBConnectionFormFactory
-from bi_connector_greenplum_mdb.core.settings import GreenplumConnectorSettings
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 
 class TestGreenplumMDBConnectionForm(ConnectionFormTestBase):
@@ -25,7 +25,7 @@ class TestGreenplumMDBConnectionForm(ConnectionFormTestBase):
         ids=("with_mdb", "no_mdb"),
     )
     def connectors_settings(self, request) -> Optional[ConnectorSettingsBase]:
-        return GreenplumConnectorSettings(USE_MDB_CLUSTER_PICKER=request.param)
+        return MDBConnectorSettings(USE_MDB_CLUSTER_PICKER=request.param)
 
     @pytest.fixture(
         params=(TenantYCFolder(folder_id="some_folder_id"), TenantYCOrganization(org_id="some_org_id")),

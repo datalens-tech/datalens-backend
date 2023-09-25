@@ -20,7 +20,7 @@ from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_PO
 
 import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
 from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
-from bi_connector_postgresql_mdb.core.settings import PostgresConnectorSettings
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 
 class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
@@ -29,7 +29,7 @@ class PostgreSQLMDBConnectionFormFactory(PostgreSQLConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, PostgresConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, MDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
         mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 

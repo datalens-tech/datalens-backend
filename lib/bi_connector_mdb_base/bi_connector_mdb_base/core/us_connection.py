@@ -14,11 +14,14 @@ from bi_api_commons_ya_cloud.models import (
     TenantYCFolder,
     TenantYCOrganization,
 )
+from bi_api_lib_ya.connections_security.base import MDBDomainManager
 from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+from dl_constants.enums import ConnectionType
 from dl_core import exc
 from dl_core.connection_models import ConnectOptions
 
 from bi_connector_mdb_base.core.base_models import MDBConnectOptionsMixin
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 
 if TYPE_CHECKING:
@@ -38,6 +41,8 @@ class _MDBConnectOptionsProtocol(MDBConnectOptionsMixin, ConnectOptions):
 
 class _MDBConnectionProtocol(Protocol):
     MDB_CLIENT_CLS: ClassVar[Type[MDBClusterServiceBaseClient]]
+
+    conn_type: ConnectionType
 
     @property
     def data(self) -> ConnMDBDataModelMixin:
@@ -73,11 +78,22 @@ class MDBConnectionMixin:
             original_version=original_version,
         )
 
+        cs = services_registry.get_connectors_settings(self.conn_type)
+        assert cs is not None and isinstance(cs, MDBConnectorSettings)
+        if not cs.MDB_ORG_CHECK_ENABLED:
+            self.data.skip_mdb_org_check = True
+            return
+
         if self.data.mdb_cluster_id == "":
             self.data.mdb_cluster_id = None
-
         if self.data.mdb_cluster_id is None:
-            return
+            db_domain_manager = services_registry.get_conn_executor_factory().conn_security_manager.db_domain_manager
+            assert isinstance(db_domain_manager, MDBDomainManager)
+            if any(db_domain_manager.host_in_mdb(host) for host in self.parse_multihosts()):
+                raise exc.ConnectionConfigurationError(
+                    'Connection to Managed Databases should be created via "Select in folder" scenario.',
+                )
+            return  # Nothing to check anymore - all connection hosts are not MDB
 
         issr = services_registry.get_installation_specific_service_registry(YCServiceRegistry)
         cli_mdb = await issr.get_mdb_client(self.MDB_CLIENT_CLS)
@@ -99,29 +115,24 @@ class MDBConnectionMixin:
         else:
             raise Exception("Unsupported tenant type")
 
-        # Temporary flag    # TODO: remove raise_on_check_fail flag
-        raise_on_check_fail = os.environ.get("MDB_ORG_CHECK_ENABLED", "0") == "1"
-        if raise_on_check_fail and original_version is None:
-            self.data.skip_mdb_org_check = True
-
         if cluster_org_id != current_org_id:
             LOGGER.info(
                 f"MDB cluster and DataLens tenant organization id mismatch: "
                 f'"{cluster_org_id}" != "{current_org_id}"',
             )
-            if raise_on_check_fail and not self.data.skip_mdb_org_check:  # TODO: remove `raise_on_check_fail` flag
+            if not self.data.skip_mdb_org_check:
                 raise exc.ConnectionConfigurationError(
                     f"Unable to use Managed Databases cluster from another organization. "
                     f'Current DataLens organization id: "{current_org_id}", '
                     f'database organization id: "{cluster_org_id}".'
                 )
 
-        if not all(host in cluster_hosts for host in self.parse_multihosts()):
+        if not all(host in cluster_hosts for host in self.parse_multihosts()):  # TODO: check CNAMEs
             LOGGER.info(
                 f"MDB cluster and DataLens tenant organization id mismatch: "
                 f'"{cluster_org_id}" != "{current_org_id}"',
             )
-            if raise_on_check_fail and not self.data.skip_mdb_org_check:  # TODO: remove `raise_on_check_fail` flag
+            if not self.data.skip_mdb_org_check:
                 raise exc.ConnectionConfigurationError("All hosts in connection must belong to specified cluster")
 
         self.data.is_verified_mdb_org = True

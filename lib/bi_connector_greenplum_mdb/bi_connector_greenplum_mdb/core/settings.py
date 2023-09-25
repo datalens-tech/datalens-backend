@@ -1,22 +1,16 @@
-import attr
-
 from dl_configs.connectors_settings import (
     ConnectorsConfigType,
     ConnectorSettingsBase,
 )
-from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
-
-@attr.s(frozen=True)
-class GreenplumConnectorSettings(ConnectorSettingsBase):
-    USE_MDB_CLUSTER_PICKER: bool = s_attrib("USE_MDB_CLUSTER_PICKER", missing=False)  # type: ignore
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 
 def greenplum_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
-    return dict(GREENPLUM=GreenplumConnectorSettings())
+    return dict(GREENPLUM=MDBConnectorSettings())
 
 
 class GreenplumMDBSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = GreenplumConnectorSettings
+    settings_class = MDBConnectorSettings
     fallback = greenplum_settings_fallback

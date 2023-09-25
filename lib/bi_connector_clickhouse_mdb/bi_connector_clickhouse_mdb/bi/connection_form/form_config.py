@@ -19,9 +19,9 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_clickhouse.api.connection_form.form_config import ClickHouseConnectionFormFactory
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
-from bi_connector_clickhouse_mdb.core.settings import ClickHouseConnectorSettings
 import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
 from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 
 class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
@@ -30,7 +30,7 @@ class ClickHouseMDBConnectionFormFactory(ClickHouseConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, MDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
         mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 

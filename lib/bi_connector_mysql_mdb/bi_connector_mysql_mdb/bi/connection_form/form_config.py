@@ -18,9 +18,9 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 
 import bi_connector_mdb_base.bi.form_config.models.rows.prepared.components as mdb_c
 from bi_connector_mdb_base.bi.form_config.models.shortcuts import get_db_host_section
+from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 from bi_connector_mysql.bi.connection_form.form_config import MySQLConnectionFormFactory
 from bi_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
-from bi_connector_mysql_mdb.core.settings import MysqlConnectorSettings
 
 
 class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
@@ -29,7 +29,7 @@ class MySQLMDBConnectionFormFactory(MySQLConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, MysqlConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, MDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
         mdb_enabled = connector_settings.USE_MDB_CLUSTER_PICKER
 
