@@ -2081,7 +2081,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "datalens-version"
-version = "0.2037.0"
+version = "0.2039.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
