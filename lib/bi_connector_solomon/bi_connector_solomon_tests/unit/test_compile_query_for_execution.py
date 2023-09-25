@@ -1,5 +1,8 @@
 from typing import Type
 
+import sqlalchemy as sa
+from sqlalchemy.engine.default import DefaultDialect
+
 from dl_core.connection_executors.adapters.common_base import (
     _DBA_TV,
     _TARGET_DTO_TV,
@@ -21,8 +24,14 @@ class TestBaseDirectAdapter(CommonBaseDirectAdapter):
         pass
 
 
+def get_dialect() -> DefaultDialect:
+    engine = sa.create_engine("bi_solomon://", strategy="mock", executor=lambda *_, **__: None)
+    engine = engine.execution_options(compiled_cache=None)
+    return engine.dialect
+
+
 def test_compile_query():
     adapter = TestBaseDirectAdapter()
     query = sa_plain_text('alias(constant_line(100), "100%")')
-    compiled_query = adapter.compile_query_for_execution(query)
+    compiled_query = adapter.compile_query_for_execution(query, dialect=get_dialect())
     assert compiled_query == 'alias(constant_line(100), "100%")'

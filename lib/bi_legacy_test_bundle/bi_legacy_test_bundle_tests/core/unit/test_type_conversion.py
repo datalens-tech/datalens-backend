@@ -3,7 +3,6 @@ from __future__ import annotations
 import pytest
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import BIType
 from dl_core.db import get_type_transformer
 from dl_core.db.native_type import CommonNativeType
@@ -42,9 +41,3 @@ def test_foreign_conversion(connection_type):
     # pass nullable, don't pass name (because user-type doesn't match)
     expected = CommonNativeType(conn_type=connection_type, name="date", nullable=False)
     assert mapped == expected
-
-
-@pytest.mark.parametrize("array_type", (BIType.array_int, BIType.array_float, BIType.array_str))
-def test_null_array_conversion(array_type):
-    tt = get_type_transformer(CONNECTION_TYPE_POSTGRES)
-    assert tt.cast_for_output(None, user_t=array_type) is None

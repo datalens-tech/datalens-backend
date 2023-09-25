@@ -49,21 +49,15 @@ SAMPLE_NATIVE_TYPES = (
 )
 
 
-@pytest.fixture(params=SAMPLE_NATIVE_TYPES, ids=[obj.native_type_class_name for obj in SAMPLE_NATIVE_TYPES])
-def some_native_type(request):
-    return request.param
-
-
+@pytest.mark.parametrize(
+    "some_native_type", SAMPLE_NATIVE_TYPES, ids=[obj.native_type_class_name for obj in SAMPLE_NATIVE_TYPES]
+)
 def test_native_type_schema(some_native_type):
     dumped = OneOfNativeTypeSchema().dump(some_native_type)
-    if isinstance(dumped, str):  # Transition
-        return
     assert dumped["native_type_class_name"] == some_native_type.native_type_class_name
     assert dumped["conn_type"] == some_native_type.conn_type.value
     assert dumped["name"] == some_native_type.name
 
     loaded = OneOfNativeTypeSchema().load(dumped)
-    if isinstance(loaded, str):
-        return  # Transition-state, the test isn't valid. TODO: remove.
     assert type(loaded) is type(some_native_type)
     assert loaded == some_native_type, "roundtrip"
