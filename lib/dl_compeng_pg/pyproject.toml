@@ -1,0 +1,51 @@
+
+[tool.poetry]
+name = "datalens-compeng-pg"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_compeng_pg"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiopg = ">=1.4.0"
+asyncpg = ">=0.27.0"
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+datalens-constants = {path = "../dl_constants"}
+datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
+datalens-core = {path = "../dl_core"}
+
+[tool.poetry.plugins."dl_core.data_processor_plugins"]
+compeng_aiopg = "dl_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
+compeng_asyncpg = "dl_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

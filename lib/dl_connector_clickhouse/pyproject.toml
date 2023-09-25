@@ -1,0 +1,88 @@
+
+[tool.poetry]
+name = "datalens-connector-clickhouse"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_connector_clickhouse"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.12"
+shortuuid = ">=1.0.11"
+sqlalchemy = ">=1.4.46, <2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-constants = {path = "../dl_constants"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-db-testing = {path = "../dl_db_testing"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_api_lib.connectors"]
+clickhouse = "dl_connector_clickhouse.api.connector:ClickHouseApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+clickhouse = "dl_connector_clickhouse.core.clickhouse.connector:ClickHouseCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+clickhouse = "dl_connector_clickhouse.db_testing.connector:ClickHouseDbTestingConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+clickhouse = "dl_connector_clickhouse.formula.connector:ClickHouseFormulaConnector"
+
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+clickhouse = "dl_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlugin"
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+frozendict = ">=2.3.8"
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+pytz = ">=2022.7.1"
+datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-testing = {path = "../dl_testing"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_connector_clickhouse_tests/db", "dl_connector_clickhouse_tests/unit"]
+
+
+
+[datalens.pytest.unit]
+root_dir = "dl_connector_clickhouse_tests/unit"
+skip_compose = "true"
+
+[datalens.pytest.db]
+root_dir = "dl_connector_clickhouse_tests/db"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+dl_connector_clickhouse = [
+    {path = "dl_connector_clickhouse/api"},
+    {path = "dl_connector_clickhouse/core"},
+]
+dl_formula_ref_dl_connector_clickhouse = [
+    {path = "dl_connector_clickhouse/formula_ref"},
+]

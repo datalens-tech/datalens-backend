@@ -1,0 +1,9 @@
+# Translations
+*.pot
+# Example data
+db_config.json
+# venv
+venv-bi-formula-ref/
+
+# Generated docs
+docs-source/

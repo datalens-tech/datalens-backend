@@ -1,0 +1,9 @@
+# United Storage with predefined env
+FROM ghcr.io/datalens-tech/datalens-us:latest
+
+ENV DEV_MODE="true"
+ENV SQL_DEBUG="true"
+ENV MULTITENANT="false"
+ENV DEBUG="knex:*"
+ENV APP_INSTALLATION="opensource"
+ENV APP_ENV="preprod"

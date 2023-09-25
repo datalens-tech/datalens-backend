@@ -1,0 +1,91 @@
+# Copyright (c) 2023 YANDEX LLC <datalens-opensource@yandex-team.ru>
+# This file is distributed under the same license as the DataLens package.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: datalens-opensource@yandex-team.ru\n"
+"POT-Creation-Date: 2023-09-22 08:13+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "field_host"
+msgstr "Hostname"
+
+msgid "field_port"
+msgstr "Port"
+
+msgid "field_username"
+msgstr "Username"
+
+msgid "field_password"
+msgstr "Password"
+
+msgid "field_db-name"
+msgstr "Path to database"
+
+msgid "value_raw-sql-level-off"
+msgstr "Forbid"
+
+msgid "value_raw-sql-level-subselect"
+msgstr "Allow subselects in datasets"
+
+msgid "value_raw-sql-level-subselect-note"
+msgstr "This option allows you to describe dataset sources using SQL queries"
+
+msgid "value_raw-sql-level-dashsql"
+msgstr "Allow subselects in datasets and queries from charts"
+
+msgid "value_raw-sql-level-dashsql-note"
+msgstr ""
+"This option allows you to describe dataset sources using SQL queries and "
+"create QL charts"
+
+msgid "label_allow-subselect-hint-2"
+msgstr ""
+"We do not recommend combining subqueries in datasets with RLS or "
+"restrictions on viewing tables."
+
+msgid "label_allow-subselect-hint-3"
+msgstr ""
+"SQL queries from charts enter the connection directly and do not take into "
+"account the RLS configured in the datasets."
+
+msgid "field_raw-sql-level"
+msgstr "Raw SQL level"
+
+msgid "field_access-token"
+msgstr "Access token"
+
+msgid "field_auto-create-dashboard"
+msgstr ""
+"Automatically create a dashboard, charts, and a dataset on the connection"
+
+msgid "label_advanced-settings"
+msgstr "Advanced connection settings"
+
+msgid "label_ssl-enabled"
+msgstr "TLS"
+
+msgid "value_ssl-enabled-off"
+msgstr "Off"
+
+msgid "value_ssl-enabled-on"
+msgstr "On"
+
+msgid "label_ssl-ca"
+msgstr "CA Certificate"
+
+msgid "label_data-export-forbidden"
+msgstr "Disable data export"
+
+msgid "help_text_data-export-forbidden"
+msgstr ""
+"Disabling data export will hide the data export button in the charts, though "
+"you will still be able to extract data from charts and take screenshots."
+
+msgid "value_data-export-forbidden-off"
+msgstr "Off"
+
+msgid "value_data-export-forbidden-on"
+msgstr "On"

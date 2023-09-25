@@ -1,0 +1,17 @@
+*.egg-info
+.venv
+build
+.task
+.tox
+.env
+.tmp.env*
+.coverage
+.python-version
+*.ipynb
+.ruff_cache
+.idea
+__pycache__
+ci_artifacts
+.DS_Store
+artifacts
+Taskfile.yml

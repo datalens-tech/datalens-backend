@@ -1,0 +1,40 @@
+
+[tool.poetry]
+name = "datalens-sqlalchemy-common"
+version = "0.2"
+description = "BI SQLAlchemy dialects common additions"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_sqlalchemy_common"}]
+license = "Apache 2.0"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
+datalens-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_sqlalchemy_common_tests/unit"]
+
+
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

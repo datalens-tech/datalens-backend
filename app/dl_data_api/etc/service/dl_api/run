@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+set -x  # debug.
+set -eu
+
+HTTP_BIND_PORT="8080"
+if [ "${BISYS_USE_IPV6:-1}" = "1" ]; then HTTP_BIND_ADDR="[::]"; else HTTP_BIND_ADDR="0.0.0.0"; fi
+
+GUNICORN_LISTEN_PORT="${BI_API_GUNICORN_LISTEN_PORT:-${GUNICORN_LISTEN_PORT:-${HTTP_BIND_PORT}}}"
+
+exec gunicorn dl_data_api.app:create_gunicorn_app \
+    --config "${BI_API_GUNICORN_CONFIG:-${GUNICORN_CONFIG}}" \
+    --log-config "${BI_API_GUNICORN_LOG_CONFIG:-${GUNICORN_LOG_CONFIG}}" \
+    --bind "${HTTP_BIND_ADDR}:${GUNICORN_LISTEN_PORT}" \
+    --max-requests "${BI_API_GUNICORN_MAX_RQ:-${GUNICORN_MAX_RQ:-5000}}" \
+    --max-requests-jitter "${BI_API_GUNICORN_MAX_RQ_JITTER:-${GUNICORN_MAX_RQ_JITTER:-500}}" \
+    --workers "${BI_API_GUNICORN_WORKERS_COUNT:-${GUNICORN_WORKERS_COUNT:-1}}" \
+    --worker-class aiohttp.GunicornWebWorker

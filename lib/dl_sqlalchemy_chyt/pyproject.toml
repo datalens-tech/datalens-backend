@@ -1,0 +1,38 @@
+
+[tool.poetry]
+name = "datalens-sqlalchemy-chyt"
+version = "0.7"
+description = "BI CHYT SQLAlchemy Dialect"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_sqlalchemy_chyt"}]
+license = "Apache 2.0"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_chyt = "dl_sqlalchemy_chyt.base:BICHYTDialect"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

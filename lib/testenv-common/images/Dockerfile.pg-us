@@ -1,0 +1,6 @@
+# FROM postgres:13-alpine
+FROM postgres:13-alpine@sha256:b9f66c57932510574fb17bccd175776535cec9abcfe7ba306315af2f0b7bfbb4
+
+COPY pg-us/docker-entrypoint-initdb.d/extensions.sql /docker-entrypoint-initdb.d/extensions.sql
+
+CMD ["postgres"]

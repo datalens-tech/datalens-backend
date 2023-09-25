@@ -1,0 +1,49 @@
+# Copyright (c) 2023 YANDEX LLC <datalens-opensource@yandex-team.ru>
+# This file is distributed under the same license as the DataLens package.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: datalens-opensource@yandex-team.ru\n"
+"POT-Creation-Date: 2023-09-22 08:17+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "label_connector-snowflake"
+msgstr "Snowflake"
+
+msgid "label_snowflake-doc-help"
+msgstr "Подробнее в [документации]({LINK})"
+
+msgid "label_account-name"
+msgstr "ACCOUNT_NAME"
+
+msgid "label_client-id"
+msgstr "CLIENT_ID"
+
+msgid "label_client-secret"
+msgstr "CLIENT_SECRET"
+
+msgid "button_get-new-token"
+msgstr "Получить новый токен"
+
+msgid "label_user-name"
+msgstr "User name"
+
+msgid "label_database"
+msgstr "Database name"
+
+msgid "label_database-schema"
+msgstr "Database schema"
+
+msgid "label_warehouse"
+msgstr "Warehouse"
+
+msgid "label_user-role"
+msgstr "User role"
+
+msgid "label_showflake-auth-section-title"
+msgstr "Аутентификация"
+
+msgid "label_showflake-db-details-section-title"
+msgstr "Сведения о базе данных"

@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  db-clickhouse-22-10:
+    ports:
+     - "51110:8123"
+     - "51111:9000"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-22-10

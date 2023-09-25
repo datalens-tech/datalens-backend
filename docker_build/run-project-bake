@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# This is a wrapper script for docker bake
+# It launch `docker buildx bake ...` with appropriate CWD and add all required .hcl files to arguments
+# All extra arguments will be passed to bake
+
+set -eux
+
+ALL_BAKE_FILES=(
+    _bake_vars_functions.hcl
+    bake_base.hcl
+    bake_ci.hcl
+    bake_code_gen.hcl
+    bake_sources.hcl
+    bake_translations.hcl
+    bake_apps.hcl
+)
+
+FILE_AGS=()
+
+for BAKE_FILE in "${ALL_BAKE_FILES[@]}"
+do
+  FILE_AGS+=(--file "${BAKE_FILE}")
+done
+
+HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+export DL_B_PROJECT_ROOT=$(realpath "${HERE}/..")
+
+cd "${HERE}"
+
+exec docker buildx bake "${FILE_AGS[@]}" "$@"

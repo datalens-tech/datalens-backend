@@ -1,0 +1,35 @@
+
+[tool.poetry]
+name = "datalens-utils"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_utils"}]
+license = "Apache 2.0"
+
+
+[tool.poetry.dependencies]
+async-timeout = ">=4.0.2"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+python = ">=3.10, <3.12"
+
+[tool.poetry.group.tests.dependencies]
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_utils_tests/unit"]
+
+
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

@@ -1,0 +1,7 @@
+# 9.4 is the earliest version that supports compeng expressions
+# FROM postgres:9.4.26-alpine
+FROM postgres:9.4.26-alpine@sha256:b3ae2dad6f153711444221849919b98c0503e6eef57be18300713cbef7ada4bc
+
+COPY db-postgres/data /common-data
+
+COPY db-postgres/initdb.d/* /docker-entrypoint-initdb.d/

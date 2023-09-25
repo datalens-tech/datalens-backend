@@ -1,0 +1,42 @@
+# This file is used by datalens-repmanager as the main configuration file
+
+dl_repo:
+  fs_editor: git
+
+  package_types:
+    - type: terrarium  # Repository tools
+      root_path: terrarium
+      boilerplate_path: lib/dl_package_boilerplate
+
+    - type: lib  # Main libraries
+      root_path: lib
+      boilerplate_path: lib/dl_package_boilerplate
+      tags:
+        - main_dependency_group
+
+    - type: app  # Apps
+      root_path: app
+      boilerplate_path: lib/dl_package_boilerplate
+      tags:
+        - main_dependency_group
+        - own_dependency_group
+
+  custom_package_map:
+    flask_marshmallow: flask-marshmallow
+    flask_restx: flask-restx
+    grpc: grpcio
+    jaeger_client: jaeger-client
+    jwt: pyjwt
+    typing_extensions: typing-extensions
+    marshmallow_oneofschema: marshmallow-oneofschema
+    more_itertools: more-itertools
+    psycopg2: psycopg2-binary
+    pytest_lazyfixture: pytest-lazyfixture
+    pyuwsgi: uwsgi
+    sentry_sdk: sentry-sdk
+    snowflake: snowflake-connector-python
+
+  metapackages: []
+
+  plugins:
+    - type: dependency_registration

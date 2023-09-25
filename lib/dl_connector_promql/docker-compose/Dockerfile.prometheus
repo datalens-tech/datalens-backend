@@ -1,0 +1,4 @@
+# FROM prom/prometheus:v2.29.1
+FROM prom/prometheus:v2.29.1@sha256:ca8ba947c1fb52346cb0e398eefef07927de4ae42e2270f9627edfc8efbdc4f0
+
+COPY prometheus /etc/prometheus

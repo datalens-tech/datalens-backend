@@ -1,0 +1,3 @@
+params:
+  BIGQUERY_CONFIG: {getter: $osenv, key: BIGQUERY_CONFIG}
+  BIGQUERY_CREDS: {getter: $osenv, key: BIGQUERY_CREDS}

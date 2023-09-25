@@ -1,0 +1,13 @@
+---
+editable: false
+---
+
+# {{ _('Function Availability') }}
+
+{{ _('Function availability for various data source types.') }}
+
+{% for audience, table in table_by_audience.items() -%}
+{%- if audience.default != True %}{{ '{% if audience == \"'+ audience.name + '\" %}' }}{% endif -%}
+{{ table }}
+{%- if audience.default != True %}{{ '{% endif %}' }}{% endif -%}
+{%- endfor %}

@@ -1,0 +1,41 @@
+name: build_apps
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bake_applications:
+    runs-on: [ self-hosted, linux ]
+    permissions:
+      packages: write
+      contents: read
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      CR_TAG_BASE: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+      IMAGE_NAME_CONTROL_API: "dl-control-api"
+      IMAGE_NAME_DATA_API: "dl-data-api"
+      BAKE_TARGET_CONTROL_API_APP: "dl_control_api"
+      BAKE_TARGET_DATA_API_APP: "dl_data_api"
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: "ghcr.io"
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - run: |
+          cd docker_build
+          ./run-project-bake "${BAKE_TARGET_CONTROL_API_APP}" --push --set "${BAKE_TARGET_CONTROL_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_CONTROL_API}:latest" --set "${BAKE_TARGET_CONTROL_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_CONTROL_API}:$(git rev-parse HEAD)"
+          ./run-project-bake "${BAKE_TARGET_DATA_API_APP}" --push --set "${BAKE_TARGET_DATA_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_DATA_API}:latest" --set "${BAKE_TARGET_DATA_API_APP}.tags=${CR_TAG_BASE}/${IMAGE_NAME_DATA_API}:$(git rev-parse HEAD)"

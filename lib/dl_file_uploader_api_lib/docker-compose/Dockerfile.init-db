@@ -1,0 +1,13 @@
+FROM python@sha256:aa053a66b9defa644886d62c78eaea6a13a2ceb49a979a9ad904561d8d4ba8da
+# ^ python:3.10-slim-bullseye
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update &&\
+    apt install -y curl &&\
+    apt clean &&\
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY init-db/s3 /s3
+COPY init-db/entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]

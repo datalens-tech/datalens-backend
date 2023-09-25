@@ -1,0 +1,57 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+
+services:
+  db-clickhouse-21-8:
+    ports:
+      - "52202:8123"
+      - "52203:9000"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-21-8
+    # Check non-UTC ClickHouse
+    environment:
+      TZ: "America/New_York"
+
+  db-clickhouse-22-10:
+    ports:
+      - "52204:8123"
+      - "52205:9000"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-22-10
+
+  db-clickhouse-22-10-ssl:
+    ports:
+      - "52206:8443"
+      - "52207:9440"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-22-10.ssl
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+     - "52210:5432"
+
+  us:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.us
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+     - "52211:80"

@@ -1,0 +1,23 @@
+---
+{%- if in_category %}
+title: {{meta_title}}{% if meta_description %}
+description: {{meta_description}}{% endif %}{% if meta_keywords %}
+keywords:{% for keyword in meta_keywords %}
+- {{keyword}}{% endfor %}{% endif %}{% endif %}
+editable: false
+---
+
+{% if title %}# {{ title }}
+{% endif %}{% if description %}{{ description }}
+{% endif %}{% for multi_func in functions %}
+{% for audience, func in multi_func.items() %}{% if audience.default != True %}{{ '{% if audience == \"'+ audience.name + '\" %}' }}{% endif %}
+## [{% if in_category %}{{ func.short_title }}{% else %}{{ func.title }}{% endif %}]({{ make_link(func) }})
+
+**{{ _('Syntax') }}:**{% if func.multi_signature %}{{ '<br/>' }}{% endif %}
+{%- for signature in func.signature_coll.signatures -%}
+{% if loop.index != 1 %}{{ _('<br/>or<br/>') }}{% endif %}`{{ signature.body }}`
+{%- endfor %}
+
+{% if func.description %}{{ func.description }}{% endif %}
+{% if audience.default != True %}{{ '{% endif %}' }}{% endif %}{% endfor %}
+{% endfor %}

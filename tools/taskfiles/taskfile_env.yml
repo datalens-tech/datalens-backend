@@ -1,0 +1,41 @@
+version: '3'
+
+vars:
+  THIS_DIR:
+    sh: realpath "."
+
+  PACKAGE_NAME:
+    sh: basename {{.USER_WORKING_DIR}}
+
+tasks:
+  mk_dot_env:
+    cmds:
+      - cp .env.sample .env
+      - echo 'fix env to point to the correct python executable'
+
+  ensure_venv:
+    dotenv:
+      - .env
+    cmds:
+      - |
+        if [ -f .env ]; then echo ""; else echo "Please create .env (at $(realpath .)), use .env.sample as reference"; exit 1; fi;
+        $PYTHON -m venv $VENV_PATH
+        . $VENV_PATH/bin/activate
+        pip install -r requirements-localhost.txt
+        pip install -e $(realpath  ../terrarium/dl_repmanager) $(realpath ../terrarium/bi_ci)
+    status:
+      - test -f $VENV_PATH/bin/activate
+    # todo: deal with ci to skip ensure_venv
+    #    sources:
+    #      - requirements-localhost.txt
+    silent: true
+
+  devenv:
+    dir: '/{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker-compose up --build
+
+  devenv-d:
+    dir: '/{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker-compose up --build -d

@@ -1,0 +1,6 @@
+from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
+from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
+
+
+class TestDateTimeFunctionBigQuery(BigQueryTestBase, DefaultDateTimeFunctionFormulaConnectorTestSuite):
+    pass

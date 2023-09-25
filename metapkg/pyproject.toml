@@ -1,0 +1,349 @@
+[tool.poetry]
+name = "datalens-metapackage"
+version = "0.1.0"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+license = "Apache 2.0"
+packages = [{include = "bi_ci_dummy"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+antlr4-python3-runtime = "==4.11.1"
+aiohttp = "==3.8.5"
+aiopg = "==1.4.0"
+anyascii = "==0.3.2"
+attrs = "==22.2.0"
+arq = "==0.25.0"
+certifi = "==2022.12.7"
+openpyxl = "==3.0.10"
+aiobotocore = "==2.4.2"
+aiogoogle = "==5.2.0"
+marshmallow = "==3.19.0"
+sentry-sdk = "==1.15.0"
+pyyaml = "==5.3.1"
+SQLAlchemy = "==1.4.46, <2.0"
+gunicorn = "==20.1.0"
+shortuuid = "==1.0.11"
+sqlalchemy = "==1.4.46, <2.0"
+Flask = "==2.0.3"
+Werkzeug = "==2.0.3"
+flask-marshmallow = "==0.14.0"
+flask-restx = "==1.1.0"
+graphviz = "==0.17"
+ipdb = "==0.13.13"
+ipython = "==8.10.0"
+marshmallow-oneofschema = "==3.0.1"
+pandas = "==1.5.3"
+pyopenssl = "==21.0.0"
+python-dateutil = "==2.8.2"
+raven = "==6.10.0"
+requests = "==2.28.2"
+tabulate = "==0.9.0"
+async-timeout = "==4.0.2"
+psycopg2-binary = "==2.9.6"
+pyjwt = "==2.3.0"
+pytz = "==2022.7.1"
+ujson = "==1.35"
+werkzeug = "==2.0.3"
+xxhash = "==3.2.0"
+asyncpg = "==0.27.0"
+flask = "==2.0.3"
+snowflake-connector-python = "==2.9.0"
+snowflake-sqlalchemy = "==1.4.6"
+clickhouse-driver = "==0.2.5"
+dill = "==0.3.6"
+google-api-core = "==2.11.1"
+google-auth = "==2.21.0"
+oracledb = "==1.3.1"
+yarl = "==1.8.2"
+googleapis-common-protos = "==1.59.1"
+grpcio = "==1.45.0rc1"
+mysqlclient = "==1.4.6"
+pyodbc = "==4.0.35"
+ciso8601 = "==2.2.0"
+redis = "==4.5.1"
+Babel = "==2.12.1"
+jinja2 = "==3.1.2"
+opentracing = "==2.4.0"
+frozendict = "==2.3.8"
+typing-extensions = "==4.5.0"
+aiodns = "==3.0.0"
+jaeger-client = "==4.8.0"
+pytest = "==7.2.2"
+tornado = "==6.2"
+cryptography = "==3.3.2"
+typeguard = "==2.13.3"
+more-itertools = "==9.1.0"
+aiochclient = "==2.2.0"
+cchardet = "==2.1.7"
+dnspython = "==2.2.1"
+lz4 = "==4.3.2"
+[tool.poetry.group.ci.dependencies]
+boto3 = ">=1.24.59"  # TODO FIX: This is used in tests in some packages. Try to fix with dependency in relevant packages
+#
+# All apps should be listed here. This group is installed for CI & local development
+#
+clickhouse-sqlalchemy = {path = "../lib/clickhouse-sqlalchemy"}
+dynamic-enum = {path = "../lib/dynamic_enum"}
+redis_cache_lock = {path = "../lib/redis-cache-lock"}
+statcommons = {path = "../lib/statcommons"}
+datalens-version = {path = "../lib/dl_version"}
+datalens-file-uploader-task-interface = {path = "../lib/dl_file_uploader_task_interface"}
+datalens-api-commons = {path = "../lib/dl_api_commons"}
+datalens-api-lib-testing = {path = "../lib/dl_api_lib_testing"}
+datalens-sqlalchemy-postgres = {path = "../lib/dl_sqlalchemy_postgres"}
+datalens-utils = {path = "../lib/dl_utils"}
+datalens-sqlalchemy-common = {path = "../lib/dl_sqlalchemy_common"}
+datalens-us-client = {path = "../lib/dl_us_client"}
+datalens-file-uploader-lib = {path = "../lib/dl_file_uploader_lib"}
+datalens-constants = {path = "../lib/dl_constants"}
+datalens-formula-ref = {path = "../lib/dl_formula_ref"}
+datalens-connector-promql = {path = "../lib/dl_connector_promql"}
+datalens-compeng-pg = {path = "../lib/dl_compeng_pg"}
+datalens-api-client = {path = "../lib/dl_api_client"}
+datalens-i18n = {path = "../lib/dl_i18n"}
+datalens-connector-chyt = {path = "../lib/dl_connector_chyt"}
+datalens-connector-bundle-chs3 = {path = "../lib/dl_connector_bundle_chs3"}
+datalens-sqlalchemy-clickhouse = {path = "../lib/dl_sqlalchemy_clickhouse"}
+datalens-connector-postgresql = {path = "../lib/dl_connector_postgresql"}
+datalens-connector-clickhouse = {path = "../lib/dl_connector_clickhouse"}
+datalens-sqlalchemy-chyt = {path = "../lib/dl_sqlalchemy_chyt"}
+datalens-connector-greenplum = {path = "../lib/dl_connector_greenplum"}
+datalens-sqlalchemy-mssql = {path = "../lib/dl_sqlalchemy_mssql"}
+datalens-sqlalchemy-promql = {path = "../lib/dl_sqlalchemy_promql"}
+datalens-formula-testing = {path = "../lib/dl_formula_testing"}
+datalens-testing = {path = "../lib/dl_testing"}
+datalens-formula = {path = "../lib/dl_formula"}
+datalens-connector-snowflake = {path = "../lib/dl_connector_snowflake"}
+datalens-configs = {path = "../lib/dl_configs"}
+datalens-api-connector = {path = "../lib/dl_api_connector"}
+datalens-core = {path = "../lib/dl_core"}
+datalens-app-tools = {path = "../lib/dl_app_tools"}
+datalens-query-processing = {path = "../lib/dl_query_processing"}
+datalens-file-uploader-api-lib = {path = "../lib/dl_file_uploader_api_lib"}
+datalens-sqlalchemy-oracle = {path = "../lib/dl_sqlalchemy_oracle"}
+datalens-file-secure-reader-lib = {path = "../lib/dl_file_secure_reader_lib"}
+datalens-model-tools = {path = "../lib/dl_model_tools"}
+datalens-package-boilerplate = {path = "../lib/dl_package_boilerplate"}
+datalens-core-testing = {path = "../lib/dl_core_testing"}
+datalens-api-lib = {path = "../lib/dl_api_lib"}
+datalens-db-testing = {path = "../lib/dl_db_testing"}
+datalens-file-uploader-worker-lib = {path = "../lib/dl_file_uploader_worker_lib"}
+datalens-connector-bigquery = {path = "../lib/dl_connector_bigquery"}
+datalens-task-processor = {path = "../lib/dl_task_processor"}
+
+#
+# This section defines dependencies groups per app.
+# To export/install specific app without other dependencies - use `--only` flag
+# Group naming convention: `app_${APP_FOLDER_NAME}`
+#
+
+[tool.poetry.group.dev.dependencies]
+black = "==23.3.0"
+ruff = "==0.0.267"
+ipdb = "==0.13.13"
+mysqlclient = "==1.4.6"
+psycopg2 = "==2.8.6"
+pyodbc = "==4.0.35"
+pytest = "==7.2.2"
+python-dateutil = "==2.8.2"
+pytest-asyncio = "==0.21.0"
+uwsgi = "==2.0.21"
+shortuuid = "==1.0.11"
+sentry-sdk = "==1.15.0"
+babel = "==2.12.1"
+mock = "==4.0.3"
+responses = "==0.23.1"
+pytest-lazy-fixture = "==0.6.3"
+pytz = "==2022.7.1"
+oracledb = "==1.3.1"
+psycopg2-binary = "==2.9.6"
+tomlkit = "==0.11.8"
+pandas = "==1.5.3"
+platformdirs = "==3.8.0"
+clize = "==5.0.0"
+poetry = "==1.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens.meta.mypy_common]
+# this section will be inserted into all packages under
+warn_unused_configs = true
+disallow_untyped_defs = true
+#; to make `disallow_untyped_defs = False` overrides more useful:
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.meta.mypy_stubs_packages_override]
+# bunch of overrides for different case
+# : src package -> {"name": "non standard name, but same stub should have same version"}
+# : src package -> {"name": "non standard name", "version": "hard coded version"}
+# : src package -> {"version": "hard coded version"}  # implies standard types-{pkg name} name
+# : src package -> {"ignore": true} # stub doesn't exist
+aiochclient = {ignore = true}
+aiodns = {ignore = true}
+aiogoogle =  {ignore = true}
+aiopg =  {ignore = true}
+antlr4-python3-runtime =  {ignore = true}
+arq =  {ignore = true}
+async-timeout =  {ignore = true}
+asyncpg =  {ignore = true}
+attrs =  {ignore = true}
+babel =  {ignore = true}
+black =  {ignore = true}
+boto3 =  {name = "boto3-stubs"}
+cchardet =  {ignore = true}
+certifi =  {ignore = true}
+ciso8601 =  {ignore = true}
+clickhouse-driver =  {ignore = true}
+clize =  {ignore = true}
+dill =  {ignore = true}
+dnspython =  {ignore = true}
+flask =  {ignore = true}
+flask-marshmallow =  {ignore = true}
+flask-restx =  {ignore = true}
+frozendict =  {ignore = true}
+google-api-core =  {ignore = true}
+google-auth =  {ignore = true}
+googleapis-common-protos =  {ignore = true}
+graphviz =  {ignore = true}
+grpcio =  {ignore = true}
+gunicorn =  {ignore = true}
+ipdb =  {ignore = true}
+ipython =  {ignore = true}
+jaeger-client =  {ignore = true}
+jinja2 =  {ignore = true}
+lz4 =  {ignore = true}
+marshmallow =  {ignore = true}
+marshmallow-oneofschema =  {ignore = true}
+more-itertools =  {ignore = true}
+mysqlclient =  {ignore = true}
+openpyxl =  {ignore = true}
+oracledb =  {ignore = true}
+pandas = {name = "pandas-stubs", version="1.5.3.230321"}
+platformdirs =  {ignore = true}
+poetry =  {ignore = true}
+psycopg2 =  {ignore = true}
+psycopg2-binary =  {name = "types-psycopg2"}
+pyjwt =  {ignore = true}
+pyodbc =  {ignore = true}
+pytest =  {ignore = true}
+pytest-asyncio =  {ignore = true}
+pyyaml =  {ignore = true}
+raven =  {ignore = true}
+responses =  {ignore = true}
+ruff =  {ignore = true}
+sentry-sdk =  {ignore = true}
+shortuuid =  {ignore = true}
+snowflake-connector-python =  {ignore = true}
+snowflake-sqlalchemy =  {ignore = true}
+tomlkit =  {ignore = true}
+tornado =  {ignore = true}
+typeguard =  {ignore = true}
+typing-extensions =  {ignore = true}
+ujson =  {version = "5.8.0.1"}
+uwsgi =  {ignore = true}
+werkzeug =  {ignore = true}
+xxhash =  {ignore = true}
+yarl =  {ignore = true}
+aioitertools =  {ignore = true}
+aiosignal = {ignore = true}
+aniso8601 = {ignore = true}
+anyascii = {ignore = true}
+asn1crypto = {ignore = true}
+asttokens = {ignore = true}
+backcall = {ignore = true}
+botocore = {name = "botocore-stubs"}
+build = {ignore = true}
+"cachecontrol[filecache]" = {ignore = true}
+cachetools = {ignore = true}
+charset-normalizer = {ignore = true}
+cleo = {ignore = true}
+click = {ignore = true}
+crashtest = {ignore = true}
+distlib = {ignore = true}
+docutils = {ignore = true}
+dulwich = {ignore = true}
+et-xmlfile = {ignore = true}
+exceptiongroup = {ignore = true}
+executing = {ignore = true}
+filelock = {ignore = true}
+frozenlist = {ignore = true}
+hiredis = {ignore = true}
+idna = {ignore = true}
+importlib-metadata = {ignore = true}
+iniconfig = {ignore = true}
+installer = {ignore = true}
+itsdangerous = {ignore = true}
+jaraco-classes = {ignore = true}
+jedi = {ignore = true}
+jsonschema = {ignore = true}
+keyring = {ignore = true}
+lockfile = {ignore = true}
+markupsafe = {ignore = true}
+matplotlib-inline = {ignore = true}
+msgpack = {ignore = true}
+multidict = {ignore = true}
+numpy = {ignore = true}
+od = {ignore = true}
+oscrypto = {ignore = true}
+packaging = {ignore = true}
+parso = {ignore = true}
+pathspec = {ignore = true}
+pickleshare = {ignore = true}
+pkginfo = {ignore = true}
+poetry-core = {ignore = true}
+poetry-plugin-export = {ignore = true}
+prompt-toolkit = {ignore = true}
+ptyprocess = {ignore = true}
+pure-eval = {ignore = true}
+pyasn1 = {ignore = true}
+pyasn1-modules = {ignore = true}
+pycares = {ignore = true}
+pycparser = {ignore = true}
+pycryptodomex = {ignore = true}
+pygments = {name = "types-Pygments", version="2.15.0.2"}
+pyproject-hooks = {ignore = true}
+pyrsistent = {ignore = true}
+python-dotenv = {ignore = true}
+rapidfuzz = {ignore = true}
+"redis[hiredis]" = {ignore = true}
+requests-toolbelt = {ignore = true}
+rsa = {ignore = true}
+shellingham = {ignore = true}
+sigtools = {ignore = true}
+sqlparse = {ignore = true}
+stack-data = {ignore = true}
+threadloop = {ignore = true}
+thrift = {ignore = true}
+tomli = {ignore = true}
+tonyg-rfc3339 = {ignore = true}
+traitlets = {ignore = true}
+trove-classifiers = {ignore = true}
+types-pyyaml = {ignore = true}
+virtualenv = {ignore = true}
+wcwidth = {ignore = true}
+webencodings = {ignore = true}
+wrapt = {ignore = true}
+zipp = {ignore = true}
+aiohttp = {ignore = true}
+greenlet = {ignore = true}
+jeepney = {ignore = true}
+pywin32-ctypes = {ignore = true}
+secretstorage = {ignore = true}
+tzdata = {ignore = true}
+xattr = {ignore = true}
+appnope = {ignore = true}
+
+[tool.poetry.group.app_dl_os_control_api.dependencies]
+datalens-control-api = {path = "../app/dl_control_api"}
+
+[tool.poetry.group.app_dl_os_data_api.dependencies]
+datalens-data-api = {path = "../app/dl_data_api"}

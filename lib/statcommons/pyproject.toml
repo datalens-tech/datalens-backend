@@ -1,0 +1,31 @@
+
+[tool.poetry]
+name = "statcommons"
+version = "0.28.0"
+description = "Possibly-statbox-api-related common utils and helpers and reusables."
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "statcommons"}]
+license = "Apache 2.0"
+
+
+[tool.poetry.dependencies]
+flask = ">=2.0.3"
+python = ">=3.10, <3.12"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

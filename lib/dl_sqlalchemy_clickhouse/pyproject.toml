@@ -1,0 +1,40 @@
+
+[tool.poetry]
+name = "datalens-sqlalchemy-clickhouse"
+version = "0.3"
+description = "BI ClickHouse SQLAlchemy Dialect Customizations"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_sqlalchemy_clickhouse"}]
+license = "Apache 2.0"
+readme = "README.rst"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_clickhouse = "dl_sqlalchemy_clickhouse.base:BIClickHouseDialect"
+bi_clickhouse_basic = "dl_sqlalchemy_clickhouse.base:BIClickHouseDialectBasic"
+
+[tool.poetry.group.tests.dependencies]
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_sqlalchemy_clickhouse_tests/unit"]
+
+
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

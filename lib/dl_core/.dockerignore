@@ -1,0 +1,9 @@
+.eggs
+.pytest_cache
+.tox
+.venv
+
+build
+.coverage
+.env
+*.egg-info

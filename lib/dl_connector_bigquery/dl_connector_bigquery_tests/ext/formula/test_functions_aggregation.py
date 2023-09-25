@@ -1,0 +1,6 @@
+from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
+from dl_formula_testing.testcases.functions_aggregation import DefaultMainAggFunctionFormulaConnectorTestSuite
+
+
+class TestMainAggFunctionBigQuery(BigQueryTestBase, DefaultMainAggFunctionFormulaConnectorTestSuite):
+    supports_countd_approx = True
