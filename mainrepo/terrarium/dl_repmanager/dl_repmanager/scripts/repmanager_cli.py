@@ -32,6 +32,10 @@ from dl_repmanager.repository_manager import (
     RepositoryManager,
 )
 from dl_repmanager.repository_navigator import RepositoryNavigator
+from dl_repmanager.scripts.package_meta_cli import (
+    DlPackageMetaTool,
+    add_package_commands,
+)
 
 
 def _entity_ref_type_type(value: str | EntityReferenceType) -> EntityReferenceType:
@@ -75,9 +79,9 @@ def make_parser() -> argparse.ArgumentParser:
         required=True,
         help="Type of the package. See the config file (dl-repo.yml) for available package types",
     )
-    rename_parser = argparse.ArgumentParser(add_help=False)
-    rename_parser.add_argument("--old-import-name", required=True, help="Old import (module) name")
-    rename_parser.add_argument("--new-import-name", required=True, help="New import (module) name")
+    old_new_import_names_parser = argparse.ArgumentParser(add_help=False)
+    old_new_import_names_parser.add_argument("--old-import-name", required=True, help="Old import (module) name")
+    old_new_import_names_parser.add_argument("--new-import-name", required=True, help="New import (module) name")
 
     # commands
     subparsers = parser.add_subparsers(title="command", dest="command")
@@ -99,12 +103,12 @@ def make_parser() -> argparse.ArgumentParser:
         help="Name of the package folder to copy from",
     )
 
-    rename_subparser = subparsers.add_parser(
+    rename_parser = subparsers.add_parser(
         "rename",
         parents=[package_name_parser],
         help="Rename package",
     )
-    rename_subparser.add_argument(
+    rename_parser.add_argument(
         "--new-package-name",
         required=True,
         help="New name of the package",
@@ -112,7 +116,7 @@ def make_parser() -> argparse.ArgumentParser:
 
     move_code_parser = subparsers.add_parser(
         "rename-module",
-        parents=[rename_parser],
+        parents=[old_new_import_names_parser],
         help="Rename module (move code from one package to another or within one package)",
     )
     move_code_parser.add_argument(
@@ -132,15 +136,13 @@ def make_parser() -> argparse.ArgumentParser:
         help="Change package type (move it to another directory)",
     )
 
-    package_list_subparser = subparsers.add_parser(
+    package_list_parser = subparsers.add_parser(
         "package-list",
         parents=[package_type_parser],
         help="List all packages of a given type",
     )
-    package_list_subparser.add_argument("--mask", help="Formatting mask")
-    package_list_subparser.add_argument(
-        "--base-path", default=".", help="Base path for formatting relative package paths"
-    )
+    package_list_parser.add_argument("--mask", help="Formatting mask")
+    package_list_parser.add_argument("--base-path", default=".", help="Base path for formatting relative package paths")
 
     subparsers.add_parser(
         "import-list",
@@ -154,13 +156,13 @@ def make_parser() -> argparse.ArgumentParser:
         help="List requirements of a package",
     )
 
-    req_check_subparser = subparsers.add_parser(
+    req_check_parser = subparsers.add_parser(
         "req-check",
         parents=[package_name_parser],
         help="Compare imports and requirements of a package",
     )
-    req_check_subparser.add_argument("--ignore-prefix", type=str, help="Package prefix to ignore when comparing")
-    req_check_subparser.add_argument("--tests", action="store_true", help="Check for tests, not the main package")
+    req_check_parser.add_argument("--ignore-prefix", type=str, help="Package prefix to ignore when comparing")
+    req_check_parser.add_argument("--tests", action="store_true", help="Check for tests, not the main package")
 
     metapackage_parser = argparse.ArgumentParser(add_help=False)
     metapackage_parser.add_argument("--metapackage", required=True, help="Metapackage name from repo config")
@@ -217,6 +219,17 @@ def make_parser() -> argparse.ArgumentParser:
     search_imports_parser.add_argument(
         "--imported", type=_entity_ref_list_type, required=True, help="List of imported entites to search for"
     )
+
+    recurse_packages_parser = subparsers.add_parser(
+        "recurse-packages",
+        parents=[entities_parser],
+        help="Apply command to multiple packages",
+    )
+    recurse_packages_subparsers = recurse_packages_parser.add_subparsers(
+        title="package_command",
+        dest="recurse_packages_command",
+    )
+    add_package_commands(recurse_packages_subparsers)
 
     return parser
 
@@ -370,6 +383,34 @@ class DlRepManagerTool:
         ]
         print("\n".join(sorted(formatted_imports)))
 
+    def recurse_packages(
+        self,
+        entities: list[EntityReference],
+        args: argparse.Namespace,
+    ) -> None:
+        for entity_ref in entities:
+            assert entity_ref.ref_type in (
+                EntityReferenceType.package_reg,
+                EntityReferenceType.package_type,
+            ), "Only `package_reg` and `package_type` supported here"
+
+        resolved_entities = self.repository_navigator.resolve_entities_to_type(
+            entities,
+            to_ref_type=EntityReferenceType.package_reg,
+        )
+        package_paths = [
+            self.package_index.get_package_info_by_reg_name(entity_ref.name).abs_path
+            for entity_ref in resolved_entities
+        ]
+        for package_path in package_paths:
+            print(f"Processing {package_path}")
+            DlPackageMetaTool.run_for_package_path(
+                fs_editor=self.repository_env.get_fs_editor(),
+                package_path=package_path,
+                package_command=args.recurse_packages_command,
+                args=args,
+            )
+
     @classmethod
     def run(cls, args: argparse.Namespace) -> None:
         config_file_name = args.config
@@ -437,6 +478,8 @@ class DlRepManagerTool:
                 tool.resolve_entities(entities=args.entities, to_ref_type=args.to_type)
             case "search-imports":
                 tool.search_imports(entities=args.entities, imported=args.imported)
+            case "recurse-packages":
+                tool.recurse_packages(entities=args.entities, args=args)
             case _:
                 raise RuntimeError(f"Got unknown command: {args.command}")
 

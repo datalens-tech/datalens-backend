@@ -6,6 +6,7 @@ from typing import (
     Any,
     Generator,
     Iterable,
+    Sequence,
 )
 
 import attr
@@ -60,7 +61,7 @@ class TOMLWriter(TOMLReaderBase):
         # __getitem__ might return an `OutOfOrderTableProxy` or an `AbstractTable` - you never know.
         # `AbstractTable` does have an `add` method while `OutOfOrderTableProxy` doesn't.
         section = self.get_section(key)
-        assert isinstance(section, AbstractTable)
+        assert isinstance(section, AbstractTable), f"Expected AbstractTable, got {type(section)}"
         return section
 
     def add_section(self, key: str) -> AbstractTable:
@@ -101,6 +102,16 @@ class TOMLWriter(TOMLReaderBase):
             yield
         except NonExistentKey:
             pass
+
+    def set_text_value(self, section_name: str, key: str, value: str) -> None:
+        section = self.get_section(section_name)
+        section[key] = value
+
+    def set_array_value(self, section_name: str, key: str, value: Sequence[str]) -> None:
+        section = self.get_section(section_name)
+        array = tomlkit.array()
+        array.extend(value)
+        section[key] = array
 
 
 @attr.s

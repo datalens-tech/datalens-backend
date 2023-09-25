@@ -135,14 +135,14 @@ class FilesystemEditor(abc.ABC):
         self._replace_regex_in_dir(path=path, regex=regex, repl=repl, mask_blacklist=mask_blacklist)
 
     @abc.abstractmethod
-    def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
+    def _copy_path(self, src_path: Path, dst_path: Path) -> None:
         """Make a copy of `src_dir` named `dst_dir`."""
         raise NotImplementedError
 
     @final
-    def copy_path(self, src_dir: Path, dst_dir: Path) -> None:
-        self._validate_paths(src_dir, dst_dir)
-        self._copy_path(src_dir=src_dir, dst_dir=dst_dir)
+    def copy_path(self, src_path: Path, dst_path: Path) -> None:
+        self._validate_paths(src_path, dst_path)
+        self._copy_path(src_path=src_path, dst_path=dst_path)
 
     @abc.abstractmethod
     def _move_path(self, old_path: Path, new_path: Path) -> None:
@@ -162,6 +162,15 @@ class FilesystemEditor(abc.ABC):
         self._validate_paths(path)
         self._remove_path(path=path)
 
+    @abc.abstractmethod
+    def _path_exists(self, path: Path) -> bool:
+        raise NotImplementedError
+
+    @final
+    def path_exists(self, path: Path) -> bool:
+        self._validate_paths(path)
+        return self._path_exists(path=path)
+
     @contextmanager
     def _open(self, path: Path, mode: str) -> Generator[TextIO, None, None]:
         with open(path, mode=mode) as file_obj:
@@ -179,10 +188,13 @@ class FilesystemEditor(abc.ABC):
 
 @attr.s(frozen=True)
 class DefaultFilesystemEditor(FilesystemEditor):
-    def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
-        assert src_dir.exists(), "Source dir doesn't exist"
-        assert not dst_dir.exists(), "Destination dir already exists"
-        shutil.copytree(src_dir, dst_dir)
+    def _copy_path(self, src_path: Path, dst_path: Path) -> None:
+        assert src_path.exists(), f"Source path '{src_path}' doesn't exist"
+        assert not dst_path.exists(), "Destination dir already exists"
+        if src_path.is_file():
+            shutil.copy(src_path, dst_path)
+        else:
+            shutil.copytree(src_path, dst_path)
 
     def _move_path(self, old_path: Path, new_path: Path) -> None:
         assert old_path.exists()
@@ -209,7 +221,13 @@ class DefaultFilesystemEditor(FilesystemEditor):
             shutil.move(old_path, new_path)
 
     def _remove_path(self, path: Path) -> None:
-        shutil.rmtree(path)
+        if path.is_file():
+            os.remove(path)
+        else:
+            shutil.rmtree(path)
+
+    def _path_exists(self, path: Path) -> bool:
+        return path.exists()
 
 
 @attr.s(frozen=True)
@@ -223,7 +241,9 @@ class GitFilesystemEditor(DefaultFilesystemEditor):
         subprocess.run(f'git add "{rel_old_path}" && git mv "{rel_old_path}" "{rel_new_path}"', shell=True)
 
     def _remove_path(self, path: Path) -> None:
-        subprocess.run(f'git rm "{path}"', shell=True)
+        result = subprocess.run(f'git rm "{path}"', shell=True)
+        if result.returncode != 0:
+            super()._remove_path(path)
 
 
 @attr.s(frozen=True)
@@ -243,6 +263,8 @@ class VirtualFilesystemEditor(FilesystemEditor):
 
     def _recursive_children(self, path: Path) -> list[Path]:
         children: set[Path] = set()
+        if path.is_file():
+            return [path]
         for real_child in path.rglob("*/"):
             if real_child in self._moved_paths.values():
                 # It has been moved
@@ -272,10 +294,10 @@ class VirtualFilesystemEditor(FilesystemEditor):
         if src_path in self._edited_files:
             self._edited_files[dst_path] = self._edited_files[src_path]
 
-    def _copy_path(self, src_dir: Path, dst_dir: Path) -> None:
-        self._copy_single_path(src_path=src_dir, dst_path=dst_dir)
-        for src_child_path in self._recursive_children(src_dir):
-            dst_child_path = dst_dir / src_child_path.relative_to(src_dir)
+    def _copy_path(self, src_path: Path, dst_path: Path) -> None:
+        self._copy_single_path(src_path=src_path, dst_path=dst_path)
+        for src_child_path in self._recursive_children(src_path):
+            dst_child_path = dst_path / src_child_path.relative_to(src_path)
             self._copy_single_path(src_path=src_child_path, dst_path=dst_child_path)
 
     def _move_single_path(self, src_path: Path, dst_path: Path) -> None:
@@ -340,6 +362,11 @@ class VirtualFilesystemEditor(FilesystemEditor):
             new_text = str_io.getvalue()
             if new_text != original_text:
                 self._edited_files[path] = new_text
+
+    def _path_exists(self, path: Path) -> bool:
+        return (
+            path in self._moved_paths or path in self._copied_paths or path in self._edited_files or path.exists()
+        ) and path not in self._removed_paths
 
 
 _FS_EDITOR_CLASSES: dict[str, Type[FilesystemEditor]] = {

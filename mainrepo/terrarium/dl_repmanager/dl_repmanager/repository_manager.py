@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 from typing import (
     Callable,
+    Collection,
     Mapping,
     Optional,
     Sequence,
@@ -221,7 +222,7 @@ class RepositoryManager:
         # Create a copy of the boilerplate dir
         boilerplate_dir = boilerplate_info.abs_path
         new_pkg_dir = package_info.abs_path
-        self.fs_editor.copy_path(src_dir=boilerplate_dir, dst_dir=new_pkg_dir)
+        self.fs_editor.copy_path(src_path=boilerplate_dir, dst_path=new_pkg_dir)
 
         # Rename and replace all the internals
         self._rename_package_internals(old_package_info=boilerplate_info, new_package_info=package_info)
