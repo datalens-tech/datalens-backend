@@ -20,7 +20,7 @@ datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
 datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-clickhouse_mdb = "bi_connector_clickhouse_mdb.bi.connector:ClickHouseMDBApiConnector"
+clickhouse_mdb = "bi_connector_clickhouse_mdb.api.connector:ClickHouseMDBApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 clickhouse_mdb = "bi_connector_clickhouse_mdb.core.connector:ClickHouseMDBCoreConnector"

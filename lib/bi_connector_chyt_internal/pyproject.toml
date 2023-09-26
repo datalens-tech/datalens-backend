@@ -26,7 +26,7 @@ datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-chyt_internal = "bi_connector_chyt_internal.bi.connector:CHYTInternalApiConnector"
+chyt_internal = "bi_connector_chyt_internal.api.connector:CHYTInternalApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 chyt_internal = "bi_connector_chyt_internal.core.connector:CHYTInternalCoreConnector"
@@ -58,6 +58,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_chyt_internal = [
-    {path = "bi_connector_chyt_internal/bi"},
+    {path = "bi_connector_chyt_internal/api"},
     {path = "bi_connector_chyt_internal/core"},
 ]

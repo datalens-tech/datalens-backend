@@ -12,7 +12,7 @@ from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_clickhouse.api.i18n.localizer import CONFIGS as BI_API_LIB_CONFIGS
 
-from bi_connector_clickhouse_mdb.bi.connection_form.form_config import ClickHouseMDBConnectionFormFactory
+from bi_connector_clickhouse_mdb.api.connection_form.form_config import ClickHouseMDBConnectionFormFactory
 from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 

@@ -20,15 +20,15 @@ datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connector:CHFrozenBumpyRoadsApiConnector"
-ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.bi.connector:CHFrozenCovidApiConnector"
-ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connector:CHFrozenDemoApiConnector"
-ch_frozen_dtp = "bi_connector_bundle_ch_frozen.ch_frozen_dtp.bi.connector:CHFrozenDTPApiConnector"
-ch_frozen_gkh = "bi_connector_bundle_ch_frozen.ch_frozen_gkh.bi.connector:CHFrozenGKHApiConnector"
-ch_frozen_horeca = "bi_connector_bundle_ch_frozen.ch_frozen_horeca.bi.connector:CHFrozenHorecaApiConnector"
-ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connector:CHFrozenSamplesApiConnector"
-ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.bi.connector:CHFrozenTransparencyApiConnector"
-ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connector:CHFrozenWeatherApiConnector"
+ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.api.connector:CHFrozenBumpyRoadsApiConnector"
+ch_frozen_covid = "bi_connector_bundle_ch_frozen.ch_frozen_covid.api.connector:CHFrozenCovidApiConnector"
+ch_frozen_demo = "bi_connector_bundle_ch_frozen.ch_frozen_demo.api.connector:CHFrozenDemoApiConnector"
+ch_frozen_dtp = "bi_connector_bundle_ch_frozen.ch_frozen_dtp.api.connector:CHFrozenDTPApiConnector"
+ch_frozen_gkh = "bi_connector_bundle_ch_frozen.ch_frozen_gkh.api.connector:CHFrozenGKHApiConnector"
+ch_frozen_horeca = "bi_connector_bundle_ch_frozen.ch_frozen_horeca.api.connector:CHFrozenHorecaApiConnector"
+ch_frozen_samples = "bi_connector_bundle_ch_frozen.ch_frozen_samples.api.connector:CHFrozenSamplesApiConnector"
+ch_frozen_transparency = "bi_connector_bundle_ch_frozen.ch_frozen_transparency.api.connector:CHFrozenTransparencyApiConnector"
+ch_frozen_weather = "bi_connector_bundle_ch_frozen.ch_frozen_weather.api.connector:CHFrozenWeatherApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 ch_frozen_bumpy_roads = "bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.core.connector:CHFrozenBumpyRoadsCoreConnector"
@@ -77,24 +77,24 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_bundle_ch_frozen = [
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_base/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_base/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_base/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_bumpy_roads/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_covid/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_covid/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_covid/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_demo/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_demo/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_demo/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_dtp/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_dtp/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_dtp/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_gkh/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_gkh/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_gkh/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_horeca/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_horeca/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_horeca/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_samples/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_samples/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_samples/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_transparency/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_transparency/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_transparency/core"},
-    {path = "bi_connector_bundle_ch_frozen/ch_frozen_weather/bi"},
+    {path = "bi_connector_bundle_ch_frozen/ch_frozen_weather/api"},
     {path = "bi_connector_bundle_ch_frozen/ch_frozen_weather/core"},
 ]

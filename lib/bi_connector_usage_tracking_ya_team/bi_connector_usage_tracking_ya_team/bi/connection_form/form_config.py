@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bi_connector_bundle_ch_filtered.base.bi.connection_form.form_config import ServiceConnectionBaseFormFactory
+from bi_connector_bundle_ch_filtered.base.api.connection_form.form_config import ServiceConnectionBaseFormFactory
 from bi_connector_usage_tracking_ya_team.bi.connection_info import UsageTrackingYaTeamConnectionInfoProvider
 from bi_connector_usage_tracking_ya_team.bi.i18n.localizer import Translatable
 

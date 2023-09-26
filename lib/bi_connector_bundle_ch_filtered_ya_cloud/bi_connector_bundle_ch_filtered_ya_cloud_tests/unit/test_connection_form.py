@@ -1,23 +1,23 @@
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 
-from bi_connector_bundle_ch_filtered.base.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_BUNDLE_CH_FILTERED_CONFIGS
-from bi_connector_bundle_ch_filtered_ya_cloud.base.bi.i18n.localizer import (
+from bi_connector_bundle_ch_filtered.base.api.i18n.localizer import CONFIGS as BI_CONNECTOR_BUNDLE_CH_FILTERED_CONFIGS
+from bi_connector_bundle_ch_filtered_ya_cloud.base.api.i18n.localizer import (
     CONFIGS as BI_CONNECTOR_BUNDLE_CH_FILTERED_YA_CLOUD_CONFIGS,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.api.connection_form.form_config import (
     CHGeoFilteredFormFactory,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.api.connection_form.form_config import (
     CHYaMusicPodcastStatsConnectionFormFactory,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.api.connection_form.form_config import (
     CHMarketCouriersConnectionFormFactory,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.api.connection_form.form_config import (
     CHSchoolbookConnectionFormFactory,
 )
-from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.api.connection_form.form_config import (
     CHSMBHeatmapsConnectionFormFactory,
 )
 

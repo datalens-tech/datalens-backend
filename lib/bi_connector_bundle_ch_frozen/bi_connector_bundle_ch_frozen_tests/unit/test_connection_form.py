@@ -1,22 +1,22 @@
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 
-from bi_connector_bundle_ch_frozen.ch_frozen_base.bi.i18n.localizer import (
+from bi_connector_bundle_ch_frozen.ch_frozen_base.api.i18n.localizer import (
     CONFIGS as BI_CONNECTOR_BUNDLE_CH_FROZEN_CONFIGS,
 )
-from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_frozen.ch_frozen_bumpy_roads.api.connection_form.form_config import (
     CHFrozenBumpyRoadsFormFactory,
 )
-from bi_connector_bundle_ch_frozen.ch_frozen_covid.bi.connection_form.form_config import CHFrozenCovidFormFactory
-from bi_connector_bundle_ch_frozen.ch_frozen_demo.bi.connection_form.form_config import CHFrozenDemoFormFactory
-from bi_connector_bundle_ch_frozen.ch_frozen_dtp.bi.connection_form.form_config import CHFrozenDTPFormFactory
-from bi_connector_bundle_ch_frozen.ch_frozen_gkh.bi.connection_form.form_config import CHFrozenGKHFormFactory
-from bi_connector_bundle_ch_frozen.ch_frozen_horeca.bi.connection_form.form_config import CHFrozenHorecaFormFactory
-from bi_connector_bundle_ch_frozen.ch_frozen_samples.bi.connection_form.form_config import CHFrozenSamplesFormFactory
-from bi_connector_bundle_ch_frozen.ch_frozen_transparency.bi.connection_form.form_config import (
+from bi_connector_bundle_ch_frozen.ch_frozen_covid.api.connection_form.form_config import CHFrozenCovidFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_demo.api.connection_form.form_config import CHFrozenDemoFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_dtp.api.connection_form.form_config import CHFrozenDTPFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_gkh.api.connection_form.form_config import CHFrozenGKHFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_horeca.api.connection_form.form_config import CHFrozenHorecaFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_samples.api.connection_form.form_config import CHFrozenSamplesFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_transparency.api.connection_form.form_config import (
     CHFrozenTransparencyFormFactory,
 )
-from bi_connector_bundle_ch_frozen.ch_frozen_weather.bi.connection_form.form_config import CHFrozenWeatherFormFactory
+from bi_connector_bundle_ch_frozen.ch_frozen_weather.api.connection_form.form_config import CHFrozenWeatherFormFactory
 
 
 class TestCHFrozenBumpyRoadsConnectionForm(ConnectionFormTestBase):

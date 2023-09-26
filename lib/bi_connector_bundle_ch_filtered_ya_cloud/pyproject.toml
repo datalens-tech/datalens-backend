@@ -23,11 +23,11 @@ datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.bi.connector:ClickhouseGeoFilteredApiConnector"
-ch_ya_music_podcast_stats = "bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.bi.connector:CHYaMusicPodcastStatsApiConnector"
-market_couriers = "bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.bi.connector:CHMarketCouriersApiConnector"
-schoolbook = "bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.bi.connector:CHSchoolbookApiConnector"
-smb_heatmaps = "bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.bi.connector:CHSMBHeatmapsApiConnector"
+ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.api.connector:ClickhouseGeoFilteredApiConnector"
+ch_ya_music_podcast_stats = "bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.api.connector:CHYaMusicPodcastStatsApiConnector"
+market_couriers = "bi_connector_bundle_ch_filtered_ya_cloud.market_couriers.api.connector:CHMarketCouriersApiConnector"
+schoolbook = "bi_connector_bundle_ch_filtered_ya_cloud.schoolbook.api.connector:CHSchoolbookApiConnector"
+smb_heatmaps = "bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.api.connector:CHSMBHeatmapsApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 ch_geo_filtered = "bi_connector_bundle_ch_filtered_ya_cloud.ch_geo_filtered.core.connector:ClickhouseGeoFilteredCoreConnector"
@@ -81,16 +81,16 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_bundle_ch_filtered_ya_cloud = [
-    {path = "bi_connector_bundle_ch_filtered_ya_cloud/base/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/base/api"},
     {path = "bi_connector_bundle_ch_filtered_ya_cloud/base/core"},
-    {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/api"},
     {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_geo_filtered/core"},
-    {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/api"},
     {path = "bi_connector_bundle_ch_filtered_ya_cloud/ch_ya_music_podcast_stats/core"},
-    {path = "bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/api"},
     {path = "bi_connector_bundle_ch_filtered_ya_cloud/market_couriers/core"},
-    {path = "bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/api"},
     {path = "bi_connector_bundle_ch_filtered_ya_cloud/schoolbook/core"},
-    {path = "bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/bi"},
+    {path = "bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/api"},
     {path = "bi_connector_bundle_ch_filtered_ya_cloud/smb_heatmaps/core"},
 ]

@@ -26,8 +26,8 @@ datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
 datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-ch_billing_analytics = "bi_connector_bundle_ch_filtered.ch_billing_analytics.bi.connector:CHBillingAnalyticsApiConnector"
-usage_tracking = "bi_connector_bundle_ch_filtered.usage_tracking.bi.connector:UsageTrackingApiConnector"
+ch_billing_analytics = "bi_connector_bundle_ch_filtered.ch_billing_analytics.api.connector:CHBillingAnalyticsApiConnector"
+usage_tracking = "bi_connector_bundle_ch_filtered.usage_tracking.api.connector:UsageTrackingApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 ch_billing_analytics = "bi_connector_bundle_ch_filtered.ch_billing_analytics.core.connector:CHBillingAnalyticsCoreConnector"
@@ -72,10 +72,10 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_bundle_ch_filtered = [
-    {path = "bi_connector_bundle_ch_filtered/base/bi"},
+    {path = "bi_connector_bundle_ch_filtered/base/api"},
     {path = "bi_connector_bundle_ch_filtered/base/core"},
-    {path = "bi_connector_bundle_ch_filtered/ch_billing_analytics/bi"},
+    {path = "bi_connector_bundle_ch_filtered/ch_billing_analytics/api"},
     {path = "bi_connector_bundle_ch_filtered/ch_billing_analytics/core"},
-    {path = "bi_connector_bundle_ch_filtered/usage_tracking/bi"},
+    {path = "bi_connector_bundle_ch_filtered/usage_tracking/api"},
     {path = "bi_connector_bundle_ch_filtered/usage_tracking/core"},
 ]

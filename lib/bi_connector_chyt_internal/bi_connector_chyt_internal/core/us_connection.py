@@ -16,7 +16,7 @@ from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
 
-from bi_connector_chyt_internal.bi.i18n.localizer import Translatable
+from bi_connector_chyt_internal.api.i18n.localizer import Translatable
 from bi_connector_chyt_internal.core.conn_options import CHYTInternalConnectOptions
 from bi_connector_chyt_internal.core.constants import (
     NOTIF_TYPE_CHYT_USING_PUBLIC_CLIQUE,

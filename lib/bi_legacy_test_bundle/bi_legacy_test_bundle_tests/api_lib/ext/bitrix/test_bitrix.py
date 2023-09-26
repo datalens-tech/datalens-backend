@@ -12,7 +12,7 @@ from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from dl_testing.utils import guids_from_titles
 
-from bi_connector_bitrix_gds.bi.api_schema.connection import BitrixPortalValidator
+from bi_connector_bitrix_gds.api.api_schema.connection import BitrixPortalValidator
 
 
 @pytest.mark.parametrize(
